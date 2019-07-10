@@ -25,5 +25,9 @@ If you have downloaded XLSX template and placed it next to json_to_xlsx.py, your
 
 - [XLSX template](https://raw.githubusercontent.com/HafisCZ/SF-Exporter/master/template.xlsx)
 
+
+_Use this script to dump all values into .xlsx, since json_to_xlsx filters certain items out:_
+- [XLSX Dump](https://raw.githubusercontent.com/HafisCZ/SF-Exporter/master/dump.py)
+
 ### Required packages
 - [openpyxl](https://pypi.org/project/openpyxl/)
