@@ -5,6 +5,8 @@ Purpose of this project is to create simple scripts for Shakes & Fidget that col
 
 In the current state, the only available scripts are aimed at exporting guild members list and their statistics
 
+_Create an issue on GitHub if you found a bug or your exported files do not match reality_
+
 ### How to use
 To create a .JSON file, drag you .HAR file over har_to_json.py
 If you want to create also .XLSX spreadsheet, drag your newly created .JSON over to json_to_xlsx.py
