@@ -1,5 +1,7 @@
 ***Exported data are not guaranteed to be correct, since there are no descriptions for many values - many meanings are only approximated and many values change between sessions***
 
+***I am currently working on Java version, that will replace & include everything in one package - GUI included.***
+
 ### About
 Purpose of this project is to create simple scripts for Shakes & Fidget that collect data from .HAR files and output structured .JSON files or .XLSX tables
 
