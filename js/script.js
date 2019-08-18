@@ -41,12 +41,33 @@ $(document).ready(() => {
 	sftools.init();
 });
 
+function showSet(set) {
+  // Configure modal
+  $('#modalSetHeader').html(
+    '<h4 class="modal-title">' +
+    set.Label + 
+    '<h6><span class="badge badge-dark ml-2">' + 
+    set.Groups.length + 
+    ' groups</span><span class="badge badge-dark ml-2">' + 
+    set.Players.length + 
+    ' players</span></h6>' +
+    '</h4>'
+  );
+  
+  $('#modalSetBody').html(
+    
+  );
+
+  // Show
+  $('#modalSet').modal('show');
+}
+
 window.addEventListener("sftools.updatelist", function(e) {	
 	$('#list').empty();
 	
 	for (var i = sftools.data.length - 1, item; item = sftools.data[i]; i--) {
-		$('#list').append(
-			'<a href="#" class="list-group-item list-group-item-action mb-2">' +
+		$('#list').append(   
+			'<a onclick="showSet(sftools.data[' + i + ']);" class="list-group-item list-group-item-action mb-2">' +
 			'<div class="d-flex w-100 justify-content-between"><div>' +
 			'<h5 class="mb-1">' +
 			item.Label +

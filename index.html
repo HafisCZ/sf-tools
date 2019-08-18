@@ -42,7 +42,7 @@
   <main role="main" class="flex-shrink-0">
     <div class="container">
       <div class="list-group mt-5" id="list">
-      
+        <!--LIST CONTENT-->
       </div>
       <div class="text-center mt-5 mb-5">
         <h3>Drag files here</h3>
@@ -51,11 +51,23 @@
           <input multiple onchange="manualFileHandler(this.files)" type="file" hidden>
         </label>
       </div>
-
     </div>
   </main>
   
   <!--MODAL-->
+  <div class="modal" id="modalSet" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header navbar-dark" id="modalSetHeader">
+          <!--MODAL HEADER-->
+        </div>
+        <div class="modal-body" id="modalSetBody">
+          <!--MODAL CONTENT-->
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <div class="modal" id="modalSettings" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
