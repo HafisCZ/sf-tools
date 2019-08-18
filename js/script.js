@@ -40,18 +40,18 @@ window.addEventListener("sftools.updatelist", function(e) {
 	for (var i = sftools.data.length - 1, item; item = sftools.data[i]; i--) {
 		$('#list').append(
 			'<a href="#" class="list-group-item list-group-item-action mb-2">' +
-			'<div class="d-flex w-100 justify-content-between">' +
+			'<div class="d-flex w-100 justify-content-between"><div>' +
 			'<h5 class="mb-1">' +
 			item.Label +
 			'</h5>' +
-			'<button type="button" class="btn btn-outline-danger" onclick="removeHandler(' + i + ');">Remove</button>' +
-			'</div>' +
-			'<span class="badge badge-dark mr-2">' +
+      '<span class="badge badge-dark mr-2">' +
 			item.Groups.length +
 			' groups</span>' +
 			'<span class="badge badge-dark">' +
 			item.Players.length + 
-			' players</span>' +
+			' players</span></div>' +
+			'<button type="button" class="btn btn-outline-danger" onclick="removeHandler(' + i + ');">Remove</button>' +
+			'</div>' +
 			'</a>'
 		)
 	}

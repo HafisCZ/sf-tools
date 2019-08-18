@@ -17,14 +17,18 @@
 
 <body>
   <!--DRAG-DROP OVERLAY-->
-  <div class="dragdropzone" id="dragtest" ondrop="dropHandler(event);" ondragover="dragoverHandler(event);"></div>
+  <div class="dragdropzone" style="visibility: hidden;" id="dragtest" ondrop="dropHandler(event);" ondragover="dragoverHandler(event);"></div>
    
   <!--HEADER-->
   <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
       <a class="navbar-brand" href="#">SFTools Web UI</a>
-
-      <div class="collapse navbar-collapse" id="navbarCollapse">
+      
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
             <a class="nav-link" data-toggle="modal" data-target="#modalSettings">Settings</a>
@@ -51,7 +55,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
     
-        <div class="modal-header">
+        <div class="modal-header navbar-dark">
           <h4 class="modal-title" id="myModalLabel">Settings</h4>
         </div>
       
@@ -119,7 +123,6 @@
             <input type="checkbox" class="custom-control-input" id="check4">
             <label class="custom-control-label" for="check4">Restrict to 100</label>
           </div>
-          
         </div>
     
         <div class="modal-footer justify-content-between">
