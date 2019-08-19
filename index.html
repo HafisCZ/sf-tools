@@ -33,6 +33,9 @@
           <li class="nav-item">
             <a class="nav-link" data-toggle="modal" data-target="#modalSettings">Settings</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="modal" data-target="#modalHelp">Help</a>
+          </li>
         </ul>
       </div>
     </nav>
@@ -72,8 +75,8 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
     
-        <div class="modal-header navbar-dark">
-          <h4 class="modal-title" id="myModalLabel">Settings</h4>
+        <div class="modal-header bg-dark">
+          <h4 class="modal-title text-white">Settings</h4>
         </div>
       
         <div class="modal-body">
@@ -143,8 +146,49 @@
         </div>
     
         <div class="modal-footer justify-content-between">
-          <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-          <button id="settingsSave" class="btn btn-primary" data-dismiss="modal">Save</button>
+          <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+          <button id="settingsSave" class="btn btn-dark" data-dismiss="modal">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal" id="modalHelp" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+    
+        <div class="modal-header bg-dark">
+          <h4 class="modal-title text-white">Help</h4>
+        </div>
+      
+        <div class="modal-body">
+          <h5>How to get the HAR files</h5>
+          <label>
+            Open a tab in your browser, press <strong>F12</strong> and navigate over to <strong>Network</strong> tab.
+            Now, you should see items appearing inside the tab when you go open SF game.<br>
+            If you want to capture a player, simply click on his profile. The same applies to groups.<br>
+            When you have everything you need, go to the tab and click <strong>Save all as HAR</strong>.
+            This can be hidden under <strong>HAR</strong> button, or similar.
+          </label>
+          <hr/>
+          <h5>What to do next</h5>
+          <label>
+            After uploading your file and seeing it appear in the list, you can click on it to reveal more information.
+          </label>
+          <hr/>
+          <h5>How it works</h5>
+          <label>
+            HAR files are archives containing comunication between your browser and servers.
+            This allows this web application to open the files and extract required information from them.
+            Uploaded files are parsed and stored within your browser (Deleting local storage will wipe them out).<br>
+            All login information is ignored when the files are parsed, but please be wary that they contain your name and password in raw form - <strong>never send .HAR files to anyone</strong>.
+          </label>
+          <hr/>
+          <h5>Notice</h5>
+          <label>
+            All functionality within this page is provided as is, without any warranties. The content is not guaranteed to be correct and can become broken any time.<br><br>
+            SFTools &copy; 2019 HIRAISHIN SOFTWARE
+          </label>
         </div>
       </div>
     </div>
