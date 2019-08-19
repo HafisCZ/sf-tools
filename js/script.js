@@ -59,7 +59,8 @@ function showSet(id) {
     header +=
       '<h4 class="modal-title text-white">' +
       set.Label + 
-      '<h6><span class="badge badge-light">' + 
+      '<a class="btn btn-outline-light btn-sm ml-3 mt-1" style="font-size: .5rem;">Export</a>' +
+      '<h6 class="mt-2"><span class="badge badge-light">' + 
       set.Groups.length + 
       ' groups</span><span class="badge badge-light ml-2">' + 
       set.Players.length + 
