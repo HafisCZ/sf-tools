@@ -1,73 +1,158 @@
-function dropHandler(ev) {
-	ev.preventDefault();
-	
-	if (ev.dataTransfer.items) {
-		for (var i = 0; i < ev.dataTransfer.items.length; i++) {
-			if (ev.dataTransfer.items[i].kind === 'file') {
-				fileHandler(ev.dataTransfer.items[i].getAsFile());
-			}
-		}
-	} else {
-		for (var i = 0; i < ev.dataTransfer.files.length; i++) {
-			fileHandler(ev.dataTransfer.files[i]);
-		}
-	}
-	
-	document.querySelector("#dragtest").style.visibility = "hidden";
-}
+/*
+  SFTools IO
+*/
+$(window).on('dragenter', e => {
+  window.lasttarget = e.target;
+  $('#dragtest').css('visibility', ''); 
+});
 
-function dragoverHandler(ev) {
-	ev.preventDefault();
-}
-
-function fileHandler(file) {
-	sftools.import(file);
-}
-
-function removeHandler(index) {
-	sftools.remove(index);
-}
-
-function manualFileHandler(files) {
-  for (let i = 0, numFiles = files.length; i < numFiles; i++) {
-  const file = files[i];
-    fileHandler(file);
+$(window).on('dragleave', e => {
+  if (e.target === window.lasttarget || e.target === document) {
+    $('#dragtest').css('visibility', 'hidden');
   }
-}
+});
 
-var lastTarget = null;
+var dragdrop = {
+  drop: ev => {
+    ev.preventDefault();
+    
+    if (ev.dataTransfer.items) {
+      for (var i in ev.dataTransfer.items) {
+        if (ev.dataTransfer.items[i].kind === 'file') {
+          dragdrop.load(ev.dataTransfer.items[i].getAsFile());
+        }
+      }
+    } else {
+      for (var i in ev.dataTransfer.files) {
+        dragdrop.load(ev.dataTransfer.files[i]);
+      }
+    }
+    
+    $('#dragtest').css('visibility', 'hidden');
+  },
+  dragover: ev => ev.preventDefault(),
+  load: file => sftools.import(file),
+  remove: id => sftools.remove(id),
+  loadman: files => {
+    for (var i in files) {;
+       fileHandler(files[i]);
+    }
+  }
+};
 
 $(document).ready(() => {
 	sftools.init();
 });
 
-function showSet(set) {
-  // Configure modal
-  $('#modalSetHeader').html(
-    '<h4 class="modal-title">' +
-    set.Label + 
-    '<h6><span class="badge badge-dark ml-2">' + 
-    set.Groups.length + 
-    ' groups</span><span class="badge badge-dark ml-2">' + 
-    set.Players.length + 
-    ' players</span></h6>' +
-    '</h4>'
+/*
+  Control
+*/
+function showSet(id) {
+  var set = sftools.data[id];
+  
+  if (set) {
+    var header = '';
+    var content = '';
+    var content2 = '';
+    
+    // Header
+    header +=
+      '<h4 class="modal-title text-white">' +
+      set.Label + 
+      '<h6><span class="badge badge-light">' + 
+      set.Groups.length + 
+      ' groups</span><span class="badge badge-light ml-2">' + 
+      set.Players.length + 
+      ' players</span></h6>' +
+      '</h4>'
+    
+    // Content
+    for (var i in set.Players) {
+      content += '<a onclick="showPlayer(' + id + ',' + i + ');" class="list-group-item list-group-item-action">' + set.Players[i].Name + '</a>';
+    }
+    
+    for (var i in set.Groups) {
+      content2 += '<a onclick="showGroup(' + id + ',' + i + ');" class="list-group-item list-group-item-action">' + set.Groups[i].Name + '</a>';
+    }
+    
+    // Set & show
+    $('#modalSetHeader').html(header);
+    
+    $('#setlist').html(content);
+    $('#setlist2').html(content2);
+    
+    $('#setsearch').val('');
+    $('#setsearch2').val('');
+    
+    $('#modalSet').modal('show');
+  }
+}
+  
+function showPlayer(set, id) {
+  var player = sftools.data[set].Players[id];
+  
+  $('#modalDetailHeader').html(
+    '<div class="d-flex w-100 justify-content-between">' +
+    '<h4 class="modal-title text-white">' + player.Name + '</h4>' + 
+    '<h4 class="modal-title text-white">' + player.Level + '</h4>' +
+    '</div>'
   );
   
-  $('#modalSetBody').html(
-    
+  $('#modalDetailBody').html(
+    '<div class="progress bg-dark mt-n4 mb-2 mx-n2" style="height: 1px;">' +
+    '<div class="progress-bar" style="width: ' + Math.trunc(100.0 * player.XP / player.XPNext) + '%" role="progressbar"></div>' +
+    '</div>' +
+     
+    '<div class="row pt-3">' +
+    '<div class="col">Strength</div>' +        
+    '<div class="col text-center text-muted">' +
+    player.Strength +
+    '</div>' +       
+    '<div class="col">Constitution</div>' +      
+    '<div class="col text-center text-muted">' +
+    player.Constitution +
+    '</div>' +    
+    '</div>' +    
+    '<div class="row">' +
+    '<div class="col">Dexterity</div>' +        
+    '<div class="col text-center text-muted">' +
+    player.Dexterity +
+    '</div>' +       
+    '<div class="col">Luck</div>' +     
+    '<div class="col text-center text-muted">' +
+    player.Luck +
+    '</div>' +    
+    '</div>' +   
+    '<div class="row">' +
+    '<div class="col">Intelligence</div>' +        
+    '<div class="col text-center text-muted">' +
+    player.Intelligence +
+    '</div>' +       
+    '<div class="col">Armor</div>' +    
+    '<div class="col text-center text-muted">' +
+    player.Armor +
+    '</div>' +      
+    '</div>'
   );
+  
+  $('#modalDetail').modal('show');
+}
 
-  // Show
-  $('#modalSet').modal('show');
+function showGroup(set, id) {
+  var group = sftools.data[set].Groups[id];
+  
+  $('#modalDetailHeader').html('<h4 class="modal-title text-white">' + group.Name + '</h4>');
+  $('#modalDetailBody').empty();
+  
+  $('#modalDetail').modal('show');
 }
 
 window.addEventListener("sftools.updatelist", function(e) {	
-	$('#list').empty();
+  var content = '';
 	
 	for (var i = sftools.data.length - 1, item; item = sftools.data[i]; i--) {
-		$('#list').append(   
-			'<a onclick="showSet(sftools.data[' + i + ']);" class="list-group-item list-group-item-action mb-2">' +
+		content +=   
+			'<a onclick="showSet(' + i + ');" class="list-group-item list-group-item-action mb-2">' +
 			'<div class="d-flex w-100 justify-content-between"><div>' +
 			'<h5 class="mb-1">' +
 			item.Label +
@@ -78,24 +163,12 @@ window.addEventListener("sftools.updatelist", function(e) {
 			'<span class="badge badge-dark">' +
 			item.Players.length + 
 			' players</span></div>' +
-			'<button type="button" class="btn btn-outline-danger" onclick="removeHandler(' + i + ');">Remove</button>' +
+			'<button type="button" class="btn btn-outline-danger" onclick="dragdrop.remove(' + i + ');">Remove</button>' +
 			'</div>' +
 			'</a>'
-		)
 	}
-});
-
-window.addEventListener("dragenter", function(e) {
-	lastTarget = e.target;
-
-	document.querySelector("#dragtest").style.visibility = "";
-});
-
-window.addEventListener("dragleave", function(e) {
-	if(e.target === lastTarget || e.target === document)
-	{
-		document.querySelector("#dragtest").style.visibility = "hidden";
-	}
+  
+  $('#list').html(content);
 });
 
 // Settings handlers

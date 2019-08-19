@@ -17,7 +17,7 @@
 
 <body>
   <!--DRAG-DROP OVERLAY-->
-  <div class="dragdropzone" style="visibility: hidden;" id="dragtest" ondrop="dropHandler(event);" ondragover="dragoverHandler(event);"></div>
+  <div class="dragdropzone" style="visibility: hidden;" id="dragtest" ondrop="dragdrop.drop(event);" ondragover="dragdrop.dragover(event);"></div>
    
   <!--HEADER-->
   <header>
@@ -51,7 +51,7 @@
         <h3>Drag files here</h3>
         <label class='text-muted'>
           Or click here to select a file
-          <input multiple onchange="manualFileHandler(this.files)" type="file" hidden>
+          <input multiple onchange="dragdrop.loadman(this.files)" type="file" hidden>
         </label>
       </div>
     </div>
@@ -59,20 +59,46 @@
   
   <!--MODAL-->
   <div class="modal" id="modalSet" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-top modal-lg" role="document">
       <div class="modal-content">
-        <div class="modal-header navbar-dark" id="modalSetHeader">
-          <!--MODAL HEADER-->
+        <div class="modal-header bg-dark" id="modalSetHeader">
+          <!--HEADER-->
         </div>
         <div class="modal-body" id="modalSetBody">
-          <!--MODAL CONTENT-->
+          <div class="row">
+            <div class="col">
+              <input class="form-control mb-2" id="setsearch" type="text" placeholder="Filter player">
+              <div class="list-group" id="setlist">
+                <!--LIST CONTENT-->
+              </div>
+            </div>
+            <div class="col">
+              <input class="form-control mb-2" id="setsearch2" type="text" placeholder="Filter group">
+              <div class="list-group" id="setlist2">
+                <!--LIST CONTENT-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal" id="modalDetail" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-top modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-dark" id="modalDetailHeader">
+          <!--HEADER-->
+        </div>       
+        <div class="modal-body" id="modalDetailBody">
+          <!--CONTENT-->
         </div>
       </div>
     </div>
   </div>
   
   <div class="modal" id="modalSettings" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-dialog-top" role="document">
       <div class="modal-content">
     
         <div class="modal-header bg-dark">
@@ -154,7 +180,7 @@
   </div>
   
   <div class="modal" id="modalHelp" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-top modal-lg" role="document">
       <div class="modal-content">
     
         <div class="modal-header bg-dark">
@@ -205,6 +231,32 @@
   
   <script type="text/javascript" src="js/script.js"></script>
 	<script type="text/javascript" src="js/sftools.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      $("#setsearch").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#setlist a").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+      
+      $("#setsearch2").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#setlist2 a").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+      
+      $('#modalDetail').on('show.bs.modal', function() {
+        $('#modalSet').modal('hide');
+      });
+      
+      $('#modalDetail').on('hidden.bs.modal', function() {
+        $('#modalSet').modal('show');
+      });
+    });
+  </script>
 </body>
 
 </html>
