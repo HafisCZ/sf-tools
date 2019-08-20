@@ -2,239 +2,239 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  
-  <title>SFTools Web UI</title>
-  
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/mdb.min.css" rel="stylesheet">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <link href="css/style.css" rel="stylesheet">
+	<title>SFTools Web UI</title>
+
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/mdb.min.css" rel="stylesheet">
+
+	<link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
-  <!--DRAG-DROP OVERLAY-->
-  <div class="dragdropzone" style="visibility: hidden;" id="dragtest" ondrop="dragdrop.drop(event);" ondragover="dragdrop.dragover(event);"></div>
-   
-  <!--HEADER-->
-  <header>
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-      <a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.0.9</small></a>
-      
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="modal" data-target="#modalSettings">Settings</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="modal" data-target="#modalHelp">Help</a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </header>
-  
-  <!--MAIN-->
-  <main role="main" class="flex-shrink-0">
-    <div class="container">
-      <div class="list-group mt-5" id="list">
-        <!--LIST CONTENT-->
-      </div>
-      <div class="text-center mt-5 mb-5">
-        <h3>Drag files here</h3>
-        <label class='text-muted'>
-          Or click here to select a file
-          <input multiple onchange="dragdrop.loadman(this.files)" type="file" hidden>
-        </label>
-      </div>
-    </div>
-  </main>
-  
-  <!--MODAL-->
-  <div class="modal" id="modalSet" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-top modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-dark" id="modalSetHeader">
-          <!--HEADER-->
-        </div>
-        <div class="modal-body" id="modalSetBody">
-          <h5>Browse</h5>
-          <div class="row">
-            <div class="col">
-              <input class="form-control mb-2" id="setsearch" type="text" placeholder="Filter player">
-              <div class="list-group" id="setlist">
-                <!--LIST CONTENT-->
-              </div>
-            </div>
-            <div class="col">
-              <input class="form-control mb-2" id="setsearch2" type="text" placeholder="Filter group">
-              <div class="list-group" id="setlist2">
-                <!--LIST CONTENT-->
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="modal" id="modalDetail" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-top modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-dark" id="modalDetailHeader">
-          <!--HEADER-->
-        </div>       
-        <div class="modal-body" id="modalDetailBody">
-          <!--CONTENT-->
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="modal" id="modalSettings" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-top" role="document">
-      <div class="modal-content">
-    
-        <div class="modal-header bg-dark">
-          <h4 class="modal-title text-white">Settings</h4>
-        </div>
-      
-        <div class="modal-body">
-         <h5>Highlighting</h5>
-        
-         <div class="row">
-            <div class="col-sm text-left"><label>Scrapbook</label></div>
-            <div class="col-sm text-center"><label class="text-danger" id="label1"></label></div>
-            <div class="col-sm text-right"><label class="text-success" id="label2"></label></div>
-          </div>
-          <input type="range" min="0" max="100" class="custom-range" id="range1">
-          <input type="range" min="0" max="100" class="custom-range" id="range2">
-          
-         <div class="row mt-3">
-            <div class="col-sm text-left"><label>Group pet</label></div>
-            <div class="col-sm text-center"><label class="text-danger" id="label3"></label></div>
-            <div class="col-sm text-right"><label class="text-success" id="label4"></label></div>
-          </div>
-          <input type="range" min="0" max="500" class="custom-range" id="range3">
-          <input type="range" min="0" max="500" class="custom-range" id="range4">
-          
-         <div class="row mt-3">
-            <div class="col-sm text-left"><label>Knights</label></div>
-            <div class="col-sm text-center"><label class="text-danger" id="label5"></label></div>
-            <div class="col-sm text-right"><label class="text-success" id="label6"></label></div>
-          </div>
-          <input type="range" min="0" max="25" class="custom-range" id="range5">
-          <input type="range" min="0" max="25" class="custom-range" id="range6">
-          
-         <div class="row mt-3">
-            <div class="col-sm text-left"><label>Mount</label></div>
-            <div class="col-sm text-center"><label class="text-danger" id="label7"></label></div>
-            <div class="col-sm text-right"><label class="text-success" id="label8"></label></div>
-          </div>
-          <input type="range" min="0" max="4" class="custom-range" id="range7">
-          <input type="range" min="0" max="4" class="custom-range" id="range8">
-            
-          <div class="custom-control custom-checkbox mb-2 mt-3">
-              <input type="checkbox" class="custom-control-input" id="check1">
-              <label class="custom-control-label" for="check1">Apply to all</label>
-          </div>
-          
-          <hr/>
-          
-          <h5>Gear score</h5>
-         
-          <div class="d-flex w-100 justify-content-between">
-            <label>Item upgrades</label>
-            <label class="text-success" id="label9"></label>
-          </div>
-          <input type="range" min="0" max="20" class="custom-range" id="range9">
-          
-          <div class="custom-control custom-checkbox mb-2 mt-3">
-            <input type="checkbox" class="custom-control-input" id="check2">
-            <label class="custom-control-label" for="check2">Ignore gems</label>
-          </div>
-          
-          <div class="custom-control custom-checkbox mb-2 mt-3">
-            <input type="checkbox" class="custom-control-input" id="check3">
-            <label class="custom-control-label" for="check3">Ignore weapons</label>
-          </div>
-          
-          <div class="custom-control custom-checkbox mb-2 mt-3">
-            <input type="checkbox" class="custom-control-input" id="check4">
-            <label class="custom-control-label" for="check4">Restrict to 100</label>
-          </div>
-        </div>
-    
-        <div class="modal-footer justify-content-between">
-          <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
-          <button id="settingsSave" class="btn btn-dark" data-dismiss="modal">Save</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="modal" id="modalHelp" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-dialog-top modal-lg" role="document">
-      <div class="modal-content">
-    
-        <div class="modal-header bg-dark">
-          <h4 class="modal-title text-white">Help</h4>
-        </div>
-      
-        <div class="modal-body">
-          <h5>How to get the HAR files</h5>
-          <label>
-            Open a tab in your browser, press <strong>F12</strong> and navigate over to <strong>Network</strong> tab.
-            Now, you should see items appearing inside the tab when you go open SF game.<br>
-            If you want to capture a player, simply click on his profile. The same applies to groups.<br>
-            When you have everything you need, go to the tab and click <strong>Save all as HAR</strong>.
-            This can be hidden under <strong>HAR</strong> button, or similar.
-          </label>
-          <hr/>
-          <h5>What to do next</h5>
-          <label>
-            After uploading your file and seeing it appear in the list, you can click on it to reveal more information.
-          </label>
-          <hr/>
-          <h5>How it works</h5>
-          <label>
-            HAR files are archives containing comunication between your browser and servers.
-            This allows this web application to open the files and extract required information from them.
-            Uploaded files are parsed and stored within your browser (Deleting local storage will wipe them out).<br>
-            All login information is ignored when the files are parsed, but please be wary that they contain your name and password in raw form - <strong>never send .HAR files to anyone</strong>.
-          </label>
-          <hr/>
-          <h5>Notice</h5>
-          <label>
-            All functionality within this page is provided as is, without any warranties. The content is not guaranteed to be correct and can become broken any time.<br><br>
-            SFTools &copy; 2019 HIRAISHIN SOFTWARE
-          </label>
-        </div>
-        
-        <div class="modal-footer justify-content-between">
-          <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
-  <script type="text/javascript" src="js/popper.min.js"></script>
-  <script type="text/javascript" src="js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="js/mdb.min.js"></script>
-  
-  <script type="text/javascript" src="js/script.js"></script>
-	<script type="text/javascript" src="js/sftools.js"></script>
-  
-  <script type="text/javascript" src="js/modals/settings.js"></script>
-  <script type="text/javascript" src="js/modals/browse.js"></script>
+	<!--DRAG-DROP OVERLAY-->
+	<div class="dragdropzone" style="visibility: hidden;" id="dragtest" ondrop="dragdrop.drop(event);" ondragover="dragdrop.dragover(event);"></div>
+
+	<!--HEADER-->
+	<header>
+		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+			<a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.0.10</small></a>
+
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="modal" data-target="#modalSettings">Settings</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" data-toggle="modal" data-target="#modalHelp">Help</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	</header>
+
+	<!--MAIN-->
+	<main role="main" class="flex-shrink-0">
+		<div class="container">
+			<div class="list-group mt-5" id="list">
+				<!--LIST CONTENT-->
+			</div>
+			<div class="text-center mt-5 mb-5">
+				<h3>Drag files here</h3>
+				<label class='text-muted'>
+					Or click here to select a file
+					<input multiple onchange="dragdrop.loadman(this.files)" type="file" hidden>
+				</label>
+			</div>
+		</div>
+	</main>
+
+	<!--MODAL-->
+	<div class="modal" id="modalSet" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header bg-dark" id="modalSetHeader">
+					<!--HEADER-->
+				</div>
+				<div class="modal-body" id="modalSetBody">
+					<h5>Browse</h5>
+					<div class="row">
+						<div class="col">
+							<input class="form-control mb-2" id="setsearch" type="text" placeholder="Filter player">
+							<div class="list-group" id="setlist">
+								<!--LIST CONTENT-->
+							</div>
+						</div>
+						<div class="col">
+							<input class="form-control mb-2" id="setsearch2" type="text" placeholder="Filter group">
+							<div class="list-group" id="setlist2">
+								<!--LIST CONTENT-->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="modalDetail" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header bg-dark" id="modalDetailHeader">
+					<!--HEADER-->
+				</div>
+				<div class="modal-body" id="modalDetailBody">
+					<!--CONTENT-->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="modalSettings" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-top" role="document">
+			<div class="modal-content">
+
+				<div class="modal-header bg-dark">
+					<h4 class="modal-title text-white">Settings</h4>
+				</div>
+
+				<div class="modal-body">
+				 <h5>Highlighting</h5>
+
+				 <div class="row">
+						<div class="col-sm text-left"><label>Scrapbook</label></div>
+						<div class="col-sm text-center"><label class="text-danger" id="label1"></label></div>
+						<div class="col-sm text-right"><label class="text-success" id="label2"></label></div>
+					</div>
+					<input type="range" min="0" max="100" class="custom-range" id="range1">
+					<input type="range" min="0" max="100" class="custom-range" id="range2">
+
+				 <div class="row mt-3">
+						<div class="col-sm text-left"><label>Group pet</label></div>
+						<div class="col-sm text-center"><label class="text-danger" id="label3"></label></div>
+						<div class="col-sm text-right"><label class="text-success" id="label4"></label></div>
+					</div>
+					<input type="range" min="0" max="100" class="custom-range" id="range3">
+					<input type="range" min="0" max="100" class="custom-range" id="range4">
+
+				 <div class="row mt-3">
+						<div class="col-sm text-left"><label>Knights</label></div>
+						<div class="col-sm text-center"><label class="text-danger" id="label5"></label></div>
+						<div class="col-sm text-right"><label class="text-success" id="label6"></label></div>
+					</div>
+					<input type="range" min="0" max="25" class="custom-range" id="range5">
+					<input type="range" min="0" max="25" class="custom-range" id="range6">
+
+				 <div class="row mt-3">
+						<div class="col-sm text-left"><label>Mount</label></div>
+						<div class="col-sm text-center"><label class="text-danger" id="label7"></label></div>
+						<div class="col-sm text-right"><label class="text-success" id="label8"></label></div>
+					</div>
+					<input type="range" min="0" max="4" class="custom-range" id="range7">
+					<input type="range" min="0" max="4" class="custom-range" id="range8">
+
+					<div class="custom-control custom-checkbox mb-2 mt-3">
+						<input type="checkbox" class="custom-control-input" id="check1">
+						<label class="custom-control-label" for="check1">Apply to all</label>
+					</div>
+
+					<hr/>
+
+					<h5>Gear score</h5>
+
+					<div class="d-flex w-100 justify-content-between">
+						<label>Item upgrades</label>
+						<label class="text-success" id="label9"></label>
+					</div>
+					<input type="range" min="0" max="20" class="custom-range" id="range9">
+
+					<div class="custom-control custom-checkbox mb-2 mt-3">
+						<input type="checkbox" class="custom-control-input" id="check2">
+						<label class="custom-control-label" for="check2">Ignore gems</label>
+					</div>
+
+					<div class="custom-control custom-checkbox mb-2 mt-3">
+						<input type="checkbox" class="custom-control-input" id="check3">
+						<label class="custom-control-label" for="check3">Ignore weapons</label>
+					</div>
+
+					<div class="custom-control custom-checkbox mb-2 mt-3">
+						<input type="checkbox" class="custom-control-input" id="check4">
+						<label class="custom-control-label" for="check4">Restrict to 100</label>
+					</div>
+				</div>
+
+				<div class="modal-footer justify-content-between">
+					<button class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+					<button class="btn btn-dark" id="modalSettingsSave">Save</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="modalHelp" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
+			<div class="modal-content">
+
+				<div class="modal-header bg-dark">
+					<h4 class="modal-title text-white">Help</h4>
+				</div>
+
+				<div class="modal-body">
+					<h5>How to get the HAR files</h5>
+					<label>
+						Open a tab in your browser, press <strong>F12</strong> and navigate over to <strong>Network</strong> tab.
+						Now, you should see items appearing inside the tab when you go open SF game.<br>
+						If you want to capture a player, simply click on his profile. The same applies to groups.<br>
+						When you have everything you need, go to the tab and click <strong>Save all as HAR</strong>.
+						This can be hidden under <strong>HAR</strong> button, or similar.
+					</label>
+					<hr/>
+					<h5>What to do next</h5>
+					<label>
+						After uploading your file and seeing it appear in the list, you can click on it to reveal more information.
+					</label>
+					<hr/>
+					<h5>How it works</h5>
+					<label>
+						HAR files are archives containing comunication between your browser and servers.
+						This allows this web application to open the files and extract required information from them.
+						Uploaded files are parsed and stored within your browser (Deleting local storage will wipe them out).<br>
+						All login information is ignored when the files are parsed, but please be wary that they contain your name and password in raw form - <strong>never send .HAR files to anyone</strong>.
+					</label>
+					<hr/>
+					<h5>Notice</h5>
+					<label>
+						All functionality within this page is provided as is, without any warranties. The content is not guaranteed to be correct and can become broken any time.<br><br>
+						SFTools &copy; 2019 HIRAISHIN SOFTWARE
+					</label>
+				</div>
+
+				<div class="modal-footer justify-content-between">
+					<button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+	<script type="text/javascript" src="js/popper.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/mdb.min.js"></script>
+
+	<script type="text/javascript" src="js/sft/core.js"></script>
+	<script type="text/javascript" src="js/sft/constants.js"></script>
+	
+	<script type="text/javascript" src="js/ui/script.js"></script>
+	<script type="text/javascript" src="js/ui/browse.js"></script>
 </body>
 
 </html>
