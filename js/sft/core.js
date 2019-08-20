@@ -182,18 +182,18 @@ class SFImporter
 
 		for (var [key, val] of JSONScanner.iterate(json))
 		{
-			if (key === 'text' && (value.includes('otherpname') || value.includes('ownpname')))
+			if (key === 'text' && (val.includes('otherplayername') || val.includes('ownplayername')))
 			{
-				var p = SFImporter.buildPlayer(value);
+				var player = SFImporter.buildPlayer(val);
 
-				if (!ps.find((p) => { return p.Name === p.Name; }))
+				if (!ps.find((p) => { return p.Name === player.Name; }))
 				{
-					ps.push(p);
+					ps.push(player);
 				}
 
-				if (value.includes('owngroup'))
+				if (val.includes('owngroup'))
 				{
-					var group = SFImporter.buildGroup(value);
+					var group = SFImporter.buildGroup(val);
 
 					if (!gs.find((g) => { return g.Name === group.Name; }))
 					{
@@ -201,22 +201,22 @@ class SFImporter
 					}
 				}
 			}
-			else if (key === 'text' && value.includes('othergroup'))
+			else if (key === 'text' && val.includes('othergroup'))
 			{
-				var group = SFImporter.buildGroup(value);
+				var group = SFImporter.buildGroup(val);
 
 				if (!gs.find((g) => { return g.Name === group.Name; }))
 				{
 					gs.push(group);
 				}
 			}
-
-			return {
-				Players: ps,
-				Groups: gs,
-				Label: label
-			};
 		}
+
+        return {
+            Players: ps,
+            Groups: gs,
+            Label: label
+        };
 	}
 
 	static buildGroup(data)
