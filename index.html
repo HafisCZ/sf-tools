@@ -22,7 +22,7 @@
   <!--HEADER-->
   <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-      <a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.0.8</small></a>
+      <a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.0.9</small></a>
       
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
@@ -233,31 +233,8 @@
   <script type="text/javascript" src="js/script.js"></script>
 	<script type="text/javascript" src="js/sftools.js"></script>
   
-  <script>
-    $(document).ready(function() {
-      $("#setsearch").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        $("#setlist a").filter(function() {
-          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-      });
-      
-      $("#setsearch2").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        $("#setlist2 a").filter(function() {
-          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-      });
-      
-      $('#modalDetail').on('show.bs.modal', function() {
-        $('#modalSet').modal('hide');
-      });
-      
-      $('#modalDetail').on('hidden.bs.modal', function() {
-        $('#modalSet').modal('show');
-      });
-    });
-  </script>
+  <script type="text/javascript" src="js/modals/settings.js"></script>
+  <script type="text/javascript" src="js/modals/browse.js"></script>
 </body>
 
 </html>
