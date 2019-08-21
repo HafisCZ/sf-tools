@@ -242,7 +242,7 @@ class DetailController
             </div>
             <div class="row">
               <div class="col">${player.FortressKnights > 0 ? 'Knights' : ''}</div>
-              <div class="col text-center ${player.FortressKnights < st.knights.min.value ? 'text-danger' : (player.FortressKnights >= st.knights.max.value ? 'text-success' : 'text-warning')}">${player.FortressKnights > 0 ? player.FortressKnights : ''}</div>
+              <div class="col text-center ${MD.rif(player.FortressKnights >= st.knights.max.value, 'text-success') || MD.rif(player.FortressKnights >= st.knights.min.value, 'text-warning') || 'text-danger'}">${player.FortressKnights > 0 ? player.FortressKnights : ''}</div>
               <div class="col">Warriors</div>
               <div class="col text-center text-muted">${player.FortressWarriors}</div>
             </div>
@@ -335,12 +335,18 @@ class DetailController
         b.push(`
             <h5>About</h5>
             <div class="row">
-                <div class="col-4">Rank</div>
-                <div class="col text-muted">${group.Rank}</div>
+                <div class="col-3">Rank</div>
+                <div class="col text-center text-muted">${group.Rank}</div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
             </div>
             <div class="row">
-                <div class="col-4">Members</div>
-                <div class="col text-muted">${group.MemberCount} / 50</div>
+                <div class="col-3">Members</div>
+                <div class="col text-center text-muted">${group.MemberCount} / 50</div>
+                <div class="col"></div>
+                <div class="col"></div>
+                <div class="col"></div>
             </div>
             <hr/>
         `);
@@ -348,44 +354,64 @@ class DetailController
         // Upgrades
         b.push(`
             <div class="row">
-                <div class="col">
+                <div class="col-3">
                     <h5>Details</h5>
                 </div>
                 <div class="col text-center"><h6>&sum;</h6></div>
                 <div class="col text-center"><h6>&empty;</h6></div>
+                <div class="col text-center"><h6>Min</h6></div>
+                <div class="col text-center"><h6>Max</h6></div>
             </div>
         `);
 
+        var pa = Math.trunc(group.Pets.reduce((a, b) => a + b, 0) / group.MemberCount);
+        var ps = Math.min(...group.Pets);
+        var pl = Math.max(...group.Pets);
+
         b.push(`
             <div class="row">
-                <div class="col-4">Level</div>
+                <div class="col-3">Level</div>
                 <div class="col text-center text-muted">${group.Levels.reduce((a, b) => a + b, 0)}</div>
                 <div class="col text-center text-muted">${Math.trunc(group.Levels.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
+                <div class="col text-center text-muted">${Math.min(...group.Levels)}</div>
+                <div class="col text-center text-muted">${Math.max(...group.Levels)}</div>
             </div>
             <div class="row">
-                <div class="col-4">Pet</div>
+                <div class="col-3">Pet</div>
                 <div class="col text-center text-muted">${group.Pets.reduce((a, b) => a + b, 0)}</div>
-                <div class="col text-center text-muted">${Math.trunc(group.Pets.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
+                <div class="col text-center ${MD.rif(pa >= st.pet.max.value, 'text-success') || MD.rif(pa >= st.pet.min.value, 'text-warning') || 'text-danger'}">${pa}</div>
+                <div class="col text-center ${MD.rif(ps >= st.pet.max.value, 'text-success') || MD.rif(ps >= st.pet.min.value, 'text-warning') || 'text-danger'}">${ps}</div>
+                <div class="col text-center ${MD.rif(pl >= st.pet.max.value, 'text-success') || MD.rif(pl >= st.pet.min.value, 'text-warning') || 'text-danger'}">${pl}</div>
             </div>
         `);
 
         if (group.Knights)
         {
+            var ka = Math.trunc(group.Knights.reduce((a, b) => a + b, 0) / group.MemberCount);
+            var ks = Math.min(...group.Knights);
+            var kl = Math.max(...group.Knights);
+
             b.push(`
                 <div class="row">
-                    <div class="col-4">Treasure</div>
+                    <div class="col-3">Treasure</div>
                     <div class="col text-center text-muted">${group.Treasures.reduce((a, b) => a + b, 0)}</div>
                     <div class="col text-center text-muted">${Math.trunc(group.Treasures.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
+                    <div class="col text-center text-muted">${Math.min(...group.Treasures)}</div>
+                    <div class="col text-center text-muted">${Math.max(...group.Treasures)}</div>
                 </div>
                 <div class="row">
-                    <div class="col-4">Instructor</div>
+                    <div class="col-3">Instructor</div>
                     <div class="col text-center text-muted">${group.Instructors.reduce((a, b) => a + b, 0)}</div>
                     <div class="col text-center text-muted">${Math.trunc(group.Instructors.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
+                    <div class="col text-center text-muted">${Math.min(...group.Instructors)}</div>
+                    <div class="col text-center text-muted">${Math.max(...group.Instructors)}</div>
                 </div>
                 <div class="row">
-                    <div class="col-4">Knights</div>
+                    <div class="col-3">Knights</div>
                     <div class="col text-center text-muted">${group.Knights.reduce((a, b) => a + b, 0)}</div>
-                    <div class="col text-center text-muted">${Math.trunc(group.Knights.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
+                    <div class="col text-center ${MD.rif(ka >= st.knights.max.value, 'text-success') || MD.rif(ka >= st.knights.min.value, 'text-warning') || 'text-danger'}">${ka}</div>
+                    <div class="col text-center ${MD.rif(ks >= st.knights.max.value, 'text-success') || MD.rif(ks >= st.knights.min.value, 'text-warning') || 'text-danger'}">${ks}</div>
+                    <div class="col text-center ${MD.rif(kl >= st.knights.max.value, 'text-success') || MD.rif(kl >= st.knights.min.value, 'text-warning') || 'text-danger'}">${kl}</div>
                 </div>
             `);
         }
