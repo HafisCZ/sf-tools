@@ -1,63 +1,154 @@
+class MainController
+{
+    static show()
+    {
+        var h = [];
+
+        for (var [i, set] of sf.rsets())
+        {
+            h.push(`
+                <a class="list-group-item list-group-item-action mb-2 hoverable" onclick="SetController.show(${i});">
+                    <div class="d-flex w-100 justify-content-between">
+                        <div>
+                            <h5 class="mb-1">${set.Label}</h5>
+                            <span class="badge badge-dark mr-1">${set.Groups.length} groups</span>
+                            <span class="badge badge-dark">${set.Players.length} players</span>
+                        </div>
+                        <button type="button" class="btn btn-link p-0 mr-2" onclick="event.stopPropagation(); MainController.remove(${i});">
+                            <i class="fas fa-trash fa-lg text-dark remove-icon"></i>
+                        </button>
+                    </div>
+                </a>
+            `);
+        }
+
+        $('#list').html(h.join(''));
+    }
+
+    static remove(i)
+    {
+         sf.remove(i);
+
+         MainController.show();
+    }
+
+    static import(f)
+    {
+        SFImporter.importFile(f, MainController.show);
+    }
+}
+
 class SetController
 {
-    static show(l)
+    static show(i)
     {
-        const s = sf.data[l];
+        $('#modalSetHeader').html(`<h4 class="modal-title text-white">${sf.set(i).Label}</h4><a class="btn btn-outline-light btn-sm m-0 py-1 mt-1 mr-2 px-3">Export</a>`);
 
-        if (s)
+        var a = [];
+        for (var [j, p] of sf.players(i))
         {
-            var h = `<h4 class="modal-title text-white">${s.Label}</h4><a class="btn btn-outline-light btn-sm m-0 py-1 mt-1 mr-2 px-3">Export</a>;`;
-            var a = '';
-            var b = '';
-
-            for (var i in s.Players) {
-              a += `<a onclick="DetailController.showPlayer(${l},${i});" class="list-group-item list-group-item-action">${s.Players[i].Name}</a>`;
-            }
-
-            for (var i in s.Groups) {
-              b += `<a onclick="DetailController.showGroup(${l},${i});" class="list-group-item list-group-item-action">${s.Groups[i].Name}</a>`;
-            }
-
-            $('#modalSetHeader').html(h);
-            $('#setlist').html(a);
-            $('#setlist2').html(b);
-            $('#setsearch').val('');
-            $('#setsearch2').val('');
-            $('#modalSet').modal('show');
+            a.push(`<a onclick="DetailController.showPlayer(${i},${j});" class="list-group-item list-group-item-action">${p.Name}</div>`);
         }
+        $('#setlist').html(a.join(''));
+
+        var b = [];
+        for (var [j, g] of sf.groups(i))
+        {
+            b.push(`<a onclick="DetailController.showGroup(${i},${j});" class="list-group-item list-group-item-action">${g.Name}</div>`);
+        }
+        $('#setlist2').html(b.join(''));
+
+        $('#setsearch').val('');
+        $('#setsearch2').val('');
+
+        $('#modalSet').modal('show');
+    }
+}
+
+class MD
+{
+    static badge(l, ...c)
+    {
+        return `<span class="badge ${c.join(' ')}">${l}</span>`;
+    }
+
+    static nl()
+    {
+        return '<br>';
+    }
+
+    static rif(r, s)
+    {
+        return r ? s : null;
     }
 }
 
 class DetailController
 {
-    static showPlayer(set, id)
+    static showPlayer(s, p)
     {
-        var player = sf.player(set, id);
+        const player = sf.player(s, p);
+        var m = [];
 
-        var mod0 = '';
-        var mod1 = '';
-        var mod2 = '';
+        // Travel duration
+        m.push(MD.badge(
+            player.Mount > 0 ? `-${Enum.Mount[player.Mount]} Travel duration` : 'No mount',
+            MD.rif(player.Mount >= st.mount.max.value, 'badge-success') || MD.rif(player.Mount >= st.mount.min.value, 'badge-warning') || 'badge-danger',
+            'mr-2 mb-2'
+        ));
 
-        mod0 += `<span class="mr-2 badge ${player.Mount < st.mount.min.value ? 'badge-danger' : (player.Mount >= st.mount.max.value ? 'badge-success' : 'badge-warning')}">${player.Mount > 0 ? '-' + Enum.Mount[player.Mount] + ' Travel duration' : 'No mount'}</span>`;
-
-        if (player.PotionLen1 > 0) {
-          mod0 += `<span class="mr-2 badge ${player.PotionLen1 === 25 ? 'badge-success' : 'badge-warning'}">+${player.PotionLen1}% ${Enum.Potion[player.Potion1]}</span>`;
+        // Potions
+        for (var i = 0; i < 3; i++)
+        {
+            if (player.Potions[i])
+            {
+                m.push(MD.badge(
+                    `+${player.PotionsLen[i]}% ${Enum.Potion[player.Potions[i]]}`,
+                    MD.rif(player.PotionsLen[i] == 25, 'badge-success') || 'badge-warning',
+                    'mr-2 mb-2'
+                ));
+            }
+            else
+            {
+                m.push(MD.badge(
+                    'Empty slot',
+                    'badge-danger',
+                    'mr-2 mb-2'
+                ));
+            }
         }
 
-        if (player.PotionLen2 > 0) {
-          mod0 += `<span class="mr-2 badge ${player.PotionLen2 === 25 ? 'badge-success' : 'badge-warning'}">+${player.PotionLen2}% ${Enum.Potion[player.Potion2]}</span>`;
-        }
+        // New line
+        m.push(MD.nl());
 
-        if (player.PotionLen3 > 0) {
-          mod0 += `<span class="mr-2 badge ${player.PotionLen3 === 25 ? 'badge-success' : 'badge-warning'}">+${player.PotionLen3}% ${Enum.Potion[player.Potion3]}</span>`;
-        }
+        // Scrapbook
+        var scrapbook = player.Book / 21.6;
+        m.push(MD.badge(
+            `+${Math.trunc(scrapbook * 10) / 10}% XP bonus`,
+            MD.rif(scrapbook >= st.scrapbook.max.value, 'badge-success') || MD.rif(scrapbook >= st.scrapbook.min.value, 'badge-warning') || 'badge-danger',
+            'mr-2 mb-2'
+        ));
 
-        mod1 += `<span class="mr-2 badge ${player.Book * 100 / 2160 < st.scrapbook.min.value ? 'badge-danger' : (player.Book * 100 / 2160 >= st.scrapbook.max.value ? 'badge-success' : 'badge-warning')}">+${Math.trunc(player.Book * 1000 / 2160) / 10}% XP bonus</span>`;
-        mod1 += `<span class="mr-2 badge badge-dark">+${player.Achievements * 5} Attribute bonus</span>`;
+        // New line
+        m.push(MD.nl());
 
-        mod2 += `<span class="mr-2 badge badge-dark">+?% Critical hit damage bonus</span>`;
-        mod2 += `<span class="mr-2 badge badge-dark">+?% Damage bonus</span>`;
-        mod2 += `<span class="mr-2 badge badge-dark mb-2">+?% Life bonus</span>`;
+        // Attribute bonus
+        m.push(MD.badge(
+            `+${player.Achievements * 5} Attribute bonus`,
+            'badge-dark mb-2 mr-2'
+        ));
+
+        // Damage bonus
+        m.push(MD.badge(
+            `+${player.DamageBonus}% Damage bonus`,
+            'badge-dark mb-2 mr-2'
+        ));
+
+        // Life bonus
+        m.push(MD.badge(
+            `+${player.LifeBonus}% Life bonus`,
+            'badge-dark mb-2 mr-2'
+        ));
 
         $('#modalDetailHeader').html(`
           <div class="d-flex w-100 justify-content-between">
@@ -66,120 +157,240 @@ class DetailController
           </div>
         `);
 
-        $('#modalDetailBody').html(`
-          <div class="progress bg-dark mt-n4 mb-4 mx-n2" style="height: 1px;">
-            <div class="progress-bar" style="width: ${Math.trunc(100 * player.XP / player.XPNext)}%" role="progressbar"></div>
-          </div>
-          <h5>Modifiers</h5>
-          <h5>${mod0}<h5>
-          <h5>${mod1}<h5>
-          <h5>${mod2}<h5>
-          <hr/>
-          <h5>Attributes</h5>
-          <div class="row">
-            <div class="col">Strength</div>
-            <div class="col text-center text-muted">${player.Strength}</div>
-            <div class="col">Constitution</div>
-            <div class="col text-center text-muted">${player.Constitution}</div>
-          </div>
-          <div class="row">
-            <div class="col">Dexterity</div>
-            <div class="col text-center text-muted">${player.Dexterity}</div>
-            <div class="col">Luck</div>
-            <div class="col text-center text-muted">${player.Luck}</div>
-          </div>
-          <div class="row">
-            <div class="col">Intelligence</div>
-            <div class="col text-center text-muted">${player.Intelligence}</div>
-            <div class="col">Armor</div>
-            <div class="col text-center text-muted">${player.Armor}</div>
-          </div>
-          <hr/>
-          <h5>Collection</h5>
-          <div class="row">
-            <div class="col">
-              <label>Scrapbook</label>
+        var b = [];
+
+        // XP bar
+        b.push(`
+            <div class="progress bg-dark mt-n4 mb-4 mx-n2" style="height: 1px;">
+              <div class="progress-bar" style="width: ${Math.trunc(100 * player.XP / player.XPNext)}%" role="progressbar"></div>
             </div>
-            <div class="col text-center text-muted">
-              <label>${player.Book} out of 2160</label>
-            </div>
-            <div class="col text-center text-muted">
-              <label>${Math.trunc(100 * player.Book / 2160)}%</label>
-            </div>
-          </div>
-          <div class="progress mt-n2" style="height: 2px;">
-            <div class="progress-bar ${100 * player.Book / 2160 < st.scrapbook.min.value ? 'bg-danger' : (100 * player.Book / 2160 >= st.scrapbook.max.value ? 'bg-success' : 'bg-warning')}" style="width: ${Math.trunc(100 * player.Book / 2260)}%" role="progressbar"></div>
-          </div>
-          <div class="row mt-2">
-            <div class="col">
-              <label>Achievements</label>
-            </div>
-            <div class="col text-center text-muted">
-              <label>${player.Achievements} out of 70</label>
-            </div>
-            <div class="col text-center text-muted">
-              <label>${Math.trunc(100 * player.Achievements / 70)}%</label>
-            </div>
-          </div>
-          <div class="progress mt-n2" style="height: 2px;">
-            <div class="progress-bar bg-dark" style="width: ${Math.trunc(100 * player.Achievements / 70)}%" role="progressbar"></div>
-          </div>
-          <hr/>
-          <h5>Fortress</h5>
-          <div class="row">
-            <div class="col">Upgrades</div>
-            <div class="col text-center text-muted">${player.FortressUpgrades}</div>
-            <div class="col">Wall</div>
-            <div class="col text-center text-muted">${player.FortressWall}</div>
-          </div>
-          <div class="row">
-            <div class="col">${player.FortressKnights > 0 ? 'Knights' : ''}</div>
-            <div class="col text-center ${player.FortressKnights < st.knights.min.value ? 'text-danger' : (player.FortressKnights >= st.knights.max.value ? 'text-success' : 'text-warning')}">${player.FortressKnights > 0 ? player.FortressKnights : ''}</div>
-            <div class="col">Warriors</div>
-            <div class="col text-center text-muted">${player.FortressWarriors}</div>
-          </div>
-          <div class="row">
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col">Archers</div>
-            <div class="col text-center text-muted">${player.FortressArchers}</div>
-          </div>
-          <div class="row">
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col">Mages</div>
-            <div class="col text-center text-muted">${player.FortressMages}</div>
-          </div>
-          <hr/>
-          <h5>Rankings</h5>
-          <div class="row">
-            <div class="col"><b>Player</b></div>
-            <div class="col"><b>Fortress</b></div>
-          </div>
-          <div class="row">
-            <div class="col">Rank</div>
-            <div class="col text-center text-muted">${player.RankPlayer}</div>
-            <div class="col">Rank</div>
-            <div class="col text-center text-muted">${player.RankFortress}</div>
-          </div>
-          <div class="row">
-            <div class="col">Honor</div>
-            <div class="col text-center text-muted">${player.HonorPlayer}</div>
-            <div class="col">Honor</div>
-            <div class="col text-center text-muted">${player.HonorFortress}</div>
-          </div>
         `);
 
+        // Modifiers
+        b.push(`
+            <h5>Modifiers</h5>
+            <h5>${m.join('')}</h5>
+            <hr/>
+        `);
+
+        // Attributes
+        b.push(`
+            <h5>Attributes</h5>
+            <div class="row">
+              <div class="col">Strength</div>
+              <div class="col text-center text-muted">${player.Strength}</div>
+              <div class="col">Constitution</div>
+              <div class="col text-center text-muted">${player.Constitution}</div>
+            </div>
+            <div class="row">
+              <div class="col">Dexterity</div>
+              <div class="col text-center text-muted">${player.Dexterity}</div>
+              <div class="col">Luck</div>
+              <div class="col text-center text-muted">${player.Luck}</div>
+            </div>
+            <div class="row">
+              <div class="col">Intelligence</div>
+              <div class="col text-center text-muted">${player.Intelligence}</div>
+              <div class="col">Armor</div>
+              <div class="col text-center text-muted">${player.Armor}</div>
+            </div>
+            <hr/>
+        `);
+
+        // Collection
+        b.push(`
+            <h5>Collection</h5>
+            <div class="row">
+              <div class="col">
+                <label>Scrapbook</label>
+              </div>
+              <div class="col text-center text-muted">
+                <label>${player.Book} out of 2160</label>
+              </div>
+              <div class="col text-center text-muted">
+                <label>${Math.trunc(100 * player.Book / 2160)}%</label>
+              </div>
+            </div>
+            <div class="progress mt-n2" style="height: 2px;">
+              <div class="progress-bar ${scrapbook < st.scrapbook.min.value ? 'bg-danger' : (scrapbook >= st.scrapbook.max.value ? 'bg-success' : 'bg-warning')}" style="width: ${Math.trunc(scrapbook)}%" role="progressbar"></div>
+            </div>
+            <div class="row mt-2">
+              <div class="col">
+                <label>Achievements</label>
+              </div>
+              <div class="col text-center text-muted">
+                <label>${player.Achievements} out of 70</label>
+              </div>
+              <div class="col text-center text-muted">
+                <label>${Math.trunc(100 * player.Achievements / 70)}%</label>
+              </div>
+            </div>
+            <div class="progress mt-n2" style="height: 2px;">
+              <div class="progress-bar bg-dark" style="width: ${Math.trunc(100 * player.Achievements / 70)}%" role="progressbar"></div>
+            </div>
+            <hr/>
+        `);
+
+        // Fortress
+        b.push(`
+            <h5>Fortress</h5>
+            <div class="row">
+              <div class="col">Upgrades</div>
+              <div class="col text-center text-muted">${player.FortressUpgrades}</div>
+              <div class="col">Wall</div>
+              <div class="col text-center text-muted">${player.FortressWall}</div>
+            </div>
+            <div class="row">
+              <div class="col">${player.FortressKnights > 0 ? 'Knights' : ''}</div>
+              <div class="col text-center ${player.FortressKnights < st.knights.min.value ? 'text-danger' : (player.FortressKnights >= st.knights.max.value ? 'text-success' : 'text-warning')}">${player.FortressKnights > 0 ? player.FortressKnights : ''}</div>
+              <div class="col">Warriors</div>
+              <div class="col text-center text-muted">${player.FortressWarriors}</div>
+            </div>
+            <div class="row">
+              <div class="col"></div>
+              <div class="col"></div>
+              <div class="col">Archers</div>
+              <div class="col text-center text-muted">${player.FortressArchers}</div>
+            </div>
+            <div class="row">
+              <div class="col"></div>
+              <div class="col"></div>
+              <div class="col">Mages</div>
+              <div class="col text-center text-muted">${player.FortressMages}</div>
+            </div>
+            <hr/>
+        `);
+
+        // Group
+        if (player.Group.Role) {
+            b.push(`
+                <h5>Group</h5>
+                <div class="row">
+                    <div class="col">Position</div>
+                    <div class="col text-center text-muted">${Enum.Role[player.Group.Role]}</div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">Treasure</div>
+                    <div class="col text-center text-muted">${player.Group.Treasure}</div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                </div>
+                <div class="row">
+                    <div class="col">Instructor</div>
+                    <div class="col text-center text-muted">${player.Group.Instructor}</div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                </div>
+                <div class="row">
+                    <div class="col">Pet</div>
+                    <div class="col text-center ${MD.rif(player.Group.Pet >= st.pet.max.value, 'text-success') || MD.rif(player.Group.Pet >= st.pet.min.value, 'text-warning') || 'text-danger'}">${player.Group.Pet}</div>
+                    <div class="col"></div>
+                    <div class="col"></div>
+                </div>
+                <hr/>
+            `);
+        }
+
+        // Rankings
+        b.push(`
+            <h5>Rankings</h5>
+            <div class="row">
+              <div class="col"><b>Player</b></div>
+              <div class="col"><b>Fortress</b></div>
+            </div>
+            <div class="row">
+              <div class="col">Rank</div>
+              <div class="col text-center text-muted">${player.RankPlayer}</div>
+              <div class="col">Rank</div>
+              <div class="col text-center text-muted">${player.RankFortress}</div>
+            </div>
+            <div class="row">
+              <div class="col">Honor</div>
+              <div class="col text-center text-muted">${player.HonorPlayer}</div>
+              <div class="col">Honor</div>
+              <div class="col text-center text-muted">${player.HonorFortress}</div>
+            </div>
+        `);
+
+        $('#modalDetailBody').html(b.join(''));
         $('#modalDetail').modal('show');
     }
 
-    static showGroup(set, id)
+    static showGroup(s, g)
     {
-        var group = sf.data[set].Groups[id];
+        var group = sf.group(s, g);
+        var b = [];
 
-        $('#modalDetailHeader').html('<h4 class="modal-title text-white">' + group.Name + '</h4>');
-        $('#modalDetailBody').empty();
+        $('#modalDetailHeader').html(`
+            <div class="d-flex w-100 justify-content-between">
+              <h4 class="modal-title text-white">${group.Name}</h4>
+              <h4 class="modal-title text-white">${group.Rank}</h4>
+            </div>
+        `);
 
+        // Details
+        b.push(`
+            <h5>About</h5>
+            <div class="row">
+                <div class="col-4">Rank</div>
+                <div class="col text-muted">${group.Rank}</div>
+            </div>
+            <div class="row">
+                <div class="col-4">Members</div>
+                <div class="col text-muted">${group.MemberCount} / 50</div>
+            </div>
+            <hr/>
+        `);
+
+        // Upgrades
+        b.push(`
+            <div class="row">
+                <div class="col">
+                    <h5>Details</h5>
+                </div>
+                <div class="col text-center"><h6>&sum;</h6></div>
+                <div class="col text-center"><h6>&empty;</h6></div>
+            </div>
+        `);
+
+        b.push(`
+            <div class="row">
+                <div class="col-4">Level</div>
+                <div class="col text-center text-muted">${group.Levels.reduce((a, b) => a + b, 0)}</div>
+                <div class="col text-center text-muted">${Math.trunc(group.Levels.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
+            </div>
+            <div class="row">
+                <div class="col-4">Pet</div>
+                <div class="col text-center text-muted">${group.Pets.reduce((a, b) => a + b, 0)}</div>
+                <div class="col text-center text-muted">${Math.trunc(group.Pets.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
+            </div>
+        `);
+
+        if (group.Knights)
+        {
+            b.push(`
+                <div class="row">
+                    <div class="col-4">Treasure</div>
+                    <div class="col text-center text-muted">${group.Treasures.reduce((a, b) => a + b, 0)}</div>
+                    <div class="col text-center text-muted">${Math.trunc(group.Treasures.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
+                </div>
+                <div class="row">
+                    <div class="col-4">Instructor</div>
+                    <div class="col text-center text-muted">${group.Instructors.reduce((a, b) => a + b, 0)}</div>
+                    <div class="col text-center text-muted">${Math.trunc(group.Instructors.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
+                </div>
+                <div class="row">
+                    <div class="col-4">Knights</div>
+                    <div class="col text-center text-muted">${group.Knights.reduce((a, b) => a + b, 0)}</div>
+                    <div class="col text-center text-muted">${Math.trunc(group.Knights.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
+                </div>
+            `);
+        }
+
+        $('#modalDetailBody').html(b.join(''));
         $('#modalDetail').modal('show');
     }
 }
@@ -232,42 +443,3 @@ class SettingsController
         sourceElem.on(evt, () => callback(sourceElem, targetElem));
     }
 }
-
-SettingsController.bind('#range1', '#label1', 'input', (input, label) => label.text(`${input.val()}%`));
-SettingsController.bind('#range2', '#label2', 'input', (input, label) => label.text(`${input.val()}%`));
-SettingsController.bind('#range3', '#label3', 'input', (input, label) => label.text(`${input.val() * 5}`));
-SettingsController.bind('#range4', '#label4', 'input', (input, label) => label.text(`${input.val() * 5}`));
-SettingsController.bind('#range5', '#label5', 'input', (input, label) => label.text(input.val()));
-SettingsController.bind('#range6', '#label6', 'input', (input, label) => label.text(input.val()));
-SettingsController.bind('#range7', '#label7', 'input', (input, label) => label.text(Enum.Mount[input.val()]));
-SettingsController.bind('#range8', '#label8', 'input', (input, label) => label.text(Enum.Mount[input.val()]));
-SettingsController.bind('#range9', '#label9', 'input', (input, label) => label.text(input.val()));
-
-SettingsController.bind('#modalSettings', null, 'show.bs.modal', (modal, nl) => SettingsController.loadSettings());
-SettingsController.bind('#modalSettingsSave', null, 'click', (button, nl) => SettingsController.saveSettings());
-
-$("#setsearch").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#setlist a").filter(function() {
-        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-});
-
-$("#setsearch2").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#setlist2 a").filter(function() {
-        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-});
-
-$('#modalDetail').on('show.bs.modal', function() {
-    $('#modalSet').modal('hide');
-});
-
-$('#modalDetail').on('hidden.bs.modal', function() {
-    $('#modalSet').modal('show');
-});
-
-$(document).ready(function() {
-    window.dispatchEvent(new Event('sftools.updatelist'));
-});

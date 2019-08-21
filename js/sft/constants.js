@@ -1,6 +1,5 @@
 var Enum = {
     Mount: {
-        0: 'None',
         1: '10%',
         2: '20%',
         3: '30%',
@@ -14,5 +13,12 @@ var Enum = {
         4: 'Constitution',
         5: 'Luck',
         6: 'Life'
+    },
+
+    Role: {
+        1: 'Owner',
+        2: 'Officer',
+        3: 'Member',
+        4: 'Invited'
     }
 };

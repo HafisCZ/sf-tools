@@ -1,71 +1,78 @@
 /*
-  SFTools IO
+    Bindings
 */
-$(window).on('dragenter', e => {
-  window.lasttarget = e.target;
-  $('#dragtest').css('visibility', '');
-});
+$('.dragzone').on({
+    'drop': function(event) {
+        $('.dragzone').css('visibility', 'hidden');
 
-$(window).on('dragleave', e => {
-  if (e.target === window.lasttarget || e.target === document) {
-    $('#dragtest').css('visibility', 'hidden');
-  }
-});
+        event.preventDefault();
 
-var dragdrop = {
-  drop: ev => {
-    ev.preventDefault();
-
-    if (ev.dataTransfer.items) {
-      for (var i in ev.dataTransfer.items) {
-        if (ev.dataTransfer.items[i].kind === 'file') {
-          dragdrop.load(ev.dataTransfer.items[i].getAsFile());
+        for (var i in event.originalEvent.dataTransfer.items) {
+            if (event.originalEvent.dataTransfer.items[i].kind === 'file') {
+                MainController.import(event.originalEvent.dataTransfer.items[i].getAsFile());
+            }
         }
-      }
-    } else {
-      for (var i in ev.dataTransfer.files) {
-        dragdrop.load(ev.dataTransfer.files[i]);
-      }
+    },
+    'dragover' : function(event) {
+        event.preventDefault();
     }
-
-    $('#dragtest').css('visibility', 'hidden');
-  },
-  dragover: ev => ev.preventDefault(),
-  loadFile: file => {
-      if (file) {
-          var reader = new FileReader();
-
-          reader.readAsText(file, 'UTF-8');
-          reader.onload = (event) => {
-              sf.add(SFImporter.import(DateFormatter.format(new Date(file.lastModified)), JSON.parse(event.target.result)));
-              window.dispatchEvent(new Event('sftools.updatelist'));
-          };
-      }},
-  load: file =>  dragdrop.loadFile(file),
-  remove: id => { sf.remove(id);  window.dispatchEvent(new Event('sftools.updatelist'));},
-  loadman: files => {
-    for (var i in files) {
-       dragdrop.loadFile(files[i]);
-    }
-  }
-};
-
-window.addEventListener("sftools.updatelist", function(e) {
-  var content = '';
-
-	for (var i = sf.data.length - 1, item; item = sf.data[i]; i--) {
-		content += `
-      <a onclick="SetController.show(${i});" class="list-group-item list-group-item-action mb-2"><div class="d-flex w-100 justify-content-between">
-        <div>
-    			<h5 class="mb-1">${item.Label}</h5>
-          <span class="badge badge-dark mr-1">${item.Groups.length} groups</span>
-    			<span class="badge badge-dark">${item.Players.length} players</span>
-        </div>
-  			   <button type="button" class="btn btn-link p-0 mr-2" onclick="dragdrop.remove(${i});"><i class="fas fa-trash fa-lg text-dark"></i></button>
-  			</div>
-			</a>
-    `;
-	}
-
-  $('#list').html(content);
 });
+
+$('#filebrowser').on({
+    'change': function(event) {
+        if (this.files[0]) {
+            MainController.import(this.files[0]);
+        }
+    }
+});
+
+$(window).on({
+    'dragenter': function(event) {
+        window.target = event.target;
+
+        $('.dragzone').css('visibility', '');
+    },
+    'dragleave': function(event) {
+        if (event.target === window.target || event.target === document)
+        {
+            $('.dragzone').css('visibility', 'hidden');
+        }
+    }
+});
+
+$("#setsearch").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#setlist a").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+});
+
+$("#setsearch2").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#setlist2 a").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+});
+
+$('#modalDetail').on('show.bs.modal', function() {
+    $('#modalSet').modal('hide');
+});
+
+$('#modalDetail').on('hidden.bs.modal', function() {
+    $('#modalSet').modal('show');
+});
+
+SettingsController.bind('#range1', '#label1', 'input', (input, label) => label.text(`${input.val()}%`));
+SettingsController.bind('#range2', '#label2', 'input', (input, label) => label.text(`${input.val()}%`));
+SettingsController.bind('#range3', '#label3', 'input', (input, label) => label.text(`${input.val() * 5}`));
+SettingsController.bind('#range4', '#label4', 'input', (input, label) => label.text(`${input.val() * 5}`));
+SettingsController.bind('#range5', '#label5', 'input', (input, label) => label.text(input.val()));
+SettingsController.bind('#range6', '#label6', 'input', (input, label) => label.text(input.val()));
+SettingsController.bind('#range7', '#label7', 'input', (input, label) => label.text(Enum.Mount[input.val()]));
+SettingsController.bind('#range8', '#label8', 'input', (input, label) => label.text(Enum.Mount[input.val()]));
+SettingsController.bind('#range9', '#label9', 'input', (input, label) => label.text(input.val()));
+
+SettingsController.bind('#modalSettings', null, 'show.bs.modal', (modal, nl) => SettingsController.loadSettings());
+SettingsController.bind('#modalSettingsSave', null, 'click', (button, nl) => SettingsController.saveSettings());
+
+MainController.show();

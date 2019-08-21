@@ -17,18 +17,18 @@
 
 <body>
 	<!--DRAG-DROP OVERLAY-->
-	<div class="dragdropzone" style="visibility: hidden;" id="dragtest" ondrop="dragdrop.drop(event);" ondragover="dragdrop.dragover(event);"></div>
+	<div class="dragzone" style="visibility: hidden;"></div>
 
 	<!--HEADER-->
 	<header>
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.0.10</small></a>
+			<a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.0.11</small></a>
 
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 
-			<div class="collapse navbar-collapse" id="navbarNav">
+			<div class="collapse navbar-collapse">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
 						<a class="nav-link" data-toggle="modal" data-target="#modalSettings">Settings</a>
@@ -51,7 +51,7 @@
 				<h3>Drag files here</h3>
 				<label class='text-muted'>
 					Or click here to select a file
-					<input multiple onchange="dragdrop.loadman(this.files)" type="file" hidden>
+					<input type="file" id="filebrowser" hidden>
 				</label>
 			</div>
 		</div>
@@ -233,8 +233,8 @@
 	<script type="text/javascript" src="js/sft/core.js"></script>
 	<script type="text/javascript" src="js/sft/constants.js"></script>
 
-	<script type="text/javascript" src="js/ui/script.js"></script>
 	<script type="text/javascript" src="js/ui/browse.js"></script>
+	<script type="text/javascript" src="js/ui/script.js"></script>
 </body>
 
 </html>
