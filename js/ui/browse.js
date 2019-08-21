@@ -152,7 +152,7 @@ class DetailController
 
         $('#modalDetailHeader').html(`
           <div class="d-flex w-100 justify-content-between">
-            <h4 class="modal-title text-white">${player.Name}</h4>
+            <h4 class="modal-title text-white">${player.Name}<small class="ml-2 text-muted" style="font-size: 60%">${player.Group.Name}</small></h4>
             <h4 class="modal-title text-white">${player.Level}</h4>
           </div>
         `);
