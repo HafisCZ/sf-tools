@@ -386,7 +386,11 @@ class SFImporter
         {
             if (g.Roles[i] == 4)
             {
-                g.Knights.splice(i, 1);
+                if (g.Knights)
+                {
+                    g.Knights.splice(i, 1);
+                }
+
                 g.Levels.splice(i, 1);
                 g.Treasures.splice(i, 1);
                 g.Instructors.splice(i, 1);
