@@ -382,6 +382,21 @@ class SFImporter
             }
 		}
 
+        for (var i = 0; i < g.MemberCount; i++)
+        {
+            if (g.Roles[i] == 4)
+            {
+                g.Knights.splice(i, 1);
+                g.Levels.splice(i, 1);
+                g.Treasures.splice(i, 1);
+                g.Instructors.splice(i, 1);
+                g.Pets.splice(i, 1);
+                g.Members.splice(i, 1);
+                g.MemberCount--;
+                i--;
+            }
+        }
+
 		return g;
 	}
 
