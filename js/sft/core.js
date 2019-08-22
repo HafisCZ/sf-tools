@@ -270,6 +270,33 @@ class SFCore
 
 class SFUtil
 {
+    static itemMods()
+    {
+        return {
+            weapon: {
+                warrior: 2,
+                scout: 2.5,
+                mage: 4.5
+            },
+            armor: {
+                warrior: 15,
+                scout: 7.5,
+                mage: 3
+            },
+            item: {
+                normal: 2,
+                epic3: 1.2,
+                epic5: 1,
+                epic1: 5
+            }
+        };
+    }
+
+    static itemAttr(player)
+    {
+        return player.Level + 4 + player.Aura * (player.Witch >= 3 ? 2 + Math.max(0, player.Witch - 3) / 6 : 1);
+    }
+
     static gem(factor, player, group)
     {
         return player.Level * factor * (1 + 0.15 * (player.Fortress.GemMine - 1)) + (group && group.Knights) ? (group.Knights.reduce((a, b) => a + b, 0) / 3) : 0;
@@ -539,8 +566,6 @@ class SFImporter
 				p.Wpn1 = SFImporter.buildItem(vals.slice(135, 147));
 				p.Wpn2 = SFImporter.buildItem(vals.slice(147, 159));
 
-				p.Mount = vals[159] % 16;
-
                 p.Potions = [
                     {
                         Type: vals[194] == 16 ? 6 : (vals[194] == 0 ? 0 : 1 + (vals[194] - 1) % 5),
@@ -560,7 +585,7 @@ class SFImporter
 				p.Fortress.Upgrades = vals[247];
 				p.Fortress.Knights = vals[258];
 
-                p.Tower = SFUtil.nor216(vals[159])[1];
+                [p.Mount, p.Tower] = SFUtil.nor216(vals[159]);
                 [p.DamageBonus, p.LifeBonus] = SFUtil.nor28(vals[252] / Math.pow(2, 16));
 
 				p.Face = vals.slice(8, 18);
@@ -601,9 +626,6 @@ class SFImporter
 				p.Wpn1 = SFImporter.buildItem(vals.slice(144, 156));
 				p.Wpn2 = SFImporter.buildItem(vals.slice(156, 168));
 
-				p.Mount = vals[286] % 16;
-                p.MountExpire = new Date(vals[451]);
-
                 p.Potions = [
                     {
                         Type: vals[493] == 16 ? 6 : (vals[493] == 0 ? 0 : 1 + (vals[493] - 1) % 5),
@@ -630,7 +652,8 @@ class SFImporter
                 p.DamageBonus = vals[623];
                 p.LifeBonus = vals[624];
 
-                p.Tower = SFUtil.nor216(vals[286])[1];
+				[p.Mount, p.Tower] = SFUtil.nor216(vals[286]);
+                p.MountExpire = new Date(vals[451]);
 
 				p.Face = vals.slice(17, 27);
                 SFImporter.fillFortress(p, vals.slice(524, 536), null);
@@ -643,27 +666,28 @@ class SFImporter
     static fillFortress(p, f, u)
     {
         p.Fortress.Fortress = f[0];
-        p.Fortress.MageTower = 0;
-        p.Fortress.Smithy = 0;
-        p.Fortress.Academy = 0;
-        p.Fortress.Treasury = 0;
-        p.Fortress.Barracks = 0;
-        p.Fortress.LaborerQuarters = 0;
-        p.Fortress.ArcheryGuild = 0;
-        p.Fortress.Quarry = 0;
-        p.Fortress.WoodcutterGuild = 0;
-        p.Fortress.GemMine = 0;
-        p.Fortress.Fortifications = 0;
+        p.Fortress.LaborerQuarters = f[1];
+        p.Fortress.WoodcutterGuild = f[2];
+        p.Fortress.Quarry = f[3];
+        p.Fortress.GemMine = f[4];
+        p.Fortress.Academy = f[5];
+        p.Fortress.ArcheryGuild = f[6];
+        p.Fortress.Barracks = f[7];
+        p.Fortress.MageTower = f[8];
+        p.Fortress.Treasury = f[9];
+        p.Fortress.Smithy = f[10];
+        p.Fortress.Fortifications = f[11];
+
         p.Fortress.HeartOfDarkness = 0;
-        p.Fortress.GladiatorTrainer = 0;
+        p.Fortress.UnderworldGate = 0;
+        p.Fortress.SoulExtractor = 0;
+        p.Fortress.TortureChamber = 0;
+        p.Fortress.GoblinPit = 0;
         p.Fortress.TrollBlock = 0;
+        p.Fortress.Keeper = 0;
+        p.Fortress.GladiatorTrainer = 0;
         p.Fortress.GoldPit = 0;
         p.Fortress.TimeMachine = 0;
-        p.Fortress.GoblinPit = 0;
-        p.Fortress.SoulExtractor = 0;
-        p.Fortress.Keeper = 0;
-        p.Fortress.UnderworldGate = 0;
-        p.Fortress.TortureChamber = 0;
     }
 }
 

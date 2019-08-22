@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+
+	<title>SF Miner Utility</title>
+
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/mdb.min.css" rel="stylesheet">
+
+    <link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+	<header>
+		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+			<a class="navbar-brand text-white">SF Miner Utility</a>
+		</nav>
+	</header>
+
+	<main role="main" class="flex-shrink-0">
+		<div class="container">
+            <div class="border border-dark rounded p-3 my-3">
+                <label class="mt-3">Data</label>
+                <textarea class="form-control" id="digdata" rows="2" style="font-size: 80%;"></textarea>
+                <label class="mt-1" >Requested value</label>
+                <input type="text" class="form-control" id="digval">
+            </div>
+
+            <div id="digout" class="px-5"></div>
+		</div>
+	</main>
+
+	<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+	<script type="text/javascript" src="js/popper.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/mdb.min.js"></script>
+
+    <script>
+      function dig(va, f)
+      {
+          const vv = va.split('/').map(a => Number(a));
+          const ds = (o, i, v, f, p) => {
+              var fl = [];
+
+              if (f == v) fl.push('');
+
+              if (v > Math.pow(2, 4) && f == v % Math.pow(2, 4)) fl.push('% 16');
+              if (v > Math.pow(2, 6) && f == v % Math.pow(2, 6)) fl.push('% 64');
+              if (v > Math.pow(2, 8) && f == v % Math.pow(2, 8)) fl.push('% 256');
+              if (v > Math.pow(2, 16) && f == v % Math.pow(2, 16)) fl.push('% 65536');
+
+              if (f == v / Math.pow(2, 4)) fl.push('/ 16');
+              if (f == v / Math.pow(2, 6)) fl.push('/ 64');
+              if (f == v / Math.pow(2, 8)) fl.push('/ 256');
+              if (f == v / Math.pow(2, 16)) fl.push('/ 65536');
+
+              if (fl.length)
+              {
+                  o.push({
+                      index: i,
+                      mod: p,
+                      ops: fl
+                  });
+              }
+          }
+
+		var o = [];
+
+		for (var i in vv)
+		{
+			const v = vv[i];
+
+			ds(o, i, v, f, 'v');
+			ds(o, i, v / Math.pow(2, 4), f, 'v / 16');
+			ds(o, i, v / Math.pow(2, 6), f, 'v / 64');
+			ds(o, i, v / Math.pow(2, 8), f, 'v / 256');
+			ds(o, i, v / Math.pow(2, 16), f, 'v / 65536');
+			if (v > Math.pow(2, 4)) ds(o, i, v % Math.pow(2, 4), f, 'v % 16');
+			if (v > Math.pow(2, 6)) ds(o, i, v % Math.pow(2, 6), f, 'v % 64');
+			if (v > Math.pow(2, 8)) ds(o, i, v % Math.pow(2, 8), f, 'v % 256');
+			if (v > Math.pow(2,16)) ds(o, i, v % Math.pow(2, 16), f, 'v % 65536');
+			ds(o, i, v - v % Math.pow(2, 4), f, 'v - v % 16');
+			ds(o, i, v - v % Math.pow(2, 6), f, 'v - v % 64');
+			ds(o, i, v - v % Math.pow(2, 8), f, 'v - v % 256');
+			ds(o, i, v - v % Math.pow(2, 16), f, 'v - v % 65536');
+      	}
+
+      	return [o, vv];
+      }
+
+	  $('#digval').on('change input', function() {
+		  var vi = $('#digdata').val();
+		  var vf = Number($('#digval').val());
+
+		  if (vi && vf && Number.isInteger(vf))
+		  {
+			  var vv = [];
+			  var [dd, vals] = dig(vi, vf);
+
+			  var index = 0;
+			  for (var i in dd)
+			  {
+				  const v = dd[i];
+
+				  if (index != v.index)
+				  {
+					  vv.push(`<div class="mt-2 bg-dark text-white row"><div class="col-3">${v.index}</div><div class="col-1">${vals[v.index]}</div></div>`);
+					  index = v.index;
+				  }
+
+				  for (var j in v.ops)
+				  {
+					  vv.push(`<div class="row"><div class="col-3"></div><div class="col">(${v.mod}) ${v.ops[j]}</div></div>`);
+				  }
+			  }
+
+			  $('#digout').html(vv.join(''));
+		  }
+		  else
+		  {
+			  $('#digout').empty();
+		  }
+	  });
+    </script>
+</body>
+
+</html>

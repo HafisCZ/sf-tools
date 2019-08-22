@@ -78,7 +78,7 @@ SettingsController.bind('#modalSettingsSave', null, 'click', (button, nl) => Set
 // Initialize
 window.nf = new Notificator('notifyblock');
 window.sl = new Logger();
-window.st = new LocalStorage(13);
+window.st = new LocalStorage(14);
 window.sf = new SFCore();
 
 MainController.show();
