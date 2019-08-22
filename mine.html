@@ -102,14 +102,14 @@
 			  var vv = [];
 			  var [dd, vals] = dig(vi, vf);
 
-			  var index = 0;
+			  var index = -1;
 			  for (var i in dd)
 			  {
 				  const v = dd[i];
 
 				  if (index != v.index)
 				  {
-					  vv.push(`<div class="mt-2 bg-dark text-white row"><div class="col-3">${v.index}</div><div class="col-1">${vals[v.index]}</div></div>`);
+					  vv.push(`<div class="rounded mt-2 bg-dark text-white row"><div class="col-3">${v.index}</div><div class="col-1">${vals[v.index]}</div></div>`);
 					  index = v.index;
 				  }
 
@@ -117,6 +117,11 @@
 				  {
 					  vv.push(`<div class="row"><div class="col-3"></div><div class="col">(${v.mod}) ${v.ops[j]}</div></div>`);
 				  }
+			  }
+
+			  if (!dd.length)
+			  {
+				  vv.push(`<div class="rounded mt-2 bg-danger text-white row"><div class="col-3">Nothing found</div></div>`);
 			  }
 
 			  $('#digout').html(vv.join(''));
