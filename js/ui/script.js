@@ -75,4 +75,10 @@ SettingsController.bind('#range9', '#label9', 'input', (input, label) => label.t
 SettingsController.bind('#modalSettings', null, 'show.bs.modal', (modal, nl) => SettingsController.loadSettings());
 SettingsController.bind('#modalSettingsSave', null, 'click', (button, nl) => SettingsController.saveSettings());
 
+// Initialize
+window.nf = new Notificator('notifyblock');
+window.sl = new Logger();
+window.st = new LocalStorage(13);
+window.sf = new SFCore();
+
 MainController.show();

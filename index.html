@@ -18,17 +18,18 @@
 <body>
 	<!--DRAG-DROP OVERLAY-->
 	<div class="dragzone" style="visibility: hidden;"></div>
+	<notifyblock></notifyblock>
 
 	<!--HEADER-->
 	<header>
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.0.11</small></a>
+			<a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.0.12</small></a>
 
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+			<a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
-			</button>
+			</a>
 
-			<div class="collapse navbar-collapse">
+			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item">
 						<a class="nav-link" data-toggle="modal" data-target="#modalSettings">Settings</a>
@@ -173,8 +174,8 @@
 				</div>
 
 				<div class="modal-footer justify-content-between">
-					<button class="btn btn-outline-dark" data-dismiss="modal">Close</button>
-					<button class="btn btn-dark" id="modalSettingsSave">Save</button>
+					<a class="btn btn-outline-dark" data-dismiss="modal">Close</a>
+					<a class="btn btn-dark" id="modalSettingsSave">Save</a>
 				</div>
 			</div>
 		</div>
@@ -213,13 +214,14 @@
 					<hr/>
 					<h5>Notice</h5>
 					<label>
-						All functionality within this page is provided as is, without any warranties. The content is not guaranteed to be correct and can become broken any time.<br><br>
-						SFTools &copy; 2019 HIRAISHIN SOFTWARE
+						Everything within this website is provided as is, without any warranties. The content is not guaranteed to be correct and can become broken any time. It is not associated with Playa Games in any way.<br><br>
+						<b>SFTools &copy; 2019 HIRAISHIN SOFTWARE</b><br>
+						The importing process (including response analysis) was done solely by <b>mar21</b> without any external assistance.
 					</label>
 				</div>
 
 				<div class="modal-footer justify-content-between">
-					<button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+					<a class="btn btn-outline-dark" data-dismiss="modal">Close</a>
 				</div>
 			</div>
 		</div>

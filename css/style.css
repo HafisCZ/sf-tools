@@ -11,6 +11,16 @@ main > .container {
    height: 100%;
 }
 
+notifyblock {
+    position: fixed;
+    z-index: 9999;
+    overflow: hidden;
+    width: 50vw;
+    top: 1em;
+    -ms-transform: translateX(25vw);
+    transform: translateX(25vw);
+}
+
 body {
   overflow-y: scroll;
 }

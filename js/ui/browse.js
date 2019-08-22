@@ -42,7 +42,15 @@ class SetController
 {
     static show(i)
     {
-        $('#modalSetHeader').html(`<h4 class="modal-title text-white">${sf.set(i).Label}</h4><a class="btn btn-outline-light btn-sm m-0 py-1 mt-1 mr-2 px-3">Export</a>`);
+        $('#modalSetHeader').html(`
+            <h4 class="modal-title text-white">${sf.set(i).Label}</h4>
+            <a class="btn btn-outline-light dropdown-toggle m-0 py-1 mt-1 mr-2 px-3" data-toggle="dropdown">Export</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item">To PNG</a>
+                <a class="dropdown-item">To CSV</a>
+                <a class="dropdown-item">To JSON</a>
+            </div>
+        `);
 
         var a = [];
         for (var [j, p] of sf.players(i))
@@ -103,8 +111,8 @@ class DetailController
             if (player.Potions[i])
             {
                 m.push(MD.badge(
-                    `+${player.PotionsLen[i]}% ${Enum.Potion[player.Potions[i]]}`,
-                    MD.rif(player.PotionsLen[i] == 25, 'badge-success') || 'badge-warning',
+                    `+${player.Potions[i].Size}% ${Enum.Potion[player.Potions[i].Type]}`,
+                    MD.rif(player.Potions[i].Size == 25, 'badge-success') || 'badge-warning',
                     'mr-2 mb-2'
                 ));
             }
@@ -236,27 +244,27 @@ class DetailController
             <h5>Fortress</h5>
             <div class="row">
               <div class="col">Upgrades</div>
-              <div class="col text-center text-muted">${player.FortressUpgrades}</div>
+              <div class="col text-center text-muted">${player.Fortress.Upgrades}</div>
               <div class="col">Wall</div>
-              <div class="col text-center text-muted">${player.FortressWall}</div>
+              <div class="col text-center text-muted">${player.Fortress.Wall}</div>
             </div>
             <div class="row">
-              <div class="col">${player.FortressKnights > 0 ? 'Knights' : ''}</div>
-              <div class="col text-center ${MD.rif(player.FortressKnights >= st.knights.max.value, 'text-success') || MD.rif(player.FortressKnights >= st.knights.min.value, 'text-warning') || 'text-danger'}">${player.FortressKnights > 0 ? player.FortressKnights : ''}</div>
+              <div class="col">${player.Fortress.Knights > 0 ? 'Knights' : ''}</div>
+              <div class="col text-center ${MD.rif(player.Fortress.Knights >= st.knights.max.value, 'text-success') || MD.rif(player.Fortress.Knights >= st.knights.min.value, 'text-warning') || 'text-danger'}">${player.Fortress.Knights > 0 ? player.Fortress.Knights : ''}</div>
               <div class="col">Warriors</div>
-              <div class="col text-center text-muted">${player.FortressWarriors}</div>
+              <div class="col text-center text-muted">${player.Fortress.Warriors}</div>
             </div>
             <div class="row">
               <div class="col"></div>
               <div class="col"></div>
               <div class="col">Archers</div>
-              <div class="col text-center text-muted">${player.FortressArchers}</div>
+              <div class="col text-center text-muted">${player.Fortress.Archers}</div>
             </div>
             <div class="row">
               <div class="col"></div>
               <div class="col"></div>
               <div class="col">Mages</div>
-              <div class="col text-center text-muted">${player.FortressMages}</div>
+              <div class="col text-center text-muted">${player.Fortress.Mages}</div>
             </div>
             <hr/>
         `);

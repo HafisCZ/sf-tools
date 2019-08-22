@@ -112,8 +112,8 @@ class LocalStorage
         if (localStorage.version != ver)
         {
             sl.log(Log.ERROR, 'ST_VER_NOT_EQUAL');
+            nf.show(NotificationType.WARNING, 'Cache inconsistency', 'It appears that your data is outdated. This may cause unusual behaviour unless you import all your data again.');
 
-            localStorage.clear();
             localStorage.version = ver;
         }
 
@@ -268,6 +268,41 @@ class SFCore
 	}
 }
 
+class SFUtil
+{
+    static gem(factor, player, group)
+    {
+        return player.Level * factor * (1 + 0.15 * (player.Fortress.GemMine - 1)) + (group && group.Knights) ? (group.Knights.reduce((a, b) => a + b, 0) / 3) : 0;
+    }
+
+    static gemSmall(player, group)
+    {
+        return gem(0.23, player, group);
+    }
+
+    static gemMedium(player, group)
+    {
+        return gem(0.23, player, group);
+    }
+
+    static gemLarge(player, group)
+    {
+        return gem(0.36, player, group);
+    }
+
+    static nor216(v)
+    {
+        const n = v % Math.pow(2, 16);
+        return [n, (v - n) / Math.pow(2, 16)];
+    }
+
+    static nor28(v)
+    {
+        const n = v % Math.pow(2, 8);
+        return [n, (v - n) / Math.pow(2, 8)];
+    }
+}
+
 class SFImporter
 {
     static importFile(f, c)
@@ -275,9 +310,15 @@ class SFImporter
         var r = new FileReader();
         r.readAsText(f, 'UTF-8');
         r.onload = function (e) {
-            sf.add(SFImporter.import(DateFormatter.format(new Date(f.lastModified)), JSON.parse(e.target.result)));
-
-            c();
+            try
+            {
+                sf.add(SFImporter.import(DateFormatter.format(new Date(f.lastModified)), JSON.parse(e.target.result)));
+                c();
+            }
+            catch(e)
+            {
+                nf.show(NotificationType.DANGER, 'File import failed', 'It appears that your file is not compatible. Please try again or use another file.');
+            }
         };
     }
 
@@ -433,7 +474,8 @@ class SFImporter
 	static buildPlayer(data)
 	{
 		var p = {
-            Group: {}
+            Group: {},
+            Fortress: {}
         };
 
 		for (var [k, v] of ResponseParser.parse(data))
@@ -449,10 +491,10 @@ class SFImporter
 			else if (k.includes('unitlevel'))
 			{
 				var values = SFImporter.split(v);
-				p.FortressWall = values[0];
-				p.FortressWarriors = values[1];
-				p.FortressArchers = values[2];
-				p.FortressMages = values[3];
+				p.Fortress.Wall = values[0];
+				p.Fortress.Warriors = values[1];
+				p.Fortress.Archers = values[2];
+				p.Fortress.Mages = values[3];
 			}
 			else if (k.includes('achievement'))
 			{
@@ -499,32 +541,30 @@ class SFImporter
 
 				p.Mount = vals[159] % 16;
 
-				p.Potion1 = vals[194] == 16 ? 6 : (vals[194] == 0 ? 0 : 1 + (vals[194] - 1) % 5);
-				p.Potion2 = vals[195] == 16 ? 6 : (vals[195] == 0 ? 0 : 1 + (vals[195] - 1) % 5);
-				p.Potion3 = vals[196] == 16 ? 6 : (vals[196] == 0 ? 0 : 1 + (vals[196] - 1) % 5);
-
-				p.PotionLen1 = vals[200];
-				p.PotionLen2 = vals[201];
-				p.PotionLen3 = vals[202];
-
                 p.Potions = [
-                    p.Potion1, p.Potion2, p.Potion3
-                ];
-
-                p.PotionsLen = [
-                    p.PotionLen1, p.PotionLen2, p.PotionLen3
+                    {
+                        Type: vals[194] == 16 ? 6 : (vals[194] == 0 ? 0 : 1 + (vals[194] - 1) % 5),
+                        Size: vals[200]
+                    },
+                    {
+                        Type: vals[195] == 16 ? 6 : (vals[195] == 0 ? 0 : 1 + (vals[195] - 1) % 5),
+                        Size: vals[201]
+                    },
+                    {
+                        Type: vals[196] == 16 ? 6 : (vals[196] == 0 ? 0 : 1 + (vals[196] - 1) % 5),
+                        Size: vals[202]
+                    }
                 ];
 
 				p.HonorFortress = vals[248];
-				p.FortressUpgrades = vals[247];
-				p.FortressKnights = vals[258];
+				p.Fortress.Upgrades = vals[247];
+				p.Fortress.Knights = vals[258];
 
-                const dungeonBonus = vals[252] / Math.pow(2, 16);
-                p.DamageBonus = dungeonBonus % 256;
-                p.LifeBonus = (dungeonBonus - dungeonBonus % 256) / 256;
+                p.Tower = SFUtil.nor216(vals[159])[1];
+                [p.DamageBonus, p.LifeBonus] = SFUtil.nor28(vals[252] / Math.pow(2, 16));
 
 				p.Face = vals.slice(8, 18);
-				p.Fortress = vals.slice(208, 220);
+                SFImporter.fillFortress(p, vals.slice(208, 220), null);
 			}
 			else if (k.includes('playerSave'))
 			{
@@ -562,41 +602,111 @@ class SFImporter
 				p.Wpn2 = SFImporter.buildItem(vals.slice(156, 168));
 
 				p.Mount = vals[286] % 16;
-
-				p.Potion1 = vals[493] == 16 ? 6 : (vals[493] == 0 ? 0 : 1 + (vals[493] - 1) % 5);
-				p.Potion2 = vals[494] == 16 ? 6 : (vals[494] == 0 ? 0 : 1 + (vals[494] - 1) % 5);
-				p.Potion3 = vals[495] == 16 ? 6 : (vals[495] == 0 ? 0 : 1 + (vals[495] - 1) % 5);
-
-				p.PotionLen1 = vals[499];
-				p.PotionLen2 = vals[500];
-				p.PotionLen3 = vals[501];
+                p.MountExpire = new Date(vals[451]);
 
                 p.Potions = [
-                    p.Potion1, p.Potion2, p.Potion3
-                ];
-
-                p.PotionsLen = [
-                    p.PotionLen1, p.PotionLen2, p.PotionLen3
+                    {
+                        Type: vals[493] == 16 ? 6 : (vals[493] == 0 ? 0 : 1 + (vals[493] - 1) % 5),
+                        Size: vals[499],
+                        Expire: new Date(vals[496])
+                    },
+                    {
+                        Type: vals[494] == 16 ? 6 : (vals[494] == 0 ? 0 : 1 + (vals[494] - 1) % 5),
+                        Size: vals[500],
+                        Expire: new Date(vals[497])
+                    },
+                    {
+                        Type: vals[495] == 16 ? 6 : (vals[495] == 0 ? 0 : 1 + (vals[495] - 1) % 5),
+                        Size: vals[501],
+                        Expire: new Date(vals[498])
+                    }
                 ];
 
 				p.RankFortress = vals[583];
 				p.HonorFortress = vals[582];
-				p.FortressUpgrades = vals[581];
-				p.FortressKnights = vals[598];
+				p.Fortress.Upgrades = vals[581];
+				p.Fortress.Knights = vals[598];
 
                 p.DamageBonus = vals[623];
                 p.LifeBonus = vals[624];
 
+                p.Tower = SFUtil.nor216(vals[286])[1];
+
 				p.Face = vals.slice(17, 27);
-				p.Fortress = vals.slice(524, 536);
+                SFImporter.fillFortress(p, vals.slice(524, 536), null);
 			}
 		}
 
 		return p;
 	}
+
+    static fillFortress(p, f, u)
+    {
+        p.Fortress.Fortress = f[0];
+        p.Fortress.MageTower = 0;
+        p.Fortress.Smithy = 0;
+        p.Fortress.Academy = 0;
+        p.Fortress.Treasury = 0;
+        p.Fortress.Barracks = 0;
+        p.Fortress.LaborerQuarters = 0;
+        p.Fortress.ArcheryGuild = 0;
+        p.Fortress.Quarry = 0;
+        p.Fortress.WoodcutterGuild = 0;
+        p.Fortress.GemMine = 0;
+        p.Fortress.Fortifications = 0;
+        p.Fortress.HeartOfDarkness = 0;
+        p.Fortress.GladiatorTrainer = 0;
+        p.Fortress.TrollBlock = 0;
+        p.Fortress.GoldPit = 0;
+        p.Fortress.TimeMachine = 0;
+        p.Fortress.GoblinPit = 0;
+        p.Fortress.SoulExtractor = 0;
+        p.Fortress.Keeper = 0;
+        p.Fortress.UnderworldGate = 0;
+        p.Fortress.TortureChamber = 0;
+    }
 }
 
-// Initialize
-window.sl = new Logger();
-window.st = new LocalStorage(12);
-window.sf = new SFCore();
+const NotificationType = {
+    DANGER: 'danger',
+    WARNING: 'warning',
+    SUCCESS: 'success',
+    ERROR: 'danger'
+}
+
+class Notificator
+{
+    constructor(e)
+    {
+        this.parent = e;
+        this.iter = 0;
+        this.notes = {};
+    }
+
+    show(style, header, body)
+    {
+        $(this.parent).append(`<p nid="${this.iter}" class="note note-${style} animated fadeInDown"><strong>${header}:</strong> ${body}</p>`);
+
+        const note = $(`${this.parent}>p`).last();
+        note.on('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function() {
+            nf.state($(this).attr('nid'));
+        });
+
+        this.notes[this.iter] = 1;
+
+        this.iter++;
+    }
+
+    state(i)
+    {
+        if (this.notes[i] === 1)
+        {
+            $(`${this.parent}>p[nid=${i}]`).removeClass('fadeInDown').addClass('delay-3s fadeOutUp');
+            this.notes[i] = 2;
+        }
+        else if (this.notes[i] == 2)
+        {
+            $(`${this.parent}>p[nid=${i}]`).remove();
+        }
+    }
+}
