@@ -158,6 +158,12 @@ class DetailController
             'badge-dark mb-2 mr-2'
         ));
 
+        // Gold bonus
+        m.push(MD.badge(
+            `+${player.Tower}% Gold bonus`,
+            'badge-dark mb-2 mr-2'
+        ));
+
         $('#modalDetailHeader').html(`
           <div class="d-flex w-100 justify-content-between">
             <h4 class="modal-title text-white">${player.Name}<small class="ml-2 text-muted" style="font-size: 60%">${player.Group.Name || ''}</small></h4>
