@@ -62,6 +62,10 @@ $('#modalDetail').on('hidden.bs.modal', function() {
     $('#modalSet').modal('show');
 });
 
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();
+});
+
 SettingsController.bind('#range1', '#label1', 'input', (input, label) => label.text(`${input.val()}%`));
 SettingsController.bind('#range2', '#label2', 'input', (input, label) => label.text(`${input.val()}%`));
 SettingsController.bind('#range3', '#label3', 'input', (input, label) => label.text(`${input.val() * 5}`));
@@ -78,7 +82,7 @@ SettingsController.bind('#modalSettingsSave', null, 'click', (button, nl) => Set
 // Initialize
 window.nf = new Notificator('notifyblock');
 window.sl = new Logger();
-window.st = new LocalStorage(14);
+window.st = new LocalStorage(15);
 window.sf = new SFCore();
 
 MainController.show();

@@ -14,9 +14,12 @@ class MainController
                             <span class="badge badge-dark mr-1">${set.Groups.length} groups</span>
                             <span class="badge badge-dark">${set.Players.length} players</span>
                         </div>
-                        <button type="button" class="btn btn-link p-0 mr-2" onclick="event.stopPropagation(); MainController.remove(${i});">
-                            <i class="fas fa-trash fa-lg text-dark remove-icon"></i>
-                        </button>
+                        <div class="mr-2 p-1 mt-2">
+                            ${set.Version == st.currentVer() ? `<i class="mr-2 fas text-success fa-check-circle" data-toggle="tooltip" title="Version ${set.Version}"></i>` : '<i class="mr-2 fas text-danger fa-exclamation-triangle" data-toggle="tooltip" title="This file cannot be regenerated. Please import it again."></i>'}
+                            <button type="button" class="btn btn-link p-0" onclick="event.stopPropagation(); MainController.remove(${i});">
+                                <i class="fas fa-trash fa-lg text-dark remove-icon"></i>
+                            </button>
+                        </div>
                     </div>
                 </a>
             `);

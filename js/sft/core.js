@@ -112,8 +112,6 @@ class LocalStorage
         if (localStorage.version != ver)
         {
             sl.log(Log.ERROR, 'ST_VER_NOT_EQUAL');
-            nf.show(NotificationType.WARNING, 'Cache inconsistency', 'It appears that your data is outdated. This may cause unusual behaviour unless you import all your data again.');
-
             localStorage.version = ver;
         }
 
@@ -147,6 +145,63 @@ class LocalStorage
         };
 
         this.data = new LocalStorageObjectProperty('d', []);
+
+        var rdata = [];
+        var rupdate = false;
+        var rfailed = false;
+
+        for (var i in this.data.value)
+        {
+            var s = this.data.value[i];
+
+            if (s.Version != ver)
+            {
+                if (s.Version)
+                {
+                    rupdate = true;
+                    s.Version = ver;
+
+                    for (var p in s.Players)
+                    {
+                        s.Players[p] = SFImporter.buildPlayer(s.Players[p].Raw);
+                    }
+
+                    for (var g in s.Groups)
+                    {
+                        s.Groups[g] = SFImporter.buildGroup(s.Groups[g].Raw);
+                    }
+                }
+                else
+                {
+                    rfailed = true;
+                }
+            }
+
+            rdata.push(s);
+        }
+
+        if (rupdate)
+        {
+            this.data.value = rdata;
+
+            if (rfailed)
+            {
+                nf.show(NotificationType.WARNING, 'Cache regeneration', 'Some files could not be regenerated. Please import them again.');
+            }
+            else
+            {
+                nf.show(NotificationType.SUCCESS, 'Cache regeneration', 'All files successfully regenerated.');
+            }
+        }
+        else if (rfailed)
+        {
+            nf.show(NotificationType.ERROR, 'Cache regeneration', 'No files could be regenerated. Please import them again.');
+        }
+    }
+
+    currentVer()
+    {
+        return localStorage.version;
     }
 }
 
@@ -407,7 +462,10 @@ class SFImporter
 			}
 		}
 
+        nf.show(NotificationType.SUCCESS, label, 'Successfully imported!');
+
         return {
+            Version: st.currentVer(),
             Players: ps,
             Groups: gs,
             Label: label
@@ -416,7 +474,9 @@ class SFImporter
 
 	static buildGroup(data)
 	{
-		var g = {};
+		var g = {
+            Raw: data
+        };
 
 		for (var [k, v] of ResponseParser.parse(data))
 		{
@@ -502,7 +562,8 @@ class SFImporter
 	{
 		var p = {
             Group: {},
-            Fortress: {}
+            Fortress: {},
+            Raw: data
         };
 
 		for (var [k, v] of ResponseParser.parse(data))
