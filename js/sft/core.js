@@ -146,56 +146,32 @@ class LocalStorage
 
         this.data = new LocalStorageObjectProperty('d', []);
 
-        var rdata = [];
-        var rupdate = false;
-        var rfailed = false;
+        var ucannot = false;
+        var ucan = false;
 
         for (var i in this.data.value)
         {
-            var s = this.data.value[i];
-
-            if (s.Version != ver)
+            if (this.data.value[i].Version)
             {
-                if (s.Version)
+                if (this.data.value[i].Version < ver)
                 {
-                    rupdate = true;
-                    s.Version = ver;
-
-                    for (var p in s.Players)
-                    {
-                        s.Players[p] = SFImporter.buildPlayer(s.Players[p].Raw);
-                    }
-
-                    for (var g in s.Groups)
-                    {
-                        s.Groups[g] = SFImporter.buildGroup(s.Groups[g].Raw);
-                    }
+                    ucan = true;
                 }
-                else
-                {
-                    rfailed = true;
-                }
-            }
-
-            rdata.push(s);
-        }
-
-        if (rupdate)
-        {
-            this.data.value = rdata;
-
-            if (rfailed)
-            {
-                nf.show(NotificationType.WARNING, 'Cache regeneration', 'Some files could not be regenerated. Please import them again.');
             }
             else
             {
-                nf.show(NotificationType.SUCCESS, 'Cache regeneration', 'All files successfully regenerated.');
+                ucannot = true;
             }
         }
-        else if (rfailed)
+
+        if (ucannot)
         {
-            nf.show(NotificationType.ERROR, 'Cache regeneration', 'No files could be regenerated. Please import them again.');
+            nf.show(NotificationType.ERROR, 'Version inconsistency', 'It appears that some of your entries are outdated and cannot be regenerated. This can cause them to be unreadable until you remove them and import them again.');
+        }
+
+        if (ucan)
+        {
+            nf.show(NotificationType.WARNING, 'Version inconsistency', 'It appears that some of your entries are outdated. To regenerate them click on the warning icon next to remove button.');
         }
     }
 
@@ -321,6 +297,30 @@ class SFCore
 	{
 		return this.data[s].Groups[g];
 	}
+
+    regenerate(s)
+    {
+        var ns = {
+            Version: st.currentVer(),
+            Players: [],
+            Groups: [],
+            Label: this.data[s].Label
+        }
+
+        for (var p in this.data[s].Players)
+        {
+            ns.Players.push(SFImporter.buildPlayer(this.data[s].Players[p].Raw));
+        }
+
+        for (var g in this.data[s].Groups)
+        {
+            ns.Groups.push(SFImporter.buildGroup(this.data[s].Groups[g].Raw));
+        }
+
+        this.data[s] = ns;
+
+        st.data.value = this.data;
+    }
 }
 
 class SFUtil
