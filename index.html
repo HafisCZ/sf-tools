@@ -23,7 +23,7 @@
 	<!--HEADER-->
 	<header>
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.0.14</small></a>
+			<a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.1.0</small></a>
 
 			<a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
 				<span class="navbar-toggler-icon"></span>
@@ -191,23 +191,23 @@
 
 				<div class="modal-body">
 					<h5>How to get the HAR files</h5>
-					<label>
-						Open a tab in your browser, press <strong>F12</strong> and navigate over to <strong>Network</strong> tab.
-						Now, you should see items appearing inside the tab when you go open SF game.<br>
-						If you want to capture a player, simply click on his profile. The same applies to groups.<br>
-						When you have everything you need, go to the tab and click <strong>Save all as HAR</strong>.
-						This can be hidden under <strong>HAR</strong> button, or similar.
-					</label>
-					<hr/>
+					<ul>
+						<li>Open developer tab by <strong>F12</strong> and navigate over to <strong>Network</strong> tab.</li>
+						<li>Now open the game and you should see items starting to appear.</li>
+						<li>If you want to save a player or a guild, simply click on them in Hall of Fame / guild screen.</li>
+						<li>When you are done, click on <strong>Save all as HAR</strong> and save the file on your computer.</li>
+						<li>To import the file, simply drag it over to this page.</li>
+					</ul>
 					<h5>What to do next</h5>
 					<label>
-						After uploading your file and seeing it appear in the list, you can click on it to reveal more information.
+						To view the data, left-click on the desired entry.
+						You can use right-click to set an entry as base to compare to when viewing another entry.
 					</label>
 					<hr/>
 					<h5>How it works</h5>
 					<label>
 						HAR files are archives containing comunication between your browser and servers.
-						This allows this web application to open the files and extract required information from them.
+						This allows this application to open the files and extract required information from them.
 						Uploaded files are parsed and stored within your browser (Deleting local storage will wipe them out).<br>
 						All login information is ignored when the files are parsed, but please be wary that they contain your name and password in raw form - <strong>never send .HAR files to anyone</strong>.
 					</label>
@@ -234,6 +234,7 @@
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/mdb.min.js"></script>
 
+	<script type="text/javascript" src="js/sft/utils.js"></script>
 	<script type="text/javascript" src="js/sft/core.js"></script>
 	<script type="text/javascript" src="js/sft/constants.js"></script>
 

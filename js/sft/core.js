@@ -1,120 +1,7 @@
-const Log = {
-    INFO: 0,
-    WARN: 1,
-    ERROR: 2
-};
-
-class Logger
-{
-    constructor() {
-        this.l = [];
-    }
-
-    clear()
-    {
-        this.l = [];
-    }
-
-    log(s, msg)
-    {
-        this.l.push({
-            type: s,
-            message: msg
-        });
-
-        if (s === Log.INFO)
-        {
-            console.info(msg);
-        }
-        else if (s === Log.WARN)
-        {
-            console.warn(msg);
-        }
-        else if (s === Log.ERROR)
-        {
-            console.error(msg);
-        }
-
-        if (this.l.length >= 50)
-        {
-            this.l.splice(0, 1);
-        }
-    }
-
-    * messages()
-    {
-        for (var i in this.l)
-        {
-            yield [this.l[i]];
-        }
-    }
-}
-
-class LocalStorageProperty
-{
-    constructor(key, def)
-    {
-        this.key = key;
-        this.def = def;
-    }
-
-    get value()
-    {
-        return window.localStorage.getItem(this.key) || this.def;
-    }
-
-    set value(val)
-    {
-        window.localStorage.setItem(this.key, val);
-    }
-}
-
-class LocalStorageBoolProperty extends LocalStorageProperty
-{
-    constructor(key, def)
-    {
-        super(key, def);
-    }
-
-    get value()
-    {
-        return window.localStorage.getItem(this.key) === 'true' || this.def;
-    }
-
-    set value(val)
-    {
-        super.value = val;
-    }
-}
-
-class LocalStorageObjectProperty extends LocalStorageProperty
-{
-    constructor(key, def)
-    {
-        super(key, JSON.stringify(def));
-    }
-
-    get value()
-    {
-        return JSON.parse(super.value);
-    }
-
-    set value(val)
-    {
-        super.value = JSON.stringify(val);
-    }
-}
-
 class LocalStorage
 {
-    constructor(ver)
+    constructor()
     {
-        if (localStorage.version != ver)
-        {
-            sl.log(Log.ERROR, 'ST_VER_NOT_EQUAL');
-            localStorage.version = ver;
-        }
-
         this.scrapbook = {
             min: new LocalStorageProperty('h0', 70),
             max: new LocalStorageProperty('h1', 90)
@@ -145,89 +32,7 @@ class LocalStorage
         };
 
         this.data = new LocalStorageObjectProperty('d', []);
-
-        var ucannot = false;
-        var ucan = false;
-
-        for (var i in this.data.value)
-        {
-            if (this.data.value[i].Version)
-            {
-                if (this.data.value[i].Version < ver)
-                {
-                    ucan = true;
-                }
-            }
-            else
-            {
-                ucannot = true;
-            }
-        }
-
-        if (ucannot)
-        {
-            nf.show(NotificationType.ERROR, 'Version inconsistency', 'It appears that some of your entries are outdated and cannot be regenerated. This can cause them to be unreadable until you remove them and import them again.');
-        }
-
-        if (ucan)
-        {
-            nf.show(NotificationType.WARNING, 'Version inconsistency', 'It appears that some of your entries are outdated. To regenerate them click on the warning icon next to remove button.');
-        }
-    }
-
-    currentVer()
-    {
-        return localStorage.version;
-    }
-}
-
-class JSONScanner
-{
-    static* iterate(o, p = [])
-    {
-        for (var i in o)
-        {
-            const pp = p.concat(i);
-            yield [i, o[i]];
-
-            if (o[i] !== null && typeof(o[i]) == 'object')
-            {
-                yield* JSONScanner.iterate(o[i], pp);
-            }
-        }
-    }
-}
-
-class ResponseParser
-{
-    static* parse(m)
-    {
-        var o = m.split('&');
-
-        for (var i in o)
-        {
-            yield o[i].split(':', 2);
-        }
-    }
-}
-
-class DateFormatter
-{
-    static format(d)
-    {
-        return DateFormatter.trail(d.getDate(), 2) + '.' + DateFormatter.trail(d.getMonth(), 2) + '.' + d.getFullYear() + ' ' + DateFormatter.trail(d.getHours(), 2) + ':' + DateFormatter.trail(d.getMinutes(), 2);
-    }
-
-    static trail(c, n)
-    {
-        var r = '' + c;
-
-        while (r.length < n)
-        {
-            r = '0' + r;
-        }
-
-        return r;
+        this.visited = new LocalStorageBoolProperty('f', false);
     }
 }
 
@@ -235,36 +40,40 @@ class SFCore
 {
 	constructor()
 	{
-		this.data = st.data.value;
+        this.rdata = st.data.value;
+        this.inflate();
 	}
+
+    inflate()
+    {
+        this.data = [];
+
+        for (const set of this.rdata)
+        {
+            this.data.push(new SFSet(set));
+        }
+    }
 
 	add(s)
 	{
-		this.data.push(s);
-		st.data.value = this.data;
+		this.rdata.push(s);
+
+		st.data.value = this.rdata;
+        this.inflate();
 	}
 
-    * sets()
-    {
-        for (var i in sf.data)
-        {
-            yield [i, sf.data[i]];
-        }
-    }
-
-    * rsets()
-    {
-        for (var i = sf.data.length - 1, item; item = sf.data[i]; i--)
-        {
-            yield [i, item];
-        }
-    }
-
-	remove(i)
+    remove(i)
 	{
-		this.data.splice(i, 1);
-		st.data.value = this.data;
+		this.rdata.splice(i, 1);
+
+		st.data.value = this.rdata;
+        this.inflate();
 	}
+
+    * sets() { for (var i = 0; i < this.data.length; i++) yield [i, this.data[i]]; }
+    * rsets() { for (var i = this.data.length - 1, item; item = this.data[i]; i--) yield [i, item]; }
+
+    // Delete the rest ?? idkev
 
     set(s)
     {
@@ -296,168 +105,38 @@ class SFCore
 	{
 		return this.data[s].Groups[g];
 	}
-
-    regenerate(s)
-    {
-        var ns = {
-            Version: st.currentVer(),
-            Players: [],
-            Groups: [],
-            Label: this.data[s].Label
-        }
-
-        for (var p in this.data[s].Players)
-        {
-            ns.Players.push(SFImporter.buildPlayer(this.data[s].Players[p].Raw));
-        }
-
-        for (var g in this.data[s].Groups)
-        {
-            ns.Groups.push(SFImporter.buildGroup(this.data[s].Groups[g].Raw));
-        }
-
-        this.data[s] = ns;
-
-        st.data.value = this.data;
-
-        nf.show(NotificationType.SUCCESS, ns.Label, 'File successfully regenerated.');
-    }
 }
 
-class SFUtil
+class SFSet
 {
-    static itemMods()
+    constructor(data)
     {
-        return {
-            weapon: {
-                warrior: 2,
-                scout: 2.5,
-                mage: 4.5
-            },
-            armor: {
-                warrior: 15,
-                scout: 7.5,
-                mage: 3
-            },
-            item: {
-                normal: 2,
-                epic3: 1.2,
-                epic5: 1,
-                epic1: 5
-            }
-        };
-    }
+        this.Players = [];
+        this.Groups = [];
+        this.Label = data.Label;
 
-    static itemAttr(player)
-    {
-        return player.Level + 4 + player.Aura * (player.Witch >= 3 ? 2 + Math.max(0, player.Witch - 3) / 6 : 1);
-    }
-
-    static gem(factor, player, group)
-    {
-        return player.Level * factor * (1 + 0.15 * (player.Fortress.GemMine - 1)) + (group && group.Knights) ? (group.Knights.reduce((a, b) => a + b, 0) / 3) : 0;
-    }
-
-    static gemSmall(player, group)
-    {
-        return gem(0.23, player, group);
-    }
-
-    static gemMedium(player, group)
-    {
-        return gem(0.23, player, group);
-    }
-
-    static gemLarge(player, group)
-    {
-        return gem(0.36, player, group);
-    }
-
-    static getGem(item)
-    {
-        return [SFUtil.nor216(item.SlotID)[1] % 64, SFUtil.nor216(item.Mods)[1]];
-    }
-
-    static getUpgrades(item)
-    {
-        return (item.Mods % Math.pow(2, 16)) / 256;
-    }
-
-    static getEnchantment(item)
-    {
-        return item.ItemID != item.ItemID % Math.pow(2, 16);
-    }
-
-    static nor216(v)
-    {
-        const n = v % Math.pow(2, 16);
-        return [n, (v - n) / Math.pow(2, 16)];
-    }
-
-    static nor28(v)
-    {
-        const n = v % Math.pow(2, 8);
-        return [n, (v - n) / Math.pow(2, 8)];
-    }
-
-    static nor26(v)
-    {
-        const n = v % Math.pow(2, 6);
-        return [n, (v - n) / Math.pow(2, 6)];
-    }
-}
-
-class SFImporter
-{
-    static importFile(f, c)
-    {
-        var r = new FileReader();
-        r.readAsText(f, 'UTF-8');
-        r.onload = function (e) {
-            try
+        for (const val of data.Raws)
+        {
+            if (val.includes('otherplayername') || val.includes('ownplayername'))
             {
-                sf.add(SFImporter.import(DateFormatter.format(new Date(f.lastModified)), JSON.parse(e.target.result)));
-                c();
-            }
-            catch(e)
-            {
-                nf.show(NotificationType.DANGER, 'File import failed', 'It appears that your file is not compatible. Please try again or use another file.');
-            }
-        };
-    }
-
-    static split(s, d = '/')
-    {
-        return s.split(d).map(v => Number(v));
-    }
-
-	static import(label, json)
-	{
-		var ps = [];
-		var gs = [];
-
-		for (var [key, val] of JSONScanner.iterate(json))
-		{
-			if (key === 'text' && (val.includes('otherplayername') || val.includes('ownplayername')))
-			{
-				if (val.includes('owngroup'))
-				{
-					var group = SFImporter.buildGroup(val);
-
-					if (!gs.find(g => g.Name === group.Name))
-					{
-						gs.push(group);
-					}
-				}
-
-                var player = SFImporter.buildPlayer(val);
-
-                if (!ps.find(p => p.Name === player.Name))
+                if (val.includes('owngroup'))
                 {
-                    ps.push(player);
+                    var group = new SFGroup(val);
+
+                    if (!this.Groups.find(g => g.Name === group.Name))
+                    {
+                        this.Groups.push(group);
+                    }
                 }
 
-                const og = gs.find(g => g.Name === player.Group.Name);
+                var player = new SFPlayer(val);
+
+                if (!this.Players.find(p => p.Name === player.Name))
+                {
+                    this.Players.push(player);
+                }
+
+                const og = this.Groups.find(g => g.Name === player.Group.Name);
                 if (og && og.Knights)
                 {
                     const i = og.Members.findIndex(m => m === player.Name);
@@ -472,187 +151,91 @@ class SFImporter
                         player.Knights = og.Knights[i];
                     }
                 }
-			}
-			else if (key === 'text' && val.includes('othergroup'))
-			{
-				var group = SFImporter.buildGroup(val);
-
-				if (!gs.find(g => g.Name === group.Name))
-				{
-					gs.push(group);
-				}
-			}
-		}
-
-        nf.show(NotificationType.SUCCESS, label, 'Successfully imported!');
-
-        return {
-            Version: st.currentVer(),
-            Players: ps,
-            Groups: gs,
-            Label: label
-        };
-	}
-
-	static buildGroup(data)
-	{
-		var g = {
-            Raw: data
-        };
-
-		for (var [k, v] of ResponseParser.parse(data))
-		{
-			if (k.includes('groupname'))
-			{
-				g.Name = v;
-			}
-            else if (k.includes('groupsave') || k.includes('groupSave'))
-            {
-                var vals = SFImporter.split(v);
-                var members = vals[3];
-
-                g.Levels = vals.slice(64, 64 + members).map(l => l % 1000);
-                g.Roles = vals.slice(314, 314 + members);
-                g.Treasures = vals.slice(214, 214 + members);
-                g.Instructors = vals.slice(264, 264 + members);
-                g.Pets = vals.slice(390, 390 + members);
             }
-            else if (k.includes('groupmember'))
+            else if (val.includes('othergroup'))
             {
-                g.Members = v.split(',');
-                g.MemberCount = g.Members.length;
-            }
-            else if (k.includes('grouprank'))
-            {
-                g.Rank = v;
-            }
-            else if (k.includes('groupknights'))
-            {
-                g.Knights = SFImporter.split(v, ',').slice(0, 50);
-            }
-		}
+                var group = new SFGroup(val);
 
-        for (var i = 0; i < g.MemberCount; i++)
-        {
-            if (g.Roles[i] == 4)
-            {
-                if (g.Knights)
+                if (!this.Groups.find(g => g.Name === group.Name))
                 {
-                    g.Knights.splice(i, 1);
+                    this.Groups.push(group);
                 }
-
-                g.Levels.splice(i, 1);
-                g.Treasures.splice(i, 1);
-                g.Instructors.splice(i, 1);
-                g.Pets.splice(i, 1);
-                g.Members.splice(i, 1);
-                g.MemberCount--;
-                i--;
             }
         }
+    }
+}
 
-		return g;
-	}
+class SFPlayer
+{
+    constructor(data)
+    {
+        this.Group = {};
+        this.Fortress = {};
 
-	static buildItem(vals)
-	{
-		var i = {};
+        for (var [k, v] of SFUtil.parse(data))
+        {
+            if (k.includes('groupname'))
+            {
+                this.Group.Name = v;
+            }
+            else if (k.includes('name'))
+            {
+                this.Name = v;
+            }
+            else if (k.includes('unitlevel'))
+            {
+                var values = SFUtil.split(v);
+                this.Fortress.Wall = values[0];
+                this.Fortress.Warriors = values[1];
+                this.Fortress.Archers = values[2];
+                this.Fortress.Mages = values[3];
+            }
+            else if (k.includes('achievement'))
+            {
+                this.Achievements = SFUtil.split(v).slice(0, 70).reduce((a, b) => a + b, 0);
+            }
+            else if (k.includes('fortressrank'))
+            {
+                this.RankFortress = Number(v);
+            }
+            else if (k.includes('playerlookat'))
+            {
+                var vals = SFUtil.split(v);
 
-		i.SlotID = vals[0];
-		i.ItemID = vals[1];
-		i.Rating1 = vals[2];
-		i.Rating2 = vals[3];
-		i.Attribute1Type = vals[4];
-		i.Attribute2Type = vals[5];
-		i.Attribute3Type = vals[6];
-		i.Attribute1 = vals[7];
+                this.LastOnline = new Date(vals[1] * 1000);
 
-		if (i.Attribute1Type === 6) {
-			i.Attribute3 = i.Attribute1;
-            i.Attribute2 = i.Attribute1;
-		} else {
-			i.Attribute2 = vals[8];
-			i.Attribute3 = vals[9];
-		}
+                this.XP = vals[3];
+                this.XPNext = vals[4];
+                this.Book = vals[163] - 10000;
+                this.Level = vals[173];
 
-		i.Value = vals[10];
-		i.Mods = vals[11];
+                this.HonorPlayer = vals[5];
+                this.RankPlayer = vals[6];
 
-		return i;
-	}
+                this.Race = vals[18] % 16;
+                this.Sex = vals[19] % 16;
+                this.Class = vals[20] % 16;
 
-	static buildPlayer(data)
-	{
-		var p = {
-            Group: {},
-            Fortress: {},
-            Raw: data
-        };
+                this.Strength = vals[21] + vals[26];
+                this.Dexterity = vals[22] + vals[27];
+                this.Intelligence = vals[23] + vals[28];
+                this.Constitution = vals[24] + vals[29];
+                this.Luck = vals[25] + vals[30];
+                this.Armor = vals[168];
 
-		for (var [k, v] of ResponseParser.parse(data))
-		{
-			if (k.includes('groupname'))
-			{
-				p.Group.Name = v;
-			}
-			else if (k.includes('name'))
-			{
-				p.Name = v;
-			}
-			else if (k.includes('unitlevel'))
-			{
-				var values = SFImporter.split(v);
-				p.Fortress.Wall = values[0];
-				p.Fortress.Warriors = values[1];
-				p.Fortress.Archers = values[2];
-				p.Fortress.Mages = values[3];
-			}
-			else if (k.includes('achievement'))
-			{
-				p.Achievements = SFImporter.split(v).slice(0, 70).reduce((a, b) => a + b, 0);
-			}
-			else if (k.includes('fortressrank'))
-			{
-				p.RankFortress = Number(v);
-			}
-			else if (k.includes('playerlookat'))
-			{
-				var vals = SFImporter.split(v);
+                this.Head = new SFItem(vals.slice(39, 51));
+                this.Body = new SFItem(vals.slice(51, 63));
+                this.Hand = new SFItem(vals.slice(63, 75));
+                this.Feet = new SFItem(vals.slice(75, 87));
+                this.Neck = new SFItem(vals.slice(87, 99));
+                this.Belt = new SFItem(vals.slice(99, 111));
+                this.Ring = new SFItem(vals.slice(111, 123));
+                this.Misc = new SFItem(vals.slice(123, 135));
 
-                p.LastOnline = new Date(vals[1] * 1000);
+                this.Wpn1 = new SFItem(vals.slice(135, 147));
+                this.Wpn2 = new SFItem(vals.slice(147, 159));
 
-				p.XP = vals[3];
-				p.XPNext = vals[4];
-				p.Book = vals[163] - 10000;
-				p.Level = vals[173];
-
-				p.HonorPlayer = vals[5];
-				p.RankPlayer = vals[6];
-
-				p.Race = vals[18] % 16;
-				p.Sex = vals[19] % 16;
-				p.Class = vals[20] % 16;
-
-				p.Strength = vals[21] + vals[26];
-				p.Dexterity = vals[22] + vals[27];
-				p.Intelligence = vals[23] + vals[28];
-				p.Constitution = vals[24] + vals[29];
-				p.Luck = vals[25] + vals[30];
-				p.Armor = vals[168];
-
-				p.Head = SFImporter.buildItem(vals.slice(39, 51));
-				p.Body = SFImporter.buildItem(vals.slice(51, 63));
-				p.Hand = SFImporter.buildItem(vals.slice(63, 75));
-				p.Feet = SFImporter.buildItem(vals.slice(75, 87));
-				p.Neck = SFImporter.buildItem(vals.slice(87, 99));
-				p.Belt = SFImporter.buildItem(vals.slice(99, 111));
-				p.Ring = SFImporter.buildItem(vals.slice(111, 123));
-				p.Misc = SFImporter.buildItem(vals.slice(123, 135));
-
-				p.Wpn1 = SFImporter.buildItem(vals.slice(135, 147));
-				p.Wpn2 = SFImporter.buildItem(vals.slice(147, 159));
-
-                p.Potions = [
+                this.Potions = [
                     {
                         Type: vals[194] == 16 ? 6 : (vals[194] == 0 ? 0 : 1 + (vals[194] - 1) % 5),
                         Size: vals[200]
@@ -667,55 +250,55 @@ class SFImporter
                     }
                 ];
 
-				p.HonorFortress = vals[248];
-				p.Fortress.Upgrades = vals[247];
-				p.Fortress.Knights = vals[258];
+                this.HonorFortress = vals[248];
+                this.Fortress.Upgrades = vals[247];
+                this.Fortress.Knights = vals[258];
 
-                //[p.Aura, p.AuraFill] = SFUtil.nor28(vals[242]);
-                [p.Mount, p.Tower] = SFUtil.nor216(vals[159]);
-                [p.DamageBonus, p.LifeBonus] = SFUtil.nor28(vals[252] / Math.pow(2, 16));
+                //[this.Aura, this.AuraFill] = SFUtil.nor28(vals[242]);
+                [this.Mount, this.Tower] = SFUtil.nor216(vals[159]);
+                [this.DamageBonus, this.LifeBonus] = SFUtil.nor28(vals[252] / Math.pow(2, 16));
 
-				p.Face = vals.slice(8, 18);
-                SFImporter.fillFortress(p, vals.slice(208, 220), null);
-			}
-			else if (k.includes('playerSave'))
-			{
-				var vals = SFImporter.split(v);
+                this.Face = vals.slice(8, 18);
+                SFPlayer.fillFortress(this, vals.slice(208, 220), null);
+            }
+            else if (k.includes('playerSave'))
+            {
+                var vals = SFUtil.split(v);
 
-                p.LastOnline = new Date(vals[2] * 1000);
+                this.LastOnline = new Date(vals[2] * 1000);
 
-				p.XP = vals[8];
-				p.XPNext = vals[9];
-				p.Book = vals[438] - 10000;
-				p.Level = vals[465];
+                this.XP = vals[8];
+                this.XPNext = vals[9];
+                this.Book = vals[438] - 10000;
+                this.Level = vals[465];
 
-				p.HonorPlayer = vals[10];
-				p.RankPlayer = vals[11];
+                this.HonorPlayer = vals[10];
+                this.RankPlayer = vals[11];
 
-				p.Race = vals[27] % 16;
-				p.Sex = vals[28] % 16;
-				p.Class = vals[29] % 16;
+                this.Race = vals[27] % 16;
+                this.Sex = vals[28] % 16;
+                this.Class = vals[29] % 16;
 
-				p.Strength = vals[30] + vals[35];
-				p.Dexterity = vals[31] + vals[36];
-				p.Intelligence = vals[32] + vals[37];
-				p.Constitution = vals[33] + vals[38];
-				p.Luck = vals[34] + vals[39];
-				p.Armor = vals[447];
+                this.Strength = vals[30] + vals[35];
+                this.Dexterity = vals[31] + vals[36];
+                this.Intelligence = vals[32] + vals[37];
+                this.Constitution = vals[33] + vals[38];
+                this.Luck = vals[34] + vals[39];
+                this.Armor = vals[447];
 
-				p.Head = SFImporter.buildItem(vals.slice(48, 60));
-				p.Body = SFImporter.buildItem(vals.slice(60, 72));
-				p.Hand = SFImporter.buildItem(vals.slice(72, 84));
-				p.Feet = SFImporter.buildItem(vals.slice(84, 96));
-				p.Neck = SFImporter.buildItem(vals.slice(96, 108));
-				p.Belt = SFImporter.buildItem(vals.slice(108, 120));
-				p.Ring = SFImporter.buildItem(vals.slice(120, 132));
-				p.Misc = SFImporter.buildItem(vals.slice(132, 144));
+                this.Head = new SFItem(vals.slice(48, 60));
+                this.Body = new SFItem(vals.slice(60, 72));
+                this.Hand = new SFItem(vals.slice(72, 84));
+                this.Feet = new SFItem(vals.slice(84, 96));
+                this.Neck = new SFItem(vals.slice(96, 108));
+                this.Belt = new SFItem(vals.slice(108, 120));
+                this.Ring = new SFItem(vals.slice(120, 132));
+                this.Misc = new SFItem(vals.slice(132, 144));
 
-				p.Wpn1 = SFImporter.buildItem(vals.slice(144, 156));
-				p.Wpn2 = SFImporter.buildItem(vals.slice(156, 168));
+                this.Wpn1 = new SFItem(vals.slice(144, 156));
+                this.Wpn2 = new SFItem(vals.slice(156, 168));
 
-                p.Potions = [
+                this.Potions = [
                     {
                         Type: vals[493] == 16 ? 6 : (vals[493] == 0 ? 0 : 1 + (vals[493] - 1) % 5),
                         Size: vals[499],
@@ -733,27 +316,25 @@ class SFImporter
                     }
                 ];
 
-				p.RankFortress = vals[583];
-				p.HonorFortress = vals[582];
-				p.Fortress.Upgrades = vals[581];
-				p.Fortress.Knights = vals[598];
+                this.RankFortress = vals[583];
+                this.HonorFortress = vals[582];
+                this.Fortress.Upgrades = vals[581];
+                this.Fortress.Knights = vals[598];
 
-                p.DamageBonus = vals[623];
-                p.LifeBonus = vals[624];
+                this.DamageBonus = vals[623];
+                this.LifeBonus = vals[624];
 
-                p.Aura = vals[491];
-                p.AuraFill = vals[492];
+                this.Aura = vals[491];
+                this.AuraFill = vals[492];
 
-				[p.Mount, p.Tower] = SFUtil.nor216(vals[286]);
-                p.MountExpire = new Date(vals[451]);
+                [this.Mount, this.Tower] = SFUtil.nor216(vals[286]);
+                this.MountExpire = new Date(vals[451]);
 
-				p.Face = vals.slice(17, 27);
-                SFImporter.fillFortress(p, vals.slice(524, 536), null);
-			}
-		}
-
-		return p;
-	}
+                this.Face = vals.slice(17, 27);
+                SFPlayer.fillFortress(this, vals.slice(524, 536), null);
+            }
+        }
+    }
 
     static fillFortress(p, f, u)
     {
@@ -781,6 +362,148 @@ class SFImporter
         p.Fortress.GoldPit = 0;
         p.Fortress.TimeMachine = 0;
     }
+}
+
+class SFItem
+{
+    constructor(data)
+    {
+		this.SlotID = data[0];
+		this.ItemID = data[1];
+		this.Rating1 = data[2];
+		this.Rating2 = data[3];
+		this.Attribute1Type = data[4];
+		this.Attribute2Type = data[5];
+		this.Attribute3Type = data[6];
+		this.Attribute1 = data[7];
+
+		if (this.Attribute1Type === 6) {
+			this.Attribute3 = this.Attribute1;
+            this.Attribute2 = this.Attribute1;
+		} else {
+			this.Attribute2 = data[8];
+			this.Attribute3 = data[9];
+		}
+
+		this.Value = data[10];
+		this.Mods = data[11];
+    }
+
+    getGem()
+    {
+        return [SFUtil.nor216(this.SlotID)[1] % 64, SFUtil.nor216(this.Mods)[1]];
+    }
+
+    getUpgrades()
+    {
+        return (this.Mods % Math.pow(2, 16)) / 256;
+    }
+
+    getEnchantment()
+    {
+        return this.ItemID != this.ItemID % Math.pow(2, 16);
+    }
+}
+
+class SFGroup
+{
+    constructor(data)
+    {
+		for (var [k, v] of SFUtil.parse(data))
+		{
+			if (k.includes('groupname'))
+			{
+				this.Name = v;
+			}
+            else if (k.includes('groupsave') || k.includes('groupSave'))
+            {
+                var vals = SFUtil.split(v);
+                var members = vals[3];
+
+                this.Levels = vals.slice(64, 64 + members).map(l => l % 1000);
+                this.Roles = vals.slice(314, 314 + members);
+                this.Treasures = vals.slice(214, 214 + members);
+                this.Instructors = vals.slice(264, 264 + members);
+                this.Pets = vals.slice(390, 390 + members);
+            }
+            else if (k.includes('groupmember'))
+            {
+                this.Members = v.split(',');
+                this.MemberCount = this.Members.length;
+            }
+            else if (k.includes('grouprank'))
+            {
+                this.Rank = v;
+            }
+            else if (k.includes('groupknights'))
+            {
+                this.Knights = SFUtil.split(v, ',').slice(0, 50);
+            }
+		}
+
+        for (var i = 0; i < this.MemberCount; i++)
+        {
+            if (this.Roles[i] == 4)
+            {
+                if (this.Knights)
+                {
+                    this.Knights.splice(i, 1);
+                }
+
+                this.Levels.splice(i, 1);
+                this.Treasures.splice(i, 1);
+                this.Instructors.splice(i, 1);
+                this.Pets.splice(i, 1);
+                this.Members.splice(i, 1);
+                this.MemberCount--;
+                i--;
+            }
+        }
+    }
+}
+
+class SFImporter
+{
+    static importFile(f, c)
+    {
+        var r = new FileReader();
+        r.readAsText(f, 'UTF-8');
+        r.onload = function (e) {
+            try
+            {
+                sf.add(SFImporter.import(DateFormatter.format(new Date(f.lastModified)), JSON.parse(e.target.result)));
+                c();
+            }
+            catch(e)
+            {
+                nf.show(NotificationType.DANGER, 'File import failed', 'It appears that your file is not compatible. Please try again or use another file.');
+            }
+        };
+    }
+
+	static import(label, json)
+	{
+		var vs = [];
+
+		for (var [key, val] of JSONScanner.iterate(json))
+		{
+			if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername')))
+			{
+                if (!vs.includes(val))
+                {
+                   vs.push(val);
+                }
+			}
+		}
+
+        nf.show(NotificationType.SUCCESS, label, 'Successfully imported!');
+
+        return {
+            Raws: vs,
+            Label: label
+        };
+	}
+
 }
 
 const NotificationType = {

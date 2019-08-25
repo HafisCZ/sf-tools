@@ -2,6 +2,12 @@ class MainController
 {
     static show()
     {
+        if (!st.visited.value)
+        {
+            st.visited.value = true;
+            $('#modalHelp').modal('show');
+        }
+
         var h = [];
 
         for (var [i, set] of sf.rsets())
@@ -15,9 +21,6 @@ class MainController
                             <span class="badge badge-dark">${set.Players.length} players</span>
                         </div>
                         <div class="mr-2 p-1 mt-2">
-                            ${set.Version == st.currentVer() ? `<i class="mr-2 fas text-success fa-check-circle" data-toggle="tooltip" title="Version ${set.Version}"></i>` :
-                            (set.Version ? `<i class="mr-2 fas text-warning fa-exclamation-triangle" data-toggle="tooltip" onclick="event.stopPropagation(); MainController.regenerate(${i});" title="Version ${set.Version} can be regenerated. Click on this icon to do so."></i>` :
-                            '<i class="mr-2 fas text-danger fa-exclamation-triangle" data-toggle="tooltip" title="This entry cannot be regenerated. Please import it again."></i>')}
                             <button type="button" class="btn btn-link p-0" onclick="event.stopPropagation(); MainController.remove(${i});">
                                 <i class="fas fa-trash fa-lg text-dark remove-icon"></i>
                             </button>
@@ -28,8 +31,6 @@ class MainController
         }
 
         $('#list').html(h.join(''));
-        $('[data-toggle="tooltip"]').tooltip();
-
         $('#list > a').on('contextmenu', function(e) {
             e.preventDefault();
 
@@ -53,14 +54,6 @@ class MainController
          sf.remove(i);
 
          MainController.show();
-    }
-
-    static regenerate(i)
-    {
-        sf.regenerate(i);
-        $('[data-toggle="tooltip"]').tooltip('hide');
-
-        MainController.show();
     }
 
     static import(f)
