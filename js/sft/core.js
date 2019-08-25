@@ -373,6 +373,21 @@ class SFUtil
         return gem(0.36, player, group);
     }
 
+    static getGem(item)
+    {
+        return [SFUtil.nor216(item.SlotID)[1] % 64, SFUtil.nor216(item.Mods)[1]];
+    }
+
+    static getUpgrades(item)
+    {
+        return (item.Mods % Math.pow(2, 16)) / 256;
+    }
+
+    static getEnchantment(item)
+    {
+        return item.ItemID != item.ItemID % Math.pow(2, 16);
+    }
+
     static nor216(v)
     {
         const n = v % Math.pow(2, 16);
@@ -553,7 +568,8 @@ class SFImporter
 		i.Attribute1 = vals[7];
 
 		if (i.Attribute1Type === 6) {
-			i.Attribute3 = vals.Attribute2 = vals.Attribute1;
+			i.Attribute3 = i.Attribute1;
+            i.Attribute2 = i.Attribute1;
 		} else {
 			i.Attribute2 = vals[8];
 			i.Attribute3 = vals[9];
