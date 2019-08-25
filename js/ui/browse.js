@@ -13,7 +13,7 @@ class MainController
         for (var [i, set] of sf.rsets())
         {
             h.push(`
-                <a class="list-group-item list-group-item-action mb-2 hoverable ${i == MainController.compareToId ? 'border-primary' : ''}" index="${i}" onclick="MainController.showSet(${i});">
+                <a class="list-group-item list-group-item-action mb-2 hoverable ${i + 1 == MainController.compareToId ? 'border-primary' : ''}" index="${i + 1}" onclick="MainController.showSet(${i});">
                     <div class="d-flex w-100 justify-content-between">
                         <div>
                             <h5 class="mb-1">${set.Label}</h5>
@@ -45,7 +45,7 @@ class MainController
 
     static compareTo(i)
     {
-        MainController.compareToId = MainController.compareToId == i ? null : i;
+        MainController.compareToId = MainController.compareToId == i ? 0 : i;
         MainController.show();
     }
 
@@ -67,7 +67,7 @@ class SetController
     static show(i, c)
     {
         $('#modalSetHeader').html(`
-            <h4 class="modal-title text-white">${sf.set(i).Label}${c ? `<small class="ml-2 text-muted">(${sf.set(c).Label})</small>` : ''}</h4>
+            <h4 class="modal-title text-white">${sf.set(i).Label}${c ? `<small class="ml-2 text-muted">(${sf.set(c - 1).Label})</small>` : ''}</h4>
             <a class="btn btn-outline-light dropdown-toggle m-0 py-1 mt-1 mr-2 px-3" data-toggle="dropdown">Export</a>
             <div class="dropdown-menu">
                 <a class="dropdown-item">To PNG</a>
@@ -150,7 +150,7 @@ class DetailController
     static showPlayer(s, p, c)
     {
         const player = sf.player(s, p);
-        const cmp = c ? sf.set(c).Players.find(p => p.Name === player.Name) : null;
+        const cmp = c ? sf.set(c - 1).Players.find(p => p.Name === player.Name) : null;
         var m = [];
 
         // Travel duration
@@ -163,7 +163,7 @@ class DetailController
         // Potions
         for (var i = 0; i < 3; i++)
         {
-            if (player.Potions[i])
+            if (player.Potions[i].Size > 0)
             {
                 m.push(MD.badge(
                     `+${player.Potions[i].Size}% ${Enum.Potion[player.Potions[i].Type]}`,
