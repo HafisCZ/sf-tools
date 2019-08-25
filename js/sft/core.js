@@ -320,6 +320,8 @@ class SFCore
         this.data[s] = ns;
 
         st.data.value = this.data;
+
+        nf.show(NotificationType.SUCCESS, ns.Label, 'File successfully regenerated.');
     }
 }
 
@@ -382,6 +384,12 @@ class SFUtil
     {
         const n = v % Math.pow(2, 8);
         return [n, (v - n) / Math.pow(2, 8)];
+    }
+
+    static nor26(v)
+    {
+        const n = v % Math.pow(2, 6);
+        return [n, (v - n) / Math.pow(2, 6)];
     }
 }
 
@@ -596,6 +604,8 @@ class SFImporter
 			{
 				var vals = SFImporter.split(v);
 
+                p.LastOnline = new Date(vals[1] * 1000);
+
 				p.XP = vals[3];
 				p.XPNext = vals[4];
 				p.Book = vals[163] - 10000;
@@ -646,6 +656,7 @@ class SFImporter
 				p.Fortress.Upgrades = vals[247];
 				p.Fortress.Knights = vals[258];
 
+                //[p.Aura, p.AuraFill] = SFUtil.nor28(vals[242]);
                 [p.Mount, p.Tower] = SFUtil.nor216(vals[159]);
                 [p.DamageBonus, p.LifeBonus] = SFUtil.nor28(vals[252] / Math.pow(2, 16));
 
@@ -655,6 +666,8 @@ class SFImporter
 			else if (k.includes('playerSave'))
 			{
 				var vals = SFImporter.split(v);
+
+                p.LastOnline = new Date(vals[2] * 1000);
 
 				p.XP = vals[8];
 				p.XPNext = vals[9];
@@ -712,6 +725,9 @@ class SFImporter
 
                 p.DamageBonus = vals[623];
                 p.LifeBonus = vals[624];
+
+                p.Aura = vals[491];
+                p.AuraFill = vals[492];
 
 				[p.Mount, p.Tower] = SFUtil.nor216(vals[286]);
                 p.MountExpire = new Date(vals[451]);

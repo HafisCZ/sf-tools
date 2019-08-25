@@ -27,6 +27,8 @@
             <div class="border border-dark rounded p-3 my-3">
                 <label class="mt-3">Data</label>
                 <textarea class="form-control" id="digdata" rows="2" style="font-size: 80%;"></textarea>
+				<label class="mt-1" >Ignored fields</label>
+                <input type="text" class="form-control" id="digfil">
                 <label class="mt-1" >Requested value</label>
                 <input type="text" class="form-control" id="digval">
             </div>
@@ -97,6 +99,26 @@
 		  var vi = $('#digdata').val();
 		  var vf = Number($('#digval').val());
 
+		  var vr = $('#digfil').val().split(',');
+		  var vignore = [];
+
+		  for (var i in vr)
+		  {
+			  if (vr[i].includes('-'))
+			  {
+				  var [x, y] = vr[i].split('-');
+				  var xx = Number(x);
+				  var yy = Number(y);
+				  for (var j = xx; j <= yy; j++)
+				  {
+					  vignore.push(j);
+				  }
+			  }
+			  else {
+				  vignore.push(Number(vr[i]));
+			  }
+		  }
+
 		  if (vi && vf && Number.isInteger(vf))
 		  {
 			  var vv = [];
@@ -106,6 +128,10 @@
 			  for (var i in dd)
 			  {
 				  const v = dd[i];
+
+				  if (vignore.includes(Number(v.index))) {
+					  continue;
+				  }
 
 				  if (index != v.index)
 				  {

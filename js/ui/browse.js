@@ -41,7 +41,8 @@ class MainController
     static regenerate(i)
     {
         sf.regenerate(i);
-        
+        $('[data-toggle="tooltip"]').tooltip('hide');
+
         MainController.show();
     }
 
