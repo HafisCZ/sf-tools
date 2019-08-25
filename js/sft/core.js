@@ -231,7 +231,6 @@ class DateFormatter
     }
 }
 
-
 class SFCore
 {
 	constructor()

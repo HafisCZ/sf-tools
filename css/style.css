@@ -45,3 +45,7 @@ body.modal-open {
 .remove-icon:hover {
     color: #dc3545 !important;
 }
+
+xsm {
+    font-size: 70%;
+}

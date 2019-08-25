@@ -7,7 +7,7 @@ class MainController
         for (var [i, set] of sf.rsets())
         {
             h.push(`
-                <a class="list-group-item list-group-item-action mb-2 hoverable" onclick="SetController.show(${i});">
+                <a class="list-group-item list-group-item-action mb-2 hoverable ${i == MainController.compareToId ? 'border-primary' : ''}" index="${i}" onclick="MainController.showSet(${i});">
                     <div class="d-flex w-100 justify-content-between">
                         <div>
                             <h5 class="mb-1">${set.Label}</h5>
@@ -29,6 +29,23 @@ class MainController
 
         $('#list').html(h.join(''));
         $('[data-toggle="tooltip"]').tooltip();
+
+        $('#list > a').on('contextmenu', function(e) {
+            e.preventDefault();
+
+            MainController.compareTo($(this).attr('index'));
+        });
+    }
+
+    static showSet(i)
+    {
+        SetController.show(i, MainController.compareToId);
+    }
+
+    static compareTo(i)
+    {
+        MainController.compareToId = MainController.compareToId == i ? null : i;
+        MainController.show();
     }
 
     static remove(i)
@@ -54,10 +71,10 @@ class MainController
 
 class SetController
 {
-    static show(i)
+    static show(i, c)
     {
         $('#modalSetHeader').html(`
-            <h4 class="modal-title text-white">${sf.set(i).Label}</h4>
+            <h4 class="modal-title text-white">${sf.set(i).Label}${c ? `<small class="ml-2 text-muted">(${sf.set(c).Label})</small>` : ''}</h4>
             <a class="btn btn-outline-light dropdown-toggle m-0 py-1 mt-1 mr-2 px-3" data-toggle="dropdown">Export</a>
             <div class="dropdown-menu">
                 <a class="dropdown-item">To PNG</a>
@@ -69,14 +86,14 @@ class SetController
         var a = [];
         for (var [j, p] of sf.players(i))
         {
-            a.push(`<a onclick="DetailController.showPlayer(${i},${j});" class="list-group-item list-group-item-action">${p.Name}</div>`);
+            a.push(`<a onclick="DetailController.showPlayer(${i},${j},${c});" class="list-group-item list-group-item-action">${p.Name}</div>`);
         }
         $('#setlist').html(a.join(''));
 
         var b = [];
         for (var [j, g] of sf.groups(i))
         {
-            b.push(`<a onclick="DetailController.showGroup(${i},${j});" class="list-group-item list-group-item-action">${g.Name}</div>`);
+            b.push(`<a onclick="DetailController.showGroup(${i},${j},${c});" class="list-group-item list-group-item-action">${g.Name}</div>`);
         }
         $('#setlist2').html(b.join(''));
 
@@ -105,11 +122,42 @@ class MD
     }
 }
 
+class UIUtil
+{
+    static dif2(p, cp, f, f1)
+    {
+        if (cp)
+        {
+            return UIUtil.dif(p[f], cp[f], f1);
+        }
+
+        return ``;
+    }
+
+    static dif(p, cp, f)
+    {
+        if (cp)
+        {
+            if (p[f] > cp[f])
+            {
+                return ` <xsm>+${p[f] - cp[f]}</xsm>`;
+            }
+            else if (p[f] < cp[f])
+            {
+                return ` <xsm>${p[f] - cp[f]}</xsm>`;
+            }
+        }
+
+        return ``;
+    }
+}
+
 class DetailController
 {
-    static showPlayer(s, p)
+    static showPlayer(s, p, c)
     {
         const player = sf.player(s, p);
+        const cmp = c ? sf.set(c).Players.find(p => p.Name === player.Name) : null;
         var m = [];
 
         // Travel duration
@@ -181,59 +229,46 @@ class DetailController
         $('#modalDetailHeader').html(`
           <div class="d-flex w-100 justify-content-between">
             <h4 class="modal-title text-white">${player.Name}<small class="ml-2 text-muted" style="font-size: 60%">${player.Group.Name || ''}</small></h4>
-            <h4 class="modal-title text-white">${player.Level}</h4>
+            <h4 class="modal-title text-white">${player.Level}${UIUtil.dif(player, cmp, 'Level')}</h4>
           </div>
         `);
 
         var b = [];
 
-        // XP bar
         b.push(`
             <div class="progress bg-dark mt-n4 mb-4 mx-n2" style="height: 1px;">
               <div class="progress-bar" style="width: ${Math.trunc(100 * player.XP / player.XPNext)}%" role="progressbar"></div>
             </div>
-        `);
-
-        // Modifiers
-        b.push(`
             <h5>Modifiers</h5>
             <h5>${m.join('')}</h5>
             <hr/>
-        `);
-
-        // Attributes
-        b.push(`
             <h5>Attributes</h5>
             <div class="row">
               <div class="col">Strength</div>
-              <div class="col text-center text-muted">${player.Strength}</div>
+              <div class="col text-center text-muted">${player.Strength}${UIUtil.dif(player, cmp, 'Strength')}</div>
               <div class="col">Constitution</div>
-              <div class="col text-center text-muted">${player.Constitution}</div>
+              <div class="col text-center text-muted">${player.Constitution}${UIUtil.dif(player, cmp, 'Constitution')}</div>
             </div>
             <div class="row">
               <div class="col">Dexterity</div>
-              <div class="col text-center text-muted">${player.Dexterity}</div>
+              <div class="col text-center text-muted">${player.Dexterity}${UIUtil.dif(player, cmp, 'Dexterity')}</div>
               <div class="col">Luck</div>
-              <div class="col text-center text-muted">${player.Luck}</div>
+              <div class="col text-center text-muted">${player.Luck}${UIUtil.dif(player, cmp, 'Luck')}</div>
             </div>
             <div class="row">
               <div class="col">Intelligence</div>
-              <div class="col text-center text-muted">${player.Intelligence}</div>
+              <div class="col text-center text-muted">${player.Intelligence}${UIUtil.dif(player, cmp, 'Intelligence')}</div>
               <div class="col">Armor</div>
-              <div class="col text-center text-muted">${player.Armor}</div>
+              <div class="col text-center text-muted">${player.Armor}${UIUtil.dif(player, cmp, 'Armor')}</div>
             </div>
             <hr/>
-        `);
-
-        // Collection
-        b.push(`
             <h5>Collection</h5>
             <div class="row">
               <div class="col">
                 <label>Scrapbook</label>
               </div>
               <div class="col text-center text-muted">
-                <label>${player.Book} out of 2160</label>
+                <label>${player.Book}${UIUtil.dif(player, cmp, 'Book')} out of 2160</label>
               </div>
               <div class="col text-center text-muted">
                 <label>${Math.trunc(100 * player.Book / 2160)}%</label>
@@ -247,7 +282,7 @@ class DetailController
                 <label>Achievements</label>
               </div>
               <div class="col text-center text-muted">
-                <label>${player.Achievements} out of 70</label>
+                <label>${player.Achievements}${UIUtil.dif(player, cmp, 'Achievements')} out of 70</label>
               </div>
               <div class="col text-center text-muted">
                 <label>${Math.trunc(100 * player.Achievements / 70)}%</label>
@@ -257,73 +292,89 @@ class DetailController
               <div class="progress-bar bg-dark" style="width: ${Math.trunc(100 * player.Achievements / 70)}%" role="progressbar"></div>
             </div>
             <hr/>
-        `);
-
-        // Fortress
-        b.push(`
             <h5>Fortress</h5>
             <div class="row">
               <div class="col">Upgrades</div>
-              <div class="col text-center text-muted">${player.Fortress.Upgrades}</div>
+              <div class="col text-center text-muted">${player.Fortress.Upgrades}${UIUtil.dif2(player, cmp, 'Fortress', 'Upgrades')}</div>
               <div class="col">Wall</div>
-              <div class="col text-center text-muted">${player.Fortress.Wall}</div>
+              <div class="col text-center text-muted">${player.Fortress.Wall}${UIUtil.dif2(player, cmp, 'Fortress', 'Wall')}</div>
             </div>
             <div class="row">
               <div class="col">${player.Fortress.Knights > 0 ? 'Knights' : ''}</div>
-              <div class="col text-center ${MD.rif(player.Fortress.Knights >= st.knights.max.value, 'text-success') || MD.rif(player.Fortress.Knights >= st.knights.min.value, 'text-warning') || 'text-danger'}">${player.Fortress.Knights > 0 ? player.Fortress.Knights : ''}</div>
+              <div class="col text-center ${MD.rif(player.Fortress.Knights >= st.knights.max.value, 'text-success') || MD.rif(player.Fortress.Knights >= st.knights.min.value, 'text-warning') || 'text-danger'}">${player.Fortress.Knights > 0 ? player.Fortress.Knights + UIUtil.dif2(player, cmp, 'Fortress', 'Knights') : ''}</div>
               <div class="col">Warriors</div>
-              <div class="col text-center text-muted">${player.Fortress.Warriors}</div>
+              <div class="col text-center text-muted">${player.Fortress.Warriors}${UIUtil.dif2(player, cmp, 'Fortress', 'Warriors')}</div>
             </div>
             <div class="row">
               <div class="col"></div>
               <div class="col"></div>
               <div class="col">Archers</div>
-              <div class="col text-center text-muted">${player.Fortress.Archers}</div>
+              <div class="col text-center text-muted">${player.Fortress.Archers}${UIUtil.dif2(player, cmp, 'Fortress', 'Archers')}</div>
             </div>
             <div class="row">
               <div class="col"></div>
               <div class="col"></div>
               <div class="col">Mages</div>
-              <div class="col text-center text-muted">${player.Fortress.Mages}</div>
+              <div class="col text-center text-muted">${player.Fortress.Mages}${UIUtil.dif2(player, cmp, 'Fortress', 'Mages')}</div>
             </div>
             <hr/>
+            <div class="row">
+                <div class="col">
+                    <h5>Dungeons</h5>
+                    <div class="row">
+                        <div class="col">Tower</div>
+                        <div class="col text-center text-muted">${player.Tower}${UIUtil.dif(player, cmp, 'Tower')}</div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col"></div>
+                        <div class="col"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col">Group dungeon</div>
+                        <div class="col text-center text-muted">${player.DamageBonus}${UIUtil.dif(player, cmp, 'DamageBonus')}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col">Player dungeon</div>
+                        <div class="col text-center text-muted">${player.LifeBonus}${UIUtil.dif(player, cmp, 'LifeBonus')}</div>
+                    </div>
+                </div>
         `);
 
         // Group
         if (player.Group.Role) {
             b.push(`
-                <h5>Group</h5>
-                <div class="row">
-                    <div class="col">Position</div>
-                    <div class="col text-center text-muted">${Enum.Role[player.Group.Role]}</div>
-                    <div class="col"></div>
-                    <div class="col"></div>
+                <div class="col">
+                    <h5>Group</h5>
+                    <div class="row">
+                        <div class="col">Position</div>
+                        <div class="col text-center text-muted">${Enum.Role[player.Group.Role]}</div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <div class="col">Treasure</div>
+                        <div class="col text-center text-muted">${player.Group.Treasure}${UIUtil.dif2(player, cmp, 'Group', 'Treasure')}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col">Instructor</div>
+                        <div class="col text-center text-muted">${player.Group.Instructor}${UIUtil.dif2(player, cmp, 'Group', 'Instructor')}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col">Pet</div>
+                        <div class="col text-center ${MD.rif(player.Group.Pet >= st.pet.max.value, 'text-success') || MD.rif(player.Group.Pet >= st.pet.min.value, 'text-warning') || 'text-danger'}">${player.Group.Pet}${UIUtil.dif2(player, cmp, 'Group', 'Pet')}</div>
+                    </div>
                 </div>
-                <br>
-                <div class="row">
-                    <div class="col">Treasure</div>
-                    <div class="col text-center text-muted">${player.Group.Treasure}</div>
-                    <div class="col"></div>
-                    <div class="col"></div>
-                </div>
-                <div class="row">
-                    <div class="col">Instructor</div>
-                    <div class="col text-center text-muted">${player.Group.Instructor}</div>
-                    <div class="col"></div>
-                    <div class="col"></div>
-                </div>
-                <div class="row">
-                    <div class="col">Pet</div>
-                    <div class="col text-center ${MD.rif(player.Group.Pet >= st.pet.max.value, 'text-success') || MD.rif(player.Group.Pet >= st.pet.min.value, 'text-warning') || 'text-danger'}">${player.Group.Pet}</div>
-                    <div class="col"></div>
-                    <div class="col"></div>
-                </div>
-                <hr/>
             `);
+        }
+        else
+        {
+            b.push('<div class="col"><div class="row"><div class="col"></div><div class="col"></div></div></div>');
         }
 
         // Rankings
         b.push(`
+            </div>
+            <hr/>
             <h5>Rankings</h5>
             <div class="row">
               <div class="col"><b>Player</b></div>
@@ -331,15 +382,15 @@ class DetailController
             </div>
             <div class="row">
               <div class="col">Rank</div>
-              <div class="col text-center text-muted">${player.RankPlayer}</div>
+              <div class="col text-center text-muted">${player.RankPlayer}${UIUtil.dif(player, cmp, 'RankPlayer')}</div>
               <div class="col">Rank</div>
-              <div class="col text-center text-muted">${player.RankFortress}</div>
+              <div class="col text-center text-muted">${player.RankFortress}${UIUtil.dif(player, cmp, 'RankFortress')}</div>
             </div>
             <div class="row">
               <div class="col">Honor</div>
-              <div class="col text-center text-muted">${player.HonorPlayer}</div>
+              <div class="col text-center text-muted">${player.HonorPlayer}${UIUtil.dif(player, cmp, 'HonorPlayer')}</div>
               <div class="col">Honor</div>
-              <div class="col text-center text-muted">${player.HonorFortress}</div>
+              <div class="col text-center text-muted">${player.HonorFortress}${UIUtil.dif(player, cmp, 'HonorFortress')}</div>
             </div>
         `);
 
@@ -347,7 +398,7 @@ class DetailController
         $('#modalDetail').modal('show');
     }
 
-    static showGroup(s, g)
+    static showGroup(s, g, c)
     {
         var group = sf.group(s, g);
         var b = [];
