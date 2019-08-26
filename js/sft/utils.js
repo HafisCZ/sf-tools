@@ -172,3 +172,51 @@ class SFUtil
         return s.split(d).map(v => Number(v));
     }
 }
+
+class MD
+{
+    static badge(l, ...c)
+    {
+        return `<span class="badge ${c.join(' ')}">${l}</span>`;
+    }
+
+    static nl()
+    {
+        return '<br>';
+    }
+
+    static rif(r, s)
+    {
+        return r ? s : null;
+    }
+}
+
+class UIUtil
+{
+    static dif2(p, cp, f, f1)
+    {
+        if (cp)
+        {
+            return UIUtil.dif(p[f], cp[f], f1);
+        }
+
+        return ``;
+    }
+
+    static dif(p, cp, f)
+    {
+        if (cp)
+        {
+            if (p[f] > cp[f])
+            {
+                return ` <xsm>+${p[f] - cp[f]}</xsm>`;
+            }
+            else if (p[f] < cp[f])
+            {
+                return ` <xsm>${p[f] - cp[f]}</xsm>`;
+            }
+        }
+
+        return ``;
+    }
+}

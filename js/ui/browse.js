@@ -1,153 +1,167 @@
-class MainController
+class ModalController
 {
-    static show()
+    constructor(id)
     {
-        if (!st.visited.value)
-        {
-            st.visited.value = true;
-            $('#modalHelp').modal('show');
-        }
+        this.do = $(`#${id}`);
+    }
 
-        var h = [];
+    show()
+    {
+        this.do.modal('show');
+    }
 
-        for (var [i, set] of sf.rsets())
-        {
-            h.push(`
-                <a class="list-group-item list-group-item-action mb-2 hoverable ${i + 1 == MainController.compareToId ? 'border-primary' : ''}" index="${i + 1}" onclick="MainController.showSet(${i});">
-                    <div class="d-flex w-100 justify-content-between">
-                        <div>
-                            <h5 class="mb-1">${set.Label}</h5>
-                            <span class="badge badge-dark mr-1">${set.Groups.length} groups</span>
-                            <span class="badge badge-dark">${set.Players.length} players</span>
-                        </div>
-                        <div class="mr-2 p-1 mt-2">
-                            <button type="button" class="btn btn-link p-0" onclick="event.stopPropagation(); MainController.remove(${i});">
-                                <i class="fas fa-trash fa-lg text-dark remove-icon"></i>
-                            </button>
-                        </div>
-                    </div>
-                </a>
-            `);
-        }
+    hide()
+    {
+        this.do.modal('hide');
+    }
 
-        $('#list').html(h.join(''));
-        $('#list > a').on('contextmenu', function(e) {
-            e.preventDefault();
+    parent(c)
+    {
+        this.do.on('show.bs.modal', function() {
+            c.do.modal('hide');
+        })
 
-            MainController.compareTo($(this).attr('index'));
+        this.do.on('hidden.bs.modal', function() {
+            c.do.modal('show');
         });
-    }
-
-    static showSet(i)
-    {
-        SetController.show(i, MainController.compareToId);
-    }
-
-    static compareTo(i)
-    {
-        MainController.compareToId = MainController.compareToId == i ? 0 : i;
-        MainController.show();
-    }
-
-    static remove(i)
-    {
-         sf.remove(i);
-
-         MainController.show();
-    }
-
-    static import(f)
-    {
-        SFImporter.importFile(f, MainController.show);
     }
 }
 
-class SetController
+class SetModalController extends ModalController
 {
-    static show(i, c)
+    constructor()
     {
-        $('#modalSetHeader').html(`
-            <h4 class="modal-title text-white">${sf.set(i).Label}${c ? `<small class="ml-2 text-muted">(${sf.set(c - 1).Label})</small>` : ''}</h4>
-            <a class="btn btn-outline-light dropdown-toggle m-0 py-1 mt-1 mr-2 px-3" data-toggle="dropdown">Export</a>
-            <div class="dropdown-menu">
-                <a class="dropdown-item">To PNG</a>
-                <a class="dropdown-item">To CSV</a>
-                <a class="dropdown-item">To JSON</a>
-            </div>
-        `);
+        super('m-set');
 
+        this.label = $('#m-set-label');
+        this.players = $('#m-set-playerlist');
+        this.groups = $('#m-set-grouplist');
+        this.search = $('#m-set-search');
+
+        this.search.on('keyup', function() {
+            var value = $(this).val().toLowerCase();
+
+            $('#m-set-playerlist a').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            })
+            $('#m-set-grouplist a').filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            })
+        });
+    }
+
+    show(i, c)
+    {
         var a = [];
         for (var [j, p] of sf.players(i))
         {
-            a.push(`<a onclick="DetailController.showPlayer(${i},${j},${c});" class="list-group-item list-group-item-action">${p.Name}</div>`);
+            a.push(`<a onclick="mc.player.show(${i},${j},${c});" class="list-group-item list-group-item-action">${p.Name}</div>`);
         }
-        $('#setlist').html(a.join(''));
 
         var b = [];
         for (var [j, g] of sf.groups(i))
         {
-            b.push(`<a onclick="DetailController.showGroup(${i},${j},${c});" class="list-group-item list-group-item-action">${g.Name}</div>`);
+            b.push(`<a onclick="mc.group.show(${i},${j},${c});" class="list-group-item list-group-item-action">${g.Name}</div>`);
         }
-        $('#setlist2').html(b.join(''));
 
-        $('#setsearch').val('');
-        $('#setsearch2').val('');
+        this.label.html(`${sf.set(i).Label}${c ? `<small class="ml-2 text-muted">(${sf.set(c - 1).Label})</small>` : ''}`);
+        this.players.html(a.join(''));
+        this.groups.html(b.join(''));
+        this.search.val('');
 
-        $('#modalSet').modal('show');
+        super.show();
     }
 }
 
-class MD
+class SettingsModalController extends ModalController
 {
-    static badge(l, ...c)
+    constructor()
     {
-        return `<span class="badge ${c.join(' ')}">${l}</span>`;
-    }
+        super('m-settings');
 
-    static nl()
-    {
-        return '<br>';
-    }
-
-    static rif(r, s)
-    {
-        return r ? s : null;
-    }
-}
-
-class UIUtil
-{
-    static dif2(p, cp, f, f1)
-    {
-        if (cp)
+        this.ranges = [];
+        for (var i = 1; i <= 9; i++)
         {
-            return UIUtil.dif(p[f], cp[f], f1);
+            this.ranges.push($(`#m-settings-r${i}`));
         }
 
-        return ``;
+        this.labels = [];
+        for (var i = 1; i <= 9; i++)
+        {
+            this.labels.push($(`#m-settings-l${i}`));
+        }
+
+        this.checks = [];
+        for (var i = 1; i <= 4; i++)
+        {
+            this.checks.push($(`#m-settings-c${i}`));
+        }
+
+        $('#m-settings-r1').on('input', function(e) { $('#m-settings-l1').text(`${$(this).val()}%`); });
+        $('#m-settings-r2').on('input', function(e) { $('#m-settings-l2').text(`${$(this).val()}%`); });
+        $('#m-settings-r3').on('input', function(e) { $('#m-settings-l3').text(`${$(this).val() * 5}`); });
+        $('#m-settings-r4').on('input', function(e) { $('#m-settings-l4').text(`${$(this).val() * 5}`); });
+        $('#m-settings-r5').on('input', function(e) { $('#m-settings-l5').text(`${$(this).val()}`); });
+        $('#m-settings-r6').on('input', function(e) { $('#m-settings-l6').text(`${$(this).val()}`); });
+        $('#m-settings-r7').on('input', function(e) { $('#m-settings-l7').text(`${Enum.Mount[$(this).val()]}%`); });
+        $('#m-settings-r8').on('input', function(e) { $('#m-settings-l8').text(`${Enum.Mount[$(this).val()]}%`); });
+        $('#m-settings-r9').on('input', function(e) { $('#m-settings-l9').text(`${$(this).val()}`); });
     }
 
-    static dif(p, cp, f)
+    show()
     {
-        if (cp)
-        {
-            if (p[f] > cp[f])
-            {
-                return ` <xsm>+${p[f] - cp[f]}</xsm>`;
-            }
-            else if (p[f] < cp[f])
-            {
-                return ` <xsm>${p[f] - cp[f]}</xsm>`;
-            }
-        }
+        $('#m-settings-r1').val(st.scrapbook.min.value);
+        $('#m-settings-r2').val(st.scrapbook.max.value);
+        $('#m-settings-r3').val(st.pet.min.value / 5);
+        $('#m-settings-r4').val(st.pet.max.value / 5);
+        $('#m-settings-r5').val(st.knights.min.value);
+        $('#m-settings-r6').val(st.knights.max.value);
+        $('#m-settings-r7').val(st.mount.min.value);
+        $('#m-settings-r8').val(st.mount.max.value);
+        $('#m-settings-r9').val(st.gear.upgrades.value);
 
-        return ``;
+        $('#m-settings-c1').prop('checked', st.highlight.value);
+        $('#m-settings-c2').prop('checked', st.gear.ignore_gems.value);
+        $('#m-settings-c3').prop('checked', st.gear.ignore_weapons.value);
+        $('#m-settings-c4').prop('checked', st.gear.ignore_excess.value);
+
+        $('input[id^="m-settings-r"]').trigger('input');
+
+        super.show();
+    }
+
+    save()
+    {
+        st.scrapbook.min.value = $('#m-settings-r1').val();
+        st.scrapbook.max.value = $('#m-settings-r2').val();
+        st.pet.min.value = $('#m-settings-r3').val() * 5;
+        st.pet.max.value = $('#m-settings-r4').val() * 5;
+        st.knights.min.value = $('#m-settings-r5').val();
+        st.knights.max.value = $('#m-settings-r6').val();
+        st.mount.min.value = $('#m-settings-r7').val();
+        st.mount.max.value = $('#m-settings-r8').val();
+        st.gear.upgrades.value = $('#m-settings-r9').val();
+
+        st.highlight.value = $('#m-settings-c1').prop('checked');
+        st.gear.ignore_gems.value = $('#m-settings-c2').prop('checked');
+        st.gear.ignore_weapons.value = $('#m-settings-c3').prop('checked');
+        st.gear.ignore_excess.value = $('#m-settings-c4').prop('checked');
+
+        super.hide();
     }
 }
 
-class DetailController
+class PlayerModalController extends ModalController
 {
-    static showPlayer(s, p, c)
+    constructor()
+    {
+        super('m-player');
+
+        this.header = $('#m-player-header');
+        this.body = $('#m-player-body');
+    }
+
+    show(s, p, c)
     {
         const player = sf.player(s, p);
         const cmp = c ? sf.set(c - 1).Players.find(p => p.Name === player.Name) : null;
@@ -219,7 +233,7 @@ class DetailController
             'badge-dark mb-2 mr-2'
         ));
 
-        $('#modalDetailHeader').html(`
+        this.header.html(`
           <div class="d-flex w-100 justify-content-between">
             <h4 class="modal-title text-white">${player.Name}<small class="ml-2 text-muted" style="font-size: 60%">${player.Group.Name || ''}</small></h4>
             <h4 class="modal-title text-white">${player.Level}${UIUtil.dif(player, cmp, 'Level')}</h4>
@@ -387,16 +401,29 @@ class DetailController
             </div>
         `);
 
-        $('#modalDetailBody').html(b.join(''));
-        $('#modalDetail').modal('show');
+        this.body.html(b.join(''));
+
+        super.show();
+    }
+}
+
+class GroupModalController extends ModalController
+{
+    constructor()
+    {
+        super('m-group');
+
+        this.header = $('#m-group-header');
+        this.body = $('#m-group-body');
     }
 
-    static showGroup(s, g, c)
+    show(s, g, c)
     {
         var group = sf.group(s, g);
+        var cmp = c ? sf.set(c - 1).Groups.find(g => g.Name == group.Name) : null;
         var b = [];
 
-        $('#modalDetailHeader').html(`
+        this.header.html(`
             <div class="d-flex w-100 justify-content-between">
               <h4 class="modal-title text-white">${group.Name}</h4>
               <h4 class="modal-title text-white">${group.Rank}</h4>
@@ -408,14 +435,14 @@ class DetailController
             <h5>About</h5>
             <div class="row">
                 <div class="col-3">Rank</div>
-                <div class="col text-center text-muted">${group.Rank}</div>
+                <div class="col text-center text-muted">${group.Rank}${UIUtil.dif(group, cmp, 'Rank')}</div>
                 <div class="col"></div>
                 <div class="col"></div>
                 <div class="col"></div>
             </div>
             <div class="row">
                 <div class="col-3">Members</div>
-                <div class="col text-center text-muted">${group.MemberCount} / 50</div>
+                <div class="col text-center text-muted">${group.MemberCount}${UIUtil.dif(group, cmp, 'MemberCount')} / 50</div>
                 <div class="col"></div>
                 <div class="col"></div>
                 <div class="col"></div>
@@ -436,108 +463,115 @@ class DetailController
             </div>
         `);
 
-        var pa = Math.trunc(group.Pets.reduce((a, b) => a + b, 0) / group.MemberCount);
-        var ps = Math.min(...group.Pets);
-        var pl = Math.max(...group.Pets);
-
         b.push(`
             <div class="row">
                 <div class="col-3">Level</div>
-                <div class="col text-center text-muted">${group.Levels.reduce((a, b) => a + b, 0)}</div>
-                <div class="col text-center text-muted">${Math.trunc(group.Levels.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
-                <div class="col text-center text-muted">${Math.min(...group.Levels)}</div>
-                <div class="col text-center text-muted">${Math.max(...group.Levels)}</div>
+                <div class="col text-center text-muted">${group.Levels.Sum}${UIUtil.dif2(group, cmp, 'Levels', 'Sum')}</div>
+                <div class="col text-center text-muted">${group.Levels.Avg}${UIUtil.dif2(group, cmp, 'Levels', 'Avg')}</div>
+                <div class="col text-center text-muted">${group.Levels.Min}${UIUtil.dif2(group, cmp, 'Levels', 'Min')}</div>
+                <div class="col text-center text-muted">${group.Levels.Max}${UIUtil.dif2(group, cmp, 'Levels', 'Max')}</div>
             </div>
             <div class="row">
                 <div class="col-3">Pet</div>
-                <div class="col text-center text-muted">${group.Pets.reduce((a, b) => a + b, 0)}</div>
-                <div class="col text-center ${MD.rif(pa >= st.pet.max.value, 'text-success') || MD.rif(pa >= st.pet.min.value, 'text-warning') || 'text-danger'}">${pa}</div>
-                <div class="col text-center ${MD.rif(ps >= st.pet.max.value, 'text-success') || MD.rif(ps >= st.pet.min.value, 'text-warning') || 'text-danger'}">${ps}</div>
-                <div class="col text-center ${MD.rif(pl >= st.pet.max.value, 'text-success') || MD.rif(pl >= st.pet.min.value, 'text-warning') || 'text-danger'}">${pl}</div>
+                <div class="col text-center text-muted">${group.Pets.Sum}${UIUtil.dif2(group, cmp, 'Pets', 'Sum')}</div>
+                <div class="col text-center ${MD.rif(group.Pets.Avg >= st.pet.max.value, 'text-success') || MD.rif(group.Pets.Avg >= st.pet.min.value, 'text-warning') || 'text-danger'}">${group.Pets.Avg}${UIUtil.dif2(group, cmp, 'Pets', 'Avg')}</div>
+                <div class="col text-center ${MD.rif(group.Pets.Min >= st.pet.max.value, 'text-success') || MD.rif(group.Pets.Min >= st.pet.min.value, 'text-warning') || 'text-danger'}">${group.Pets.Min}${UIUtil.dif2(group, cmp, 'Pets', 'Min')}</div>
+                <div class="col text-center ${MD.rif(group.Pets.Max >= st.pet.max.value, 'text-success') || MD.rif(group.Pets.Max >= st.pet.min.value, 'text-warning') || 'text-danger'}">${group.Pets.Max}${UIUtil.dif2(group, cmp, 'Pets', 'Max')}</div>
             </div>
         `);
 
         if (group.Knights)
         {
-            var ka = Math.trunc(group.Knights.reduce((a, b) => a + b, 0) / group.MemberCount);
-            var ks = Math.min(...group.Knights);
-            var kl = Math.max(...group.Knights);
-
             b.push(`
                 <div class="row">
                     <div class="col-3">Treasure</div>
-                    <div class="col text-center text-muted">${group.Treasures.reduce((a, b) => a + b, 0)}</div>
-                    <div class="col text-center text-muted">${Math.trunc(group.Treasures.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
-                    <div class="col text-center text-muted">${Math.min(...group.Treasures)}</div>
-                    <div class="col text-center text-muted">${Math.max(...group.Treasures)}</div>
+                    <div class="col text-center text-muted">${group.Treasures.Sum}${UIUtil.dif2(group, cmp, 'Treasures', 'Sum')}</div>
+                    <div class="col text-center text-muted">${group.Treasures.Avg}${UIUtil.dif2(group, cmp, 'Treasures', 'Avg')}</div>
+                    <div class="col text-center text-muted">${group.Treasures.Min}${UIUtil.dif2(group, cmp, 'Treasures', 'Min')}</div>
+                    <div class="col text-center text-muted">${group.Treasures.Max}${UIUtil.dif2(group, cmp, 'Treasures', 'Max')}</div>
                 </div>
                 <div class="row">
                     <div class="col-3">Instructor</div>
-                    <div class="col text-center text-muted">${group.Instructors.reduce((a, b) => a + b, 0)}</div>
-                    <div class="col text-center text-muted">${Math.trunc(group.Instructors.reduce((a, b) => a + b, 0) / group.MemberCount)}</div>
-                    <div class="col text-center text-muted">${Math.min(...group.Instructors)}</div>
-                    <div class="col text-center text-muted">${Math.max(...group.Instructors)}</div>
+                    <div class="col text-center text-muted">${group.Instructors.Sum}${UIUtil.dif2(group, cmp, 'Instructors', 'Sum')}</div>
+                    <div class="col text-center text-muted">${group.Instructors.Avg}${UIUtil.dif2(group, cmp, 'Instructors', 'Avg')}</div>
+                    <div class="col text-center text-muted">${group.Instructors.Min}${UIUtil.dif2(group, cmp, 'Instructors', 'Min')}</div>
+                    <div class="col text-center text-muted">${group.Instructors.Max}${UIUtil.dif2(group, cmp, 'Instructors', 'Max')}</div>
                 </div>
                 <div class="row">
                     <div class="col-3">Knights</div>
-                    <div class="col text-center text-muted">${group.Knights.reduce((a, b) => a + b, 0)}</div>
-                    <div class="col text-center ${MD.rif(ka >= st.knights.max.value, 'text-success') || MD.rif(ka >= st.knights.min.value, 'text-warning') || 'text-danger'}">${ka}</div>
-                    <div class="col text-center ${MD.rif(ks >= st.knights.max.value, 'text-success') || MD.rif(ks >= st.knights.min.value, 'text-warning') || 'text-danger'}">${ks}</div>
-                    <div class="col text-center ${MD.rif(kl >= st.knights.max.value, 'text-success') || MD.rif(kl >= st.knights.min.value, 'text-warning') || 'text-danger'}">${kl}</div>
+                    <div class="col text-center text-muted">${group.Knights.Sum}${UIUtil.dif2(group, cmp, 'Knights', 'Sum')}</div>
+                    <div class="col text-center ${MD.rif(group.Knights.Avg >= st.knights.max.value, 'text-success') || MD.rif(group.Knights.Avg >= st.knights.min.value, 'text-warning') || 'text-danger'}">${group.Knights.Avg}${UIUtil.dif2(group, cmp, 'Knights', 'Avg')}</div>
+                    <div class="col text-center ${MD.rif(group.Knights.Min >= st.knights.max.value, 'text-success') || MD.rif(group.Knights.Min >= st.knights.min.value, 'text-warning') || 'text-danger'}">${group.Knights.Min}${UIUtil.dif2(group, cmp, 'Knights', 'Min')}</div>
+                    <div class="col text-center ${MD.rif(group.Knights.Max >= st.knights.max.value, 'text-success') || MD.rif(group.Knights.Max >= st.knights.min.value, 'text-warning') || 'text-danger'}">${group.Knights.Max}${UIUtil.dif2(group, cmp, 'Knights', 'Max')}</div>
                 </div>
             `);
         }
 
-        $('#modalDetailBody').html(b.join(''));
-        $('#modalDetail').modal('show');
+        this.body.html(b.join(''));
+
+        super.show();
     }
 }
 
-class SettingsController
+class MainController
 {
-    static saveSettings()
+    static show()
     {
-        st.scrapbook.min.value = $('#range1').val();
-        st.scrapbook.max.value = $('#range2').val();
-        st.pet.min.value = $('#range3').val() * 5;
-        st.pet.max.value = $('#range4').val() * 5;
-        st.knights.min.value = $('#range5').val();
-        st.knights.max.value = $('#range6').val();
-        st.mount.min.value = $('#range7').val();
-        st.mount.max.value = $('#range8').val();
-        st.gear.upgrades.value = $('#range9').val();
+        if (!st.visited.value)
+        {
+            st.visited.value = true;
+            mc.help.show();
+        }
 
-        st.highlight.value = $('#check1').prop('checked');
-        st.gear.ignore_gems.value = $('#check2').prop('checked');
-        st.gear.ignore_weapons.value = $('#check3').prop('checked');
-        st.gear.ignore_excess.value = $('#check4').prop('checked');
+        var entries = [];
+        for (var[i, set] of sf.rsets())
+        {
+            entries.push(`
+                <a class="list-group-item list-group-item-action mb-2 hoverable ${i + 1 == MainController.compareToId ? 'border-primary' : ''}" index="${i + 1}" onclick="MainController.showSet(${i});">
+                    <div class="d-flex w-100 justify-content-between">
+                        <div>
+                            <h5 class="mb-1">${set.Label}</h5>
+                            <span class="badge badge-dark mr-1">${set.Groups.length} groups</span>
+                            <span class="badge badge-dark">${set.Players.length} players</span>
+                        </div>
+                        <div class="mr-2 p-1 mt-2">
+                            <button type="button" class="btn btn-link p-0" onclick="event.stopPropagation(); MainController.remove(${i});">
+                                <i class="fas fa-trash fa-lg text-dark remove-icon"></i>
+                            </button>
+                        </div>
+                    </div>
+                </a>
+            `);
+        }
+
+        $('#m-list').html(entries.join(''));
+        $('#m-list > a').on('contextmenu', function(e) {
+            e.preventDefault();
+
+            MainController.compareTo($(this).attr('index'));
+        });
     }
 
-    static loadSettings()
+    static showSet(i)
     {
-        $('#range1').val(st.scrapbook.min.value);
-        $('#range2').val(st.scrapbook.max.value);
-        $('#range3').val(st.pet.min.value / 5);
-        $('#range4').val(st.pet.max.value / 5);
-        $('#range5').val(st.knights.min.value);
-        $('#range6').val(st.knights.max.value);
-        $('#range7').val(st.mount.min.value);
-        $('#range8').val(st.mount.max.value);
-        $('#range9').val(st.gear.upgrades.value);
-
-        $('#check1').prop('checked', st.highlight.value);
-        $('#check2').prop('checked', st.gear.ignore_gems.value);
-        $('#check3').prop('checked', st.gear.ignore_weapons.value);
-        $('#check4').prop('checked', st.gear.ignore_excess.value);
-
-        $('input[id^="range"]').trigger('input');
+        mc.set.show(i, MainController.compareToId);
     }
 
-    static bind(source, target, evt, callback)
+    static compareTo(i)
     {
-        const sourceElem = $(source);
-        const targetElem = $(target);
+        MainController.compareToId = MainController.compareToId == i ? 0 : i;
+        MainController.show();
+    }
 
-        sourceElem.on(evt, () => callback(sourceElem, targetElem));
+    static remove(i)
+    {
+         sf.remove(i);
+
+         MainController.show();
+    }
+
+    static import(f)
+    {
+        SFImporter.importFile(f, MainController.show);
     }
 }

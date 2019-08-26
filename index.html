@@ -2,41 +2,39 @@
 <html lang="en">
 
 <head>
+	<!--META-->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
-
+	<!--TITLE-->
 	<title>SFTools Web UI</title>
-
+	<!--STYLESHEET-->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+	<!--STYLESHEET-->
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/mdb.min.css" rel="stylesheet">
-
 	<link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
-	<!--DRAG-DROP OVERLAY-->
+	<!--DRAGDROP OVERLAY-->
 	<div class="dragzone" style="visibility: hidden;"></div>
+	<!--NOTIFICATION BLOCK-->
 	<notifyblock></notifyblock>
 
 	<!--HEADER-->
 	<header>
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.1.0</small></a>
+			<a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.1.1</small></a>
 
-			<a class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+			<a class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">
 				<span class="navbar-toggler-icon"></span>
 			</a>
 
-			<div class="collapse navbar-collapse" id="navbarNav">
+			<div class="collapse navbar-collapse">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="modal" data-target="#modalSettings">Settings</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" data-toggle="modal" data-target="#modalHelp">Help</a>
-					</li>
+					<li class="nav-item"><a class="nav-link" onclick="mc.settings.show()">Settings</a></li>
+					<li class="nav-item"><a class="nav-link" onclick="mc.help.show()">Help</a></li>
 				</ul>
 			</div>
 		</nav>
@@ -45,40 +43,39 @@
 	<!--MAIN-->
 	<main role="main" class="flex-shrink-0">
 		<div class="container">
-			<div class="list-group mt-5" id="list">
-				<!--LIST CONTENT-->
-			</div>
+			<div class="list-group mt-5" id="m-list"></div>
 			<div class="text-center mt-5 mb-5">
 				<h3>Drag files here</h3>
 				<label class='text-muted'>
 					Or click here to select a file
-					<input type="file" id="filebrowser" hidden>
+					<input type="file" id="m-filebrowser" hidden>
 				</label>
 			</div>
 		</div>
 	</main>
 
 	<!--MODAL-->
-	<div class="modal" id="modalSet" tabindex="-1" role="dialog">
+	<div class="modal" id="m-set" tabindex="-1" role="dialog">
 		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
 			<div class="modal-content">
-				<div class="modal-header bg-dark" id="modalSetHeader">
-					<!--HEADER-->
+				<div class="modal-header bg-dark">
+					<h4 class="modal-title text-white" id="m-set-label"></h4>
+					<a class="btn btn-outline-light dropdown-toggle m-0 py-1 mt-1 mr-2 px-3" data-toggle="dropdown">Export</a>
+		            <div class="dropdown-menu">
+		                <a class="dropdown-item">To PNG</a>
+		                <a class="dropdown-item">To CSV</a>
+		                <a class="dropdown-item">To JSON</a>
+		            </div>
 				</div>
-				<div class="modal-body" id="modalSetBody">
+				<div class="modal-body">
 					<h5>Browse</h5>
+					<input class="form-control mb-2" id="m-set-search" type="text" placeholder="Filter">
 					<div class="row">
 						<div class="col">
-							<input class="form-control mb-2" id="setsearch" type="text" placeholder="Filter player">
-							<div class="list-group" id="setlist">
-								<!--LIST CONTENT-->
-							</div>
+							<div class="list-group" id="m-set-playerlist"></div>
 						</div>
 						<div class="col">
-							<input class="form-control mb-2" id="setsearch2" type="text" placeholder="Filter group">
-							<div class="list-group" id="setlist2">
-								<!--LIST CONTENT-->
-							</div>
+							<div class="list-group" id="m-set-grouplist"></div>
 						</div>
 					</div>
 				</div>
@@ -86,109 +83,98 @@
 		</div>
 	</div>
 
-	<div class="modal" id="modalDetail" tabindex="-1" role="dialog">
+	<div class="modal" id="m-player" tabindex="-1" role="dialog">
 		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
 			<div class="modal-content">
-				<div class="modal-header bg-dark" id="modalDetailHeader">
-					<!--HEADER-->
-				</div>
-				<div class="modal-body" id="modalDetailBody">
-					<!--CONTENT-->
-				</div>
+				<div class="modal-header bg-dark" id="m-player-header"></div>
+				<div class="modal-body" id="m-player-body"></div>
 			</div>
 		</div>
 	</div>
 
-	<div class="modal" id="modalSettings" tabindex="-1" role="dialog">
+	<div class="modal" id="m-group" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header bg-dark" id="m-group-header"></div>
+				<div class="modal-body" id="m-group-body"></div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal" id="m-settings" tabindex="-1" role="dialog">
 		<div class="modal-dialog modal-dialog-top" role="document">
 			<div class="modal-content">
-
 				<div class="modal-header bg-dark">
 					<h4 class="modal-title text-white">Settings</h4>
 				</div>
-
 				<div class="modal-body">
-				 <h5>Highlighting</h5>
-
-				 <div class="row">
+					<h5>Highlighting</h5>
+				 	<div class="row">
 						<div class="col-sm text-left"><label>Scrapbook</label></div>
-						<div class="col-sm text-center"><label class="text-danger" id="label1"></label></div>
-						<div class="col-sm text-right"><label class="text-success" id="label2"></label></div>
+						<div class="col-sm text-center"><label class="text-danger" id="m-settings-l1"></label></div>
+						<div class="col-sm text-right"><label class="text-success" id="m-settings-l2"></label></div>
 					</div>
-					<input type="range" min="0" max="100" class="custom-range" id="range1">
-					<input type="range" min="0" max="100" class="custom-range" id="range2">
-
-				 <div class="row mt-3">
+					<input type="range" min="0" max="100" class="custom-range" id="m-settings-r1">
+					<input type="range" min="0" max="100" class="custom-range" id="m-settings-r2">
+				 	<div class="row mt-3">
 						<div class="col-sm text-left"><label>Group pet</label></div>
-						<div class="col-sm text-center"><label class="text-danger" id="label3"></label></div>
-						<div class="col-sm text-right"><label class="text-success" id="label4"></label></div>
+						<div class="col-sm text-center"><label class="text-danger" id="m-settings-l3"></label></div>
+						<div class="col-sm text-right"><label class="text-success" id="m-settings-l4"></label></div>
 					</div>
-					<input type="range" min="0" max="100" class="custom-range" id="range3">
-					<input type="range" min="0" max="100" class="custom-range" id="range4">
-
-				 <div class="row mt-3">
+					<input type="range" min="0" max="100" class="custom-range" id="m-settings-r3">
+					<input type="range" min="0" max="100" class="custom-range" id="m-settings-r4">
+				 	<div class="row mt-3">
 						<div class="col-sm text-left"><label>Knights</label></div>
-						<div class="col-sm text-center"><label class="text-danger" id="label5"></label></div>
-						<div class="col-sm text-right"><label class="text-success" id="label6"></label></div>
+						<div class="col-sm text-center"><label class="text-danger" id="m-settings-l5"></label></div>
+						<div class="col-sm text-right"><label class="text-success" id="m-settings-l6"></label></div>
 					</div>
-					<input type="range" min="0" max="25" class="custom-range" id="range5">
-					<input type="range" min="0" max="25" class="custom-range" id="range6">
-
-				 <div class="row mt-3">
+					<input type="range" min="0" max="25" class="custom-range" id="m-settings-r5">
+					<input type="range" min="0" max="25" class="custom-range" id="m-settings-r6">
+				 	<div class="row mt-3">
 						<div class="col-sm text-left"><label>Mount</label></div>
-						<div class="col-sm text-center"><label class="text-danger" id="label7"></label></div>
-						<div class="col-sm text-right"><label class="text-success" id="label8"></label></div>
+						<div class="col-sm text-center"><label class="text-danger" id="m-settings-l7"></label></div>
+						<div class="col-sm text-right"><label class="text-success" id="m-settings-l8"></label></div>
 					</div>
-					<input type="range" min="0" max="4" class="custom-range" id="range7">
-					<input type="range" min="0" max="4" class="custom-range" id="range8">
-
+					<input type="range" min="0" max="4" class="custom-range" id="m-settings-r7">
+					<input type="range" min="0" max="4" class="custom-range" id="m-settings-r8">
 					<div class="custom-control custom-checkbox mb-2 mt-3">
-						<input type="checkbox" class="custom-control-input" id="check1">
+						<input type="checkbox" class="custom-control-input" id="m-settings-c1">
 						<label class="custom-control-label" for="check1">Apply to all</label>
 					</div>
-
 					<hr/>
-
 					<h5>Gear score</h5>
-
 					<div class="d-flex w-100 justify-content-between">
 						<label>Item upgrades</label>
-						<label class="text-success" id="label9"></label>
+						<label class="text-success" id="m-settings-l9"></label>
 					</div>
-					<input type="range" min="0" max="20" class="custom-range" id="range9">
-
+					<input type="range" min="0" max="20" class="custom-range" id="m-settings-r9">
 					<div class="custom-control custom-checkbox mb-2 mt-3">
-						<input type="checkbox" class="custom-control-input" id="check2">
+						<input type="checkbox" class="custom-control-input" id="m-settings-c2">
 						<label class="custom-control-label" for="check2">Ignore gems</label>
 					</div>
-
 					<div class="custom-control custom-checkbox mb-2 mt-3">
-						<input type="checkbox" class="custom-control-input" id="check3">
+						<input type="checkbox" class="custom-control-input" id="m-settings-c3">
 						<label class="custom-control-label" for="check3">Ignore weapons</label>
 					</div>
-
 					<div class="custom-control custom-checkbox mb-2 mt-3">
-						<input type="checkbox" class="custom-control-input" id="check4">
+						<input type="checkbox" class="custom-control-input" id="m-settings-c4">
 						<label class="custom-control-label" for="check4">Restrict to 100</label>
 					</div>
 				</div>
-
 				<div class="modal-footer justify-content-between">
 					<a class="btn btn-outline-dark" data-dismiss="modal">Close</a>
-					<a class="btn btn-dark" id="modalSettingsSave">Save</a>
+					<a class="btn btn-dark" onclick="mc.settings.save()">Save</a>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="modal" id="modalHelp" tabindex="-1" role="dialog">
+	<div class="modal" id="m-help" tabindex="-1" role="dialog">
 		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
 			<div class="modal-content">
-
 				<div class="modal-header bg-dark">
 					<h4 class="modal-title text-white">Help</h4>
 				</div>
-
 				<div class="modal-body">
 					<h5>How to get the HAR files</h5>
 					<ul>
@@ -220,9 +206,8 @@
 						The importing process (including response analysis) was done solely by <b>mar21</b> without any external assistance.
 					</label>
 				</div>
-
 				<div class="modal-footer justify-content-between">
-					<a class="btn btn-outline-dark" data-dismiss="modal">Close</a>
+					<a class="btn btn-outline-dark" onclick="mc.help.hide()">Close</a>
 					<a class="btn btn-outline-dark" href="mine.html">Mining tool</a>
 				</div>
 			</div>

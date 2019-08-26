@@ -40,44 +40,21 @@ $(window).on({
     }
 });
 
-$("#setsearch").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#setlist a").filter(function() {
-        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-});
-
-$("#setsearch2").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#setlist2 a").filter(function() {
-        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-});
-
-$('#modalDetail').on('show.bs.modal', function() {
-    $('#modalSet').modal('hide');
-});
-
-$('#modalDetail').on('hidden.bs.modal', function() {
-    $('#modalSet').modal('show');
-});
-
-SettingsController.bind('#range1', '#label1', 'input', (input, label) => label.text(`${input.val()}%`));
-SettingsController.bind('#range2', '#label2', 'input', (input, label) => label.text(`${input.val()}%`));
-SettingsController.bind('#range3', '#label3', 'input', (input, label) => label.text(`${input.val() * 5}`));
-SettingsController.bind('#range4', '#label4', 'input', (input, label) => label.text(`${input.val() * 5}`));
-SettingsController.bind('#range5', '#label5', 'input', (input, label) => label.text(input.val()));
-SettingsController.bind('#range6', '#label6', 'input', (input, label) => label.text(input.val()));
-SettingsController.bind('#range7', '#label7', 'input', (input, label) => label.text(Enum.Mount[input.val()]));
-SettingsController.bind('#range8', '#label8', 'input', (input, label) => label.text(Enum.Mount[input.val()]));
-SettingsController.bind('#range9', '#label9', 'input', (input, label) => label.text(input.val()));
-
-SettingsController.bind('#modalSettings', null, 'show.bs.modal', (modal, nl) => SettingsController.loadSettings());
-SettingsController.bind('#modalSettingsSave', null, 'click', (button, nl) => SettingsController.saveSettings());
-
 // Initialize
 window.nf = new Notificator('notifyblock');
 window.st = new LocalStorage();
 window.sf = new SFCore();
+
+window.m = new MainController('m');
+window.mc = {
+    settings: new SettingsModalController(),
+    help: new ModalController('m-help'),
+    set: new SetModalController(),
+    player: new PlayerModalController(),
+    group: new GroupModalController()
+};
+
+window.mc.player.parent(window.mc.set);
+window.mc.group.parent(window.mc.set);
 
 MainController.show();

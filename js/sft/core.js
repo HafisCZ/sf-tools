@@ -418,18 +418,17 @@ class SFGroup
             else if (k.includes('groupsave') || k.includes('groupSave'))
             {
                 var vals = SFUtil.split(v);
-                var members = vals[3];
+                this.MemberCount = vals[3];
 
-                this.Levels = vals.slice(64, 64 + members).map(l => l % 1000);
-                this.Roles = vals.slice(314, 314 + members);
-                this.Treasures = vals.slice(214, 214 + members);
-                this.Instructors = vals.slice(264, 264 + members);
-                this.Pets = vals.slice(390, 390 + members);
+                this.Levels = vals.slice(64, 64 + this.MemberCount).map(l => l % 1000);
+                this.Roles = vals.slice(314, 314 + this.MemberCount);
+                this.Treasures = vals.slice(214, 214 + this.MemberCount);
+                this.Instructors = vals.slice(264, 264 + this.MemberCount);
+                this.Pets = vals.slice(390, 390 + this.MemberCount);
             }
             else if (k.includes('groupmember'))
             {
                 this.Members = v.split(',');
-                this.MemberCount = this.Members.length;
             }
             else if (k.includes('grouprank'))
             {
@@ -437,7 +436,7 @@ class SFGroup
             }
             else if (k.includes('groupknights'))
             {
-                this.Knights = SFUtil.split(v, ',').slice(0, 50);
+                this.Knights = SFUtil.split(v, ',').slice(0, this.MemberCount);
             }
 		}
 
@@ -459,6 +458,24 @@ class SFGroup
                 i--;
             }
         }
+
+        SFGroup.stats(this.Levels);
+        SFGroup.stats(this.Pets);
+
+        if (this.Knights)
+        {
+            SFGroup.stats(this.Knights);
+            SFGroup.stats(this.Instructors);
+            SFGroup.stats(this.Treasures);
+        }
+    }
+
+    static stats(arr)
+    {
+        arr.Sum = arr.reduce((a, b) => a + b, 0);
+        arr.Avg = Math.trunc(arr.Sum / arr.length);
+        arr.Min = Math.min(...arr);
+        arr.Max = Math.max(...arr);
     }
 }
 
