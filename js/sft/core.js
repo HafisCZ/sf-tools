@@ -321,7 +321,7 @@ class SFPlayer
                 this.Fortress.Upgrades = vals[581];
                 this.Fortress.Knights = vals[598];
 
-                this.DamageBonus = vals[623];
+                this.DamageBonus = (vals[509] - vals[509] % 64) / 32;
                 this.LifeBonus = vals[624];
 
                 this.Aura = vals[491];

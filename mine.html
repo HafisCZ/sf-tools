@@ -27,12 +27,14 @@
             <div class="border border-dark rounded p-3 my-3">
                 <label class="mt-3">Data</label>
                 <textarea class="form-control" id="digdata" rows="2" style="font-size: 80%;"></textarea>
+				<small class="form-text text-muted">Separate values using /. Use comma to separate individual data entries.</small>
 				<label class="mt-1" >Ignored fields</label>
                 <input type="text" class="form-control" id="digfil">
+				<small class="form-text text-muted">Separate using comma, use - for range.</small>
                 <label class="mt-1" >Requested value</label>
                 <input type="text" class="form-control" id="digval">
+				<small class="form-text text-muted">Separate using comma.</small>
             </div>
-
             <div id="digout" class="px-5"></div>
 		</div>
 	</main>
@@ -43,120 +45,162 @@
 	<script type="text/javascript" src="js/mdb.min.js"></script>
 
     <script>
-      function dig(va, f)
-      {
-          const vv = va.split('/').map(a => Number(a));
-          const ds = (o, i, v, f, p) => {
-              var fl = [];
-
-              if (f == v) fl.push('');
-
-              if (v > Math.pow(2, 4) && f == v % Math.pow(2, 4)) fl.push('% 16');
-              if (v > Math.pow(2, 6) && f == v % Math.pow(2, 6)) fl.push('% 64');
-              if (v > Math.pow(2, 8) && f == v % Math.pow(2, 8)) fl.push('% 256');
-              if (v > Math.pow(2, 16) && f == v % Math.pow(2, 16)) fl.push('% 65536');
-
-              if (f == v / Math.pow(2, 4)) fl.push('/ 16');
-              if (f == v / Math.pow(2, 6)) fl.push('/ 64');
-              if (f == v / Math.pow(2, 8)) fl.push('/ 256');
-              if (f == v / Math.pow(2, 16)) fl.push('/ 65536');
-
-              if (fl.length)
-              {
-                  o.push({
-                      index: i,
-                      mod: p,
-                      ops: fl
-                  });
-              }
-          }
-
-		var o = [];
-
-		for (var i in vv)
+		function funRemainder(returns, target, num, func)
 		{
-			const v = vv[i];
+			for (var i = 4; i <= 16; i++)
+			{
+				var res = num % Math.pow(2, i);
 
-			ds(o, i, v, f, 'v');
-			ds(o, i, v / Math.pow(2, 4), f, 'v / 16');
-			ds(o, i, v / Math.pow(2, 6), f, 'v / 64');
-			ds(o, i, v / Math.pow(2, 8), f, 'v / 256');
-			ds(o, i, v / Math.pow(2, 16), f, 'v / 65536');
-			if (v > Math.pow(2, 4)) ds(o, i, v % Math.pow(2, 4), f, 'v % 16');
-			if (v > Math.pow(2, 6)) ds(o, i, v % Math.pow(2, 6), f, 'v % 64');
-			if (v > Math.pow(2, 8)) ds(o, i, v % Math.pow(2, 8), f, 'v % 256');
-			if (v > Math.pow(2,16)) ds(o, i, v % Math.pow(2, 16), f, 'v % 65536');
-			ds(o, i, v - v % Math.pow(2, 4), f, 'v - v % 16');
-			ds(o, i, v - v % Math.pow(2, 6), f, 'v - v % 64');
-			ds(o, i, v - v % Math.pow(2, 8), f, 'v - v % 256');
-			ds(o, i, v - v % Math.pow(2, 16), f, 'v - v % 65536');
-      	}
+				if (target === res)
+				{
+					returns.push(`(${func}) % ${Math.pow(2, i)}`);
+				}
+			}
+		}
 
-      	return [o, vv];
-      }
+		function funDivision(returns, target, num, func)
+		{
+			for (var i = 4; i <= 16; i++)
+			{
+				var res = num / Math.pow(2, i);
 
-	  $('#digval').on('change input', function() {
-		  var vi = $('#digdata').val();
-		  var vf = Number($('#digval').val());
+				if (target === res)
+				{
+					returns.push(`(${func}) / ${Math.pow(2, i)}`);
+				}
+			}
+		}
 
-		  var vr = $('#digfil').val().split(',');
-		  var vignore = [];
+		function funSingle(target, num)
+		{
+			var returns = [];
 
-		  for (var i in vr)
-		  {
-			  if (vr[i].includes('-'))
-			  {
-				  var [x, y] = vr[i].split('-');
-				  var xx = Number(x);
-				  var yy = Number(y);
-				  for (var j = xx; j <= yy; j++)
-				  {
-					  vignore.push(j);
-				  }
-			  }
-			  else {
-				  vignore.push(Number(vr[i]));
-			  }
-		  }
+			if (target === num)
+			{
+				returns.push(`x`);
+			}
 
-		  if (vi && vf && Number.isInteger(vf))
-		  {
-			  var vv = [];
-			  var [dd, vals] = dig(vi, vf);
+			funDivision(returns, target, num, 'x');
+			funRemainder(returns, target, num, 'x');
 
-			  var index = -1;
-			  for (var i in dd)
-			  {
-				  const v = dd[i];
+			for (var i = 4; i <= 16; i++)
+			{
+				funDivision(returns, target, num % Math.pow(2, i), `x % ${Math.pow(2, i)}`);
+			}
 
-				  if (vignore.includes(Number(v.index))) {
-					  continue;
-				  }
+			for (var i = 4; i <= 16; i++)
+			{
+				funRemainder(returns, target, num / Math.pow(2, i), `x / ${Math.pow(2, i)}`);
+				funDivision(returns, target, num / Math.pow(2, i), `x / ${Math.pow(2, i)}`);
+			}
 
-				  if (index != v.index)
-				  {
-					  vv.push(`<div class="rounded mt-2 bg-dark text-white row"><div class="col-3">${v.index}</div><div class="col-1">${vals[v.index]}</div></div>`);
-					  index = v.index;
-				  }
+			for (var i = 4; i <= 16; i++)
+			{
+				funRemainder(returns, target, num - num % Math.pow(2, i), `x - x % ${Math.pow(2, i)}`);
+				funDivision(returns, target, num - num % Math.pow(2, i), `x - x % ${Math.pow(2, i)}`);
+			}
 
-				  for (var j in v.ops)
-				  {
-					  vv.push(`<div class="row"><div class="col-3"></div><div class="col">(${v.mod}) ${v.ops[j]}</div></div>`);
-				  }
-			  }
+			return returns;
+		}
 
-			  if (!dd.length)
-			  {
-				  vv.push(`<div class="rounded mt-2 bg-danger text-white row"><div class="col-3">Nothing found</div></div>`);
-			  }
+		$('#digval, #digdata, #digfil').on('change input', function() {
+			$('#digout').empty();
 
-			  $('#digout').html(vv.join(''));
-		  }
-		  else
-		  {
-			  $('#digout').empty();
-		  }
-	  });
+			if (!$('#digval').val() || $('#digdata').val().length == 0) return;
+
+			var targets = $('#digval').val().split(',').map(a => Number(a));
+			for (var i = 0; i < targets.length; i++)
+			{
+				if (!targets[i])
+				{
+					targets.splice(i, 1);
+					i--;
+				}
+			}
+
+			var rawFilter = $('#digfil').val().length > 0 ? $('#digfil').val().split(',') : [];
+			var filter = [];
+			for (var i = 0; i < rawFilter.length; i++)
+			{
+				if (rawFilter[i].includes('-'))
+				{
+					var [x, y] = rawFilter[i].split('-').map(v => Number(v));
+					for (var j = x; j <= y; j++)
+					{
+						filter.push(j);
+					}
+				}
+				else
+				{
+					filter.push(Number(rawFilter[i]));
+				}
+			}
+
+			var content = [];
+
+			var rawdata = $('#digdata').val().split(',');
+			var data = [];
+			for (var i = 0; i < rawdata.length; i++)
+			{
+				data.push(rawdata[i].split('/').map(a => Number(a)));
+			}
+
+			for (var i = 0; i < data[0].length; i++)
+			{
+				if (!filter.includes(i))
+				{
+					var results = [];
+					if (data.length == 1)
+					{
+						for (var j = 0; j < data.length; j++)
+						{
+							results.push(funSingle(targets[j], data[0][i]));
+						}
+					}
+					else
+					{
+						for (var j = 0; j < data.length; j++)
+						{
+							results.push(funSingle(targets[j], data[j][i]));
+						}
+					}
+
+					var hasresults = 0;
+					for (var j = 0; j < results.length; j++)
+					{
+						hasresults += results[j].length;
+					}
+
+					if (hasresults)
+					{
+						content.push(`<div class="rounded mt-2 bg-dark text-white row"><div class="col-1">${i}</div>`);
+
+						for (var j = 0; j < data.length; j++)
+						{
+							content.push(`<div class="col text-center">${data[j][i]}</div>`);
+						}
+
+						content.push('</div><div class="row">');
+
+						for (var j = 0; j < results.length; j++)
+						{
+							content.push('<div class="col-1"></div><div class="col">');
+
+							for (var k = 0; k < results[j].length; k++)
+							{
+								content.push(`<div class="row"><div class="col text-center">${results[j][k]}</div></div>`);
+							}
+
+							content.push('</div>');
+						}
+
+						content.push('</div>');
+					}
+				}
+			}
+
+			$('#digout').html(content.join(''));
+		});
     </script>
 </body>
 
