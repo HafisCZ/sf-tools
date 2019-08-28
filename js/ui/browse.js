@@ -79,32 +79,14 @@ class SettingsModalController extends ModalController
     {
         super('m-settings');
 
-        this.ranges = [];
-        for (var i = 1; i <= 9; i++)
-        {
-            this.ranges.push($(`#m-settings-r${i}`));
-        }
-
-        this.labels = [];
-        for (var i = 1; i <= 9; i++)
-        {
-            this.labels.push($(`#m-settings-l${i}`));
-        }
-
-        this.checks = [];
-        for (var i = 1; i <= 4; i++)
-        {
-            this.checks.push($(`#m-settings-c${i}`));
-        }
-
         $('#m-settings-r1').on('input', function(e) { $('#m-settings-l1').text(`${$(this).val()}%`); });
         $('#m-settings-r2').on('input', function(e) { $('#m-settings-l2').text(`${$(this).val()}%`); });
         $('#m-settings-r3').on('input', function(e) { $('#m-settings-l3').text(`${$(this).val() * 5}`); });
         $('#m-settings-r4').on('input', function(e) { $('#m-settings-l4').text(`${$(this).val() * 5}`); });
         $('#m-settings-r5').on('input', function(e) { $('#m-settings-l5').text(`${$(this).val()}`); });
         $('#m-settings-r6').on('input', function(e) { $('#m-settings-l6').text(`${$(this).val()}`); });
-        $('#m-settings-r7').on('input', function(e) { $('#m-settings-l7').text(`${Enum.Mount[$(this).val()]}%`); });
-        $('#m-settings-r8').on('input', function(e) { $('#m-settings-l8').text(`${Enum.Mount[$(this).val()]}%`); });
+        $('#m-settings-r7').on('input', function(e) { $('#m-settings-l7').text(`${$(this).val() > 0 ? Enum.Mount[$(this).val()] : 'None'}`); });
+        $('#m-settings-r8').on('input', function(e) { $('#m-settings-l8').text(`${$(this).val() > 0 ? Enum.Mount[$(this).val()] : 'None'}`); });
         $('#m-settings-r9').on('input', function(e) { $('#m-settings-l9').text(`${$(this).val()}`); });
     }
 

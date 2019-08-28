@@ -34,6 +34,10 @@
                 <label class="mt-1" >Requested value</label>
                 <input type="text" class="form-control" id="digval">
 				<small class="form-text text-muted">Separate using comma.</small>
+				<div class="custom-control custom-checkbox mb-2 mt-3">
+					<input type="checkbox" class="custom-control-input" id="onlyfull">
+					<label class="custom-control-label" for="onlyfull">Show only common entries</label>
+				</div>
             </div>
             <div id="digout" class="px-5"></div>
 		</div>
@@ -103,10 +107,12 @@
 			return returns;
 		}
 
-		$('#digval, #digdata, #digfil').on('change input', function() {
+		$('#digval, #digdata, #digfil, #onlyfull').on('change input', function() {
 			$('#digout').empty();
 
 			if (!$('#digval').val() || $('#digdata').val().length == 0) return;
+
+			var onlyall = $('#onlyfull').prop('checked');
 
 			var targets = $('#digval').val().split(',').map(a => Number(a));
 			for (var i = 0; i < targets.length; i++)
@@ -150,11 +156,11 @@
 				if (!filter.includes(i))
 				{
 					var results = [];
-					if (data.length == 1)
+					if (targets.length == 1)
 					{
 						for (var j = 0; j < data.length; j++)
 						{
-							results.push(funSingle(targets[j], data[0][i]));
+							results.push(funSingle(targets[0], data[j][i]));
 						}
 					}
 					else
@@ -166,14 +172,16 @@
 					}
 
 					var hasresults = 0;
+					var hasall = true;
 					for (var j = 0; j < results.length; j++)
 					{
 						hasresults += results[j].length;
+						hasall &= results[j].length;
 					}
 
-					if (hasresults)
+					if ((!onlyall && hasresults) || (onlyall && hasall))
 					{
-						content.push(`<div class="rounded mt-2 bg-dark text-white row"><div class="col-1">${i}</div>`);
+						content.push(`<div class="rounded mt-2 ${hasall ? 'bg-success' : 'bg-dark'} text-white row"><div class="col-1">${i}</div>`);
 
 						for (var j = 0; j < data.length; j++)
 						{
