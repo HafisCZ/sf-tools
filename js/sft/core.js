@@ -54,6 +54,14 @@ class SFCore
         }
     }
 
+    swap(i, j)
+    {
+        [this.rdata[i], this.rdata[j]] = [this.rdata[j], this.rdata[i]];
+
+        st.data.value = this.rdata;
+        this.inflate();
+    }
+
 	add(s)
 	{
 		this.rdata.push(s);
@@ -119,7 +127,7 @@ class SFSet
         {
             if (val.includes('otherplayername') || val.includes('ownplayername'))
             {
-                if (val.includes('owngroup'))
+                if (val.includes('owngroup') && val.includes('groupmember'))
                 {
                     var group = new SFGroup(val);
 
@@ -322,7 +330,8 @@ class SFPlayer
                 this.Fortress.Knights = vals[598];
 
                 this.DamageBonus = (vals[509] - vals[509] % 64) / 32;
-                this.LifeBonus = vals[624];
+
+                this.LifeBonus = 0;
 
                 this.Aura = vals[491];
                 this.AuraFill = vals[492];

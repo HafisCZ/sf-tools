@@ -34,9 +34,14 @@
                 <label class="mt-1" >Requested value</label>
                 <input type="text" class="form-control" id="digval">
 				<small class="form-text text-muted">Separate using comma.</small>
-				<div class="custom-control custom-checkbox mb-2 mt-3">
+				<button type="button" class="btn btn-dark btn-sm rounded mr-2 custom-control-inline" id="refresh">Refresh</button>
+				<div class="custom-control custom-checkbox custom-control-inline mb-2 mt-3">
 					<input type="checkbox" class="custom-control-input" id="onlyfull">
 					<label class="custom-control-label" for="onlyfull">Show only common entries</label>
+				</div>
+				<div class="custom-control custom-checkbox custom-control-inline mb-2 mt-3">
+					<input type="checkbox" class="custom-control-input" id="filteroff">
+					<label class="custom-control-label" for="filteroff">Ignore filter</label>
 				</div>
             </div>
             <div id="digout" class="px-5"></div>
@@ -90,26 +95,34 @@
 			for (var i = 4; i <= 16; i++)
 			{
 				funDivision(returns, target, num % Math.pow(2, i), `x % ${Math.pow(2, i)}`);
-			}
-
-			for (var i = 4; i <= 16; i++)
-			{
 				funRemainder(returns, target, num / Math.pow(2, i), `x / ${Math.pow(2, i)}`);
 				funDivision(returns, target, num / Math.pow(2, i), `x / ${Math.pow(2, i)}`);
-			}
-
-			for (var i = 4; i <= 16; i++)
-			{
 				funRemainder(returns, target, num - num % Math.pow(2, i), `x - x % ${Math.pow(2, i)}`);
 				funDivision(returns, target, num - num % Math.pow(2, i), `x - x % ${Math.pow(2, i)}`);
+				for (var j = 4; j <= 16; j++)
+				{
+					funRemainder(returns, target, num / Math.pow(2, i) - (num / Math.pow(2, i)) % Math.pow(2, j), `x / ${Math.pow(2, i)} - (x / ${Math.pow(2, i)}) % ${Math.pow(2, j)}`);
+				}
+				for (var j = 4; j <= 16; j++)
+				{
+					funDivision(returns, target, num / Math.pow(2, i) - (num / Math.pow(2, i)) % Math.pow(2, j), `x / ${Math.pow(2, i)} - (x / ${Math.pow(2, i)}) % ${Math.pow(2, j)}`);
+				}
 			}
 
 			return returns;
 		}
 
-		$('#digval, #digdata, #digfil, #onlyfull').on('change input', function() {
-			$('#digout').empty();
+		$('#refresh').on('click', function() {
+			$('#digval').trigger('input');
+		});
 
+		$('#filteroff, #onlyfull').on('input', function() {
+			$('#digval').trigger('input');
+		});
+
+		$('#digval, #digdata, #digfil').on('change input', function() {
+			$('#digout').empty();
+			console.log('od');
 			if (!$('#digval').val() || $('#digdata').val().length == 0) return;
 
 			var onlyall = $('#onlyfull').prop('checked');
@@ -126,7 +139,9 @@
 
 			var rawFilter = $('#digfil').val().length > 0 ? $('#digfil').val().split(',') : [];
 			var filter = [];
-			for (var i = 0; i < rawFilter.length; i++)
+			var filteroff = $('#filteroff').prop('checked');
+
+			for (var i = 0; i < rawFilter.length && !filteroff; i++)
 			{
 				if (rawFilter[i].includes('-'))
 				{
@@ -176,12 +191,12 @@
 					for (var j = 0; j < results.length; j++)
 					{
 						hasresults += results[j].length;
-						hasall &= results[j].length;
+						hasall &= results[j].length > 0;
 					}
 
-					if ((!onlyall && hasresults) || (onlyall && hasall))
+					if ((!onlyall && hasresults > 0) || (onlyall && hasall))
 					{
-						content.push(`<div class="rounded mt-2 ${hasall ? 'bg-success' : 'bg-dark'} text-white row"><div class="col-1">${i}</div>`);
+						content.push(`<div class="rounded mt-2 ${hasall ? 'bg-dark text-white' : 'bg-warning text-dark'} row"><div class="col-1">${i}</div>`);
 
 						for (var j = 0; j < data.length; j++)
 						{
@@ -192,7 +207,7 @@
 
 						for (var j = 0; j < results.length; j++)
 						{
-							content.push('<div class="col-1"></div><div class="col">');
+							content.push('<div class="col-1"></div><div class="col" style="font-size: 75%;">');
 
 							for (var k = 0; k < results[j].length; k++)
 							{

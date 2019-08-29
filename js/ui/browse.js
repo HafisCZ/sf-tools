@@ -506,15 +506,25 @@ class MainController
         }
 
         var entries = [];
-        for (var[i, set] of sf.rsets())
+        for (var[i, set] of sf.rsets())//<div class="d-flex w-100 justify-content-between"></div>
         {
             entries.push(`
-                <a class="list-group-item list-group-item-action mb-2 hoverable ${i + 1 == MainController.compareToId ? 'border-primary' : ''}" index="${i + 1}" onclick="MainController.showSet(${i});">
-                    <div class="d-flex w-100 justify-content-between">
-                        <div>
-                            <h5 class="mb-1">${set.Label}</h5>
-                            <span class="badge badge-dark mr-1">${set.Groups.length} groups</span>
-                            <span class="badge badge-dark">${set.Players.length} players</span>
+                <a class="list-group-item list-group-item-action mb-2 ${i + 1 == MainController.compareToId ? 'border-primary' : ''}" index="${i + 1}" onclick="MainController.showSet(${i});">
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex justify-content-start">
+                            <div class="btn-group-vertical m-0 ml-n5 pr-2" role="group" onclick="event.stopPropagation();" oncontextmenu="event.stopPropagation();">
+                                <button type="button" class="btn btn-link p-0 m-0 pb-1 ${i == sf.data.length - 1 ? 'invisible' : ''}" onclick="event.stopPropagation(); MainController.move(${i},1)">
+                                    <i class="fas fa-chevron-up remove-icon"></i>
+                                </button>
+                                <button type="button" class="btn btn-link p-0 m-0 mb-n1 ${i ? '' : 'invisible'}" onclick="event.stopPropagation(); MainController.move(${i},-1)">
+                                    <i class="fas fa-chevron-down remove-icon"></i>
+                                </button>
+                            </div>
+                            <div class="ml-4">
+                                <h5 class="mb-1">${set.Label}</h5>
+                                <span class="badge badge-dark mr-1">${set.Groups.length} groups</span>
+                                <span class="badge badge-dark">${set.Players.length} players</span>
+                            </div>
                         </div>
                         <div class="mr-2 p-1 mt-2">
                             <button type="button" class="btn btn-link p-0" onclick="event.stopPropagation(); MainController.remove(${i});">
@@ -532,6 +542,19 @@ class MainController
 
             MainController.compareTo($(this).attr('index'));
         });
+    }
+
+    static move(set, direction)
+    {
+        if ((set == 0 && direction == -1) || (set == sf.data.length - 1 && direction == 1))
+        {
+            return;
+        }
+        else
+        {
+            sf.swap(set, set + direction);
+            MainController.show();
+        }
     }
 
     static showSet(i)
