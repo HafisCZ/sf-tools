@@ -19,7 +19,7 @@ class DateFormatter
 {
     static format(d)
     {
-        return DateFormatter.trail(d.getDate(), 2) + '.' + DateFormatter.trail(d.getMonth(), 2) + '.' + d.getFullYear() + ' ' + DateFormatter.trail(d.getHours(), 2) + ':' + DateFormatter.trail(d.getMinutes(), 2);
+        return DateFormatter.trail(d.getDate(), 2) + '.' + DateFormatter.trail(d.getMonth() + 1, 2) + '.' + d.getFullYear() + ' ' + DateFormatter.trail(d.getHours(), 2) + ':' + DateFormatter.trail(d.getMinutes(), 2);
     }
 
     static trail(c, n)
@@ -227,11 +227,11 @@ class UIUtil
 
             if (v > 0)
             {
-                return ` <xsm>+${v}%</xsm>`;
+                return ` <xsm>+${v.toFixed(2)}%</xsm>`;
             }
             else if (v < 0)
             {
-                return ` <xsm>${v}%</xsm>`;
+                return ` <xsm>${v.toFixed(2)}%</xsm>`;
             }
         }
 

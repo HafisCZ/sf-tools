@@ -122,6 +122,7 @@ class SFSet
         this.Players = [];
         this.Groups = [];
         this.Label = data.Label;
+        this.Timestamp = data.Timestamp;
 
         for (const val of data.Raws)
         {
@@ -513,17 +514,17 @@ class SFImporter
         r.onload = function (e) {
             try
             {
-                sf.add(SFImporter.import(DateFormatter.format(new Date(f.lastModified)), JSON.parse(e.target.result)));
+                sf.add(SFImporter.import(Math.floor(new Date(f.LastModified).getTime() / 1000), DateFormatter.format(new Date(f.lastModified)), JSON.parse(e.target.result)));
                 c();
             }
             catch(e)
             {
-                nf.show(NotificationType.DANGER, 'File import failed', 'It appears that your file is not compatible. Please try again or use another file.');
+                nf.show(NotificationType.DANGER, 'File import failed', 'It appears that your file is not compatible. Please try again or use another file.' + e);
             }
         };
     }
 
-	static import(label, json)
+	static import(timestamp, label, json)
 	{
 		var vs = [];
 
@@ -542,7 +543,8 @@ class SFImporter
 
         return {
             Raws: vs,
-            Label: label
+            Label: label,
+            Timestamp: timestamp
         };
 	}
 

@@ -55,7 +55,7 @@ class SetModalController extends ModalController
         var data = sf.data[this.current];
         var compare = this.currentcompare ? sf.data[this.currentcompare - 1] : null;
 
-        saveAs(Exporter.jsonBlob(data, compare), `${data.Label}.json`);
+        Exporter.download(`${data.Label}${compare ? `_${compare.Label}` : ''}.json`, Exporter.jsonBlob(data, compare));
     }
 
     exportpng()
@@ -64,7 +64,7 @@ class SetModalController extends ModalController
         var compare = this.currentcompare ? sf.data[this.currentcompare - 1] : null;
 
         Exporter.pngBlob(data, compare, function (blob) {
-            saveAs(blob, `${data.Label}.png`);
+            Exporter.download(`${data.Label}${compare ? `_${compare.Label}` : ''}.json`, blob);
         });
     }
 
@@ -614,6 +614,24 @@ class MainController
 
 class Exporter
 {
+    static download(filename, blob)
+    {
+        // Create element
+        let a = document.createElement('a');
+        a.download = filename;
+        a.href = URL.createObjectURL(blob);
+
+        // Add element to document
+        document.body.appendChild(a);
+
+        // Click element
+        a.click();
+
+        // Cleanup
+        URL.revokeObjectURL(a.href);
+        document.body.removeChild(a);
+    }
+
     static jsonBlob(data, compare)
     {
         var out = data;
@@ -769,7 +787,7 @@ class Exporter
                 <tr>
                     <td width="250" class="rb">${p.Name}</td>
                     <td width="100">${p.Level}${UIUtil.dif(p, c, 'Level')}</td>
-                    <td width="120" class="${scrapbook < st.scrapbook.min.value ? 'bg-danger' : (scrapbook >= st.scrapbook.max.value ? 'bg-success' : 'bg-warning')}">${Math.trunc(scrapbook * 10) / 10}%${UIUtil.difbook(p, c)}</td>
+                    <td width="120" class="${scrapbook < st.scrapbook.min.value ? 'bg-danger' : (scrapbook >= st.scrapbook.max.value ? 'bg-success' : 'bg-warning')}">${scrapbook.toFixed(1)}%${UIUtil.difbook(p, c)}</td>
                     <td width="80" class="rb ${p.Mount < st.mount.min.value ? 'bg-danger' : (p.Mount >= st.mount.max.value ? 'bg-success' : 'bg-warning')}">${p.Mount ? Enum.Mount[p.Mount] : ''}</td>
                     <td width="100" class="rb">${p.Achievements}</td>
                     <td width="30" class="${p.Potions[0].Size < 5 ? 'bg-danger' : (p.Potions[0].Size >= 25 ? 'bg-success' : 'bg-warning')}"></td>
