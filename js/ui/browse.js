@@ -50,8 +50,35 @@ class SetModalController extends ModalController
         });
     }
 
+    exportjson()
+    {
+        var data = sf.data[this.current];
+        var compare = this.currentcompare ? sf.data[this.currentcompare - 1] : null;
+
+        saveAs(SFExporter.jsonBlob(data, compare), `${data.Label}.json`);
+    }
+
+    exportpng()
+    {
+        var data = sf.data[this.current];
+        var compare = this.currentcompare ? sf.data[this.currentcompare - 1] : null;
+
+        saveAs(SFExporter.pngBlob(data, compare), `${data.Label}.png`);
+    }
+
+    exportcsv()
+    {
+        var data = sf.data[this.current];
+        var compare = this.currentcompare ? sf.data[this.currentcompare - 1] : null;
+
+        saveAs(SFExporter.csvBlob(data, compare), `${data.Label}.csv`);
+    }
+
     show(i, c)
     {
+        this.current = i;
+        this.currentcompare = c;
+
         var a = [];
         for (var [j, p] of sf.players(i))
         {
@@ -553,6 +580,16 @@ class MainController
         else
         {
             sf.swap(set, set + direction);
+
+            if (set + 1 == MainController.compareToId)
+            {
+                MainController.compareTo(set + 1 + direction);
+            }
+            else if (set + 1 + direction == MainController.compareToId)
+            {
+                MainController.compareTo(set + 1);
+            }
+
             MainController.show();
         }
     }

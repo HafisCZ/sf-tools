@@ -51,7 +51,8 @@ window.mc = {
     help: new ModalController('m-help'),
     set: new SetModalController(),
     player: new PlayerModalController(),
-    group: new GroupModalController()
+    group: new GroupModalController(),
+    history: new ModalController('m-history')
 };
 
 window.mc.player.parent(window.mc.set);

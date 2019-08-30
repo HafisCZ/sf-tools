@@ -25,7 +25,7 @@
 	<!--HEADER-->
 	<header>
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;">1.1.2</small></a>
+			<a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;" onclick="event.stopPropagation(); mc.history.show();">1.1.3</small></a>
 
 			<a class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">
 				<span class="navbar-toggler-icon"></span>
@@ -60,11 +60,12 @@
 			<div class="modal-content">
 				<div class="modal-header bg-dark">
 					<h4 class="modal-title text-white" id="m-set-label"></h4>
-					<a class="btn btn-outline-light dropdown-toggle m-0 py-1 mt-1 mr-2 px-3" data-toggle="dropdown">Export</a>
+					<a class="btn btn-dark dropdown-toggle m-0 py-1 mt-1 mr-2 px-3" data-toggle="dropdown">
+						<i class="fas fa-file-export text-white"></i>
+					</a>
 		            <div class="dropdown-menu">
-		                <a class="dropdown-item">To PNG</a>
-		                <a class="dropdown-item">To CSV</a>
-		                <a class="dropdown-item">To JSON</a>
+		                <a class="dropdown-item" onclick="mc.set.exportpng();">To PNG</a>
+		                <a class="dropdown-item" onclick="mc.set.exportjson();">To JSON</a>
 		            </div>
 				</div>
 				<div class="modal-body">
@@ -214,15 +215,74 @@
 		</div>
 	</div>
 
+	<div class="modal" id="m-history" tabindex="-1" role="dialog">
+		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header justify-content-between bg-dark">
+					<h4 class="modal-title text-white">Version history</h4>
+					<a class="btn btn-outline-white text-white m-0 my-n1 py-2" onclick="mc.history.hide()">Close</a>
+				</div>
+				<div class="modal-body">
+					<h5>1.1.3</h5>
+					<ul>
+						<li>Users can now export sets into JSON format</li>
+						<li>Added version history</li>
+						<li>Included FileSaver library</li>
+						<li>Bugfixes:
+							<small>
+								<ul style="list-style-type:none">
+									<li>- Player dungeon shows incorrect number</li>
+									<li>- Selection for comparison does not change when reordering a set</li>
+								 </ul>
+							</small>
+						</li>
+					</ul>
+					<hr/>
+					<h5>1.1.2</h5>
+					<ul>
+						<li>Added ability to change order of sets</li>
+					</ul>
+					<hr/>
+					<h5>1.1.1</h5>
+					<ul>
+						<li>Reformatted & reorganized code</li>
+						<li>Sum, average, min and max values for groups are now included when parsing</li>
+						<li>Added modal controllers</li>
+						<li>Improved mining tool</li>
+						<li>Added compare mode to groups</li>
+					</ul>
+					<hr/>
+					<h5>1.1.0</h5>
+					<ul>
+						<li>Reorganized code</li>
+						<li>Removed unused logger class</li>
+						<li>Data are now stored raw and parsed at initialization to lower storage size cost and add backwards compatibility</li>
+					</ul>
+					<hr/>
+					<h5>1.0.0 - 1.0.14</h5>
+					<ul>
+						<li>Initial release</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!--jQuerry & MDBootstrap-->
 	<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
 	<script type="text/javascript" src="js/popper.min.js"></script>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/mdb.min.js"></script>
 
+	<!--Core SFUtil components-->
 	<script type="text/javascript" src="js/sft/utils.js"></script>
 	<script type="text/javascript" src="js/sft/core.js"></script>
 	<script type="text/javascript" src="js/sft/constants.js"></script>
 
+	<!--Filesaver-->
+	<script type="text/javascript" src="js/filesaver/filesaver.js"></script>
+
+	<!--UI SFUtil components-->
 	<script type="text/javascript" src="js/ui/browse.js"></script>
 	<script type="text/javascript" src="js/ui/script.js"></script>
 </body>

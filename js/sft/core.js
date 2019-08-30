@@ -331,7 +331,7 @@ class SFPlayer
 
                 this.DamageBonus = (vals[509] - vals[509] % 64) / 32;
 
-                this.LifeBonus = 0;
+                this.LifeBonus = ((vals[445] / Math.pow(2, 16)) - (vals[445] / Math.pow(2, 16)) % 256) / 256;
 
                 this.Aura = vals[491];
                 this.AuraFill = vals[492];
@@ -573,5 +573,119 @@ class Notificator
         {
             $(`${this.parent}>p[nid=${i}]`).remove();
         }
+    }
+}
+
+class SFExporter
+{
+    static jsonBlob(data, compare)
+    {
+        var out = data;
+
+        if (compare)
+        {
+            data.Players.forEach(function (p) {
+                var cp = compare.Players.find(a => a.Name === p.Name);
+                if (cp) {
+                    var dp = {
+                        Level: p.Level - cp.Level,
+                        RankPlayer: p.RankPlayer - cp.RankPlayer,
+                        RankFortress: p.RankFortress - cp.RankFortress,
+                        HonorPlayer: p.HonorPlayer - cp.HonorPlayer,
+                        HonorFortress: p.HonorFortress - cp.HonorFortress,
+                        LifeBonus: p.LifeBonus - cp.LifeBonus,
+                        DamageBonus: p.DamageBonus - cp.DamageBonus,
+                        Tower: p.Tower - cp.Tower,
+                        Achievements: p.Achievements - cp.Achievements,
+                        Book: p.Book - cp.Book,
+                        Fortress : {
+                            Upgrades: p.Fortress.Upgrades - cp.Fortress.Upgrades,
+                            Wall: p.Fortress.Wall - cp.Fortress.Wall,
+                            Warriors: p.Fortress.Warriors - cp.Fortress.Warriors,
+                            Archers: p.Fortress.Archers - cp.Fortress.Archers,
+                            Mages: p.Fortress.Mages - cp.Fortress.Mages,
+                        },
+                        Strength: p.Strength - cp.Strength,
+                        Constitution: p.Constitution - cp.Constitution,
+                        Dexterity: p.Dexterity - cp.Dexterity,
+                        Luck: p.Luck - cp.Luck,
+                        Intelligence: p.Intelligence - cp.Intelligence,
+                        Armor: p.Armor - cp.Armor,
+                        XP: p.XP - cp.XP,
+                        XPNext: p.XPNext - cp.XPNext
+                    }
+
+                    if (p.Group)
+                    {
+                        dp.Group = {
+                            Treasure: p.Group.Treasure - cp.Group.Treasure,
+                            Instructor: p.Group.Instructor - cp.Group.Instructor,
+                            Pet: p.Group.Pet - cp.Group.Pet
+                        };
+
+                        dp.Fortress.Knights = p.Fortress.Knights - cp.Fortress.Knights;
+                    }
+
+                    p.Compare = dp;
+                }
+            });
+
+            data.Groups.forEach(function (g) {
+                var cg = compare.Groups.find(a => a.Name === g.Name);
+                if (cg) {
+                    var dg = {
+                        MemberCount: g.MemberCount - cg.MemberCount,
+                        Rank: g.Rank - cg.Rank,
+                        Levels: {
+                            Sum: g.Levels.Sum - cg.Levels.Sum,
+                            Avg: g.Levels.Avg - cg.Levels.Avg,
+                            Min: g.Levels.Min - cg.Levels.Min,
+                            Max: g.Levels.Max - cg.Levels.Max
+                        },
+                        Pets: {
+                            Sum: g.Pets.Sum - cg.Pets.Sum,
+                            Avg: g.Pets.Avg - cg.Pets.Avg,
+                            Min: g.Pets.Min - cg.Pets.Min,
+                            Max: g.Pets.Max - cg.Pets.Max
+                        },
+                        Treasures: {
+                            Sum: g.Treasures.Sum - cg.Treasures.Sum,
+                            Avg: g.Treasures.Avg - cg.Treasures.Avg,
+                            Min: g.Treasures.Min - cg.Treasures.Min,
+                            Max: g.Treasures.Max - cg.Treasures.Max
+                        },
+                        Instructors: {
+                            Sum: g.Instructors.Sum - cg.Instructors.Sum,
+                            Avg: g.Instructors.Avg - cg.Instructors.Avg,
+                            Min: g.Instructors.Min - cg.Instructors.Min,
+                            Max: g.Instructors.Max - cg.Instructors.Max
+                        },
+                        Knights: {
+                            Sum: g.Knights.Sum - cg.Knights.Sum,
+                            Avg: g.Knights.Avg - cg.Knights.Avg,
+                            Min: g.Knights.Min - cg.Knights.Min,
+                            Max: g.Knights.Max - cg.Knights.Max
+                        }
+                    }
+
+                    g.Compare = dg;
+                }
+            });
+        }
+
+        return new Blob([JSON.stringify(out)], {
+            type: 'application/json;charset=utf-8'
+        });
+    }
+
+    static pngBlob(data, compare)
+    {
+        var out = [];
+
+        // Unimplemented
+
+        return new Blob([out.join('')], {
+            type: 'image/png;charset=utf-8'
+        });
     }
 }
