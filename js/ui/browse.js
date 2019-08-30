@@ -55,7 +55,7 @@ class SetModalController extends ModalController
         var data = sf.data[this.current];
         var compare = this.currentcompare ? sf.data[this.currentcompare - 1] : null;
 
-        saveAs(SFExporter.jsonBlob(data, compare), `${data.Label}.json`);
+        saveAs(Exporter.jsonBlob(data, compare), `${data.Label}.json`);
     }
 
     exportpng()
@@ -63,15 +63,9 @@ class SetModalController extends ModalController
         var data = sf.data[this.current];
         var compare = this.currentcompare ? sf.data[this.currentcompare - 1] : null;
 
-        saveAs(SFExporter.pngBlob(data, compare), `${data.Label}.png`);
-    }
-
-    exportcsv()
-    {
-        var data = sf.data[this.current];
-        var compare = this.currentcompare ? sf.data[this.currentcompare - 1] : null;
-
-        saveAs(SFExporter.csvBlob(data, compare), `${data.Label}.csv`);
+        Exporter.pngBlob(data, compare, function (blob) {
+            saveAs(blob, `${data.Label}.png`);
+        });
     }
 
     show(i, c)
@@ -615,5 +609,190 @@ class MainController
     static import(f)
     {
         SFImporter.importFile(f, MainController.show);
+    }
+}
+
+class Exporter
+{
+    static jsonBlob(data, compare)
+    {
+        var out = data;
+
+        if (compare)
+        {
+            data.Players.forEach(function (p) {
+                var cp = compare.Players.find(a => a.Name === p.Name);
+                if (cp) {
+                    var dp = {
+                        Level: p.Level - cp.Level,
+                        RankPlayer: p.RankPlayer - cp.RankPlayer,
+                        RankFortress: p.RankFortress - cp.RankFortress,
+                        HonorPlayer: p.HonorPlayer - cp.HonorPlayer,
+                        HonorFortress: p.HonorFortress - cp.HonorFortress,
+                        LifeBonus: p.LifeBonus - cp.LifeBonus,
+                        DamageBonus: p.DamageBonus - cp.DamageBonus,
+                        Tower: p.Tower - cp.Tower,
+                        Achievements: p.Achievements - cp.Achievements,
+                        Book: p.Book - cp.Book,
+                        Fortress : {
+                            Upgrades: p.Fortress.Upgrades - cp.Fortress.Upgrades,
+                            Wall: p.Fortress.Wall - cp.Fortress.Wall,
+                            Warriors: p.Fortress.Warriors - cp.Fortress.Warriors,
+                            Archers: p.Fortress.Archers - cp.Fortress.Archers,
+                            Mages: p.Fortress.Mages - cp.Fortress.Mages,
+                        },
+                        Strength: p.Strength - cp.Strength,
+                        Constitution: p.Constitution - cp.Constitution,
+                        Dexterity: p.Dexterity - cp.Dexterity,
+                        Luck: p.Luck - cp.Luck,
+                        Intelligence: p.Intelligence - cp.Intelligence,
+                        Armor: p.Armor - cp.Armor,
+                        XP: p.XP - cp.XP,
+                        XPNext: p.XPNext - cp.XPNext
+                    }
+
+                    if (p.Group)
+                    {
+                        dp.Group = {
+                            Treasure: p.Group.Treasure - cp.Group.Treasure,
+                            Instructor: p.Group.Instructor - cp.Group.Instructor,
+                            Pet: p.Group.Pet - cp.Group.Pet
+                        };
+
+                        dp.Fortress.Knights = p.Fortress.Knights - cp.Fortress.Knights;
+                    }
+
+                    p.Compare = dp;
+                }
+            });
+
+            data.Groups.forEach(function (g) {
+                var cg = compare.Groups.find(a => a.Name === g.Name);
+                if (cg) {
+                    var dg = {
+                        MemberCount: g.MemberCount - cg.MemberCount,
+                        Rank: g.Rank - cg.Rank,
+                        Levels: {
+                            Sum: g.Levels.Sum - cg.Levels.Sum,
+                            Avg: g.Levels.Avg - cg.Levels.Avg,
+                            Min: g.Levels.Min - cg.Levels.Min,
+                            Max: g.Levels.Max - cg.Levels.Max
+                        },
+                        Pets: {
+                            Sum: g.Pets.Sum - cg.Pets.Sum,
+                            Avg: g.Pets.Avg - cg.Pets.Avg,
+                            Min: g.Pets.Min - cg.Pets.Min,
+                            Max: g.Pets.Max - cg.Pets.Max
+                        },
+                        Treasures: {
+                            Sum: g.Treasures.Sum - cg.Treasures.Sum,
+                            Avg: g.Treasures.Avg - cg.Treasures.Avg,
+                            Min: g.Treasures.Min - cg.Treasures.Min,
+                            Max: g.Treasures.Max - cg.Treasures.Max
+                        },
+                        Instructors: {
+                            Sum: g.Instructors.Sum - cg.Instructors.Sum,
+                            Avg: g.Instructors.Avg - cg.Instructors.Avg,
+                            Min: g.Instructors.Min - cg.Instructors.Min,
+                            Max: g.Instructors.Max - cg.Instructors.Max
+                        },
+                        Knights: {
+                            Sum: g.Knights.Sum - cg.Knights.Sum,
+                            Avg: g.Knights.Avg - cg.Knights.Avg,
+                            Min: g.Knights.Min - cg.Knights.Min,
+                            Max: g.Knights.Max - cg.Knights.Max
+                        }
+                    }
+
+                    g.Compare = dg;
+                }
+            });
+        }
+
+        return new Blob([JSON.stringify(out)], {
+            type: 'application/json;charset=utf-8'
+        });
+    }
+
+    static pngBlob(data, compare, callback)
+    {
+        // Uinmplemented
+        var content = [];
+
+        content.push(`
+            <style>
+                .rb {
+                    border-right: 1px solid black;
+                }
+
+                table {
+                    width: 100%;
+                    text-align: center;
+                }
+
+                table td {
+                    font-size: 1.2em;
+                }
+            </style>
+            <table cellspacing="0">
+                <tr>
+                    <td rowspan="2" class="rb">Name</td>
+                    <td colspan="4" class="rb">General</td>
+                    <td colspan="3" rowspan="2" class="rb">Potions</td>
+                    <td colspan="4">Group</td>
+                </tr>
+                <tr>
+                    <td>Level</td>
+                    <td>Album</td>
+                    <td>Mount</td>
+                    <td class="rb">Awards</td>
+                    <td>Treasure</td>
+                    <td>Instructor</td>
+                    <td>Pet</td>
+                    <td>Knights</td>
+                </tr>
+                <tr>
+                    <td colspan="12" style="border-bottom: 3px solid black"></td>
+                </tr>
+        `);
+
+        data.Players.forEach(function (p) {
+            var c = compare ? compare.Players.find(a => a.Name == p.Name) : null;
+
+            if (!p.Fortress.Knights)
+            {
+                return;
+            }
+
+            var scrapbook = p.Book / 21.6;
+            content.push(`
+                <tr>
+                    <td width="250" class="rb">${p.Name}</td>
+                    <td width="100">${p.Level}${UIUtil.dif(p, c, 'Level')}</td>
+                    <td width="120" class="${scrapbook < st.scrapbook.min.value ? 'bg-danger' : (scrapbook >= st.scrapbook.max.value ? 'bg-success' : 'bg-warning')}">${Math.trunc(scrapbook * 10) / 10}%${UIUtil.difbook(p, c)}</td>
+                    <td width="80" class="rb ${p.Mount < st.mount.min.value ? 'bg-danger' : (p.Mount >= st.mount.max.value ? 'bg-success' : 'bg-warning')}">${p.Mount ? Enum.Mount[p.Mount] : ''}</td>
+                    <td width="100" class="rb">${p.Achievements}</td>
+                    <td width="30" class="${p.Potions[0].Size < 5 ? 'bg-danger' : (p.Potions[0].Size >= 25 ? 'bg-success' : 'bg-warning')}"></td>
+                    <td width="30" class="${p.Potions[1].Size < 5 ? 'bg-danger' : (p.Potions[1].Size >= 25 ? 'bg-success' : 'bg-warning')}"></td>
+                    <td width="30" class="rb ${p.Potions[2].Size < 5 ? 'bg-danger' : (p.Potions[2].Size >= 25 ? 'bg-success' : 'bg-warning')}"></td>
+                    <td width="100">${p.Group.Treasure}${UIUtil.dif2(p, c, 'Group', 'Treasure')}</td>
+                    <td width="100">${p.Group.Instructor}${UIUtil.dif2(p, c, 'Group', 'Instructor')}</td>
+                    <td width="100" class="${p.Group.Pet < st.pet.min.value ? 'bg-danger' : (p.Group.Pet >= st.pet.max.value ? 'bg-success' : 'bg-warning')}">${p.Group.Pet}${UIUtil.dif2(p, c, 'Group', 'Pet')}</td>
+                    <td width="100" class="${p.Fortress.Knights < st.knights.min.value ? 'bg-danger' : (p.Fortress.Knights >= st.knights.max.value ? 'bg-success' : 'bg-warning')}">${p.Fortress.Knights}${UIUtil.dif2(p, c, 'Fortress', 'Knights')}</td>
+                </tr>
+            `);
+        })
+
+        content.push('</table>');
+
+        $('#imageblock').html(content.join(''));
+
+        return html2canvas(document.getElementById('imageblock'), {
+            logging: false
+        }).then(function(canvas) {
+            canvas.toBlob(callback);
+
+            $('#imageblock').empty();
+        });
     }
 }

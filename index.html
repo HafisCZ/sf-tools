@@ -21,6 +21,7 @@
 	<div class="dragzone" style="visibility: hidden;"></div>
 	<!--NOTIFICATION BLOCK-->
 	<notifyblock></notifyblock>
+	<div id="imageblock"></div>
 
 	<!--HEADER-->
 	<header>
@@ -41,7 +42,7 @@
 	</header>
 
 	<!--MAIN-->
-	<main role="main" class="flex-shrink-0">
+	<main role="main" class="flex-shrink-0 bg-white">
 		<div class="container">
 			<div class="list-group mt-5" id="m-list"></div>
 			<div class="text-center mt-5 mb-5">
@@ -225,14 +226,14 @@
 				<div class="modal-body">
 					<h5>1.1.3</h5>
 					<ul>
-						<li>Users can now export sets into JSON format</li>
+						<li>Users can now export sets into JSON and PNG formats</li>
 						<li>Added version history</li>
-						<li>Included FileSaver library</li>
 						<li>Bugfixes:
 							<small>
 								<ul style="list-style-type:none">
 									<li>- Player dungeon shows incorrect number</li>
 									<li>- Selection for comparison does not change when reordering a set</li>
+									<li>- List with players is not sorted</li>
 								 </ul>
 							</small>
 						</li>
@@ -279,8 +280,9 @@
 	<script type="text/javascript" src="js/sft/core.js"></script>
 	<script type="text/javascript" src="js/sft/constants.js"></script>
 
-	<!--Filesaver-->
-	<script type="text/javascript" src="js/filesaver/filesaver.js"></script>
+	<!--Libraries-->
+	<script type="text/javascript" src="js/libs/filesaver.js"></script>
+	<script type="text/javascript" src="js/libs/html2canvas.min.js"></script>
 
 	<!--UI SFUtil components-->
 	<script type="text/javascript" src="js/ui/browse.js"></script>

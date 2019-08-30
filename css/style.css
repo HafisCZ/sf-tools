@@ -21,6 +21,12 @@ notifyblock {
     transform: translateX(25vw);
 }
 
+#imageblock {
+    position: fixed;
+    top: 2000px;
+    left: 0;
+}
+
 body {
   overflow-y: scroll;
 }

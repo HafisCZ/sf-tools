@@ -219,4 +219,22 @@ class UIUtil
 
         return ``;
     }
+
+    static difbook(p, c)
+    {
+        if (c) {
+            var v = Math.trunc((p.Book / 21.6 - c.Book / 21.6) * 100) / 100;
+
+            if (v > 0)
+            {
+                return ` <xsm>+${v}%</xsm>`;
+            }
+            else if (v < 0)
+            {
+                return ` <xsm>${v}%</xsm>`;
+            }
+        }
+
+        return '';
+    }
 }
