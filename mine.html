@@ -122,7 +122,7 @@
 
 		$('#digval, #digdata, #digfil').on('change input', function() {
 			$('#digout').empty();
-			console.log('od');
+
 			if (!$('#digval').val() || $('#digdata').val().length == 0) return;
 
 			var onlyall = $('#onlyfull').prop('checked');
@@ -180,9 +180,19 @@
 					}
 					else
 					{
-						for (var j = 0; j < data.length; j++)
+						if (data.length == 1)
 						{
-							results.push(funSingle(targets[j], data[j][i]));
+							for (var j = 0; j < targets.length; j++)
+							{
+								results.push(funSingle(targets[j], data[0][i]));
+							}
+						}
+						else
+						{
+							for (var j = 0; j < data.length; j++)
+							{
+								results.push(funSingle(targets[j], data[j][i]));
+							}
 						}
 					}
 

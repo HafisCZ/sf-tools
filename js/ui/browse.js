@@ -39,13 +39,31 @@ class SetModalController extends ModalController
         this.search = $('#m-set-search');
 
         this.search.on('keyup', function() {
-            var value = $(this).val().toLowerCase();
+            var raw = $(this).val().toLowerCase();
+            var pfilter = p => true;
+            var gfilter = g => true;
+
+            var fil = Str.split(raw, '=<>', ' ');
+            if (fil.length === 1)
+            {
+                pfilter = p => p.Name.toLowerCase().includes(fil[0]);
+                gfilter = g => g.Name.toLowerCase().includes(fil[0]);
+            }
+            else if (fil.length === 3)
+            {
+                if (fil[0] === 'level')
+                {
+                    if (fil[1] === '=') pfilter = p => p.Level == fil[2];
+                    else if (fil[1] === '<') pfilter = p => p.Level < fil[2];
+                    else if (fil[1] === '>') pfilter = p => p.Level > fil[2];
+                }
+            }
 
             $('#m-set-playerlist a').filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                $(this).toggle(pfilter(sf.data[mc.set.current].Players[$(this).attr('pid')]));
             })
             $('#m-set-grouplist a').filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                $(this).toggle(gfilter(sf.data[mc.set.current].Groups[$(this).attr('gid')]));
             })
         });
     }
@@ -76,13 +94,13 @@ class SetModalController extends ModalController
         var a = [];
         for (var [j, p] of sf.players(i))
         {
-            a.push(`<a onclick="mc.player.show(${i},${j},${c});" class="list-group-item list-group-item-action">${p.Name}</div>`);
+            a.push(`<a onclick="mc.player.show(${i},${j},${c});" pid="${j}" class="list-group-item list-group-item-action">${p.Name}</div>`);
         }
 
         var b = [];
         for (var [j, g] of sf.groups(i))
         {
-            b.push(`<a onclick="mc.group.show(${i},${j},${c});" class="list-group-item list-group-item-action">${g.Name}</div>`);
+            b.push(`<a onclick="mc.group.show(${i},${j},${c});" gid="${j}" class="list-group-item list-group-item-action">${g.Name}</div>`);
         }
 
         this.label.html(`${sf.set(i).Label}${c ? `<small class="ml-2 text-muted">(${sf.set(c - 1).Label})</small>` : ''}`);
@@ -300,6 +318,12 @@ class PlayerModalController extends ModalController
             </div>
             <div class="progress mt-n2" style="height: 2px;">
               <div class="progress-bar bg-dark" style="width: ${Math.trunc(100 * player.Achievements / 70)}%" role="progressbar"></div>
+            </div>
+            <div class="row mt-2 ${player.Aura ? '' : 'd-none'}">
+                <div class="col">Toilet</div>
+                <div class="col text-center text-muted">${player.Aura}</div>
+                <div class="col">Fill</div>
+                <div class="col text-center text-muted">${player.AuraFill}</div>
             </div>
             <hr/>
             <h5>Fortress</h5>

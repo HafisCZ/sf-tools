@@ -238,3 +238,69 @@ class UIUtil
         return '';
     }
 }
+
+class Str
+{
+    static split(str, delims, ignore='')
+    {
+        var delimiters = delims.split('');
+        var chars = str.split('');
+        var ign = ignore.split('');
+        var out = [];
+        var word = [];
+
+        for (var i = 0, c; c = chars[i]; i++)
+        {
+            if (ign.includes(c)) continue;
+
+            if (delimiters.includes(c))
+            {
+                out.push(word.join(''), c);
+                word = [];
+            }
+            else
+            {
+                word.push(c);
+            }
+        }
+
+        out.push(word.join(''));
+
+        return out;
+    }
+}
+
+class Mat
+{
+    static normalize(v, base)
+    {
+        return v % base;
+    }
+
+    static pack2(a, b, base)
+    {
+        return a * base + b;
+    }
+
+    static unpack2(v, base)
+    {
+        let b = v % base;
+        let a = (v - b) / base;
+
+        return [a, b];
+    }
+
+    static pack3(a, b, c, base)
+    {
+        return (a * base + b) * base + c;
+    }
+
+    static unpack3(v, base)
+    {
+        let c = v % base;
+        let b = ((v - c) / base) % base;
+        let a = (((v - c) / base) - b) / base;
+
+        return [a, b, c];
+    }
+}

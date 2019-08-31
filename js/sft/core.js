@@ -196,6 +196,7 @@ class SFPlayer
     {
         this.Group = {};
         this.Fortress = {};
+        this.Achievements = 0;
 
         for (var [k, v] of SFUtil.parse(data))
         {
@@ -231,7 +232,7 @@ class SFPlayer
 
                 this.XP = vals[3];
                 this.XPNext = vals[4];
-                this.Book = vals[163] - 10000;
+                this.Book = vals[163] ? vals[163] - 10000 : 0;
                 this.Level = vals[173];
 
                 this.HonorPlayer = vals[5];
@@ -279,9 +280,11 @@ class SFPlayer
                 this.Fortress.Upgrades = vals[247];
                 this.Fortress.Knights = vals[258];
 
-                //[this.Aura, this.AuraFill] = SFUtil.nor28(vals[242]);
-                [this.Mount, this.Tower] = SFUtil.nor216(vals[159]);
-                [this.DamageBonus, this.LifeBonus] = SFUtil.nor28(vals[252] / Math.pow(2, 16));
+                this.Aura = 0;
+                this.AuraFill = 0;
+
+                [this.Tower, this.Mount] = Mat.unpack2(vals[159], 65536);
+                [this.LifeBonus, this.DamageBonus] = Mat.unpack2(vals[252] / 65536, 256);
 
                 this.Face = vals.slice(8, 18);
                 SFPlayer.fillFortress(this, vals.slice(208, 220), null);
@@ -294,7 +297,7 @@ class SFPlayer
 
                 this.XP = vals[8];
                 this.XPNext = vals[9];
-                this.Book = vals[438] - 10000;
+                this.Book = vals[438] ? vals[438] - 10000 : 0;
                 this.Level = vals[465];
 
                 this.HonorPlayer = vals[10];
@@ -347,13 +350,12 @@ class SFPlayer
                 this.Fortress.Knights = vals[598];
 
                 this.DamageBonus = (vals[509] - vals[509] % 64) / 32;
-
                 this.LifeBonus = ((vals[445] / Math.pow(2, 16)) - (vals[445] / Math.pow(2, 16)) % 256) / 256;
 
                 this.Aura = vals[491];
                 this.AuraFill = vals[492];
 
-                [this.Mount, this.Tower] = SFUtil.nor216(vals[286]);
+                [this.Tower, this.Mount] = Mat.unpack2(vals[286], 65536);
                 this.MountExpire = new Date(vals[451]);
 
                 this.Face = vals.slice(17, 27);
