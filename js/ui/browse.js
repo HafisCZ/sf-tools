@@ -82,7 +82,7 @@ class SetModalController extends ModalController
         var compare = this.currentcompare ? sf.data[this.currentcompare - 1] : null;
 
         Exporter.pngBlob(data, compare, function (blob) {
-            Exporter.download(`${data.Label}${compare ? `_${compare.Label}` : ''}.json`, blob);
+            Exporter.download(`${data.Label}${compare ? `_${compare.Label}` : ''}.png`, blob);
         });
     }
 
