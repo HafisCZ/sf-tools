@@ -213,8 +213,8 @@ class SFPlayer
                 var values = SFUtil.split(v);
                 this.Fortress.Wall = values[0];
                 this.Fortress.Warriors = values[1];
-                this.Fortress.Archers = values[2];
-                this.Fortress.Mages = values[3];
+                this.Fortress.Mages = values[2];
+                this.Fortress.Archers = values[3];
             }
             else if (k.includes('achievement'))
             {
@@ -381,14 +381,14 @@ class SFPlayer
 
         p.Fortress.HeartOfDarkness = 0;
         p.Fortress.UnderworldGate = 0;
-        p.Fortress.SoulExtractor = 0;
-        p.Fortress.TortureChamber = 0;
-        p.Fortress.GoblinPit = 0;
-        p.Fortress.TrollBlock = 0;
-        p.Fortress.Keeper = 0;
-        p.Fortress.GladiatorTrainer = 0;
         p.Fortress.GoldPit = 0;
+        p.Fortress.SoulExtractor = 0;
+        p.Fortress.GoblinPit = 0;
+        p.Fortress.TortureChamber = 0;
+        p.Fortress.GladiatorTrainer = 0;
+        p.Fortress.TrollBlock = 0;
         p.Fortress.TimeMachine = 0;
+        p.Fortress.Keeper = 0;
     }
 }
 

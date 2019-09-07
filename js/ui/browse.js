@@ -409,6 +409,44 @@ class PlayerModalController extends ModalController
         b.push(`
             </div>
             <hr/>
+            <h5>Fortress</h5>
+            <div class="row">
+              <div class="col">Fortress</div>
+              <div class="col text-center text-muted">${player.Fortress.Fortress}${UIUtil.dif2(player, cmp, 'Fortress', 'Fortress')}</div>
+              <div class="col">Laborers' Quarters</div>
+              <div class="col text-center text-muted">${player.Fortress.LaborerQuarters}${UIUtil.dif2(player, cmp, 'Fortress', 'LaborerQuarters')}</div>
+            </div>
+            <div class="row">
+              <div class="col">Woordcutter's Hut</div>
+              <div class="col text-center text-muted">${player.Fortress.WoodcutterGuild}${UIUtil.dif2(player, cmp, 'Fortress', 'WoodcutterGuild')}</div>
+              <div class="col">Quarry</div>
+              <div class="col text-center text-muted">${player.Fortress.Quarry}${UIUtil.dif2(player, cmp, 'Fortress', 'Quarry')}</div>
+            </div>
+            <div class="row">
+              <div class="col">Get Mine</div>
+              <div class="col text-center text-muted">${player.Fortress.GemMine}${UIUtil.dif2(player, cmp, 'Fortress', 'GemMine')}</div>
+              <div class="col">Academy</div>
+              <div class="col text-center text-muted">${player.Fortress.Academy}${UIUtil.dif2(player, cmp, 'Fortress', 'Academy')}</div>
+            </div>
+            <div class="row">
+              <div class="col">Archery Guild</div>
+              <div class="col text-center text-muted">${player.Fortress.ArcheryGuild}${UIUtil.dif2(player, cmp, 'Fortress', 'ArcheryGuild')}</div>
+              <div class="col">Barracks</div>
+              <div class="col text-center text-muted">${player.Fortress.Barracks}${UIUtil.dif2(player, cmp, 'Fortress', 'Barracks')}</div>
+            </div>
+            <div class="row">
+              <div class="col">Mages' Tower</div>
+              <div class="col text-center text-muted">${player.Fortress.MageTower}${UIUtil.dif2(player, cmp, 'Fortress', 'MageTower')}</div>
+              <div class="col">Treasury</div>
+              <div class="col text-center text-muted">${player.Fortress.Treasury}${UIUtil.dif2(player, cmp, 'Fortress', 'Treasury')}</div>
+            </div>
+            <div class="row">
+              <div class="col">Smithy</div>
+              <div class="col text-center text-muted">${player.Fortress.Smithy}${UIUtil.dif2(player, cmp, 'Fortress', 'Smithy')}</div>
+              <div class="col">Fortifications</div>
+              <div class="col text-center text-muted">${player.Fortress.Fortifications}${UIUtil.dif2(player, cmp, 'Fortress', 'Fortifications')}</div>
+            </div>
+            <hr/>
             <h5>Rankings</h5>
             <div class="row">
               <div class="col"><b>Player</b></div>
@@ -809,7 +847,7 @@ class Exporter
             var scrapbook = p.Book / 21.6;
             content.push(`
                 <tr>
-                    <td width="250" class="rb">${p.Name}</td>
+                    <td width="250" class="rb">${!c ? '<span style="font-weight: bold; background-color: #00c851; margin-top: -0.1em; font-size: 0.8em; padding: 0.1em 0.3em 0.2em 0.3em; border-radius: 0.2em ">NEW</span> ' : ''}${p.Name}</td>
                     <td width="100">${p.Level}${UIUtil.dif(p, c, 'Level')}</td>
                     <td width="120" class="${scrapbook < st.scrapbook.min.value ? 'bg-danger' : (scrapbook >= st.scrapbook.max.value ? 'bg-success' : 'bg-warning')}">${scrapbook.toFixed(1)}%${UIUtil.difbook(p, c)}</td>
                     <td width="80" class="rb ${p.Mount < st.mount.min.value ? 'bg-danger' : (p.Mount >= st.mount.max.value ? 'bg-success' : 'bg-warning')}">${p.Mount ? Enum.Mount[p.Mount] : ''}</td>
@@ -820,7 +858,7 @@ class Exporter
                     <td width="100">${p.Group.Treasure}${UIUtil.dif2(p, c, 'Group', 'Treasure')}</td>
                     <td width="100">${p.Group.Instructor}${UIUtil.dif2(p, c, 'Group', 'Instructor')}</td>
                     <td width="100" class="${p.Group.Pet < st.pet.min.value ? 'bg-danger' : (p.Group.Pet >= st.pet.max.value ? 'bg-success' : 'bg-warning')}">${p.Group.Pet}${UIUtil.dif2(p, c, 'Group', 'Pet')}</td>
-                    <td width="100" class="${p.Fortress.Knights < st.knights.min.value ? 'bg-danger' : (p.Fortress.Knights >= st.knights.max.value ? 'bg-success' : 'bg-warning')}">${p.Fortress.Knights}${UIUtil.dif2(p, c, 'Fortress', 'Knights')}</td>
+                    <td width="100" class="${p.Fortress.Knights < st.knights.min.value ? 'bg-danger' : (p.Fortress.Knights >= st.knights.max.value ? 'bg-success' : 'bg-warning')}">${p.Fortress.Knights}/${p.Fortress.Fortress}${UIUtil.dif2(p, c, 'Fortress', 'Knights')}</td>
                 </tr>
             `);
         })
