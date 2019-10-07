@@ -36,11 +36,10 @@
                 </ul>
             </div>
         </nav>
-
-        <div class="uk-container uk-margin-top uk-animation-fast" data-id="main">
-            <ul class="uk-switcher uk-margin-bottom" data-id="pages">
-                <!--BROWSE PLAYERS-->
-                <li class="uk-active">
+        <div class="uk-container uk-margin-top uk-margin-bottom" data-id="main">
+            <div data-view-container class="uk-animation-fast">
+                <div data-view="players">
+                    <!--BROWSE PLAYERS-->
                     <div uk-filter="target: [data-id='psgrid']">
                         <div>
                             <div class="uk-inline uk-width-expand">
@@ -62,10 +61,9 @@
                         </div>
                         <div class="uk-child-width-1-4 uk-child-width-1-6@m uk-text-center uk-grid-small uk-grid-match" uk-grid data-id="psgrid"></div>
                     </div>
-                </li>
-
-                <!--GROUPS-->
-                <li>
+                </div>
+                <div data-view="groups">
+                    <!--BROWSE GROUPS-->
                     <div class="uk-margin-bottom">
                         <div class="uk-inline uk-width-expand">
                             <form class="uk-search uk-search-default uk-width-expand">
@@ -76,10 +74,9 @@
                         </div>
                     </div>
                     <div class="uk-child-width-1-4 uk-child-width-1-6@m uk-text-center uk-grid-small uk-grid-match" uk-grid data-id="gsgrid"></div>
-                </li>
-
-                <!--DATABASE-->
-                <li>
+                </div>
+                <div data-view="database">
+                    <!--DATABASE-->
                     <div data-id="dbalert"></div>
                     <div class="js-upload uk-placeholder uk-text-center" data-id="dbdrop">
                         <span uk-icon="cloud-upload"></span>
@@ -90,10 +87,9 @@
                         </div>
                     </div>
                     <ul uk-accordion data-id="dblist"></ul>
-                </li>
-
-                <!--PLAYER DETAIL-->
-                <li>
+                </div>
+                <div data-view="player">
+                    <!--PLAYER DETAIL-->
                     <div class="uk-inline uk-width-1-1">
                         <div class="uk-card uk-card-default uk-card-small uk-card-body">
                             <div class="uk-flex uk-flex-inline uk-flex-between uk-width-expand">
@@ -322,10 +318,9 @@
                             </div>
                         </div>
                     </div>
-                </li>
-
-                <!--ARENA MANAGER-->
-                <li>
+                </div>
+                <div data-view="arena">
+                    <!--ARENA MANAGER-->
                     <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top" data-group="idlegame">
                         <h5 class="uk-card-title">Arena Simulator</h5>
                         <div class="uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
@@ -455,7 +450,7 @@
                             <div class="uk-width-1-5"></div>
                             <div class="uk-width-1-1"><br/></div>
                             <div class="uk-width-1-5"><b>Total money</b></div>
-                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="ast" disabled></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="aso" disabled></div>
                             <div class="uk-width-1-5"></div>
                             <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
                                 <div class="uk-width-1-3"><b>Target</b></div>
@@ -464,33 +459,59 @@
                                     <select class="uk-select uk-form-small uk-padding-remove" id="asg" data-noreset>
                                         <option value="0">Minutes</option>
                                         <option value="1">Total Money</option>
-                                        <option value="2">Available Runes</option>
-                                        <option value="3">Building Level</option>
+                                        <option value="2">Total Runes</option>
+                                        <option value="3">Hourly Rate</option>
+                                        <option value="4">Sacrifice Runes</option>
+                                        <option value="5">Building Level</option>
                                     </select>
                                 </div>
                             </div>
-                            <div class="uk-width-1-5"><b>Available money</b></div>
-                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asc" disabled></div>
+                            <div class="uk-width-1-5"><b>Run money</b></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="ast" disabled></div>
                             <div class="uk-width-1-5"></div>
                             <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
                                 <div class="uk-width-1-3"><b>Total runes</b></div>
                                 <div class="uk-width-2-3"><input class="uk-input uk-form-small" type="text" id="asr" placeholder="Enter amount of runes you have" data-noreset></div>
                             </div>
-                            <div class="uk-width-1-5"><b>Available runes</b></div>
-                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asa" disabled></div>
+                            <div class="uk-width-1-5"><b>Available money</b></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asc" disabled></div>
                             <div class="uk-width-1-5"></div>
                             <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
                                 <div class="uk-width-1-3"><b>Speed upgrades</b></div>
-                                <div class="uk-width-2-3"><input class="uk-input uk-form-small" type="text" id="asb" placeholder="Enter upgrades as HEX or BIN" data-noreset></div>
+                                <div class="uk-width-2-3 uk-flex uk-flex-between uk-flex-middle" id="asb" data-noreset>
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                </div>
                             </div>
-                            <div class="uk-width-1-5"><b>Duration</b></div>
-                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asl" disabled></div>
+                            <div class="uk-width-1-5"><b>Total runes</b></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asf" disabled></div>
                             <div class="uk-width-1-5"></div>
                             <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
                                 <div class="uk-width-1-3"><b>Rate upgrades</b></div>
-                                <div class="uk-width-2-3"><input class="uk-input uk-form-small" type="text" id="asp" placeholder="Enter upgrades as HEX or BIN" data-noreset></div>
+                                <div class="uk-width-2-3 uk-flex uk-flex-between uk-flex-middle" id="asp" data-noreset>
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                    <input class="uk-checkbox" type="checkbox">
+                                </div>
                             </div>
-                            <div class="uk-width-3-5"></div>
+                            <div class="uk-width-1-5"><b>Runes to sacrifice</b></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asa" disabled></div>
+                            <div class="uk-width-1-5"></div>
                             <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
                                 <div class="uk-width-1-3"><b>Upgrade style</b></div>
                                 <div class="uk-width-2-3">
@@ -500,23 +521,34 @@
                                         <option value="2">Lowest price</option>
                                         <option value="3">Best rate</option>
                                         <option value="4">Amortisation</option>
-                                        <option value="5">Best rate (Force)</option>
-                                        <option value="6">Follow breakpoints</option>
+                                        <option value="5">Breakpoint amortisation</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-5"><b>Duration</b></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asl" disabled></div>
+                            <div class="uk-width-1-5"></div>
+                            <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                                <div class="uk-width-1-3"><b>Sacrifice style</b></div>
+                                <div class="uk-width-2-3">
+                                    <select class="uk-select uk-form-small" id="asv" data-noreset>
+                                        <option value="0">None</option>
+                                        <option value="1">Match total</option>
+                                        <option value="1">Double total</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="uk-width-3-5"></div>
                             <div class="uk-width-2-5" class="uk-grid uk-grid-small uk-grid-collapse" uk-grid>
-                                <div class="uk-width-1-3"><button class="uk-button uk-button-small uk-button-primary uk-width-expand" onclick="RunIdle()" id="ass">START</button></div>
-                                <div class="uk-width-1-3"><button class="uk-button uk-button-small uk-button-danger uk-width-expand" onclick="ResetIdle()">RESET</button></div>
-                                <div class="uk-width-1-3"><button class="uk-button uk-button-small uk-button-danger uk-width-expand" onclick="ClearIdle()">CLEAR</button></div>
+                                <div class="uk-width-1-3"><button class="uk-button uk-button-small uk-button-primary uk-width-expand" onclick="runSimulation()">START</button></div>
+                                <div class="uk-width-1-3"><button class="uk-button uk-button-small uk-button-danger uk-width-expand" onclick="resetSimulation()">STOP</button></div>
+                                <div class="uk-width-1-3"><button class="uk-button uk-button-small uk-button-danger uk-width-expand" onclick="clearSimulation()">CLEAR</button></div>
                             </div>
                         </div>
                     </div>
-                </li>
-
-                <!--SETTINGS-->
-                <li>
+                </div>
+                <div data-view="settings">
+                    <!--SETTINGS-->
                     <div class="uk-card uk-card-default uk-card-small uk-card-body uk-width-expand">
                         <h4>Highlighting</h4>
                         <form class="uk-form-stacked uk-margin-remove">
@@ -620,10 +652,9 @@
                             <button class="uk-button uk-button-default" onclick="window.settings.save()" data-id="stapply">APPLY</button>
                         </div>
                     </div>
-                </li>
-
-                <!--GROUP DETAIL-->
-                <li>
+                </div>
+                <div data-view="group">
+                    <!--GROUP DETAIL-->
                     <div class="uk-inline uk-width-1-1">
                         <div class="uk-card uk-card-default uk-card-small uk-card-body">
                             <div class="uk-flex uk-flex-inline uk-flex-between uk-width-expand">
@@ -712,10 +743,38 @@
                         </div>
                         <div data-id="gtable"></div>
                     </div>
-                </li>
-            </ul>
+                </div>
+            </div>
         </div>
 
+        <script type="text/javascript">
+            window.view = new Object();
+            window.view.container = document.querySelector('[data-view-container]');
+            window.nav = function (v, ... args) {
+                let view = document.querySelector(`[data-view="${v}"]`)
+                if (view && !window.view.lock && window.view.locked != v) {
+                    window.view.lock = true;
+                    window.view.container.classList.add('uk-animation-fade', 'uk-animation-reverse');
+                    setTimeout(function () {
+                        window.view.container.hidden = true;
+                        window.view.container.classList.remove('uk-animation-fade', 'uk-animation-reverse');
+                        document.querySelectorAll('[data-view]').forEach(el => el.hidden = el.getAttribute('data-view') != v);
+                        setTimeout(function () {
+                            window.view.container.classList.add('uk-animation-fade');
+                            window.view.container.hidden = false;
+                            UIkit.update(element = document.body, type = 'update');
+                            setTimeout(function () {
+                                window.view.container.classList.remove('uk-animation-fade');
+                                window.view.lock = false;
+                                window.view.locked = v;
+                            }, 150);
+                        }, 50);
+                        window[v].init(args);
+                    }, 200);
+                }
+            }
+            window.nav('players');
+        </script>
         <script src="js/sft.js"></script>
     </body>
 </html>

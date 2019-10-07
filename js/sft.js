@@ -34,48 +34,7 @@ window._ = function (i) {
     return $(`[data-id="${c[0]}"]:first ${c.length > 1 ? c[1] : ''}`);
 }
 
-/*
-    PAGE DEFINITIONS
-*/
-window.page = {
-    index: 0,
-    ready: true,
-    table: {
-        players: 0,
-        groups: 1,
-        database: 2,
-        player: 3,
-        arena: 4,
-        settings: 5,
-        group: 6
-    }
-}
-
 window.charts = [];
-
-/*
-    NAVIGATE FUNCTION - SWITCHES BETWEEN PAGES WITH ANIMATION AND CALLS PAGE CONSTRUCTOR
-*/
-window.nav = function (i, ... e) {
-    if (window.page.ready && window.page.index != i) {
-        window.page.ready = false;
-        window.page.index = i;
-        _('main').addClass('uk-animation-fade uk-animation-reverse');
-        setTimeout(function () {
-            _('main').hide().removeClass('uk-animation-fade uk-animation-reverse');
-            UIkit.switcher(_('pages')[0]).show(window.page.table[i]);
-            setTimeout(function () {
-                _('main').addClass('uk-animation-fade').show();
-                UIkit.update(element = document.body, type = 'update');
-                setTimeout(function () {
-                    _('main').removeClass('uk-animation-fade');
-                    window.page.ready = true;
-                }, 150);
-            }, 50);
-            window[i].init(e);
-        }, 200);
-    }
-}
 
 window.he.highlight = function (v, e) {
     if (v >= window.he.rules()[e].max) return `<span class="fsuccess">${v}</span>`;

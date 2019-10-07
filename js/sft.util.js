@@ -312,10 +312,48 @@ class LocalStorageObjectProperty extends LocalStorageProperty
 /*
     UTIL FUNCTIONS
 */
-Math.format = (number) => {
-    let p = number.toString().split('e');
-    return `${p[0].split('').map((c, i, a) => ((a.length - 1 - i) % 3 == 0 && (a.length - 2 - i) > 0) ? `${c} ` : c).join('')}${p.length > 1 ? p[1] : ''}`;
-}
+Math.units = [
+    [1E87, 'Ocv'],
+    [1E84, 'Spv'],
+    [1E81, 'Sxv'],
+    [1E78, 'Qiv'],
+    [1E75, 'Qav'],
+    [1E72, 'Tv'],
+    [1E69, 'Dv'],
+    [1E66, 'Uv'],
+    [1E63, 'v'],
+    [1E60, 'N'],
+    [1E57, 'O'],
+    [1E54, 'St'],
+    [1E51, 'Sd'],
+    [1E48, 'Qd'],
+    [1E45, 'Qt'],
+    [1E42, 'T'],
+    [1E39, 'D'],
+    [1E36, 'U'],
+    [1E33, 'd'],
+    [1E30, 'n'],
+    [1E27, 'o'],
+    [1E24, 'S'],
+    [1E21, 's'],
+    [1E18, 'Q'],
+    [1E15, 'q'],
+    [1E12, 't'],
+    [1E9, 'B']
+];
+
+Math.format = (n) => {
+    if (n < 1E9) {
+        let p = n.toString().split('e');
+        return `${p[0].split('').map((c, i, a) => ((a.length - 1 - i) % 3 == 0 && (a.length - 2 - i) > 0) ? `${c} ` : c).join('')}${p.length > 1 ? p[1] : ''}`;
+    } else {
+        for (let i = 0, u; u = Math.units[i]; i++) {
+            if (n >= u[0]) {
+                return `${(Math.trunc((n / u[0]) * 1000) / 1000)} ${u[1]}`;
+            }
+        }
+    }
+};
 
 Math.clamp = (number, min, max) => number < min ? min : (number > max ? max : number);
 
