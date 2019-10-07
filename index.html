@@ -1,281 +1,721 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <title>SFTools 1.2</title>
 
-<head>
-	<!--META-->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta http-equiv="x-ua-compatible" content="ie=edge">
-	<!--TITLE-->
-	<title>SFTools Web UI</title>
-	<!--STYLESHEET-->
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-	<!--STYLESHEET-->
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/mdb.min.css" rel="stylesheet">
-	<link href="css/style.css" rel="stylesheet">
-</head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<body>
-	<!--DRAGDROP OVERLAY-->
-	<div class="dragzone" style="visibility: hidden;"></div>
-	<!--NOTIFICATION BLOCK-->
-	<notifyblock></notifyblock>
-	<div id="imageblock"></div>
+        <link rel="stylesheet" href="css/uikit.min.css" />
+        <link rel="stylesheet" href="css/custom.css" />
 
-	<!--HEADER-->
-	<header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-			<a class="navbar-brand text-white">SFTools Web UI <small style="font-size: 50%;" onclick="event.stopPropagation(); mc.history.show();">1.1.3</small></a>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
 
-			<a class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse">
-				<span class="navbar-toggler-icon"></span>
-			</a>
+        <script src="js/uikit.min.js"></script>
+        <script src="js/uikit-icons.min.js"></script>
+        <script src="js/jquery.3.4.1.min.js"></script>
 
-			<div class="collapse navbar-collapse">
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item"><a class="nav-link" onclick="mc.settings.show()">Settings</a></li>
-					<li class="nav-item"><a class="nav-link" onclick="mc.help.show()">Help</a></li>
-				</ul>
-			</div>
-		</nav>
-	</header>
+        <script src="js/lz-string.min.js"></script>
+        <script src="js/html2canvas.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js" integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
 
-	<!--MAIN-->
-	<main role="main" class="flex-shrink-0 bg-white">
-		<div class="container">
-			<div class="list-group mt-5" id="m-list"></div>
-			<div class="text-center mt-5 mb-5">
-				<h3>Drag files here</h3>
-				<label class='text-muted'>
-					Or click here to select a file
-					<input type="file" id="m-filebrowser" hidden>
-				</label>
-			</div>
-		</div>
-	</main>
+        <script src="js/sft.util.js"></script>
+        <script src="js/sft.core.js"></script>
+        <script src="js/sft.idle.js"></script>
+    </head>
+    <body>
+        <nav class="uk-navbar-container" uk-navbar>
+            <div class="uk-navbar-left">
+                <ul class="uk-navbar-item uk-logo">SFTools <span style="font-size: 0.5em; margin-top: -0.6em; margin-left: 0.3em; margin-right: -0.7em">1.2 Beta</span></ul>
+                <ul class="uk-navbar-nav">
+                    <li><a onclick="window.nav('players')">Players</a></li>
+                    <li><a onclick="window.nav('groups')">Groups</a></li>
+                    <li><a onclick="window.nav('arena')">Arena</a></li>
+                    <li><a onclick="window.nav('database')">Database</a></li>
+                    <li><a onclick="window.nav('settings')">Settings</a></li>
+                </ul>
+            </div>
+        </nav>
 
-	<!--MODAL-->
-	<div class="modal" id="m-set" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header bg-dark">
-					<h4 class="modal-title text-white" id="m-set-label"></h4>
-					<a class="btn btn-dark dropdown-toggle m-0 py-1 mt-1 mr-2 px-3" data-toggle="dropdown">
-						<i class="fas fa-file-export text-white"></i>
-					</a>
-		            <div class="dropdown-menu">
-		                <a class="dropdown-item" onclick="mc.set.exportpng();">To PNG</a>
-		                <a class="dropdown-item" onclick="mc.set.exportjson();">To JSON</a>
-		            </div>
-				</div>
-				<div class="modal-body">
-					<h5>Browse</h5>
-					<input class="form-control mb-2" id="m-set-search" type="text" placeholder="Filter">
-					<div class="row">
-						<div class="col">
-							<div class="list-group" id="m-set-playerlist"></div>
-						</div>
-						<div class="col">
-							<div class="list-group" id="m-set-grouplist"></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div class="uk-container uk-margin-top uk-animation-fast" data-id="main">
+            <ul class="uk-switcher uk-margin-bottom" data-id="pages">
+                <!--BROWSE PLAYERS-->
+                <li class="uk-active">
+                    <div uk-filter="target: [data-id='psgrid']">
+                        <div>
+                            <div class="uk-inline uk-width-expand">
+                                <form class="uk-search uk-search-default uk-width-expand">
+                                    <span uk-search-icon></span>
+                                    <input class="uk-search-input" type="search" data-id="pssearch" placeholder="Search...">
+                                </form>
+                                <button class="uk-close-small uk-overlay uk-position-center-right" type="button" onclick="window.players.reset_name();" uk-close></button>
+                            </div>
+                            <ul class="uk-subnav uk-subnav-pill">
+                                <li class="uk-active" uk-filter-control><a>All</a></li>
+                                <li uk-filter-control="[data-class='1']"><a>Warrior</a></li>
+                                <li uk-filter-control="[data-class='2']"><a>Mage</a></li>
+                                <li uk-filter-control="[data-class='3']"><a>Scout</a></li>
+                                <li uk-filter-control="[data-class='4']"><a>Assassin</a></li>
+                                <li uk-filter-control="[data-class='5']"><a>Battle Mage</a></li>
+                                <li uk-filter-control="[data-class='6']"><a>Berserker</a></li>
+                            </ul>
+                        </div>
+                        <div class="uk-child-width-1-4 uk-child-width-1-6@m uk-text-center uk-grid-small uk-grid-match" uk-grid data-id="psgrid"></div>
+                    </div>
+                </li>
 
-	<div class="modal" id="m-player" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header bg-dark" id="m-player-header"></div>
-				<div class="modal-body" id="m-player-body"></div>
-			</div>
-		</div>
-	</div>
+                <!--GROUPS-->
+                <li>
+                    <div class="uk-margin-bottom">
+                        <div class="uk-inline uk-width-expand">
+                            <form class="uk-search uk-search-default uk-width-expand">
+                                <span uk-search-icon></span>
+                                <input class="uk-search-input" type="search" data-id="gssearch" placeholder="Search...">
+                            </form>
+                            <button class="uk-close-small uk-overlay uk-position-center-right" type="button" onclick="window.groups.reset_name();" uk-close></button>
+                        </div>
+                    </div>
+                    <div class="uk-child-width-1-4 uk-child-width-1-6@m uk-text-center uk-grid-small uk-grid-match" uk-grid data-id="gsgrid"></div>
+                </li>
 
-	<div class="modal" id="m-group" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header bg-dark" id="m-group-header"></div>
-				<div class="modal-body" id="m-group-body"></div>
-			</div>
-		</div>
-	</div>
+                <!--DATABASE-->
+                <li>
+                    <div data-id="dbalert"></div>
+                    <div class="js-upload uk-placeholder uk-text-center" data-id="dbdrop">
+                        <span uk-icon="cloud-upload"></span>
+                        <span class="uk-text-middle">Upload archive files by dropping them here or </span>
+                        <div uk-form-custom>
+                            <input type="file" data-id="dbbrowser" multiple>
+                            <span class="uk-link">selecting one</span>
+                        </div>
+                    </div>
+                    <ul uk-accordion data-id="dblist"></ul>
+                </li>
 
-	<div class="modal" id="m-settings" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-dialog-top" role="document">
-			<div class="modal-content">
-				<div class="modal-header bg-dark">
-					<h4 class="modal-title text-white">Settings</h4>
-				</div>
-				<div class="modal-body">
-					<h5>Highlighting</h5>
-				 	<div class="row">
-						<div class="col-sm text-left"><label>Scrapbook</label></div>
-						<div class="col-sm text-center"><label class="text-danger" id="m-settings-l1"></label></div>
-						<div class="col-sm text-right"><label class="text-success" id="m-settings-l2"></label></div>
-					</div>
-					<input type="range" min="0" max="100" class="custom-range" id="m-settings-r1">
-					<input type="range" min="0" max="100" class="custom-range" id="m-settings-r2">
-				 	<div class="row mt-3">
-						<div class="col-sm text-left"><label>Group pet</label></div>
-						<div class="col-sm text-center"><label class="text-danger" id="m-settings-l3"></label></div>
-						<div class="col-sm text-right"><label class="text-success" id="m-settings-l4"></label></div>
-					</div>
-					<input type="range" min="0" max="100" class="custom-range" id="m-settings-r3">
-					<input type="range" min="0" max="100" class="custom-range" id="m-settings-r4">
-				 	<div class="row mt-3">
-						<div class="col-sm text-left"><label>Knights</label></div>
-						<div class="col-sm text-center"><label class="text-danger" id="m-settings-l5"></label></div>
-						<div class="col-sm text-right"><label class="text-success" id="m-settings-l6"></label></div>
-					</div>
-					<input type="range" min="0" max="25" class="custom-range" id="m-settings-r5">
-					<input type="range" min="0" max="25" class="custom-range" id="m-settings-r6">
-				 	<div class="row mt-3">
-						<div class="col-sm text-left"><label>Mount</label></div>
-						<div class="col-sm text-center"><label class="text-danger" id="m-settings-l7"></label></div>
-						<div class="col-sm text-right"><label class="text-success" id="m-settings-l8"></label></div>
-					</div>
-					<input type="range" min="0" max="4" class="custom-range" id="m-settings-r7">
-					<input type="range" min="0" max="4" class="custom-range" id="m-settings-r8">
-					<div class="custom-control custom-checkbox mb-2 mt-3">
-						<input type="checkbox" class="custom-control-input" id="m-settings-c1">
-						<label class="custom-control-label" for="m-settings-c1">Apply to all</label>
-					</div>
-					<hr/>
-					<h5>Gear score</h5>
-					<div class="d-flex w-100 justify-content-between">
-						<label>Item upgrades</label>
-						<label class="text-success" id="m-settings-l9"></label>
-					</div>
-					<input type="range" min="0" max="20" class="custom-range" id="m-settings-r9">
-					<div class="custom-control custom-checkbox mb-2 mt-3">
-						<input type="checkbox" class="custom-control-input" id="m-settings-c2">
-						<label class="custom-control-label" for="m-settings-c2">Ignore gems</label>
-					</div>
-					<div class="custom-control custom-checkbox mb-2 mt-3">
-						<input type="checkbox" class="custom-control-input" id="m-settings-c3">
-						<label class="custom-control-label" for="m-settings-c3">Ignore weapons</label>
-					</div>
-					<div class="custom-control custom-checkbox mb-2 mt-3">
-						<input type="checkbox" class="custom-control-input" id="m-settings-c4">
-						<label class="custom-control-label" for="m-settings-c4">Restrict to 100</label>
-					</div>
-				</div>
-				<div class="modal-footer justify-content-between">
-					<a class="btn btn-outline-dark" data-dismiss="modal">Close</a>
-					<a class="btn btn-dark" onclick="mc.settings.save()">Save</a>
-				</div>
-			</div>
-		</div>
-	</div>
+                <!--PLAYER DETAIL-->
+                <li>
+                    <div class="uk-inline uk-width-1-1">
+                        <div class="uk-card uk-card-default uk-card-small uk-card-body">
+                            <div class="uk-flex uk-flex-inline uk-flex-between uk-width-expand">
+                                <div class="uk-card-title uk-grid-small" uk-grid>
+                                    <div>
+                                        <img class="uk-padding-small" data-id="pimage" width="128" height="128" alt="" uk-img>
+                                    </div>
+                                    <div class="uk-padding-small">
+                                        <h3 class="uk-margin-auto-vertical" data-id="pname"></h3>
+                                        <h5 class="uk-margin-small-top uk-text-muted" data-id="pgroup"></h5>
+                                    </div>
+                                    <div class="uk-padding-small">
+                                        <h3 class="uk-margin-auto-vertical" data-id="plevel"></h3>
+                                    </div>
+                                </div>
+                                <div class="uk-padding-small uk-flex uk-flex-column uk-flex-around">
+                                    <div>
+                                        <span class="uk-label" data-id="pmountbonus"></span>
+                                        <span class="uk-label" data-id="ppot1"></span>
+                                        <span class="uk-label" data-id="ppot2"></span>
+                                        <span class="uk-label" data-id="ppot3"></span>
+                                    </div>
+                                    <div>
+                                        <span class="uk-label" data-id="pbookbonus"></span>
+                                    </div>
+                                    <div>
+                                        <span class="uk-label" data-id="pachievementbonus"></span>
+                                        <span class="uk-label" data-id="pdamagebonus"></span>
+                                        <span class="uk-label" data-id="plifebonus"></span>
+                                        <span class="uk-label" data-id="pgoldbonus"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div data-id="pxp"></div>
+                        </div>
+                        <span data-id="platest" uk-icon="icon: history; ratio: 1.5" class="danger uk-position-top uk-padding-small"></span>
+                    </div>
+                    <div class="uk-flex uk-flex-between">
+                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand uk-margin-right">
+                            <h5 class="uk-card-title">Attributes</h5>
+                            <table class="uk-table uk-table-small table-padding-minimal">
+                                <tbody>
+                                    <tr>
+                                        <td>Strength</td>
+                                        <td data-id="pstrength"></td>
+                                        <td>Constitution</td>
+                                        <td data-id="pconstitution"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dexterity</td>
+                                        <td data-id="pdexterity"></td>
+                                        <td>Luck</td>
+                                        <td data-id="pluck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Intelligence</td>
+                                        <td data-id="pintelligence"></td>
+                                        <td>Armor</td>
+                                        <td data-id="parmor"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand">
+                            <h5 class="uk-card-title">Collection</h5>
+                            <table class="uk-table uk-table-small">
+                                <tbody>
+                                    <tr>
+                                        <td>Scrapbook</td>
+                                        <td data-id="pbooknum"></td>
+                                        <td data-id="pbookpercent"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="uk-padding-remove" colspan="3">
+                                            <div data-id="pbookbar"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Achievements</td>
+                                        <td data-id="pachnum"></td>
+                                        <td data-id="pachpercent"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="uk-padding-remove" colspan="3">
+                                            <div data-id="pachbar"></div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dungeons</td>
+                                        <td data-id="pdunnum"></td>
+                                        <td data-id="pdunpercent"></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="uk-padding-remove" colspan="3">
+                                            <div data-id="pdunbar"></div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="uk-flex uk-flex-between" data-id="pchartb">
+                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-margin-right uk-width-expand">
+                            <h5 class="uk-card-title">Level & Attribute Growth</h5>
+                            <div class="chart-container uk-margin-medium-bottom">
+                                <canvas data-id="pclevel"></canvas>
+                            </div>
+                        </div>
+                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand">
+                            <h5 class="uk-card-title">Collection Growth</h5>
+                            <div class="chart-container uk-margin-medium-bottom">
+                                <canvas data-id="pccollect"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="uk-flex uk-flex-between">
+                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-margin-right uk-width-expand">
+                            <h5 class="uk-card-title">Fortress</h5>
+                            <table class="uk-table uk-table-small table-padding-minimal">
+                                <tbody>
+                                    <tr>
+                                        <td>Upgrades</td>
+                                        <td data-id="pfupgrades"></td>
+                                        <td>Wall</td>
+                                        <td data-id="pfwall"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>Warriors</td>
+                                        <td data-id="pfwarriors"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>Archers</td>
+                                        <td data-id="pfarchers"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"></td>
+                                        <td>Mages</td>
+                                        <td data-id="pfmages"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4"><br></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fortress</td>
+                                        <td data-id="pffortress"></td>
+                                        <td>Laborers' Quarters</td>
+                                        <td data-id="pflabourersquarters"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Woodcutter's Hut</td>
+                                        <td data-id="pfwoodcuttershut"></td>
+                                        <td>Quarry</td>
+                                        <td data-id="pfquarry"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Gem Mine</td>
+                                        <td data-id="pfgemmine"></td>
+                                        <td>Academy</td>
+                                        <td data-id="pfacademy"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Archery Guild</td>
+                                        <td data-id="pfarcheryguild"></td>
+                                        <td>Barracks</td>
+                                        <td data-id="pfbarracks"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mages' Tower</td>
+                                        <td data-id="pfmagestower"></td>
+                                        <td>Treasury</td>
+                                        <td data-id="pftreasury"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Smithy</td>
+                                        <td data-id="pfsmithy"></td>
+                                        <td>Fortifications</td>
+                                        <td data-id="pffortifications"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand" data-id="pchartb2">
+                            <h5 class="uk-card-title">Fortress Growth</h5>
+                            <div class="chart-container-600">
+                                <canvas data-id="pcfort"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="uk-flex uk-flex-between uk-margin-bottom" data-id="pgroups">
+                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand uk-margin-right">
+                            <h5 class="uk-card-title">Group</h5>
+                            <table class="uk-table uk-table-small table-padding-minimal">
+                                <tbody>
+                                    <tr>
+                                        <td>Name</td>
+                                        <td data-id="pgname"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><br></td>
+                                    </tr>
+                                    <tr data-id="pgextra">
+                                        <td>Treasure</td>
+                                        <td data-id="pgtreasure"></td>
+                                    </tr>
+                                    <tr data-id="pgextra">
+                                        <td>Instructor</td>
+                                        <td data-id="pginstructor"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pet</td>
+                                        <td data-id="pgpet"></td>
+                                    </tr>
+                                    <tr data-id="pgextra">
+                                        <td>Knights</td>
+                                        <td data-id="pgknights"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand" data-id="pchartb3">
+                            <h5 class="uk-card-title">Group Growth</h5>
+                            <div class="chart-container">
+                                <canvas data-id="pcgroup"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </li>
 
-	<div class="modal" id="m-help" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header bg-dark">
-					<h4 class="modal-title text-white">Help</h4>
-				</div>
-				<div class="modal-body">
-					<h5>How to get the HAR files</h5>
-					<ul>
-						<li>Open developer tab by <strong>F12</strong> and navigate over to <strong>Network</strong> tab.</li>
-						<li>Now open the game and you should see items starting to appear.</li>
-						<li>If you want to save a player or a guild, simply click on them in Hall of Fame / guild screen.</li>
-						<li>When you are done, click on <strong>Save all as HAR</strong> and save the file on your computer.</li>
-						<li>To import the file, simply drag it over to this page.</li>
-					</ul>
-					<h5>What to do next</h5>
-					<label>
-						To view the data, left-click on the desired entry.
-						You can use right-click to set an entry as base to compare to when viewing another entry.
-					</label>
-					<hr/>
-					<h5>How it works</h5>
-					<label>
-						HAR files are archives containing comunication between your browser and servers.
-						This allows this application to open the files and extract required information from them.
-						Uploaded files are parsed and stored within your browser (Deleting local storage will wipe them out).<br>
-						All login information is ignored when the files are parsed, but please be wary that they contain your name and password in raw form - <strong>never send .HAR files to anyone</strong>.
-					</label>
-					<hr/>
-					<h5>Notice</h5>
-					<label>
-						Everything within this website is provided as is, without any warranties. The content is not guaranteed to be correct and can become broken any time. It is not associated with Playa Games in any way.<br><br>
+                <!--ARENA MANAGER-->
+                <li>
+                    <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top" data-group="idlegame">
+                        <h5 class="uk-card-title">Arena Simulator</h5>
+                        <div class="uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                            <div class="uk-width-1-5"></div>
+                            <div class="uk-width-1-5 uk-button-group uk-flex-between uk-child-width-expand">
+                                <button class="uk-button uk-button-success uk-button-small" data-idle-preview="1">1</button>
+                                <button class="uk-button uk-button-success uk-button-small" data-idle-preview="10">10</button>
+                                <button class="uk-button uk-button-success uk-button-small" data-idle-preview="25">25</button>
+                                <button class="uk-button uk-button-success uk-button-small" data-idle-preview="100">100</button>
+                            </div>
+                            <div class="uk-width-1-5">Cycle</div>
+                            <div class="uk-width-1-5">Money per Cycle</div>
+                            <div class="uk-width-1-5">Upgrade Cost</div>
+                            <div class="uk-width-1-5"><b>Seat</b></div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as0i" data-noreset></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as0" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as0t" disabled></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as0p" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as0m" disabled></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as0c" disabled></div>
+                            <div class="uk-width-1-5"><b>Popcorn stand</b></div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as1i" data-noreset></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as1" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as1t" disabled></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as1p" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as1m" disabled></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as1c" disabled></div>
+                            <div class="uk-width-1-5"><b>Parking lot</b></div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as2i" data-noreset></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as2" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as2t" disabled></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as2p" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as2m" disabled></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as2c" disabled></div>
+                            <div class="uk-width-1-5"><b>Traps</b></div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as3i" data-noreset></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as3" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as3t" disabled></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as3p" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as3m" disabled></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as3c" disabled></div>
+                            <div class="uk-width-1-5"><b>Drinks</b></div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as4i" data-noreset></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as4" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as4t" disabled></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as4p" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as4m" disabled></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as4c" disabled></div>
+                            <div class="uk-width-1-5"><b>Deadly trap</b></div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as5i" data-noreset></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as5" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as5t" disabled></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as5p" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as5m" disabled></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as5c" disabled></div>
+                            <div class="uk-width-1-5"><b>VIP seat</b></div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as6i" data-noreset></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as6" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as6t" disabled></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as6p" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as6m" disabled></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as6c" disabled></div>
+                            <div class="uk-width-1-5"><b>Snacks</b></div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as7i" data-noreset></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as7" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as7t" disabled></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as7p" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as7m" disabled></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as7c" disabled></div>
+                            <div class="uk-width-1-5"><b>Straying monsters</b></div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as8i" data-noreset></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as8" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as8t" disabled></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as8p" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as8m" disabled></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as8c" disabled></div>
+                            <div class="uk-width-1-5"><b>Toilet</b></div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as9i" data-noreset></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as9" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as9t" disabled></div>
+                                <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as9p" disabled></div>
+                            </div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as9m" disabled></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as9c" disabled></div>
+                            <div class="uk-width-2-5"></div>
+                            <div class="uk-width-1-5 uk-text-right"><b>Hourly production</b></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="ash" disabled></div>
+                            <div class="uk-width-1-5"></div>
+                            <div class="uk-width-1-1"><br/></div>
+                            <div class="uk-width-1-5"><b>Total money</b></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="ast" disabled></div>
+                            <div class="uk-width-1-5"></div>
+                            <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                                <div class="uk-width-1-3"><b>Target</b></div>
+                                <div class="uk-width-1-3"><input class="uk-input uk-form-small" type="text" id="asd" placeholder="Enter amount" data-noreset></div>
+                                <div class="uk-width-1-3">
+                                    <select class="uk-select uk-form-small uk-padding-remove" id="asg" data-noreset>
+                                        <option value="0">Minutes</option>
+                                        <option value="1">Total Money</option>
+                                        <option value="2">Available Runes</option>
+                                        <option value="3">Building Level</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-5"><b>Available money</b></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asc" disabled></div>
+                            <div class="uk-width-1-5"></div>
+                            <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                                <div class="uk-width-1-3"><b>Total runes</b></div>
+                                <div class="uk-width-2-3"><input class="uk-input uk-form-small" type="text" id="asr" placeholder="Enter amount of runes you have" data-noreset></div>
+                            </div>
+                            <div class="uk-width-1-5"><b>Available runes</b></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asa" disabled></div>
+                            <div class="uk-width-1-5"></div>
+                            <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                                <div class="uk-width-1-3"><b>Speed upgrades</b></div>
+                                <div class="uk-width-2-3"><input class="uk-input uk-form-small" type="text" id="asb" placeholder="Enter upgrades as HEX or BIN" data-noreset></div>
+                            </div>
+                            <div class="uk-width-1-5"><b>Duration</b></div>
+                            <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asl" disabled></div>
+                            <div class="uk-width-1-5"></div>
+                            <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                                <div class="uk-width-1-3"><b>Rate upgrades</b></div>
+                                <div class="uk-width-2-3"><input class="uk-input uk-form-small" type="text" id="asp" placeholder="Enter upgrades as HEX or BIN" data-noreset></div>
+                            </div>
+                            <div class="uk-width-3-5"></div>
+                            <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                                <div class="uk-width-1-3"><b>Upgrade style</b></div>
+                                <div class="uk-width-2-3">
+                                    <select class="uk-select uk-form-small" id="asu" data-noreset>
+                                        <option value="0">None</option>
+                                        <option value="1">First available</option>
+                                        <option value="2">Lowest price</option>
+                                        <option value="3">Best rate</option>
+                                        <option value="4">Amortisation</option>
+                                        <option value="5">Best rate (Force)</option>
+                                        <option value="6">Follow breakpoints</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="uk-width-3-5"></div>
+                            <div class="uk-width-2-5" class="uk-grid uk-grid-small uk-grid-collapse" uk-grid>
+                                <div class="uk-width-1-3"><button class="uk-button uk-button-small uk-button-primary uk-width-expand" onclick="RunIdle()" id="ass">START</button></div>
+                                <div class="uk-width-1-3"><button class="uk-button uk-button-small uk-button-danger uk-width-expand" onclick="ResetIdle()">RESET</button></div>
+                                <div class="uk-width-1-3"><button class="uk-button uk-button-small uk-button-danger uk-width-expand" onclick="ClearIdle()">CLEAR</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
 
-						<b>SFTools &copy; 2019 HIRAISHIN SOFTWARE</b><br>
-						The importing process (including response analysis) was done solely by <b>mar21</b> without any external assistance.
-					</label>
-				</div>
-				<div class="modal-footer justify-content-between">
-					<a class="btn btn-outline-dark" onclick="mc.help.hide()">Close</a>
-					<a class="btn btn-outline-dark" href="mine.html">Mining tool</a>
-				</div>
-			</div>
-		</div>
-	</div>
+                <!--SETTINGS-->
+                <li>
+                    <div class="uk-card uk-card-default uk-card-small uk-card-body uk-width-expand">
+                        <h4>Highlighting</h4>
+                        <form class="uk-form-stacked uk-margin-remove">
+                            <div class="uk-margin">
+                                <label class="uk-form-label"><h5>Scrapbook limits</h5></label>
+                                <div class="uk-form-controls">
+                                    <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" data-id="stbookmin" type="text"></div>
+                                    <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" data-id="stbookmax" type="text"></div>
+                                </div>
+                            </div>
+                            <div class="uk-margin">
+                                <label class="uk-form-label"><h5>Group pet limits</h5></label>
+                                <div class="uk-form-controls">
+                                    <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" data-id="stpetmin" type="text"></div>
+                                    <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" data-id="stpetmax" type="text"></div>
+                                </div>
+                            </div>
+                            <div class="uk-margin">
+                                <label class="uk-form-label"><h5>Knight limits</h5></label>
+                                <div class="uk-form-controls">
+                                    <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" data-id="stknightmin" type="text"></div>
+                                    <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" data-id="stknightmax" type="text"></div>
+                                </div>
+                            </div>
+                            <div class="uk-margin">
+                                <label class="uk-form-label"><h5>Treasure limits</h5></label>
+                                <div class="uk-form-controls">
+                                    <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" data-id="sttreasuremin" type="text"></div>
+                                    <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" data-id="sttreasuremax" type="text"></div>
+                                </div>
+                            </div>
+                            <div class="uk-margin">
+                                <label class="uk-form-label"><h5>Instructor limits</h5></label>
+                                <div class="uk-form-controls">
+                                    <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" data-id="stinstructormin" type="text"></div>
+                                    <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" data-id="stinstructormax" type="text"></div>
+                                </div>
+                            </div>
+                            <div class="uk-margin">
+                                <label class="uk-form-label"><h5>Mount limits</h5></label>
+                                <div class="uk-form-controls">
+                                    <div class="uk-flex uk-flex-middle">
+                                        <span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span>
+                                        <select class="uk-select uk-form-small" data-id="stmountmin">
+                                            <option value="0">None</option>
+                                            <option value="1">10%</option>
+                                            <option value="2">20%</option>
+                                            <option value="3">30%</option>
+                                            <option value="4">50%</option>
+                                        </select>
+                                    </div>
+                                    <div class="uk-flex uk-flex-middle uk-margin-small-top">
+                                        <span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span>
+                                        <select class="uk-select uk-form-small" data-id="stmountmax">
+                                            <option value="0">None</option>
+                                            <option value="1">10%</option>
+                                            <option value="2">20%</option>
+                                            <option value="3">30%</option>
+                                            <option value="4">50%</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="uk-margin">
+                                <label class="uk-form-label"><h5>Item score</h5></label>
+                                <div class="uk-form-controls uk-form-controls-text">
+                                    <div class="k-flex-column">
+                                        <label class="uk-form-label"><input class="uk-checkbox" type="checkbox" data-id="stienchantment"> Ignore enchantments</label>
+                                        <label class="uk-form-label"><input class="uk-checkbox" type="checkbox" data-id="stiweapon"> Ignore weapons</label>
+                                        <label class="uk-form-label"><input class="uk-checkbox" type="checkbox" data-id="stiexcess"> Restrict to 100</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="uk-margin">
+                                <label class="uk-form-label"><h5>Apply badge to members</h5></label>
+                                <div class="uk-form-controls">
+                                    <select class="uk-select uk-form-small" data-id="stmarknew">
+                                        <option value="0">None</option>
+                                        <option value="1">Newer than 1 week</option>
+                                        <option value="2">Newer than 2 weeks</option>
+                                        <option value="3">Newer than a month</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                        <h3>Database</h3>
+                        <form class="uk-form-stacked uk-margin-remove">
+                            <div class="uk-margin">
+                                <label class="uk-form-label"><h5>Mark old entries</h5></label>
+                                <div class="uk-form-controls">
+                                    <select class="uk-select uk-form-small" data-id="stold">
+                                        <option value="0">Older than 1 week</option>
+                                        <option value="1">Older than 2 weeks</option>
+                                        <option value="2">Older than a month</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="uk-flex uk-flex-between uk-margin-medium-top uk-margin-medium-bottom">
+                            <button class="uk-button uk-button-danger" onclick="window.settings.reset()">RESET</button>
+                            <button class="uk-button uk-button-default" onclick="window.settings.save()" data-id="stapply">APPLY</button>
+                        </div>
+                    </div>
+                </li>
 
-	<div class="modal" id="m-history" tabindex="-1" role="dialog">
-		<div class="modal-dialog modal-dialog-top modal-lg" role="document">
-			<div class="modal-content">
-				<div class="modal-header justify-content-between bg-dark">
-					<h4 class="modal-title text-white">Version history</h4>
-					<a class="btn btn-outline-white text-white m-0 my-n1 py-2" onclick="mc.history.hide()">Close</a>
-				</div>
-				<div class="modal-body">
-					<h5>1.1.3</h5>
-					<ul>
-						<li>Users can now export sets into JSON and PNG formats</li>
-						<li>Added version history</li>
-						<li>Player list is now sorted by group role and level</li>
-					</ul>
-					<hr/>
-					<h5>1.1.2</h5>
-					<ul>
-						<li>Added ability to change order of sets</li>
-					</ul>
-					<hr/>
-					<h5>1.1.1</h5>
-					<ul>
-						<li>Reformatted & reorganized code</li>
-						<li>Sum, average, min and max values for groups are now included when parsing</li>
-						<li>Added modal controllers</li>
-						<li>Improved mining tool</li>
-						<li>Added compare mode to groups</li>
-					</ul>
-					<hr/>
-					<h5>1.1.0</h5>
-					<ul>
-						<li>Reorganized code</li>
-						<li>Removed unused logger class</li>
-						<li>Data are now stored raw and parsed at initialization to lower storage size cost and add backwards compatibility</li>
-					</ul>
-					<hr/>
-					<h5>1.0.0 - 1.0.14</h5>
-					<ul>
-						<li>Initial release</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
+                <!--GROUP DETAIL-->
+                <li>
+                    <div class="uk-inline uk-width-1-1">
+                        <div class="uk-card uk-card-default uk-card-small uk-card-body">
+                            <div class="uk-flex uk-flex-inline uk-flex-between uk-width-expand">
+                                <div class="uk-card-title uk-grid-small" uk-grid>
+                                    <div>
+                                        <img class="uk-padding-small" data-src='images/icon_group.png' width="128" height="128" uk-img>
+                                    </div>
+                                    <div class="uk-padding-small">
+                                        <h3 class="uk-margin-auto-vertical" data-id="gname"></h3>
+                                        <h5 class="uk-margin-small-top uk-text-muted" data-id="gcount"></h5>
+                                    </div>
+                                    <div class="uk-padding-small">
+                                        <h3 class="uk-margin-auto-vertical" data-id="grank"></h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span data-id="glatest" uk-icon="icon: history; ratio: 1.5" class="danger uk-position-top uk-padding-small"></span>
+                    </div>
 
-	<!--jQuerry & MDBootstrap-->
-	<script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
-	<script type="text/javascript" src="js/popper.min.js"></script>
-	<script type="text/javascript" src="js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/mdb.min.js"></script>
-	<script type="text/javascript" src="js/html2canvas.min.js"></script>
+                    <div class="uk-flex uk-flex-between">
+                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand uk-margin-right">
+                            <h5 class="uk-card-title">Details</h5>
+                            <table class="uk-table uk-table-small table-padding-minimal table-scale-5">
+                                <tbody>
+                                    <tr style="text-align: center">
+                                        <td></td>
+                                        <td>∑</td>
+                                        <td>∅</td>
+                                        <td>Min</td>
+                                        <td>Max</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Level</td>
+                                        <td data-id="glevelsum"></td>
+                                        <td data-id="glevelavg"></td>
+                                        <td data-id="glevelmin"></td>
+                                        <td data-id="glevelmax"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pet</td>
+                                        <td data-id="gpetsum"></td>
+                                        <td data-id="gpetavg"></td>
+                                        <td data-id="gpetmin"></td>
+                                        <td data-id="gpetmax"></td>
+                                    </tr>
+                                    <tr data-id="gown">
+                                        <td>Knights</td>
+                                        <td data-id="gknightssum"></td>
+                                        <td data-id="gknightsavg"></td>
+                                        <td data-id="gknightsmin"></td>
+                                        <td data-id="gknightsmax"></td>
+                                    </tr>
+                                    <tr data-id="gown">
+                                        <td>Treasure</td>
+                                        <td data-id="gtreasuresum"></td>
+                                        <td data-id="gtreasureavg"></td>
+                                        <td data-id="gtreasuremin"></td>
+                                        <td data-id="gtreasuremax"></td>
+                                    </tr>
+                                    <tr data-id="gown">
+                                        <td>Instructor</td>
+                                        <td data-id="ginstructorsum"></td>
+                                        <td data-id="ginstructoravg"></td>
+                                        <td data-id="ginstructormin"></td>
+                                        <td data-id="ginstructormax"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand" data-id="gcchart">
+                            <h5 class="uk-card-title">Growth</h5>
+                            <div class="chart-container uk-margin-medium-bottom">
+                                <canvas data-id="gcgrowth"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-margin-bottom" data-id="gtable-container">
+                        <div class="uk-flex uk-flex-between">
+                            <h5 class="uk-card-title">Group evaluation</h5>
+                            <a class="uk-icon-click" uk-icon="image" onclick="window.group.export()"></a>
+                        </div>
+                        <div class="uk-flex uk-flex-left">
+                            <h4 class="uk-width-auto uk-margin-right">Compare to</h4>
+                            <select class="uk-select uk-form-small uk-width-expand" data-id="gcompare"></select>
+                        </div>
+                        <div data-id="gtable"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
 
-	<!--Core SFUtil components-->
-	<script type="text/javascript" src="js/sft/utils.js"></script>
-	<script type="text/javascript" src="js/sft/core.js"></script>
-	<script type="text/javascript" src="js/sft/constants.js"></script>
-
-	<!--UI SFUtil components-->
-	<script type="text/javascript" src="js/ui/browse.js"></script>
-	<script type="text/javascript" src="js/ui/script.js"></script>
-</body>
-
+        <script src="js/sft.js"></script>
+    </body>
 </html>
