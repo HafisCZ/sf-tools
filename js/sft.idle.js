@@ -80,8 +80,7 @@ function getAmortisation (level, initialIncrement, initialDuration, initialCost)
 
 function getBreakpointAmortisation (level, initialIncrement, initialDuration, initialCost) {
     let nb = getBreakpointLevel(getNearestBreakpoint(level) + 1);
-    let sm = getUpgradeBulkPrice(level, initialCost, nb - level);
-    let dm = (getCycleProduction(nb, initialIncrement) - getCycleProduction(level, initialIncrement)) / getCycleDuration(nb, initialDuration);
+    return getUpgradeBulkPrice(level, initialCost, nb - level) / ((getCycleProduction(nb, initialIncrement) - getCycleProduction(level, initialIncrement)) / getCycleDuration(nb, initialDuration));
 }
 
 class Building {
@@ -299,10 +298,12 @@ SimulationRule.Buy.BestRate = function (s) {
     let k = 0;
 
     for (const b of s.buildings) {
-        let c = b.getProductionRate(1) / b.cost;
-        if (c > k && b.cost <= s.money) {
-            k = c;
-            i = b;
+        if (b.cost <= s.money) {
+            let c = b.getProductionRate(1) / b.cost;
+            if (c > k) {
+                k = c;
+                i = b;
+            }
         }
     }
 
@@ -329,7 +330,7 @@ SimulationRule.Buy.BreakpointAmortisation = function (s) {
     let k = Number.POSITIVE_INFINITY;
 
     for (const b of s.buildings) {
-        let c = b.building.getBreakpointAmortisation(b.level + 1);
+        let c = b.building.getBreakpointAmortisation(b.level);
         if (c < k) {
             k = c;
             i = b;
