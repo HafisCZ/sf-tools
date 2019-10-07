@@ -381,6 +381,10 @@ SimulationRule.Exit.ProductionExceeded = function (s, money) {
     return s.getProductionRate() * 3600 >= money;
 }
 
+SimulationRule.Exit.AvailableMoneyExceeded = function (s, money) {
+    return s.money >= money;
+}
+
 SimulationRule.Exit.AvailableRunesExceeded = function (s, runes) {
     return getRunesFromMoney(s.totalpi) >= runes;
 }
