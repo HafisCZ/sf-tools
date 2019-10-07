@@ -361,6 +361,8 @@ SimulationRule.Sacrifice.MatchDouble = function (s) {
     return false;
 }
 
+SimulationRule.Exit.Infinity = function (s) { return false; }
+
 SimulationRule.Exit.DurationExceeded = function (s, duration) {
     return s.seconds >= duration * 60;
 }
