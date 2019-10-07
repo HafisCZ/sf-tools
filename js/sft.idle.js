@@ -460,17 +460,16 @@ class IdleGameSimulator {
 $(function () {
     $('[data-idle-preview]').on('mouseenter', function () {
         let count = Number($(this).attr('data-idle-preview'));
-        let level = $('input[id^="as"][id$="i"]').toArray().map(e => parseInt($(e).val() || 0));
+        let level = $('input[id^="as"][id$="i"]').toArray().map((e, index) => parseInt($(e).val() || (index == 0 ? 1 : 0)));
         let runes = Number($('#asr').val() || 0);
         let mults = Number($('#asb').val() || 0);
         let multp = Number($('#asp').val() || 0);
-
-        level[0] = level[0] || 1;
 
         showUpgradePreview(count, level, runes, mults, multp);
     });
 
     $('[data-idle-preview]').on('mouseleave', function () {
+
         for (let i = 0; i < 10; i++) {
             $(`#as${i}, #as${i}t, #as${i}m, #as${i}c, #as${i}p`).removeAttr('style');
             showPreview();
@@ -530,7 +529,13 @@ function showPreview () {
         $(`#as${i}p`).val(`${Math.trunc(100 * window.game.buildings[i].getProductionPerSecond() / window.game.getProductionPerSecond())}%`);
     }
 
-    $('#ash').val(Math.format(Math.trunc(window.game.getBuildings().reduce((sum, b) => sum + b.getCycleProduction() / b.getCycleDuration(), 0) * 3600)));
+    let hourly = Math.trunc(window.game.getBuildings().reduce((sum, b) => sum + b.getCycleProduction() / b.getCycleDuration(), 0) * 3600);
+
+    $('#ash').val(Math.format(hourly));
+
+    UIkit.tooltip($('#ash')[0], {
+        title: `1D: ${Math.format(hourly * 24)}<br>3D: ${Math.format(hourly * 24 * 3)}<br>7D: ${Math.format(hourly * 24 * 7)}`
+    });
 }
 
 function ShowIdle() {
