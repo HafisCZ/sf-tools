@@ -181,6 +181,7 @@ class Simulation {
         this.boosts = boosts;
         this.seconds = 0;
         this.totalpi = 0;
+        this.sacrifices = 0;
 
         this.start();
         if (levels) {
@@ -199,6 +200,7 @@ class Simulation {
 
     sacrifice () {
         this.runes += getRunesFromMoney(this.total);
+        this.sacrifices++;
         this.start();
     }
 
@@ -433,6 +435,8 @@ function runSimulation () {
         $('#asl').val(Date.toNiceString(window.simulation.instance.seconds));
         $('#asf').val(Math.format(window.simulation.instance.runes));
         $('#aso').val(Math.format(window.simulation.instance.totalpi));
+        $('#ase').val(Date.toNiceString(window.simulation.instance.ticks));
+        $('#asz').val(window.simulation.instance.sacrifices);
 
         for (let i = 0, b; b = window.simulation.instance.buildings[i]; i++) {
             $(`#as${i}`).val(b.level);
@@ -549,7 +553,7 @@ function showUpgradePreview (count) {
         $(`#as${i}p`).val(`+${Math.trunc(10000 * b.getProductionRate() * (1 / pp - 1 / ps)) / 100}%`);
     }
 
-    $('#ash, #ast, #asc, #asa, #asl, #asf, #aso').val('');
+    $('#ash, #ast, #asc, #asa, #asl, #asf, #aso, #ase, #asz').val('');
 }
 
 $(function () {
