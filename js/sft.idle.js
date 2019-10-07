@@ -408,9 +408,11 @@ function runSimulation () {
         start: Date.now()
     };
 
+    window.simspeed = (window.simulation.buy == SimulationRule.Buy.Amortisation || window.simulation.buy == SimulationRule.Buy.BreakpointAmortisation) ? 360 : 86400;
+
     window.simulationRunning = true;
     window.simulationLoop = setInterval(function () {
-        for (let i = 0; i < 360; i++) {
+        for (let i = 0; i < window.simspeed; i++) {
             if (window.simulation.exit(window.simulation.instance, window.simulation.exitParam)) {
                 window.simulationFinished = true;
                 clearInterval(window.simulationLoop);
@@ -462,7 +464,7 @@ function runSimulation () {
             window.simulationFinished = false;
             clearInterval(window.simulationDraw);
         }
-    }, 100);
+    }, 50);
 }
 
 function resetSimulation () {
