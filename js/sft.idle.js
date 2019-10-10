@@ -1,16 +1,24 @@
 const __cache = {};
 
 function getNearestBreakpoint (level) {
-    if (level > 100) {
-        return 3 + getNearestBreakpoint(level / 10);
-    } else if (level < 25) {
+    if (level < 25) {
         return 0;
     } else if (level < 50) {
         return 1;
     } else if (level < 100) {
         return 2;
-    } else {
+    } else if (level < 250) {
         return 3;
+    } else if (level < 500) {
+        return 4;
+    } else if (level < 1000) {
+        return 5;
+    } else if (level < 2500) {
+        return 6;
+    } else if (level < 5000) {
+        return 7;
+    } else {
+        return 8;
     }
 }
 
@@ -28,26 +36,41 @@ function getBreakpointLevel (breakpoint) {
     }
 }
 
-function getUpgradePrice (requestedLevel, initialCost) {
-    if (requestedLevel > 0) {
-        if (!__cache[initialCost] || !__cache[initialCost][requestedLevel]) {
-            if (!__cache[initialCost]) {
-                __cache[initialCost] = {};
-            }
-            __cache[initialCost][requestedLevel] = Math.ceil(1.03 * getUpgradePrice(requestedLevel - 1, initialCost));
-        }
-        return __cache[initialCost][requestedLevel];
+function getUpgradePrice (level, initialCost) {
+    if (__cache[initialCost] && __cache[initialCost][level]) {
+        return __cache[initialCost][level];
     } else {
-        return initialCost;
+        if (!__cache[initialCost]) {
+            __cache[initialCost] = new Array(10000);
+            __cache[initialCost][0] = initialCost;
+            for (let i = 1; i <= level; i++) {
+                __cache[initialCost][i] = Math.ceil(1.03 * __cache[initialCost][i - 1]);
+            }
+            return __cache[initialCost][level];
+        } else {
+            for (let j = level - 1; j >= 0; j--) {
+                if (__cache[initialCost][j]) {
+                    for (let i = j + 1; i <= level; i++) {
+                        __cache[initialCost][i] = Math.ceil(1.03 * __cache[initialCost][i - 1]);
+                    }
+                    return __cache[initialCost][level];
+                }
+            }
+        }
     }
 }
 
+/*
+    A bit faster version of old getUpgradeBulkPrice without unnecesarry recursion
+*/
 function getUpgradeBulkPrice (level, initialCost, bulkAmount) {
-    let sum = 0;
-    for (let i = 0; i < bulkAmount; i++) {
-        sum += getUpgradePrice(level + i, initialCost);
+    for (var i = level + 1, cost = getUpgradePrice(level, initialCost); i < level + bulkAmount; i++) {
+        if (!__cache[initialCost][i]) {
+            __cache[initialCost][i] = Math.ceil(1.03 * __cache[initialCost][i - 1]);
+        }
+        cost += __cache[initialCost][i];
     }
-    return sum;
+    return cost;
 }
 
 function getUpgradeCountFromMoney (level, initialCost, money) {
@@ -75,7 +98,7 @@ function getRunesFromMoney (money) {
 }
 
 function getAmortisation (level, initialIncrement, initialDuration, initialCost) {
-    return getUpgradePrice(level - 1, initialCost) / (getCycleIncrement(level, initialIncrement) / getCycleDuration(level, initialDuration));
+    return getUpgradePrice(level - 1, initialCost) / ((initialIncrement * Math.pow(2, getNearestBreakpoint(level))) / (initialDuration * Math.pow(0.8, getNearestBreakpoint(level))));
 }
 
 function getBreakpointAmortisation (level, initialIncrement, initialDuration, initialCost) {
@@ -126,6 +149,10 @@ class Building {
     getBreakpointAmortisation (level) {
         return getBreakpointAmortisation(level, this.initialIncrement, this.initialDuration, this.initialCost);
     }
+
+    getProductionRate (level) {
+        return getCycleProduction(level, this.initialIncrement) / getCycleDuration(level, this.initialDuration);
+    }
 }
 
 Building.Seat = new Building(72, 1, 5, 1);
@@ -138,6 +165,29 @@ Building.VIPSeat = new Building(2880, 2560, 500000000, 0);
 Building.Snacks = new Building(4320, 7680, 10000000000, 0);
 Building.StrayingMonsters = new Building(8640, 30720, 250000000000, 0);
 Building.Toilet = new Building(21600, 153600, 5000000000000, 0);
+
+function matchProductionRate (level, building, matchedBuilding) {
+    return matchProductionRateBetween(matchedBuilding, building.getProductionRate(Math.max(1, level)), 0, 10000);
+}
+
+function matchProductionRateBetween (building, minimalRate, min, max) {
+    if (max - min <= 2) {
+        if (building.getProductionRate(min) >= minimalRate) {
+            return min;
+        } else if (building.getProductionRate(min + 1) < minimalRate) {
+            return max;
+        } else {
+            return min + 1;
+        }
+    } else {
+        let mid = Math.ceil((max + min) / 2);
+        if (building.getProductionRate(mid) > minimalRate) {
+            return matchProductionRateBetween(building, minimalRate, min, mid);
+        } else {
+            return matchProductionRateBetween(building, minimalRate, mid, max);
+        }
+    }
+}
 
 class SimulatedBuilding {
     constructor (building, speedMultiplier, moneyMultiplier) {
@@ -157,10 +207,10 @@ class SimulatedBuilding {
     }
 
     tick () {
-        if (this.cycle-- > 0) {
+        if (++this.cycle >= this.duration) {
             return 0;
         } else {
-            this.cycle = this.duration;
+            this.cycle = 0;
             return this.production;
         }
     }
@@ -180,7 +230,7 @@ class Simulation {
         this.boosts = boosts;
         this.seconds = 0;
         this.totalpi = 0;
-        this.sacrifices = 0;
+        this.sacrifices = [];
 
         this.start();
         if (levels) {
@@ -198,8 +248,15 @@ class Simulation {
     }
 
     sacrifice () {
+        this.sacrifices.push({
+            money: this.total,
+            time: this.seconds,
+            last: this.ticks,
+            runes: this.runes,
+            newrunes: getRunesFromMoney(this.total)
+        });
+
         this.runes += getRunesFromMoney(this.total);
-        this.sacrifices++;
         this.start();
     }
 
@@ -225,8 +282,8 @@ class Simulation {
     }
 
     tryUpgrade (b, count) {
-        if (count) {
-            let cost = b.building.getUpgradeBulkPrice(b.level, count);
+        if (count && b.level < 1E4) {
+            let cost = b.building.getUpgradeBulkPrice(b.level, Math.clamp(count, 1, 1E4 - b.level));
             if (this.money >= cost) {
                 this.money -= cost;
 
@@ -237,7 +294,7 @@ class Simulation {
                 return false;
             }
         } else {
-            if (this.money >= b.cost) {
+            if (this.money >= b.cost && b.level < 1E4) {
                 this.money -= b.cost;
 
                 b.setLevel(b.level + 1);
@@ -271,7 +328,7 @@ SimulationRule.Buy.BuyNone = function (s) {
 
 SimulationRule.Buy.First = function (s) {
     for (const b of s.buildings) {
-        if (s.tryUpgrade(b)) {
+        if (b.level < 1E4 && s.tryUpgrade(b)) {
             return true;
         }
     }
@@ -284,13 +341,13 @@ SimulationRule.Buy.Cheapest = function (s) {
     let c = Number.POSITIVE_INFINITY;
 
     for (const b of s.buildings) {
-        if (b.cost < c) {
+        if (b.cost < c && b.level < 1E4) {
             i = b;
             c = b.cost;
         }
     }
 
-    return s.tryUpgrade(i);
+    return i ? s.tryUpgrade(i) : false;
 }
 
 SimulationRule.Buy.BestRate = function (s) {
@@ -298,7 +355,7 @@ SimulationRule.Buy.BestRate = function (s) {
     let k = 0;
 
     for (const b of s.buildings) {
-        if (b.cost <= s.money) {
+        if (b.cost <= s.money && b.level < 1E4) {
             let c = b.getProductionRate(1) / b.cost;
             if (c > k) {
                 k = c;
@@ -315,10 +372,12 @@ SimulationRule.Buy.Amortisation = function (s) {
     let k = Number.POSITIVE_INFINITY;
 
     for (const b of s.buildings) {
-        let c = b.building.getAmortisation(b.level + 1);
-        if (c < k) {
-            k = c;
-            i = b;
+        if (b.level < 1E4) {
+            let c = b.building.getAmortisation(b.level + 1);
+            if (c < k) {
+                k = c;
+                i = b;
+            }
         }
     }
 
@@ -330,15 +389,17 @@ SimulationRule.Buy.BreakpointAmortisation = function (s) {
     let k = Number.POSITIVE_INFINITY;
 
     for (const b of s.buildings) {
-        let c = b.building.getBreakpointAmortisation(b.level);
-        if (c < k) {
-            k = c;
-            i = b;
-        } else {
-            c = b.building.getAmortisation(b.level + 1);
+        if (b.level < 1E4) {
+            let c = b.building.getBreakpointAmortisation(b.level);
             if (c < k) {
                 k = c;
                 i = b;
+            } else if (b.cost <= s.money) {
+                c = b.building.getAmortisation(b.level + 1);
+                if (c < k) {
+                    k = c;
+                    i = b;
+                }
             }
         }
     }
@@ -409,7 +470,13 @@ function runSimulation () {
         start: Date.now()
     };
 
-    window.simspeed = (window.simulation.buy == SimulationRule.Buy.Amortisation || window.simulation.buy == SimulationRule.Buy.BreakpointAmortisation) ? 360 : 86400;
+    if (window.simulation.buy == SimulationRule.Buy.BreakpointAmortisation) {
+        window.simspeed = 360;
+    } else if (window.simulation.buy == SimulationRule.Buy.Amortisation) {
+        window.simspeed = 3600;
+    } else {
+        window.simspeed = 86400;
+    }
 
     window.simulationRunning = true;
     window.simulationLoop = setInterval(function () {
@@ -443,7 +510,7 @@ function runSimulation () {
         $('#asf').val(Math.format(window.simulation.instance.runes));
         $('#aso').val(Math.format(window.simulation.instance.totalpi));
         $('#ase').val(Date.toNiceString(window.simulation.instance.ticks));
-        $('#asz').val(window.simulation.instance.sacrifices);
+        $('#asz').val(window.simulation.instance.sacrifices.length);
 
         for (let i = 0, b; b = window.simulation.instance.buildings[i]; i++) {
             $(`#as${i}`).val(b.level);
@@ -548,16 +615,15 @@ function showUpgradePreview (count) {
     bb.forEach((b, i) => b.setLevel(lb[i]));
 
     let pp = aa.reduce((s, b) => s + b.getProductionRate(), 0);
+    let ps = bb.map((b, i) => aa.reduce((s, x, y) => s + (y != i ? x.getProductionRate() : 0), 0) + b.getProductionRate());
 
     for (let i = 0, a, b; a = aa[i], b = bb[i]; i++) {
-        let ps = aa.reduce((s, x, index) => s + (index != i ? x.getProductionRate() : 0), 0) + b.getProductionRate();
-
         $(`#as${i}, #as${i}t, #as${i}m, #as${i}c, #as${i}p`).css('color', '#00c851');
         $(`#as${i}`).val(b.level);
         $(`#as${i}t`).val(Date.toNiceString(Math.trunc(b.duration)));
         $(`#as${i}m`).val(`+${Math.format(b.production - a.production)}`);
         $(`#as${i}c`).val(Math.format(getUpgradeBulkPrice(a.level, a.building.initialCost, count)));
-        $(`#as${i}p`).val(`+${Math.trunc(10000 * b.getProductionRate() * (1 / pp - 1 / ps)) / 100}%`);
+        $(`#as${i}p`).val(`+${Math.trunc(10000 * b.getProductionRate() * (1 / pp - 1 / ps[i])) / 100}%`);
     }
 
     $('#ash, #ast, #asc, #asa, #asl, #asf, #aso, #ase, #asz').val('');

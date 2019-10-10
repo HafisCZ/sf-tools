@@ -43,6 +43,12 @@ nav > div > ul, nav > div > ul > li > a {
     border: 1px solid transparent;
 }
 
+.uk-button-xsmall {
+    padding: 0 5px;
+    line-height: 28px;
+    font-size: .875rem;
+}
+
 .bdanger {
     background-color: #ff3547 !important;
 }
