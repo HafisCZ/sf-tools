@@ -335,7 +335,7 @@ window.group = {
         }
     },
     export: function () {
-        html2canvas(_('gtable')[0], {
+        html2canvas($('#screenshot')[0], {
             logging: false
         }).then(function (canvas) {
             canvas.toBlob(function (blob) {
@@ -911,11 +911,11 @@ _('gcompare').on('change', function () {
 
     let cc = window.db.db().Groups[gid][reftime];
 
-    let plist = g.MemberIDs.filter(id => window.db.db().Players[id][t] &&window.db.db().Players[id][t].Group.Role < 4).map(id => window.db.db().Players[id][t]);
+    let plist = g.MemberIDs.filter(id => window.db.db().Players[id][t] && window.db.db().Players[id][t].Group.Role < 4).map(id => window.db.db().Players[id][t]);
     let clist = cc ? cc.MemberIDs.filter(id => window.db.db().Players[id][reftime] && window.db.db().Players[id][reftime].Group.Role < 4).map(id => window.db.db().Players[id][reftime]): null;
 
-    let content = [`
-        <table class="table-group" cellspacing="0" cellpadding="0">
+    let viewHeader = [`
+        <table class="table-group">
             <tbody>
                 <tr>
                     <td rowspan="2" class="border-right-thin">Name</td>
@@ -940,6 +940,35 @@ _('gcompare').on('change', function () {
                     <td colspan="4" class="border-bottom-thick"></td>
                 </tr>
     `];
+
+    let screenshotHeader = [`
+        <table class="table-group" style="width: 1140px !important">
+            <tbody>
+                <tr>
+                    <td rowspan="2" class="border-right-thin">Name</td>
+                    <td colspan="4" class="border-right-thin">General</td>
+                    <td colspan="3" rowspan="2" class="border-right-thin">Potions</td>
+                    <td colspan="4">Group</td>
+                </tr>
+                <tr>
+                    <td>Level</td>
+                    <td>Album</td>
+                    <td>Mount</td>
+                    <td class="border-right-thin">Awards</td>
+                    <td>Treasure</td>
+                    <td>Instructor</td>
+                    <td>Pet</td>
+                    <td>Knights</td>
+                </tr>
+                <tr>
+                    <td colspan="1" class="border-bottom-thick border-right-thin"></td>
+                    <td colspan="4" class="border-bottom-thick border-right-thin"></td>
+                    <td colspan="3" class="border-bottom-thick border-right-thin"></td>
+                    <td colspan="4" class="border-bottom-thick"></td>
+                </tr>
+    `];
+
+    let content = [];
 
     plist.forEach(function (p) {
         let c = clist ? clist.find(player => player.ID === p.ID) : null;
@@ -985,5 +1014,6 @@ _('gcompare').on('change', function () {
 
     content.push('</tbody></table>');
 
-    _('gtable').html(content.join(''));
+    _('gtable').html(viewHeader.concat(content).join(''));
+    $('#screenshot').html(screenshotHeader.concat(content).join(''));
 });

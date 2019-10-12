@@ -3,6 +3,12 @@ nav {
     height: 3.5em !important;
 }
 
+#screenshot {
+    position: fixed;
+    top: 2000px;
+    left: 0;
+}
+
 nav > div > ul, nav > div > ul > li > a {
     color: #ffffff !important;
 }
