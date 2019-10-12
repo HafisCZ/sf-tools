@@ -140,6 +140,10 @@ class Database
 {
     constructor (data)
     {
+        data.sort(function (da, db) {
+            return da.timestamp - db.timestamp;
+        });
+
         this.Players = {};
         this.Groups = {};
 
