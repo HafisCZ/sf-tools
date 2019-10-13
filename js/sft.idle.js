@@ -575,7 +575,7 @@ function showPreview () {
 
     let runes = Number($('#asr').val());
     let boost = $('[data-group="idlegame"] .uk-checkbox').toArray().map(c => c.checked);
-    let level = Array(10).fill().map((y, i) => Number($(`#as${i}i`).val()));
+    let level = Array(10).fill().map((y, i) => Math.min(10000, Number($(`#as${i}i`).val())));
     let exit = Number($('#asd').val());
 
     window.simulation = {
@@ -593,6 +593,15 @@ function showPreview () {
         $(`#as${i}m`).val(Math.format(Math.trunc(b.production)));
         $(`#as${i}c`).val(Math.format(Math.trunc(b.cost)));
         $(`#as${i}p`).val(`${Math.trunc(100 * b.getProductionRate() / window.simulation.instance.getProductionRate())}%`);
+
+        let timeNeeded = Math.trunc(b.cost / window.simulation.instance.getProductionRate());
+        if (timeNeeded <= 0) {
+            $(`#as${i}d`).val('< 1S');
+        } else if (timeNeeded >= 604800) {
+            $(`#as${i}d`).val('> 7D');
+        } else {
+            $(`#as${i}d`).val(Date.toNiceString(timeNeeded));
+        }
     }
 
     let hourly = Math.trunc(window.simulation.instance.getProductionRate() * 3600);
@@ -606,24 +615,35 @@ function showPreview () {
 function showUpgradePreview (count) {
     let runes = Number($('#asr').val());
     let boosts = $('[data-group="idlegame"] .uk-checkbox').toArray().map(c => c.checked);
-    let la = Array(10).fill().map((y, i) => Number($(`#as${i}i`).val() || (i ? 0 : 1)));
-    let lb = Array(10).fill().map((y, i) => la[i] + count);
+    let la = Array(10).fill().map((y, i) => Math.min(10000, Number($(`#as${i}i`).val() || (i ? 0 : 1))));
+    let lb = count <= 0 ? null : Array(10).fill().map((y, i) => Math.min(la[i] + count, 10000));
 
     let aa = Object.values(Building).map((b, i) => new SimulatedBuilding(b, boosts[i] ? 0.5 : 1, (1 + runes * 0.05) * (boosts[i + 10] ? 2 : 1)));
     let bb = Object.values(Building).map((b, i) => new SimulatedBuilding(b, boosts[i] ? 0.5 : 1, (1 + runes * 0.05) * (boosts[i + 10] ? 2 : 1)));
     aa.forEach((b, i) => b.setLevel(la[i]));
-    bb.forEach((b, i) => b.setLevel(lb[i]));
+    bb.forEach((b, i) => lb ? b.setLevel(lb[i]) : b.setLevel(getBreakpointLevel(getNearestBreakpoint(la[i]) + 1)));
 
     let pp = aa.reduce((s, b) => s + b.getProductionRate(), 0);
     let ps = bb.map((b, i) => aa.reduce((s, x, y) => s + (y != i ? x.getProductionRate() : 0), 0) + b.getProductionRate());
 
     for (let i = 0, a, b; a = aa[i], b = bb[i]; i++) {
-        $(`#as${i}, #as${i}t, #as${i}m, #as${i}c, #as${i}p`).css('color', '#00c851');
+        $(`#as${i}, #as${i}t, #as${i}m, #as${i}c, #as${i}p, #as${i}d`).css('color', '#00c851');
         $(`#as${i}`).val(b.level);
         $(`#as${i}t`).val(Date.toNiceString(Math.trunc(b.duration)));
         $(`#as${i}m`).val(`+${Math.format(b.production - a.production)}`);
-        $(`#as${i}c`).val(Math.format(getUpgradeBulkPrice(a.level, a.building.initialCost, count)));
         $(`#as${i}p`).val(`+${Math.trunc(10000 * b.getProductionRate() * (1 / pp - 1 / ps[i])) / 100}%`);
+
+        let bulkPrice = getUpgradeBulkPrice(a.level, a.building.initialCost, b.level - a.level);
+        $(`#as${i}c`).val(Math.format(bulkPrice));
+
+        let timeNeeded = Math.trunc(bulkPrice / pp);
+        if (timeNeeded <= 0) {
+            $(`#as${i}d`).val('< 1S');
+        } else if (timeNeeded >= 604800) {
+            $(`#as${i}d`).val('> 7D');
+        } else {
+            $(`#as${i}d`).val(Date.toNiceString(timeNeeded));
+        }
     }
 
     $('#ash, #ast, #asc, #asa, #asl, #asf, #aso, #ase, #asz').val('');
@@ -637,7 +657,7 @@ $(function () {
     }).on('mouseleave', function () {
         if (!window.simulationRunning) {
             for (let i = 0; i < 10; i++) {
-                $(`#as${i}, #as${i}t, #as${i}m, #as${i}c, #as${i}p`).removeAttr('style');
+                $(`#as${i}, #as${i}t, #as${i}m, #as${i}c, #as${i}p, #as${i}d`).removeAttr('style');
             }
             showPreview();
         }
