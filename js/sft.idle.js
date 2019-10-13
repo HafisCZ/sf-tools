@@ -516,8 +516,22 @@ function runSimulation () {
             $(`#as${i}`).val(b.level);
             $(`#as${i}t`).val(Date.toNiceString(Math.trunc(b.duration)));
             $(`#as${i}m`).val(Math.format(Math.trunc(b.production)));
-            $(`#as${i}c`).val(Math.format(Math.trunc(b.cost)));
             $(`#as${i}p`).val(`${Math.trunc(100 * b.getProductionRate() / window.simulation.instance.getProductionRate())}%`);
+
+            if (b.level < 10000) {
+                $(`#as${i}c`).val(Math.format(Math.trunc(b.cost)));
+                let timeNeeded = Math.trunc(b.cost / window.simulation.instance.getProductionRate());
+                if (timeNeeded <= 0) {
+                    $(`#as${i}d`).val('< 1S');
+                } else if (timeNeeded >= 604800) {
+                    $(`#as${i}d`).val('> 7D');
+                } else {
+                    $(`#as${i}d`).val(Date.toNiceString(timeNeeded));
+                }
+            } else {
+                $(`#as${i}c`).val('');
+                $(`#as${i}d`).val('');
+            }
         }
 
         let hourly = Math.trunc(window.simulation.instance.getProductionRate() * 3600);
@@ -591,16 +605,21 @@ function showPreview () {
         $(`#as${i}`).val(b.level);
         $(`#as${i}t`).val(Date.toNiceString(Math.trunc(b.duration)));
         $(`#as${i}m`).val(Math.format(Math.trunc(b.production)));
-        $(`#as${i}c`).val(Math.format(Math.trunc(b.cost)));
         $(`#as${i}p`).val(`${Math.trunc(100 * b.getProductionRate() / window.simulation.instance.getProductionRate())}%`);
 
-        let timeNeeded = Math.trunc(b.cost / window.simulation.instance.getProductionRate());
-        if (timeNeeded <= 0) {
-            $(`#as${i}d`).val('< 1S');
-        } else if (timeNeeded >= 604800) {
-            $(`#as${i}d`).val('> 7D');
+        if (b.level < 10000) {
+            $(`#as${i}c`).val(Math.format(Math.trunc(b.cost)));
+            let timeNeeded = Math.trunc(b.cost / window.simulation.instance.getProductionRate());
+            if (timeNeeded <= 0) {
+                $(`#as${i}d`).val('< 1S');
+            } else if (timeNeeded >= 604800) {
+                $(`#as${i}d`).val('> 7D');
+            } else {
+                $(`#as${i}d`).val(Date.toNiceString(timeNeeded));
+            }
         } else {
-            $(`#as${i}d`).val(Date.toNiceString(timeNeeded));
+            $(`#as${i}c`).val('');
+            $(`#as${i}d`).val('');
         }
     }
 
@@ -627,22 +646,32 @@ function showUpgradePreview (count) {
     let ps = bb.map((b, i) => aa.reduce((s, x, y) => s + (y != i ? x.getProductionRate() : 0), 0) + b.getProductionRate());
 
     for (let i = 0, a, b; a = aa[i], b = bb[i]; i++) {
-        $(`#as${i}, #as${i}t, #as${i}m, #as${i}c, #as${i}p, #as${i}d`).css('color', '#00c851');
-        $(`#as${i}`).val(b.level);
-        $(`#as${i}t`).val(Date.toNiceString(Math.trunc(b.duration)));
-        $(`#as${i}m`).val(`+${Math.format(b.production - a.production)}`);
-        $(`#as${i}p`).val(`+${Math.trunc(10000 * b.getProductionRate() * (1 / pp - 1 / ps[i])) / 100}%`);
+        if (a.level < 10000) {
+            $(`#as${i}, #as${i}t, #as${i}m, #as${i}c, #as${i}p, #as${i}d`).css('color', '#00c851');
 
-        let bulkPrice = getUpgradeBulkPrice(a.level, a.building.initialCost, b.level - a.level);
-        $(`#as${i}c`).val(Math.format(bulkPrice));
+            $(`#as${i}`).val(b.level);
+            $(`#as${i}t`).val(Date.toNiceString(Math.trunc(b.duration)));
+            $(`#as${i}m`).val(`+${Math.format(b.production - a.production)}`);
+            $(`#as${i}p`).val(`+${Math.trunc(10000 * b.getProductionRate() * (1 / pp - 1 / ps[i])) / 100}%`);
 
-        let timeNeeded = Math.trunc(bulkPrice / pp);
-        if (timeNeeded <= 0) {
-            $(`#as${i}d`).val('< 1S');
-        } else if (timeNeeded >= 604800) {
-            $(`#as${i}d`).val('> 7D');
+            let bulkPrice = getUpgradeBulkPrice(a.level, a.building.initialCost, b.level - a.level);
+            $(`#as${i}c`).val(Math.format(bulkPrice));
+
+            let timeNeeded = Math.trunc(bulkPrice / pp);
+            if (timeNeeded <= 0) {
+                $(`#as${i}d`).val('< 1S');
+            } else if (timeNeeded >= 604800) {
+                $(`#as${i}d`).val('> 7D');
+            } else {
+                $(`#as${i}d`).val(Date.toNiceString(timeNeeded));
+            }
         } else {
-            $(`#as${i}d`).val(Date.toNiceString(timeNeeded));
+            $(`#as${i}`).val(a.level);
+            $(`#as${i}t`).val(Date.toNiceString(Math.trunc(a.duration)));
+            $(`#as${i}m`).val(Math.format(Math.trunc(a.production)));
+            $(`#as${i}p`).val(`${Math.trunc(100 * a.getProductionRate() / pp)}%`);
+            $(`#as${i}c`).val('');
+            $(`#as${i}d`).val('');
         }
     }
 
