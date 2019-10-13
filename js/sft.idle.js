@@ -94,7 +94,8 @@ function getCycleIncrement (level, initialIncrement) {
 }
 
 function getRunesFromMoney (money) {
-    return Math.trunc(Math.pow(money, 0.2548));
+    //return Math.trunc(3.389E-6 * Math.pow(money, 0.83));
+    return Math.trunc(3.3884415613921E-6 * Math.pow(money, 0.83));
 }
 
 function getAmortisation (level, initialIncrement, initialDuration, initialCost) {
@@ -208,10 +209,10 @@ class SimulatedBuilding {
 
     tick () {
         if (++this.cycle >= this.duration) {
-            return 0;
-        } else {
             this.cycle = 0;
             return this.production;
+        } else {
+            return 0;
         }
     }
 
