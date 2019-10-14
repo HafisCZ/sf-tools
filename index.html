@@ -19,6 +19,8 @@
         <script src="js/html2canvas.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js" integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
 
+        <script src="js/response.js"></script>
+
         <script src="js/sft.util.js"></script>
         <script src="js/sft.core.js"></script>
         <script src="js/sft.idle.js"></script>
@@ -588,6 +590,83 @@
                 </div>
                 <div data-view="settings">
                     <!--SETTINGS-->
+                    <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-bottom">
+                        <h4>Highlighting</h4>
+                        <div class="uk-grid uk-grid-small" uk-grid>
+                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stbe"> Scrapbook</h5></div>
+                            <div class="uk-width-5-6">
+                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stbmin" type="text"></div>
+                                <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stbmax" type="text"></div>
+                            </div>
+                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stpe"> Group pet</h5></div>
+                            <div class="uk-width-5-6">
+                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stpmin" type="text"></div>
+                                <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stpmax" type="text"></div>
+                            </div>
+                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stke"> Knights</h5></div>
+                            <div class="uk-width-5-6">
+                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stkmin" type="text"></div>
+                                <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stkmax" type="text"></div>
+                            </div>
+                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stte"> Treasure</h5></div>
+                            <div class="uk-width-5-6">
+                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="sttmin" type="text"></div>
+                                <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="sttmax" type="text"></div>
+                            </div>
+                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stie"> Instructor</h5></div>
+                            <div class="uk-width-5-6">
+                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stimin" type="text"></div>
+                                <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stimax" type="text"></div>
+                            </div>
+                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stme"> Mount</h5></div>
+                            <div class="uk-width-5-6">
+                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span>
+                                    <select class="uk-select uk-form-small" id="stmmin">
+                                        <option value="0">None</option>
+                                        <option value="1">10%</option>
+                                        <option value="2">20%</option>
+                                        <option value="3">30%</option>
+                                        <option value="4">50%</option>
+                                    </select>
+                                </div>
+                                <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span>
+                                    <select class="uk-select uk-form-small" id="stmmax">
+                                        <option value="0">None</option>
+                                        <option value="1">10%</option>
+                                        <option value="2">20%</option>
+                                        <option value="3">30%</option>
+                                        <option value="4">50%</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stje"> Join date</h5></div>
+                            <div class="uk-width-5-6">
+                                <div class="uk-flex uk-flex-middle"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span>
+                                    <select class="uk-select uk-form-small" id="stjval">
+                                        <option value="0">Newer than 1 week</option>
+                                        <option value="1">Newer than 2 weeks</option>
+                                        <option value="2">Newer than a month</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-bottom">
+                        <h4>Database</h4>
+                        <div class="uk-grid uk-grid-small" uk-grid>
+                            <div class="uk-width-1-6"><h5>Import date</h5></div>
+                            <div class="uk-width-5-6">
+                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span>
+                                    <select class="uk-select uk-form-small" id="stoval">
+                                        <option value="0">Older than 1 week</option>
+                                        <option value="1">Older than 2 weeks</option>
+                                        <option value="2">Older than a month</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="uk-card uk-card-default uk-card-small uk-card-body uk-width-expand">
                         <h4>Highlighting</h4>
                         <form class="uk-form-stacked uk-margin-remove">

@@ -700,9 +700,10 @@ $(function () {
     });
 
     $('[data-group="idlegame"]').on('paste', function () {
-        event.preventDefault();
         let content = (event.clipboardData || window.clipboardData).getData('text').toLowerCase();
         if (content.includes('idlegame')) {
+            event.preventDefault();
+
             let entries = content.split('&').map(e => e.split(':'));
             for (const entry of entries) {
                 if (entry[0] == 'idle.idlegame') {

@@ -71,7 +71,7 @@ class DatabaseIO
         let players = [];
         let groups = [];
         let raws = [];
-
+        console.log(Archive.getMessages(json));
         for (var [key, val] of Iterator.deep(json))
         {
             if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername')))
@@ -490,39 +490,6 @@ class Group
         {
             Util.ArraySMMA(this.Knights);
         }
-    }
-}
-
-class ComplexDataType {
-    constructor (bytes) {
-        this.bytes = bytes;
-        this.ptr = 0;
-    }
-
-    byte () {
-        return this.bytes[this.ptr++];
-    }
-
-    short () {
-        return this.bytes[this.ptr++] + (this.bytes[this.ptr++] << 8);
-    }
-
-    long () {
-        return this.bytes[this.ptr++] + (this.bytes[this.ptr++] << 8) + (this.bytes[this.ptr++] << 16) + (this.bytes[this.ptr++] << 24);
-    }
-
-    assert (size) {
-        if (this.bytes.length != size) {
-            throw 'COMPLEXDATATYPE SIZE NOT EQUAL';
-        }
-    }
-
-    static fromArray (arr) {
-        return new ComplexDataType(arr.reduce((bytes, word) => bytes.concat([word % 0x100, (word >> 8) % 0x100, (word >> 16) % 0x100, (word >> 24) % 0x100]), []));
-    }
-
-    static fromString (str) {
-        return ComplexDataType.fromArray(padStr.split('/'));
     }
 }
 
