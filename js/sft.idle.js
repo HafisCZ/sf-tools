@@ -698,4 +698,24 @@ $(function () {
             showPreview();
         }
     });
+
+    $('[data-group="idlegame"]').on('paste', function () {
+        event.preventDefault();
+        let content = (event.clipboardData || window.clipboardData).getData('text').toLowerCase();
+        if (content.includes('idlegame')) {
+            let entries = content.split('&').map(e => e.split(':'));
+            for (const entry of entries) {
+                if (entry[0] == 'idle.idlegame') {
+                    let data = entry[1].split('/');
+                    for (let i = 0; i < 10; i++) {
+                        $(`#as${i}i`).val(data[3 + i]);
+                    }
+                    $('[data-group="idlegame"] .uk-checkbox').toArray().forEach((c, i) => c.checked = data[43 + i] > 0);
+                    $('#asr').val(data[76]);
+                    showPreview();
+                    break;
+                }
+            }
+        }
+    });
 });
