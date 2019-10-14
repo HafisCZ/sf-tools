@@ -95,7 +95,7 @@ function getCycleIncrement (level, initialIncrement) {
 
 function getRunesFromMoney (money) {
     //return Math.trunc(3.389E-6 * Math.pow(money, 0.83));
-    return Math.trunc(3.3884415613921E-6 * Math.pow(money, 0.83));
+    return Math.trunc((Math.PI * 11592991 / 10748438389408) * Math.pow(money, 0.83));
 }
 
 function getAmortisation (level, initialIncrement, initialDuration, initialCost) {
@@ -437,7 +437,7 @@ SimulationRule.Exit.TotalMoneyExceeded = function (s, money) {
 }
 
 SimulationRule.Exit.TotalRunesExceeded = function (s, runes) {
-    return (s.runes + getRunesFromMoney(s.totalpi)) >= runes;
+    return (s.runes + getRunesFromMoney(s.total)) >= runes;
 }
 
 SimulationRule.Exit.ProductionExceeded = function (s, money) {
@@ -449,7 +449,7 @@ SimulationRule.Exit.AvailableMoneyExceeded = function (s, money) {
 }
 
 SimulationRule.Exit.AvailableRunesExceeded = function (s, runes) {
-    return getRunesFromMoney(s.totalpi) >= runes;
+    return getRunesFromMoney(s.total) >= runes;
 }
 
 SimulationRule.Exit.BuildingLevelExceeded = function (s, level) {
