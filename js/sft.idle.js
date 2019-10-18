@@ -162,9 +162,9 @@ class Building {
         } else {
             let mid = Math.ceil((max + min) / 2);
             if (building.getProductionRate(mid) > minimalRate) {
-                return matchProductionRateBetween(building, minimalRate, min, mid);
+                return this.matchProductionRateBetween(building, minimalRate, min, mid);
             } else {
-                return matchProductionRateBetween(building, minimalRate, mid, max);
+                return this.matchProductionRateBetween(building, minimalRate, mid, max);
             }
         }
     }
