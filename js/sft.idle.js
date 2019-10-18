@@ -144,7 +144,7 @@ class Building {
         Returns level of matched building needed to match production rate of this building at requested level
     */
     matchProductionRate (level, matched) {
-        return this.matchProductionRateBetween(match, this.getProductionRate(Math.max(1, level)), 0, 10000);
+        return this.matchProductionRateBetween(matched, this.getProductionRate(Math.max(1, level)), 0, 10000);
     }
 
     /*
