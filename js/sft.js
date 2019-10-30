@@ -914,8 +914,10 @@ _('gcompare').on('change', function () {
     let plist = g.MemberIDs.filter(id => window.db.db().Players[id][t] && window.db.db().Players[id][t].Group.Role < 4).map(id => window.db.db().Players[id][t]);
     let clist = cc ? cc.MemberIDs.filter(id => window.db.db().Players[id][reftime] && window.db.db().Players[id][reftime].Group.Role < 4).map(id => window.db.db().Players[id][reftime]): null;
 
-    let viewHeader = [`
-        <table class="table-group">
+    let viewTableTag = '<table class="table-group">';
+    let shotTableTag = '<table class="table-group" style="width: 1140px !important">';
+
+    let content = [`
             <tbody>
                 <tr>
                     <td rowspan="2" class="border-right-thin">Name</td>
@@ -941,34 +943,15 @@ _('gcompare').on('change', function () {
                 </tr>
     `];
 
-    let screenshotHeader = [`
-        <table class="table-group" style="width: 1140px !important">
-            <tbody>
-                <tr>
-                    <td rowspan="2" class="border-right-thin">Name</td>
-                    <td colspan="4" class="border-right-thin">General</td>
-                    <td colspan="3" rowspan="2" class="border-right-thin">Potions</td>
-                    <td colspan="4">Group</td>
-                </tr>
-                <tr>
-                    <td>Level</td>
-                    <td>Album</td>
-                    <td>Mount</td>
-                    <td class="border-right-thin">Awards</td>
-                    <td>Treasure</td>
-                    <td>Instructor</td>
-                    <td>Pet</td>
-                    <td>Knights</td>
-                </tr>
-                <tr>
-                    <td colspan="1" class="border-bottom-thick border-right-thin"></td>
-                    <td colspan="4" class="border-bottom-thick border-right-thin"></td>
-                    <td colspan="3" class="border-bottom-thick border-right-thin"></td>
-                    <td colspan="4" class="border-bottom-thick"></td>
-                </tr>
-    `];
-
-    let content = [];
+    let toCompString = function (a, b) {
+        if (a < b) {
+            return ` <span>${a - b}</span>`;
+        } else if (a > b) {
+            return ` <span>+${a - b}</span>`;
+        } else {
+            return '';
+        }
+    }
 
     plist.forEach(function (p) {
         let c = clist ? clist.find(player => player.ID === p.ID) : null;
@@ -1012,8 +995,113 @@ _('gcompare').on('change', function () {
         }
     });
 
-    content.push('</tbody></table>');
+    content.push(`
+        <tr>
+            <td>
+                <br/>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="border-bottom-thick">Level</td>
+            <td class="border-bottom-thick" colspan="2">Group pet</td>
+            <td class="border-bottom-thick" colspan="4">Knights</td>
+            <td class="border-bottom-thick" colspan="2">Treasure</td>
+            <td class="border-bottom-thick" colspan="2">Instructor</td>
+        </tr>
+    `);
 
-    _('gtable').html(viewHeader.concat(content).join(''));
-    $('#screenshot').html(screenshotHeader.concat(content).join(''));
+    content.push(cc ? `
+        <tr>
+            <td class="border-right-thin">Min</td>
+            <td>${g.Levels.Min}${toCompString(g.Levels.Min, cc.Levels.Min)}</td>
+            <td colspan="2">${g.Pets.Min}${toCompString(g.Pets.Min, cc.Pets.Min)}</td>
+            <td colspan="4">${g.Knights.Min}${toCompString(g.Knights.Min, cc.Knights.Min)}</td>
+            <td colspan="2">${g.Treasures.Min}${toCompString(g.Treasures.Min, cc.Treasures.Min)}</td>
+            <td colspan="2">${g.Instructors.Min}${toCompString(g.Instructors.Min, cc.Instructors.Min)}</td>
+        </tr>
+        <tr>
+            <td class="border-right-thin">Average</td>
+            <td>${g.Levels.Avg}${toCompString(g.Levels.Avg, cc.Levels.Avg)}</td>
+            <td colspan="2" class="${g.Pets.Avg < window.he.rules().pet.min ? 'fdanger' : (g.Pets.Avg >= window.he.rules().pet.max ? 'fsuccess' : 'fwarning')}">${g.Pets.Avg}${toCompString(g.Pets.Avg, cc.Pets.Avg)}</td>
+            <td colspan="4" class="${g.Knights.Avg < window.he.rules().knights.min ? 'fdanger' : (g.Knights.Avg >= window.he.rules().knights.max ? 'fsuccess' : 'fwarning')}">${g.Knights.Avg}${toCompString(g.Knights.Avg, cc.Knights.Avg)}</td>
+            <td colspan="2">${g.Treasures.Avg}${toCompString(g.Treasures.Avg, cc.Treasures.Avg)}</td>
+            <td colspan="2">${g.Instructors.Avg}${toCompString(g.Instructors.Avg, cc.Instructors.Avg)}</td>
+        </tr>
+        <tr>
+            <td class="border-right-thin">Max</td>
+            <td>${g.Levels.Max}${toCompString(g.Levels.Max, cc.Levels.Max)}</td>
+            <td colspan="2">${g.Pets.Max}${toCompString(g.Pets.Max, cc.Pets.Max)}</td>
+            <td colspan="4">${g.Knights.Max}${toCompString(g.Knights.Max, cc.Knights.Max)}</td>
+            <td colspan="2">${g.Treasures.Max}${toCompString(g.Treasures.Max, cc.Treasures.Max)}</td>
+            <td colspan="2">${g.Instructors.Max}${toCompString(g.Instructors.Max, cc.Instructors.Max)}</td>
+        </tr>
+    ` : `
+        <tr>
+            <td class="border-right-thin">Min</td>
+            <td>${g.Levels.Min}</td>
+            <td colspan="2">${g.Pets.Min}</td>
+            <td colspan="4">${g.Knights.Min}</td>
+            <td colspan="2">${g.Treasures.Min}</td>
+            <td colspan="2">${g.Instructors.Min}</td>
+        </tr>
+        <tr>
+            <td class="border-right-thin">Average</td>
+            <td>${g.Levels.Avg}</td>
+            <td colspan="2" class="${g.Pets.Avg < window.he.rules().pet.min ? 'fdanger' : (g.Pets.Avg >= window.he.rules().pet.max ? 'fsuccess' : 'fwarning')}">${g.Pets.Avg}</td>
+            <td colspan="4" class="${g.Knights.Avg < window.he.rules().knights.min ? 'fdanger' : (g.Knights.Avg >= window.he.rules().knights.max ? 'fsuccess' : 'fwarning')}">${g.Knights.Avg}</td>
+            <td colspan="2">${g.Treasures.Avg}</td>
+            <td colspan="2">${g.Instructors.Avg}</td>
+        </tr>
+        <tr>
+            <td class="border-right-thin">Max</td>
+            <td>${g.Levels.Max}</td>
+            <td colspan="2">${g.Pets.Max}</td>
+            <td colspan="4">${g.Knights.Max}</td>
+            <td colspan="2">${g.Treasures.Max}</td>
+            <td colspan="2">${g.Instructors.Max}</td>
+        </tr>
+    `);
+
+    if (clist) {
+        let membersKicked = clist.reduce(function (sum, player) {
+            if (!plist.find(p => p.ID == player.ID)) {
+                sum.push(player.Name);
+            }
+
+            return sum;
+        }, []);
+        let membersJoined = plist.reduce(function (sum, player) {
+            if (!clist.find(p => p.ID == player.ID)) {
+                sum.push(player.Name);
+            }
+
+            return sum;
+        }, []);
+
+        content.push(`
+            <tr>
+                <td>
+                    <br/>
+                </td>
+            </tr>
+            <tr>
+                <td class="border-right-thin">Joined</td>
+                <td>${membersJoined.length}</td>
+                <td colspan="10" class="align-left-force">${membersJoined.join(', ')}</td>
+            </tr>
+            <tr>
+                <td class="border-right-thin">Kicked</td>
+                <td>${membersKicked.length}</td>
+                <td colspan="10" class="align-left-force">${membersKicked.join(', ')}</td>
+            </tr>
+        `);
+    }
+
+    content.push(`
+        </tbody></table>
+    `);
+
+    _('gtable').html(viewTableTag + (content).join(''));
+    $('#screenshot').html(shotTableTag + (content).join(''));
 });

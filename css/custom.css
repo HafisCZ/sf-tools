@@ -124,6 +124,10 @@ body {
     text-align: left !important;
 }
 
+.align-left-force {
+    text-align: left !important;
+}
+
 .chart-container {
     width: 100% !important;
     height: 300px !important;
@@ -136,6 +140,10 @@ body {
 
 .border-right-thin {
     border-right: 1px solid black !important;
+}
+
+.border-right-false {
+    border-right: 1px solid transparent !important;
 }
 
 .border-bottom-thick {

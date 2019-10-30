@@ -428,7 +428,7 @@ SimulationRule.Buy.BreakpointAmortisation = function (s) {
             if (c < k) {
                 k = c;
                 i = b;
-            } else if (b.cost <= s.money) {
+            } else if (true || b.cost <= s.money) {
                 c = b.building.getAmortisation(b.level + 1);
                 if (c < k) {
                     k = c;

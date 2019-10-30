@@ -71,7 +71,7 @@ class DatabaseIO
         let players = [];
         let groups = [];
         let raws = [];
-        console.log(Archive.getMessages(json));
+
         for (var [key, val] of Iterator.deep(json))
         {
             if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername')))
