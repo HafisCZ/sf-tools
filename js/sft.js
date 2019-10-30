@@ -36,10 +36,32 @@ window._ = function (i) {
 
 window.charts = [];
 
-window.he.highlight = function (v, e) {
-    if (v >= window.he.rules()[e].max) return `<span class="fsuccess">${v}</span>`;
-    if (v >= window.he.rules()[e].min) return `<span class="fwarning">${v}</span>`;
-    else return `<span class="fdanger">${v}</span>`;
+window.hf = function (v, mn, mx, en) {
+    if (!en) return `<span>${v}</span>`;
+    if (v >= mx) return `<span class="fsuccess">${v}</span>`;
+    if (v >= mn) return `<span class="fwarning">${v}</span>`;
+    return `<span class="fdanger">${v}</span>`;
+}
+
+window.hb = function (v, mn, mx, en) {
+    if (!en) return `<span>${v}</span>`;
+    if (v >= mx) return `<span class="bsuccess">${v}</span>`;
+    if (v >= mn) return `<span class="bwarning">${v}</span>`;
+    return `<span class="bdanger">${v}</span>`;
+}
+
+window.hcf = function (v, mn, mx, en) {
+    if (!en) return ``;
+    if (v >= mx) return `fsuccess`;
+    if (v >= mn) return `fwarning`;
+    return `fdanger`;
+}
+
+window.hcb = function (v, mn, mx, en) {
+    if (!en) return ``;
+    if (v >= mx) return `bsuccess`;
+    if (v >= mn) return `bwarning`;
+    return `bdanger`;
 }
 
 /*
@@ -50,56 +72,76 @@ window.settings = {
         this.reset();
     },
     reset: function () {
-        _('stbookmin').val(window.he.rules().book.min);
-        _('stbookmax').val(window.he.rules().book.max);
-        _('stpetmin').val(window.he.rules().pet.min);
-        _('stpetmax').val(window.he.rules().pet.max);
-        _('stknightmin').val(window.he.rules().knights.min);
-        _('stknightmax').val(window.he.rules().knights.max);
-        _('stmountmin').val(window.he.rules().mount.min);
-        _('stmountmax').val(window.he.rules().mount.max);
-        _('sttreasuremin').val(window.he.rules().treasure.min);
-        _('sttreasuremax').val(window.he.rules().treasure.max);
-        _('stinstructormin').val(window.he.rules().instructor.min);
-        _('stinstructormax').val(window.he.rules().instructor.max);
-        _('stienchantment').prop('checked', window.he.rules().ienchant);
-        _('stiweapon').prop('checked', window.he.rules().iweapons);
-        _('stiexcess').prop('checked', window.he.rules().iexcess);
-        _('stmarknew').val(window.he.rules().badgenew);
-        _('stold').val(window.he.rules().badgeold);
+        let rules = window.he.rules();
+
+        // Book
+        $('#stbe').prop('checked', rules.book_enabled);
+        $('#stbmin').val(rules.book_min);
+        $('#stbmax').val(rules.book_max);
+
+        // Pet
+        $('#stpe').prop('checked', rules.pet_enabled);
+        $('#stpmin').val(rules.pet_min);
+        $('#stpmax').val(rules.pet_max);
+
+        // Knight hall
+        $('#stke').prop('checked', rules.knights_enabled);
+        $('#stkmin').val(rules.knights_min);
+        $('#stkmax').val(rules.knights_max);
+
+        // Treasure
+        $('#stte').prop('checked', rules.treasure_enabled);
+        $('#sttmin').val(rules.treasure_min);
+        $('#sttmax').val(rules.treasure_max);
+
+        // Instructor
+        $('#stie').prop('checked', rules.instructor_enabled);
+        $('#stimin').val(rules.instructor_min);
+        $('#stimax').val(rules.instructor_max);
+
+        // Mount
+        $('#stme').prop('checked', rules.mount_enabled);
+        $('#stmmin').val(rules.mount_min);
+        $('#stmmax').val(rules.mount_max);
+
+        // Joined ago
+        $('#stje').prop('checked', rules.join_enabled);
+        $('#stjval').val(rules.join);
+
+        // Outdated entries
+        $('#stoval').val(rules.outdated);
     },
     save: function () {
         if (this.validate()) {
             window.he.save({
-                book: {
-                    min: _('stbookmin').val(),
-                    max: _('stbookmax').val()
-                },
-                pet: {
-                    min: _('stpetmin').val(),
-                    max: _('stpetmax').val()
-                },
-                knights: {
-                    min: _('stknightmin').val(),
-                    max: _('stknightmax').val()
-                },
-                mount: {
-                    min: _('stmountmin').val(),
-                    max: _('stmountmax').val()
-                },
-                treasure: {
-                    min: _('sttreasuremin').val(),
-                    max: _('sttreasuremax').val()
-                },
-                instructor: {
-                    min: _('stinstructormin').val(),
-                    max: _('stinstructormax').val()
-                },
-                badgenew: _('stmarknew').val(),
-                ienchant: _('stienchantment').prop('checked') ? 1 : 0,
-                iweapons: _('stiweapon').prop('checked') ? 1 : 0,
-                iexcess: _('stiweapon').prop('checked') ? 1 : 0,
-                badgeold: _('stold').val()
+                book_enabled: $('#stbe').prop('checked') == true,
+                book_min: Number($('#stbmin').val()),
+                book_max: Number($('#stbmax').val()),
+
+                pet_enabled: $('#stpe').prop('checked') == true,
+                pet_min: Number($('#stpmin').val()),
+                pet_max: Number($('#stpmax').val()),
+
+                knights_enabled: $('#stke').prop('checked') == true,
+                knights_min: Number($('#stkmin').val()),
+                knights_max: Number($('#stkmax').val()),
+
+                treasure_enabled: $('#stte').prop('checked') == true,
+                treasure_min: Number($('#sttmin').val()),
+                treasure_max: Number($('#sttmax').val()),
+
+                instructor_enabled: $('#stie').prop('checked') == true,
+                instructor_min: Number($('#stimin').val()),
+                instructor_max: Number($('#stimax').val()),
+
+                mount_enabled: $('#stme').prop('checked') == true,
+                mount_min: Number($('#stmmin').val()),
+                mount_max: Number($('#stmmax').val()),
+
+                join_enabled: $('#stje').prop('checked') == true,
+                join: Number($('#stjval').val()),
+
+                outdated: Number($('#stoval').val())
             });
 
             _('stapply').addClass('blink-success');
@@ -169,6 +211,7 @@ window.groups = {
 window.group = {
     init: function (gid) {
         const g = window.db.db().Groups[gid].Latest;
+        const rules = window.he.rules();
 
         _('glatest').addClass('uk-invisible');
         if (Date.now() - window.db.db().Groups[gid].LatestTimestamp > TIME_WEEK) {
@@ -185,22 +228,22 @@ window.group = {
         _('glevelmax').html(g.Levels.Max);
 
         _('gpetsum').html(g.Pets.Sum);
-        _('gpetavg').html(window.he.highlight(g.Pets.Avg, 'pet'));
+        _('gpetavg').html(window.hf(g.Pets.Avg, rules.pet_min, rules.pet_max, rules.pet_enabled));
         _('gpetmin').html(g.Pets.Min);
         _('gpetmax').html(g.Pets.Max);
 
         _('gknightssum').html(g.Knights.Sum);
-        _('gknightsavg').html(window.he.highlight(g.Knights.Avg, 'knights'));
+        _('gknightsavg').html(window.hf(g.Knights.Avg, rules.knights_min, rules.knights_max, rules.knights_enabled));
         _('gknightsmin').html(g.Knights.Min);
         _('gknightsmax').html(g.Knights.Max);
 
         _('gtreasuresum').html(g.Treasures.Sum);
-        _('gtreasureavg').html(window.he.highlight(g.Treasures.Avg, 'treasure'));
+        _('gtreasureavg').html(window.hf(g.Treasures.Avg, rules.treasure_min, rules.treasure_max, rules.treasure_enabled));
         _('gtreasuremin').html(g.Treasures.Min);
         _('gtreasuremax').html(g.Treasures.Max);
 
         _('ginstructorsum').html(g.Instructors.Sum);
-        _('ginstructoravg').html(window.he.highlight(g.Instructors.Avg, 'instructor'));
+        _('ginstructoravg').html(window.hf(g.Instructors.Avg, rules.instructor_min, rules.instructor_max, rules.instructor_enabled));
         _('ginstructormin').html(g.Instructors.Min);
         _('ginstructormax').html(g.Instructors.Max);
 
@@ -339,7 +382,7 @@ window.group = {
             logging: false
         }).then(function (canvas) {
             canvas.toBlob(function (blob) {
-                window.download('group', blob);
+                window.download(window.group.compare ? `${window.group.current}.${window.group.compare}.png` : `${window.group.current}.png`, blob);
             });
         });
     }
@@ -351,6 +394,8 @@ window.group = {
 window.player = {
     init: function (pid) {
         const p = window.db.db().Players[pid].Latest;
+
+        let rules = window.he.rules();
 
         _('platest').addClass('uk-invisible');
         if (Date.now() - window.db.db().Players[pid].LatestTimestamp > 1000 * 60 * 60 * 24 * 7) {
@@ -364,7 +409,7 @@ window.player = {
         _('pxp').css('width', `${ 100 * p.XP / p.XPNext }%`).css('border-bottom', '2px solid #212121');
 
         _('pmountbonus').html(p.Mount ? `-${ p.Mount === 4 ? 5 : p.Mount }0% Travel duration` : 'No mount').removeClass('uk-label-success uk-label-warning uk-label-danger').addClass(
-            p.Mount >= window.he.rules().mount.max ? 'uk-label-success' : (p.Mount >= window.he.rules().mount.min ? 'uk-label-warning' : 'uk-label-danger')
+            rules.mount_enabled ? (p.Mount >= rules.mount_max ? 'uk-label-success' : (p.Mount >= rules.mount_min ? 'uk-label-warning' : 'uk-label-danger')) : ''
         );
         for (var i = 0; i < 3; i++)
         {
@@ -373,7 +418,7 @@ window.player = {
             );
         }
         _('pbookbonus').html(`+${ Math.trunc(p.Book / 21.6) }% XP bonus`).removeClass('uk-label-success uk-label-warning uk-label-danger').addClass(
-            p.Book / 21.6 >= window.he.rules().book.max ? 'uk-label-success' : (p.Book / 21.6 >= window.he.rules().book.min ? 'uk-label-warning' : 'uk-label-danger')
+            rules.book_enabled ? (p.Book / 21.6 >= rules.book_max ? 'uk-label-success' : (p.Book / 21.6 >= rules.book_min ? 'uk-label-warning' : 'uk-label-danger')) : ''
         );
         _('pachievementbonus').html(`+${ 5 * p.Achievements.Owned } Attribute bonus`);
         _('pdamagebonus').html(`+${ p.Dungeons.Group } Damage bonus`);
@@ -390,7 +435,7 @@ window.player = {
         _('pbooknum').html(`${ p.Book } out of 2160`);
         _('pbookpercent').html(`${ Math.trunc(p.Book / 21.6) }%`);
         _('pbookbar').css('width', `${ p.Book / 21.6 }%`).css('border-bottom', `2px solid ${
-            p.Book / 21.6 >= window.he.rules().book.max ? '#32d296' : (p.Book / 21.6 >= window.he.rules().book.min ? '#faa05a' : '#f0506e')
+            p.Book / 21.6 >= rules.book_max ? '#32d296' : (p.Book / 21.6 >= rules.book_min ? '#faa05a' : '#f0506e')
         }`);
 
         _('pachnum').html(`${ p.Achievements.Owned } out of 70`);
@@ -423,12 +468,12 @@ window.player = {
 
         if (p.Group) {
             _('pgname').html(p.Group.Name);
-            _('pgpet').html(window.he.highlight(p.Group.Pet, 'pet'));
+            _('pgpet').html(window.hf(p.Group.Pet, rules.pet_min, rules.pet_max, rules.pet_enabled));
 
             if (p.Group.Own) {
-                _('pgtreasure').html(window.he.highlight(p.Group.Treasure, 'treasure'));
-                _('pginstructor').html(window.he.highlight(p.Group.Instructor, 'instructor'));
-                _('pgknights').html(window.he.highlight(p.Fortress.Knights, 'knights'));
+                _('pgtreasure').html(window.hf(p.Group.Treasure, rules.treasure_min, rules.treasure_max, rules.treasure_enabled));
+                _('pginstructor').html(window.hf(p.Group.Instructor, rules.instructor_min, rules.instructor_max, rules.instructor_enabled));
+                _('pgknights').html(window.hf(p.Fortress.Knights, rules.knights_min, rules.knights_max, rules.knights_enabled));
 
                 $('[data-id="pgextra"]').show();
             } else {
@@ -906,6 +951,8 @@ _('gcompare').on('change', function () {
     let gid = window.group.current;
     let reftime = $(this).val();
 
+    window.group.compare = reftime;
+
     let g = window.db.db().Groups[gid].Latest;
     let t = window.db.db().Groups[gid].LatestTimestamp;
 
@@ -953,43 +1000,45 @@ _('gcompare').on('change', function () {
         }
     }
 
+    let rules = window.he.rules();
+
     plist.forEach(function (p) {
         let c = clist ? clist.find(player => player.ID === p.ID) : null;
 
         if (c) {
             content.push(`
                 <tr>
-                    <td width="250" class="border-right-thin">${window.he.rules().badgenew > 0 && Date.now() - p.Group.Joined < [0, 604800000, 2 * 604800000, 4 * 604800000][window.he.rules().badgenew] ? '<span uk-icon="icon: tag; ratio: 1.1"></span> ' : ''}${p.Name}</td>
+                    <td width="250" class="border-right-thin">${rules.join_enabled && Date.now() - p.Group.Joined < [0, 604800000, 2 * 604800000, 4 * 604800000][rules.join] ? '<span uk-icon="icon: tag; ratio: 1.1"></span> ' : ''}${p.Name}</td>
                     <td width="100">${p.Level}${Util.FormatDiff(p.Level, c.Level)}</td>
-                    <td width="120" class="${p.Book / 21.6 < window.he.rules().book.min ? 'bdanger' : (p.Book / 21.6 >= window.he.rules().book.max ? 'bsuccess' : 'bwarning')}">${Number(p.Book / 21.6).toFixed(1)}%${
+                    <td width="120" class="${window.hcb(p.Book / 21.6, rules.book_min, rules.book_max, rules.book_enabled)}">${Number(p.Book / 21.6).toFixed(1)}%${
                         p.Book > c.Book ? ` <span>+${Number((p.Book - c.Book) / 21.6).toFixed(2)}%</span>` : (p.Book < c.Book ? ` <span>${Number((p.Book - c.Book) / 21.6).toFixed(2)}%</span>` : '')
                     }</td>
-                    <td width="80" class="border-right-thin ${p.Mount < window.he.rules().mount.min ? 'bdanger' : (p.Mount >= window.he.rules().mount.max ? 'bsuccess' : 'bwarning')}">${p.Mount ? ['', '10%', '20%', '30%', '50%'][p.Mount] : ''}</td>
+                    <td width="80" class="border-right-thin ${window.hcb(p.Mount, rules.mount_min, rules.mount_max, rules.mount_enabled)}">${p.Mount ? ['', '10%', '20%', '30%', '50%'][p.Mount] : ''}</td>
                     <td width="100" class="border-right-thin">${p.Achievements.Owned}</td>
                     <td width="30" class="${p.Potions[0].Size < 5 ? 'bdanger' : (p.Potions[0].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
                     <td width="30" class="${p.Potions[1].Size < 5 ? 'bdanger' : (p.Potions[1].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
                     <td width="30" class="border-right-thin ${p.Potions[2].Size < 5 ? 'bdanger' : (p.Potions[2].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
-                    <td width="100">${p.Group.Treasure}${Util.FormatDiff(p.Group.Treasure, c.Group.Treasure)}</td>
-                    <td width="100">${p.Group.Instructor}${Util.FormatDiff(p.Group.Instructor, c.Group.Instructor)}</td>
-                    <td width="100" class="${p.Group.Pet < window.he.rules().pet.min ? 'bdanger' : (p.Group.Pet >= window.he.rules().pet.max ? 'bsuccess' : 'bwarning')}">${p.Group.Pet}${Util.FormatDiff(p.Group.Pet, c.Group.Pet)}</td>
-                    <td width="100" class="${p.Fortress.Knights < window.he.rules().knights.min ? 'bdanger' : (p.Fortress.Knights >= window.he.rules().knights.max ? 'bsuccess' : 'bwarning')}">${p.Fortress.Knights}/${p.Fortress.Fortress}${Util.FormatDiff(p.Fortress.Knights, c.Fortress.Knights)}</td>
+                    <td width="100" class="${window.hcb(p.Group.Treasure, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${p.Group.Treasure}${Util.FormatDiff(p.Group.Treasure, c.Group.Treasure)}</td>
+                    <td width="100" class="${window.hcb(p.Group.Instructor, rules.instructor_min, rules.instructor_max, rules.instructor_enabled)}">${p.Group.Instructor}${Util.FormatDiff(p.Group.Instructor, c.Group.Instructor)}</td>
+                    <td width="100" class="${window.hcb(p.Group.Pet, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${p.Group.Pet}${Util.FormatDiff(p.Group.Pet, c.Group.Pet)}</td>
+                    <td width="100" class="${window.hcb(p.Fortress.Knights, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${p.Fortress.Knights}/${p.Fortress.Fortress}${Util.FormatDiff(p.Fortress.Knights, c.Fortress.Knights)}</td>
                 </tr>
             `);
         } else {
             content.push(`
                 <tr>
-                    <td width="250" class="border-right-thin">${window.he.rules().badgenew > 0 && Date.now() - p.Group.Joined < [0, 604800000, 2 * 604800000, 4 * 604800000][window.he.rules().badgenew] ? '<span uk-icon="tag"></span> ' : ''}${p.Name}</td>
+                    <td width="250" class="border-right-thin">${rules.join_enabled && Date.now() - p.Group.Joined < [0, 604800000, 2 * 604800000, 4 * 604800000][rules.join] ? '<span uk-icon="tag"></span> ' : ''}${p.Name}</td>
                     <td width="100">${p.Level}</td>
-                    <td width="120" class="${p.Book / 21.6 < window.he.rules().book.min ? 'bdanger' : (p.Book / 21.6 >= window.he.rules().book.max ? 'bsuccess' : 'bwarning')}">${Number(p.Book / 21.6).toFixed(1)}%</td>
-                    <td width="80" class="border-right-thin ${p.Mount < window.he.rules().mount.min ? 'bdanger' : (p.Mount >= window.he.rules().mount.max ? 'bsuccess' : 'bwarning')}">${p.Mount ? ['', '10%', '20%', '30%', '50%'][p.Mount] : ''}</td>
+                    <td width="120" class="${window.hcb(p.Book / 21.6, rules.book_min, rules.book_max, rules.book_enabled)}">${Number(p.Book / 21.6).toFixed(1)}%</td>
+                    <td width="80" class="border-right-thin ${window.hcb(p.Mount, rules.mount_min, rules.mount_max, rules.mount_enabled)}">${p.Mount ? ['', '10%', '20%', '30%', '50%'][p.Mount] : ''}</td>
                     <td width="100" class="border-right-thin">${p.Achievements.Owned}</td>
                     <td width="30" class="${p.Potions[0].Size < 5 ? 'bdanger' : (p.Potions[0].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
                     <td width="30" class="${p.Potions[1].Size < 5 ? 'bdanger' : (p.Potions[1].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
                     <td width="30" class="border-right-thin ${p.Potions[2].Size < 5 ? 'bdanger' : (p.Potions[2].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
-                    <td width="100">${p.Group.Treasure}</td>
-                    <td width="100">${p.Group.Instructor}</td>
-                    <td width="100" class="${p.Group.Pet < window.he.rules().pet.min ? 'bdanger' : (p.Group.Pet >= window.he.rules().pet.max ? 'bsuccess' : 'bwarning')}">${p.Group.Pet}</td>
-                    <td width="100" class="${p.Fortress.Knights < window.he.rules().knights.min ? 'bdanger' : (p.Fortress.Knights >= window.he.rules().knights.max ? 'bsuccess' : 'bwarning')}">${p.Fortress.Knights}/${p.Fortress.Fortress}</td>
+                    <td width="100" class="${window.hcb(p.Group.Treasure, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${p.Group.Treasure}</td>
+                    <td width="100" class="${window.hcb(p.Group.Instructor, rules.instructor_min, rules.instructor_max, rules.instructor_enabled)}">${p.Group.Instructor}</td>
+                    <td width="100" class="${window.hcb(p.Group.Pet, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${p.Group.Pet}</td>
+                    <td width="100" class="${window.hcb(p.Fortress.Knights, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${p.Fortress.Knights}/${p.Fortress.Fortress}</td>
                 </tr>
             `);
         }
@@ -1015,51 +1064,51 @@ _('gcompare').on('change', function () {
         <tr>
             <td class="border-right-thin">Min</td>
             <td>${g.Levels.Min}${toCompString(g.Levels.Min, cc.Levels.Min)}</td>
-            <td colspan="2">${g.Pets.Min}${toCompString(g.Pets.Min, cc.Pets.Min)}</td>
-            <td colspan="4">${g.Knights.Min}${toCompString(g.Knights.Min, cc.Knights.Min)}</td>
-            <td colspan="2">${g.Treasures.Min}${toCompString(g.Treasures.Min, cc.Treasures.Min)}</td>
-            <td colspan="2">${g.Instructors.Min}${toCompString(g.Instructors.Min, cc.Instructors.Min)}</td>
+            <td colspan="2" class="${window.hcf(g.Pets.Min, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${g.Pets.Min}${toCompString(g.Pets.Min, cc.Pets.Min)}</td>
+            <td colspan="4" class="${window.hcf(g.Knights.Min, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${g.Knights.Min}${toCompString(g.Knights.Min, cc.Knights.Min)}</td>
+            <td colspan="2" class="${window.hcf(g.Treasures.Min, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${g.Treasures.Min}${toCompString(g.Treasures.Min, cc.Treasures.Min)}</td>
+            <td colspan="2" class="${window.hcf(g.Instructors.Min, rules.instructor_min, rules.instructor_max, rules.instructor_enabled)}">${g.Instructors.Min}${toCompString(g.Instructors.Min, cc.Instructors.Min)}</td>
         </tr>
         <tr>
             <td class="border-right-thin">Average</td>
             <td>${g.Levels.Avg}${toCompString(g.Levels.Avg, cc.Levels.Avg)}</td>
-            <td colspan="2" class="${g.Pets.Avg < window.he.rules().pet.min ? 'fdanger' : (g.Pets.Avg >= window.he.rules().pet.max ? 'fsuccess' : 'fwarning')}">${g.Pets.Avg}${toCompString(g.Pets.Avg, cc.Pets.Avg)}</td>
-            <td colspan="4" class="${g.Knights.Avg < window.he.rules().knights.min ? 'fdanger' : (g.Knights.Avg >= window.he.rules().knights.max ? 'fsuccess' : 'fwarning')}">${g.Knights.Avg}${toCompString(g.Knights.Avg, cc.Knights.Avg)}</td>
-            <td colspan="2">${g.Treasures.Avg}${toCompString(g.Treasures.Avg, cc.Treasures.Avg)}</td>
-            <td colspan="2">${g.Instructors.Avg}${toCompString(g.Instructors.Avg, cc.Instructors.Avg)}</td>
+            <td colspan="2" class="${window.hcf(g.Pets.Avg, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${g.Pets.Avg}${toCompString(g.Pets.Avg, cc.Pets.Avg)}</td>
+            <td colspan="4" class="${window.hcf(g.Knights.Avg, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${g.Knights.Avg}${toCompString(g.Knights.Avg, cc.Knights.Avg)}</td>
+            <td colspan="2" class="${window.hcf(g.Treasures.Avg, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${g.Treasures.Avg}${toCompString(g.Treasures.Avg, cc.Treasures.Avg)}</td>
+            <td colspan="2" class="${window.hcf(g.Instructors.Avg, rules.instructor_min, rules.instructor_max, rules.instructor_enabled)}">${g.Instructors.Avg}${toCompString(g.Instructors.Avg, cc.Instructors.Avg)}</td>
         </tr>
         <tr>
             <td class="border-right-thin">Max</td>
             <td>${g.Levels.Max}${toCompString(g.Levels.Max, cc.Levels.Max)}</td>
-            <td colspan="2">${g.Pets.Max}${toCompString(g.Pets.Max, cc.Pets.Max)}</td>
-            <td colspan="4">${g.Knights.Max}${toCompString(g.Knights.Max, cc.Knights.Max)}</td>
-            <td colspan="2">${g.Treasures.Max}${toCompString(g.Treasures.Max, cc.Treasures.Max)}</td>
-            <td colspan="2">${g.Instructors.Max}${toCompString(g.Instructors.Max, cc.Instructors.Max)}</td>
+            <td colspan="2" class="${window.hcf(g.Pets.Max, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${g.Pets.Max}${toCompString(g.Pets.Max, cc.Pets.Max)}</td>
+            <td colspan="4" class="${window.hcf(g.Knights.Max, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${g.Knights.Max}${toCompString(g.Knights.Max, cc.Knights.Max)}</td>
+            <td colspan="2" class="${window.hcf(g.Treasures.Max, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${g.Treasures.Max}${toCompString(g.Treasures.Max, cc.Treasures.Max)}</td>
+            <td colspan="2" class="${window.hcf(g.Instructors.Max, rules.instructor_min, rules.instructor_max, rules.instructor_enabled)}">${g.Instructors.Max}${toCompString(g.Instructors.Max, cc.Instructors.Max)}</td>
         </tr>
     ` : `
         <tr>
             <td class="border-right-thin">Min</td>
             <td>${g.Levels.Min}</td>
-            <td colspan="2">${g.Pets.Min}</td>
-            <td colspan="4">${g.Knights.Min}</td>
-            <td colspan="2">${g.Treasures.Min}</td>
-            <td colspan="2">${g.Instructors.Min}</td>
+            <td colspan="2" class="${window.hcf(g.Pets.Min, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${g.Pets.Min}</td>
+            <td colspan="4" class="${window.hcf(g.Knights.Min, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${g.Knights.Min}</td>
+            <td colspan="2" class="${window.hcf(g.Treasures.Min, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${g.Treasures.Min}</td>
+            <td colspan="2" class="${window.hcf(g.Instructors.Min, rules.instructor_min, rules.instructor_max, rules.instructor_enabled)}">${g.Instructors.Min}</td>
         </tr>
         <tr>
             <td class="border-right-thin">Average</td>
             <td>${g.Levels.Avg}</td>
-            <td colspan="2" class="${g.Pets.Avg < window.he.rules().pet.min ? 'fdanger' : (g.Pets.Avg >= window.he.rules().pet.max ? 'fsuccess' : 'fwarning')}">${g.Pets.Avg}</td>
-            <td colspan="4" class="${g.Knights.Avg < window.he.rules().knights.min ? 'fdanger' : (g.Knights.Avg >= window.he.rules().knights.max ? 'fsuccess' : 'fwarning')}">${g.Knights.Avg}</td>
-            <td colspan="2">${g.Treasures.Avg}</td>
-            <td colspan="2">${g.Instructors.Avg}</td>
+            <td colspan="2" class="${window.hcf(g.Pets.Avg, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${g.Pets.Avg}</td>
+            <td colspan="4" class="${window.hcf(g.Knights.Avg, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${g.Knights.Avg}</td>
+            <td colspan="2" class="${window.hcf(g.Treasures.Avg, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${g.Treasures.Avg}</td>
+            <td colspan="2" class="${window.hcf(g.Instructors.Avg, rules.instructor_min, rules.instructor_max, rules.instructor_enabled)}">${g.Instructors.Avg}</td>
         </tr>
         <tr>
             <td class="border-right-thin">Max</td>
             <td>${g.Levels.Max}</td>
-            <td colspan="2">${g.Pets.Max}</td>
-            <td colspan="4">${g.Knights.Max}</td>
-            <td colspan="2">${g.Treasures.Max}</td>
-            <td colspan="2">${g.Instructors.Max}</td>
+            <td colspan="2" class="${window.hcf(g.Pets.Max, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${g.Pets.Max}</td>
+            <td colspan="4" class="${window.hcf(g.Knights.Max, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${g.Knights.Max}</td>
+            <td colspan="2" class="${window.hcf(g.Treasures.Max, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${g.Treasures.Max}</td>
+            <td colspan="2" class="${window.hcf(g.Instructors.Max, rules.instructor_min, rules.instructor_max, rules.instructor_enabled)}">${g.Instructors.Max}</td>
         </tr>
     `);
 

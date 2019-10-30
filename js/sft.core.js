@@ -2,21 +2,48 @@ class HighlightEngine
 {
     constructor()
     {
-        this.sop = new LocalStorageObjectProperty(btoa('HIGHLIGHTING'), {
-            book: { min: 50, max: 90 }, pet: { min: 100, max: 200 }, knights: { min: 10, max: 15 }, mount: { min: 1, max: 4 }, badgenew: 0, ienchant: 0, iweapons: 0, iexcess: 0, treasure: { min: 5, max: 20 }, instructor: { min: 5, max: 20 }, badgeold: 0
+        this.sop = new LocalStorageObjectProperty(btoa('HIGHLIGHTING2'), {
+            book_enabled: false,
+            book_min: 0,
+            book_max: 0,
+
+            pet_enabled: false,
+            pet_min: 0,
+            pet_max: 0,
+
+            knights_enabled: false,
+            knights_min: 0,
+            knights_max: 0,
+
+            treasure_enabled: false,
+            treasure_min: 0,
+            treasure_max: 0,
+
+            instructor_enabled: false,
+            instructor_min: 0,
+            instructor_max: 0,
+
+            mount_enabled: false,
+            mount_min: 0,
+            mount_max: 0,
+
+            join_enabled: false,
+            join: 0,
+
+            outdated: 0
         });
-        this.r = this.sop.value;
+        this.tmp = this.sop.value;
     }
 
     save(rules)
     {
-        this.r = rules;
-        this.sop.value = this.r;
+        this.sop.value = rules;
+        this.tmp = rules;
     }
 
     rules()
     {
-        return this.r;
+        return this.tmp;
     }
 }
 
