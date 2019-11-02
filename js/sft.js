@@ -214,7 +214,7 @@ window.group = {
         const rules = window.he.rules();
 
         _('glatest').addClass('uk-invisible');
-        if (Date.now() - window.db.db().Groups[gid].LatestTimestamp > TIME_WEEK) {
+        if (Date.now() - window.db.db().Groups[gid].LatestTimestamp > [TIME_WEEK, 2 * TIME_WEEK, 4 * TIME_WEEK][rules.outdated]) {
             _('glatest').removeClass('uk-invisible');
         }
 
@@ -232,22 +232,22 @@ window.group = {
         _('gpetmin').html(g.Pets.Min);
         _('gpetmax').html(g.Pets.Max);
 
-        _('gknightssum').html(g.Knights.Sum);
-        _('gknightsavg').html(window.hf(g.Knights.Avg, rules.knights_min, rules.knights_max, rules.knights_enabled));
-        _('gknightsmin').html(g.Knights.Min);
-        _('gknightsmax').html(g.Knights.Max);
-
-        _('gtreasuresum').html(g.Treasures.Sum);
-        _('gtreasureavg').html(window.hf(g.Treasures.Avg, rules.treasure_min, rules.treasure_max, rules.treasure_enabled));
-        _('gtreasuremin').html(g.Treasures.Min);
-        _('gtreasuremax').html(g.Treasures.Max);
-
-        _('ginstructorsum').html(g.Instructors.Sum);
-        _('ginstructoravg').html(window.hf(g.Instructors.Avg, rules.instructor_min, rules.instructor_max, rules.instructor_enabled));
-        _('ginstructormin').html(g.Instructors.Min);
-        _('ginstructormax').html(g.Instructors.Max);
-
         if (g.Own) {
+            _('gknightssum').html(g.Knights.Sum);
+            _('gknightsavg').html(window.hf(g.Knights.Avg, rules.knights_min, rules.knights_max, rules.knights_enabled));
+            _('gknightsmin').html(g.Knights.Min);
+            _('gknightsmax').html(g.Knights.Max);
+
+            _('gtreasuresum').html(g.Treasures.Sum);
+            _('gtreasureavg').html(window.hf(g.Treasures.Avg, rules.treasure_min, rules.treasure_max, rules.treasure_enabled));
+            _('gtreasuremin').html(g.Treasures.Min);
+            _('gtreasuremax').html(g.Treasures.Max);
+
+            _('ginstructorsum').html(g.Instructors.Sum);
+            _('ginstructoravg').html(window.hf(g.Instructors.Avg, rules.instructor_min, rules.instructor_max, rules.instructor_enabled));
+            _('ginstructormin').html(g.Instructors.Min);
+            _('ginstructormax').html(g.Instructors.Max);
+
             window.group.current = gid;
             _('gcompare').html('<option value="0"></option>' + window.db.db().Groups[gid].List.map(entry => `<option value="${entry.timestamp}">${new ReadableDate(entry.timestamp)}</option>`));
             _('gcompare').trigger('change');
@@ -382,7 +382,7 @@ window.group = {
             logging: false
         }).then(function (canvas) {
             canvas.toBlob(function (blob) {
-                window.download(window.group.compare ? `${window.group.current}.${window.group.compare}.png` : `${window.group.current}.png`, blob);
+                window.download(window.group.compare ? `${window.db.db().Groups[window.group.current].Latest.Name}.${window.db.db().Groups[window.group.current].LatestTimestamp}.${window.group.compare}.png` : `${window.db.db().Groups[window.group.current].Latest.Name}.${window.db.db().Groups[window.group.current].LatestTimestamp}.png`, blob);
             });
         });
     }
@@ -398,7 +398,7 @@ window.player = {
         let rules = window.he.rules();
 
         _('platest').addClass('uk-invisible');
-        if (Date.now() - window.db.db().Players[pid].LatestTimestamp > 1000 * 60 * 60 * 24 * 7) {
+        if (Date.now() - window.db.db().Players[pid].LatestTimestamp > [TIME_WEEK, 2 * TIME_WEEK, 4 * TIME_WEEK][rules.outdated]) {
             _('platest').removeClass('uk-invisible');
         }
 
@@ -838,12 +838,12 @@ window.db.attach('change', function () {
 
     content.sort(function (a, b) {
         if (a.latest && b.latest) {
-            if ((a.data.Group && a.data.Group.Role) || (b.data.Group && b.data.Group.Role)) {
-                if ((a.data.Group && a.data.Group.Role) && (b.data.Group && b.data.Group.Role)) {
+            if ((a.data.Group && a.data.Group.Own && a.data.Group.Role) || (b.data.Group && b.data.Group.Own && b.data.Group.Role)) {
+                if ((a.data.Group && a.data.Group.Own && a.data.Group.Role) && (b.data.Group && b.data.Group.Own && b.data.Group.Role)) {
                     if (a.data.Group.Role === b.data.Group.Role) {
                         return b.data.Level - a.data.Level;
                     } else return a.data.Group.Role - b.data.Group.Role;
-                } else return (a.data.Group && a.data.Group.Role) ? -1 : 1;
+                } else return (a.data.Group && a.data.Group.Own && a.data.Group.Role) ? -1 : 1;
             } else return b.data.Level - a.data.Level;
         } else return !a.latest & b.latest
     });
@@ -951,7 +951,7 @@ _('gcompare').on('change', function () {
     let gid = window.group.current;
     let reftime = $(this).val();
 
-    window.group.compare = reftime;
+    window.group.compare = reftime == 0 ? null : reftime;
 
     let g = window.db.db().Groups[gid].Latest;
     let t = window.db.db().Groups[gid].LatestTimestamp;
@@ -1008,7 +1008,7 @@ _('gcompare').on('change', function () {
         if (c) {
             content.push(`
                 <tr>
-                    <td width="250" class="border-right-thin">${rules.join_enabled && Date.now() - p.Group.Joined < [0, 604800000, 2 * 604800000, 4 * 604800000][rules.join] ? '<span uk-icon="icon: tag; ratio: 1.1"></span> ' : ''}${p.Name}</td>
+                    <td width="250" class="border-right-thin">${rules.join_enabled && Date.now() - p.Group.Joined < [604800000, 2 * 604800000, 4 * 604800000][rules.join] ? '<span uk-icon="icon: tag; ratio: 1.1"></span> ' : ''}${p.Name}</td>
                     <td width="100">${p.Level}${Util.FormatDiff(p.Level, c.Level)}</td>
                     <td width="120" class="${window.hcb(p.Book / 21.6, rules.book_min, rules.book_max, rules.book_enabled)}">${Number(p.Book / 21.6).toFixed(1)}%${
                         p.Book > c.Book ? ` <span>+${Number((p.Book - c.Book) / 21.6).toFixed(2)}%</span>` : (p.Book < c.Book ? ` <span>${Number((p.Book - c.Book) / 21.6).toFixed(2)}%</span>` : '')
@@ -1027,7 +1027,7 @@ _('gcompare').on('change', function () {
         } else {
             content.push(`
                 <tr>
-                    <td width="250" class="border-right-thin">${rules.join_enabled && Date.now() - p.Group.Joined < [0, 604800000, 2 * 604800000, 4 * 604800000][rules.join] ? '<span uk-icon="tag"></span> ' : ''}${p.Name}</td>
+                    <td width="250" class="border-right-thin">${rules.join_enabled && Date.now() - p.Group.Joined < [604800000, 2 * 604800000, 4 * 604800000][rules.join] ? '<span uk-icon="tag"></span> ' : ''}${p.Name}</td>
                     <td width="100">${p.Level}</td>
                     <td width="120" class="${window.hcb(p.Book / 21.6, rules.book_min, rules.book_max, rules.book_enabled)}">${Number(p.Book / 21.6).toFixed(1)}%</td>
                     <td width="80" class="border-right-thin ${window.hcb(p.Mount, rules.mount_min, rules.mount_max, rules.mount_enabled)}">${p.Mount ? ['', '10%', '20%', '30%', '50%'][p.Mount] : ''}</td>

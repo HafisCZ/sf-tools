@@ -109,7 +109,7 @@ class DatabaseIO
 
         for (const raw of raws)
         {
-            if (raw.includes('othergroupsave') || raw.includes('owngroupsave'))
+            if (raw.includes('groupSave') || raw.includes('groupsave'))
             {
                 let group = {};
                 for (var [key, val] of Iterator.parse(raw))
@@ -210,7 +210,7 @@ class Database
                     player.Group.Pet = group.Pets[index];
                     player.Group.Own = group.Own;
 
-                    if (!player.Fortress.Knights) {
+                    if (!player.Fortress.Knights && group.Knights) {
                         player.Fortress.Knights = group.Knights[index];
                     }
                 }
@@ -542,7 +542,7 @@ class Item {
         this.class = Math.trunc(this.picIndex / 1000) + 1;
     }
 
-    isToiledFlushed () {
+    isFlushed () {
         return this.coins == 0;
     }
 
