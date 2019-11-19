@@ -285,8 +285,8 @@ class Player
 
         this.Achievements = data.achievements.slice(0, 70).reduce(function (array, item, index) {
             array.push({
-                owned: item === 1,
-                progress: data.achievements[index + 70]
+                Owned: item === 1,
+                Progress: data.achievements[index + 70]
             });
 
             return array;
@@ -294,6 +294,8 @@ class Player
         this.Achievements.Owned = data.achievements.slice(0, 70).reduce(function (result, a) {
             return result + a
         }, 0);
+
+        this.Achievements.Dehydration = this.Achievements[63].Owned;
 
         this.ID = data.save[data.own ? 1 : 0];
         this.LastOnline = new Date(data.save[data.own ? 2 : 1] * 1000);

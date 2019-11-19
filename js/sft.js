@@ -1014,7 +1014,9 @@ _('gcompare').on('change', function () {
                         p.Book > c.Book ? ` <span>+${Number((p.Book - c.Book) / 21.6).toFixed(2)}%</span>` : (p.Book < c.Book ? ` <span>${Number((p.Book - c.Book) / 21.6).toFixed(2)}%</span>` : '')
                     }</td>
                     <td width="80" class="border-right-thin ${window.hcb(p.Mount, rules.mount_min, rules.mount_max, rules.mount_enabled)}">${p.Mount ? ['', '10%', '20%', '30%', '50%'][p.Mount] : ''}</td>
-                    <td width="100" class="border-right-thin">${p.Achievements.Owned}</td>
+                    <td width="100" class="border-right-thin">${p.Achievements.Owned}${
+                        p.Achievements.Dehydration ? ' <span>H</span>' : ''
+                    }</td>
                     <td width="30" class="${p.Potions[0].Size < 5 ? 'bdanger' : (p.Potions[0].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
                     <td width="30" class="${p.Potions[1].Size < 5 ? 'bdanger' : (p.Potions[1].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
                     <td width="30" class="border-right-thin ${p.Potions[2].Size < 5 ? 'bdanger' : (p.Potions[2].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
@@ -1031,7 +1033,9 @@ _('gcompare').on('change', function () {
                     <td width="100">${p.Level}</td>
                     <td width="120" class="${window.hcb(p.Book / 21.6, rules.book_min, rules.book_max, rules.book_enabled)}">${Number(p.Book / 21.6).toFixed(1)}%</td>
                     <td width="80" class="border-right-thin ${window.hcb(p.Mount, rules.mount_min, rules.mount_max, rules.mount_enabled)}">${p.Mount ? ['', '10%', '20%', '30%', '50%'][p.Mount] : ''}</td>
-                    <td width="100" class="border-right-thin">${p.Achievements.Owned}</td>
+                    <td width="100" class="border-right-thin">${p.Achievements.Owned}${
+                        p.Achievements.Dehydration ? ' <span>H</span>' : ''
+                    }</td>
                     <td width="30" class="${p.Potions[0].Size < 5 ? 'bdanger' : (p.Potions[0].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
                     <td width="30" class="${p.Potions[1].Size < 5 ? 'bdanger' : (p.Potions[1].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
                     <td width="30" class="border-right-thin ${p.Potions[2].Size < 5 ? 'bdanger' : (p.Potions[2].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
