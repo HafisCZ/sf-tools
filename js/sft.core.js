@@ -283,15 +283,20 @@ class Player
             Fortifications : data.save[data.own ? 535 : 219]
         };
 
-        this.Achievements = data.achievements.slice(0, 70).reduce(function (array, item, index) {
+        if (data.achievements.length < 160) {
+            data.achievements.splice(140, 0, ... [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            data.achievements.splice(70, 0, ... [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+        }
+
+        this.Achievements = data.achievements.slice(0, 80).reduce(function (array, item, index) {
             array.push({
                 Owned: item === 1,
-                Progress: data.achievements[index + 70]
+                Progress: data.achievements[index + 80]
             });
 
             return array;
         }, []);
-        this.Achievements.Owned = data.achievements.slice(0, 70).reduce(function (result, a) {
+        this.Achievements.Owned = data.achievements.slice(0, 80).reduce(function (result, a) {
             return result + a
         }, 0);
 

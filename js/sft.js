@@ -438,9 +438,9 @@ window.player = {
             p.Book / 21.6 >= rules.book_max ? '#32d296' : (p.Book / 21.6 >= rules.book_min ? '#faa05a' : '#f0506e')
         }`);
 
-        _('pachnum').html(`${ p.Achievements.Owned } out of 70`);
-        _('pachpercent').html(`${ Math.trunc(p.Achievements.Owned / 0.7) }%`);
-        _('pachbar').css('width', `${ p.Achievements.Owned / 0.7 }%`).css('border-bottom', `2px solid #212121`);
+        _('pachnum').html(`${ p.Achievements.Owned } out of 80`);
+        _('pachpercent').html(`${ Math.trunc(p.Achievements.Owned / 0.8) }%`);
+        _('pachbar').css('width', `${ p.Achievements.Owned / 0.8 }%`).css('border-bottom', `2px solid #212121`);
 
         const dungeons = p.Dungeons.reduce((sum, value) => sum + Math.max(0, value - 2), 0) + p.Dungeons.Tower + p.Dungeons.Player;
         const dungeons_total = 260 + 100 + 50;
