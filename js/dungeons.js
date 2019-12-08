@@ -1,4 +1,31 @@
-function getBossAsModel(boss) {
+const WARRIOR = 'warrior';
+const SCOUT = 'scout';
+const MAGE = 'mage';
+const BATTLEMAGE = 'battlemage';
+const ASSASSIN = 'assassin';
+const BERSERKER = 'berserker';
+
+function rand (successChance) {
+    if (successChance) {
+        return Math.random() * 100 < successChance;
+    } else {
+        return false;
+    }
+}
+
+/*
+    clear(); Math.trunc(runBattleAnalytic([ new EntityModel() ], [ new EntityModel(getModelFromPreset(DUNGEONS.DUNGEON[17][11])) ], 10000).games_won / 100);
+*/
+function isClassCategory (category, enemyClass) {
+    if (category == 0 && (enemyClass === WARRIOR || enemyClass === BATTLEMAGE || enemyClass === BERSERKER)) return true;
+    else if (category == 1 && (enemyClass === SCOUT || enemyClass === ASSASSIN)) return true;
+    else if (category == 2 && enemyClass === MAGE) return true;
+    else return false;
+}
+
+function getModelFromPreset(boss) {
+    let damageBase = DAMAGE_BASE[Math.min(97, Math.trunc(boss.enemy_level / 5))] * (boss.enemy_class === WARRIOR ? 0.4 : (boss.enemy_class === SCOUT ? 0.8 : 0.56));
+
     return {
         class: boss.enemy_class,
         level: boss.enemy_level,
@@ -17,7 +44,13 @@ function getBossAsModel(boss) {
             lightning: 0
         },
         weapons: {
-
+            primary: {
+                min: damageBase * (boss.enemy_class === WARRIOR ? 0.4 : 0.75),
+                max: damageBase * (boss.enemy_class === WARRIOR ? 1.6 : 1.25),
+                cold: 0,
+                fire: 0,
+                lightning: 0
+            }
         },
         bonus: {
             health: 0,
@@ -27,16 +60,13 @@ function getBossAsModel(boss) {
             gladiator: 0,
             strikefirst: false,
             healthrune: 0
-        },
-        override: {
-            health: boss.health
         }
     };
 }
 
 class EntityModel {
     constructor (model = {
-        class: 'battlemage',
+        class: BATTLEMAGE,
         level: 345,
         attributes: {
             strength: 19076,
@@ -56,7 +86,7 @@ class EntityModel {
             primary: {
                 min: 611,
                 max: 1021,
-                cold: 13,
+                cold: 0,
                 lightning: 0,
                 fire: 0
             }
@@ -66,7 +96,7 @@ class EntityModel {
             damage: 32,
             lifepotion: true,
             swordenchant: true,
-            gladiator: 55,
+            gladiator: 11,
             strikefirst: true,
             healthrune: 0
         }
@@ -83,7 +113,7 @@ class EntityModel {
             }
         }
 
-        if (!this.model.weapons.secondary && this.model.class === 'assassin') {
+        if (!this.model.weapons.secondary && this.model.class === ASSASSIN) {
             this.model.weapons.secondary = {
                 min: this.model.level * 1.5,
                 max: this.model.level * 2,
@@ -94,198 +124,190 @@ class EntityModel {
         }
     }
 
-    getCriticalChanceAgainst (enemyLevel) {
-        return Math.min(50, this.model.attributes.luck * 5 / (2 * enemyLevel));
+    // Critical chance
+    getCriticalChanceAgainst (el) {
+        return Math.min(50, this.model.attributes.luck * 5 / (el * 2));
     }
 
+    // Critical multiplier
     getCriticalMultiplier () {
-        return 100 + this.model.bonus.gladiator + (this.model.bonus.swordenchant ? 5 : 0);
+        return 2 + 0.05 * this.model.bonus.gladiator + (this.model.bonus.swordenchant ? 0.05 : 0);
     }
 
-    getDamageRange (enemyStrength, enemyDexterity, enemyIntelligence) {
-        if (this.model.class === 'battlemage' || this.model.class === 'warrior' || this.model.class === 'berserker') {
-            let strengthBase = (1 + this.model.attributes.strength / 10 - enemyStrength / 20) * (1 + this.model.bonus.damage / 100);
-            let normalDamageMin = Math.max(0, this.model.weapons.primary.min * strengthBase);
-            let normalDamageMax = Math.max(0, this.model.weapons.primary.max * strengthBase);
+    // Damage min max
+    getDamageRangeAgainst (enemyClass, enemyStr, enemyDex, enemyInt, enemyRes, enemyFireRes, enemyColdRes, enemyLightningRes) {
+        let normalMult = 1 - enemyRes / 100;
+        let fireMult = 1 - enemyFireRes / 100;
+        let coldMult = 1 - enemyColdRes / 100;
+        let lightningMult = 1 - enemyLightningRes / 100;
 
-            return {
-                primary: {
-                    min: {
-                        normal: normalDamageMin,
-                        cold: normalDamageMin * (this.model.weapons.primary.cold / 100),
-                        fire: normalDamageMin * (this.model.weapons.primary.fire / 100),
-                        lightning: normalDamageMin * (this.model.weapons.primary.lightning / 100)
-                    },
-                    max: {
-                        normal: normalDamageMax,
-                        cold: normalDamageMax * (this.model.weapons.primary.cold / 100),
-                        fire: normalDamageMax * (this.model.weapons.primary.fire / 100),
-                        lightning: normalDamageMax * (this.model.weapons.primary.lightning / 100)
-                    }
+        switch (enemyClass) {
+            case WARRIOR:
+            case BERSERKER:
+            case BATTLEMAGE:
+            {
+                let base = 1 + this.model.attributes.strength * 0.1;
+                base -= isClassCategory(0, enemyClass) ? 0 : Math.min(base / 2, enemyStr / 20);
+                base *= 1 + this.model.bonus.damage / 100;
+
+                let min = base * this.model.weapons.primary.min;
+                let max = base * this.model.weapons.primary.max;
+                let mul = (normalMult + fireMult * this.model.weapons.primary.fire + coldMult * this.model.weapons.primary.cold + lightningMult * this.model.weapons.primary.lightning);
+
+                return {
+                    min: min * mul,
+                    max: max * mul
                 }
-            };
-        } else if (this.model.class === 'scout') {
-            let dexterityBase = (1 + this.model.attributes.dexterity / 10 - enemyDexterity / 20) * (1 + this.model.bonus.damage / 100);
-            let normalDamageMin = Math.max(0, this.model.weapons.primary.min * dexterityBase);
-            let normalDamageMax = Math.max(0, this.model.weapons.primary.max * dexterityBase);
-
-            return {
-                primary: {
-                    min: {
-                        normal: normalDamageMin,
-                        cold: normalDamageMin * (this.model.weapons.primary.cold / 100),
-                        fire: normalDamageMin * (this.model.weapons.primary.fire / 100),
-                        lightning: normalDamageMin * (this.model.weapons.primary.lightning / 100)
-                    },
-                    max: {
-                        normal: normalDamageMax,
-                        cold: normalDamageMax * (this.model.weapons.primary.cold / 100),
-                        fire: normalDamageMax * (this.model.weapons.primary.fire / 100),
-                        lightning: normalDamageMax * (this.model.weapons.primary.lightning / 100)
-                    }
-                }
-            };
-        } else if (this.model.class === 'mage') {
-            let intelligenceBase = (1 + this.model.attributes.intelligence / 10 - enemyIntelligence / 20) * (1 + this.model.bonus.damage / 100);
-            let normalDamageMin = Math.max(0, this.model.weapons.primary.min * intelligenceBase);
-            let normalDamageMax = Math.max(0, this.model.weapons.primary.max * intelligenceBase);
-
-            return {
-                primary: {
-                    min: {
-                        normal: normalDamageMin,
-                        cold: normalDamageMin * (this.model.weapons.primary.cold / 100),
-                        fire: normalDamageMin * (this.model.weapons.primary.fire / 100),
-                        lightning: normalDamageMin * (this.model.weapons.primary.lightning / 100)
-                    },
-                    max: {
-                        normal: normalDamageMax,
-                        cold: normalDamageMax * (this.model.weapons.primary.cold / 100),
-                        fire: normalDamageMax * (this.model.weapons.primary.fire / 100),
-                        lightning: normalDamageMax * (this.model.weapons.primary.lightning / 100)
-                    }
-                }
-            };
-        } else if (this.model.class === 'assassin') {
-            let dexterityBase = (1 + this.model.attributes.dexterity / 10 - enemyDexterity / 20) * (1 + this.model.bonus.damage / 100);
-            let normalDamageMin = Math.max(0, this.model.weapons.primary.min * dexterityBase);
-            let normalDamageMax = Math.max(0, this.model.weapons.primary.max * dexterityBase);
-            let normalDamageSecondaryMin = Math.max(0, this.model.weapons.secondary.min * dexterityBase);
-            let normalDamageSecondaryMax = Math.max(0, this.model.weapons.secondary.max * dexterityBase);
-
-            return {
-                primary: {
-                    min: {
-                        normal: normalDamageMin,
-                        cold: normalDamageMin * (this.model.weapons.primary.cold / 100),
-                        fire: normalDamageMin * (this.model.weapons.primary.fire / 100),
-                        lightning: normalDamageMin * (this.model.weapons.primary.lightning / 100)
-                    },
-                    max: {
-                        normal: normalDamageMax,
-                        cold: normalDamageMax * (this.model.weapons.primary.cold / 100),
-                        fire: normalDamageMax * (this.model.weapons.primary.fire / 100),
-                        lightning: normalDamageMax * (this.model.weapons.primary.lightning / 100)
-                    }
-                }, secondary: {
-                    min: {
-                        normal: normalDamageSecondaryMin,
-                        cold: normalDamageSecondaryMin * (this.model.weapons.secondary.cold / 100),
-                        fire: normalDamageSecondaryMin * (this.model.weapons.secondary.fire / 100),
-                        lightning: normalDamageSecondaryMin * (this.model.weapons.secondary.lightning / 100)
-                    },
-                    max: {
-                        normal: normalDamageSecondaryMax,
-                        cold: normalDamageSecondaryMax * (this.model.weapons.secondary.cold / 100),
-                        fire: normalDamageSecondaryMax * (this.model.weapons.secondary.fire / 100),
-                        lightning: normalDamageSecondaryMax * (this.model.weapons.secondary.lightning / 100)
-                    }
-                }
-            };
-        }
-    }
-
-    getHealth () {
-        if (this.model.override && this.model.override.health) {
-            return this.model.override.health;
-        }
-
-        let healthBase = (this.model.level + 1) * this.model.attributes.constitution * (1 + this.model.bonus.health / 100) * ( 1 + (this.model.bonus.lifepotion ? 0.25 : 0)) * (1 + this.model.bonus.healthrune / 100);
-        if (this.model.class === 'warrior' || this.model.class === 'battlemage' || this.model.class === 'berserker') {
-            return healthBase * 5;
-        } else if (this.model.class === 'assassin' || this.model.class === 'scout') {
-            return healthBase * 4;
-        } else if (this.model.class === 'mage') {
-            return healthBase * 2;
-        }
-    }
-
-    getDamageReductionAgainst (enemyClass, enemyLevel) {
-        if (enemyClass === 'mage' || enemyClass === 'battlemage') {
-            return 0;
-        } else if (this.model.class === 'warrior') {
-            return Math.min(50, this.model.defense.armor / enemyLevel);
-        } else if (this.model.class === 'berserker') {
-            return Math.min(25, (this.model.defense.armor * 0.5 )/ enemyLevel);
-        } else if (this.model.class === 'battlemage') {
-            return Math.min(50, 40 + this.model.defense.armor / enemyLevel);
-        } else if (this.model.class === 'scout' || this.model.class === 'assassin') {
-            return Math.min(25, this.model.defense.armor / enemyLevel);
-        } else if (this.model.class === 'mage') {
-            return Math.min(10, this.model.defense.armor / enemyLevel);
-        }
-    }
-
-    getElementalDamageReduction () {
-        return {
-            cold: this.model.defense.cold + this.model.defense.total,
-            fire: this.model.defense.fire + this.model.defense.total,
-            lightning: this.model.defense.lightning + this.model.defense.total
-        };
-    }
-
-    getSpecialDamageAgainst (enemyClass, enemyHealth) {
-        if (this.model.class === 'battlemage') {
-            if (enemyClass === 'battlemage' || enemyClass === 'mage') {
-                return 0;
-            } else {
-                return 0.33 * enemyHealth;
             }
+            case MAGE:
+            {
+                let base = 1 + this.model.attributes.intelligence * 0.1;
+                base -= isClassCategory(2, enemyClass) ? 0 : Math.min(base / 2, enemyInt / 20);
+                base *= 1 + this.model.bonus.damage / 100;
+
+                let min = base * this.model.weapons.primary.min;
+                let max = base * this.model.weapons.primary.max;
+                let mul = (1 + fireMult * this.model.weapons.primary.fire + coldMult * this.model.weapons.primary.cold + lightningMult * this.model.weapons.primary.lightning);
+
+                return {
+                    min: min * mul,
+                    max: max * mul
+                }
+            }
+            case SCOUT:
+            {
+                let base = 1 + this.model.attributes.dexterity * 0.1;
+                base -= isClassCategory(1, enemyClass) ? 0 : Math.min(base / 2, enemyDex / 20);
+                base *= 1 + this.model.bonus.damage / 100;
+
+                let min = base * this.model.weapons.primary.min;
+                let max = base * this.model.weapons.primary.max;
+                let mul = (1 + fireMult * this.model.weapons.primary.fire + coldMult * this.model.weapons.primary.cold + lightningMult * this.model.weapons.primary.lightning);
+
+                return {
+                    min: min * mul,
+                    max: max * mul
+                }
+            }
+            case ASSASSIN:
+            {
+                let base = 1 + this.model.attributes.dexterity * 0.1;
+                base -= isClassCategory(1, enemyClass) ? 0 : Math.min(base / 2, enemyDex / 20);
+                base *= 1 + this.model.bonus.damage / 100;
+
+                let min = base * (this.model.weapons.primary.min + this.model.weapons.secondary.min) * 0.625;
+                let max = base * (this.model.weapons.primary.max + this.model.weapons.secondary.max) * 0.625;
+                let mul = (1 + fireMult * this.model.weapons.primary.fire + coldMult * this.model.weapons.primary.cold + lightningMult * this.model.weapons.primary.lightning);
+
+                return {
+                    min: min * mul,
+                    max: max * mul
+                }
+            }
+        }
+    }
+
+    // Health
+    getHealth () {
+        let base = (this.model.level + 1) * this.model.attributes.constitution;
+        base *= 1 + this.model.bonus.health / 100;
+        base *= this.model.bonus.lifepotion ? 1.25 : 1;
+        base *= 1 + this.model.bonus.healthrune / 100;
+
+        switch (this.model.class) {
+            case WARRIOR:
+            case BERSERKER:
+            case BATTLEMAGE:
+                return base * 5;
+            case ASSASSIN:
+            case SCOUT:
+                return base * 4;
+            case MAGE:
+                return base * 2;
+        }
+    }
+
+    // Get resistances
+    getResistances (enemyLevel) {
+        let normalRes = 0;
+        let fireRes = this.model.defense.fire + this.model.defense.total;
+        let coldRes = this.model.defense.cold + this.model.defense.total;
+        let lightningRes = this.model.defense.lightning + this.model.defense.total;
+
+        switch (this.model.class) {
+            case WARRIOR:
+            {
+                normalRes = Math.min(50, this.model.defense.armor / enemyLevel);
+                break;
+            }
+            case BERSERKER:
+            {
+                normalRes = Math.min(25, this.model.defense.armor / enemyLevel / 2);
+                break;
+            }
+            case BATTLEMAGE:
+            {
+                normalRes = Math.min(50, 40 + this.model.defense.armor / enemyLevel);
+                break;
+            }
+            case SCOUT:
+            case ASSASSIN:
+            {
+                normalRes = Math.min(25, this.model.defense.armor / enemyLevel);
+                break;
+            }
+            case MAGE:
+            {
+                normalRes = Math.min(10, this.model.defense.armor / enemyLevel);
+                break;
+            }
+        }
+
+        return {
+            normal: normalRes,
+            fire: fireRes,
+            cold: coldRes,
+            lightning: lightningRes
+        }
+    }
+
+    // Fireball damage of battlemages
+    getSpecialDamageAgainst (enemyClass, enemyHealth) {
+        if (this.model.class === BATTLEMAGE && (enemyClass != MAGE || enemyClass != BATTLEMAGE)) {
+            return Math.min(enemyHealth, this.getHealth()) / 3;
         } else {
             return 0;
         }
     }
 
+    // Second attack from berserkers
     getSecondAttackChance () {
-        return this.model.class === 'berserker' ? 50 : 0;
+        return this.model.class === BERSERKER ? 50 : 0;
     }
 
-    getDamageSkipChance (enemyClass) {
-        if (this.model.class === 'warrior') {
-            return 25;
-        } else if (this.model.class === 'scout' || this.model.class === 'assassin') {
-            return 50;
-        } else {
-            return 0;
+    // Attack skip chance
+    getDamageSkipChance () {
+        switch (this.model.class) {
+            case WARRIOR:
+                return 25;
+            case SCOUT:
+            case ASSASSIN:
+                return 50;
+            default:
+                return 0;
         }
     }
 }
 
 function runBattleAnalytic (players = [ new EntityModel() ], enemies = [ new EntityModel() ], samples = 100000) {
-    let wins = 0, loses = 0;
+    let wins = 0;
     for (let i = 0; i < samples; i++) {
         if (runBattle(players.map(p => new EntityModel(p.model)), enemies.map(e => new EntityModel(e.model)))) {
             wins++;
-        } else {
-            loses++;
         }
     }
 
-    return {
-        games_won: wins,
-        games_lost: loses,
-        games_total: samples
-    };
+    return wins;
 }
 
 function runBattle (players, enemies) {
@@ -293,48 +315,41 @@ function runBattle (players, enemies) {
         let player = players[0];
         let enemy = enemies[0];
 
-        if (!player.health) player.health = player.getHealth();
         if (!enemy.health) enemy.health = enemy.getHealth();
+        if (!rand(enemy.getDamageSkipChance())) {
+            enemy.health -= player.getSpecialDamageAgainst(enemy.model.class, enemy.getHealth());
+        }
 
-        enemy.health -= player.getSpecialDamageAgainst(enemy.model.class, enemy.getHealth());
-        player.health -= enemy.getSpecialDamageAgainst(player.model.class, player.getHealth());
+        if (!player.health) player.health = player.getHealth();
+        if (!rand(player.getDamageSkipChance())) {
+            player.health -= enemy.getSpecialDamageAgainst(player.model.class, player.getHealth());
+        }
 
-        let playerStrikesFirst = (player.model.bonus.strikefirst == enemy.model.bonus.strikefirst) ? (Math.random() * 100 < 50) : (player.model.bonus.strikefirst && !enemy.model.bonus.strikefirst);
+        let fightOrder = (player.model.bonus.strikefirst == enemy.model.bonus.strikefirst) ? (Math.random() * 100 < 50) : (player.model.bonus.strikefirst && !enemy.model.bonus.strikefirst);
+        let round = 0;
 
         while (player.health > 0 && enemy.health > 0) {
-            if (playerStrikesFirst) {
-                console.log('PLAYER');
-                runAttack(player, enemy);
-                if (player.getSecondAttackChance() && Math.random() * 100 < player.getSecondAttackChance()) {
-                    runAttack(player, enemy);
-                }
+            if (fightOrder) {
+                runAttack(player, enemy, round);
+                if (rand(player.getSecondAttackChance())) runAttack(player, enemy, round);
 
-                if (enemy.health < 0) {
-                    break;
-                } else {
-                    console.log('TARGET');
-                    runAttack(enemy, player);
-                    if (enemy.getSecondAttackChance() && Math.random() * 100 < enemy.getSecondAttackChance()) {
-                        runAttack(enemy, player);
-                    }
+                if (enemy.health < 0) break;
+                else {
+                    runAttack(enemy, player, round);
+                    if (rand(enemy.getSecondAttackChance())) runAttack(enemy, player, round);
                 }
             } else {
-                console.log('PLAYER');
-                runAttack(enemy, player);
-                if (enemy.getSecondAttackChance() && Math.random() * 100 < enemy.getSecondAttackChance()) {
-                    runAttack(enemy, player);
-                }
+                runAttack(enemy, player, round);
+                if (rand(enemy.getSecondAttackChance())) runAttack(enemy, player, round);
 
-                if (player.health < 0) {
-                    break;
-                } else {
-                    console.log('TARGET');
-                    runAttack(player, enemy);
-                    if (player.getSecondAttackChance() && Math.random() * 100 < player.getSecondAttackChance()) {
-                        runAttack(player, enemy);
-                    }
+                if (player.health < 0) break;
+                else {
+                    runAttack(player, enemy, round);
+                    if (rand(player.getSecondAttackChance())) runAttack(player, enemy, round);
                 }
             }
+
+            round++;
         }
 
         if (player.health < 0) players.shift();
@@ -345,55 +360,60 @@ function runBattle (players, enemies) {
     }
 }
 
-function runAttack (attacker, target) {
-    if (target.getDamageSkipChance() && Math.random() * 100 < target.getDamageSkipChance()) {
-        console.log('Miss');
-        return;
-    }
-
-    let resistances = target.getElementalDamageReduction();
-    resistances.normal = target.getDamageReductionAgainst(attacker.model.class, attacker.model.level);
-
-    let damageRanges = attacker.getDamageRange(target.model.attributes.strength, target.model.attributes.dexterity, target.model.attributes.intelligence);
-    let damage = {
-        normal: 0,
-        cold: 0,
-        fire: 0,
-        lightning: 0
-    };
-
-    if (damageRanges.primary) {
-        let damageBase = (Math.random() * 100 < attacker.getCriticalChanceAgainst(target.model.level)) ? (1 + attacker.getCriticalMultiplier() / 100) : 1;
-        damage.normal += damageBase * (damageRanges.primary.min.normal + Math.random() * (damageRanges.primary.max.normal - damageRanges.primary.min.normal + 1));
-        damage.cold += damageBase * (damageRanges.primary.min.cold + Math.random() * (damageRanges.primary.max.cold - damageRanges.primary.min.cold + 1));
-        damage.fire += damageBase * (damageRanges.primary.min.fire + Math.random() * (damageRanges.primary.max.fire - damageRanges.primary.min.fire + 1));
-        damage.lightning += damageBase * (damageRanges.primary.min.lightning + Math.random() * (damageRanges.primary.max.lightning - damageRanges.primary.min.lightning + 1));
-    }
-
-    if (damageRanges.secondary) {
-        let damageBase = (Math.random() * 100 < attacker.getCriticalChanceAgainst(target.model.level)) ? (1 + attacker.getCriticalMultiplier() / 100) : 1;
-        damage.normal += damageBase * (damageRanges.secondary.min.normal + Math.random() * (damageRanges.secondary.max.normal - damageRanges.secondary.min.normal + 1));
-        damage.cold += damageBase * (damageRanges.secondary.min.cold + Math.random() * (damageRanges.secondary.max.cold - damageRanges.secondary.min.cold + 1));
-        damage.fire += damageBase * (damageRanges.secondary.min.fire + Math.random() * (damageRanges.secondary.max.fire - damageRanges.secondary.min.fire + 1));
-        damage.lightning += damageBase * (damageRanges.secondary.min.lightning + Math.random() * (damageRanges.secondary.max.lightning - damageRanges.secondary.min.lightning + 1));
-    }
-
-    target.health -= (damage.normal * (1 - resistances.normal / 100) + damage.lightning * (1 - resistances.lightning / 100)  + damage.cold * (1 - resistances.cold / 100) + damage.fire * (1 - resistances.fire / 100) );
-
-    console.log({
-        attacker: attacker,
-        target: target,
-        damage_taken: (damage.normal * (1 - resistances.normal / 100) + damage.lightning * (1 - resistances.lightning / 100)  + damage.cold * (1 - resistances.cold / 100) + damage.fire * (1 - resistances.fire / 100) ),
-        damage_dealt: damage,
-        damage_resisted: {
-            normal: damage.normal * (resistances.normal / 100),
-            cold: damage.cold * (resistances.cold / 100),
-            fire: damage.fire * (resistances.fire / 100),
-            lightning: damage.lightning * (resistances.lightning / 100)
-        },
-        resistances: resistances
-    });
+function formatNumber (num) {
+    return num.toString().split('').map((n, i, a) => (((a.length - i - 1) % 3 == 2 && i != 0) ? ` ${n}` : `${n}`)).join('');
 }
+
+function runAttack (attacker, target, round) {
+    let isSkip = rand(target.getDamageSkipChance());
+    let isCrit = rand(attacker.getCriticalChanceAgainst(target.model.level));
+    let resists = target.getResistances(attacker.model.level);
+    let range = attacker.getDamageRangeAgainst(target.model.class, target.model.attributes.strength, target.model.attributes.dexterity, target.model.attributes.intelligence, resists.normal, resists.fire, resists.cold, resists.lightning);
+
+    let damage = range.min + Math.random() * (range.max - range.min + 1);
+    damage *= isCrit ? attacker.getCriticalMultiplier() : 1;
+    damage *= Math.pow(1.05, round);
+
+    if (false) console.log(`
+        ROUND: ${round + 1}
+
+        ATTACKER: (${attacker.model.class}) ${attacker.model.level}
+            HP: ${formatNumber(Math.trunc(attacker.health))} / ${formatNumber(Math.trunc(attacker.getHealth()))}
+            STR: ${formatNumber(attacker.model.attributes.strength)}
+            DEX: ${formatNumber(attacker.model.attributes.dexterity)}
+            INT: ${formatNumber(attacker.model.attributes.intelligence)}
+            CON: ${formatNumber(attacker.model.attributes.constitution)}
+            CRIT CHANCE: ${attacker.getCriticalChanceAgainst(target.model.level)}%
+            CRIT MULT: ${Math.trunc(attacker.getCriticalMultiplier() * 100)}%
+            WEAPON DAMAGE: ${formatNumber(Math.trunc(attacker.model.weapons.primary.min))} - ${formatNumber(Math.trunc(attacker.model.weapons.primary.max))}
+            RESISTANCES: ARMOR: ${attacker.model.defense.armor} (FIRE: ${attacker.model.defense.fire + attacker.model.defense.total}%, COLD: ${attacker.model.defense.cold + attacker.model.defense.total}%, LIGHTNING: ${attacker.model.defense.lightning + attacker.model.defense.total}%)
+
+        TARGET: (${target.model.class}) ${target.model.level}
+            HP: ${formatNumber(Math.trunc(target.health))} / ${formatNumber(Math.trunc(target.getHealth()))}
+            STR: ${formatNumber(target.model.attributes.strength)}
+            DEX: ${formatNumber(target.model.attributes.dexterity)}
+            INT: ${formatNumber(target.model.attributes.intelligence)}
+            CON: ${formatNumber(target.model.attributes.constitution)}
+            RESISTANCES: ARMOR: ${target.model.defense.armor} (FIRE: ${target.model.defense.fire + target.model.defense.total}%, COLD: ${target.model.defense.cold + target.model.defense.total}%, LIGHTNING: ${target.model.defense.lightning + target.model.defense.total}%)
+
+        RESULT:
+            DAMAGE RANGE: ${formatNumber(Math.trunc(range.min))} - ${formatNumber(Math.trunc(range.max))}
+
+            RESISTED: ${resists.normal}% (FIRE: ${resists.fire}%, COLD: ${resists.cold}%, LIGHTNING: ${resists.lightning}%)
+            DAMAGE DEALT: ${isSkip ? 0 : formatNumber(Math.trunc(damage))}
+
+            WAS CRIT: ${isCrit}
+            WAS MISS: ${isSkip}
+    `);
+
+    if (!isSkip) {
+        target.health -= damage;
+    }
+}
+
+const DAMAGE_BASE = [
+    0, 0, 20, 25, 35, 60, 75, 85, 90, 100, 120, 130, 140, 150, 165, 175, 185, 195, 205, 215, 225, 235, 250, 260, 270, 280, 300, 310, 320, 330, 340, 350, 365, 380, 400, 420, 430, 440, 455, 470, 480, 490, 500, 505, 515, 535, 540, 550, 560, 570, 575, 590, 600, 620, 630, 675, 715, 750, 765, 780, 825, 880, 900, 915, 925, 950, 980, 1025, 1045, 1065, 1080, 1105, 1150, 1175, 1200, 1280, 1310, 1330, 1350, 1375, 1400, 1425, 1500, 1530, 1560, 1585, 1630, 1670, 1700, 1725, 1755, 1795, 1820, 1850, 1880, 1920, 1970, 2000
+];
 
 const DUNGEONS = {
   'TOWER': {
