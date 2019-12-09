@@ -29,7 +29,7 @@ function rand (successChance) {
 */
 
 function toModel (preset) {
-    let base = DAMAGE_BASE[Math.min(97, Math.trunc(preset.enemy_level / 5))] * (preset.enemy_class === WARRIOR ? 0.4 : (preset.enemy_class === SCOUT ? 0.56 : 0.8));
+    let base = 2 * DAMAGE_BASE[Math.min(97, Math.trunc(preset.enemy_level / 5))] * (preset.enemy_class === WARRIOR ? 0.4 : (preset.enemy_class === SCOUT ? 0.56 : 0.8));
     return {
         class: preset.enemy_class,
         level: preset.enemy_level,
@@ -261,9 +261,7 @@ function runBattleAnalytic (groupA, groupB, samples = 100000) {
     let result = {
         samples: samples,
         wins: 0,
-        averageHP: 0,
-        leastHP: 1,
-        mostHP: 0
+        averageHP: 0
     };
 
     let wins = 0;
@@ -302,7 +300,7 @@ function runBattle (groupA, groupB) {
         // Set damage ranges
         a.range = a.getDamageRange(b);
         b.range = b.getDamageRange(a);
-        if (!window.x) {window.x=true;console.log(a.range, b.range);}
+
         // Decide who starts first in a duel
         let aStrikeFirst = true;
         if (a.model.enchantquick && b.model.enchantquick) {

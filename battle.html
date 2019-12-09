@@ -437,12 +437,12 @@
                         if ($('#dungeon-select').val() == -1) {console.log('a');
                             enemyModel = {
                                 class: $('#eclass').val(),
-                                level: Number($('#elevel').val()),
-                                str: Number($('#estr').val()),
-                                dex: Number($('#edex').val()),
-                                int: Number($('#eint').val()),
-                                con: Number($('#econ').val()),
-                                lck: Number($('#elck').val()),
+                                level: Number($('#elevel').val()) || 1,
+                                str: Number($('#estr').val()) || 1,
+                                dex: Number($('#edex').val()) || 1,
+                                int: Number($('#eint').val()) || 1,
+                                con: Number($('#econ').val()) || 1,
+                                lck: Number($('#elck').val()) || 1,
                                 armor: {
                                     normal: Number($('#earmornormal').val()),
                                     total: Number($('#earmortotal').val()),
@@ -452,7 +452,7 @@
                                 },
                                 damage: {
                                     min: Number($('#edamagemin').val()),
-                                    max: Number($('#edamagemax').val()),
+                                    max: Number($('#edamagemax').val()) || 1,
                                     fire: Number($('#edamagefire').val()),
                                     cold: Number($('#edamagecold').val()),
                                     lightning: Number($('#edamagelightning').val())
@@ -469,15 +469,14 @@
                             enemyModel = toModel(OPTIONS[$('#dungeon-select').val()].enemies[$('#enemy-select').val()]);
                         }
 
-                        //let enemyModel = toModel(DUNGEONS.DUNGEON[17][11]);
                         let playerModel = {
                             class: $('#pclass').val(),
-                            level: Number($('#plevel').val()),
-                            str: Number($('#pstr').val()),
-                            dex: Number($('#pdex').val()),
-                            int: Number($('#pint').val()),
-                            con: Number($('#pcon').val()),
-                            lck: Number($('#plck').val()),
+                            level: Number($('#plevel').val()) || 1,
+                            str: Number($('#pstr').val()) || 1,
+                            dex: Number($('#pdex').val()) || 1,
+                            int: Number($('#pint').val()) || 1,
+                            con: Number($('#pcon').val()) || 1,
+                            lck: Number($('#plck').val()) || 1,
                             armor: {
                                 normal: Number($('#parmornormal').val()),
                                 total: Number($('#parmortotal').val()),
@@ -487,7 +486,7 @@
                             },
                             damage: {
                                 min: Number($('#pdamagemin').val()),
-                                max: Number($('#pdamagemax').val()),
+                                max: Number($('#pdamagemax').val()) || 1,
                                 fire: Number($('#pdamagefire').val()),
                                 cold: Number($('#pdamagecold').val()),
                                 lightning: Number($('#pdamagelightning').val())
@@ -500,7 +499,7 @@
                             enchantcrit: $('#penchantcrit').prop('checked'),
                             enchantquick: $('#penchantquick').prop('checked')
                         };
-                        //playerModel = TEST_MODEL; // TESTING
+
                         let result = runBattleAnalytic([ new EntityModel(playerModel) ], [ new EntityModel(enemyModel) ], 1000000);
 
                         $('#simulator-result').html(`
