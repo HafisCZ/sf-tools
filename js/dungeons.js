@@ -99,8 +99,8 @@ class EntityModel {
     }
 
     // Critical chance against leveled oponent
-    getCritChance (el) {
-        return Math.min(50, this.model.lck * 2.5 / el);
+    getCritChance (target) {
+        return Math.min(50, this.model.lck * 2.5 / target.model.level);
     }
 
     // Critical damage multiplier
@@ -109,14 +109,17 @@ class EntityModel {
     }
 
     // Damage min max
-    getDamageRange (enemyClass, enemyStr, enemyDex, enemyInt, enemyRes, enemyFireRes, enemyColdRes, enemyLightningRes) {
+    getDamageRange (target) {
+        // Target resistance
+        let targetResistances = target.getResistances(this);
+
         // Base damage resistance
-        let nMult = 1 - enemyRes / 100;
+        let nMult = 1 - targetResistances.normal / 100;
 
         // Elemental resistances
-        let fMult = nMult * (1 - enemyFireRes / 100) * (this.model.damage.fire / 100);
-        let cMult = nMult * (1 - enemyColdRes / 100) * (this.model.damage.cold / 100);
-        let lMult = nMult * (1 - enemyLightningRes / 100) * (this.model.damage.lightning / 100);
+        let fMult = nMult * (1 - targetResistances.fire / 100) * (this.model.damage.fire / 100);
+        let cMult = nMult * (1 - targetResistances.cold / 100) * (this.model.damage.cold / 100);
+        let lMult = nMult * (1 - targetResistances.lightning / 100) * (this.model.damage.lightning / 100);
 
         // Damage multiplier from dungeon
         let bMult = 1 + this.model.damagebonus / 100;
@@ -125,13 +128,13 @@ class EntityModel {
         let base = bMult * (nMult + fMult + cMult + lMult);
 
         if (this.model.class === WARRIOR || this.model.class === BERSERKER || this.model.class === BATTLEMAGE) {
-            base *= (1 + Math.max(this.model.str / 2, this.model.str - enemyStr / 2)) / 10;
+            base *= (1 + Math.max(this.model.str / 2, this.model.str - target.model.str / 2)) / 10;
         } else if (this.model.class === MAGE) {
-            base *= (1 + Math.max(this.model.int / 2, this.model.int - enemyInt / 2)) / 10;
+            base *= (1 + Math.max(this.model.int / 2, this.model.int - target.model.int / 2)) / 10;
         } else if (this.model.class === SCOUT) {
-            base *= (1 + Math.max(this.model.dex / 2, this.model.dex - enemyDex / 2)) / 10;
+            base *= (1 + Math.max(this.model.dex / 2, this.model.dex - target.model.dex / 2)) / 10;
         } else if (this.model.class === ASSASSIN) {
-            base *= 1.25 * (1 + Math.max(this.model.dex / 2, this.model.dex - enemyDex / 2)) / 10;
+            base *= 1.25 * (1 + Math.max(this.model.dex / 2, this.model.dex - target.model.dex / 2)) / 10;
         }
 
         return {
@@ -161,8 +164,8 @@ class EntityModel {
     }
 
     // Calculate damage resistance from leveled opponent
-    getApproxResistance (el) {
-        let res = 50 * this.model.level / el;
+    getApproxResistance (attacker) {
+        let res = 50 * this.model.level / attacker.model.level;
         switch (this.model.class) {
             case WARRIOR: return Math.min(50, res);
             case BERSERKER: return Math.min(25, res / 2);
@@ -174,10 +177,10 @@ class EntityModel {
     }
 
     // Get resistances
-    getResistances (el) {
+    getResistances (attacker) {
         if (!this.model.armor) {
             return {
-                normal: this.getApproxResistance(el),
+                normal: this.getApproxResistance(attacker),
                 fire: 0,
                 cold: 0,
                 lightning: 0
@@ -188,28 +191,28 @@ class EntityModel {
         switch (this.model.class) {
             case WARRIOR:
             {
-                normal = Math.min(50, this.model.armor.normal / el);
+                normal = Math.min(50, this.model.armor.normal / attacker.model.level);
                 break;
             }
             case BERSERKER:
             {
-                normal = Math.min(25, this.model.armor.normal / el / 2);
+                normal = Math.min(25, this.model.armor.normal / attacker.model.level / 2);
                 break;
             }
             case BATTLEMAGE:
             {
-                normal = Math.min(50, 40 + this.model.armor.normal / el);
+                normal = Math.min(50, 40 + this.model.armor.normal / attacker.model.level);
                 break;
             }
             case SCOUT:
             case ASSASSIN:
             {
-                normal = Math.min(25, this.model.armor.normal / el);
+                normal = Math.min(25, this.model.armor.normal / attacker.model.level);
                 break;
             }
             case MAGE:
             {
-                normal = Math.min(10, this.model.armor.normal / el);
+                normal = Math.min(10, this.model.armor.normal / attacker.model.level);
                 break;
             }
         }
@@ -223,9 +226,9 @@ class EntityModel {
     }
 
     // Fireball damage of battlemages
-    getSpecialDamage (enemyClass, enemyHealth) {
-        if (this.model.class === BATTLEMAGE && (enemyClass != MAGE || enemyClass != BATTLEMAGE)) {
-            return Math.min(enemyHealth, this.getHealth()) / 3;
+    getSpecialDamage (target) {
+        if (this.model.class === BATTLEMAGE && (target.model.class != MAGE || target.model.class != BATTLEMAGE)) {
+            return Math.min(target.getHealth(), this.getHealth()) / 3;
         } else {
             return 0;
         }
@@ -237,8 +240,8 @@ class EntityModel {
     }
 
     // Chance to skip incoming damage
-    getSkipChance (enemyClass) {
-        if (enemyClass === MAGE) {
+    getSkipChance (attacker) {
+        if (attacker.model.class === MAGE) {
             return 0;
         } else {
             switch (this.model.class) {
@@ -255,15 +258,26 @@ class EntityModel {
 }
 
 function runBattleAnalytic (groupA, groupB, samples = 100000) {
+    let result = {
+        samples: samples,
+        wins: 0,
+        averageHP: 0,
+        leastHP: 1,
+        mostHP: 0
+    };
+
     let wins = 0;
+    let averageDamage
 
     for (let i = 0; i < samples; i++) {
-        if (runBattle(groupA.map(a => a.copy()), groupB.map(b => b.copy()))) {
-            wins++;
-        }
+        let hp = runBattle(groupA.map(a => a.copy()), groupB.map(b => b.copy()));
+        result.wins += (hp <= 0 ? 1 : 0);
+        result.averageHP += Math.max(0, hp);
     }
 
-    return wins;
+    result.averageHP /= result.samples;
+
+    return result;
 }
 
 function runBattle (groupA, groupB) {
@@ -277,14 +291,18 @@ function runBattle (groupA, groupB) {
         if (!a.health) a.health = a.getHealth();
 
         // Deal initial damage to enemies if they deal any
-        if (!rand(a.getSkipChance(b.model.class))) {
-            a.health -= b.getSpecialDamage(a.model.class, a.getHealth());
+        if (!rand(a.getSkipChance(b))) {
+            a.health -= b.getSpecialDamage(a);
         }
 
-        if (!rand(b.getSkipChance(a.model.class))) {
-            b.health -= a.getSpecialDamage(b.model.class, b.getHealth());
+        if (!rand(b.getSkipChance(a))) {
+            b.health -= a.getSpecialDamage(b);
         }
 
+        // Set damage ranges
+        a.range = a.getDamageRange(b);
+        b.range = b.getDamageRange(a);
+        if (!window.x) {window.x=true;console.log(a.range, b.range);}
         // Decide who starts first in a duel
         let aStrikeFirst = true;
         if (a.model.enchantquick && b.model.enchantquick) {
@@ -344,7 +362,7 @@ function runBattle (groupA, groupB) {
 
         // Win condition
         if (!groupA.length || !groupB.length) {
-            return groupA.length > 0;
+            return b.health / b.getHealth();
         }
     }
 }
@@ -355,53 +373,26 @@ function formatNumber (num) {
 
 function runAttack (attacker, target, data) {
     // Roll chances
-    let skipRoll = rand(target.getSkipChance(attacker.model.class));
-    let critRoll = rand(attacker.getCritChance(target.model.level));
+    let skipRoll = rand(target.getSkipChance(attacker));
+    let critRoll = rand(attacker.getCritChance(target));
 
     // Fight parameters
-    let resistances = target.getResistances(attacker.model.level);
-    let range = attacker.getDamageRange(target.model.class, target.model.str, target.model.dex, target.model.int, resistances.normal, resistances.fire, resistances.cold, resistances.lightning);
-    let damage = (range.min + Math.random() * (1 + range.max - range.min)) * (critRoll ? attacker.getCritMult() : 1) * (skipRoll ? 0 : 1) * data.damagemult;
+    let damage = (attacker.range.min + Math.random() * (1 + attacker.range.max - attacker.range.min)) * (critRoll ? attacker.getCritMult() : 1) * (skipRoll ? 0 : 1) * data.damagemult;
 
     // Sub damage from target health
     target.health -= damage;
 
     // Scale damage with more hits are dealt
     data.attacks++;
-    data.hits += skipRoll ? -1 : 1;
+    data.hits += skipRoll ? 0 : 1;
+
     if (data.hits > 4) {
         data.damagemult *= 1.4;
     }
+
     if (data.hits > 12) {
         data.hits = 0;
     }
-
-    // Log data
-    if (false) console.log(`
-        ${data.attacks}
-        DAMAGE MULT: ${data.damagemult}
-        HIT STREAK : ${data.hits}
-
-        ATTACKER: (${attacker.model.class}) ${attacker.model.level}
-            CRIT CHANCE: ${attacker.getCritChance(target.model.level)}%
-            CRIT MULT: ${Math.trunc(attacker.getCritMult() * 100)}%
-            WEAPON DAMAGE: ${formatNumber(Math.trunc(attacker.model.damage.min))} - ${formatNumber(Math.trunc(attacker.model.damage.max))}
-
-        TARGET: (${target.model.class}) ${target.model.level}
-            HP: ${formatNumber(Math.trunc(target.health))} / ${formatNumber(Math.trunc(target.getHealth()))}
-            RESISTANCES:
-                NORM: ${resistances.normal}%
-                FIRE: ${resistances.fire}%
-                COLD: ${resistances.cold}%
-                LIGH: ${resistances.lightning}%
-
-        EVAL:
-            DAMAGE RANGE: ${formatNumber(Math.trunc(range.min))} - ${formatNumber(Math.trunc(range.max))}
-            DAMAGE DEALT: ${formatNumber(Math.trunc(damage))}
-
-            WAS CRIT: ${critRoll}
-            WAS MISS: ${skipRoll}
-    `);
 }
 
 const DAMAGE_BASE = [
@@ -2507,17 +2498,6 @@ const DUNGEONS = {
         'constitution': 3280,
         'luck': 1340,
         'health': 1252960
-      },
-      '10': {
-        'enemy_name': '',
-        'enemy_level': 0,
-        'enemy_class': 'mirror image',
-        'strength': 0,
-        'dexterity': 0,
-        'intelligence': 0,
-        'constitution': 0,
-        'luck': 0,
-        'health': 0
       }
     },
     '10': {
@@ -4743,17 +4723,6 @@ const DUNGEONS = {
         'constitution': 33038,
         'luck': 2454,
         'health': 23060524
-      },
-      '10': {
-        'enemy_name': '',
-        'enemy_level': 350,
-        'enemy_class': 'mirror image',
-        'strength': 1,
-        'dexterity': 1,
-        'intelligence': 1,
-        'constitution': 4,
-        'luck': 1,
-        'health': 1
       }
     },
     '10': {
@@ -6096,7 +6065,6 @@ const DUNGEONS = {
     }
   },
   'PORTAL': {
-    '1': {
       '1': {
         'enemy_name': 'Beast',
         'enemy_level': 200,
@@ -6206,10 +6174,8 @@ const DUNGEONS = {
         'constitution': 71650,
         'luck': 1804,
         'health': 91353752
-      }
     },
-    '2': {
-      '1': {
+      '11': {
         'enemy_name': 'Ritualist',
         'enemy_level': 260,
         'enemy_class': 'scout',
@@ -6220,7 +6186,7 @@ const DUNGEONS = {
         'luck': 2945,
         'health': 79615440
       },
-      '2': {
+      '12': {
         'enemy_name': 'Desert Devourer',
         'enemy_level': 266,
         'enemy_class': 'mage',
@@ -6231,7 +6197,7 @@ const DUNGEONS = {
         'luck': 3108,
         'health': 42490380
       },
-      '3': {
+      '13': {
         'enemy_name': 'Snaker',
         'enemy_level': 272,
         'enemy_class': 'mage',
@@ -6242,7 +6208,7 @@ const DUNGEONS = {
         'luck': 3271,
         'health': 46311720
       },
-      '4': {
+      '14': {
         'enemy_name': 'Snake Mage',
         'enemy_level': 278,
         'enemy_class': 'scout',
@@ -6253,7 +6219,7 @@ const DUNGEONS = {
         'luck': 3501,
         'health': 101835000
       },
-      '5': {
+      '15': {
         'enemy_name': 'Gory Gatherer',
         'enemy_level': 284,
         'enemy_class': 'warrior',
@@ -6264,7 +6230,7 @@ const DUNGEONS = {
         'luck': 2404,
         'health': 137256000
       },
-      '6': {
+      '16': {
         'enemy_name': 'Lithic Leviathan',
         'enemy_level': 290,
         'enemy_class': 'warrior',
@@ -6275,7 +6241,7 @@ const DUNGEONS = {
         'luck': 2507,
         'health': 148482752
       },
-      '7': {
+      '17': {
         'enemy_name': 'Ghastly Grey',
         'enemy_level': 296,
         'enemy_class': 'scout',
@@ -6286,7 +6252,7 @@ const DUNGEONS = {
         'luck': 4102,
         'health': 127745640
       },
-      '8': {
+      '18': {
         'enemy_name': 'Malicious Martha',
         'enemy_level': 302,
         'enemy_class': 'mage',
@@ -6297,7 +6263,7 @@ const DUNGEONS = {
         'luck': 4250,
         'health': 66847860
       },
-      '9': {
+      '19': {
         'enemy_name': 'Big Z',
         'enemy_level': 308,
         'enemy_class': 'mage',
@@ -6308,7 +6274,7 @@ const DUNGEONS = {
         'luck': 4313,
         'health': 69599160
       },
-      '10': {
+      '20': {
         'enemy_name': 'Father of Lies',
         'enemy_level': 314,
         'enemy_class': 'mage',
@@ -6318,10 +6284,8 @@ const DUNGEONS = {
         'constitution': 115330,
         'luck': 4440,
         'health': 72657904
-      }
     },
-    '3': {
-      '1': {
+      '21': {
         'enemy_name': 'Spikey Spiteful',
         'enemy_level': 320,
         'enemy_class': 'scout',
@@ -6332,7 +6296,7 @@ const DUNGEONS = {
         'luck': 4513,
         'health': 152950080
       },
-      '2': {
+      '22': {
         'enemy_name': 'Hellmutt',
         'enemy_level': 326,
         'enemy_class': 'scout',
@@ -6343,7 +6307,7 @@ const DUNGEONS = {
         'luck': 4576,
         'health': 158830432
       },
-      '3': {
+      '23': {
         'enemy_name': 'Soldier of Doom',
         'enemy_level': 332,
         'enemy_class': 'scout',
@@ -6354,7 +6318,7 @@ const DUNGEONS = {
         'luck': 4703,
         'health': 165354480
       },
-      '4': {
+      '24': {
         'enemy_name': 'Blood Occultist',
         'enemy_level': 338,
         'enemy_class': 'mage',
@@ -6365,7 +6329,7 @@ const DUNGEONS = {
         'luck': 4756,
         'health': 84566944
       },
-      '5': {
+      '25': {
         'enemy_name': 'Biting Batbuck',
         'enemy_level': 344,
         'enemy_class': 'scout',
@@ -6376,7 +6340,7 @@ const DUNGEONS = {
         'luck': 4829,
         'health': 177853200
       },
-      '6': {
+      '26': {
         'enemy_name': 'His Pestilence',
         'enemy_level': 350,
         'enemy_class': 'warrior',
@@ -6387,7 +6351,7 @@ const DUNGEONS = {
         'luck': 3166,
         'health': 230519248
       },
-      '7': {
+      '27': {
         'enemy_name': 'Obstructor',
         'enemy_level': 356,
         'enemy_class': 'scout',
@@ -6398,7 +6362,7 @@ const DUNGEONS = {
         'luck': 5613,
         'health': 215085360
       },
-      '8': {
+      '28': {
         'enemy_name': 'Martyrdom\'s Maiden',
         'enemy_level': 362,
         'enemy_class': 'warrior',
@@ -6409,7 +6373,7 @@ const DUNGEONS = {
         'luck': 3680,
         'health': 287223744
       },
-      '9': {
+      '29': {
         'enemy_name': 'Muscular Muzzle',
         'enemy_level': 368,
         'enemy_class': 'mage',
@@ -6420,7 +6384,7 @@ const DUNGEONS = {
         'luck': 6139,
         'health': 121976640
       },
-      '10': {
+      '30': {
         'enemy_name': 'Azmo Fantasmo',
         'enemy_level': 374,
         'enemy_class': 'mage',
@@ -6430,10 +6394,8 @@ const DUNGEONS = {
         'constitution': 173990,
         'luck': 6478,
         'health': 130492496
-      }
     },
-    '4': {
-      '1': {
+      '31': {
         'enemy_name': 'Premature Hellspawn',
         'enemy_level': 380,
         'enemy_class': 'scout',
@@ -6444,7 +6406,7 @@ const DUNGEONS = {
         'luck': 6713,
         'health': 277459456
       },
-      '2': {
+      '32': {
         'enemy_name': 'Angel of Pain',
         'enemy_level': 386,
         'enemy_class': 'warrior',
@@ -6455,7 +6417,7 @@ const DUNGEONS = {
         'luck': 4328,
         'health': 371539360
       },
-      '3': {
+      '33': {
         'enemy_name': 'h4xx0r',
         'enemy_level': 392,
         'enemy_class': 'warrior',
@@ -6466,7 +6428,7 @@ const DUNGEONS = {
         'luck': 4505,
         'health': 391428000
       },
-      '4': {
+      '34': {
         'enemy_name': 'Loricate Biter',
         'enemy_level': 398,
         'enemy_class': 'warrior',
@@ -6477,7 +6439,7 @@ const DUNGEONS = {
         'luck': 4646,
         'health': 411987456
       },
-      '5': {
+      '35': {
         'enemy_name': 'Slender Person',
         'enemy_level': 404,
         'enemy_class': 'mage',
@@ -6488,7 +6450,7 @@ const DUNGEONS = {
         'luck': 7809,
         'health': 172189792
       },
-      '6': {
+      '36': {
         'enemy_name': 'Hammerer',
         'enemy_level': 410,
         'enemy_class': 'mage',
@@ -6499,7 +6461,7 @@ const DUNGEONS = {
         'luck': 8020,
         'health': 178941184
       },
-      '7': {
+      '37': {
         'enemy_name': 'Horrendous Hag',
         'enemy_level': 416,
         'enemy_class': 'mage',
@@ -6510,7 +6472,7 @@ const DUNGEONS = {
         'luck': 8167,
         'health': 185381520
       },
-      '8': {
+      '38': {
         'enemy_name': 'Deeply Fallen',
         'enemy_level': 422,
         'enemy_class': 'warrior',
@@ -6521,7 +6483,7 @@ const DUNGEONS = {
         'luck': 5070,
         'health': 483467840
       },
-      '9': {
+      '39': {
         'enemy_name': 'Demon of Terror',
         'enemy_level': 428,
         'enemy_class': 'mage',
@@ -6532,7 +6494,7 @@ const DUNGEONS = {
         'luck': 8649,
         'health': 202196288
       },
-      '10': {
+      '40': {
         'enemy_name': 'Exitus Prime',
         'enemy_level': 434,
         'enemy_class': 'mage',
@@ -6542,10 +6504,8 @@ const DUNGEONS = {
         'constitution': 240370,
         'luck': 8800,
         'health': 209121904
-      }
     },
-    '5': {
-      '1': {
+      '41': {
         'enemy_name': 'Brute',
         'enemy_level': 440,
         'enemy_class': 'warrior',
@@ -6556,7 +6516,7 @@ const DUNGEONS = {
         'luck': 5435,
         'health': 544193984
       },
-      '2': {
+      '42': {
         'enemy_name': 'Nasty Trapper',
         'enemy_level': 446,
         'enemy_class': 'scout',
@@ -6567,7 +6527,7 @@ const DUNGEONS = {
         'luck': 9178,
         'health': 450629632
       },
-      '3': {
+      '43': {
         'enemy_name': 'Executor',
         'enemy_level': 452,
         'enemy_class': 'warrior',
@@ -6578,7 +6538,7 @@ const DUNGEONS = {
         'luck': 5735,
         'health': 590666688
       },
-      '4': {
+      '44': {
         'enemy_name': 'Fatty on the Rocks',
         'enemy_level': 458,
         'enemy_class': 'mage',
@@ -6589,7 +6549,7 @@ const DUNGEONS = {
         'luck': 9628,
         'health': 242471344
       },
-      '5': {
+      '45': {
         'enemy_name': 'Ex-Exorcist',
         'enemy_level': 464,
         'enemy_class': 'warrior',
@@ -6600,7 +6560,7 @@ const DUNGEONS = {
         'luck': 5959,
         'health': 630260992
       },
-      '6': {
+      '46': {
         'enemy_name': 'Death Dispenser',
         'enemy_level': 470,
         'enemy_class': 'scout',
@@ -6611,7 +6571,7 @@ const DUNGEONS = {
         'luck': 10000,
         'health': 520040512
       },
-      '7': {
+      '47': {
         'enemy_name': 'Shadow of Power',
         'enemy_level': 476,
         'enemy_class': 'mage',
@@ -6622,7 +6582,7 @@ const DUNGEONS = {
         'luck': 11423,
         'health': 300910688
       },
-      '8': {
+      '48': {
         'enemy_name': 'Horned Witch',
         'enemy_level': 482,
         'enemy_class': 'mage',
@@ -6633,7 +6593,7 @@ const DUNGEONS = {
         'luck': 11664,
         'health': 310791168
       },
-      '9': {
+      '49': {
         'enemy_name': 'Death\'s Best Buddy',
         'enemy_level': 488,
         'enemy_class': 'scout',
@@ -6644,7 +6604,7 @@ const DUNGEONS = {
         'luck': 11863,
         'health': 643993472
       },
-      '10': {
+      '50': {
         'enemy_name': 'Devourer of Souls',
         'enemy_level': 500,
         'enemy_class': 'mage',
@@ -6655,6 +6615,46 @@ const DUNGEONS = {
         'luck': 12264,
         'health': 340108864
       }
-    }
   }
+};
+
+const OPTIONS = {
+    0: { name: 'TOWER', enemies: DUNGEONS.TOWER, group: 'GENERAL' },
+    1: { name: 'PORTAL', enemies: DUNGEONS.PORTAL },
+
+    2: { name: 'DESECRATED CATACOMBS', enemies: DUNGEONS.DUNGEON[1], group: 'DUNGEONS' },
+    3: { name: 'THE MINES OF GLORIA', enemies: DUNGEONS.DUNGEON[2] },
+    4: { name: 'THE RUINS OF GNARK', enemies: DUNGEONS.DUNGEON[3] },
+    5: { name: 'THE CUTTHROAT GROTTO', enemies: DUNGEONS.DUNGEON[4] },
+    6: { name: 'THE EMERALD SCALE ALTAR', enemies: DUNGEONS.DUNGEON[5] },
+    7: { name: 'THE TOXIC TREE', enemies: DUNGEONS.DUNGEON[6] },
+    8: { name: 'THE MAGMA STREAM', enemies: DUNGEONS.DUNGEON[7] },
+    9: { name: 'THE FROST BLOOD TEMPLE', enemies: DUNGEONS.DUNGEON[8] },
+    10: { name: 'THE PYRAMID OF MADNESS', enemies: DUNGEONS.DUNGEON[9] },
+    11: { name: 'BLACK SKULL FORTRESS', enemies: DUNGEONS.DUNGEON[10] },
+    12: { name: 'CIRCUS OF TERROR', enemies: DUNGEONS.DUNGEON[11] },
+    13: { name: 'HELL', enemies: DUNGEONS.DUNGEON[12] },
+    14: { name: 'THE 13TH FLOOR', enemies: DUNGEONS.DUNGEON[13] },
+    16: { name: 'EASTEROS', enemies: DUNGEONS.DUNGEON[14] },
+    17: { name: 'TIME-HONORED SCHOOL OF MAGIC', enemies: DUNGEONS.DUNGEON[16] },
+    17: { name: 'HEMORRIDOR', enemies: DUNGEONS.DUNGEON[17] },
+    19: { name: 'NORDIC GODS', enemies: DUNGEONS.DUNGEON[19] },
+
+    20: { name: 'DESECRATED CATACOMBS ', enemies: DUNGEONS.SHADOW_DUNGEON[1], group: 'SHADOW DUNGEONS' },
+    21: { name: 'THE MINES OF GLORIA ', enemies: DUNGEONS.SHADOW_DUNGEON[2] },
+    22: { name: 'THE RUINS OF GNARK ', enemies: DUNGEONS.SHADOW_DUNGEON[3] },
+    23: { name: 'THE CUTTHROAT GROTTO ', enemies: DUNGEONS.SHADOW_DUNGEON[4] },
+    24: { name: 'THE EMERALD SCALE ALTAR ', enemies: DUNGEONS.SHADOW_DUNGEON[5] },
+    25: { name: 'THE TOXIC TREE ', enemies: DUNGEONS.SHADOW_DUNGEON[6] },
+    26: { name: 'THE MAGMA STREAM ', enemies: DUNGEONS.SHADOW_DUNGEON[7] },
+    27: { name: 'THE FROST BLOOD TEMPLE ', enemies: DUNGEONS.SHADOW_DUNGEON[8] },
+    28: { name: 'THE PYRAMID OF MADNESS ', enemies: DUNGEONS.SHADOW_DUNGEON[9] },
+    29: { name: 'BLACK SKULL FORTRESS ', enemies: DUNGEONS.SHADOW_DUNGEON[10] },
+    30: { name: 'CIRCUS OF TERROR ', enemies: DUNGEONS.SHADOW_DUNGEON[11] },
+    31: { name: 'HELL ', enemies: DUNGEONS.SHADOW_DUNGEON[12] },
+    32: { name: 'THE 13TH FLOOR ', enemies: DUNGEONS.SHADOW_DUNGEON[13] },
+    33: { name: 'EASTEROS ', enemies: DUNGEONS.SHADOW_DUNGEON[14] },
+    34: { name: 'TIME-HONORED SCHOOL OF MAGIC ', enemies: DUNGEONS.SHADOW_DUNGEON[16] },
+    35: { name: 'HEMORRIDOR ', enemies: DUNGEONS.SHADOW_DUNGEON[17] },
+    36: { name: 'NORDIC GODS ', enemies: DUNGEONS.SHADOW_DUNGEON[19] }
 };

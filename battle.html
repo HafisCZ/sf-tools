@@ -27,6 +27,14 @@
         </nav>
         <div class="uk-container uk-margin-top uk-margin-bottom">
             <div class="uk-container" uk-grid>
+                <div class="uk-width-1-1">
+                    <div class="uk-placeholder">
+                        <button class="uk-button uk-button-default uk-width-1-1" id="start-simulator">RUN SIMULATOR</button>
+                        <div id="simulator-result">
+
+                        </div>
+                    </div>
+                </div>
                 <div class="uk-width-1-2">
                     <article class="uk-comment uk-comment-primary">
                         <header class="uk-comment-header uk-flex uk-flex-between">
@@ -39,20 +47,20 @@
                                     CLASS
                                 </div>
                                 <div class="uk-width-3-4">
-                                    <select class="uk-select uk-form-small" id="form-horizontal-select">
-                                        <option>WARRIOR</option>
-                                        <option>SCOUT</option>
-                                        <option>MAGE</option>
-                                        <option>BATTLE MAGE</option>
-                                        <option>ASSASSIN</option>
-                                        <option>BERSERKER</option>
+                                    <select class="uk-select uk-form-small" id="pclass">
+                                        <option value="warrior">WARRIOR</option>
+                                        <option value="scout">SCOUT</option>
+                                        <option value="mage">MAGE</option>
+                                        <option value="battlemage">BATTLE MAGE</option>
+                                        <option value="assassin">ASSASSIN</option>
+                                        <option value="berserker">BERSERKER</option>
                                     </select>
                                 </div>
                                 <div class="uk-width-1-4">
                                     LEVEL
                                 </div>
                                 <div class="uk-width-3-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="plevel">
                                 </div>
                                 <div class="uk-width-1-1">
                                     <hr>
@@ -61,31 +69,31 @@
                                     STRENGTH
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="pstr">
                                 </div>
                                 <div class="uk-width-1-4">
                                     DEXTERITY
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="pdex">
                                 </div>
                                 <div class="uk-width-1-4">
                                     INTELLIGENCE
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="pint">
                                 </div>
                                 <div class="uk-width-1-4">
                                     CONSTITUTION
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="pcon">
                                 </div>
                                 <div class="uk-width-1-4">
                                     LUCK
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="plck">
                                 </div>
                                 <div class="uk-width-1-1">
                                     <hr>
@@ -94,31 +102,31 @@
                                     MIN DMG
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="pdamagemin">
                                 </div>
                                 <div class="uk-width-1-4">
                                     MAX DMG
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="pdamagemax">
                                 </div>
                                 <div class="uk-width-1-4">
                                     FIRE %
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="pdamagefire">
                                 </div>
                                 <div class="uk-width-1-4">
                                     COLD %
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="pdamagecold">
                                 </div>
                                 <div class="uk-width-1-4">
                                     LIGHTNING %
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="pdamagelightning">
                                 </div>
                                 <div class="uk-width-1-1">
                                     <hr>
@@ -127,31 +135,31 @@
                                     ARMOR
                                 </div>
                                 <div class="uk-width-3-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="parmornormal">
                                 </div>
                                 <div class="uk-width-1-4">
                                     TOTAL %
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="parmortotal">
                                 </div>
                                 <div class="uk-width-1-4">
                                     FIRE %
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="parmorfire">
                                 </div>
                                 <div class="uk-width-1-4">
                                     COLD %
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="parmorcold">
                                 </div>
                                 <div class="uk-width-1-4">
                                     LIGHTNING %
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="parmorlightning">
                                 </div>
                                 <div class="uk-width-1-1">
                                     <hr>
@@ -160,16 +168,16 @@
                                     HEALTH %
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="phealthbonus">
                                 </div>
                                 <div class="uk-width-1-2">
-                                    <label><input class="uk-checkbox" type="checkbox"> LIFE POTION</label>
+                                    <label><input class="uk-checkbox" type="checkbox" id="plifepotion"> LIFE POTION</label>
                                 </div>
                                 <div class="uk-width-1-4">
                                     RUNE %
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="prunehealth">
                                 </div>
                                 <div class="uk-width-1-2">
 
@@ -178,38 +186,338 @@
                                     DAMAGE %
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="pdamagebonus">
                                 </div>
                                 <div class="uk-width-1-2">
-                                    <label><input class="uk-checkbox" type="checkbox"> SHADOW OF THE COWBOY</label>
+                                    <label><input class="uk-checkbox" type="checkbox" id="penchantquick"> SHADOW OF THE COWBOY</label>
                                 </div>
                                 <div class="uk-width-1-4">
                                     GLADIATOR
                                 </div>
                                 <div class="uk-width-1-4">
-                                    <input class="uk-input uk-form-small" type="text">
+                                    <input class="uk-input uk-form-small" type="text" id="pgladiator">
                                 </div>
                                 <div class="uk-width-1-2">
-                                    <label><input class="uk-checkbox" type="checkbox"> SWORD OF VENGEANCE</label>
+                                    <label><input class="uk-checkbox" type="checkbox" id="penchantcrit"> SWORD OF VENGEANCE</label>
                                 </div>
                             </div>
                         </div>
                     </article>
-                    <div class="uk-placeholder">
-                        ADD OR SELECT OPPONENT
-                    </div>
                 </div>
                 <div class="uk-width-1-2">
                     <div class="uk-placeholder">
-                        ADD OR SELECT OPPONENT
+                        <p class="uk-text-center">SELECT OPPONENT</p>
+                        <select class="uk-select uk-form-small uk-margin-bottom" id="dungeon-select">
+
+                        </select>
+                        <select class="uk-select uk-form-small" id="enemy-select">
+
+                        </select>
+                        <div id="enemy-manual">
+                            <div class="uk-grid-small" uk-grid>
+                                <div class="uk-width-1-4">
+                                    CLASS
+                                </div>
+                                <div class="uk-width-3-4">
+                                    <select class="uk-select uk-form-small" id="eclass">
+                                        <option value="warrior">WARRIOR</option>
+                                        <option value="scout">SCOUT</option>
+                                        <option value="mage">MAGE</option>
+                                        <option value="battlemage">BATTLE MAGE</option>
+                                        <option value="assassin">ASSASSIN</option>
+                                        <option value="berserker">BERSERKER</option>
+                                    </select>
+                                </div>
+                                <div class="uk-width-1-4">
+                                    LEVEL
+                                </div>
+                                <div class="uk-width-3-4">
+                                    <input class="uk-input uk-form-small" type="text" id="elevel">
+                                </div>
+                                <div class="uk-width-1-1">
+                                    <hr>
+                                </div>
+                                <div class="uk-width-1-4">
+                                    STRENGTH
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="estr">
+                                </div>
+                                <div class="uk-width-1-4">
+                                    DEXTERITY
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="edex">
+                                </div>
+                                <div class="uk-width-1-4">
+                                    INTELLIGENCE
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="eint">
+                                </div>
+                                <div class="uk-width-1-4">
+                                    CONSTITUTION
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="econ">
+                                </div>
+                                <div class="uk-width-1-4">
+                                    LUCK
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="elck">
+                                </div>
+                                <div class="uk-width-1-1">
+                                    <hr>
+                                </div>
+                                <div class="uk-width-1-4">
+                                    MIN DMG
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="edamagemin">
+                                </div>
+                                <div class="uk-width-1-4">
+                                    MAX DMG
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="edamagemax">
+                                </div>
+                                <div class="uk-width-1-4">
+                                    FIRE %
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="edamagefire">
+                                </div>
+                                <div class="uk-width-1-4">
+                                    COLD %
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="edamagecold">
+                                </div>
+                                <div class="uk-width-1-4">
+                                    LIGHTNING %
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="edamagelightning">
+                                </div>
+                                <div class="uk-width-1-1">
+                                    <hr>
+                                </div>
+                                <div class="uk-width-1-4">
+                                    ARMOR
+                                </div>
+                                <div class="uk-width-3-4">
+                                    <input class="uk-input uk-form-small" type="text" id="earmornormal">
+                                </div>
+                                <div class="uk-width-1-4">
+                                    TOTAL %
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="earmortotal">
+                                </div>
+                                <div class="uk-width-1-4">
+                                    FIRE %
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="earmorfire">
+                                </div>
+                                <div class="uk-width-1-4">
+                                    COLD %
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="earmorcold">
+                                </div>
+                                <div class="uk-width-1-4">
+                                    LIGHTNING %
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="earmorlightning">
+                                </div>
+                                <div class="uk-width-1-1">
+                                    <hr>
+                                </div>
+                                <div class="uk-width-1-4">
+                                    HEALTH %
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="ehealthbonus">
+                                </div>
+                                <div class="uk-width-1-2">
+                                    <label><input class="uk-checkbox" type="checkbox" id="elifepotion"> LIFE POTION</label>
+                                </div>
+                                <div class="uk-width-1-4">
+                                    RUNE %
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="erunehealth">
+                                </div>
+                                <div class="uk-width-1-2">
+
+                                </div>
+                                <div class="uk-width-1-4">
+                                    DAMAGE %
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="edamagebonus">
+                                </div>
+                                <div class="uk-width-1-2">
+                                    <label><input class="uk-checkbox" type="checkbox" id="eenchantquick"> SHADOW OF THE COWBOY</label>
+                                </div>
+                                <div class="uk-width-1-4">
+                                    GLADIATOR
+                                </div>
+                                <div class="uk-width-1-4">
+                                    <input class="uk-input uk-form-small" type="text" id="egladiator">
+                                </div>
+                                <div class="uk-width-1-2">
+                                    <label><input class="uk-checkbox" type="checkbox" id="eenchantcrit"> SWORD OF VENGEANCE</label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <script src="js/dungeons.js"></script>
-        <script type="text/text/javascript">
-            // Controller code
 
+        <script src="js/dungeons.js"></script>
+        <script type="text/javascript">
+            $(function () {
+                $('#start-simulator').prop('disabled', true);
+                $('#enemy-manual').hide();
+                $('#enemy-select').hide();
+
+                $('#dungeon-select').append('<option value="-2"></option>');
+                $('#dungeon-select').append('<option value="-1">CUSTOM OPPONENT</option>');
+
+                Object.entries(OPTIONS).forEach(function (keyval) {
+                    if (keyval[1].group) {
+                        $('#dungeon-select').append(`<option disabled class="uk-text-muted">${keyval[1].group}</option>`);
+                    }
+
+                    $('#dungeon-select').append(`<option value="${keyval[0]}">${keyval[1].name}</option>`);
+                });
+
+                $('#dungeon-select').on('change', function () {
+                    let content = [];
+
+                    if ($(this).val() >= 0) {
+                        let dungeon = OPTIONS[$(this).val()].enemies;
+
+                        Object.entries(dungeon).forEach(function (keyval) {
+                            content.push(`<option value="${keyval[0]}">${keyval[1].enemy_level} - ${keyval[1].enemy_name.toUpperCase()}</option>`);
+                        });
+
+                        $('#enemy-select').show();
+                    } else {
+                        $('#enemy-select').hide();
+                    }
+
+                    if ($(this).val() == -1) {
+                        $('#enemy-manual').show();
+                    } else {
+                        $('#enemy-manual').hide();
+                    }
+
+                    $('#enemy-select').html(content.join(''));
+
+                    if ($(this).val() < -1) {
+                        $('#start-simulator').prop('disabled', true);
+                    } else {
+                        $('#start-simulator').prop('disabled', false);
+                    }
+                });
+
+                $('#start-simulator').on('click', function () {
+                    $('#start-simulator').prop('disabled', true);
+                    $('#simulator-result').html(`<div class="uk-flex uk-flex-center uk-margin-top"><div uk-spinner="ratio: 2.5"></div></div>`);
+
+                    setTimeout(function () {
+                        let enemyModel = {};
+
+                        if ($('#dungeon-select').val() == -1) {console.log('a');
+                            enemyModel = {
+                                class: $('#eclass').val(),
+                                level: Number($('#elevel').val()),
+                                str: Number($('#estr').val()),
+                                dex: Number($('#edex').val()),
+                                int: Number($('#eint').val()),
+                                con: Number($('#econ').val()),
+                                lck: Number($('#elck').val()),
+                                armor: {
+                                    normal: Number($('#earmornormal').val()),
+                                    total: Number($('#earmortotal').val()),
+                                    fire: Number($('#earmorfire').val()),
+                                    cold: Number($('#earmorcold').val()),
+                                    lightning: Number($('#earmorlightning').val())
+                                },
+                                damage: {
+                                    min: Number($('#edamagemin').val()),
+                                    max: Number($('#edamagemax').val()),
+                                    fire: Number($('#edamagefire').val()),
+                                    cold: Number($('#edamagecold').val()),
+                                    lightning: Number($('#edamagelightning').val())
+                                },
+                                healthbonus: Number($('#ehealthbonus').val()),
+                                damagebonus: Number($('#edamagebonus').val()),
+                                lifepotion: $('#elifepotion').prop('checked'),
+                                gladiator: Number($('#egladiator').val()),
+                                runehealth: Number($('#erunehealth').val()),
+                                enchantcrit: $('#eenchantcrit').prop('checked'),
+                                enchantquick: $('#eenchantquick').prop('checked')
+                            };
+                        } else {
+                            enemyModel = toModel(OPTIONS[$('#dungeon-select').val()].enemies[$('#enemy-select').val()]);
+                        }
+
+                        //let enemyModel = toModel(DUNGEONS.DUNGEON[17][11]);
+                        let playerModel = {
+                            class: $('#pclass').val(),
+                            level: Number($('#plevel').val()),
+                            str: Number($('#pstr').val()),
+                            dex: Number($('#pdex').val()),
+                            int: Number($('#pint').val()),
+                            con: Number($('#pcon').val()),
+                            lck: Number($('#plck').val()),
+                            armor: {
+                                normal: Number($('#parmornormal').val()),
+                                total: Number($('#parmortotal').val()),
+                                fire: Number($('#parmorfire').val()),
+                                cold: Number($('#parmorcold').val()),
+                                lightning: Number($('#parmorlightning').val())
+                            },
+                            damage: {
+                                min: Number($('#pdamagemin').val()),
+                                max: Number($('#pdamagemax').val()),
+                                fire: Number($('#pdamagefire').val()),
+                                cold: Number($('#pdamagecold').val()),
+                                lightning: Number($('#pdamagelightning').val())
+                            },
+                            healthbonus: Number($('#phealthbonus').val()),
+                            damagebonus: Number($('#pdamagebonus').val()),
+                            lifepotion: $('#plifepotion').prop('checked'),
+                            gladiator: Number($('#pgladiator').val()),
+                            runehealth: Number($('#prunehealth').val()),
+                            enchantcrit: $('#penchantcrit').prop('checked'),
+                            enchantquick: $('#penchantquick').prop('checked')
+                        };
+                        //playerModel = TEST_MODEL; // TESTING
+                        let result = runBattleAnalytic([ new EntityModel(playerModel) ], [ new EntityModel(enemyModel) ], 1000000);
+
+                        $('#simulator-result').html(`
+                            <div class="uk-grid-small uk-margin-medium-top uk-margin-medium-left uk-margin-medium-right" uk-grid>
+                                <div class="uk-width-2-3">SUCCESS CHANCE</div>
+                                <div class="uk-width-1-3">${(result.wins / result.samples < 0.01) ? (result.wins / result.samples > 0 ? '< 1' : '0') : Math.trunc(100 * result.wins / result.samples)}%</div>
+                                <div class="uk-width-2-3">MUSHROOM COST</div>
+                                <div class="uk-width-1-3">${Math.trunc(Math.max(1, result.samples / result.wins))}</div>
+                                <div class="uk-width-2-3">ENEMY HP AVERAGE</div>
+                                <div class="uk-width-1-3">${Math.trunc(100 * result.averageHP)}%</div>
+                            </div>
+                        `);
+
+                        $('#start-simulator').prop('disabled', false);
+                    }, 100);
+                });
+            });
         </script>
     </body>
 </html>
