@@ -36,11 +36,20 @@
                     </div>
                 </div>
                 <div class="uk-width-1-2">
+                    <div class="uk-placeholder">
+                        <div class="uk-grid-small" uk-grid>
+                                <div class="uk-width-1-6">SLOT</div>
+                                <div class="uk-width-1-3">
+                                    <select class="uk-select uk-form-small" id="slot-select">
+                                        <option value="0">0</option>
+                                    </select>
+                                </div>
+                                <div class="uk-width-1-6"><button class="uk-button uk-button-secondary uk-button-small uk-width-1-1" id="slot-save">SAVE</button></div>
+                                <div class="uk-width-1-6"><button class="uk-button uk-button-secondary uk-button-small uk-width-1-1" id="slot-add">+</button></div>
+                                <div class="uk-width-1-6"><button class="uk-button uk-button-danger uk-button-small uk-width-1-1" id="slot-remove">-</button></div>
+                        </div>
+                    </div>
                     <article class="uk-comment uk-comment-primary">
-                        <header class="uk-comment-header uk-flex uk-flex-between">
-                            <button class="uk-button uk-button-secondary uk-button-small">EDIT</button>
-                            <button class="uk-button uk-button-danger uk-button-small">REMOVE</button>
-                        </header>
                         <div class="uk-comment-body">
                             <div class="uk-grid-small" uk-grid>
                                 <div class="uk-width-1-4">
@@ -381,6 +390,206 @@
 
         <script src="js/dungeons.js"></script>
         <script type="text/javascript">
+            // Current models
+            var currentModelPtr = 0;
+            var currentModels = [ EMPTY_MODEL ];
+
+            // Slot approach to multiple saves, can load and save to a slot to keep data when browser is off
+            function loadModelsFromPreferences (slot) {
+                currentModels = JSON.parse(window.localStorage[slot]);
+                currentModelPtr = 0;
+            }
+
+            function saveModelsToPreferences (slot) {
+                window.localStorage[slot] = JSON.stringify(currentModels);
+            }
+
+            function addModel () {
+                currentModels.push(getCurrentModel());
+                loadCurrentModel(currentModels[currentModels.length - 1]);
+            }
+
+            function removeModel (model) {
+                currentModels = currentModels.filter(m => m != model);
+                currentModelPtr = 0;
+                loadCurrentModel(currentModels[currentModelPtr]);
+            }
+
+            function showModel (ptr) {
+                currentModelPtr = ptr < 0 ? 0 : (ptr > currentModels.length - 1 ? currentModels.length - 1 : ptr);
+                loadCurrentModel(currentModels[currentModelPtr]);
+            }
+
+            function saveModel () {
+                currentModels[currentModelPtr] = getCurrentModel();
+            }
+
+            // Load model into view
+            function loadCurrentModel (model) {
+                $('#pclass').val(model.class);
+                $('#plevel').val(model.level);
+                $('#pstr').val(model.str);
+                $('#pdex').val(model.dex);
+                $('#pint').val(model.int);
+                $('#pcon').val(model.con);
+                $('#plck').val(model.lck);
+                $('#parmornormal').val(model.armor.normal);
+                $('#parmortotal').val(model.armor.total);
+                $('#parmorfire').val(model.armor.fire);
+                $('#parmorcold').val(model.armor.cold);
+                $('#parmorlightning').val(model.armor.lightning);
+                $('#pdamagemin').val(model.damage.min);
+                $('#pdamagemax').val(model.damage.max);
+                $('#pdamagefire').val(model.damage.fire);
+                $('#pdamagecold').val(model.damage.cold);
+                $('#pdamagelightning').val(model.damage.lightning);
+                $('#phealthbonus').val(model.healthbonus);
+                $('#pdamagebonus').val(model.damagebonus);
+                $('#pgladiator').val(model.gladiator);
+                $('#prunehealth').val(model.runehealth);
+                $('#plifepotion').prop('checked', model.lifepotion);
+                $('#penchantcrit').prop('checked', model.enchantcrit);
+                $('#penchantquick').prop('checked', model.enchantquick);
+            }
+
+            // Get model from view
+            function getCurrentModel () {
+                return {
+                    class: $('#pclass').val(),
+                    level: Number($('#plevel').val()),
+                    str: Number($('#pstr').val()),
+                    dex: Number($('#pdex').val()),
+                    int: Number($('#pint').val()),
+                    con: Number($('#pcon').val()),
+                    lck: Number($('#plck').val()),
+                    armor: {
+                        normal: Number($('#parmornormal').val()),
+                        total: Number($('#parmortotal').val()),
+                        fire: Number($('#parmorfire').val()),
+                        cold: Number($('#parmorcold').val()),
+                        lightning: Number($('#parmorlightning').val())
+                    },
+                    damage: {
+                        min: Number($('#pdamagemin').val()),
+                        max: Number($('#pdamagemax').val()),
+                        fire: Number($('#pdamagefire').val()),
+                        cold: Number($('#pdamagecold').val()),
+                        lightning: Number($('#pdamagelightning').val())
+                    },
+                    healthbonus: Number($('#phealthbonus').val()),
+                    damagebonus: Number($('#pdamagebonus').val()),
+                    lifepotion: $('#plifepotion').prop('checked'),
+                    gladiator: Number($('#pgladiator').val()),
+                    runehealth: Number($('#prunehealth').val()),
+                    enchantcrit: $('#penchantcrit').prop('checked'),
+                    enchantquick: $('#penchantquick').prop('checked')
+                }
+            }
+
+            function getCurrentEnemyCustomModel () {
+                return {
+                    class: $('#eclass').val(),
+                    level: Number($('#elevel').val()),
+                    str: Number($('#estr').val()),
+                    dex: Number($('#edex').val()),
+                    int: Number($('#eint').val()),
+                    con: Number($('#econ').val()),
+                    lck: Number($('#elck').val()),
+                    armor: {
+                        normal: Number($('#earmornormal').val()),
+                        total: Number($('#earmortotal').val()),
+                        fire: Number($('#earmorfire').val()),
+                        cold: Number($('#earmorcold').val()),
+                        lightning: Number($('#earmorlightning').val())
+                    },
+                    damage: {
+                        min: Number($('#edamagemin').val()),
+                        max: Number($('#edamagemax').val()),
+                        fire: Number($('#edamagefire').val()),
+                        cold: Number($('#edamagecold').val()),
+                        lightning: Number($('#edamagelightning').val())
+                    },
+                    healthbonus: Number($('#ehealthbonus').val()),
+                    damagebonus: Number($('#edamagebonus').val()),
+                    lifepotion: $('#elifepotion').prop('checked'),
+                    gladiator: Number($('#egladiator').val()),
+                    runehealth: Number($('#erunehealth').val()),
+                    enchantcrit: $('#eenchantcrit').prop('checked'),
+                    enchantquick: $('#eenchantquick').prop('checked')
+                }
+            }
+
+
+            // Check if model is valid
+            function isModelValid (model) {
+                return (
+                    !isNaN(model.level) && model.level > 0 &&
+                    !isNaN(model.str) && model.str > 0 &&
+                    !isNaN(model.dex) && model.dex > 0 &&
+                    !isNaN(model.int) && model.int > 0 &&
+                    !isNaN(model.con) && model.con > 0 &&
+                    !isNaN(model.lck) && model.lck > 0 &&
+                    (!model.armor || (!isNaN(model.armor.normal) &&
+                    !isNaN(model.armor.total) &&
+                    !isNaN(model.armor.fire) &&
+                    !isNaN(model.armor.cold) &&
+                    !isNaN(model.armor.lightning))) &&
+                    !isNaN(model.damage.min) &&
+                    !isNaN(model.damage.max) &&
+                    !isNaN(model.damage.fire) &&
+                    !isNaN(model.damage.cold) &&
+                    !isNaN(model.damage.lightning) &&
+                    !isNaN(model.healthbonus) &&
+                    !isNaN(model.damagebonus) &&
+                    !isNaN(model.gladiator) &&
+                    !isNaN(model.runehealth)
+                );
+            }
+
+            // Reset selector
+            function resetSelector (index) {
+                let options = [];
+
+                currentModels.forEach(function (model, i) {
+                    options.push(`<option value="${i}">${i}</option>`);
+                });
+
+                $('#slot-select').html(options.join(''));
+                $('#slot-select').val(index);
+            }
+
+            // Setup slot selection & stuff :)
+            $(function () {
+                resetSelector(0);
+                showModel(0);
+
+                $('#slot-select').on('change', function () {
+                    showModel($(this).val());
+                    resetSelector(currentModelPtr);
+                });
+
+                $('#slot-save').on('click', function () {
+                    saveModel();
+                    resetSelector(currentModelPtr);
+                });
+
+                $('#slot-add').on('click', function () {
+                    addModel();
+                    resetSelector(currentModelPtr);
+                });
+
+                $('#slot-remove').on('click', function () {
+                    if (currentModels.length > 1) {
+                        removeModel(currentModels[currentModelPtr]);
+                        resetSelector(0);
+                    }
+                });
+
+                $('#pclass, #plevel, #pstr, #pdex, #pint, #pcon, #plck, #pdamagemin, #pdamagemax, #pdamagefire, #pdamagecold, #pdamagelightning, #parmornormal, #parmortotal, #parmorfire, #parmorcold, #parmorlightning, #phealthbonus, #pdamagebonus, #pgladiator, #prunehealth, #plifepotion, #penchantcrit, #penchantquick').on('input', function () {
+                    $(`#slot-select [value="${currentModelPtr}"]`).html(`${currentModelPtr} - UNSAVED`);
+                });
+            });
+
             $(function () {
                 $('#start-simulator').prop('disabled', true);
                 $('#enemy-manual').hide();
@@ -428,93 +637,35 @@
                 });
 
                 $('#start-simulator').on('click', function () {
-                    $('#start-simulator').prop('disabled', true);
-                    $('#simulator-result').html(`<div class="uk-flex uk-flex-center uk-margin-top"><div uk-spinner="ratio: 2.5"></div></div>`);
+                    let enemyModel = null;
+                    if ($('#dungeon-select').val() == -1) {
+                        enemyModel = getCurrentEnemyCustomModel();
+                    } else {
+                        enemyModel = toModel(OPTIONS[$('#dungeon-select').val()].enemies[$('#enemy-select').val()]);
+                    }
 
-                    setTimeout(function () {
-                        let enemyModel = {};
+                    if (currentModels.reduce((valid, model) => valid & isModelValid(model), true) && isModelValid(enemyModel)) {
+                        $('#start-simulator').prop('disabled', true);
+                        $('#simulator-result').html(`<div class="uk-flex uk-flex-center uk-margin-top"><div uk-spinner="ratio: 2.5"></div></div>`);
 
-                        if ($('#dungeon-select').val() == -1) {console.log('a');
-                            enemyModel = {
-                                class: $('#eclass').val(),
-                                level: Number($('#elevel').val()) || 1,
-                                str: Number($('#estr').val()) || 1,
-                                dex: Number($('#edex').val()) || 1,
-                                int: Number($('#eint').val()) || 1,
-                                con: Number($('#econ').val()) || 1,
-                                lck: Number($('#elck').val()) || 1,
-                                armor: {
-                                    normal: Number($('#earmornormal').val()),
-                                    total: Number($('#earmortotal').val()),
-                                    fire: Number($('#earmorfire').val()),
-                                    cold: Number($('#earmorcold').val()),
-                                    lightning: Number($('#earmorlightning').val())
-                                },
-                                damage: {
-                                    min: Number($('#edamagemin').val()),
-                                    max: Number($('#edamagemax').val()) || 1,
-                                    fire: Number($('#edamagefire').val()),
-                                    cold: Number($('#edamagecold').val()),
-                                    lightning: Number($('#edamagelightning').val())
-                                },
-                                healthbonus: Number($('#ehealthbonus').val()),
-                                damagebonus: Number($('#edamagebonus').val()),
-                                lifepotion: $('#elifepotion').prop('checked'),
-                                gladiator: Number($('#egladiator').val()),
-                                runehealth: Number($('#erunehealth').val()),
-                                enchantcrit: $('#eenchantcrit').prop('checked'),
-                                enchantquick: $('#eenchantquick').prop('checked')
-                            };
-                        } else {
-                            enemyModel = toModel(OPTIONS[$('#dungeon-select').val()].enemies[$('#enemy-select').val()]);
-                        }
+                        setTimeout(function () {
+                            let result = runBattleAnalytic(currentModels.map(model => new EntityModel(model)), [ new EntityModel(enemyModel) ], 1000000);
 
-                        let playerModel = {
-                            class: $('#pclass').val(),
-                            level: Number($('#plevel').val()) || 1,
-                            str: Number($('#pstr').val()) || 1,
-                            dex: Number($('#pdex').val()) || 1,
-                            int: Number($('#pint').val()) || 1,
-                            con: Number($('#pcon').val()) || 1,
-                            lck: Number($('#plck').val()) || 1,
-                            armor: {
-                                normal: Number($('#parmornormal').val()),
-                                total: Number($('#parmortotal').val()),
-                                fire: Number($('#parmorfire').val()),
-                                cold: Number($('#parmorcold').val()),
-                                lightning: Number($('#parmorlightning').val())
-                            },
-                            damage: {
-                                min: Number($('#pdamagemin').val()),
-                                max: Number($('#pdamagemax').val()) || 1,
-                                fire: Number($('#pdamagefire').val()),
-                                cold: Number($('#pdamagecold').val()),
-                                lightning: Number($('#pdamagelightning').val())
-                            },
-                            healthbonus: Number($('#phealthbonus').val()),
-                            damagebonus: Number($('#pdamagebonus').val()),
-                            lifepotion: $('#plifepotion').prop('checked'),
-                            gladiator: Number($('#pgladiator').val()),
-                            runehealth: Number($('#prunehealth').val()),
-                            enchantcrit: $('#penchantcrit').prop('checked'),
-                            enchantquick: $('#penchantquick').prop('checked')
-                        };
-
-                        let result = runBattleAnalytic([ new EntityModel(playerModel) ], [ new EntityModel(enemyModel) ], 1000000);
-
-                        $('#simulator-result').html(`
-                            <div class="uk-grid-small uk-margin-medium-top uk-margin-medium-left uk-margin-medium-right" uk-grid>
-                                <div class="uk-width-2-3">SUCCESS CHANCE</div>
-                                <div class="uk-width-1-3">${(result.wins / result.samples < 0.01) ? (result.wins / result.samples > 0 ? '< 1' : '0') : Math.trunc(100 * result.wins / result.samples)}%</div>
-                                <div class="uk-width-2-3">MUSHROOM COST</div>
-                                <div class="uk-width-1-3">${Math.trunc(Math.max(1, result.samples / result.wins))}</div>
-                                <div class="uk-width-2-3">ENEMY HP AVERAGE</div>
-                                <div class="uk-width-1-3">${Math.trunc(100 * result.averageHP)}%</div>
-                            </div>
-                        `);
-
-                        $('#start-simulator').prop('disabled', false);
-                    }, 100);
+                            $('#simulator-result').html(`
+                                <div class="uk-grid-small uk-margin-medium-top uk-margin-medium-left uk-margin-medium-right" uk-grid>
+                                    <div class="uk-width-2-3">SUCCESS CHANCE</div>
+                                    <div class="uk-width-1-3">${(result.wins / result.samples < 0.01) ? (result.wins / result.samples > 0 ? '< 1' : '0') : Math.trunc(100 * result.wins / result.samples)}%</div>
+                                    <div class="uk-width-2-3">MUSHROOM COST</div>
+                                    <div class="uk-width-1-3">${Math.trunc(Math.max(1, result.samples / result.wins))}</div>
+                                    <div class="uk-width-2-3">ENEMY HP AVERAGE</div>
+                                    <div class="uk-width-1-3">${Math.trunc(100 * result.averageHP)}%</div>
+                                </div>
+                            `);
+                            $('#start-simulator').prop('disabled', false);
+                        }, 100);
+                    } else {
+                        $('#simulator-result').html(`<p class="uk-text-center uk-text-danger uk-margin-top">INVALID INPUT DATA</p><p class="uk-text-center">LEVEL AND ATTRIBUTES ARE REQUIRED</p>`);
+                    }
                 });
             });
         </script>

@@ -87,6 +87,37 @@ const TEST_MODEL = {
     enchantquick: true
 };
 
+const EMPTY_MODEL = {
+    class: WARRIOR,
+    level: 0,
+    str: 0,
+    dex: 0,
+    int: 0,
+    con: 0,
+    lck: 0,
+    armor: {
+        normal: 0,
+        total: 0,
+        fire: 0,
+        cold: 0,
+        lightning: 0
+    },
+    damage: {
+        min: 0,
+        max: 0,
+        fire: 0,
+        cold: 0,
+        lightning: 0
+    },
+    healthbonus: 0,
+    damagebonus: 0,
+    lifepotion: false,
+    gladiator: 0,
+    runehealth: 0,
+    enchantcrit: false,
+    enchantquick: false
+};
+
 class EntityModel {
     // Create entity model from model
     constructor (model) {
@@ -263,9 +294,6 @@ function runBattleAnalytic (groupA, groupB, samples = 100000) {
         wins: 0,
         averageHP: 0
     };
-
-    let wins = 0;
-    let averageDamage
 
     for (let i = 0; i < samples; i++) {
         let hp = runBattle(groupA.map(a => a.copy()), groupB.map(b => b.copy()));
