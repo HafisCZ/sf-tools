@@ -26,11 +26,14 @@
                 <ul class="uk-navbar-item">BUG TRACKER</ul>
             </div>
         </nav>
-        <div class="uk-container uk-margin-top uk-margin-bottom">
-            <form class="uk-search uk-search-default uk-width-1-1" action="javascript:void(0)">
+        <div class="uk-container uk-margin-top uk-margin-bottom uk-flex uk-flex-between">
+            <form class="uk-search uk-search-default uk-width-2-3" action="javascript:void(0)">
                 <span uk-search-icon></span>
                 <input class="uk-search-input" type="search" placeholder="Search..." id="search">
             </form>
+            <div class="uk-width-1-3 uk-placeholder uk-padding-remove-vertical uk-margin-remove-vertical uk-margin-small-left uk-flex uk-flex-middle uk-flex-center">
+                <p><b id="resolved"></b> out of <b id="issues"></b> resolved</p>
+            </div>
         </div>
         <div class="uk-container uk-margin-top very-smol" id="content">
 
@@ -82,6 +85,8 @@
                 bug(27, 'sb', 'Players can be granted the \'Mule\' achievement even if their backpack is not upgraded and empty.')
             ];
 
+            buglist.sort((a, b) => ((a.fx ? 1 : -1) - (b.fx ? 1 : -1)) || (b.id - a.id));
+
             function inflate (buglist) {
                 var content = [];
 
@@ -120,6 +125,9 @@
             }
 
             $(function () {
+                $('#issues').text(buglist.length.toString());
+                $('#resolved').text(buglist.reduce((t, b) => t + (b.fx ? 1 : 0), 0).toString());
+
                 $('#search').val('');
                 $('#search').on('change input', function () {
                     let filter = $(this).val().toLowerCase();
