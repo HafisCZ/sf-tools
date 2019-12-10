@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools 1.2</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/uikit.min.css" />
+        <link rel="stylesheet" href="css/custom.css" />
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+
+        <script src="js/uikit.min.js"></script>
+        <script src="js/uikit-icons.min.js"></script>
+        <script src="js/jquery.3.4.1.min.js"></script>
+
+        <script src="js/lz-string.min.js"></script>
+        <script src="js/html2canvas.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js" integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <nav class="uk-navbar-container" uk-navbar>
+            <div class="uk-navbar-left">
+                <ul class="uk-navbar-item uk-logo">SFTools <span style="font-size: 0.5em; margin-top: -0.6em; margin-left: 0.3em; margin-right: -0.7em">1.2 Beta</span></ul>
+                <ul class="uk-navbar-item">BUG TRACKER</ul>
+            </div>
+        </nav>
+        <div class="uk-container uk-margin-top uk-margin-bottom">
+            <form class="uk-search uk-search-default uk-width-1-1" action="javascript:void(0)">
+                <span uk-search-icon></span>
+                <input class="uk-search-input" type="search" placeholder="Search..." id="search">
+            </form>
+        </div>
+        <div class="uk-container uk-margin-top very-smol" id="content">
+
+        </div>
+
+        <div class="uk-container uk-margin-bottom">
+            <p class="uk-text-center uk-text-muted">No bugs here. Go break something.</p>
+        </div>
+
+        <script type="text/javascript">
+            function bug (id, v, d, f, fx) {
+                return {
+                    id: id,
+                    d: d,
+                    v: v,
+                    f: f,
+                    fx: fx
+                };
+            }
+
+            const buglist = [
+                bug(0, 'sba', 'Sparks rise from the attribute upgrade buttons even if attribute could not be purchased.', 'Move spark generation to success check in the callback.'),
+                bug(1, 'sb', 'Attribute upgrade buttons send requests even if player does not have enough money to purchase them.', 'Send requests only if player has enough money, like with the rest of upgrade buttons.'),
+                bug(2, 'sba', 'The progress bar integrated into the navigator is drawn on top of the text and icons.', 'Draw the progress bar only on the background.'),
+                bug(3, 'sba', 'The text in the navigator has obvious dark boxy background.'),
+                bug(4, 'sb', 'The Arena and Dungeon screens can get stuck in the middle of fade in/out animations if they are switched between subscreens too quickly.', 'Wait for the animation to finish and then switch, ignoring all switch requests between. Or switch and exit the animation.'),
+                bug(5, 'b', 'Clicking on the Inconspicuous Book does not reset the cursor type.'),
+                bug(6, 'b', 'The cursor does not change type when hovering on inventory expand button.'),
+                bug(7, 'sba', 'Dragging the inventory expand button snaps the inventory to the cursor instead of keeping the relative position.'),
+                bug(8, 'sba', 'All pets play the blink animation when clicked, even if they are unknown.'),
+                bug(9, 'sba', 'Companions have no experience yet there is a glow in the experience bar', 'Do not draw the experience bar when companions are shown.'),
+                bug(10, 'sba', 'Building upgrade overlay has white colons in description box but yellow everywhere else.'),
+                bug(11, 'sba', 'Rune bonuses for damage and resistance are not shown for other characters (including companions).'),
+                bug(12, 'sba', 'Rune bonus for damage shows ++ instead of single + for own character.'),
+                bug(13, 'sba', 'The tooltip for Assassin\'s defense (strength attribute) shows incorrect equation in the tooltip.'),
+                bug(14, 'sb', 'The attack icon in own guild overlaps with the text when no attack is possible.'),
+                bug(15, 'sba', 'When selecting the bottom most fights in the battle history twice, the top logs dissappear until the view is scrolled up.'),
+                bug(16, 'sba', 'Battle history allows for selection of multiple fights, but nothing can be further done with the selected fights.'),
+                bug(17, 'sba', 'Unknown epic items in the Scrapbook show empty quotes as their description.'),
+                bug(18, 'sba', 'Grabbing page in Scrapbook and switching to other screen and then back leaves the shadow of the grabbed page. This can crash the game, when run in browser, if you switch to different category, grab left then right page.'),
+                bug(19, 'sba', 'Selecting page in Scrapbook that is higher that the maximum page of other category and switching to that category resets the slider to 0, but leaves the page on the last most index of the category.'),
+                bug(20, 'sb', 'Character preview in the mail screen is not reset if mail is empty.'),
+                bug(21, 'sba', 'There is extra space within arena manager\'s number if said number is below million.', 'Do not include the extra space in the number localization when no name is used.'),
+                bug(22, 'sba', 'Scrapbook shows maximum of 2170 items, but there are players that have above that.'),
+                bug(23, 'sb', 'Guild attack date in Guilds Hall of Fame shows sometimes 1/1 00:00.'),
+                bug(24, 's', 'Desync can happen between client & server models. Can be fixed by switching to different screen or by reloading the character in the worst case.'),
+                bug(25, 'sb', 'Scrolling the list of group members within Guilds the Hall of Fame by using arrow keys scrolls both the member list and the guild list, causing flicker between character and guild preview depending what request finished first.'),
+                bug(26, 'sb', 'Arena screen is often not in sync with the server, thus attacks can hit someone else instead of who is displayed', 'Attack by using currently shown player\'s PID.'),
+                bug(27, 'sb', 'Players can be granted the \'Mule\' achievement even if their backpack is not upgraded and empty.')
+            ];
+
+            function inflate (buglist) {
+                var content = [];
+
+                buglist.forEach(function (bug) {
+                    content.push(`
+                        <article class="uk-comment uk-comment-primary uk-margin-small-bottom border">
+                            <header class="uk-comment-header uk-grid-medium uk-flex-middle " uk-grid>
+                                <div class="uk-width-expand">
+                                    <h4 class="uk-comment-title uk-margin-remove ${bug.fx ? 'uk-text-success' : ''}">ISSUE #${bug.id} ${bug.fx ? 'RESOLVED' : ''}</h4>
+                                </div>
+                            </header>
+                            <div class="uk-comment-body">
+                                <div>
+                                    <b>DESCRIPTION: </b>
+                                    <p class="uk-margin-remove">${bug.d}</p>
+                                </div>
+                                ${bug.v ? `
+                                <div class="uk-margin-small-top">
+                                    <b>AFFECTED VERSIONS: </b>
+                                    <p class="uk-margin-remove">${bug.v.split('').map(v => {
+                                        switch (v) {
+                                            case 's': return 'STEAM';
+                                            case 'b': return 'BROWSER';
+                                            case 'a': return 'ANDROID';
+                                            default: return 'UNKNOWN';
+                                        }
+                                    }).join(', ')}</p>
+                                </div>` : ''}
+                                ${bug.f ? `<div class="uk-margin-small-top"><b>PROPOSED FIX: </b><p class="uk-margin-remove">${bug.f}</p></div>` : ''}
+                            </div>
+                        </article>
+                    `);
+                });
+
+                $('#content').html(content.join(''));
+            }
+
+            $(function () {
+                $('#search').val('');
+                $('#search').on('change input', function () {
+                    let filter = $(this).val().toLowerCase();
+                    $('#content article').each(function (index, element) {
+                        if ($(element).find('div > p').text().toLowerCase().includes(filter)) {
+                            $(element).show();
+                        } else {
+                            $(element).hide();
+                        }
+                    });
+                });
+
+                inflate(buglist);
+            });
+        </script>
+    </body>
+</html>

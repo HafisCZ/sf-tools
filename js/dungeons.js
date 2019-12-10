@@ -7,6 +7,9 @@
     Features:
     - Any number of players (companions) & enemies (works with both 1v1 and guild fights)
     - Rune damage & resistances
+
+    Fixes:
+    - Berserker health is multiplied by wrong factor
 */
 
 const WARRIOR = 'warrior';
@@ -183,9 +186,9 @@ class EntityModel {
 
         switch (this.model.class) {
             case WARRIOR:
-            case BERSERKER:
             case BATTLEMAGE:
                 return base * 5;
+            case BERSERKER:
             case ASSASSIN:
             case SCOUT:
                 return base * 4;
