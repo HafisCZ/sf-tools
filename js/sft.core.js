@@ -283,6 +283,10 @@ class Player
             Fortifications : data.save[data.own ? 535 : 219]
         };
 
+        if (!data.achievements) {
+            data.achievements = Array(160).fill(0);
+        }
+
         if (data.achievements.length < 160) {
             data.achievements.splice(140, 0, ... [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
             data.achievements.splice(70, 0, ... [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
