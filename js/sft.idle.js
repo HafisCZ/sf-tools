@@ -228,6 +228,7 @@ class SimulatedBuilding {
         this.building = building;
         this.speedMultiplier = speedMultiplier;
         this.moneyMultiplier = moneyMultiplier;
+        this.harvested = 0;
         this.cycle = 0;
 
         this.setLevel(building.getBaseLevel());
@@ -243,6 +244,7 @@ class SimulatedBuilding {
     tick () {
         if (++this.cycle >= this.duration) {
             this.cycle = 0;
+            this.harvested++;
             return this.production;
         } else {
             return 0;
@@ -461,6 +463,14 @@ SimulationRule.Sacrifice.Match = function (s) {
 
 SimulationRule.Sacrifice.MatchDouble = function (s) {
     if (getRunesFromMoney(s.total) > Math.max(100, s.runes * 2)) {
+        s.sacrifice();
+    }
+
+    return false;
+}
+
+SimulationRule.Sacrifice.MathHalfOrToilet = function (s) {
+    if ((s.buildings[9].level > 0 && s.buildings[9].harvested > 0) || getRunesFromMoney(s.total) > Math.max(100, s.runes) / 2) {
         s.sacrifice();
     }
 

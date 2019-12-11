@@ -23,7 +23,7 @@
         <nav class="uk-navbar-container" uk-navbar>
             <div class="uk-navbar-left">
                 <ul class="uk-navbar-item uk-logo">SFTools <span style="font-size: 0.5em; margin-top: -0.6em; margin-left: 0.3em; margin-right: -0.7em">1.2 Beta</span></ul>
-                <ul class="uk-navbar-item">BUG TRACKER</ul>
+                <ul class="uk-navbar-nav"><li><a>BUG TRACKER</a></li></ul>
             </div>
         </nav>
         <div class="uk-container uk-margin-top uk-margin-bottom uk-flex uk-flex-between">
@@ -88,7 +88,8 @@
                 bug(24, 1576018186000, 's', 'Desync can happen between client & server models. Can be fixed by switching to different screen or by reloading the character in the worst case.'),
                 bug(25, 1576018186000, 'sb', 'Scrolling the list of group members within Guilds the Hall of Fame by using arrow keys scrolls both the member list and the guild list, causing flicker between character and guild preview depending what request finished first.'),
                 bug(26, 1576018186000, 'sb', 'Arena screen is often not in sync with the server, thus attacks can hit someone else instead of who is displayed.', 'Attack by using currently shown player\'s PID.'),
-                bug(27, 1576018186000, 'sb', 'Players can be granted the \'Mule\' achievement even if their backpack is not upgraded and empty.')
+                bug(27, 1576018186000, 'sb', 'Players can be granted the \'Mule\' achievement even if their backpack is not upgraded and empty.'),
+                bug(28, 1576023000000, 's', 'Items from advent calendar are treated as a shop items (Including mushroom price in their tooltips) when looked at for the first time.')
             ];
 
             buglist.sort((a, b) => ((a.fx ? 1 : -1) - (b.fx ? 1 : -1)) || (b.id - a.id));
