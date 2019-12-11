@@ -173,7 +173,7 @@ class EntityModel {
 
         return {
             min: this.model.damage.min * base,
-            max: this.model.damage.max * base + 1
+            max: this.model.damage.max * base
         }
     }
 
