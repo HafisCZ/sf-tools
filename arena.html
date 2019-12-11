@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools 1.2</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="css/uikit.min.css" />
+        <link rel="stylesheet" href="css/custom.css" />
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+
+        <script src="js/uikit.min.js"></script>
+        <script src="js/uikit-icons.min.js"></script>
+        <script src="js/jquery.3.4.1.min.js"></script>
+
+        <script src="js/lz-string.min.js"></script>
+        <script src="js/html2canvas.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js" integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
+
+        <script src="js/sft.util.js"></script>
+        <script src="js/sft.idle.js"></script>
+    </head>
+    <body>
+        <nav class="uk-navbar-container" uk-navbar>
+            <div class="uk-navbar-left">
+                <ul class="uk-navbar-item uk-logo">SFTools <span style="font-size: 0.5em; margin-top: -0.6em; margin-left: 0.3em; margin-right: -0.7em">1.2 Beta</span></ul>
+                <ul class="uk-navbar-nav"><li><a href="index.html">ARENA</a></li></ul>
+            </div>
+        </nav>
+
+        <div class="uk-container uk-margin-bottom uk-margin-top">
+            <div class="uk-placeholder">
+                <h4>How to use</h4>
+                <p class="uk-text-meta">This tool has two modes.: preview and simulator. <br>If you want to take a look how your arena is doing, all you need to do is insert your building levels into the first column, insert your current runes into the 'Starting runes' field and finally check all speed and rate upgrades you have. Now the tool will show you your current production. <br>If you want to look how much you need for an upgrade, you can hover above the green buttons. This will show you the potential gain from your upgrades. You can see how much will the upgrade cost and how long it will take for you to afford it in the 'Upgrade Cost' column.<br>To use the simulator function, you should / can specify following options: Target, which the simulation will reach and end; Upgrade style, that the program will use to upgrade buildings and the Sacrifice style, that tells the program when to sacrifice and start anew.</p>
+            </div>
+        </div>
+
+        <div class="uk-container uk-margin-bottom">
+            <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top" data-group="idlegame">
+                <h5 class="uk-card-title">Arena Simulator</h5>
+                <div class="uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                    <div class="uk-width-1-5"></div>
+                    <div class="uk-width-1-5 uk-button-group uk-flex-between uk-child-width-expand">
+                        <button class="uk-button uk-button-success uk-button-xsmall" data-idle-preview="1">1</button>
+                        <button class="uk-button uk-button-success uk-button-xsmall" data-idle-preview="10">10</button>
+                        <button class="uk-button uk-button-success uk-button-xsmall" data-idle-preview="25">25</button>
+                        <button class="uk-button uk-button-success uk-button-xsmall" data-idle-preview="100">100</button>
+                        <button class="uk-button uk-button-success uk-button-xsmall" data-idle-preview="-1">BP</button>
+                    </div>
+                    <div class="uk-width-1-5">Cycle</div>
+                    <div class="uk-width-1-5">Money per Cycle</div>
+                    <div class="uk-width-1-5">Upgrade Cost</div>
+                    <div class="uk-width-1-5"><b>Seat</b></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as0i" data-noreset></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as0" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as0t" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as0p" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as0m" disabled></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as0c" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as0d" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Popcorn stand</b></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as1i" data-noreset></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as1" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as1t" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as1p" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as1m" disabled></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as1c" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as1d" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Parking lot</b></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as2i" data-noreset></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as2" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as2t" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as2p" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as2m" disabled></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as2c" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as2d" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Trap</b></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as3i" data-noreset></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as3" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as3t" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as3p" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as3m" disabled></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as3c" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as3d" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Drinks</b></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as4i" data-noreset></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as4" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as4t" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as4p" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as4m" disabled></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as4c" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as4d" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Deadly trap</b></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as5i" data-noreset></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as5" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as5t" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as5p" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as5m" disabled></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as5c" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as5d" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><b>VIP seat</b></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as6i" data-noreset></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as6" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as6t" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as6p" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as6m" disabled></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as6c" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as6d" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Snacks</b></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as7i" data-noreset></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as7" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as7t" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as7p" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as7m" disabled></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as7c" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as7d" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Straying monsters</b></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as8i" data-noreset></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as8" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as8t" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as8p" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as8m" disabled></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as8c" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as8d" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Toilet</b></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as9i" data-noreset></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as9" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as9t" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as9p" disabled></div>
+                    </div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="as9m" disabled></div>
+                    <div class="uk-width-1-5 uk-grid-collapse uk-grid-small uk-margin-auto-top" uk-grid>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as9c" disabled></div>
+                        <div class="uk-width-1-2"><input class="uk-input uk-form-small" type="text" id="as9d" disabled></div>
+                    </div>
+                    <div class="uk-width-2-5"></div>
+                    <div class="uk-width-1-5 uk-text-right"><b>Hourly production</b></div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" data-hmtl="true" type="text" id="ash" disabled></div>
+                    <div class="uk-width-1-5"></div>
+                    <div class="uk-width-1-1"><br/></div>
+                    <div class="uk-width-1-5"><b>Total money</b></div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="aso" disabled></div>
+                    <div class="uk-width-1-5"></div>
+                    <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                        <div class="uk-width-1-3"><b>Target</b></div>
+                        <div class="uk-width-1-3"><input class="uk-input uk-form-small" type="text" id="asd" placeholder="Enter amount" data-noreset></div>
+                        <div class="uk-width-1-3">
+                            <select class="uk-select uk-form-small uk-padding-remove" id="asg" data-noreset>
+                                <option value="0">None</option>
+                                <option value="1">Minutes</option>
+                                <option value="2">Total Money</option>
+                                <option value="3">Total Runes</option>
+                                <option value="4">Hourly Rate</option>
+                                <option value="5">Available Money</option>
+                                <option value="6">Sacrifice Runes</option>
+                                <option value="7">Building Level</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Run money</b></div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="ast" disabled></div>
+                    <div class="uk-width-1-5"></div>
+                    <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                        <div class="uk-width-1-3"><b>Starting runes</b></div>
+                        <div class="uk-width-2-3"><input class="uk-input uk-form-small" type="text" id="asr" placeholder="Enter amount of runes you have" data-noreset></div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Available money</b></div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asc" disabled></div>
+                    <div class="uk-width-1-5"></div>
+                    <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                        <div class="uk-width-1-3"><b>Speed upgrades</b></div>
+                        <div class="uk-width-2-3 uk-flex uk-flex-between uk-flex-middle" id="asb" data-noreset>
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                        </div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Total runes</b></div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asf" disabled></div>
+                    <div class="uk-width-1-5"></div>
+                    <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                        <div class="uk-width-1-3"><b>Rate upgrades</b></div>
+                        <div class="uk-width-2-3 uk-flex uk-flex-between uk-flex-middle" id="asp" data-noreset>
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                            <input class="uk-checkbox" type="checkbox">
+                        </div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Runes to sacrifice</b></div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asa" disabled></div>
+                    <div class="uk-width-1-5"></div>
+                    <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                        <div class="uk-width-1-3"><b>Upgrade style</b></div>
+                        <div class="uk-width-2-3">
+                            <select class="uk-select uk-form-small" id="asu" data-noreset>
+                                <option value="0">None</option>
+                                <option value="1">First available</option>
+                                <option value="2">Lowest price</option>
+                                <option value="3">Best rate</option>
+                                <option value="4">Amortisation</option>
+                                <option value="5">Breakpoint amortisation</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Duration</b></div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asl" disabled></div>
+                    <div class="uk-width-1-5"></div>
+                    <div class="uk-width-2-5 uk-grid-small uk-text-center uk-grid-first-left" uk-grid>
+                        <div class="uk-width-1-3"><b>Sacrifice style</b></div>
+                        <div class="uk-width-2-3">
+                            <select class="uk-select uk-form-small" id="asv" data-noreset>
+                                <option value="0">None</option>
+                                <option value="1">Half total</option>
+                                <option value="2">Match total</option>
+                                <option value="3">Double total</option>
+                                <option value="4">Half or Toilet</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Duration since sacrifice</b></div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="ase" disabled></div>
+                    <div class="uk-width-1-5"></div>
+                    <div class="uk-width-2-5" class="uk-grid uk-grid-small uk-grid-collapse" uk-grid>
+                        <div class="uk-width-1-3"><button class="uk-button uk-button-small uk-button-primary uk-width-expand" onclick="runSimulation()">START</button></div>
+                        <div class="uk-width-1-3"><button class="uk-button uk-button-small uk-button-danger uk-width-expand" onclick="resetSimulation()">STOP</button></div>
+                        <div class="uk-width-1-3"><button class="uk-button uk-button-small uk-button-danger uk-width-expand" onclick="clearSimulation()">CLEAR</button></div>
+                    </div>
+                    <div class="uk-width-1-5"><b>Sacrifices</b></div>
+                    <div class="uk-width-1-5"><input class="uk-input uk-form-small" type="text" id="asz" disabled></div>
+                    <div class="uk-width-3-5"></div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+
+        </script>
+    </body>
+</html>

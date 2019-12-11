@@ -23,7 +23,7 @@
         <nav class="uk-navbar-container" uk-navbar>
             <div class="uk-navbar-left">
                 <ul class="uk-navbar-item uk-logo">SFTools <span style="font-size: 0.5em; margin-top: -0.6em; margin-left: 0.3em; margin-right: -0.7em">1.2 Beta</span></ul>
-                <ul class="uk-navbar-nav"><li><a>BUG TRACKER</a></li></ul>
+                <ul class="uk-navbar-nav"><li><a href="index.html">BUG TRACKER</a></li></ul>
             </div>
         </nav>
         <div class="uk-container uk-margin-top uk-margin-bottom uk-flex uk-flex-between">
@@ -93,7 +93,9 @@
                 bug(29, 1576023000000, 's', 'Upgrade button for guild treasure and instructor is always active even if there is not enough money for the purchase.'),
                 bug(30, 1576023000000, 's', 'Trying to upgrade guild treasure and instructor without enough money displays the error message in the wrong place.'),
                 bug(31, 1576023000000, 's', 'The tab that the Hall of Fame hotkey shows when pressed does not set accordingly to the tab currently selected but has own counter.'),
-                bug(32, 1576023000000, 's', 'The tooltip min max damages for Battle Mages use intelligence instead of strength in the calculations.')
+                bug(32, 1576023000000, 's', 'The tooltip min max damages for Battle Mages use intelligence instead of strength in the calculations.'),
+                bug(33, 1576023000000, 's', 'The tooltip for items in inventory is shown at wrong place if items are placed in extended chest.'),
+                bug(34, 1576023000000, 's', 'The message when someone raids your fortress successfully is in green instead of red, and the failed raid is in red.')
             ];
 
             buglist.sort((a, b) => ((a.fx ? 1 : -1) - (b.fx ? 1 : -1)) || (b.id - a.id));
