@@ -32,7 +32,7 @@ function rand (successChance) {
 */
 
 function toModel (preset) {
-    let base = 2 * DAMAGE_BASE[Math.min(97, Math.trunc(preset.enemy_level / 5))] * (preset.enemy_class === WARRIOR ? 0.4 : (preset.enemy_class === SCOUT ? 0.56 : 0.8));
+    let base = 2 * DAMAGE_BASE[Math.min(97, Math.trunc(preset.enemy_level / 5))] * (preset.enemy_class === WARRIOR ? 0.4 : (preset.enemy_class === SCOUT ? 0.56 : (preset.enemy_class === ASSASSIN ? 0.56 : 0.8)));
     return {
         class: preset.enemy_class,
         level: preset.enemy_level,
@@ -3702,7 +3702,7 @@ const DUNGEONS = {
       '6': {
         'enemy_name': 'Loki',
         'enemy_level': 360,
-        'enemy_class': 'scout',
+        'enemy_class': 'assassin',
         'strength': 6500,
         'dexterity': 18500,
         'intelligence': 6500,
@@ -6039,7 +6039,7 @@ const DUNGEONS = {
       '6': {
         'enemy_name': 'Loki',
         'enemy_level': 565,
-        'enemy_class': 'scout',
+        'enemy_class': 'assassin',
         'strength': 39500,
         'dexterity': 111000,
         'intelligence': 39500,
