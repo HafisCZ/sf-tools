@@ -958,8 +958,8 @@ _('gcompare').on('change', function () {
 
     let cc = window.db.db().Groups[gid][reftime];
 
-    let plist = g.MemberIDs.filter(id => window.db.db().Players[id][t] && window.db.db().Players[id][t].Group.Role < 4).map(id => window.db.db().Players[id][t]);
-    let clist = cc ? cc.MemberIDs.filter(id => window.db.db().Players[id][reftime] && window.db.db().Players[id][reftime].Group.Role < 4).map(id => window.db.db().Players[id][reftime]): null;
+    let plist = g.MemberIDs.filter(id => window.db.db().Players[id][t] && window.db.db().Players[id][t].Group && window.db.db().Players[id][t].Group.Role < 4).map(id => window.db.db().Players[id][t]);
+    let clist = cc ? cc.MemberIDs.filter(id => window.db.db().Players[id][reftime] && window.db.db().Players[id][reftime].Group && window.db.db().Players[id][reftime].Group.Role < 4).map(id => window.db.db().Players[id][reftime]): null;
 
     let viewTableTag = '<table class="table-group">';
     let shotTableTag = '<table class="table-group" style="width: 1140px !important">';
