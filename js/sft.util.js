@@ -203,16 +203,21 @@ const Iterator = {
         }
     },
 
-    deep: function * (object, trace = [])
+    deep: function * (object, trace = [], url = [])
     {
         for (var index in object)
         {
+            if (index === 'url') {
+                url[0] = object[index];
+                continue;
+            }
+
             const ptrace = trace.concat(index);
-            yield [index, object[index]];
+            yield [index, object[index], url[0]];
 
             if (object[index] != null && typeof(object[index]) == 'object')
             {
-                yield* Iterator.deep(object[index], ptrace);
+                yield* Iterator.deep(object[index], ptrace, url);
             }
         }
     }

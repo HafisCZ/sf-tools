@@ -99,19 +99,28 @@ class DatabaseIO
         let groups = [];
         let raws = [];
 
-        for (var [key, val] of Iterator.deep(json))
+        for (var [key, val, url] of Iterator.deep(json))
         {
             if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername')))
             {
-                raws.push(val);
+                var url = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
+                if (url[1] && url[2]) {
+                    var server_prefix = url[1] + '_' + url[2] + '_';
+                    raws.push([val, server_prefix]);
+                }
             }
         }
 
-        for (const raw of raws)
+        for (const rawPair of raws)
         {
+            var raw = rawPair[0];
+            var prefix = rawPair[1];
+
             if (raw.includes('groupSave') || raw.includes('groupsave'))
             {
                 let group = {};
+
+                group.prefix = prefix;
                 for (var [key, val] of Iterator.parse(raw))
                 {
                     if (key.includes('groupname')) group.name = val;
@@ -130,6 +139,8 @@ class DatabaseIO
 
             if (raw.includes('otherplayername') || raw.includes('ownplayername')) {
                 let player = {};
+
+                player.prefix = prefix;
                 for (var [key, val] of Iterator.parse(raw))
                 {
                     if (key.includes('groupname')) player.groupname = val;
@@ -180,15 +191,15 @@ class Database
             {
                 let group = new Group(groupdata);
 
-                if (!this.Groups[group.ID])
+                if (!this.Groups[group.Identifier])
                 {
-                    this.Groups[group.ID] = {
+                    this.Groups[group.Identifier] = {
                         List: []
                     };
                 }
 
-                this.Groups[group.ID][entry.timestamp] = group;
-                this.Groups[group.ID].List.push({
+                this.Groups[group.Identifier][entry.timestamp] = group;
+                this.Groups[group.Identifier].List.push({
                     timestamp: entry.timestamp,
                     group: group
                 });
@@ -202,7 +213,7 @@ class Database
                 if (gid)
                 {
                     let group = this.Groups[gid][entry.timestamp];
-                    let index = group.MemberIDs.findIndex(p => p === player.ID);
+                    let index = group.MemberIDs.findIndex(p => p === player.Identifier);
 
                     player.Group.Role = group.Roles[index];
                     player.Group.Treasure = group.Treasures[index];
@@ -215,15 +226,15 @@ class Database
                     }
                 }
 
-                if (!this.Players[player.ID])
+                if (!this.Players[player.Identifier])
                 {
-                    this.Players[player.ID] = {
+                    this.Players[player.Identifier] = {
                         List: []
                     };
                 }
 
-                this.Players[player.ID][entry.timestamp] = player;
-                this.Players[player.ID].List.push({
+                this.Players[player.Identifier][entry.timestamp] = player;
+                this.Players[player.Identifier].List.push({
                     timestamp: entry.timestamp,
                     player: player
                 });
@@ -251,6 +262,8 @@ class Player
 {
     constructor (data)
     {
+        this.Prefix = data.prefix || 's1_de';
+
         this.Name = data.name;
 
         if (data.groupname) {
@@ -307,6 +320,8 @@ class Player
         this.Achievements.Dehydration = this.Achievements[63].Owned;
 
         this.ID = data.save[data.own ? 1 : 0];
+        this.Identifier = this.Prefix + '_' + this.ID;
+
         this.LastOnline = new Date(data.save[data.own ? 2 : 1] * 1000);
         this.Level = Util.Math.unpack(data.save[data.own ? 7 : 2], 16);
         this.XP = data.save[data.own ? 8 : 3];
@@ -482,12 +497,15 @@ class Group
 {
     constructor (data)
     {
+        this.Prefix = data.prefix || 's1_de';
         this.ID = data.save[0];
+        this.Identifier = this.Prefix + '_' + this.ID;
+
         this.Name = data.name;
         this.Rank = data.rank;
         this.MemberCount = data.save[3];
         this.Honor = data.save[13];
-        this.MemberIDs = data.save.slice(14, 14 + this.MemberCount);
+        this.MemberIDs = data.save.slice(14, 14 + this.MemberCount).map(mid => (this.Prefix + '_' + mid));
         this.Levels = data.save.slice(64, 64 + this.MemberCount).map(level => level % 1000);
         this.Roles = data.save.slice(314, 314 + this.MemberCount);
         this.Treasures = data.save.slice(214, 214 + this.MemberCount);

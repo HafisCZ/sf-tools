@@ -817,19 +817,22 @@ window.db.attach('change', function () {
         const p = i.Latest;
         const n = Date.now() - i.LatestTimestamp <= TIME_WEEK;
 
+        const s = p.Prefix.split('_').map(x => x.toUpperCase()).join(' ');
+
         content.push({
             data: p,
             latest: n,
             content: `
-                <div data-pid="${p.ID}" data-class="${p.Class}">
+                <div data-pid="${p.Identifier}" data-class="${p.Class}">
                     <div class="uk-inline">
-                        <a class="uk-display-block uk-card uk-link-toggle uk-card-body uk-card-default uk-padding-remove" onclick="window.nav('player', ${p.ID})">
-                            <img class="uk-padding-small" data-src="images/${Strings.Images.Class[p.Class]}" width="128" height="128" uk-img>
+                        <a class="uk-display-block uk-card uk-link-toggle uk-card-body uk-card-default uk-padding-remove" onclick="window.nav('player', '${p.Identifier}')">
+                            <img class="uk-padding-small uk-margin-top" data-src="images/${Strings.Images.Class[p.Class]}" width="128" height="128" uk-img>
                             <div class="uk-padding-small uk-padding-remove-top">
                                 ${p.Name}
                             </div>
                         </a>
-                        ${n ? '' : '<span uk-icon="icon: history; ration: 1.5" class="danger uk-position-top-left uk-padding-small"></span>'}
+                        <span class="uk-position-top-left uk-padding-small uk-text-top pad-half-top uk-text-small">${s}</span>
+                        ${n ? '' : '<span uk-icon="icon: history" class="danger uk-position-top-right uk-padding-small"></span>'}
                     </div>
                 </div>
             `
@@ -858,24 +861,31 @@ window.db.attach('change', function () {
         const g = i.Latest;
         const n = Date.now() - i.LatestTimestamp <= TIME_WEEK;
 
+        const s = g.Prefix.split('_').map(x => x.toUpperCase()).join(' ');
+
         content.push({
             data: g,
             latest: n,
             content: `
-                <div data-gid="${g.ID}">
+                <div data-gid="${g.Identifier}">
                     <div class="uk-inline">
-                        <a class="uk-display-block uk-card uk-link-toggle uk-card-body uk-card-default uk-padding-remove" onclick="window.nav('group', ${g.ID})">
+                        <a class="uk-display-block uk-card uk-link-toggle uk-card-body uk-card-default uk-padding-remove" onclick="window.nav('group', '${g.Identifier}')">
                             <img class="uk-padding-small" data-src="images/${Strings.Images.Group}" width="128" height="128" uk-img>
                             <div class="uk-padding-small uk-padding-remove-top">
                                 ${g.Name}
                             </div>
                         </a>
-                        ${n ? '' : '<span uk-icon="icon: history; ration: 1.5" class="danger uk-position-top-left uk-padding-small"></span>'}
+                        <span class="uk-position-top-left uk-padding-small uk-text-top pad-half-top uk-text-small">${s}</span>
+                        ${n ? '' : '<span uk-icon="icon: history" class="danger uk-position-top-right uk-padding-small"></span>'}
                     </div>
                 </div>
             `
         });
     }
+
+    content.sort(function (a, b) {
+        return (b.data.Own && !a.data.Own) || (b.latest - a.latest);
+    });
 
     _('gsgrid').html(content.map(c => c.content).join(''));
 }, true);
@@ -1003,7 +1013,7 @@ _('gcompare').on('change', function () {
     let rules = window.he.rules();
 
     plist.forEach(function (p) {
-        let c = clist ? clist.find(player => player.ID === p.ID) : null;
+        let c = clist ? clist.find(player => player.Identifier === p.Identifier) : null;
 
         if (c) {
             content.push(`
@@ -1118,14 +1128,14 @@ _('gcompare').on('change', function () {
 
     if (clist) {
         let membersKicked = clist.reduce(function (sum, player) {
-            if (!plist.find(p => p.ID == player.ID)) {
+            if (!plist.find(p => p.Identifier == player.Identifier)) {
                 sum.push(player.Name);
             }
 
             return sum;
         }, []);
         let membersJoined = plist.reduce(function (sum, player) {
-            if (!clist.find(p => p.ID == player.ID)) {
+            if (!clist.find(p => p.Identifier == player.Identifier)) {
                 sum.push(player.Name);
             }
 
