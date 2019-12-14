@@ -131,7 +131,7 @@ class DatabaseIO
             if (raw.includes('otherplayername') || raw.includes('ownplayername')) {
                 let player = {};
                 for (var [key, val] of Iterator.parse(raw))
-                {if (key.includes('achievement')) console.log(key, val);
+                {
                     if (key.includes('groupname')) player.groupname = val;
                     else if (key.includes('name')) player.name = val;
                     else if (key.includes('unitlevel')) player.units = val.split('/').map(a => Number(a));
