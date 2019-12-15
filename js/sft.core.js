@@ -105,7 +105,7 @@ class DatabaseIO
             {
                 var url = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
                 if (url[1] && url[2]) {
-                    var server_prefix = url[1] + '_' + url[2] + '_';
+                    var server_prefix = url[1] + '_' + url[2];
                     raws.push([val, server_prefix]);
                 }
             }
@@ -131,7 +131,7 @@ class DatabaseIO
                     else if (key.includes('groupSave')) group.save = val.split('/').map(a => Number(a));
                 }
 
-                if (!groups.find(g => g.name === group.name))
+                if (!groups.find(g => g.name === group.name) && group.members)
                 {
                     groups.push(group);
                 }
@@ -160,6 +160,19 @@ class DatabaseIO
                     players.push(player);
                 }
             }
+        }
+
+        var testStorage = [ ... this.storage, {
+            timestamp: timestamp,
+            players: players,
+            groups: groups
+        } ];
+
+        try {
+            new Database(testStorage);
+        } catch (e) {
+            alert('This file could not be imported, please create a new one.');
+            return;
         }
 
         this.storage.push({

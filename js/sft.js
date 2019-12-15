@@ -1,4 +1,11 @@
-window.db = new DatabaseIO();
+try {
+    window.db = new DatabaseIO();
+} catch (e) {
+    if (confirm('An iccorectible issue has appeared! Press OK to clear the database.')) {
+        window.localStorage.removeItem([btoa('STORAGE')]);
+    }
+}
+
 window.he = new HighlightEngine();
 
 /*
