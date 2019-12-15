@@ -162,17 +162,17 @@ class DatabaseIO
             }
         }
 
-        var testStorage = [ ... this.storage, {
-            timestamp: timestamp,
-            players: players,
-            groups: groups
-        } ];
-
         try {
-            new Database(testStorage);
+            new Database([
+                ... this.storage,
+                {
+                    timestamp: timestamp,
+                    players: players,
+                    groups: groups
+                }
+            ]);
         } catch (e) {
-            alert('This file could not be imported, please create a new one.');
-            return;
+            return false;
         }
 
         this.storage.push({
@@ -184,6 +184,8 @@ class DatabaseIO
         this.sop.value = this.storage;
         this.database = new Database(this.storage);
         this.notify('change');
+
+        return true;
     }
 }
 

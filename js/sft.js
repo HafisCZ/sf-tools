@@ -1,9 +1,23 @@
+window.dialog = function (head, content, callback) {
+    $('#sfdialog-head').html(head);
+    $('#sfdialog-body').html(content);
+    $('#sfdialog-ok').off('click');
+    $('#sfdialog-ok').on('click', function () {
+        if (callback) {
+            callback();
+        }
+        UIkit.modal($('#sfdialog')[0]).hide();
+    });
+
+    UIkit.modal($('#sfdialog')[0]).show();
+};
+
 try {
     window.db = new DatabaseIO();
 } catch (e) {
-    if (confirm('An iccorectible issue has appeared! Press OK to clear the database.')) {
+    window.dialog('Database Error', 'The database could not be loaded. Click OK to clear the database.', () => {
         window.localStorage.removeItem([btoa('STORAGE')]);
-    }
+    });
 }
 
 window.he = new HighlightEngine();
@@ -16,9 +30,14 @@ window.import = function (f) {
     r.readAsText(f, 'UTF-8');
     r.onload = event => {
         try {
-            window.db.import(JSON.parse(event.target.result), f.lastModified);
+            if (!window.db.import(JSON.parse(event.target.result), f.lastModified)) {
+                throw 'Invalid file!';
+            }
         } catch (e) {
-            console.error(e);
+            window.dialog('Import Error', `
+                <p>The file could not be imported. Try a diffent file.</p>
+                <p>If you think that your file is correct, you can send the file to me to analyze.</p>
+            `);
         }
     }
 }
