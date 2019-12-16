@@ -45,6 +45,8 @@ function toModel (preset) {
         damage: {
             min: base * 0.5,
             max: base * 1.5,
+            min2: base * 0.5,
+            max2: base * 1.5,
             fire: 0,
             cold: 0,
             lightning: 0
@@ -77,6 +79,8 @@ const TEST_MODEL = {
     damage: {
         min: 611,
         max: 1021,
+        min2: 0,
+        max2: 0,
         fire: 0,
         cold: 13,
         lightning: 0
@@ -108,6 +112,8 @@ const EMPTY_MODEL = {
     damage: {
         min: 0,
         max: 0,
+        min2: 0,
+        max2: 0,
         fire: 0,
         cold: 0,
         lightning: 0
@@ -168,12 +174,12 @@ class EntityModel {
         } else if (this.model.class === SCOUT) {
             base *= (1 + Math.max(this.model.dex / 2, this.model.dex - target.model.dex / 2)) / 10;
         } else if (this.model.class === ASSASSIN) {
-            base *= 1.25 * (1 + Math.max(this.model.dex / 2, this.model.dex - target.model.dex / 2)) / 10;
+            base *= 0.625 * (1 + Math.max(this.model.dex / 2, this.model.dex - target.model.dex / 2)) / 10;
         }
 
         return {
-            min: this.model.damage.min * base,
-            max: this.model.damage.max * base
+            min: (this.model.damage.min + this.model.damage.min2) * base,
+            max: (this.model.damage.max + this.model.damage.max2) * base
         }
     }
 
@@ -291,7 +297,7 @@ class EntityModel {
     }
 }
 
-function runBattleAnalytic (groupA, groupB, samples = 100000) {
+function runBattleAnalytic (groupA, groupB, samples, debugFlags = {}) {
     let result = {
         samples: samples,
         wins: 0,
@@ -299,7 +305,7 @@ function runBattleAnalytic (groupA, groupB, samples = 100000) {
     };
 
     for (let i = 0; i < samples; i++) {
-        let hp = runBattle(groupA.map(a => a.copy()), groupB.map(b => b.copy()));
+        let hp = runBattle(groupA.map(a => a.copy()), groupB.map(b => b.copy()), debugFlags);
         result.wins += (hp <= 0 ? 1 : 0);
         result.averageHP += Math.max(0, hp);
     }
@@ -309,7 +315,7 @@ function runBattleAnalytic (groupA, groupB, samples = 100000) {
     return result;
 }
 
-function runBattle (groupA, groupB) {
+function runBattle (groupA, groupB, debugFlags = {}) {
     while (groupA.length && groupA.length) {
         // Pick the first entity from both groups
         let a = groupA[0];
@@ -344,7 +350,9 @@ function runBattle (groupA, groupB) {
         let data = {
             attacks: 0,
             hits: 0,
-            damagemult: 1
+            damagemult: 1,
+            onlyCrits: debugFlags.onlyCrits,
+            onlyHits: debugFlags.onlyHits
         }
 
         // Fight until any is dead
@@ -402,8 +410,8 @@ function formatNumber (num) {
 
 function runAttack (attacker, target, data) {
     // Roll chances
-    let skipRoll = rand(target.getSkipChance(attacker));
-    let critRoll = rand(attacker.getCritChance(target));
+    let skipRoll = data.onlyHits ? false : rand(target.getSkipChance(attacker));
+    let critRoll = data.onlyCrits || rand(attacker.getCritChance(target));
 
     // Fight parameters
     let damage = (attacker.range.min + Math.random() * (1 + attacker.range.max - attacker.range.min)) * (critRoll ? attacker.getCritMult() : 1) * (skipRoll ? 0 : 1) * data.damagemult;

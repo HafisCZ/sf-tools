@@ -15,8 +15,8 @@ window.dialog = function (head, content, callback) {
 try {
     window.db = new DatabaseIO();
 } catch (e) {
-    window.dialog('Database Error', 'The database could not be loaded. Click OK to clear the database.', () => {
-        window.localStorage.removeItem([btoa('STORAGE')]);
+    window.dialog('Database Error', 'Please contact the developer!', () => {
+        //window.localStorage.removeItem([btoa('STORAGE')]);
     });
 }
 
@@ -275,7 +275,7 @@ window.group = {
             _('ginstructormax').html(g.Instructors.Max);
 
             window.group.current = gid;
-            _('gcompare').html('<option value="0"></option>' + window.db.db().Groups[gid].List.map(entry => `<option value="${entry.timestamp}">${new ReadableDate(entry.timestamp)}</option>`));
+            _('gcompare').html('<option value="0"></option>' + window.db.db().Groups[gid].List.concat().sort((a, b) => b.timestamp - a.timestamp).map(entry => `<option value="${entry.timestamp}">${new ReadableDate(entry.timestamp)}</option>`));
             _('gcompare').trigger('change');
 
             $('[data-id="gown"]').show();
@@ -998,17 +998,18 @@ _('gcompare').on('change', function () {
     let clist = cc ? cc.MemberIDs.filter(id => window.db.db().Players[id] && window.db.db().Players[id][reftime] && window.db.db().Players[id][reftime].Group && window.db.db().Players[id][reftime].Group.Role < 4).map(id => window.db.db().Players[id][reftime]): null;
 
     let viewTableTag = '<table class="table-group">';
-    let shotTableTag = '<table class="table-group" style="width: 1140px !important">';
+    let shotTableTag = '<table class="table-group" style="width: 1260px !important">';
 
     let content = [`
             <tbody>
                 <tr>
                     <td rowspan="2" class="border-right-thin">Name</td>
-                    <td colspan="4" class="border-right-thin">General</td>
+                    <td colspan="5" class="border-right-thin">General</td>
                     <td colspan="3" rowspan="2" class="border-right-thin">Potions</td>
                     <td colspan="4">Group</td>
                 </tr>
                 <tr>
+                    <td>Class</td>
                     <td>Level</td>
                     <td>Album</td>
                     <td>Mount</td>
@@ -1020,7 +1021,7 @@ _('gcompare').on('change', function () {
                 </tr>
                 <tr>
                     <td colspan="1" class="border-bottom-thick border-right-thin"></td>
-                    <td colspan="4" class="border-bottom-thick border-right-thin"></td>
+                    <td colspan="5" class="border-bottom-thick border-right-thin"></td>
                     <td colspan="3" class="border-bottom-thick border-right-thin"></td>
                     <td colspan="4" class="border-bottom-thick"></td>
                 </tr>
@@ -1045,6 +1046,7 @@ _('gcompare').on('change', function () {
             content.push(`
                 <tr>
                     <td width="250" class="border-right-thin">${rules.join_enabled && Date.now() - p.Group.Joined < [604800000, 2 * 604800000, 4 * 604800000][rules.join] ? '<span uk-icon="icon: tag; ratio: 1.1"></span> ' : ''}${p.Name}</td>
+                    <td width="120">${Strings.Classes[p.Class]}</td>
                     <td width="100">${p.Level}${Util.FormatDiff(p.Level, c.Level)}</td>
                     <td width="120" class="${window.hcb(p.Book / 21.6, rules.book_min, rules.book_max, rules.book_enabled)}">${Number(p.Book / 21.6).toFixed(1)}%${
                         p.Book > c.Book ? ` <span>+${Number((p.Book - c.Book) / 21.6).toFixed(2)}%</span>` : (p.Book < c.Book ? ` <span>${Number((p.Book - c.Book) / 21.6).toFixed(2)}%</span>` : '')
@@ -1066,6 +1068,7 @@ _('gcompare').on('change', function () {
             content.push(`
                 <tr>
                     <td width="250" class="border-right-thin">${rules.join_enabled && Date.now() - p.Group.Joined < [604800000, 2 * 604800000, 4 * 604800000][rules.join] ? '<span uk-icon="tag"></span> ' : ''}${p.Name}</td>
+                    <td width="120">${Strings.Classes[p.Class]}</td>
                     <td width="100">${p.Level}</td>
                     <td width="120" class="${window.hcb(p.Book / 21.6, rules.book_min, rules.book_max, rules.book_enabled)}">${Number(p.Book / 21.6).toFixed(1)}%</td>
                     <td width="80" class="border-right-thin ${window.hcb(p.Mount, rules.mount_min, rules.mount_max, rules.mount_enabled)}">${p.Mount ? ['', '10%', '20%', '30%', '50%'][p.Mount] : ''}</td>
@@ -1092,7 +1095,7 @@ _('gcompare').on('change', function () {
         </tr>
         <tr>
             <td></td>
-            <td class="border-bottom-thick">Level</td>
+            <td class="border-bottom-thick" colspan="2">Level</td>
             <td class="border-bottom-thick" colspan="2">Group pet</td>
             <td class="border-bottom-thick" colspan="4">Knights</td>
             <td class="border-bottom-thick" colspan="2">Treasure</td>
@@ -1103,7 +1106,7 @@ _('gcompare').on('change', function () {
     content.push(cc ? `
         <tr>
             <td class="border-right-thin">Min</td>
-            <td>${g.Levels.Min}${toCompString(g.Levels.Min, cc.Levels.Min)}</td>
+            <td colspan="2" >${g.Levels.Min}${toCompString(g.Levels.Min, cc.Levels.Min)}</td>
             <td colspan="2" class="${window.hcf(g.Pets.Min, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${g.Pets.Min}${toCompString(g.Pets.Min, cc.Pets.Min)}</td>
             <td colspan="4" class="${window.hcf(g.Knights.Min, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${g.Knights.Min}${toCompString(g.Knights.Min, cc.Knights.Min)}</td>
             <td colspan="2" class="${window.hcf(g.Treasures.Min, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${g.Treasures.Min}${toCompString(g.Treasures.Min, cc.Treasures.Min)}</td>
@@ -1111,7 +1114,7 @@ _('gcompare').on('change', function () {
         </tr>
         <tr>
             <td class="border-right-thin">Average</td>
-            <td>${g.Levels.Avg}${toCompString(g.Levels.Avg, cc.Levels.Avg)}</td>
+            <td colspan="2" >${g.Levels.Avg}${toCompString(g.Levels.Avg, cc.Levels.Avg)}</td>
             <td colspan="2" class="${window.hcf(g.Pets.Avg, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${g.Pets.Avg}${toCompString(g.Pets.Avg, cc.Pets.Avg)}</td>
             <td colspan="4" class="${window.hcf(g.Knights.Avg, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${g.Knights.Avg}${toCompString(g.Knights.Avg, cc.Knights.Avg)}</td>
             <td colspan="2" class="${window.hcf(g.Treasures.Avg, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${g.Treasures.Avg}${toCompString(g.Treasures.Avg, cc.Treasures.Avg)}</td>
@@ -1119,7 +1122,7 @@ _('gcompare').on('change', function () {
         </tr>
         <tr>
             <td class="border-right-thin">Max</td>
-            <td>${g.Levels.Max}${toCompString(g.Levels.Max, cc.Levels.Max)}</td>
+            <td colspan="2" >${g.Levels.Max}${toCompString(g.Levels.Max, cc.Levels.Max)}</td>
             <td colspan="2" class="${window.hcf(g.Pets.Max, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${g.Pets.Max}${toCompString(g.Pets.Max, cc.Pets.Max)}</td>
             <td colspan="4" class="${window.hcf(g.Knights.Max, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${g.Knights.Max}${toCompString(g.Knights.Max, cc.Knights.Max)}</td>
             <td colspan="2" class="${window.hcf(g.Treasures.Max, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${g.Treasures.Max}${toCompString(g.Treasures.Max, cc.Treasures.Max)}</td>
@@ -1128,7 +1131,7 @@ _('gcompare').on('change', function () {
     ` : `
         <tr>
             <td class="border-right-thin">Min</td>
-            <td>${g.Levels.Min}</td>
+            <td colspan="2" >${g.Levels.Min}</td>
             <td colspan="2" class="${window.hcf(g.Pets.Min, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${g.Pets.Min}</td>
             <td colspan="4" class="${window.hcf(g.Knights.Min, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${g.Knights.Min}</td>
             <td colspan="2" class="${window.hcf(g.Treasures.Min, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${g.Treasures.Min}</td>
@@ -1136,7 +1139,7 @@ _('gcompare').on('change', function () {
         </tr>
         <tr>
             <td class="border-right-thin">Average</td>
-            <td>${g.Levels.Avg}</td>
+            <td colspan="2" >${g.Levels.Avg}</td>
             <td colspan="2" class="${window.hcf(g.Pets.Avg, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${g.Pets.Avg}</td>
             <td colspan="4" class="${window.hcf(g.Knights.Avg, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${g.Knights.Avg}</td>
             <td colspan="2" class="${window.hcf(g.Treasures.Avg, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${g.Treasures.Avg}</td>
@@ -1144,7 +1147,7 @@ _('gcompare').on('change', function () {
         </tr>
         <tr>
             <td class="border-right-thin">Max</td>
-            <td>${g.Levels.Max}</td>
+            <td colspan="2" >${g.Levels.Max}</td>
             <td colspan="2" class="${window.hcf(g.Pets.Max, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${g.Pets.Max}</td>
             <td colspan="4" class="${window.hcf(g.Knights.Max, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${g.Knights.Max}</td>
             <td colspan="2" class="${window.hcf(g.Treasures.Max, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${g.Treasures.Max}</td>
@@ -1177,12 +1180,12 @@ _('gcompare').on('change', function () {
             <tr>
                 <td class="border-right-thin">Joined</td>
                 <td>${membersJoined.length}</td>
-                <td colspan="10" class="align-left-force">${membersJoined.join(', ')}</td>
+                <td colspan="11" class="align-left-force">${membersJoined.join(', ')}</td>
             </tr>
             <tr>
                 <td class="border-right-thin">Kicked</td>
                 <td>${membersKicked.length}</td>
-                <td colspan="10" class="align-left-force">${membersKicked.join(', ')}</td>
+                <td colspan="11" class="align-left-force">${membersKicked.join(', ')}</td>
             </tr>
         `);
     }

@@ -34,6 +34,15 @@ const Strings = {
         'Life'
     ],
 
+    Classes: {
+        1: 'Warrior',
+        2: 'Mage',
+        3: 'Scout',
+        4: 'Assassin',
+        5: 'Battle Mage',
+        6: 'Berserker'
+    },
+
     Images: {
         Class: {
             1: 'class_warrior.png',

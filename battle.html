@@ -15,8 +15,6 @@
         <script src="js/uikit-icons.min.js"></script>
         <script src="js/jquery.3.4.1.min.js"></script>
 
-        <script src="js/lz-string.min.js"></script>
-        <script src="js/html2canvas.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js" integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
     </head>
     <body>
@@ -26,7 +24,24 @@
                 <ul class="uk-navbar-nav"><li><a href="index.html">BATTLE SIMULATOR</a></li></ul>
             </div>
         </nav>
+        <div class="uk-position-top-right uk-margin uk-margin-right">
+            <label><input class="uk-checkbox" type="checkbox" id="debug"> DEBUG MODE</label>
+        </div>
         <div class="uk-container uk-margin-top uk-margin-bottom">
+            <div class="uk-container uk-margin-medium uk-grid-small" id="debugmenu" style="display: none;" uk-grid>
+                <div class="uk-width-1-3">
+                    <button class="uk-button uk-button-default uk-button-small" id="debug-fill">FILL TEST DATA</button>
+                </div>
+                <div class="uk-width-2-3"></div>
+                <div class="uk-width-1-3">
+                    <label><input class="uk-checkbox" type="checkbox" id="debug-crit"> ALWAYS CRIT</label>
+                </div>
+                <div class="uk-width-2-3"></div>
+                <div class="uk-width-1-3">
+                    <label><input class="uk-checkbox" type="checkbox" id="debug-hit"> ALWAYS HIT</label>
+                </div>
+                <div class="uk-width-2-3"></div>
+            </div>
             <div class="uk-container" uk-grid>
                 <div class="uk-width-1-1">
                     <div class="uk-placeholder">
@@ -119,6 +134,18 @@
                                 </div>
                                 <div class="uk-width-1-4">
                                     <input class="uk-input uk-form-small" type="text" id="pdamagemax">
+                                </div>
+                                <div class="uk-width-1-4" data-group-id="pdamage2" style="display: none;">
+                                    MIN DMG
+                                </div>
+                                <div class="uk-width-1-4" data-group-id="pdamage2" style="display: none;">
+                                    <input class="uk-input uk-form-small" type="text" id="pdamagemin2">
+                                </div>
+                                <div class="uk-width-1-4" data-group-id="pdamage2" style="display: none;">
+                                    MAX DMG
+                                </div>
+                                <div class="uk-width-1-4" data-group-id="pdamage2" style="display: none;">
+                                    <input class="uk-input uk-form-small" type="text" id="pdamagemax2">
                                 </div>
                                 <div class="uk-width-1-4">
                                     FIRE %
@@ -220,10 +247,10 @@
                         <select class="uk-select uk-form-small uk-margin-bottom" id="dungeon-select">
 
                         </select>
-                        <select class="uk-select uk-form-small" id="enemy-select">
+                        <select class="uk-select uk-form-small" id="enemy-select" style="display: none;">
 
                         </select>
-                        <div id="enemy-manual">
+                        <div id="enemy-manual" style="display: none;">
                             <div class="uk-grid-small" uk-grid>
                                 <div class="uk-width-1-4">
                                     CLASS
@@ -291,6 +318,18 @@
                                 </div>
                                 <div class="uk-width-1-4">
                                     <input class="uk-input uk-form-small" type="text" id="edamagemax">
+                                </div>
+                                <div class="uk-width-1-4" data-group-id="edamage2">
+                                    MIN DMG
+                                </div>
+                                <div class="uk-width-1-4" data-group-id="edamage2">
+                                    <input class="uk-input uk-form-small" type="text" id="edamagemin2">
+                                </div>
+                                <div class="uk-width-1-4" data-group-id="edamage2">
+                                    MAX DMG
+                                </div>
+                                <div class="uk-width-1-4" data-group-id="edamage2">
+                                    <input class="uk-input uk-form-small" type="text" id="edamagemax2">
                                 </div>
                                 <div class="uk-width-1-4">
                                     FIRE %
@@ -389,7 +428,7 @@
             </div>
         </div>
 
-        <script src="js/dungeons.js"></script>
+        <script src="js/sft.battle.js"></script>
         <script type="text/javascript">
             // Current models
             var currentModelPtr = 0;
@@ -441,6 +480,8 @@
                 $('#parmorlightning').val(model.armor.lightning);
                 $('#pdamagemin').val(model.damage.min);
                 $('#pdamagemax').val(model.damage.max);
+                $('#pdamagemin2').val(model.damage.min2);
+                $('#pdamagemax2').val(model.damage.max2);
                 $('#pdamagefire').val(model.damage.fire);
                 $('#pdamagecold').val(model.damage.cold);
                 $('#pdamagelightning').val(model.damage.lightning);
@@ -473,6 +514,8 @@
                     damage: {
                         min: Number($('#pdamagemin').val()),
                         max: Number($('#pdamagemax').val()),
+                        min2: ($('#pclass').val() === ASSASSIN ? Number($('#pdamagemin2').val()) : 0),
+                        max2: ($('#pclass').val() === ASSASSIN ? Number($('#pdamagemax2').val()) : 0),
                         fire: Number($('#pdamagefire').val()),
                         cold: Number($('#pdamagecold').val()),
                         lightning: Number($('#pdamagelightning').val())
@@ -506,6 +549,8 @@
                     damage: {
                         min: Number($('#edamagemin').val()),
                         max: Number($('#edamagemax').val()),
+                        min2: ($('#eclass').val() === ASSASSIN ? Number($('#edamagemin2').val()) : 0),
+                        max2: ($('#eclass').val() === ASSASSIN ? Number($('#edamagemax2').val()) : 0),
                         fire: Number($('#edamagefire').val()),
                         cold: Number($('#edamagecold').val()),
                         lightning: Number($('#edamagelightning').val())
@@ -520,6 +565,13 @@
                 }
             }
 
+            function getDebugFlags () {
+                var ed = $('#debug').prop('checked');
+                return {
+                    onlyCrits: ed && $('#debug-crit').prop('checked'),
+                    onlyHits: ed && $('#debug-hit').prop('checked')
+                }
+            }
 
             // Check if model is valid
             function isModelValid (model) {
@@ -543,7 +595,11 @@
                     !isNaN(model.healthbonus) &&
                     !isNaN(model.damagebonus) &&
                     !isNaN(model.gladiator) &&
-                    !isNaN(model.runehealth)
+                    !isNaN(model.runehealth) &&
+                    !isNaN(model.damage.min2) &&
+                    !isNaN(model.damage.max2) &&
+                    (model.damage.min > 0 && model.damage.max > 0 && model.damage.max > model.damage.min) &&
+                    (model.class === ASSASSIN ? (model.damage.min2 > 0 && model.damage.max2 > 0 && model.damage.max2 > model.damage.min2) : true)
                 );
             }
 
@@ -586,15 +642,46 @@
                     }
                 });
 
+                $('[data-group-id="pdamage2"]').hide();
+                $('[data-group-id="edamage2"]').hide();
+
+                $('#pclass').on('change', function () {
+                    if ($(this).val() === ASSASSIN) {
+                        $('[data-group-id="pdamage2"]').show();
+                    } else {
+                        $('[data-group-id="pdamage2"]').hide();
+                    }
+                });
+
+                $('#eclass').on('change', function () {
+                    if ($(this).val() === ASSASSIN) {
+                        $('[data-group-id="edamage2"]').show();
+                    } else {
+                        $('[data-group-id="edamage2"]').hide();
+                    }
+                });
+
                 $('#pclass, #plevel, #pstr, #pdex, #pint, #pcon, #plck, #pdamagemin, #pdamagemax, #pdamagefire, #pdamagecold, #pdamagelightning, #parmornormal, #parmortotal, #parmorfire, #parmorcold, #parmorlightning, #phealthbonus, #pdamagebonus, #pgladiator, #prunehealth, #plifepotion, #penchantcrit, #penchantquick').on('input', function () {
                     $(`#slot-select [value="${currentModelPtr}"]`).html(`${currentModelPtr} - UNSAVED`);
                 });
-            });
 
-            $(function () {
+                $('#debug-fill').on('click', function () {
+                    loadCurrentModel(TEST_MODEL);
+                    saveModel();
+                });
+
                 $('#start-simulator').prop('disabled', true);
+                $('#debug').prop('checked', false);
                 $('#enemy-manual').hide();
                 $('#enemy-select').hide();
+
+                $('#debug').on('change', function () {
+                    if ($(this).prop('checked')) {
+                        $('#debugmenu').show();
+                    } else {
+                        $('#debugmenu').hide();
+                    }
+                });
 
                 $('#dungeon-select').append('<option value="-2"></option>');
                 $('#dungeon-select').append('<option value="-1">CUSTOM OPPONENT</option>');
@@ -650,7 +737,7 @@
                         $('#simulator-result').html(`<div class="uk-flex uk-flex-center uk-margin-top"><div uk-spinner="ratio: 2.5"></div></div>`);
 
                         setTimeout(function () {
-                            let result = runBattleAnalytic(currentModels.map(model => new EntityModel(model)), [ new EntityModel(enemyModel) ], 1000000);
+                            let result = runBattleAnalytic(currentModels.map(model => new EntityModel(model)), [ new EntityModel(enemyModel) ], 1000000, getDebugFlags());
 
                             $('#simulator-result').html(`
                                 <div class="uk-grid-small uk-margin-medium-top uk-margin-medium-left uk-margin-medium-right" uk-grid>
