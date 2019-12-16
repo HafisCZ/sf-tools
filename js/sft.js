@@ -998,7 +998,7 @@ _('gcompare').on('change', function () {
     let clist = cc ? cc.MemberIDs.filter(id => window.db.db().Players[id] && window.db.db().Players[id][reftime] && window.db.db().Players[id][reftime].Group && window.db.db().Players[id][reftime].Group.Role < 4).map(id => window.db.db().Players[id][reftime]): null;
 
     let viewTableTag = '<table class="table-group">';
-    let shotTableTag = '<table class="table-group" style="width: 1260px !important">';
+    let shotTableTag = '<table class="table-group" style="width: 1360px !important">';
 
     let content = [`
             <tbody>
@@ -1006,7 +1006,7 @@ _('gcompare').on('change', function () {
                     <td rowspan="2" class="border-right-thin">Name</td>
                     <td colspan="5" class="border-right-thin">General</td>
                     <td colspan="3" rowspan="2" class="border-right-thin">Potions</td>
-                    <td colspan="4">Group</td>
+                    <td colspan="5">Group</td>
                 </tr>
                 <tr>
                     <td>Class</td>
@@ -1018,12 +1018,13 @@ _('gcompare').on('change', function () {
                     <td>Instructor</td>
                     <td>Pet</td>
                     <td>Knights</td>
+                    <td>Fortress</td>
                 </tr>
                 <tr>
                     <td colspan="1" class="border-bottom-thick border-right-thin"></td>
                     <td colspan="5" class="border-bottom-thick border-right-thin"></td>
                     <td colspan="3" class="border-bottom-thick border-right-thin"></td>
-                    <td colspan="4" class="border-bottom-thick"></td>
+                    <td colspan="5" class="border-bottom-thick"></td>
                 </tr>
     `];
 
@@ -1061,7 +1062,8 @@ _('gcompare').on('change', function () {
                     <td width="100" class="${window.hcb(p.Group.Treasure, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${p.Group.Treasure}${Util.FormatDiff(p.Group.Treasure, c.Group.Treasure)}</td>
                     <td width="100" class="${window.hcb(p.Group.Instructor, rules.instructor_min, rules.instructor_max, rules.instructor_enabled)}">${p.Group.Instructor}${Util.FormatDiff(p.Group.Instructor, c.Group.Instructor)}</td>
                     <td width="100" class="${window.hcb(p.Group.Pet, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${p.Group.Pet}${Util.FormatDiff(p.Group.Pet, c.Group.Pet)}</td>
-                    <td width="100" class="${window.hcb(p.Fortress.Knights, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${p.Fortress.Knights}/${p.Fortress.Fortress}${Util.FormatDiff(p.Fortress.Knights, c.Fortress.Knights)}</td>
+                    <td width="100" class="${window.hcb(p.Fortress.Knights, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${p.Fortress.Knights}${Util.FormatDiff(p.Fortress.Knights, c.Fortress.Knights)}</td>
+                    <td width="100" class="${window.hcb(p.Fortress.Knights, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${p.Fortress.Fortress}</td>
                 </tr>
             `);
         } else {
@@ -1081,7 +1083,8 @@ _('gcompare').on('change', function () {
                     <td width="100" class="${window.hcb(p.Group.Treasure, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${p.Group.Treasure}</td>
                     <td width="100" class="${window.hcb(p.Group.Instructor, rules.instructor_min, rules.instructor_max, rules.instructor_enabled)}">${p.Group.Instructor}</td>
                     <td width="100" class="${window.hcb(p.Group.Pet, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${p.Group.Pet}</td>
-                    <td width="100" class="${window.hcb(p.Fortress.Knights, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${p.Fortress.Knights}/${p.Fortress.Fortress}</td>
+                    <td width="100" class="${window.hcb(p.Fortress.Knights, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${p.Fortress.Knights}</td>
+                    <td width="100" class="${window.hcb(p.Fortress.Knights, rules.knights_min, rules.knights_max, rules.knights_enabled)}">${p.Fortress.Fortress}</td>
                 </tr>
             `);
         }
@@ -1100,6 +1103,7 @@ _('gcompare').on('change', function () {
             <td class="border-bottom-thick" colspan="4">Knights</td>
             <td class="border-bottom-thick" colspan="2">Treasure</td>
             <td class="border-bottom-thick" colspan="2">Instructor</td>
+            <td class="border-bottom-thick" colspan="1"></td>
         </tr>
     `);
 
