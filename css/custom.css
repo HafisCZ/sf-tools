@@ -19,6 +19,10 @@ nav > div > ul, nav > div > ul > li > a {
     border-color: #212121 !important;
 }
 
+.fdark {
+    color: #212121 !important;
+}
+
 .pad-half-top {
     padding-top: 0.75em !important;
 }
