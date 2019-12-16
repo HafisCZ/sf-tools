@@ -1055,9 +1055,9 @@ _('gcompare').on('change', function () {
                     <td width="100" class="border-right-thin">${p.Achievements.Owned}${
                         p.Achievements.Dehydration ? ' <span>H</span>' : ''
                     }</td>
-                    <td width="30" class="${p.Potions[0].Size < 5 ? 'bdanger' : (p.Potions[0].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
-                    <td width="30" class="${p.Potions[1].Size < 5 ? 'bdanger' : (p.Potions[1].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
-                    <td width="30" class="border-right-thin ${p.Potions[2].Size < 5 ? 'bdanger' : (p.Potions[2].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
+                    <td width="30" class="${p.Potions[0].Size < 5 ? 'bdanger fdanger' : (p.Potions[0].Size >= 25 ? 'bsuccess fsuccess' : 'bwarning fwarning')}">${p.Potions[0].Size}</td>
+                    <td width="30" class="${p.Potions[1].Size < 5 ? 'bdanger fdanger' : (p.Potions[1].Size >= 25 ? 'bsuccess fsuccess' : 'bwarning fwarning')}">${p.Potions[1].Size}</td>
+                    <td width="30" class="border-right-thin ${p.Potions[2].Size < 5 ? 'bdanger fdanger' : (p.Potions[2].Size >= 25 ? 'bsuccess fsuccess' : 'bwarning fwarning')}">${p.Potions[2].Size}</td>
                     <td width="100" class="${window.hcb(p.Group.Treasure, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${p.Group.Treasure}${Util.FormatDiff(p.Group.Treasure, c.Group.Treasure)}</td>
                     <td width="100" class="${window.hcb(p.Group.Instructor, rules.instructor_min, rules.instructor_max, rules.instructor_enabled)}">${p.Group.Instructor}${Util.FormatDiff(p.Group.Instructor, c.Group.Instructor)}</td>
                     <td width="100" class="${window.hcb(p.Group.Pet, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${p.Group.Pet}${Util.FormatDiff(p.Group.Pet, c.Group.Pet)}</td>
@@ -1075,9 +1075,9 @@ _('gcompare').on('change', function () {
                     <td width="100" class="border-right-thin">${p.Achievements.Owned}${
                         p.Achievements.Dehydration ? ' <span>H</span>' : ''
                     }</td>
-                    <td width="30" class="${p.Potions[0].Size < 5 ? 'bdanger' : (p.Potions[0].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
-                    <td width="30" class="${p.Potions[1].Size < 5 ? 'bdanger' : (p.Potions[1].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
-                    <td width="30" class="border-right-thin ${p.Potions[2].Size < 5 ? 'bdanger' : (p.Potions[2].Size >= 25 ? 'bsuccess' : 'bwarning')}"></td>
+                    <td width="30" class="${p.Potions[0].Size < 5 ? 'bdanger fdanger' : (p.Potions[0].Size >= 25 ? 'bsuccess fsuccess' : 'bwarning fwarning')}">${p.Potions[0].Size}</td>
+                    <td width="30" class="${p.Potions[1].Size < 5 ? 'bdanger fdanger' : (p.Potions[1].Size >= 25 ? 'bsuccess fsuccess' : 'bwarning fwarning')}">${p.Potions[1].Size}</td>
+                    <td width="30" class="border-right-thin ${p.Potions[2].Size < 5 ? 'bdanger fdanger' : (p.Potions[2].Size >= 25 ? 'bsuccess fsuccess' : 'bwarning fwarning')}">${p.Potions[2].Size}</td>
                     <td width="100" class="${window.hcb(p.Group.Treasure, rules.treasure_min, rules.treasure_max, rules.treasure_enabled)}">${p.Group.Treasure}</td>
                     <td width="100" class="${window.hcb(p.Group.Instructor, rules.instructor_min, rules.instructor_max, rules.instructor_enabled)}">${p.Group.Instructor}</td>
                     <td width="100" class="${window.hcb(p.Group.Pet, rules.pet_min, rules.pet_max, rules.pet_enabled)}">${p.Group.Pet}</td>
