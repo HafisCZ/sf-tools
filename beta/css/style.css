@@ -1,0 +1,162 @@
+.ui.menu.fixed {
+    background-color: #212121;
+}
+
+.ui.menu.fixed a.item, .ui.menu.fixed div.item {
+    color: white !important;
+}
+
+body {
+    margin-top: 5em;
+    margin-bottom: 5em;
+    height: auto;
+    overflow-y: scroll !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.glow:hover {
+    color: red !important;
+    cursor: pointer !important;
+}
+
+.muted {
+    color: #505050 !important;
+}
+
+.margin-tiny-top {
+    margin-top: 0.2em !important;
+}
+
+.margin-none-top {
+    margin-top: 0 !important;
+}
+
+.margin-medium-top {
+    margin-top: 1.0em !important;
+}
+
+.padding-none-bottom {
+    padding-bottom: 0 !important;
+}
+
+.padding-none-top {
+    padding-top: 0 !important;
+}
+
+.margin-large-top {
+    margin-top: 5.0em !important;
+}
+
+.margin-small-bottom {
+    margin-bottom: 0.5em !important;
+}
+
+.margin-none-bottom {
+    margin-bottom: 0 !important;
+}
+
+.clickable {
+    cursor: pointer !important;
+}
+
+.border-red {
+    border-color: red !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.margin-medium-right {
+    margin-right: 1.0em !important;
+}
+
+.border-red {
+    border-color: red !important;
+}
+
+.extreme.header {
+    font-size: 3em !important;
+}
+
+.border-right-thin {
+    border-right: 1px solid black !important;
+}
+
+.border-right-false {
+    border-right: 1px solid transparent !important;
+}
+
+.border-bottom-thick {
+    border-bottom: 2px solid black !important;
+    padding: 0 !important;
+}
+
+.table-group {
+    text-align: center !important;
+    font-family: 'Roboto', sans-serif !important;
+    border-spacing: 0 !important;
+    border-collapse: collapse !important;
+    font-weight: 300 !important;
+    font-size: 1.35em !important;
+    color: #212529 !important;
+    border: none !important;
+}
+
+.font-big {
+    font-size: 1.25em !important;
+}
+
+.player-small .column {
+    padding-bottom: 0.1em !important;
+}
+
+.table-group tr {
+
+}
+
+.table-group td:not(.border-bottom-thick) {
+    padding: 0.35em !important;
+    border-top: none !important;
+    border-left: none !important;
+    height: 1.9em !important;
+}
+
+.table-group-secondary {
+    table-layout: fixed !important;
+}
+
+.table-group td:not(.border-bottom-thick):not(.border-right-thin) {
+    border: none !important;
+}
+
+.table-group span {
+    font-size: 70% !important;
+}
+
+.background-green {
+    background-color: #00c851 !important;
+}
+
+.background-orange {
+    background-color: #ffbb33 !important;
+}
+
+.background-red {
+    background-color: #ff3547 !important;
+}
+
+.foreground-green {
+    color: #00c851 !important;
+}
+
+.foreground-orange {
+    color: #ffbb33 !important;
+}
+
+.foreground-red {
+    color: #ff3547 !important;
+}

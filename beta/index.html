@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/lz-string.min.js"></script>
+        <script src="vendor/js/html2canvas.js"></script>
+
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/components/state.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+
+        <script src="js/playa.js"></script>
+
+        <script src="js/core.js"></script>
+        <script src="js/event.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu">
+            <div class="header item">SFTools</div>
+            <a class="item" data-toggle="container-browse"><i class="small archive icon"></i>Browse</a>
+            <a class="item" data-toggle="container-files"><i class="small upload icon"></i>Files</a>
+            <a class="item" data-toggle="container-settings"><i class="small cog icon"></i>Settings</a>
+            <div class="right menu">
+                <a class="item" data-toggle="container-help"><i class="small question icon"></i>Help</a>
+            </div>
+        </div>
+
+        <div class="ui main container hidden" id="container-browse">
+            <div class="ui five column grid" id="container-browse-grid">
+
+            </div>
+        </div>
+
+        <div class="ui main container hidden" id="container-files">
+            <div class="ui grid">
+                <div class="twelve wide column" id="container-files-list">
+
+                </div>
+                <div class="four wide column">
+                    <div class="ui segment sticky">
+                        <div class="ui small two vertical statistics">
+                            <div class="statistic">
+                                <div class="value" id="container-files-statistics-groups"></div>
+                                <div class="label">Groups</div>
+                            </div>
+                            <div class="statistic">
+                                <div class="value" id="container-files-statistics-players"></div>
+                                <div class="label">Players</div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="ui small one vertical statistics">
+                            <div class="statistic">
+                                <div class="value" id="container-files-statistics-files"></div>
+                                <div class="label">Files</div>
+                            </div>
+                        </div>
+                        <br>
+                        <div>
+                            <label class="fluid ui secondary button" for="container-files-add">
+                                <i class="small upload icon"></i> Upload
+                            </label>
+                            <input type="file" multiple id="container-files-add" class="hidden">
+                        </div>
+                        <br>
+                        <div class="ui two buttons">
+                            <label class="ui left attached secondary basic button text-center" for="container-files-import">
+                                 <i class="small upload icon"></i> Import
+                            </label>
+                            <input type="file" multiple id="container-files-import" class="hidden">
+                            <div class="ui right attached secondary basic button text-center" id="container-files-export">
+                                 <i class="small download icon"></i> Export
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui main container hidden" id="container-settings">
+            <div class="ui two columns grid">
+                <div class="column">
+                    <h2 class="ui centered header">Highlighting</h2>
+                    <div class="ui form">
+                        <div class="equal width fields">
+                            <div class="field">
+                                <label>Level</label>
+                                <button class="ui toggle fluid button" data-settings="level-enabled">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Difference</label>
+                                <button class="ui toggle fluid button" data-settings="level-difference">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Minimum</label>
+                                <input type="text" class="text-center" data-settings="level-min">
+                            </div>
+                            <div class="field">
+                                <label>Recommended</label>
+                                <input type="text" class="text-center" data-settings="level-req">
+                            </div>
+                        </div>
+                        <div class="equal width fields">
+                            <div class="field">
+                                <label>Scrapbook</label>
+                                <button class="ui toggle fluid button" data-settings="scrapbook-enabled">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Difference</label>
+                                <button class="ui toggle fluid button" data-settings="scrapbook-difference">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Minimum</label>
+                                <input type="text" class="text-center" data-settings="scrapbook-min">
+                            </div>
+                            <div class="field">
+                                <label>Recommended</label>
+                                <input type="text" class="text-center" data-settings="scrapbook-req">
+                            </div>
+                        </div>
+                        <div class="equal width fields">
+                            <div class="field">
+                                <label>Mount</label>
+                                <button class="ui toggle fluid button" data-settings="mount-enabled">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Minimum</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" data-settings="mount-min">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">0%</div>
+                                        <div class="item" data-value="1">10%</div>
+                                        <div class="item" data-value="2">20%</div>
+                                        <div class="item" data-value="3">30%</div>
+                                        <div class="item" data-value="4">50%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Recommended</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" data-settings="mount-req">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">0%</div>
+                                        <div class="item" data-value="1">10%</div>
+                                        <div class="item" data-value="2">20%</div>
+                                        <div class="item" data-value="3">30%</div>
+                                        <div class="item" data-value="4">50%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="equal width fields">
+                            <div class="field">
+                                <label>Achievements</label>
+                                <button class="ui toggle fluid button" data-settings="achievements-enabled">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Difference</label>
+                                <button class="ui toggle fluid button" data-settings="achievements-difference">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Minimum</label>
+                                <input type="text" class="text-center" data-settings="achievements-min">
+                            </div>
+                            <div class="field">
+                                <label>Recommended</label>
+                                <input type="text" class="text-center" data-settings="achievements-req">
+                            </div>
+                        </div>
+                        <div class="equal width fields">
+                            <div class="field">
+                                <label>Potions</label>
+                                <button class="ui toggle fluid button" data-settings="potions-enabled">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Minimum</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" data-settings="potions-min">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">0%</div>
+                                        <div class="item" data-value="1">10%</div>
+                                        <div class="item" data-value="2">15%</div>
+                                        <div class="item" data-value="3">25%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Recommended</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" data-settings="potions-req">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">0%</div>
+                                        <div class="item" data-value="1">10%</div>
+                                        <div class="item" data-value="2">15%</div>
+                                        <div class="item" data-value="3">25%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="equal width fields">
+                            <div class="field">
+                                <label>Guild Treasure</label>
+                                <button class="ui toggle fluid button" data-settings="treasure-enabled">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Difference</label>
+                                <button class="ui toggle fluid button" data-settings="treasure-difference">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Minimum</label>
+                                <input type="text" class="text-center" data-settings="treasure-min">
+                            </div>
+                            <div class="field">
+                                <label>Recommended</label>
+                                <input type="text" class="text-center" data-settings="treasure-req">
+                            </div>
+                        </div>
+                        <div class="equal width fields">
+                            <div class="field">
+                                <label>Guild Instructor</label>
+                                <button class="ui toggle fluid button" data-settings="instructor-enabled">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Difference</label>
+                                <button class="ui toggle fluid button" data-settings="instructor-difference">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Minimum</label>
+                                <input type="text" class="text-center" data-settings="instructor-min">
+                            </div>
+                            <div class="field">
+                                <label>Recommended</label>
+                                <input type="text" class="text-center" data-settings="instructor-req">
+                            </div>
+                        </div>
+                        <div class="equal width fields">
+                            <div class="field">
+                                <label>Guild Pet</label>
+                                <button class="ui toggle fluid button" data-settings="pet-enabled">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Difference</label>
+                                <button class="ui toggle fluid button" data-settings="pet-difference">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Minimum</label>
+                                <input type="text" class="text-center" data-settings="pet-min">
+                            </div>
+                            <div class="field">
+                                <label>Recommended</label>
+                                <input type="text" class="text-center" data-settings="pet-req">
+                            </div>
+                        </div>
+                        <div class="equal width fields">
+                            <div class="field">
+                                <label>Knights</label>
+                                <button class="ui toggle fluid button" data-settings="knights-enabled">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Difference</label>
+                                <button class="ui toggle fluid button" data-settings="knights-difference">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Minimum</label>
+                                <input type="text" class="text-center" data-settings="knights-min">
+                            </div>
+                            <div class="field">
+                                <label>Recommended</label>
+                                <input type="text" class="text-center" data-settings="knights-req">
+                            </div>
+                        </div>
+                        <div class="equal width fields">
+                            <div class="field">
+                                <label>Fortress</label>
+                                <button class="ui toggle fluid button" data-settings="fortress-enabled">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Difference</label>
+                                <button class="ui toggle fluid button" data-settings="fortress-difference">Disabled</button>
+                            </div>
+                            <div class="field">
+                                <label>Minimum</label>
+                                <input type="text" class="text-center" data-settings="fortress-min">
+                            </div>
+                            <div class="field">
+                                <label>Recommended</label>
+                                <input type="text" class="text-center" data-settings="fortress-req">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <h2 class="ui centered header">Default Layout</h2>
+                    <div class="ui form">
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Player class</label>
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" value="0" data-settings="show-class">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">Hide</div>
+                                        <div class="item" data-value="1">Show</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Player ID</label>
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" value="0" data-settings="show-id">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">Hide</div>
+                                        <div class="item" data-value="1">Show</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Player Rank</label>
+                            <div class="ui selection dropdown">
+                                <input type="hidden" value="0" data-settings="show-rank">
+                                <i class="dropdown icon"></i>
+                                <div class="default text"></div>
+                                <div class="menu">
+                                    <div class="item" data-value="0">Hide</div>
+                                    <div class="item" data-value="1">Show</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Achievements</label>
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" value="0" data-settings="show-achievements">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">Hide</div>
+                                        <div class="item" data-value="1">Show</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Hydra achievement</label>
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" value="0" data-settings="show-hydra">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">Hide</div>
+                                        <div class="item" data-value="1">Icon</div>
+                                        <div class="item" data-value="2">Highlight</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Scrapbook</label>
+                            <div class="ui selection dropdown">
+                                <input type="hidden" value="0" data-settings="show-book-style">
+                                <i class="dropdown icon"></i>
+                                <div class="default text"></div>
+                                <div class="menu">
+                                    <div class="item" data-value="0">Show percentage</div>
+                                    <div class="item" data-value="1">Show item count</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Guild Treasure</label>
+                            <div class="ui selection dropdown">
+                                <input type="hidden" value="0" data-settings="show-treasure">
+                                <i class="dropdown icon"></i>
+                                <div class="default text"></div>
+                                <div class="menu">
+                                    <div class="item" data-value="0">Hide</div>
+                                    <div class="item" data-value="1">Show</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Guild Instructor</label>
+                            <div class="ui selection dropdown">
+                                <input type="hidden" value="0" data-settings="show-instructor">
+                                <i class="dropdown icon"></i>
+                                <div class="default text"></div>
+                                <div class="menu">
+                                    <div class="item" data-value="0">Hide</div>
+                                    <div class="item" data-value="1">Show</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Guild Pet</label>
+                            <div class="ui selection dropdown">
+                                <input type="hidden" value="0" data-settings="show-pet">
+                                <i class="dropdown icon"></i>
+                                <div class="default text"></div>
+                                <div class="menu">
+                                    <div class="item" data-value="0">Hide</div>
+                                    <div class="item" data-value="1">Show</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Knights and Fortress</label>
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" value="0" data-settings="show-knights">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">Hide</div>
+                                        <div class="item" data-value="1">Show</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Style</label>
+                                <div class="ui selection dropdown">
+                                    <input type="hidden" value="0" data-settings="show-knights-style">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">Combined</div>
+                                        <div class="item" data-value="1">Separate</div>
+                                        <div class="item" data-value="2">Only knights</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="ui right floated secondary button" type="submit" id="container-settings-save">Save</button>
+                        <button class="ui right floated button margin-medium-right" type="submit" id="container-settings-clear">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui main container hidden" id="container-detail" data-current-group="">
+            <div class="ui segment center aligned basic">
+                <div class="ui extreme header" id="container-detail-name"></div>
+                <div class="ui equal width labels">
+                    <div class="ui label"><i class="align justify icon"></i> <span id="container-detail-membercount"></span></div>
+                    <div class="ui label"><i class="globe icon"></i> <span id="container-detail-rank"></span></div>
+                </div>
+            </div>
+
+            <div class="ui basic segment margin-none-bottom padding-none-bottom">
+                <div class="ui grid">
+                    <div class="four wide middle aligned column">
+                        <div class="ui scrolling dropdown">
+                            <input type="hidden" value="0" id="container-detail-compare">
+                            <div class="default text" id="container-detail-compare-text"></div>
+                            <i class="dropdown icon"></i>
+                            <div class="menu" id="container-detail-compare-content">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="twelve wide column">
+                        <div class="ui small basic icon right floated buttons">
+                            <button class="ui button" data-tooltip="Save as image" id="container-detail-save"><i class="download icon"></i></button>
+                            <button class="ui button" data-tooltip="Copy table" id="container-detail-copy"><i class="copy icon"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui basic segment margin-none-top" id="container-detail-screenshot">
+                <table class="ui celled structured table table-group" id="container-detail-content">
+
+                </table>
+                <table class="ui celled structured table table-group table-group-secondary" id="container-detail-stats">
+
+                </table>
+            </div>
+        </div>
+
+        <div class="ui main container hidden" id="container-help">
+            <div class="ui segment basic">
+                <h2 class="ui header">About</h2>
+                <p>
+                    Created by mar21, HIRAISHIN SOFTWARE <i class="copyright outline icon"></i>2020
+                </p>
+                <h2 class="ui header">Support</h2>
+                <p>
+                    You can reach support at <a href="mailto:support@mar21.eu"><i class="mail icon"></i>support@mar21.eu</a>.<br>
+                    You can also find me on <a href="https://discord.gg/XWfSwe3"><i class="discord icon"></i>S&F Tavern</a> discord.
+                </p>
+                <h2 class="ui header">Terms and Conditions</h2>
+                <h3 class="ui header">I. Disclaimer</h3>
+                <p>
+                    This site is in no way affiliated with Playa Games GmbH.<br>
+                    All images present on this site are the intelectual property of Playa Games GmbH.
+                </p>
+                <h3 class="ui header">II. Warranty</h3>
+                <p>
+                    This site is disctributed as is, without any warranties.<br>
+                    All content uploaded onto this site is stored locally on your own device.<br>
+                    Thus we are not liable in any way if you lose your data due to yours or ours errors.<br>
+                    Any future updates and compatibility with the Shakes and Fidget game are not guaranteed.
+                </p>
+            </div>
+        </div>
+
+        <div class="ui basic modal" id="modal-error">
+            <div class="ui icon header">
+                <i class="exclamation triangle icon"></i>
+                Error
+            </div>
+            <div class="content text-center">
+                <p id="modal-error-content"></p>
+            </div>
+        </div>
+
+        <div class="ui basic modal" id="modal-player">
+
+        </div>
+
+        <script type="text/javascript">
+            // Screen switcher
+            $('[data-toggle]').on('click', function () {
+                Handle.call(EVENT_SHOW_SCREEN, $(this).attr('data-toggle'));
+            });
+
+            // Screen management
+            const Screens = {
+                'container-browse' : {
+                    init: function () {
+
+                    },
+                    show: function () {
+                        Handle.call(EVENT_LOAD_BROWSE);
+                    }
+                },
+                'container-files' : {
+                    init: function () {
+                        $('#container-files-add').on('change', function () {
+                            Handle.call(EVENT_FILES_ADD, this.files);
+                        });
+                        $('#container-files-export').on('click', () => Handle.call(EVENT_FILES_EXPORT));
+                        $('#container-files-import').on('change', function () {
+                            Handle.call(EVENT_FILES_IMPORT, this.files);
+                        });
+                    },
+                    show: function () {
+                        Handle.call(EVENT_LOAD_FILES);
+                    }
+                },
+                'container-settings' : {
+                    init: function () {
+                        $('#container-settings-save').on('click', () => Handle.call(EVENT_SETTINGS_SAVE));
+                        $('#container-settings-clear').on('click', () => Handle.call(EVENT_SETTINGS_CLEAR));
+
+                        // Dropdowns & Buttons
+                        $('.ui.toggle.button').state({
+                            text: {
+                                inactive: 'Disabled',
+                                active: 'Enabled'
+                            }
+                        });
+                    },
+                    show: function () {
+                        Handle.call(EVENT_LOAD_SETTINGS);
+                    }
+                },
+                'container-help' : {
+                    init: function () {
+
+                    },
+                    show: function () {
+
+                    }
+                },
+                'container-detail' : {
+                    init: function () {
+                        $('#container-detail-save').on('click', () => Handle.call(EVENT_DETAIL_SAVE));
+                        $('#container-detail-copy').on('click', () => Handle.call(EVENT_DETAIL_COPY));
+                        $('#container-detail-compare').on('change', function () {
+                            Handle.call(EVENT_LOAD_DETAIL, $('#container-detail').attr('data-current-group'), $(this).val());
+                        });
+                        $('.ui.dropdown').dropdown();
+                    },
+                    show: function (identifier) {
+                        Handle.call(EVENT_LOAD_DETAIL, identifier);
+                    }
+                }
+            }
+
+            // Initialize all screens
+            Object.values(Screens).forEach(screen => screen.init());
+
+            $('#modal-player').on('click', function () {
+                $(this).modal('hide');
+            });
+
+            // Show first screen
+            Handle.call(EVENT_SHOW_SCREEN, 'container-browse');
+        </script>
+    </body>
+</html>
