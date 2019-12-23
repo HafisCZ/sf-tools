@@ -481,8 +481,11 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="ui right floated secondary button" type="submit" id="container-settings-save">Save</button>
-                        <button class="ui right floated button margin-medium-right" type="submit" id="container-settings-clear">Clear</button>
+                        <div class="field">
+                            <label><br></label>
+                            <button class="ui right floated secondary button" type="submit" id="container-settings-save">Save</button>
+                            <button class="ui right floated button margin-medium-right" type="submit" id="container-settings-clear">Clear</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -961,8 +964,12 @@
                                 </div>
                             </div>
                         </div>
-                        <button class="ui right floated secondary button" type="submit" id="modal-custom-settings-save">Save</button>
-                        <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-clear">Clear</button>
+                        <div class="field">
+                            <label><br></label>
+                            <button class="ui right floated secondary button" type="submit" id="modal-custom-settings-save">Save</button>
+                            <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-reset">Clear</button>
+                            <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-clear">Remove custom settings</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1029,6 +1036,7 @@
                         $('#container-detail-copy').on('click', () => Handle.call(EVENT_DETAIL_COPY));
                         $('#container-detail-settings').on('click', () => Handle.call(EVENT_DETAIL_SETTINGS));
                         $('#modal-custom-settings-save').on('click', () => Handle.call(EVENT_DETAIL_SETTINGS_SAVE));
+                        $('#modal-custom-settings-reset').on('click', () => Handle.call(EVENT_DETAIL_SETTINGS_RESET));
                         $('#modal-custom-settings-clear').on('click', () => Handle.call(EVENT_DETAIL_SETTINGS_CLEAR));
                         $('#modal-player').on('click', function () {
                             $(this).modal('hide');
@@ -1037,9 +1045,6 @@
                             Handle.call(EVENT_LOAD_DETAIL, $('#container-detail').attr('data-current-group'), $(this).val());
                         });
                         $('.ui.dropdown').dropdown();
-                        $('#modal-custom-settings').modal({
-                            closable: false
-                        });
                     },
                     show: function (identifier) {
                         Handle.call(EVENT_LOAD_DETAIL, identifier);

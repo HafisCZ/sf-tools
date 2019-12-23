@@ -27,6 +27,7 @@ const EVENT_DETAIL_SAVE = 'detail_save';
 const EVENT_DETAIL_SETTINGS = 'detail_settings';
 const EVENT_DETAIL_SETTINGS_CLEAR = 'detail_settings_clear';
 const EVENT_DETAIL_SETTINGS_SAVE = 'detail_settings_save';
+const EVENT_DETAIL_SETTINGS_RESET = 'detail_settings_reset';
 
 // Bindings
 Handle.bind(EVENT_NONE, function (... args) {
@@ -571,6 +572,26 @@ Handle.bind(EVENT_DETAIL_SETTINGS_CLEAR, function () {
     Preferences.remove($('#container-detail').attr('data-current-group'));
     $('#modal-custom-settings').modal('hide');
     Handle.call(EVENT_LOAD_DETAIL, $('#container-detail').attr('data-current-group'), $('#container-detail-compare').val());
+});
+
+Handle.bind(EVENT_DETAIL_SETTINGS_RESET, function () {
+    Object.entries(Preferences.get($('#container-detail').attr('data-current-group'), Preferences.get('settings', DEFAULT_SETTINGS))).forEach(function (keyval) {
+        var key = keyval[0];
+        var val = keyval[1];
+
+        var element = $(`[data-custom-settings="${key}"]`);
+        if (element.hasClass('button')) {
+            if (val) {
+                setEnabled(element);
+            } else {
+                setDisabled(element);
+            }
+        } else {
+            element.val(val);
+        }
+    });
+
+    $('.ui.dropdown').dropdown();
 });
 
 Handle.bind(EVENT_DETAIL_SETTINGS_SAVE, function () {
