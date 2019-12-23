@@ -13,6 +13,10 @@ body {
     overflow-y: scroll !important;
 }
 
+.text-white label, .text-white .header {
+    color: white !important;
+}
+
 .hidden {
     display: none !important;
 }

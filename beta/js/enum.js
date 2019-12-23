@@ -47,7 +47,8 @@ const DEFAULT_SETTINGS = {
   "show-instructor": 1,
   "show-pet": 1,
   "show-knights": 1,
-  "show-knights-style": 0
+  "show-knights-style": 0,
+  "show-group": 2
 };
 
 const PLAYER_CLASS = [

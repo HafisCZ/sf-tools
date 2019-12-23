@@ -24,6 +24,10 @@ const EVENT_SETTINGS_SAVE = 'settings_save';
 const EVENT_DETAIL_COPY = 'detail_copy';
 const EVENT_DETAIL_SAVE = 'detail_save';
 
+const EVENT_DETAIL_SETTINGS = 'detail_settings';
+const EVENT_DETAIL_SETTINGS_CLEAR = 'detail_settings_clear';
+const EVENT_DETAIL_SETTINGS_SAVE = 'detail_settings_save';
+
 // Bindings
 Handle.bind(EVENT_NONE, function (... args) {
     console.log(... args);
@@ -279,7 +283,7 @@ Handle.bind(EVENT_LOAD_DETAIL, function (identifier, compare) {
         }
     });
 
-    var prefs = Preferences.get('settings', DEFAULT_SETTINGS);
+    var prefs = Preferences.get(identifier, Preferences.get('settings', DEFAULT_SETTINGS));
     var header_name = 1;
     var header_general = prefs['show-class'] + prefs['show-id'] + prefs['show-rank'] + prefs['show-achievements'] + 3;
     var header_potions = 3;
@@ -381,65 +385,69 @@ Handle.bind(EVENT_LOAD_DETAIL, function (identifier, compare) {
     var kicked = oldgroup.MemberIDs.filter(g => !group.MemberIDs.includes(g)).map(g => Database.Players[g].Latest.Name);
     var joined = group.MemberIDs.filter(g => !oldgroup.MemberIDs.includes(g)).map(g => Database.Players[g].Latest.Name);
 
-    $('#container-detail-stats').html(`
-        <tbody>
-            <tr>
-                <td width="${ 249 + (width % 2 == 0 ? 1 : 0) }" class="border-right-thin"></td>
-                <td>Level</td>
-                <td>Treasure</td>
-                <td>Instructor</td>
-                <td>Pet</td>
-                <td>Knights</td>
-            </tr>
-            <tr>
-                <td class="border-bottom-thick border-right-thin"></td>
-                <td class="border-bottom-thick"></td>
-                <td class="border-bottom-thick"></td>
-                <td class="border-bottom-thick"></td>
-                <td class="border-bottom-thick"></td>
-                <td class="border-bottom-thick"></td>
-            </tr>
-            <tr>
-                <td class="border-right-thin">Minimum</td>
-                <td ${ prefs['level-enabled'] ? (group.Levels.Min >= prefs['level-req'] ? 'class="foreground-green"' : (group.Levels.Min >= prefs['level-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Levels.Min }${ (prefs['level-difference'] && group.Levels.Min != oldgroup.Levels.Min) ? `<span> ${ group.Levels.Min > oldgroup.Levels.Min ? '+' : '' }${ group.Levels.Min - oldgroup.Levels.Min }</span>` : '' }</td>
-                <td ${ prefs['treasure-enabled'] ? (group.Treasures.Min >= prefs['treasure-req'] ? 'class="foreground-green"' : (group.Treasures.Min >= prefs['treasure-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Treasures.Min }${ (prefs['treasure-difference'] && group.Treasures.Min != oldgroup.Treasures.Min) ? `<span> ${ group.Treasures.Min > oldgroup.Treasures.Min ? '+' : '' }${ group.Treasures.Min - oldgroup.Treasures.Min }</span>` : '' }</td>
-                <td ${ prefs['instructor-enabled'] ? (group.Instructors.Min >= prefs['instructor-req'] ? 'class="foreground-green"' : (group.Instructors.Min >= prefs['instructor-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Instructors.Min }${ (prefs['instructor-difference'] && group.Instructors.Min != oldgroup.Instructors.Min) ? `<span> ${ group.Instructors.Min > oldgroup.Instructors.Min ? '+' : '' }${ group.Instructors.Min - oldgroup.Instructors.Min }</span>` : '' }</td>
-                <td ${ prefs['pet-enabled'] ? (group.Pets.Min >= prefs['pet-req'] ? 'class="foreground-green"' : (group.Pets.Min >= prefs['pet-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Pets.Min }${ (prefs['pet-difference'] && group.Pets.Min != oldgroup.Pets.Min) ? `<span> ${ group.Pets.Min > oldgroup.Pets.Min ? '+' : '' }${ group.Pets.Min - oldgroup.Pets.Min }</span>` : '' }</td>
-                <td ${ prefs['knights-enabled'] ? (group.Knights.Min >= prefs['knights-req'] ? 'class="foreground-green"' : (group.Knights.Min >= prefs['knights-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Knights.Min }${ (prefs['knights-difference'] && group.Knights.Min != oldgroup.Knights.Min) ? `<span> ${ group.Knights.Min > oldgroup.Knights.Min ? '+' : '' }${ group.Knights.Min - oldgroup.Knights.Min }</span>` : '' }</td>
-            </tr>
-            <tr>
-                <td class="border-right-thin">Average</td>
-                <td ${ prefs['level-enabled'] ? (group.Levels.Avg >= prefs['level-req'] ? 'class="foreground-green"' : (group.Levels.Avg >= prefs['level-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ Math.trunc(group.Levels.Avg) }${ (prefs['level-difference'] && Math.trunc(group.Levels.Avg) != Math.trunc(oldgroup.Levels.Avg)) ? `<span> ${ group.Levels.Avg > oldgroup.Levels.Avg ? '+' : '' }${ Math.trunc(group.Levels.Avg) - Math.trunc(oldgroup.Levels.Avg) }</span>` : '' }</td>
-                <td ${ prefs['treasure-enabled'] ? (group.Treasures.Avg >= prefs['treasure-req'] ? 'class="foreground-green"' : (group.Treasures.Avg >= prefs['treasure-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ Math.trunc(group.Treasures.Avg) }${ (prefs['treasure-difference'] && Math.trunc(group.Treasures.Avg) != Math.trunc(oldgroup.Treasures.Avg)) ? `<span> ${ group.Treasures.Avg > oldgroup.Treasures.Avg ? '+' : '' }${ Math.trunc(group.Treasures.Avg) - Math.trunc(oldgroup.Treasures.Avg) }</span>` : '' }</td>
-                <td ${ prefs['instructor-enabled'] ? (group.Instructors.Avg >= prefs['instructor-req'] ? 'class="foreground-green"' : (group.Instructors.Avg >= prefs['instructor-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ Math.trunc(group.Instructors.Avg) }${ (prefs['instructor-difference'] && Math.trunc(group.Instructors.Avg) != Math.trunc(oldgroup.Instructors.Avg)) ? `<span> ${ group.Instructors.Avg > oldgroup.Instructors.Avg ? '+' : '' }${ Math.trunc(group.Instructors.Avg) - Math.trunc(oldgroup.Instructors.Avg) }</span>` : '' }</td>
-                <td ${ prefs['pet-enabled'] ? (group.Pets.Avg >= prefs['pet-req'] ? 'class="foreground-green"' : (group.Pets.Avg >= prefs['pet-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ Math.trunc(group.Pets.Avg) }${ (prefs['pet-difference'] && Math.trunc(group.Pets.Avg) != Math.trunc(oldgroup.Pets.Avg)) ? `<span> ${ group.Pets.Avg > oldgroup.Pets.Avg ? '+' : '' }${ Math.trunc(group.Pets.Avg) - Math.trunc(oldgroup.Pets.Avg) }</span>` : '' }</td>
-                <td ${ prefs['knights-enabled'] ? (group.Knights.Avg >= prefs['knights-req'] ? 'class="foreground-green"' : (group.Knights.Avg >= prefs['knights-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ Math.trunc(group.Knights.Avg) }${ (prefs['knights-difference'] && Math.trunc(group.Knights.Avg) != Math.trunc(oldgroup.Knights.Avg)) ? `<span> ${ group.Knights.Avg > oldgroup.Knights.Avg ? '+' : '' }${ Math.trunc(group.Knights.Avg) - Math.trunc(oldgroup.Knights.Avg) }</span>` : '' }</td>
-            </tr>
-            <tr>
-                <td class="border-right-thin">Maximum</td>
-                <td ${ prefs['level-enabled'] ? (group.Levels.Max >= prefs['level-req'] ? 'class="foreground-green"' : (group.Levels.Max >= prefs['level-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Levels.Max }${ (prefs['level-difference'] && group.Levels.Max != oldgroup.Levels.Max) ? `<span> ${ group.Levels.Max > oldgroup.Levels.Max ? '+' : '' }${ group.Levels.Max - oldgroup.Levels.Max }</span>` : '' }</td>
-                <td ${ prefs['treasure-enabled'] ? (group.Treasures.Max >= prefs['treasure-req'] ? 'class="foreground-green"' : (group.Treasures.Max >= prefs['treasure-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Treasures.Max }${ (prefs['treasure-difference'] && group.Treasures.Max != oldgroup.Treasures.Max) ? `<span> ${ group.Treasures.Max > oldgroup.Treasures.Max ? '+' : '' }${ group.Treasures.Max - oldgroup.Treasures.Max }</span>` : '' }</td>
-                <td ${ prefs['instructor-enabled'] ? (group.Instructors.Max >= prefs['instructor-req'] ? 'class="foreground-green"' : (group.Instructors.Max >= prefs['instructor-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Instructors.Max }${ (prefs['instructor-difference'] && group.Instructors.Max != oldgroup.Instructors.Max) ? `<span> ${ group.Instructors.Max > oldgroup.Instructors.Max ? '+' : '' }${ group.Instructors.Max - oldgroup.Instructors.Max }</span>` : '' }</td>
-                <td ${ prefs['pet-enabled'] ? (group.Pets.Max >= prefs['pet-req'] ? 'class="foreground-green"' : (group.Pets.Max >= prefs['pet-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Pets.Max }${ (prefs['pet-difference'] && group.Pets.Max != oldgroup.Pets.Max) ? `<span> ${ group.Pets.Max > oldgroup.Pets.Max ? '+' : '' }${ group.Pets.Max - oldgroup.Pets.Max }</span>` : '' }</td>
-                <td ${ prefs['knights-enabled'] ? (group.Knights.Max >= prefs['knights-req'] ? 'class="foreground-green"' : (group.Knights.Max >= prefs['knights-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Knights.Max }${ (prefs['knights-difference'] && group.Knights.Max != oldgroup.Knights.Max) ? `<span> ${ group.Knights.Max > oldgroup.Knights.Max ? '+' : '' }${ group.Knights.Max - oldgroup.Knights.Max }</span>` : '' }</td>
-            </tr>
-            <tr>
-                <td colspan="6"></td>
-            </tr>
-            ${
-                (timestamp != compare) && (joined.length > 0 || kicked.length > 0) ? `
-                    <tr>
-                        <td class="border-right-thin">Joined</td>
-                        <td colspan="5">${ joined.join(', ') }</td>
-                    </tr>
-                    <tr>
-                        <td class="border-right-thin">Kicked</td>
-                        <td colspan="5">${ kicked.join(', ') }</td>
-                    </tr>
-                ` : ''
-            }
-        </tbody>
-    `);
+    if (prefs['show-group']) {
+        $('#container-detail-stats').html(`
+            <tbody>
+                <tr>
+                    <td width="${ 249 + (width % 2 == 0 ? 1 : 0) }" class="border-right-thin"></td>
+                    <td>Level</td>
+                    <td>Treasure</td>
+                    <td>Instructor</td>
+                    <td>Pet</td>
+                    <td>Knights</td>
+                </tr>
+                <tr>
+                    <td class="border-bottom-thick border-right-thin"></td>
+                    <td class="border-bottom-thick"></td>
+                    <td class="border-bottom-thick"></td>
+                    <td class="border-bottom-thick"></td>
+                    <td class="border-bottom-thick"></td>
+                    <td class="border-bottom-thick"></td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Minimum</td>
+                    <td ${ prefs['level-enabled'] ? (group.Levels.Min >= prefs['level-req'] ? 'class="foreground-green"' : (group.Levels.Min >= prefs['level-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Levels.Min }${ (prefs['level-difference'] && group.Levels.Min != oldgroup.Levels.Min) ? `<span> ${ group.Levels.Min > oldgroup.Levels.Min ? '+' : '' }${ group.Levels.Min - oldgroup.Levels.Min }</span>` : '' }</td>
+                    <td ${ prefs['treasure-enabled'] ? (group.Treasures.Min >= prefs['treasure-req'] ? 'class="foreground-green"' : (group.Treasures.Min >= prefs['treasure-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Treasures.Min }${ (prefs['treasure-difference'] && group.Treasures.Min != oldgroup.Treasures.Min) ? `<span> ${ group.Treasures.Min > oldgroup.Treasures.Min ? '+' : '' }${ group.Treasures.Min - oldgroup.Treasures.Min }</span>` : '' }</td>
+                    <td ${ prefs['instructor-enabled'] ? (group.Instructors.Min >= prefs['instructor-req'] ? 'class="foreground-green"' : (group.Instructors.Min >= prefs['instructor-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Instructors.Min }${ (prefs['instructor-difference'] && group.Instructors.Min != oldgroup.Instructors.Min) ? `<span> ${ group.Instructors.Min > oldgroup.Instructors.Min ? '+' : '' }${ group.Instructors.Min - oldgroup.Instructors.Min }</span>` : '' }</td>
+                    <td ${ prefs['pet-enabled'] ? (group.Pets.Min >= prefs['pet-req'] ? 'class="foreground-green"' : (group.Pets.Min >= prefs['pet-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Pets.Min }${ (prefs['pet-difference'] && group.Pets.Min != oldgroup.Pets.Min) ? `<span> ${ group.Pets.Min > oldgroup.Pets.Min ? '+' : '' }${ group.Pets.Min - oldgroup.Pets.Min }</span>` : '' }</td>
+                    <td ${ prefs['knights-enabled'] ? (group.Knights.Min >= prefs['knights-req'] ? 'class="foreground-green"' : (group.Knights.Min >= prefs['knights-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Knights.Min }${ (prefs['knights-difference'] && group.Knights.Min != oldgroup.Knights.Min) ? `<span> ${ group.Knights.Min > oldgroup.Knights.Min ? '+' : '' }${ group.Knights.Min - oldgroup.Knights.Min }</span>` : '' }</td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Average</td>
+                    <td ${ prefs['level-enabled'] ? (group.Levels.Avg >= prefs['level-req'] ? 'class="foreground-green"' : (group.Levels.Avg >= prefs['level-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ Math.trunc(group.Levels.Avg) }${ (prefs['level-difference'] && Math.trunc(group.Levels.Avg) != Math.trunc(oldgroup.Levels.Avg)) ? `<span> ${ group.Levels.Avg > oldgroup.Levels.Avg ? '+' : '' }${ Math.trunc(group.Levels.Avg) - Math.trunc(oldgroup.Levels.Avg) }</span>` : '' }</td>
+                    <td ${ prefs['treasure-enabled'] ? (group.Treasures.Avg >= prefs['treasure-req'] ? 'class="foreground-green"' : (group.Treasures.Avg >= prefs['treasure-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ Math.trunc(group.Treasures.Avg) }${ (prefs['treasure-difference'] && Math.trunc(group.Treasures.Avg) != Math.trunc(oldgroup.Treasures.Avg)) ? `<span> ${ group.Treasures.Avg > oldgroup.Treasures.Avg ? '+' : '' }${ Math.trunc(group.Treasures.Avg) - Math.trunc(oldgroup.Treasures.Avg) }</span>` : '' }</td>
+                    <td ${ prefs['instructor-enabled'] ? (group.Instructors.Avg >= prefs['instructor-req'] ? 'class="foreground-green"' : (group.Instructors.Avg >= prefs['instructor-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ Math.trunc(group.Instructors.Avg) }${ (prefs['instructor-difference'] && Math.trunc(group.Instructors.Avg) != Math.trunc(oldgroup.Instructors.Avg)) ? `<span> ${ group.Instructors.Avg > oldgroup.Instructors.Avg ? '+' : '' }${ Math.trunc(group.Instructors.Avg) - Math.trunc(oldgroup.Instructors.Avg) }</span>` : '' }</td>
+                    <td ${ prefs['pet-enabled'] ? (group.Pets.Avg >= prefs['pet-req'] ? 'class="foreground-green"' : (group.Pets.Avg >= prefs['pet-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ Math.trunc(group.Pets.Avg) }${ (prefs['pet-difference'] && Math.trunc(group.Pets.Avg) != Math.trunc(oldgroup.Pets.Avg)) ? `<span> ${ group.Pets.Avg > oldgroup.Pets.Avg ? '+' : '' }${ Math.trunc(group.Pets.Avg) - Math.trunc(oldgroup.Pets.Avg) }</span>` : '' }</td>
+                    <td ${ prefs['knights-enabled'] ? (group.Knights.Avg >= prefs['knights-req'] ? 'class="foreground-green"' : (group.Knights.Avg >= prefs['knights-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ Math.trunc(group.Knights.Avg) }${ (prefs['knights-difference'] && Math.trunc(group.Knights.Avg) != Math.trunc(oldgroup.Knights.Avg)) ? `<span> ${ group.Knights.Avg > oldgroup.Knights.Avg ? '+' : '' }${ Math.trunc(group.Knights.Avg) - Math.trunc(oldgroup.Knights.Avg) }</span>` : '' }</td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Maximum</td>
+                    <td ${ prefs['level-enabled'] ? (group.Levels.Max >= prefs['level-req'] ? 'class="foreground-green"' : (group.Levels.Max >= prefs['level-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Levels.Max }${ (prefs['level-difference'] && group.Levels.Max != oldgroup.Levels.Max) ? `<span> ${ group.Levels.Max > oldgroup.Levels.Max ? '+' : '' }${ group.Levels.Max - oldgroup.Levels.Max }</span>` : '' }</td>
+                    <td ${ prefs['treasure-enabled'] ? (group.Treasures.Max >= prefs['treasure-req'] ? 'class="foreground-green"' : (group.Treasures.Max >= prefs['treasure-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Treasures.Max }${ (prefs['treasure-difference'] && group.Treasures.Max != oldgroup.Treasures.Max) ? `<span> ${ group.Treasures.Max > oldgroup.Treasures.Max ? '+' : '' }${ group.Treasures.Max - oldgroup.Treasures.Max }</span>` : '' }</td>
+                    <td ${ prefs['instructor-enabled'] ? (group.Instructors.Max >= prefs['instructor-req'] ? 'class="foreground-green"' : (group.Instructors.Max >= prefs['instructor-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Instructors.Max }${ (prefs['instructor-difference'] && group.Instructors.Max != oldgroup.Instructors.Max) ? `<span> ${ group.Instructors.Max > oldgroup.Instructors.Max ? '+' : '' }${ group.Instructors.Max - oldgroup.Instructors.Max }</span>` : '' }</td>
+                    <td ${ prefs['pet-enabled'] ? (group.Pets.Max >= prefs['pet-req'] ? 'class="foreground-green"' : (group.Pets.Max >= prefs['pet-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Pets.Max }${ (prefs['pet-difference'] && group.Pets.Max != oldgroup.Pets.Max) ? `<span> ${ group.Pets.Max > oldgroup.Pets.Max ? '+' : '' }${ group.Pets.Max - oldgroup.Pets.Max }</span>` : '' }</td>
+                    <td ${ prefs['knights-enabled'] ? (group.Knights.Max >= prefs['knights-req'] ? 'class="foreground-green"' : (group.Knights.Max >= prefs['knights-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ group.Knights.Max }${ (prefs['knights-difference'] && group.Knights.Max != oldgroup.Knights.Max) ? `<span> ${ group.Knights.Max > oldgroup.Knights.Max ? '+' : '' }${ group.Knights.Max - oldgroup.Knights.Max }</span>` : '' }</td>
+                </tr>
+                <tr>
+                    <td colspan="6"></td>
+                </tr>
+                ${
+                    prefs['show-group'] == 2 && (timestamp != compare) && (joined.length > 0 || kicked.length > 0) ? `
+                        <tr>
+                            <td class="border-right-thin">Joined</td>
+                            <td colspan="5">${ joined.join(', ') }</td>
+                        </tr>
+                        <tr>
+                            <td class="border-right-thin">Kicked</td>
+                            <td colspan="5">${ kicked.join(', ') }</td>
+                        </tr>
+                    ` : ''
+                }
+            </tbody>
+        `);
+    } else {
+        $('#container-detail-stats').html('');
+    }
 
     $('[data-player]').on('click', function () {
         Handle.call(EVENT_SHOW_PLAYER, $(this).attr('data-player'));
@@ -447,7 +455,7 @@ Handle.bind(EVENT_LOAD_DETAIL, function (identifier, compare) {
 });
 
 Handle.bind(EVENT_SHOW_PLAYER, function (identifier) {
-    var prefs = Preferences.get('settings', DEFAULT_SETTINGS);
+    var prefs = Preferences.get($('#container-detail').attr('data-current-group'), Preferences.get('settings', DEFAULT_SETTINGS));
 
     var player = Database.Players[identifier].Latest;
 
@@ -536,4 +544,59 @@ Handle.bind(EVENT_SHOW_PLAYER, function (identifier) {
         </div>
     `);
     $('#modal-player').modal('show');
+});
+
+Handle.bind(EVENT_DETAIL_SETTINGS, function () {
+    Object.entries(Preferences.get($('#container-detail').attr('data-current-group'), Preferences.get('settings', DEFAULT_SETTINGS))).forEach(function (keyval) {
+        var key = keyval[0];
+        var val = keyval[1];
+
+        var element = $(`[data-custom-settings="${key}"]`);
+        if (element.hasClass('button')) {
+            if (val) {
+                setEnabled(element);
+            } else {
+                setDisabled(element);
+            }
+        } else {
+            element.val(val);
+        }
+    });
+
+    $('.ui.dropdown').dropdown();
+    $('#modal-custom-settings').modal('show');
+});
+
+Handle.bind(EVENT_DETAIL_SETTINGS_CLEAR, function () {
+    Preferences.remove($('#container-detail').attr('data-current-group'));
+    $('#modal-custom-settings').modal('hide');
+    Handle.call(EVENT_LOAD_DETAIL, $('#container-detail').attr('data-current-group'), $('#container-detail-compare').val());
+});
+
+Handle.bind(EVENT_DETAIL_SETTINGS_SAVE, function () {
+    var settings = {};
+
+    if ($('[data-custom-settings]:not(.button)').toArray().reduce((sum, element) => {
+        var val = $(element).val();
+        if (isNaN(val) || val < 0) {
+            $(element).transition('shake');
+            return sum + 1;
+        } else {
+            return sum;
+        }
+    }, 0) > 0) {
+        return;
+    }
+
+    $('[data-custom-settings]').toArray().forEach(function (element) {
+        if ($(element).hasClass('button')) {
+            settings[$(element).attr('data-custom-settings')] = $(element).hasClass('active') ? 1 : 0;
+        } else {
+            settings[$(element).attr('data-custom-settings')] = Number($(element).val());
+        }
+    });
+
+    Preferences.set($('#container-detail').attr('data-current-group'), settings);
+    $('#modal-custom-settings').modal('hide');
+    Handle.call(EVENT_LOAD_DETAIL, $('#container-detail').attr('data-current-group'), $('#container-detail-compare').val());
 });
