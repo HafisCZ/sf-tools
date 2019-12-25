@@ -51,7 +51,7 @@ class DatabaseIO
 {
     constructor()
     {
-        this.sop = new LocalStorageObjectLZProperty(btoa('STORAGE'), []);
+        this.sop = new LocalStorageObjectLZProperty('data', []);
 
         this.storage = this.sop.value;
         this.database = new Database(this.storage);

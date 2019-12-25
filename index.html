@@ -516,6 +516,13 @@
         </div>
 
         <script type="text/javascript">
+            if (window.localStorage[btoa('STORAGE')]) {
+                window.localStorage['data'] = window.localStorage[btoa('STORAGE')];
+                delete window.localStorage[btoa('STORAGE')];
+            }
+        </script>
+
+        <script type="text/javascript">
             window.view = new Object();
             window.view.container = document.querySelector('[data-view-container]');
             window.nav = function (v, ... args) {
