@@ -235,7 +235,7 @@ Handle.bind(EVENT_DETAIL_SAVE, function () {
         logging: false
     }).then(function (canvas) {
         canvas.toBlob(function (blob) {
-            window.download(`${ Database.Groups[group].Latest.Name }.${ Database.Groups[group].LatestTimestamp }${ compare ? `.${ compare }` : '' }`, blob);
+            window.download(`${ Database.Groups[group].Latest.Name }.${ Database.Groups[group].LatestTimestamp }${ compare ? `.${ compare }` : '' }.png`, blob);
         });
     });
 });
