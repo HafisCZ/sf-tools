@@ -13,6 +13,23 @@ body {
     overflow-y: scroll !important;
 }
 
+body.dimmed {
+    overflow: hidden !important;
+    margin-right: 17px !important;
+}
+
+body.dimmed .menu {
+    margin-right: 17px !important;
+}
+
+.modals {
+    overflow-y: scroll !important;
+}
+
+.modals.fade.out {
+    overflow: hidden !important;
+}
+
 .text-white label, .text-white .header {
     color: white !important;
 }
