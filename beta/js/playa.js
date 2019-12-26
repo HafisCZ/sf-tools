@@ -232,6 +232,8 @@ class Player {
             }
         ];
 
+        this.Potions.sort((a, b) => b.Size - a.Size);
+
         this.Dungeons = data.own ? [
             ... data.save.slice(480, 490),
             data.save[441],

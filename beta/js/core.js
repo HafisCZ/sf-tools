@@ -265,3 +265,58 @@ const Storage = new (class {
         return this.current;
     }
 })();
+
+const State = new (class {
+    constructor () {
+        this.sortByLevel = false;
+        this.groupID = null;
+        this.groupReferenceTimestamp = null;
+    }
+
+    setGroup (groupID, referenceTimestamp) {
+        this.groupID = groupID;
+        this.groupReferenceTimestamp = referenceTimestamp || Database.Groups[groupID].LatestTimestamp;
+    }
+
+    setReference (referenceTimestamp) {
+        this.groupReferenceTimestamp = referenceTimestamp;
+    }
+
+    reset () {
+        this.sortByLevel = false;
+        this.groupID = null;
+        this.groupReferenceTimestamp = null;
+    }
+
+    setSort (sortByLevel) {
+        this.sortByLevel = sortByLevel;
+    }
+
+    isSorted () {
+        return this.sortByLevel;
+    }
+
+    toggleSort () {
+        this.sortByLevel = !this.sortByLevel;
+    }
+
+    getGroup () {
+        return Database.Groups[this.groupID];
+    }
+
+    getGroupCurrent () {
+        return Database.Groups[this.groupID].Latest;
+    }
+
+    getGroupReference () {
+        return Database.Groups[this.groupID][this.groupReferenceTimestamp];
+    }
+
+    getGroupTimestamp () {
+        return Database.Groups[this.groupID].LatestTimestamp;
+    }
+
+    getGroupReferenceTimestamp () {
+        return this.groupReferenceTimestamp;
+    }
+})();

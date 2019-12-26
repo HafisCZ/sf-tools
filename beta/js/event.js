@@ -11,8 +11,6 @@ const EVENT_LOAD_HELP = 'load_help';
 const EVENT_LOAD_DETAIL = 'load_detail';
 const EVENT_SHOW_PLAYER = 'show_player';
 
-const EVENT_BROWSE_DETAIL = 'browse_detail';
-
 const EVENT_FILES_ADD = 'files_add';
 const EVENT_FILES_EXPORT = 'files_export';
 const EVENT_FILES_IMPORT = 'files_import';
@@ -29,6 +27,8 @@ const EVENT_DETAIL_SETTINGS_CLEAR = 'detail_settings_clear';
 const EVENT_DETAIL_SETTINGS_SAVE = 'detail_settings_save';
 const EVENT_DETAIL_SETTINGS_RESET = 'detail_settings_reset';
 
+const EVENT_TOGGLE_SORT = 'toggle_sort';
+
 // Bindings
 Handle.bind(EVENT_NONE, function (... args) {
     console.log(... args);
@@ -42,11 +42,6 @@ Handle.bind(EVENT_ERROR, function (error) {
 Handle.bind(EVENT_SHOW_SCREEN, function (screen, ... args) {
     $('.ui.container').addClass('hidden');
     $(`#${screen}`).removeClass('hidden');
-    Screens[screen].show(... args);
-});
-
-Handle.bind(EVENT_SETTINGS_CLEAR, function () {
-    Screens['container-settings'].show();
 });
 
 Handle.bind(EVENT_SETTINGS_SAVE, function () {
@@ -177,9 +172,10 @@ Handle.bind(EVENT_LOAD_BROWSE, function () {
     $('#container-browse-grid').html(content.join(''));
 
     // Show group detail
-    $('[data-group-id]').off('click');
     $('[data-group-id]').on('click', function () {
-        Handle.call(EVENT_BROWSE_DETAIL, $(this).attr('data-group-id'));
+        State.setGroup($(this).attr('data-group-id'));
+        Handle.call(EVENT_SHOW_SCREEN, 'container-detail')
+        Handle.call(EVENT_LOAD_DETAIL);
     });
 });
 
@@ -200,7 +196,6 @@ Handle.bind(EVENT_FILES_ADD, function (files) {
 
 Handle.bind(EVENT_FILES_REMOVE, function (index) {
     Storage.remove(index);
-
     Handle.call(EVENT_LOAD_FILES);
 });
 
@@ -223,19 +218,15 @@ Handle.bind(EVENT_FILES_IMPORT, function (files) {
     });
 });
 
-Handle.bind(EVENT_BROWSE_DETAIL, function (identifier) {
-    Handle.call(EVENT_SHOW_SCREEN, 'container-detail', identifier);
-});
-
 Handle.bind(EVENT_DETAIL_SAVE, function () {
-    var group = $('#container-detail').attr('data-current-group');
-    var compare = $('#container-detail-compare').val();
+    var group = State.getGroup();
+    var referenceTimestamp = State.getGroupReferenceTimestamp();
 
     html2canvas($('#container-detail-screenshot')[0], {
         logging: false
     }).then(function (canvas) {
         canvas.toBlob(function (blob) {
-            window.download(`${ Database.Groups[group].Latest.Name }.${ Database.Groups[group].LatestTimestamp }${ compare ? `.${ compare }` : '' }.png`, blob);
+            window.download(`${ group.Latest.Name }.${ group.LatestTimestamp }${ referenceTimestamp != group.LatestTimestamp ? `.${ referenceTimestamp }` : '' }.png`, blob);
         });
     });
 });
@@ -250,31 +241,33 @@ Handle.bind(EVENT_DETAIL_COPY, function () {
     window.getSelection().removeAllRanges();
 });
 
-Handle.bind(EVENT_LOAD_DETAIL, function (identifier, compare) {
-    var timestamps = Database.Groups[identifier].List.map(entry => `<div class="item" data-value="${ entry.timestamp }">${ formatDate(new Date(entry.timestamp)) }</div>`);
-    timestamps.reverse();
-    $('#container-detail-compare-content').html(timestamps.join(''));
+Handle.bind(EVENT_LOAD_DETAIL, function () {
+    var group = State.getGroup();
 
-    if (compare) {
-        $('#container-detail-compare').val(compare);
+    var timestampList = group.List.map(a => `<div class="item" data-value="${ a.timestamp }">${ formatDate(new Date(a.timestamp)) }</div>`);
+    timestampList.reverse();
+    $('#container-detail-compare-content').html(timestampList.join(''));
+
+    if (group.LatestTimestamp != State.getGroupReferenceTimestamp()) {
+        $('#container-detail-compare').val(State.getGroupReferenceTimestamp());
     } else {
-        $('#container-detail-compare').val(Database.Groups[identifier].LatestTimestamp);
-        $('#container-detail-compare-text').html(formatDate(new Date(Database.Groups[identifier].LatestTimestamp)));
-        compare = Database.Groups[identifier].LatestTimestamp;
+        $('#container-detail-compare').val(group.LatestTimestamp);
+        $('#container-detail-compare-text').html(formatDate(new Date(group.LatestTimestamp)));
     }
 
-    $('#container-detail').attr('data-current-group', identifier);
+    $('#container-detail').attr('data-current-group', group.Latest.Identifier);
 
-    var group = Database.Groups[identifier].Latest;
-    var timestamp = Database.Groups[identifier].LatestTimestamp;
+    var timestamp = group.LatestTimestamp;
+    group = group.Latest;
 
-    var oldgroup = Database.Groups[identifier][compare];
+    var compare = State.getGroupReferenceTimestamp();
+    var oldgroup = State.getGroupReference();
 
     $('#container-detail-name').text(group.Name);
     $('#container-detail-rank').text('Rank ' + group.Rank);
     $('#container-detail-membercount').text(group.MemberCount + (group.MemberCount > 1 ? ' Members' : ' Member'));
 
-    var players = group.MemberIDs.map(id => (Database.Players[id] ? Database.Players[id][timestamp] : null)).filter(player => player && player.Group && player.Group.Role < GUILD_ROLE_INVITED);
+    var players = group.MemberIDs.map(id => (Database.Players[id] ? Database.Players[id][timestamp] : null)).filter(player => player);
     var compares = players.map(function (player) {
         var ps = Database.Players[player.Identifier];
         if (compare && ps[compare] && ps[compare].Group && ps[compare].Group.Name == group.Name) {
@@ -284,7 +277,11 @@ Handle.bind(EVENT_LOAD_DETAIL, function (identifier, compare) {
         }
     });
 
-    var prefs = Preferences.get(identifier, Preferences.get('settings', DEFAULT_SETTINGS));
+    if (State.isSorted()) {
+        players.sort((a, b) => b.Level - a.Level);
+    }
+
+    var prefs = Preferences.get(group.Identifier, Preferences.get('settings', DEFAULT_SETTINGS));
     var header_name = 1;
     var header_general = prefs['show-class'] + prefs['show-id'] + prefs['show-rank'] + prefs['show-achievements'] + 3;
     var header_potions = 3;
@@ -319,7 +316,7 @@ Handle.bind(EVENT_LOAD_DETAIL, function (identifier, compare) {
 
     $('#container-detail').css('width', `${width + 130}px`);
 
-    var content = [`
+    var table_header = `
         <thead>
             <tr>
                 <td width="250" rowspan="2" colspan="1" class="border-right-thin">Name</td>
@@ -351,12 +348,13 @@ Handle.bind(EVENT_LOAD_DETAIL, function (identifier, compare) {
             </tr>
         </thead>
         <tbody>
-    `];
+    `;
 
+    var table_body = [];
     players.forEach(function (player) {
         var compare = compares.find(compare => compare.Identifier == player.Identifier);
 
-        content.push(`
+        table_body.push(`
             <tr>
                 <td class="border-right-thin clickable" data-player="${ player.Identifier }">${ player.Name }</td>
                 ${ prefs['show-class'] ? `<td>${ PLAYER_CLASS[player.Class] }</td>` : '' }
@@ -380,8 +378,7 @@ Handle.bind(EVENT_LOAD_DETAIL, function (identifier, compare) {
         `);
     });
 
-    content.push('</tbody>');
-    $('#container-detail-content').html(content.join());
+    $('#container-detail-content').html(table_header + table_body.join('') + '</tbody>');
 
     var kicked = oldgroup.MemberIDs.filter(g => !group.MemberIDs.includes(g)).map(g => Database.Players[g].Latest.Name);
     var joined = group.MemberIDs.filter(g => !oldgroup.MemberIDs.includes(g)).map(g => Database.Players[g].Latest.Name);
@@ -461,7 +458,6 @@ Handle.bind(EVENT_SHOW_PLAYER, function (identifier) {
     var player = Database.Players[identifier].Latest;
 
     var potions = player.Potions;
-    potions.sort((a, b) => b.Size - a.Size);
 
     $('#modal-player').html(`
         <div class="ui text-center extreme header margin-none-bottom padding-none-bottom">${ player.Name }</div>
@@ -571,7 +567,7 @@ Handle.bind(EVENT_DETAIL_SETTINGS, function () {
 Handle.bind(EVENT_DETAIL_SETTINGS_CLEAR, function () {
     Preferences.remove($('#container-detail').attr('data-current-group'));
     $('#modal-custom-settings').modal('hide');
-    Handle.call(EVENT_LOAD_DETAIL, $('#container-detail').attr('data-current-group'), $('#container-detail-compare').val());
+    Handle.call(EVENT_LOAD_DETAIL);
 });
 
 Handle.bind(EVENT_DETAIL_SETTINGS_RESET, function () {
@@ -619,5 +615,5 @@ Handle.bind(EVENT_DETAIL_SETTINGS_SAVE, function () {
 
     Preferences.set($('#container-detail').attr('data-current-group'), settings);
     $('#modal-custom-settings').modal('hide');
-    Handle.call(EVENT_LOAD_DETAIL, $('#container-detail').attr('data-current-group'), $('#container-detail-compare').val());
+    Handle.call(EVENT_LOAD_DETAIL);
 });

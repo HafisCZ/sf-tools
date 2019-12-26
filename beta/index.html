@@ -29,11 +29,11 @@
     <body>
         <div class="ui fixed borderless huge menu">
             <div class="header item">SFTools</div>
-            <a class="item" data-toggle="container-browse"><i class="small archive icon"></i>Browse</a>
-            <a class="item" data-toggle="container-files"><i class="small upload icon"></i>Files</a>
-            <a class="item" data-toggle="container-settings"><i class="small cog icon"></i>Settings</a>
+            <a class="item" id="show-container-browse"><i class="small archive icon"></i>Browse</a>
+            <a class="item" id="show-container-files"><i class="small upload icon"></i>Files</a>
+            <a class="item" id="show-container-settings"><i class="small cog icon"></i>Settings</a>
             <div class="right menu">
-                <a class="item" data-toggle="container-help"><i class="small question icon"></i>Help</a>
+                <a class="item" id="show-container-help"><i class="small question icon"></i>Help</a>
             </div>
         </div>
 
@@ -514,6 +514,7 @@
                     </div>
                     <div class="twelve wide column">
                         <div class="ui small basic icon right floated buttons">
+                            <button class="ui toggle button" data-tooltip="Sort by level" id="container-detail-sort"><i class="sort icon"></i></button>
                             <button class="ui button" data-tooltip="Save as image" id="container-detail-save"><i class="download icon"></i></button>
                             <button class="ui button" data-tooltip="Copy table" id="container-detail-copy"><i class="copy icon"></i></button>
                             <button class="ui button" data-tooltip="Custom settings" id="container-detail-settings"><i class="cog icon"></i></button>
@@ -976,87 +977,97 @@
         </div>
 
         <script type="text/javascript">
-            // Screen switcher
+            // Element init
+            $('#container-detail-sort').state();
+            $('.ui.dropdown').dropdown();
+            $('.ui.toggle.button:not(#container-detail-sort)').state({
+                text: {
+                    inactive: 'Disabled',
+                    active: 'Enabled'
+                }
+            });
+
+            // Listeners
+            $('#container-detail-sort').on('click', function () {
+                State.toggleSort();
+                Handle.call(EVENT_LOAD_DETAIL);
+            });
+
             $('[data-toggle]').on('click', function () {
                 Handle.call(EVENT_SHOW_SCREEN, $(this).attr('data-toggle'));
             });
 
-            // Screen management
-            const Screens = {
-                'container-browse' : {
-                    init: function () {
+            $('#container-files-add').on('change', function () {
+                Handle.call(EVENT_FILES_ADD, this.files);
+            });
 
-                    },
-                    show: function () {
-                        Handle.call(EVENT_LOAD_BROWSE);
-                    }
-                },
-                'container-files' : {
-                    init: function () {
-                        $('#container-files-add').on('change', function () {
-                            Handle.call(EVENT_FILES_ADD, this.files);
-                        });
-                        $('#container-files-export').on('click', () => Handle.call(EVENT_FILES_EXPORT));
-                        $('#container-files-import').on('change', function () {
-                            Handle.call(EVENT_FILES_IMPORT, this.files);
-                        });
-                    },
-                    show: function () {
-                        Handle.call(EVENT_LOAD_FILES);
-                    }
-                },
-                'container-settings' : {
-                    init: function () {
-                        $('#container-settings-save').on('click', () => Handle.call(EVENT_SETTINGS_SAVE));
-                        $('#container-settings-clear').on('click', () => Handle.call(EVENT_SETTINGS_CLEAR));
+            $('#container-files-export').on('click', function () {
+                Handle.call(EVENT_FILES_EXPORT);
+            });
 
-                        // Dropdowns & Buttons
-                        $('.ui.toggle.button').state({
-                            text: {
-                                inactive: 'Disabled',
-                                active: 'Enabled'
-                            }
-                        });
-                    },
-                    show: function () {
-                        Handle.call(EVENT_LOAD_SETTINGS);
-                    }
-                },
-                'container-help' : {
-                    init: function () {
+            $('#container-files-import').on('change', function () {
+                Handle.call(EVENT_FILES_IMPORT, this.files);
+            });
 
-                    },
-                    show: function () {
+            $('#container-settings-save').on('click', function () {
+                Handle.call(EVENT_SETTINGS_SAVE);
+            });
 
-                    }
-                },
-                'container-detail' : {
-                    init: function () {
-                        $('#container-detail-save').on('click', () => Handle.call(EVENT_DETAIL_SAVE));
-                        $('#container-detail-copy').on('click', () => Handle.call(EVENT_DETAIL_COPY));
-                        $('#container-detail-settings').on('click', () => Handle.call(EVENT_DETAIL_SETTINGS));
-                        $('#modal-custom-settings-save').on('click', () => Handle.call(EVENT_DETAIL_SETTINGS_SAVE));
-                        $('#modal-custom-settings-reset').on('click', () => Handle.call(EVENT_DETAIL_SETTINGS_RESET));
-                        $('#modal-custom-settings-clear').on('click', () => Handle.call(EVENT_DETAIL_SETTINGS_CLEAR));
-                        $('#modal-player').on('click', function () {
-                            $(this).modal('hide');
-                        });
-                        $('#container-detail-compare').on('change', function () {
-                            Handle.call(EVENT_LOAD_DETAIL, $('#container-detail').attr('data-current-group'), $(this).val());
-                        });
-                        $('.ui.dropdown').dropdown();
-                    },
-                    show: function (identifier) {
-                        Handle.call(EVENT_LOAD_DETAIL, identifier);
-                    }
-                }
-            }
+            $('#container-settings-clear').on('click', function () {
+                Handle.call(EVENT_LOAD_SETTINGS);
+            });
 
-            // Initialize all screens
-            Object.values(Screens).forEach(screen => screen.init());
+            $('#container-detail-save').on('click', function () {
+                Handle.call(EVENT_DETAIL_SAVE);
+            });
+
+            $('#container-detail-copy').on('click', function () {
+                Handle.call(EVENT_DETAIL_COPY);
+            });
+
+            $('#container-detail-settings').on('click', function () {
+                Handle.call(EVENT_DETAIL_SETTINGS);
+            });
+
+            $('#modal-custom-settings-save').on('click', function () {
+                Handle.call(EVENT_DETAIL_SETTINGS_SAVE);
+            });
+
+            $('#modal-custom-settings-reset').on('click', function () {
+                Handle.call(EVENT_DETAIL_SETTINGS_RESET);
+            });
+
+            $('#modal-custom-settings-clear').on('click', function () {
+                Handle.call(EVENT_DETAIL_SETTINGS_CLEAR);
+            });
+
+            $('#container-detail-compare').on('change', function () {
+                State.setReference($(this).val());
+                Handle.call(EVENT_LOAD_DETAIL);
+            });
+
+            $('#show-container-browse').on('click', function () {
+                Handle.call(EVENT_SHOW_SCREEN, 'container-browse');
+                Handle.call(EVENT_LOAD_BROWSE);
+            });
+
+            $('#show-container-files').on('click', function () {
+                Handle.call(EVENT_SHOW_SCREEN, 'container-files');
+                Handle.call(EVENT_LOAD_FILES);
+            });
+
+            $('#show-container-settings').on('click', function () {
+                Handle.call(EVENT_SHOW_SCREEN, 'container-settings');
+                Handle.call(EVENT_LOAD_SETTINGS);
+            });
+
+            $('#show-container-help').on('click', function () {
+                Handle.call(EVENT_SHOW_SCREEN, 'container-help');
+            });
 
             // Show first screen
             Handle.call(EVENT_SHOW_SCREEN, 'container-browse');
+            Handle.call(EVENT_LOAD_BROWSE);
         </script>
     </body>
 </html>
