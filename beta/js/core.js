@@ -270,11 +270,13 @@ const State = new (class {
     constructor () {
         this.sortByLevel = false;
         this.groupID = null;
+        this.groupTimestamp = null;
         this.groupReferenceTimestamp = null;
     }
 
-    setGroup (groupID, referenceTimestamp) {
+    setGroup (groupID, timestamp, referenceTimestamp) {
         this.groupID = groupID;
+        this.groupTimestamp = timestamp || Database.Groups[groupID].LatestTimestamp;
         this.groupReferenceTimestamp = referenceTimestamp || Database.Groups[groupID].LatestTimestamp;
     }
 
@@ -282,10 +284,8 @@ const State = new (class {
         this.groupReferenceTimestamp = referenceTimestamp;
     }
 
-    reset () {
-        this.sortByLevel = false;
-        this.groupID = null;
-        this.groupReferenceTimestamp = null;
+    setTimestamp (timestamp) {
+        this.groupTimestamp = timestamp;
     }
 
     setSort (sortByLevel) {
@@ -300,23 +300,32 @@ const State = new (class {
         this.sortByLevel = !this.sortByLevel;
     }
 
+    reset () {
+        this.groupTimestamp = this.getGroup().LatestTimestamp;
+        this.groupReferenceTimestamp = this.groupTimestamp;
+    }
+
+    getGroupID () {
+        return this.groupID;
+    }
+
+    getGroupTimestamp () {
+        return this.groupTimestamp;
+    }
+
+    getGroupReferenceTimestamp () {
+        return this.groupReferenceTimestamp;
+    }
+
     getGroup () {
         return Database.Groups[this.groupID];
     }
 
     getGroupCurrent () {
-        return Database.Groups[this.groupID].Latest;
+        return Database.Groups[this.groupID][this.groupTimestamp];
     }
 
     getGroupReference () {
         return Database.Groups[this.groupID][this.groupReferenceTimestamp];
-    }
-
-    getGroupTimestamp () {
-        return Database.Groups[this.groupID].LatestTimestamp;
-    }
-
-    getGroupReferenceTimestamp () {
-        return this.groupReferenceTimestamp;
     }
 })();

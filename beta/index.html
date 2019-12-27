@@ -494,25 +494,30 @@
         <div class="ui main container hidden" id="container-detail" data-current-group="">
             <div class="ui segment center aligned basic">
                 <div class="ui extreme header" id="container-detail-name"></div>
-                <div class="ui equal width labels">
+                <!--<div class="ui equal width labels">
                     <div class="ui label"><i class="align justify icon"></i> <span id="container-detail-membercount"></span></div>
                     <div class="ui label"><i class="globe icon"></i> <span id="container-detail-rank"></span></div>
-                </div>
+                </div>-->
             </div>
 
             <div class="ui basic segment margin-none-bottom padding-none-bottom">
                 <div class="ui grid">
-                    <div class="four wide middle aligned column">
-                        <div class="ui scrolling dropdown">
-                            <input type="hidden" value="0" id="container-detail-compare">
-                            <div class="default text" id="container-detail-compare-text"></div>
+                    <div class="three wide middle aligned column">
+                        <div class="ui scrolling dropdown" id="container-detail-select-dropdown">
+                            <div class="default text" id="container-detail-select-text"></div>
                             <i class="dropdown icon"></i>
-                            <div class="menu" id="container-detail-compare-content">
-
-                            </div>
                         </div>
                     </div>
-                    <div class="twelve wide column">
+                    <div class="two wide middle aligned column">
+                        compared to
+                    </div>
+                    <div class="three wide middle aligned column">
+                        <div class="ui scrolling dropdown" id="container-detail-compare-dropdown">
+                            <div class="default text" id="container-detail-compare-text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                    <div class="eight wide column">
                         <div class="ui small basic icon right floated buttons">
                             <button class="ui toggle button" data-tooltip="Sort by level" id="container-detail-sort"><i class="sort icon"></i></button>
                             <button class="ui button" data-tooltip="Save as image" id="container-detail-save"><i class="download icon"></i></button>
@@ -990,84 +995,79 @@
             // Listeners
             $('#container-detail-sort').on('click', function () {
                 State.toggleSort();
-                Handle.call(EVENT_LOAD_DETAIL);
+                Handle.call(EVT_GROUP_LOAD_TABLE);
             });
 
             $('[data-toggle]').on('click', function () {
-                Handle.call(EVENT_SHOW_SCREEN, $(this).attr('data-toggle'));
+                Handle.call(EVT_SHOWSCREEN, $(this).attr('data-toggle'));
             });
 
             $('#container-files-add').on('change', function () {
-                Handle.call(EVENT_FILES_ADD, this.files);
+                Handle.call(EVT_FILES_UPLOAD, this.files);
             });
 
             $('#container-files-export').on('click', function () {
-                Handle.call(EVENT_FILES_EXPORT);
+                Handle.call(EVT_FILES_EXPORT);
             });
 
             $('#container-files-import').on('change', function () {
-                Handle.call(EVENT_FILES_IMPORT, this.files);
+                Handle.call(EVT_FILES_IMPORT, this.files);
             });
 
             $('#container-settings-save').on('click', function () {
-                Handle.call(EVENT_SETTINGS_SAVE);
+                Handle.call(EVT_SETTINGS_SAVE);
             });
 
             $('#container-settings-clear').on('click', function () {
-                Handle.call(EVENT_LOAD_SETTINGS);
+                Handle.call(EVT_SETTINGS_LOAD);
             });
 
             $('#container-detail-save').on('click', function () {
-                Handle.call(EVENT_DETAIL_SAVE);
+                Handle.call(EVT_GROUP_SAVE);
             });
 
             $('#container-detail-copy').on('click', function () {
-                Handle.call(EVENT_DETAIL_COPY);
+                Handle.call(EVT_GROUP_COPY);
             });
 
             $('#container-detail-settings').on('click', function () {
-                Handle.call(EVENT_DETAIL_SETTINGS);
+                Handle.call(EVT_GROUP_SETTINGS_SHOW);
             });
 
             $('#modal-custom-settings-save').on('click', function () {
-                Handle.call(EVENT_DETAIL_SETTINGS_SAVE);
+                Handle.call(EVT_GROUP_SETTINGS_SAVE);
             });
 
             $('#modal-custom-settings-reset').on('click', function () {
-                Handle.call(EVENT_DETAIL_SETTINGS_RESET);
+                Handle.call(EVT_GROUP_SETTINGS_LOAD);
             });
 
             $('#modal-custom-settings-clear').on('click', function () {
-                Handle.call(EVENT_DETAIL_SETTINGS_CLEAR);
-            });
-
-            $('#container-detail-compare').on('change', function () {
-                State.setReference($(this).val());
-                Handle.call(EVENT_LOAD_DETAIL);
+                Handle.call(EVT_GROUP_SETTINGS_CLEAR);
             });
 
             $('#show-container-browse').on('click', function () {
-                Handle.call(EVENT_SHOW_SCREEN, 'container-browse');
-                Handle.call(EVENT_LOAD_BROWSE);
+                Handle.call(EVT_SHOWSCREEN, 'container-browse');
+                Handle.call(EVT_BROWSE_LOAD);
             });
 
             $('#show-container-files').on('click', function () {
-                Handle.call(EVENT_SHOW_SCREEN, 'container-files');
-                Handle.call(EVENT_LOAD_FILES);
+                Handle.call(EVT_SHOWSCREEN, 'container-files');
+                Handle.call(EVT_FILES_LOAD);
             });
 
             $('#show-container-settings').on('click', function () {
-                Handle.call(EVENT_SHOW_SCREEN, 'container-settings');
-                Handle.call(EVENT_LOAD_SETTINGS);
+                Handle.call(EVT_SHOWSCREEN, 'container-settings');
+                Handle.call(EVT_SETTINGS_LOAD);
             });
 
             $('#show-container-help').on('click', function () {
-                Handle.call(EVENT_SHOW_SCREEN, 'container-help');
+                Handle.call(EVT_SHOWSCREEN, 'container-help');
             });
 
             // Show first screen
-            Handle.call(EVENT_SHOW_SCREEN, 'container-browse');
-            Handle.call(EVENT_LOAD_BROWSE);
+            Handle.call(EVT_SHOWSCREEN, 'container-browse');
+            Handle.call(EVT_BROWSE_LOAD);
         </script>
     </body>
 </html>

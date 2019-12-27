@@ -293,6 +293,7 @@ class Group {
                 this.Treasures.splice(i, 1);
                 this.Instructors.splice(i, 1);
                 this.Pets.splice(i, 1);
+                this.MemberIDs.splice(i, 1);
                 this.Members.splice(i--, 1);
                 this.MemberCount--;
             }
@@ -307,6 +308,24 @@ class Group {
         {
             Group.setStats(this.Knights);
         }
+    }
+
+    getFakePlayer (id) {
+        var index = this.MemberIDs.indexOf(id);
+        return {
+            IsFake: true,
+            Identifier: id,
+            Name: this.Members[index],
+            Level: this.Levels[index],
+            Fortress: {
+                Knights: this.Knights[index]
+            },
+            Group: {
+                Pet: this.Pets[index],
+                Instructor: this.Instructors[index],
+                Treasure: this.Treasures[index]
+            }
+        };
     }
 
     static setStats (array) {
