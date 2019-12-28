@@ -330,7 +330,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     // Table columns
     var prefs = Preferences.get(groupCurrent.Identifier, Preferences.get('settings', DEFAULT_SETTINGS));
     var header_name = 1;
-    var header_general = prefs['show-class'] + prefs['show-id'] + prefs['show-rank'] + prefs['show-role'] + prefs['show-achievements'] + 3;
+    var header_general = prefs['show-class'] + prefs['show-id'] + prefs['show-rank'] + (prefs['show-role'] ? 1 : 0) + prefs['show-achievements'] + 3;
     var header_potions = 3;
     var header_group = prefs['show-treasure'] + prefs['show-instructor'] + prefs['show-pet'] + prefs['show-knights'] + (prefs['show-knights-style'] == 1 ? 1 : 0);
     var header_group_iter = header_group;
@@ -750,18 +750,26 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="left aligned column font-big">Treasury</div>
                         <div class="column">${ player.Fortress.Treasury }</div>
                         <div class="column"></div>
-                        <div class="left aligned column font-big">Wall</div>
-                        <div class="column">${ player.Fortress.Fortifications }</div>
-                        <div class="left aligned column">${ player.Fortress.Wall }</div>
-                        <div class="left aligned column font-big">Warriors</div>
-                        <div class="column">${ player.Fortress.Barracks * 3 }x</div>
-                        <div class="left aligned column">${ player.Fortress.Warriors }</div>
-                        <div class="left aligned column font-big">Archers</div>
-                        <div class="column">${ player.Fortress.ArcheryGuild * 2 }x</div>
-                        <div class="left aligned column">${ player.Fortress.Archers }</div>
-                        <div class="left aligned column font-big">Mages</div>
-                        <div class="column">${ player.Fortress.MageTower }x</div>
-                        <div class="left aligned column">${ player.Fortress.Mages }</div>
+                        ${ player.Fortress.Fortifications ? `
+                            <div class="left aligned column font-big">Wall</div>
+                            <div class="column">${ player.Fortress.Fortifications }</div>
+                            <div class="left aligned column">${ player.Fortress.Wall }</div>
+                        ` : '' }
+                        ${ player.Fortress.Barracks ? `
+                            <div class="left aligned column font-big">Warriors</div>
+                            <div class="column">${ player.Fortress.Barracks * 3 }x</div>
+                            <div class="left aligned column">${ player.Fortress.Warriors }</div>
+                        ` : '' }
+                        ${ player.Fortress.ArcheryGuild ? `
+                            <div class="left aligned column font-big">Archers</div>
+                            <div class="column">${ player.Fortress.ArcheryGuild * 2 }x</div>
+                            <div class="left aligned column">${ player.Fortress.Archers }</div>
+                        ` : '' }
+                        ${ player.Fortress.MageTower ? `
+                            <div class="left aligned column font-big">Mages</div>
+                            <div class="column">${ player.Fortress.MageTower }x</div>
+                            <div class="left aligned column">${ player.Fortress.Mages }</div>
+                        ` : '' }
                     </div>
                 </div>
             </div>
