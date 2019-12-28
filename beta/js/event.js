@@ -376,6 +376,14 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
         <tbody>
     `;
 
+    var td = function (current, difference, enable, min, max, diff, brackets, classes, label, extra) {
+        return `
+            <td class="${ classes || '' } ${ enable ? (current >= max ? 'background-green' : (current >= min ? 'background-orange' : 'background-red')) : '' }">
+                ${ (label != null) ? label : current }${ extra || '' }${ (diff && difference != 0) ? `<span> ${ brackets ? `(+${ difference })` : `+${ difference }` }</span>` : '' }
+            </td>
+        `;
+    };
+
     // Table body
     var table_body = [];
     members.forEach(function (player) {
@@ -388,20 +396,72 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                     ${ prefs['show-class'] ? `<td></td>` : '' }
                     ${ prefs['show-id'] ? `<td></td>` : '' }
                     ${ prefs['show-rank'] ? `<td></td>` : '' }
-                    <td ${ prefs['level-enabled'] ? (player.Level >= prefs['level-req'] ? 'class="background-green"' : (player.Level >= prefs['level-min'] ? 'class="background-orange"' : 'class="background-red"')) : '' } >${ player.Level }${ (prefs['level-difference'] && player.Level != compare.Level) ? `<span> +${ player.Level - compare.Level }</span>` : '' }</td>
+                    ${ td(
+                        player.Level,
+                        player.Level - compare.Level,
+                        prefs['level-enabled'],
+                        prefs['level-min'],
+                        prefs['level-req'],
+                        prefs['level-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) }
                     <td></td>
                     <td class="border-right-thin"></td>
                     ${ prefs['show-achievements'] ? `<td class="border-right-thin"></td>` : '' }
                     <td></td>
                     <td></td>
                     <td class="border-right-thin"></td>
-                    ${ prefs['show-treasure'] ? `<td ${ prefs['treasure-enabled'] ? (player.Group.Treasure >= prefs['treasure-req'] ? 'class="background-green"' : (player.Group.Treasure >= prefs['treasure-min'] ? 'class="background-orange"' : 'class="background-red"')) : '' } >${ player.Group.Treasure }${ (prefs['treasure-difference'] && player.Group.Treasure != compare.Group.Treasure) ? `<span> +${ player.Group.Treasure - compare.Group.Treasure }</span>` : '' }</td>` : '' }
-                    ${ prefs['show-instructor'] ? `<td ${ prefs['instructor-enabled'] ? (player.Group.Instructor >= prefs['instructor-req'] ? 'class="background-green"' : (player.Group.Instructor >= prefs['instructor-min'] ? 'class="background-orange"' : 'class="background-red"')) : '' } >${ player.Group.Instructor }${ (prefs['instructor-difference'] && player.Group.Instructor != compare.Group.Instructor) ? `<span> +${ player.Group.Instructor - compare.Group.Instructor }</span>` : '' }</td>` : '' }
-                    ${ prefs['show-pet'] ? `<td ${ prefs['pet-enabled'] ? (player.Group.Pet >= prefs['pet-req'] ? 'class="background-green"' : (player.Group.Pet >= prefs['pet-min'] ? 'class="background-orange"' : 'class="background-red"')) : '' } >${ player.Group.Pet }${ (prefs['pet-difference'] && player.Group.Pet != compare.Group.Pet) ? `<span> +${ player.Group.Pet - compare.Group.Pet }</span>` : '' }</td>` : '' }
-                    ${ prefs['show-knights'] ? `
-                        <td ${ prefs['knights-enabled'] ? (player.Fortress.Knights >= prefs['knights-req'] ? 'class="background-green"' : (player.Fortress.Knights >= prefs['knights-min'] ? 'class="background-orange"' : 'class="background-red"')) : '' } >${ player.Fortress.Knights }${ (prefs['knights-difference'] && player.Fortress.Knights != compare.Fortress.Knights) ? `<span> +${ player.Fortress.Knights - compare.Fortress.Knights }</span>` : '' }</td>
-                        ${ prefs['show-knights-style'] == 1 ? `<td></td>` : '' }
-                    ` : '' }
+                    ${ prefs['show-treasure'] ? td(
+                        player.Group.Treasure,
+                        player.Group.Treasure - compare.Group.Treasure,
+                        prefs['treasure-enabled'],
+                        prefs['treasure-min'],
+                        prefs['treasure-req'],
+                        prefs['treasure-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) : '' }
+                    ${ prefs['show-instructor'] ? td(
+                        player.Group.Instructor,
+                        player.Group.Instructor - compare.Group.Instructor,
+                        prefs['instructor-enabled'],
+                        prefs['instructor-min'],
+                        prefs['instructor-req'],
+                        prefs['instructor-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) : '' }
+                    ${ prefs['show-pet'] ? td(
+                        player.Group.Pet,
+                        player.Group.Pet - compare.Group.Pet,
+                        prefs['pet-enabled'],
+                        prefs['pet-min'],
+                        prefs['pet-req'],
+                        prefs['pet-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) : '' }
+                    ${ prefs['show-knights'] ? td(
+                        player.Fortress.Knights,
+                        player.Fortress.Knights - compare.Fortress.Knights,
+                        prefs['knights-enabled'],
+                        prefs['knights-min'],
+                        prefs['knights-req'],
+                        prefs['knights-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) : '' }
                 </tr>
             `);
         } else {
@@ -411,20 +471,117 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                     ${ prefs['show-class'] ? `<td>${ PLAYER_CLASS[player.Class] }</td>` : '' }
                     ${ prefs['show-id'] ? `<td>${ player.ID }</td>` : '' }
                     ${ prefs['show-rank'] ? `<td>${ player.Rank }</td>` : '' }
-                    <td ${ prefs['level-enabled'] ? (player.Level >= prefs['level-req'] ? 'class="background-green"' : (player.Level >= prefs['level-min'] ? 'class="background-orange"' : 'class="background-red"')) : '' } >${ player.Level }${ (prefs['level-difference'] && player.Level != compare.Level) ? `<span> +${ player.Level - compare.Level }</span>` : '' }</td>
-                    <td ${ prefs['scrapbook-enabled'] ? (player.Book >= (SCRAPBOOK_COUNT * prefs['scrapbook-req'] / 100) ? 'class="background-green"' : (player.Book >= (SCRAPBOOK_COUNT * prefs['scrapbook-min'] / 100) ? 'class="background-orange"' : 'class="background-red"')) : '' } >${ prefs['show-book-style'] ? player.Book : `${ Number(100 * player.Book / SCRAPBOOK_COUNT).toFixed(2) }%` }${ (prefs['scrapbook-difference'] && player.Book != compare.Book) ? `<span> +${ prefs['show-book-style'] ? (player.Book - compare.Book) : Number(100 * (player.Book - compare.Book) / SCRAPBOOK_COUNT).toFixed(2) }</span>` : '' }</td>
-                    <td class="border-right-thin ${ prefs['mount-enabled'] ? (player.Mount >= prefs['mount-req'] ? 'background-green' : (player.Mount >= prefs['mount-min'] ? 'background-orange' : 'background-red')) : '' }">${ PLAYER_MOUNT[player.Mount] }</td>
-                    ${ prefs['show-achievements'] ? `<td class="border-right-thin ${ prefs['achievements-enabled'] ? (player.Achievements.Owned >= prefs['achievements-req'] ? 'background-green' : (player.Achievements.Owned >= prefs['achievements-min'] ? 'background-orange' : 'background-red')) : '' }">${ player.Achievements.Owned }${ prefs['show-hydra'] && player.Achievements.Dehydration ? '<span> H</span>' : '' }${ (prefs['achievements-difference'] && player.Achievements.Owned != compare.Achievements.Owned) ? `<span> +${ player.Achievements.Owned - compare.Achievements.Owned }</span>` : '' }</td>` : '' }
+                    ${ td(
+                        player.Level,
+                        player.Level - compare.Level,
+                        prefs['level-enabled'],
+                        prefs['level-min'],
+                        prefs['level-req'],
+                        prefs['level-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) }
+                    ${ td(
+                        player.Book,
+                        prefs['show-book-style'] ? (player.Book - compare.Book) : Number(100 * (player.Book - compare.Book) / SCRAPBOOK_COUNT).toFixed(2),
+                        prefs['scrapbook-enabled'],
+                        SCRAPBOOK_COUNT * prefs['scrapbook-min'] / 100,
+                        SCRAPBOOK_COUNT * prefs['scrapbook-req'] / 100,
+                        prefs['scrapbook-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        prefs['show-book-style'] ? player.Book : Number(100 * player.Book / SCRAPBOOK_COUNT).toFixed(2),
+                        prefs['show-book-style'] ? null : '%'
+                    ) }
+                    ${ td(
+                        player.Mount,
+                        null,
+                        prefs['mount-enabled'],
+                        prefs['mount-min'],
+                        prefs['mount-req'],
+                        false,
+                        prefs['show-difference-style'],
+                        'border-right-thin',
+                        PLAYER_MOUNT[player.Mount],
+                        null
+                    ) }
+                    ${ prefs['show-achievements'] ? td(
+                        player.Achievements.Owned,
+                        player.Achievements.Owned - compare.Achievements.Owned,
+                        prefs['achievements-enabled'],
+                        prefs['achievements-min'],
+                        prefs['achievements-req'],
+                        prefs['achievements-difference'],
+                        prefs['show-difference-style'],
+                        'border-right-thin',
+                        null,
+                        (prefs['show-hydra'] && player.Achievements.Dehydration) ? '<span> H</span>' : ''
+                    ) : '' }
                     <td ${ prefs['potions-enabled'] ? (player.Potions[0].Size >= prefs['potions-req'] ? 'class="background-green foreground-green"' : (player.Potions[0].Size >= prefs['potions-min'] ? 'class="background-orange foreground-orange"' : 'class="background-red foreground-red"')) : '' } >${ player.Potions[0].Size }</td>
                     <td ${ prefs['potions-enabled'] ? (player.Potions[1].Size >= prefs['potions-req'] ? 'class="background-green foreground-green"' : (player.Potions[1].Size >= prefs['potions-min'] ? 'class="background-orange foreground-orange"' : 'class="background-red foreground-red"')) : '' } >${ player.Potions[1].Size }</td>
                     <td class="border-right-thin ${ prefs['potions-enabled'] ? (player.Potions[2].Size >= prefs['potions-req'] ? 'background-green foreground-green' : (player.Potions[2].Size >= prefs['potions-min'] ? 'background-orange foreground-orange' : 'background-red foreground-red')) : '' }">${ player.Potions[2].Size }</td>
-                    ${ prefs['show-treasure'] ? `<td ${ prefs['treasure-enabled'] ? (player.Group.Treasure >= prefs['treasure-req'] ? 'class="background-green"' : (player.Group.Treasure >= prefs['treasure-min'] ? 'class="background-orange"' : 'class="background-red"')) : '' } >${ player.Group.Treasure }${ (prefs['treasure-difference'] && player.Group.Treasure != compare.Group.Treasure) ? `<span> +${ player.Group.Treasure - compare.Group.Treasure }</span>` : '' }</td>` : '' }
-                    ${ prefs['show-instructor'] ? `<td ${ prefs['instructor-enabled'] ? (player.Group.Instructor >= prefs['instructor-req'] ? 'class="background-green"' : (player.Group.Instructor >= prefs['instructor-min'] ? 'class="background-orange"' : 'class="background-red"')) : '' } >${ player.Group.Instructor }${ (prefs['instructor-difference'] && player.Group.Instructor != compare.Group.Instructor) ? `<span> +${ player.Group.Instructor - compare.Group.Instructor }</span>` : '' }</td>` : '' }
-                    ${ prefs['show-pet'] ? `<td ${ prefs['pet-enabled'] ? (player.Group.Pet >= prefs['pet-req'] ? 'class="background-green"' : (player.Group.Pet >= prefs['pet-min'] ? 'class="background-orange"' : 'class="background-red"')) : '' } >${ player.Group.Pet }${ (prefs['pet-difference'] && player.Group.Pet != compare.Group.Pet) ? `<span> +${ player.Group.Pet - compare.Group.Pet }</span>` : '' }</td>` : '' }
-                    ${ prefs['show-knights'] ? `
-                        <td ${ prefs['knights-enabled'] ? (player.Fortress.Knights >= prefs['knights-req'] ? 'class="background-green"' : (player.Fortress.Knights >= prefs['knights-min'] ? 'class="background-orange"' : 'class="background-red"')) : '' } >${ prefs['show-knights-style'] == 0 ? `${ player.Fortress.Knights }/${ player.Fortress.Fortress }` : player.Fortress.Knights }${ (prefs['knights-difference'] && player.Fortress.Knights != compare.Fortress.Knights) ? `<span> +${ player.Fortress.Knights - compare.Fortress.Knights }</span>` : '' }</td>
-                        ${ prefs['show-knights-style'] == 1 ? `<td ${ prefs['fortress-enabled'] ? (player.Fortress.Fortress >= prefs['fortress-req'] ? 'class="background-green"' : (player.Fortress.Fortress >= prefs['fortress-min'] ? 'class="background-orange"' : 'class="background-red"')) : '' }>${ player.Fortress.Fortress }${ (prefs['fortress-difference'] && player.Fortress.Fortress != compare.Fortress.Fortress) ? `<span> +${ player.Fortress.Fortress - compare.Fortress.Fortress }</span>` : '' }</td>` : '' }
-                    ` : '' }
+                    ${ prefs['show-treasure'] ? td(
+                        player.Group.Treasure,
+                        player.Group.Treasure - compare.Group.Treasure,
+                        prefs['treasure-enabled'],
+                        prefs['treasure-min'],
+                        prefs['treasure-req'],
+                        prefs['treasure-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) : '' }
+                    ${ prefs['show-instructor'] ? td(
+                        player.Group.Instructor,
+                        player.Group.Instructor - compare.Group.Instructor,
+                        prefs['instructor-enabled'],
+                        prefs['instructor-min'],
+                        prefs['instructor-req'],
+                        prefs['instructor-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) : '' }
+                    ${ prefs['show-pet'] ? td(
+                        player.Group.Pet,
+                        player.Group.Pet - compare.Group.Pet,
+                        prefs['pet-enabled'],
+                        prefs['pet-min'],
+                        prefs['pet-req'],
+                        prefs['pet-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) : '' }
+                    ${ prefs['show-knights'] ? td(
+                        player.Fortress.Knights,
+                        player.Fortress.Knights - compare.Fortress.Knights,
+                        prefs['knights-enabled'],
+                        prefs['knights-min'],
+                        prefs['knights-req'],
+                        prefs['knights-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        prefs['show-knights-style'] > 0 ? player.Fortress.Knights : `${ player.Fortress.Knights }/${ player.Fortress.Fortress }`,
+                        null
+                    ) : '' }
+                    ${ prefs['show-knights-style'] == 1 ? td(
+                        player.Fortress.Fortress,
+                        player.Fortress.Fortress - compare.Fortress.Fortress,
+                        prefs['fortress-enabled'],
+                        prefs['fortress-min'],
+                        prefs['fortress-req'],
+                        prefs['fortress-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) : '' }
                 </tr>
             `);
         }
@@ -543,6 +700,10 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="column ${ prefs['pet-enabled'] ? (player.Group.Pet >= prefs['pet-req'] ? 'foreground-green' : (player.Group.Pet >= prefs['pet-min'] ? 'foreground-orange' : 'foreground-red')) : '' }">${ player.Group.Pet }</div>
                         <div class="left aligned column font-big">Knights</div>
                         <div class="column ${ prefs['knights-enabled'] ? (player.Fortress.Knights >= prefs['knights-req'] ? 'foreground-green' : (player.Fortress.Knights >= prefs['knights-min'] ? 'foreground-orange' : 'foreground-red')) : '' }">${ player.Fortress.Knights }</div>
+                        <div class="column"><br></div>
+                        <div class="column"></div>
+                        <div class="left aligned column font-big">Guild joined</div>
+                        <div class="column">${ formatDate(player.Group.Joined) }</div>
                     </div>
                 </div>
                 <div class="column">
@@ -586,12 +747,26 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="left aligned column font-big">Treasury</div>
                         <div class="column">${ player.Fortress.Treasury }</div>
                         <div class="column"></div>
+                        <div class="left aligned column font-big">Wall</div>
+                        <div class="column"></div>
+                        <div class="column">${ player.Fortress.Wall }</div>
+                        <div class="left aligned column font-big">Warriors</div>
+                        <div class="column">${ player.Fortress.Barracks * 3 }</div>
+                        <div class="column">${ player.Fortress.Warriors }</div>
+                        <div class="left aligned column font-big">Archers</div>
+                        <div class="column">${ player.Fortress.ArcheryGuild * 2 }</div>
+                        <div class="column">${ player.Fortress.Archers }</div>
+                        <div class="left aligned column font-big">Mages</div>
+                        <div class="column">${ player.Fortress.MageTower }</div>
+                        <div class="column">${ player.Fortress.Mages }</div>
                     </div>
                 </div>
             </div>
         </div>
     `);
-    $('#modal-player').modal('show');
+    $('#modal-player').modal({
+        centered: false
+    }).modal('show');
 });
 
 Handle.bind(EVT_GROUP_SETTINGS_SHOW, function () {
