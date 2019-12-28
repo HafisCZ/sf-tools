@@ -173,7 +173,7 @@ Handle.bind(EVT_BROWSE_LOAD, function () {
 });
 
 Handle.bind(EVT_FILES_UPLOAD, function (files) {
-    Array.from(files).forEach(function (file) {
+    Array.from(files).forEach(function (file, index, array) {
         var reader = new FileReader();
         reader.readAsText(file, 'UTF-8');
         reader.onload = event => {
@@ -181,7 +181,7 @@ Handle.bind(EVT_FILES_UPLOAD, function (files) {
                 Storage.add(event.target.result, file.lastModified);
                 Handle.call(EVT_FILES_LOAD);
             } catch (e) {
-                Handle.call(EVT_SHOWERROR, 'A problem occured while trying to import this file.<br>' + e);
+                Handle.call(EVT_SHOWERROR, 'A problem occured while trying to import this file.<br><br>' + e);
             }
         };
     });
@@ -197,7 +197,7 @@ Handle.bind(EVT_FILES_EXPORT, function () {
 });
 
 Handle.bind(EVT_FILES_IMPORT, function (files) {
-    Array.from(files).forEach(function (file) {
+    Array.from(files).forEach(function (file, index, array) {
         var reader = new FileReader();
         reader.readAsText(file, 'UTF-8');
         reader.onload = event => {
@@ -205,7 +205,7 @@ Handle.bind(EVT_FILES_IMPORT, function (files) {
                 Storage.import(event.target.result);
                 Handle.call(EVT_FILES_LOAD);
             } catch (e) {
-                Handle.call(EVT_SHOWERROR, 'A problem occured while trying to import this file.<br>' + e);
+                Handle.call(EVT_SHOWERROR, 'A problem occured while trying to import this file.<br><br>' + e);
             }
         };
     });

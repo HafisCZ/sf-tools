@@ -136,14 +136,19 @@ const Storage = new (class {
     }
 
     import (content) {
-        var files = Object.values(JSON.parse(content));
+        var files = null;
+        try {
+            files = Object.values(JSON.parse(content)).filter(f => !this.current.includes(f.timestamp));
+        } catch (e) {
+            throw `File is not archive format.<br>(${ e })`;
+        }
 
         try {
             var copy = [... this.current, ... files];
             Database.from(copy);
         } catch (e) {
             Database.from(this.current);
-            throw e;
+            throw `Archive could not be imported.<br>${ e }`;
         }
 
         this.current.push(... files);
@@ -160,7 +165,12 @@ const Storage = new (class {
     }
 
     add (content, timestamp) {
-        var json = JSON.parse(content);
+        var json = null;
+        try {
+            json = JSON.parse(content);
+        } catch (e) {
+            throw `File is not in JSON format.<br>(${ e })`;
+        }
 
         var raws = [];
         for (var [key, val, url] of filterPlayaJSON(json)) {
@@ -242,12 +252,16 @@ const Storage = new (class {
             return;
         }
 
+        if (file.players.length == 0 || file.groups.length == 0) {
+            throw 'The file must contain at least one group and one player.';
+        }
+
         try {
             var copy = [... this.current, file];
             Database.from(copy);
         } catch (e) {
             Database.from(this.current);
-            throw e;
+            throw `Unexpected error appeared while database was generated.<br>${ e }`;
         }
 
         this.current.push(file);
