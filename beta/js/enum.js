@@ -49,7 +49,8 @@ const DEFAULT_SETTINGS = {
   "show-knights": 1,
   "show-knights-style": 0,
   "show-group": 2,
-  "show-difference-style": 0
+  "show-difference-style": 0,
+  "show-role": 0
 };
 
 const PLAYER_CLASS = [
@@ -78,6 +79,14 @@ const POTIONS = [
     'Constitution',
     'Luck',
     'Life'
+];
+
+const GROUP_ROLES = [
+    '',
+    'Leader',
+    'Officer',
+    'Member',
+    'Invited'
 ];
 
 // Guild Roles

@@ -291,8 +291,6 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     var groupReference = State.getGroupReference();
     var groupReferenceTimestamp = State.getGroupReferenceTimestamp();
 
-    //console.log(group.LatestTimestamp, groupCurrentTimestamp, groupReferenceTimestamp);
-
     // Current members
     var members = [];
     for (var memberID of groupCurrent.MemberIDs) {
@@ -332,13 +330,13 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     // Table columns
     var prefs = Preferences.get(groupCurrent.Identifier, Preferences.get('settings', DEFAULT_SETTINGS));
     var header_name = 1;
-    var header_general = prefs['show-class'] + prefs['show-id'] + prefs['show-rank'] + prefs['show-achievements'] + 3;
+    var header_general = prefs['show-class'] + prefs['show-id'] + prefs['show-rank'] + prefs['show-role'] + prefs['show-achievements'] + 3;
     var header_potions = 3;
     var header_group = prefs['show-treasure'] + prefs['show-instructor'] + prefs['show-pet'] + prefs['show-knights'] + (prefs['show-knights-style'] == 1 ? 1 : 0);
     var header_group_iter = header_group;
 
     // Table width
-    var width = 659 + (prefs['show-class'] ? 120 : 0) + (prefs['show-id'] ? 100 : 0) + (prefs['show-rank'] ? 100 : 0) + (prefs['show-achievements'] ? 100 : 0) + (prefs['show-treasure'] ? 100 : 0) + (prefs['show-instructor'] ? 100 : 0) + (prefs['show-knights'] ? 100 : 0) + (prefs['show-knights-style'] == 1 ? 100 : 0);
+    var width = 659 + (prefs['show-class'] ? 120 : 0) + (prefs['show-id'] ? 100 : 0) + (prefs['show-rank'] ? 100 : 0) + (prefs['show-role'] ? 100 : 0) + (prefs['show-achievements'] ? 100 : 0) + (prefs['show-treasure'] ? 100 : 0) + (prefs['show-instructor'] ? 100 : 0) + (prefs['show-knights'] ? 100 : 0) + (prefs['show-knights-style'] == 1 ? 100 : 0);
     $('#container-detail').css('width', `${width + 130}px`);
 
     // Table header
@@ -354,6 +352,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                 ${ prefs['show-class'] ? '<td width="120">Class</td>' : '' }
                 ${ prefs['show-id'] ? '<td width="100">ID</td>' : '' }
                 ${ prefs['show-rank'] ? '<td width="100">Rank</td>' : '' }
+                ${ prefs['show-role'] ? '<td width="100">Role</td>' : '' }
                 <td width="100">Level</td>
                 <td width="130">Album</td>
                 <td ${ prefs['show-achievements'] ? '' : 'class="border-right-thin"' } width="80">Mount</td>
@@ -396,6 +395,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                     ${ prefs['show-class'] ? `<td></td>` : '' }
                     ${ prefs['show-id'] ? `<td></td>` : '' }
                     ${ prefs['show-rank'] ? `<td></td>` : '' }
+                    ${ prefs['show-role'] ? `<td>${ GROUP_ROLES[player.Group.Role] }</td>` : '' }
                     ${ td(
                         player.Level,
                         player.Level - compare.Level,
@@ -471,6 +471,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                     ${ prefs['show-class'] ? `<td>${ PLAYER_CLASS[player.Class] }</td>` : '' }
                     ${ prefs['show-id'] ? `<td>${ player.ID }</td>` : '' }
                     ${ prefs['show-rank'] ? `<td>${ player.Rank }</td>` : '' }
+                    ${ prefs['show-role'] ? `<td>${ GROUP_ROLES[player.Group.Role] }</td>` : '' }
                     ${ td(
                         player.Level,
                         player.Level - compare.Level,
@@ -702,8 +703,10 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="column ${ prefs['knights-enabled'] ? (player.Fortress.Knights >= prefs['knights-req'] ? 'foreground-green' : (player.Fortress.Knights >= prefs['knights-min'] ? 'foreground-orange' : 'foreground-red')) : '' }">${ player.Fortress.Knights }</div>
                         <div class="column"><br></div>
                         <div class="column"></div>
-                        <div class="left aligned column font-big">Guild joined</div>
+                        <div class="left aligned column font-big">Guild join date</div>
                         <div class="column">${ formatDate(player.Group.Joined) }</div>
+                        <div class="left aligned column font-big">Role</div>
+                        <div class="column">${ GROUP_ROLES[player.Group.Role] }</div>
                     </div>
                 </div>
                 <div class="column">
@@ -748,17 +751,17 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="column">${ player.Fortress.Treasury }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Wall</div>
-                        <div class="column"></div>
-                        <div class="column">${ player.Fortress.Wall }</div>
+                        <div class="column">${ player.Fortress.Fortifications }</div>
+                        <div class="left aligned column">${ player.Fortress.Wall }</div>
                         <div class="left aligned column font-big">Warriors</div>
-                        <div class="column">${ player.Fortress.Barracks * 3 }</div>
-                        <div class="column">${ player.Fortress.Warriors }</div>
+                        <div class="column">${ player.Fortress.Barracks * 3 }x</div>
+                        <div class="left aligned column">${ player.Fortress.Warriors }</div>
                         <div class="left aligned column font-big">Archers</div>
-                        <div class="column">${ player.Fortress.ArcheryGuild * 2 }</div>
-                        <div class="column">${ player.Fortress.Archers }</div>
+                        <div class="column">${ player.Fortress.ArcheryGuild * 2 }x</div>
+                        <div class="left aligned column">${ player.Fortress.Archers }</div>
                         <div class="left aligned column font-big">Mages</div>
-                        <div class="column">${ player.Fortress.MageTower }</div>
-                        <div class="column">${ player.Fortress.Mages }</div>
+                        <div class="column">${ player.Fortress.MageTower }x</div>
+                        <div class="left aligned column">${ player.Fortress.Mages }</div>
                     </div>
                 </div>
             </div>

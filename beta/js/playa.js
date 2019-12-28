@@ -289,6 +289,7 @@ class Group {
                     this.Knights.splice(i, 1);
                 }
 
+                this.Roles.splice(i, 1);
                 this.Levels.splice(i, 1);
                 this.Treasures.splice(i, 1);
                 this.Instructors.splice(i, 1);
@@ -323,7 +324,8 @@ class Group {
             Group: {
                 Pet: this.Pets[index],
                 Instructor: this.Instructors[index],
-                Treasure: this.Treasures[index]
+                Treasure: this.Treasures[index],
+                Role: this.Roles[index]
             }
         };
     }
