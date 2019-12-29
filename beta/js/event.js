@@ -328,7 +328,17 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     }
 
     // Table columns
-    var prefs = Preferences.get(groupCurrent.Identifier, Preferences.get('settings', DEFAULT_SETTINGS));
+    var prefs = Preferences.get(groupCurrent.Identifier, null);
+    if (Preferences.get(groupCurrent.Identifier)) {
+        $('#container-detail-settings')[0].style.setProperty('background', '#21ba45', 'important');
+        $('#container-detail-settings')[0].style.setProperty('color', 'white', 'important');
+    } else {
+        $('#container-detail-settings')[0].style.setProperty('background', '');
+        $('#container-detail-settings')[0].style.setProperty('color', '');
+
+        prefs = Preferences.get('settings', DEFAULT_SETTINGS);
+    }
+
     var header_name = 1;
     var header_general = prefs['show-class'] + prefs['show-id'] + prefs['show-rank'] + (prefs['show-role'] ? 1 : 0) + prefs['show-achievements'] + 3;
     var header_potions = 3;
