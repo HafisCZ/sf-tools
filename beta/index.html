@@ -1110,8 +1110,10 @@
             });
 
             // Show first screen
-            Handle.call(EVT_SHOWSCREEN, 'container-browse');
-            Handle.call(EVT_BROWSE_LOAD);
+            Storage.load(function () {
+                Handle.call(EVT_SHOWSCREEN, 'container-browse');
+                Handle.call(EVT_BROWSE_LOAD);
+            });
         </script>
     </body>
 </html>
