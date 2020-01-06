@@ -1,555 +1,298 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>SFTools 1.2</title>
+        <title>SFTools</title>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="css/uikit.min.css" />
-        <link rel="stylesheet" href="css/custom.css" />
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/html2canvas.js"></script>
+
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/components/state.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+
+        <script src="js/playa.js"></script>
+
+        <script src="js/core.js"></script>
+        <script src="js/event.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
-
-        <script src="js/uikit.min.js"></script>
-        <script src="js/uikit-icons.min.js"></script>
-        <script src="js/jquery.3.4.1.min.js"></script>
-
-        <script src="js/lz-string.min.js"></script>
-        <script src="js/html2canvas.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js" integrity="sha256-xKeoJ50pzbUGkpQxDYHD7o7hxe0LaOGeguUidbq6vis=" crossorigin="anonymous"></script>
-
-        <script src="js/response.js"></script>
-
-        <script src="js/sft.util.js"></script>
-        <script src="js/sft.core.js"></script>
     </head>
     <body>
-        <div id="screenshot"></div>
-        <nav class="uk-navbar-container" uk-navbar>
-            <div class="uk-navbar-left">
-                <ul class="uk-navbar-item uk-logo">SFTools <span style="font-size: 0.5em; margin-top: -0.6em; margin-left: 0.3em; margin-right: -0.7em">1.2 Beta</span></ul>
-                <ul class="uk-navbar-nav">
-                    <li><a onclick="window.nav('players')">Players</a></li>
-                    <li><a onclick="window.nav('groups')">Groups</a></li>
-                    <li><a onclick="window.nav('database')">Database</a></li>
-                    <li><a onclick="window.nav('settings')">Settings</a></li>
-                    <li><a>-</a></li>
-                    <li><a href="battle.html">Battle Simulator</a></li>
-                    <li><a href="bug.html">Bug Tracker</a></li>
-                    <li><a href="arena.html">Arena</a></li>
-                    <li><a href="help.html">Help</a></li>
-                </ul>
+        <div class="ui fixed borderless huge menu">
+            <div class="header item">SFTools</div>
+            <a class="item" id="show-container-browse"><i class="small archive icon"></i>Browse</a>
+            <a class="item" id="show-container-files"><i class="small upload icon"></i>Files</a>
+            <a class="item" id="show-container-settings"><i class="small cog icon"></i>Settings</a>
+            <div class="right menu">
+                <a class="item" id="show-container-help"><i class="small question icon"></i>Help</a>
             </div>
-        </nav>
-        <div class="uk-container uk-container-large uk-margin-top uk-margin-bottom" data-id="main">
-            <div data-view-container class="uk-animation-fast">
-                <div data-view="players">
-                    <!--BROWSE PLAYERS-->
-                    <div uk-filter="target: [data-id='psgrid']">
+        </div>
+
+        <div class="ui main container hidden" id="container-browse">
+            <div class="ui five column grid" id="container-browse-grid">
+
+            </div>
+        </div>
+
+        <div class="ui main container hidden" id="container-files">
+            <div class="ui grid">
+                <div class="twelve wide column" id="container-files-list">
+
+                </div>
+                <div class="four wide column">
+                    <div class="ui segment sticky">
+                        <div class="ui small two vertical statistics">
+                            <div class="statistic">
+                                <div class="value" id="container-files-statistics-groups"></div>
+                                <div class="label">Groups</div>
+                            </div>
+                            <div class="statistic">
+                                <div class="value" id="container-files-statistics-players"></div>
+                                <div class="label">Players</div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="ui small one vertical statistics">
+                            <div class="statistic">
+                                <div class="value" id="container-files-statistics-files"></div>
+                                <div class="label">Files</div>
+                            </div>
+                        </div>
+                        <br>
                         <div>
-                            <div class="uk-inline uk-width-expand">
-                                <form class="uk-search uk-search-default uk-width-expand">
-                                    <span uk-search-icon></span>
-                                    <input class="uk-search-input" type="search" data-id="pssearch" placeholder="Search...">
-                                </form>
-                                <button class="uk-close-small uk-overlay uk-position-center-right" type="button" onclick="window.players.reset_name();" uk-close></button>
-                            </div>
-                            <ul class="uk-subnav uk-subnav-pill">
-                                <li class="uk-active" uk-filter-control><a>All</a></li>
-                                <li uk-filter-control="[data-class='1']"><a>Warrior</a></li>
-                                <li uk-filter-control="[data-class='2']"><a>Mage</a></li>
-                                <li uk-filter-control="[data-class='3']"><a>Scout</a></li>
-                                <li uk-filter-control="[data-class='4']"><a>Assassin</a></li>
-                                <li uk-filter-control="[data-class='5']"><a>Battle Mage</a></li>
-                                <li uk-filter-control="[data-class='6']"><a>Berserker</a></li>
-                            </ul>
+                            <label class="fluid ui secondary button" for="container-files-add">
+                                <i class="small upload icon"></i> Upload
+                            </label>
+                            <input type="file" multiple id="container-files-add" class="hidden">
                         </div>
-                        <div class="uk-child-width-1-4 uk-child-width-1-6@m uk-text-center uk-grid-small uk-grid-match" uk-grid data-id="psgrid"></div>
-                    </div>
-                </div>
-                <div data-view="groups">
-                    <!--BROWSE GROUPS-->
-                    <div class="uk-margin-bottom">
-                        <div class="uk-inline uk-width-expand">
-                            <form class="uk-search uk-search-default uk-width-expand">
-                                <span uk-search-icon></span>
-                                <input class="uk-search-input" type="search" data-id="gssearch" placeholder="Search...">
-                            </form>
-                            <button class="uk-close-small uk-overlay uk-position-center-right" type="button" onclick="window.groups.reset_name();" uk-close></button>
-                        </div>
-                    </div>
-                    <div class="uk-child-width-1-4 uk-child-width-1-6@m uk-text-center uk-grid-small uk-grid-match" uk-grid data-id="gsgrid"></div>
-                </div>
-                <div data-view="database">
-                    <!--DATABASE-->
-                    <div data-id="dbalert"></div>
-                    <div class="js-upload uk-placeholder uk-text-center" data-id="dbdrop">
-                        <span uk-icon="cloud-upload"></span>
-                        <span class="uk-text-middle">Upload archive files by dropping them here or </span>
-                        <div uk-form-custom>
-                            <input type="file" data-id="dbbrowser" multiple>
-                            <span class="uk-link">selecting one</span>
-                        </div>
-                    </div>
-                    <ul uk-accordion data-id="dblist"></ul>
-                </div>
-                <div data-view="player">
-                    <!--PLAYER DETAIL-->
-                    <div class="uk-inline uk-width-1-1">
-                        <div class="uk-card uk-card-default uk-card-small uk-card-body">
-                            <div class="uk-flex uk-flex-inline uk-flex-between uk-width-expand">
-                                <div class="uk-card-title uk-grid-small" uk-grid>
-                                    <div>
-                                        <img class="uk-padding-small" data-id="pimage" width="128" height="128" alt="" uk-img>
-                                    </div>
-                                    <div class="uk-padding-small">
-                                        <h3 class="uk-margin-auto-vertical" data-id="pname"></h3>
-                                        <h5 class="uk-margin-small-top uk-text-muted" data-id="pgroup"></h5>
-                                    </div>
-                                    <div class="uk-padding-small">
-                                        <h3 class="uk-margin-auto-vertical" data-id="plevel"></h3>
-                                    </div>
-                                </div>
-                                <div class="uk-padding-small uk-flex uk-flex-column uk-flex-around">
-                                    <div>
-                                        <span class="uk-label" data-id="pmountbonus"></span>
-                                        <span class="uk-label" data-id="ppot1"></span>
-                                        <span class="uk-label" data-id="ppot2"></span>
-                                        <span class="uk-label" data-id="ppot3"></span>
-                                    </div>
-                                    <div>
-                                        <span class="uk-label" data-id="pbookbonus"></span>
-                                    </div>
-                                    <div>
-                                        <span class="uk-label" data-id="pachievementbonus"></span>
-                                        <span class="uk-label" data-id="pdamagebonus"></span>
-                                        <span class="uk-label" data-id="plifebonus"></span>
-                                        <span class="uk-label" data-id="pgoldbonus"></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div data-id="pxp"></div>
-                        </div>
-                        <span data-id="platest" uk-icon="icon: history; ratio: 1.5" class="danger uk-position-top uk-padding-small"></span>
-                    </div>
-                    <div class="uk-flex uk-flex-between">
-                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand uk-margin-right">
-                            <h5 class="uk-card-title">Attributes</h5>
-                            <table class="uk-table uk-table-small table-padding-minimal">
-                                <tbody>
-                                    <tr>
-                                        <td>Strength</td>
-                                        <td data-id="pstrength"></td>
-                                        <td>Constitution</td>
-                                        <td data-id="pconstitution"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Dexterity</td>
-                                        <td data-id="pdexterity"></td>
-                                        <td>Luck</td>
-                                        <td data-id="pluck"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Intelligence</td>
-                                        <td data-id="pintelligence"></td>
-                                        <td>Armor</td>
-                                        <td data-id="parmor"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand">
-                            <h5 class="uk-card-title">Collection</h5>
-                            <table class="uk-table uk-table-small">
-                                <tbody>
-                                    <tr>
-                                        <td>Scrapbook</td>
-                                        <td data-id="pbooknum"></td>
-                                        <td data-id="pbookpercent"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="uk-padding-remove" colspan="3">
-                                            <div data-id="pbookbar"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Achievements</td>
-                                        <td data-id="pachnum"></td>
-                                        <td data-id="pachpercent"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="uk-padding-remove" colspan="3">
-                                            <div data-id="pachbar"></div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Dungeons</td>
-                                        <td data-id="pdunnum"></td>
-                                        <td data-id="pdunpercent"></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="uk-padding-remove" colspan="3">
-                                            <div data-id="pdunbar"></div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="uk-flex uk-flex-between" data-id="pchartb">
-                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-margin-right uk-width-expand">
-                            <h5 class="uk-card-title">Level & Attribute Growth</h5>
-                            <div class="chart-container uk-margin-medium-bottom">
-                                <canvas data-id="pclevel"></canvas>
+                        <br>
+                        <div class="ui two buttons">
+                            <label class="ui left attached secondary basic button text-center" for="container-files-import">
+                                 <i class="small upload icon"></i> Import
+                            </label>
+                            <input type="file" id="container-files-import" class="hidden">
+                            <div class="ui right attached secondary basic button text-center" id="container-files-export">
+                                 <i class="small download icon"></i> Export
                             </div>
                         </div>
-                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand">
-                            <h5 class="uk-card-title">Collection Growth</h5>
-                            <div class="chart-container uk-margin-medium-bottom">
-                                <canvas data-id="pccollect"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="uk-flex uk-flex-between">
-                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-margin-right uk-width-expand">
-                            <h5 class="uk-card-title">Fortress</h5>
-                            <table class="uk-table uk-table-small table-padding-minimal">
-                                <tbody>
-                                    <tr>
-                                        <td>Upgrades</td>
-                                        <td data-id="pfupgrades"></td>
-                                        <td>Wall</td>
-                                        <td data-id="pfwall"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2"></td>
-                                        <td>Warriors</td>
-                                        <td data-id="pfwarriors"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2"></td>
-                                        <td>Archers</td>
-                                        <td data-id="pfarchers"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2"></td>
-                                        <td>Mages</td>
-                                        <td data-id="pfmages"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="4"><br></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Fortress</td>
-                                        <td data-id="pffortress"></td>
-                                        <td>Laborers' Quarters</td>
-                                        <td data-id="pflabourersquarters"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Woodcutter's Hut</td>
-                                        <td data-id="pfwoodcuttershut"></td>
-                                        <td>Quarry</td>
-                                        <td data-id="pfquarry"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Gem Mine</td>
-                                        <td data-id="pfgemmine"></td>
-                                        <td>Academy</td>
-                                        <td data-id="pfacademy"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Archery Guild</td>
-                                        <td data-id="pfarcheryguild"></td>
-                                        <td>Barracks</td>
-                                        <td data-id="pfbarracks"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Mages' Tower</td>
-                                        <td data-id="pfmagestower"></td>
-                                        <td>Treasury</td>
-                                        <td data-id="pftreasury"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Smithy</td>
-                                        <td data-id="pfsmithy"></td>
-                                        <td>Fortifications</td>
-                                        <td data-id="pffortifications"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand" data-id="pchartb2">
-                            <h5 class="uk-card-title">Fortress Growth</h5>
-                            <div class="chart-container-600">
-                                <canvas data-id="pcfort"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="uk-flex uk-flex-between uk-margin-bottom" data-id="pgroups">
-                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand uk-margin-right">
-                            <h5 class="uk-card-title">Group</h5>
-                            <table class="uk-table uk-table-small table-padding-minimal">
-                                <tbody>
-                                    <tr>
-                                        <td>Name</td>
-                                        <td data-id="pgname"></td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2"><br></td>
-                                    </tr>
-                                    <tr data-id="pgextra">
-                                        <td>Treasure</td>
-                                        <td data-id="pgtreasure"></td>
-                                    </tr>
-                                    <tr data-id="pgextra">
-                                        <td>Instructor</td>
-                                        <td data-id="pginstructor"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Pet</td>
-                                        <td data-id="pgpet"></td>
-                                    </tr>
-                                    <tr data-id="pgextra">
-                                        <td>Knights</td>
-                                        <td data-id="pgknights"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand" data-id="pchartb3">
-                            <h5 class="uk-card-title">Group Growth</h5>
-                            <div class="chart-container">
-                                <canvas data-id="pcgroup"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div data-view="arena">
-
-                </div>
-                <div data-view="settings">
-                    <!--SETTINGS-->
-                    <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-bottom">
-                        <h4>Highlighting</h4>
-                        <div class="uk-grid uk-grid-small" uk-grid>
-                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stbe"> Scrapbook</h5></div>
-                            <div class="uk-width-5-6">
-                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stbmin" type="text"></div>
-                                <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stbmax" type="text"></div>
-                            </div>
-                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stpe"> Group pet</h5></div>
-                            <div class="uk-width-5-6">
-                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stpmin" type="text"></div>
-                                <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stpmax" type="text"></div>
-                            </div>
-                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stke"> Knights</h5></div>
-                            <div class="uk-width-5-6">
-                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stkmin" type="text"></div>
-                                <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stkmax" type="text"></div>
-                            </div>
-                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stte"> Treasure</h5></div>
-                            <div class="uk-width-5-6">
-                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="sttmin" type="text"></div>
-                                <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="sttmax" type="text"></div>
-                            </div>
-                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stie"> Instructor</h5></div>
-                            <div class="uk-width-5-6">
-                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stimin" type="text"></div>
-                                <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span><input class="uk-input uk-form-small" id="stimax" type="text"></div>
-                            </div>
-                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stme"> Mount</h5></div>
-                            <div class="uk-width-5-6">
-                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span>
-                                    <select class="uk-select uk-form-small" id="stmmin">
-                                        <option value="0">None</option>
-                                        <option value="1">10%</option>
-                                        <option value="2">20%</option>
-                                        <option value="3">30%</option>
-                                        <option value="4">50%</option>
-                                    </select>
-                                </div>
-                                <div class="uk-flex uk-flex-middle uk-margin-small-top"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span>
-                                    <select class="uk-select uk-form-small" id="stmmax">
-                                        <option value="0">None</option>
-                                        <option value="1">10%</option>
-                                        <option value="2">20%</option>
-                                        <option value="3">30%</option>
-                                        <option value="4">50%</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="uk-width-1-6"><h5><input class="uk-checkbox" type="checkbox" id="stje"> Join date</h5></div>
-                            <div class="uk-width-5-6">
-                                <div class="uk-flex uk-flex-middle"><span uk-icon="check" class="uk-flex-none uk-margin-small-right"></span>
-                                    <select class="uk-select uk-form-small" id="stjval">
-                                        <option value="0">Newer than 1 week</option>
-                                        <option value="1">Newer than 2 weeks</option>
-                                        <option value="2">Newer than a month</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-bottom">
-                        <h4>Database</h4>
-                        <div class="uk-grid uk-grid-small" uk-grid>
-                            <div class="uk-width-1-6"><h5>Import date</h5></div>
-                            <div class="uk-width-5-6">
-                                <div class="uk-flex uk-flex-middle"><span uk-icon="close" class="uk-flex-none uk-margin-small-right"></span>
-                                    <select class="uk-select uk-form-small" id="stoval">
-                                        <option value="0">Older than 1 week</option>
-                                        <option value="1">Older than 2 weeks</option>
-                                        <option value="2">Older than a month</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="uk-flex uk-flex-between uk-margin-medium-top uk-margin-medium-bottom">
-                        <button class="uk-button uk-button-danger" onclick="window.settings.reset()">RESET</button>
-                        <button class="uk-button uk-button-default" onclick="window.settings.save()" data-id="stapply">APPLY</button>
-                    </div>
-                </div>
-                <div data-view="group">
-                    <!--GROUP DETAIL-->
-                    <div class="uk-inline uk-width-1-1">
-                        <div class="uk-card uk-card-default uk-card-small uk-card-body">
-                            <div class="uk-flex uk-flex-inline uk-flex-between uk-width-expand">
-                                <div class="uk-card-title uk-grid-small" uk-grid>
-                                    <div>
-                                        <img class="uk-padding-small" data-src='images/icon_group.png' width="128" height="128" uk-img>
-                                    </div>
-                                    <div class="uk-padding-small">
-                                        <h3 class="uk-margin-auto-vertical" data-id="gname"></h3>
-                                        <h5 class="uk-margin-small-top uk-text-muted" data-id="gcount"></h5>
-                                    </div>
-                                    <div class="uk-padding-small">
-                                        <h3 class="uk-margin-auto-vertical" data-id="grank"></h3>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <span data-id="glatest" uk-icon="icon: history; ratio: 1.5" class="danger uk-position-top uk-padding-small"></span>
-                    </div>
-
-                    <div class="uk-flex uk-flex-between">
-                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand uk-margin-right">
-                            <h5 class="uk-card-title">Details</h5>
-                            <table class="uk-table uk-table-small table-padding-minimal table-scale-5">
-                                <tbody>
-                                    <tr style="text-align: center">
-                                        <td></td>
-                                        <td>∑</td>
-                                        <td>∅</td>
-                                        <td>Min</td>
-                                        <td>Max</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Level</td>
-                                        <td data-id="glevelsum"></td>
-                                        <td data-id="glevelavg"></td>
-                                        <td data-id="glevelmin"></td>
-                                        <td data-id="glevelmax"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Pet</td>
-                                        <td data-id="gpetsum"></td>
-                                        <td data-id="gpetavg"></td>
-                                        <td data-id="gpetmin"></td>
-                                        <td data-id="gpetmax"></td>
-                                    </tr>
-                                    <tr data-id="gown">
-                                        <td>Knights</td>
-                                        <td data-id="gknightssum"></td>
-                                        <td data-id="gknightsavg"></td>
-                                        <td data-id="gknightsmin"></td>
-                                        <td data-id="gknightsmax"></td>
-                                    </tr>
-                                    <tr data-id="gown">
-                                        <td>Treasure</td>
-                                        <td data-id="gtreasuresum"></td>
-                                        <td data-id="gtreasureavg"></td>
-                                        <td data-id="gtreasuremin"></td>
-                                        <td data-id="gtreasuremax"></td>
-                                    </tr>
-                                    <tr data-id="gown">
-                                        <td>Instructor</td>
-                                        <td data-id="ginstructorsum"></td>
-                                        <td data-id="ginstructoravg"></td>
-                                        <td data-id="ginstructormin"></td>
-                                        <td data-id="ginstructormax"></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-width-expand" data-id="gcchart">
-                            <h5 class="uk-card-title">Growth</h5>
-                            <div class="chart-container uk-margin-medium-bottom">
-                                <canvas data-id="gcgrowth"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="uk-card uk-card-default uk-card-small uk-card-body uk-margin-top uk-margin-bottom" data-id="gtable-container">
-                        <div class="uk-flex uk-flex-between">
-                            <h5 class="uk-card-title">Group evaluation</h5>
-                            <a class="uk-icon-click" uk-icon="image" onclick="window.group.export()"></a>
-                        </div>
-                        <div class="uk-flex uk-flex-left">
-                            <h4 class="uk-width-auto uk-margin-right">Compare to</h4>
-                            <select class="uk-select uk-form-small uk-width-expand" data-id="gcompare"></select>
-                        </div>
-                        <div data-id="gtable"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="sfdialog" uk-modal="esc-close: false; bg-close: false;">
-            <div class="uk-modal-dialog uk-modal-body">
-                <h2 class="uk-modal-title" id="sfdialog-head"></h2>
-                <div id="sfdialog-body"></div>
-                <p class="uk-text-right">
-                    <button class="uk-button uk-button-secondary" type="button" id="sfdialog-ok">OK</button>
+        <div class="ui main container hidden" id="container-settings">
+            <div class="ui two columns grid">
+                <div class="column">
+                    <h2 class="ui centered header">Highlighting</h2>
+                    <div class="ui form" id="container-settings-highlighting"></div>
+                </div>
+                <div class="column">
+                    <h2 class="ui centered header">Default Layout</h2>
+                    <div class="ui form">
+                        <div id="container-settings-layout"></div>
+                        <div class="field">
+                            <label><br></label>
+                            <button class="ui right floated secondary button" type="submit" id="container-settings-save">Save</button>
+                            <button class="ui right floated button margin-medium-right" type="submit" id="container-settings-clear">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui main container hidden" id="container-detail" data-current-group="">
+            <div class="ui segment center aligned basic">
+                <div class="ui extreme header" id="container-detail-name"></div>
+            </div>
+
+            <div class="ui basic segment margin-none-bottom padding-none-bottom">
+                <div class="ui grid">
+                    <div class="three wide middle aligned column">
+                        <div class="ui scrolling dropdown" id="container-detail-select-dropdown">
+                            <div class="default text" id="container-detail-select-text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                    <div class="two wide middle aligned column">
+                        compared to
+                    </div>
+                    <div class="three wide middle aligned column">
+                        <div class="ui scrolling dropdown" id="container-detail-compare-dropdown">
+                            <div class="default text" id="container-detail-compare-text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                    <div class="eight wide column">
+                        <div class="ui small basic icon right floated buttons">
+                            <button class="ui toggle button" data-tooltip="Sort by level" id="container-detail-sort"><i class="sort icon"></i></button>
+                            <button class="ui button" data-tooltip="Save as image" id="container-detail-save"><i class="download icon"></i></button>
+                            <button class="ui button" data-tooltip="Copy table" id="container-detail-copy"><i class="copy icon"></i></button>
+                            <button class="ui button" data-tooltip="Custom settings" id="container-detail-settings"><i class="cog icon"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui basic segment margin-none-top padding-none" id="container-detail-screenshot">
+                <table class="ui celled structured table table-group" id="container-detail-content">
+
+                </table>
+                <table class="ui celled structured table table-group table-group-secondary" id="container-detail-stats">
+
+                </table>
+            </div>
+        </div>
+
+        <div class="ui main container hidden" id="container-help">
+            <div class="ui segment basic">
+                <h2 class="ui header">About</h2>
+                <p>
+                    Created by mar21, HIRAISHIN SOFTWARE <i class="copyright outline icon"></i>2015 - 2020
+                </p>
+                <h2 class="ui header">Support</h2>
+                <p>
+                    You can reach me at <a href="mailto:support@mar21.eu"><i class="mail icon"></i>support@mar21.eu</a> or at <a href="https://discord.gg/vrtG4x3"><i class="discord icon"></i>SFT discord</a>.<br>
+                </p>
+                <h2 class="ui header">Terms and Conditions</h2>
+                <h3 class="ui header">I. Disclaimer</h3>
+                <p>
+                    This site is in no way affiliated with Playa Games GmbH.<br>
+                    All images present on this site are the intelectual property of Playa Games GmbH.
+                </p>
+                <h3 class="ui header">II. Warranty</h3>
+                <p>
+                    This site is disctributed as is, without any warranties.<br>
+                    Any future compatibility with Shakes & Fidget game is not guaranteed.<br>
+                    All source code on this site with exception of external libraries is owned by me.<br>
+                    You are not allowed to use the source code with ill intent or via claiming it as your own.
                 </p>
             </div>
         </div>
 
-        <script type="text/javascript">
-            if (window.localStorage[btoa('STORAGE')]) {
-                window.localStorage['data'] = window.localStorage[btoa('STORAGE')];
-                delete window.localStorage[btoa('STORAGE')];
-            }
-        </script>
+        <div class="ui basic modal" id="modal-error">
+            <div class="ui icon header">
+                <i class="exclamation triangle icon"></i>
+                Error
+            </div>
+            <div class="content text-center">
+                <p id="modal-error-content"></p>
+            </div>
+        </div>
+
+        <div class="ui basic modal" id="modal-player">
+
+        </div>
+
+        <div class="ui basic large modal text-white" id="modal-custom-settings">
+            <div class="ui two columns grid">
+                <div class="column">
+                    <h2 class="ui centered header">Custom Highlighting</h2>
+                    <div class="ui form" id="modal-custom-settings-highlighting"></div>
+                </div>
+                <div class="column">
+                    <h2 class="ui centered header">Custom Layout</h2>
+                    <div class="ui form">
+                        <div id="modal-custom-settings-layout"></div>
+                        <div class="field">
+                            <label><br></label>
+                            <button class="ui right floated secondary button" type="submit" id="modal-custom-settings-save">Save</button>
+                            <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-reset">Clear</button>
+                            <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-clear">Remove custom settings</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <script type="text/javascript">
-            window.view = new Object();
-            window.view.container = document.querySelector('[data-view-container]');
-            window.nav = function (v, ... args) {
-                let view = document.querySelector(`[data-view="${v}"]`)
-                if (view && !window.view.lock && window.view.locked != v) {
-                    window.view.lock = true;
-                    window.view.container.classList.add('uk-animation-fade', 'uk-animation-reverse');
-                    setTimeout(function () {
-                        window.view.container.hidden = true;
-                        window.view.container.classList.remove('uk-animation-fade', 'uk-animation-reverse');
-                        document.querySelectorAll('[data-view]').forEach(el => el.hidden = el.getAttribute('data-view') != v);
-                        setTimeout(function () {
-                            window.view.container.classList.add('uk-animation-fade');
-                            window.view.container.hidden = false;
-                            UIkit.update(element = document.body, type = 'update');
-                            setTimeout(function () {
-                                window.view.container.classList.remove('uk-animation-fade');
-                                window.view.lock = false;
-                                window.view.locked = v;
-                            }, 150);
-                        }, 50);
-                        window[v].init(args);
-                    }, 200);
-                }
-            }
-            window.nav('players');
+            // Init
+            Handle.call(EVT_INIT);
+
+            // Listeners
+            $('#container-detail-sort').on('click', function () {
+                State.toggleSort();
+                Handle.call(EVT_GROUP_LOAD_TABLE);
+            });
+
+            $('[data-toggle]').on('click', function () {
+                Handle.call(EVT_SHOWSCREEN, $(this).attr('data-toggle'));
+            });
+
+            $('#container-files-add').on('change', function () {
+                Handle.call(EVT_FILES_UPLOAD, this.files);
+            });
+
+            $('#container-files-export').on('click', function () {
+                Handle.call(EVT_FILES_EXPORT);
+            });
+
+            $('#container-files-import').on('change', function () {
+                Handle.call(EVT_FILES_IMPORT, this.files);
+            });
+
+            $('#container-settings-save').on('click', function () {
+                Handle.call(EVT_SETTINGS_SAVE);
+            });
+
+            $('#container-settings-clear').on('click', function () {
+                Handle.call(EVT_SETTINGS_LOAD);
+            });
+
+            $('#container-detail-save').on('click', function () {
+                Handle.call(EVT_GROUP_SAVE);
+            });
+
+            $('#container-detail-copy').on('click', function () {
+                Handle.call(EVT_GROUP_COPY);
+            });
+
+            $('#container-detail-settings').on('click', function () {
+                Handle.call(EVT_GROUP_SETTINGS_SHOW);
+            });
+
+            $('#modal-custom-settings-save').on('click', function () {
+                Handle.call(EVT_GROUP_SETTINGS_SAVE);
+            });
+
+            $('#modal-custom-settings-reset').on('click', function () {
+                Handle.call(EVT_GROUP_SETTINGS_LOAD);
+            });
+
+            $('#modal-custom-settings-clear').on('click', function () {
+                Handle.call(EVT_GROUP_SETTINGS_CLEAR);
+            });
+
+            $('#show-container-browse').on('click', function () {
+                Handle.call(EVT_SHOWSCREEN, 'container-browse');
+                Handle.call(EVT_BROWSE_LOAD);
+            });
+
+            $('#show-container-files').on('click', function () {
+                Handle.call(EVT_SHOWSCREEN, 'container-files');
+                Handle.call(EVT_FILES_LOAD);
+            });
+
+            $('#show-container-settings').on('click', function () {
+                Handle.call(EVT_SHOWSCREEN, 'container-settings');
+                Handle.call(EVT_SETTINGS_LOAD);
+            });
+
+            $('#show-container-help').on('click', function () {
+                Handle.call(EVT_SHOWSCREEN, 'container-help');
+            });
+
+            // Show first screen
+            Storage.load(function () {
+                Handle.call(EVT_SHOWSCREEN, 'container-browse');
+                Handle.call(EVT_BROWSE_LOAD);
+            });
         </script>
-        <script src="js/sft.js"></script>
     </body>
 </html>

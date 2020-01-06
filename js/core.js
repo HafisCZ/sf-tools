@@ -3,20 +3,12 @@ const Preferences = new (class {
         this.storage = window.localStorage || window.sessionStorage || { };
     }
 
-    set (key, object, compress = false) {
-        if (compress) {
-            this.storage[key] = LZString.compressToUTF16(JSON.stringify(object));
-        } else {
-            this.storage[key] = JSON.stringify(object);
-        }
+    set (key, object) {
+        this.storage[key] = JSON.stringify(object);
     }
 
-    get (key, def, compress = false) {
-        if (compress) {
-            return this.storage[key] ? JSON.parse(LZString.decompressFromUTF16(this.storage[key])) : def;
-        } else {
-            return this.storage[key] ? JSON.parse(this.storage[key]) : def;
-        }
+    get (key, def) {
+        return this.storage[key] ? JSON.parse(this.storage[key]) : def;
     }
 
     remove (key) {

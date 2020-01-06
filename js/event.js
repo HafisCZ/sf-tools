@@ -2,6 +2,7 @@
 const EVT_NONE = 0;
 const EVT_SHOWSCREEN = 1;
 const EVT_SHOWERROR = 2;
+const EVT_INIT = 5;
 
 const EVT_GROUP_SHOW = 1000; // Show
 const EVT_GROUP_SORT = 1001; // Toggle sort mode
@@ -40,6 +41,81 @@ Handle.bind(EVT_SHOWSCREEN, function (s) {
 Handle.bind(EVT_SHOWERROR, function (e) {
     $('#modal-error-content').html(e);
     $('#modal-error').modal('show');
+});
+
+Handle.bind(EVT_INIT, function () {
+    let start = Date.now();
+
+    let highlighting = `
+        ${ UI.getHLEntryBlock('Level', 'level') }
+        ${ UI.getHLEntryBlock('Scrapbook', 'scrapbook') }
+        ${ UI.getHLDropdownBlock('Mount', 'mount', [ 'None', '10%', '20%', '30%', '50%' ]) }
+        ${ UI.getHLEntryBlock('Achievements', 'achievements') }
+        ${ UI.getHLDropdownBlock('Potions', 'potions', [ 'None', '10%', '15%', '25%' ]) }
+        ${ UI.getHLEntryBlock('Guild Treasure', 'treasure') }
+        ${ UI.getHLEntryBlock('Guild Instructor', 'instructor') }
+        ${ UI.getHLEntryBlock('Pet', 'pet') }
+        ${ UI.getHLEntryBlock('Knights', 'knights') }
+        ${ UI.getHLEntryBlock('Fortress', 'fortress') }
+        ${ UI.getHLEntryBlock('Gem Mine', 'gemmine') }
+        ${ UI.getHLEntryBlock('Fortress Upgrades', 'fortressupgrades') }
+        ${ UI.getHLDiffBlock('Fortress Honor', 'fortresshonor') }
+    `;
+
+    let layout = `
+        <div class="two fields">
+            ${ UI.getDLBlock('Player Class', 'show-class', [ 'Hide', 'Show' ]) }
+            ${ UI.getDLBlock('Player ID', 'show-id', [ 'Hide', 'Show' ]) }
+        </div>
+        <div class="two fields">
+            ${ UI.getDLBlock('Player Rank', 'show-rank', [ 'Hide', 'Show' ]) }
+            ${ UI.getDLBlock('Group Role', 'show-role', [ 'Hide', 'Show' ]) }
+        </div>
+        <div class="two fields">
+            ${ UI.getDLBlock('Achievements', 'show-achievements', [ 'Hide', 'Show' ]) }
+            ${ UI.getDLBlock('Hydra', 'show-hydra', [ 'Hide', 'Icon' ]) }
+        </div>
+        <div class="two fields">
+            ${ UI.getDLBlock('Scrapbook', 'show-book-style', [ 'Show percentage', 'Show item count' ]) }
+        </div>
+        <div class="two fields">
+            ${ UI.getDLBlock('Guild Treasure', 'show-treasure', [ 'Hide', 'Show' ]) }
+            ${ UI.getDLBlock('Fortress Honor', 'show-fortress-honor', [ 'Hide', 'Show' ]) }
+        </div>
+        <div class="two fields">
+            ${ UI.getDLBlock('Guild Instructor', 'show-instructor', [ 'Hide', 'Show' ]) }
+            ${ UI.getDLBlock('Fortress Upgrades', 'show-fortress-upgrades', [ 'Hide', 'Show' ]) }
+        </div>
+        <div class="two fields">
+            ${ UI.getDLBlock('Guild Pet', 'show-pet', [ 'Hide', 'Show' ]) }
+            ${ UI.getDLBlock('Gem Mine', 'show-gemmine', [ 'Hide', 'Show' ]) }
+        </div>
+        <div class="two fields">
+            ${ UI.getDLBlock('Knights', 'show-knights', [ 'Hide', 'Show', 'Show maximum' ]) }
+            ${ UI.getDLBlock('Fortress', 'show-fortress', [ 'Hide', 'Show' ]) }
+        </div>
+        <div class="two fields">
+            ${ UI.getDLBlock('Group Statistics', 'show-group', [ 'Hide', 'Show', 'Show including Member History' ]) }
+            ${ UI.getDLBlock('Difference Style', 'show-difference-style', [ 'Default', 'Brackets' ]) }
+        </div>
+    `;
+
+    $('#container-settings-highlighting').html(highlighting);
+    $('#container-settings-layout').html(layout);
+
+    $('#modal-custom-settings-highlighting').html(highlighting.replace(/data-settings/g, 'data-custom-settings'));
+    $('#modal-custom-settings-layout').html(layout.replace(/data-settings/g, 'data-custom-settings'));
+
+    $('#container-detail-sort').state();
+    $('.ui.dropdown').dropdown();
+    $('.ui.toggle.button:not(#container-detail-sort)').state({
+        text: {
+            inactive: 'Disabled',
+            active: 'Enabled'
+        }
+    });
+
+    console.log(`PAGE INIT TOOK ${ Date.now() - start } MS`);
 });
 
 Handle.bind(EVT_SETTINGS_SAVE, function () {
@@ -340,14 +416,34 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     }
 
     var header_name = 1;
-    var header_general = prefs['show-class'] + prefs['show-id'] + prefs['show-rank'] + (prefs['show-role'] ? 1 : 0) + prefs['show-achievements'] + 3;
+    var header_general = prefs['show-class'] + prefs['show-id'] + prefs['show-rank'] + prefs['show-role'] + prefs['show-achievements'] + 3;
     var header_potions = 3;
-    var header_group = prefs['show-treasure'] + prefs['show-instructor'] + prefs['show-pet'] + prefs['show-knights'] + (prefs['show-knights-style'] == 1 ? 1 : 0);
+    var header_group = prefs['show-treasure'] + prefs['show-instructor'] + prefs['show-pet'] + (prefs['show-knights'] ? 1 : 0);
+    var header_fortress = prefs['show-fortress'] + prefs['show-gemmine'] + prefs['show-fortress-honor'] + prefs['show-fortress-upgrades'];
     var header_group_iter = header_group;
 
     // Table width
-    var width = 659 + (prefs['show-class'] ? 120 : 0) + (prefs['show-id'] ? 100 : 0) + (prefs['show-rank'] ? 100 : 0) + (prefs['show-role'] ? 100 : 0) + (prefs['show-achievements'] ? 100 : 0) + (prefs['show-treasure'] ? 100 : 0) + (prefs['show-instructor'] ? 100 : 0) + (prefs['show-knights'] ? 100 : 0) + (prefs['show-knights-style'] == 1 ? 100 : 0);
-    $('#container-detail').css('width', `${width + 130}px`);
+    var width = 659 +
+        (prefs['show-class'] ? 120 : 0) +
+        (prefs['show-id'] ? 100 : 0) +
+        (prefs['show-rank'] ? 100 : 0) +
+        (prefs['show-role'] ? 100 : 0) +
+        (prefs['show-achievements'] ? 100 : 0) +
+        (prefs['show-treasure'] ? 100 : 0) +
+        (prefs['show-instructor'] ? 100 : 0) +
+        (prefs['show-knights'] ? 100 : 0) +
+        (prefs['show-fortress'] ? 100 : 0) +
+        (prefs['show-fortress-honor'] ? 120 : 0) +
+        (prefs['show-fortress-upgrades'] ? 100 : 0) +
+        (prefs['show-gemmine'] ? 100 : 0);
+
+    if (width < 997) {
+        $('#container-detail-screenshot').css('width', `${width + 130}px`);
+        $('#container-detail-screenshot').css('margin', 'auto');
+    } else {
+        $('#container-detail').css('width', `${width + 130}px`);
+        $('#container-detail-screenshot').css('margin', '');
+    }
 
     // Table header
     var table_header = `
@@ -355,8 +451,9 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
             <tr>
                 <td width="250" rowspan="2" colspan="1" class="border-right-thin">Name</td>
                 <td rowspan="1" colspan="${ header_general }" class="border-right-thin">General</td>
-                <td width="99" rowspan="2" colspan="3" ${ header_group ? 'class="border-right-thin"' : ''}>Potions</td>
-                ${ header_group ? `<td rowspan="1" colspan="${ header_group }">Group</td>` : ''}
+                <td width="99" rowspan="2" colspan="3" ${ header_group || header_fortress ? 'class="border-right-thin"' : ''}>Potions</td>
+                ${ header_group ? `<td rowspan="1" colspan="${ header_group }" ${ header_fortress ? 'class="border-right-thin"' : '' }>Group</td>` : ''}
+                ${ header_fortress ? `<td rowspan="1" colspan="${ header_fortress }">Fortress</td>` : ''}
             </tr>
             <tr>
                 ${ prefs['show-class'] ? '<td width="120">Class</td>' : '' }
@@ -367,19 +464,21 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                 <td width="130">Album</td>
                 <td ${ prefs['show-achievements'] ? '' : 'class="border-right-thin"' } width="80">Mount</td>
                 ${ prefs['show-achievements'] ? '<td class="border-right-thin" width="100">Awards</td>' : '' }
-                ${ prefs['show-treasure'] ? `<td ${ header_group_iter-- <= 0 ? 'class="border-right-thin"' : '' } width="100">Treasure</td>` : '' }
-                ${ prefs['show-instructor'] ? `<td ${ header_group_iter-- <= 0 ? 'class="border-right-thin"' : '' } width="100">Instructor</td>` : '' }
-                ${ prefs['show-pet'] ? `<td ${ header_group_iter-- <= 0 ? 'class="border-right-thin"' : '' } width="100">Pet</td>` : '' }
-                ${ prefs['show-knights'] ? `
-                    <td width="100">Knights</td>
-                    ${ prefs['show-knights-style'] == 1 ? '<td width="100">Fortress</td>' : '' }
-                ` : '' }
+                ${ prefs['show-treasure'] ? `<td ${ --header_group_iter <= 0 ? 'class="border-right-thin"' : '' } width="100">Treasure</td>` : '' }
+                ${ prefs['show-instructor'] ? `<td ${ --header_group_iter <= 0 ? 'class="border-right-thin"' : '' } width="100">Instructor</td>` : '' }
+                ${ prefs['show-pet'] ? `<td ${ --header_group_iter <= 0 ? 'class="border-right-thin"' : '' } width="100">Pet</td>` : '' }
+                ${ prefs['show-knights'] ? `<td ${ --header_group_iter <= 0 ? 'class="border-right-thin"' : '' } width="100">Knights</td>` : '' }
+                ${ prefs['show-fortress'] ? `<td width="100">Fortress</td>` : '' }
+                ${ prefs['show-fortress-upgrades'] ? `<td width="100">Upgrades</td>` : '' }
+                ${ prefs['show-fortress-honor'] ? `<td width="120">Honor</td>` : '' }
+                ${ prefs['show-gemmine'] ? `<td width="100">Gem Mine</td>` : '' }
             </tr>
             <tr>
                 <td colspan="1" class="border-bottom-thick border-right-thin"></td>
                 <td colspan="${ header_general }" class="border-bottom-thick border-right-thin"></td>
                 <td colspan="3" class="border-bottom-thick border-right-thin"></td>
-                ${ header_group ? `<td colspan="${ header_group }" class="border-bottom-thick"></td>` : '' }
+                ${ header_group ? `<td colspan="${ header_group }" class="border-bottom-thick border-right-thin"></td>` : '' }
+                ${ header_fortress ? `<td colspan="${ header_fortress }" class="border-bottom-thick"></td>` : '' }
             </tr>
         </thead>
         <tbody>
@@ -397,6 +496,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     var table_body = [];
     members.forEach(function (player) {
         var compare = membersReferences.find(c => c.Identifier == player.Identifier);
+        var group_iter = header_group;
 
         if (player.IsFake) {
             table_body.push(`
@@ -432,7 +532,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                         prefs['treasure-req'],
                         prefs['treasure-difference'],
                         prefs['show-difference-style'],
-                        null,
+                        --group_iter <= 0 ? 'border-right-thin' : null,
                         null,
                         null
                     ) : '' }
@@ -444,7 +544,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                         prefs['instructor-req'],
                         prefs['instructor-difference'],
                         prefs['show-difference-style'],
-                        null,
+                        --group_iter <= 0 ? 'border-right-thin' : null,
                         null,
                         null
                     ) : '' }
@@ -456,7 +556,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                         prefs['pet-req'],
                         prefs['pet-difference'],
                         prefs['show-difference-style'],
-                        null,
+                        --group_iter <= 0 ? 'border-right-thin' : null,
                         null,
                         null
                     ) : '' }
@@ -468,10 +568,14 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                         prefs['knights-req'],
                         prefs['knights-difference'],
                         prefs['show-difference-style'],
-                        null,
+                        --group_iter <= 0 ? 'border-right-thin' : null,
                         null,
                         null
                     ) : '' }
+                    ${ prefs['show-fortress'] ? '<td></td>' : '' }
+                    ${ prefs['show-fortress-upgrades'] ? '<td></td>' : '' }
+                    ${ prefs['show-fortress-honor'] ? '<td></td>' : '' }
+                    ${ prefs['show-gemmine'] ? '<td></td>' : '' }
                 </tr>
             `);
         } else {
@@ -541,7 +645,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                         prefs['treasure-req'],
                         prefs['treasure-difference'],
                         prefs['show-difference-style'],
-                        null,
+                        --group_iter <= 0 ? 'border-right-thin' : null,
                         null,
                         null
                     ) : '' }
@@ -553,7 +657,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                         prefs['instructor-req'],
                         prefs['instructor-difference'],
                         prefs['show-difference-style'],
-                        null,
+                        --group_iter <= 0 ? 'border-right-thin' : null,
                         null,
                         null
                     ) : '' }
@@ -565,7 +669,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                         prefs['pet-req'],
                         prefs['pet-difference'],
                         prefs['show-difference-style'],
-                        null,
+                        --group_iter <= 0 ? 'border-right-thin' : null,
                         null,
                         null
                     ) : '' }
@@ -577,17 +681,53 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                         prefs['knights-req'],
                         prefs['knights-difference'],
                         prefs['show-difference-style'],
-                        null,
-                        prefs['show-knights-style'] > 0 ? player.Fortress.Knights : `${ player.Fortress.Knights }/${ player.Fortress.Fortress }`,
+                        --group_iter <= 0 ? 'border-right-thin' : null,
+                        prefs['show-knights'] <= 1 ? player.Fortress.Knights : `${ player.Fortress.Knights }/${ player.Fortress.Fortress }`,
                         null
                     ) : '' }
-                    ${ prefs['show-knights-style'] == 1 ? td(
+                    ${ prefs['show-fortress'] ? td(
                         player.Fortress.Fortress,
                         player.Fortress.Fortress - compare.Fortress.Fortress,
                         prefs['fortress-enabled'],
                         prefs['fortress-min'],
                         prefs['fortress-req'],
                         prefs['fortress-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) : '' }
+                    ${ prefs['show-fortress-upgrades'] ? td(
+                        player.Fortress.Upgrades,
+                        player.Fortress.Upgrades - compare.Fortress.Upgrades,
+                        prefs['fortressupgrades-enabled'],
+                        prefs['fortressupgrades-min'],
+                        prefs['fortressupgrades-req'],
+                        prefs['fortressupgrades-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) : '' }
+                    ${ prefs['show-fortress-honor'] ? td(
+                        player.Fortress.Honor,
+                        player.Fortress.Honor - compare.Fortress.Honor,
+                        false,
+                        0,
+                        0,
+                        prefs['fortresshonor-difference'],
+                        prefs['show-difference-style'],
+                        null,
+                        null,
+                        null
+                    ) : '' }
+                    ${ prefs['show-gemmine'] ? td(
+                        player.Fortress.GemMine,
+                        player.Fortress.GemMine - compare.Fortress.GemMine,
+                        prefs['gemmine-enabled'],
+                        prefs['gemmine-min'],
+                        prefs['gemmine-req'],
+                        prefs['gemmine-difference'],
                         prefs['show-difference-style'],
                         null,
                         null,
@@ -754,8 +894,11 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="left aligned column font-big">Fortress</div>
                         <div class="column ${ prefs['fortress-enabled'] ? (player.Fortress.Fortress >= prefs['fortress-req'] ? 'foreground-green' : (player.Fortress.Fortress >= prefs['fortress-min'] ? 'foreground-orange' : 'foreground-red')) : '' }">${ player.Fortress.Fortress }</div>
                         <div class="column"></div>
+                        <div class="left aligned column font-big">Upgrades</div>
+                        <div class="column ${ prefs['fortressupgrades-enabled'] ? (player.Fortress.Upgrades >= prefs['fortressupgrades-req'] ? 'foreground-green' : (player.Fortress.Upgrades >= prefs['fortressupgrades-min'] ? 'foreground-orange' : 'foreground-red')) : '' }">${ player.Fortress.Upgrades }</div>
+                        <div class="column"></div>
                         <div class="left aligned column font-big">Gem Mine</div>
-                        <div class="column">${ player.Fortress.GemMine }</div>
+                        <div class="column ${ prefs['gemmine-enabled'] ? (player.Fortress.GemMine >= prefs['gemmine-req'] ? 'foreground-green' : (player.Fortress.GemMine >= prefs['gemmine-min'] ? 'foreground-orange' : 'foreground-red')) : '' }">${ player.Fortress.GemMine }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Treasury</div>
                         <div class="column">${ player.Fortress.Treasury }</div>
