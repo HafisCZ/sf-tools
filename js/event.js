@@ -420,7 +420,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     var header_potions = 3;
     var header_group = prefs['show-treasure'] + prefs['show-instructor'] + prefs['show-pet'] + (prefs['show-knights'] ? 1 : 0);
     var header_fortress = prefs['show-fortress'] + prefs['show-gemmine'] + prefs['show-fortress-honor'] + prefs['show-fortress-upgrades'];
-    var header_group_iter = header_group;
+    var header_group_iter = header_group + (header_fortress ? 0 : 100);
 
     // Table width
     var width = 659 +
@@ -477,7 +477,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                 <td colspan="1" class="border-bottom-thick border-right-thin"></td>
                 <td colspan="${ header_general }" class="border-bottom-thick border-right-thin"></td>
                 <td colspan="3" class="border-bottom-thick border-right-thin"></td>
-                ${ header_group ? `<td colspan="${ header_group }" class="border-bottom-thick border-right-thin"></td>` : '' }
+                ${ header_group ? `<td colspan="${ header_group }" class="border-bottom-thick ${ header_fortress ? 'border-right-thin' : '' }"></td>` : '' }
                 ${ header_fortress ? `<td colspan="${ header_fortress }" class="border-bottom-thick"></td>` : '' }
             </tr>
         </thead>
@@ -496,7 +496,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     var table_body = [];
     members.forEach(function (player) {
         var compare = membersReferences.find(c => c.Identifier == player.Identifier);
-        var group_iter = header_group;
+        var group_iter = header_group + (header_fortress ? 0 : 100);
 
         if (player.IsFake) {
             table_body.push(`
@@ -744,6 +744,9 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     var kicked = groupReference.MemberIDs.filter(g => !groupCurrent.MemberIDs.includes(g)).map(g => Database.Players[g] ? Database.Players[g].Latest.Name : groupReference.Members[groupReference.MemberIDs.indexOf(g)]);
     var joined = groupCurrent.MemberIDs.filter(g => !groupReference.MemberIDs.includes(g)).map(g => Database.Players[g] ? Database.Players[g].Latest.Name : groupCurrent.Members[groupCurrent.MemberIDs.indexOf(g)]);
 
+    var classes = [ 0, 0, 0, 0, 0, 0 ];
+    members.forEach(player => classes[player.Class - 1]++);
+
     if (prefs['show-group']) {
         $('#container-detail-stats').html(`
             <tbody>
@@ -788,7 +791,34 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
                     ${ prefs['show-knights'] ? `<td ${ prefs['knights-enabled'] ? (groupCurrent.Knights.Max >= prefs['knights-req'] ? 'class="foreground-green"' : (groupCurrent.Knights.Max >= prefs['knights-min'] ? 'class="foreground-orange"' : 'class="foreground-red"')) : '' }>${ groupCurrent.Knights.Max }${ (prefs['knights-difference'] && groupCurrent.Knights.Max != groupReference.Knights.Max) ? `<span> ${ groupCurrent.Knights.Max > groupReference.Knights.Max ? '+' : '' }${ groupCurrent.Knights.Max - groupReference.Knights.Max }</span>` : '' }</td>` : ''}
                 </tr>
                 <tr>
-                    <td colspan="6"></td>
+                    <td colspan="6" class="border-bottom-thick"></td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Warrior</td>
+                    <td>${ classes[0] }</td>
+                    <td class="border-right-thin">Assassin</td>
+                    <td>${ classes[3] }</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Mage</td>
+                    <td>${ classes[1] }</td>
+                    <td class="border-right-thin">Battle Mage</td>
+                    <td>${ classes[4] }</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Scout</td>
+                    <td>${ classes[2] }</td>
+                    <td class="border-right-thin">Berserker</td>
+                    <td>${ classes[5] }</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td colspan="6" ${ prefs['show-group'] == 2 && (joined.length > 0 || kicked.length > 0) ? 'class="border-bottom-thick"' : ''}></td>
                 </tr>
                 ${
                     prefs['show-group'] == 2 && (joined.length > 0 || kicked.length > 0) ? `
