@@ -114,8 +114,6 @@ Handle.bind(EVT_INIT, function () {
             active: 'Enabled'
         }
     });
-
-    console.log(`PAGE INIT TOOK ${ Date.now() - start } MS`);
 });
 
 Handle.bind(EVT_SETTINGS_SAVE, function () {
@@ -170,7 +168,7 @@ Handle.bind(EVT_FILES_LOAD, function () {
                         </div>
                     </div>
                     <div class="four wide right aligned column">
-                        <div><i class="trash alternate glow outline icon" data-file-id="${index}"></i></div>
+                        <div><span class="text-muted margin-medium-right">${ file.version || 'Unknown version' }</span> <i class="trash alternate glow outline icon" data-file-id="${index}"></i></div>
                     </div>
                 </div>
             </div>

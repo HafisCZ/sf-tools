@@ -95,6 +95,10 @@ body.dimmed .menu {
     text-align: center !important;
 }
 
+.text-muted {
+    color: gray !important;
+}
+
 .margin-medium-right {
     margin-right: 1.0em !important;
 }

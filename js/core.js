@@ -267,7 +267,8 @@ const Storage = new (class {
             var file = {
                 groups: [],
                 players: [],
-                timestamp: timestamp
+                timestamp: timestamp,
+                version: 0
             }
 
             for (var pair of raws) {
@@ -321,6 +322,8 @@ const Storage = new (class {
                         } else if (key.includes('playerSave')) {
                             player.save = val.split('/').map(a => Number(a));
                             player.own = true;
+                        } else if (key.includes('serverversion')) {
+                            file.version = Number(val);
                         }
                     }
 
