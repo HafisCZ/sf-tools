@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/html2canvas.js"></script>
+
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/components/state.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+
+        <script src="js/playa.js"></script>
+
+        <script src="js/core.js"></script>
+        <script src="js/event.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu">
+            <div class="header item">SFTools</div>
+            <a class="item" href="index.html"><i class="small reply icon"></i>Return to main site</a>
+        </div>
+
+        <div class="ui main container">
+            <h1 class="ui header centered">Item comparison</h1>
+            <div class="ui four column grid">
+                <div class="column">
+                    <h3 class="ui header centered">Player</h3>
+                    <div class="ui form">
+                        <div class="field">
+                            <label>Class</label>
+                            <div class="ui selection dropdown">
+                                <input type="hidden" value="0" id="class">
+                                <i class="dropdown icon"></i>
+                                <div class="default text"></div>
+                                <div class="menu">
+                                    <div class="item" data-value="0">Warrior</div>
+                                    <div class="item" data-value="1">Scout</div>
+                                    <div class="item" data-value="2">Mage</div>
+                                    <div class="item" data-value="3">Assassin</div>
+                                    <div class="item" data-value="4">Battle Mage</div>
+                                    <div class="item" data-value="5">Berserker</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Level</label>
+                            <input type="text" id="level">
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Strength</label>
+                                <input type="text" id="strength">
+                            </div>
+                            <div class="field">
+                                <label>Strength Potion</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" id="strengthpotion">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">None</div>
+                                        <div class="item" data-value="0.1">10%</div>
+                                        <div class="item" data-value="0.15">15%</div>
+                                        <div class="item" data-value="0.25">25%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Dexterity</label>
+                                <input type="text" id="dexterity">
+                            </div>
+                            <div class="field">
+                                <label>Dexterity Potion</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" id="dexteritypotion">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">None</div>
+                                        <div class="item" data-value="0.1">10%</div>
+                                        <div class="item" data-value="0.15">15%</div>
+                                        <div class="item" data-value="0.25">25%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Intelligence</label>
+                                <input type="text" id="intelligence">
+                            </div>
+                            <div class="field">
+                                <label>Intelligence Potion</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" id="intelligencepotion">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">None</div>
+                                        <div class="item" data-value="0.1">10%</div>
+                                        <div class="item" data-value="0.15">15%</div>
+                                        <div class="item" data-value="0.25">25%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Constitution</label>
+                                <input type="text" id="constitution">
+                            </div>
+                            <div class="field">
+                                <label>Constitution Potion</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" id="constitutionpotion">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">None</div>
+                                        <div class="item" data-value="0.1">10%</div>
+                                        <div class="item" data-value="0.15">15%</div>
+                                        <div class="item" data-value="0.25">25%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Luck</label>
+                                <input type="text" id="luck">
+                            </div>
+                            <div class="field">
+                                <label>Luck Potion</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" id="luckpotion">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">None</div>
+                                        <div class="item" data-value="0.1">10%</div>
+                                        <div class="item" data-value="0.15">15%</div>
+                                        <div class="item" data-value="0.25">25%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Armor</label>
+                                <input type="text" id="armor">
+                            </div>
+                            <div class="field">
+                                <label>Life Potion</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" id="potion">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">No</div>
+                                        <div class="item" data-value="0.25">Yes</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Minimum damage</label>
+                                <input type="text" id="lmindamage">
+                            </div>
+                            <div class="field">
+                                <label>Maximum damage</label>
+                                <input type="text" id="lmaxdamage">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Gladiator %</label>
+                            <input type="text" id="gladiator">
+                        </div>
+                        <div class="field">
+                            <label>Damage Bonus (Guild Portal)</label>
+                            <input type="text" id="damagebonus">
+                        </div>
+                        <div class="field">
+                            <label>Health bonus (Portal)</label>
+                            <input type="text" id="healthbonus">
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <h3 class="ui header centered">Current item</h3>
+                    <div class="ui form">
+                        <div class="field">
+                            <label>Type</label>
+                            <div class="ui selection compact dropdown">
+                                <input type="hidden" value="0" id="itemtype">
+                                <i class="dropdown icon"></i>
+                                <div class="default text"></div>
+                                <div class="menu">
+                                    <div class="item" data-value="0">Equipment</div>
+                                    <div class="item" data-value="1">Weapon</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field" id="larmorgroup">
+                            <label>Armor</label>
+                            <input type="text" id="larmor">
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Strength</label>
+                                <input type="text" id="lstr">
+                            </div>
+                            <div class="field">
+                                <label>Constitution</label>
+                                <input type="text" id="lcon">
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Dexterity</label>
+                                <input type="text" id="ldex">
+                            </div>
+                            <div class="field">
+                                <label>Luck</label>
+                                <input type="text" id="llck">
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Intelligence</label>
+                                <input type="text" id="lint">
+                            </div>
+                            <div class="field hidden">
+                                <label>Upgrades</label>
+                                <input type="text" id="lupgrades">
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Gem</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="-1" id="lgemtype">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="-1">None</div>
+                                        <div class="item" data-value="0">Strength</div>
+                                        <div class="item" data-value="1">Dexterity</div>
+                                        <div class="item" data-value="2">Intelligence</div>
+                                        <div class="item" data-value="3">Constitution</div>
+                                        <div class="item" data-value="4">Luck</div>
+                                        <div class="item" data-value="5">Black</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Value</label>
+                                <input type="text" id="lgemvalue">
+                            </div>
+                        </div>
+                        <div class="equal width fields" id="lenchantfield">
+                            <div class="field">
+                                <label>Elemental damage</label>
+                                <input type="text" id="lrune">
+                            </div>
+                            <div class="field">
+                                <label>Enchantment</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" id="lenchant">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">No</div>
+                                        <div class="item" data-value="1">Yes</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <h3 class="ui header centered">Replacement item</h3>
+                    <div class="ui form">
+                        <div class="field" style="visibility: hidden">
+                            <label><br></label>
+                            <input type="text">
+                        </div>
+                        <div class="two fields" id="rdamagegroup">
+                            <div class="field">
+                                <label>Minimum damage</label>
+                                <input type="text" id="rmindamage">
+                            </div>
+                            <div class="field">
+                                <label>Maximum damage</label>
+                                <input type="text" id="rmaxdamage">
+                            </div>
+                        </div>
+                        <div class="field" id="rarmorgroup">
+                            <label>Armor</label>
+                            <input type="text" id="rarmor">
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Strength</label>
+                                <input type="text" id="rstr">
+                            </div>
+                            <div class="field">
+                                <label>Constitution</label>
+                                <input type="text" id="rcon">
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Dexterity</label>
+                                <input type="text" id="rdex">
+                            </div>
+                            <div class="field">
+                                <label>Luck</label>
+                                <input type="text" id="rlck">
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Intelligence</label>
+                                <input type="text" id="rint">
+                            </div>
+                            <div class="field hidden">
+                                <label>Upgrades</label>
+                                <input type="text" id="rupgrades">
+                            </div>
+                        </div>
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Gem</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="-1" id="rgemtype">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="-1">None</div>
+                                        <div class="item" data-value="0">Strength</div>
+                                        <div class="item" data-value="1">Dexterity</div>
+                                        <div class="item" data-value="2">Intelligence</div>
+                                        <div class="item" data-value="3">Constitution</div>
+                                        <div class="item" data-value="4">Luck</div>
+                                        <div class="item" data-value="5">Black</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Value</label>
+                                <input type="text" id="rgemvalue">
+                            </div>
+                        </div>
+                        <div class="equal width fields" id="renchantfield">
+                            <div class="field">
+                                <label>Elemental damage</label>
+                                <input type="text" id="rrune">
+                            </div>
+                            <div class="field">
+                                <label>Enchantment</label>
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" id="renchant">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">No</div>
+                                        <div class="item" data-value="1">Yes</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <h3 class="ui header centered">Results</h3>
+                    <div class="ui form" id="results">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            (function ($) {
+                $('.ui.dropdown').dropdown();
+                $('#itemtype').on('change', () => {
+                    if ($('#itemtype').val() == 1) {
+                        $('#larmorgroup').css('visibility', 'hidden');
+                        $('#rdamagegroup').show();
+                        $('#rarmorgroup').hide();
+                        $('#lenchantfield').show();
+                        $('#renchantfield').show();
+                    } else {
+                        $('#larmorgroup').css('visibility', '');
+                        $('#rdamagegroup').hide();
+                        $('#rarmorgroup').show();
+                        $('#lenchantfield').hide();
+                        $('#renchantfield').hide();
+                    }
+                });
+                $('#itemtype').trigger('change');
+
+                Math.clamp = (a, b, c) => a < b ? b : (a > c ? c : a);
+
+                function get (id) {
+                    return Number($(id).val()) || 0;
+                }
+
+                function getPlayerModel () {
+                    return {
+                        class: get('#class'),
+                        level: get('#level'),
+                        str: get('#strength'),
+                        strmult: 1 + get('#strengthpotion'),
+                        dex: get('#dexterity'),
+                        dexmult: 1 + get('#dexteritypotion'),
+                        int: get('#intelligence'),
+                        intmult: 1 + get('#intelligencepotion'),
+                        con: get('#constitution'),
+                        conmult: 1 + get('#constitutionpotion'),
+                        lck: get('#luck'),
+                        lckmult: 1 + get('#luckpotion'),
+                        damagemult: 1 + get('#damagebonus') / 100,
+                        critmult: 2 * (1 + get('#gladiator') / 100),
+                        healthmult: (1 + get('#healthbonus') / 100) * (1 + get('#potion')),
+                        armor: get('#armor')
+                    };
+                }
+
+                function getLeftItemModel () {
+                    return {
+                        type: get('#itemtype'),
+                        armor: get('#larmor'),
+                        min: get('#lmindamage'),
+                        max: get('#lmaxdamage'),
+                        str: get('#lstr'),
+                        dex: get('#ldex'),
+                        int: get('#lint'),
+                        con: get('#lcon'),
+                        lck: get('#llck'),
+                        upgrades: get('#lupgrades'),
+                        gem: get('#lgemtype'),
+                        gemval: get('#lgemvalue'),
+                        rune: get('#lrune'),
+                        crit: 1 + get('#lenchant') * 0.05
+                    }
+                }
+
+                function getRightItemModel () {
+                    return {
+                        type: get('#itemtype'),
+                        armor: get('#rarmor'),
+                        min: get('#rmindamage'),
+                        max: get('#rmaxdamage'),
+                        str: get('#rstr'),
+                        dex: get('#rdex'),
+                        int: get('#rint'),
+                        con: get('#rcon'),
+                        lck: get('#rlck'),
+                        upgrades: get('#rupgrades'),
+                        gem: get('#rgemtype'),
+                        gemval: get('#rgemvalue'),
+                        rune: get('#rrune'),
+                        crit: 1 + get('#renchant') * 0.05
+                    }
+                }
+
+                function getMaxDamageReduction (player) {
+                    switch (player.class) {
+                        case 0:
+                            return 0.5;
+                        case 1:
+                        case 4:
+                            return 0.1;
+                        case 2:
+                        case 3:
+                        case 5:
+                            return 0.25;
+                        default:
+                            return 0;
+                    }
+                }
+
+                function getMainAttribute (player, attributes) {
+                    switch (player.class) {
+                        case 0:
+                        case 4:
+                        case 5:
+                            return attributes.str;
+                        case 1:
+                            return attributes.int;
+                        case 2:
+                        case 3:
+                            return attributes.dex;
+                        default:
+                            return 0;
+                    }
+                }
+
+                const TYPE_EQUIPMENT = 0;
+                const TYPE_WEAPON = 1;
+
+                function getGemValue (player, item, attribute) {
+                    var mult = (item.type == TYPE_WEAPON && (player.class != 0 && player.class != 3)) ? 2 : 1;
+                    if (item.gem == 5 || item.gem == attribute) {
+                        return item.gemval * mult;
+                    } else {
+                        return 0;
+                    }
+                }
+
+                const LABELS = {
+                    str: 'Strength',
+                    dex: 'Dexterity',
+                    int: 'Intelligence',
+                    con: 'Constitution',
+                    lck: 'Luck',
+                    chance: 'Critical Chance',
+                    reduction: 'Damage Reduction',
+                    armor: 'Armor',
+                    health: 'Health',
+                    min: 'Minimum Damage',
+                    max: 'Maximum Damage',
+                    cmin: 'Minimum Crit Damage',
+                    cmax: 'Maximum Crit Damage',
+                    avg: 'Average Damage',
+                    cavg: 'Average Crit Damage',
+                    tavg: 'Approximate Total Damage',
+                    rune: 'Elemental Damage'
+                };
+
+                function getFormattedElement (value, content) {
+                    return `
+                        <div class="field">
+                            <h3 class="ui header centered margin-none-top margin-none-bottom">${ LABELS[content] }</h3>
+                            <h2 class="ui header centered margin-none-top ${ value < 0 ? 'red' : 'green' }" style="margin-bottom: 0.9em !important;">${ value > 0 ? '+' : '' }${ value }</h2>
+                        </div>
+                    `;
+                }
+
+                function compareItems (player, left, right) {
+                    var content = [];
+
+                    var cur = {
+                        str: player.str,
+                        dex: player.dex,
+                        int: player.int,
+                        con: player.con,
+                        lck: player.lck,
+                        chance: Math.min(0.5, player.lck * 5 / (2 * player.level) / 100),
+                        crit: player.critmult * left.crit,
+                        health: player.con * 5 * (player.level + 1) * player.healthmult,
+                        armor: player.armor,
+                        rune: left.rune,
+                        reduction: Math.min(getMaxDamageReduction(player), (player.armor * (player.class == 5 ? 0.5 : 1)) / player.level / 100),
+                        min: (1 + getMainAttribute(player, player) / 10) * left.min * player.damagemult,
+                        max: (1 + getMainAttribute(player, player) / 10) * left.max * player.damagemult
+                    };
+
+                    cur.cmin = cur.min * cur.crit;
+                    cur.cmax = cur.max * cur.crit;
+                    cur.avg = (cur.min + cur.max) / 2;
+                    cur.cavg = (cur.cmin + cur.cmax) / 2;
+                    cur.tavg = cur.avg * (1 - cur.chance) + cur.cavg * cur.chance;
+
+                    var rep = {
+                        str: player.str + ((right.str + getGemValue(player, right, 0)) - (left.str + getGemValue(player, left, 0))) * player.strmult,
+                        dex: player.dex + ((right.dex + getGemValue(player, right, 1)) - (left.dex + getGemValue(player, left, 1))) * player.dexmult,
+                        int: player.int + ((right.int + getGemValue(player, right, 2)) - (left.int + getGemValue(player, left, 2))) * player.intmult,
+                        con: player.con + ((right.con + getGemValue(player, right, 3)) - (left.con + getGemValue(player, left, 3))) * player.conmult,
+                        lck: player.lck + ((right.lck + getGemValue(player, right, 4)) - (left.lck + getGemValue(player, left, 4))) * player.lckmult,
+                        crit: player.critmult * right.crit,
+                        rune: right.rune
+                    };
+
+                    rep.chance = Math.min(0.5, rep.lck * 5 / (2 * player.level) / 100);
+                    rep.health = rep.con * 5 * (player.level + 1) * player.healthmult;
+                    rep.armor = cur.armor + (left.type == TYPE_EQUIPMENT ? (right.armor - left.armor) : 0);
+                    rep.reduction = Math.min(getMaxDamageReduction(player), (rep.armor * (player.class == 5 ? 0.5 : 1)) / player.level / 100);
+                    rep.min = (1 + getMainAttribute(player, rep) / 10) * (left.type == TYPE_WEAPON ? right.min : left.min) * player.damagemult;
+                    rep.max = (1 + getMainAttribute(player, rep) / 10) * (left.type == TYPE_WEAPON ? right.max : left.max) * player.damagemult;
+                    rep.cmin = rep.min * rep.crit;
+                    rep.cmax = rep.max * rep.crit;
+                    rep.avg = (rep.min + rep.max) / 2;
+                    rep.cavg = (rep.cmin + rep.cmax) / 2;
+                    rep.tavg = rep.avg * (1 - rep.chance) * (1 + rep.rune / 100) + rep.cavg * rep.chance * (1 + rep.rune / 100);
+
+                    var dif = {
+                        str: Math.trunc(rep.str - cur.str),
+                        dex: Math.trunc(rep.dex - cur.dex),
+                        int: Math.trunc(rep.int - cur.int),
+                        con: Math.trunc(rep.con - cur.con),
+                        lck: Math.trunc(rep.lck - cur.lck),
+                        health: Math.trunc(rep.health - cur.health),
+                        chance: Math.trunc(100 * (rep.chance - cur.chance)),
+                        armor: Math.trunc(rep.armor - cur.armor),
+                        reduction: Math.trunc(100 * (rep.reduction - cur.reduction)),
+                        min: Math.trunc(rep.min - cur.min),
+                        max: Math.trunc(rep.max - cur.max),
+                        avg: Math.trunc(rep.avg - cur.avg),
+                        cmin: Math.trunc(rep.cmin - cur.cmin),
+                        cmax: Math.trunc(rep.cmax - cur.cmax),
+                        cavg: Math.trunc(rep.cavg - cur.cavg),
+                        tavg: Math.trunc(rep.tavg - cur.tavg),
+                        rune: Math.trunc(rep.rune - cur.rune)
+                    };
+
+                    $('#results').html(Object.entries(dif).map(x => x[1] == 0 || isNaN(x[1]) ? '' : getFormattedElement(x[1], x[0])).join(''));
+                    $('#results').prepend('<h4 class="ui header centered red">Pet & class bonus calculations are missing! They will be implemented in the upcoming updates.</h4>');
+                }
+
+                $('input').on('input change', () => compareItems(getPlayerModel(), getLeftItemModel(), getRightItemModel()));
+                $('input').first().trigger('input');
+            })(jQuery);
+        </script>
+    </body>
+</html>
