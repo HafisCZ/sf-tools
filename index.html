@@ -21,6 +21,7 @@
         <script src="js/playa.js"></script>
 
         <script src="js/core.js"></script>
+        <script src="js/table.js"></script>
         <script src="js/event.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
@@ -96,20 +97,103 @@
         </div>
 
         <div class="ui main container hidden" id="container-settings">
-            <div class="ui two columns grid">
+            <div class="ui three columns grid">
                 <div class="column">
-                    <h2 class="ui centered header">Highlighting</h2>
-                    <div class="ui form" id="container-settings-highlighting"></div>
+                    <div class="ui secondary menu">
+                        <a class="item active" data-tab="tab0">Standart</a>
+                        <a class="item" data-tab="tab1">Advanced</a>
+                    </div>
                 </div>
                 <div class="column">
-                    <h2 class="ui centered header">Default Layout</h2>
-                    <div class="ui form">
-                        <div id="container-settings-layout"></div>
-                        <div class="field">
-                            <label><br></label>
-                            <button class="ui right floated secondary button" type="submit" id="container-settings-save">Save</button>
-                            <button class="ui right floated button margin-medium-right" type="submit" id="container-settings-clear">Clear</button>
+                    <h1 class="ui header centered">Configuration</h1>
+                </div>
+                <div class="column">
+                    <button class="ui right floated secondary button" type="submit" id="container-settings-save">Save</button>
+                    <button class="ui right floated button margin-medium-right" type="submit" id="container-settings-clear">Clear</button>
+                </div>
+            </div>
+            <div class="ui tab basic segment active" data-tab="tab0" id="container-settings-auto">
+                <div class="ui two columns grid">
+                    <div class="column">
+                        <h2 class="ui centered header">Highlighting</h2>
+                        <div class="ui form" id="container-settings-highlighting">
+
                         </div>
+                    </div>
+                    <div class="column">
+                        <h2 class="ui centered header">Layout</h2>
+                        <div class="ui form" id="container-settings-layout">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui tab basic segment " data-tab="tab1">
+                <div class="ui two columns grid">
+                    <div class="column">
+                        <div class="ui form">
+                            <div class="field">
+                                <textarea class="area-input" id="container-settings-manual"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h2 class="ui centered header">Manual</h2>
+                        <b>You can remove the line or use <code>false</code>, <code>0</code> to disable a certain function</b><br>
+                        <b>You have to include <code>(required)</code> settings</b><br>
+                        <h3 class="ui header">Global</h3>
+                        <p>
+                            <b>categories</b><code>(required)</code><br>
+                            - Array with categories within the table<br>
+                            <b>brackets</b><br>
+                            - Use <code>true</code> to show brackets around differences<br>
+                            <b>group</b><br>
+                            - Use <code>1</code> to show guild statistics<br>
+                            - Use <code>2</code> to show guild statistics with join/leave member list<br>
+                        </p>
+                        <h3 class="ui header">Category</h3>
+                        <p>
+                            <b>name</b><code>(required)</code><br>
+                            - Category name<br>
+                            - Special names: <code>Potions</code><br>
+                            <b>headers</b><br>
+                            - Array with headers within this category<br>
+                        </p>
+                        <h3 class="ui header">Header</h3>
+                        <p>
+                            <b>name</b><code>(required)</code><br>
+                            - Header type<br>
+                            - Available names: <code>Class</code>, <code>ID</code>, <code>Rank</code>, <code>Role</code>, <code>Level</code>, <code>Album</code>, <code>Mount</code>, <code>Awards</code>, <code>Treasure</code>, <code>Instructor</code>, <code>Pet</code>, <code>Knights</code>, <code>Fortress</code>, <code>GemMine</code>, <code>Honor</code>, <code>Upgrades</code>, <code>Tower</code>, <code>Portal</code>, <code>Equipment</code>, <code>Custom</code></br>
+                            <b>diff</b><br>
+                            - Use <code>true</code> to show difference<br>
+                            <b>colors</b><br>
+                            - Array with colors for highlighting<br>
+                            - First value is default color, others follow format <code>[ x, color ]</code> that will highlight any values equal or better than <code>x</code> with specified color</br>
+                            - You can can use any valid CSS color values<br>
+                            <b>percentage</b><br>
+                            - Use <code>true</code> to show percentage instead of real value<br>
+                            - Can be only applied to <code>Mount</code>, <code>Album</code><br>
+                            <b>hydra</b><br>
+                            - Use <code>true</code> to show if player has slain the Hydra<br>
+                            - Can be only applied to <code>Awards</code><br>
+                        </p>
+                        <h3 class="ui header">Custom</h3>
+                        <p>
+                            <b>name</b><code>(required)</code><br>
+                            - Must be set to <code>Custom</code><br>
+                            <b>label</b><code>(required)</code><br>
+                            - Header name<br>
+                            <b>diff</b><br>
+                            - Use <code>true</code> to show difference<br>
+                            <b>colors</b><br>
+                            - Array with colors for highlighting<br>
+                            - First value is default color, others follow format <code>[ x, color ]</code> that will highlight any values equal or better than <code>x</code> with specified color</br>
+                            - You can can use any valid CSS color values<br>
+                            <b>values</b><br>
+                            - Array with values that will replace original values<br>
+                            <b>width</b><br>
+                            - Width of the column<br>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -198,21 +282,104 @@
         </div>
 
         <div class="ui basic large modal text-white" id="modal-custom-settings">
-            <div class="ui two columns grid">
-                <div class="column">
-                    <h2 class="ui centered header">Custom Highlighting</h2>
-                    <div class="ui form" id="modal-custom-settings-highlighting"></div>
+            <div class="ui three columns grid">
+                <div class="seven wide column">
+                    <div class="ui secondary menu">
+                        <a class="item active text-white" data-tab="tab0">Standart</a>
+                        <a class="item text-white" data-tab="tab1">Advanced</a>
+                    </div>
                 </div>
-                <div class="column">
-                    <h2 class="ui centered header">Custom Layout</h2>
-                    <div class="ui form">
-                        <div id="modal-custom-settings-layout"></div>
-                        <div class="field">
-                            <label><br></label>
-                            <button class="ui right floated secondary button" type="submit" id="modal-custom-settings-save">Save</button>
-                            <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-reset">Clear</button>
-                            <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-clear">Remove custom settings</button>
+                <div class="two wide column">
+                    <h1 class="ui header text-white centered">Configuration</h1>
+                </div>
+                <div class="seven wide column">
+                    <button class="ui right floated secondary button" type="submit" id="modal-custom-settings-save">Save</button>
+                    <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-reset">Clear</button>
+                    <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-clear">Remove custom settings</button>
+                </div>
+            </div>
+            <div class="ui tab basic segment active" data-tab="tab0" id="modal-custom-settings-auto">
+                <div class="ui two columns grid">
+                    <div class="column">
+                        <h2 class="ui centered header">Highlighting</h2>
+                        <div class="ui form" id="modal-custom-settings-highlighting">
+
                         </div>
+                    </div>
+                    <div class="column">
+                        <h2 class="ui centered header">Layout</h2>
+                        <div class="ui form" id="modal-custom-settings-layout">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui tab basic segment " data-tab="tab1">
+                <div class="ui two columns grid">
+                    <div class="column">
+                        <div class="ui form">
+                            <div class="field">
+                                <textarea class="area-input" id="modal-custom-settings-manual"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h2 class="ui centered header">Manual</h2>
+                        <b>You can remove the line or use <code>false</code>, <code>0</code> to disable a certain function</b><br>
+                        <b>You have to include <code>(required)</code> settings</b><br>
+                        <h3 class="ui header">Global</h3>
+                        <p>
+                            <b>categories</b><code>(required)</code><br>
+                            - Array with categories within the table<br>
+                            <b>brackets</b><br>
+                            - Use <code>true</code> to show brackets around differences<br>
+                            <b>group</b><br>
+                            - Use <code>1</code> to show guild statistics<br>
+                            - Use <code>2</code> to show guild statistics with join/leave member list<br>
+                        </p>
+                        <h3 class="ui header">Category</h3>
+                        <p>
+                            <b>name</b><code>(required)</code><br>
+                            - Category name<br>
+                            - Special names: <code>Potions</code><br>
+                            <b>headers</b><br>
+                            - Array with headers within this category<br>
+                        </p>
+                        <h3 class="ui header">Header</h3>
+                        <p>
+                            <b>name</b><code>(required)</code><br>
+                            - Header type<br>
+                            - Available names: <code>Class</code>, <code>ID</code>, <code>Rank</code>, <code>Role</code>, <code>Level</code>, <code>Album</code>, <code>Mount</code>, <code>Awards</code>, <code>Treasure</code>, <code>Instructor</code>, <code>Pet</code>, <code>Knights</code>, <code>Fortress</code>, <code>GemMine</code>, <code>Honor</code>, <code>Upgrades</code>, <code>Tower</code>, <code>Portal</code>, <code>Equipment</code>, <code>Custom</code></br>
+                            <b>diff</b><br>
+                            - Use <code>true</code> to show difference<br>
+                            <b>colors</b><br>
+                            - Array with colors for highlighting<br>
+                            - First value is default color, others follow format <code>[ x, color ]</code> that will highlight any values equal or better than <code>x</code> with specified color</br>
+                            - You can can use any valid CSS color values<br>
+                            <b>percentage</b><br>
+                            - Use <code>true</code> to show percentage instead of real value<br>
+                            - Can be only applied to <code>Mount</code>, <code>Album</code><br>
+                            <b>hydra</b><br>
+                            - Use <code>true</code> to show if player has slain the Hydra<br>
+                            - Can be only applied to <code>Awards</code><br>
+                        </p>
+                        <h3 class="ui header">Custom</h3>
+                        <p>
+                            <b>name</b><code>(required)</code><br>
+                            - Must be set to <code>Custom</code><br>
+                            <b>label</b><code>(required)</code><br>
+                            - Header name<br>
+                            <b>diff</b><br>
+                            - Use <code>true</code> to show difference<br>
+                            <b>colors</b><br>
+                            - Array with colors for highlighting<br>
+                            - First value is default color, others follow format <code>[ x, color ]</code> that will highlight any values equal or better than <code>x</code> with specified color</br>
+                            - You can can use any valid CSS color values<br>
+                            <b>values</b><br>
+                            - Array with values that will replace original values<br>
+                            <b>width</b><br>
+                            - Width of the column<br>
+                        </p>
                     </div>
                 </div>
             </div>

@@ -34,7 +34,7 @@ body.dimmed .menu {
     overflow: hidden !important;
 }
 
-.text-white label, .text-white .header {
+.text-white label, .text-white .header, .text-white a {
     color: white !important;
 }
 
@@ -137,6 +137,12 @@ body.dimmed .menu {
 
 .font-big {
     font-size: 1.25em !important;
+}
+
+.area-input {
+    max-height: none !important;
+    height: 88em !important;
+    resize: none !important;
 }
 
 .player-small .column {

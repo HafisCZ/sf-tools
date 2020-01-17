@@ -11,6 +11,10 @@ const Preferences = new (class {
         return this.storage[key] ? JSON.parse(this.storage[key]) : def;
     }
 
+    exists (key) {
+        return this.storage[key] != null;
+    }
+
     remove (key) {
         delete this.storage[key];
     }

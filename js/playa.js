@@ -3,22 +3,79 @@ class Item {
         var dataType = ComplexDataType.fromArray(data);
         dataType.assert(48);
 
-        this.type = dataType.short();
-        this.socket = dataType.byte();
-        this.enchantmentType = dataType.byte();
-        this.picIndex = dataType.short();
-        this.enchantmentPower = dataType.short();
-        this.damageMin = dataType.long();
-        this.damageMax = dataType.long();
-        this.attributeType = [dataType.long(), dataType.long(), dataType.long()];
-        this.attributeValue = [dataType.long(), dataType.long(), dataType.long()];
-        this.gold = dataType.long();
-        this.coins = dataType.byte();
-        this.upgradeLevel = dataType.byte();
-        this.socketPower = dataType.short();
+        var type = dataType.short();
+        var socket = dataType.byte();
+        var enchantmentType = dataType.byte();
+        var picIndex = dataType.short();
+        var enchantmentPower = dataType.short();
+        var damageMin = dataType.long();
+        var damageMax = dataType.long();
+        var attributeType = [dataType.long(), dataType.long(), dataType.long()];
+        var attributeValue = [dataType.long(), dataType.long(), dataType.long()];
+        var gold = dataType.long();
+        var coins = dataType.byte();
+        var upgradeLevel = dataType.byte();
+        var socketPower = dataType.short();
 
-        this.index = this.picIndex % 1000;
-        this.class = Math.trunc(this.picIndex / 1000) + 1;
+        this.Socket = socket;
+        this.GemType = socket >= 10 ? (socket % 10) : -1;
+        this.HasSocket = socket > 0;
+        this.GemValue = socketPower;
+        this.HasGem = socket > 1;
+        this.HasRune = attributeType[2] > 0;
+        this.Class = Math.trunc(picIndex / 1000) + 1;
+        this.PicIndex = picIndex;
+        this.Index = picIndex % 1000;
+        this.IsEpic = type < 11 && this.Index >= 50;
+        this.Type = type;
+        this.IsFlushed = coins == 0 && gold == 0 && type > 0 && type < 11;
+        this.HasValue = (coins > 0 || gold > 0 || (upgradeLevel > 0 && gold != 0 && type != 1));
+        this.Enchantment = enchantmentType;
+        this.Armor = damageMin;
+        this.DamageMin = damageMin;
+        this.DamageMax = damageMax;
+        this.DamageAverage = (damageMax + damageMin) / 2;
+        this.Upgrades = upgradeLevel;
+        this.Value = gold / 100;
+        this.Mushrooms = coins;
+        this.AttributeTypes = attributeType;
+        this.Attributes = attributeValue;
+    }
+
+    getBlacksmithQuality () {
+        if (this.Attributes[0] > 0 && this.Attributes[1] > 0 && this.Attributes[2] > 0 && this.AttributeTypes[2] < 31) {
+            return 3;
+        } else if (this.AttributeTypes[0] >= 21 && this.AttributeTypes[0] <= 23) {
+            return 3;
+        } else if (this.AttributeTypes[0] == 6) {
+            return 3;
+        } else if (this.Attributes[0] > 0 && this.Attributes[1] > 0) {
+            return 2;
+        } else {
+            return 1;
+        }
+    }
+
+    getItemLevel () {
+        var num = this.Attributes[0];
+
+        if (this.AttributeTypes[0] == 6) {
+            num = Math.trunc(num * 1.2);
+        }
+
+        if (this.Type == 1 && this.PicIndex > 999) {
+            num = Math.trunc(num / 2);
+        }
+
+        if (this.PicIndex == 52 || this.PicIndex == 1052 || this.PicIndex == 2052 || this.PicIndex == 66 || this.PicIndex == 1066 || this.PicIndex == 2066) {
+            if (this.AttributeTypes[0] == 5 && this.AttributeTypes[1] <= 0) {
+                num = Math.trunc(num / 5);
+            }
+        } else if (this.getBlacksmithQuality() == 1 && num > 66) {
+            num = Math.trunc(num * 0.75);
+        }
+
+        return Math.floor(Math.pow(num, 1.2));
     }
 }
 

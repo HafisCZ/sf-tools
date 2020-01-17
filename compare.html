@@ -578,11 +578,11 @@
                     cur.tavg = cur.avg * (1 - cur.chance) + cur.cavg * cur.chance;
 
                     var rep = {
-                        str: player.str + ((right.str + getGemValue(player, right, 0)) - (left.str + getGemValue(player, left, 0))) * player.strmult,
-                        dex: player.dex + ((right.dex + getGemValue(player, right, 1)) - (left.dex + getGemValue(player, left, 1))) * player.dexmult,
-                        int: player.int + ((right.int + getGemValue(player, right, 2)) - (left.int + getGemValue(player, left, 2))) * player.intmult,
-                        con: player.con + ((right.con + getGemValue(player, right, 3)) - (left.con + getGemValue(player, left, 3))) * player.conmult,
-                        lck: player.lck + ((right.lck + getGemValue(player, right, 4)) - (left.lck + getGemValue(player, left, 4))) * player.lckmult,
+                        str: player.str + ((right.str + getGemValue(player, right, 0)) - (left.str + getGemValue(player, left, 0))) * player.strmult * (player.class >= 4 ? 1.11 : 1),
+                        dex: player.dex + ((right.dex + getGemValue(player, right, 1)) - (left.dex + getGemValue(player, left, 1))) * player.dexmult * (player.class >= 4 ? 1.11 : 1),
+                        int: player.int + ((right.int + getGemValue(player, right, 2)) - (left.int + getGemValue(player, left, 2))) * player.intmult * (player.class >= 4 ? 1.11 : 1),
+                        con: player.con + ((right.con + getGemValue(player, right, 3)) - (left.con + getGemValue(player, left, 3))) * player.conmult * (player.class >= 4 ? 1.11 : 1),
+                        lck: player.lck + ((right.lck + getGemValue(player, right, 4)) - (left.lck + getGemValue(player, left, 4))) * player.lckmult * (player.class >= 4 ? 1.11 : 1),
                         crit: player.critmult * right.crit,
                         rune: right.rune
                     };
