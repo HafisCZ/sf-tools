@@ -455,13 +455,13 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="column"><br></div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Treasure</div>
-                        <div class="column" style="color: ${ Color.Get(player.Group.Treasure, config.findEntry('Treasure').colors) };">${ player.Group.Treasure }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Group.Treasure, config.findEntrySafe('Treasure').colors) };">${ player.Group.Treasure }</div>
                         <div class="left aligned column font-big">Instructor</div>
-                        <div class="column" style="color: ${ Color.Get(player.Group.Instructor, config.findEntry('Instructor').colors) }">${ player.Group.Instructor }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Group.Instructor, config.findEntrySafe('Instructor').colors) }">${ player.Group.Instructor }</div>
                         <div class="left aligned column font-big">Pet</div>
-                        <div class="column" style="color: ${ Color.Get(player.Group.Pet, config.findEntry('Pet').colors) }">${ player.Group.Pet }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Group.Pet, config.findEntrySafe('Pet').colors) }">${ player.Group.Pet }</div>
                         <div class="left aligned column font-big">Knights</div>
-                        <div class="column" style="color: ${ Color.Get(player.Fortress.Knights, config.findEntry('Knights').colors) }">${ player.Fortress.Knights }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Fortress.Knights, config.findEntrySafe('Knights').colors) }">${ player.Fortress.Knights }</div>
                         <div class="column"><br></div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Guild join date</div>
@@ -473,13 +473,13 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                 <div class="column">
                     <div class="ui three columns grid player-small">
                         <div class="left aligned column font-big">Scrapbook</div>
-                        <div class="column" style="color: ${ Color.Get(100 * player.Book / SCRAPBOOK_COUNT, config.findEntry('Album').colors) }">${ Number(100 * player.Book / SCRAPBOOK_COUNT).toFixed(2) }%</div>
+                        <div class="column" style="color: ${ Color.Get(100 * player.Book / SCRAPBOOK_COUNT, config.findEntrySafe('Album').colors) }">${ Number(100 * player.Book / SCRAPBOOK_COUNT).toFixed(2) }%</div>
                         <div class="column">${ player.Book } out of ${ SCRAPBOOK_COUNT }</div>
                         <div class="left aligned column font-big">Mount</div>
-                        <div class="column" style="color: ${ Color.Get(player.Mount, config.findEntry('Mount').colors) }">${ player.Mount ? (PLAYER_MOUNT[player.Mount] + '%') : 'None' }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Mount, config.findEntrySafe('Mount').colors) }">${ player.Mount ? (PLAYER_MOUNT[player.Mount] + '%') : 'None' }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Achievements</div>
-                        <div class="column" style="color: ${ Color.Get(player.Achievements.Owned, config.findEntry('Awards').colors) }">${ Math.trunc(100 * player.Achievements.Owned / ACHIEVEMENT_COUNT) }%${ config.findEntry('Awards').hydra && player.Achievements.Dehydration ? '<span> H</span>' : '' }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Achievements.Owned, config.findEntrySafe('Awards').colors) }">${ Math.trunc(100 * player.Achievements.Owned / ACHIEVEMENT_COUNT) }%${ config.findEntrySafe('Awards').hydra && player.Achievements.Dehydration ? '<span> H</span>' : '' }</div>
                         <div class="column">${ player.Achievements.Owned } out of ${ ACHIEVEMENT_COUNT }</div>
                         <div class="left aligned column font-big">Health Bonus</div>
                         <div class="column">${ player.Dungeons.Player }%</div>
@@ -491,28 +491,28 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="column"></div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Potions</div>
-                        <div class="column" style="color: ${ Color.Get(player.Potions[0].Size, config.findEntry('Potions').colors) }">${ player.Potions[0].Size ? `${ player.Potions[0].Size }%` : '' }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Potions[0].Size, config.findEntrySafe('Potions').colors) }">${ player.Potions[0].Size ? `${ player.Potions[0].Size }%` : '' }</div>
                         <div class="left aligned column">${ player.Potions[0].Size ? POTIONS[player.Potions[0].Type] : '' }</div>
                         <div class="left aligned column font-big"><br></div>
-                        <div class="column" style="color: ${ Color.Get(player.Potions[1].Size, config.findEntry('Potions').colors) }">${ player.Potions[1].Size ? `${ player.Potions[1].Size }%` : '' }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Potions[1].Size, config.findEntrySafe('Potions').colors) }">${ player.Potions[1].Size ? `${ player.Potions[1].Size }%` : '' }</div>
                         <div class="left aligned column">${ player.Potions[1].Size ? POTIONS[player.Potions[1].Type] : '' }</div>
                         <div class="left aligned column font-big"><br></div>
-                        <div class="column" style="color: ${ Color.Get(player.Potions[2].Size, config.findEntry('Potions').colors) }">${ player.Potions[2].Size ? `${ player.Potions[2].Size }%` : '' }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Potions[2].Size, config.findEntrySafe('Potions').colors) }">${ player.Potions[2].Size ? `${ player.Potions[2].Size }%` : '' }</div>
                         <div class="left aligned column">${ player.Potions[2].Size ? POTIONS[player.Potions[2].Type] : '' }</div>
                         <div class="column"><br></div>
                         <div class="column"></div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Fortress</div>
-                        <div class="column" style="color: ${ Color.Get(player.Fortress.Fortress, config.findEntry('Fortress').colors) }">${ player.Fortress.Fortress }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Fortress.Fortress, config.findEntrySafe('Fortress').colors) }">${ player.Fortress.Fortress }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Upgrades</div>
-                        <div class="column" style="color: ${ Color.Get(player.Fortress.Upgrades, config.findEntry('Upgrades').colors) }">${ player.Fortress.Upgrades }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Fortress.Upgrades, config.findEntrySafe('Upgrades').colors) }">${ player.Fortress.Upgrades }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Honor</div>
-                        <div class="column" style="color: ${ Color.Get(player.Fortress.Honor, config.findEntry('Honor').colors) }">${ player.Fortress.Honor }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Fortress.Honor, config.findEntrySafe('Honor').colors) }">${ player.Fortress.Honor }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Gem Mine</div>
-                        <div class="column" style="color: ${ Color.Get(player.Fortress.GemMine, config.findEntry('GemMine').colors) }">${ player.Fortress.GemMine }</div>
+                        <div class="column" style="color: ${ Color.Get(player.Fortress.GemMine, config.findEntrySafe('GemMine').colors) }">${ player.Fortress.GemMine }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Treasury</div>
                         <div class="column">${ player.Fortress.Treasury }</div>
@@ -572,11 +572,11 @@ Handle.bind(EVT_GROUP_SETTINGS_SAVE, function () {
             throw 'iconf';
         }
         Config.save(config, State.getGroupID());
+        $('#modal-custom-settings').modal('hide');
+        Handle.call(EVT_GROUP_LOAD_TABLE);
     } catch (exception) {
-        Handle.call(EVT_SHOWERROR, 'Invalid configuration!');
+        $('#modal-custom-settings-manual').transition('shake');
     }
-    $('#modal-custom-settings').modal('hide');
-    Handle.call(EVT_GROUP_LOAD_TABLE);
 });
 
 Handle.bind(EVT_GROUP_SETTINGS_CLEAR, function () {
@@ -678,7 +678,7 @@ Handle.bind(EVT_SETTINGS_SAVE, function () {
         Config.save(config);
         Handle.call(EVT_SETTINGS_LOAD);
     } catch (exception) {
-        Handle.call(EVT_SHOWERROR, 'Invalid configuration!');
+        $('#container-settings-manual').transition('shake');
     }
 });
 

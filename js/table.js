@@ -245,6 +245,10 @@ class Config {
         return null;
     }
 
+    findEntrySafe (name) {
+        return this.findEntry(name) || { };
+    }
+
     getData () {
         return this.config;
     }
