@@ -474,17 +474,6 @@
                     $('.ui.dropdown').dropdown();
                 });
 
-/*
-                const CLASS = {
-                    WARRIOR: 0,
-                    MAGE: 1,
-                    SCOUT: 2,
-                    ASSASSIN: 3,
-                    BATTLEMAGE: 4,
-                    BERSERKER: 5
-                };
-*/
-
                 Math.clamp = (a, b, c) => a < b ? b : (a > c ? c : a);
 
                 function get (id) {
@@ -630,12 +619,12 @@
                         int: player.int,
                         con: player.con,
                         lck: player.lck,
-                        chance: Math.min(0.5, player.lck * 5 / (2 * player.level) / 100),
+                        chance: Math.max(0, Math.min(0.5, player.lck * 5 / (2 * player.level) / 100)),
                         crit: player.critmult * left.crit,
                         health: player.con * 5 * (player.level + 1) * player.healthmult,
                         armor: player.armor,
                         rune: left.rune,
-                        reduction: Math.min(getMaxDamageReduction(player), (player.armor * (player.class == 5 ? 0.5 : 1)) / player.level / 100),
+                        reduction: Math.max(0, Math.min(getMaxDamageReduction(player), (player.armor * (player.class == 5 ? 0.5 : 1)) / player.level / 100)),
                         min: (1 + getMainAttribute(player, player) / 10) * left.min * player.damagemult,
                         max: (1 + getMainAttribute(player, player) / 10) * left.max * player.damagemult
                     };
@@ -656,10 +645,10 @@
                         rune: right.rune
                     };
 
-                    rep.chance = Math.min(0.5, rep.lck * 5 / (2 * player.level) / 100);
+                    rep.chance = Math.max(0, Math.min(0.5, rep.lck * 5 / (2 * player.level) / 100));
                     rep.health = rep.con * 5 * (player.level + 1) * player.healthmult;
                     rep.armor = cur.armor + (left.type == TYPE_EQUIPMENT ? (right.armor - left.armor) : 0);
-                    rep.reduction = Math.min(getMaxDamageReduction(player), (rep.armor * (player.class == 5 ? 0.5 : 1)) / player.level / 100);
+                    rep.reduction = Math.max(0, Math.min(getMaxDamageReduction(player), (rep.armor * (player.class == 5 ? 0.5 : 1)) / player.level / 100));
                     rep.min = (1 + getMainAttribute(player, rep) / 10) * (left.type == TYPE_WEAPON ? right.min : left.min) * player.damagemult;
                     rep.max = (1 + getMainAttribute(player, rep) / 10) * (left.type == TYPE_WEAPON ? right.max : left.max) * player.damagemult;
                     rep.cmin = rep.min * rep.crit;
@@ -669,23 +658,23 @@
                     rep.tavg = rep.avg * (1 - rep.chance) * (1 + rep.rune / 100) + rep.cavg * rep.chance * (1 + rep.rune / 100);
 
                     var dif = {
-                        str: Math.trunc(rep.str - cur.str),
-                        dex: Math.trunc(rep.dex - cur.dex),
-                        int: Math.trunc(rep.int - cur.int),
-                        con: Math.trunc(rep.con - cur.con),
-                        lck: Math.trunc(rep.lck - cur.lck),
-                        health: Math.trunc(rep.health - cur.health),
-                        chance: Math.trunc(100 * (rep.chance - cur.chance)),
-                        armor: Math.trunc(rep.armor - cur.armor),
-                        reduction: Math.trunc(100 * (rep.reduction - cur.reduction)),
-                        min: Math.trunc(rep.min - cur.min),
-                        max: Math.trunc(rep.max - cur.max),
-                        avg: Math.trunc(rep.avg - cur.avg),
-                        cmin: Math.trunc(rep.cmin - cur.cmin),
-                        cmax: Math.trunc(rep.cmax - cur.cmax),
-                        cavg: Math.trunc(rep.cavg - cur.cavg),
-                        tavg: Math.trunc(rep.tavg - cur.tavg),
-                        rune: Math.trunc(rep.rune - cur.rune)
+                        str: Math.trunc(rep.str) - Math.trunc(cur.str),
+                        dex: Math.trunc(rep.dex) - Math.trunc(cur.dex),
+                        int: Math.trunc(rep.int) - Math.trunc(cur.int),
+                        con: Math.trunc(rep.con) - Math.trunc(cur.con),
+                        lck: Math.trunc(rep.lck) - Math.trunc(cur.lck),
+                        health: Math.trunc(rep.health) - Math.trunc(cur.health),
+                        chance: Math.trunc(100 * rep.chance) - Math.trunc(100 * cur.chance),
+                        armor: Math.trunc(rep.armor) - Math.trunc(cur.armor),
+                        reduction: Math.trunc(100 * rep.reduction) - Math.trunc(100 * cur.reduction),
+                        min: Math.trunc(rep.min) - Math.trunc(cur.min),
+                        max: Math.trunc(rep.max) - Math.trunc(cur.max),
+                        avg: Math.trunc(rep.avg) - Math.trunc(cur.avg),
+                        cmin: Math.trunc(rep.cmin) - Math.trunc(cur.cmin),
+                        cmax: Math.trunc(rep.cmax) - Math.trunc(cur.cmax),
+                        cavg: Math.trunc(rep.cavg) - Math.trunc(cur.cavg),
+                        tavg: Math.trunc(rep.tavg) - Math.trunc(cur.tavg),
+                        rune: Math.trunc(rep.rune) - Math.trunc(cur.rune)
                     };
 
                     $('#results').html(Object.entries(dif).map(x => x[1] == 0 || isNaN(x[1]) ? '' : getFormattedElement(x[1], x[0])).join(''));
