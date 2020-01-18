@@ -32,361 +32,416 @@
         </div>
 
         <div class="ui main container">
-            <h1 class="ui header centered">Item comparison</h1>
-            <div class="ui four column grid">
+            <div class="ui three columns grid">
                 <div class="column">
-                    <h3 class="ui header centered">Player</h3>
-                    <div class="ui form">
-                        <div class="field">
-                            <label>Class</label>
-                            <div class="ui selection dropdown">
-                                <input type="hidden" value="0" id="class">
-                                <i class="dropdown icon"></i>
-                                <div class="default text"></div>
-                                <div class="menu">
-                                    <div class="item" data-value="0">Warrior</div>
-                                    <div class="item" data-value="1">Scout</div>
-                                    <div class="item" data-value="2">Mage</div>
-                                    <div class="item" data-value="3">Assassin</div>
-                                    <div class="item" data-value="4">Battle Mage</div>
-                                    <div class="item" data-value="5">Berserker</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label>Level</label>
-                            <input type="text" id="level">
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Strength</label>
-                                <input type="text" id="strength">
-                            </div>
-                            <div class="field">
-                                <label>Strength Potion</label>
-                                <div class="ui selection compact dropdown">
-                                    <input type="hidden" value="0" id="strengthpotion">
-                                    <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
-                                    <div class="menu">
-                                        <div class="item" data-value="0">None</div>
-                                        <div class="item" data-value="0.1">10%</div>
-                                        <div class="item" data-value="0.15">15%</div>
-                                        <div class="item" data-value="0.25">25%</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Dexterity</label>
-                                <input type="text" id="dexterity">
-                            </div>
-                            <div class="field">
-                                <label>Dexterity Potion</label>
-                                <div class="ui selection compact dropdown">
-                                    <input type="hidden" value="0" id="dexteritypotion">
-                                    <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
-                                    <div class="menu">
-                                        <div class="item" data-value="0">None</div>
-                                        <div class="item" data-value="0.1">10%</div>
-                                        <div class="item" data-value="0.15">15%</div>
-                                        <div class="item" data-value="0.25">25%</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Intelligence</label>
-                                <input type="text" id="intelligence">
-                            </div>
-                            <div class="field">
-                                <label>Intelligence Potion</label>
-                                <div class="ui selection compact dropdown">
-                                    <input type="hidden" value="0" id="intelligencepotion">
-                                    <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
-                                    <div class="menu">
-                                        <div class="item" data-value="0">None</div>
-                                        <div class="item" data-value="0.1">10%</div>
-                                        <div class="item" data-value="0.15">15%</div>
-                                        <div class="item" data-value="0.25">25%</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Constitution</label>
-                                <input type="text" id="constitution">
-                            </div>
-                            <div class="field">
-                                <label>Constitution Potion</label>
-                                <div class="ui selection compact dropdown">
-                                    <input type="hidden" value="0" id="constitutionpotion">
-                                    <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
-                                    <div class="menu">
-                                        <div class="item" data-value="0">None</div>
-                                        <div class="item" data-value="0.1">10%</div>
-                                        <div class="item" data-value="0.15">15%</div>
-                                        <div class="item" data-value="0.25">25%</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Luck</label>
-                                <input type="text" id="luck">
-                            </div>
-                            <div class="field">
-                                <label>Luck Potion</label>
-                                <div class="ui selection compact dropdown">
-                                    <input type="hidden" value="0" id="luckpotion">
-                                    <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
-                                    <div class="menu">
-                                        <div class="item" data-value="0">None</div>
-                                        <div class="item" data-value="0.1">10%</div>
-                                        <div class="item" data-value="0.15">15%</div>
-                                        <div class="item" data-value="0.25">25%</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Armor</label>
-                                <input type="text" id="armor">
-                            </div>
-                            <div class="field">
-                                <label>Life Potion</label>
-                                <div class="ui selection compact dropdown">
-                                    <input type="hidden" value="0" id="potion">
-                                    <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
-                                    <div class="menu">
-                                        <div class="item" data-value="0">No</div>
-                                        <div class="item" data-value="0.25">Yes</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Minimum damage</label>
-                                <input type="text" id="lmindamage">
-                            </div>
-                            <div class="field">
-                                <label>Maximum damage</label>
-                                <input type="text" id="lmaxdamage">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <label>Gladiator %</label>
-                            <input type="text" id="gladiator">
-                        </div>
-                        <div class="field">
-                            <label>Damage Bonus (Guild Portal)</label>
-                            <input type="text" id="damagebonus">
-                        </div>
-                        <div class="field">
-                            <label>Health bonus (Portal)</label>
-                            <input type="text" id="healthbonus">
-                        </div>
+                    <div class="ui secondary menu">
+                        <a class="item active" data-tab="tab0">Player</a>
+                        <a class="item" data-tab="tab1">Items</a>
                     </div>
                 </div>
                 <div class="column">
-                    <h3 class="ui header centered">Current item</h3>
-                    <div class="ui form">
-                        <div class="field">
-                            <label>Type</label>
-                            <div class="ui selection compact dropdown">
-                                <input type="hidden" value="0" id="itemtype">
-                                <i class="dropdown icon"></i>
-                                <div class="default text"></div>
-                                <div class="menu">
-                                    <div class="item" data-value="0">Equipment</div>
-                                    <div class="item" data-value="1">Weapon</div>
+                    <h1 class="ui header centered">Item comparison</h1>
+                </div>
+                <div class="column">
+                    <a class="ui button right floated" id="save">Save</a>
+                    <a class="ui button right floated" id="load">Load</a>
+                </div>
+            </div>
+            <div class="ui two columns grid">
+                <div class="thirteen wide column">
+                    <div class="ui tab basic segment active" data-tab="tab0">
+                        <div class="ui form grid">
+                            <div class="six wide column">
+                                <div class="field">
+                                    <label>Class</label>
+                                    <div class="ui selection dropdown">
+                                        <input type="hidden" value="0" id="class">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">Warrior</div>
+                                            <div class="item" data-value="1">Scout</div>
+                                            <div class="item" data-value="2">Mage</div>
+                                            <div class="item" data-value="3">Assassin</div>
+                                            <div class="item" data-value="4">Battle Mage</div>
+                                            <div class="item" data-value="5">Berserker</div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="field" id="larmorgroup">
-                            <label>Armor</label>
-                            <input type="text" id="larmor">
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Strength</label>
-                                <input type="text" id="lstr">
-                            </div>
-                            <div class="field">
-                                <label>Constitution</label>
-                                <input type="text" id="lcon">
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Dexterity</label>
-                                <input type="text" id="ldex">
-                            </div>
-                            <div class="field">
-                                <label>Luck</label>
-                                <input type="text" id="llck">
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Intelligence</label>
-                                <input type="text" id="lint">
-                            </div>
-                            <div class="field hidden">
-                                <label>Upgrades</label>
-                                <input type="text" id="lupgrades">
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Gem</label>
-                                <div class="ui selection compact dropdown">
-                                    <input type="hidden" value="-1" id="lgemtype">
-                                    <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
-                                    <div class="menu">
-                                        <div class="item" data-value="-1">None</div>
-                                        <div class="item" data-value="0">Strength</div>
-                                        <div class="item" data-value="1">Dexterity</div>
-                                        <div class="item" data-value="2">Intelligence</div>
-                                        <div class="item" data-value="3">Constitution</div>
-                                        <div class="item" data-value="4">Luck</div>
-                                        <div class="item" data-value="5">Black</div>
+                                <div class="field">
+                                    <label>Level</label>
+                                    <input type="text" id="level">
+                                </div>
+                                <div class="two fields">
+                                    <div class="field">
+                                        <label>Minimum damage</label>
+                                        <input type="text" id="lmindamage">
+                                    </div>
+                                    <div class="field">
+                                        <label>Maximum damage</label>
+                                        <input type="text" id="lmaxdamage">
+                                    </div>
+                                </div>
+                                <div class="two fields">
+                                    <div class="field">
+                                        <label>Damage Bonus (Guild)</label>
+                                        <input type="text" id="damagebonus">
+                                    </div>
+                                    <div class="field">
+                                        <label>Gladiator %</label>
+                                        <input type="text" id="gladiator">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Armor</label>
+                                    <input type="text" id="armor">
+                                </div>
+                                <div class="two fields">
+                                    <div class="field">
+                                        <label>Health bonus (Portal)</label>
+                                        <input type="text" id="healthbonus">
+                                    </div>
+                                    <div class="field">
+                                        <label>Life Potion</label>
+                                        <div class="ui selection compact dropdown">
+                                            <input type="hidden" value="0" id="potion">
+                                            <i class="dropdown icon"></i>
+                                            <div class="default text"></div>
+                                            <div class="menu">
+                                                <div class="item" data-value="0">No</div>
+                                                <div class="item" data-value="0.25">Yes</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="field">
-                                <label>Value</label>
-                                <input type="text" id="lgemvalue">
-                            </div>
-                        </div>
-                        <div class="equal width fields" id="lenchantfield">
-                            <div class="field">
-                                <label>Elemental damage</label>
-                                <input type="text" id="lrune">
-                            </div>
-                            <div class="field">
-                                <label>Enchantment</label>
-                                <div class="ui selection compact dropdown">
-                                    <input type="hidden" value="0" id="lenchant">
-                                    <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
-                                    <div class="menu">
-                                        <div class="item" data-value="0">No</div>
-                                        <div class="item" data-value="1">Yes</div>
+                            <div class="ten wide column">
+                                <div class="ui form vertically divided grid">
+                                    <div class="three column row">
+                                        <div class="column">
+                                            <div class="field">
+                                                <label>Strength</label>
+                                                <input type="text" id="strength">
+                                            </div>
+                                            <div class="field">
+                                                <label>Water Pet Bonus</label>
+                                                <input type="text" id="strengthpet">
+                                            </div>
+                                            <div class="field">
+                                                <label>Strength Potion</label>
+                                                <div class="ui selection compact dropdown">
+                                                    <input type="hidden" value="0" id="strengthpotion">
+                                                    <i class="dropdown icon"></i>
+                                                    <div class="default text"></div>
+                                                    <div class="menu">
+                                                        <div class="item" data-value="0">None</div>
+                                                        <div class="item" data-value="0.1">10%</div>
+                                                        <div class="item" data-value="0.15">15%</div>
+                                                        <div class="item" data-value="0.25">25%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+                                            <div class="field">
+                                                <label>Dexterity</label>
+                                                <input type="text" id="dexterity">
+                                            </div>
+                                            <div class="field">
+                                                <label>Earth Pet Bonus</label>
+                                                <input type="text" id="dexteritypet">
+                                            </div>
+                                            <div class="field">
+                                                <label>Dexterity Potion</label>
+                                                <div class="ui selection compact dropdown">
+                                                    <input type="hidden" value="0" id="dexteritypotion">
+                                                    <i class="dropdown icon"></i>
+                                                    <div class="default text"></div>
+                                                    <div class="menu">
+                                                        <div class="item" data-value="0">None</div>
+                                                        <div class="item" data-value="0.1">10%</div>
+                                                        <div class="item" data-value="0.15">15%</div>
+                                                        <div class="item" data-value="0.25">25%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+                                            <div class="field">
+                                                <label>Intelligence</label>
+                                                <input type="text" id="intelligence">
+                                            </div>
+                                            <div class="field">
+                                                <label>Light Pet Bonus</label>
+                                                <input type="text" id="intelligencepet">
+                                            </div>
+                                            <div class="field">
+                                                <label>Intelligence Potion</label>
+                                                <div class="ui selection compact dropdown">
+                                                    <input type="hidden" value="0" id="intelligencepotion">
+                                                    <i class="dropdown icon"></i>
+                                                    <div class="default text"></div>
+                                                    <div class="menu">
+                                                        <div class="item" data-value="0">None</div>
+                                                        <div class="item" data-value="0.1">10%</div>
+                                                        <div class="item" data-value="0.15">15%</div>
+                                                        <div class="item" data-value="0.25">25%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="three column row">
+                                        <div class="column">
+                                            <div class="field">
+                                                <label>Constitution</label>
+                                                <input type="text" id="constitution">
+                                            </div>
+                                            <div class="field">
+                                                <label>Shadow Pet Bonus</label>
+                                                <input type="text" id="constitutionpet">
+                                            </div>
+                                            <div class="field">
+                                                <label>Constitution Potion</label>
+                                                <div class="ui selection compact dropdown">
+                                                    <input type="hidden" value="0" id="constitutionpotion">
+                                                    <i class="dropdown icon"></i>
+                                                    <div class="default text"></div>
+                                                    <div class="menu">
+                                                        <div class="item" data-value="0">None</div>
+                                                        <div class="item" data-value="0.1">10%</div>
+                                                        <div class="item" data-value="0.15">15%</div>
+                                                        <div class="item" data-value="0.25">25%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+                                            <div class="field">
+                                                <label>Luck</label>
+                                                <input type="text" id="luck">
+                                            </div>
+                                            <div class="field">
+                                                <label>Fire Pet Bonus</label>
+                                                <input type="text" id="luckpet">
+                                            </div>
+                                            <div class="field">
+                                                <label>Luck Potion</label>
+                                                <div class="ui selection compact dropdown">
+                                                    <input type="hidden" value="0" id="luckpotion">
+                                                    <i class="dropdown icon"></i>
+                                                    <div class="default text"></div>
+                                                    <div class="menu">
+                                                        <div class="item" data-value="0">None</div>
+                                                        <div class="item" data-value="0.1">10%</div>
+                                                        <div class="item" data-value="0.15">15%</div>
+                                                        <div class="item" data-value="0.25">25%</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="column">
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="column">
-                    <h3 class="ui header centered">Replacement item</h3>
-                    <div class="ui form">
-                        <div class="field" style="visibility: hidden">
-                            <label><br></label>
-                            <input type="text">
-                        </div>
-                        <div class="two fields" id="rdamagegroup">
-                            <div class="field">
-                                <label>Minimum damage</label>
-                                <input type="text" id="rmindamage">
-                            </div>
-                            <div class="field">
-                                <label>Maximum damage</label>
-                                <input type="text" id="rmaxdamage">
-                            </div>
-                        </div>
-                        <div class="field" id="rarmorgroup">
-                            <label>Armor</label>
-                            <input type="text" id="rarmor">
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Strength</label>
-                                <input type="text" id="rstr">
-                            </div>
-                            <div class="field">
-                                <label>Constitution</label>
-                                <input type="text" id="rcon">
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Dexterity</label>
-                                <input type="text" id="rdex">
-                            </div>
-                            <div class="field">
-                                <label>Luck</label>
-                                <input type="text" id="rlck">
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Intelligence</label>
-                                <input type="text" id="rint">
-                            </div>
-                            <div class="field hidden">
-                                <label>Upgrades</label>
-                                <input type="text" id="rupgrades">
-                            </div>
-                        </div>
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Gem</label>
-                                <div class="ui selection compact dropdown">
-                                    <input type="hidden" value="-1" id="rgemtype">
-                                    <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
-                                    <div class="menu">
-                                        <div class="item" data-value="-1">None</div>
-                                        <div class="item" data-value="0">Strength</div>
-                                        <div class="item" data-value="1">Dexterity</div>
-                                        <div class="item" data-value="2">Intelligence</div>
-                                        <div class="item" data-value="3">Constitution</div>
-                                        <div class="item" data-value="4">Luck</div>
-                                        <div class="item" data-value="5">Black</div>
+                    <div class="ui tab basic segment" data-tab="tab1">
+                        <div class="ui three columns grid">
+                            <div class="seven wide column">
+                                <h3 class="ui header centered">Current item</h3>
+                                <div class="ui form">
+                                    <div class="field">
+                                        <label>Type</label>
+                                        <div class="ui selection compact dropdown">
+                                            <input type="hidden" value="0" id="itemtype">
+                                            <i class="dropdown icon"></i>
+                                            <div class="default text"></div>
+                                            <div class="menu">
+                                                <div class="item" data-value="0">Equipment</div>
+                                                <div class="item" data-value="1">Weapon</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field" id="larmorgroup">
+                                        <label>Armor</label>
+                                        <input type="text" id="larmor">
+                                    </div>
+                                    <div class="two fields">
+                                        <div class="field">
+                                            <label>Strength</label>
+                                            <input type="text" id="lstr">
+                                        </div>
+                                        <div class="field">
+                                            <label>Constitution</label>
+                                            <input type="text" id="lcon">
+                                        </div>
+                                    </div>
+                                    <div class="two fields">
+                                        <div class="field">
+                                            <label>Dexterity</label>
+                                            <input type="text" id="ldex">
+                                        </div>
+                                        <div class="field">
+                                            <label>Luck</label>
+                                            <input type="text" id="llck">
+                                        </div>
+                                    </div>
+                                    <div class="two fields">
+                                        <div class="field">
+                                            <label>Intelligence</label>
+                                            <input type="text" id="lint">
+                                        </div>
+                                        <div class="field hidden">
+                                            <label>Upgrades</label>
+                                            <input type="text" id="lupgrades">
+                                        </div>
+                                    </div>
+                                    <div class="two fields">
+                                        <div class="field">
+                                            <label>Gem</label>
+                                            <div class="ui selection compact dropdown">
+                                                <input type="hidden" value="-1" id="lgemtype">
+                                                <i class="dropdown icon"></i>
+                                                <div class="default text"></div>
+                                                <div class="menu">
+                                                    <div class="item" data-value="-1">None</div>
+                                                    <div class="item" data-value="0">Strength</div>
+                                                    <div class="item" data-value="1">Dexterity</div>
+                                                    <div class="item" data-value="2">Intelligence</div>
+                                                    <div class="item" data-value="3">Constitution</div>
+                                                    <div class="item" data-value="4">Luck</div>
+                                                    <div class="item" data-value="5">Black</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="field">
+                                            <label>Value</label>
+                                            <input type="text" id="lgemvalue">
+                                        </div>
+                                    </div>
+                                    <div class="equal width fields" id="lenchantfield">
+                                        <div class="field">
+                                            <label>Elemental damage</label>
+                                            <input type="text" id="lrune">
+                                        </div>
+                                        <div class="field">
+                                            <label>Enchantment</label>
+                                            <div class="ui selection compact dropdown">
+                                                <input type="hidden" value="0" id="lenchant">
+                                                <i class="dropdown icon"></i>
+                                                <div class="default text"></div>
+                                                <div class="menu">
+                                                    <div class="item" data-value="0">No</div>
+                                                    <div class="item" data-value="1">Yes</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="field">
-                                <label>Value</label>
-                                <input type="text" id="rgemvalue">
+                            <div class="two wide column">
                             </div>
-                        </div>
-                        <div class="equal width fields" id="renchantfield">
-                            <div class="field">
-                                <label>Elemental damage</label>
-                                <input type="text" id="rrune">
-                            </div>
-                            <div class="field">
-                                <label>Enchantment</label>
-                                <div class="ui selection compact dropdown">
-                                    <input type="hidden" value="0" id="renchant">
-                                    <i class="dropdown icon"></i>
-                                    <div class="default text"></div>
-                                    <div class="menu">
-                                        <div class="item" data-value="0">No</div>
-                                        <div class="item" data-value="1">Yes</div>
+                            <div class="seven wide column">
+                                <h3 class="ui header centered">Replacement item</h3>
+                                <div class="ui form">
+                                    <div class="field" style="visibility: hidden">
+                                        <label><br></label>
+                                        <input type="text" id="emptyfield">
+                                    </div>
+                                    <div class="two fields" id="rdamagegroup">
+                                        <div class="field">
+                                            <label>Minimum damage</label>
+                                            <input type="text" id="rmindamage">
+                                        </div>
+                                        <div class="field">
+                                            <label>Maximum damage</label>
+                                            <input type="text" id="rmaxdamage">
+                                        </div>
+                                    </div>
+                                    <div class="field" id="rarmorgroup">
+                                        <label>Armor</label>
+                                        <input type="text" id="rarmor">
+                                    </div>
+                                    <div class="two fields">
+                                        <div class="field">
+                                            <label>Strength</label>
+                                            <input type="text" id="rstr">
+                                        </div>
+                                        <div class="field">
+                                            <label>Constitution</label>
+                                            <input type="text" id="rcon">
+                                        </div>
+                                    </div>
+                                    <div class="two fields">
+                                        <div class="field">
+                                            <label>Dexterity</label>
+                                            <input type="text" id="rdex">
+                                        </div>
+                                        <div class="field">
+                                            <label>Luck</label>
+                                            <input type="text" id="rlck">
+                                        </div>
+                                    </div>
+                                    <div class="two fields">
+                                        <div class="field">
+                                            <label>Intelligence</label>
+                                            <input type="text" id="rint">
+                                        </div>
+                                        <div class="field hidden">
+                                            <label>Upgrades</label>
+                                            <input type="text" id="rupgrades">
+                                        </div>
+                                    </div>
+                                    <div class="two fields">
+                                        <div class="field">
+                                            <label>Gem</label>
+                                            <div class="ui selection compact dropdown">
+                                                <input type="hidden" value="-1" id="rgemtype">
+                                                <i class="dropdown icon"></i>
+                                                <div class="default text"></div>
+                                                <div class="menu">
+                                                    <div class="item" data-value="-1">None</div>
+                                                    <div class="item" data-value="0">Strength</div>
+                                                    <div class="item" data-value="1">Dexterity</div>
+                                                    <div class="item" data-value="2">Intelligence</div>
+                                                    <div class="item" data-value="3">Constitution</div>
+                                                    <div class="item" data-value="4">Luck</div>
+                                                    <div class="item" data-value="5">Black</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="field">
+                                            <label>Value</label>
+                                            <input type="text" id="rgemvalue">
+                                        </div>
+                                    </div>
+                                    <div class="equal width fields" id="renchantfield">
+                                        <div class="field">
+                                            <label>Elemental damage</label>
+                                            <input type="text" id="rrune">
+                                        </div>
+                                        <div class="field">
+                                            <label>Enchantment</label>
+                                            <div class="ui selection compact dropdown">
+                                                <input type="hidden" value="0" id="renchant">
+                                                <i class="dropdown icon"></i>
+                                                <div class="default text"></div>
+                                                <div class="menu">
+                                                    <div class="item" data-value="0">No</div>
+                                                    <div class="item" data-value="1">Yes</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="column">
-                    <h3 class="ui header centered">Results</h3>
+                <div class="three wide column">
                     <div class="ui form" id="results">
 
                     </div>
@@ -396,6 +451,7 @@
 
         <script type="text/javascript">
             (function ($) {
+                $('.menu .item').tab();
                 $('.ui.dropdown').dropdown();
                 $('#itemtype').on('change', () => {
                     if ($('#itemtype').val() == 1) {
@@ -414,6 +470,18 @@
                 });
                 $('#itemtype').trigger('change');
 
+                $('#save').on('click', function () {
+                    localStorage['preset/0'] = JSON.stringify($('input').toArray().map(x => { return { key: $(x).attr('id'), val: $(x).val() || 0 }}));
+                });
+
+                $('#load').on('click', function () {
+                    if (localStorage['preset/0']) {
+                        JSON.parse(localStorage['preset/0']).forEach(x => { $('#' + x.key).val(x.val); });
+                    }
+                    $('#itemtype').trigger('change');
+                    $('.ui.dropdown').dropdown();
+                });
+
                 Math.clamp = (a, b, c) => a < b ? b : (a > c ? c : a);
 
                 function get (id) {
@@ -425,15 +493,15 @@
                         class: get('#class'),
                         level: get('#level'),
                         str: get('#strength'),
-                        strmult: 1 + get('#strengthpotion'),
+                        strmult: (1 + get('#strengthpotion')) * (1 + get('#strengthpet') / 100),
                         dex: get('#dexterity'),
-                        dexmult: 1 + get('#dexteritypotion'),
+                        dexmult: (1 + get('#dexteritypotion')) * (1 + get('#dexteritypet') / 100),
                         int: get('#intelligence'),
-                        intmult: 1 + get('#intelligencepotion'),
+                        intmult: (1 + get('#intelligencepotion')) * (1 + get('#intelligencepet') / 100),
                         con: get('#constitution'),
-                        conmult: 1 + get('#constitutionpotion'),
+                        conmult: (1 + get('#constitutionpotion')) * (1 + get('#constitutionpet') / 100),
                         lck: get('#luck'),
-                        lckmult: 1 + get('#luckpotion'),
+                        lckmult: (1 + get('#luckpotion')) * (1 + get('#luckpet') / 100),
                         damagemult: 1 + get('#damagebonus') / 100,
                         critmult: 2 * (1 + get('#gladiator') / 100),
                         healthmult: (1 + get('#healthbonus') / 100) * (1 + get('#potion')),
@@ -620,10 +688,21 @@
                     };
 
                     $('#results').html(Object.entries(dif).map(x => x[1] == 0 || isNaN(x[1]) ? '' : getFormattedElement(x[1], x[0])).join(''));
-                    $('#results').prepend('<h4 class="ui header centered red">Pet & class bonus calculations are missing! They will be implemented in the upcoming updates.</h4>');
                 }
 
-                $('input').on('input change', () => compareItems(getPlayerModel(), getLeftItemModel(), getRightItemModel()));
+                $('input').on('input change', () => {
+                    if ($('input').toArray().reduce((sum, element) => {
+                        if (isNaN($(element).val())) {
+                            $(element).parent('.field').addClass('error');
+                            return sum + 1;
+                        } else {
+                            $(element).parent('.field').removeClass('error');
+                            return sum;
+                        }
+                    }, 0) == 0) {
+                        compareItems(getPlayerModel(), getLeftItemModel(), getRightItemModel());
+                    }
+                });
                 $('input').first().trigger('input');
             })(jQuery);
         </script>
