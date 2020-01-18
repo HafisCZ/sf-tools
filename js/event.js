@@ -562,7 +562,7 @@ Handle.bind(EVT_GROUP_SETTINGS_LOAD, function () {
     $('#modal-custom-settings-manual').val(JSON.stringify(data, null, 1));
     fillStandartConfiguration(data, true);
 
-    $('.ui.dropdown').dropdown();
+    $('#modal-custom-settings > .ui.dropdown').dropdown();
 });
 
 Handle.bind(EVT_GROUP_SETTINGS_SAVE, function () {
