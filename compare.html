@@ -60,8 +60,8 @@
                                         <div class="default text"></div>
                                         <div class="menu">
                                             <div class="item" data-value="0">Warrior</div>
-                                            <div class="item" data-value="1">Scout</div>
-                                            <div class="item" data-value="2">Mage</div>
+                                            <div class="item" data-value="1">Mage</div>
+                                            <div class="item" data-value="2">Scout</div>
                                             <div class="item" data-value="3">Assassin</div>
                                             <div class="item" data-value="4">Battle Mage</div>
                                             <div class="item" data-value="5">Berserker</div>
@@ -294,10 +294,6 @@
                                             <label>Intelligence</label>
                                             <input type="text" id="lint">
                                         </div>
-                                        <div class="field hidden">
-                                            <label>Upgrades</label>
-                                            <input type="text" id="lupgrades">
-                                        </div>
                                     </div>
                                     <div class="two fields">
                                         <div class="field">
@@ -390,10 +386,6 @@
                                             <label>Intelligence</label>
                                             <input type="text" id="rint">
                                         </div>
-                                        <div class="field hidden">
-                                            <label>Upgrades</label>
-                                            <input type="text" id="rupgrades">
-                                        </div>
                                     </div>
                                     <div class="two fields">
                                         <div class="field">
@@ -482,6 +474,17 @@
                     $('.ui.dropdown').dropdown();
                 });
 
+/*
+                const CLASS = {
+                    WARRIOR: 0,
+                    MAGE: 1,
+                    SCOUT: 2,
+                    ASSASSIN: 3,
+                    BATTLEMAGE: 4,
+                    BERSERKER: 5
+                };
+*/
+
                 Math.clamp = (a, b, c) => a < b ? b : (a > c ? c : a);
 
                 function get (id) {
@@ -520,7 +523,6 @@
                         int: get('#lint'),
                         con: get('#lcon'),
                         lck: get('#llck'),
-                        upgrades: get('#lupgrades'),
                         gem: get('#lgemtype'),
                         gemval: get('#lgemvalue'),
                         rune: get('#lrune'),
@@ -539,7 +541,6 @@
                         int: get('#rint'),
                         con: get('#rcon'),
                         lck: get('#rlck'),
-                        upgrades: get('#rupgrades'),
                         gem: get('#rgemtype'),
                         gemval: get('#rgemvalue'),
                         rune: get('#rrune'),
