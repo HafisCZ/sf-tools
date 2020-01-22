@@ -166,7 +166,7 @@
                         <p>
                             <b>name</b><code>(required)</code><br>
                             - Header type<br>
-                            - Available names: <code>Class</code>, <code>ID</code>, <code>Rank</code>, <code>Role</code>, <code>Level</code>, <code>Album</code>, <code>Mount</code>, <code>Awards</code>, <code>Treasure</code>, <code>Instructor</code>, <code>Pet</code>, <code>Knights</code>, <code>Fortress</code>, <code>GemMine</code>, <code>Honor</code>, <code>Upgrades</code>, <code>Tower</code>, <code>Portal</code>, <code>Equipment</code>, <code>Custom</code></br>
+                            - Available names: <code>Class</code>, <code>ID</code>, <code>Rank</code>, <code>Role</code>, <code>Level</code>, <code>Album</code>, <code>Mount</code>, <code>Awards</code>, <code>Treasure</code>, <code>Instructor</code>, <code>Pet</code>, <code>Knights</code>, <code>Fortress</code>, <code>GemMine</code>, <code>Honor</code>, <code>Upgrades</code>, <code>Tower</code>, <code>Portal</code>, <code>Equipment</code></br>
                             <b>diff</b><br>
                             - Use <code>true</code> to show difference<br>
                             <b>colors</b><br>
@@ -175,6 +175,8 @@
                             - You can can use any valid CSS color values<br>
                             <b>width</b><br>
                             - Width of the column<br>
+                            <b>stat</b><br>
+                            - Use <code>true</code> to enable statistics for this field<br>
                             <b>percentage</b><br>
                             - Use <code>true</code> to show percentage instead of real value<br>
                             - Can be only applied to <code>Mount</code>, <code>Album</code><br>
@@ -185,9 +187,7 @@
                         <h3 class="ui header">Custom</h3>
                         <p>
                             <b>name</b><code>(required)</code><br>
-                            - Must be set to <code>Custom</code><br>
-                            <b>label</b><code>(required)</code><br>
-                            - Header name<br>
+                            - Name of the field<br>
                             <b>diff</b><br>
                             - Use <code>true</code> to show difference<br>
                             <b>colors</b><br>
@@ -236,9 +236,6 @@
             </div>
             <div class="ui basic segment margin-none-top padding-none" id="container-detail-screenshot">
                 <table class="ui celled structured table table-group" id="container-detail-content">
-
-                </table>
-                <table class="ui celled structured table table-group table-group-secondary" id="container-detail-stats">
 
                 </table>
             </div>
@@ -355,7 +352,7 @@
                         <p>
                             <b>name</b><code>(required)</code><br>
                             - Header type<br>
-                            - Available names: <code>Class</code>, <code>ID</code>, <code>Rank</code>, <code>Role</code>, <code>Level</code>, <code>Album</code>, <code>Mount</code>, <code>Awards</code>, <code>Treasure</code>, <code>Instructor</code>, <code>Pet</code>, <code>Knights</code>, <code>Fortress</code>, <code>GemMine</code>, <code>Honor</code>, <code>Upgrades</code>, <code>Tower</code>, <code>Portal</code>, <code>Equipment</code>, <code>Custom</code></br>
+                            - Available names: <code>Class</code>, <code>ID</code>, <code>Rank</code>, <code>Role</code>, <code>Level</code>, <code>Album</code>, <code>Mount</code>, <code>Awards</code>, <code>Treasure</code>, <code>Instructor</code>, <code>Pet</code>, <code>Knights</code>, <code>Fortress</code>, <code>GemMine</code>, <code>Honor</code>, <code>Upgrades</code>, <code>Tower</code>, <code>Portal</code>, <code>Equipment</code></br>
                             <b>diff</b><br>
                             - Use <code>true</code> to show difference<br>
                             <b>colors</b><br>
@@ -364,6 +361,8 @@
                             - You can can use any valid CSS color values<br>
                             <b>width</b><br>
                             - Width of the column<br>
+                            <b>stat</b><br>
+                            - Use <code>true</code> to enable statistics for this field<br>
                             <b>percentage</b><br>
                             - Use <code>true</code> to show percentage instead of real value<br>
                             - Can be only applied to <code>Mount</code>, <code>Album</code><br>
@@ -374,9 +373,7 @@
                         <h3 class="ui header">Custom</h3>
                         <p>
                             <b>name</b><code>(required)</code><br>
-                            - Must be set to <code>Custom</code><br>
-                            <b>label</b><code>(required)</code><br>
-                            - Header name<br>
+                            - Name of the field<br>
                             <b>diff</b><br>
                             - Use <code>true</code> to show difference<br>
                             <b>colors</b><br>

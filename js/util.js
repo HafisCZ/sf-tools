@@ -93,6 +93,10 @@ class ComplexDataType {
         return this.bytes[this.ptr++] + (this.bytes[this.ptr++] << 8) + (this.bytes[this.ptr++] << 16) + (this.bytes[this.ptr++] << 24);
     }
 
+    multiple (func) {
+        return func(this);
+    }
+
     assert (size) {
         if (this.bytes.length != size) {
             throw 'COMPLEXDATATYPE SIZE NOT EQUAL';
@@ -105,6 +109,10 @@ class ComplexDataType {
 
     static fromString (str) {
         return ComplexDataType.fromArray(padStr.split('/'));
+    }
+
+    static fromValue (val) {
+        return ComplexDataType.fromArray([ val ]);
     }
 }
 
@@ -313,7 +321,8 @@ function createConfigurationObject (custom) {
     data.categories[0].headers.push({
         name: 'Level',
         diff: settings['level-difference'],
-        colors: settings['level-enabled'] ? [ Color.RED, [ settings['level-req'], Color.GREEN ], [ settings['level-min'], Color.ORANGE ] ] : null
+        colors: settings['level-enabled'] ? [ Color.RED, [ settings['level-req'], Color.GREEN ], [ settings['level-min'], Color.ORANGE ] ] : null,
+        stat: true
     });
 
     data.categories[0].headers.push({
@@ -344,7 +353,8 @@ function createConfigurationObject (custom) {
         data.categories[2].headers.push({
             name: 'Treasure',
             diff: settings['treasure-difference'],
-            colors: settings['treasure-enabled'] ? [ Color.RED, [ settings['treasure-req'], Color.GREEN ], [ settings['treasure-min'], Color.ORANGE ] ] : null
+            colors: settings['treasure-enabled'] ? [ Color.RED, [ settings['treasure-req'], Color.GREEN ], [ settings['treasure-min'], Color.ORANGE ] ] : null,
+            stat: true
         });
     }
 
@@ -352,7 +362,8 @@ function createConfigurationObject (custom) {
         data.categories[2].headers.push({
             name: 'Instructor',
             diff: settings['instructor-difference'],
-            colors: settings['instructor-enabled'] ? [ Color.RED, [ settings['instructor-req'], Color.GREEN ], [ settings['instructor-min'], Color.ORANGE ] ] : null
+            colors: settings['instructor-enabled'] ? [ Color.RED, [ settings['instructor-req'], Color.GREEN ], [ settings['instructor-min'], Color.ORANGE ] ] : null,
+            stat: true
         });
     }
 
@@ -360,7 +371,8 @@ function createConfigurationObject (custom) {
         data.categories[2].headers.push({
             name: 'Pet',
             diff: settings['pet-difference'],
-            colors: settings['pet-enabled'] ? [ Color.RED, [ settings['pet-req'], Color.GREEN ], [ settings['pet-min'], Color.ORANGE ] ] : null
+            colors: settings['pet-enabled'] ? [ Color.RED, [ settings['pet-req'], Color.GREEN ], [ settings['pet-min'], Color.ORANGE ] ] : null,
+            stat: true
         });
     }
 
@@ -369,7 +381,8 @@ function createConfigurationObject (custom) {
             name: 'Knights',
             diff: settings['knights-difference'],
             colors: settings['knights-enabled'] ? [ Color.RED, [ settings['knights-req'], Color.GREEN ], [ settings['knights-min'], Color.ORANGE ] ] : null,
-            maximum: settings['show-knights'] == 2
+            maximum: settings['show-knights'] == 2,
+            stat: true
         });
     }
 

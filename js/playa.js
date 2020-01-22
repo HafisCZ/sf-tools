@@ -150,7 +150,10 @@ class Player {
         this.Honor = data.save[data.own ? 10 : 5];
         this.Rank = data.save[data.own ? 11 : 6];
         this.Race = split(data.save[data.own ? 27 : 18], 4);
-        this.Sex = split(data.save[data.own ? 28 : 19], 4);
+
+        [this.Sex, this.Mirror, this.MirrorPieces] = ComplexDataType.fromValue(data.save[data.own ? 28 : 19]).multiple(o => [ o.byte(), o.byte(), getMirrorPieces(o.short()) ]);
+        this.MirrorPieces.Count = this.MirrorPieces.reduce((count, o) => count + (o ? 1 : 0), 0);
+
         this.Class = split(data.save[data.own ? 29 : 20], 4);
 
         this.Face = data.own ? {
@@ -311,8 +314,8 @@ class Player {
             split4(data.save[257], 8)[0]
         ];
 
-        [this.Dungeons.Group, this.Dungeons.Player] = split2(split2(data.save[data.own ? 445 : 252], 16)[1], 8);
-        [this.Mount, this.Dungeons.Tower] = split2(data.save[data.own ? 286 : 159], 16);
+        [/* empty */, this.Dungeons.Group, this.Dungeons.Player] = ComplexDataType.fromValue(data.save[data.own ? 445 : 252]).multiple(o => [ o.short(), o.byte(), o.byte() ]);
+        [this.Mount, this.Dungeons.Tower] = ComplexDataType.fromValue(data.save[data.own ? 286 : 159]).multiple(o => [ o.short(), o.short() ]);
     }
 }
 

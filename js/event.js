@@ -301,7 +301,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
 
     if (width < 1127) {
         $('#container-detail').css('width', '');
-        $('#container-detail-screenshot').css('width', `${ width }px`);
+        $('#container-detail-screenshot').css('width', `${ Math.max(750, width) }px`);
         $('#container-detail-screenshot').css('margin', 'auto');
     } else {
         $('#container-detail').css('width', `${ width }px`);
@@ -317,108 +317,10 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
         }
     });
 
-    $('#container-detail-content').html(table.toString());
-
-    // Kicked & Joined
     var kicked = groupReference.MemberIDs.filter(g => !groupCurrent.MemberIDs.includes(g)).map(g => Database.Players[g] ? Database.Players[g].Latest.Name : groupReference.Members[groupReference.MemberIDs.indexOf(g)]);
     var joined = groupCurrent.MemberIDs.filter(g => !groupReference.MemberIDs.includes(g)).map(g => Database.Players[g] ? Database.Players[g].Latest.Name : groupCurrent.Members[groupCurrent.MemberIDs.indexOf(g)]);
 
-    var classes = [ 0, 0, 0, 0, 0, 0 ];
-    members.forEach(player => classes[player.Class - 1]++);
-
-    var clevel = config.findEntry('Level');
-    var ctreasure = config.findEntry('Treasure');
-    var cinstructor = config.findEntry('Instructor');
-    var cpet = config.findEntry('Pet');
-    var cknights = config.findEntry('Knights');
-    var clength = (clevel ? 1 : 0) + (ctreasure ? 1 : 0) + (cinstructor ? 1 : 0) + (cpet ? 1 : 0) + (cknights ? 1 : 0);
-
-    if (config.getData().group) {
-        $('#container-detail-stats').html(`
-            <tbody>
-                ${ clength ? `
-                    <tr>
-                        <td width="${ 249 + (width % 2 ? 0 : 1) }" class="border-right-thin"></td>
-                        ${ clevel ? `<td>Level</td>` : '' }
-                        ${ ctreasure ? `<td>Treasure</td>` : '' }
-                        ${ cinstructor ? `<td>Instructor</td>` : '' }
-                        ${ cpet ? `<td>Pet</td>` : '' }
-                        ${ cknights ? `<td>Knights</td>` : '' }
-                    </tr>
-                    <tr>
-                        <td class="border-bottom-thick border-right-thin"></td>
-                        ${ clevel ? `<td class="border-bottom-thick" colspan="${ Math.max(3, clength) }"></td>` : '' }
-                    </tr>
-                    <tr>
-                    <td class="border-right-thin">Minimum</td>
-                        ${ clevel ? Cell.Cell(groupCurrent.Levels.Min + (clevel.diff ? Cell.Difference(groupCurrent.Levels.Min - groupReference.Levels.Min, config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Levels.Min, clevel.colors)) : '' }
-                        ${ ctreasure ? Cell.Cell(groupCurrent.Treasures.Min + (ctreasure.diff ? Cell.Difference(groupCurrent.Treasures.Min - groupReference.Treasures.Min, config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Treasures.Min, ctreasure.colors)) : '' }
-                        ${ cinstructor ? Cell.Cell(groupCurrent.Instructors.Min + (cinstructor.diff ? Cell.Difference(groupCurrent.Instructors.Min - groupReference.Instructors.Min, config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Instructors.Min, cinstructor.colors)) : '' }
-                        ${ cpet ? Cell.Cell(groupCurrent.Pets.Min + (cpet.diff ? Cell.Difference(groupCurrent.Pets.Min - groupReference.Pets.Min, config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Pets.Min, cpet.colors)) : '' }
-                        ${ cknights ? Cell.Cell(groupCurrent.Knights.Min + (cknights.diff ? Cell.Difference(groupCurrent.Knights.Min - groupReference.Knights.Min, config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Knights.Min, cknights.colors)) : '' }
-                    </tr>
-                    <td class="border-right-thin">Average</td>
-                        ${ clevel ? Cell.Cell(groupCurrent.Levels.Avg.toFixed(0) + (clevel.diff ? Cell.Difference((groupCurrent.Levels.Avg - groupReference.Levels.Avg).toFixed(0), config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Levels.Avg, clevel.colors)) : '' }
-                        ${ ctreasure ? Cell.Cell(groupCurrent.Treasures.Avg.toFixed(0) + (ctreasure.diff ? Cell.Difference((groupCurrent.Treasures.Avg - groupReference.Treasures.Avg).toFixed(0), config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Treasures.Avg, ctreasure.colors)) : '' }
-                        ${ cinstructor ? Cell.Cell(groupCurrent.Instructors.Avg.toFixed(0) + (cinstructor.diff ? Cell.Difference((groupCurrent.Instructors.Avg - groupReference.Instructors.Avg).toFixed(0), config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Instructors.Avg, cinstructor.colors)) : '' }
-                        ${ cpet ? Cell.Cell(groupCurrent.Pets.Avg.toFixed(0) + (cpet.diff ? Cell.Difference((groupCurrent.Pets.Avg - groupReference.Pets.Avg).toFixed(0), config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Pets.Avg, cpet.colors)) : '' }
-                        ${ cknights ? Cell.Cell(groupCurrent.Knights.Avg.toFixed(0) + (cknights.diff ? Cell.Difference((groupCurrent.Knights.Avg - groupReference.Knights.Avg).toFixed(0), config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Knights.Avg, cknights.colors)) : '' }
-                    </tr>
-                    <td class="border-right-thin">Maximum</td>
-                        ${ clevel ? Cell.Cell(groupCurrent.Levels.Max + (clevel.diff ? Cell.Difference(groupCurrent.Levels.Max - groupReference.Levels.Max, config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Levels.Max, clevel.colors)) : '' }
-                        ${ ctreasure ? Cell.Cell(groupCurrent.Treasures.Max + (ctreasure.diff ? Cell.Difference(groupCurrent.Treasures.Max - groupReference.Treasures.Max, config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Treasures.Max, ctreasure.colors)) : '' }
-                        ${ cinstructor ? Cell.Cell(groupCurrent.Instructors.Max + (cinstructor.diff ? Cell.Difference(groupCurrent.Instructors.Max - groupReference.Instructors.Max, config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Instructors.Max, cinstructor.colors)) : '' }
-                        ${ cpet ? Cell.Cell(groupCurrent.Pets.Max + (cpet.diff ? Cell.Difference(groupCurrent.Pets.Max - groupReference.Pets.Max, config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Pets.Max, cpet.colors)) : '' }
-                        ${ cknights ? Cell.Cell(groupCurrent.Knights.Max + (cknights.diff ? Cell.Difference(groupCurrent.Knights.Max - groupReference.Knights.Max, config.brackets) : ''), Color.NONE, Color.Get(groupCurrent.Knights.Max, cknights.colors)) : '' }
-                    </tr>
-                ` : '' }
-                <tr>
-                    <td colspan="${ 1 + Math.max(clength, 3) }" class="border-bottom-thick"></td>
-                </tr>
-                <tr>
-                    <td class="border-right-thin">Warrior</td>
-                    <td>${ classes[0] }</td>
-                    <td class="border-right-thin">Assassin</td>
-                    <td>${ classes[3] }</td>
-                    ${ clength > 3 ? '<td></td>' : '' }
-                    ${ clength > 4 ? '<td></td>' : '' }
-                </tr>
-                <tr>
-                    <td class="border-right-thin">Mage</td>
-                    <td>${ classes[1] }</td>
-                    <td class="border-right-thin">Battle Mage</td>
-                    <td>${ classes[4] }</td>
-                    ${ clength > 3 ? '<td></td>' : '' }
-                    ${ clength > 4 ? '<td></td>' : '' }
-                </tr>
-                <tr>
-                    <td class="border-right-thin">Scout</td>
-                    <td>${ classes[2] }</td>
-                    <td class="border-right-thin">Berserker</td>
-                    <td>${ classes[5] }</td>
-                    ${ clength > 3 ? '<td></td>' : '' }
-                    ${ clength > 4 ? '<td></td>' : '' }
-                </tr>
-                <tr>
-                    <td colspan="${ 1 + Math.max(clength, 3) }" ${ config.getData().group == 2 && (joined.length > 0 || kicked.length > 0) ? 'class="border-bottom-thick"' : ''}></td>
-                </tr>
-                ${
-                    config.getData().group == 2 && (joined.length > 0 || kicked.length > 0) ? `
-                        <tr>
-                            <td class="border-right-thin">Joined</td>
-                            <td colspan="5">${ joined.join(', ') }</td>
-                        </tr>
-                        <tr>
-                            <td class="border-right-thin">Kicked</td>
-                            <td colspan="5">${ kicked.join(', ') }</td>
-                        </tr>
-                    ` : ''
-                }
-            </tbody>
-        `);
-    } else {
-        $('#container-detail-stats').html('');
-    }
+    $('#container-detail-content').html(table.toString(joined, kicked));
 
     $('[data-player]').on('click', function () {
         Handle.call(EVT_PLAYER_LOAD, $(this).attr('data-player'), State.getGroupTimestamp());
