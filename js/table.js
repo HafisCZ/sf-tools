@@ -76,9 +76,9 @@ const ReservedHeaders = {
             var rval = cell.operation(cell.players.map(p => p.compare.Book));
             var color = Color.Get(100 * cval / SCRAPBOOK_COUNT, header.colors);
             if (header.percentage) {
-                return Cell.Cell((100 * cval / SCRAPBOOK_COUNT).toFixed(2) + '%' + (header.diff ? Cell.FormattedDifference((100 * (cval - rval) / SCRAPBOOK_COUNT).toFixed(2), cval - rval, config.brackets) : ''), Color.NONE, color, last);
+                return Cell.Cell((100 * cval / SCRAPBOOK_COUNT).toFixed(2) + '%' + (header.diff ? Cell.FormattedDifference((100 * (cval - rval) / SCRAPBOOK_COUNT).toFixed(2), cval - rval, config.brackets) : ''), Color.NONE, color, false);
             } else {
-                return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), color, Color.NONE, last);
+                return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), color, Color.NONE, false);
             }
         });
     },
@@ -87,7 +87,7 @@ const ReservedHeaders = {
             return Cell.Cell(header.percentage ? (PLAYER_MOUNT[cell.player.Mount] + (cell.player.Mount ? '%' : '')) : cell.player.Mount, Color.Get(cell.player.Mount, header.colors), Color.NONE, last);
         }, header.width || 80, header.stat, cell => {
             var cval = cell.operation(cell.players.map(p => p.player.Mount));
-            return Cell.Cell(header.percentage ? (PLAYER_MOUNT[cval] + (cval ? '%' : '')) : cval, Color.NONE, Color.Get(cval, header.colors), last);
+            return Cell.Cell(header.percentage ? (PLAYER_MOUNT[cval] + (cval ? '%' : '')) : cval, Color.NONE, Color.Get(cval, header.colors), false);
         });
     },
     "Awards": (group, header, config, last) => {
