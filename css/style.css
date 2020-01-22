@@ -47,12 +47,32 @@ body.dimmed .menu {
     cursor: pointer !important;
 }
 
+.nopad {
+    padding-top: 1.0em !important;
+}
+
+.nopad > .column {
+    padding: 0.25em !important;
+}
+
 .muted {
     color: #505050 !important;
 }
 
+.margin-auto-top {
+    margin: calc(2rem - .14285714em) 0 1rem !important;
+}
+
 .margin-tiny-top {
     margin-top: 0.2em !important;
+}
+
+.field.npl {
+    padding-left: 0 !important;
+}
+
+.field.npr {
+    padding-right: 0 !important;
 }
 
 .margin-none-top {
@@ -61,6 +81,10 @@ body.dimmed .menu {
 
 .margin-medium-top {
     margin-top: 1.0em !important;
+}
+
+.margin-medium-bottom {
+    margin-bottom: 1.0em !important;
 }
 
 .padding-none-bottom {

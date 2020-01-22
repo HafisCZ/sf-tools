@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Arena Manager</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/html2canvas.js"></script>
+
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/components/state.min.js"></script>
+
+        <script src="js/idle.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu">
+            <div class="header item">SFTools</div>
+            <a class="item" href="index.html"><i class="small reply icon"></i>Return to main site</a>
+        </div>
+
+        <div class="ui main container">
+            <div class="ui three columns middle aligned grid">
+                <div class="column">
+                    <div class="ui toggle checkbox">
+                        <input type="checkbox" name="public">
+                        <label>Simulator</label>
+                    </div>
+                </div>
+                <div class="column">
+                    <h1 class="ui centered header">Arena Manager</h1>
+                </div>
+                <div class="column">
+                    <a class="ui button right floated" id="save">Save</a>
+                    <a class="ui button right floated" id="load">Load</a>
+                </div>
+            </div>
+            <form class="ui form margin-medium-top">
+                <div class="ui middle aligned grid nopad" id="main">
+                    <div class="three wide column">
+
+                    </div>
+                    <div class="three wide column">
+                        <div class="two fields">
+                            <div class="field">
+                                <h4 class="ui centered header">Level</h4>
+                            </div>
+                            <div class="field">
+                                <h4 class="ui centered header">Upgrades</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="four wide column">
+                        <div class="two fields">
+                            <div class="ten wide field">
+                                <h4 class="ui centered header">Cycle</h4>
+                            </div>
+                            <div class="six wide field">
+                                <h4 class="ui centered header">Share</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="two wide column">
+                        <div class="field margin-medium-bottom">
+                            <h4 class="ui centered header">Money per Cycle</h4>
+                        </div>
+                    </div>
+                    <div class="three wide column">
+                        <div class="two fields">
+                            <div class="six wide field">
+                                <h4 class="ui centered header">Cost</h4>
+                            </div>
+                            <div class="ten wide field">
+                                <h4 class="ui centered header">Estimation</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <script type="text/javascript">
+            function add (id, name) {
+                $('#main').append(`
+                    <div class="three wide column">
+                        <h2 class="ui header">${ name }</h2>
+                    </div>
+                    <div class="three wide column">
+                        <div class="two fields">
+                            <div class="field npr">
+                                <input type="text" data-building="${ id }" data-setting="level">
+                            </div>
+                            <div class="field npl">
+                                <div class="ui selection compact dropdown">
+                                    <input type="hidden" value="0" data-building="${ id }" data-setting="boosts">
+                                    <i class="dropdown icon"></i>
+                                    <div class="default text"></div>
+                                    <div class="menu">
+                                        <div class="item" data-value="0">None</div>
+                                        <div class="item" data-value="1">Speed</div>
+                                        <div class="item" data-value="2">Gold</div>
+                                        <div class="item" data-value="3">Both</div>
+                                        <div class="item" data-value="4">Platinum</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="four wide column">
+                        <div class="two fields">
+                            <div class="ten wide field npr">
+                                <input type="text" disabled data-building="${ id }" data-setting="cycle">
+                            </div>
+                            <div class="six wide field npl">
+                                <input type="text" disabled data-building="${ id }" data-setting="share">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="two wide column">
+                        <div class="field npr margin-medium-bottom">
+                            <input type="text" disabled data-building="${ id }" data-setting="rate">
+                        </div>
+                    </div>
+                    <div class="four wide column">
+                        <div class="two fields">
+                            <div class="six wide field npr">
+                                <input type="text" disabled data-building="${ id }" data-setting="cost">
+                            </div>
+                            <div class="ten wide field npl">
+                                <input type="text" disabled data-building="${ id }" data-setting="estimated">
+                            </div>
+                        </div>
+                    </div>
+                `);
+            }
+
+            add(0, 'Seat');
+            add(1, 'Popcorn Stand');
+            add(2, 'Parking Lot');
+            add(3, 'Trap');
+            add(4, 'Drinks');
+            add(5, 'Deadly Trap');
+            add(6, 'VIP Seat');
+            add(7, 'Snacks');
+            add(8, 'Straying Monsters');
+            add(9, 'Toilet');
+
+            $('.dropdown').dropdown();
+        </script>
+    </body>
+</html>
