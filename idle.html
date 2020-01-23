@@ -301,10 +301,10 @@
                     setCycle(i, getFormattedDuration(Math.trunc(boost.speed * building.getCycleDuration(target || level))));
 
                     if (target) {
-                        setShare(i, `+${ Math.trunc(100 * (building.getProductionRate(target) - building.getProductionRate(level)) * boost.rate / total) }%`);
+                        setShare(i, `+${ Math.trunc(100 * (building.getProductionRate(target) - building.getProductionRate(level)) * boost.rate * runes / total) }%`);
                         setRate(i, `+${ Math.format(Math.trunc((building.getCycleProduction(target) - building.getCycleProduction(level)) * boost.money * runes)) }`)
                     } else {
-                        setShare(i, `${ Math.trunc(100 * building.getProductionRate(level) * boost.rate / total) }%`);
+                        setShare(i, `${ Math.trunc(100 * building.getProductionRate(level) * boost.rate * runes / total) }%`);
                         setRate(i, Math.format(Math.trunc(building.getCycleProduction(level) * boost.money * runes)));
                     }
 
