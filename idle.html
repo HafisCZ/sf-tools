@@ -26,26 +26,36 @@
         </div>
 
         <div class="ui main container">
-            <div class="ui three columns middle aligned grid">
-                <div class="column">
+            <div class="ui five columns middle aligned grid">
+                <div class="two wide column">
                     <div class="ui toggle checkbox">
                         <input type="checkbox" name="public">
                         <label>Simulator</label>
                     </div>
                 </div>
-                <div class="column">
+                <div class="four wide column">
+                    <div class="ui four mini buttons field">
+                        <a class="ui button" data-bulk="2">10</a>
+                        <a class="ui button" data-bulk="3">25</a>
+                        <a class="ui button" data-bulk="4">100</a>
+                        <a class="ui button" data-bulk="BK">BP</a>
+                    </div>
+                </div>
+                <div class="four wide column">
                     <h1 class="ui centered header">Arena Manager</h1>
                 </div>
-                <div class="column">
-                    <a class="ui button right floated" id="save">Save</a>
-                    <a class="ui button right floated" id="load">Load</a>
+                <div class="three wide column">
+
+                </div>
+                <div class="three wide wide column">
+                    <div class="ui mini form field">
+                        <input type="text" placeholder="Runes" id="runes">
+                    </div>
                 </div>
             </div>
             <form class="ui form margin-medium-top">
                 <div class="ui middle aligned grid nopad" id="main">
-                    <div class="three wide column">
-
-                    </div>
+                    <div class="three wide column"></div>
                     <div class="three wide column">
                         <div class="two fields">
                             <div class="field">
@@ -56,7 +66,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="four wide column">
+                    <div class="one wide column"></div>
+                    <div class="three wide column">
                         <div class="two fields">
                             <div class="ten wide field">
                                 <h4 class="ui centered header">Cycle</h4>
@@ -71,12 +82,12 @@
                             <h4 class="ui centered header">Money per Cycle</h4>
                         </div>
                     </div>
-                    <div class="three wide column">
+                    <div class="four wide column">
                         <div class="two fields">
-                            <div class="six wide field">
+                            <div class="eight wide field">
                                 <h4 class="ui centered header">Cost</h4>
                             </div>
-                            <div class="ten wide field">
+                            <div class="eight wide field">
                                 <h4 class="ui centered header">Estimation</h4>
                             </div>
                         </div>
@@ -94,7 +105,7 @@
                     <div class="three wide column">
                         <div class="two fields">
                             <div class="field npr">
-                                <input type="text" data-building="${ id }" data-setting="level">
+                                <input type="text" data-building="${ id }" data-setting="level" placeholder="${ id == 0 ? 1 : 0 }">
                             </div>
                             <div class="field npl">
                                 <div class="ui selection compact dropdown">
@@ -112,7 +123,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="four wide column">
+                    <div class="one wide column"></div>
+                    <div class="three wide column">
                         <div class="two fields">
                             <div class="ten wide field npr">
                                 <input type="text" disabled data-building="${ id }" data-setting="cycle">
@@ -129,10 +141,10 @@
                     </div>
                     <div class="four wide column">
                         <div class="two fields">
-                            <div class="six wide field npr">
+                            <div class="eight wide field npr">
                                 <input type="text" disabled data-building="${ id }" data-setting="cost">
                             </div>
-                            <div class="ten wide field npl">
+                            <div class="eight wide field npl">
                                 <input type="text" disabled data-building="${ id }" data-setting="estimated">
                             </div>
                         </div>
@@ -151,7 +163,56 @@
             add(8, 'Straying Monsters');
             add(9, 'Toilet');
 
+            var bulk = 0;
+
             $('.dropdown').dropdown();
+            $('[data-setting="level"], [data-setting="boosts"], #runes').on('input change', update);
+            $('[data-bulk]').off('click');
+            $('[data-bulk]').on('click', function () {
+                if ($(this).hasClass('green')) {
+                    $(this).removeClass('green');
+                    bulk = 0;
+                } else {
+                    $('[data-bulk]').removeClass('green');
+                    $(this).addClass('green');
+                    bulk = $(this).attr('data-bulk');
+                }
+                update();
+            });
+
+            function update () {
+                var rune = 1 + 0.05 * (Number($('#runes').val()) || 0);
+
+                var total = Object.values(Building).reduce((sum, building, i, array) => {
+                    var boost = $(`[data-building="${ i }"][data-setting="boosts"]`).val();
+                    mult = ((boost == 1 || boost > 2) ? 2 : 1) * ((boost > 1 ? (boost == 4 ? 4 : 2) : 1));
+                    return sum + rune * mult * building.getProductionRate(Number($(`[data-building="${ i }"][data-setting="level"]`).val()) || (i == 0 ? 1 : 0));
+                }, 0);
+
+                Object.values(Building).forEach((building, i, array) => {
+                    var level = Number($(`[data-building="${ i }"][data-setting="level"]`).val()) || (i == 0 ? 1 : 0);
+
+                    var boost = $(`[data-building="${ i }"][data-setting="boosts"]`).val();
+                    var speed = (boost == 1 || boost >= 3) ? 2 : 1;
+                    var money = (boost >= 2) ? (boost == 4 ? 4 : 2) : 1;
+
+                    $(`[data-building="${ i }"][data-setting="cycle"]`).val(getFormattedDuration(Math.trunc(building.getCycleDuration(level) / speed)));
+                    $(`[data-building="${ i }"][data-setting="share"]`).val(`${ Math.trunc(100 * (building.getProductionRate(level) * money * speed) / total) }%`);
+                    $(`[data-building="${ i }"][data-setting="rate"]`).val(Math.format(Math.trunc(money * building.getCycleProduction(level) * rune)));
+                    $(`[data-building="${ i }"][data-setting="cost"]`).val(Math.format(building.getUpgradePrice(level, 1)));
+
+                    var estimated = Math.trunc(building.getUpgradePrice(level, 1) / total);
+                    $(`[data-building="${ i }"][data-setting="estimated"]`).val(estimated > 604800 ? '< 7D' : (estimated < 1 ? '> 1S' : getFormattedDuration(estimated)));
+                });
+
+                if (bulk == 0) {
+                    $('[data-setting]:not([data-setting="level"], [data-setting="boosts"])').removeClass('ffgreen');
+                } else {
+                    $('[data-setting]:not([data-setting="level"], [data-setting="boosts"])').addClass('ffgreen');
+                }
+            }
+
+            update();
         </script>
     </body>
 </html>

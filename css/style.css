@@ -55,6 +55,19 @@ body.dimmed .menu {
     padding: 0.25em !important;
 }
 
+.ffgreen {
+    color: green !important;
+}
+
+input:disabled {
+    opacity: 1 !important;
+}
+
+#runes::placeholder {
+    opacity: 1 !important;
+    color: grey !important;
+}
+
 .muted {
     color: #505050 !important;
 }
