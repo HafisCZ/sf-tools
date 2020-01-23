@@ -46,8 +46,10 @@
 
                 </div>
                 <div class="four wide wide column">
-                    <div class="ui mini form field">
-                        <input type="text" placeholder="Runes" id="runes">
+                    <div class="ui mini form">
+                        <div class=" field">
+                            <input type="text" placeholder="Runes" id="runes">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -165,6 +167,30 @@
             add(8, 'Straying Monsters');
             add(9, 'Toilet');
 
+            $('#main').append(`
+                <div class="six wide column"></div>
+                <div class="two wide column">
+                    <h3 class="ui header">Per hour</h3>
+                </div>
+                <div class="four wide column">
+                    <div class="field npr margin-medium-bottom">
+                        <input type="text" disabled id="productionhour">
+                    </div>
+                </div>
+                <div class="four wide column"></div>
+
+                <div class="six wide column"></div>
+                <div class="two wide column">
+                    <h3 class="ui header">Per day</h3>
+                </div>
+                <div class="four wide column">
+                    <div class="field npr margin-medium-bottom">
+                        <input type="text" disabled id="productionday">
+                    </div>
+                </div>
+                <div class="four wide column"></div>
+            `);
+
             var bulk = 0;
 
             $('.dropdown').dropdown();
@@ -220,11 +246,45 @@
                 $(`[data-building="${ id }"][data-setting="estimated"]`).val(estimated);
             }
 
+            (function () {
+                var data = JSON.parse(localStorage.idle || { });
+                if (data.runes) {
+                    $('#runes').val(data.runes);
+                    data.buildings.forEach(b => {
+                        $(`[data-building="${ b.id }"][data-setting="${ b.key }"]`).val(b.value);
+                    });
+                }
+            })();
+
             function update () {
+                if ($('[data-setting="level"], #runes').toArray().reduce((sum, element) => {
+                    if (isNaN($(element).val())) {
+                        $(element).parent('.field').addClass('error');
+                        return sum + 1;
+                    } else {
+                        $(element).parent('.field').removeClass('error');
+                        return sum;
+                    }
+                }, 0) == 0) {
+                    localStorage.idle = JSON.stringify({
+                        buildings: $('[data-setting="level"], [data-setting="boosts"]').toArray().map(x => {
+                            return {
+                                key: $(x).attr('data-setting'),
+                                value: $(x).val(),
+                                id: $(x).attr('data-building')
+                            };
+                        }),
+                        runes: $('#runes').val()
+                    });
+                }
+
                 var runes = 1 + 0.05 * (Number($('#runes').val()) || 0);
                 var total = Object.values(Building).reduce((sum, building, i, array) => {
                     return sum + runes * getBoosts(i).rate * building.getProductionRate(getLevel(i, i == 0 ? 1 : 0));
                 }, 0);
+
+                $('#productionhour').val(Math.format(Math.trunc(total * 60 * 60)));
+                $('#productionday').val(Math.format(Math.trunc(total * 60 * 60 * 24)));
 
                 Object.values(Building).forEach((building, i, array) => {
                     var level = getLevel(i, i == 0 ? 1 : 0)
@@ -242,10 +302,10 @@
 
                     if (target) {
                         setShare(i, `+${ Math.trunc(100 * (building.getProductionRate(target) - building.getProductionRate(level)) * boost.rate / total) }%`);
-                        setRate(i, `+${ Math.format(Math.trunc((building.getCycleProduction(target) - building.getCycleProduction(level)) * boost.rate)) }`)
+                        setRate(i, `+${ Math.format(Math.trunc((building.getCycleProduction(target) - building.getCycleProduction(level)) * boost.money * runes)) }`)
                     } else {
                         setShare(i, `${ Math.trunc(100 * building.getProductionRate(level) * boost.rate / total) }%`);
-                        setRate(i, Math.format(Math.trunc(building.getCycleProduction(level) * boost.rate)));
+                        setRate(i, Math.format(Math.trunc(building.getCycleProduction(level) * boost.money * runes)));
                     }
 
                     if (level < 10000) {

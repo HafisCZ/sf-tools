@@ -71,9 +71,10 @@ class Building {
         } else {
             var price = 0;
             for (var i = 0; i < Multipliers.length; i++) {
-                while (bulk - level > Multipliers[i]) {
+                while (bulk > Multipliers[i]) {
                     price += PriceTable[this.id][i][level];
                     level += Multipliers[i];
+                    bulk -= Multipliers[i];
                 }
             }
             return price;
