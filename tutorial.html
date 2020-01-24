@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Knowledge Base</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/html2canvas.js"></script>
+
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/components/state.min.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu">
+            <div class="header item">SFTools</div>
+            <div class="right menu">
+                <a class="item" href="index.html"><i class="small reply icon"></i>Go back</a>
+            </div>
+        </div>
+
+        <div class="ui main container">
+            <div class="ui header huge centered">Shakes & Fidget Knowledge Base</div>
+            <div class="ui fluid icon input">
+                <input class="prompt" type="text" placeholder="Search ..." id="search">
+                <i class="search icon"></i>
+            </div>
+            <div id="content" class="margin-medium-top">
+
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            const add = (label, text) => document.getElementById('content').innerHTML += `<div class="ui segment"><h3 class="ui header">${ label }</h3><p>${ text }</p></div>`;
+            document.getElementById('search').value = '';
+            document.getElementById('search').addEventListener('input', event => { var value = event.target.value.toLowerCase(); $('#content > div').each((index, element) => { if ((value != ' ') && (!value || $(element).children('h3, p').text().toLowerCase().includes(value))) $(element).show(); else $(element).hide(); }); });
+
+            add('What is the chance for black gems?', 'The chance depends on how many members of your guild have Hall of Knights at level 15 or above, where each increases the chance of finding black gem by 1%.');
+            add('What is a Holy Grail and where can I find it?', 'Holy Grail is an item that wobbles with items that are missing from your scrapbook. <br>You can find it in your gem mine after reaching level 75 and having at least 1000 entries in your scrapbook. Your gem mine can be any level.');
+            add('How can I unlock new epic items?', 'You can unlock 1 set of epic items after reaching:<br>- Level 100<br>- Level 150<br>- Level 200<br>- Twister floor 100<br>- Twister floor 250<br>- Twister floor 500<br>You can unlock additional 1 epic set using the toilet, where you can get 3 epic weapons per class.');
+            add('How can I purchase the golden portrait?', 'The dealer will show up when you have 1000 mushrooms or above. You can purchase the portrait for 1000 mushrooms.');
+            add('How many items does it take to complete the witch recipe?', 'The amount of items per recipe depends on how many people contributes items for the previous recipe.');
+            add('How many resources can I get from resource items?', 'The amount of resource you can receive depends on the level of your production buildings.');
+            add('What units should I upgrade in the Underworld?', 'Fight with goblins at level 1 until you reach Heart of Darkness level 5. Then keep upgrading only Kepper.');
+            add('Where can I find the pet nest?', 'You can find it after reaching level 75 as a quest reward.');
+            add('How can I get the Big Spender achievement?', 'You can get it by purchasing 10 mushrooms worth of treasure, instructor or pet upgrades.');
+            add('How can I unlock the tower?', 'You can unlock it after clearing dungeon 9.');
+            add('How can I unlock the shadow world?', 'You can unlock it after reaching level 125 whil having the Tower unlocked.');
+            add('How can I get the Deep Mining Master?', 'You can get it by upgrading the gold & gem mines to level 50.');
+            add('How is the pet bonus calculated?', 'You can get:<br>- 1.00% for each pet<br>- 0.50% for each pet at level 100<br>- 0.75% for each pet at level 150<br>- 1.00% for each pet at level 200.');
+            add('What are red quests?', 'Red quests grant you double experience or gold and contain rare enemy for your scrapbook. They are very rare.');
+            add('How can I check the server time?', 'Write /time in the chat.');
+            add('When do I have to do guard duty to get the bonus from gold weekend?', 'You need to finish the guard duty while the weekend is still active. Optimal start would be shortly before 2PM, so you can get full 10 hours.');
+            add('When are mushrooms for sale?', 'During last weekend of the month and during special occasions like Chrismas, Easter and Birthday.');
+            add('How can I unlock the guild pet?', 'Guild pet can be unlocked by guild leader after he reaches level 100 with at least one of his pets. Any other guild members will be then able to upgrade their pets.');
+            add('Rune: Improved item quality', 'Maximum value is 5. It works in a similar way as toilet does. It is equal to 2 1/3 aura level if your server has all scrolls.');
+
+            add('What items are Toilet specific?', 'Tie of Integrity, Invisible Ring, Black Hole');
+
+
+            add('Achievement: Day X', 'Noone knows how it works, but it does work in some way.');
+
+        </script>
+    </body>
+</html>

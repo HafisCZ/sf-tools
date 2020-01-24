@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Statistics</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/html2canvas.js"></script>
+
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/components/state.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+
+        <script src="js/playa.js"></script>
+
+        <script src="js/core.js"></script>
+        <script src="js/table.js"></script>
+        <script src="js/event.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu">
+            <div class="header item">SFTools</div>
+            <a class="item" id="show-container-browse"><i class="small archive icon"></i>Browse</a>
+            <a class="item" id="show-container-files"><i class="small upload icon"></i>Files</a>
+            <a class="item" id="show-container-settings"><i class="small cog icon"></i>Settings</a>
+            <div class="right menu">
+                <a class="item" href="index.html"><i class="small reply icon"></i>Go back</a>
+            </div>
+        </div>
+
+        <div id="9nGg23I" class="ui main container">
+            <div class="ui active dimmer">
+                <div class="ui large text loader">Loading</div>
+            </div>
+        </div>
+
+        <div class="ui main container hidden" id="container-browse">
+            <div class="ui five column grid" id="container-browse-grid">
+
+            </div>
+        </div>
+
+        <div class="ui main container hidden" id="container-files">
+            <div class="ui grid">
+                <div class="twelve wide column" id="container-files-list">
+
+                </div>
+                <div class="four wide column">
+                    <div class="ui segment sticky">
+                        <div class="ui small two vertical statistics">
+                            <div class="statistic">
+                                <div class="value" id="container-files-statistics-groups"></div>
+                                <div class="label">Groups</div>
+                            </div>
+                            <div class="statistic">
+                                <div class="value" id="container-files-statistics-players"></div>
+                                <div class="label">Players</div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="ui small one vertical statistics">
+                            <div class="statistic">
+                                <div class="value" id="container-files-statistics-files"></div>
+                                <div class="label">Files</div>
+                            </div>
+                        </div>
+                        <br>
+                        <div>
+                            <label class="fluid ui secondary button" for="container-files-add">
+                                <i class="small upload icon"></i> Upload
+                            </label>
+                            <input type="file" multiple id="container-files-add" class="hidden">
+                        </div>
+                        <br>
+                        <div class="ui two buttons">
+                            <label class="ui left attached secondary basic button text-center" for="container-files-import">
+                                 <i class="small upload icon"></i> Import
+                            </label>
+                            <input type="file" id="container-files-import" class="hidden">
+                            <div class="ui right attached secondary basic button text-center" id="container-files-export">
+                                 <i class="small download icon"></i> Export
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui main container hidden" id="container-settings">
+            <div class="ui three columns grid">
+                <div class="column">
+                    <div class="ui secondary menu">
+                        <a class="item active" data-tab="tab0">Standart</a>
+                        <a class="item" data-tab="tab1">Advanced</a>
+                    </div>
+                </div>
+                <div class="column">
+                    <h1 class="ui header centered">Configuration</h1>
+                </div>
+                <div class="column">
+                    <button class="ui right floated secondary button" type="submit" id="container-settings-save">Save</button>
+                    <button class="ui right floated button margin-medium-right" type="submit" id="container-settings-clear">Clear</button>
+                </div>
+            </div>
+            <div class="ui tab basic segment active" data-tab="tab0" id="container-settings-auto">
+                <div class="ui two columns grid">
+                    <div class="column">
+                        <h2 class="ui centered header">Highlighting</h2>
+                        <div class="ui form" id="container-settings-highlighting">
+
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h2 class="ui centered header">Layout</h2>
+                        <div class="ui form" id="container-settings-layout">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui tab basic segment " data-tab="tab1">
+                <div class="ui two columns grid">
+                    <div class="column">
+                        <div class="ui form">
+                            <div class="field">
+                                <textarea class="area-input" id="container-settings-manual"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h2 class="ui centered header">Manual</h2>
+                        <b>You can remove the line or use <code>false</code>, <code>0</code> to disable a certain function</b><br>
+                        <b>You have to include <code>(required)</code> settings</b><br>
+                        <h3 class="ui header">Global</h3>
+                        <p>
+                            <b>categories</b><code>(required)</code><br>
+                            - Array with categories within the table<br>
+                            <b>brackets</b><br>
+                            - Use <code>true</code> to show brackets around differences<br>
+                            <b>group</b><br>
+                            - Use <code>1</code> to show guild statistics<br>
+                            - Use <code>2</code> to show guild statistics with join/leave member list<br>
+                        </p>
+                        <h3 class="ui header">Category</h3>
+                        <p>
+                            <b>name</b><code>(required)</code><br>
+                            - Category name<br>
+                            - Special names: <code>Potions</code><br>
+                            <b>headers</b><br>
+                            - Array with headers within this category<br>
+                            <b>width</b><br>
+                            - Width of the columns<br>
+                            - Can be only applied to <code>Potions</code><br>
+                        </p>
+                        <h3 class="ui header">Header</h3>
+                        <p>
+                            <b>name</b><code>(required)</code><br>
+                            - Header type<br>
+                            - Available names: <code>Class</code>, <code>ID</code>, <code>Rank</code>, <code>Role</code>, <code>Level</code>, <code>Album</code>, <code>Mount</code>, <code>Awards</code>, <code>Treasure</code>, <code>Instructor</code>, <code>Pet</code>, <code>Knights</code>, <code>Fortress</code>, <code>GemMine</code>, <code>Honor</code>, <code>Upgrades</code>, <code>Tower</code>, <code>Portal</code>, <code>Equipment</code></br>
+                            <b>diff</b><br>
+                            - Use <code>true</code> to show difference<br>
+                            <b>colors</b><br>
+                            - Array with colors for highlighting<br>
+                            - First value is default color, others follow format <code>[ x, color ]</code> that will highlight any values equal or better than <code>x</code> with specified color</br>
+                            - You can can use any valid CSS color values<br>
+                            <b>width</b><br>
+                            - Width of the column<br>
+                            <b>stat</b><br>
+                            - Use <code>true</code> to enable statistics for this field<br>
+                            <b>percentage</b><br>
+                            - Use <code>true</code> to show percentage instead of real value<br>
+                            - Can be only applied to <code>Mount</code>, <code>Album</code><br>
+                            <b>hydra</b><br>
+                            - Use <code>true</code> to show if player has slain the Hydra<br>
+                            - Can be only applied to <code>Awards</code><br>
+                        </p>
+                        <h3 class="ui header">Custom</h3>
+                        <p>
+                            <b>name</b><code>(required)</code><br>
+                            - Name of the field<br>
+                            <b>diff</b><br>
+                            - Use <code>true</code> to show difference<br>
+                            <b>colors</b><br>
+                            - Array with colors for highlighting<br>
+                            - First value is default color, others follow format <code>[ x, color ]</code> that will highlight any values equal or better than <code>x</code> with specified color</br>
+                            - You can can use any valid CSS color values<br>
+                            <b>values</b><br>
+                            - Array with values that will replace original values<br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui main container hidden" id="container-detail" data-current-group="">
+            <div class="ui segment center aligned basic">
+                <div class="ui extreme header" id="container-detail-name"></div>
+            </div>
+
+            <div class="ui basic segment margin-none-bottom padding-none-bottom">
+                <div class="ui grid">
+                    <div class="three wide middle aligned column">
+                        <div class="ui scrolling dropdown" id="container-detail-select-dropdown">
+                            <div class="default text" id="container-detail-select-text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                    <div class="two wide middle aligned column">
+                        compared to
+                    </div>
+                    <div class="three wide middle aligned column">
+                        <div class="ui scrolling dropdown" id="container-detail-compare-dropdown">
+                            <div class="default text" id="container-detail-compare-text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                    <div class="eight wide column">
+                        <div class="ui small basic icon right floated buttons">
+                            <button class="ui toggle button" data-tooltip="Sort by level" id="container-detail-sort"><i class="sort icon"></i></button>
+                            <button class="ui button" data-tooltip="Save as image" id="container-detail-save"><i class="download icon"></i></button>
+                            <button class="ui button" data-tooltip="Copy table" id="container-detail-copy"><i class="copy icon"></i></button>
+                            <button class="ui button" data-tooltip="Custom settings" id="container-detail-settings"><i class="cog icon"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui basic segment margin-none-top padding-none" id="container-detail-screenshot">
+                <table class="ui celled structured table table-group" id="container-detail-content">
+
+                </table>
+            </div>
+        </div>
+
+        <div class="ui basic modal" id="modal-error">
+            <div class="ui icon header">
+                <i class="exclamation triangle icon"></i>
+                Error
+            </div>
+            <div class="content text-center">
+                <p id="modal-error-content"></p>
+            </div>
+        </div>
+
+        <div class="ui basic modal" id="modal-player">
+
+        </div>
+
+        <div class="ui basic large modal text-white" id="modal-custom-settings">
+            <div class="ui three columns grid">
+                <div class="seven wide column">
+                    <div class="ui secondary menu">
+                        <a class="item active text-white" data-tab="tab0">Standart</a>
+                        <a class="item text-white" data-tab="tab1">Advanced</a>
+                    </div>
+                </div>
+                <div class="two wide column">
+                    <h1 class="ui header text-white centered">Configuration</h1>
+                </div>
+                <div class="seven wide column">
+                    <button class="ui right floated secondary button" type="submit" id="modal-custom-settings-save">Save</button>
+                    <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-reset">Clear</button>
+                    <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-clear">Remove custom settings</button>
+                </div>
+            </div>
+            <div class="ui tab basic segment active" data-tab="tab0" id="modal-custom-settings-auto">
+                <div class="ui two columns grid">
+                    <div class="column">
+                        <h2 class="ui centered header">Highlighting</h2>
+                        <div class="ui form" id="modal-custom-settings-highlighting">
+
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h2 class="ui centered header">Layout</h2>
+                        <div class="ui form" id="modal-custom-settings-layout">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui tab basic segment" data-tab="tab1">
+                <div class="ui two columns grid">
+                    <div class="column">
+                        <div class="ui form">
+                            <div class="field">
+                                <textarea class="area-input" id="modal-custom-settings-manual"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h2 class="ui centered header">Manual</h2>
+                        <b>You can remove the line or use <code>false</code>, <code>0</code> to disable a certain function</b><br>
+                        <b>You have to include <code>(required)</code> settings</b><br>
+                        <h3 class="ui header">Global</h3>
+                        <p>
+                            <b>categories</b><code>(required)</code><br>
+                            - Array with categories within the table<br>
+                            <b>brackets</b><br>
+                            - Use <code>true</code> to show brackets around differences<br>
+                            <b>group</b><br>
+                            - Use <code>1</code> to show guild statistics<br>
+                            - Use <code>2</code> to show guild statistics with join/leave member list<br>
+                        </p>
+                        <h3 class="ui header">Category</h3>
+                        <p>
+                            <b>name</b><code>(required)</code><br>
+                            - Category name<br>
+                            - Special names: <code>Potions</code><br>
+                            <b>headers</b><br>
+                            - Array with headers within this category<br>
+                            <b>width</b><br>
+                            - Width of the columns<br>
+                            - Can be only applied to <code>Potions</code><br>
+                        </p>
+                        <h3 class="ui header">Header</h3>
+                        <p>
+                            <b>name</b><code>(required)</code><br>
+                            - Header type<br>
+                            - Available names: <code>Class</code>, <code>ID</code>, <code>Rank</code>, <code>Role</code>, <code>Level</code>, <code>Album</code>, <code>Mount</code>, <code>Awards</code>, <code>Treasure</code>, <code>Instructor</code>, <code>Pet</code>, <code>Knights</code>, <code>Fortress</code>, <code>GemMine</code>, <code>Honor</code>, <code>Upgrades</code>, <code>Tower</code>, <code>Portal</code>, <code>Equipment</code></br>
+                            <b>diff</b><br>
+                            - Use <code>true</code> to show difference<br>
+                            <b>colors</b><br>
+                            - Array with colors for highlighting<br>
+                            - First value is default color, others follow format <code>[ x, color ]</code> that will highlight any values equal or better than <code>x</code> with specified color</br>
+                            - You can can use any valid CSS color values<br>
+                            <b>width</b><br>
+                            - Width of the column<br>
+                            <b>stat</b><br>
+                            - Use <code>true</code> to enable statistics for this field<br>
+                            <b>percentage</b><br>
+                            - Use <code>true</code> to show percentage instead of real value<br>
+                            - Can be only applied to <code>Mount</code>, <code>Album</code><br>
+                            <b>hydra</b><br>
+                            - Use <code>true</code> to show if player has slain the Hydra<br>
+                            - Can be only applied to <code>Awards</code><br>
+                        </p>
+                        <h3 class="ui header">Custom</h3>
+                        <p>
+                            <b>name</b><code>(required)</code><br>
+                            - Name of the field<br>
+                            <b>diff</b><br>
+                            - Use <code>true</code> to show difference<br>
+                            <b>colors</b><br>
+                            - Array with colors for highlighting<br>
+                            - First value is default color, others follow format <code>[ x, color ]</code> that will highlight any values equal or better than <code>x</code> with specified color</br>
+                            - You can can use any valid CSS color values<br>
+                            <b>values</b><br>
+                            - Array with values that will replace original values<br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            // Init
+            Handle.call(EVT_INIT);
+
+            // Listeners
+            $('#container-detail-sort').on('click', function () {
+                State.toggleSort();
+                Handle.call(EVT_GROUP_LOAD_TABLE);
+            });
+
+            $('[data-toggle]').on('click', function () {
+                Handle.call(EVT_SHOWSCREEN, $(this).attr('data-toggle'));
+            });
+
+            $('#container-files-add').on('change', function () {
+                Handle.call(EVT_FILES_UPLOAD, this.files);
+            });
+
+            $('#container-files-export').on('click', function () {
+                Handle.call(EVT_FILES_EXPORT);
+            });
+
+            $('#container-files-import').on('change', function () {
+                Handle.call(EVT_FILES_IMPORT, this.files);
+            });
+
+            $('#container-settings-save').on('click', function () {
+                Handle.call(EVT_SETTINGS_SAVE);
+            });
+
+            $('#container-settings-clear').on('click', function () {
+                Handle.call(EVT_SETTINGS_LOAD);
+            });
+
+            $('#container-detail-save').on('click', function () {
+                Handle.call(EVT_GROUP_SAVE);
+            });
+
+            $('#container-detail-copy').on('click', function () {
+                Handle.call(EVT_GROUP_COPY);
+            });
+
+            $('#container-detail-settings').on('click', function () {
+                Handle.call(EVT_GROUP_SETTINGS_SHOW);
+            });
+
+            $('#modal-custom-settings-save').on('click', function () {
+                Handle.call(EVT_GROUP_SETTINGS_SAVE);
+            });
+
+            $('#modal-custom-settings-reset').on('click', function () {
+                Handle.call(EVT_GROUP_SETTINGS_LOAD);
+            });
+
+            $('#modal-custom-settings-clear').on('click', function () {
+                Handle.call(EVT_GROUP_SETTINGS_CLEAR);
+            });
+
+            $('#show-container-browse').on('click', function () {
+                Handle.call(EVT_SHOWSCREEN, 'container-browse');
+                Handle.call(EVT_BROWSE_LOAD);
+            });
+
+            $('#show-container-files').on('click', function () {
+                Handle.call(EVT_SHOWSCREEN, 'container-files');
+                Handle.call(EVT_FILES_LOAD);
+            });
+
+            $('#show-container-settings').on('click', function () {
+                Handle.call(EVT_SHOWSCREEN, 'container-settings');
+                Handle.call(EVT_SETTINGS_LOAD);
+            });
+
+            $('#show-container-help').on('click', function () {
+                Handle.call(EVT_SHOWSCREEN, 'container-help');
+            });
+
+            // Show first screen
+            Storage.load(function () {
+                Handle.call(EVT_BROWSE_LOAD);
+                Handle.call(EVT_SHOWSCREEN, 'container-browse');
+            });
+        </script>
+    </body>
+</html>
