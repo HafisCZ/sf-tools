@@ -37,35 +37,69 @@
         </div>
 
         <script type="text/javascript">
-            const add = (label, text) => document.getElementById('content').innerHTML += `<div class="ui segment"><h3 class="ui header">${ label }</h3><p>${ text }</p></div>`;
+            const asEmpty = () => '';
+            const asRequirements = (... requirements) => `<br><b>Requirements</b>${ requirements.map(r => `<br>- ${ r }`).join('') }`;
+
+            const add = (category, label, ... entries) => document.getElementById('content').innerHTML += `<div class="ui segment"><h3 class="ui header">${ category } ${ label ? `/ ${ label }` : '' }</h3><p>${ entries.join('<br>') }</p></div>`;
             document.getElementById('search').value = '';
             document.getElementById('search').addEventListener('input', event => { var value = event.target.value.toLowerCase(); $('#content > div').each((index, element) => { if ((value != ' ') && (!value || $(element).children('h3, p').text().toLowerCase().includes(value))) $(element).show(); else $(element).hide(); }); });
 
-            add('What is the chance for black gems?', 'The chance depends on how many members of your guild have Hall of Knights at level 15 or above, where each increases the chance of finding black gem by 1%.');
-            add('What is a Holy Grail and where can I find it?', 'Holy Grail is an item that wobbles with items that are missing from your scrapbook. <br>You can find it in your gem mine after reaching level 75 and having at least 1000 entries in your scrapbook. Your gem mine can be any level.');
-            add('How can I unlock new epic items?', 'You can unlock 1 set of epic items after reaching:<br>- Level 100<br>- Level 150<br>- Level 200<br>- Twister floor 100<br>- Twister floor 250<br>- Twister floor 500<br>You can unlock additional 1 epic set using the toilet, where you can get 3 epic weapons per class.');
-            add('How can I purchase the golden portrait?', 'The dealer will show up when you have 1000 mushrooms or above. You can purchase the portrait for 1000 mushrooms.');
-            add('How many items does it take to complete the witch recipe?', 'The amount of items per recipe depends on how many people contributes items for the previous recipe.');
-            add('How many resources can I get from resource items?', 'The amount of resource you can receive depends on the level of your production buildings.');
-            add('What units should I upgrade in the Underworld?', 'Fight with goblins at level 1 until you reach Heart of Darkness level 5. Then keep upgrading only Kepper.');
-            add('Where can I find the pet nest?', 'You can find it after reaching level 75 as a quest reward.');
-            add('How can I get the Big Spender achievement?', 'You can get it by purchasing 10 mushrooms worth of treasure, instructor or pet upgrades.');
-            add('How can I unlock the tower?', 'You can unlock it after clearing dungeon 9.');
-            add('How can I unlock the shadow world?', 'You can unlock it after reaching level 125 whil having the Tower unlocked.');
-            add('How can I get the Deep Mining Master?', 'You can get it by upgrading the gold & gem mines to level 50.');
-            add('How is the pet bonus calculated?', 'You can get:<br>- 1.00% for each pet<br>- 0.50% for each pet at level 100<br>- 0.75% for each pet at level 150<br>- 1.00% for each pet at level 200.');
-            add('What are red quests?', 'Red quests grant you double experience or gold and contain rare enemy for your scrapbook. They are very rare.');
-            add('How can I check the server time?', 'Write /time in the chat.');
-            add('When do I have to do guard duty to get the bonus from gold weekend?', 'You need to finish the guard duty while the weekend is still active. Optimal start would be shortly before 2PM, so you can get full 10 hours.');
-            add('When are mushrooms for sale?', 'During last weekend of the month and during special occasions like Chrismas, Easter and Birthday.');
-            add('How can I unlock the guild pet?', 'Guild pet can be unlocked by guild leader after he reaches level 100 with at least one of his pets. Any other guild members will be then able to upgrade their pets.');
-            add('Rune: Improved item quality', 'Maximum value is 5. It works in a similar way as toilet does. It is equal to 2 1/3 aura level if your server has all scrolls.');
+            add('Fortress', 'Black Gems',
+                'The chance to receive a black gem depends on how many members of your guild have Hall of Knights at level 15 or above.',
+                'Each member that meets this requirement increases the chance by 1% up to the max of 50%.'
+            );
 
-            add('What items are Toilet specific?', 'Tie of Integrity, Invisible Ring, Black Hole');
+            add('Items', 'Holy Grail',
+                'Holy Grail is an support item that helps you see items that you are yet to collect for your scrapbook. You can find it in your gem mine.',
+                asRequirements('Level 75', 'At least 1000 items in your scrapbook', 'Any level of gem mine')
+            );
 
+            add('Pets', 'Pet Nest',
+                'Pet Nest is an item that allows you to collect pets, fight with them agains other player\'s pets or inside pet dungeons. You can receive it as a quest reward.',
+                asRequirements('Level 75')
+            );
 
-            add('Achievement: Day X', 'Noone knows how it works, but it does work in some way.');
+            add('Pets', 'Bonus',
+                'The base bonus is 1% for every owned pet.',
+                'Additionaly you can also receive another 0.5% for each pet at level 100, 0.75% at level 150 and 1% at level 200. The resulting bonus is rounded down.'
+            );
 
+            add('Dealer', 'Golden Portrait',
+                'Golden Portrait is cosmetic item that can be purchased from the dealer for 1000 mushrooms. You need to have those mushrooms on your account for him to appear.'
+            );
+
+            add('Witch', null,
+                'Witch allows you to enchant your items with powerfull enchantments.',
+                asRequirements('Level 66')
+            );
+
+            add('Witch', 'Recipes',
+                'Recipes must be completed before their corresponding enchantment can be used.',
+                'To complete a recipe, players must throw their items of required type into the cauldron',
+                'The amount of items required to finish brewing the recipe depends on the amount of players that contributed to the previous recipe.'
+            );
+
+            add('Underworld', 'Unit Strategy',
+                'Level only Keeper. Before you gain access to Keeper, fight only with goblins at level 1 and upgrade Heart of Darkness up to level 5.'
+            );
+
+            add('Underworld', null,
+                'Underworld allows you to mine gold, increase your critical damage and lure players into your dungeon for souls.',
+                asRequirements('Access to the Tower', 'Gem mine at level 10 or above')
+            );
+
+            add('Arena Manager', null,
+                'Arena Manager is a minigame that allows you to unlock several bonuses for your items.',
+                asRequirements('Level 105')
+            );
+
+            add('Achievement', 'Day X',
+                'Noone knows how it works, but it does work in some way.'
+            );
+
+            add('Achievement', 'Deep Mining Master',
+                'You need to upgrade both of your to level 50.'
+            );
         </script>
     </body>
 </html>

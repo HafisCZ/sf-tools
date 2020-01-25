@@ -195,6 +195,16 @@
 
             var bulk = 0;
 
+            (function () {
+                var data = JSON.parse(localStorage.idle || { });
+                if (data.runes) {
+                    $('#runes').val(data.runes);
+                    data.buildings.forEach(b => {
+                        $(`[data-building="${ b.id }"][data-setting="${ b.key }"]`).val(b.value);
+                    });
+                }
+            })();
+
             $('.dropdown').dropdown();
             $('[data-setting="level"], [data-setting="boosts"], #runes').on('input change', update);
             $('[data-bulk]').off('click');
@@ -247,16 +257,6 @@
             function setEstimated (id, estimated) {
                 $(`[data-building="${ id }"][data-setting="estimated"]`).val(estimated);
             }
-
-            (function () {
-                var data = JSON.parse(localStorage.idle || { });
-                if (data.runes) {
-                    $('#runes').val(data.runes);
-                    data.buildings.forEach(b => {
-                        $(`[data-building="${ b.id }"][data-setting="${ b.key }"]`).val(b.value);
-                    });
-                }
-            })();
 
             function update () {
                 if ($('[data-setting="level"], #runes').toArray().reduce((sum, element) => {
