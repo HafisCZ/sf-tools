@@ -18,6 +18,8 @@ const EVT_GROUP_SETTINGS_CLEAR = 1013; // Clear group settings
 const EVT_SETTINGS_SAVE = 2000;
 const EVT_SETTINGS_LOAD = 2001;
 
+const EVT_PLAYERS_LOAD = 6000;
+
 const EVT_FILES_LOAD = 3000;
 const EVT_FILES_REMOVE = 3001;
 const EVT_FILES_UPLOAD = 3002;
@@ -293,7 +295,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     }
 
     // Load settings
-    var config = new Config(groupCurrent.Identifier);
+    var config = Config.load(groupCurrent.Identifier);
 
     // Create table
     var table = new Table(config.getData());
@@ -328,7 +330,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
 });
 
 Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
-    var config = new Config(State.getGroupID());
+    var config = State.getGroupID() ? Config.load(State.getGroupID()) : Config.empty();
     var player = Database.Players[identifier][timestamp];
 
     $('#modal-player').html(`
@@ -356,20 +358,28 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="column">${ player.Damage.Min } - ${ player.Damage.Max }</div>
                         <div class="column"><br></div>
                         <div class="column"></div>
-                        <div class="left aligned column font-big">Treasure</div>
-                        <div class="column" style="color: ${ Color.Get(player.Group.Treasure, config.findEntrySafe('Treasure').colors) };">${ player.Group.Treasure }</div>
-                        <div class="left aligned column font-big">Instructor</div>
-                        <div class="column" style="color: ${ Color.Get(player.Group.Instructor, config.findEntrySafe('Instructor').colors) }">${ player.Group.Instructor }</div>
-                        <div class="left aligned column font-big">Pet</div>
-                        <div class="column" style="color: ${ Color.Get(player.Group.Pet, config.findEntrySafe('Pet').colors) }">${ player.Group.Pet }</div>
-                        <div class="left aligned column font-big">Knights</div>
-                        <div class="column" style="color: ${ Color.Get(player.Fortress.Knights, config.findEntrySafe('Knights').colors) }">${ player.Fortress.Knights }</div>
-                        <div class="column"><br></div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Guild join date</div>
-                        <div class="column">${ formatDate(player.Group.Joined) }</div>
-                        <div class="left aligned column font-big">Role</div>
-                        <div class="column">${ GROUP_ROLES[player.Group.Role] }</div>
+                        ${ player.Group ? `
+                            ${ player.Group.Own ? `
+                                <div class="left aligned column font-big">Treasure</div>
+                                <div class="column" style="color: ${ Color.Get(player.Group.Treasure, config.findEntrySafe('Treasure').colors) };">${ player.Group.Treasure }</div>
+                                <div class="left aligned column font-big">Instructor</div>
+                                <div class="column" style="color: ${ Color.Get(player.Group.Instructor, config.findEntrySafe('Instructor').colors) }">${ player.Group.Instructor }</div>
+                                <div class="left aligned column font-big">Pet</div>
+                                <div class="column" style="color: ${ Color.Get(player.Group.Pet, config.findEntrySafe('Pet').colors) }">${ player.Group.Pet }</div>
+                                <div class="left aligned column font-big">Knights</div>
+                                <div class="column" style="color: ${ Color.Get(player.Fortress.Knights, config.findEntrySafe('Knights').colors) }">${ player.Fortress.Knights }</div>
+                                <div class="column"><br></div>
+                                <div class="column"></div>
+                            ` : '' }
+                            <div class="left aligned column font-big">Guild</div>
+                            <div class="column">${ player.Group.Name }</div>
+                            <div class="left aligned column font-big">Guild join date</div>
+                            <div class="column">${ formatDate(player.Group.Joined) }</div>
+                            ${ player.Group.Role ? `
+                                <div class="left aligned column font-big">Role</div>
+                                <div class="column">${ GROUP_ROLES[player.Group.Role] }</div>
+                            ` : '' }
+                        ` : '' }
                     </div>
                 </div>
                 <div class="column">
@@ -460,7 +470,7 @@ Handle.bind(EVT_GROUP_SETTINGS_SHOW, function () {
 });
 
 Handle.bind(EVT_GROUP_SETTINGS_LOAD, function () {
-    var data = new Config(State.getGroupID()).getData();
+    var data = Config.load(State.getGroupID()).getData();
     $('#modal-custom-settings-manual').val(JSON.stringify(data, null, 1));
     fillStandartConfiguration(data, true);
 
@@ -569,6 +579,14 @@ Handle.bind(EVT_INIT, function () {
     $('[data-custom-settings]').on('change click', () => {
         $('#modal-custom-settings-manual').val(JSON.stringify(createConfigurationObject(true), null, 1));
     });
+
+    $('#psearch').on('change input', function () {
+        var value = $(this).val().toLowerCase();
+        $('#container-players-grid .column').filter(function () {
+            var player = Database.Players[$(this).children('.clickable').attr('data-player')].Latest;
+            $(this).toggle(player.Name.toLowerCase().includes(value) || player.Identifier.replace(/_/g, ' ').toLowerCase().includes(value));
+        });
+    });
 });
 
 Handle.bind(EVT_SETTINGS_SAVE, function () {
@@ -585,9 +603,34 @@ Handle.bind(EVT_SETTINGS_SAVE, function () {
 });
 
 Handle.bind(EVT_SETTINGS_LOAD, function () {
-    var data = new Config().getData();
+    var data = Config.load().getData();
     $('#container-settings-manual').val(JSON.stringify(data, null, 1));
     fillStandartConfiguration(data, false);
 
     $('.ui.dropdown').dropdown();
+});
+
+Handle.bind(EVT_PLAYERS_LOAD, function () {
+    $('#psearch').val('');
+    State.unsetGroup();
+
+    var content = [];
+    Object.values(Database.Players).forEach((player) => {
+        content.push(`
+            <div class="column">
+                <div class="ui segment text-center clickable ${Database.Latest != player.LatestTimestamp ? 'border-red' : ''}" data-player="${ player.Latest.Identifier }">
+                    <h3 class="ui header margin-tiny-bottom margin-tiny-top">${ player.Latest.Name }</h3>
+                    <div class="text-muted">${ player.Latest.Identifier.replace(/_/g, ' ') }</div>
+                </div>
+            </div>
+        `);
+    });
+
+    $('#container-players-grid').html(content.join(''));
+
+    $('[data-player]').off('click');
+    $('[data-player]').on('click', function () {
+        var player = Database.Players[$(this).attr('data-player')];
+        Handle.call(EVT_PLAYER_LOAD, player.Latest.Identifier, player.LatestTimestamp);
+    });
 });

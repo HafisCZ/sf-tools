@@ -9,6 +9,8 @@
         <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
         <link rel="stylesheet" href="css/style.css"/>
 
+        <link rel="preload" href="res/group.png" as="image"/>
+
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/html2canvas.js"></script>
 
@@ -30,6 +32,7 @@
         <div class="ui fixed borderless huge menu">
             <div class="header item">SFTools</div>
             <a class="item" id="show-container-browse"><i class="small archive icon"></i>Browse</a>
+            <a class="item" id="show-container-players"><i class="small database icon"></i>Players</a>
             <a class="item" id="show-container-files"><i class="small upload icon"></i>Files</a>
             <a class="item" id="show-container-settings"><i class="small cog icon"></i>Settings</a>
             <div class="right menu">
@@ -201,6 +204,16 @@
             </div>
         </div>
 
+        <div class="ui main container hidden" id="container-players">
+            <div class="ui fluid icon input">
+                <input class="prompt" type="text" placeholder="Search ..." id="psearch">
+                <i class="search icon"></i>
+            </div>
+            <div class="ui five column grid margin-medium-top" id="container-players-grid">
+
+            </div>
+        </div>
+
         <div class="ui main container hidden" id="container-detail" data-current-group="">
             <div class="ui segment center aligned basic">
                 <div class="ui extreme header" id="container-detail-name"></div>
@@ -250,7 +263,7 @@
             </div>
         </div>
 
-        <div class="ui basic modal" id="modal-player">
+        <div class="ui basic modal margin-none-top" id="modal-player">
 
         </div>
 
@@ -436,6 +449,11 @@
 
             $('#show-container-help').on('click', function () {
                 Handle.call(EVT_SHOWSCREEN, 'container-help');
+            });
+
+            $('#show-container-players').on('click', function () {
+                Handle.call(EVT_SHOWSCREEN, 'container-players');
+                Handle.call(EVT_PLAYERS_LOAD);
             });
 
             // Show first screen

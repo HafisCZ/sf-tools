@@ -377,10 +377,6 @@ const Color = {
 }
 
 class Config {
-    constructor (didentifier) {
-        this.config = Preferences.get('config/' + didentifier, Preferences.get('config', DEFAULT_CONFIG));
-    }
-
     static save (config, didentifier) {
         if (didentifier) {
             Preferences.set('config/' + didentifier, config);
@@ -395,6 +391,18 @@ class Config {
 
     static exists (didentifier) {
         return Preferences.exists('config/' + didentifier);
+    }
+
+    static empty () {
+        var config = new Config();
+        config.config = { categories: [] };
+        return config;
+    }
+
+    static load (didentifier) {
+        var config = new Config();
+        config.config = Preferences.get('config/' + didentifier, Preferences.get('config', DEFAULT_CONFIG));
+        return config;
     }
 
     findEntry (name) {

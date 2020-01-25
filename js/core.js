@@ -341,8 +341,8 @@ const Storage = new (class {
                 return;
             }
 
-            if (file.players.length == 0 || file.groups.length == 0) {
-                throw 'The file must contain at least one group and one player.';
+            if (file.players.length == 0) {
+                throw 'The file must contain at least one player.';
             }
 
             Database.add([ file ]);
@@ -378,6 +378,10 @@ const State = new (class {
         this.groupID = groupID;
         this.groupTimestamp = timestamp || Database.Groups[groupID].LatestTimestamp;
         this.groupReferenceTimestamp = referenceTimestamp || Database.Groups[groupID].LatestTimestamp;
+    }
+
+    unsetGroup () {
+        this.groupID = null;
     }
 
     setReference (referenceTimestamp) {
