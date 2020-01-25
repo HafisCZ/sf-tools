@@ -125,7 +125,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="field">
+                            <div class="field clickable">
                                 <input type="text" disabled data-building="${ id }" data-setting="clevel">
                             </div>
                         </div>
@@ -264,6 +264,12 @@
                     $(this).addClass('green');
                     bulk = $(this).attr('data-bulk');
                 }
+                update();
+            });
+
+            $('[data-setting="clevel"]').parent('.field').on('click', function () {
+                var child = $(this).children('[data-setting]');
+                $(`[data-setting="level"][data-building="${ child.attr('data-building') }"]`).val(child.val());
                 update();
             });
 
