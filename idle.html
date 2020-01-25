@@ -132,10 +132,10 @@
                     </div>
                     <div class="three wide column">
                         <div class="two fields">
-                            <div class="eight wide field npr">
+                            <div class="nine wide field npr">
                                 <input type="text" disabled data-building="${ id }" data-setting="cycle">
                             </div>
-                            <div class="eight wide field npl">
+                            <div class="seven wide field npl">
                                 <input type="text" disabled data-building="${ id }" data-setting="share">
                             </div>
                         </div>
@@ -170,27 +170,73 @@
             add(9, 'Toilet');
 
             $('#main').append(`
-                <div class="six wide column"></div>
+                <div class="three wide column"></div>
                 <div class="two wide column">
-                    <h3 class="ui header">Per hour</h3>
+                    <h3 class="ui header">Available money</h3>
                 </div>
                 <div class="four wide column">
-                    <div class="field npr margin-medium-bottom">
-                        <input type="text" disabled id="productionhour">
+                    <div class="two fields">
+                        <div class="field npr">
+                            <input type="text" id="money">
+                        </div>
                     </div>
                 </div>
-                <div class="four wide column"></div>
-
-                <div class="six wide column"></div>
+                <div class="one wide column"></div>
                 <div class="two wide column">
-                    <h3 class="ui header">Per day</h3>
+                    <h3 class="ui header">1 Hour</h3>
                 </div>
                 <div class="four wide column">
-                    <div class="field npr margin-medium-bottom">
-                        <input type="text" disabled id="productionday">
+                    <div class="two fields">
+                        <div class="field npr">
+                            <input type="text" disabled id="productionhour">
+                        </div>
+                        <div class="field npl">
+                            <input type="text" disabled id="runeshour">
+                        </div>
                     </div>
                 </div>
-                <div class="four wide column"></div>
+                <div class="three wide column"></div>
+                <div class="two wide column">
+                    <h3 class="ui header">Money spent</h3>
+                </div>
+                <div class="four wide column">
+                    <div class="two fields">
+                        <div class="field npr">
+                            <input type="text" disabled id="spent">
+                        </div>
+                        <div class="field npl">
+                            <input type="text" disabled id="spentrunes">
+                        </div>
+                    </div>
+                </div>
+                <div class="one wide column"></div>
+                <div class="two wide column">
+                    <h3 class="ui header">8 Hours</h3>
+                </div>
+                <div class="four wide column">
+                    <div class="two fields">
+                        <div class="field npr">
+                            <input type="text" disabled id="productionnight">
+                        </div>
+                        <div class="field npl">
+                            <input type="text" disabled id="runesnight">
+                        </div>
+                    </div>
+                </div>
+                <div class="ten wide column"></div>
+                <div class="two wide column">
+                    <h3 class="ui header">24 Hours</h3>
+                </div>
+                <div class="four wide column">
+                    <div class="two fields">
+                        <div class="field npr">
+                            <input type="text" disabled id="productionday">
+                        </div>
+                        <div class="field npl">
+                            <input type="text" disabled id="runesday">
+                        </div>
+                    </div>
+                </div>
             `);
 
             var bulk = 0;
@@ -199,6 +245,7 @@
                 var data = JSON.parse(localStorage.idle || { });
                 if (data.runes) {
                     $('#runes').val(data.runes);
+                    $('#money').val(data.money);
                     data.buildings.forEach(b => {
                         $(`[data-building="${ b.id }"][data-setting="${ b.key }"]`).val(b.value);
                     });
@@ -206,7 +253,7 @@
             })();
 
             $('.dropdown').dropdown();
-            $('[data-setting="level"], [data-setting="boosts"], #runes').on('input change', update);
+            $('[data-setting="level"], [data-setting="boosts"], #runes, #money').on('input change', update);
             $('[data-bulk]').off('click');
             $('[data-bulk]').on('click', function () {
                 if ($(this).hasClass('green')) {
@@ -276,7 +323,8 @@
                                 id: $(x).attr('data-building')
                             };
                         }),
-                        runes: $('#runes').val()
+                        runes: $('#runes').val(),
+                        money: $('#money').val()
                     });
                 }
 
@@ -285,8 +333,25 @@
                     return sum + runes * getBoosts(i).rate * building.getProductionRate(getLevel(i, i == 0 ? 1 : 0));
                 }, 0);
 
-                $('#productionhour').val(Math.format(Math.trunc(total * 60 * 60)));
-                $('#productionday').val(Math.format(Math.trunc(total * 60 * 60 * 24)));
+                var hourly = total * 60 * 60;
+
+                var moneyspent = Object.values(Building).reduce((sum, building, i, array) => {
+                    return sum + building.getUpgradePrice(i == 0 ? 1 : 0, getLevel(i, 0));
+                }, 0);
+
+                var currentmoney = moneyspent + (Number($('#money').val()) || 0);
+                var currentrunes = getRunesFromMoney(currentmoney);
+
+                $('#spent').val(Math.format(Math.trunc(moneyspent)));
+                $('#spentrunes').val(Math.format(Math.trunc(currentrunes)));
+
+                $('#productionhour').val(Math.format(Math.trunc(hourly)));
+                $('#productionnight').val(Math.format(Math.trunc(8 * hourly)));
+                $('#productionday').val(Math.format(Math.trunc(24 * hourly)));
+
+                $('#runeshour').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + hourly) - currentrunes)));
+                $('#runesnight').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 8 * hourly) - currentrunes)));
+                $('#runesday').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 24 * hourly) - currentrunes)));
 
                 Object.values(Building).forEach((building, i, array) => {
                     var level = getLevel(i, i == 0 ? 1 : 0)
