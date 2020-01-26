@@ -190,8 +190,8 @@
                         <div class="field npr">
                             <input type="text" disabled id="productionhour">
                         </div>
-                        <div class="field npl">
-                            <input type="text" disabled id="runeshour">
+                        <div class="field clickable npl">
+                            <input type="text" data-add-runes="0" disabled id="runeshour">
                         </div>
                     </div>
                 </div>
@@ -204,8 +204,8 @@
                         <div class="field npr">
                             <input type="text" disabled id="spent">
                         </div>
-                        <div class="field npl">
-                            <input type="text" disabled id="spentrunes">
+                        <div class="field clickable npl">
+                            <input type="text" data-add-runes="0" disabled id="spentrunes">
                         </div>
                     </div>
                 </div>
@@ -218,8 +218,8 @@
                         <div class="field npr">
                             <input type="text" disabled id="productionnight">
                         </div>
-                        <div class="field npl">
-                            <input type="text" disabled id="runesnight">
+                        <div class="field clickable npl">
+                            <input type="text" data-add-runes="0" disabled id="runesnight">
                         </div>
                     </div>
                 </div>
@@ -232,8 +232,8 @@
                         <div class="field npr">
                             <input type="text" disabled id="productionday">
                         </div>
-                        <div class="field npl">
-                            <input type="text" disabled id="runesday">
+                        <div class="field clickable npl">
+                            <input type="text" data-add-runes="0" disabled id="runesday">
                         </div>
                     </div>
                 </div>
@@ -246,8 +246,8 @@
                         <div class="field npr">
                             <input type="text" disabled id="productionweek">
                         </div>
-                        <div class="field npl">
-                            <input type="text" disabled id="runesweek">
+                        <div class="field clickable npl">
+                            <input type="text" data-add-runes="0" disabled id="runesweek">
                         </div>
                     </div>
                 </div>
@@ -284,6 +284,11 @@
             $('[data-setting="clevel"]').parent('.field').on('click', function () {
                 var child = $(this).children('[data-setting]');
                 $(`[data-setting="level"][data-building="${ child.attr('data-building') }"]`).val(child.val());
+                update();
+            });
+
+            $('#spentrunes, #runeshour, #runesnight, #runesday, #runesweek').parent('.field').on('click', function () {
+                $('#runes').val(Number($('#runes').val()) + Number($(this).children('[data-add-runes]').attr('data-add-runes')));
                 update();
             });
 
@@ -374,6 +379,12 @@
                 $('#runesnight').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 8 * hourly) - currentrunes)));
                 $('#runesday').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 24 * hourly) - currentrunes)));
                 $('#runesweek').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 7 * 24 * hourly) - currentrunes)));
+
+                $('#spentrunes').attr('data-add-runes', currentrunes);
+                $('#runeshour').attr('data-add-runes', currentrunes + getRunesFromMoney(currentmoney + hourly));
+                $('#runesnight').attr('data-add-runes', currentrunes + getRunesFromMoney(currentmoney + 8 * hourly));
+                $('#runesday').attr('data-add-runes', currentrunes + getRunesFromMoney(currentmoney + 24 * hourly));
+                $('#runesweek').attr('data-add-runes', currentrunes + getRunesFromMoney(currentmoney + 7 * 24 * hourly));
 
                 Object.values(Building).forEach((building, i, array) => {
                     var level = getLevel(i, i == 0 ? 1 : 0)
