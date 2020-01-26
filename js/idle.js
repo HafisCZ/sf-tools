@@ -51,6 +51,10 @@ function getRunesFromMoney (money) {
     return Math.trunc((Math.PI * 11592991 / 10748438389408) * Math.pow(money, 0.83));
 }
 
+function getRunesFromMoney2 (money) {
+    return Math.trunc(0.0000022387211385683589 * Math.pow(money, 0.85));
+}
+
 class Building {
     constructor (id, initialDuration, initialIncrement, initialCost, initialLevel) {
         this.id = id;

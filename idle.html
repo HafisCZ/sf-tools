@@ -104,7 +104,7 @@
             function add (id, name) {
                 $('#main').append(`
                     <div class="three wide column">
-                        <h2 class="ui header">${ name }</h2>
+                        <h2 class="ui header" data-header="${id}">${ name }</h2>
                     </div>
                     <div class="four wide column">
                         <div class="three fields">
@@ -190,7 +190,7 @@
                         <div class="field npr">
                             <input type="text" disabled id="productionhour">
                         </div>
-                        <div class="field clickable npl">
+                        <div class="field npl">
                             <input type="text" data-add-runes="0" disabled id="runeshour">
                         </div>
                     </div>
@@ -204,7 +204,7 @@
                         <div class="field npr">
                             <input type="text" disabled id="spent">
                         </div>
-                        <div class="field clickable npl">
+                        <div class="field npl">
                             <input type="text" data-add-runes="0" disabled id="spentrunes">
                         </div>
                     </div>
@@ -218,7 +218,7 @@
                         <div class="field npr">
                             <input type="text" disabled id="productionnight">
                         </div>
-                        <div class="field clickable npl">
+                        <div class="field npl">
                             <input type="text" data-add-runes="0" disabled id="runesnight">
                         </div>
                     </div>
@@ -232,7 +232,7 @@
                         <div class="field npr">
                             <input type="text" disabled id="productionday">
                         </div>
-                        <div class="field clickable npl">
+                        <div class="field npl">
                             <input type="text" data-add-runes="0" disabled id="runesday">
                         </div>
                     </div>
@@ -246,7 +246,7 @@
                         <div class="field npr">
                             <input type="text" disabled id="productionweek">
                         </div>
-                        <div class="field clickable npl">
+                        <div class="field npl">
                             <input type="text" data-add-runes="0" disabled id="runesweek">
                         </div>
                     </div>
@@ -284,11 +284,6 @@
             $('[data-setting="clevel"]').parent('.field').on('click', function () {
                 var child = $(this).children('[data-setting]');
                 $(`[data-setting="level"][data-building="${ child.attr('data-building') }"]`).val(child.val());
-                update();
-            });
-
-            $('#spentrunes, #runeshour, #runesnight, #runesday, #runesweek').parent('.field').on('click', function () {
-                $('#runes').val(Number($('#runes').val()) + Number($(this).children('[data-add-runes]').attr('data-add-runes')));
                 update();
             });
 
@@ -380,15 +375,18 @@
                 $('#runesday').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 24 * hourly) - currentrunes)));
                 $('#runesweek').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 7 * 24 * hourly) - currentrunes)));
 
-                $('#spentrunes').attr('data-add-runes', currentrunes);
-                $('#runeshour').attr('data-add-runes', currentrunes + getRunesFromMoney(currentmoney + hourly));
-                $('#runesnight').attr('data-add-runes', currentrunes + getRunesFromMoney(currentmoney + 8 * hourly));
-                $('#runesday').attr('data-add-runes', currentrunes + getRunesFromMoney(currentmoney + 24 * hourly));
-                $('#runesweek').attr('data-add-runes', currentrunes + getRunesFromMoney(currentmoney + 7 * 24 * hourly));
+                var bestamort = 0;
+                var bestamortindex = 0;
 
                 Object.values(Building).forEach((building, i, array) => {
                     var level = getLevel(i, i == 0 ? 1 : 0)
                     var boost = getBoosts(i);
+
+                    var amort = building.getBreakpointAmortisation(level);
+                    if (i == 0 || amort < bestamort) {
+                        bestamort = amort;
+                        bestamortindex = i;
+                    }
 
                     var target = 0;
                     if (bulk > 0 && bulk < 5) {
@@ -401,10 +399,10 @@
                     setCycle(i, getFormattedDuration(Math.trunc(boost.speed * building.getCycleDuration(target || level))));
 
                     if (target) {
-                        setShare(i, `+${ Math.trunc(100 * (building.getProductionRate(target) - building.getProductionRate(level)) * boost.rate * runes / total) }%`);
+                        setShare(i, `+${ (100 * (building.getProductionRate(target) - building.getProductionRate(level)) * boost.rate * runes / total).toFixed(1) }%`);
                         setRate(i, `+${ Math.format(Math.trunc((building.getCycleProduction(target) - building.getCycleProduction(level)) * boost.money * runes)) }`)
                     } else {
-                        setShare(i, `${ Math.trunc(100 * building.getProductionRate(level) * boost.rate * runes / total) }%`);
+                        setShare(i, `${ (100 * building.getProductionRate(level) * boost.rate * runes / total).toFixed(1) }%`);
                         setRate(i, Math.format(Math.trunc(building.getCycleProduction(level) * boost.money * runes)));
                     }
 
@@ -424,6 +422,14 @@
                     } else {
                         setCost(i, '');
                         setEstimated(i, '');
+                    }
+                });
+
+                $('[data-header]').toArray().forEach(element => {
+                    if ($(element).attr('data-header') == bestamortindex) {
+                        $(element).addClass('green');
+                    } else {
+                        $(element).removeClass('green');
                     }
                 });
 
