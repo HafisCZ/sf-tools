@@ -55,7 +55,7 @@
                     </div>
                 </div>
             </div>
-            <form class="ui form margin-medium-top">
+            <form class="ui small form margin-medium-top">
                 <div class="ui middle aligned grid nopad" id="main">
                     <div class="three wide column"></div>
                     <div class="four wide column">
@@ -237,6 +237,20 @@
                         </div>
                     </div>
                 </div>
+                <div class="ten wide column"></div>
+                <div class="two wide column">
+                    <h3 class="ui header">7 Days</h3>
+                </div>
+                <div class="four wide column">
+                    <div class="two fields">
+                        <div class="field npr">
+                            <input type="text" disabled id="productionweek">
+                        </div>
+                        <div class="field npl">
+                            <input type="text" disabled id="runesweek">
+                        </div>
+                    </div>
+                </div>
             `);
 
             var bulk = 0;
@@ -354,10 +368,12 @@
                 $('#productionhour').val(Math.format(Math.trunc(hourly)));
                 $('#productionnight').val(Math.format(Math.trunc(8 * hourly)));
                 $('#productionday').val(Math.format(Math.trunc(24 * hourly)));
+                $('#productionweek').val(Math.format(Math.trunc(7 * 24 * hourly)));
 
                 $('#runeshour').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + hourly) - currentrunes)));
                 $('#runesnight').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 8 * hourly) - currentrunes)));
                 $('#runesday').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 24 * hourly) - currentrunes)));
+                $('#runesweek').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 7 * 24 * hourly) - currentrunes)));
 
                 Object.values(Building).forEach((building, i, array) => {
                     var level = getLevel(i, i == 0 ? 1 : 0)
