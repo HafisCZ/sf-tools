@@ -581,10 +581,29 @@ Handle.bind(EVT_INIT, function () {
     });
 
     $('#psearch').on('change input', function () {
-        var value = $(this).val().toLowerCase();
-        $('#container-players-grid .column').filter(function () {
-            var player = Database.Players[$(this).children('.clickable').attr('data-player')].Latest;
-            $(this).toggle(player.Name.toLowerCase().includes(value) || player.Identifier.replace(/_/g, ' ').toLowerCase().includes(value));
+        var terms = $(this).val().toLowerCase().split(' ').filter(term => term.length && term != ' ');
+        var items = [];
+
+        Object.values(Database.Players).forEach(player => {
+            var matches = terms.reduce((total, term) => total + ((player.Latest.Name.toLowerCase().includes(term) || player.Latest.Identifier.replace(/_/g, ' ').toLowerCase().includes(term)) ? 1 : 0), 0);
+            if (matches == terms.length) {
+                items.push(`
+                    <div class="column">
+                        <div class="ui segment text-center clickable ${Database.Latest != player.LatestTimestamp ? 'border-red' : ''}" data-player="${ player.Latest.Identifier }">
+                            <h3 class="ui header margin-tiny-bottom margin-tiny-top">${ player.Latest.Name }</h3>
+                            <div class="text-muted">${ player.Latest.Identifier.replace(/_/g, ' ') }</div>
+                        </div>
+                    </div>
+                `);
+            }
+        });
+
+        $('#container-players-grid').html(items.join(''));
+
+        $('[data-player]').off('click');
+        $('[data-player]').on('click', function () {
+            var player = Database.Players[$(this).attr('data-player')];
+            Handle.call(EVT_PLAYER_LOAD, player.Latest.Identifier, player.LatestTimestamp);
         });
     });
 });
