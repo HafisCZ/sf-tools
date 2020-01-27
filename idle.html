@@ -191,7 +191,7 @@
                             <input type="text" disabled id="productionhour">
                         </div>
                         <div class="field npl">
-                            <input type="text" data-add-runes="0" disabled id="runeshour">
+                            <input type="text" disabled id="runeshour">
                         </div>
                     </div>
                 </div>
@@ -205,7 +205,7 @@
                             <input type="text" disabled id="spent">
                         </div>
                         <div class="field npl">
-                            <input type="text" data-add-runes="0" disabled id="spentrunes">
+                            <input type="text" disabled id="spentrunes">
                         </div>
                     </div>
                 </div>
@@ -219,7 +219,7 @@
                             <input type="text" disabled id="productionnight">
                         </div>
                         <div class="field npl">
-                            <input type="text" data-add-runes="0" disabled id="runesnight">
+                            <input type="text" disabled id="runesnight">
                         </div>
                     </div>
                 </div>
@@ -233,11 +233,30 @@
                             <input type="text" disabled id="productionday">
                         </div>
                         <div class="field npl">
-                            <input type="text" data-add-runes="0" disabled id="runesday">
+                            <input type="text" disabled id="runesday">
                         </div>
                     </div>
                 </div>
-                <div class="ten wide column"></div>
+                <div class="three wide column"></div>
+                <div class="one wide column">
+                    <div class="field margin-medium-bottom">
+                        <input type="text" id="reqhours">
+                    </div>
+                </div>
+                <div class="one wide column">
+                    <h3 class="ui header">Hours</h3>
+                </div>
+                <div class="four wide column">
+                <div class="two fields">
+                    <div class="field npr">
+                        <input type="text" disabled id="reqproduction">
+                    </div>
+                    <div class="field npl">
+                        <input type="text" disabled id="reqrunes">
+                    </div>
+                </div>
+                </div>
+                <div class="one wide column"></div>
                 <div class="two wide column">
                     <h3 class="ui header">7 Days</h3>
                 </div>
@@ -247,7 +266,7 @@
                             <input type="text" disabled id="productionweek">
                         </div>
                         <div class="field npl">
-                            <input type="text" data-add-runes="0" disabled id="runesweek">
+                            <input type="text" disabled id="runesweek">
                         </div>
                     </div>
                 </div>
@@ -267,7 +286,7 @@
             })();
 
             $('.dropdown').dropdown();
-            $('[data-setting="level"], [data-setting="boosts"], #runes, #money').on('input change', update);
+            $('[data-setting="level"], [data-setting="boosts"], #runes, #money, #reqhours').on('input change', update);
             $('[data-bulk]').off('click');
             $('[data-bulk]').on('click', function () {
                 if ($(this).hasClass('green')) {
@@ -326,7 +345,7 @@
             }
 
             function update () {
-                if ($('[data-setting="level"], #runes').toArray().reduce((sum, element) => {
+                if ($('[data-setting="level"], #runes, #money').toArray().reduce((sum, element) => {
                     if (isNaN($(element).val())) {
                         $(element).parent('.field').addClass('error');
                         return sum + 1;
@@ -374,6 +393,10 @@
                 $('#runesnight').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 8 * hourly) - currentrunes)));
                 $('#runesday').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 24 * hourly) - currentrunes)));
                 $('#runesweek').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 7 * 24 * hourly) - currentrunes)));
+
+                var req = ($('#reqhours').val() || 0);
+                $('#reqproduction').val(Math.format(Math.trunc(hourly * req)));
+                $('#reqrunes').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + req * hourly) - currentrunes)));
 
                 var bestamort = 0;
                 var bestamortindex = 0;
