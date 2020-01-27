@@ -110,6 +110,10 @@ class Building {
         return this.getCycleProduction(level) / this.getCycleDuration(level);
     }
 
+    getProduction (level, duration) {
+        return this.getCycleProduction(level) * Math.floor(duration / this.getCycleDuration(level));
+    }
+
     matchProductionRate (level, matched) {
         return this.matchProductionRateBetween(matched, this.getProductionRate(Math.max(1, level)), 0, 10000);
     }

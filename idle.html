@@ -197,7 +197,7 @@
                 </div>
                 <div class="three wide column"></div>
                 <div class="two wide column">
-                    <h3 class="ui header">Money spent</h3>
+                    <h3 class="ui header">Total money</h3>
                 </div>
                 <div class="four wide column">
                     <div class="two fields">
@@ -274,38 +274,12 @@
 
             var bulk = 0;
 
-            (function () {
-                var data = JSON.parse(localStorage.idle || { });
-                if (data.runes) {
-                    $('#runes').val(data.runes);
-                    $('#money').val(data.money);
-                    data.buildings.forEach(b => {
-                        $(`[data-building="${ b.id }"][data-setting="${ b.key }"]`).val(b.value);
-                    });
-                }
-            })();
-
             $('.dropdown').dropdown();
             $('[data-setting="level"], [data-setting="boosts"], #runes, #money, #reqhours').on('input change', update);
-            $('[data-bulk]').off('click');
-            $('[data-bulk]').on('click', function () {
-                if ($(this).hasClass('green')) {
-                    $(this).removeClass('green');
-                    bulk = 0;
-                } else {
-                    $('[data-bulk]').removeClass('green');
-                    $(this).addClass('green');
-                    bulk = $(this).attr('data-bulk');
-                }
-                update();
-            });
+            $('[data-bulk]').on('click', function () { if ($(this).hasClass('green')) { $(this).removeClass('green'); bulk = 0; } else { $('[data-bulk]').removeClass('green'); $(this).addClass('green'); bulk = $(this).attr('data-bulk'); } update(); });
+            $('[data-setting="clevel"]').parent('.field').on('click', function () { var child = $(this).children('[data-setting]'); $(`[data-setting="level"][data-building="${ child.attr('data-building') }"]`).val(child.val()); update(); });
 
-            $('[data-setting="clevel"]').parent('.field').on('click', function () {
-                var child = $(this).children('[data-setting]');
-                $(`[data-setting="level"][data-building="${ child.attr('data-building') }"]`).val(child.val());
-                update();
-            });
-
+            // Shortcut getters
             function getLevel (id, def = 0) {
                 var level = Number($(`[data-building="${ id }"][data-setting="level"]`).val()) || def;
                 return Math.max(0, Math.min(10000, level));
@@ -320,142 +294,196 @@
                 };
             }
 
-            function setCurrentLevel (id, level) {
-                $(`[data-building="${ id }"][data-setting="clevel"]`).val(level);
-            }
-
-            function setCycle (id, cycle) {
-                $(`[data-building="${ id }"][data-setting="cycle"]`).val(cycle);
-            }
-
-            function setShare (id, share) {
-                $(`[data-building="${ id }"][data-setting="share"]`).val(share);
-            }
-
-            function setRate (id, rate) {
-                $(`[data-building="${ id }"][data-setting="rate"]`).val(rate);
-            }
-
-            function setCost (id, cost) {
-                $(`[data-building="${ id }"][data-setting="cost"]`).val(cost);
-            }
-
-            function setEstimated (id, estimated) {
-                $(`[data-building="${ id }"][data-setting="estimated"]`).val(estimated);
-            }
-
-            function update () {
-                if ($('[data-setting="level"], #runes, #money').toArray().reduce((sum, element) => {
+            // Save & Load functions
+            function hasTableErrors() {
+                return $('[data-setting="level"], #runes, #money, #reqhours').toArray().reduce((errors, element) => {
                     if (isNaN($(element).val())) {
                         $(element).parent('.field').addClass('error');
-                        return sum + 1;
+                        return errors + 1;
                     } else {
                         $(element).parent('.field').removeClass('error');
-                        return sum;
+                        return errors;
                     }
-                }, 0) == 0) {
-                    localStorage.idle = JSON.stringify({
-                        buildings: $('[data-setting="level"], [data-setting="boosts"]').toArray().map(x => {
-                            return {
-                                key: $(x).attr('data-setting'),
-                                value: $(x).val(),
-                                id: $(x).attr('data-building')
-                            };
-                        }),
-                        runes: $('#runes').val(),
-                        money: $('#money').val()
-                    });
+                }, 0) != 0;
+            }
+
+            function getTable () {
+                return {
+                    buildings: $('[data-setting="level"], [data-setting="boosts"]').toArray().map(element => {
+                        return {
+                            key: $(element).attr('data-setting'),
+                            id: $(element).attr('data-building'),
+                            value: $(element).val()
+                        }
+                    }),
+                    runes: $('#runes').val(),
+                    money: $('#money').val(),
+                    hours: $('#reqhours').val()
+                };
+            }
+
+            function setTable (data) {
+                $('#runes').val(data.runes);
+                $('#money').val(data.money);
+                $('#reqhours').val(data.hours);
+                data.buildings.forEach(b => {
+                    $(`[data-building="${ b.id }"][data-setting="${ b.key }"]`).val(b.value);
+                })
+            }
+
+            // Setters & Getters
+            function getFieldId (i, setting) {
+                return `[data-building="${ i }"][data-setting="${ setting }"]`;
+            }
+
+            function getField (id) {
+                return Math.max(0, parseFloat($(id).val()) || 0);
+            }
+
+            function setField (id, value) {
+                $(id).val(value);
+            }
+
+            function setMoneyField (id, value) {
+                $(id).val(Math.format(Math.trunc(value)));
+            }
+
+            function setTimeField (id, value) {
+                $(id).val(getFormattedDuration(Math.trunc(value)));
+            }
+
+            function findEqualOrAbove (array, value) {
+                for (var i = 0; i < array.length; i++) {
+                    if (value <= array[i]) {
+                        return i;
+                    }
+                }
+                return -1;
+            }
+
+            // Update
+            function update () {
+                if (!hasTableErrors()) {
+                    // Save only when no errors are present
+                    localStorage.idle = JSON.stringify(getTable());
                 }
 
-                var runes = 1 + 0.05 * (Number($('#runes').val()) || 0);
-                var total = Object.values(Building).reduce((sum, building, i, array) => {
-                    return sum + runes * getBoosts(i).rate * building.getProductionRate(getLevel(i, i == 0 ? 1 : 0));
-                }, 0);
+                // Money multiplier from runes
+                var runeMultiplier = 1 + 0.05 * getField('#runes');
 
-                var hourly = total * 60 * 60;
+                var moneySpent = 0;
+                var productionApproximate = 0;
+                var productionHourlyApproximate = 0;
+                var productionCurve = new Array(86401).fill(0);
 
-                var moneyspent = Object.values(Building).reduce((sum, building, i, array) => {
-                    return sum + building.getUpgradePrice(i == 0 ? 1 : 0, getLevel(i, 0));
-                }, 0);
+                var amortizationIndex = 0;
+                var amortizationValue = 0;
 
-                var currentmoney = moneyspent + (Number($('#money').val()) || 0);
-                var currentrunes = getRunesFromMoney(currentmoney);
-
-                $('#spent').val(Math.format(Math.trunc(moneyspent)));
-                $('#spentrunes').val(Math.format(Math.trunc(currentrunes)));
-
-                $('#productionhour').val(Math.format(Math.trunc(hourly)));
-                $('#productionnight').val(Math.format(Math.trunc(8 * hourly)));
-                $('#productionday').val(Math.format(Math.trunc(24 * hourly)));
-                $('#productionweek').val(Math.format(Math.trunc(7 * 24 * hourly)));
-
-                $('#runeshour').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + hourly) - currentrunes)));
-                $('#runesnight').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 8 * hourly) - currentrunes)));
-                $('#runesday').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 24 * hourly) - currentrunes)));
-                $('#runesweek').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + 7 * 24 * hourly) - currentrunes)));
-
-                var req = ($('#reqhours').val() || 0);
-                $('#reqproduction').val(Math.format(Math.trunc(hourly * req)));
-                $('#reqrunes').val('+' + Math.format(Math.trunc(getRunesFromMoney(currentmoney + req * hourly) - currentrunes)));
-
-                var bestamort = 0;
-                var bestamortindex = 0;
-
-                Object.values(Building).forEach((building, i, array) => {
-                    var level = getLevel(i, i == 0 ? 1 : 0)
+                // First building loop
+                Object.values(Building).forEach((building, i) => {
+                    var level = getLevel(i, i == 0 ? 1 : 0);
                     var boost = getBoosts(i);
 
-                    var amort = building.getBreakpointAmortisation(level);
-                    if (i == 0 || amort < bestamort) {
-                        bestamort = amort;
-                        bestamortindex = i;
+                    // Money spent on upgrades
+                    moneySpent += building.getUpgradePrice(i == 0 ? 1 : 0, level);
+
+                    // Precise and approximate production
+                    productionApproximate += runeMultiplier * boost.rate * building.getProductionRate(level);
+                    productionHourlyApproximate += runeMultiplier * boost.rate * building.getProductionRate(level) * 3600;
+                    for (let i = 0; i < 86401; i++) {
+                        productionCurve[i] += runeMultiplier * boost.rate * building.getProduction(level, i);
                     }
 
-                    var target = 0;
-                    if (bulk > 0 && bulk < 5) {
-                        target = Math.min(10000, level + Multipliers[bulk - 1]);
-                    } else if (bulk == 5) {
-                        target = Math.min(10000, Building.getBreakpointLevel(Building.getNearestBreakpoint(level) + 1));
-                    }
-
-                    setCurrentLevel(i, target || level);
-                    setCycle(i, getFormattedDuration(Math.trunc(boost.speed * building.getCycleDuration(target || level))));
-
-                    if (target) {
-                        setShare(i, `+${ (100 * (building.getProductionRate(target) - building.getProductionRate(level)) * boost.rate * runes / total).toFixed(1) }%`);
-                        setRate(i, `+${ Math.format(Math.trunc((building.getCycleProduction(target) - building.getCycleProduction(level)) * boost.money * runes)) }`)
-                    } else {
-                        setShare(i, `${ (100 * building.getProductionRate(level) * boost.rate * runes / total).toFixed(1) }%`);
-                        setRate(i, Math.format(Math.trunc(building.getCycleProduction(level) * boost.money * runes)));
-                    }
-
-                    if (level < 10000) {
-                        var cost = building.getUpgradePrice(level, target ? (target - level) : 1);
-                        var estimated = Math.trunc(cost / total);
-
-                        setCost(i, Math.format(Math.trunc(cost)));
-
-                        if (estimated > 604800) {
-                            setEstimated(i, '> 7D');
-                        } else if (estimated < 1) {
-                            setEstimated(i, '< 1S');
-                        } else {
-                            setEstimated(i, getFormattedDuration(estimated));
-                        }
-                    } else {
-                        setCost(i, '');
-                        setEstimated(i, '');
+                    // Find best amortization value
+                    var amortization = building.getBreakpointAmortisation(level);
+                    if (i == 0 || amortization < amortizationValue) {
+                        amortizationIndex = i;
+                        amortizationValue = amortization;
                     }
                 });
 
+                // Money and runes collected this run
+                var moneyThisRun = moneySpent + getField('#money');
+                var runesThisRun = getRunesFromMoney(moneyThisRun);
+
+                // Production fields
+                setMoneyField('#spent', moneyThisRun);
+                setMoneyField('#spentrunes', runesThisRun);
+                setMoneyField('#productionhour', productionCurve[3600]);
+                setMoneyField('#productionnight', productionCurve[28800]);
+                setMoneyField('#productionday', productionCurve[86400]);
+                setMoneyField('#productionweek', 168 * productionHourlyApproximate);
+                setField('#runeshour', '+' + Math.format(Math.trunc(getRunesFromMoney(moneyThisRun + productionCurve[3600]) - runesThisRun)));
+                setField('#runesnight', '+' + Math.format(Math.trunc(getRunesFromMoney(moneyThisRun + productionCurve[28800]) - runesThisRun)));
+                setField('#runesday', '+' + Math.format(Math.trunc(getRunesFromMoney(moneyThisRun + productionCurve[86400]) - runesThisRun)));
+                setField('#runesweek', '+' + Math.format(Math.trunc(getRunesFromMoney(moneyThisRun + 168 * productionHourlyApproximate) - runesThisRun)));
+
+                // Manual production fields
+                var requestedTimespan = getField('#reqhours');
+                if (requestedTimespan > 24) {
+                    setMoneyField('#reqproduction', requestedTimespan * productionHourlyApproximate);
+                    setField('#reqrunes', '+' + Math.format(Math.trunc(getRunesFromMoney(moneyThisRun + requestedTimespan * productionHourlyApproximate) - runesThisRun)));
+                } else {
+                    setMoneyField('#reqproduction', productionCurve[requestedTimespan * 3600]);
+                    setField('#reqrunes', '+' + Math.format(Math.trunc(getRunesFromMoney(moneyThisRun + productionCurve[requestedTimespan * 3600]) - runesThisRun)));
+                }
+
+                // Second building loop
+                Object.values(Building).forEach((building, i) => {
+                    var level = getLevel(i, i == 0 ? 1 : 0);
+                    var boost = getBoosts(i);
+
+                    // Target level
+                    var target = 0;
+                    if (bulk == 5) {
+                        target = Math.min(10000, Building.getBreakpointLevel(Building.getNearestBreakpoint(level) + 1));
+                    } else if (bulk > 0) {
+                        target = Math.min(10000, level + Multipliers[bulk - 1]);
+                    }
+
+                    // Set fields
+                    setField(getFieldId(i, 'clevel'), target || level);
+                    setTimeField(getFieldId(i, 'cycle'), boost.speed * building.getCycleDuration(target || level));
+
+                    if (target) {
+                        setField(getFieldId(i, 'share'), `+${ (100 * (building.getProductionRate(target) - building.getProductionRate(level)) * boost.rate * runeMultiplier / productionApproximate).toFixed(1) }%`);
+                        setField(getFieldId(i, 'rate'), `+${ Math.format(Math.trunc((building.getCycleProduction(target) - building.getCycleProduction(level)) * boost.money * runeMultiplier )) }`);
+                    } else {
+                        setField(getFieldId(i, 'share'), `${ (100 * building.getProductionRate(level) * boost.rate * runeMultiplier / productionApproximate).toFixed(1) }%`);
+                        setMoneyField(getFieldId(i, 'rate'), building.getCycleProduction(level) * boost.money * runeMultiplier);
+                    }
+
+                    // Set cost fields
+                    if (level < 10000) {
+                        var upgradeCost = building.getUpgradePrice(level, target ? (target - level) : 1);
+                        setMoneyField(getFieldId(i, 'cost'), upgradeCost);
+
+                        var estimationPrecise = findEqualOrAbove(productionCurve, upgradeCost);
+                        var estimationApproximate = upgradeCost / productionApproximate;
+
+                        if (estimationPrecise != -1) {
+                            setTimeField(getFieldId(i, 'estimated'), estimationPrecise);
+                        } else if (estimationApproximate < 604800) {
+                            setTimeField(getFieldId(i, 'estimated'), estimationApproximate);
+                        } else {
+                            setField(getFieldId(i, 'estimated'), '> 7D');
+                        }
+                    } else {
+                        setField(getFieldId(i, 'cost'), '');
+                        setField(getFieldId(i, 'estimated'), '');
+                    }
+                });
+
+                // Color building according to best amortization
                 $('[data-header]').toArray().forEach(element => {
-                    if ($(element).attr('data-header') == bestamortindex) {
+                    if ($(element).attr('data-header') == amortizationIndex) {
                         $(element).addClass('green');
                     } else {
                         $(element).removeClass('green');
                     }
                 });
 
+                // Set color to green if upgrade is selected
                 if (bulk == 0) {
                     $('[data-setting]:not([data-setting="level"], [data-setting="boosts"])').removeClass('ffgreen');
                 } else {
@@ -463,6 +491,8 @@
                 }
             }
 
+            // Load table from localStorage and update
+            setTable(localStorage.idle ? JSON.parse(localStorage.idle) : { buildings: [ ] });
             update();
         </script>
     </body>
