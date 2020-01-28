@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="two wide column">
-
+                    <a class="ui mini fluid button" id="display">Labeled</a>
                 </div>
                 <div class="four wide column">
                     <h1 class="ui centered header">Arena Manager</h1>
@@ -273,11 +273,21 @@
             `);
 
             var bulk = 0;
+            var display = 0;
 
             $('.dropdown').dropdown();
+            $('#display').on('click', function () { display = display == 0 ? 1 : 0; if (display) { $(this).text('Scientific'); } else { $(this).text('Labeled'); } update(); });
             $('[data-setting="level"], [data-setting="boosts"], #runes, #money, #reqhours').on('input change', update);
             $('[data-bulk]').on('click', function () { if ($(this).hasClass('green')) { $(this).removeClass('green'); bulk = 0; } else { $('[data-bulk]').removeClass('green'); $(this).addClass('green'); bulk = $(this).attr('data-bulk'); } update(); });
             $('[data-setting="clevel"]').parent('.field').on('click', function () { var child = $(this).children('[data-setting]'); $(`[data-setting="level"][data-building="${ child.attr('data-building') }"]`).val(child.val()); update(); });
+
+            function formatNumber (value) {
+                if (display == 0 || value < 1E6) {
+                    return Math.format(Math.trunc(value));
+                } else {
+                    return value.toExponential(3).toString().replace('+', '');
+                }
+            }
 
             // Shortcut getters
             function getLevel (id, def = 0) {
@@ -345,7 +355,7 @@
             }
 
             function setMoneyField (id, value) {
-                $(id).val(Math.format(Math.trunc(value)));
+                $(id).val(formatNumber(value));
             }
 
             function setTimeField (id, value) {
@@ -413,19 +423,19 @@
                 setMoneyField('#productionnight', productionCurve[28800]);
                 setMoneyField('#productionday', productionCurve[86400]);
                 setMoneyField('#productionweek', 168 * productionHourlyApproximate);
-                setField('#runeshour', '+' + Math.format(Math.trunc(getRunesFromMoney(moneyThisRun + productionCurve[3600]) - runesThisRun)));
-                setField('#runesnight', '+' + Math.format(Math.trunc(getRunesFromMoney(moneyThisRun + productionCurve[28800]) - runesThisRun)));
-                setField('#runesday', '+' + Math.format(Math.trunc(getRunesFromMoney(moneyThisRun + productionCurve[86400]) - runesThisRun)));
-                setField('#runesweek', '+' + Math.format(Math.trunc(getRunesFromMoney(moneyThisRun + 168 * productionHourlyApproximate) - runesThisRun)));
+                setField('#runeshour', '+' + formatNumber(getRunesFromMoney(moneyThisRun + productionCurve[3600]) - runesThisRun));
+                setField('#runesnight', '+' + formatNumber(getRunesFromMoney(moneyThisRun + productionCurve[28800]) - runesThisRun));
+                setField('#runesday', '+' + formatNumber(getRunesFromMoney(moneyThisRun + productionCurve[86400]) - runesThisRun));
+                setField('#runesweek', '+' + formatNumber(getRunesFromMoney(moneyThisRun + 168 * productionHourlyApproximate) - runesThisRun));
 
                 // Manual production fields
                 var requestedTimespan = getField('#reqhours');
                 if (requestedTimespan > 24) {
                     setMoneyField('#reqproduction', requestedTimespan * productionHourlyApproximate);
-                    setField('#reqrunes', '+' + Math.format(Math.trunc(getRunesFromMoney(moneyThisRun + requestedTimespan * productionHourlyApproximate) - runesThisRun)));
+                    setField('#reqrunes', '+' + formatNumber(getRunesFromMoney(moneyThisRun + requestedTimespan * productionHourlyApproximate) - runesThisRun));
                 } else {
                     setMoneyField('#reqproduction', productionCurve[requestedTimespan * 3600]);
-                    setField('#reqrunes', '+' + Math.format(Math.trunc(getRunesFromMoney(moneyThisRun + productionCurve[requestedTimespan * 3600]) - runesThisRun)));
+                    setField('#reqrunes', '+' + formatNumber(getRunesFromMoney(moneyThisRun + productionCurve[requestedTimespan * 3600]) - runesThisRun));
                 }
 
                 // Second building loop
