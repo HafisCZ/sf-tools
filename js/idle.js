@@ -97,8 +97,8 @@ class Building {
         return this.initialIncrement * Math.pow(2, Building.getNearestBreakpoint(level));
     }
 
-    getAmortisation (level) {
-        return this.getUpgradePrice(level - 1) / ((this.initialIncrement * Math.pow(2, Building.getNearestBreakpoint(level))) / (this.initialDuration * Math.pow(0.8, Building.getNearestBreakpoint(level))));
+    getAmortisation (level, bulk) {
+        return this.getUpgradePrice(level, bulk) / (this.getProductionRate(level + bulk) - this.getProductionRate(level));
     }
 
     getBreakpointAmortisation (level) {

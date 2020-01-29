@@ -405,10 +405,12 @@
                     }
 
                     // Find best amortization value
-                    var amortization = building.getBreakpointAmortisation(level);
-                    if (i == 0 || amortization < amortizationValue) {
+                    var amortization = building.getAmortisation(level, (bulk > 0 && bulk < 5) ? Multipliers[bulk - 1] : 1) / boost.rate;
+                    var amortizationBreakpoint = building.getBreakpointAmortisation(level) / boost.rate;
+
+                    if (i == 0 || (bulk < 5 && amortization < amortizationValue) || amortizationBreakpoint < amortizationValue) {
                         amortizationIndex = i;
-                        amortizationValue = amortization;
+                        amortizationValue = bulk < 5 ? Math.min(amortization, amortizationBreakpoint) : amortizationBreakpoint;
                     }
                 });
 
