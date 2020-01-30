@@ -22,6 +22,10 @@ body.dimmed .menu {
     margin-right: 17px !important;
 }
 
+.white {
+    color: white !important;
+}
+
 .padding-none {
     padding: 0 !important;
 }

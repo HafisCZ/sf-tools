@@ -30,10 +30,16 @@ const EVT_BROWSE_LOAD = 4000;
 
 const EVT_PLAYER_LOAD = 5000;
 
+const EVT_SHOWCRITICAL = 6;
+
 // Bindings
 Handle.bind(EVT_NONE, function (... args) {
     console.log(... args);
 });
+
+Handle.bind(EVT_SHOWCRITICAL, function (s) {
+    $('#sf-loader-content').html(`<h1 class="ui header white">${ s }</h1>`);
+})
 
 Handle.bind(EVT_SHOWSCREEN, function (s) {
     $('.ui.container').addClass('hidden');

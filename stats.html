@@ -41,7 +41,7 @@
         </div>
 
         <div id="9nGg23I" class="ui main container">
-            <div class="ui active dimmer">
+            <div class="ui active dimmer" id="sf-loader-content">
                 <div class="ui large text loader">Loading</div>
             </div>
         </div>
@@ -484,6 +484,9 @@
             Storage.load(function () {
                 Handle.call(EVT_BROWSE_LOAD);
                 Handle.call(EVT_SHOWSCREEN, 'container-browse');
+            }, function () {
+                // Firefox private mode
+                Handle.call(EVT_SHOWCRITICAL, "Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
             });
         </script>
     </body>

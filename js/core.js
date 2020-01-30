@@ -21,7 +21,7 @@ const Preferences = new (class {
 })(window);
 
 const FileDatabase = new (class {
-    ready (callback) {
+    ready (callback, error) {
         this.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
         window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction  || window.msIDBTransaction;
         window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
@@ -36,6 +36,8 @@ const FileDatabase = new (class {
         request.onupgradeneeded = function (e) {
             e.target.result.createObjectStore('files', { keyPath: 'timestamp' });
         }
+
+        request.onerror = error;
     }
 
     set (object) {
@@ -215,7 +217,7 @@ const Database = new (class {
 })();
 
 const Storage = new (class {
-    load (callback) {
+    load (callback, error) {
         FileDatabase.ready(() => {
             FileDatabase.get((current) => {
                 this.current = current;
@@ -223,7 +225,7 @@ const Storage = new (class {
                 Database.from(this.current);
                 callback();
             });
-        });
+        }, error);
     }
 
     save () {
