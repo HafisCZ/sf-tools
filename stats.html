@@ -205,10 +205,34 @@
         </div>
 
         <div class="ui main container hidden" id="container-players">
-            <div class="ui fluid icon input">
-                <input class="prompt" type="text" placeholder="Search ..." id="psearch">
-                <i class="search icon"></i>
+            <div class="ui middle aligned grid">
+                <div class="ten wide column">
+                    <div class="ui fluid icon input">
+                        <input class="prompt" type="text" placeholder="Search ..." id="psearch">
+                        <i class="search icon"></i>
+                    </div>
+                </div>
+                <div class="one wide column"></div>
+                <div class="one wide column">
+                    <h4 class="ui header " style="margin-top: 0.25em; margin-left: -1em;">Order by</h4>
+                </div>
+                <div class="four wide column">
+                    <div class="field">
+                        <div class="ui selection fluid dropdown">
+                            <input type="hidden" value="0" id="porderby">
+                            <i class="dropdown icon"></i>
+                            <div class="default text"></div>
+                            <div class="menu">
+                                <div class="item" data-value="0">Most recent</div>
+                                <div class="item" data-value="1">Name</div>
+                                <div class="item" data-value="2">Level</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+
             <div class="ui five column grid margin-medium-top" id="container-players-grid">
 
             </div>

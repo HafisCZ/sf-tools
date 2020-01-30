@@ -588,25 +588,34 @@ Handle.bind(EVT_INIT, function () {
         $('#modal-custom-settings-manual').val(JSON.stringify(createConfigurationObject(true), null, 1));
     });
 
-    $('#psearch').on('change input', function () {
-        var terms = $(this).val().toLowerCase().split(' ').filter(term => term.length && term != ' ');
+    $('#psearch, #porderby').on('change input', function () {
+        var order = $('#porderby').val();
+        var terms = $('#psearch').val().toLowerCase().split(' ').filter(term => term.length && term != ' ');
         var items = [];
 
         Object.values(Database.Players).forEach(player => {
             var matches = terms.reduce((total, term) => total + ((player.Latest.Name.toLowerCase().includes(term) || player.Latest.Identifier.replace(/_/g, ' ').toLowerCase().includes(term)) ? 1 : 0), 0);
             if (matches == terms.length) {
-                items.push(`
+                items.push({
+                    player: player,
+                    html:
+                    `
                     <div class="column">
                         <div class="ui segment text-center clickable ${Database.Latest != player.LatestTimestamp ? 'border-red' : ''}" data-player="${ player.Latest.Identifier }">
                             <h3 class="ui header margin-tiny-bottom margin-tiny-top">${ player.Latest.Name }</h3>
                             <div class="text-muted">${ player.Latest.Identifier.replace(/_/g, ' ') }</div>
                         </div>
                     </div>
-                `);
+                    `
+                });
             }
         });
 
-        $('#container-players-grid').html(items.join(''));
+        if (order == 0) items.sort((a, b) => b.player.LatestTimestamp - a.player.LatestTimestamp);
+        else if (order == 1) items.sort((a, b) => a.player.Latest.Name.localeCompare(b.player.Latest.Name));
+        else if (order == 2) items.sort((a, b) => b.player.Latest.Level - a.player.Latest.Level);
+
+        $('#container-players-grid').html(items.map(i => i.html).join(''));
 
         $('[data-player]').off('click');
         $('[data-player]').on('click', function () {
@@ -638,26 +647,6 @@ Handle.bind(EVT_SETTINGS_LOAD, function () {
 });
 
 Handle.bind(EVT_PLAYERS_LOAD, function () {
-    $('#psearch').val('');
     State.unsetGroup();
-
-    var content = [];
-    Object.values(Database.Players).forEach((player) => {
-        content.push(`
-            <div class="column">
-                <div class="ui segment text-center clickable ${Database.Latest != player.LatestTimestamp ? 'border-red' : ''}" data-player="${ player.Latest.Identifier }">
-                    <h3 class="ui header margin-tiny-bottom margin-tiny-top">${ player.Latest.Name }</h3>
-                    <div class="text-muted">${ player.Latest.Identifier.replace(/_/g, ' ') }</div>
-                </div>
-            </div>
-        `);
-    });
-
-    $('#container-players-grid').html(content.join(''));
-
-    $('[data-player]').off('click');
-    $('[data-player]').on('click', function () {
-        var player = Database.Players[$(this).attr('data-player')];
-        Handle.call(EVT_PLAYER_LOAD, player.Latest.Identifier, player.LatestTimestamp);
-    });
+    $('#psearch').val('').trigger('input');
 });
