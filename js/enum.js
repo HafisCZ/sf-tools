@@ -54,6 +54,22 @@ const GROUP_ROLES = [
     'Invited'
 ];
 
+const FORTRESS_BUILDINGS = [
+    '',
+    'Fortress',
+    'Laborers\' Quarters',
+    'Woodcutter Guild',
+    'Quarry',
+    'Gem Mine',
+    'Academy',
+    'Archery Guild',
+    'Barracks',
+    'Mages\' Tower',
+    'Treasury',
+    'Smithy',
+    'Fortifications'
+];
+
 // Guild Roles
 const GUILD_ROLE_NONE = 0;
 const GUILD_ROLE_LEADER = 1;

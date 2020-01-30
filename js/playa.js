@@ -104,7 +104,7 @@ class Player {
             Knights : data.save[data.own ? 598 : 258],
             Fortress : data.save[data.own ? 524 : 208],
             LaborerQuarters : data.save[data.own ? 525 : 209],
-            WoodcutterGuild : data.save[data.own ? 527 : 210],
+            WoodcutterGuild : data.save[data.own ? 526 : 210],
             Quarry : data.save[data.own ? 527 : 211],
             GemMine : data.save[data.own ? 528 : 212],
             Academy : data.save[data.own ? 529 : 213],
@@ -115,6 +115,13 @@ class Player {
             Smithy : data.save[data.own ? 534 : 218],
             Fortifications : data.save[data.own ? 535 : 219]
         };
+
+        if (data.save[data.own ? 571 : 244]) {
+            this.Fortress.Upgrade = {
+                Building: data.save[data.own ? 571 : 244],
+                Finish: new Date(data.save[data.own ? 572 : 245] * 1000)
+            }
+        }
 
         if (!data.achievements) {
             data.achievements = Array(160).fill(0);

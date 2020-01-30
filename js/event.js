@@ -380,6 +380,14 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                                 <div class="column">${ GROUP_ROLES[player.Group.Role] }</div>
                             ` : '' }
                         ` : '' }
+                        ${ player.Fortress.Upgrade ? `
+                            <div class="column"><br></div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Currently building</div>
+                            <div class="column">${ FORTRESS_BUILDINGS[player.Fortress.Upgrade.Building] }</div>
+                            <div class="left aligned column font-big"></div>
+                            <div class="column">${ formatDate(player.Fortress.Upgrade.Finish) }</div>
+                        ` : '' }
                     </div>
                 </div>
                 <div class="column">

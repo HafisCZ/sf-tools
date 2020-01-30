@@ -93,6 +93,7 @@
                 color: white;
                 opacity: 0.6;
                 font-size: 90%;
+                pointer-events: none;
             }
 
             .footer-repo {
@@ -199,7 +200,6 @@
                     $(".footer-repo").html(`Last updated on ${ formatDate(date) }`);
                 });
             } else {
-                console.log('cached');
                 $(".footer-repo").html(`Last updated on ${ formatDate(new Date(JSON.parse(localStorage['version']).timestamp)) }`);
             }
         </script>
