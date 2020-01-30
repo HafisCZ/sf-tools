@@ -225,11 +225,11 @@ class Table {
                             group.add(header.name, cell => {
                                 var a = getObjectAt(cell.player, header.path);
                                 var b = getObjectAt(cell.compare, header.path);
-                                return Cell.Cell((Color.Get(a, header.values) || a) + (header.diff ? Cell.Difference(Number.isInteger(a - b) ? (a - b) : (a - b).toFixed(2), config.brackets) : ''), Color.Get(a, header.colors), Color.NONE, last);
+                                return Cell.Cell((Color.Get(a, header.values, header.flip) || a) + (header.diff ? Cell.Difference(Number.isInteger(a - b) ? (a - b) : (a - b).toFixed(2), config.brackets) : ''), Color.Get(a, header.colors, header.flip), Color.NONE, last);
                             }, header.width || 100, header.stat, cell => {
                                 var cval = cell.operation(cell.players.map(p => getObjectAt(p.player, header.path)));
                                 var rval = cell.operation(cell.players.map(p => getObjectAt(p.player, header.path)));
-                                return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
+                                return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors, header.flip), false);
                             });
                         }
                     });
