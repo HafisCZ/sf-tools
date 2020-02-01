@@ -165,6 +165,15 @@ input:disabled {
     padding: 0 !important;
 }
 
+.table-invis {
+    margin: 0.5em !important;
+    font-weight: 300 !important;
+    font-size: 1.35em !important;
+    color: #212529 !important;
+    font-family: 'Roboto', sans-serif !important;
+    margin-top: -1.8em !important;
+}
+
 .table-group {
     text-align: center !important;
     font-family: 'Roboto', sans-serif !important;

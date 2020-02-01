@@ -185,7 +185,11 @@ Handle.bind(EVT_GROUP_SHOW, function () {
 // Save group as image
 Handle.bind(EVT_GROUP_SAVE, function () {
     html2canvas($('#container-detail-screenshot')[0], {
-        logging: false
+        logging: false,
+        onclone: function(doc){
+            var hidden = doc.getElementById('screenshot-only');
+            hidden.style.display = 'block';
+        }
     }).then(function (canvas) {
         canvas.toBlob(function (blob) {
             window.download(`${ State.getGroupCurrent().Name }.${ State.getGroupTimestamp() }${ State.getGroupReferenceTimestamp() != State.getGroupTimestamp() ? `.${ State.getGroupReferenceTimestamp() }` : '' }.png`, blob);
@@ -194,6 +198,8 @@ Handle.bind(EVT_GROUP_SAVE, function () {
 });
 
 Handle.bind(EVT_GROUP_COPY, function () {
+    $('#screenshot-only').show();
+
     var range = document.createRange();
     range.selectNode(document.getElementById('container-detail-screenshot'));
 
@@ -201,6 +207,8 @@ Handle.bind(EVT_GROUP_COPY, function () {
     window.getSelection().addRange(range);
     document.execCommand('copy');
     window.getSelection().removeAllRanges();
+
+    $('#screenshot-only').hide();
 });
 
 Handle.bind(EVT_GROUP_LOAD_HEADER, function () {
@@ -254,6 +262,10 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     var groupCurrentTimestamp = State.getGroupTimestamp();
     var groupReference = State.getGroupReference();
     var groupReferenceTimestamp = State.getGroupReferenceTimestamp();
+
+    $('#sf-d1').html(formatDate(new Date(Number(State.getGroupTimestamp()))));
+    $('#sf-d2').html(formatDate(new Date(Number(State.getGroupReferenceTimestamp()))));
+    $('#screenshot-only').hide();
 
     // Current members
     var members = [];
