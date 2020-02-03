@@ -54,6 +54,24 @@ const GROUP_ROLES = [
     'Invited'
 ];
 
+const ATTACK_TYPES = {
+    0: 'Normal',
+    1: 'Critical',
+    2: 'Catapult',
+    3: 'Blocked',
+    4: 'Evaded',
+    5: 'NormalSecondary',
+    6: 'CriticalSecondary',
+    7: 'BlockedSecondary',
+    8: 'EvadedSecondary',
+    15: 'Fireball',
+    16: 'FireballBlock',
+    20: 'BerserkerNormal',
+    21: 'BerserkerCritical',
+    23: 'BerserkerBlocked',
+    24: 'BerserkerEvaded'
+};
+
 const FORTRESS_BUILDINGS = [
     '',
     'Fortress',

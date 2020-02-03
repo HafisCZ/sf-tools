@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>SFTools - Fight Exporter</title>
+        <title>SFTools - Fight Viewer</title>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,11 +16,6 @@
 
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
-
-        <script src="js/playa.js"></script>
-
-        <script src="js/core.js"></script>
-        <script src="js/event.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
@@ -43,136 +38,33 @@
 
                 </div>
                 <div class="four wide column">
-                    <h1 class="ui centered header">Fight Exporter</h1>
+                    <h1 class="ui centered header">Fight Viewer</h1>
                 </div>
                 <div class="six wide column">
 
                 </div>
             </div>
-            <div class="ui form" id="fi-results" hidden>
-                <div class="ui grid">
-                    <div class="two columns row">
-                        <div class="column">
-                            <div class="ui grid">
-                                <div class="eight wide column">
-                                    <h2 class="ui centered header" id="fi-a-name"></h2>
-                                </div>
-                                <div class="two wide column">
-                                    <h2 class="ui centered header" id="fi-a-level"></h2>
-                                </div>
-                                <div class="six wide column">
-                                    <h2 class="ui centered header" id="fi-a-class"></h2>
-                                </div>
-                                <div class="sixteen wide column">
-                                    <div class="two fields">
-                                        <div class="field">
-                                            <label>Minimum damage</label>
-                                            <input type="text" id="fi-a-min">
-                                        </div>
-                                        <div class="field">
-                                            <label>Maximum damage</label>
-                                            <input type="text" id="fi-a-max">
-                                        </div>
-                                    </div>
-                                    <div class="two fields">
-                                        <div class="field">
-                                            <label>Strength</label>
-                                            <input type="text" id="fi-a-strength">
-                                        </div>
-                                        <div class="field">
-                                            <label>Constitution</label>
-                                            <input type="text" id="fi-a-constitution">
-                                        </div>
-                                    </div>
-                                    <div class="two fields">
-                                        <div class="field">
-                                            <label>Dexterity</label>
-                                            <input type="text" id="fi-a-dexterity">
-                                        </div>
-                                        <div class="field">
-                                            <label>Luck</label>
-                                            <input type="text" id="fi-a-luck">
-                                        </div>
-                                    </div>
-                                    <div class="two fields">
-                                        <div class="field">
-                                            <label>Intelligence</label>
-                                            <input type="text" id="fi-a-intelligence">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="column">
-                            <div class="ui grid">
-                                <div class="eight wide column">
-                                    <h2 class="ui centered header" id="fi-b-name"></h2>
-                                </div>
-                                <div class="two wide column">
-                                    <h2 class="ui centered header" id="fi-b-level"></h2>
-                                </div>
-                                <div class="six wide column">
-                                    <h2 class="ui centered header" id="fi-b-class"></h2>
-                                </div>
-                                <div class="sixteen wide column">
-                                    <div class="two fields">
-                                        <div class="field">
-                                            <label>Minimum damage</label>
-                                            <input type="text" id="fi-b-min">
-                                        </div>
-                                        <div class="field">
-                                            <label>Maximum damage</label>
-                                            <input type="text" id="fi-b-max">
-                                        </div>
-                                    </div>
-                                    <div class="two fields">
-                                        <div class="field">
-                                            <label>Strength</label>
-                                            <input type="text" id="fi-b-strength">
-                                        </div>
-                                        <div class="field">
-                                            <label>Constitution</label>
-                                            <input type="text" id="fi-b-constitution">
-                                        </div>
-                                    </div>
-                                    <div class="two fields">
-                                        <div class="field">
-                                            <label>Dexterity</label>
-                                            <input type="text" id="fi-b-dexterity">
-                                        </div>
-                                        <div class="field">
-                                            <label>Luck</label>
-                                            <input type="text" id="fi-b-luck">
-                                        </div>
-                                    </div>
-                                    <div class="two fields">
-                                        <div class="field">
-                                            <label>Intelligence</label>
-                                            <input type="text" id="fi-b-intelligence">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="column" id="fi-attacks">
+            <div id="fi-content">
+                <div class="ui secondary menu" id="fi-select">
 
-                        </div>
-                    </div>
+                </div>
+                <div id="fi-content-pages">
+
                 </div>
             </div>
-            <div class="ui form margin-medium-top">
-                <div class="field">
-                    <textarea id="fi-output"></textarea>
-                </div>
-            </div>
+            <h3 class="ui centered header red" id="fi-error" hidden></h3>
         </div>
 
         <script type="text/javascript">
             (function ($) {
-                $('#fi-output').val('');
                 $('#fi-open').on('change', function () {
+                    $('#fi-content').hide();
+                    $('#fi-content-pages').html('');
+                    $('#fi-select').html('');
+
+                    $('#fi-error').hide();
+                    $('#fi-error').text('');
+
                     var reader = new FileReader();
                     reader.readAsText(this.files[0], 'UTF-8');
                     reader.onload = event => {
@@ -185,138 +77,193 @@
                                 }
                             }
 
-                            var messages = { };
-                            for (var raw of raws) {
+                            for (var index = 0, raw; raw = raws[index]; index++) {
+                                var messages = { };
                                 for (var [key, val] of parsePlayaResponse(raw)) {
                                     if (key.includes('fight') || key.includes('winnerid')) {
                                         var k = key.split('.');
                                         messages[k.length > 1 ? k[k.length - 1] : k[0]] = val.replace(/,/g, '/').split('/');
                                     }
                                 }
-                            }
 
-                            if (!messages['fighters'] || messages['fighters'][0] != 0 || !messages['winnerid'] || !messages['r']) {
-                                throw 'Invalid fight type!';
-                            } else {
-                                var fighters = messages['fighters'].slice(5);
-                                var [fa, fb] = [fighters.slice(0, 47), fighters.slice(47, 94)].map(data => {
-                                    var f = { };
-                                    var x = data.map(d => isNaN(d) ? d : Number(d));
-
-                                    f.id = x[0];
-                                    f.name = x[1];
-                                    f.level = x[2];
-                                    f.health = x[3];
-                                    f.strength = x[5];
-                                    f.dexterity = x[6];
-                                    f.intelligence = x[7];
-                                    f.constitution = x[8];
-                                    f.luck = x[9];
-
-                                    f.race = x[20];
-                                    f.gender = x[21];
-                                    f.class = PLAYER_CLASS[x[22]];
-
-                                    f.damagemin = x[25];
-                                    f.damagemax = x[26];
-
-                                    return f;
-                                });
-
-                                fighters = [fa, fb];
-
-                                $('#fi-a-name').text(fa.name);
-                                $('#fi-a-level').text(fa.level);
-                                $('#fi-a-class').text(fa.class);
-                                $('#fi-a-min').val(fa.damagemin);
-                                $('#fi-a-max').val(fa.damagemax);
-                                $('#fi-a-strength').val(fa.strength);
-                                $('#fi-a-dexterity').val(fa.dexterity);
-                                $('#fi-a-intelligence').val(fa.intelligence);
-                                $('#fi-a-constitution').val(fa.constitution);
-                                $('#fi-a-luck').val(fa.luck);
-
-                                $('#fi-b-name').text(fb.name);
-                                $('#fi-b-level').text(fb.level);
-                                $('#fi-b-class').text(fb.class);
-                                $('#fi-b-min').val(fb.damagemin);
-                                $('#fi-b-max').val(fb.damagemax);
-                                $('#fi-b-strength').val(fb.strength);
-                                $('#fi-b-dexterity').val(fb.dexterity);
-                                $('#fi-b-intelligence').val(fb.intelligence);
-                                $('#fi-b-constitution').val(fb.constitution);
-                                $('#fi-b-luck').val(fb.luck);
-
-                                var winner = messages['winnerid'][0] == fa.id ? fa : fb;
-
-                                var rounds = [ ];
-                                for (var i = 0; i < messages['r'].length / 3; i++) {
-                                    var attack = messages['r'].slice(i * 3, i * 3 + 3);
-                                    rounds.push({
-                                        id: attack[0],
-                                        type: {
-                                            0: 'Normal',
-                                            1: 'Critical',
-                                            2: 'Catapult',
-                                            3: 'Blocked',
-                                            4: 'Evaded',
-                                            5: 'NormalSecondary',
-                                            6: 'CriticalSecondary',
-                                            7: 'BlockedSecondary',
-                                            8: 'EvadedSecondary',
-                                            15: 'Fireball',
-                                            16: 'FireballBlock',
-                                            20: 'BerserkerNormal',
-                                            21: 'BerserkerCritical',
-                                            23: 'BerserkerBlocked',
-                                            24: 'BerserkerEvaded'
-                                        }[attack[1]],
-                                        health: attack[2],
-                                        crit: attack[1] == 1 || attack[1] == 6 || attack[1] == 21
+                                if (messages['fighters'] && messages['fighters'][0] == 0 && messages['winnerid'] && messages['r']) {
+                                    var fighters = [messages['fighters'].slice(5, 52), messages['fighters'].slice(52, 99)].map(data => {
+                                        var x = data.map(d => isNaN(d) ? d : Number(d));
+                                        return {
+                                            id: x[0],
+                                            name: x[1],
+                                            level: x[2],
+                                            health: x[3],
+                                            strength: x[5],
+                                            dexterity: x[6],
+                                            intelligence: x[7],
+                                            constitution: x[8],
+                                            luck: x[9],
+                                            class: PLAYER_CLASS[x[22]],
+                                            damagemin: x[25],
+                                            damagemax: x[26]
+                                        };
                                     });
-                                }
+                                    var [a, b] = fighters;
+                                    var winner = messages['winnerid'][0] == a.id ? a : b;
 
-                                rounds.forEach((round, i) => {
-                                    if (round.id == fa.id) {
-                                        round.source = fa;
-                                        round.target = fb;
-                                    } else {
-                                        round.source = fb;
-                                        round.target = fa;
+                                    var rounds = [ ];
+                                    for (var i = 0; i < messages['r'].length / 3; i++) {
+                                        var [id, type, hpleft] = messages['r'].slice(i * 3, i * 3 + 3);
+                                        rounds.push({
+                                            source: id == a.id ? a : b,
+                                            target: id == a.id ? b : a,
+                                            type: ATTACK_TYPES[type],
+                                            crit: type == 1 || type == 6 || type == 21,
+                                            health: hpleft
+                                        });
                                     }
 
-                                    round.damage = (function (rs, inx, src, tar) {
-                                        for (var l = inx - 1; l >= 0; l--) {
-                                            if (rs[l].id == src.id) return rs[l].health;
-                                        }
-                                        return tar.health;
-                                    })(rounds, i, round.source, round.target) - round.health;
-                                });
+                                    rounds.forEach((round, i) => {
+                                        round.damage = (function (rs, inx, src, tar) {
+                                            for (var l = inx - 1; l >= 0; l--) {
+                                                if (rs[l].source.id == src.id) return rs[l].health;
+                                            }
+                                            return tar.health;
+                                        })(rounds, i, round.source, round.target) - round.health;
+                                    });
 
-                                $('#fi-output').val(`Player1:\n${ Object.entries(fa).map(kv => `${ kv[0] }: ${ kv[1] }`).join('\n') }\n\nPlayer2:\n${ Object.entries(fb).map(kv => `${ kv[0] }: ${ kv[1] }`).join('\n') }\n\nWinner: ${ winner.name }\n\nRounds:\n${ rounds.map((r, fi) => `${ fi }: ${ r.source.name } (${ r.type }): ${ r.damage }`).join('\n') }`);
-
-                                $('#fi-attacks').html('');
-                                rounds.forEach((round, i) => {
-                                    $('#fi-attacks').append(`
-                                        <div class="ui segment">
-                                            <div class="ui grid">
-                                                <div class="one wide column">${ i + 1 }</div>
-                                                <div class="two wide column"><b>${ round.source.name }</b></div>
-                                                <div class="one wide column">></div>
-                                                <div class="two wide column"><b>${ round.target.name }</b></div>
-                                                <div class="two wide column"></div>
-                                                <div class="two wide column text-center ${ round.crit ? 'foreground-red' : '' }">${ round.type }</div>
-                                                <div class="four wide column text-center ${ round.crit ? 'foreground-red' : '' }">${ round.damage }</div>
-                                                <div class="two wide column"></div>
+                                    $('#fi-select').append(`<a class="item ${ index ? '' : 'active' }" data-tab="tab${ index }">${ a.name } / ${ b.name }</a>`)
+                                    $('#fi-content-pages').append(`
+                                        <div class="ui tab basic segment ${ index ? '' : 'active' }" data-tab="tab${ index }">
+                                            <div class="ui small form">
+                                                <div class="ui grid">
+                                                    <div class="two columns row">
+                                                        <div class="column">
+                                                            <h2 class="ui centered header">${ a.name }</h2>
+                                                            <div class="two fields">
+                                                                <div class="field">
+                                                                    <label>Class</label>
+                                                                    <input type="text" value="${ a.class }">
+                                                                </div>
+                                                                <div class="field">
+                                                                    <label>Level</label>
+                                                                    <input type="text" value="${ a.level }">
+                                                                </div>
+                                                            </div>
+                                                            <div class="two fields">
+                                                                <div class="field">
+                                                                    <label>Minimum damage</label>
+                                                                    <input type="text" value="${ a.damagemin }">
+                                                                </div>
+                                                                <div class="field">
+                                                                    <label>Maximum damage</label>
+                                                                    <input type="text" value="${ a.damagemax }">
+                                                                </div>
+                                                            </div>
+                                                            <div class="two fields">
+                                                                <div class="field">
+                                                                    <label>Strength</label>
+                                                                    <input type="text" value="${ a.strength }">
+                                                                </div>
+                                                                <div class="field">
+                                                                    <label>Constitution</label>
+                                                                    <input type="text" value="${ a.constitution }">
+                                                                </div>
+                                                            </div>
+                                                            <div class="two fields">
+                                                                <div class="field">
+                                                                    <label>Dexterity</label>
+                                                                    <input type="text" value="${ a.dexterity }">
+                                                                </div>
+                                                                <div class="field">
+                                                                    <label>Luck</label>
+                                                                    <input type="text" value="${ a.luck }">
+                                                                </div>
+                                                            </div>
+                                                            <div class="two fields">
+                                                                <div class="field">
+                                                                    <label>Intelligence</label>
+                                                                    <input type="text" value="${ a.intelligence }">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="column">
+                                                            <h2 class="ui centered header">${ b.name }</h2>
+                                                            <div class="two fields">
+                                                                <div class="field">
+                                                                    <label>Class</label>
+                                                                    <input type="text" value="${ b.class }">
+                                                                </div>
+                                                                <div class="field">
+                                                                    <label>Level</label>
+                                                                    <input type="text" value="${ b.level }">
+                                                                </div>
+                                                            </div>
+                                                            <div class="two fields">
+                                                                <div class="field">
+                                                                    <label>Minimum damage</label>
+                                                                    <input type="text" value="${ b.damagemin }">
+                                                                </div>
+                                                                <div class="field">
+                                                                    <label>Maximum damage</label>
+                                                                    <input type="text" value="${ b.damagemax }">
+                                                                </div>
+                                                            </div>
+                                                            <div class="two fields">
+                                                                <div class="field">
+                                                                    <label>Strength</label>
+                                                                    <input type="text" value="${ b.strength }">
+                                                                </div>
+                                                                <div class="field">
+                                                                    <label>Constitution</label>
+                                                                    <input type="text" value="${ b.constitution }">
+                                                                </div>
+                                                            </div>
+                                                            <div class="two fields">
+                                                                <div class="field">
+                                                                    <label>Dexterity</label>
+                                                                    <input type="text" value="${ b.dexterity }">
+                                                                </div>
+                                                                <div class="field">
+                                                                    <label>Luck</label>
+                                                                    <input type="text" value="${ b.luck }">
+                                                                </div>
+                                                            </div>
+                                                            <div class="two fields">
+                                                                <div class="field">
+                                                                    <label>Intelligence</label>
+                                                                    <input type="text" value="${ b.intelligence }">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="column">
+                                                            ${ rounds.map((round, i) => `
+                                                                    <div class="ui segment">
+                                                                        <div class="ui grid">
+                                                                            <div class="one wide column">${ i + 1 }</div>
+                                                                            <div class="two wide column"><b>${ round.source.name }</b></div>
+                                                                            <div class="one wide column">></div>
+                                                                            <div class="two wide column"><b>${ round.target.name }</b></div>
+                                                                            <div class="two wide column"></div>
+                                                                            <div class="two wide column text-center ${ round.crit ? 'foreground-red' : '' }">${ round.type }</div>
+                                                                            <div class="four wide column text-center ${ round.crit ? 'foreground-red' : '' }">${ round.damage }</div>
+                                                                            <div class="two wide column"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                `).join('')
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     `);
-                                });
-
-                                $('#fi-results').show();
+                                }
                             }
+
+                            $('#fi-content').show();
+                            $('.menu .item').tab();
                         } catch (e) {
-                            $('#fi-output').val(e);
+                            $('#fi-error').show();
+                            $('#fi-error').text(e);
                         }
                     };
                 });
