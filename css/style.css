@@ -76,10 +76,6 @@ input:disabled {
     color: #505050 !important;
 }
 
-.margin-auto-top {
-    margin: calc(2rem - .14285714em) 0 1rem !important;
-}
-
 .margin-tiny-top {
     margin-top: 0.2em !important;
 }
