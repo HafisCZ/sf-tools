@@ -101,7 +101,9 @@
                                             luck: x[9],
                                             class: PLAYER_CLASS[x[22]],
                                             damagemin: x[25],
-                                            damagemax: x[26]
+                                            damagemax: x[26],
+                                            damagemin2: x[22] == 4 ? x[37] : 0,
+                                            damagemax2: x[22] == 4 ? x[38] : 0
                                         };
                                     });
                                     var [a, b] = fighters;
@@ -114,7 +116,7 @@
                                             source: id == a.id ? a : b,
                                             target: id == a.id ? b : a,
                                             type: ATTACK_TYPES[type],
-                                            crit: type == 1 || type == 6 || type == 21,
+                                            crit: type == 1 || type == 11 || type == 21,
                                             health: hpleft
                                         });
                                     }
@@ -149,11 +151,11 @@
                                                             <div class="two fields">
                                                                 <div class="field">
                                                                     <label>Minimum damage</label>
-                                                                    <input type="text" value="${ a.damagemin }">
+                                                                    <input type="text" value="${ a.damagemin }${ a.damagemin2 ? ` (${ a.damagemin2 })` : '' }">
                                                                 </div>
                                                                 <div class="field">
                                                                     <label>Maximum damage</label>
-                                                                    <input type="text" value="${ a.damagemax }">
+                                                                    <input type="text" value="${ a.damagemax }${ a.damagemax2 ? ` (${ a.damagemax2 })` : '' }">
                                                                 </div>
                                                             </div>
                                                             <div class="two fields">
@@ -198,11 +200,11 @@
                                                             <div class="two fields">
                                                                 <div class="field">
                                                                     <label>Minimum damage</label>
-                                                                    <input type="text" value="${ b.damagemin }">
+                                                                    <input type="text" value="${ b.damagemin }${ b.damagemin2 ? ` (${ b.damagemin2 })` : '' }">
                                                                 </div>
                                                                 <div class="field">
                                                                     <label>Maximum damage</label>
-                                                                    <input type="text" value="${ b.damagemax }">
+                                                                    <input type="text" value="${ b.damagemax }${ b.damagemax2 ? ` (${ b.damagemax2 })` : '' }">
                                                                 </div>
                                                             </div>
                                                             <div class="two fields">
@@ -236,16 +238,17 @@
                                                     <div class="row">
                                                         <div class="column">
                                                             ${ rounds.map((round, i) => `
-                                                                    <div class="ui segment">
+                                                                    <div class="ui basic segment ${ i % 2 ? 'undertone' : '' }">
                                                                         <div class="ui grid">
+                                                                            <div class="one wide column"></div>
                                                                             <div class="one wide column">${ i + 1 }</div>
                                                                             <div class="two wide column"><b>${ round.source.name }</b></div>
                                                                             <div class="one wide column">></div>
                                                                             <div class="two wide column"><b>${ round.target.name }</b></div>
                                                                             <div class="two wide column"></div>
                                                                             <div class="two wide column text-center ${ round.crit ? 'foreground-red' : '' }">${ round.type }</div>
-                                                                            <div class="four wide column text-center ${ round.crit ? 'foreground-red' : '' }">${ round.damage }</div>
-                                                                            <div class="two wide column"></div>
+                                                                            <div class="four wide column text-right ${ round.crit ? 'foreground-red text-bold' : '' }">${ round.damage ? formatAsSpacedNumber(round.damage) : '' }</div>
+                                                                            <div class="one wide column"></div>
                                                                         </div>
                                                                     </div>
                                                                 `).join('')

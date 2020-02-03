@@ -132,8 +132,20 @@ input:disabled {
     text-align: center !important;
 }
 
+.undertone {
+    background-color: #F0F0F0 !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
 .text-muted {
     color: gray !important;
+}
+
+.text-bold {
+    font-weight: bold !important;
 }
 
 .margin-medium-right {

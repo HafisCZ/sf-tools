@@ -23,6 +23,10 @@ function clamp (a, b, c) {
     return Math.min(c, Math.max(b, a));
 }
 
+function formatAsSpacedNumber(n) {
+    return n.toString().split('').map((char, i, array) => ((array.length - 1 - i) % 3 == 2) && i != 0 ? (' ' + char) : char).join('');
+}
+
 // Iterator
 function * getIterator (array) {
     for (var i = 0, a; a = array[i]; i++) {

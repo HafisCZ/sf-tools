@@ -60,16 +60,16 @@ const ATTACK_TYPES = {
     2: 'Catapult',
     3: 'Blocked',
     4: 'Evaded',
-    5: 'NormalSecondary',
-    6: 'CriticalSecondary',
-    7: 'BlockedSecondary',
-    8: 'EvadedSecondary',
+    10: 'Normal',
+    11: 'Critical',
+    13: 'Blocked',
+    14: 'Evaded',
     15: 'Fireball',
-    16: 'FireballBlock',
-    20: 'BerserkerNormal',
-    21: 'BerserkerCritical',
-    23: 'BerserkerBlocked',
-    24: 'BerserkerEvaded'
+    16: 'Fireball blocked',
+    20: 'Normal',
+    21: 'Critical',
+    23: 'Blocked',
+    24: 'Evaded'
 };
 
 const FORTRESS_BUILDINGS = [
