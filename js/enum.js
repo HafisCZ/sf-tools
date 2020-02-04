@@ -54,6 +54,32 @@ const GROUP_ROLES = [
     'Invited'
 ];
 
+const FIGHT_TYPES = {
+    PlayerVsPlayer: 0,
+    Quest: 1,
+    Dungeon: 4,
+    Tower: 5,
+    PlayerPortal: 6,
+    GuildPortal: 7,
+    Shadow: 12
+};
+
+function getFightTargetName (type, name) {
+    if (isNaN(name)) {
+        return name;
+    } else {
+        switch (type) {
+            case FIGHT_TYPES.Quest: return 'Quest Monster';
+            case FIGHT_TYPES.Dungeon: return 'Dungeon Monster';
+            case FIGHT_TYPES.Tower: return 'Tower Monster';
+            case FIGHT_TYPES.PlayerPortal: return 'Portal Monster';
+            case FIGHT_TYPES.GuildPortal: return 'Guild Portal Monster';
+            case FIGHT_TYPES.Shadow: return 'Shadow Dungeon Monster';
+            default: return 'Unknown';
+        }
+    }
+}
+
 const ATTACK_TYPES = {
     0: 'Normal',
     1: 'Critical',

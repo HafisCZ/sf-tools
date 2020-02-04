@@ -82,18 +82,19 @@
                                 for (var [key, val] of parsePlayaResponse(raw)) {
                                     if (key.includes('fight') || key.includes('winnerid')) {
                                         var k = key.split('.');
-                                        messages[k.length > 1 ? k[k.length - 1] : k[0]] = val.replace(/,/g, '/').split('/');
+                                        messages[k.length > 1 ? k[k.length - 1] : k[0]] = val.replace(/,/g, '/').split('/').map(d => isNaN(d) ? d : Number(d));
                                     }
                                 }
 
-                                if (messages['fighters'] && messages['fighters'][0] == 0 && messages['winnerid'] && messages['r']) {
-                                    var fighters = [messages['fighters'].slice(5, 52), messages['fighters'].slice(52, 99)].map(data => {
-                                        var x = data.map(d => isNaN(d) ? d : Number(d));
+                                var fighttype = messages['fighters'][0];
+                                if (messages['fighters'] && Object.values(FIGHT_TYPES).includes(fighttype) && messages['winnerid'] && messages['r']) {
+                                    var fighters = [messages['fighters'].slice(5, 52), messages['fighters'].slice(52, 99)].map(x => {
                                         return {
                                             id: x[0],
-                                            name: x[1],
+                                            name: getFightTargetName(fighttype, x[1]),
                                             level: x[2],
-                                            health: x[3],
+                                            maxhealth: x[3],
+                                            health: x[4],
                                             strength: x[5],
                                             dexterity: x[6],
                                             intelligence: x[7],
@@ -141,48 +142,56 @@
                                                             <div class="two fields">
                                                                 <div class="field">
                                                                     <label>Class</label>
-                                                                    <input type="text" value="${ a.class }">
+                                                                    <input type="text" value="${ a.class }" disabled class="text-center">
                                                                 </div>
                                                                 <div class="field">
                                                                     <label>Level</label>
-                                                                    <input type="text" value="${ a.level }">
+                                                                    <input type="text" value="${ a.level }" disabled class="text-center">
                                                                 </div>
                                                             </div>
                                                             <div class="two fields">
                                                                 <div class="field">
                                                                     <label>Minimum damage</label>
-                                                                    <input type="text" value="${ a.damagemin }${ a.damagemin2 ? ` (${ a.damagemin2 })` : '' }">
+                                                                    <input type="text" value="${ a.damagemin || '' }${ a.damagemin2 ? ` (${ a.damagemin2 })` : '' }" disabled class="text-center">
                                                                 </div>
                                                                 <div class="field">
                                                                     <label>Maximum damage</label>
-                                                                    <input type="text" value="${ a.damagemax }${ a.damagemax2 ? ` (${ a.damagemax2 })` : '' }">
+                                                                    <input type="text" value="${ a.damagemax || '' }${ a.damagemax2 ? ` (${ a.damagemax2 })` : '' }" disabled class="text-center">
                                                                 </div>
                                                             </div>
-                                                            <div class="two fields">
+                                                            <div class="five fields">
                                                                 <div class="field">
                                                                     <label>Strength</label>
-                                                                    <input type="text" value="${ a.strength }">
+                                                                    <input type="text" value="${ a.strength }" disabled class="text-center">
                                                                 </div>
                                                                 <div class="field">
                                                                     <label>Constitution</label>
-                                                                    <input type="text" value="${ a.constitution }">
+                                                                    <input type="text" value="${ a.constitution }" disabled class="text-center">
                                                                 </div>
-                                                            </div>
-                                                            <div class="two fields">
                                                                 <div class="field">
                                                                     <label>Dexterity</label>
-                                                                    <input type="text" value="${ a.dexterity }">
+                                                                    <input type="text" value="${ a.dexterity }" disabled class="text-center">
                                                                 </div>
                                                                 <div class="field">
                                                                     <label>Luck</label>
-                                                                    <input type="text" value="${ a.luck }">
+                                                                    <input type="text" value="${ a.luck }" disabled class="text-center">
+                                                                </div>
+                                                                <div class="field">
+                                                                    <label>Intelligence</label>
+                                                                    <input type="text" value="${ a.intelligence }" disabled class="text-center">
                                                                 </div>
                                                             </div>
                                                             <div class="two fields">
                                                                 <div class="field">
-                                                                    <label>Intelligence</label>
-                                                                    <input type="text" value="${ a.intelligence }">
+                                                                    <label>Health</label>
+                                                                    <input type="text" value="${ a.maxhealth }" disabled class="text-center">
                                                                 </div>
+                                                                ${ a.health != a.maxhealth ? `
+                                                                    <div class="field">
+                                                                        <label>Current Health</label>
+                                                                        <input type="text" value="${ a.health }" disabled class="text-center">
+                                                                    </div>
+                                                                ` : '' }
                                                             </div>
                                                         </div>
                                                         <div class="column">
@@ -190,48 +199,56 @@
                                                             <div class="two fields">
                                                                 <div class="field">
                                                                     <label>Class</label>
-                                                                    <input type="text" value="${ b.class }">
+                                                                    <input type="text" value="${ b.class }" disabled class="text-center">
                                                                 </div>
                                                                 <div class="field">
                                                                     <label>Level</label>
-                                                                    <input type="text" value="${ b.level }">
+                                                                    <input type="text" value="${ b.level }" disabled class="text-center">
                                                                 </div>
                                                             </div>
                                                             <div class="two fields">
                                                                 <div class="field">
                                                                     <label>Minimum damage</label>
-                                                                    <input type="text" value="${ b.damagemin }${ b.damagemin2 ? ` (${ b.damagemin2 })` : '' }">
+                                                                    <input type="text" value="${ b.damagemin || '' }${ b.damagemin2 ? ` (${ b.damagemin2 })` : '' }" disabled class="text-center">
                                                                 </div>
                                                                 <div class="field">
                                                                     <label>Maximum damage</label>
-                                                                    <input type="text" value="${ b.damagemax }${ b.damagemax2 ? ` (${ b.damagemax2 })` : '' }">
+                                                                    <input type="text" value="${ b.damagemax || '' }${ b.damagemax2 ? ` (${ b.damagemax2 })` : '' }" disabled class="text-center">
                                                                 </div>
                                                             </div>
-                                                            <div class="two fields">
+                                                            <div class="five  fields">
                                                                 <div class="field">
                                                                     <label>Strength</label>
-                                                                    <input type="text" value="${ b.strength }">
+                                                                    <input type="text" value="${ b.strength }" disabled class="text-center">
                                                                 </div>
                                                                 <div class="field">
                                                                     <label>Constitution</label>
-                                                                    <input type="text" value="${ b.constitution }">
+                                                                    <input type="text" value="${ b.constitution }" disabled class="text-center">
                                                                 </div>
-                                                            </div>
-                                                            <div class="two fields">
                                                                 <div class="field">
                                                                     <label>Dexterity</label>
-                                                                    <input type="text" value="${ b.dexterity }">
+                                                                    <input type="text" value="${ b.dexterity }" disabled class="text-center">
                                                                 </div>
                                                                 <div class="field">
                                                                     <label>Luck</label>
-                                                                    <input type="text" value="${ b.luck }">
+                                                                    <input type="text" value="${ b.luck }" disabled class="text-center">
+                                                                </div>
+                                                                <div class="field">
+                                                                    <label>Intelligence</label>
+                                                                    <input type="text" value="${ b.intelligence }" disabled class="text-center">
                                                                 </div>
                                                             </div>
                                                             <div class="two fields">
                                                                 <div class="field">
-                                                                    <label>Intelligence</label>
-                                                                    <input type="text" value="${ b.intelligence }">
+                                                                    <label>Health</label>
+                                                                    <input type="text" value="${ b.maxhealth }" disabled class="text-center">
                                                                 </div>
+                                                                ${ b.health != b.maxhealth ? `
+                                                                    <div class="field">
+                                                                        <label>Current Health</label>
+                                                                        <input type="text" value="${ b.health }" disabled class="text-center">>
+                                                                    </div>
+                                                                ` : '' }
                                                             </div>
                                                         </div>
                                                     </div>
@@ -242,12 +259,12 @@
                                                                         <div class="ui grid">
                                                                             <div class="one wide column"></div>
                                                                             <div class="one wide column">${ i + 1 }</div>
-                                                                            <div class="two wide column"><b>${ round.source.name }</b></div>
-                                                                            <div class="one wide column">></div>
-                                                                            <div class="two wide column"><b>${ round.target.name }</b></div>
-                                                                            <div class="two wide column"></div>
+                                                                            <div class="three wide column text-right"><b>${ round.source.name }</b></div>
+                                                                            <div class="one wide column text-center">></div>
+                                                                            <div class="three wide column"><b>${ round.target.name }</b></div>
+                                                                            <div class="one wide column"></div>
                                                                             <div class="two wide column text-center ${ round.crit ? 'foreground-red' : '' }">${ round.type }</div>
-                                                                            <div class="four wide column text-right ${ round.crit ? 'foreground-red text-bold' : '' }">${ round.damage ? formatAsSpacedNumber(round.damage) : '' }</div>
+                                                                            <div class="three wide column text-right ${ round.crit ? 'foreground-red text-bold' : '' }">${ round.damage ? formatAsSpacedNumber(round.damage) : '' }</div>
                                                                             <div class="one wide column"></div>
                                                                         </div>
                                                                     </div>
