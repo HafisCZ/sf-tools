@@ -32,18 +32,18 @@
                     <label class="ui fluid button" for="fi-open">
                         <i class="small upload icon"></i> Open file
                     </label>
-                    <input type="file" id="fi-open" hidden>
+                    <input type="file" id="fi-open" multiple hidden>
                 </div>
                 <div class="three wide column">
                     <label class="ui fluid button" for="fi-add">
                         <i class="small plus icon"></i> Add file
                     </label>
-                    <input type="file" id="fi-add" hidden>
+                    <input type="file" id="fi-add" multiple hidden>
                 </div>
                 <div class="four wide column">
                     <h1 class="ui centered header">Fight Viewer</h1>
                 </div>
-                <div class="six wide column">
+                <div class="five wide column">
                     <div class="ui form field">
                         <div class="ui selection fluid dropdown">
                             <input type="hidden" id="fi-select">
@@ -54,6 +54,11 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="one wide column">
+                    <button class="ui icon button" id="fi-copy">
+                        <i class="copy outline icon"></i>
+                    </button>
                 </div>
             </div>
             <h3 class="ui centered header red" id="fi-error" hidden></h3>
@@ -73,6 +78,17 @@
                     $('[data-tab]').removeClass('active');
                     $(`[data-tab="${ $(this).val() }"]`).addClass('active');
                 });
+                $('#fi-select').val('');
+                $('#fi-copy').on('click', function () {
+                    if ($('[data-tab]').length == 0) return;
+                    var el = document.createElement('textarea');
+                    var tab = tabs[$('[data-tab].active').attr('data-tab')];
+                    el.value = `name:\t${tab.name}\nfightera:\n${ Object.entries(tab.fa).map(kv => `${ kv[0] }\t${ kv[1] }`).join('\n') }\nfighterB:\n${ Object.entries(tab.fb).map(kv => `${ kv[0] }\t${ kv[1] }`).join('\n') }\nrounds:\n${ tab.rounds.map((r, i) => `${i}\t${r.src.id}\t${r.tar.id}\t${r.atype}\t${r.damage}`).join('\n') }`;
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(el);
+                });
 
                 var tabs = [];
                 var tabsadded = false;
@@ -80,22 +96,20 @@
                 // Remove all tabs
                 function clearTabs() {
                     tabs = [];
-                    tabsadded = false;
                 }
 
                 // Add new tab
                 function addTab(... tab) {
                     tabs.push(... tab);
-                    tabsadded = true;
                 }
 
                 // Update document
                 function updateTabs() {
                     if (tabs.length) {
                         $('#fi-content').show();
-                        $('#fi-select-items').html(tabs.map((tab, index) => `<div class="item" data-value="tab${ index }">${ index + 1 }. ${ tab.name }</div>`).join(''));
+                        $('#fi-select-items').html(tabs.map((tab, index) => `<div class="item${ !tabsadded && index == 0 ? ' active selected' : '' }" data-value="${ index }">${ index + 1 }. ${ tab.name }</div>`).join(''));
                         $('#fi-content-pages').html(tabs.map((tab, index) => `
-                            <div class="ui tab basic segment${ tabsadded && index == 0 ? ' active' : '' }${ index == 0 ? ' margin-medium-top' : '' }" data-tab="tab${ index }">
+                            <div class="ui tab basic segment${ !tabsadded && index == 0 ? ' active' : '' }${ index == 0 ? ' margin-medium-top' : '' }" data-tab="${ index }">
                                 <div class="ui small form">
                                     <div class="ui grid">
                                         <div class="two columns row">
@@ -146,12 +160,12 @@
                                                 <div class="two fields">
                                                     <div class="field">
                                                         <label>Health</label>
-                                                        <input type="text" value="${ tab.fa.maxhealth }" disabled class="text-center">
+                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fa.maxhealth) }" disabled class="text-center">
                                                     </div>
                                                     ${ tab.fa.health != tab.fa.maxhealth ? `
                                                         <div class="field">
                                                             <label>Current Health</label>
-                                                            <input type="text" value="${ tab.fa.health }" disabled class="text-center">
+                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fa.health) }" disabled class="text-center">
                                                         </div>
                                                     ` : '' }
                                                 </div>
@@ -203,12 +217,12 @@
                                                 <div class="two fields">
                                                     <div class="field">
                                                         <label>Health</label>
-                                                        <input type="text" value="${ tab.fb.maxhealth }" disabled class="text-center">
+                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fb.maxhealth) }" disabled class="text-center">
                                                     </div>
                                                     ${ tab.fb.health != tab.fb.maxhealth ? `
                                                         <div class="field">
                                                             <label>Current Health</label>
-                                                            <input type="text" value="${ tab.fb.health }" disabled class="text-center">>
+                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fb.health) }" disabled class="text-center">>
                                                         </div>
                                                     ` : '' }
                                                 </div>
@@ -238,13 +252,19 @@
                                 </div>
                             </div>
                         `).join(''));
+                        if (!tabsadded) {
+                            $('#fi-select').val('0');
+                        } else {
+                            $('#fi-select').trigger('change');
+                        }
                         $('.dropdown').dropdown();
+                        tabsadded = true;
                     } else {
                         $('#fi-content').hide();
                         $('#fi-select-items').html('');
                         $('#fi-content-pages').html('');
+                        tabsadded = false;
                     }
-                    tabsadded = false;
                 }
 
                 // Clear error
@@ -329,7 +349,8 @@
                                 name: `${ fa.name } / ${ fb.name }`,
                                 fa: fa,
                                 fb: fb,
-                                rounds: rounds
+                                rounds: rounds,
+                                winner: winner.id
                             });
                         }
                     }
