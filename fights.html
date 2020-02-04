@@ -35,255 +35,335 @@
                     <input type="file" id="fi-open" hidden>
                 </div>
                 <div class="three wide column">
-
+                    <label class="ui fluid button" for="fi-add">
+                        <i class="small plus icon"></i> Add file
+                    </label>
+                    <input type="file" id="fi-add" hidden>
                 </div>
                 <div class="four wide column">
                     <h1 class="ui centered header">Fight Viewer</h1>
                 </div>
                 <div class="six wide column">
+                    <div class="ui form field">
+                        <div class="ui selection fluid dropdown">
+                            <input type="hidden" id="fi-select">
+                            <i class="dropdown icon"></i>
+                            <div class="default text"></div>
+                            <div class="menu" id="fi-select-items">
 
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <h3 class="ui centered header red" id="fi-error" hidden></h3>
             <div id="fi-content">
-                <div class="ui secondary menu" id="fi-select">
+                    <div class="ui secondary grid" id="fi-select">
 
-                </div>
+                    </div>
                 <div id="fi-content-pages">
 
                 </div>
             </div>
-            <h3 class="ui centered header red" id="fi-error" hidden></h3>
         </div>
 
         <script type="text/javascript">
             (function ($) {
-                $('#fi-open').on('change', function () {
-                    $('#fi-content').hide();
-                    $('#fi-content-pages').html('');
-                    $('#fi-select').html('');
+                $('#fi-select').on('change', function () {
+                    $('[data-tab]').removeClass('active');
+                    $(`[data-tab="${ $(this).val() }"]`).addClass('active');
+                });
 
-                    $('#fi-error').hide();
-                    $('#fi-error').text('');
+                var tabs = [];
+                var tabsadded = false;
 
-                    var reader = new FileReader();
-                    reader.readAsText(this.files[0], 'UTF-8');
-                    reader.onload = event => {
-                        try {
-                            var json = JSON.parse(event.target.result);
-                            var raws = [];
-                            for (var [key, val, url] of filterPlayaJSON(json)) {
-                                if (key === 'text' && val.includes('fightheader')) {
-                                    raws.push(val);
-                                }
-                            }
+                // Remove all tabs
+                function clearTabs() {
+                    tabs = [];
+                    tabsadded = false;
+                }
 
-                            for (var index = 0, raw; raw = raws[index]; index++) {
-                                var messages = { };
-                                for (var [key, val] of parsePlayaResponse(raw)) {
-                                    if (key.includes('fight') || key.includes('winnerid')) {
-                                        var k = key.split('.');
-                                        messages[k.length > 1 ? k[k.length - 1] : k[0]] = val.replace(/,/g, '/').split('/').map(d => isNaN(d) ? d : Number(d));
-                                    }
-                                }
+                // Add new tab
+                function addTab(... tab) {
+                    tabs.push(... tab);
+                    tabsadded = true;
+                }
 
-                                var fighttype = messages['fighters'][0];
-                                if (messages['fighters'] && Object.values(FIGHT_TYPES).includes(fighttype) && messages['winnerid'] && messages['r']) {
-                                    var fighters = [messages['fighters'].slice(5, 52), messages['fighters'].slice(52, 99)].map(x => {
-                                        return {
-                                            id: x[0],
-                                            name: getFightTargetName(fighttype, x[1]),
-                                            level: x[2],
-                                            maxhealth: x[3],
-                                            health: x[4],
-                                            strength: x[5],
-                                            dexterity: x[6],
-                                            intelligence: x[7],
-                                            constitution: x[8],
-                                            luck: x[9],
-                                            class: PLAYER_CLASS[x[22]],
-                                            damagemin: x[25],
-                                            damagemax: x[26],
-                                            damagemin2: x[22] == 4 ? x[37] : 0,
-                                            damagemax2: x[22] == 4 ? x[38] : 0
-                                        };
-                                    });
-                                    var [a, b] = fighters;
-                                    var winner = messages['winnerid'][0] == a.id ? a : b;
-
-                                    var rounds = [ ];
-                                    for (var i = 0; i < messages['r'].length / 3; i++) {
-                                        var [id, type, hpleft] = messages['r'].slice(i * 3, i * 3 + 3);
-                                        rounds.push({
-                                            source: id == a.id ? a : b,
-                                            target: id == a.id ? b : a,
-                                            type: ATTACK_TYPES[type],
-                                            crit: type == 1 || type == 11 || type == 21,
-                                            health: hpleft
-                                        });
-                                    }
-
-                                    rounds.forEach((round, i) => {
-                                        round.damage = (function (rs, inx, src, tar) {
-                                            for (var l = inx - 1; l >= 0; l--) {
-                                                if (rs[l].source.id == src.id) return rs[l].health;
-                                            }
-                                            return tar.health;
-                                        })(rounds, i, round.source, round.target) - round.health;
-                                    });
-
-                                    $('#fi-select').append(`<a class="item ${ index ? '' : 'active' }" data-tab="tab${ index }">${ a.name } / ${ b.name }</a>`)
-                                    $('#fi-content-pages').append(`
-                                        <div class="ui tab basic segment ${ index ? '' : 'active' }" data-tab="tab${ index }">
-                                            <div class="ui small form">
-                                                <div class="ui grid">
-                                                    <div class="two columns row">
-                                                        <div class="column">
-                                                            <h2 class="ui centered header">${ a.name }</h2>
-                                                            <div class="two fields">
-                                                                <div class="field">
-                                                                    <label>Class</label>
-                                                                    <input type="text" value="${ a.class }" disabled class="text-center">
-                                                                </div>
-                                                                <div class="field">
-                                                                    <label>Level</label>
-                                                                    <input type="text" value="${ a.level }" disabled class="text-center">
-                                                                </div>
-                                                            </div>
-                                                            <div class="two fields">
-                                                                <div class="field">
-                                                                    <label>Minimum damage</label>
-                                                                    <input type="text" value="${ a.damagemin || '' }${ a.damagemin2 ? ` (${ a.damagemin2 })` : '' }" disabled class="text-center">
-                                                                </div>
-                                                                <div class="field">
-                                                                    <label>Maximum damage</label>
-                                                                    <input type="text" value="${ a.damagemax || '' }${ a.damagemax2 ? ` (${ a.damagemax2 })` : '' }" disabled class="text-center">
-                                                                </div>
-                                                            </div>
-                                                            <div class="five fields">
-                                                                <div class="field">
-                                                                    <label>Strength</label>
-                                                                    <input type="text" value="${ a.strength }" disabled class="text-center">
-                                                                </div>
-                                                                <div class="field">
-                                                                    <label>Constitution</label>
-                                                                    <input type="text" value="${ a.constitution }" disabled class="text-center">
-                                                                </div>
-                                                                <div class="field">
-                                                                    <label>Dexterity</label>
-                                                                    <input type="text" value="${ a.dexterity }" disabled class="text-center">
-                                                                </div>
-                                                                <div class="field">
-                                                                    <label>Luck</label>
-                                                                    <input type="text" value="${ a.luck }" disabled class="text-center">
-                                                                </div>
-                                                                <div class="field">
-                                                                    <label>Intelligence</label>
-                                                                    <input type="text" value="${ a.intelligence }" disabled class="text-center">
-                                                                </div>
-                                                            </div>
-                                                            <div class="two fields">
-                                                                <div class="field">
-                                                                    <label>Health</label>
-                                                                    <input type="text" value="${ a.maxhealth }" disabled class="text-center">
-                                                                </div>
-                                                                ${ a.health != a.maxhealth ? `
-                                                                    <div class="field">
-                                                                        <label>Current Health</label>
-                                                                        <input type="text" value="${ a.health }" disabled class="text-center">
-                                                                    </div>
-                                                                ` : '' }
-                                                            </div>
-                                                        </div>
-                                                        <div class="column">
-                                                            <h2 class="ui centered header">${ b.name }</h2>
-                                                            <div class="two fields">
-                                                                <div class="field">
-                                                                    <label>Class</label>
-                                                                    <input type="text" value="${ b.class }" disabled class="text-center">
-                                                                </div>
-                                                                <div class="field">
-                                                                    <label>Level</label>
-                                                                    <input type="text" value="${ b.level }" disabled class="text-center">
-                                                                </div>
-                                                            </div>
-                                                            <div class="two fields">
-                                                                <div class="field">
-                                                                    <label>Minimum damage</label>
-                                                                    <input type="text" value="${ b.damagemin || '' }${ b.damagemin2 ? ` (${ b.damagemin2 })` : '' }" disabled class="text-center">
-                                                                </div>
-                                                                <div class="field">
-                                                                    <label>Maximum damage</label>
-                                                                    <input type="text" value="${ b.damagemax || '' }${ b.damagemax2 ? ` (${ b.damagemax2 })` : '' }" disabled class="text-center">
-                                                                </div>
-                                                            </div>
-                                                            <div class="five  fields">
-                                                                <div class="field">
-                                                                    <label>Strength</label>
-                                                                    <input type="text" value="${ b.strength }" disabled class="text-center">
-                                                                </div>
-                                                                <div class="field">
-                                                                    <label>Constitution</label>
-                                                                    <input type="text" value="${ b.constitution }" disabled class="text-center">
-                                                                </div>
-                                                                <div class="field">
-                                                                    <label>Dexterity</label>
-                                                                    <input type="text" value="${ b.dexterity }" disabled class="text-center">
-                                                                </div>
-                                                                <div class="field">
-                                                                    <label>Luck</label>
-                                                                    <input type="text" value="${ b.luck }" disabled class="text-center">
-                                                                </div>
-                                                                <div class="field">
-                                                                    <label>Intelligence</label>
-                                                                    <input type="text" value="${ b.intelligence }" disabled class="text-center">
-                                                                </div>
-                                                            </div>
-                                                            <div class="two fields">
-                                                                <div class="field">
-                                                                    <label>Health</label>
-                                                                    <input type="text" value="${ b.maxhealth }" disabled class="text-center">
-                                                                </div>
-                                                                ${ b.health != b.maxhealth ? `
-                                                                    <div class="field">
-                                                                        <label>Current Health</label>
-                                                                        <input type="text" value="${ b.health }" disabled class="text-center">>
-                                                                    </div>
-                                                                ` : '' }
-                                                            </div>
-                                                        </div>
+                // Update document
+                function updateTabs() {
+                    if (tabs.length) {
+                        $('#fi-content').show();
+                        $('#fi-select-items').html(tabs.map((tab, index) => `<div class="item" data-value="tab${ index }">${ index + 1 }. ${ tab.name }</div>`).join(''));
+                        $('#fi-content-pages').html(tabs.map((tab, index) => `
+                            <div class="ui tab basic segment${ tabsadded && index == 0 ? ' active' : '' }${ index == 0 ? ' margin-medium-top' : '' }" data-tab="tab${ index }">
+                                <div class="ui small form">
+                                    <div class="ui grid">
+                                        <div class="two columns row">
+                                            <div class="column">
+                                                <h2 class="ui centered header">${ tab.fa.name }</h2>
+                                                <div class="two fields">
+                                                    <div class="field">
+                                                        <label>Class</label>
+                                                        <input type="text" value="${ tab.fa.class }" disabled class="text-center">
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="column">
-                                                            ${ rounds.map((round, i) => `
-                                                                    <div class="ui basic segment ${ i % 2 ? 'undertone' : '' }">
-                                                                        <div class="ui grid">
-                                                                            <div class="one wide column"></div>
-                                                                            <div class="one wide column">${ i + 1 }</div>
-                                                                            <div class="three wide column text-right"><b>${ round.source.name }</b></div>
-                                                                            <div class="one wide column text-center">></div>
-                                                                            <div class="three wide column"><b>${ round.target.name }</b></div>
-                                                                            <div class="one wide column"></div>
-                                                                            <div class="two wide column text-center ${ round.crit ? 'foreground-red' : '' }">${ round.type }</div>
-                                                                            <div class="three wide column text-right ${ round.crit ? 'foreground-red text-bold' : '' }">${ round.damage ? formatAsSpacedNumber(round.damage) : '' }</div>
-                                                                            <div class="one wide column"></div>
-                                                                        </div>
-                                                                    </div>
-                                                                `).join('')
-                                                            }
-                                                        </div>
+                                                    <div class="field">
+                                                        <label>Level</label>
+                                                        <input type="text" value="${ tab.fa.level }" disabled class="text-center">
                                                     </div>
+                                                </div>
+                                                <div class="two fields">
+                                                    <div class="field">
+                                                        <label>Minimum damage</label>
+                                                        <input type="text" value="${ tab.fa.damagemin || '' }${ tab.fa.damagemin2 ? ` (${ tab.fa.damagemin2 })` : '' }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Maximum damage</label>
+                                                        <input type="text" value="${ tab.fa.damagemax || '' }${ tab.fa.damagemax2 ? ` (${ tab.fa.damagemax2 })` : '' }" disabled class="text-center">
+                                                    </div>
+                                                </div>
+                                                <div class="five fields">
+                                                    <div class="field">
+                                                        <label>Strength</label>
+                                                        <input type="text" value="${ tab.fa.strength }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Constitution</label>
+                                                        <input type="text" value="${ tab.fa.constitution }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Dexterity</label>
+                                                        <input type="text" value="${ tab.fa.dexterity }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Luck</label>
+                                                        <input type="text" value="${ tab.fa.luck }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Intelligence</label>
+                                                        <input type="text" value="${ tab.fa.intelligence }" disabled class="text-center">
+                                                    </div>
+                                                </div>
+                                                <div class="two fields">
+                                                    <div class="field">
+                                                        <label>Health</label>
+                                                        <input type="text" value="${ tab.fa.maxhealth }" disabled class="text-center">
+                                                    </div>
+                                                    ${ tab.fa.health != tab.fa.maxhealth ? `
+                                                        <div class="field">
+                                                            <label>Current Health</label>
+                                                            <input type="text" value="${ tab.fa.health }" disabled class="text-center">
+                                                        </div>
+                                                    ` : '' }
+                                                </div>
+                                            </div>
+                                            <div class="column">
+                                                <h2 class="ui centered header">${ tab.fb.name }</h2>
+                                                <div class="two fields">
+                                                    <div class="field">
+                                                        <label>Class</label>
+                                                        <input type="text" value="${ tab.fb.class }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Level</label>
+                                                        <input type="text" value="${ tab.fb.level }" disabled class="text-center">
+                                                    </div>
+                                                </div>
+                                                <div class="two fields">
+                                                    <div class="field">
+                                                        <label>Minimum damage</label>
+                                                        <input type="text" value="${ tab.fb.damagemin || '' }${ tab.fb.damagemin2 ? ` (${ tab.fb.damagemin2 })` : '' }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Maximum damage</label>
+                                                        <input type="text" value="${ tab.fb.damagemax || '' }${ tab.fb.damagemax2 ? ` (${ tab.fb.damagemax2 })` : '' }" disabled class="text-center">
+                                                    </div>
+                                                </div>
+                                                <div class="five  fields">
+                                                    <div class="field">
+                                                        <label>Strength</label>
+                                                        <input type="text" value="${ tab.fb.strength }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Constitution</label>
+                                                        <input type="text" value="${ tab.fb.constitution }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Dexterity</label>
+                                                        <input type="text" value="${ tab.fb.dexterity }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Luck</label>
+                                                        <input type="text" value="${ tab.fb.luck }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Intelligence</label>
+                                                        <input type="text" value="${ tab.fb.intelligence }" disabled class="text-center">
+                                                    </div>
+                                                </div>
+                                                <div class="two fields">
+                                                    <div class="field">
+                                                        <label>Health</label>
+                                                        <input type="text" value="${ tab.fb.maxhealth }" disabled class="text-center">
+                                                    </div>
+                                                    ${ tab.fb.health != tab.fb.maxhealth ? `
+                                                        <div class="field">
+                                                            <label>Current Health</label>
+                                                            <input type="text" value="${ tab.fb.health }" disabled class="text-center">>
+                                                        </div>
+                                                    ` : '' }
                                                 </div>
                                             </div>
                                         </div>
-                                    `);
+                                        <div class="row">
+                                            <div class="column">
+                                                ${ tab.rounds.map((round, i) => `
+                                                        <div class="ui basic segment ${ i % 2 ? 'undertone' : '' }">
+                                                            <div class="ui grid">
+                                                                <div class="one wide column"></div>
+                                                                <div class="one wide column">${ i + 1 }</div>
+                                                                <div class="three wide column text-right"><b>${ round.src.name }</b></div>
+                                                                <div class="one wide column text-center">></div>
+                                                                <div class="three wide column"><b>${ round.tar.name }</b></div>
+                                                                <div class="one wide column"></div>
+                                                                <div class="two wide column text-center ${ round.crit ? 'foreground-red' : '' }">${ ATTACK_TYPES[round.atype] }</div>
+                                                                <div class="three wide column text-right ${ round.crit ? 'foreground-red text-bold' : '' }">${ round.damage ? formatAsSpacedNumber(round.damage) : '' }</div>
+                                                                <div class="one wide column"></div>
+                                                            </div>
+                                                        </div>
+                                                    `).join('')
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join(''));
+                        $('.dropdown').dropdown();
+                    } else {
+                        $('#fi-content').hide();
+                        $('#fi-select-items').html('');
+                        $('#fi-content-pages').html('');
+                    }
+                    tabsadded = false;
+                }
+
+                // Clear error
+                function clearError() {
+                    $('#fi-error').hide();
+                    $('#fi-error').text('');
+                }
+
+                // Show error
+                function showError(msg) {
+                    $('#fi-error').show();
+                    $('#fi-error').text(msg);
+                }
+
+                // Parse file
+                function parseTabs(json) {
+                    var fights = [];
+                    var raws = [];
+
+                    for (var [k, v] of filterPlayaJSON(json)) {
+                        if (k == 'text' && v.includes('fightheader')) {
+                            raws.push(v);
+                        }
+                    }
+
+                    for (var raw of raws) {
+                        var msg = {};
+                        for (var [k, v] of parsePlayaResponse(raw)) {
+                            if (k.includes('fight') || k.includes('winnerid')) {
+                                var ks = k.split('.');
+                                msg[ks.length > 1 ? ks[ks.length - 1] : ks[0]] = v.split(/[/,]/g).map(d => isNaN(d) ? d : Number(d));
+                            }
+                        }
+
+                        if (msg['fighters'] && msg['winnerid'] && msg['r'] && Object.values(FIGHT_TYPES).includes(msg['fighters'][0])) {
+                            var ftype = msg['fighters'][0];
+                            var fighters, [fa, fb] = fighters = [msg['fighters'].slice(5, 52), msg['fighters'].slice(52, 99)].map(x => {
+                                return {
+                                    id: x[0],
+                                    name: getFightTargetName(ftype, x[1]),
+                                    level: x[2],
+                                    maxhealth: x[3],
+                                    health: x[4],
+                                    strength: x[5],
+                                    dexterity: x[6],
+                                    intelligence: x[7],
+                                    constitution: x[8],
+                                    luck: x[9],
+                                    class: PLAYER_CLASS[x[22]],
+                                    damagemin: x[25],
+                                    damagemax: x[26],
+                                    damagemin2: x[22] == 4 ? x[37] : 0,
+                                    damagemax2: x[22] == 4 ? x[38] : 0
                                 }
+                            });
+                            var winner = msg['winnerid'][0] == fa.id ? fa : fb;
+                            var rounds = [];
+                            for (var i = 0; i < msg['r'].length / 3; i++) {
+                                var [id, atype, healthleft] = msg['r'].slice(i * 3, i * 3 + 3);
+                                rounds.push({
+                                    src: id == fa.id ? fa : fb,
+                                    tar: id == fa.id ? fb : fa,
+                                    atype: atype,
+                                    crit: atype % 10 == 1,
+                                    healthleft: healthleft
+                                });
                             }
 
-                            $('#fi-content').show();
-                            $('.menu .item').tab();
-                        } catch (e) {
-                            $('#fi-error').show();
-                            $('#fi-error').text(e);
+                            for (var i = 0, r; r = rounds[i]; i++) {
+                                r.damage = (function (_rounds, _i, source, target) {
+                                    for (var j = _i - 1; j >= 0; j--) {
+                                        if (_rounds[j].src.id == source.id) {
+                                            return _rounds[j].healthleft;
+                                        }
+                                    }
+
+                                    return target.health;
+                                })(rounds, i, r.src, r.tar) - r.healthleft;
+                            }
+
+                            fights.push({
+                                name: `${ fa.name } / ${ fb.name }`,
+                                fa: fa,
+                                fb: fb,
+                                rounds: rounds
+                            });
+                        }
+                    }
+
+                    return fights;
+                }
+
+                // Event handlers
+                $('#fi-open').on('change', function () {
+                    clearTabs();
+
+                    var r = new FileReader();
+                    r.readAsText(this.files[0], 'UTF-8');
+                    r.onload = event => {
+                        try {
+                            clearError();
+                            addTab(... parseTabs(JSON.parse(event.target.result)));
+                            updateTabs();
+                        } catch (exception) {
+                            showError(exception);
+                        }
+                    };
+                });
+
+                $('#fi-add').on('change', function () {
+                    var r = new FileReader();
+                    r.readAsText(this.files[0], 'UTF-8');
+                    r.onload = event => {
+                        try {
+                            clearError();
+                            addTab(... parseTabs(JSON.parse(event.target.result)));
+                            updateTabs();
+                        } catch (exception) {
+                            showError(exception);
                         }
                     };
                 });
