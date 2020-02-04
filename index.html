@@ -187,7 +187,7 @@
         <script>
             const months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
             function formatDate (date) {
-                return `${ date.getDate() }. ${ months[date.getMonth()] } ${ date.getFullYear() } ${ date.getHours() }:${ date.getMinutes() }`;
+                return `${ date.getDate() }. ${ months[date.getMonth()] } ${ date.getFullYear() } ${ date.getHours() }:${ date.getMinutes() < 10 ? '0' : '' }${ date.getMinutes() }`;
             }
 
             var item = localStorage['version'] ? JSON.parse(localStorage['version']) : { expire: 0 };
