@@ -292,68 +292,94 @@ const Cell = {
     Small: (text) => ` <span>${ text }</span>`,
     Empty: () => '<td></td>',
     Extras: (headers, players, extra, joined, kicked) => {
-        var classes = players.reduce((cls, p) => { cls[p.player.Class - 1]++; return cls; }, [0, 0, 0, 0, 0, 0]);
-        return extra > 0 ? `
-            <tr>
-                <td colspan="${ 1 + headers.length }"></td>
-            </tr>
-            <tr>
-                <td class="border-right-thin"></td>
-                ${ headers.map((h, index, array) => (h.stat && h.scell) ? `<td>${ h.name }</td>` : '<td></td>').join('') }
-            </tr>
-            <tr>
-                <td class="border-right-thin border-bottom-thick"></td>
-                <td class="border-bottom-thick" colspan="${ headers.length }"></td>
-            </tr>
-            <tr>
-                <td class="border-right-thin">Minimum</td>
-                ${ headers.map((h, index, array) => (h.stat && h.scell) ? h.scell({ players: players, operation: ar => Math.min(... ar) }) : '<td></td>').join('') }
-            </tr>
-            <tr>
-                <td class="border-right-thin">Average</td>
-                ${ headers.map((h, index, array) => (h.stat && h.scell) ? h.scell({ players: players, operation: ar => Math.trunc(ar.reduce((a, b) => a + b, 0) / ar.length) }) : '<td></td>').join('') }
-            </tr>
-            <tr>
-                <td class="border-right-thin">Maximum</td>
-                ${ headers.map((h, index, array) => (h.stat && h.scell) ? h.scell({ players: players, operation: ar => Math.max(... ar) }) : '<td></td>').join('') }
-            </tr>
-            <tr>
-                <td class="border-right-thin border-bottom-thick"></td>
-                <td class="border-bottom-thick" colspan="${ headers.length }"></td>
-            </tr>
-            <tr>
-                <td class="border-right-thin">Warrior</td>
-                <td>${ classes[0] }</td>
-                ${ extra > 1 && joined.length > 0 ? `
-                    <td class="border-right-thin" rowspan="3" colspan="2">Joined</td>
-                    <td colspan="${ Math.max(2, headers.length - 2) }" rowspan="3">${ joined.join(', ') }</td>
-                ` : '' }
-            </tr>
-            <tr>
-                <td class="border-right-thin">Mage</td>
-                <td>${ classes[1] }</td>
-            </tr>
-            <tr>
-                <td class="border-right-thin">Scout</td>
-                <td>${ classes[2] }</td>
-            </tr>
-            <tr>
-                <td class="border-right-thin">Assassin</td>
-                <td>${ classes[3] }</td>
-                ${ extra > 1 && kicked.length > 0 ? `
-                    <td class="border-right-thin" rowspan="3" colspan="2">Kicked</td>
-                    <td colspan="${ Math.max(2, headers.length - 2) }" rowspan="3">${ kicked.join(', ') }</td>
-                ` : '' }
-            </tr>
-            <tr>
-                <td class="border-right-thin">Battle Mage</td>
-                <td>${ classes[4] }</td>
-            </tr>
-            <tr>
-                <td class="border-right-thin">Berserker</td>
-                <td>${ classes[5] }</td>
-            </tr>
-        ` : '';
+
+        var showMembers = extra > 1;
+        var showStats = extra > 0 && headers.reduce((collector, header) => collector + (header.stat ? 1 : 0), 0) > 0;
+
+        var content = [];
+
+        if (showMembers || showStats) {
+            content.push(`
+                <tr>
+                    <td colspan="${ 1 + headers.length }"></td>
+                </tr>
+            `);
+        }
+
+        if (showStats) {
+            content.push(`
+                <tr>
+                    <td class="border-right-thin"></td>
+                    ${ headers.map((h, index, array) => (h.stat && h.scell) ? `<td>${ h.name }</td>` : '<td></td>').join('') }
+                </tr>
+                <tr>
+                    <td class="border-right-thin border-bottom-thick"></td>
+                    <td class="border-bottom-thick" colspan="${ headers.length }"></td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Minimum</td>
+                    ${ headers.map((h, index, array) => (h.stat && h.scell) ? h.scell({ players: players, operation: ar => Math.min(... ar) }) : '<td></td>').join('') }
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Average</td>
+                    ${ headers.map((h, index, array) => (h.stat && h.scell) ? h.scell({ players: players, operation: ar => Math.trunc(ar.reduce((a, b) => a + b, 0) / ar.length) }) : '<td></td>').join('') }
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Maximum</td>
+                    ${ headers.map((h, index, array) => (h.stat && h.scell) ? h.scell({ players: players, operation: ar => Math.max(... ar) }) : '<td></td>').join('') }
+                </tr>
+            `);
+        }
+
+        if (showMembers) {
+            var classes = players.reduce((cls, p) => { cls[p.player.Class - 1]++; return cls; }, [0, 0, 0, 0, 0, 0]);
+
+            if (showStats) {
+                content.push(`
+                    <tr>
+                        <td class="border-right-thin border-bottom-thick"></td>
+                        <td class="border-bottom-thick" colspan="${ headers.length }"></td>
+                    </tr>
+                `);
+            }
+
+            content.push(`
+                <tr>
+                    <td class="border-right-thin">Warrior</td>
+                    <td>${ classes[0] }</td>
+                    ${ extra > 1 && joined.length > 0 ? `
+                        <td class="border-right-thin" rowspan="3" colspan="2">Joined</td>
+                        <td colspan="${ Math.max(2, headers.length - 2) }" rowspan="3">${ joined.join(', ') }</td>
+                    ` : '' }
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Mage</td>
+                    <td>${ classes[1] }</td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Scout</td>
+                    <td>${ classes[2] }</td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Assassin</td>
+                    <td>${ classes[3] }</td>
+                    ${ extra > 1 && kicked.length > 0 ? `
+                        <td class="border-right-thin" rowspan="3" colspan="2">Kicked</td>
+                        <td colspan="${ Math.max(2, headers.length - 2) }" rowspan="3">${ kicked.join(', ') }</td>
+                    ` : '' }
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Battle Mage</td>
+                    <td>${ classes[4] }</td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin">Berserker</td>
+                    <td>${ classes[5] }</td>
+                </tr>
+            `);
+        }
+
+        return content.join('');
     }
 }
 
