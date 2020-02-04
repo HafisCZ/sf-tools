@@ -30,15 +30,12 @@
             <div class="ui middle aligned margin-medium-bottom grid">
                 <div class="three wide column">
                     <label class="ui fluid button" for="fi-open">
-                        <i class="small upload icon"></i> Open file
+                        <i class="upload icon"></i> Open file
                     </label>
                     <input type="file" id="fi-open" multiple hidden>
                 </div>
                 <div class="three wide column">
-                    <label class="ui fluid button" for="fi-add">
-                        <i class="small plus icon"></i> Add file
-                    </label>
-                    <input type="file" id="fi-add" multiple hidden>
+                    <a class="ui fluid button" id="fi-clear"><i class="trash alternate outline icon"></i>Clear</a>
                 </div>
                 <div class="four wide column">
                     <h1 class="ui centered header">Fight Viewer</h1>
@@ -263,6 +260,8 @@
                         $('#fi-content').hide();
                         $('#fi-select-items').html('');
                         $('#fi-content-pages').html('');
+                        $('#fi-select').parent('.dropdown').children('.text').text('');
+                        $('.dropdown').dropdown();
                         tabsadded = false;
                     }
                 }
@@ -360,33 +359,24 @@
 
                 // Event handlers
                 $('#fi-open').on('change', function () {
-                    clearTabs();
-
-                    var r = new FileReader();
-                    r.readAsText(this.files[0], 'UTF-8');
-                    r.onload = event => {
-                        try {
-                            clearError();
-                            addTab(... parseTabs(JSON.parse(event.target.result)));
-                            updateTabs();
-                        } catch (exception) {
-                            showError(exception);
-                        }
-                    };
+                    Array.from(this.files).forEach(file => {
+                        var r = new FileReader();
+                        r.readAsText(file, 'UTF-8');
+                        r.onload = event => {
+                            try {
+                                clearError();
+                                addTab(... parseTabs(JSON.parse(event.target.result)));
+                                updateTabs();
+                            } catch (exception) {
+                                showError(exception);
+                            }
+                        };
+                    });
                 });
 
-                $('#fi-add').on('change', function () {
-                    var r = new FileReader();
-                    r.readAsText(this.files[0], 'UTF-8');
-                    r.onload = event => {
-                        try {
-                            clearError();
-                            addTab(... parseTabs(JSON.parse(event.target.result)));
-                            updateTabs();
-                        } catch (exception) {
-                            showError(exception);
-                        }
-                    };
+                $('#fi-clear').on('click', function () {
+                    clearTabs();
+                    updateTabs();
                 });
             })(jQuery);
         </script>
