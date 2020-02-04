@@ -275,7 +275,6 @@
             var bulk = 0;
             var display = 0;
 
-            $('.dropdown').dropdown();
             $('#display').on('click', function () { display = display == 0 ? 1 : 0; if (display) { $(this).text('Scientific'); } else { $(this).text('Labeled'); } update(); });
             $('[data-setting="level"], [data-setting="boosts"], #runes, #money, #reqhours').on('input change', update);
             $('[data-bulk]').on('click', function () { if ($(this).hasClass('green')) { $(this).removeClass('green'); bulk = 0; } else { $('[data-bulk]').removeClass('green'); $(this).addClass('green'); bulk = $(this).attr('data-bulk'); } update(); });
@@ -505,6 +504,8 @@
 
             // Load table from localStorage and update
             setTable(localStorage.idle ? JSON.parse(localStorage.idle) : { buildings: [ ] });
+            $('.dropdown').dropdown();
+
             update();
         </script>
     </body>

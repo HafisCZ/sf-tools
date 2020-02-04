@@ -232,7 +232,7 @@ Math.format = function (n) {
     if (n < NumberLabels[NumberLabels.length - 1][0]) {
         return n.toString().split('').map((char, i, array) => ((array.length - 1 - i) % 3 == 2) && i != 0 ? (' ' + char) : char).join('');
     } else if (n > NumberLabels[0][0]) {
-        return n.toExponential(3);
+        return n.toExponential(3).replace('+', '');
     } else {
         for (let i = 0, unit; unit = NumberLabels[i]; i++) {
             if (n >= unit[0]) {
