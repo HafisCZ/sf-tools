@@ -204,7 +204,6 @@
                     </div>
                     <div class="eight wide column">
                         <div class="ui small basic icon right floated buttons">
-                            <button class="ui toggle button" data-tooltip="Sort by level" id="container-detail-sort"><i class="sort icon"></i></button>
                             <button class="ui button" data-tooltip="Save as image" id="container-detail-save"><i class="download icon"></i></button>
                             <button class="ui button" data-tooltip="Copy table" id="container-detail-copy"><i class="copy icon"></i></button>
                             <button class="ui button" data-tooltip="Custom settings" id="container-detail-settings"><i class="cog icon"></i></button>
@@ -290,11 +289,6 @@
             Handle.call(EVT_INIT);
 
             // Listeners
-            $('#container-detail-sort').on('click', function () {
-                State.toggleSort();
-                Handle.call(EVT_GROUP_LOAD_TABLE);
-            });
-
             $('[data-toggle]').on('click', function () {
                 Handle.call(EVT_SHOWSCREEN, $(this).attr('data-toggle'));
             });

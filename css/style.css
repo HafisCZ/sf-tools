@@ -253,3 +253,23 @@ input:disabled {
 .foreground-red {
     color: #ff3547 !important;
 }
+
+[data-sortable] {
+    position: relative;
+}
+
+[data-sortable="1"]::before {
+    content: "\f0de";
+    font-family: Icons;
+    position: absolute;
+    left: 1px;
+    transform: scale(0.7);
+}
+
+[data-sortable="2"]::before {
+    content: "\f0dd";
+    font-family: Icons;
+    position: absolute;
+    left: 1px;
+    transform: scale(0.7);
+}

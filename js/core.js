@@ -370,16 +370,35 @@ const Storage = new (class {
 
 const State = new (class {
     constructor () {
-        this.sortByLevel = false;
         this.groupID = null;
         this.groupTimestamp = null;
         this.groupReferenceTimestamp = null;
+        this.sortBy = null;
+        this.sortStyle = null;
     }
 
     setGroup (groupID, timestamp, referenceTimestamp) {
         this.groupID = groupID;
         this.groupTimestamp = timestamp || Database.Groups[groupID].LatestTimestamp;
         this.groupReferenceTimestamp = referenceTimestamp || Database.Groups[groupID].LatestTimestamp;
+    }
+
+    getSort () {
+        return this.sortBy;
+    }
+
+    setSort (by, style) {
+        this.sortBy = by;
+        this.sortStyle = style;
+    }
+
+    getSortStyle () {
+        return this.sortStyle;
+    }
+
+    clearSort () {
+        this.sortBy = null;
+        this.sortStyle = 0;
     }
 
     unsetGroup () {
@@ -392,14 +411,6 @@ const State = new (class {
 
     setTimestamp (timestamp) {
         this.groupTimestamp = timestamp;
-    }
-
-    setSort (sortByLevel) {
-        this.sortByLevel = sortByLevel;
-    }
-
-    isSorted () {
-        return this.sortByLevel;
     }
 
     toggleSort () {

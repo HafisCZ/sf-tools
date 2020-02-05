@@ -212,6 +212,8 @@ Handle.bind(EVT_GROUP_COPY, function () {
 });
 
 Handle.bind(EVT_GROUP_LOAD_HEADER, function () {
+    State.clearSort();
+
     var group = State.getGroup();
 
     var listSelect = [];
@@ -251,6 +253,7 @@ Handle.bind(EVT_GROUP_LOAD_HEADER, function () {
 
     $('#container-detail-compare-dropdown').dropdown('setting', 'onChange', function (value, text) {
         State.setReference(value);
+        State.clearSort();
         Handle.call(EVT_GROUP_LOAD_TABLE);
     });
 });
@@ -298,11 +301,6 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
         }
     }
 
-    // Sort members if requested
-    if (State.isSorted()) {
-        members.sort((a, b) => b.Level - a.Level);
-    }
-
     // Table columns
     if (Config.exists(groupCurrent.Identifier)) {
         $('#container-detail-settings')[0].style.setProperty('background', '#21ba45', 'important');
@@ -340,11 +338,21 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     var kicked = groupReference.MemberIDs.filter(g => !groupCurrent.MemberIDs.includes(g)).map(g => Database.Players[g] ? Database.Players[g].Latest.Name : groupReference.Members[groupReference.MemberIDs.indexOf(g)]);
     var joined = groupCurrent.MemberIDs.filter(g => !groupReference.MemberIDs.includes(g)).map(g => Database.Players[g] ? Database.Players[g].Latest.Name : groupCurrent.Members[groupCurrent.MemberIDs.indexOf(g)]);
 
-    $('#container-detail-content').html(table.toString(joined, kicked));
+    // Sort members if requested
+    var sortStyle = State.getSortStyle();
+    var sortBy = State.getSort();
+
+    $('#container-detail-content').html(table.toString(joined, kicked, sortBy, sortStyle));
 
     $('[data-player]').on('click', function () {
         Handle.call(EVT_PLAYER_LOAD, $(this).attr('data-player'), State.getGroupTimestamp());
     });
+
+    $('[data-sortable]').on('click', function () {
+        var header = $(this).text();
+        State.setSort(header, State.getSort() == header ? (State.getSortStyle() + 1) % 3 : 1);
+        Handle.call(EVT_GROUP_LOAD_TABLE);
+    })
 });
 
 Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {

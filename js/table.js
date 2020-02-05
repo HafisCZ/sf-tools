@@ -7,8 +7,8 @@ class HeaderGroup {
         this.empty = empty;
     }
 
-    add (name, cell, width, stat, scell) {
-        this.headers.push({ name: name, width: width, cell: cell, position: this.headers.length, stat: stat, scell: scell });
+    add (name, cell, width, stat, scell, sort, flip) {
+        this.headers.push({ name: name, width: width, cell: cell, position: this.headers.length, stat: stat, scell: scell, sort: sort, flip: flip });
         this.width += width;
         this.length++;
         return this;
@@ -19,13 +19,13 @@ const ReservedCategories = {
     'Potions': (group, category, config, last) => {
         group.add('', cell => {
             return Cell.Cell(cell.player.Potions[0].Size, Color.Get(cell.player.Potions[0].Size, category.colors), category.visible ? Color.None : Color.Get(cell.player.Potions[0].Size, category.colors));
-        }, category.width || 33);
+        }, category.width || 33, false, null, player => player.Potions[0].Size, false);
         group.add('', cell => {
             return Cell.Cell(cell.player.Potions[1].Size, Color.Get(cell.player.Potions[1].Size, category.colors), category.visible ? Color.None : Color.Get(cell.player.Potions[1].Size, category.colors));
-        }, category.width || 33);
+        }, category.width || 33, false, null, player => player.Potions[1].Size, false);
         group.add('', cell => {
             return Cell.Cell(cell.player.Potions[2].Size, Color.Get(cell.player.Potions[2].Size, category.colors), category.visible ? Color.None : Color.Get(cell.player.Potions[2].Size, category.colors), !last);
-        }, category.width || 33);
+        }, category.width || 33, false, null, player => player.Potions[2].Size, false);
     }
 };
 
@@ -33,12 +33,12 @@ const ReservedHeaders = {
     'Class': (group, header, config, last) => {
         group.add('Class', cell => {
             return Cell.Cell(PLAYER_CLASS[cell.player.Class], Color.NONE, Color.NONE, last);
-        }, header.width || 120, false);
+        }, header.width || 120, false, null, player => player.Class, false);
     },
     'ID': (group, header, config, last) => {
         group.add('ID', cell => {
             return Cell.Cell(cell.player.ID, Color.NONE, Color.NONE, last);
-        }, header.width || 100, false);
+        }, header.width || 100, false, null, player => player.ID, false);
     },
     "Rank": (group, header, config, last) => {
         group.add('Rank', cell => {
@@ -47,12 +47,12 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Rank));
             var rval = cell.operation(cell.players.map(p => p.compare.Rank));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(rval - cval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors, true), false);
-        });
+        }, player => player.Rank, true);
     },
     "Role": (group, header, config, last) => {
         group.add('Role', cell => {
             return Cell.Cell(GROUP_ROLES[cell.player.Group.Role], Color.NONE, Color.NONE, last);
-        }, header.width || 100, false);
+        }, header.width || 100, false, null, player => player.Group.Role, false);
     },
     "Level": (group, header, config, last) => {
         group.add('Level', cell => {
@@ -61,7 +61,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Level));
             var rval = cell.operation(cell.players.map(p => p.compare.Level));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Level, false);
     },
     "Album": (group, header, config, last) => {
         group.add('Album', cell => {
@@ -80,7 +80,7 @@ const ReservedHeaders = {
             } else {
                 return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), color, Color.NONE, false);
             }
-        });
+        }, player => player.Book, false);
     },
     "Mount": (group, header, config, last) => {
         group.add('Mount', cell => {
@@ -88,7 +88,7 @@ const ReservedHeaders = {
         }, header.width || 80, header.stat, cell => {
             var cval = cell.operation(cell.players.map(p => p.player.Mount));
             return Cell.Cell(header.percentage ? (PLAYER_MOUNT[cval] + (cval ? '%' : '')) : cval, Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Mount, false);
     },
     "Awards": (group, header, config, last) => {
         group.add('Awards', cell => {
@@ -97,7 +97,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Achievements.Owned));
             var rval = cell.operation(cell.players.map(p => p.compare.Achievements.Owned));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Achievements.Owned, false);
     },
     "Treasure": (group, header, config, last) => {
         group.add('Treasure', cell => {
@@ -106,7 +106,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Group.Treasure));
             var rval = cell.operation(cell.players.map(p => p.compare.Group.Treasure));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Group.Treasure, false);
     },
     "Instructor": (group, header, config, last) => {
         group.add('Instructor', cell => {
@@ -115,7 +115,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Group.Instructor));
             var rval = cell.operation(cell.players.map(p => p.compare.Group.Instructor));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Group.Instructor, false);
     },
     "Pet": (group, header, config, last) => {
         group.add('Pet', cell => {
@@ -124,7 +124,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Group.Pet));
             var rval = cell.operation(cell.players.map(p => p.compare.Group.Pet));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Group.Pet, false);
     },
     "Knights": (group, header, config, last) => {
         group.add('Knights', cell => {
@@ -133,7 +133,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Fortress.Knights));
             var rval = cell.operation(cell.players.map(p => p.compare.Fortress.Knights));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Fortress.Knights, false);
     },
     "Fortress": (group, header, config, last) => {
         group.add('Fortress', cell => {
@@ -142,7 +142,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Fortress.Fortress));
             var rval = cell.operation(cell.players.map(p => p.compare.Fortress.Fortress));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Fortress, false);
     },
     "GemMine": (group, header, config, last) => {
         group.add('Gem Mine', cell => {
@@ -151,7 +151,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Fortress.GemMine));
             var rval = cell.operation(cell.players.map(p => p.compare.Fortress.GemMine));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Fortress.GemMine, false);
     },
     "Honor": (group, header, config, last) => {
         group.add('Honor', cell => {
@@ -160,7 +160,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Fortress.Honor));
             var rval = cell.operation(cell.players.map(p => p.compare.Fortress.Honor));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Fortress.Honor, false);
     },
     "Upgrades": (group, header, config, last) => {
         group.add('Upgrades', cell => {
@@ -169,7 +169,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Fortress.Upgrades));
             var rval = cell.operation(cell.players.map(p => p.compare.Fortress.Upgrades));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Fortress.Upgrades, false);
     },
     "Tower": (group, header, config, last) => {
         group.add('Tower', cell => {
@@ -178,7 +178,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Dungeons.Tower));
             var rval = cell.operation(cell.players.map(p => p.compare.Dungeons.Tower));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Dungeons.Tower, false);
     },
     "Portal": (group, header, config, last) => {
         group.add('Portal', cell => {
@@ -187,7 +187,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => p.player.Dungeons.Portal));
             var rval = cell.operation(cell.players.map(p => p.compare.Dungeons.Portal));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => player.Dungeons.Player, false);
     },
     "Equipment": (group, header, config, last) => {
         group.add('Equipment', cell => {
@@ -198,7 +198,7 @@ const ReservedHeaders = {
             var cval = cell.operation(cell.players.map(p => Object.values(p.player.Items).reduce((total, i) => total + i.getItemLevel(), 0)));
             var rval = cell.operation(cell.players.map(p => Object.values(p.compare.Items).reduce((total, i) => total + i.getItemLevel(), 0)));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
-        });
+        }, player => Object.values(player.Items).reduce((total, i) => total + i.getItemLevel(), 0), false);
     }
 };
 
@@ -230,7 +230,7 @@ class Table {
                                 var cval = cell.operation(cell.players.map(p => getObjectAt(p.player, header.path)));
                                 var rval = cell.operation(cell.players.map(p => getObjectAt(p.player, header.path)));
                                 return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors, header.flip), false);
-                            });
+                            }, player => getObjectAt(player, header.path), header.flip);
                         }
                     });
                 }
@@ -256,21 +256,46 @@ class Table {
         return 250 + this.config.reduce((a, b) => a + b.width, 0);
     }
 
-    toString (joined, kicked) {
+    toString (joined, kicked, sortby, sortstyle) {
         var flat = this.config.reduce((array, group) => {
             array.push(... group.headers);
             return array;
         }, []);
 
+        if (sortstyle) {
+            if (sortby == 'Name') {
+                if (sortstyle == 1) {
+                    this.players.sort((a, b) => a.player.Name.localeCompare(b.player.Name));
+                } else {
+                    this.players.sort((a, b) => b.player.Name.localeCompare(a.player.Name));
+                }
+            } else if (sortby == 'Potions') {
+                if (sortstyle == 1) {
+                    this.players.sort((a, b) => b.player.Potions.reduce((c, p) => c + p.Size, 0) - a.player.Potions.reduce((c, p) => c + p.Size, 0));
+                } else {
+                    this.players.sort((a, b) => a.player.Potions.reduce((c, p) => c + p.Size, 0) - b.player.Potions.reduce((c, p) => c + p.Size, 0));
+                }
+            } else {
+                var sort = flat.find(h => h.name == sortby);
+                if (sort) {
+                    if ((sortstyle == 1 && !sort.flip) || (sortstyle == 2 && sort.flip)) {
+                        this.players.sort((a, b) => compareItems(sort.sort(a.player), sort.sort(b.player)));
+                    } else if ((sortstyle == 2 && !sort.flip) || (sortstyle == 1 && sort.flip)) {
+                        this.players.sort((a, b) => compareItems(sort.sort(b.player), sort.sort(a.player)));
+                    }
+                }
+            }
+        }
+
         return `
             <thead>
                 <tr>
-                    <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin">Name</td>
-                    ${ this.config.map((g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' }>${ g.name }</td>`).join('') }
+                    <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == 'Name' ? sortstyle : 0 }">Name</td>
+                    ${ this.config.map((g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable="${ sortby == 'Potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`).join('') }
                     ${ flat.length < 5 ? Array(5 - flat.length).fill(null).map(x => '<td width="100"></td>').join('') : '' }
                 </tr>
                 <tr>
-                    ${ this.config.map((g, index, array) => g.headers.map((h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`).join('')).join('') }
+                    ${ this.config.map((g, index, array) => g.headers.map((h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`).join('')).join('') }
                 </tr>
                 <tr>
                     <td colspan="1" class="border-bottom-thick border-right-thin"></td>

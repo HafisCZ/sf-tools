@@ -65,6 +65,14 @@ function * filterPlayaJSON (o, tt = [], a = []) {
     }
 }
 
+function compareItems (a, b) {
+    if (typeof(a) == 'String') {
+        return a.localeCompare(b);
+    } else {
+        return b - a;
+    }
+}
+
 // Potion size
 function getPotionSize (potion) {
     if (potion >= POTION_STRENGTH_SMALL && potion <= POTION_LUCK_SMALL) {
