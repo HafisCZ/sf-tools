@@ -311,7 +311,7 @@
                             var fighters, [fa, fb] = fighters = [msg['fighters'].slice(5, 52), msg['fighters'].slice(52, 99)].map(x => {
                                 return {
                                     id: x[0],
-                                    name: getFightTargetName(ftype, x[1]),
+                                    name: getFightTargetName(ftype, x[10] < 0 ? Math.abs(x[10]) : x[1], Math.abs(x[10])),
                                     level: x[2],
                                     maxhealth: x[3],
                                     health: x[4],
@@ -320,6 +320,7 @@
                                     intelligence: x[7],
                                     constitution: x[8],
                                     luck: x[9],
+                                    face: x[10],
                                     class: PLAYER_CLASS[x[22]],
                                     damagemin: x[25],
                                     damagemax: x[26],
