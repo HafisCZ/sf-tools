@@ -33,7 +33,7 @@ const ReservedHeaders = {
     'Class': (group, header, config, last) => {
         group.add('Class', cell => {
             return Cell.Cell(PLAYER_CLASS[cell.player.Class], Color.NONE, Color.NONE, last);
-        }, header.width || 120, false, null, player => player.Class, false);
+        }, header.width || 120, false, null, player => player.Class, true);
     },
     'ID': (group, header, config, last) => {
         group.add('ID', cell => {
@@ -52,7 +52,7 @@ const ReservedHeaders = {
     "Role": (group, header, config, last) => {
         group.add('Role', cell => {
             return Cell.Cell(GROUP_ROLES[cell.player.Group.Role], Color.NONE, Color.NONE, last);
-        }, header.width || 100, false, null, player => player.Group.Role, false);
+        }, header.width || 100, false, null, player => player.Group.Role, true);
     },
     "Level": (group, header, config, last) => {
         group.add('Level', cell => {
