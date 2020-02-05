@@ -219,7 +219,7 @@
                                                     ${ tab.fb.health != tab.fb.maxhealth ? `
                                                         <div class="field">
                                                             <label>Current Health</label>
-                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fb.health) }" disabled class="text-center">>
+                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fb.health) }" disabled class="text-center">
                                                         </div>
                                                     ` : '' }
                                                 </div>
@@ -285,17 +285,25 @@
 
                     for (var [k, v] of filterPlayaJSON(json)) {
                         if (k == 'text' && v.includes('fightheader')) {
-                            raws.push(v);
+                            var cr = [];
+                            for (var [kb, vb] of parsePlayaResponse(v)) {
+                                if (kb.includes('.fighters')) {
+                                    cr.push(['fighters', vb].join(':'));
+                                } else if (kb.includes('.r')) {
+                                    cr.push(['r', vb].join(':'));
+                                } else if (kb.includes('winnerid')) {
+                                    cr.push(['winnerid', vb].join(':'));
+                                    raws.push(cr.join('&'));
+                                    cr = [];
+                                }
+                            }
                         }
                     }
 
                     for (var raw of raws) {
                         var msg = {};
                         for (var [k, v] of parsePlayaResponse(raw)) {
-                            if (k.includes('fight') || k.includes('winnerid')) {
-                                var ks = k.split('.');
-                                msg[ks.length > 1 ? ks[ks.length - 1] : ks[0]] = v.split(/[/,]/g).map(d => isNaN(d) ? d : Number(d));
-                            }
+                            msg[k] = v.split(/[/,]/g).map(d => isNaN(d) ? d : Number(d));
                         }
 
                         if (msg['fighters'] && msg['winnerid'] && msg['r'] && Object.values(FIGHT_TYPES).includes(msg['fighters'][0])) {

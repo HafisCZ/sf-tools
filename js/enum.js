@@ -61,7 +61,8 @@ const FIGHT_TYPES = {
     Tower: 5,
     PlayerPortal: 6,
     GuildPortal: 7,
-    Shadow: 12
+    Shadow: 12,
+    Underworld: 16
 };
 
 function getFightTargetName (type, name) {
@@ -75,6 +76,7 @@ function getFightTargetName (type, name) {
             case FIGHT_TYPES.PlayerPortal: return 'Portal Monster';
             case FIGHT_TYPES.GuildPortal: return 'Guild Portal Monster';
             case FIGHT_TYPES.Shadow: return 'Shadow Dungeon Monster';
+            case FIGHT_TYPES.Underworld: return ['Goblin', 'Troll', 'Keeper'][name];
             default: return 'Unknown';
         }
     }
