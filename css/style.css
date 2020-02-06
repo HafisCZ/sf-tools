@@ -273,3 +273,19 @@ input:disabled {
     left: 1px;
     transform: scale(0.7);
 }
+
+.fi-wrap {
+    position: relative;
+    height: 2em;
+}
+
+.fi-right {
+    left: 2em;
+    position: absolute;
+    width: 17em;
+}
+
+.fi-left {
+    left: -0.5em;
+    position: absolute;
+}

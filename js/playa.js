@@ -84,6 +84,7 @@ class Player {
     {
         this.Prefix = data.prefix || 's1_de';
 
+        this.Save = data.save;
         this.Name = data.name;
 
         if (data.groupname) {
@@ -113,7 +114,9 @@ class Player {
             MageTower : data.save[data.own ? 532 : 216],
             Treasury : data.save[data.own ? 533 : 217],
             Smithy : data.save[data.own ? 534 : 218],
-            Fortifications : data.save[data.own ? 535 : 219]
+            Fortifications : data.save[data.own ? 535 : 219],
+            Wood: data.save[data.own ? 544 : 228],
+            Stone: data.save[data.own ? 545 : 229]
         };
 
         if (data.save[data.own ? 571 : 244]) {

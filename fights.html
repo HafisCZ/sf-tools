@@ -28,21 +28,31 @@
         </div>
         <div class="ui main container">
             <div class="ui middle aligned margin-medium-bottom grid">
-                <div class="three wide column">
+                <div class="two wide column">
                     <label class="ui fluid button" for="fi-open">
-                        <i class="upload icon"></i> Open file
+                        <i class="upload icon"></i> Open
                     </label>
                     <input type="file" id="fi-open" multiple hidden>
                 </div>
-                <div class="three wide column">
+                <div class="two wide column">
                     <a class="ui fluid button" id="fi-clear"><i class="trash alternate outline icon"></i>Clear</a>
+                </div>
+                <div class="two wide column text-center">
+                    <div class="ui icon buttons">
+                        <button class="ui button" id="fi-copyall">
+                            <i class="copy outline icon"></i>
+                        </button>
+                        <button class="ui button" id="fi-saveall">
+                            <i class="save outline icon"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="four wide column">
                     <h1 class="ui centered header">Fight Viewer</h1>
                 </div>
-                <div class="five wide column">
+                <div class="four wide column">
                     <div class="ui form field">
-                        <div class="ui selection fluid dropdown">
+                        <div class="ui selection fluid dropdown" style="height: 3.5em !important; margin-left: -2em !important; width: 22em !important;">
                             <input type="hidden" id="fi-select">
                             <i class="dropdown icon"></i>
                             <div class="default text"></div>
@@ -52,10 +62,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="one wide column">
-                    <button class="ui icon button" id="fi-copy">
-                        <i class="copy outline icon"></i>
-                    </button>
+                <div class="two wide column text-center">
+                    <div class="ui icon buttons">
+                        <button class="ui button" id="fi-copy">
+                            <i class="copy outline icon"></i>
+                        </button>
+                        <button class="ui button" id="fi-save">
+                            <i class="save outline icon"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
             <h3 class="ui centered header red" id="fi-error" hidden></h3>
@@ -104,7 +119,7 @@
                 function updateTabs() {
                     if (tabs.length) {
                         $('#fi-content').show();
-                        $('#fi-select-items').html(tabs.map((tab, index) => `<div class="item${ !tabsadded && index == 0 ? ' active selected' : '' }" data-value="${ index }">${ index + 1 }. ${ tab.name }</div>`).join(''));
+                        $('#fi-select-items').html(tabs.map((tab, index) => `<div class="item${ !tabsadded && index == 0 ? ' active selected' : '' }" data-value="${ index }"><div class="fi-wrap"><div class="fi-left">${ index + 1 }.</div><div class="fi-right">${ tab.fa.name }</br>${ tab.fb.name }</div></div></div>`).join(''));
                         $('#fi-content-pages').html(tabs.map((tab, index) => `
                             <div class="ui tab basic segment${ !tabsadded && index == 0 ? ' active' : '' }${ index == 0 ? ' margin-medium-top' : '' }" data-tab="${ index }">
                                 <div class="ui small form">
@@ -254,16 +269,17 @@
                         } else {
                             $('#fi-select').trigger('change');
                         }
-                        $('.dropdown').dropdown();
                         tabsadded = true;
                     } else {
+                        $('.dropdown').dropdown();
                         $('#fi-content').hide();
                         $('#fi-select-items').html('');
                         $('#fi-content-pages').html('');
                         $('#fi-select').parent('.dropdown').children('.text').text('');
-                        $('.dropdown').dropdown();
                         tabsadded = false;
                     }
+
+                    $('.dropdown').dropdown();
                 }
 
                 // Clear error
