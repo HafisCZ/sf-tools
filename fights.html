@@ -90,16 +90,110 @@
                     $('[data-tab]').removeClass('active');
                     $(`[data-tab="${ $(this).val() }"]`).addClass('active');
                 });
-                $('#fi-select').val('');
-                $('#fi-copy').on('click', function () {
-                    if ($('[data-tab]').length == 0) return;
+
+                function copyToClipboard (string) {
                     var el = document.createElement('textarea');
-                    var tab = tabs[$('[data-tab].active').attr('data-tab')];
-                    el.value = `name:\t${tab.name}\nfightera:\n${ Object.entries(tab.fa).map(kv => `${ kv[0] }\t${ kv[1] }`).join('\n') }\nfighterB:\n${ Object.entries(tab.fb).map(kv => `${ kv[0] }\t${ kv[1] }`).join('\n') }\nrounds:\n${ tab.rounds.map((r, i) => `${i}\t${r.src.id}\t${r.tar.id}\t${r.atype}\t${r.damage}`).join('\n') }`;
+                    el.value = string;
                     document.body.appendChild(el);
                     el.select();
                     document.execCommand('copy');
                     document.body.removeChild(el);
+                }
+
+                $('#fi-select').val('');
+
+                $('#fi-save').on('click', function () {
+                    if ($('[data-tab]').length == 0) return;
+                    var tab = tabs[$('[data-tab].active').attr('data-tab')];
+
+                    download(`${ tab.name }.json`, new Blob([
+                        JSON.stringify({
+                            name: tab.name,
+                            fa: tab.fa,
+                            fb: tab.fb,
+                            rounds: tab.rounds.map(r => {
+                                return {
+                                    crit: r.crit,
+                                    type: r.atype,
+                                    hpleft: r.healthleft,
+                                    damage: r.damage,
+                                    src: {
+                                        id: r.src.id,
+                                        name: r.src.name,
+                                        face: r.src.face
+                                    },
+                                    tar: {
+                                        id: r.tar.id,
+                                        name: r.tar.name,
+                                        face: r.tar.face
+                                    }
+                                };
+                            })
+                        })
+                    ], {
+                        type: 'application/json'
+                    }));
+                });
+
+                $('#fi-saveall').on('click', function () {
+                    if ($('[data-tab]').length == 0) return;
+
+                    download(`fights.json`, new Blob([
+                        JSON.stringify(tabs.map(tab => {
+                            return {
+                                name: tab.name,
+                                fa: tab.fa,
+                                fb: tab.fb,
+                                rounds: tab.rounds.map(r => {
+                                    return {
+                                        crit: r.crit,
+                                        type: r.atype,
+                                        hpleft: r.healthleft,
+                                        damage: r.damage,
+                                        src: {
+                                            id: r.src.id,
+                                            name: r.src.name,
+                                            face: r.src.face
+                                        },
+                                        tar: {
+                                            id: r.tar.id,
+                                            name: r.tar.name,
+                                            face: r.tar.face
+                                        }
+                                    };
+                                })
+                            };
+                        }))
+                    ], {
+                        type: 'application/json'
+                    }));
+                });
+
+                $('#fi-copy').on('click', function () {
+                    if ($('[data-tab]').length == 0) return;
+                    var tab = tabs[$('[data-tab].active').attr('data-tab')];
+                    copyToClipboard(
+                        `name:\t${tab.name}\nfightera:\n${ Object.entries(tab.fa).map(kv => `${ kv[0] }\t${ kv[1] }`).join('\n') }\nfighterB:\n${ Object.entries(tab.fb).map(kv => `${ kv[0] }\t${ kv[1] }`).join('\n') }\nrounds:\n${ tab.rounds.map((r, i) => `${i}\t${r.src.id}\t${r.tar.id}\t${r.atype}\t${r.damage}`).join('\n') }`
+                    );
+                });
+
+                $('#fi-copyall').on('click', function () {
+                    if ($('[data-tab]').length == 0) return;
+
+                    var columns = tabs.map(
+                        tab => `name:\t${tab.name}\t\t\t\t\nfightera:\t\t\t\t\t\n${ Object.entries(tab.fa).map(kv => `${ kv[0] }\t${ kv[1] }\t\t\t\t`).join('\n') }\nfighterB:\t\t\t\t\t\n${ Object.entries(tab.fb).map(kv => `${ kv[0] }\t${ kv[1] }\t\t\t\t`).join('\n') }\nrounds:\t\t\t\t\t\n${ tab.rounds.map((r, i) => `${i}\t${r.src.id}\t${r.tar.id}\t${r.atype}\t${r.damage}\t`).join('\n') }`.split('\n')
+                    );
+
+                    var rows = [];
+                    var maxh = Math.max(... columns.map(col => col.length));
+                    for (var i = 0; i < maxh; i++) {
+                        rows[i] = '';
+                        for (var j = 0; j < columns.length; j++) {
+                            rows[i] += columns[j][i] || '\t\t\t\t\t';
+                        }
+                    }
+
+                    copyToClipboard(rows.join('\n'));
                 });
 
                 var tabs = [];

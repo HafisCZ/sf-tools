@@ -326,6 +326,14 @@ class Player {
 
         [/* empty */, this.Dungeons.Group, this.Dungeons.Player] = ComplexDataType.fromValue(data.save[data.own ? 445 : 252]).multiple(o => [ o.short(), o.byte(), o.byte() ]);
         [this.Mount, this.Dungeons.Tower] = ComplexDataType.fromValue(data.save[data.own ? 286 : 159]).multiple(o => [ o.short(), o.short() ]);
+
+        this.Pets = {
+            Shadow: data.pets[data.own ? 104 : 1],
+            Light: data.pets[data.own ? 105 : 2],
+            Earth: data.pets[data.own ? 106 : 3],
+            Fire: data.pets[data.own ? 107 : 4],
+            Water: data.pets[data.own ? 108 : 5]
+        };
     }
 }
 

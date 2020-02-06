@@ -216,11 +216,23 @@ const Database = new (class {
     }
 })();
 
+function upgrade ( items ) {
+    items.forEach(item => {
+        item.players.forEach(player => {
+            if (!player.pets) {
+                player.pets = [];
+            }
+        });
+    });
+}
+
 const Storage = new (class {
     load (callback, error) {
         FileDatabase.ready(() => {
             FileDatabase.get((current) => {
                 this.current = current;
+
+                upgrade(this.current);
 
                 Database.from(this.current);
                 callback();
@@ -328,6 +340,8 @@ const Storage = new (class {
                         } else if (key.includes('playerSave')) {
                             player.save = val.split('/').map(a => Number(a));
                             player.own = true;
+                        } else if (key.includes('petbonus') || key.includes('petsSave')) {
+                            player.pets = val.split('/').map(a => Number(a));
                         } else if (key.includes('serverversion')) {
                             file.version = Number(val);
                         }
