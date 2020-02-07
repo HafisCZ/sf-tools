@@ -1,4 +1,6 @@
+// Preferences
 const Preferences = new (class {
+
     constructor (window) {
         this.storage = window.localStorage || window.sessionStorage || { };
     }
@@ -18,15 +20,19 @@ const Preferences = new (class {
     remove (key) {
         delete this.storage[key];
     }
+
 })(window);
 
-const FileDatabase = new (class {
-    ready (callback, error) {
-        this.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-        window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction  || window.msIDBTransaction;
-        window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
+// IndexedDB Setup
+window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction  || window.msIDBTransaction;
+window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
-        var request = this.indexedDB.open('database', 1);
+// File Database
+const FileDatabase = new (class {
+
+    ready (callback, error) {
+        var request = window.indexedDB.open('database', 1);
 
         request.onsuccess = (e) => {
             this.db = request.result;
@@ -41,7 +47,7 @@ const FileDatabase = new (class {
     }
 
     set (object) {
-        this.db.transaction(['files'], 'readwrite').objectStore('files').add(object);
+        this.db.transaction(['files'], 'readwrite').objectStore('files').put(object);
     }
 
     get (callback) {
@@ -60,9 +66,12 @@ const FileDatabase = new (class {
     remove (key) {
         this.db.transaction(['files'], 'readwrite').objectStore('files').delete(key);
     }
+
 })();
 
+// Event Handler
 const Handle = new (class {
+
     constructor () {
         this.listeners = {};
     }
@@ -86,36 +95,41 @@ const Handle = new (class {
             this.listeners[event].forEach(listener => listener(... args));
         }
     }
+
 })();
 
+// Database
 const Database = new (class {
-    remove (timestamp) {
-        Object.values(this.Players).forEach(function (player) {
-            if (player.List.length == 1 && player.List[0].timestamp == timestamp) {
-                delete Database.Players[player.Latest.Identifier];
-            } else {
-                delete player[timestamp];
-            }
-        });
 
-        Object.values(this.Groups).forEach(function (group) {
-            if (group.List.length == 1 && group.List[0].timestamp == timestamp) {
-                delete Database.Groups[group.Latest.Identifier];
-            } else {
-                delete group[timestamp];
-            }
-        })
+    remove (... timestamps) {
+        for (var timestamp of timestamps) {
+            Object.values(this.Players).forEach(function (p) {
+                if (p.List.length == 1 && p.List[0].timestamp == timestamp) {
+                    delete Database.Players[p.Latest.Identifier];
+                } else {
+                    delete p[timestamp];
+                }
+            });
 
-        this.update();
+            Object.values(this.Groups).forEach(function (g) {
+                if (g.List.length == 1 && g.List[0].timestamp == timestamp) {
+                    delete Database.Groups[g.Latest.Identifier];
+                } else {
+                    delete g[timestamp];
+                }
+            });
+
+            this.update();
+        }
     }
 
-    add (files) {
+    add (... files) {
         var tempGroups = {};
         var tempPlayers = {};
 
         for (var file of files) {
             for (var data of file.groups) {
-                let group = new Group(data);
+                let group = new SFGroup(data);
 
                 if (!tempGroups[group.Identifier]) {
                     tempGroups[group.Identifier] = {};
@@ -124,12 +138,12 @@ const Database = new (class {
             }
 
             for (var data of file.players) {
-                let player = new Player(data);
+                let player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
 
-                let groupIdentifier = player.Group ? Object.keys(tempGroups).find(id => tempGroups[id] && tempGroups[id][file.timestamp] && tempGroups[id][file.timestamp].Name == player.Group.Name) : null;
-                if (groupIdentifier) {
-                    let group = tempGroups[groupIdentifier][file.timestamp];
-                    let index = group.MemberIDs.findIndex(p => p === player.Identifier);
+                let gid = player.hasGuild() ? Object.keys(tempGroups).find(id => getAtSafe(tempGroups, id, file.timestamp).Name == player.Group.Name) : null;
+                if (gid) {
+                    let group = tempGroups[gid][file.timestamp];
+                    let index = group.MemberIDs.findIndex(i => i == player.Identifier);
 
                     player.Group.Role = group.Roles[index];
                     player.Group.Treasure = group.Treasures[index];
@@ -176,7 +190,7 @@ const Database = new (class {
         this.Players = {};
         this.Groups = {};
 
-        this.add(files);
+        this.add(... files);
     }
 
     update () {
@@ -214,25 +228,42 @@ const Database = new (class {
             }
         }
     }
+
 })();
 
-function upgrade ( items ) {
-    items.forEach(item => {
-        item.players.forEach(player => {
-            if (!player.pets) {
-                player.pets = [];
+const UpdateService = {
+    update: function (file) {
+        var updated = false;
+
+        for (var i = 0, p; p = file.players[i]; i++) {
+            if (!p.pets) {
+                p.pets = p.own ? new Array(288).fill(0) : new Array(6).fill(0);
+                updated = true;
             }
-        });
-    });
-}
+        }
+
+        return updated;
+    }
+};
 
 const Storage = new (class {
+
     load (callback, error) {
         FileDatabase.ready(() => {
             FileDatabase.get((current) => {
                 this.current = current;
 
-                upgrade(this.current);
+                // Correction
+                var corrected = false;
+                for (var i = 0, f; f = this.current[i]; i++) {
+                    if (UpdateService.update(f)) {
+                        corrected = true;
+                    }
+                }
+
+                if (corrected) {
+                    this.save();
+                }
 
                 Database.from(this.current);
                 callback();
@@ -244,15 +275,16 @@ const Storage = new (class {
         this.current.sort((a, b) => a.timestamp - b.timestamp);
         this.current.forEach((f) => {
             FileDatabase.set(f);
-        })
+        });
     }
 
     import (content) {
         try {
             var json = JSON.parse(content);
             var list = json.filter(file => (this.current.find(cfile => cfile.timestamp == file.timestamp) == null));
+            list.forEach(f => UpdateService.update(f));
 
-            Database.add(list);
+            Database.add(... list);
 
             this.current.push(... list);
             this.save();
@@ -361,7 +393,8 @@ const Storage = new (class {
                 throw 'The file must contain at least one player.';
             }
 
-            Database.add([ file ]);
+            UpdateService.update(file);
+            Database.add(file);
 
             this.current.push(file);
             this.save();
@@ -375,6 +408,38 @@ const Storage = new (class {
         Database.remove(this.current[index].timestamp);
 
         this.current.splice(index, 1);
+    }
+
+    merge (indexes) {
+        var timestamps = indexes.map(i => this.current[i].timestamp);
+        var files = this.current.filter(f => timestamps.includes(f.timestamp));
+        files.reverse();
+
+        var base = files[0];
+        for (var i = 1, file; file = files[i]; i++) {
+            for (var p of file.players) {
+                if (!base.players.find(bp => bp.prefix == p.prefix && bp.name == p.name)) {
+                    base.players.push(p);
+                }
+            }
+
+            for (var g of file.groups) {
+                if (!base.groups.find(bg => bg.prefix == g.prefix && bg.name == g.name)) {
+                    base.groups.push(p);
+                }
+            }
+        }
+
+        timestamps.forEach(t => {
+            FileDatabase.remove(t);
+            this.current.splice(this.current.findIndex(file => file.timestamp == t), 1);
+        });
+
+        Database.remove(... timestamps);
+        Database.add(base);
+
+        this.current.push(base);
+        this.save();
     }
 
     files () {

@@ -1,7 +1,7 @@
-class Item {
+class SFItem {
     constructor (data) {
-        var dataType = ComplexDataType.fromArray(data);
-        dataType.assert(48);
+        var dataType = data.values ? data : new ComplexDataType(data);
+        dataType.assert(12);
 
         var type = dataType.short();
         var socket = dataType.byte();
@@ -77,267 +77,158 @@ class Item {
 
         return Math.floor(Math.pow(num, 1.2));
     }
-}
 
-class Player {
-    constructor (data)
-    {
-        this.Prefix = data.prefix || 's1_de';
+    getBlacksmithRandom (max) {
+        return (this.Type * 37 + this.PicIndex * 83 + this.DamageMin * 1731 + this.DamageMax * 162) % (max + 1);
+    }
 
-        this.Save = data.save;
-        this.Name = data.name;
+    getBlacksmithUpgradePrice () {
+        if (this.Type == 0 || this.Type > 10) {
+            return [0, 0];
+        } else {
+            var num = this.getItemLevel();
+            var quality = this.getBlacksmithQuality();
+            var num2 = 50;
+            var num3 = 0;
 
-        if (data.groupname) {
-            this.Group = {
-                Name: data.groupname,
-                Joined: new Date(data.save[data.own ? 443 : 166] * 1000)
-            };
-        }
-
-        this.Fortress = {
-            Wall: data.units[0],
-            Warriors : data.units[1],
-            Mages : data.units[2],
-            Archers : data.units[3],
-            Rank : data.fortressrank,
-            Honor : data.save[data.own ? 582 : 248],
-            Upgrades : data.save[data.own ? 581 : 247],
-            Knights : data.save[data.own ? 598 : 258],
-            Fortress : data.save[data.own ? 524 : 208],
-            LaborerQuarters : data.save[data.own ? 525 : 209],
-            WoodcutterGuild : data.save[data.own ? 526 : 210],
-            Quarry : data.save[data.own ? 527 : 211],
-            GemMine : data.save[data.own ? 528 : 212],
-            Academy : data.save[data.own ? 529 : 213],
-            ArcheryGuild : data.save[data.own ? 530 : 214],
-            Barracks : data.save[data.own ? 531 : 215],
-            MageTower : data.save[data.own ? 532 : 216],
-            Treasury : data.save[data.own ? 533 : 217],
-            Smithy : data.save[data.own ? 534 : 218],
-            Fortifications : data.save[data.own ? 535 : 219],
-            Wood: data.save[data.own ? 544 : 228],
-            Stone: data.save[data.own ? 545 : 229]
-        };
-
-        if (data.save[data.own ? 571 : 244]) {
-            this.Fortress.Upgrade = {
-                Building: data.save[data.own ? 571 : 244],
-                Finish: new Date(data.save[data.own ? 572 : 245] * 1000)
+            switch (quality) {
+                case 1: {
+                    num3 = 25;
+                    break;
+                }
+                case 2: {
+                    num3 = 50;
+                    break;
+                }
+                case 3: {
+                    num3 = 75;
+                    break;
+                }
             }
-        }
 
-        if (!data.achievements) {
-            data.achievements = Array(160).fill(0);
-        }
-
-        if (data.achievements.length < 160) {
-            data.achievements.splice(140, 0, ... [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-            data.achievements.splice(70, 0, ... [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
-        }
-
-        this.Achievements = data.achievements.slice(0, 80).reduce(function (array, item, index) {
-            array.push({
-                Owned: item === 1,
-                Progress: data.achievements[index + 80]
-            });
-
-            return array;
-        }, []);
-        this.Achievements.Owned = data.achievements.slice(0, 80).reduce(function (result, a) {
-            return result + a
-        }, 0);
-
-        this.Achievements.Dehydration = this.Achievements[63].Owned;
-
-        this.ID = data.save[data.own ? 1 : 0];
-        this.Identifier = this.Prefix + '_' + this.ID;
-
-        this.LastOnline = new Date(data.save[data.own ? 2 : 1] * 1000);
-        this.Level = split(data.save[data.own ? 7 : 2], 16);
-        this.XP = data.save[data.own ? 8 : 3];
-        this.XPNext = data.save[data.own ? 9 : 4];
-        this.Book = data.save[data.own ? 438 : 163] ? data.save[data.own ? 438 : 163] - 10000 : 0;
-        this.Honor = data.save[data.own ? 10 : 5];
-        this.Rank = data.save[data.own ? 11 : 6];
-        this.Race = split(data.save[data.own ? 27 : 18], 4);
-
-        [this.Sex, this.Mirror, this.MirrorPieces] = ComplexDataType.fromValue(data.save[data.own ? 28 : 19]).multiple(o => [ o.byte(), o.byte(), getMirrorPieces(o.short()) ]);
-        this.MirrorPieces.Count = this.MirrorPieces.reduce((count, o) => count + (o ? 1 : 0), 0);
-
-        this.Class = split(data.save[data.own ? 29 : 20], 4);
-
-        this.Face = data.own ? {
-            Mouth: data.save[17],
-            Hair: {
-                Type: data.save[18] % 100,
-                Color: Math.trunc(data.save[18] / 100)
-            },
-            Brows: {
-                Type: data.save[19] % 100,
-                Color: Math.trunc(data.save[19] / 100)
-            },
-            Eyes: data.save[20],
-            Beard: {
-                Type: data.save[21] % 100,
-                Color: Math.trunc(data.save[21] / 100)
-            },
-            Nose: data.save[22],
-            Ears: data.save[23],
-            Extra: data.save[24]
-        } : {
-            Mouth: data.save[8],
-            Hair: {
-                Type: data.save[9] % 100,
-                Color: Math.trunc(data.save[9] / 100)
-            },
-            Brows: {
-                Type: data.save[10] % 100,
-                Color: Math.trunc(data.save[10] / 100)
-            },
-            Eyes: data.save[11],
-            Beard: {
-                Type: data.save[12] % 100,
-                Color: Math.trunc(data.save[12] / 100)
-            },
-            Nose: data.save[13],
-            Ears: data.save[14],
-            Extra: data.save[15]
-        };
-
-        this.Strength = data.own ? {
-            Total: data.save[30] + data.save[35],
-            Base: data.save[30],
-            Bonus: data.save[35]
-        } : {
-            Total: data.save[21] + data.save[26],
-            Base: data.save[21],
-            Bonus: data.save[26]
-        };
-
-        this.Dexterity = data.own ? {
-            Total: data.save[31] + data.save[36],
-            Base: data.save[31],
-            Bonus: data.save[36]
-        } : {
-            Total: data.save[22] + data.save[27],
-            Base: data.save[22],
-            Bonus: data.save[27]
-        };
-
-        this.Intelligence = data.own ? {
-            Total: data.save[32] + data.save[37],
-            Base: data.save[32],
-            Bonus: data.save[37]
-        } : {
-            Total: data.save[23] + data.save[28],
-            Base: data.save[23],
-            Bonus: data.save[28]
-        };
-
-        this.Constitution = data.own ? {
-            Total: data.save[33] + data.save[38],
-            Base: data.save[33],
-            Bonus: data.save[38]
-        } : {
-            Total: data.save[24] + data.save[29],
-            Base: data.save[24],
-            Bonus: data.save[29]
-        };
-
-        this.Luck = data.own ? {
-            Total: data.save[34] + data.save[39],
-            Base: data.save[34],
-            Bonus: data.save[39]
-        } : {
-            Total: data.save[25] + data.save[30],
-            Base: data.save[25],
-            Bonus: data.save[30]
-        };
-
-        this.Armor = data.save[data.own ? 447 : 168];
-        this.Damage = {
-            Min: data.save[data.own ? 448 : 169],
-            Max: data.save[data.own ? 449 : 170],
-            Avg: (data.save[data.own ? 448 : 169] + data.save[data.own ? 449 : 170]) / 2
-        };
-
-        this.Items = {
-            Head: new Item(data.own ? data.save.slice(48, 60) : data.save.slice(39, 51)),
-            Body: new Item(data.own ? data.save.slice(60, 72) : data.save.slice(51, 63)),
-            Hand: new Item(data.own ? data.save.slice(72, 84) : data.save.slice(63, 75)),
-            Feet: new Item(data.own ? data.save.slice(84, 96) : data.save.slice(75, 87)),
-            Neck: new Item(data.own ? data.save.slice(96, 108) : data.save.slice(87, 99)),
-            Belt: new Item(data.own ? data.save.slice(108, 120) : data.save.slice(99, 111)),
-            Ring: new Item(data.own ? data.save.slice(120, 132) : data.save.slice(111, 123)),
-            Misc: new Item(data.own ? data.save.slice(132, 144) : data.save.slice(123, 135)),
-            Wpn1: new Item(data.own ? data.save.slice(144, 156) : data.save.slice(135, 147)),
-            Wpn2: new Item(data.own ? data.save.slice(156, 168) : data.save.slice(147, 159))
-        };
-
-        this.Potions = data.own ? [
-            {
-                Type: data.save[493] == 16 ? 6 : (data.save[493] == 0 ? 0 : 1 + (data.save[493] - 1) % 5),
-                Size: data.save[499]
-            },
-            {
-                Type: data.save[494] == 16 ? 6 : (data.save[494] == 0 ? 0 : 1 + (data.save[494] - 1) % 5),
-                Size: data.save[500]
-            },
-            {
-                Type: data.save[495] == 16 ? 6 : (data.save[495] == 0 ? 0 : 1 + (data.save[495] - 1) % 5),
-                Size: data.save[501]
+            switch (this.Upgrades) {
+                case 0: {
+                    num2 *= 3;
+                    num3 = 0;
+                    break;
+                }
+                case 1: {
+                    num2 *= 4;
+                    num3 = 1;
+                    break;
+                }
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7: {
+                    num2 *= this.Upgrades + 3;
+                    num3 *= this.Upgrades - 1;
+                    break;
+                }
+                case 8: {
+                    num2 *= 12;
+                    num3 *= 8;
+                    break;
+                }
+                case 9: {
+                    num2 *= 15;
+                    num3 *= 10;
+                    break;
+                }
+                case 10:
+                case 11:
+                case 12:
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                case 17:
+                case 18:
+                case 19: {
+                    num2 *= 15 + this.Upgrades - 9;
+                    num3 *= 10 + 2 * (this.Upgrades - 9);
+                    break;
+                }
             }
-        ] : [
-            {
-                Type: data.save[194] == 16 ? 6 : (data.save[194] == 0 ? 0 : 1 + (data.save[194] - 1) % 5),
-                Size: data.save[200]
-            },
-            {
-                Type: data.save[195] == 16 ? 6 : (data.save[195] == 0 ? 0 : 1 + (data.save[195] - 1) % 5),
-                Size: data.save[201]
-            },
-            {
-                Type: data.save[196] == 16 ? 6 : (data.save[196] == 0 ? 0 : 1 + (data.save[196] - 1) % 5),
-                Size: data.save[202]
+
+            num2 = Math.floor(num * num2 / 100);
+            num3 = Math.floor(num * num3 / 100);
+            if (this.Type == 1 && this.PicIndex > 999) {
+                num2 *= 2;
+                num3 *= 2;
             }
-        ];
 
-        this.Potions.sort((a, b) => b.Size - a.Size);
+            return [num2, num3];
+        }
+    }
 
-        this.Dungeons = data.own ? [
-            ... data.save.slice(480, 490),
-            data.save[441],
-            data.save[442],
-            data.save[490] - 120,
-            ... split4(data.save[604], 8),
-            ... split4(data.save[605], 8),
-            ... split4(data.save[606], 8),
-            split4(data.save[607], 8)[0]
-        ] : [
-            ... data.save.slice(183, 193),
-            data.save[164],
-            data.save[165],
-            data.save[193] - 120,
-            ... split4(data.save[254], 8),
-            ... split4(data.save[255], 8),
-            ... split4(data.save[256], 8),
-            split4(data.save[257], 8)[0]
-        ];
+    getBlacksmithPrice () {
+        if (this.Value == 0 && this.Type == 1) {
+            return [0, 0];
+        } else {
+            var num = 0;
+            var num2 = 0;
+            var upgrades = this.Upgrades;
+            var num3 = this.Attributes[0];
 
-        [/* empty */, this.Dungeons.Group, this.Dungeons.Player] = ComplexDataType.fromValue(data.save[data.own ? 445 : 252]).multiple(o => [ o.short(), o.byte(), o.byte() ]);
-        [this.Mount, this.Dungeons.Tower] = ComplexDataType.fromValue(data.save[data.own ? 286 : 159]).multiple(o => [ o.short(), o.short() ]);
+            while (this.Upgrades-- > 0) {
+                this.Attributes[0] = Math.trunc( this.Attributes[0] / 1.04);
+                var price = this.getBlacksmithUpgradePrice();
 
-        this.Pets = {
-            Shadow: data.pets[data.own ? 104 : 1],
-            Light: data.pets[data.own ? 105 : 2],
-            Earth: data.pets[data.own ? 106 : 3],
-            Fire: data.pets[data.own ? 107 : 4],
-            Water: data.pets[data.own ? 108 : 5]
-        };
+                num += price[0];
+                num2 += price[1];
+            }
+
+            this.Upgrades = upgrades;
+            this.Attributes[0] = num3;
+
+            return [num, num2];
+        }
+    }
+
+    getDismantleReward () {
+        if (this.Type == 0 || this.Type > 10) {
+            return [0, 0];
+        } else {
+            var num = this.getItemLevel();
+            var quality = this.getBlacksmithQuality();
+            var num2 = 0;
+            var num3 = 0;
+
+            switch (quality) {
+                case 1: {
+                    num2 = 75 + this.getBlacksmithRandom(25);
+                    num3 = this.getBlacksmithRandom(1);
+                    break;
+                }
+                case 2: {
+                    num2 = 50 + this.getBlacksmithRandom(30);
+                    num3 = 5 + this.getBlacksmithRandom(5);
+                    break;
+                }
+                case 2: {
+                    num2 = 25 + this.getBlacksmithRandom(25);
+                    num3 = 50 + this.getBlacksmithRandom(50);
+                    break;
+                }
+            }
+
+            num2 = Math.floor(num * num2 / 100);
+            num3 = Math.floor(num * num3 / 100);
+            if (this.Type == 1 && this.PicIndex > 999) {
+                num2 *= 2;
+                num3 *= 2;
+            }
+
+            var sell = this.getBlacksmithPrice();
+            return [ num2 + sell[0], num3 + sell[1] ];
+        }
     }
 }
 
-class Group {
+class SFGroup {
     constructor (data) {
         this.Prefix = data.prefix || 's1_de';
         this.ID = data.save[0];
@@ -345,24 +236,26 @@ class Group {
 
         this.Name = data.name;
         this.Rank = data.rank;
+        this.Members = data.members;
+        this.Own = data.own;
+
         this.MemberCount = data.save[3];
         this.Honor = data.save[13];
-        this.MemberIDs = data.save.slice(14, 14 + this.MemberCount).map(mid => (this.Prefix + '_' + mid));
-        this.Levels = data.save.slice(64, 64 + this.MemberCount).map(level => level % 1000);
-        this.Roles = data.save.slice(314, 314 + this.MemberCount);
-        this.Treasures = data.save.slice(214, 214 + this.MemberCount);
-        this.Instructors = data.save.slice(264, 264 + this.MemberCount);
-        this.Pets = data.save.slice(390, 390 + this.MemberCount);
-        this.Members = data.members.slice(0, this.MemberCount);
         this.Pet = data.save[378];
-        this.Own = this.Treasures.reduce((a, b) => a + b, 0) > 0;
+
+        this.MemberIDs = data.save.slice(14, 64).map(mid => (this.Prefix + '_' + mid));
+        this.Levels = data.save.slice(64, 114).map(level => level % 1000);
+        this.Roles = data.save.slice(314, 364);
+        this.Treasures = data.save.slice(214, 264);
+        this.Instructors = data.save.slice(264, 314);
+        this.Pets = data.save.slice(390, 440);
 
         if (data.knights) {
-            this.Knights = data.knights.slice(0, this.MemberCount);
+            this.Knights = data.knights.slice(0, 50);
         }
 
-        for (var i = 0; i < this.MemberCount; i++) {
-            if (this.Roles[i] === GUILD_ROLE_INVITED) {
+        for (var i = 0; i < this.MemberIDs.length; i++) {
+            if (this.Roles[i] == 0 || this.Roles[i] == GUILD_ROLE_INVITED) {
                 if (this.Knights) {
                     this.Knights.splice(i, 1);
                 }
@@ -377,41 +270,480 @@ class Group {
                 this.MemberCount--;
             }
         }
+    }
+}
 
-        Group.setStats(this.Levels);
-        Group.setStats(this.Pets);
-        Group.setStats(this.Treasures);
-        Group.setStats(this.Instructors);
+class SFPlayer {
+    constructor (data) {
 
-        if (this.Knights)
-        {
-            Group.setStats(this.Knights);
-        }
     }
 
-    getFakePlayer (id) {
-        var index = this.MemberIDs.indexOf(id);
-        return {
-            IsFake: true,
-            Identifier: id,
-            Name: this.Members[index],
-            Level: this.Levels[index],
-            Fortress: {
-                Knights: this.Knights[index]
+    hasGuild () {
+        return this.Group.Identifier != null;
+    }
+}
+
+class SFOtherPlayer extends SFPlayer {
+    constructor (data) {
+        super(data);
+
+        var dataType = new ComplexDataType(data.save);
+        dataType.assert(256);
+
+        this.ID = dataType.long();
+        this.LastOnline = new Date(dataType.long() * 1000);
+        this.Level = dataType.short();
+        dataType.clear(); // skip
+        this.XP = dataType.long();
+        this.XPNext = dataType.long();
+        this.Honor = dataType.long();
+        this.Rank = dataType.long();
+        dataType.skip(1); // skip
+        this.Face = {
+            Mouth: dataType.long(),
+            Hair: {
+                Type: dataType.long() % 100,
+                Color: Math.trunc(dataType.back(1).long() / 100)
             },
-            Group: {
-                Pet: this.Pets[index],
-                Instructor: this.Instructors[index],
-                Treasure: this.Treasures[index],
-                Role: this.Roles[index]
-            }
+            Brows: {
+                Type: dataType.long() % 100,
+                Color: Math.trunc(dataType.back(1).long() / 100)
+            },
+            Eyes: dataType.long(),
+            Beard: {
+                Type: dataType.long() % 100,
+                Color: Math.trunc(dataType.back(1).long() / 100)
+            },
+            Nose: dataType.long(),
+            Ears: dataType.long(),
+            Special: dataType.long(),
+            Special2: dataType.long(),
+            Portrait: dataType.long()
         };
-    }
+        this.Race = dataType.short();
+        dataType.clear(); // skip
+        this.Gender = dataType.byte();
+        this.Mirror = dataType.byte();
+        this.MirrorPieces = getMirrorPieces(dataType.short());
+        this.MirrorPieces.Count = this.MirrorPieces.reduce((count, o) => count + (o ? 1 : 0), 0);
+        this.Class = dataType.short();
+        dataType.clear(); // skip
+        this.Strength = {
+            Base: dataType.long(),
+            Bonus: dataType.skip(4).long()
+        };
+        this.Dexterity = {
+            Base: dataType.back(5).long(),
+            Bonus: dataType.skip(4).long()
+        };
+        this.Intelligence = {
+            Base: dataType.back(5).long(),
+            Bonus: dataType.skip(4).long()
+        };
+        this.Constitution = {
+            Base: dataType.back(5).long(),
+            Bonus: dataType.skip(4).long()
+        };
+        this.Luck = {
+            Base: dataType.back(5).long(),
+            Bonus: dataType.skip(4).long()
+        };
+        this.Strength.Total = this.Strength.Base + this.Strength.Bonus;
+        this.Dexterity.Total = this.Dexterity.Base + this.Dexterity.Bonus;
+        this.Intelligence.Total = this.Intelligence.Base + this.Intelligence.Bonus;
+        this.Constitution.Total = this.Constitution.Base + this.Constitution.Bonus;
+        this.Luck.Total = this.Luck.Base + this.Luck.Bonus;
+        dataType.skip(8); // skip
+        this.Items = {
+            Head: new SFItem(dataType.sub(12)),
+            Body: new SFItem(dataType.sub(12)),
+            Hand: new SFItem(dataType.sub(12)),
+            Feet: new SFItem(dataType.sub(12)),
+            Neck: new SFItem(dataType.sub(12)),
+            Belt: new SFItem(dataType.sub(12)),
+            Ring: new SFItem(dataType.sub(12)),
+            Misc: new SFItem(dataType.sub(12)),
+            Wpn1: new SFItem(dataType.sub(12)),
+            Wpn2: new SFItem(dataType.sub(12))
+        };
+        this.Mount = dataType.short();
+        this.Dungeons = {
+            Normal: []
+        };
+        this.Dungeons.Tower = dataType.short();
+        dataType.skip(1); // skip
+        this.Group = {
+            ID: dataType.long(),
+            Name: data.groupname
+        };
+        dataType.skip(1); // skip
+        this.Book = Math.max(0, dataType.long() - 10000);
+        this.Dungeons.Normal[10] = dataType.long();
+        this.Dungeons.Normal[11] = dataType.long();
+        this.Group.Joined = new Date(dataType.long() * 1000);
+        this.Flags = {
+            Bits: dataType.long()
+        };
+        this.Armor = dataType.long();
+        this.Damage = {
+            Min: dataType.long(),
+            Max: dataType.long()
+        };
+        this.Damage.Avg = (this.Damage.Min + this.Damage.Max) / 2;
+        dataType.skip(12); // skip
+        this.Dungeons.Normal[0] = dataType.long();
+        this.Dungeons.Normal[1] = dataType.long();
+        this.Dungeons.Normal[2] = dataType.long();
+        this.Dungeons.Normal[3] = dataType.long();
+        this.Dungeons.Normal[4] = dataType.long();
+        this.Dungeons.Normal[5] = dataType.long();
+        this.Dungeons.Normal[6] = dataType.long();
+        this.Dungeons.Normal[7] = dataType.long();
+        this.Dungeons.Normal[8] = dataType.long();
+        this.Dungeons.Normal[9] = dataType.long();
+        this.Dungeons.Normal[12] = dataType.long() - 120;
+        this.Potions = [{
+            Type: getPotionType(dataType.long()),
+            Size: dataType.skip(5).long()
+        }, {
+            Type: getPotionType(dataType.back(6).long()),
+            Size: dataType.skip(5).long()
+        }, {
+            Type: getPotionType(dataType.back(6).long()),
+            Size: dataType.skip(5).long()
+        }];
+        this.Potions.sort((a, b) => b.Size - a.Size);
+        this.Potions.Life = dataType.long();
+        this.Flags.HideFrame = dataType.long();
+        this.Flags.NoInvite = dataType.long();
+        dataType.skip(2); // skip
+        this.Fortress = {
+            Wall: data.units[0],
+            Warriors: data.units[1],
+            Mages: data.units[2],
+            Archers: data.units[3],
+            Honor: data.fortresshonor,
+            Fortress: dataType.long(),
+            LaborerQuarters: dataType.long(),
+            WoodcutterGuild: dataType.long(),
+            Quarry: dataType.long(),
+            GemMine: dataType.long(),
+            Academy: dataType.long(),
+            ArcheryGuild: dataType.long(),
+            Barracks: dataType.long(),
+            MageTower: dataType.long(),
+            Treasury: dataType.long(),
+            Smithy: dataType.long(),
+            Fortifications: dataType.long(),
+            Wood: dataType.skip(8).long(),
+            Stone: dataType.long()
+        }
+        dataType.skip(14); // skip
+        if (dataType.long()) {
+            this.Fortress.Upgrade = {
+                Building: dataType.back(1).long(),
+                Finish: new Date(dataType.long() * 1000)
+            }
+        } else {
+            dataType.skip(1); // skip
+        }
+        this.Fortress.Upgrades = dataType.skip(1).long();
+        this.Fortress.Honor = dataType.long();
+        dataType.skip(3); // skip
+        dataType.short(); // skip
+        this.Dungeons.Group = dataType.byte();
+        this.Dungeons.Player = dataType.byte();
+        this.Dungeons.Normal[13] = dataType.long();
+        this.Dungeons.Shadow = [
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte()
+        ];
+        dataType.clear(); // skip
+        this.Fortress.Knights = dataType.long();
 
-    static setStats (array) {
-        array.Sum = array.reduce((total, value) => total + value, 0);
-        array.Avg = array.Sum / array.length;
-        array.Min = Math.min(... array);
-        array.Max = Math.max(... array);
+        dataType = new ComplexDataType(data.pets);
+        dataType.assert(6);
+
+        dataType.skip(1); // skip
+        this.Pets = {
+            Shadow: dataType.long(),
+            Light: dataType.long(),
+            Earth: dataType.long(),
+            Fire: dataType.long(),
+            Water: dataType.long()
+        };
+
+        this.Name = data.name;
+        this.Prefix = data.prefix || 's1_de';
+        this.Identifier = this.Prefix + '_' + this.ID;
+
+        this.Group.Identifier = this.Group.Name ? `${ this.Prefix }_${ this.Group.ID }` : null;
+
+        this.Achievements = [];
+        this.Achievements.Owned = 0;
+        for (var i = 0; i < 80; i++) {
+            this.Achievements.push({
+                Owned: data.achievements[i] == 1,
+                Progress: data.achievements[i + 80] || 0
+            });
+
+            if (data.achievements[i] == 1 && i < data.achievements.length / 2) {
+                this.Achievements.Owned++;
+            }
+        }
+
+        this.Achievements.Dehydration = this.Achievements[63].Owned;
+    }
+}
+
+class SFOwnPlayer extends SFPlayer {
+    constructor (data) {
+        super(data);
+
+        var dataType = new ComplexDataType(data.save);
+        dataType.assert(650);
+
+        dataType.skip(1); // skip
+        this.ID = dataType.long();
+        this.LastOnline = new Date(dataType.long() * 1000);
+        dataType.skip(4); // skip
+        this.Level = dataType.short();
+        dataType.clear();
+        this.XP = dataType.long();
+        this.XPNext = dataType.long();
+        this.Honor = dataType.long();
+        this.Rank = dataType.long();
+        dataType.skip(5); // skip
+        this.Face = {
+            Mouth: dataType.long(),
+            Hair: {
+                Type: dataType.long() % 100,
+                Color: Math.trunc(dataType.back(1).long() / 100)
+            },
+            Brows: {
+                Type: dataType.long() % 100,
+                Color: Math.trunc(dataType.back(1).long() / 100)
+            },
+            Eyes: dataType.long(),
+            Beard: {
+                Type: dataType.long() % 100,
+                Color: Math.trunc(dataType.back(1).long() / 100)
+            },
+            Nose: dataType.long(),
+            Ears: dataType.long(),
+            Special: dataType.long(),
+            Special2: dataType.long(),
+            Portrait: dataType.long()
+        };
+        this.Race = dataType.short();
+        dataType.clear(); // skip
+        this.Gender = dataType.byte();
+        this.Mirror = dataType.byte();
+        this.MirrorPieces = getMirrorPieces(dataType.short());
+        this.MirrorPieces.Count = this.MirrorPieces.reduce((count, o) => count + (o ? 1 : 0), 0);
+        this.Class = dataType.short();
+        dataType.clear(); // skip
+        this.Strength = {
+            Base: dataType.long(),
+            Bonus: dataType.skip(4).long()
+        };
+        this.Dexterity = {
+            Base: dataType.back(5).long(),
+            Bonus: dataType.skip(4).long()
+        };
+        this.Intelligence = {
+            Base: dataType.back(5).long(),
+            Bonus: dataType.skip(4).long()
+        };
+        this.Constitution = {
+            Base: dataType.back(5).long(),
+            Bonus: dataType.skip(4).long()
+        };
+        this.Luck = {
+            Base: dataType.back(5).long(),
+            Bonus: dataType.skip(4).long()
+        };
+        this.Strength.Total = this.Strength.Base + this.Strength.Bonus;
+        this.Dexterity.Total = this.Dexterity.Base + this.Dexterity.Bonus;
+        this.Intelligence.Total = this.Intelligence.Base + this.Intelligence.Bonus;
+        this.Constitution.Total = this.Constitution.Base + this.Constitution.Bonus;
+        this.Luck.Total = this.Luck.Base + this.Luck.Bonus;
+        dataType.skip(8); // skip
+        this.Items = {
+            Head: new SFItem(dataType.sub(12)),
+            Body: new SFItem(dataType.sub(12)),
+            Hand: new SFItem(dataType.sub(12)),
+            Feet: new SFItem(dataType.sub(12)),
+            Neck: new SFItem(dataType.sub(12)),
+            Belt: new SFItem(dataType.sub(12)),
+            Ring: new SFItem(dataType.sub(12)),
+            Misc: new SFItem(dataType.sub(12)),
+            Wpn1: new SFItem(dataType.sub(12)),
+            Wpn2: new SFItem(dataType.sub(12))
+        };
+        dataType.skip(118); // skip
+        this.Mount = dataType.short();
+        this.Dungeons = {
+            Normal: []
+        };
+        this.Dungeons.Tower = dataType.short();
+        dataType.skip(148); // skip
+        this.Group = {
+            ID: dataType.long(),
+            Name: data.groupname
+        };
+        dataType.skip(2); // skip
+        this.Book = Math.max(0, dataType.long() - 10000);
+        dataType.skip(2); // skip
+        this.Dungeons.Normal[10] = dataType.long();
+        this.Dungeons.Normal[11] = dataType.long();
+        this.Group.Joined = new Date(dataType.long() * 1000);
+        this.Flags = {
+            Bits: dataType.long()
+        };
+        dataType.short(); // skip
+        this.Dungeons.Group = dataType.byte();
+        this.Dungeons.Player = dataType.byte();
+        dataType.skip(1); // skip
+        this.Armor = dataType.long();
+        this.Damage = {
+            Min: dataType.long(),
+            Max: dataType.long()
+        };
+        this.Damage.Avg = (this.Damage.Min + this.Damage.Max) / 2;
+        dataType.skip(30); // skip
+        this.Dungeons.Normal[0] = dataType.long();
+        this.Dungeons.Normal[1] = dataType.long();
+        this.Dungeons.Normal[2] = dataType.long();
+        this.Dungeons.Normal[3] = dataType.long();
+        this.Dungeons.Normal[4] = dataType.long();
+        this.Dungeons.Normal[5] = dataType.long();
+        this.Dungeons.Normal[6] = dataType.long();
+        this.Dungeons.Normal[7] = dataType.long();
+        this.Dungeons.Normal[8] = dataType.long();
+        this.Dungeons.Normal[9] = dataType.long();
+        this.Dungeons.Normal[12] = dataType.long() - 120;
+        dataType.skip(2); // skip
+        this.Potions = [{
+            Type: getPotionType(dataType.long()),
+            Size: dataType.skip(5).long()
+        }, {
+            Type: getPotionType(dataType.back(6).long()),
+            Size: dataType.skip(5).long()
+        }, {
+            Type: getPotionType(dataType.back(6).long()),
+            Size: dataType.skip(5).long()
+        }];
+        this.Potions.sort((a, b) => b.Size - a.Size);
+        this.Potions.Life = dataType.long();
+        dataType.skip(14); // skip
+        this.Flags.HideFrame = dataType.long();
+        dataType.skip(3); //skip
+        this.Flags.NoInvite = dataType.long();
+        dataType.skip(2); // skip
+        this.Fortress = {
+            Wall: data.units[0],
+            Warriors: data.units[1],
+            Mages: data.units[2],
+            Archers: data.units[3],
+            Honor: data.fortresshonor,
+            Fortress: dataType.long(),
+            LaborerQuarters: dataType.long(),
+            WoodcutterGuild: dataType.long(),
+            Quarry: dataType.long(),
+            GemMine: dataType.long(),
+            Academy: dataType.long(),
+            ArcheryGuild: dataType.long(),
+            Barracks: dataType.long(),
+            MageTower: dataType.long(),
+            Treasury: dataType.long(),
+            Smithy: dataType.long(),
+            Fortifications: dataType.long(),
+            Wood: dataType.skip(8).long(),
+            Stone: dataType.long()
+        }
+        this.Dungeons.Normal[13] = dataType.long();
+        dataType.skip(24); // skip
+        if (dataType.long()) {
+            this.Fortress.Upgrade = {
+                Building: dataType.back(1).long(),
+                Finish: new Date(dataType.long() * 1000)
+            }
+        } else {
+            dataType.skip(2); // skip
+        }
+        this.Fortress.Upgrades = dataType.skip(8).long();
+        this.Fortress.Honor = dataType.long();
+        this.Fortress.Rank = dataType.long();
+        dataType.skip(14); // skip
+        this.Fortress.Knights = dataType.long();
+        dataType.skip(5); // skip
+        this.Dungeons.Shadow = [
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte(),
+            dataType.byte()
+        ];
+        dataType.clear(); // skip
+        dataType.skip(15); // skip
+        this.Group.Treasure = dataType.long();
+        this.Group.Instructor = dataType.long();
+        dataType.skip(4); // skip
+        this.Group.Pet = dataType.long();
+
+        dataType = new ComplexDataType(data.pets);
+        dataType.assert(288);
+
+        dataType.skip(104); // skip
+        this.Pets = {
+            Shadow: dataType.long(),
+            Light: dataType.long(),
+            Earth: dataType.long(),
+            Fire: dataType.long(),
+            Water: dataType.long()
+        };
+
+        this.Name = data.name;
+        this.Prefix = data.prefix || 's1_de';
+        this.Identifier = this.Prefix + '_' + this.ID;
+
+        this.Group.Identifier = this.Group.Name ? `${ this.Prefix }_${ this.Group.ID }` : null;
+
+        this.Achievements = [];
+        this.Achievements.Owned = 0;
+        for (var i = 0; i < 80; i++) {
+            this.Achievements.push({
+                Owned: data.achievements[i] == 1,
+                Progress: data.achievements[i + 80] || 0
+            });
+
+            if (data.achievements[i] == 1 && i < data.achievements.length / 2) {
+                this.Achievements.Owned++;
+            }
+        }
+
+        this.Achievements.Dehydration = this.Achievements[63].Owned;
     }
 }

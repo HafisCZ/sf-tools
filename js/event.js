@@ -25,6 +25,7 @@ const EVT_FILES_REMOVE = 3001;
 const EVT_FILES_UPLOAD = 3002;
 const EVT_FILES_IMPORT = 3003;
 const EVT_FILES_EXPORT = 3004;
+const EVT_FILE_MERGE = 100001;
 
 const EVT_BROWSE_LOAD = 4000;
 
@@ -63,7 +64,7 @@ Handle.bind(EVT_FILES_LOAD, function () {
             <div class="ui segment">
                 <div class="ui middle aligned grid">
                     <div class="four wide text-center column">
-                        <h3 class="ui margin-tiny-top header">${formatDate(new Date(file.timestamp))}</h3>
+                        <h3 class="ui margin-tiny-top header clickable" data-file="${ index }">${formatDate(new Date(file.timestamp))}</h3>
                     </div>
                     <div class="three wide column">
                         <div class="ui label">
@@ -91,6 +92,10 @@ Handle.bind(EVT_FILES_LOAD, function () {
     $('.ui.sticky').sticky({
         context: '#container-files-list',
         offset: 70
+    });
+
+    $('#container-files-list [data-file]').on('click', function () {
+        $(this).toggleClass('file-selected');
     });
 
     $('[data-file-id]').on('click', function () {
@@ -158,6 +163,13 @@ Handle.bind(EVT_FILES_REMOVE, function (index) {
 
 Handle.bind(EVT_FILES_EXPORT, function () {
     Storage.export();
+});
+
+Handle.bind(EVT_FILE_MERGE, function () {
+    var files = $('.file-selected.clickable').toArray().map(e => $(e).attr('data-file'));
+    if (files.length > 1) {
+        Storage.merge(files);
+    }
 });
 
 Handle.bind(EVT_FILES_IMPORT, function (files) {
@@ -276,7 +288,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
         if (Database.Players[memberID] && Database.Players[memberID][groupCurrentTimestamp]) {
             members.push(Database.Players[memberID][groupCurrentTimestamp]);
         } else {
-            members.push(groupCurrent.getFakePlayer(memberID));
+            //members.push(groupCurrent.getFakePlayer(memberID));
         }
     }
 
@@ -384,7 +396,7 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="column">${ player.Damage.Min } - ${ player.Damage.Max }</div>
                         <div class="column"><br></div>
                         <div class="column"></div>
-                        ${ player.Group ? `
+                        ${ player.hasGuild() ? `
                             ${ player.Group.Own ? `
                                 <div class="left aligned column font-big">Treasure</div>
                                 <div class="column" style="color: ${ Color.Get(player.Group.Treasure, config.findEntrySafe('Treasure').colors) };">${ player.Group.Treasure }</div>

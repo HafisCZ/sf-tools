@@ -254,6 +254,10 @@ input:disabled {
     color: #ff3547 !important;
 }
 
+h3.file-selected {
+    color: #cc411f !important;
+}
+
 [data-sortable] {
     position: relative;
 }

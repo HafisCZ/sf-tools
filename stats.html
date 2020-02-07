@@ -93,6 +93,12 @@
                                  <i class="small download icon"></i> Export
                             </div>
                         </div>
+                        <br><br>
+                        <div>
+                            <label class="fluid ui button" id="sf-file-merge">
+                                <i class="small clone outline icon"></i> Merge selected
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -327,6 +333,11 @@
 
             $('#modal-custom-settings-save').on('click', function () {
                 Handle.call(EVT_GROUP_SETTINGS_SAVE);
+            });
+
+            $('#sf-file-merge').on('click', function () {
+                Handle.call(EVT_FILE_MERGE);
+                Handle.call(EVT_FILES_LOAD);
             });
 
             $('#modal-custom-settings-reset').on('click', function () {

@@ -73,6 +73,10 @@ function compareItems (a, b) {
     }
 }
 
+function getPotionType (type) {
+    return type == 16 ? 6 : (type == 0 ? 0 : 1 + (type - 1) % 5);
+}
+
 // Potion size
 function getPotionSize (potion) {
     if (potion >= POTION_STRENGTH_SMALL && potion <= POTION_LUCK_SMALL) {
@@ -86,45 +90,72 @@ function getPotionSize (potion) {
     }
 }
 
+function getAtSafe(obj, ... path) {
+    var x = obj;
+    for (var i = 0, c; c = path[i]; i++) {
+        x = x[c];
+        if (!x) return { };
+    }
+    return x;
+}
+
 // Complex datatype
 class ComplexDataType {
-    constructor (bytes) {
-        this.bytes = bytes;
+    constructor (values) {
+        this.values = values;
         this.ptr = 0;
-    }
-
-    byte () {
-        return this.bytes[this.ptr++];
-    }
-
-    short () {
-        return this.bytes[this.ptr++] + (this.bytes[this.ptr++] << 8);
+        this.bytes = [];
     }
 
     long () {
-        return this.bytes[this.ptr++] + (this.bytes[this.ptr++] << 8) + (this.bytes[this.ptr++] << 16) + (this.bytes[this.ptr++] << 24);
+        return this.values[this.ptr++];
     }
 
-    multiple (func) {
-        return func(this);
+    split () {
+        var word = this.long();
+        this.bytes = [word % 0x100, (word >> 8) % 0x100, (word >> 16) % 0x100, (word >> 24) % 0x100];
+    }
+
+    short () {
+        if (!this.bytes.length) {
+            this.split();
+        }
+
+        return this.bytes.shift() + (this.bytes.shift() << 8);
+    }
+
+    byte () {
+        if (!this.bytes.length) {
+            this.split();
+        }
+
+        return this.bytes.shift();
     }
 
     assert (size) {
-        if (this.bytes.length != size) {
-            throw 'COMPLEXDATATYPE SIZE NOT EQUAL';
+        if (this.values.length < size) {
+            throw `ComplexDataType Exception: Expected ${ size } values but ${ this.values.length } were supplied!`;
         }
     }
 
-    static fromArray (arr) {
-        return new ComplexDataType(arr.reduce((bytes, word) => bytes.concat([word % 0x100, (word >> 8) % 0x100, (word >> 16) % 0x100, (word >> 24) % 0x100]), []));
+    sub (size) {
+        var b = this.values.slice(this.ptr, this.ptr + size);
+        this.ptr += size;
+        return new ComplexDataType(b);
     }
 
-    static fromString (str) {
-        return ComplexDataType.fromArray(padStr.split('/'));
+    clear () {
+        this.bytes = [];
     }
 
-    static fromValue (val) {
-        return ComplexDataType.fromArray([ val ]);
+    skip (size) {
+        this.ptr += size;
+        return this;
+    }
+
+    back (size) {
+        this.ptr -= size;
+        return this;
     }
 }
 
