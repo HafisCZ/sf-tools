@@ -106,7 +106,7 @@
             }
 
             .footer-legal {
-                height: 4em;
+                height: 5.75em;
                 width: 100%;
                 position: absolute;
                 bottom: 0;
@@ -181,6 +181,7 @@
             </div>
             <div class="footer-legal">
                 Copyright <i class="copyright outline icon"></i>2020 mar21 | support@mar21.eu<br>
+                Special thanks to <b>Zeraffim</b> for support and testing of this project<br>
                 This site is in no way affiliated with PlayaGames or Shakes & Fidget
             </div>
         </div>
@@ -203,14 +204,17 @@
                     }
                 ).then(function (response) {
                     var date = new Date(response.data[0].commit.author.date);
+                    var message = response.data[0].commit.message;
                     localStorage['version'] = JSON.stringify({
                         timestamp: date.getTime(),
+                        message: message,
                         expire: Date.now() + 1800000
                     });
-                    $(".footer-repo").html(`Last updated on ${ formatDate(date) }`);
+                    $(".footer-repo").html(`Last updated on ${ formatDate(date) } - ${ message }`);
                 });
             } else {
-                $(".footer-repo").html(`Last updated on ${ formatDate(new Date(JSON.parse(localStorage['version']).timestamp)) }`);
+                var obj = JSON.parse(localStorage['version']);
+                $(".footer-repo").html(`Last updated on ${ formatDate(new Date(obj.timestamp)) } - ${ obj.message }`);
             }
         </script>
     </body>
