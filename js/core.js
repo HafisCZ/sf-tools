@@ -240,6 +240,10 @@ const UpdateService = {
                 p.pets = p.own ? new Array(288).fill(0) : new Array(6).fill(0);
                 updated = true;
             }
+            if (!p.achievements) {
+                p.achievements = new Array(160).fill(0);
+                updated = true;
+            }
         }
 
         return updated;
@@ -425,7 +429,7 @@ const Storage = new (class {
 
             for (var g of file.groups) {
                 if (!base.groups.find(bg => bg.prefix == g.prefix && bg.name == g.name)) {
-                    base.groups.push(p);
+                    base.groups.push(g);
                 }
             }
         }
