@@ -631,7 +631,7 @@ Handle.bind(EVT_INIT, function () {
         <p>
             <b>name</b><code>(required)</code><br>
             - Header type<br>
-            - Available names: <code>Class</code>, <code>ID</code>, <code>Rank</code>, <code>Role</code>, <code>Level</code>, <code>Album</code>, <code>Mount</code>, <code>Awards</code>, <code>Treasure</code>, <code>Instructor</code>, <code>Pet</code>, <code>Knights</code>, <code>Fortress</code>, <code>GemMine</code>, <code>Honor</code>, <code>Upgrades</code>, <code>Tower</code>, <code>Portal</code>, <code>Equipment</code></br>
+            - Available names: <code>Class</code>, <code>ID</code>, <code>Rank</code>, <code>Role</code>, <code>Level</code>, <code>Album</code>, <code>Mount</code>, <code>Awards</code>, <code>Treasure</code>, <code>Instructor</code>, <code>Pet</code>, <code>Knights</code>, <code>Fortress</code>, <code>GemMine</code>, <code>Honor</code>, <code>Upgrades</code>, <code>Tower</code>, <code>Portal</code>, <code>Equipment</code>, <code>BuildingNow</code></br>
             <b>diff</b><br>
             - Use <code>true</code> to show difference<br>
             <b>colors</b><br>

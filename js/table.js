@@ -183,11 +183,16 @@ const ReservedHeaders = {
     "Portal": (group, header, config, last) => {
         group.add('Portal', cell => {
             return Cell.Cell(cell.player.Dungeons.Player + (header.diff ? Cell.Difference(cell.player.Dungeons.Player - cell.compare.Dungeons.Player, config.brackets) : ''), Color.Get(cell.player.Dungeons.Player, header.colors), Color.NONE, last);
-        }, header.width || 100, header.stat, cell => {
+        }, header.width || 200, header.stat, cell => {
             var cval = cell.operation(cell.players.map(p => p.player.Dungeons.Portal));
             var rval = cell.operation(cell.players.map(p => p.compare.Dungeons.Portal));
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
         }, player => player.Dungeons.Player, false);
+    },
+    "BuildingNow": (group, header, config, last) => {
+        group.add('Building', cell => {
+            return Cell.Cell(FORTRESS_BUILDINGS[cell.player.Fortress.Upgrade.Building], Color.Get(cell.player.Fortress.Upgrade.Building, header.colors), Color.NONE, last);
+        }, header.width || 180, false, null, player => player.Fortress.Upgrade.Building == 0 ? -1 : (12 - player.Fortress.Upgrade.Building), false);
     },
     "Equipment": (group, header, config, last) => {
         group.add('Equipment', cell => {

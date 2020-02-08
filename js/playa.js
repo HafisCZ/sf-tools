@@ -439,13 +439,9 @@ class SFOtherPlayer extends SFPlayer {
             Stone: dataType.long()
         }
         dataType.skip(14); // skip
-        if (dataType.long()) {
-            this.Fortress.Upgrade = {
-                Building: dataType.back(1).long(),
-                Finish: new Date(dataType.long() * 1000)
-            }
-        } else {
-            dataType.skip(1); // skip
+        this.Fortress.Upgrade = {
+            Building: dataType.long(),
+            Finish: new Date(dataType.long() * 1000)
         }
         this.Fortress.Upgrades = dataType.skip(1).long();
         this.Fortress.Honor = dataType.long();
@@ -676,13 +672,9 @@ class SFOwnPlayer extends SFPlayer {
         }
         this.Dungeons.Normal[13] = dataType.long();
         dataType.skip(24); // skip
-        if (dataType.long()) {
-            this.Fortress.Upgrade = {
-                Building: dataType.back(1).long(),
-                Finish: new Date(dataType.long() * 1000)
-            }
-        } else {
-            dataType.skip(2); // skip
+        this.Fortress.Upgrade = {
+            Building: dataType.long(),
+            Finish: new Date(dataType.long() * 1000)
         }
         this.Fortress.Upgrades = dataType.skip(8).long();
         this.Fortress.Honor = dataType.long();
