@@ -162,6 +162,11 @@ const ReservedHeaders = {
             return Cell.Cell(cval + (header.diff ? Cell.Difference(cval - rval, config.brackets) : ''), Color.NONE, Color.Get(cval, header.colors), false);
         }, player => player.Fortress.Honor, false);
     },
+    "LastActive": (group, header, config, last) => {
+        group.add('Last Active', cell => {
+            return Cell.Cell(formatDate(cell.player.LastOnline), Color.NONE, Color.NONE, last);
+        }, header.width || 160, false, null, player => player.LastOnline, false);
+    },
     "Upgrades": (group, header, config, last) => {
         group.add('Upgrades', cell => {
             return Cell.Cell(cell.player.Fortress.Upgrades + (header.diff ? Cell.Difference(cell.player.Fortress.Upgrades - cell.compare.Fortress.Upgrades, config.brackets) : ''), Color.Get(cell.player.Fortress.Upgrades, header.colors), Color.NONE, last);

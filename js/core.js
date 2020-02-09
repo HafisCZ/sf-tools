@@ -421,6 +421,10 @@ const Storage = new (class {
 
         var base = files[0];
         for (var i = 1, file; file = files[i]; i++) {
+            if (!base.version) {
+                base.version = file.version;
+            }
+
             for (var p of file.players) {
                 if (!base.players.find(bp => bp.prefix == p.prefix && bp.name == p.name)) {
                     base.players.push(p);

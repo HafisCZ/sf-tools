@@ -82,6 +82,38 @@ class SFItem {
         return (this.Type * 37 + this.PicIndex * 83 + this.DamageMin * 1731 + this.DamageMax * 162) % (max + 1);
     }
 
+    getBlacksmithSocketPrice () {
+        if (this.type == 0 || this.Type == 2 || this.Type > 10) {
+            return [0, 0];
+        } else {
+            var num = this.getItemLevel();
+            var quality = this.getBlacksmithQuality();
+            var num2 = 500;
+            var num3 = 0;
+
+            switch (quality) {
+                case 1: {
+                    num3 = 25;
+                    break;
+                }
+                case 2: {
+                    num3 = 50;
+                    break;
+                }
+                case 3: {
+                    num3 = 100;
+                    break;
+                }
+                default: {
+                    num2 = 0;
+                    break;
+                }
+            }
+
+            return [Math.floor(num * num2 / 100), Math.max(10, Math.floor(num * num3 / 100) * 10)];
+        }
+    }
+
     getBlacksmithUpgradePrice () {
         if (this.Type == 0 || this.Type > 10) {
             return [0, 0];
