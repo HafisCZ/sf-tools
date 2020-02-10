@@ -293,7 +293,8 @@ const ReservedHeaders = {
         group.add('Last Active', header, {
             width: 160,
         }, cell => {
-            return CellGenerator.Cell(formatDate(cell.player.LastOnline), CompareEval.evaluate(cell.player.getInactiveDuration(), header.color), '', last);
+            var a = cell.player.getInactiveDuration();
+            return CellGenerator.Cell(CompareEval.evaluate(a, header.value) || formatDate(cell.player.LastOnline), CompareEval.evaluate(a, header.color), '', last);
         }, null, player => player.LastOnline);
     },
     'Equipment': function (group, header, last) {
@@ -642,6 +643,18 @@ const SP_KEYWORD_HEADER_RESERVED = Object.keys(ReservedHeaders);
 const SP_KEYWORD_BOOL = [ 'on', 'off' ];
 const SP_KEYWORD_EQ = [ 'above', 'below', 'or', 'equal', 'default' ];
 
+const SP_KEYWORD_EQ_MAP = {
+    'above or equal': 'ae',
+    'below or equal': 'be',
+    'equal or above': 'ae',
+    'equal or below': 'be',
+    'above': 'a',
+    'below': 'b',
+    'equal': 'e',
+    'default': 'd'
+};
+const SP_KEYWORD_EQ_REGEX = new RegExp(Object.keys(SP_KEYWORD_EQ_MAP).join('|'), 'gi');
+
 const SP_KEYWORD_CONSTANTS = {
     'green': '#00c851',
     'orange': '#ffbb33',
@@ -652,39 +665,40 @@ const SP_KEYWORD_CONSTANTS = {
     '1day': '3',
     '3days': '4',
     '7days': '5',
-    '21days': '6'
+    '21days': '6',
+    'mount10': '1',
+    'mount20': '2',
+    'mount30': '3',
+    'mount50': '4',
+    'none': '0'
 };
 
 // Setting parser
 const SettingsParser = (function () {
     // Helper functions
-    function parseArrayParameterArgument(text) {
-        var arr = text ? text.split(' ') : [];
-        if (arr.length == 2 && isCSSColor(arr[1])) {
-            if (arr[0] == 'default') {
-                return [ 'd', 0, arr[1] ];
+    function split3 (text, delim) {
+        var i = text.indexOf(delim);
+        if (i == -1) {
+            return [ text ];
+        } else {
+            var b = text.substring(i + delim.length);
+            var j = b.indexOf(delim);
+            if (j == -1) {
+                return [ text.substring(0, i), b ];
             } else {
-                return null;
+                return [ text.substring(0, i), b.substring(0, j), b.substring(j + delim.length).trim() ];
             }
-        } else if (arr.length == 3 && !isNaN(arr[1]) && isCSSColor(arr[2])) {
-            if (arr[0] == 'equal') {
-                return [ 'e', Number(arr[1]), arr[2] ];
-            } else if (arr[0] == 'above') {
-                return [ 'a', Number(arr[1]), arr[2] ];
-            } else if (arr[0] == 'below') {
-                return [ 'b', Number(arr[1]), arr[2] ];
-            } else {
-                return null;
-            }
-        } else if (arr.length == 5 && !isNaN(arr[3]) && isCSSColor(arr[4])) {
-            var x = arr.slice(0, 3).join(' ');
-            if (x == 'equal or above' || x == 'above or equal') {
-                return [ 'ae', Number(arr[3]), arr[4] ];
-            } else if (x == 'equal or below' || x == 'below or equal') {
-                return [ 'be', Number(arr[3]), arr[4] ];
-            } else {
-                return null;
-            }
+        }
+    }
+
+    function parseArrayParameterArgument(text, color) {
+        if (text) {
+            var val = text.replace(SP_KEYWORD_EQ_REGEX, matched => SP_KEYWORD_EQ_MAP[matched]);
+            var arr, [ eq, a, b ] = arr = split3(val, ' ');
+
+            if (arr.length == 2 && eq == 'd' && (!color || isCSSColor(a))) return [ eq, 0, a ];
+            else if (arr.length == 3 && Object.values(SP_KEYWORD_EQ_MAP).includes(eq) && !isNaN(a) && (!color || isCSSColor(b))) return [ eq, Number(a), b ];
+            else return null;
         } else {
             return null;
         }
@@ -856,9 +870,9 @@ const SettingsParser = (function () {
                 else if (SP_KEYWORD_PARAMETER_NUMBER.includes(key)) this.addNumberParam(key, arg);
                 else if (SP_KEYWORD_PARAMETER_STRING.includes(key)) this.addStringParam(key, arg);
                 else if (SP_KEYWORD_PARAMETER_ARRAY.includes(key)) {
-                    var color = parseArrayParameterArgument(arg);
-                    if (color) {
-                        this.addArrayParam(key, color);
+                    var value = parseArrayParameterArgument(arg, key == 'color');
+                    if (value) {
+                        this.addArrayParam(key, value);
                     }
                 } else if (SP_KEYWORD_HEADER == key) this.addHeader(arg);
                 else if (SP_KEYWORD_CATEGORY == key) this.addCategory(arg);
