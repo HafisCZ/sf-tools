@@ -129,6 +129,7 @@ const Database = new (class {
 
         for (var file of files) {
             for (var data of file.groups) {
+                data.timestamp = file.timestamp;
                 let group = new SFGroup(data);
 
                 if (!tempGroups[group.Identifier]) {
@@ -138,6 +139,7 @@ const Database = new (class {
             }
 
             for (var data of file.players) {
+                data.timestamp = file.timestamp;
                 let player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
 
                 let gid = player.hasGuild() ? Object.keys(tempGroups).find(id => getAtSafe(tempGroups, id, file.timestamp).Name == player.Group.Name) : null;

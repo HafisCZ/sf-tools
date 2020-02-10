@@ -270,6 +270,7 @@ class SFGroup {
         this.Rank = data.rank;
         this.Members = data.members;
         this.Own = data.own;
+        this.Timestamp = data.timestamp;
 
         this.MemberCount = data.save[3];
         this.Honor = data.save[13];
@@ -307,7 +308,7 @@ class SFGroup {
 
 class SFPlayer {
     constructor (data) {
-
+        this.Timestamp = data.timestamp;
     }
 
     hasGuild () {
@@ -315,7 +316,15 @@ class SFPlayer {
     }
 
     getInactiveDuration () {
-        return 0;
+        var dif = this.Timestamp - this.LastOnline;
+        if (dif < 900000) return 0;
+        else if (dif < 3600000) return 1;
+        else if (dif < 43200000) return 2;
+        else if (dif < 86400000) return 3;
+        else if (dif < 259200000) return 4;
+        else if (dif < 604800000) return 5;
+        else if (dif < 1814400000) return 6;
+        else return 7;
     }
 }
 

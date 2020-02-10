@@ -645,7 +645,14 @@ const SP_KEYWORD_EQ = [ 'above', 'below', 'or', 'equal', 'default' ];
 const SP_KEYWORD_CONSTANTS = {
     'green': '#00c851',
     'orange': '#ffbb33',
-    'red': '#ff3547'
+    'red': '#ff3547',
+    '15min': '0',
+    '1hour': '1',
+    '12hours': '2',
+    '1day': '3',
+    '3days': '4',
+    '7days': '5',
+    '21days': '6'
 };
 
 // Setting parser
@@ -699,12 +706,12 @@ const SettingsParser = (function () {
                 var [ wordPart, ... commentPart ] = row.split('#');
                 var words, [a, ... b] = words = wordPart.split(' ');
 
-                b = b.join('&nbsp;');
+                b = b.join(' ');
 
                 var rcontent = [];
 
                 if (SP_KEYWORD_HEADER == a && SP_KEYWORD_HEADER_RESERVED.includes(b)) {
-                    content.push(`<span class="ta-keyword">${ a }</span>&nbsp;<span class="ta-reserved">${ b }</span>`);
+                    content.push(`<span class="ta-keyword">${ a }</span>&nbsp;<span class="ta-reserved">${ b.replace(/ /, '&nbsp;') }</span>`);
                     continue;
                 }
 
