@@ -313,6 +313,10 @@ class SFPlayer {
     hasGuild () {
         return this.Group.Identifier != null;
     }
+
+    getInactiveDuration () {
+        return 0;
+    }
 }
 
 class SFOtherPlayer extends SFPlayer {
@@ -454,7 +458,7 @@ class SFOtherPlayer extends SFPlayer {
             Warriors: data.units[1],
             Mages: data.units[2],
             Archers: data.units[3],
-            Honor: data.fortresshonor,
+            Rank: data.fortressrank,
             Fortress: dataType.long(),
             LaborerQuarters: dataType.long(),
             WoodcutterGuild: dataType.long(),
@@ -686,7 +690,7 @@ class SFOwnPlayer extends SFPlayer {
             Warriors: data.units[1],
             Mages: data.units[2],
             Archers: data.units[3],
-            Honor: data.fortresshonor,
+            Rank: data.fortressrank,
             Fortress: dataType.long(),
             LaborerQuarters: dataType.long(),
             WoodcutterGuild: dataType.long(),

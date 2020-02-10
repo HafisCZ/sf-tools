@@ -8,7 +8,6 @@
 
 body {
     margin-top: 5em;
-    margin-bottom: 5em;
     height: auto;
     overflow-y: scroll !important;
 }
@@ -61,6 +60,10 @@ body.dimmed .menu {
 
 .ffgreen {
     color: green !important;
+}
+
+.sf-container {
+    margin-bottom: 5em;
 }
 
 input:disabled {
@@ -292,4 +295,59 @@ h3.file-selected {
 .fi-left {
     left: -0.5em;
     position: absolute;
+}
+
+.ta-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.ta-content {
+    position: absolute;
+    border: 1px solid transparent;
+    pointer-events: none;
+    color: black;
+}
+
+.ta-area {
+    color: transparent !important;
+    caret-color: black;
+    max-height: calc(100vh - 12em) !important;
+    height: calc(100vh - 12em) !important;
+    resize: none !important;
+}
+
+.ta-area::selection {
+    color: transparent;
+}
+
+.ta-keyword {
+    text-shadow: -0.06ex 0 black, 0.06ex 0 black;
+}
+
+.ta-reserved {
+    text-shadow: -0.06ex 0 #b300b3, 0.06ex 0 #b300b3;
+    color: #b300b3;
+}
+
+.ta-color {
+    text-decoration: underline;
+}
+
+.ta-constant {
+    color: #175e5a;
+}
+
+.ta-boolean-on {
+    text-shadow: -0.06ex 0 green, 0.06ex 0 green;
+    color: green;
+}
+
+.ta-boolean-off {
+    text-shadow: -0.06ex 0 red, 0.06ex 0 red;
+    color: red;
+}
+
+.ta-comment {
+    color: #696969;
 }

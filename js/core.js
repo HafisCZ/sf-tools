@@ -426,13 +426,13 @@ const Storage = new (class {
             }
 
             for (var p of file.players) {
-                if (!base.players.find(bp => bp.prefix == p.prefix && bp.name == p.name)) {
+                if (!base.players.find(bp => bp.prefix == p.prefix && bp.id == p.id)) {
                     base.players.push(p);
                 }
             }
 
             for (var g of file.groups) {
-                if (!base.groups.find(bg => bg.prefix == g.prefix && bg.name == g.name)) {
+                if (!base.groups.find(bg => bg.prefix == g.prefix && bg.id == g.id)) {
                     base.groups.push(g);
                 }
             }

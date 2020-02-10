@@ -314,7 +314,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     }
 
     // Table columns
-    if (Config.exists(groupCurrent.Identifier)) {
+    if (Settings.exists(groupCurrent.Identifier)) {
         $('#container-detail-settings')[0].style.setProperty('background', '#21ba45', 'important');
         $('#container-detail-settings')[0].style.setProperty('color', 'white', 'important');
     } else {
@@ -323,10 +323,10 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     }
 
     // Load settings
-    var config = Config.load(groupCurrent.Identifier);
+    var config = Settings.load(groupCurrent.Identifier);
 
     // Create table
-    var table = new Table(config.getData());
+    var table = new Table(config);
     var width = table.width();
 
     if (width < 1127) {
@@ -364,16 +364,16 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
         var header = $(this).text();
         State.setSort(header, State.getSort() == header ? (State.getSortStyle() + 1) % 3 : 1);
         Handle.call(EVT_GROUP_LOAD_TABLE);
-    })
+    });
 });
 
 Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
-    var config = State.getGroupID() ? Config.load(State.getGroupID()) : Config.empty();
+    var config = State.getGroupID() ? Settings.load(State.getGroupID()) : Settings.empty();
     var player = Database.Players[identifier][timestamp];
 
     $('#modal-player').html(`
         <div class="ui text-center extreme header margin-none-bottom padding-none-bottom">${ player.Name }</div>
-        <div class="ui text-center huge header padding-none-top margin-remove-top">${ PLAYER_CLASS[player.Class] } ${ player.Level }</div>
+        <div class="ui text-center huge header padding-none-top margin-remove-top">${ PLAYER_CLASS[player.Class] } <span style="color: ${ CompareEval.evaluate(player.Level, config.getEntrySafe('Level').color) }">${ player.Level }</span></div>
         <div class="content text-center">
             <div class="ui two columns grid">
                 <div class="column">
@@ -399,13 +399,13 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         ${ player.hasGuild() ? `
                             ${ player.Group.Own ? `
                                 <div class="left aligned column font-big">Treasure</div>
-                                <div class="column" style="color: ${ Color.Get(player.Group.Treasure, config.findEntrySafe('Treasure').colors) };">${ player.Group.Treasure }</div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Treasure, config.getEntrySafe('Treasure').color) };">${ player.Group.Treasure }</div>
                                 <div class="left aligned column font-big">Instructor</div>
-                                <div class="column" style="color: ${ Color.Get(player.Group.Instructor, config.findEntrySafe('Instructor').colors) }">${ player.Group.Instructor }</div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Instructor, config.getEntrySafe('Instructor').color) }">${ player.Group.Instructor }</div>
                                 <div class="left aligned column font-big">Pet</div>
-                                <div class="column" style="color: ${ Color.Get(player.Group.Pet, config.findEntrySafe('Pet').colors) }">${ player.Group.Pet }</div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Pet, config.getEntrySafe('Pet').color) }">${ player.Group.Pet }</div>
                                 <div class="left aligned column font-big">Knights</div>
-                                <div class="column" style="color: ${ Color.Get(player.Fortress.Knights, config.findEntrySafe('Knights').colors) }">${ player.Fortress.Knights }</div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Knights, config.getEntrySafe('Knights').color) }">${ player.Fortress.Knights }</div>
                                 <div class="column"><br></div>
                                 <div class="column"></div>
                             ` : '' }
@@ -431,13 +431,13 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                 <div class="column">
                     <div class="ui three columns grid player-small">
                         <div class="left aligned column font-big">Scrapbook</div>
-                        <div class="column" style="color: ${ Color.Get(100 * player.Book / SCRAPBOOK_COUNT, config.findEntrySafe('Album').colors) }">${ Number(100 * player.Book / SCRAPBOOK_COUNT).toFixed(2) }%</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(100 * player.Book / SCRAPBOOK_COUNT, config.getEntrySafe('Album').color) }">${ Number(100 * player.Book / SCRAPBOOK_COUNT).toFixed(2) }%</div>
                         <div class="column">${ player.Book } out of ${ SCRAPBOOK_COUNT }</div>
                         <div class="left aligned column font-big">Mount</div>
-                        <div class="column" style="color: ${ Color.Get(player.Mount, config.findEntrySafe('Mount').colors) }">${ player.Mount ? (PLAYER_MOUNT[player.Mount] + '%') : 'None' }</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Mount, config.getEntrySafe('Mount').color) }">${ player.Mount ? (PLAYER_MOUNT[player.Mount] + '%') : 'None' }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Achievements</div>
-                        <div class="column" style="color: ${ Color.Get(player.Achievements.Owned, config.findEntrySafe('Awards').colors) }">${ Math.trunc(100 * player.Achievements.Owned / ACHIEVEMENT_COUNT) }%${ config.findEntrySafe('Awards').hydra && player.Achievements.Dehydration ? '<span> H</span>' : '' }</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Achievements.Owned, config.getEntrySafe('Awards').color) }">${ Math.trunc(100 * player.Achievements.Owned / ACHIEVEMENT_COUNT) }%${ config.getEntrySafe('Awards').hydra && player.Achievements.Dehydration ? '<span> H</span>' : '' }</div>
                         <div class="column">${ player.Achievements.Owned } out of ${ ACHIEVEMENT_COUNT }</div>
                         <div class="left aligned column font-big">Health Bonus</div>
                         <div class="column">${ player.Dungeons.Player }%</div>
@@ -449,28 +449,28 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="column"></div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Potions</div>
-                        <div class="column" style="color: ${ Color.Get(player.Potions[0].Size, config.findEntrySafe('Potions').colors) }">${ player.Potions[0].Size ? `${ player.Potions[0].Size }%` : '' }</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Potions[0].Size, config.getEntrySafe('Potions').color) }">${ player.Potions[0].Size ? `${ player.Potions[0].Size }%` : '' }</div>
                         <div class="left aligned column">${ player.Potions[0].Size ? POTIONS[player.Potions[0].Type] : '' }</div>
                         <div class="left aligned column font-big"><br></div>
-                        <div class="column" style="color: ${ Color.Get(player.Potions[1].Size, config.findEntrySafe('Potions').colors) }">${ player.Potions[1].Size ? `${ player.Potions[1].Size }%` : '' }</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Potions[1].Size, config.getEntrySafe('Potions').color) }">${ player.Potions[1].Size ? `${ player.Potions[1].Size }%` : '' }</div>
                         <div class="left aligned column">${ player.Potions[1].Size ? POTIONS[player.Potions[1].Type] : '' }</div>
                         <div class="left aligned column font-big"><br></div>
-                        <div class="column" style="color: ${ Color.Get(player.Potions[2].Size, config.findEntrySafe('Potions').colors) }">${ player.Potions[2].Size ? `${ player.Potions[2].Size }%` : '' }</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Potions[2].Size, config.getEntrySafe('Potions').color) }">${ player.Potions[2].Size ? `${ player.Potions[2].Size }%` : '' }</div>
                         <div class="left aligned column">${ player.Potions[2].Size ? POTIONS[player.Potions[2].Type] : '' }</div>
                         <div class="column"><br></div>
                         <div class="column"></div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Fortress</div>
-                        <div class="column" style="color: ${ Color.Get(player.Fortress.Fortress, config.findEntrySafe('Fortress').colors) }">${ player.Fortress.Fortress }</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Fortress, config.getEntrySafe('Fortress').color) }">${ player.Fortress.Fortress }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Upgrades</div>
-                        <div class="column" style="color: ${ Color.Get(player.Fortress.Upgrades, config.findEntrySafe('Upgrades').colors) }">${ player.Fortress.Upgrades }</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Upgrades, config.getEntrySafe('Upgrades').color) }">${ player.Fortress.Upgrades }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Honor</div>
-                        <div class="column" style="color: ${ Color.Get(player.Fortress.Honor, config.findEntrySafe('Honor').colors) }">${ player.Fortress.Honor }</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Honor, config.getEntrySafe('Honor').color) }">${ player.Fortress.Honor }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Gem Mine</div>
-                        <div class="column" style="color: ${ Color.Get(player.Fortress.GemMine, config.findEntrySafe('GemMine').colors) }">${ player.Fortress.GemMine }</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.GemMine, config.getEntrySafe('GemMine').color) }">${ player.Fortress.GemMine }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Treasury</div>
                         <div class="column">${ player.Fortress.Treasury }</div>
@@ -508,6 +508,7 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
     }).modal('show');
 });
 
+// Show group settings
 Handle.bind(EVT_GROUP_SETTINGS_SHOW, function () {
     $('#modal-custom-settings').modal({
         centered: false
@@ -515,188 +516,33 @@ Handle.bind(EVT_GROUP_SETTINGS_SHOW, function () {
     Handle.call(EVT_GROUP_SETTINGS_LOAD);
 });
 
+// Load group settings
 Handle.bind(EVT_GROUP_SETTINGS_LOAD, function () {
-    var data = Config.load(State.getGroupID()).getData();
-    $('#modal-custom-settings-manual').val(JSON.stringify(data, null, 1));
-    fillStandartConfiguration(data, true);
-
-    $('#modal-custom-settings .ui.dropdown').dropdown();
+    $('#sc-code textarea').val(Settings.load(State.getGroupID()).getCode());
+    $('#sc-code textarea').trigger('input');
 });
 
+// Save group settings
 Handle.bind(EVT_GROUP_SETTINGS_SAVE, function () {
-    try {
-        var config = JSON.parse($('#modal-custom-settings-manual').val());
-        if (!config.categories) {
-            throw 'iconf';
-        }
-        Config.save(config, State.getGroupID());
-        $('#modal-custom-settings').modal('hide');
-        Handle.call(EVT_GROUP_LOAD_TABLE);
-    } catch (exception) {
-        $('#modal-custom-settings-manual').transition('shake');
-    }
-});
-
-Handle.bind(EVT_GROUP_SETTINGS_CLEAR, function () {
-    Config.remove(State.getGroupID());
+    Settings.save($('#sc-code textarea').val(), State.getGroupID());
     $('#modal-custom-settings').modal('hide');
     Handle.call(EVT_GROUP_LOAD_TABLE);
 });
 
+// Clear settings group
+Handle.bind(EVT_GROUP_SETTINGS_CLEAR, function () {
+    Settings.remove(State.getGroupID());
+    $('#modal-custom-settings').modal('hide');
+    Handle.call(EVT_GROUP_LOAD_TABLE);
+});
+
+// Initialization
 Handle.bind(EVT_INIT, function () {
-    let highlighting = `
-        ${ UI.getHLEntryBlock('Level', 'level') }
-        ${ UI.getHLEntryBlock('Scrapbook', 'scrapbook') }
-        ${ UI.getHLDropdownBlock('Mount', 'mount', { 0: 'None', 1: '10%', 2: '20%', 3: '30%', 4: '50%' }) }
-        ${ UI.getHLEntryBlock('Achievements', 'achievements') }
-        ${ UI.getHLDropdownBlock('Potions', 'potions', { 0: 'None', 10: '10%', 15: '15%', 25: '25%' }) }
-        ${ UI.getHLEntryBlock('Guild Treasure', 'treasure') }
-        ${ UI.getHLEntryBlock('Guild Instructor', 'instructor') }
-        ${ UI.getHLEntryBlock('Pet', 'pet') }
-        ${ UI.getHLEntryBlock('Knights', 'knights') }
-        ${ UI.getHLEntryBlock('Fortress', 'fortress') }
-        ${ UI.getHLEntryBlock('Gem Mine', 'gemmine') }
-        ${ UI.getHLEntryBlock('Fortress Upgrades', 'fortressupgrades') }
-        ${ UI.getHLDiffBlock('Fortress Honor', 'fortresshonor') }
-    `;
-
-    let layout = `
-        <div class="two fields">
-            ${ UI.getDLBlock('Player Class', 'show-class', [ 'Hide', 'Show' ]) }
-            ${ UI.getDLBlock('Player ID', 'show-id', [ 'Hide', 'Show' ]) }
-        </div>
-        <div class="two fields">
-            ${ UI.getDLBlock('Player Rank', 'show-rank', [ 'Hide', 'Show' ]) }
-            ${ UI.getDLBlock('Group Role', 'show-role', [ 'Hide', 'Show' ]) }
-        </div>
-        <div class="two fields">
-            ${ UI.getDLBlock('Achievements', 'show-achievements', [ 'Hide', 'Show' ]) }
-            ${ UI.getDLBlock('Hydra', 'show-hydra', [ 'Hide', 'Icon' ]) }
-        </div>
-        <div class="two fields">
-            ${ UI.getDLBlock('Scrapbook', 'show-book-style', [ 'Show percentage', 'Show item count' ]) }
-        </div>
-        <div class="two fields">
-            ${ UI.getDLBlock('Guild Treasure', 'show-treasure', [ 'Hide', 'Show' ]) }
-            ${ UI.getDLBlock('Fortress Honor', 'show-fortress-honor', [ 'Hide', 'Show' ]) }
-        </div>
-        <div class="two fields">
-            ${ UI.getDLBlock('Guild Instructor', 'show-instructor', [ 'Hide', 'Show' ]) }
-            ${ UI.getDLBlock('Fortress Upgrades', 'show-fortress-upgrades', [ 'Hide', 'Show' ]) }
-        </div>
-        <div class="two fields">
-            ${ UI.getDLBlock('Guild Pet', 'show-pet', [ 'Hide', 'Show' ]) }
-            ${ UI.getDLBlock('Gem Mine', 'show-gemmine', [ 'Hide', 'Show' ]) }
-        </div>
-        <div class="two fields">
-            ${ UI.getDLBlock('Knights', 'show-knights', [ 'Hide', 'Show', 'Show maximum' ]) }
-            ${ UI.getDLBlock('Fortress', 'show-fortress', [ 'Hide', 'Show' ]) }
-        </div>
-        <div class="two fields">
-            ${ UI.getDLBlock('Group Statistics', 'show-group', [ 'Hide', 'Show', 'Show including Member History' ]) }
-            ${ UI.getDLBlock('Difference Style', 'show-difference-style', [ 'Default', 'Brackets' ]) }
-        </div>
-        <div class="two fields">
-            ${ UI.getDLBlock('Tower', 'show-tower', [ 'Hide', 'Show' ]) }
-            ${ UI.getDLBlock('Portal', 'show-portal', [ 'Hide', 'Show' ]) }
-        </div>
-    `;
-
-    $('[data-manual]').html(`
-        <h2 class="ui centered header">Manual</h2>
-        <b>You can remove the line or use <code>false</code>, <code>0</code> to disable a certain function</b><br>
-        <b>You have to include <code>(required)</code> settings</b><br>
-        <h3 class="ui header">Global</h3>
-        <p>
-            <b>categories</b><code>(required)</code><br>
-            - Array with categories within the table<br>
-            <b>brackets</b><br>
-            - Use <code>true</code> to show brackets around differences<br>
-            <b>group</b><br>
-            - Use <code>1</code> to show guild statistics<br>
-            - Use <code>2</code> to show guild statistics with join/leave member list<br>
-        </p>
-        <h3 class="ui header">Category</h3>
-        <p>
-            <b>name</b><code>(required)</code><br>
-            - Category name<br>
-            - Special names: <code>Potions</code><br>
-            <b>headers</b><br>
-            - Array with headers within this category<br>
-            <b>width</b><br>
-            - Width of the columns<br>
-            - Can be only applied to <code>Potions</code><br>
-        </p>
-        <h3 class="ui header">Header</h3>
-        <p>
-            <b>name</b><code>(required)</code><br>
-            - Header type<br>
-            - Available names: <code>Class</code>, <code>ID</code>, <code>Rank</code>, <code>Role</code>, <code>Level</code>, <code>Album</code>, <code>Mount</code>, <code>Awards</code>, <code>Treasure</code>, <code>Instructor</code>, <code>Pet</code>, <code>Knights</code>, <code>Fortress</code>, <code>GemMine</code>, <code>Honor</code>, <code>Upgrades</code>, <code>Tower</code>, <code>Portal</code>, <code>Equipment</code>, <code>BuildingNow</code></br>
-            <b>diff</b><br>
-            - Use <code>true</code> to show difference<br>
-            <b>colors</b><br>
-            - Array with colors for highlighting<br>
-            - First value is default color, others follow format <code>[ x, color ]</code> that will highlight any values equal or better than <code>x</code> with specified color</br>
-            - You can can use any valid CSS color values<br>
-            <b>width</b><br>
-            - Width of the column<br>
-            <b>stat</b><br>
-            - Use <code>true</code> to enable statistics for this field<br>
-            <b>percentage</b><br>
-            - Use <code>true</code> to show percentage instead of real value<br>
-            - Can be only applied to <code>Mount</code>, <code>Album</code><br>
-            <b>hydra</b><br>
-            - Use <code>true</code> to show if player has slain the Hydra<br>
-            - Can be only applied to <code>Awards</code><br>
-        </p>
-        <h3 class="ui header">Custom</h3>
-        <p>
-            <b>name</b><code>(required)</code><br>
-            - Name of the field<br>
-            <b>path</b><code>(required)</code><br>
-            - Variable shown with the field<br>
-            <b>width</b><br>
-            - Width of the column<br>
-            <b>diff</b><br>
-            - Use <code>true</code> to show difference<br>
-            <b>colors</b><br>
-            - Array with colors for highlighting<br>
-            - First value is default color, others follow format <code>[ x, color ]</code> that will highlight any values equal or better than <code>x</code> with specified color</br>
-            - You can can use any valid CSS color values<br>
-            <b>values</b><br>
-            - Array with values that will replace original values<br>
-            - First value is default value, others follow format <code>[ x, text ]</code> that will show text for any values equal or higher than <code>x</code></br>
-            <b>stat</b><br>
-            - Use <code>true</code> to enable statistics for this field<br>
-            <b>flip</b><br>
-            - Use <code>true</code> to treat lower value as better
-        </p>
-    `);
-
-    $('#container-settings-highlighting').html(highlighting);
-    $('#container-settings-layout').html(layout);
-
-    $('#modal-custom-settings-highlighting').html(highlighting.replace(/data-settings/g, 'data-custom-settings'));
-    $('#modal-custom-settings-layout').html(layout.replace(/data-settings/g, 'data-custom-settings'));
-
-    $('#container-detail-sort').state();
+    // Semantic elements
     $('.ui.dropdown').dropdown();
-    $('.ui.toggle.button:not(#container-detail-sort)').state({
-        text: {
-            inactive: 'Disabled',
-            active: 'Enabled'
-        }
-    });
     $('.menu .item').tab();
 
-    $('[data-settings]').on('change click', () => {
-        $('#container-settings-manual').val(JSON.stringify(createConfigurationObject(false), null, 1));
-    });
-
-    $('[data-custom-settings]').on('change click', () => {
-        $('#modal-custom-settings-manual').val(JSON.stringify(createConfigurationObject(true), null, 1));
-    });
-
+    // Player search
     $('#psearch, #porderby').on('change input', function () {
         var order = $('#porderby').val();
         var terms = $('#psearch').val().toLowerCase().split(' ').filter(term => term.length && term != ' ');
@@ -732,29 +578,116 @@ Handle.bind(EVT_INIT, function () {
             Handle.call(EVT_PLAYER_LOAD, player.Latest.Identifier, player.LatestTimestamp);
         });
     });
-});
 
-Handle.bind(EVT_SETTINGS_SAVE, function () {
-    try {
-        var config = JSON.parse($('#container-settings-manual').val());
-        if (!config.categories) {
-            throw 'iconf';
-        }
-        Config.save(config);
-        Handle.call(EVT_SETTINGS_LOAD);
-    } catch (exception) {
-        $('#container-settings-manual').transition('shake');
+    // Settings syntax highlighting
+    function enableHighlighting (el) {
+        var $a = el;
+        var $b = $a.children('.ta-content');
+        var $c = $a.children('textarea');
+        $b.css('top', $c.css('padding-top'));
+        $b.css('left', $c.css('padding-left'));
+        $b.css('margin-right', '30px');
+        $b.css('font', $c.css('font'));
+        $b.css('font-family', $c.css('font-family'));
+        $b.css('line-height', $c.css('line-height'));
+        $c.css('overflow-x', 'hidden');
+        $c.on('input', function () {
+            var val = $(this).val();
+            $b.html(SettingsParser.highlight(val));
+        });
+        $c.trigger('input');
+        $c.on('scroll', function () {
+            var scroll = $(this).scrollTop();
+            $b.css('transform', scroll > 0 ? `translateY(${ -scroll }px)` : '');
+            $b.css('clip-path', `inset(${ scroll }px 0px 0px 0px)`);
+        });
     }
+
+    enableHighlighting($('#sc-code'));
+    enableHighlighting($('#sg-code'));
+
+    $('#sg-tutorial, #sc-tutorial').css('line-height', '20px');
+    $('#sg-tutorial, #sc-tutorial').html(`
+        <b>Global</b></br>
+        <div>
+            Any options used before creating a category will be applied to all headers.
+        </div>
+        </br>
+        <b>Syntax</b></br>
+        <div class="ui grid">
+            <div class="one wide column"></div>
+            <div class="five wide column">
+                Create category</br>
+                Create header</br>
+                Show member list</br>
+                Show difference</br>
+                Show in statistics</br>
+                Show hydra</br>
+                Show as percentage</br>
+                Show maximum knights</br>
+                Set width</br>
+                Set color rule</br>
+                Set value rule</br>
+                Specify path
+            </div>
+            <div class="ten wide column">
+                <code>category NAME</code></br>
+                <code>header NAME</code></br>
+                <code>members BOOL</code></br>
+                <code>difference BOOL</code></br>
+                <code>statistics BOOL</code></br>
+                <code>hydra BOOL</code></br>
+                <code>percentage BOOL</code></br>
+                <code>maximum BOOL</code></br>
+                <code>width NUMBER</code></br>
+                <code>color RULE</code></br>
+                <code>value RULE</code></br>
+                <code>path PATH</code>
+            </div>
+        </div>
+        </br>
+        <b>Predefined names</b></br>
+        <div>
+            <b>Headers</b>: ${ SP_KEYWORD_HEADER_RESERVED.map(c => `<code>${ c }</code>`).join(', ') }</br>
+            <b>Categories</b>: ${ SP_KEYWORD_CATEGORY_RESERVED.map(c => `<code>${ c }</code>`).join(', ') }
+        </div>
+        </br>
+        <b>Bool values</b></br>
+        <div>
+            Use <code>on</code> to enable or <code>off</code> to disable an option
+        </div>
+        </br>
+        <b>Rules</b></br>
+        <div>
+            You can specify rule <code>default OUT</code> that will be used if none match.</br>
+            Normal rules can be specified by using <code>FUNCTION VALUE OUT</code>.</br>
+            </br>
+            <code>OUT</code> is a value or color that is shown when the rule is applied.</br>
+            <code>VALUE</code> is a value used to determine if the rule should be applied.</br>
+            <code>FUNCTION</code> can be any of: <code>equal</code>, <code>above</code>, <code>below</code>, <code>above or equal</code>, <code>below or equal</code>, <code>equal or above</code>, <code>below or above</code></br>
+        </div>
+        </br>
+        <b>Other</b></br>
+        <div>
+            Write a line comment by adding <code>#</code> in front of it.</br>
+            Use any of predefined constants:</br>
+            ${ Object.keys(SP_KEYWORD_CONSTANTS).map(c => `<code>@${ c }</code>`).join(', ') }
+        </div>
+    `);
 });
 
+// Saving global settings
+Handle.bind(EVT_SETTINGS_SAVE, function () {
+    Settings.save($('#sg-code textarea').val());
+});
+
+// Loading global settings
 Handle.bind(EVT_SETTINGS_LOAD, function () {
-    var data = Config.load().getData();
-    $('#container-settings-manual').val(JSON.stringify(data, null, 1));
-    fillStandartConfiguration(data, false);
-
-    $('.ui.dropdown').dropdown();
+    $('#sg-code textarea').val(Settings.load().getCode());
+    $('#sg-code textarea').trigger('input');
 });
 
+// Loading player list
 Handle.bind(EVT_PLAYERS_LOAD, function () {
     State.unsetGroup();
     $('#psearch').val('').trigger('input');

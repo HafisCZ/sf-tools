@@ -46,13 +46,13 @@
             </div>
         </div>
 
-        <div class="ui main container hidden" id="container-browse">
+        <div class="ui main container hidden sf-container" id="container-browse">
             <div class="ui five column grid" id="container-browse-grid">
 
             </div>
         </div>
 
-        <div class="ui main container hidden" id="container-files">
+        <div class="ui main container hidden sf-container" id="container-files">
             <div class="ui grid">
                 <div class="twelve wide column" id="container-files-list">
 
@@ -105,54 +105,40 @@
         </div>
 
         <div class="ui main container hidden" id="container-settings">
-            <div class="ui three columns grid">
+            <div class="ui three columns middle aligned grid">
                 <div class="column">
-                    <div class="ui secondary menu">
-                        <a class="item active" data-tab="tab0">Standart</a>
-                        <a class="item" data-tab="tab1">Advanced</a>
-                    </div>
+
                 </div>
                 <div class="column">
-                    <h1 class="ui header centered">Configuration</h1>
+                    <h1 class="ui header text-white centered">Settings</h1>
                 </div>
                 <div class="column">
                     <button class="ui right floated secondary button" type="submit" id="container-settings-save">Save</button>
                     <button class="ui right floated button margin-medium-right" type="submit" id="container-settings-clear">Clear</button>
                 </div>
             </div>
-            <div class="ui tab basic segment active" data-tab="tab0" id="container-settings-auto">
-                <div class="ui two columns grid">
-                    <div class="column">
-                        <h2 class="ui centered header">Highlighting</h2>
-                        <div class="ui form" id="container-settings-highlighting">
-
-                        </div>
-                    </div>
-                    <div class="column">
-                        <h2 class="ui centered header">Layout</h2>
-                        <div class="ui form" id="container-settings-layout">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ui tab basic segment " data-tab="tab1">
+            <div class="ui basic segment">
                 <div class="ui two columns grid">
                     <div class="column">
                         <div class="ui form">
                             <div class="field">
-                                <textarea class="area-input" id="container-settings-manual"></textarea>
+                                <div class="ta-wrapper" id="sg-code">
+                                    <div class="ta-content">
+
+                                    </div>
+                                    <textarea class="ta-area"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="column" data-manual>
-
+                    <div class="column" id="sg-tutorial">
+                        Tutorial should be here :)
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="ui main container hidden" id="container-players">
+        <div class="ui main container hidden sf-container" id="container-players">
             <div class="ui middle aligned grid">
                 <div class="ten wide column">
                     <div class="ui fluid icon input">
@@ -186,7 +172,7 @@
             </div>
         </div>
 
-        <div class="ui main container hidden" id="container-detail" data-current-group="">
+        <div class="ui main container hidden sf-container" id="container-detail" data-current-group="">
             <div class="ui segment center aligned basic">
                 <div class="ui extreme header" id="container-detail-name"></div>
             </div>
@@ -242,15 +228,12 @@
         </div>
 
         <div class="ui basic large modal text-white" id="modal-custom-settings">
-            <div class="ui three columns grid">
+            <div class="ui three columns middle aligned grid">
                 <div class="seven wide column">
-                    <div class="ui secondary menu">
-                        <a class="item active text-white" data-tab="tab0">Standart</a>
-                        <a class="item text-white" data-tab="tab1">Advanced</a>
-                    </div>
+
                 </div>
                 <div class="two wide column">
-                    <h1 class="ui header text-white centered">Configuration</h1>
+                    <h1 class="ui header text-white centered">Settings</h1>
                 </div>
                 <div class="seven wide column">
                     <button class="ui right floated secondary button" type="submit" id="modal-custom-settings-save">Save</button>
@@ -258,33 +241,22 @@
                     <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-clear">Remove custom settings</button>
                 </div>
             </div>
-            <div class="ui tab basic segment active" data-tab="tab0" id="modal-custom-settings-auto">
-                <div class="ui two columns grid">
-                    <div class="column">
-                        <h2 class="ui centered header">Highlighting</h2>
-                        <div class="ui form" id="modal-custom-settings-highlighting">
-
-                        </div>
-                    </div>
-                    <div class="column">
-                        <h2 class="ui centered header">Layout</h2>
-                        <div class="ui form" id="modal-custom-settings-layout">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ui tab basic segment" data-tab="tab1">
+            <div class="ui basic segment">
                 <div class="ui two columns grid">
                     <div class="column">
                         <div class="ui form">
                             <div class="field">
-                                <textarea class="area-input" id="modal-custom-settings-manual"></textarea>
+                                <div class="ta-wrapper" id="sc-code">
+                                    <div class="ta-content">
+
+                                    </div>
+                                    <textarea class="ta-area"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="column" data-manual>
-
+                    <div class="column" id="sc-tutorial">
+                        Tutorial should be here :)
                     </div>
                 </div>
             </div>
