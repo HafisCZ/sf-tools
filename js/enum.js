@@ -66,30 +66,16 @@ const FIGHT_TYPES = {
 };
 
 function getFightTargetName (type, name, face) {
-    if (NAME_COMPANION[face]) {
-        return NAME_COMPANION[face];
+    switch (type) {
+        case FIGHT_TYPES.Quest: return getMonsterName(face);
+        case FIGHT_TYPES.Dungeon: return getMonsterName(face);
+        case FIGHT_TYPES.Tower: return getMonsterName(face);
+        case FIGHT_TYPES.PlayerPortal: return getMonsterName(face);
+        case FIGHT_TYPES.GuildPortal: return getMonsterName(face);
+        case FIGHT_TYPES.Shadow: return `Shadow ${ getMonsterName(face) }`;
+        case FIGHT_TYPES.Underworld: return getUnderworldUnitName(name);
+        default: return 'Unknown';
     }
-
-    if (isNaN(name)) {
-        return name;
-    } else {
-        switch (type) {
-            case FIGHT_TYPES.Quest: return getMonsterName(face);
-            case FIGHT_TYPES.Dungeon: return getMonsterName(face);
-            case FIGHT_TYPES.Tower: return getMonsterName(face);
-            case FIGHT_TYPES.PlayerPortal: return getMonsterName(face);
-            case FIGHT_TYPES.GuildPortal: return getMonsterName(face);
-            case FIGHT_TYPES.Shadow: return `Shadow ${ getMonsterName(face) }`;
-            case FIGHT_TYPES.Underworld: return getUnderworldUnitName(name);
-            default: return 'Unknown';
-        }
-    }
-}
-
-const NAME_COMPANION = {
-    391: 'Bert',
-    392: 'Mark',
-    393: 'Kunigunde'
 }
 
 function getUnderworldUnitName (id) {

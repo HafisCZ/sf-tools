@@ -653,6 +653,7 @@ const SP_KEYWORD_EQ_MAP = {
     'equal': 'e',
     'default': 'd'
 };
+
 const SP_KEYWORD_EQ_REGEX = new RegExp(Object.keys(SP_KEYWORD_EQ_MAP).join('|'), 'gi');
 
 const SP_KEYWORD_CONSTANTS = {

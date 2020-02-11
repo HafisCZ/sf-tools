@@ -16,6 +16,7 @@
 
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
+        <script src="js/playa.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
@@ -91,12 +92,80 @@
                     $(`[data-tab="${ $(this).val() }"]`).addClass('active');
                 });
 
-                function copyToClipboard (string) {
-                    var el = document.createElement('textarea');
-                    el.value = string;
+                function copyToClipboard (... tabs) {
+                    var content = [];
+
+                    // Convert all tabs into tables
+                    for (var tab of tabs) {
+                        var rows = [];
+
+                        Object.entries(tab.fighterA).forEach(([key, val]) => {
+                            if (val instanceof SFItem) {
+                                rows.push([ key ]);
+                                rows.push([ '', 'MinDmg', val.DamageMin ]);
+                                rows.push([ '', 'MaxDmg', val.DamageMax ]);
+                            } else if (key == 'Face') {
+                                rows.push([ key, val.Mouth ]);
+                            } else {
+                                rows.push([ key, val ]);
+                            }
+                        });
+
+                        Object.entries(tab.fighterB).forEach(([key, val]) => {
+                            if (val instanceof SFItem) {
+                                rows.push([ key ]);
+                                rows.push([ '', 'MinDmg', val.DamageMin ]);
+                                rows.push([ '', 'MaxDmg', val.DamageMax ]);
+                            } else if (key == 'Face') {
+                                rows.push([ key, val.Mouth ]);
+                            } else {
+                                rows.push([ key, val ]);
+                            }
+                        });
+
+                        rows.push([ 'index', 'attacker', 'target', 'type', 'damage' ]);
+                        tab.rounds.forEach((round, i) => {
+                            rows.push([ i, round.attacker.ID, round.target.ID, ATTACK_TYPES[round.attackType], round.attackDamage ]);
+                        });
+
+                        content.push(rows);
+                    }
+
+                    var maxColumns = Math.max(... content[0].map(r => r.length));
+                    var maxRows = Math.max(... content.map(r => r.length));
+
+                    var rows = [];
+                    for (var c of content) {
+                        for (var i = 0; i < maxRows; i++) {
+                            var x = [];
+                            if (c[i]) {
+                                x.push(... c[i].map(y => `<td>${ y }</td>`));
+                            }
+                            while (x.length < maxColumns) {
+                                x.push(`<td></td>`);
+                            }
+                            if (rows[i]) {
+                                rows[i].push(...x);
+                            } else {
+                                rows[i] = x;
+                            }
+                        }
+                    }
+
+                    // Create element
+                    var el = document.createElement('table');
+                    el.innerHTML = `<tbody>${ rows.map(r => `<tr>${ r.join('') }</tr>`).join('') }</tbody>`;
                     document.body.appendChild(el);
-                    el.select();
+
+                    // Create range, select element and copy
+                    var range = document.createRange();
+                    range.selectNode(el);
+                    window.getSelection().removeAllRanges();
+                    window.getSelection().addRange(range);
                     document.execCommand('copy');
+                    window.getSelection().removeAllRanges();
+
+                    // Destroy element
                     document.body.removeChild(el);
                 }
 
@@ -106,27 +175,18 @@
                     if ($('[data-tab]').length == 0) return;
                     var tab = tabs[$('[data-tab].active').attr('data-tab')];
 
-                    download(`${ tab.name }.json`, new Blob([
+                    download(`${ tab.fighterA.Name }/${ tab.fighterB.Name }.json`, new Blob([
                         JSON.stringify({
-                            name: tab.name,
-                            fa: tab.fa,
-                            fb: tab.fb,
-                            rounds: tab.rounds.map(r => {
+                            targetA: tab.fighterA,
+                            targetB: tab.fighterB,
+                            rounds: tab.rounds.map(round => {
                                 return {
-                                    crit: r.crit,
-                                    type: r.atype,
-                                    hpleft: r.healthleft,
-                                    damage: r.damage,
-                                    src: {
-                                        id: r.src.id,
-                                        name: r.src.name,
-                                        face: r.src.face
-                                    },
-                                    tar: {
-                                        id: r.tar.id,
-                                        name: r.tar.name,
-                                        face: r.tar.face
-                                    }
+                                    attackCrit: round.attackCrit,
+                                    attackType: round.attackType,
+                                    attackMissed: round.attackMissed,
+                                    attackDamage: round.attackDamage,
+                                    attacker: round.attacker.ID,
+                                    target: round.target.ID
                                 };
                             })
                         })
@@ -141,25 +201,16 @@
                     download(`fights.json`, new Blob([
                         JSON.stringify(tabs.map(tab => {
                             return {
-                                name: tab.name,
-                                fa: tab.fa,
-                                fb: tab.fb,
-                                rounds: tab.rounds.map(r => {
+                                targetA: tab.fighterA,
+                                targetB: tab.fighterB,
+                                rounds: tab.rounds.map(round => {
                                     return {
-                                        crit: r.crit,
-                                        type: r.atype,
-                                        hpleft: r.healthleft,
-                                        damage: r.damage,
-                                        src: {
-                                            id: r.src.id,
-                                            name: r.src.name,
-                                            face: r.src.face
-                                        },
-                                        tar: {
-                                            id: r.tar.id,
-                                            name: r.tar.name,
-                                            face: r.tar.face
-                                        }
+                                        attackCrit: round.attackCrit,
+                                        attackType: round.attackType,
+                                        attackMissed: round.attackMissed,
+                                        attackDamage: round.attackDamage,
+                                        attacker: round.attacker.ID,
+                                        target: round.target.ID
                                     };
                                 })
                             };
@@ -171,29 +222,12 @@
 
                 $('#fi-copy').on('click', function () {
                     if ($('[data-tab]').length == 0) return;
-                    var tab = tabs[$('[data-tab].active').attr('data-tab')];
-                    copyToClipboard(
-                        `name:\t${tab.name}\nfightera:\n${ Object.entries(tab.fa).map(kv => `${ kv[0] }\t${ kv[1] }`).join('\n') }\nfighterB:\n${ Object.entries(tab.fb).map(kv => `${ kv[0] }\t${ kv[1] }`).join('\n') }\nrounds:\n${ tab.rounds.map((r, i) => `${i}\t${r.src.id}\t${r.tar.id}\t${r.atype}\t${r.damage}`).join('\n') }`
-                    );
+                    copyToClipboard(tabs[$('[data-tab].active').attr('data-tab')]);
                 });
 
                 $('#fi-copyall').on('click', function () {
                     if ($('[data-tab]').length == 0) return;
-
-                    var columns = tabs.map(
-                        tab => `name:\t${tab.name}\t\t\t\t\nfightera:\t\t\t\t\t\n${ Object.entries(tab.fa).map(kv => `${ kv[0] }\t${ kv[1] }\t\t\t\t`).join('\n') }\nfighterB:\t\t\t\t\t\n${ Object.entries(tab.fb).map(kv => `${ kv[0] }\t${ kv[1] }\t\t\t\t`).join('\n') }\nrounds:\t\t\t\t\t\n${ tab.rounds.map((r, i) => `${i}\t${r.src.id}\t${r.tar.id}\t${r.atype}\t${r.damage}\t`).join('\n') }`.split('\n')
-                    );
-
-                    var rows = [];
-                    var maxh = Math.max(... columns.map(col => col.length));
-                    for (var i = 0; i < maxh; i++) {
-                        rows[i] = '';
-                        for (var j = 0; j < columns.length; j++) {
-                            rows[i] += columns[j][i] || '\t\t\t\t\t';
-                        }
-                    }
-
-                    copyToClipboard(rows.join('\n'));
+                    copyToClipboard(... tabs);
                 });
 
                 var tabs = [];
@@ -213,122 +247,122 @@
                 function updateTabs() {
                     if (tabs.length) {
                         $('#fi-content').show();
-                        $('#fi-select-items').html(tabs.map((tab, index) => `<div class="item${ !tabsadded && index == 0 ? ' active selected' : '' }" data-value="${ index }"><div class="fi-wrap"><div class="fi-left">${ index + 1 }.</div><div class="fi-right">${ tab.fa.name }</br>${ tab.fb.name }</div></div></div>`).join(''));
+                        $('#fi-select-items').html(tabs.map((tab, index) => `<div class="item${ !tabsadded && index == 0 ? ' active selected' : '' }" data-value="${ index }"><div class="fi-wrap"><div class="fi-left">${ index + 1 }.</div><div class="fi-right">${ tab.fighterA.Name }</br>${ tab.fighterB.Name }</div></div></div>`).join(''));
                         $('#fi-content-pages').html(tabs.map((tab, index) => `
                             <div class="ui tab basic segment${ !tabsadded && index == 0 ? ' active' : '' }${ index == 0 ? ' margin-medium-top' : '' }" data-tab="${ index }">
                                 <div class="ui small form">
                                     <div class="ui grid">
                                         <div class="two columns row">
                                             <div class="column">
-                                                <h2 class="ui centered header">${ tab.fa.name }</h2>
+                                                <h2 class="ui centered header">${ tab.fighterA.Name }</h2>
                                                 <div class="two fields">
                                                     <div class="field">
                                                         <label>Class</label>
-                                                        <input type="text" value="${ tab.fa.class }" disabled class="text-center">
+                                                        <input type="text" value="${ PLAYER_CLASS[tab.fighterA.Class] }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Level</label>
-                                                        <input type="text" value="${ tab.fa.level }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterA.Level }" disabled class="text-center">
                                                     </div>
                                                 </div>
                                                 <div class="two fields">
                                                     <div class="field">
                                                         <label>Minimum damage</label>
-                                                        <input type="text" value="${ tab.fa.damagemin || '' }${ tab.fa.damagemin2 ? ` (${ tab.fa.damagemin2 })` : '' }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterA.Wpn1.DamageMin || '' }${ tab.fighterA.Wpn2.DamageMin ? ` (${ tab.fighterA.Wpn2.DamageMin })` : '' }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Maximum damage</label>
-                                                        <input type="text" value="${ tab.fa.damagemax || '' }${ tab.fa.damagemax2 ? ` (${ tab.fa.damagemax2 })` : '' }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterA.Wpn1.DamageMax || '' }${ tab.fighterA.Wpn2.DamageMax ? ` (${ tab.fighterA.Wpn2.DamageMax })` : '' }" disabled class="text-center">
                                                     </div>
                                                 </div>
                                                 <div class="five fields">
                                                     <div class="field">
                                                         <label>Strength</label>
-                                                        <input type="text" value="${ tab.fa.strength }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterA.Strength }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Constitution</label>
-                                                        <input type="text" value="${ tab.fa.constitution }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterA.Constitution }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Dexterity</label>
-                                                        <input type="text" value="${ tab.fa.dexterity }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterA.Dexterity }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Luck</label>
-                                                        <input type="text" value="${ tab.fa.luck }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterA.Luck }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Intelligence</label>
-                                                        <input type="text" value="${ tab.fa.intelligence }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterA.Intelligence }" disabled class="text-center">
                                                     </div>
                                                 </div>
                                                 <div class="two fields">
                                                     <div class="field">
                                                         <label>Health</label>
-                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fa.maxhealth) }" disabled class="text-center">
+                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fighterA.MaximumLife) }" disabled class="text-center">
                                                     </div>
-                                                    ${ tab.fa.health != tab.fa.maxhealth ? `
+                                                    ${ tab.fighterA.Life != tab.fighterA.MaximumLife ? `
                                                         <div class="field">
                                                             <label>Current Health</label>
-                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fa.health) }" disabled class="text-center">
+                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fighterA.Life) }" disabled class="text-center">
                                                         </div>
                                                     ` : '' }
                                                 </div>
                                             </div>
                                             <div class="column">
-                                                <h2 class="ui centered header">${ tab.fb.name }</h2>
+                                                <h2 class="ui centered header">${ tab.fighterB.Name }</h2>
                                                 <div class="two fields">
                                                     <div class="field">
                                                         <label>Class</label>
-                                                        <input type="text" value="${ tab.fb.class }" disabled class="text-center">
+                                                        <input type="text" value="${ PLAYER_CLASS[tab.fighterB.Class] }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Level</label>
-                                                        <input type="text" value="${ tab.fb.level }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterB.Level }" disabled class="text-center">
                                                     </div>
                                                 </div>
                                                 <div class="two fields">
                                                     <div class="field">
                                                         <label>Minimum damage</label>
-                                                        <input type="text" value="${ tab.fb.damagemin || '' }${ tab.fb.damagemin2 ? ` (${ tab.fb.damagemin2 })` : '' }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterB.Wpn1.DamageMin || (tab.fighterB.ApproximateDamageMin ? `~ ${ tab.fighterB.ApproximateDamageMin }` : '') }${ tab.fighterB.Wpn2.DamageMin ? ` (${ tab.fighterB.Wpn2.DamageMin })` : '' }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Maximum damage</label>
-                                                        <input type="text" value="${ tab.fb.damagemax || '' }${ tab.fb.damagemax2 ? ` (${ tab.fb.damagemax2 })` : '' }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterB.Wpn1.DamageMax || (tab.fighterB.ApproximateDamageMax ? `~ ${ tab.fighterB.ApproximateDamageMax }` : '') }${ tab.fighterB.Wpn2.DamageMax ? ` (${ tab.fighterB.Wpn2.DamageMax })` : '' }" disabled class="text-center">
                                                     </div>
                                                 </div>
                                                 <div class="five  fields">
                                                     <div class="field">
                                                         <label>Strength</label>
-                                                        <input type="text" value="${ tab.fb.strength }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterB.Strength }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Constitution</label>
-                                                        <input type="text" value="${ tab.fb.constitution }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterB.Constitution }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Dexterity</label>
-                                                        <input type="text" value="${ tab.fb.dexterity }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterB.Dexterity }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Luck</label>
-                                                        <input type="text" value="${ tab.fb.luck }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterB.Luck}" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Intelligence</label>
-                                                        <input type="text" value="${ tab.fb.intelligence }" disabled class="text-center">
+                                                        <input type="text" value="${ tab.fighterB.Intelligence }" disabled class="text-center">
                                                     </div>
                                                 </div>
                                                 <div class="two fields">
                                                     <div class="field">
                                                         <label>Health</label>
-                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fb.maxhealth) }" disabled class="text-center">
+                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fighterB.MaximumLife) }" disabled class="text-center">
                                                     </div>
-                                                    ${ tab.fb.health != tab.fb.maxhealth ? `
+                                                    ${ tab.fighterB.Life != tab.fighterB.MaximumLife ? `
                                                         <div class="field">
                                                             <label>Current Health</label>
-                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fb.health) }" disabled class="text-center">
+                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fighterB.Life) }" disabled class="text-center">
                                                         </div>
                                                     ` : '' }
                                                 </div>
@@ -341,12 +375,12 @@
                                                             <div class="ui grid">
                                                                 <div class="one wide column"></div>
                                                                 <div class="one wide column">${ i + 1 }</div>
-                                                                <div class="three wide column text-right"><b>${ round.src.name }</b></div>
+                                                                <div class="three wide column text-right"><b>${ round.attacker.Name }</b></div>
                                                                 <div class="one wide column text-center">></div>
-                                                                <div class="three wide column"><b>${ round.tar.name }</b></div>
+                                                                <div class="three wide column"><b>${ round.target.Name }</b></div>
                                                                 <div class="one wide column"></div>
-                                                                <div class="two wide column text-center ${ round.crit ? 'foreground-red' : '' }">${ ATTACK_TYPES[round.atype] }</div>
-                                                                <div class="three wide column text-right ${ round.crit ? 'foreground-red text-bold' : '' }">${ round.damage ? formatAsSpacedNumber(round.damage) : '' }</div>
+                                                                <div class="two wide column text-center ${ round.attackCrit ? 'foreground-red' : '' }">${ ATTACK_TYPES[round.attackType] }</div>
+                                                                <div class="three wide column text-right ${ round.attackCrit ? 'foreground-red text-bold' : '' }">${ round.attackDamage ? formatAsSpacedNumber(round.attackDamage) : '' }</div>
                                                                 <div class="one wide column"></div>
                                                             </div>
                                                         </div>
@@ -417,58 +451,89 @@
                         }
 
                         if (msg['fighters'] && msg['winnerid'] && msg['r'] && Object.values(FIGHT_TYPES).includes(msg['fighters'][0])) {
-                            var ftype = msg['fighters'][0];
-                            var fighters, [fa, fb] = fighters = [msg['fighters'].slice(5, 52), msg['fighters'].slice(52, 99)].map(x => {
-                                return {
-                                    id: x[0],
-                                    name: getFightTargetName(ftype, x[10] < 0 ? Math.abs(x[10]) : x[1], Math.abs(x[10])),
-                                    level: x[2],
-                                    maxhealth: x[3],
-                                    health: x[4],
-                                    strength: x[5],
-                                    dexterity: x[6],
-                                    intelligence: x[7],
-                                    constitution: x[8],
-                                    luck: x[9],
-                                    face: x[10],
-                                    class: PLAYER_CLASS[x[22]],
-                                    damagemin: x[25],
-                                    damagemax: x[26],
-                                    damagemin2: x[22] == 4 ? x[37] : 0,
-                                    damagemax2: x[22] == 4 ? x[38] : 0
-                                }
-                            });
-                            var winner = msg['winnerid'][0] == fa.id ? fa : fb;
+                            var fightType = msg['fighters'][0];
+
+                            // Fighter A (always a player)
+                            var fighterA = new SFFighter(msg['fighters'].slice(5, 52));
+
+                            // Fighter B (player or monster)
+                            var fighterB = new SFFighter(msg['fighters'].slice(52, 99));
+                            if (fighterB.isMonster() || !isNaN(fighterB.Name)) {
+                                fighterB.Name = getFightTargetName(fightType, fighterB.Name, fighterB.getMonsterID());
+                            }
+
+                            // Winner
+                            var winner = msg['winnerid'][0] == fighterA.ID ? fighterA : fighterB;
+
+                            // Looping though all rounds
                             var rounds = [];
                             for (var i = 0; i < msg['r'].length / 3; i++) {
-                                var [id, atype, healthleft] = msg['r'].slice(i * 3, i * 3 + 3);
+                                var [
+                                    attackerID,
+                                    attackType,
+                                    targetHealthLeft
+                                ] = msg['r'].slice(i * 3, i * 3 + 3);
                                 rounds.push({
-                                    src: id == fa.id ? fa : fb,
-                                    tar: id == fa.id ? fb : fa,
-                                    atype: atype,
-                                    crit: atype % 10 == 1,
-                                    healthleft: healthleft
+                                    attacker: attackerID == fighterA.ID ? fighterA : fighterB,
+                                    target: attackerID == fighterA.ID ? fighterB : fighterA,
+                                    attackType: attackType,
+                                    attackCrit: attackType % 10 == 1,
+                                    attackMissed: (attackType % 10 == 3) || (attackType % 10 == 4),
+                                    targetHealthLeft: targetHealthLeft
                                 });
                             }
 
-                            for (var i = 0, r; r = rounds[i]; i++) {
-                                r.damage = (function (_rounds, _i, source, target) {
-                                    for (var j = _i - 1; j >= 0; j--) {
-                                        if (_rounds[j].src.id == source.id) {
-                                            return _rounds[j].healthleft;
+                            for (var i = 0, round; round = rounds[i]; i++) {
+                                round.attackDamage = (() => {
+                                    for (var j = i - 1; j >= 0; j--) {
+                                        if (rounds[j].attacker == round.attacker) {
+                                            return rounds[j].targetHealthLeft;
                                         }
                                     }
 
-                                    return target.health;
-                                })(rounds, i, r.src, r.tar) - r.healthleft;
+                                    return round.target.Life;
+                                })() - round.targetHealthLeft;
+                            }
+
+                            if (fighterB.isMonster() && rounds.length) {
+                                var min = Number.MAX_SAFE_INTEGER;
+                                var max = 0;
+
+                                for (var i = 0, round; round = rounds[i]; i++) {
+                                    if (round.attacker == fighterB && (round.attackCrit || round.attackType % 10 == 0)) {
+                                        var damage = round.attackDamage / (round.attackCrit ? 2 : 1) / (1 + i / 6);
+
+                                        if (damage < min) {
+                                            min = damage;
+                                        }
+
+                                        if (damage > max) {
+                                            max = damage;
+                                        }
+                                    }
+                                }
+
+                                // Armor reduction, using maximum armor per class
+                                var armorMultiplier = 1 - fighterA.getMaximumDamageReduction();
+
+                                // Primary attribute
+                                var primaryAttribute = fighterB.getPrimaryAttribute();
+                                var defenseAttribute = fighterA.getDefenseAtribute(fighterB) / 2;
+                                if (defenseAttribute > primaryAttribute / 2) {
+                                    defenseAttribute = primaryAttribute / 2;
+                                }
+
+                                var attributeMultiplier = 1 + (primaryAttribute / 10 - defenseAttribute / 10);
+
+                                fighterB.ApproximateDamageMin = Math.trunc(min / attributeMultiplier / armorMultiplier);
+                                fighterB.ApproximateDamageMax = Math.trunc(max / attributeMultiplier / armorMultiplier);
                             }
 
                             fights.push({
-                                name: `${ fa.name } / ${ fb.name }`,
-                                fa: fa,
-                                fb: fb,
+                                fighterA: fighterA,
+                                fighterB: fighterB,
                                 rounds: rounds,
-                                winner: winner.id
+                                winner: winner
                             });
                         }
                     }

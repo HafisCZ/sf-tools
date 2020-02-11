@@ -1,6 +1,6 @@
 class SFItem {
     constructor (data) {
-        var dataType = data.values ? data : new ComplexDataType(data);
+        var dataType = ComplexDataType.create(data);
         dataType.assert(12);
 
         var type = dataType.short();
@@ -40,6 +40,7 @@ class SFItem {
         this.Mushrooms = coins;
         this.AttributeTypes = attributeType;
         this.Attributes = attributeValue;
+        this.HasEnchantment = enchantmentType > 0;
     }
 
     getBlacksmithQuality () {
@@ -256,6 +257,110 @@ class SFItem {
 
             var sell = this.getBlacksmithPrice();
             return [ num2 + sell[0], num3 + sell[1] ];
+        }
+    }
+}
+
+class SFFighter {
+    constructor (data) {
+        var dataType = ComplexDataType.create(data);
+        dataType.assert(47);
+
+        this.ID = dataType.long();
+        this.Name = dataType.string();
+        this.Level = dataType.long();
+        this.MaximumLife = dataType.long();
+        this.Life = dataType.long();
+
+        this.Strength = dataType.long();
+        this.Dexterity = dataType.long();
+        this.Intelligence = dataType.long();
+        this.Constitution = dataType.long();
+        this.Luck = dataType.long();
+
+        this.Face = {
+            Mouth: dataType.long(),
+            Hair: {
+                Type: dataType.long() % 100,
+                Color: Math.trunc(dataType.back(1).long() / 100)
+            },
+            Brows: {
+                Type: dataType.long() % 100,
+                Color: Math.trunc(dataType.back(1).long() / 100)
+            },
+            Eyes: dataType.long(),
+            Beard: {
+                Type: dataType.long() % 100,
+                Color: Math.trunc(dataType.back(1).long() / 100)
+            },
+            Nose: dataType.long(),
+            Ears: dataType.long(),
+            Special: dataType.long(),
+            Special2: dataType.long(),
+            Portrait: dataType.long()
+        };
+
+        this.Race = dataType.long();
+        this.Gender = dataType.long();
+        this.Class = dataType.long();
+
+        this.Wpn1 = new SFItem(dataType.sub(12));
+        this.Wpn2 = new SFItem(dataType.sub(12));
+    }
+
+    getMonsterID () {
+        return -this.Face.Mouth;
+    }
+
+    isMonster () {
+        return this.Face.Mouth < 0;
+    }
+
+    getMaximumDamageReduction () {
+        switch (this.Class) {
+            case 0:
+            case 4:
+            case 5:
+                return 0.50
+            case 2:
+            case 3:
+                return 0.25;
+            case 1:
+                return 0.10;
+            default:
+                return 0;
+        }
+    }
+
+    getPrimaryAttribute () {
+        switch (this.Class) {
+            case 0:
+            case 4:
+            case 5:
+                return this.Strength;
+            case 2:
+            case 3:
+                return this.Dexterity;
+            case 1:
+                return this.Intelligence;
+            default:
+                return 0;
+        }
+    }
+
+    getDefenseAtribute (player) {
+        switch (player.Class) {
+            case 0:
+            case 4:
+            case 5:
+                return this.Strength;
+            case 2:
+            case 3:
+                return this.Dexterity;
+            case 1:
+                return this.Intelligence;
+            default:
+                return 0;
         }
     }
 }
