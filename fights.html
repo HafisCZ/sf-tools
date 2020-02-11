@@ -281,21 +281,22 @@
                                                         <input type="text" value="${ tab.fighterA.Strength }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
-                                                        <label>Constitution</label>
-                                                        <input type="text" value="${ tab.fighterA.Constitution }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
                                                         <label>Dexterity</label>
                                                         <input type="text" value="${ tab.fighterA.Dexterity }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Luck</label>
-                                                        <input type="text" value="${ tab.fighterA.Luck }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
                                                         <label>Intelligence</label>
                                                         <input type="text" value="${ tab.fighterA.Intelligence }" disabled class="text-center">
                                                     </div>
+                                                    <div class="field">
+                                                        <label>Constitution</label>
+                                                        <input type="text" value="${ tab.fighterA.Constitution }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Luck</label>
+                                                        <input type="text" value="${ tab.fighterA.Luck }" disabled class="text-center">
+                                                    </div>
+
                                                 </div>
                                                 <div class="two fields">
                                                     <div class="field">
@@ -338,20 +339,20 @@
                                                         <input type="text" value="${ tab.fighterB.Strength }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
-                                                        <label>Constitution</label>
-                                                        <input type="text" value="${ tab.fighterB.Constitution }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
                                                         <label>Dexterity</label>
                                                         <input type="text" value="${ tab.fighterB.Dexterity }" disabled class="text-center">
                                                     </div>
                                                     <div class="field">
-                                                        <label>Luck</label>
-                                                        <input type="text" value="${ tab.fighterB.Luck}" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
                                                         <label>Intelligence</label>
                                                         <input type="text" value="${ tab.fighterB.Intelligence }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Constitution</label>
+                                                        <input type="text" value="${ tab.fighterB.Constitution }" disabled class="text-center">
+                                                    </div>
+                                                    <div class="field">
+                                                        <label>Luck</label>
+                                                        <input type="text" value="${ tab.fighterB.Luck}" disabled class="text-center">
                                                     </div>
                                                 </div>
                                                 <div class="two fields">
@@ -455,6 +456,9 @@
 
                             // Fighter A (always a player)
                             var fighterA = new SFFighter(msg['fighters'].slice(5, 52));
+                            if (fighterA.isMonster()) {
+                                fighterA.Name = getFightTargetName(fightType, fighterA.Name, fighterA.getMonsterID());
+                            }
 
                             // Fighter B (player or monster)
                             var fighterB = new SFFighter(msg['fighters'].slice(52, 99));

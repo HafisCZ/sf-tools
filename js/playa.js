@@ -318,14 +318,14 @@ class SFFighter {
 
     getMaximumDamageReduction () {
         switch (this.Class) {
-            case 0:
-            case 4:
-            case 5:
-                return 0.50
-            case 2:
-            case 3:
-                return 0.25;
             case 1:
+            case 5:
+            case 6:
+                return 0.50
+            case 3:
+            case 4:
+                return 0.25;
+            case 2:
                 return 0.10;
             default:
                 return 0;
@@ -334,14 +334,14 @@ class SFFighter {
 
     getPrimaryAttribute () {
         switch (this.Class) {
-            case 0:
-            case 4:
-            case 5:
-                return this.Strength;
-            case 2:
-            case 3:
-                return this.Dexterity;
             case 1:
+            case 5:
+            case 6:
+                return this.Strength;
+            case 3:
+            case 4:
+                return this.Dexterity;
+            case 2:
                 return this.Intelligence;
             default:
                 return 0;
@@ -350,14 +350,14 @@ class SFFighter {
 
     getDefenseAtribute (player) {
         switch (player.Class) {
-            case 0:
-            case 4:
-            case 5:
-                return this.Strength;
-            case 2:
-            case 3:
-                return this.Dexterity;
             case 1:
+            case 5:
+            case 6:
+                return this.Strength;
+            case 3:
+            case 4:
+                return this.Dexterity;
+            case 2:
                 return this.Intelligence;
             default:
                 return 0;
