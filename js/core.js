@@ -156,6 +156,13 @@ const Database = new (class {
                     if (!player.Fortress.Knights && group.Knights) {
                         player.Fortress.Knights = group.Knights[index];
                     }
+                } else {
+                    player.Group.Role = -1;
+                    player.Group.Treasure = -1;
+                    player.Group.Instructor = -1;
+                    player.Group.Pet = -1;
+                    player.Group.Own = -1;
+                    player.Fortress.Knights = -1;
                 }
 
                 if (!tempPlayers[player.Identifier]) {
@@ -464,12 +471,21 @@ const State = new (class {
         this.groupReferenceTimestamp = null;
         this.sortBy = null;
         this.sortStyle = null;
+        this.cachedTable = null;
     }
 
     setGroup (groupID, timestamp, referenceTimestamp) {
         this.groupID = groupID;
         this.groupTimestamp = timestamp || Database.Groups[groupID].LatestTimestamp;
         this.groupReferenceTimestamp = referenceTimestamp || Database.Groups[groupID].LatestTimestamp;
+    }
+
+    cacheTable (table) {
+        this.cachedTable = table;
+    }
+
+    getCachedTable () {
+        return this.cachedTable;
     }
 
     getSort () {

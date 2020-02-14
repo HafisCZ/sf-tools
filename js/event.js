@@ -327,6 +327,8 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
 
     // Create table
     var table = new Table(config);
+    var tablePlayers = new StatisticsTableArray();
+
     var width = table.width();
 
     if (width < 1127) {
@@ -343,7 +345,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     members.forEach(function (player) {
         var compare = membersReferences.find(c => c.Identifier == player.Identifier);
         if (!player.IsFake) {
-            table.addPlayer(player, compare);
+            tablePlayers.add(player, compare);
         }
     });
 
@@ -354,7 +356,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     var sortStyle = State.getSortStyle();
     var sortBy = State.getSort();
 
-    $('#container-detail-content').html(table.toString(joined, kicked, sortBy, sortStyle));
+    $('#container-detail-content').html(table.createStatisticsTable(tablePlayers, joined, kicked, sortBy, sortStyle));
 
     $('[data-player]').on('click', function () {
         Handle.call(EVT_PLAYER_LOAD, $(this).attr('data-player'), State.getGroupTimestamp());
@@ -368,7 +370,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
 });
 
 Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
-    var config = State.getGroupID() ? Settings.load(State.getGroupID()) : Settings.empty();
+    var config = State.getGroupID() ? Settings.load(State.getGroupID()) : Settings.load();
     var player = Database.Players[identifier][timestamp];
 
     $('#modal-player').html(`
@@ -543,37 +545,34 @@ Handle.bind(EVT_INIT, function () {
     $('.menu .item').tab();
 
     // Player search
-    $('#psearch, #porderby').on('change input', function () {
-        var order = $('#porderby').val();
+    $('#psearch').on('input', function () {
         var terms = $('#psearch').val().toLowerCase().split(' ').filter(term => term.length && term != ' ');
         var items = [];
 
-        Object.values(Database.Players).forEach(player => {
+        var table = State.getCachedTable();
+        var width = table.width();
+        var tablePlayers = new PlayersTableArray();
+
+        for (var player of Object.values(Database.Players)) {
             var matches = terms.reduce((total, term) => total + ((player.Latest.Name.toLowerCase().includes(term) || player.Latest.Identifier.replace(/_/g, ' ').toLowerCase().includes(term)) ? 1 : 0), 0);
             if (matches == terms.length) {
-                items.push({
-                    player: player,
-                    html:
-                    `
-                    <div class="column">
-                        <div class="ui segment text-center clickable ${Database.Latest != player.LatestTimestamp ? 'border-red' : ''}" data-player="${ player.Latest.Identifier }">
-                            <h3 class="ui header margin-tiny-bottom margin-tiny-top">${ player.Latest.Name }</h3>
-                            <div class="text-muted">${ player.Latest.Identifier.replace(/_/g, ' ') }</div>
-                        </div>
-                    </div>
-                    `
-                });
+                tablePlayers.add(player.Latest, player.LatestTimestamp == Database.Latest);
             }
+        }
+
+        var sortStyle = State.getSortStyle();
+        var sortBy = State.getSort();
+
+        $('#pl-table').html(table.createPlayersTable(tablePlayers, sortBy, sortStyle));
+        $('#container-players').css('width', `${ Math.max(750, table.width() + 110) }px`);
+
+        $('#pl-table [data-sortable]').on('click', function () {
+            var header = $(this).text();
+            State.setSort(header, State.getSort() == header ? (State.getSortStyle() + 1) % 3 : 1);
+            $('#psearch').trigger('input');
         });
 
-        if (order == 0) items.sort((a, b) => b.player.LatestTimestamp - a.player.LatestTimestamp);
-        else if (order == 1) items.sort((a, b) => a.player.Latest.Name.localeCompare(b.player.Latest.Name));
-        else if (order == 2) items.sort((a, b) => b.player.Latest.Level - a.player.Latest.Level);
-
-        $('#container-players-grid').html(items.map(i => i.html).join(''));
-
-        $('[data-player]').off('click');
-        $('[data-player]').on('click', function () {
+        $('#pl-table [data-player]').on('click', function () {
             var player = Database.Players[$(this).attr('data-player')];
             Handle.call(EVT_PLAYER_LOAD, player.Latest.Identifier, player.LatestTimestamp);
         });
@@ -690,5 +689,7 @@ Handle.bind(EVT_SETTINGS_LOAD, function () {
 // Loading player list
 Handle.bind(EVT_PLAYERS_LOAD, function () {
     State.unsetGroup();
+    State.clearSort();
+    State.cacheTable(new Table(Settings.load()));
     $('#psearch').val('').trigger('input');
 });

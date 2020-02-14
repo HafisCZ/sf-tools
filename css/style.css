@@ -237,6 +237,11 @@ input:disabled {
     background-color: #00c851 !important;
 }
 
+.pl-searchbar {
+    margin: auto;
+    width: 75vw;
+}
+
 .background-orange {
     background-color: #ffbb33 !important;
 }
