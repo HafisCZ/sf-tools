@@ -921,7 +921,7 @@ const SettingsParser = (function () {
         pushCategory () {
             if (this.c) {
                 this.pushHeader();
-                if (this.c.h.length) {
+                if (this.c.h.length || SP_KEYWORD_CATEGORY_RESERVED.includes(this.c.name)) {
                     if (SP_KEYWORD_CATEGORY_RESERVED.includes(this.c.name)) {
                         merge(this.c, this.g);
                     }
