@@ -652,7 +652,7 @@ class Table {
                     <td class="border-right-thin">Assassin</td>
                     <td>${ classes[3] }</td>
                     ${ kicked.length > 0 ? `
-                        <td class="border-right-thin" rowspan="3" colspan="2">Kicked</td>
+                        <td class="border-right-thin" rowspan="3" colspan="2">Left</td>
                         <td colspan="${ Math.max(2, flat.length - 2) }" rowspan="3">${ kicked.join(', ') }</td>
                     ` : '' }
                 </tr>
