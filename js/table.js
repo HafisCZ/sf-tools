@@ -349,7 +349,7 @@ const ReservedHeaders = {
             var a = cell.player.getInactiveDuration();
             return CellGenerator.Cell(CompareEval.evaluate(a, header.value) || formatDate(cell.player.LastOnline), CompareEval.evaluate(a, header.color), '', last);
         }, null, cell => {
-            return CellGenerator.Plain(CompareEval.evaluate(cell.getInactiveDuration(), header.value) || formatDate(cell.player.LastOnline), last);
+            return CellGenerator.Plain(CompareEval.evaluate(cell.getInactiveDuration(), header.value) || formatDate(cell.LastOnline), last);
         }, player => player.LastOnline);
     },
     'Equipment': function (group, header, last) {
@@ -921,12 +921,14 @@ const SettingsParser = (function () {
         pushCategory () {
             if (this.c) {
                 this.pushHeader();
+                if (this.c.h.length) {
+                    if (SP_KEYWORD_CATEGORY_RESERVED.includes(this.c.name)) {
+                        merge(this.c, this.g);
+                    }
 
-                if (SP_KEYWORD_CATEGORY_RESERVED.includes(this.c.name)) {
-                    merge(this.c, this.g);
+                    this.root.c.push(this.c);
                 }
 
-                this.root.c.push(this.c);
                 this.c = null;
             }
         }

@@ -142,7 +142,7 @@ const Database = new (class {
                 data.timestamp = file.timestamp;
                 let player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
 
-                let gid = player.hasGuild() ? Object.keys(tempGroups).find(id => getAtSafe(tempGroups, id, file.timestamp).Name == player.Group.Name) : null;
+                let gid = player.hasGuild() ? Object.keys(tempGroups).find(id => getAtSafe(tempGroups, id, file.timestamp).Identifier == player.Group.Identifier && getAtSafe(tempGroups, id, file.timestamp).MemberIDs.includes(player.Identifier)) : null;
                 if (gid) {
                     let group = tempGroups[gid][file.timestamp];
                     let index = group.MemberIDs.findIndex(i => i == player.Identifier);
