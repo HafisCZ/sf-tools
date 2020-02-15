@@ -626,7 +626,7 @@ Handle.bind(EVT_INIT, function () {
                 <code>category NAME</code></br>
                 <code>header NAME</code></br>
                 <code>members BOOL</code></br>
-                <code>indexed BOOL</code></br>
+                <code>indexed BOOL or static</code></br>
                 <code>difference BOOL</code></br>
                 <code>statistics BOOL</code></br>
                 <code>hydra BOOL</code></br>

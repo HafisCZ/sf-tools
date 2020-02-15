@@ -417,7 +417,7 @@ class Table {
                 ReservedCategories[category.name](group, category, glast);
             } else {
                 category.h.forEach((header, hi, ha) => {
-                    var hlast = (!glast && hi == ha.length - 1) || (hi != ha.length - 1 && ha[hi + 1].name == 'Awards') || header.name == 'Awards';
+                    var hlast = (!glast && hi == ha.length - 1) || (hi != ha.length - 1 && ha[hi + 1].name == 'Awards');
 
                     if (ReservedHeaders[header.name]) {
                         ReservedHeaders[header.name](group, header, hlast);
@@ -479,7 +479,7 @@ class Table {
                 } else {
                     players.sort((a, b) => b.player.Name.localeCompare(a.player.Name));
                 }
-            } else if (sortby == '_index'){
+            } else if (sortby == '_index') {
                 if (sortstyle == 1) {
                     players.sort((a, b) => a.index - b.index);
                 } else {
@@ -516,7 +516,7 @@ class Table {
         return `
             <thead>
                 <tr>
-                    ${ this.root.indexed ? `<td style="width: 50px" colspan="1" rowspan="2" class="clickable" data-sortable="${ sortby == '_index' ? sortstyle : 0 }" data-sortable-key="_index">#</td>` : '' }
+                    ${ this.root.indexed ? `<td style="width: 50px" colspan="1" rowspan="2" class="clickable" ${ this.root.indexed != 2 ? ` data-sortable="${ sortby == '_index' ? sortstyle : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
                     <td style="width: 100px" colspan="1" rowspan="2" class="clickable" data-sortable="${ sortby == '_server' ? sortstyle : 0 }" data-sortable-key="_server">Server</td>
                     <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == '_name' ? sortstyle : 0 }" data-sortable-key="_name">Name</td>
                     ${ join(this.config, (g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable-key="_potions" data-sortable="${ sortby == '_potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`) }
@@ -532,7 +532,7 @@ class Table {
                 </tr>
             </thead>
             <tbody>
-                ${ join(players, r => `<tr>${ this.root.indexed ? `<td>${ r.index + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`) }
+                ${ join(players, (r, i) => `<tr>${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`) }
         `;
     }
 
@@ -579,7 +579,7 @@ class Table {
         var content = `
             <thead>
                 <tr>
-                    ${ this.root.indexed ? `<td style="width: 50px" colspan="1" rowspan="2" class="clickable" data-sortable="${ sortby == '_index' ? sortstyle : 0 }" data-sortable-key="_index">#</td>` : '' }
+                    ${ this.root.indexed ? `<td style="width: 50px" colspan="1" rowspan="2" class="clickable" ${ this.root.indexed != 2 ? ` data-sortable="${ sortby == '_index' ? sortstyle : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
                     <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == '_name' ? sortstyle : 0 }" data-sortable-key="_name">Name</td>
                     ${ join(this.config, (g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable="${ sortby == '_potions' ? sortstyle : 0 }" data-sortable-key="_potions"` : '' }>${ g.name }</td>`) }
                     ${ flat.length < 5 ? Array(5 - flat.length).fill(null).map(x => '<td width="100"></td>').join('') : '' }
@@ -595,7 +595,7 @@ class Table {
                 </tr>
             </thead>
             <tbody>
-                ${ join(players, r => `<tr>${ this.root.indexed ? `<td>${ r.index + 1 }</td>` : '' }<td class="border-right-thin clickable" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.cell(r)) }</tr>`) }
+                ${ join(players, (r, i) => `<tr>${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td class="border-right-thin clickable" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.cell(r)) }</tr>`) }
         `;
 
         // Add statistics
@@ -800,6 +800,7 @@ const SP_KEYWORD_PARAMETER_ARRAY = [ 'color', 'value' ];
 const SP_KEYWORD_CATEGORY_RESERVED = Object.keys(ReservedCategories);
 const SP_KEYWORD_HEADER_RESERVED = Object.keys(ReservedHeaders);
 const SP_KEYWORD_BOOL = [ 'on', 'off' ];
+const SP_KEYWORD_SPECIAL = [ 'static' ];
 const SP_KEYWORD_EQ = [ 'above', 'below', 'or', 'equal', 'default' ];
 
 const SP_KEYWORD_EQ_MAP = {
@@ -900,6 +901,7 @@ const SettingsParser = (function () {
                     else if (SP_KEYWORD_PARAMETER_STRING.includes(word)) rcontent.push(`<span class="ta-keyword">${ word }</span>`);
                     else if (SP_KEYWORD_PARAMETER_ARRAY.includes(word)) rcontent.push(`<span class="ta-keyword">${ word }</span>`);
                     else if (SP_KEYWORD_PARAMETER_BOOL.includes(words[0]) && SP_KEYWORD_BOOL.includes(word)) rcontent.push(`<span class="ta-boolean-${ word }">${ word }</span>`);
+                    else if (words[0] == 'indexed' && SP_KEYWORD_SPECIAL == word) rcontent.push(`<span class="ta-boolean-on">static</span>`);
                     else if (SP_KEYWORD_PARAMETER_ARRAY.includes(words[0]) && SP_KEYWORD_EQ.includes(word)) rcontent.push(`<span class="ta-constant">${ word }</span>`);
                     else if (SP_KEYWORD_CATEGORY == word) rcontent.push(`<span class="ta-keyword">${ word }</span>`);
                     else if (SP_KEYWORD_HEADER == word) rcontent.push(`<span class="ta-keyword">${ word }</span>`);
@@ -998,6 +1000,8 @@ const SettingsParser = (function () {
         addBoolParam (param, arg) {
             if (param && SP_KEYWORD_BOOL.includes(arg)) {
                 this.addRawParam(param, arg == 'on');
+            } else if (param == 'indexed' && arg == 'static') {
+                this.addRawParam(param, 2);
             }
         }
 
