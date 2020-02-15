@@ -330,7 +330,7 @@ const ReservedHeaders = {
             var b = cell.operation(cell.players.map(p => p.compare.Dungeons.Player));
             return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
         }, cell => {
-            return CellGenerator.Plain(cell.Dungeons.Portal, last);
+            return CellGenerator.Plain(cell.Dungeons.Player, last);
         }, player => player.Dungeons.Player);
     },
     'Building': function (group, header, last) {
