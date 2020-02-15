@@ -17,23 +17,10 @@ const PLAYER_MOUNT = [
 ];
 
 function getMirrorPieces (value) {
-    return [
-        ((value >> 0) & 1) != 0,
-        ((value >> 1) & 1) != 0,
-        ((value >> 2) & 1) != 0,
-        ((value >> 3) & 1) != 0,
-        ((value >> 4) & 1) != 0,
-        ((value >> 5) & 1) != 0,
-        ((value >> 6) & 1) != 0,
-        ((value >> 7) & 1) != 0,
-        ((value >> 8) & 1) != 0,
-        ((value >> 9) & 1) != 0,
-        ((value >> 10) & 1) != 0,
-        ((value >> 11) & 1) != 0,
-        ((value >> 11) & 1) != 0,
-        ((value >> 13) & 1) != 0,
-        ((value >> 14) & 1) != 0
-    ];
+    for (var i = 0; i < 15; i++) {
+        if ((value >> i) & 1) return i + 1;
+    }
+    return 0;
 }
 
 const POTIONS = [

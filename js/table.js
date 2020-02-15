@@ -512,25 +512,23 @@ class Table {
                 <tr>
                     <td style="width: 100px" colspan="1" rowspan="2" class="clickable" data-sortable="${ sortby == 'Server' ? sortstyle : 0 }">Server</td>
                     <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == 'Name' ? sortstyle : 0 }">Name</td>
-                    ${ this.config.map((g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable="${ sortby == 'Potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`).join('') }
+                    ${ join(this.config, (g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable="${ sortby == 'Potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`) }
                     ${ w < 750 ? `<td width="${ 750 - w }"></td>` : '' }
                 </tr>
                 <tr>
-                    ${ this.config.map((g, index, array) => g.headers.map((h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`).join('')).join('') }
+                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
                 </tr>
                 <tr>
                     <td colspan="2" class="border-bottom-thick border-right-thin"></td>
-                    ${ this.config.map((g, index, array) => `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`).join('') }
+                    ${ join(this.config, (g, index, array) => `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`) }
                 </tr>
             </thead>
             <tbody>
-                ${ players.map(r => `<tr><td>${ r.player.Prefix.replace(/_/g, ' ') }</td><td class="border-right-thin clickable ${ r.latest ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ flat.map(h => h.generators.list(r.player)).join('') }</tr>`).join('') }
+                ${ join(players, r => `<tr><td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`) }
         `;
     }
 
     createStatisticsTable (players, joined, kicked, sortby, sortstyle) {
-        var content = [];
-
         // Flatten the headers
         var flat = this.flatten();
 
@@ -564,41 +562,41 @@ class Table {
         var w = this.width();
 
         // Add main body
-        content.push(`
+        var content = `
             <thead>
                 <tr>
                     <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == 'Name' ? sortstyle : 0 }">Name</td>
-                    ${ this.config.map((g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable="${ sortby == 'Potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`).join('') }
+                    ${ join(this.config, (g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable="${ sortby == 'Potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`) }
                     ${ flat.length < 5 ? Array(5 - flat.length).fill(null).map(x => '<td width="100"></td>').join('') : '' }
                     ${ w < 750 ? `<td width="${ 750 - w }"></td>` : '' }
                 </tr>
                 <tr>
-                    ${ this.config.map((g, index, array) => g.headers.map((h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`).join('')).join('') }
+                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
                 </tr>
                 <tr>
                     <td colspan="1" class="border-bottom-thick border-right-thin"></td>
-                    ${ this.config.map((g, index, array) => `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`).join('') }
+                    ${ join(this.config, (g, index, array) => `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`) }
                 </tr>
             </thead>
             <tbody>
-                ${ players.map(r => `<tr><td class="border-right-thin clickable" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ flat.map(h => h.generators.cell(r)).join('') }</tr>`).join('') }
-        `);
+                ${ join(players, r => `<tr><td class="border-right-thin clickable" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.cell(r)) }</tr>`) }
+        `;
 
         // Add statistics
         var showMembers = this.root.members;
         var showStatistics = flat.reduce((c, h) => c + (h.statistics ? 1 : 0), 0) > 0;
 
         if (showMembers || showStatistics) {
-            content.push(`
+            content += `
                 <tr><td colspan="${ flat.length + 1 }"></td></tr>
-            `);
+            `;
         }
 
         if (showStatistics) {
-            content.push(`
+            content += `
                 <tr>
                     <td class="border-right-thin"></td>
-                    ${ flat.map((h, i) => (h.statistics && h.generators.statistics) ? `<td>${ h.name }</td>` : '<td></td>').join('') }
+                    ${ join(flat, (h, i) => (h.statistics && h.generators.statistics) ? `<td>${ h.name }</td>` : '<td></td>') }
                 </tr>
                 <tr>
                     <td class="border-right-thin border-bottom-thick"></td>
@@ -606,32 +604,32 @@ class Table {
                 </tr>
                 <tr>
                     <td class="border-right-thin">Minimum</td>
-                    ${ flat.map((h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics({ players: players, operation: ar => Math.min(... ar) }) : '<td></td>').join('') }
+                    ${ join(flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics({ players: players, operation: ar => Math.min(... ar) }) : '<td></td>') }
                 </tr>
                 <tr>
                     <td class="border-right-thin">Average</td>
-                    ${ flat.map((h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics({ players: players, operation: ar => Math.trunc(ar.reduce((a, b) => a + b, 0) / ar.length) }) : '<td></td>').join('') }
+                    ${ join(flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics({ players: players, operation: ar => Math.trunc(ar.reduce((a, b) => a + b, 0) / ar.length) }) : '<td></td>') }
                 </tr>
                 <tr>
                     <td class="border-right-thin">Maximum</td>
-                    ${ flat.map((h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics({ players: players, operation: ar => Math.max(... ar) }) : '<td></td>').join('') }
+                    ${ join(flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics({ players: players, operation: ar => Math.max(... ar) }) : '<td></td>') }
                 </tr>
-            `);
+            `;
         }
 
         if (showMembers) {
             var classes = players.reduce((c, p) => { c[p.player.Class - 1]++; return c; }, [0, 0, 0, 0, 0, 0]);
 
             if (showStatistics) {
-                content.push(`
+                content += `
                     <tr>
                         <td class="border-right-thin border-bottom-thick"></td>
                         <td class="border-bottom-thick" colspan="${ flat.length }"></td>
                     </tr>
-                `);
+                `;
             }
 
-            content.push(`
+            content += `
                 <tr>
                     <td class="border-right-thin">Warrior</td>
                     <td>${ classes[0] }</td>
@@ -664,13 +662,10 @@ class Table {
                     <td class="border-right-thin">Berserker</td>
                     <td>${ classes[5] }</td>
                 </tr>
-            `);
+            `;
         }
 
-        // Add table end
-        content.push('</tbody>');
-
-        return content.join('');
+        return content + '</tbody>';
     }
 }
 

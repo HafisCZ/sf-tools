@@ -92,9 +92,18 @@ function getPotionSize (potion) {
 
 function getAtSafe(obj, ... path) {
     var x = obj;
-    for (var i = 0, c; c = path[i]; i++) {
-        x = x[c];
+    for (var i = 0, l = path.length; i < l; i++) {
+        x = x[path[i]];
         if (!x) return { };
+    }
+    return x;
+}
+
+function getAt(obj, ... path) {
+    var x = obj;
+    for (var i = 0, l = path.length; i < l; i++) {
+        x = x[path[i]];
+        if (!x) return null;
     }
     return x;
 }
@@ -184,3 +193,10 @@ function getObjectAt (obj, path) {
 
 // Download
 function download(e,d){let o=document.createElement("a");o.download=e,o.href=URL.createObjectURL(d),document.body.appendChild(o),o.click(),URL.revokeObjectURL(o.href),document.body.removeChild(o)}
+
+// Fast join array to string
+function join (a, c) {
+    var r = '';
+    for (var i = 0, l = a.length; i < l; ++i) r += c(a[i], i, a);
+    return r;
+}

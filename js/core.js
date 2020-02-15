@@ -104,7 +104,7 @@ const Database = new (class {
     remove (... timestamps) {
         for (var timestamp of timestamps) {
             Object.values(this.Players).forEach(function (p) {
-                if (p.List.length == 1 && p.List[0].timestamp == timestamp) {
+                if (p[timestamp] && p.Count == 1) {
                     delete Database.Players[p.Latest.Identifier];
                 } else {
                     delete p[timestamp];
@@ -112,8 +112,8 @@ const Database = new (class {
             });
 
             Object.values(this.Groups).forEach(function (g) {
-                if (g.List.length == 1 && g.List[0].timestamp == timestamp) {
-                    delete Database.Groups[g.Latest.Identifier];
+                if (g[timestamp] && g.Count == 1) {
+                    delete Database.Players[g.Latest.Identifier];
                 } else {
                     delete g[timestamp];
                 }
@@ -142,26 +142,37 @@ const Database = new (class {
                 data.timestamp = file.timestamp;
                 let player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
 
-                let gid = player.hasGuild() ? Object.keys(tempGroups).find(id => getAtSafe(tempGroups, id, file.timestamp).Identifier == player.Group.Identifier && getAtSafe(tempGroups, id, file.timestamp).MemberIDs.includes(player.Identifier)) : null;
-                if (gid) {
-                    let group = tempGroups[gid][file.timestamp];
-                    let index = group.MemberIDs.findIndex(i => i == player.Identifier);
+                let groupID = player.hasGuild() ? Object.keys(tempGroups).find(id => {
+                    var obj = getAtSafe(tempGroups, id, file.timestamp);
+                    return obj.Identifier == player.Group.Identifier && obj.Members.includes(player.Identifier);
+                }) : null;
+
+                if (groupID) {
+                    let group = tempGroups[groupID][file.timestamp];
+                    let index = group.Members.findIndex(identifier => identifier == player.Identifier);
 
                     player.Group.Role = group.Roles[index];
-                    player.Group.Treasure = group.Treasures[index];
-                    player.Group.Instructor = group.Instructors[index];
-                    player.Group.Pet = group.Pets[index];
-                    player.Group.Own = group.Own;
 
-                    if (!player.Fortress.Knights && group.Knights) {
-                        player.Fortress.Knights = group.Knights[index];
+                    if (group.Own) {
+                        player.Group.Own = true;
+                        player.Group.Pet = group.Pets[index];
+                        player.Group.Treasure = group.Treasures[index];
+                        player.Group.Instructor = group.Instructors[index];
+
+                        if (!player.Fortress.Knights && group.Knights) {
+                            player.Fortress.Knights = group.Knights[index];
+                        }
+                    } else {
+                        player.Group.Pet = -1;
+                        player.Group.Treasure = -1;
+                        player.Group.Instructor = -1;
+                        player.Fortress.Knights = -1;
                     }
                 } else {
                     player.Group.Role = -1;
+                    player.Group.Pet = -1;
                     player.Group.Treasure = -1;
                     player.Group.Instructor = -1;
-                    player.Group.Pet = -1;
-                    player.Group.Own = -1;
                     player.Fortress.Knights = -1;
                 }
 
@@ -205,35 +216,53 @@ const Database = new (class {
     update () {
         this.Latest = 0;
 
-        for (const [id, obj] of Object.entries(this.Players)) {
-            obj.List = Object.entries(obj).map(function (entry) {
-                return {
-                    timestamp: Number(entry[0]),
-                    player: entry[1]
-                };
-            }).filter(entry => !isNaN(entry.timestamp));
+        for (const [identifier, player] of Object.entries(this.Players)) {
+            player.LatestTimestamp = 0;
+            player.List = Object.entries(player).reduce((array, [ ts, obj ]) => {
+                if (!isNaN(ts)) {
+                    var timestamp = Number(ts);
+                    array.push([ timestamp, obj ]);
+                    if (this.Latest < timestamp) {
+                        this.Latest = timestamp;
+                    }
+                    if (player.LatestTimestamp < timestamp) {
+                        player.LatestTimestamp = timestamp;
+                    }
+                }
 
-            obj.List.sort((a, b) => a.timestamp - b.timestamp);
-            obj.LatestTimestamp = obj.List[obj.List.length - 1].timestamp;
-            obj.Latest = obj[obj.LatestTimestamp];
-            if (obj.LatestTimestamp > this.Latest) {
-                this.Latest = obj.LatestTimestamp;
+                return array;
+            }, []);
+
+            player.List.sort((a, b) => b[0] - a[0]);
+            player.Latest = player[player.LatestTimestamp];
+
+            if (this.Latest < player.LatestTimestamp) {
+                this.Latest = player.LatestTimestamp;
             }
         }
 
-        for (const [id, obj] of Object.entries(this.Groups)) {
-            obj.List = Object.entries(obj).map(function (entry) {
-                return {
-                    timestamp: Number(entry[0]),
-                    group: entry[1]
-                };
-            }).filter(entry => !isNaN(entry.timestamp));
+        for (const [identifier, group] of Object.entries(this.Groups)) {
+            group.LatestTimestamp = 0;
+            group.List = Object.entries(group).reduce((array, [ ts, obj ]) => {
+                if (!isNaN(ts)) {
+                    var timestamp = Number(ts);
+                    array.push([ timestamp, obj ]);
+                    if (this.Latest < timestamp) {
+                        this.Latest = timestamp;
+                    }
+                    if (group.LatestTimestamp < timestamp) {
+                        group.LatestTimestamp = timestamp;
+                    }
+                }
 
-            obj.List.sort((a, b) => a.timestamp - b.timestamp);
-            obj.LatestTimestamp = obj.List[obj.List.length - 1].timestamp;
-            obj.Latest = obj[obj.LatestTimestamp];
-            if (obj.LatestTimestamp > this.Latest) {
-                this.Latest = obj.LatestTimestamp;
+                return array;
+            }, []);
+
+            group.List.sort((a, b) => b[0] - a[0]);
+            group.Latest = group[group.LatestTimestamp];
+
+            if (this.Latest < group.LatestTimestamp) {
+                this.Latest = group.LatestTimestamp;
             }
         }
     }
@@ -251,6 +280,10 @@ const UpdateService = {
             }
             if (!p.achievements) {
                 p.achievements = new Array(160).fill(0);
+                updated = true;
+            }
+            if (!p.prefix) {
+                p.prefix = 's1_de';
                 updated = true;
             }
         }
@@ -275,7 +308,7 @@ const Storage = new (class {
                 }
 
                 if (corrected) {
-                    this.save();
+                    this.save(... this.current);
                 }
 
                 Database.from(this.current);
@@ -284,11 +317,11 @@ const Storage = new (class {
         }, error);
     }
 
-    save () {
+    save (... files) {
         this.current.sort((a, b) => a.timestamp - b.timestamp);
-        this.current.forEach((f) => {
-            FileDatabase.set(f);
-        });
+        for (var i = 0, file; file = files[i]; i++) {
+            FileDatabase.set(file);
+        }
     }
 
     import (content) {
@@ -300,7 +333,7 @@ const Storage = new (class {
             Database.add(... list);
 
             this.current.push(... list);
-            this.save();
+            this.save(... list);
         } catch (exception) {
             throw exception.lineNumber + ' ' + exception;
         }
@@ -339,7 +372,7 @@ const Storage = new (class {
 
                 if (raw.includes('groupSave') || raw.includes('groupsave')) {
                     var group = {
-                        prefix: prefix
+                        prefix: prefix || 's1_de'
                     };
 
                     for (var [key, val] of parsePlayaResponse(raw)) {
@@ -359,14 +392,14 @@ const Storage = new (class {
                         }
                     }
 
-                    if (!file.groups.find(g => g.name === group.name) && group.members) {
+                    if (!file.groups.find(g => g.name === group.name) && group.rank) {
                         file.groups.push(group);
                     }
                 }
 
                 if (raw.includes('otherplayername') || raw.includes('ownplayername')) {
                     let player = {
-                        prefix: prefix
+                        prefix: prefix || 's1_de'
                     };
 
                     for (var [key, val] of parsePlayaResponse(raw)) {
@@ -410,7 +443,7 @@ const Storage = new (class {
             Database.add(file);
 
             this.current.push(file);
-            this.save();
+            this.save(file);
         } catch (exception) {
             throw exception.lineNumber + ' ' + exception;
         }
@@ -456,7 +489,7 @@ const Storage = new (class {
         Database.add(base);
 
         this.current.push(base);
-        this.save();
+        this.save(base);
     }
 
     files () {

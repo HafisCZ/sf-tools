@@ -108,31 +108,23 @@ Handle.bind(EVT_BROWSE_LOAD, function () {
     var groups = Object.values(Database.Groups).filter(group => group.Latest.Own);
     groups.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
 
-    var content = [];
+    var content = '';
     groups.forEach(function (group, index, array) {
-        if (index % 5 == 0) {
-            content.push(`<div class="row">`);
-        }
-
-        var splitPrefix = group.Latest.Prefix.split('_');
-
-        content.push(`
+        content += `
+            ${ index % 5 == 0 ? '<div class="row">' : '' }
             <div class="column">
                 <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''}" data-group-id="${group.Latest.Identifier}">
                     <img class="ui medium centered image" src="res/group.png">
-                    <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${splitPrefix[0]} ${splitPrefix[1]}</h3>
+                    <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
                     <h3 class="ui margin-none-top centered header">${group.Latest.Name}</h3>
                 </div>
             </div>
-        `);
-
-        if ((index % 5 == 4) || index >= array.length - 1) {
-            content.push(`</div>`);
-        }
+            ${ ((index % 5 == 4) || index >= array.length - 1) ? '</div>' : '' }
+        `;
     });
 
     // Show list
-    $('#container-browse-grid').html(content.join(''));
+    $('#container-browse-grid').html(content);
 
     // Show group detail
     $('[data-group-id]').on('click', function () {
@@ -230,17 +222,18 @@ Handle.bind(EVT_GROUP_LOAD_HEADER, function () {
 
     var listSelect = [];
     var listReference = [];
-    for (var [index, obj] of getReverseIterator(group.List)) {
+
+    for (var [ timestamp, g ] of group.List) {
         listSelect.push({
-            name: formatDate(new Date(obj.timestamp)),
-            value: obj.timestamp,
-            selected: obj.timestamp == State.getGroupTimestamp()
+            name: formatDate(new Date(timestamp)),
+            value: timestamp,
+            selected: timestamp == State.getGroupTimestamp()
         });
 
-        if (obj.timestamp <= State.getGroupTimestamp()) {
+        if (timestamp <= State.getGroupTimestamp()) {
             listReference.push({
-                name: formatDate(new Date(obj.timestamp)),
-                value: obj.timestamp
+                name: formatDate(new Date(timestamp)),
+                value: timestamp
             });
         }
     }
@@ -284,32 +277,28 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
 
     // Current members
     var members = [];
-    for (var memberID of groupCurrent.MemberIDs) {
+    for (var memberID of groupCurrent.Members) {
         if (Database.Players[memberID] && Database.Players[memberID][groupCurrentTimestamp]) {
             members.push(Database.Players[memberID][groupCurrentTimestamp]);
-        } else {
-            //members.push(groupCurrent.getFakePlayer(memberID));
         }
     }
 
     // Reference members
     var membersReferences = [];
     for (var member of members) {
-        if (member.IsFake && groupCurrentTimestamp == groupReferenceTimestamp) {
-            membersReferences.push(member);
-        } else {
-            var player = Database.Players[member.Identifier];
-            if (player) {
-                var playerReference = player[groupReferenceTimestamp];
-
-                if (playerReference && playerReference.Group && playerReference.Group.Name == groupCurrent.Name) {
-                    membersReferences.push(playerReference);
-                } else {
-                    membersReferences.push(player.List.find(p => p.player.Group && p.player.Group.Name == groupCurrent.Name).player);
-                }
+        var player = Database.Players[member.Identifier];
+        if (player) {
+            var playerReference = player[groupReferenceTimestamp];
+            if (playerReference && playerReference.Group.Identifier == groupCurrent.Identifier) {
+                membersReferences.push(playerReference);
             } else {
-                membersReferences.push(member);
+                var ts = player.List.find(p => p[0] <= groupReferenceTimestamp && p[1].Group.Identifier == groupCurrent.Identifier);
+                if (ts) {
+                    membersReferences.push(ts[1]);
+                }
             }
+        } else {
+            membersReferences.push(member);
         }
     }
 
@@ -343,14 +332,16 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
 
     // Add players
     members.forEach(function (player) {
-        var compare = membersReferences.find(c => c.Identifier == player.Identifier);
-        if (!player.IsFake) {
-            tablePlayers.add(player, compare);
-        }
+        tablePlayers.add(player, membersReferences.find(c => c.Identifier == player.Identifier));
     });
 
-    var kicked = groupReference.MemberIDs.filter(g => !groupCurrent.MemberIDs.includes(g)).map(g => Database.Players[g] ? Database.Players[g].Latest.Name : groupReference.Members[groupReference.MemberIDs.indexOf(g)]);
-    var joined = groupCurrent.MemberIDs.filter(g => !groupReference.MemberIDs.includes(g)).map(g => Database.Players[g] ? Database.Players[g].Latest.Name : groupCurrent.Members[groupCurrent.MemberIDs.indexOf(g)]);
+    // Member exchanges
+    var joined = groupCurrent.Members.filter(id => !groupReference.Members.includes(id)).map(id => {
+        return getAt(Database.Players, id, groupCurrentTimestamp, 'Name') || getAt(Database.Players, id, 'List', 0, 1, 'Name') || id;
+    });
+    var kicked = groupReference.Members.filter(id => !groupCurrent.Members.includes(id)).map(id => {
+        return getAt(Database.Players, id, groupCurrentTimestamp, 'Name') || getAt(Database.Players, id, 'List', 0, 1, 'Name') || id;
+    });
 
     // Sort members if requested
     var sortStyle = State.getSortStyle();
@@ -415,12 +406,12 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                             <div class="column">${ player.Group.Name }</div>
                             <div class="left aligned column font-big">Guild join date</div>
                             <div class="column">${ formatDate(player.Group.Joined) }</div>
-                            ${ player.Group.Role ? `
+                            ${ player.Group.Role != -1 ? `
                                 <div class="left aligned column font-big">Role</div>
                                 <div class="column">${ GROUP_ROLES[player.Group.Role] }</div>
                             ` : '' }
                         ` : '' }
-                        ${ player.Fortress.Upgrade ? `
+                        ${ player.Fortress.Upgrade.Building ? `
                             <div class="column"><br></div>
                             <div class="column"></div>
                             <div class="left aligned column font-big">Currently building</div>
@@ -545,8 +536,8 @@ Handle.bind(EVT_INIT, function () {
     $('.menu .item').tab();
 
     // Player search
-    $('#psearch').on('input', function () {
-        var terms = $('#psearch').val().toLowerCase().split(' ').filter(term => term.length && term != ' ');
+    $('#psearch').on('change', function () {
+        var terms = $('#psearch').val().toLowerCase().split(' ').filter(term => term.trim().length);
         var items = [];
 
         var table = State.getCachedTable();
@@ -554,7 +545,7 @@ Handle.bind(EVT_INIT, function () {
         var tablePlayers = new PlayersTableArray();
 
         for (var player of Object.values(Database.Players)) {
-            var matches = terms.reduce((total, term) => total + ((player.Latest.Name.toLowerCase().includes(term) || player.Latest.Identifier.replace(/_/g, ' ').toLowerCase().includes(term)) ? 1 : 0), 0);
+            var matches = terms.reduce((total, term) => total + ((player.Latest.Name.toLowerCase().includes(term) || player.Latest.Prefix.includes(term) || (player.Latest.hasGuild() && player.Latest.Group.Name.toLowerCase().includes(term))) ? 1 : 0), 0);
             if (matches == terms.length) {
                 tablePlayers.add(player.Latest, player.LatestTimestamp == Database.Latest);
             }
@@ -569,7 +560,7 @@ Handle.bind(EVT_INIT, function () {
         $('#pl-table [data-sortable]').on('click', function () {
             var header = $(this).text();
             State.setSort(header, State.getSort() == header ? (State.getSortStyle() + 1) % 3 : 1);
-            $('#psearch').trigger('input');
+            $('#psearch').trigger('change');
         });
 
         $('#pl-table [data-player]').on('click', function () {
@@ -691,5 +682,5 @@ Handle.bind(EVT_PLAYERS_LOAD, function () {
     State.unsetGroup();
     State.clearSort();
     State.cacheTable(new Table(Settings.load()));
-    $('#psearch').val('').trigger('input');
+    $('#psearch').val('').trigger('change');
 });

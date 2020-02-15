@@ -367,22 +367,21 @@ class SFFighter {
 
 class SFGroup {
     constructor (data) {
-        this.Prefix = data.prefix || 's1_de';
+        this.Prefix = data.prefix.replace('_', ' ');
         this.ID = data.save[0];
-        this.Identifier = this.Prefix + '_' + this.ID;
+        this.Identifier = data.prefix + '_' + this.ID;
 
         this.Name = data.name;
         this.Rank = data.rank;
-        this.Members = data.members;
         this.Own = data.own;
         this.Timestamp = data.timestamp;
 
+        this.MemberNames = data.members;
         this.MemberCount = data.save[3];
         this.Honor = data.save[13];
         this.Pet = data.save[378];
 
-        this.MemberIDs = data.save.slice(14, 64).map(mid => (this.Prefix + '_' + mid));
-        this.Levels = data.save.slice(64, 114).map(level => level % 1000);
+        this.Members = data.save.slice(14, 64).map(mid => (data.prefix + '_' + mid));
         this.Roles = data.save.slice(314, 364);
         this.Treasures = data.save.slice(214, 264);
         this.Instructors = data.save.slice(264, 314);
@@ -392,18 +391,17 @@ class SFGroup {
             this.Knights = data.knights.slice(0, 50);
         }
 
-        for (var i = 0; i < this.MemberIDs.length; i++) {
+        for (var i = 0; i < this.Members.length; i++) {
             if (this.Roles[i] == 0 || this.Roles[i] == GUILD_ROLE_INVITED) {
                 if (this.Knights) {
                     this.Knights.splice(i, 1);
                 }
 
                 this.Roles.splice(i, 1);
-                this.Levels.splice(i, 1);
                 this.Treasures.splice(i, 1);
                 this.Instructors.splice(i, 1);
                 this.Pets.splice(i, 1);
-                this.MemberIDs.splice(i, 1);
+                this.MemberNames.splice(i, 1);
                 this.Members.splice(i--, 1);
                 this.MemberCount--;
             }
@@ -475,7 +473,6 @@ class SFOtherPlayer extends SFPlayer {
         this.Gender = dataType.byte();
         this.Mirror = dataType.byte();
         this.MirrorPieces = getMirrorPieces(dataType.short());
-        this.MirrorPieces.Count = this.MirrorPieces.reduce((count, o) => count + (o ? 1 : 0), 0);
         this.Class = dataType.short();
         dataType.clear(); // skip
         this.Strength = {
@@ -632,10 +629,10 @@ class SFOtherPlayer extends SFPlayer {
         };
 
         this.Name = data.name;
-        this.Prefix = data.prefix || 's1_de';
-        this.Identifier = this.Prefix + '_' + this.ID;
+        this.Prefix = data.prefix.replace('_', ' ');
+        this.Identifier = data.prefix + '_' + this.ID;
 
-        this.Group.Identifier = this.Group.Name ? `${ this.Prefix }_${ this.Group.ID }` : null;
+        this.Group.Identifier = this.Group.Name ? `${ data.prefix }_${ this.Group.ID }` : null;
 
         this.Achievements = [];
         this.Achievements.Owned = 0;
@@ -698,7 +695,6 @@ class SFOwnPlayer extends SFPlayer {
         this.Gender = dataType.byte();
         this.Mirror = dataType.byte();
         this.MirrorPieces = getMirrorPieces(dataType.short());
-        this.MirrorPieces.Count = this.MirrorPieces.reduce((count, o) => count + (o ? 1 : 0), 0);
         this.Class = dataType.short();
         dataType.clear(); // skip
         this.Strength = {
@@ -868,10 +864,10 @@ class SFOwnPlayer extends SFPlayer {
         };
 
         this.Name = data.name;
-        this.Prefix = data.prefix || 's1_de';
-        this.Identifier = this.Prefix + '_' + this.ID;
+        this.Prefix = data.prefix.replace('_', ' ');
+        this.Identifier = data.prefix + '_' + this.ID;
 
-        this.Group.Identifier = this.Group.Name ? `${ this.Prefix }_${ this.Group.ID }` : null;
+        this.Group.Identifier = this.Group.Name ? `${ data.prefix }_${ this.Group.ID }` : null;
 
         this.Achievements = [];
         this.Achievements.Owned = 0;
