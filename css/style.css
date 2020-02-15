@@ -242,6 +242,11 @@ input:disabled {
     width: 75%;
 }
 
+#psearch::placeholder {
+    opacity: 0.9;
+    color: grey;
+}
+
 .background-orange {
     background-color: #ffbb33 !important;
 }

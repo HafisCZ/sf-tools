@@ -386,7 +386,7 @@ class PlayersTableArray extends Array {
     }
 
     add (player, latest) {
-        super.push({ player: player, latest: latest });
+        super.push({ player: player, latest: latest, index: this.length });
     }
 }
 
@@ -397,7 +397,7 @@ class StatisticsTableArray extends Array {
     }
 
     add (player, compare) {
-        super.push({ player: player, compare: compare || player });
+        super.push({ player: player, compare: compare || player, index: this.length });
     }
 }
 
@@ -455,7 +455,7 @@ class Table {
     }
 
     width () {
-        return 250 + this.config.reduce((a, b) => a + b.width, 0);
+        return (this.root.indexed ? 50 : 0) + 250 + this.config.reduce((a, b) => a + b.width, 0);
     }
 
     flatten () {
@@ -473,19 +473,25 @@ class Table {
 
         // Sort players usign desired method
         if (sortstyle) {
-            if (sortby == 'Name') {
+            if (sortby == '_name') {
                 if (sortstyle == 1) {
                     players.sort((a, b) => a.player.Name.localeCompare(b.player.Name));
                 } else {
                     players.sort((a, b) => b.player.Name.localeCompare(a.player.Name));
                 }
-            } else if (sortby == 'Server') {
+            } else if (sortby == '_index'){
+                if (sortstyle == 1) {
+                    players.sort((a, b) => a.index - b.index);
+                } else {
+                    players.sort((a, b) => b.index - a.index);
+                }
+            } else if (sortby == '_server') {
                 if (sortstyle == 1) {
                     players.sort((a, b) => a.player.Prefix.localeCompare(b.player.Prefix));
                 } else {
                     players.sort((a, b) => b.player.Prefix.localeCompare(a.player.Prefix));
                 }
-            } else if (sortby == 'Potions') {
+            } else if (sortby == '_potions') {
                 if (sortstyle == 1) {
                     players.sort((a, b) => b.player.Potions.reduce((c, p) => c + p.Size, 0) - a.player.Potions.reduce((c, p) => c + p.Size, 0));
                 } else {
@@ -510,21 +516,23 @@ class Table {
         return `
             <thead>
                 <tr>
-                    <td style="width: 100px" colspan="1" rowspan="2" class="clickable" data-sortable="${ sortby == 'Server' ? sortstyle : 0 }">Server</td>
-                    <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == 'Name' ? sortstyle : 0 }">Name</td>
-                    ${ join(this.config, (g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable="${ sortby == 'Potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`) }
+                    ${ this.root.indexed ? `<td style="width: 50px" colspan="1" rowspan="2" class="clickable" data-sortable="${ sortby == '_index' ? sortstyle : 0 }" data-sortable-key="_index">#</td>` : '' }
+                    <td style="width: 100px" colspan="1" rowspan="2" class="clickable" data-sortable="${ sortby == '_server' ? sortstyle : 0 }" data-sortable-key="_server">Server</td>
+                    <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == '_name' ? sortstyle : 0 }" data-sortable-key="_name">Name</td>
+                    ${ join(this.config, (g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable-key="_potions" data-sortable="${ sortby == '_potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`) }
                     ${ w < 750 ? `<td width="${ 750 - w }"></td>` : '' }
                 </tr>
                 <tr>
-                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
+                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" data-sortable-key="${ h.name }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
                 </tr>
                 <tr>
+                    ${ this.root.indexed ? '<td colspan="1" class="border-bottom-thick"></td>' : '' }
                     <td colspan="2" class="border-bottom-thick border-right-thin"></td>
                     ${ join(this.config, (g, index, array) => `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`) }
                 </tr>
             </thead>
             <tbody>
-                ${ join(players, r => `<tr><td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`) }
+                ${ join(players, r => `<tr>${ this.root.indexed ? `<td>${ r.index + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`) }
         `;
     }
 
@@ -534,13 +542,19 @@ class Table {
 
         // Sort players usign desired method
         if (sortstyle) {
-            if (sortby == 'Name') {
+            if (sortby == '_name') {
                 if (sortstyle == 1) {
                     players.sort((a, b) => a.player.Name.localeCompare(b.player.Name));
                 } else {
                     players.sort((a, b) => b.player.Name.localeCompare(a.player.Name));
                 }
-            } else if (sortby == 'Potions') {
+            } else if (sortby == '_index'){
+                if (sortstyle == 1) {
+                    players.sort((a, b) => a.index - b.index);
+                } else {
+                    players.sort((a, b) => b.index - a.index);
+                }
+            } else if (sortby == '_potions') {
                 if (sortstyle == 1) {
                     players.sort((a, b) => b.player.Potions.reduce((c, p) => c + p.Size, 0) - a.player.Potions.reduce((c, p) => c + p.Size, 0));
                 } else {
@@ -565,21 +579,23 @@ class Table {
         var content = `
             <thead>
                 <tr>
-                    <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == 'Name' ? sortstyle : 0 }">Name</td>
-                    ${ join(this.config, (g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable="${ sortby == 'Potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`) }
+                    ${ this.root.indexed ? `<td style="width: 50px" colspan="1" rowspan="2" class="clickable" data-sortable="${ sortby == '_index' ? sortstyle : 0 }" data-sortable-key="_index">#</td>` : '' }
+                    <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == '_name' ? sortstyle : 0 }" data-sortable-key="_name">Name</td>
+                    ${ join(this.config, (g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable="${ sortby == '_potions' ? sortstyle : 0 }" data-sortable-key="_potions"` : '' }>${ g.name }</td>`) }
                     ${ flat.length < 5 ? Array(5 - flat.length).fill(null).map(x => '<td width="100"></td>').join('') : '' }
                     ${ w < 750 ? `<td width="${ 750 - w }"></td>` : '' }
                 </tr>
                 <tr>
-                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
+                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" data-sortable-key="${ h.name }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
                 </tr>
                 <tr>
+                    ${ this.root.indexed ? '<td colspan="1" class="border-bottom-thick"></td>' : '' }
                     <td colspan="1" class="border-bottom-thick border-right-thin"></td>
                     ${ join(this.config, (g, index, array) => `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`) }
                 </tr>
             </thead>
             <tbody>
-                ${ join(players, r => `<tr><td class="border-right-thin clickable" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.cell(r)) }</tr>`) }
+                ${ join(players, r => `<tr>${ this.root.indexed ? `<td>${ r.index + 1 }</td>` : '' }<td class="border-right-thin clickable" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.cell(r)) }</tr>`) }
         `;
 
         // Add statistics
@@ -588,30 +604,30 @@ class Table {
 
         if (showMembers || showStatistics) {
             content += `
-                <tr><td colspan="${ flat.length + 1 }"></td></tr>
+                <tr><td colspan="${ flat.length + 1 + (this.root.indexed ? 1 : 0) }"></td></tr>
             `;
         }
 
         if (showStatistics) {
             content += `
                 <tr>
-                    <td class="border-right-thin"></td>
+                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }></td>
                     ${ join(flat, (h, i) => (h.statistics && h.generators.statistics) ? `<td>${ h.name }</td>` : '<td></td>') }
                 </tr>
                 <tr>
-                    <td class="border-right-thin border-bottom-thick"></td>
+                    <td class="border-right-thin border-bottom-thick" ${ this.root.indexed ? 'colspan="2"' : '' }></td>
                     <td class="border-bottom-thick" colspan="${ flat.length }"></td>
                 </tr>
                 <tr>
-                    <td class="border-right-thin">Minimum</td>
+                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Minimum</td>
                     ${ join(flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics({ players: players, operation: ar => Math.min(... ar) }) : '<td></td>') }
                 </tr>
                 <tr>
-                    <td class="border-right-thin">Average</td>
+                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Average</td>
                     ${ join(flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics({ players: players, operation: ar => Math.trunc(ar.reduce((a, b) => a + b, 0) / ar.length) }) : '<td></td>') }
                 </tr>
                 <tr>
-                    <td class="border-right-thin">Maximum</td>
+                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Maximum</td>
                     ${ join(flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics({ players: players, operation: ar => Math.max(... ar) }) : '<td></td>') }
                 </tr>
             `;
@@ -623,7 +639,7 @@ class Table {
             if (showStatistics) {
                 content += `
                     <tr>
-                        <td class="border-right-thin border-bottom-thick"></td>
+                        <td class="border-right-thin border-bottom-thick" ${ this.root.indexed ? 'colspan="2"' : '' }></td>
                         <td class="border-bottom-thick" colspan="${ flat.length }"></td>
                     </tr>
                 `;
@@ -631,7 +647,7 @@ class Table {
 
             content += `
                 <tr>
-                    <td class="border-right-thin">Warrior</td>
+                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Warrior</td>
                     <td>${ classes[0] }</td>
                     ${ joined.length > 0 ? `
                         <td class="border-right-thin" rowspan="3" colspan="2">Joined</td>
@@ -639,15 +655,15 @@ class Table {
                     ` : '' }
                 </tr>
                 <tr>
-                    <td class="border-right-thin">Mage</td>
+                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Mage</td>
                     <td>${ classes[1] }</td>
                 </tr>
                 <tr>
-                    <td class="border-right-thin">Scout</td>
+                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Scout</td>
                     <td>${ classes[2] }</td>
                 </tr>
                 <tr>
-                    <td class="border-right-thin">Assassin</td>
+                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Assassin</td>
                     <td>${ classes[3] }</td>
                     ${ kicked.length > 0 ? `
                         <td class="border-right-thin" rowspan="3" colspan="2">Left</td>
@@ -655,11 +671,11 @@ class Table {
                     ` : '' }
                 </tr>
                 <tr>
-                    <td class="border-right-thin">Battle Mage</td>
+                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Battle Mage</td>
                     <td>${ classes[4] }</td>
                 </tr>
                 <tr>
-                    <td class="border-right-thin">Berserker</td>
+                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Berserker</td>
                     <td>${ classes[5] }</td>
                 </tr>
             `;
@@ -765,7 +781,7 @@ const CompareEval = {
                 return out;
             }
         }
-        return def;
+        return def || '';
     }
 }
 
@@ -774,8 +790,8 @@ const SP_KEYWORD_CATEGORY = 'category';
 const SP_KEYWORD_HEADER = 'header';
 
 // Parameters
-const SP_KEYWORD_GLOBAL_BOOL = [ 'members' ];
-const SP_KEYWORD_PARAMETER_BOOL = [ 'difference', 'percentage', 'hydra', 'flip', 'visible', 'brackets', 'statistics', 'maximum', 'members' ];
+const SP_KEYWORD_GLOBAL_BOOL = [ 'members', 'indexed' ];
+const SP_KEYWORD_PARAMETER_BOOL = [ 'difference', 'percentage', 'hydra', 'flip', 'visible', 'brackets', 'statistics', 'maximum', 'members', 'indexed' ];
 const SP_KEYWORD_PARAMETER_NUMBER = [ 'width' ];
 const SP_KEYWORD_PARAMETER_STRING = [ 'path', 'type' ];
 const SP_KEYWORD_PARAMETER_ARRAY = [ 'color', 'value' ];
@@ -949,12 +965,12 @@ const SettingsParser = (function () {
 
         addRawParam (param, arg) {
             if (param) {
-                if (this.h) {
+                if (SP_KEYWORD_GLOBAL_BOOL.includes(param)) {
+                    this.root[param] = arg;
+                } else if (this.h) {
                     this.h[param] = arg;
                 } else if (this.c) {
                     this.c[param] = arg;
-                } else if (SP_KEYWORD_GLOBAL_BOOL.includes(param)) {
-                    this.root[param] = arg;
                 } else {
                     this.g[param] = arg;
                 }

@@ -354,7 +354,7 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     });
 
     $('[data-sortable]').on('click', function () {
-        var header = $(this).text();
+        var header = $(this).attr('data-sortable-key');
         State.setSort(header, State.getSort() == header ? (State.getSortStyle() + 1) % 3 : 1);
         Handle.call(EVT_GROUP_LOAD_TABLE);
     });
@@ -558,7 +558,7 @@ Handle.bind(EVT_INIT, function () {
         $('#container-players').css('width', `${ Math.max(750, table.width() + 110) }px`);
 
         $('#pl-table [data-sortable]').on('click', function () {
-            var header = $(this).text();
+            var header = $(this).attr('data-sortable-key');
             State.setSort(header, State.getSort() == header ? (State.getSortStyle() + 1) % 3 : 1);
             $('#psearch').trigger('change');
         });
@@ -610,9 +610,11 @@ Handle.bind(EVT_INIT, function () {
                 Create category</br>
                 Create header</br>
                 Show member list</br>
+                Show indexes</br>
                 Show difference</br>
                 Show in statistics</br>
                 Show hydra</br>
+                Show potion sizes</br>
                 Show as percentage</br>
                 Show maximum knights</br>
                 Set width</br>
@@ -624,9 +626,11 @@ Handle.bind(EVT_INIT, function () {
                 <code>category NAME</code></br>
                 <code>header NAME</code></br>
                 <code>members BOOL</code></br>
+                <code>indexed BOOL</code></br>
                 <code>difference BOOL</code></br>
                 <code>statistics BOOL</code></br>
                 <code>hydra BOOL</code></br>
+                <code>visible BOOL</code></br>
                 <code>percentage BOOL</code></br>
                 <code>maximum BOOL</code></br>
                 <code>width NUMBER</code></br>
@@ -636,22 +640,20 @@ Handle.bind(EVT_INIT, function () {
             </div>
         </div>
         </br>
+        <div>
+            <b>Bool values</b>: Use <code>on</code> to enable or <code>off</code> to disable an option
+        </div>
+        </br>
         <b>Predefined names</b></br>
         <div>
             <b>Headers</b>: ${ SP_KEYWORD_HEADER_RESERVED.map(c => `<code>${ c }</code>`).join(', ') }</br>
             <b>Categories</b>: ${ SP_KEYWORD_CATEGORY_RESERVED.map(c => `<code>${ c }</code>`).join(', ') }
         </div>
         </br>
-        <b>Bool values</b></br>
-        <div>
-            Use <code>on</code> to enable or <code>off</code> to disable an option
-        </div>
-        </br>
         <b>Rules</b></br>
         <div>
             You can specify rule <code>default OUT</code> that will be used if none match.</br>
             Normal rules can be specified by using <code>FUNCTION VALUE OUT</code>.</br>
-            </br>
             <code>OUT</code> is a value or color that is shown when the rule is applied.</br>
             <code>VALUE</code> is a value used to determine if the rule should be applied.</br>
             <code>FUNCTION</code> can be any of: <code>equal</code>, <code>above</code>, <code>below</code>, <code>above or equal</code>, <code>below or equal</code>, <code>equal or above</code>, <code>below or above</code></br>
