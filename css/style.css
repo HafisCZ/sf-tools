@@ -237,11 +237,6 @@ input:disabled {
     background-color: #00c851 !important;
 }
 
-.pl-searchbar {
-    margin: auto;
-    width: 75%;
-}
-
 #psearch::placeholder {
     opacity: 0.9;
     color: grey;

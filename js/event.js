@@ -31,6 +31,13 @@ const EVT_BROWSE_LOAD = 4000;
 
 const EVT_PLAYER_LOAD = 5000;
 
+const EVT_PLAYER_SETTINGS_SHOW = 6001;
+const EVT_PLAYER_SETTINGS_LOAD = 6004;
+const EVT_PLAYER_SETTINGS_SAVE = 6005;
+const EVT_PLAYER_SETTINGS_CLEAR = 6006;
+const EVT_PLAYERS_SAVE = 6002;
+const EVT_PLAYERS_COPY = 6003;
+
 const EVT_SHOWCRITICAL = 6;
 
 // Bindings
@@ -201,6 +208,17 @@ Handle.bind(EVT_GROUP_SAVE, function () {
     });
 });
 
+// Save group as image
+Handle.bind(EVT_PLAYERS_SAVE, function () {
+    html2canvas($('#pl-table')[0], {
+        logging: false
+    }).then(function (canvas) {
+        canvas.toBlob(function (blob) {
+            window.download(`players.png`, blob);
+        });
+    });
+});
+
 Handle.bind(EVT_GROUP_COPY, function () {
     $('#screenshot-only').show();
 
@@ -213,6 +231,16 @@ Handle.bind(EVT_GROUP_COPY, function () {
     window.getSelection().removeAllRanges();
 
     $('#screenshot-only').hide();
+});
+
+Handle.bind(EVT_PLAYERS_COPY, function () {
+    var range = document.createRange();
+    range.selectNode(document.getElementById('pl-table'));
+
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
 });
 
 Handle.bind(EVT_GROUP_LOAD_HEADER, function () {
@@ -506,7 +534,23 @@ Handle.bind(EVT_GROUP_SETTINGS_SHOW, function () {
     $('#modal-custom-settings').modal({
         centered: false
     }).modal('show');
+    $('#modal-custom-settings').attr('data-group', '1');
     Handle.call(EVT_GROUP_SETTINGS_LOAD);
+});
+
+// Show group settings
+Handle.bind(EVT_PLAYER_SETTINGS_SHOW, function () {
+    $('#modal-custom-settings').modal({
+        centered: false
+    }).modal('show');
+    $('#modal-custom-settings').attr('data-group', '0');
+    Handle.call(EVT_PLAYER_SETTINGS_LOAD);
+});
+
+// Load group settings
+Handle.bind(EVT_PLAYER_SETTINGS_LOAD, function () {
+    $('#sc-code textarea').val(Settings.load('players').getCode());
+    $('#sc-code textarea').trigger('input');
 });
 
 // Load group settings
@@ -517,16 +561,28 @@ Handle.bind(EVT_GROUP_SETTINGS_LOAD, function () {
 
 // Save group settings
 Handle.bind(EVT_GROUP_SETTINGS_SAVE, function () {
-    Settings.save($('#sc-code textarea').val(), State.getGroupID());
-    $('#modal-custom-settings').modal('hide');
-    Handle.call(EVT_GROUP_LOAD_TABLE);
+    if ($('#modal-custom-settings').attr('data-group') == 1) {
+        Settings.save($('#sc-code textarea').val(), State.getGroupID());
+        $('#modal-custom-settings').modal('hide');
+        Handle.call(EVT_GROUP_LOAD_TABLE);
+    } else {
+        Settings.save($('#sc-code textarea').val(), 'players');
+        $('#modal-custom-settings').modal('hide');
+        Handle.call(EVT_PLAYERS_LOAD);
+    }
 });
 
 // Clear settings group
 Handle.bind(EVT_GROUP_SETTINGS_CLEAR, function () {
-    Settings.remove(State.getGroupID());
-    $('#modal-custom-settings').modal('hide');
-    Handle.call(EVT_GROUP_LOAD_TABLE);
+    if ($('#modal-custom-settings').attr('data-group') == 1) {
+        Settings.remove(State.getGroupID());
+        $('#modal-custom-settings').modal('hide');
+        Handle.call(EVT_GROUP_LOAD_TABLE);
+    } else {
+        Settings.remove('players');
+        $('#modal-custom-settings').modal('hide');
+        Handle.call(EVT_PLAYERS_LOAD);
+    }
 });
 
 // Initialization
@@ -683,6 +739,15 @@ Handle.bind(EVT_SETTINGS_LOAD, function () {
 Handle.bind(EVT_PLAYERS_LOAD, function () {
     State.unsetGroup();
     State.clearSort();
-    State.cacheTable(new Table(Settings.load()));
+    State.cacheTable(new Table(Settings.load('players')));
     $('#psearch').val('').trigger('change');
+
+    // Extra settings
+    if (Settings.exists('players')) {
+        $('#pl-settings')[0].style.setProperty('background', '#21ba45', 'important');
+        $('#pl-settings')[0].style.setProperty('color', 'white', 'important');
+    } else {
+        $('#pl-settings')[0].style.setProperty('background', '');
+        $('#pl-settings')[0].style.setProperty('color', '');
+    }
 });

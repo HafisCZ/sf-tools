@@ -139,9 +139,25 @@
         </div>
 
         <div class="ui main container hidden sf-container" id="container-players">
-            <div class="ui fluid icon input pl-searchbar">
-                <input class="prompt" type="text" placeholder="Filter players by server, guild and/or username" id="psearch">
-                <i class="search icon"></i>
+            <div class="ui basic segment margin-none-bottom padding-none-bottom">
+                <div class="ui grid">
+                    <div class="three wide column">
+
+                    </div>
+                    <div class="ten wide middle aligned column">
+                        <div class="ui fluid icon input pl-searchbar">
+                            <input class="prompt" type="text" placeholder="Filter players by server, guild and/or username" id="psearch">
+                            <i class="search icon"></i>
+                        </div>
+                    </div>
+                    <div class="three wide column">
+                        <div class="ui small basic icon right floated buttons">
+                            <button class="ui button" data-tooltip="Save as image" id="pl-save"><i class="download icon"></i></button>
+                            <button class="ui button" data-tooltip="Copy table" id="pl-copy"><i class="copy icon"></i></button>
+                            <button class="ui button" data-tooltip="Custom settings" id="pl-settings"><i class="cog icon"></i></button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <table class="ui celled structured table table-group" id="pl-table">
 
@@ -277,6 +293,18 @@
 
             $('#container-detail-settings').on('click', function () {
                 Handle.call(EVT_GROUP_SETTINGS_SHOW);
+            });
+
+            $('#pl-save').on('click', function () {
+                Handle.call(EVT_PLAYERS_SAVE);
+            });
+
+            $('#pl-copy').on('click', function () {
+                Handle.call(EVT_PLAYERS_COPY);
+            });
+
+            $('#pl-settings').on('click', function () {
+                Handle.call(EVT_PLAYER_SETTINGS_SHOW);
             });
 
             $('#modal-custom-settings-save').on('click', function () {

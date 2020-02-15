@@ -428,12 +428,12 @@ class Table {
                             var a = getObjectAt(cell.player, header.path);
                             var b = getObjectAt(cell.compare, header.path);
                             var c = header.flip ? (b - a) : (a - b);
-                            return CellGenerator.Cell(CompareEval.evaluate(a, header.value) || a + (header.difference ? CellGenerator.Difference(Number.isInteger(c) ? c : c.toFixed(2), this.header.brackets) : ''), CompareEval.evaluate(a, header.color), '', hlast);
+                            return CellGenerator.Cell(CompareEval.evaluate(a, header.value) || a + (header.difference ? CellGenerator.Difference(Number.isInteger(c) ? c : c.toFixed(2), header.brackets) : ''), CompareEval.evaluate(a, header.color), '', hlast);
                         }, cell => {
                             var a = cell.operation(cell.players.map(p => getObjectAt(p.player, header.path)));
                             var b = cell.operation(cell.players.map(p => getObjectAt(p.compare, header.path)));
                             var c = header.flip ? (b - a) : (a - b);
-                            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(c, this.header.brackets) : ''), '', CompareEval.evaluate(a, header.color), false);
+                            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(c, header.brackets) : ''), '', CompareEval.evaluate(a, header.color), false);
                         }, cell => {
                             var a = getObjectAt(cell, header.path);
                             return CellGenerator.Plain(CompareEval.evaluate(a, header.value) || a, hlast);
