@@ -104,7 +104,7 @@ const Database = new (class {
     remove (... timestamps) {
         for (var timestamp of timestamps) {
             Object.values(this.Players).forEach(function (p) {
-                if (p[timestamp] && p.Count == 1) {
+                if (p[timestamp] && p.List.length == 1) {
                     delete Database.Players[p.Latest.Identifier];
                 } else {
                     delete p[timestamp];
@@ -112,8 +112,8 @@ const Database = new (class {
             });
 
             Object.values(this.Groups).forEach(function (g) {
-                if (g[timestamp] && g.Count == 1) {
-                    delete Database.Players[g.Latest.Identifier];
+                if (g[timestamp] && g.List.length == 1) {
+                    delete Database.Groups[g.Latest.Identifier];
                 } else {
                     delete g[timestamp];
                 }
@@ -468,13 +468,13 @@ const Storage = new (class {
             }
 
             for (var p of file.players) {
-                if (!base.players.find(bp => bp.prefix == p.prefix && bp.id == p.id)) {
+                if (!base.players.find(bp => bp.prefix == p.prefix && (p.own ? (p.save[1] == bp.save[1]) : (p.save[0] == bp.save[0])))) {
                     base.players.push(p);
                 }
             }
 
             for (var g of file.groups) {
-                if (!base.groups.find(bg => bg.prefix == g.prefix && bg.id == g.id)) {
+                if (!base.groups.find(bg => bg.prefix == g.prefix && bg.save[0] == g.save[0])) {
                     base.groups.push(g);
                 }
             }
