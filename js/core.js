@@ -584,3 +584,55 @@ const State = new (class {
         return Database.Groups[this.groupID][this.groupReferenceTimestamp];
     }
 })();
+
+// Better screen management
+const UI = {
+    FloatingSettings: new (class {
+        // Globals
+        init () {
+            this.$modal = $('#fl-modal');
+            this.$area = $('#fl-code textarea');
+
+            $('#fl-save').on('click', () => this.save());
+            $('#fl-clear').on('click', () => this.load());
+            $('#fl-remove').on('click', () => this.remove());
+        }
+
+        // Show modal
+        show (identifier, onChangeEvent) {
+            // Options
+            this.identifier = identifier;
+            this.onChangeEvent = onChangeEvent;
+            this.code = Settings.load(identifier).getCode();
+
+            // Show modal
+            this.$modal.modal({ centered: false }).modal('show');
+
+            // Show contents
+            this.load();
+        }
+
+        // Save settings
+        save () {
+            Settings.save(this.$area.val(), this.identifier);
+            this.hide();
+        }
+
+        // Remove settings
+        remove () {
+            Settings.remove(this.identifier);
+            this.hide();
+        }
+
+        // Hide (called only if changed)
+        hide () {
+            this.$modal.modal('hide');
+            Handle.call(this.onChangeEvent);
+        }
+
+        // Load contents
+        load () {
+            this.$area.val(this.code).trigger('input');
+        }
+    })()
+};

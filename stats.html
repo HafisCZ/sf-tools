@@ -219,7 +219,8 @@
 
         </div>
 
-        <div class="ui basic large modal text-white" id="modal-custom-settings">
+        <!-- Floating Settings Modal -->
+        <div class="ui basic large modal text-white" id="fl-modal">
             <div class="ui three columns middle aligned grid">
                 <div class="seven wide column">
 
@@ -228,9 +229,9 @@
                     <h1 class="ui header text-white centered">Settings</h1>
                 </div>
                 <div class="seven wide column">
-                    <button class="ui right floated secondary button" type="submit" id="modal-custom-settings-save">Save</button>
-                    <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-reset">Clear</button>
-                    <button class="ui right floated button margin-medium-right" type="submit" id="modal-custom-settings-clear">Remove custom settings</button>
+                    <button class="ui right floated secondary button" type="submit" id="fl-save">Save</button>
+                    <button class="ui right floated button margin-medium-right" type="submit" id="fl-clear">Clear</button>
+                    <button class="ui right floated button margin-medium-right" type="submit" id="fl-remove">Remove custom settings</button>
                 </div>
             </div>
             <div class="ui basic segment">
@@ -238,7 +239,7 @@
                     <div class="column">
                         <div class="ui form">
                             <div class="field">
-                                <div class="ta-wrapper" id="sc-code">
+                                <div class="ta-wrapper" id="fl-code">
                                     <div class="ta-content">
 
                                     </div>
@@ -292,7 +293,7 @@
             });
 
             $('#container-detail-settings').on('click', function () {
-                Handle.call(EVT_GROUP_SETTINGS_SHOW);
+                Handle.call(EVENT_GUILD_SETTINGS_SHOW);
             });
 
             $('#pl-save').on('click', function () {
@@ -304,24 +305,12 @@
             });
 
             $('#pl-settings').on('click', function () {
-                Handle.call(EVT_PLAYER_SETTINGS_SHOW);
-            });
-
-            $('#modal-custom-settings-save').on('click', function () {
-                Handle.call(EVT_GROUP_SETTINGS_SAVE);
+                Handle.call(EVENT_PLAYERS_SETTINGS_SHOW);
             });
 
             $('#sf-file-merge').on('click', function () {
                 Handle.call(EVT_FILE_MERGE);
                 Handle.call(EVT_FILES_LOAD);
-            });
-
-            $('#modal-custom-settings-reset').on('click', function () {
-                Handle.call(EVT_GROUP_SETTINGS_LOAD);
-            });
-
-            $('#modal-custom-settings-clear').on('click', function () {
-                Handle.call(EVT_GROUP_SETTINGS_CLEAR);
             });
 
             $('#show-container-browse').on('click', function () {
@@ -345,7 +334,7 @@
 
             $('#show-container-players').on('click', function () {
                 Handle.call(EVT_SHOWSCREEN, 'container-players');
-                Handle.call(EVT_PLAYERS_LOAD);
+                Handle.call(EVENT_PLAYERS_SHOW);
             });
 
             // Show first screen

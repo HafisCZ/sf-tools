@@ -3,6 +3,7 @@ const EVT_NONE = 0;
 const EVT_SHOWSCREEN = 1;
 const EVT_SHOWERROR = 2;
 const EVT_INIT = 5;
+const EVT_SHOWCRITICAL = 6;
 
 const EVT_GROUP_SHOW = 1000; // Show
 const EVT_GROUP_SORT = 1001; // Toggle sort mode
@@ -10,35 +11,33 @@ const EVT_GROUP_LOAD_TABLE = 1002; // Load table
 const EVT_GROUP_LOAD_HEADER = 1003; // Load header
 const EVT_GROUP_SAVE = 1004; // Save as image
 const EVT_GROUP_COPY = 1005; // Copy table
-const EVT_GROUP_SETTINGS_SHOW = 1010; // Show group settings
-const EVT_GROUP_SETTINGS_LOAD = 1011; // Load group settings
-const EVT_GROUP_SETTINGS_SAVE = 1012; // Save group settings
-const EVT_GROUP_SETTINGS_CLEAR = 1013; // Clear group settings
-
 const EVT_SETTINGS_SAVE = 2000;
 const EVT_SETTINGS_LOAD = 2001;
-
 const EVT_PLAYERS_LOAD = 6000;
-
 const EVT_FILES_LOAD = 3000;
 const EVT_FILES_REMOVE = 3001;
 const EVT_FILES_UPLOAD = 3002;
 const EVT_FILES_IMPORT = 3003;
 const EVT_FILES_EXPORT = 3004;
 const EVT_FILE_MERGE = 100001;
-
 const EVT_BROWSE_LOAD = 4000;
-
 const EVT_PLAYER_LOAD = 5000;
-
-const EVT_PLAYER_SETTINGS_SHOW = 6001;
-const EVT_PLAYER_SETTINGS_LOAD = 6004;
-const EVT_PLAYER_SETTINGS_SAVE = 6005;
-const EVT_PLAYER_SETTINGS_CLEAR = 6006;
 const EVT_PLAYERS_SAVE = 6002;
 const EVT_PLAYERS_COPY = 6003;
 
-const EVT_SHOWCRITICAL = 6;
+// Better event names
+const EVENT_GUILD_SETTINGS_SHOW = 21000;
+
+const EVENT_PLAYERS_SHOW = 22000;
+const EVENT_PLAYERS_SETTINGS_SHOW = 22001;
+
+Handle.bind(EVENT_PLAYERS_SETTINGS_SHOW, function () {
+    UI.FloatingSettings.show('players', EVT_PLAYERS_LOAD);
+});
+
+Handle.bind(EVENT_GUILD_SETTINGS_SHOW, function () {
+    UI.FloatingSettings.show(State.getGroupID(), EVT_GROUP_LOAD_TABLE);
+});
 
 // Bindings
 Handle.bind(EVT_NONE, function (... args) {
@@ -529,67 +528,9 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
     }).modal('show');
 });
 
-// Show group settings
-Handle.bind(EVT_GROUP_SETTINGS_SHOW, function () {
-    $('#modal-custom-settings').modal({
-        centered: false
-    }).modal('show');
-    $('#modal-custom-settings').attr('data-group', '1');
-    Handle.call(EVT_GROUP_SETTINGS_LOAD);
-});
-
-// Show group settings
-Handle.bind(EVT_PLAYER_SETTINGS_SHOW, function () {
-    $('#modal-custom-settings').modal({
-        centered: false
-    }).modal('show');
-    $('#modal-custom-settings').attr('data-group', '0');
-    Handle.call(EVT_PLAYER_SETTINGS_LOAD);
-});
-
-// Load group settings
-Handle.bind(EVT_PLAYER_SETTINGS_LOAD, function () {
-    $('#sc-code textarea').val(Settings.load('players').getCode());
-    $('#sc-code textarea').trigger('input');
-});
-
-// Load group settings
-Handle.bind(EVT_GROUP_SETTINGS_LOAD, function () {
-    $('#sc-code textarea').val(Settings.load(State.getGroupID()).getCode());
-    $('#sc-code textarea').trigger('input');
-});
-
-// Save group settings
-Handle.bind(EVT_GROUP_SETTINGS_SAVE, function () {
-    if ($('#modal-custom-settings').attr('data-group') == 1) {
-        Settings.save($('#sc-code textarea').val(), State.getGroupID());
-        $('#modal-custom-settings').modal('hide');
-        Handle.call(EVT_GROUP_LOAD_TABLE);
-    } else {
-        Settings.save($('#sc-code textarea').val(), 'players');
-        $('#modal-custom-settings').modal('hide');
-        Handle.call(EVT_PLAYERS_LOAD);
-    }
-});
-
-// Clear settings group
-Handle.bind(EVT_GROUP_SETTINGS_CLEAR, function () {
-    if ($('#modal-custom-settings').attr('data-group') == 1) {
-        Settings.remove(State.getGroupID());
-        $('#modal-custom-settings').modal('hide');
-        Handle.call(EVT_GROUP_LOAD_TABLE);
-    } else {
-        Settings.remove('players');
-        $('#modal-custom-settings').modal('hide');
-        Handle.call(EVT_PLAYERS_LOAD);
-    }
-});
-
 // Initialization
 Handle.bind(EVT_INIT, function () {
-    // Semantic elements
-    $('.ui.dropdown').dropdown();
-    $('.menu .item').tab();
+    UI.FloatingSettings.init();
 
     // Player search
     $('#psearch').on('change', function () {
@@ -649,7 +590,7 @@ Handle.bind(EVT_INIT, function () {
         });
     }
 
-    enableHighlighting($('#sc-code'));
+    enableHighlighting($('#fl-code'));
     enableHighlighting($('#sg-code'));
 
     $('#sg-tutorial, #sc-tutorial').css('line-height', '20px');
@@ -735,10 +676,14 @@ Handle.bind(EVT_SETTINGS_LOAD, function () {
     $('#sg-code textarea').trigger('input');
 });
 
-// Loading player list
-Handle.bind(EVT_PLAYERS_LOAD, function () {
+Handle.bind(EVENT_PLAYERS_SHOW, function () {
     State.unsetGroup();
     State.clearSort();
+    Handle.call(EVT_PLAYERS_LOAD);
+});
+
+// Loading player list
+Handle.bind(EVT_PLAYERS_LOAD, function () {
     State.cacheTable(new Table(Settings.load('players')));
     $('#psearch').val('').trigger('change');
 
