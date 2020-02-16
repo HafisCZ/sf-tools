@@ -656,7 +656,6 @@ Handle.bind(EVT_INIT, function () {
             <code>FUNCTION</code> can be any of: <code>equal</code>, <code>above</code>, <code>below</code>, <code>above or equal</code>, <code>below or equal</code>, <code>equal or above</code>, <code>below or above</code></br>
         </div>
         </br>
-        <b>Other</b></br>
         <div>
             Write a line comment by adding <code>#</code> in front of it.</br>
             Use any of predefined constants:</br>

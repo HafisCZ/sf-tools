@@ -72,7 +72,7 @@ const ReservedHeaders = {
             width: 120,
             flip: true
         }, cell => {
-            return CellGenerator.Cell(PLAYER_CLASS[cell.player.Class], '', '', last);
+            return CellGenerator.Cell(PLAYER_CLASS[cell.player.Class], CompareEval.evaluate(cell.player.Class, header.color), '', last);
         }, null, cell => {
             return CellGenerator.Plain(PLAYER_CLASS[cell.Class], last);
         }, player => player.Class);
@@ -831,7 +831,13 @@ const SP_KEYWORD_CONSTANTS = {
     'mount20': '2',
     'mount30': '3',
     'mount50': '4',
-    'none': '0'
+    'none': '0',
+    'warrior': '1',
+    'mage': '2',
+    'scout': '3',
+    'assassin': '4',
+    'battlemage': '5',
+    'berserker': '6'
 };
 
 // Setting parser
