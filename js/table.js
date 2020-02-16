@@ -863,9 +863,13 @@ const SettingsParser = (function () {
             var val = text.replace(SP_KEYWORD_EQ_REGEX, matched => SP_KEYWORD_EQ_MAP[matched]);
             var arr, [ eq, a, b ] = arr = split3(val, ' ');
 
-            if (arr.length == 2 && eq == 'd' && (!color || isCSSColor(a))) return [ eq, 0, a ];
-            else if (arr.length == 3 && Object.values(SP_KEYWORD_EQ_MAP).includes(eq) && !isNaN(a) && (!color || isCSSColor(b))) return [ eq, Number(a), b ];
-            else return null;
+            if (arr.length == 2 && eq == 'd') {
+                if (!color || isCSSColor(a)) return [ eq, 0, a ];
+                else if (isCSSColor(`#${ a }`)) return [ eq, 0, `#${ a }` ];
+            } else if (arr.length == 3 && Object.values(SP_KEYWORD_EQ_MAP).includes(eq) && !isNaN(a)) {
+                if (!color || isCSSColor(b)) return [ eq, Number(a), b ];
+                else if (isCSSColor(`#${ b }`)) return [ eq, Number(a), `#${ b }` ];
+            } else return null;
         } else {
             return null;
         }
@@ -896,9 +900,13 @@ const SettingsParser = (function () {
                     continue;
                 }
 
-                for (var word of words) {
-                    if (words[0] == 'color' && isCSSColor(word)) rcontent.push(`<span class="ta-color" style="color: ${ word }">${ word }</span>`);
-                    else if (word[0] == '@' && Object.keys(SP_KEYWORD_CONSTANTS).includes(word.slice(1))) rcontent.push(`<span class="ta-constant">${ word }</span>`);
+                for (var i = 0, l = words.length; i < l; i++) {
+                    var word = words[i];
+
+                    if (SP_KEYWORD_PARAMETER_ARRAY.includes(words[0]) && ((words[1] == 'default' && i == 2) || (i == 3) || (i == 5)) && (isCSSColor(word) || isCSSColor(`#${ word }`))) {
+                        if (isCSSColor(word)) rcontent.push(`<span class="ta-color" style="color: ${ word }">${ word }</span>`);
+                        else rcontent.push(`<span class="ta-color" style="color: #${ word }">${ word }</span>`);
+                    } else if (word[0] == '@' && Object.keys(SP_KEYWORD_CONSTANTS).includes(word.slice(1))) rcontent.push(`<span class="ta-constant">${ word }</span>`);
                     else if (SP_KEYWORD_CATEGORY == words[0] && SP_KEYWORD_CATEGORY_RESERVED.includes(word)) rcontent.push(`<span class="ta-reserved">${ word }</span>`);
                     else if (SP_KEYWORD_HEADER == words[0] && SP_KEYWORD_HEADER_RESERVED.includes(word)) rcontent.push(`<span class="ta-reserved">${ word }</span>`);
                     else if (SP_KEYWORD_PARAMETER_BOOL.includes(word)) rcontent.push(`<span class="ta-keyword">${ word }</span>`);
