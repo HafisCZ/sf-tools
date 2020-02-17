@@ -347,9 +347,9 @@
                 Handle.call(EVENT_PLAYERS_SHOW);
             });
 
-            $('#gl-show-other').on('change', function () {
+            $('#gl-show-other').checkbox('uncheck').on('change', function () {
                 Handle.call(EVENT_GUILDS_TOGGLE, $(this).checkbox('is checked'));
-            }).checkbox('uncheck');
+            });
 
             // Show first screen
             Storage.load(function () {

@@ -180,10 +180,14 @@ const ReservedHeaders = {
         group.add('Treasure', header, {
             width: 100
         }, cell => {
+            if (cell.player.Group.Treasure == -1) return CellGenerator.Plain('?', last);
             return CellGenerator.Cell(cell.player.Group.Treasure + (header.difference ? CellGenerator.Difference(cell.player.Group.Treasure - cell.compare.Group.Treasure, header.brackets) : ''), CompareEval.evaluate(cell.player.Group.Treasure, header.color), '', last);
         }, cell => {
-            var a = cell.operation(cell.players.map(p => p.player.Group.Treasure));
-            var b = cell.operation(cell.players.map(p => p.compare.Group.Treasure));
+            var aa = cell.players.map(p => p.player.Group.Treasure).filter(x => x != -1);
+            var bb = cell.players.map(p => p.compare.Group.Treasure).filter(x => x != -1);
+            if (!aa.length || !bb.length) return CellGenerator.Plain('?');
+            var a = cell.operation(aa);
+            var b = cell.operation(bb);
             return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
         }, cell => {
             return CellGenerator.Plain(cell.Group.Treasure == -1 ? '?' : cell.Group.Treasure, last);
@@ -193,10 +197,14 @@ const ReservedHeaders = {
         group.add('Instructor', header, {
             width: 100
         }, cell => {
+            if (cell.player.Group.Instructor == -1) return CellGenerator.Plain('?', last);
             return CellGenerator.Cell(cell.player.Group.Instructor + (header.difference ? CellGenerator.Difference(cell.player.Group.Instructor - cell.compare.Group.Instructor, header.brackets) : ''), CompareEval.evaluate(cell.player.Group.Instructor, header.color), '', last);
         }, cell => {
-            var a = cell.operation(cell.players.map(p => p.player.Group.Instructor));
-            var b = cell.operation(cell.players.map(p => p.compare.Group.Instructor));
+            var aa = cell.players.map(p => p.player.Group.Instructor).filter(x => x != -1);
+            var bb = cell.players.map(p => p.compare.Group.Instructor).filter(x => x != -1);
+            if (!aa.length || !bb.length) return CellGenerator.Plain('?');
+            var a = cell.operation(aa);
+            var b = cell.operation(bb);
             return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
         }, cell => {
             return CellGenerator.Plain(cell.Group.Instructor == -1 ? '?' : cell.Group.Instructor, last);
@@ -206,10 +214,14 @@ const ReservedHeaders = {
         group.add('Pet', header, {
             width: 100
         }, cell => {
+            if (cell.player.Group.Pet == -1) return CellGenerator.Plain('?', last);
             return CellGenerator.Cell(cell.player.Group.Pet + (header.difference ? CellGenerator.Difference(cell.player.Group.Pet - cell.compare.Group.Pet, header.brackets) : ''), CompareEval.evaluate(cell.player.Group.Pet, header.color), '', last);
         }, cell => {
-            var a = cell.operation(cell.players.map(p => p.player.Group.Pet));
-            var b = cell.operation(cell.players.map(p => p.compare.Group.Pet));
+            var aa = cell.players.map(p => p.player.Group.Pet).filter(x => x != -1);
+            var bb = cell.players.map(p => p.compare.Group.Pet).filter(x => x != -1);
+            if (!aa.length || !bb.length) return CellGenerator.Plain('?');
+            var a = cell.operation(aa);
+            var b = cell.operation(bb);
             return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
         }, cell => {
             return CellGenerator.Plain(cell.Group.Pet == -1 ? '?' : cell.Group.Pet, last);
@@ -219,10 +231,14 @@ const ReservedHeaders = {
         group.add('Knights', header, {
             width: 100
         }, cell => {
+            if (cell.player.Fortress.Knights == -1) return CellGenerator.Plain((cell.player.Fortress.Knights == -1 ? '?' : cell.player.Fortress.Knights) + (header.maximum ? `/${ cell.player.Fortress.Fortress }` : ''), last);
             return CellGenerator.Cell(cell.player.Fortress.Knights + (header.maximum ? `/${ cell.player.Fortress.Fortress }` : '') + (header.difference ? CellGenerator.Difference(cell.player.Fortress.Knights - cell.compare.Fortress.Knights, header.brackets) : ''), CompareEval.evaluate(cell.player.Fortress.Knights, header.color), '', last);
         }, cell => {
-            var a = cell.operation(cell.players.map(p => p.player.Fortress.Knights));
-            var b = cell.operation(cell.players.map(p => p.compare.Fortress.Knights));
+            var aa = cell.players.map(p => p.player.Fortress.Knights).filter(x => x != -1);
+            var bb = cell.players.map(p => p.compare.Fortress.Knights).filter(x => x != -1);
+            if (!aa.length || !bb.length) return CellGenerator.Plain('?');
+            var a = cell.operation(aa);
+            var b = cell.operation(bb);
             return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
         }, cell => {
             return CellGenerator.Plain((cell.Fortress.Knights == -1 ? '?' : cell.Fortress.Knights) + (header.maximum ? `/${ cell.Fortress.Fortress }` : ''), last);

@@ -166,7 +166,7 @@ const Database = new (class {
                             player.Fortress.Knights = group.Knights[index];
                         }
                     } else {
-                        player.Group.Pet = -1;
+                        player.Group.Pet = group.Pets[index];
                         player.Group.Treasure = -1;
                         player.Group.Instructor = -1;
                         player.Fortress.Knights = -1;
