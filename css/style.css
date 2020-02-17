@@ -356,3 +356,9 @@ h3.file-selected {
 .ta-comment {
     color: #696969;
 }
+
+.css-gl-show-other {
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+}

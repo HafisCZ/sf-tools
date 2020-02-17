@@ -26,6 +26,8 @@ const EVT_PLAYERS_SAVE = 6002;
 const EVT_PLAYERS_COPY = 6003;
 
 // Better event names
+const EVENT_GUILDS_TOGGLE = 20000;
+
 const EVENT_GUILD_SETTINGS_SHOW = 21000;
 
 const EVENT_PLAYERS_SHOW = 22000;
@@ -37,6 +39,11 @@ Handle.bind(EVENT_PLAYERS_SETTINGS_SHOW, function () {
 
 Handle.bind(EVENT_GUILD_SETTINGS_SHOW, function () {
     UI.FloatingSettings.show(State.getGroupID(), EVT_GROUP_LOAD_TABLE);
+});
+
+Handle.bind(EVENT_GUILDS_TOGGLE, function (visible) {
+    State.otherEnabled = visible;
+    Handle.call(EVT_BROWSE_LOAD);
 });
 
 // Bindings
@@ -110,29 +117,53 @@ Handle.bind(EVT_FILES_LOAD, function () {
 });
 
 Handle.bind(EVT_BROWSE_LOAD, function () {
-    // Prepare list
-    var groups = Object.values(Database.Groups).filter(group => group.Latest.Own);
+    // Content strings
+    var contentOwn = '';
+    var contentOther = '';
+
+    // Loop variables
+    var indexOwn = 0;
+    var indexOther = 0;
+
+    var groups = Object.values(Database.Groups);
     groups.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
 
-    var content = '';
-    groups.forEach(function (group, index, array) {
-        content += `
-            ${ index % 5 == 0 ? '<div class="row">' : '' }
-            <div class="column">
-                <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''}" data-group-id="${group.Latest.Identifier}">
-                    <img class="ui medium centered image" src="res/group.png">
-                    <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
-                    <h3 class="ui margin-none-top centered header">${group.Latest.Name}</h3>
+    // Loop all groups
+    for (var i = 0, group; group = groups[i]; i++) {
+        if (group.Latest.Own) {
+            contentOwn += `
+                ${ indexOwn % 5 == 0 ? `${ indexOwn != 0 ? '</div>' : '' }<div class="row">` : '' }
+                <div class="column">
+                    <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''}" data-group-id="${group.Latest.Identifier}">
+                        <img class="ui medium centered image" src="res/group.png">
+                        <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
+                        <h3 class="ui margin-none-top centered header">${group.Latest.Name}</h3>
+                    </div>
                 </div>
-            </div>
-            ${ ((index % 5 == 4) || index >= array.length - 1) ? '</div>' : '' }
-        `;
-    });
+            `;
+            indexOwn++;
+        } else if (State.otherEnabled) {
+            contentOther += `
+                ${ indexOther % 5 == 0 ? `${ indexOther != 0 ? '</div>' : '' }<div class="row">` : '' }
+                <div class="column">
+                    <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''}" data-group-id="${group.Latest.Identifier}">
+                        <img class="ui medium centered image" src="res/group.png">
+                        <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
+                        <h3 class="ui margin-none-top centered header">${group.Latest.Name}</h3>
+                    </div>
+                </div>
+            `;
+            indexOther++;
+        }
+    }
 
-    // Show list
-    $('#container-browse-grid').html(content);
+    // Add endings
+    contentOwn += '</div>';
+    contentOther += '</div>';
 
-    // Show group detail
+    // jQuery
+    $('#gl-guilds-own').html(contentOwn);
+    $('#gl-guilds-other').html(contentOther);
     $('[data-group-id]').on('click', function () {
         State.setGroup($(this).attr('data-group-id'));
         Handle.call(EVT_GROUP_SHOW);

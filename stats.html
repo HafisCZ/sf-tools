@@ -47,8 +47,18 @@
         </div>
 
         <div class="ui main container hidden sf-container" id="container-browse">
-            <div class="ui five column grid" id="container-browse-grid">
+            <div class="ui five column grid" id="gl-guilds-own">
 
+            </div>
+            <div class="ui five column grid margin-large-top" id="gl-guilds-other">
+
+            </div>
+            <!-- Show all guilds checkbox -->
+            <div class="css-gl-show-other">
+                <div class="ui checkbox" id="gl-show-other">
+                    <input type="checkbox">
+                    <label>Show other guilds</label>
+                </div>
             </div>
         </div>
 
@@ -336,6 +346,10 @@
                 Handle.call(EVT_SHOWSCREEN, 'container-players');
                 Handle.call(EVENT_PLAYERS_SHOW);
             });
+
+            $('#gl-show-other').on('change', function () {
+                Handle.call(EVENT_GUILDS_TOGGLE, $(this).checkbox('is checked'));
+            }).checkbox('uncheck');
 
             // Show first screen
             Storage.load(function () {

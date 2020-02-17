@@ -131,6 +131,7 @@ const Database = new (class {
             for (var data of file.groups) {
                 data.timestamp = file.timestamp;
                 let group = new SFGroup(data);
+                group.MembersPresent = 0;
 
                 if (!tempGroups[group.Identifier]) {
                     tempGroups[group.Identifier] = {};
@@ -149,6 +150,8 @@ const Database = new (class {
 
                 if (groupID) {
                     let group = tempGroups[groupID][file.timestamp];
+                    group.MembersPresent++;
+
                     let index = group.Members.findIndex(identifier => identifier == player.Identifier);
 
                     player.Group.Role = group.Roles[index];
@@ -180,6 +183,17 @@ const Database = new (class {
                     tempPlayers[player.Identifier] = {};
                 }
                 tempPlayers[player.Identifier][file.timestamp] = player;
+            }
+
+            for (var [identifier, groups] of Object.entries(tempGroups)) {
+                for (var [timestamp, group] of Object.entries(groups)) {
+                    if (!group.MembersPresent) {
+                        delete groups[timestamp];
+                    }
+                }
+                if (!Object.values(groups).length) {
+                    delete tempGroups[identifier];
+                }
             }
         }
 
