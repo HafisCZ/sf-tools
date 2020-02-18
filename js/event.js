@@ -428,54 +428,97 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
         <div class="content text-center">
             <div class="ui two columns grid">
                 <div class="column">
-                    <div class="ui two columns grid player-small">
+                    <div class="ui three columns grid player-small">
                         <div class="left aligned column font-big">Strength</div>
+                        <div class="column"></div>
                         <div class="column">${ player.Strength.Total }</div>
                         <div class="left aligned column font-big">Dexterity</div>
+                        <div class="column"></div>
                         <div class="column">${ player.Dexterity.Total }</div>
                         <div class="left aligned column font-big">Intelligence</div>
+                        <div class="column"></div>
                         <div class="column">${ player.Intelligence.Total }</div>
                         <div class="left aligned column font-big">Constitution</div>
+                        <div class="column"></div>
                         <div class="column">${ player.Constitution.Total }</div>
                         <div class="left aligned column font-big">Luck</div>
+                        <div class="column"></div>
                         <div class="column">${ player.Luck.Total }</div>
                         <div class="column"><br></div>
                         <div class="column"></div>
+                        <div class="column"></div>
                         <div class="left aligned column font-big">Armor</div>
+                        <div class="column"></div>
                         <div class="column">${ player.Armor }</div>
                         <div class="left aligned column font-big">Damage</div>
+                        <div class="column"></div>
                         <div class="column">${ player.Damage.Min } - ${ player.Damage.Max }</div>
                         <div class="column"><br></div>
+                        <div class="column"></div>
                         <div class="column"></div>
                         ${ player.hasGuild() ? `
                             ${ player.Group.Own ? `
                                 <div class="left aligned column font-big">Treasure</div>
+                                <div class="column"></div>
                                 <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Treasure, config.getEntrySafe('Treasure').color) };">${ player.Group.Treasure }</div>
                                 <div class="left aligned column font-big">Instructor</div>
+                                <div class="column"></div>
                                 <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Instructor, config.getEntrySafe('Instructor').color) }">${ player.Group.Instructor }</div>
                                 <div class="left aligned column font-big">Pet</div>
+                                <div class="column"></div>
                                 <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Pet, config.getEntrySafe('Pet').color) }">${ player.Group.Pet }</div>
                                 <div class="left aligned column font-big">Knights</div>
+                                <div class="column"></div>
                                 <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Knights, config.getEntrySafe('Knights').color) }">${ player.Fortress.Knights }</div>
                                 <div class="column"><br></div>
                                 <div class="column"></div>
+                                <div class="column"></div>
                             ` : '' }
                             <div class="left aligned column font-big">Guild</div>
+                            <div class="column"></div>
                             <div class="column">${ player.Group.Name }</div>
                             <div class="left aligned column font-big">Guild join date</div>
+                            <div class="column"></div>
                             <div class="column">${ formatDate(player.Group.Joined) }</div>
                             ${ player.Group.Role != -1 ? `
                                 <div class="left aligned column font-big">Role</div>
+                                <div class="column"></div>
                                 <div class="column">${ GROUP_ROLES[player.Group.Role] }</div>
                             ` : '' }
                         ` : '' }
                         ${ player.Fortress.Upgrade.Building ? `
                             <div class="column"><br></div>
                             <div class="column"></div>
+                            <div class="column"></div>
                             <div class="left aligned column font-big">Currently building</div>
+                            <div class="column"></div>
                             <div class="column">${ FORTRESS_BUILDINGS[player.Fortress.Upgrade.Building] }</div>
                             <div class="left aligned column font-big"></div>
+                            <div class="column"></div>
                             <div class="column">${ formatDate(player.Fortress.Upgrade.Finish) }</div>
+                        ` : '' }
+                        <div class="column"><br></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        ${ player.Fortress.Fortifications ? `
+                            <div class="left aligned column font-big">Wall</div>
+                            <div class="column">${ player.Fortress.Fortifications }</div>
+                            <div class="column">${ player.Fortress.Wall }</div>
+                        ` : '' }
+                        ${ player.Fortress.Barracks ? `
+                            <div class="left aligned column font-big">Warriors</div>
+                            <div class="column">${ player.Fortress.Barracks * 3 }x</div>
+                            <div class="column">${ player.Fortress.Warriors }</div>
+                        ` : '' }
+                        ${ player.Fortress.ArcheryGuild ? `
+                            <div class="left aligned column font-big">Archers</div>
+                            <div class="column">${ player.Fortress.ArcheryGuild * 2 }x</div>
+                            <div class="column">${ player.Fortress.Archers }</div>
+                        ` : '' }
+                        ${ player.Fortress.MageTower ? `
+                            <div class="left aligned column font-big">Mages</div>
+                            <div class="column">${ player.Fortress.MageTower }x</div>
+                            <div class="column">${ player.Fortress.Mages }</div>
                         ` : '' }
                     </div>
                 </div>
@@ -511,44 +554,48 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="column"><br></div>
                         <div class="column"></div>
                         <div class="column"></div>
-                        <div class="left aligned column font-big">Fortress</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Fortress, config.getEntrySafe('Fortress').color) }">${ player.Fortress.Fortress }</div>
-                        <div class="column"></div>
                         <div class="left aligned column font-big">Upgrades</div>
                         <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Upgrades, config.getEntrySafe('Upgrades').color) }">${ player.Fortress.Upgrades }</div>
                         <div class="column"></div>
-                        <div class="left aligned column font-big">Honor</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Honor, config.getEntrySafe('Fortress Honor').color) }">${ player.Fortress.Honor }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Gem Mine</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.GemMine, config.getEntrySafe('Gem Mine').color) }">${ player.Fortress.GemMine }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Treasury</div>
-                        <div class="column">${ player.Fortress.Treasury }</div>
-                        <div class="column"></div>
+                        <div class="left aligned column font-big">Rank</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Rank, config.getEntrySafe('Fortress Rank').color) }">${ player.Fortress.Rank }</div>
+                        <div class="left aligned column" style="color: ${ CompareEval.evaluate(player.Fortress.Honor, config.getEntrySafe('Fortress Honor').color) }">(${ player.Fortress.Honor })</div>
                         <div class="column"><br></div>
                         <div class="column"></div>
                         <div class="column"></div>
-                        ${ player.Fortress.Fortifications ? `
-                            <div class="left aligned column font-big">Wall</div>
-                            <div class="column">${ player.Fortress.Fortifications }</div>
-                            <div class="left aligned column">${ player.Fortress.Wall }</div>
-                        ` : '' }
-                        ${ player.Fortress.Barracks ? `
-                            <div class="left aligned column font-big">Warriors</div>
-                            <div class="column">${ player.Fortress.Barracks * 3 }x</div>
-                            <div class="left aligned column">${ player.Fortress.Warriors }</div>
-                        ` : '' }
-                        ${ player.Fortress.ArcheryGuild ? `
-                            <div class="left aligned column font-big">Archers</div>
-                            <div class="column">${ player.Fortress.ArcheryGuild * 2 }x</div>
-                            <div class="left aligned column">${ player.Fortress.Archers }</div>
-                        ` : '' }
-                        ${ player.Fortress.MageTower ? `
-                            <div class="left aligned column font-big">Mages</div>
-                            <div class="column">${ player.Fortress.MageTower }x</div>
-                            <div class="left aligned column">${ player.Fortress.Mages }</div>
-                        ` : '' }
+                        <div class="left aligned column font-big">Fortress</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Fortress, config.getEntrySafe('Fortress').color) }">${ player.Fortress.Fortress }</div>
+                        <div class="column"></div>
+                        <div class="left aligned column font-big">Quarters</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.LaborerQuarters, config.getEntrySafe('Quarters').color) }">${ player.Fortress.LaborerQuarters }</div>
+                        <div class="column"></div>
+                        <div class="left aligned column font-big">Woodcutter</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.WoodcutterGuild, config.getEntrySafe('Woodcutter').color) }">${ player.Fortress.WoodcutterGuild }</div>
+                        <div class="column"></div>
+                        <div class="left aligned column font-big">Quarry</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Quarry, config.getEntrySafe('Quarry').color) }">${ player.Fortress.Quarry }</div>
+                        <div class="column"></div>
+                        <div class="left aligned column font-big">Academy</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Academy, config.getEntrySafe('Academy').color) }">${ player.Fortress.Academy }</div>
+                        <div class="column"></div>
+                        <div class="left aligned column font-big">Archery Guild</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.ArcheryGuild, config.getEntrySafe('Archery Guild').color) }">${ player.Fortress.ArcheryGuild }</div>
+                        <div class="column"></div>
+                        <div class="left aligned column font-big">Barracks</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Barracks, config.getEntrySafe('Barracks').color) }">${ player.Fortress.Barracks }</div>
+                        <div class="column"></div>
+                        <div class="left aligned column font-big">Mage Tower</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.MageTower, config.getEntrySafe('Mage Tower').color) }">${ player.Fortress.MageTower }</div>
+                        <div class="column"></div>
+                        <div class="left aligned column font-big">Treasury</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Treasury, config.getEntrySafe('Treasury').color) }">${ player.Fortress.Treasury }</div>
+                        <div class="column"></div>
+                        <div class="left aligned column font-big">Smithy</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Smithy, config.getEntrySafe('Smithy').color) }">${ player.Fortress.Smithy }</div>
+                        <div class="column"></div>
+                        <div class="left aligned column font-big">Fortifications</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Fortifications, config.getEntrySafe('Wall').color) }">${ player.Fortress.Fortifications }</div>
+                        <div class="column"></div>
                     </div>
                 </div>
             </div>
@@ -626,72 +673,84 @@ Handle.bind(EVT_INIT, function () {
 
     $('#sg-tutorial, #sc-tutorial').css('line-height', '20px');
     $('#sg-tutorial, #sc-tutorial').html(`
-        <b>Global</b></br>
-        <div>
-            Any options used before creating a category will be applied to all headers.
+        <div class="ui pointing secondary settings-menu menu">
+            <a class="active item" data-tab="tab0">Basics</a>
+            <a class="item" data-tab="tab1">Options</a>
+            <a class="item" data-tab="tab2">Categories</a>
+            <a class="item" data-tab="tab3">Headers</a>
+            <a class="item" data-tab="tab4">Custom</a>
         </div>
-        </br>
-        <b>Syntax</b></br>
-        <div class="ui grid">
-            <div class="one wide column"></div>
-            <div class="five wide column">
-                Create category</br>
-                Create header</br>
-                Show member list</br>
-                Show indexes</br>
-                Show difference</br>
-                Show in statistics</br>
-                Show hydra</br>
-                Show potion sizes</br>
-                Show as percentage</br>
-                Show maximum knights</br>
-                Set width</br>
-                Set color rule</br>
-                Set value rule</br>
-                Specify path
+        <div class="ui active tab basic segment padding-none" data-tab="tab0">
+            <div class="ui grid">
+                <div class="one wide column"></div>
+                <div class="six wide column">
+                    <code>category NAME</code></br>
+                    <code>header NAME</code>
+                </div>
+                <div class="nine wide column">
+                    Create category</br>
+                    Create header
+                </div>
             </div>
-            <div class="ten wide column">
-                <code>category NAME</code></br>
-                <code>header NAME</code></br>
-                <code>members BOOL</code></br>
-                <code>indexed BOOL or static</code></br>
-                <code>difference BOOL</code></br>
-                <code>statistics BOOL</code></br>
-                <code>hydra BOOL</code></br>
-                <code>visible BOOL</code></br>
-                <code>percentage BOOL</code></br>
-                <code>maximum BOOL</code></br>
-                <code>width NUMBER</code></br>
-                <code>color RULE</code></br>
-                <code>value RULE</code></br>
-                <code>path PATH</code>
+            </br>
+            Using any option before first category will make it apply to all headers. You can overwrite it by using the option in the header directly.
+            </br></br>
+            <b>Bool</b>: Use <code>on</code> to enable or <code>off</code> to disable an option
+            </br></br>
+            <b>Rule</b>: You can specify default value by using rule <code>default VALUE</code> syntax.</br>
+            Otherwise you can use rule <code>COMPARE COMPARE_VALUE VALUE</code>, while <code>COMPARE</code> can be any of <code>equal</code>, <code>below</code>, <code>above</code>, <code>equal or above</code> and <code>equal or below</code>. <code>COMPARE_VALUE</code> is a reference value used for the comparison.
+            </br></br>
+            You can write comments by starting them with <code>#</code> character.
+            </br></br>
+            You can also use several <b>constants</b>: ${ Object.keys(SP_KEYWORD_CONSTANTS).map(c => `<code>@${ c }</code>`).join(', ') }
+        </div>
+        <div class="ui tab basic segment padding-none" data-tab="tab1">
+            <div class="ui grid">
+                <div class="one wide column"></div>
+                <div class="six wide column">
+                    <code>members BOOL</code></br>
+                    <code>indexed BOOL or static</code></br>
+                    <code>difference BOOL</code></br>
+                    <code>statistics BOOL</code></br>
+                    <code>hydra BOOL</code></br>
+                    <code>visible BOOL</code></br>
+                    <code>percentage BOOL</code></br>
+                    <code>maximum BOOL</code></br>
+                    <code>width NUMBER</code></br>
+                    <code>color RULE</code></br>
+                    <code>value RULE</code></br>
+                    <code>path PATH</code></br>
+                    <code>alias NAME</code>
+                </div>
+                <div class="nine wide column">
+                    Show member list</br>
+                    Show indexes</br>
+                    Show difference</br>
+                    Show in statistics</br>
+                    Show hydra</br>
+                    Show potion sizes</br>
+                    Show as percentage</br>
+                    Show maximum knights</br>
+                    Set width</br>
+                    Set color rule</br>
+                    Set value rule</br>
+                    Specify path</br>
+                    Rename column
+                </div>
             </div>
         </div>
-        </br>
-        <div>
-            <b>Bool values</b>: Use <code>on</code> to enable or <code>off</code> to disable an option
+        <div class="ui tab basic segment padding-none" data-tab="tab2">
+            ${ SP_KEYWORD_CATEGORY_RESERVED.map(c => `${ c }`).join(', ') }
         </div>
-        </br>
-        <div>
-            <b>Headers</b>: ${ SP_KEYWORD_HEADER_RESERVED.map(c => `<code>${ c }</code>`).join(', ') }</br>
-            <b>Categories</b>: ${ SP_KEYWORD_CATEGORY_RESERVED.map(c => `<code>${ c }</code>`).join(', ') }
+        <div class="ui tab basic segment padding-none" data-tab="tab3">
+            ${ SP_KEYWORD_HEADER_RESERVED.map(c => `${ c }`).join(', ') }
         </div>
-        </br>
-        <b>Rules</b></br>
-        <div>
-            You can specify rule <code>default OUT</code> that will be used if none match.</br>
-            Normal rules can be specified by using <code>FUNCTION VALUE OUT</code>.</br>
-            <code>OUT</code> is a value or color that is shown when the rule is applied.</br>
-            <code>VALUE</code> is a value used to determine if the rule should be applied.</br>
-            <code>FUNCTION</code> can be any of: <code>equal</code>, <code>above</code>, <code>below</code>, <code>above or equal</code>, <code>below or equal</code>, <code>equal or above</code>, <code>below or above</code></br>
-        </div>
-        </br>
-        <div>
-            Write a line comment by adding <code>#</code> in front of it.</br>
-            Use any of predefined constants:</br>
-            ${ Object.keys(SP_KEYWORD_CONSTANTS).map(c => `<code>@${ c }</code>`).join(', ') }
+        <div class="ui tab basic segment padding-none" data-tab="tab4">
+            Custom headers can be created by using any non-reserved header name and the <code>path</code> option. To use, simply set the <code>path</code> to any valid object path.
         </div>
     `);
+
+    $('.menu .item').tab();
 });
 
 // Saving global settings

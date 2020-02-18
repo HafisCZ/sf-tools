@@ -362,3 +362,15 @@ h3.file-selected {
     bottom: 1em;
     right: 1em;
 }
+
+.padding-none {
+    padding: 0;
+}
+
+.settings-menu .active {
+    font-weight: normal !important;
+}
+
+.modal .settings-menu .active {
+    border-color: white !important;
+}
