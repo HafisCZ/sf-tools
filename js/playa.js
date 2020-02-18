@@ -429,6 +429,22 @@ class SFPlayer {
         else if (dif < 1814400000) return 6;
         else return 7;
     }
+
+    getPrimaryAttribute () {
+        switch (this.Class) {
+            case 1:
+            case 5:
+            case 6:
+                return this.Strength;
+            case 3:
+            case 4:
+                return this.Dexterity;
+            case 2:
+                return this.Intelligence;
+            default:
+                return { };
+        }
+    }
 }
 
 class SFOtherPlayer extends SFPlayer {
@@ -648,6 +664,7 @@ class SFOtherPlayer extends SFPlayer {
         }
 
         this.Achievements.Dehydration = this.Achievements[63].Owned;
+        this.PrimaryAttribute = this.getPrimaryAttribute();
     }
 }
 
@@ -883,5 +900,6 @@ class SFOwnPlayer extends SFPlayer {
         }
 
         this.Achievements.Dehydration = this.Achievements[63].Owned;
+        this.PrimaryAttribute = this.getPrimaryAttribute();
     }
 }

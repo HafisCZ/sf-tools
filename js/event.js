@@ -518,10 +518,10 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Upgrades, config.getEntrySafe('Upgrades').color) }">${ player.Fortress.Upgrades }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Honor</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Honor, config.getEntrySafe('Honor').color) }">${ player.Fortress.Honor }</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Honor, config.getEntrySafe('Fortress Honor').color) }">${ player.Fortress.Honor }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Gem Mine</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.GemMine, config.getEntrySafe('GemMine').color) }">${ player.Fortress.GemMine }</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.GemMine, config.getEntrySafe('Gem Mine').color) }">${ player.Fortress.GemMine }</div>
                         <div class="column"></div>
                         <div class="left aligned column font-big">Treasury</div>
                         <div class="column">${ player.Fortress.Treasury }</div>
