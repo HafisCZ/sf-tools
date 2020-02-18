@@ -672,7 +672,6 @@ Handle.bind(EVT_INIT, function () {
             <b>Bool values</b>: Use <code>on</code> to enable or <code>off</code> to disable an option
         </div>
         </br>
-        <b>Predefined names</b></br>
         <div>
             <b>Headers</b>: ${ SP_KEYWORD_HEADER_RESERVED.map(c => `<code>${ c }</code>`).join(', ') }</br>
             <b>Categories</b>: ${ SP_KEYWORD_CATEGORY_RESERVED.map(c => `<code>${ c }</code>`).join(', ') }

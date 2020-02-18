@@ -71,11 +71,11 @@ function createGenericHeader (name, defaults, ptr) {
         group.add(header.alias || name, header, defaults, cell => {
             var a = ptr(cell.player);
             var b = ptr(cell.compare);
-            return CellGenerator.Cell((CompareEval.evaluate(a, header.value) || a) + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), CompareEval.evaluate(a, header.color), '', last);
+            return CellGenerator.Cell((CompareEval.evaluate(a, header.value) || a) + (header.difference ? CellGenerator.Difference(header.flip ? (b - a) : (a - b), header.brackets) : ''), CompareEval.evaluate(a, header.color), '', last);
         }, cell => {
             var a = cell.operation(cell.players.map(p => ptr(p.player)));
             var b = cell.operation(cell.players.map(p => ptr(p.compare)));
-            return CellGenerator.Cell((CompareEval.evaluate(a, header.value) || a) + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
+            return CellGenerator.Cell((CompareEval.evaluate(a, header.value) || a) + (header.difference ? CellGenerator.Difference(header.flip ? (b - a) : (a - b), header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
         }, cell => {
             var a = ptr(cell);
             return CellGenerator.Plain((CompareEval.evaluate(a, header.value) || a), last);
@@ -84,18 +84,58 @@ function createGenericHeader (name, defaults, ptr) {
 }
 
 const ReservedHeaders = {
+    // Attributes
     'Strength': createGenericHeader('Str', { width: 100 }, p => p.Strength.Total),
     'Dexterity': createGenericHeader('Dex', { width: 100 }, p => p.Dexterity.Total),
     'Intelligence': createGenericHeader('Int', { width: 100 }, p => p.Intelligence.Total),
     'Constitution': createGenericHeader('Con', { width: 100 }, p => p.Constitution.Total),
     'Luck': createGenericHeader('Lck', { width: 100 }, p => p.Luck.Total),
     'Attribute': createGenericHeader('Attribute', { width: 100 }, p => p.PrimaryAttribute.Total),
+
+    // Base Attributes
     'Base Strength': createGenericHeader('Base Str', { width: 100 }, p => p.Strength.Base),
     'Base Dexterity': createGenericHeader('Base Dex', { width: 100 }, p => p.Dexterity.Base),
     'Base Intelligence': createGenericHeader('Base Int', { width: 100 }, p => p.Intelligence.Base),
     'Base Constitution': createGenericHeader('Base Con', { width: 100 }, p => p.Constitution.Base),
     'Base Luck': createGenericHeader('Base Lck', { width: 100 }, p => p.Luck.Base),
     'Base': createGenericHeader('Base', { width: 100 }, p => p.PrimaryAttribute.Base),
+
+    // Character
+    'Level': createGenericHeader('Level', { width: 100 }, p => p.Level),
+    'Honor': createGenericHeader('Honor', { width: 100 }, p => p.Honor),
+    'Armor': createGenericHeader('Armor', { width: 100 }, p => p.Armor),
+    'Mirror': createGenericHeader('Mirror', { width: 100 }, p => p.Mirror ? 13 : p.MirrorPieces),
+    'Equipment': createGenericHeader('Equipment', { width: 130 }, p => Object.values(p.Items).reduce((total, i) => total + i.getItemLevel(), 0)),
+
+    // Dungeons
+    'Tower': createGenericHeader('Tower', { width: 100 }, p => p.Dungeons.Tower),
+    'Portal': createGenericHeader('Portal', { width: 100 }, p => p.Dungeons.Player),
+    'Guild Portal': createGenericHeader('Guild Portal', { width: 130 }, p => p.Dungeons.Group),
+
+    // Fortress
+    'Fortress': createGenericHeader('Fortress', { width: 100 }, p => p.Fortress.Fortress),
+    'Upgrades': createGenericHeader('Upgrades', { width: 100 }, p => p.Fortress.Upgrades),
+    'Gem Mine': createGenericHeader('Gem Mine', { width: 100 }, p => p.Fortress.GemMine),
+    'Fortress Honor': createGenericHeader('Fortress Honor', { width: 150 }, p => p.Fortress.Honor),
+    'Wall': createGenericHeader('Wall', { width: 100 }, p => p.Fortress.Fortifications),
+    'Quarters': createGenericHeader('Quarters', { width: 100 }, p => p.Fortress.LaborerQuarters),
+    'Woodcutter': createGenericHeader('Woodcutter', { width: 100 }, p => p.Fortress.WoodcutterGuild),
+    'Quarry': createGenericHeader('Quarry', { width: 100 }, p => p.Fortress.Quarry),
+    'Academy': createGenericHeader('Academy', { width: 100 }, p => p.Fortress.Academy),
+    'Archery Guild': createGenericHeader('Archery', { width: 100 }, p => p.Fortress.ArcheryGuild),
+    'Barracks': createGenericHeader('Barracks', { width: 100 }, p => p.Fortress.Barracks),
+    'Mage Tower': createGenericHeader('Mages', { width: 100 }, p => p.Fortress.MageTower),
+    'Treasury': createGenericHeader('Treasury', { width: 100 }, p => p.Fortress.Treasury),
+    'Smithy': createGenericHeader('Smithy', { width: 100 }, p => p.Fortress.Smithy),
+
+    // Pets
+    'Shadow': createGenericHeader('Shadow', { width: 100 }, p => p.Pets.Shadow),
+    'Light': createGenericHeader('Light', { width: 100 }, p => p.Pets.Light),
+    'Earth': createGenericHeader('Earth', { width: 100 }, p => p.Pets.Earth),
+    'Fire': createGenericHeader('Fire', { width: 100 }, p => p.Pets.Fire),
+    'Water': createGenericHeader('Water', { width: 100 }, p => p.Pets.Water),
+
+    // Special headers
     'Class': function (group, header, last) {
         group.add(header.alias || 'Class', header, {
             width: 120,
@@ -139,18 +179,14 @@ const ReservedHeaders = {
             return CellGenerator.Plain(cell.Group.Role == -1 ? '?' : GROUP_ROLES[cell.Group.Role], last);
         }, player => player.Group.Role);
     },
-    'Level': function (group, header, last) {
-        group.add(header.alias || 'Level', header, {
-            width: 100
+    'Guild': function (group, header, last) {
+        group.add(header.alias || 'Guild', header, {
+            width: 200
         }, cell => {
-            return CellGenerator.Cell(cell.player.Level + (header.difference ? CellGenerator.Difference(cell.player.Level - cell.compare.Level, header.brackets) : ''), CompareEval.evaluate(cell.player.Level, header.color), '', last);
-        }, cell => {
-            var a = cell.operation(cell.players.map(p => p.player.Level));
-            var b = cell.operation(cell.players.map(p => p.compare.Level));
-            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
-        }, cell => {
-            return CellGenerator.Plain(cell.Level, last);
-        }, player => player.Level);
+            return CellGenerator.Cell(cell.player.Group.Name || '', '', '', last);
+        }, null, cell => {
+            return CellGenerator.Plain(cell.Group.Name || '', last);
+        }, player => player.Group.Name || '');
     },
     'Mount': function (group, header, last) {
         group.add(header.alias || 'Mount', header, {
@@ -273,58 +309,6 @@ const ReservedHeaders = {
             return CellGenerator.Plain((cell.Fortress.Knights == -1 ? '?' : cell.Fortress.Knights) + (header.maximum ? `/${ cell.Fortress.Fortress }` : ''), last);
         }, player => player.Fortress.Knights);
     },
-    'Gem Mine': function (group, header, last) {
-        group.add(header.alias || 'Gem Mine', header, {
-            width: 100
-        }, cell => {
-            return CellGenerator.Cell(cell.player.Fortress.GemMine + (header.difference ? CellGenerator.Difference(cell.player.Fortress.GemMine - cell.compare.Fortress.GemMine, header.brackets) : ''), CompareEval.evaluate(cell.player.Fortress.GemMine, header.color), '', last);
-        }, cell => {
-            var a = cell.operation(cell.players.map(p => p.player.Fortress.GemMine));
-            var b = cell.operation(cell.players.map(p => p.compare.Fortress.GemMine));
-            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
-        }, cell => {
-            return CellGenerator.Plain(cell.Fortress.GemMine, last);
-        }, player => player.Fortress.GemMine);
-    },
-    'Fortress': function (group, header, last) {
-        group.add(header.alias || 'Fortress', header, {
-            width: 100
-        }, cell => {
-            return CellGenerator.Cell(cell.player.Fortress.Fortress + (header.difference ? CellGenerator.Difference(cell.player.Fortress.Fortress - cell.compare.Fortress.Fortress, header.brackets) : ''), CompareEval.evaluate(cell.player.Fortress.Fortress, header.color), '', last);
-        }, cell => {
-            var a = cell.operation(cell.players.map(p => p.player.Fortress.Fortress));
-            var b = cell.operation(cell.players.map(p => p.compare.Fortress.Fortress));
-            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
-        }, cell => {
-            return CellGenerator.Plain(cell.Fortress.Fortress, last);
-        }, player => player.Fortress.Fortress);
-    },
-    'Honor': function (group, header, last) {
-        group.add(header.alias || 'Honor', header, {
-            width: 100
-        }, cell => {
-            return CellGenerator.Cell(cell.player.Honor + (header.difference ? CellGenerator.Difference(cell.player.Honor - cell.compare.Honor, header.brackets) : ''), CompareEval.evaluate(cell.player.Honor, header.color), '', last);
-        }, cell => {
-            var a = cell.operation(cell.players.map(p => p.player.Honor));
-            var b = cell.operation(cell.players.map(p => p.compare.Honor));
-            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
-        }, cell => {
-            return CellGenerator.Plain(cell.Honor, last);
-        }, player => player.Honor);
-    },
-    'Fortress Honor': function (group, header, last) {
-        group.add(header.alias || 'Fortress Honor', header, {
-            width: 150
-        }, cell => {
-            return CellGenerator.Cell(cell.player.Fortress.Honor + (header.difference ? CellGenerator.Difference(cell.player.Fortress.Honor - cell.compare.Fortress.Honor, header.brackets) : ''), CompareEval.evaluate(cell.player.Fortress.Honor, header.color), '', last);
-        }, cell => {
-            var a = cell.operation(cell.players.map(p => p.player.Fortress.Honor));
-            var b = cell.operation(cell.players.map(p => p.compare.Fortress.Honor));
-            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
-        }, cell => {
-            return CellGenerator.Plain(cell.Fortress.Honor, last);
-        }, player => player.Fortress.Honor);
-    },
     'Fortress Rank': function (group, header, last) {
         group.add(header.alias || 'Fortress Rank', header, {
             width: 100,
@@ -338,45 +322,6 @@ const ReservedHeaders = {
         }, cell => {
             return CellGenerator.Plain(cell.Fortress.Rank, last);
         }, player => player.Fortress.Rank);
-    },
-    'Upgrades': function (group, header, last) {
-        group.add(header.alias || 'Upgrades', header, {
-            width: 100
-        }, cell => {
-            return CellGenerator.Cell(cell.player.Fortress.Upgrades + (header.difference ? CellGenerator.Difference(cell.player.Fortress.Upgrades - cell.compare.Fortress.Upgrades, header.brackets) : ''), CompareEval.evaluate(cell.player.Fortress.Upgrades, header.color), '', last);
-        }, cell => {
-            var a = cell.operation(cell.players.map(p => p.player.Fortress.Upgrades));
-            var b = cell.operation(cell.players.map(p => p.compare.Fortress.Upgrades));
-            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
-        }, cell => {
-            return CellGenerator.Plain(cell.Fortress.Upgrades, last);
-        }, player => player.Fortress.Upgrades);
-    },
-    'Tower': function (group, header, last) {
-        group.add(header.alias || 'Tower', header, {
-            width: 100
-        }, cell => {
-            return CellGenerator.Cell(cell.player.Dungeons.Tower + (header.difference ? CellGenerator.Difference(cell.player.Dungeons.Tower - cell.compare.Dungeons.Tower, header.brackets) : ''), CompareEval.evaluate(cell.player.Dungeons.Tower, header.color), '', last);
-        }, cell => {
-            var a = cell.operation(cell.players.map(p => p.player.Dungeons.Tower));
-            var b = cell.operation(cell.players.map(p => p.compare.Dungeons.Tower));
-            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
-        }, cell => {
-            return CellGenerator.Plain(cell.Dungeons.Tower, last);
-        }, player => player.Dungeons.Tower);
-    },
-    'Portal': function (group, header, last) {
-        group.add(header.alias || 'Portal', header, {
-            width: 100
-        }, cell => {
-            return CellGenerator.Cell(cell.player.Dungeons.Player + (header.difference ? CellGenerator.Difference(cell.player.Dungeons.Player - cell.compare.Dungeons.Player, header.brackets) : ''), CompareEval.evaluate(cell.player.Dungeons.Player, header.color), '', last);
-        }, cell => {
-            var a = cell.operation(cell.players.map(p => p.player.Dungeons.Player));
-            var b = cell.operation(cell.players.map(p => p.compare.Dungeons.Player));
-            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
-        }, cell => {
-            return CellGenerator.Plain(cell.Dungeons.Player, last);
-        }, player => player.Dungeons.Player);
     },
     'Building': function (group, header, last) {
         group.add(header.alias || 'Building', header, {
@@ -397,22 +342,14 @@ const ReservedHeaders = {
             return CellGenerator.Plain(CompareEval.evaluate(cell.getInactiveDuration(), header.value) || formatDate(cell.LastOnline), last);
         }, player => player.LastOnline);
     },
-    'Equipment': function (group, header, last) {
-        group.add(header.alias || 'Equipment', header, {
-            width: 130
+    'Guild Joined': function (group, header, last) {
+        group.add(header.alias || 'Guild Joined', header, {
+            width: 160,
         }, cell => {
-            var a = Object.values(cell.player.Items).reduce((total, i) => total + i.getItemLevel(), 0);
-            var b = Object.values(cell.compare.Items).reduce((total, i) => total + i.getItemLevel(), 0);
-
-            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), CompareEval.evaluate(a, header.color), '', last);
-        }, cell => {
-            var a = cell.operation(cell.players.map(p => Object.values(p.player.Items).reduce((total, i) => total + i.getItemLevel(), 0)));
-            var b = cell.operation(cell.players.map(p => Object.values(p.compare.Items).reduce((total, i) => total + i.getItemLevel(), 0)));
-
-            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(a - b, header.brackets) : ''), '', CompareEval.evaluate(a, header.color), last);
-        }, cell => {
-            return CellGenerator.Plain(Object.values(cell.Items).reduce((total, i) => total + i.getItemLevel(), 0), last);
-        }, player => Object.values(player.Items).reduce((total, i) => total + i.getItemLevel(), 0));
+            return CellGenerator.Cell(cell.player.hasGuild() ? formatDate(cell.player.Group.Joined) : '', '', '', last);
+        }, null, cell => {
+            return CellGenerator.Plain(cell.hasGuild() ? formatDate(cell.Group.Joined) : '', last);
+        }, player => player.Group.Joined);
     }
 };
 
