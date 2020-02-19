@@ -879,7 +879,7 @@ Handle.bind(EVT_INIT, function () {
             </div>
         </div>
         <div class="ui tab basic segment padding-none" data-tab="tab4">
-            <b>Predefined categories</b>:</br>
+            <b>Predefined headers</b>:</br>
             These headers are reserved and already contain a path. If you want to have a custom header with the same name as a reserved header, you will have to use different name and then rename them using the <code>alias</code> option.</br>
             </br>
             <div class="ui three column css-compact-grid grid">
