@@ -676,77 +676,215 @@ Handle.bind(EVT_INIT, function () {
         <div class="ui pointing secondary settings-menu menu">
             <a class="active item" data-tab="tab0">Basics</a>
             <a class="item" data-tab="tab1">Options</a>
-            <a class="item" data-tab="tab2">Categories</a>
-            <a class="item" data-tab="tab3">Headers</a>
-            <a class="item" data-tab="tab4">Custom</a>
+            <a class="item" data-tab="tab2">Rules</a>
+            <a class="item" data-tab="tab3">Categories</a>
+            <a class="item" data-tab="tab4">Headers</a>
         </div>
         <div class="ui active tab basic segment padding-none" data-tab="tab0">
-            <div class="ui grid">
-                <div class="one wide column"></div>
-                <div class="six wide column">
-                    <code>category NAME</code></br>
-                    <code>header NAME</code>
-                </div>
-                <div class="nine wide column">
-                    Create category</br>
-                    Create header
+            <div>
+                <b>Global settings</b>:</br>
+                Use value <code>on</code> to enable or <code>off</code> to disable a feature. All features are disabled by default.</br>
+                </br>
+                <div class="ui css-compact-grid grid">
+                    <div class="five wide column">
+                        <code>members</code>
+                    </div>
+                    <div class="eleven wide column">
+                        Count number of members for each class in your guild and track those who left or joined.
+                    </div>
+                    <div class="five wide column">
+                        <code>indexed</code>
+                    </div>
+                    <div class="eleven wide column">
+                        Show index at the start of each row. If you want the index to stay static while sorting, use value <code>static</code>.
+                    </div>
                 </div>
             </div>
             </br>
-            Using any option before first category will make it apply to all headers. You can overwrite it by using the option in the header directly.
-            </br></br>
-            <b>Bool</b>: Use <code>on</code> to enable or <code>off</code> to disable an option
-            </br></br>
-            <b>Rule</b>: You can specify default value by using rule <code>default VALUE</code> syntax.</br>
-            Otherwise you can use rule <code>COMPARE COMPARE_VALUE VALUE</code>, while <code>COMPARE</code> can be any of <code>equal</code>, <code>below</code>, <code>above</code>, <code>equal or above</code> and <code>equal or below</code>. <code>COMPARE_VALUE</code> is a reference value used for the comparison.
-            </br></br>
-            You can write comments by starting them with <code>#</code> character.
-            </br></br>
-            You can also use several <b>constants</b>: ${ Object.keys(SP_KEYWORD_CONSTANTS).map(c => `<code>@${ c }</code>`).join(', ') }
+            <div>
+                <b>Table structure</b>:</br>
+                All headers must be placed within a category. Headers will be added to the last created category. Empty categories except reserved ones will be ignored.</br>
+                </br>
+                <div class="ui css-compact-grid grid">
+                    <div class="five wide column">
+                        <code>category NAME</code>
+                    </div>
+                    <div class="eleven wide column">
+                        Create a category with a given name.
+                    </div>
+                    <div class="five wide column">
+                        <code>header NAME</code>
+                    </div>
+                    <div class="eleven wide column">
+                        Create a header with a given name.
+                    </div>
+                </div>
+            </div>
+            </br>
+            <div>
+                <b>Comments</b>:</br>
+                You can write comments by prefixing them with the character <code>#</code>.</br>
+            </div>
+            </br>
+            <b>Constants</b>:</br>
+            You can use any of the predefined constants below. All constants are prefixed by the character <code>@</code>.</br>
+            </br>
+            <b>Predefined constants</b>:</br>
+            </br>
+            <div class="ui five column css-compact-grid grid">
+                ${ Object.keys(SP_KEYWORD_CONSTANTS).map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
+            </div>
         </div>
         <div class="ui tab basic segment padding-none" data-tab="tab1">
-            <div class="ui grid">
-                <div class="one wide column"></div>
-                <div class="six wide column">
-                    <code>members BOOL</code></br>
-                    <code>indexed BOOL or static</code></br>
-                    <code>difference BOOL</code></br>
-                    <code>statistics BOOL</code></br>
-                    <code>hydra BOOL</code></br>
-                    <code>visible BOOL</code></br>
-                    <code>percentage BOOL</code></br>
-                    <code>maximum BOOL</code></br>
-                    <code>width NUMBER</code></br>
-                    <code>color RULE</code></br>
-                    <code>value RULE</code></br>
-                    <code>path PATH</code></br>
+            <b>Options</b>:</br>
+            You can use options to customize headers and reserved categories. Options must be placed after creating header or reserved category and will be effective only until another is created.</br>
+            </br>
+            <div class="ui css-compact-grid grid">
+                <div class="five wide column">
                     <code>alias NAME</code>
                 </div>
-                <div class="nine wide column">
-                    Show member list</br>
-                    Show indexes</br>
-                    Show difference</br>
-                    Show in statistics</br>
-                    Show hydra</br>
-                    Show potion sizes</br>
-                    Show as percentage</br>
-                    Show maximum knights</br>
-                    Set width</br>
-                    Set color rule</br>
-                    Set value rule</br>
-                    Specify path</br>
-                    Rename column
+                <div class="eleven wide column">
+                    Rename reserved header or category.
+                </div>
+                <div class="five wide column">
+                    <code>width NUMBER</code>
+                </div>
+                <div class="eleven wide column">
+                    Change the width of the header. In case of a reserved category, it will be applied to all it's child headers.
+                </div>
+                <div class="five wide column">
+                    <code>difference BOOL</code>
+                </div>
+                <div class="eleven wide column">
+                    Show the difference between current and reference values while comparing.
+                </div>
+                <div class="five wide column">
+                    <code>brackets BOOL</code>
+                </div>
+                <div class="eleven wide column">
+                    Show difference within brackets.
+                </div>
+                <div class="five wide column">
+                    <code>statistics BOOL</code>
+                </div>
+                <div class="eleven wide column">
+                    Show minimum, average and max values below the table.
+                </div>
+                <div class="five wide column">
+                    <code>percentage BOOL</code>
+                </div>
+                <div class="eleven wide column">
+                    Show value as percentage instead of value only. Has effect only on <code>Mount</code> and <code>Album</code> headers.
+                </div>
+                <div class="five wide column">
+                    <code>hydra BOOL</code>
+                </div>
+                <div class="eleven wide column">
+                    Show whether player has Dehydration achievement. Has effect only on <code>Awards</code> header.
+                </div>
+                <div class="five wide column">
+                    <code>visible BOOL</code>
+                </div>
+                <div class="eleven wide column">
+                    Show value even with color enabled. Has effect only on <code>Potions</code> header.
+                </div>
+                <div class="five wide column">
+                    <code>maximum BOOL</code>
+                </div>
+                <div class="eleven wide column">
+                    Show the level of Fortress next to knights. Has effect only on <code>Knights</code> header.
+                </div>
+                <div class="five wide column">
+                    <code>color RULE COLOR</code>
+                </div>
+                <div class="eleven wide column">
+                    Apply a color to the cell if it follows the rule. You can use any valid css colors.
+                </div>
+                <div class="five wide column">
+                    <code>value RULE VALUE</code>
+                </div>
+                <div class="eleven wide column">
+                    Show a custom value instead of real value if it follows the rule.
+                </div>
+            </div>
+            </br>
+            <b>Options for custom headers</b>:</br>
+            </br>
+            <div class="ui css-compact-grid grid">
+                <div class="five wide column">
+                    <code>path PATH</code>
+                </div>
+                <div class="eleven wide column">
+                    This option is required for custom headers and contains the path to the value you want to show.
+                </div>
+                <div class="five wide column">
+                    <code>flip BOOL</code>
+                </div>
+                <div class="eleven wide column">
+                    Enabling this option will treat lesser values as better.
                 </div>
             </div>
         </div>
         <div class="ui tab basic segment padding-none" data-tab="tab2">
-            ${ SP_KEYWORD_CATEGORY_RESERVED.map(c => `${ c }`).join(', ') }
+            <b>Rule</b>:</br>
+            Rules consist of a function and a value. When the function is evaluated as true, the value will be used. If there are more rules, then the first evaluated as true will be used.</br>
+            </br>
+            <div class="ui css-compact-grid grid">
+                <div class="five wide column">
+                    <code>default</code>
+                </div>
+                <div class="eleven wide column">
+                    This rule specifies the default value and will be used only if no other rules are used.
+                </div>
+                <div class="five wide column">
+                    <code>equal X</code>
+                </div>
+                <div class="eleven wide column">
+                    Any value equal to X.
+                </div>
+                <div class="five wide column">
+                    <code>above X</code>
+                </div>
+                <div class="eleven wide column">
+                    Any value above X.
+                </div>
+                <div class="five wide column">
+                    <code>below X</code>
+                </div>
+                <div class="eleven wide column">
+                    Any value below X.
+                </div>
+                <div class="five wide column">
+                    <code>equal or above X</code></br>
+                    <code>above or equal X</code>
+                </div>
+                <div class="eleven wide column">
+                    Any value equal or above X.
+                </div>
+                <div class="five wide column">
+                    <code>equal or below X</code></br>
+                    <code>below or equal X</code>
+                </div>
+                <div class="eleven wide column">
+                    Any value equal or below X.
+                </div>
+            </div>
         </div>
         <div class="ui tab basic segment padding-none" data-tab="tab3">
-            ${ SP_KEYWORD_HEADER_RESERVED.map(c => `${ c }`).join(', ') }
+            <b>Predefined categories</b>:</br>
+            These categories are reserved and contain a set of predefined headers. You can set options to them as you would with headers as they will be set to all child headers. They cannot contain any other headers.</br>
+            </br>
+            <div class="ui three column css-compact-grid grid">
+                ${ SP_KEYWORD_CATEGORY_RESERVED.map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
+            </div>
         </div>
         <div class="ui tab basic segment padding-none" data-tab="tab4">
-            Custom headers can be created by using any non-reserved header name and the <code>path</code> option. To use, simply set the <code>path</code> to any valid object path.
+            <b>Predefined categories</b>:</br>
+            These headers are reserved and already contain a path. If you want to have a custom header with the same name as a reserved header, you will have to use different name and then rename them using the <code>alias</code> option.</br>
+            </br>
+            <div class="ui three column css-compact-grid grid">
+                ${ SP_KEYWORD_HEADER_RESERVED.map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
+            </div>
         </div>
     `);
 
