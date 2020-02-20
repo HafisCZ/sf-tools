@@ -399,7 +399,7 @@ class Table {
                 ReservedCategories[category.name](group, category, glast);
             } else {
                 category.h.forEach((header, hi, ha) => {
-                    var hlast = (!glast && hi == ha.length - 1) || (hi != ha.length - 1 && ha[hi + 1].name == 'Awards');
+                    var hlast = (!glast && hi == ha.length - 1) || (hi != ha.length - 1 && ha[hi + 1].name == 'Awards') || (!glast && header.name == 'Awards');
 
                     if (ReservedHeaders[header.name]) {
                         ReservedHeaders[header.name](group, header, hlast);
