@@ -225,11 +225,15 @@ Handle.bind(EVT_GROUP_SHOW, function () {
 
 // Save group as image
 Handle.bind(EVT_GROUP_SAVE, function () {
-    html2canvas($('#container-detail-screenshot')[0], {
+    html2canvas($('#gd-table').get(0), {
         logging: false,
-        onclone: function(doc){
-            var hidden = doc.getElementById('screenshot-only');
-            hidden.style.display = 'block';
+        onclone: function (doc) {
+            var node = doc.getElementById('gd-table');
+            var head = node.getElementsByTagName('thead')[0];
+
+            var row = doc.createElement('tr');
+            row.innerHTML = `<td colspan="4" class="text-left">${ formatDate(new Date(Number(State.getGroupTimestamp()))) } - ${ formatDate(new Date(Number(State.getGroupReferenceTimestamp()))) }</td>`;
+            head.prepend(row);
         }
     }).then(function (canvas) {
         canvas.toBlob(function (blob) {
@@ -240,7 +244,7 @@ Handle.bind(EVT_GROUP_SAVE, function () {
 
 // Save group as image
 Handle.bind(EVT_PLAYERS_SAVE, function () {
-    html2canvas($('#pl-table')[0], {
+    html2canvas($('#pl-table').get(0), {
         logging: false
     }).then(function (canvas) {
         canvas.toBlob(function (blob) {
@@ -250,17 +254,23 @@ Handle.bind(EVT_PLAYERS_SAVE, function () {
 });
 
 Handle.bind(EVT_GROUP_COPY, function () {
-    $('#screenshot-only').show();
+    var node = document.createElement('div');
+    node.innerHTML = `${ formatDate(new Date(Number(State.getGroupTimestamp()))) } - ${ formatDate(new Date(Number(State.getGroupReferenceTimestamp()))) }`
+    document.body.prepend(node);
 
     var range = document.createRange();
-    range.selectNode(document.getElementById('container-detail-screenshot'));
+    range.selectNode(node);
+
+    var range2 = document.createRange();
+    range2.selectNode(document.getElementById('gd-table'));
 
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);
+    window.getSelection().addRange(range2);
     document.execCommand('copy');
     window.getSelection().removeAllRanges();
 
-    $('#screenshot-only').hide();
+    document.body.removeChild(node);
 });
 
 Handle.bind(EVT_PLAYERS_COPY, function () {
@@ -329,10 +339,6 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     var groupReference = State.getGroupReference();
     var groupReferenceTimestamp = State.getGroupReferenceTimestamp();
 
-    $('#sf-d1').html(formatDate(new Date(Number(State.getGroupTimestamp()))));
-    $('#sf-d2').html(formatDate(new Date(Number(State.getGroupReferenceTimestamp()))));
-    $('#screenshot-only').hide();
-
     // Current members
     var members = [];
     for (var memberID of groupCurrent.Members) {
@@ -376,18 +382,6 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     var table = new Table(config);
     var tablePlayers = new StatisticsTableArray();
 
-    var width = table.width();
-
-    if (width < 1127) {
-        $('#container-detail').css('width', '');
-        $('#container-detail-screenshot').css('width', `${ Math.max(750, width) }px`);
-        $('#container-detail-screenshot').css('margin', 'auto');
-    } else {
-        $('#container-detail').css('width', `${ width }px`);
-        $('#container-detail-screenshot').css('width', '');
-        $('#container-detail-screenshot').css('margin', '');
-    }
-
     // Add players
     members.forEach(function (player) {
         tablePlayers.add(player, membersReferences.find(c => c.Identifier == player.Identifier));
@@ -405,7 +399,12 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     var sortStyle = State.getSortStyle();
     var sortBy = State.getSort();
 
-    $('#container-detail-content').html(table.createStatisticsTable(tablePlayers, joined, kicked, sortBy, sortStyle));
+    var [content, w] = table.createStatisticsTable(tablePlayers, joined, kicked, sortBy, sortStyle);
+
+    $('#gd-table').html(content);
+    $('#gd-table').css('position', 'absolute');
+    $('#gd-table').css('width', `${ w }px`);
+    $('#gd-table').css('left', `calc(50vw - 9px - ${ w / 2 }px)`);
 
     $('[data-player]').on('click', function () {
         Handle.call(EVT_PLAYER_LOAD, $(this).attr('data-player'), State.getGroupTimestamp());
@@ -616,7 +615,6 @@ Handle.bind(EVT_INIT, function () {
         var items = [];
 
         var table = State.getCachedTable();
-        var width = table.width();
         var tablePlayers = new PlayersTableArray();
 
         for (var player of Object.values(Database.Players)) {
@@ -629,8 +627,12 @@ Handle.bind(EVT_INIT, function () {
         var sortStyle = State.getSortStyle();
         var sortBy = State.getSort();
 
-        $('#pl-table').html(table.createPlayersTable(tablePlayers, sortBy, sortStyle));
-        $('#container-players').css('width', `${ Math.max(750, table.width() + 110) }px`);
+        var [content, w] = table.createPlayersTable(tablePlayers, sortBy, sortStyle);
+
+        $('#pl-table').html(content);
+        $('#pl-table').css('position', 'absolute');
+        $('#pl-table').css('width', `${ w }px`);
+        $('#pl-table').css('left', `calc(50vw - 9px - ${ w / 2 }px)`);
 
         $('#pl-table [data-sortable]').on('click', function () {
             var header = $(this).attr('data-sortable-key');
@@ -781,6 +783,12 @@ Handle.bind(EVT_INIT, function () {
                 </div>
                 <div class="eleven wide column">
                     Show whether player has Dehydration achievement. Has effect only on <code>Awards</code> header.
+                </div>
+                <div class="five wide column">
+                    <code>grail BOOL</code>
+                </div>
+                <div class="eleven wide column">
+                    Show whether player has found the Holy Grail. Has effect only on <code>Album</code> header.
                 </div>
                 <div class="five wide column">
                     <code>visible BOOL</code>

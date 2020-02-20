@@ -216,13 +216,13 @@ const ReservedHeaders = {
     },
     'Album': function (group, header, last) {
         group.add(header.alias || 'Album', header, {
-            width: 130
+            width: 100 + (header.difference ? 30 : 0) + (header.grail ? 15 : 0)
         }, cell => {
             var color = CompareEval.evaluate(100 * cell.player.Book / SCRAPBOOK_COUNT, header.color);
             if (header.percentage) {
-                return CellGenerator.Cell((100 * cell.player.Book / SCRAPBOOK_COUNT).toFixed(2) + '%' + (header.difference ? CellGenerator.Difference((100 * (cell.player.Book - cell.compare.Book) / SCRAPBOOK_COUNT).toFixed(2), header.brackets) : ''), color, '', last);
+                return CellGenerator.Cell((100 * cell.player.Book / SCRAPBOOK_COUNT).toFixed(2) + '%' + (header.grail && cell.player.Achievements.Grail ? CellGenerator.Small(' G') : '') + (header.difference ? CellGenerator.Difference((100 * (cell.player.Book - cell.compare.Book) / SCRAPBOOK_COUNT).toFixed(2), header.brackets) : ''), color, '', last);
             } else {
-                return CellGenerator.Cell(cell.player.Book + (header.difference ? CellGenerator.Difference(cell.player.Book - cell.compare.Book, header.brackets) : ''), color, '', last);
+                return CellGenerator.Cell(cell.player.Book + (header.grail && cell.player.Achievements.Grail ? CellGenerator.Small(' G') : '') + (header.difference ? CellGenerator.Difference(cell.player.Book - cell.compare.Book, header.brackets) : ''), color, '', last);
             }
         }, cell => {
             var a = cell.operation(cell.players.map(p => p.player.Book));
@@ -235,9 +235,9 @@ const ReservedHeaders = {
             }
         }, cell => {
             if (header.percentage) {
-                return CellGenerator.Plain((100 * cell.Book / SCRAPBOOK_COUNT).toFixed(2) + '%', last);
+                return CellGenerator.Plain((100 * cell.Book / SCRAPBOOK_COUNT).toFixed(2) + '%' + (header.grail && cell.Achievements.Grail ? CellGenerator.Small(' G') : ''), last);
             } else {
-                return CellGenerator.Plain(cell.Book, last);
+                return CellGenerator.Plain(cell.Book + (header.grail && cell.Achievements.Grail ? CellGenerator.Small(' G') : ''), last);
             }
         }, player => player.Book);
     },
@@ -436,10 +436,6 @@ class Table {
         });
     }
 
-    width () {
-        return (this.root.indexed ? 50 : 0) + 250 + this.config.reduce((a, b) => a + b.width, 0);
-    }
-
     flatten () {
         return this.config.reduce((array, group) => {
             array.push(... group.headers);
@@ -491,18 +487,14 @@ class Table {
             }
         }
 
-        // Current width
-        var w = this.width();
-
         // Add main body
-        return `
+        return [`
             <thead>
                 <tr>
                     ${ this.root.indexed ? `<td style="width: 50px" colspan="1" rowspan="2" class="clickable" ${ this.root.indexed != 2 ? ` data-sortable="${ sortby == '_index' ? sortstyle : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
                     <td style="width: 100px" colspan="1" rowspan="2" class="clickable" data-sortable="${ sortby == '_server' ? sortstyle : 0 }" data-sortable-key="_server">Server</td>
                     <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == '_name' ? sortstyle : 0 }" data-sortable-key="_name">Name</td>
-                    ${ join(this.config, (g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable-key="_potions" data-sortable="${ sortby == '_potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`) }
-                    ${ w < 750 ? `<td width="${ 750 - w }"></td>` : '' }
+                    ${ join(this.config, (g, index, array) => `<td ${ g.name == 'Potions' ? `style="width:${ g.width }px"` : '' } colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable-key="_potions" data-sortable="${ sortby == '_potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`) }
                 </tr>
                 <tr>
                     ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" data-sortable-key="${ h.name }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
@@ -515,7 +507,7 @@ class Table {
             </thead>
             <tbody>
                 ${ join(players, (r, i) => `<tr>${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`) }
-        `;
+        `, 100 + 250 + this.config.reduce((a, b) => a + b.width, 0) + (this.root.indexed ? 50 : 0)];
     }
 
     createStatisticsTable (players, joined, kicked, sortby, sortstyle) {
@@ -555,7 +547,8 @@ class Table {
         }
 
         // Current width
-        var w = this.width();
+        var cw = this.config.reduce((a, b) => a + b.width, 0);
+        var w = (this.root.indexed ? 50 : 0) + 250 + Math.max(400, cw);
 
         // Add main body
         var content = `
@@ -564,8 +557,7 @@ class Table {
                     ${ this.root.indexed ? `<td style="width: 50px" colspan="1" rowspan="2" class="clickable" ${ this.root.indexed != 2 ? ` data-sortable="${ sortby == '_index' ? sortstyle : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
                     <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == '_name' ? sortstyle : 0 }" data-sortable-key="_name">Name</td>
                     ${ join(this.config, (g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable="${ sortby == '_potions' ? sortstyle : 0 }" data-sortable-key="_potions"` : '' }>${ g.name }</td>`) }
-                    ${ flat.length < 5 ? Array(5 - flat.length).fill(null).map(x => '<td width="100"></td>').join('') : '' }
-                    ${ w < 750 ? `<td width="${ 750 - w }"></td>` : '' }
+                    ${ cw < 400 || flat.length < 3 ? joinN(Math.max(1, 3 - flat.length), x => `<td style="width: ${ (400 - cw) / Math.max(1, 3 - flat.length) }px"></td>`) : '' }
                 </tr>
                 <tr>
                     ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" data-sortable-key="${ h.name }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
@@ -632,8 +624,8 @@ class Table {
                     <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Warrior</td>
                     <td>${ classes[0] }</td>
                     ${ joined.length > 0 ? `
-                        <td class="border-right-thin" rowspan="3" colspan="2">Joined</td>
-                        <td colspan="${ Math.max(2, flat.length - 2) }" rowspan="3">${ joined.join(', ') }</td>
+                        <td class="border-right-thin" rowspan="3" colspan="1">Joined</td>
+                        <td colspan="${ Math.max(1, flat.length - 2) }" rowspan="3">${ joined.join(', ') }</td>
                     ` : '' }
                 </tr>
                 <tr>
@@ -648,8 +640,8 @@ class Table {
                     <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Assassin</td>
                     <td>${ classes[3] }</td>
                     ${ kicked.length > 0 ? `
-                        <td class="border-right-thin" rowspan="3" colspan="2">Left</td>
-                        <td colspan="${ Math.max(2, flat.length - 2) }" rowspan="3">${ kicked.join(', ') }</td>
+                        <td class="border-right-thin" rowspan="3" colspan="1">Left</td>
+                        <td colspan="${ Math.max(1, flat.length - 2) }" rowspan="3">${ kicked.join(', ') }</td>
                     ` : '' }
                 </tr>
                 <tr>
@@ -663,7 +655,7 @@ class Table {
             `;
         }
 
-        return content + '</tbody>';
+        return [content + '</tbody>', w];
     }
 }
 
@@ -773,7 +765,7 @@ const SP_KEYWORD_HEADER = 'header';
 
 // Parameters
 const SP_KEYWORD_GLOBAL_BOOL = [ 'members', 'indexed' ];
-const SP_KEYWORD_PARAMETER_BOOL = [ 'difference', 'percentage', 'hydra', 'flip', 'visible', 'brackets', 'statistics', 'maximum', 'members', 'indexed' ];
+const SP_KEYWORD_PARAMETER_BOOL = [ 'difference', 'percentage', 'hydra', 'flip', 'visible', 'brackets', 'statistics', 'maximum', 'members', 'indexed', 'grail' ];
 const SP_KEYWORD_PARAMETER_NUMBER = [ 'width' ];
 const SP_KEYWORD_PARAMETER_STRING = [ 'path', 'type', 'alias' ];
 const SP_KEYWORD_PARAMETER_ARRAY = [ 'color', 'value' ];

@@ -135,6 +135,10 @@ input:disabled {
     text-align: center !important;
 }
 
+.text-left {
+    text-align: left !important;
+}
+
 .undertone {
     background-color: #F0F0F0 !important;
 }
@@ -376,6 +380,6 @@ h3.file-selected {
 }
 
 .css-compact-grid .column {
-    padding-top: 0.5em !important;
-    padding-bottom: 0.5em !important;
+    padding-top: 0.3em !important;
+    padding-bottom: 0.3em !important;
 }

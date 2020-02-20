@@ -200,3 +200,9 @@ function join (a, c) {
     for (var i = 0, l = a.length; i < l; ++i) r += c(a[i], i, a);
     return r;
 }
+
+function joinN (n, c) {
+    var r = '';
+    for (var i = 0; i < n; i++) r += c();
+    return r;
+}

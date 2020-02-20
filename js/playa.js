@@ -412,6 +412,22 @@ class SFGroup {
 class SFPlayer {
     constructor (data) {
         this.Timestamp = data.timestamp;
+
+        this.Achievements = [];
+        this.Achievements.Owned = 0;
+        for (var i = 0; i < 80; i++) {
+            this.Achievements.push({
+                Owned: data.achievements[i] == 1,
+                Progress: data.achievements[i + 80] || 0
+            });
+
+            if (data.achievements[i] == 1 && i < data.achievements.length / 2) {
+                this.Achievements.Owned++;
+            }
+        }
+
+        this.Achievements.Dehydration = this.Achievements[63].Owned;
+        this.Achievements.Grail = this.Achievements[76].Owned;
     }
 
     hasGuild () {
@@ -649,21 +665,6 @@ class SFOtherPlayer extends SFPlayer {
         this.Identifier = data.prefix + '_' + this.ID;
 
         this.Group.Identifier = this.Group.Name ? `${ data.prefix }_${ this.Group.ID }` : null;
-
-        this.Achievements = [];
-        this.Achievements.Owned = 0;
-        for (var i = 0; i < 80; i++) {
-            this.Achievements.push({
-                Owned: data.achievements[i] == 1,
-                Progress: data.achievements[i + 80] || 0
-            });
-
-            if (data.achievements[i] == 1 && i < data.achievements.length / 2) {
-                this.Achievements.Owned++;
-            }
-        }
-
-        this.Achievements.Dehydration = this.Achievements[63].Owned;
         this.PrimaryAttribute = this.getPrimaryAttribute();
     }
 }
@@ -885,21 +886,6 @@ class SFOwnPlayer extends SFPlayer {
         this.Identifier = data.prefix + '_' + this.ID;
 
         this.Group.Identifier = this.Group.Name ? `${ data.prefix }_${ this.Group.ID }` : null;
-
-        this.Achievements = [];
-        this.Achievements.Owned = 0;
-        for (var i = 0; i < 80; i++) {
-            this.Achievements.push({
-                Owned: data.achievements[i] == 1,
-                Progress: data.achievements[i + 80] || 0
-            });
-
-            if (data.achievements[i] == 1 && i < data.achievements.length / 2) {
-                this.Achievements.Owned++;
-            }
-        }
-
-        this.Achievements.Dehydration = this.Achievements[63].Owned;
         this.PrimaryAttribute = this.getPrimaryAttribute();
     }
 }
