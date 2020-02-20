@@ -46,41 +46,41 @@ const FIGHT_TYPES = {
     Quest: 1,
     Dungeon: 4,
     Tower: 5,
+    FortAttack: 8,
+    FortDefend: 9,
+    FortRevenge: 109,
     PlayerPortal: 6,
     GuildPortal: 7,
     Shadow: 12,
-    Underworld: 16
+    Underworld: 16,
+    GuildPet: 17,
+    PetsDungeon: 13,
+    PetsAttack: 14,
+    PetsDefend: 15
 };
 
 function getFightTargetName (type, name, face) {
-    if (NAME_COMPANION[face]) {
-        return NAME_COMPANION[face];
-    }
-
-    switch (type) {
-        case FIGHT_TYPES.Quest: return getMonsterName(face);
-        case FIGHT_TYPES.Dungeon: return getMonsterName(face);
-        case FIGHT_TYPES.Tower: return getMonsterName(face);
-        case FIGHT_TYPES.PlayerPortal: return getMonsterName(face);
-        case FIGHT_TYPES.GuildPortal: return getMonsterName(face);
-        case FIGHT_TYPES.Shadow: return `Shadow ${ getMonsterName(face) }`;
-        case FIGHT_TYPES.Underworld: return getUnderworldUnitName(name);
-        default: return 'Unknown';
+    if (NAME_UNIT_COMPANION[face]) {
+        return NAME_UNIT_COMPANION[face];
+    } else if (type == FIGHT_TYPES.Shadow) {
+        return `Shadow ${ NAME_MONSTER[face] }`;
+    } else if (NAME_MONSTER[face]) {
+        return NAME_MONSTER[face];
+    } else {
+        return 'Unknown';
     }
 }
 
-const NAME_COMPANION = {
+const NAME_UNIT_UNDERWORLD = {
+    0: 'Goblin',
+    1: 'Troll',
+    2: 'Keeper'
+}
+
+const NAME_UNIT_COMPANION = {
     391: 'Bert',
     392: 'Mark',
     393: 'Kunigunde'
-}
-
-function getUnderworldUnitName (id) {
-    return NAME_UNIT_UNDERWORLD[id];
-}
-
-function getMonsterName (id) {
-    return NAME_MONSTER[id];
 }
 
 const NAME_MONSTER = {
@@ -775,12 +775,6 @@ const NAME_MONSTER = {
     897: 'Unhere',
     898: 'Tritosting',
     899: 'Hydrospir'
-}
-
-const NAME_UNIT_UNDERWORLD = {
-    0: 'Goblin',
-    1: 'Troll',
-    2: 'Keeper'
 }
 
 const ATTACK_TYPES = {

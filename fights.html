@@ -247,14 +247,14 @@
                 function updateTabs() {
                     if (tabs.length) {
                         $('#fi-content').show();
-                        $('#fi-select-items').html(tabs.map((tab, index) => `<div class="item${ !tabsadded && index == 0 ? ' active selected' : '' }" data-value="${ index }"><div class="fi-wrap"><div class="fi-left">${ index + 1 }.</div><div class="fi-right">${ tab.fighterA.Name }</br>${ tab.fighterB.Name }</div></div></div>`).join(''));
+                        $('#fi-select-items').html(tabs.map((tab, index) => `<div class="item${ !tabsadded && index == 0 ? ' active selected' : '' }" data-value="${ index }"><div class="fi-wrap"><div class="fi-left">${ index + 1 }.</div><div class="fi-right"><span class="${ tab.winner.ID != tab.fighterA.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterA.Name }</span></br><span class="${ tab.winner.ID != tab.fighterB.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterB.Name }</span></div></div></div>`).join(''));
                         $('#fi-content-pages').html(tabs.map((tab, index) => `
                             <div class="ui tab basic segment${ !tabsadded && index == 0 ? ' active' : '' }${ index == 0 ? ' margin-medium-top' : '' }" data-tab="${ index }">
                                 <div class="ui small form">
                                     <div class="ui grid">
                                         <div class="two columns row">
                                             <div class="column">
-                                                <h2 class="ui centered header">${ tab.fighterA.Name }</h2>
+                                                <h2 class="ui centered header ${ tab.winner.ID != tab.fighterA.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterA.Name }</h2>
                                                 <div class="two fields">
                                                     <div class="field">
                                                         <label>Class</label>
@@ -312,7 +312,7 @@
                                                 </div>
                                             </div>
                                             <div class="column">
-                                                <h2 class="ui centered header">${ tab.fighterB.Name }</h2>
+                                                <h2 class="ui centered header ${ tab.winner.ID != tab.fighterB.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterB.Name }</h2>
                                                 <div class="two fields">
                                                     <div class="field">
                                                         <label>Class</label>
