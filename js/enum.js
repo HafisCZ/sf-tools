@@ -8,6 +8,16 @@ const PLAYER_CLASS = [
     'Berserker'
 ];
 
+const PLAYER_CLASS_SEARCH = [
+    '',
+    'warrior',
+    'mage',
+    'scout',
+    'assassin',
+    'battle mage',
+    'berserker'
+];
+
 const PLAYER_MOUNT = [
     '',
     '10',

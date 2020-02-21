@@ -706,7 +706,7 @@ Handle.bind(EVT_INIT, function () {
         var tablePlayers = new PlayersTableArray();
 
         for (var player of Object.values(Database.Players)) {
-            var matches = terms.reduce((total, term) => total + ((player.Latest.Name.toLowerCase().includes(term) || player.Latest.Prefix.includes(term) || (player.Latest.hasGuild() && player.Latest.Group.Name.toLowerCase().includes(term))) ? 1 : 0), 0);
+            var matches = terms.reduce((total, term) => total + ((player.Latest.Name.toLowerCase().includes(term) || player.Latest.Prefix.includes(term) || PLAYER_CLASS_SEARCH[player.Latest.Class].includes(term) || (player.Latest.hasGuild() && player.Latest.Group.Name.toLowerCase().includes(term))) ? 1 : 0), 0);
             if (matches == terms.length) {
                 tablePlayers.add(player.Latest, player.LatestTimestamp == Database.Latest);
             }
