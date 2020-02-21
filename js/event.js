@@ -447,7 +447,9 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
             if (playerReference && playerReference.Group.Identifier == groupCurrent.Identifier) {
                 membersReferences.push(playerReference);
             } else {
-                var ts = player.List.find(p => p[0] <= groupReferenceTimestamp && p[1].Group.Identifier == groupCurrent.Identifier);
+                var xx = player.List.concat();
+                xx.reverse();
+                var ts = xx.find(p => p[0] >= groupReferenceTimestamp && p[1].Group.Identifier == groupCurrent.Identifier);
                 if (ts) {
                     membersReferences.push(ts[1]);
                 }
