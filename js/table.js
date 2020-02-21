@@ -354,6 +354,15 @@ const ReservedHeaders = {
             return CellGenerator.Plain(CompareEval.evaluate(cell.getInactiveDuration(), header.value) || formatDate(cell.LastOnline), last);
         }, player => player.LastOnline);
     },
+    'Timestamp': function (group, header, last) {
+        group.add(header.alias || 'Timestamp', header, {
+            width: 160,
+        }, cell => {
+            return CellGenerator.Plain(formatDate(new Date(cell.player.Timestamp)), last);
+        }, null, cell => {
+            return CellGenerator.Plain(formatDate(new Date(cell.Timestamp)), last);
+        }, player => player.Timestamp);
+    },
     'Guild Joined': function (group, header, last) {
         group.add(header.alias || 'Guild Joined', header, {
             width: 160,
