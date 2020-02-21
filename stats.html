@@ -31,6 +31,7 @@
     <body>
         <div class="ui fixed borderless huge menu">
             <div class="header item">SFTools</div>
+            <a class="item" id="show-container-me"><i class="small user icon"></i>Me</a>
             <a class="item" id="show-container-browse"><i class="small archive icon"></i>Guilds</a>
             <a class="item" id="show-container-players"><i class="small database icon"></i>Players</a>
             <a class="item" id="show-container-files"><i class="small upload icon"></i>Files</a>
@@ -59,6 +60,12 @@
                     <input type="checkbox">
                     <label>Show other guilds</label>
                 </div>
+            </div>
+        </div>
+
+        <div class="ui main container hidden sf-container" id="container-me">
+            <div class="ui five column grid" id="ol-list">
+
             </div>
         </div>
 
@@ -170,6 +177,29 @@
                 </div>
             </div>
             <table class="ui celled structured table table-group" id="pl-table">
+
+            </table>
+        </div>
+
+        <div class="ui main container hidden sf-container" id="container-player">
+            <div class="ui basic segment margin-none-bottom padding-none-bottom">
+                <div class="ui grid">
+                    <div class="three wide column">
+
+                    </div>
+                    <div class="ten wide middle aligned column">
+                        <h1 class="ui centered header" id="od-name"></h1>
+                    </div>
+                    <div class="three wide column">
+                        <div class="ui small basic icon right floated buttons">
+                            <button class="ui button" data-tooltip="Save as image" id="od-save"><i class="download icon"></i></button>
+                            <button class="ui button" data-tooltip="Copy table" id="od-copy"><i class="copy icon"></i></button>
+                            <button class="ui button" data-tooltip="Custom settings" id="od-settings"><i class="cog icon"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="ui celled structured table table-group" id="od-table">
 
             </table>
         </div>
@@ -301,12 +331,24 @@
                 Handle.call(EVENT_GUILD_SETTINGS_SHOW);
             });
 
+            $('#od-settings').on('click', function () {
+                Handle.call(EVENT_OWNPLAYER_SETTINGS_SHOW);
+            });
+
             $('#pl-save').on('click', function () {
                 Handle.call(EVT_PLAYERS_SAVE);
             });
 
             $('#pl-copy').on('click', function () {
                 Handle.call(EVT_PLAYERS_COPY);
+            });
+
+            $('#od-save').on('click', function () {
+                Handle.call(EVENT_OWNPLAYER_SAVE);
+            });
+
+            $('#od-copy').on('click', function () {
+                Handle.call(EVENT_OWNPLAYER_COPY);
             });
 
             $('#pl-settings').on('click', function () {
@@ -333,8 +375,9 @@
                 Handle.call(EVT_SETTINGS_LOAD);
             });
 
-            $('#show-container-help').on('click', function () {
-                Handle.call(EVT_SHOWSCREEN, 'container-help');
+            $('#show-container-me').on('click', function () {
+                Handle.call(EVT_SHOWSCREEN, 'container-me');
+                Handle.call(EVENT_OWNPLAYERS_LOAD);
             });
 
             $('#show-container-players').on('click', function () {

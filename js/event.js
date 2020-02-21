@@ -33,6 +33,13 @@ const EVENT_GUILD_SETTINGS_SHOW = 21000;
 const EVENT_PLAYERS_SHOW = 22000;
 const EVENT_PLAYERS_SETTINGS_SHOW = 22001;
 
+const EVENT_OWNPLAYERS_LOAD = 23000;
+
+const EVENT_OWNPLAYER_SHOW = 24000;
+const EVENT_OWNPLAYER_SETTINGS_SHOW = 24001;
+const EVENT_OWNPLAYER_SAVE = 24002;
+const EVENT_OWNPLAYER_COPY = 24003;
+
 Handle.bind(EVENT_PLAYERS_SETTINGS_SHOW, function () {
     UI.FloatingSettings.show('players', EVT_PLAYERS_LOAD);
 });
@@ -41,9 +48,40 @@ Handle.bind(EVENT_GUILD_SETTINGS_SHOW, function () {
     UI.FloatingSettings.show(State.getGroupID(), EVT_GROUP_LOAD_TABLE);
 });
 
+Handle.bind(EVENT_OWNPLAYER_SETTINGS_SHOW, function () {
+    UI.FloatingSettings.show(State.player.Latest.Identifier, EVENT_OWNPLAYER_SHOW);
+});
+
 Handle.bind(EVENT_GUILDS_TOGGLE, function (visible) {
     State.otherEnabled = visible;
     Handle.call(EVT_BROWSE_LOAD);
+});
+
+// Show group
+Handle.bind(EVENT_OWNPLAYER_SHOW, function (identifier) {
+    Handle.call(EVT_SHOWSCREEN, 'container-player');
+
+    identifier = identifier || State.player.Latest.Identifier;
+
+    if (Settings.exists(identifier)) {
+        $('#od-settings')[0].style.setProperty('background', '#21ba45', 'important');
+        $('#od-settings')[0].style.setProperty('color', 'white', 'important');
+    } else {
+        $('#od-settings')[0].style.setProperty('background', '');
+        $('#od-settings')[0].style.setProperty('color', '');
+    }
+
+    var player = Database.Players[identifier];
+    State.player = player;
+
+    var table = new Table(Settings.load(identifier));
+    var [content, w] = table.createHistoryTable(player.List);
+
+    $('#od-table').html(content);
+    $('#od-table').css('position', 'absolute');
+    $('#od-table').css('width', `${ w }px`);
+    $('#od-table').css('left', `calc(50vw - 9px - ${ w / 2 }px)`);
+    $('#od-name').text(player.Latest.Name);
 });
 
 // Bindings
@@ -113,6 +151,36 @@ Handle.bind(EVT_FILES_LOAD, function () {
 
     $('[data-file-id]').on('click', function () {
         Handle.call(EVT_FILES_REMOVE, $(this).attr('data-file-id'));
+    });
+});
+
+Handle.bind(EVENT_OWNPLAYERS_LOAD, function () {
+    // Variables
+    var content = '';
+
+    // Own players
+    var players = Object.values(Database.Players).filter(player => player.Latest.Own);
+    players.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
+
+    // Create grid
+    for (var i = 0, player; player = players[i]; i++) {
+        content += `
+            ${ i % 5 == 0 ? '<div class="row">' : '' }
+            <div class="column">
+                <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''}" data-player-id="${ player.Latest.Identifier }">
+                    <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
+                    <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
+                    <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
+                </div>
+            </div>
+            ${ i % 5 == 4 || i == players.length - 1 ? '</div>' : '' }
+        `;
+    }
+
+    // jQuery
+    $('#ol-list').html(content);
+    $('#ol-list [data-player-id]').on('click', function () {
+        Handle.call(EVENT_OWNPLAYER_SHOW, $(this).attr('data-player-id'));
     });
 });
 
@@ -253,6 +321,16 @@ Handle.bind(EVT_PLAYERS_SAVE, function () {
     });
 });
 
+Handle.bind(EVENT_OWNPLAYER_SAVE, function () {
+    html2canvas($('#od-table').get(0), {
+        logging: false
+    }).then(function (canvas) {
+        canvas.toBlob(function (blob) {
+            window.download(`${ State.player.Latest.Name }.png`, blob);
+        });
+    });
+});
+
 Handle.bind(EVT_GROUP_COPY, function () {
     var node = document.createElement('div');
     node.innerHTML = `${ formatDate(new Date(Number(State.getGroupTimestamp()))) } - ${ formatDate(new Date(Number(State.getGroupReferenceTimestamp()))) }`
@@ -276,6 +354,16 @@ Handle.bind(EVT_GROUP_COPY, function () {
 Handle.bind(EVT_PLAYERS_COPY, function () {
     var range = document.createRange();
     range.selectNode(document.getElementById('pl-table'));
+
+    window.getSelection().removeAllRanges();
+    window.getSelection().addRange(range);
+    document.execCommand('copy');
+    window.getSelection().removeAllRanges();
+});
+
+Handle.bind(EVENT_OWNPLAYER_COPY, function () {
+    var range = document.createRange();
+    range.selectNode(document.getElementById('od-table'));
 
     window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);

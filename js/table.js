@@ -399,7 +399,7 @@ class Table {
                 ReservedCategories[category.name](group, category, glast);
             } else {
                 category.h.forEach((header, hi, ha) => {
-                    var hlast = (!glast && hi == ha.length - 1) || (hi != ha.length - 1 && ha[hi + 1].name == 'Awards') || (!glast && header.name == 'Awards');
+                    var hlast = (!glast && hi == ha.length - 1) || (hi != ha.length - 1 && ha[hi + 1].name == 'Awards') || (hi != ha.length - 1 && header.name == 'Awards');
 
                     if (ReservedHeaders[header.name]) {
                         ReservedHeaders[header.name](group, header, hlast);
@@ -443,9 +443,33 @@ class Table {
         }, []);
     }
 
-    createPlayersTable (players, sortby, sortstyle) {
-        var content = [];
+    createHistoryTable (players) {
+        var flat = this.flatten();
 
+        // Main body
+        return [`
+            <thead>
+                <tr>
+                    ${ this.root.indexed ? `<td style="width: 50px" colspan="1" rowspan="2">#</td>` : '' }
+                    <td style="width: 200px" colspan="1" rowspan="2" class="border-right-thin">Date</td>
+                    ${ join(this.config, (g, index, array) => `<td ${ g.name == 'Potions' ? `style="width:${ g.width }px"` : '' } colspan="${ g.length }" class="${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' }>${ g.name }</td>`) }
+                </tr>
+                <tr>
+                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
+                </tr>
+                <tr>
+                    ${ this.root.indexed ? '<td class="border-bottom-thick"></td>' : '' }
+                    <td class="border-bottom-thick border-right-thin"></td>
+                    ${ join(this.config, (g, index, array) => `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`) }
+                </tr>
+            </thead>
+            <tbody>
+                ${ join(players, (r, i) => `<tr>${ this.root.indexed ? `<td>${ i + 1 }</td>` : '' }<td class="border-right-thin">${ formatDate(new Date(r[0])) }</td>${ join(flat, h => h.generators.cell({ player: r[1], compare: i != players.length - 1 ? players[i + 1][1] : r[1] })) }</tr>`) }
+            </tbody>
+        `, 200 + this.config.reduce((a, b) => a + b.width, 0) + (this.root.indexed ? 50 : 0)];
+    }
+
+    createPlayersTable (players, sortby, sortstyle) {
         // Flatten the headers
         var flat = this.flatten();
 
@@ -507,6 +531,7 @@ class Table {
             </thead>
             <tbody>
                 ${ join(players, (r, i) => `<tr>${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`) }
+            </tbody>
         `, 100 + 250 + this.config.reduce((a, b) => a + b.width, 0) + (this.root.indexed ? 50 : 0)];
     }
 

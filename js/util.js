@@ -206,3 +206,21 @@ function joinN (n, c) {
     for (var i = 0; i < n; i++) r += c();
     return r;
 }
+
+const Weekends = {
+    Type: [
+        'EPIC',
+         'GOLD',
+         'RESOURCE',
+         'EXPERIENCE'
+    ],
+    GetWeekendType: function (date = Date.now()) {
+        date = new Date(date);
+        date.setDate(date.getDate() - date.getDay() + (date.getDay() ? 1 : -6));
+        date.setHours(0, 0, 0);
+        let week = Math.trunc(date.getTime() / (7 * 24 * 3600 * 1000)) % 4;
+        let beg = new Date(date.getTime() + 5 * 24 * 60 * 60 * 1000 + 1);
+        let end = new Date(date.getTime() + 7 * 24 * 60 * 60 * 1000 - 1000);
+        return [this.Type[week], formatDate(beg), formatDate(end)];
+    }
+}

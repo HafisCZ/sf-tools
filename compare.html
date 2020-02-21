@@ -627,8 +627,8 @@
                         armor: player.armor,
                         rune: left.rune,
                         reduction: Math.max(0, Math.min(getMaxDamageReduction(player), (player.armor * (player.class == 5 ? 0.5 : 1)) / player.level / 100)),
-                        min: (1 + getMainAttribute(player, player) / 10) * left.min * player.damagemult,
-                        max: (1 + getMainAttribute(player, player) / 10) * left.max * player.damagemult
+                        min: (1 + getMainAttribute(player, player) / 10) * left.min * player.damagemult * (1 + left.rune / 100),
+                        max: (1 + getMainAttribute(player, player) / 10) * left.max * player.damagemult * (1 + left.rune / 100)
                     };
 
                     cur.cmin = cur.min * cur.crit;
@@ -651,13 +651,13 @@
                     rep.health = rep.con * 5 * (player.level + 1) * player.healthmult;
                     rep.armor = cur.armor + (left.type == TYPE_EQUIPMENT ? (right.armor - left.armor) : 0);
                     rep.reduction = Math.max(0, Math.min(getMaxDamageReduction(player), (rep.armor * (player.class == 5 ? 0.5 : 1)) / player.level / 100));
-                    rep.min = (1 + getMainAttribute(player, rep) / 10) * (left.type == TYPE_WEAPON ? right.min : left.min) * player.damagemult;
-                    rep.max = (1 + getMainAttribute(player, rep) / 10) * (left.type == TYPE_WEAPON ? right.max : left.max) * player.damagemult;
+                    rep.min = (1 + getMainAttribute(player, rep) / 10) * (left.type == TYPE_WEAPON ? right.min : left.min) * player.damagemult * (1 + rep.rune / 100);
+                    rep.max = (1 + getMainAttribute(player, rep) / 10) * (left.type == TYPE_WEAPON ? right.max : left.max) * player.damagemult * (1 + rep.rune / 100);
                     rep.cmin = rep.min * rep.crit;
                     rep.cmax = rep.max * rep.crit;
                     rep.avg = (rep.min + rep.max) / 2;
                     rep.cavg = (rep.cmin + rep.cmax) / 2;
-                    rep.tavg = rep.avg * (1 - rep.chance) * (1 + rep.rune / 100) + rep.cavg * rep.chance * (1 + rep.rune / 100);
+                    rep.tavg = rep.avg * (1 - rep.chance) * (1 + rep.rune / 100) + rep.cavg * rep.chance;
 
                     var dif = {
                         str: Math.trunc(rep.str) - Math.trunc(cur.str),
