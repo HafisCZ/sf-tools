@@ -167,16 +167,7 @@ const Database = new (class {
                         }
                     } else {
                         player.Group.Pet = group.Pets[index];
-                        player.Group.Treasure = -1;
-                        player.Group.Instructor = -1;
-                        player.Fortress.Knights = -1;
                     }
-                } else {
-                    player.Group.Role = -1;
-                    player.Group.Pet = -1;
-                    player.Group.Treasure = -1;
-                    player.Group.Instructor = -1;
-                    player.Fortress.Knights = -1;
                 }
 
                 if (!tempPlayers[player.Identifier]) {

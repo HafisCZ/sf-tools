@@ -10,6 +10,7 @@ body {
     margin-top: 5em;
     height: auto;
     overflow-y: scroll !important;
+    overflow-x: auto;
 }
 
 body.dimmed {

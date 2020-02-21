@@ -81,6 +81,9 @@ Handle.bind(EVENT_OWNPLAYER_SHOW, function (identifier) {
     $('#od-table').css('position', 'absolute');
     $('#od-table').css('width', `${ w }px`);
     $('#od-table').css('left', `calc(50vw - 9px - ${ w / 2 }px)`);
+    if ($('#od-table').css('left').slice(0, -2) < 0) {
+        $('#od-table').css('left', '0px');
+    }
     $('#od-name').text(player.Latest.Name);
 });
 
@@ -493,6 +496,9 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
     $('#gd-table').css('position', 'absolute');
     $('#gd-table').css('width', `${ w }px`);
     $('#gd-table').css('left', `calc(50vw - 9px - ${ w / 2 }px)`);
+    if ($('#gd-table').css('left').slice(0, -2) < 0) {
+        $('#gd-table').css('left', '0px');
+    }
 
     $('[data-player]').on('click', function () {
         Handle.call(EVT_PLAYER_LOAD, $(this).attr('data-player'), State.getGroupTimestamp());
@@ -769,6 +775,9 @@ Handle.bind(EVT_INIT, function () {
         $('#pl-table').css('position', 'absolute');
         $('#pl-table').css('width', `${ w }px`);
         $('#pl-table').css('left', `calc(50vw - 9px - ${ w / 2 }px)`);
+        if ($('#pl-table').css('left').slice(0, -2) < 0) {
+            $('#pl-table').css('left', '0px');
+        }
 
         $('#pl-table [data-sortable]').on('click', function () {
             var header = $(this).attr('data-sortable-key');

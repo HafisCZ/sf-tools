@@ -690,7 +690,6 @@ class SFOtherPlayer extends SFPlayer {
             dataType.byte()
         ];
         dataType.clear(); // skip
-        this.Fortress.Knights = dataType.long();
 
         dataType = new ComplexDataType(data.pets);
         dataType.assert(6);
@@ -840,7 +839,10 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Normal[8] = dataType.long();
         this.Dungeons.Normal[9] = dataType.long();
         this.Dungeons.Normal[12] = dataType.long() - 120;
-        dataType.skip(2); // skip
+        this.Toilet = {
+            Aura: dataType.long(),
+            Fill: dataType.long()
+        }
         this.Potions = [{
             Type: getPotionType(dataType.long()),
             Size: dataType.skip(5).long()
@@ -853,7 +855,9 @@ class SFOwnPlayer extends SFPlayer {
         }];
         this.Potions.sort((a, b) => b.Size - a.Size);
         this.Potions.Life = dataType.long();
-        dataType.skip(14); // skip
+        dataType.skip(12); // skip
+        this.Toilet.Capacity = dataType.long();
+        dataType.skip(1); // skip
         this.Flags.HideFrame = dataType.long();
         dataType.skip(3); //skip
         this.Flags.NoInvite = dataType.long();
