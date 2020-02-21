@@ -577,9 +577,9 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                             <div class="column"><br></div>
                             <div class="column"></div>
                             <div class="column"></div>
-                            <div class="left aligned column font-big">Currently building</div>
-                            <div class="column"></div>
-                            <div class="column">${ FORTRESS_BUILDINGS[player.Fortress.Upgrade.Building] }</div>
+                            <div class="seven wide left aligned column font-big">Currently building</div>
+                            <div class="four wide column"></div>
+                            <div class="five wide column">${ FORTRESS_BUILDINGS[player.Fortress.Upgrade.Building] }</div>
                             <div class="left aligned column font-big"></div>
                             <div class="column"></div>
                             <div class="column">${ formatDate(player.Fortress.Upgrade.Finish) }</div>
@@ -606,6 +606,54 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                             <div class="left aligned column font-big">Mages</div>
                             <div class="column">${ player.Fortress.MageTower }x</div>
                             <div class="column">${ player.Fortress.Mages }</div>
+                        ` : '' }
+                        <div class="column"><br></div>
+                        <div class="column"></div>
+                        <div class="column"></div>
+                        ${ player.Runes.Gold ? `
+                            <div class="left aligned column font-big">Bonus Gold</div>
+                            <div class="column"></div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Gold, config.getEntrySafe('Rune Gold').color) }">${ player.Runes.Gold }%</div>
+                        ` : '' }
+                        ${ player.Runes.XP ? `
+                            <div class="left aligned column font-big">Bonus XP</div>
+                            <div class="column"></div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.XP, config.getEntrySafe('Rune XP').color) }">${ player.Runes.XP }%</div>
+                        ` : '' }
+                        ${ player.Runes.Chance ? `
+                            <div class="left aligned column font-big">Epic Chance</div>
+                            <div class="column"></div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Chance, config.getEntrySafe('Rune Chance').color) }">${ player.Runes.Chance }%</div>
+                        ` : '' }
+                        ${ player.Runes.Quality ? `
+                            <div class="left aligned column font-big">Item Quality</div>
+                            <div class="column"></div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Quality, config.getEntrySafe('Rune Quality').color) }">${ player.Runes.Quality }%</div>
+                        ` : '' }
+                        ${ player.Runes.Health ? `
+                            <div class="left aligned column font-big">Bonus Health</div>
+                            <div class="column"></div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Health, config.getEntrySafe('Rune Health').color) }">${ player.Runes.Health }%</div>
+                        ` : '' }
+                        ${ player.Runes.Damage ? `
+                            <div class="left aligned column font-big">Elemental Dmg</div>
+                            <div class="column"></div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Damage, config.getEntrySafe('Rune Damage').color) }">${ player.Runes.Damage }%</div>
+                        ` : '' }
+                        ${ player.Runes.ResistanceFire ? `
+                            <div class="left aligned column font-big">Fire Resist</div>
+                            <div class="column"></div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.ResistanceFire, config.getEntrySafe('Fire Resist').color) }">${ player.Runes.ResistanceFire }%</div>
+                        ` : '' }
+                        ${ player.Runes.ResistanceCold ? `
+                            <div class="left aligned column font-big">Cold Resist</div>
+                            <div class="column"></div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.ResistanceCold, config.getEntrySafe('Cold Resist').color) }">${ player.Runes.ResistanceCold }%</div>
+                        ` : '' }
+                        ${ player.Runes.ResistanceLightning ? `
+                            <div class="left aligned column font-big">Lightning Resist</div>
+                            <div class="column"></div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.ResistanceLightning, config.getEntrySafe('Lightning Resist').color) }">${ player.Runes.ResistanceLightning }%</div>
                         ` : '' }
                     </div>
                 </div>

@@ -135,6 +135,18 @@ const ReservedHeaders = {
     'Fire': createGenericHeader('Fire', { width: 100 }, p => p.Pets.Fire),
     'Water': createGenericHeader('Water', { width: 100 }, p => p.Pets.Water),
 
+    // Runes
+    'Rune Gold': createGenericHeader('Rune Gold', { width: 100 }, p => p.Runes.Gold),
+    'Rune XP': createGenericHeader('Rune XP', { width: 100 }, p => p.Runes.XP),
+    'Rune Chance': createGenericHeader('Rune Chance', { width: 100 }, p => p.Runes.Chance),
+    'Rune Quality': createGenericHeader('Rune Quality', { width: 100 }, p => p.Runes.Quality),
+    'Rune Health': createGenericHeader('Rune Health', { width: 100 }, p => p.Runes.Health),
+    'Rune Damage': createGenericHeader('Rune Damage', { width: 100 }, p => p.Runes.Damage),
+    'Rune Resist': createGenericHeader('Rune Resistance', { width: 110 }, p => p.Runes.Resistance),
+    'Fire Resist': createGenericHeader('Fire Resistance', { width: 110 }, p => p.Runes.ResistanceFire),
+    'Cold Resist': createGenericHeader('Cold Resistance', { width: 110 }, p => p.Runes.ResistanceCold),
+    'Lightning Resist': createGenericHeader('Lightning Resistance', { width: 110 }, p => p.Runes.ResistanceLightning),
+
     // Special headers
     'Class': function (group, header, last) {
         group.add(header.alias || 'Class', header, {
@@ -936,7 +948,7 @@ const SettingsParser = (function () {
             if (this.h) {
                 merge(this.h, this.g);
 
-                if (SP_KEYWORD_HEADER_RESERVED.includes(this.h.name) || this.h.path) {
+                if ((SP_KEYWORD_HEADER_RESERVED.includes(this.h.name) || this.h.path) && this.c) {
                     this.c.h.push(this.h);
                 }
 

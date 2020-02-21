@@ -22,7 +22,7 @@ class SFItem {
         this.HasSocket = socket > 0;
         this.GemValue = socketPower;
         this.HasGem = socket > 1;
-        this.HasRune = attributeType[2] > 0;
+        this.HasRune = attributeType[2] > 30;
         this.Class = Math.trunc(picIndex / 1000) + 1;
         this.PicIndex = picIndex;
         this.Index = picIndex % 1000;
@@ -462,6 +462,49 @@ class SFPlayer {
                 return { };
         }
     }
+
+    evaluateRunes () {
+        this.Runes = {
+            Gold: 0,
+            Chance: 0,
+            Quality: 0,
+            XP: 0,
+            Health: 0,
+            ResistanceFire: 0,
+            ResistanceCold: 0,
+            ResistanceLightning: 0,
+            Damage: 0,
+            Resistance: 0
+        };
+
+        for (var item of Object.values(this.Items)) {
+            if (item.HasRune) {
+                var rune = item.AttributeTypes[2];
+                var value = item.Attributes[2];
+
+                if (rune == 31) this.Runes.Gold += value;
+                else if (rune == 32) this.Runes.Chance += value;
+                else if (rune == 33) this.Runes.Quality += value;
+                else if (rune == 34) this.Runes.XP += value;
+                else if (rune == 35) this.Runes.Health += value;
+                else if (rune == 36) {
+                    this.Runes.ResistanceFire += value;
+                    this.Runes.Resistance += Math.trunc(value / 3);
+                } else if (rune == 37) {
+                    this.Runes.ResistanceCold += value;
+                    this.Runes.Resistance += Math.trunc(value / 3);
+                } else if (rune == 38) {
+                    this.Runes.ResistanceLightning += value;
+                    this.Runes.Resistance += Math.trunc(value / 3);
+                } else if (rune == 39) {
+                    this.Runes.ResistanceFire += value;
+                    this.Runes.ResistanceCold += value;
+                    this.Runes.ResistanceLightning += value;
+                    this.Runes.Resistance += value;
+                } else if (rune >= 40 && rune <= 42) this.Runes.Damage += value;
+            }
+        }
+    }
 }
 
 class SFOtherPlayer extends SFPlayer {
@@ -667,6 +710,7 @@ class SFOtherPlayer extends SFPlayer {
 
         this.Group.Identifier = this.Group.Name ? `${ data.prefix }_${ this.Group.ID }` : null;
         this.PrimaryAttribute = this.getPrimaryAttribute();
+        this.evaluateRunes();
     }
 }
 
@@ -888,5 +932,6 @@ class SFOwnPlayer extends SFPlayer {
 
         this.Group.Identifier = this.Group.Name ? `${ data.prefix }_${ this.Group.ID }` : null;
         this.PrimaryAttribute = this.getPrimaryAttribute();
+        this.evaluateRunes();
     }
 }
