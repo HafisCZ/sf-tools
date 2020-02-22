@@ -9,8 +9,6 @@ const EVT_GROUP_SHOW = 1000; // Show
 const EVT_GROUP_SORT = 1001; // Toggle sort mode
 const EVT_GROUP_LOAD_TABLE = 1002; // Load table
 const EVT_GROUP_LOAD_HEADER = 1003; // Load header
-const EVT_GROUP_SAVE = 1004; // Save as image
-const EVT_GROUP_COPY = 1005; // Copy table
 const EVT_SETTINGS_SAVE = 2000;
 const EVT_SETTINGS_LOAD = 2001;
 const EVT_PLAYERS_LOAD = 6000;
@@ -22,10 +20,11 @@ const EVT_FILES_EXPORT = 3004;
 const EVT_FILE_MERGE = 100001;
 const EVT_BROWSE_LOAD = 4000;
 const EVT_PLAYER_LOAD = 5000;
-const EVT_PLAYERS_SAVE = 6002;
-const EVT_PLAYERS_COPY = 6003;
 
 // Better event names
+const EVENT_COPY = 10001;
+const EVENT_SAVE = 10002;
+
 const EVENT_GUILDS_TOGGLE = 20000;
 
 const EVENT_GUILD_SETTINGS_SHOW = 21000;
@@ -37,8 +36,6 @@ const EVENT_OWNPLAYERS_LOAD = 23000;
 
 const EVENT_OWNPLAYER_SHOW = 24000;
 const EVENT_OWNPLAYER_SETTINGS_SHOW = 24001;
-const EVENT_OWNPLAYER_SAVE = 24002;
-const EVENT_OWNPLAYER_COPY = 24003;
 
 Handle.bind(EVENT_PLAYERS_SETTINGS_SHOW, function () {
     UI.FloatingSettings.show('players', EVT_PLAYERS_LOAD);
@@ -171,6 +168,7 @@ Handle.bind(EVENT_OWNPLAYERS_LOAD, function () {
             ${ i % 5 == 0 ? '<div class="row">' : '' }
             <div class="column">
                 <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''}" data-player-id="${ player.Latest.Identifier }">
+                    <span class="css-timestamp">${ formatDate(new Date(player.LatestTimestamp)) }</span>
                     <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
                     <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
                     <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
@@ -206,6 +204,7 @@ Handle.bind(EVT_BROWSE_LOAD, function () {
                 ${ indexOwn % 5 == 0 ? `${ indexOwn != 0 ? '</div>' : '' }<div class="row">` : '' }
                 <div class="column">
                     <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''}" data-group-id="${group.Latest.Identifier}">
+                        <span class="css-timestamp">${ formatDate(new Date(group.LatestTimestamp)) }</span>
                         <img class="ui medium centered image" src="res/group.png">
                         <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
                         <h3 class="ui margin-none-top centered header">${group.Latest.Name}</h3>
@@ -218,6 +217,7 @@ Handle.bind(EVT_BROWSE_LOAD, function () {
                 ${ indexOther % 5 == 0 ? `${ indexOther != 0 ? '</div>' : '' }<div class="row">` : '' }
                 <div class="column">
                     <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''}" data-group-id="${group.Latest.Identifier}">
+                        <span class="css-timestamp">${ formatDate(new Date(group.LatestTimestamp)) }</span>
                         <img class="ui medium centered image" src="res/group.png">
                         <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
                         <h3 class="ui margin-none-top centered header">${group.Latest.Name}</h3>
@@ -294,81 +294,27 @@ Handle.bind(EVT_GROUP_SHOW, function () {
     Handle.call(EVT_GROUP_LOAD_TABLE);
 });
 
-// Save group as image
-Handle.bind(EVT_GROUP_SAVE, function () {
-    html2canvas($('#gd-table').get(0), {
+Handle.bind(EVENT_SAVE, function (selector, filename, onclone) {
+    html2canvas(document.getElementById(selector), {
         logging: false,
-        onclone: function (doc) {
-            var node = doc.getElementById('gd-table');
-            var head = node.getElementsByTagName('thead')[0];
-
-            var row = doc.createElement('tr');
-            row.innerHTML = `<td colspan="4" class="text-left">${ formatDate(new Date(Number(State.getGroupTimestamp()))) } - ${ formatDate(new Date(Number(State.getGroupReferenceTimestamp()))) }</td>`;
-            head.prepend(row);
-        }
+        onclone: onclone
     }).then(function (canvas) {
         canvas.toBlob(function (blob) {
-            window.download(`${ State.getGroupCurrent().Name }.${ State.getGroupTimestamp() }${ State.getGroupReferenceTimestamp() != State.getGroupTimestamp() ? `.${ State.getGroupReferenceTimestamp() }` : '' }.png`, blob);
+            window.download(`${ filename }.png`, blob);
         });
     });
 });
 
-// Save group as image
-Handle.bind(EVT_PLAYERS_SAVE, function () {
-    html2canvas($('#pl-table').get(0), {
-        logging: false
-    }).then(function (canvas) {
-        canvas.toBlob(function (blob) {
-            window.download(`players.png`, blob);
-        });
-    });
-});
-
-Handle.bind(EVENT_OWNPLAYER_SAVE, function () {
-    html2canvas($('#od-table').get(0), {
-        logging: false
-    }).then(function (canvas) {
-        canvas.toBlob(function (blob) {
-            window.download(`${ State.player.Latest.Name }.png`, blob);
-        });
-    });
-});
-
-Handle.bind(EVT_GROUP_COPY, function () {
-    var node = document.createElement('div');
-    node.innerHTML = `${ formatDate(new Date(Number(State.getGroupTimestamp()))) } - ${ formatDate(new Date(Number(State.getGroupReferenceTimestamp()))) }`
-    document.body.prepend(node);
-
+Handle.bind(EVENT_COPY, function (selector, extra) {
     var range = document.createRange();
-    range.selectNode(node);
-
-    var range2 = document.createRange();
-    range2.selectNode(document.getElementById('gd-table'));
+    range.selectNode(document.getElementById(selector));
 
     window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    window.getSelection().addRange(range2);
-    document.execCommand('copy');
-    window.getSelection().removeAllRanges();
 
-    document.body.removeChild(node);
-});
+    if (extra) {
+        window.getSelection().addRange(extra);
+    }
 
-Handle.bind(EVT_PLAYERS_COPY, function () {
-    var range = document.createRange();
-    range.selectNode(document.getElementById('pl-table'));
-
-    window.getSelection().removeAllRanges();
-    window.getSelection().addRange(range);
-    document.execCommand('copy');
-    window.getSelection().removeAllRanges();
-});
-
-Handle.bind(EVENT_OWNPLAYER_COPY, function () {
-    var range = document.createRange();
-    range.selectNode(document.getElementById('od-table'));
-
-    window.getSelection().removeAllRanges();
     window.getSelection().addRange(range);
     document.execCommand('copy');
     window.getSelection().removeAllRanges();
@@ -520,6 +466,7 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
     $('#modal-player').html(`
         <div class="ui text-center extreme header margin-none-bottom padding-none-bottom">${ player.Name }</div>
         <div class="ui text-center huge header padding-none-top margin-remove-top">${ PLAYER_CLASS[player.Class] } <span style="color: ${ CompareEval.evaluate(player.Level, config.getEntrySafe('Level').color) }">${ player.Level }</span></div>
+        <div class="ui text-center big header padding-none-top padding-none-bottom">${ formatDate(new Date(player.Timestamp)) }</div>
         <div class="content text-center">
             <div class="ui two columns grid">
                 <div class="column">

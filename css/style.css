@@ -13,6 +13,13 @@ body {
     overflow-x: auto;
 }
 
+.css-timestamp {
+    position: absolute;
+    top: 0.25em;
+    left: 4.5em;
+    font-size: 85%;
+}
+
 body.dimmed {
     overflow: hidden !important;
     margin-right: 17px !important;

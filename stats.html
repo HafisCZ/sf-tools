@@ -320,11 +320,25 @@
             });
 
             $('#container-detail-save').on('click', function () {
-                Handle.call(EVT_GROUP_SAVE);
+                Handle.call(EVENT_SAVE, 'gd-table', `${ State.getGroupCurrent().Name }.${ State.getGroupTimestamp() }${ State.getGroupReferenceTimestamp() != State.getGroupTimestamp() ? `.${ State.getGroupReferenceTimestamp() }` : '' }`, function (doc) {
+                    var node = doc.getElementById('gd-table');
+                    var head = node.getElementsByTagName('thead')[0];
+                    var row = doc.createElement('tr');
+                    row.innerHTML = `<td colspan="4" class="text-left">${ formatDate(new Date(Number(State.getGroupTimestamp()))) } - ${ formatDate(new Date(Number(State.getGroupReferenceTimestamp()))) }</td>`;
+                    head.prepend(row);
+                });
             });
 
             $('#container-detail-copy').on('click', function () {
-                Handle.call(EVT_GROUP_COPY);
+                var node = document.createElement('div');
+                node.innerHTML = `${ formatDate(new Date(Number(State.getGroupTimestamp()))) } - ${ formatDate(new Date(Number(State.getGroupReferenceTimestamp()))) }`
+                document.body.prepend(node);
+                var range = document.createRange();
+                range.selectNode(node);
+                
+                Handle.call(EVENT_COPY, 'gd-table', range);
+
+                document.body.removeChild(node);
             });
 
             $('#container-detail-settings').on('click', function () {
@@ -336,19 +350,19 @@
             });
 
             $('#pl-save').on('click', function () {
-                Handle.call(EVT_PLAYERS_SAVE);
+                Handle.call(EVENT_SAVE, 'pl-table', 'players');
             });
 
             $('#pl-copy').on('click', function () {
-                Handle.call(EVT_PLAYERS_COPY);
+                Handle.call(EVENT_COPY, 'pl-table');
             });
 
             $('#od-save').on('click', function () {
-                Handle.call(EVENT_OWNPLAYER_SAVE);
+                Handle.call(EVENT_SAVE, 'od-table', State.player.Latest.Name);
             });
 
             $('#od-copy').on('click', function () {
-                Handle.call(EVENT_OWNPLAYER_COPY);
+                Handle.call(EVENT_COPY, 'od-table');
             });
 
             $('#pl-settings').on('click', function () {
