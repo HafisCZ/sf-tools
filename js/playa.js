@@ -463,6 +463,22 @@ class SFPlayer {
         }
     }
 
+    getDefenseAtribute (player) {
+        switch (player.Class) {
+            case 1:
+            case 5:
+            case 6:
+                return this.Strength;
+            case 3:
+            case 4:
+                return this.Dexterity;
+            case 2:
+                return this.Intelligence;
+            default:
+                return 0;
+        }
+    }
+
     evaluateRunes () {
         this.Runes = {
             Gold: 0,
@@ -474,6 +490,9 @@ class SFPlayer {
             ResistanceCold: 0,
             ResistanceLightning: 0,
             Damage: 0,
+            DamageFire: 0,
+            DamageCold: 0,
+            DamageLightning: 0,
             Resistance: 0
         };
 
@@ -501,7 +520,16 @@ class SFPlayer {
                     this.Runes.ResistanceCold += value;
                     this.Runes.ResistanceLightning += value;
                     this.Runes.Resistance += value;
-                } else if (rune >= 40 && rune <= 42) this.Runes.Damage += value;
+                } else if (rune == 40) {
+                    this.Runes.DamageFire += value;
+                    this.Runes.Damage += value;
+                } else if (rune == 41) {
+                    this.Runes.DamageCold += value;
+                    this.Runes.Damage += value;
+                } else if (rune == 42) {
+                    this.Runes.DamageLightning += value;
+                    this.Runes.Damage += value;
+                }
             }
         }
     }
