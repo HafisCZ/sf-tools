@@ -369,7 +369,7 @@ class SFGroup {
     constructor (data) {
         this.Prefix = data.prefix.replace('_', ' ');
         this.ID = data.save[0];
-        this.Identifier = data.prefix + '_' + this.ID;
+        this.Identifier = data.prefix + '_g' + this.ID;
 
         this.Name = data.name;
         this.Rank = data.rank;
@@ -381,7 +381,7 @@ class SFGroup {
         this.Honor = data.save[13];
         this.Pet = data.save[378];
 
-        this.Members = data.save.slice(14, 64).map(mid => (data.prefix + '_' + mid));
+        this.Members = data.save.slice(14, 64).map(mid => (data.prefix + '_p' + mid));
         this.Roles = data.save.slice(314, 364);
         this.Treasures = data.save.slice(214, 264);
         this.Instructors = data.save.slice(264, 314);
@@ -705,9 +705,9 @@ class SFOtherPlayer extends SFPlayer {
 
         this.Name = data.name;
         this.Prefix = data.prefix.replace('_', ' ');
-        this.Identifier = data.prefix + '_' + this.ID;
+        this.Identifier = data.prefix + '_p' + this.ID;
 
-        this.Group.Identifier = this.Group.Name ? `${ data.prefix }_${ this.Group.ID }` : null;
+        this.Group.Identifier = this.Group.Name ? `${ data.prefix }_g${ this.Group.ID }` : null;
         this.PrimaryAttribute = this.getPrimaryAttribute();
         this.evaluateRunes();
     }
@@ -932,9 +932,9 @@ class SFOwnPlayer extends SFPlayer {
 
         this.Name = data.name;
         this.Prefix = data.prefix.replace('_', ' ');
-        this.Identifier = data.prefix + '_' + this.ID;
+        this.Identifier = data.prefix + '_p' + this.ID;
 
-        this.Group.Identifier = this.Group.Name ? `${ data.prefix }_${ this.Group.ID }` : null;
+        this.Group.Identifier = this.Group.Name ? `${ data.prefix }_g${ this.Group.ID }` : null;
         this.PrimaryAttribute = this.getPrimaryAttribute();
         this.evaluateRunes();
     }

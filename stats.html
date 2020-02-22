@@ -67,6 +67,16 @@
             <div class="ui five column grid" id="ol-list">
 
             </div>
+            <div class="ui five column grid margin-large-top" id="ol-list-other">
+
+            </div>
+            <!-- Show all players checkbox -->
+            <div class="css-ol-show-other">
+                <div class="ui checkbox" id="ol-show-other">
+                    <input type="checkbox">
+                    <label>Show other players</label>
+                </div>
+            </div>
         </div>
 
         <div class="ui main container hidden sf-container" id="container-files">
@@ -290,15 +300,15 @@
             </div>
         </div>
 
+        <div id="pp-remove" class="ui custom popup right center">
+            <div id="pp-remove-button" class="ui fluid basic button">Delete permanently</div>
+        </div>
+
         <script type="text/javascript">
             // Init
             Handle.call(EVT_INIT);
 
             // Listeners
-            $('[data-toggle]').on('click', function () {
-                Handle.call(EVT_SHOWSCREEN, $(this).attr('data-toggle'));
-            });
-
             $('#container-files-add').on('change', function () {
                 Handle.call(EVT_FILES_UPLOAD, this.files);
             });
@@ -335,7 +345,7 @@
                 document.body.prepend(node);
                 var range = document.createRange();
                 range.selectNode(node);
-                
+
                 Handle.call(EVENT_COPY, 'gd-table', range);
 
                 document.body.removeChild(node);
@@ -401,6 +411,10 @@
 
             $('#gl-show-other').checkbox('uncheck').on('change', function () {
                 Handle.call(EVENT_GUILDS_TOGGLE, $(this).checkbox('is checked'));
+            });
+
+            $('#ol-show-other').checkbox('uncheck').on('change', function () {
+                Handle.call(EVENT_OWNPLAYERS_TOGGLE, $(this).checkbox('is checked'));
             });
 
             // Show first screen

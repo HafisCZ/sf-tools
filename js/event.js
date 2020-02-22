@@ -31,8 +31,10 @@ const EVENT_GUILD_SETTINGS_SHOW = 21000;
 
 const EVENT_PLAYERS_SHOW = 22000;
 const EVENT_PLAYERS_SETTINGS_SHOW = 22001;
+const EVENT_PLAYERS_REFRESH = 22002;
 
 const EVENT_OWNPLAYERS_LOAD = 23000;
+const EVENT_OWNPLAYERS_TOGGLE = 23001;
 
 const EVENT_OWNPLAYER_SHOW = 24000;
 const EVENT_OWNPLAYER_SETTINGS_SHOW = 24001;
@@ -52,6 +54,11 @@ Handle.bind(EVENT_OWNPLAYER_SETTINGS_SHOW, function () {
 Handle.bind(EVENT_GUILDS_TOGGLE, function (visible) {
     State.otherEnabled = visible;
     Handle.call(EVT_BROWSE_LOAD);
+});
+
+Handle.bind(EVENT_OWNPLAYERS_TOGGLE, function (visible) {
+    State.otherPlayersEnabled = visible;
+    Handle.call(EVENT_OWNPLAYERS_LOAD);
 });
 
 // Show group
@@ -157,31 +164,61 @@ Handle.bind(EVT_FILES_LOAD, function () {
 Handle.bind(EVENT_OWNPLAYERS_LOAD, function () {
     // Variables
     var content = '';
+    var contentOther = '';
+
+    var index = 0;
+    var indexOther = 0;
 
     // Own players
-    var players = Object.values(Database.Players).filter(player => player.Latest.Own);
+    var players = Object.values(Database.Players);
     players.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
 
     // Create grid
     for (var i = 0, player; player = players[i]; i++) {
-        content += `
-            ${ i % 5 == 0 ? '<div class="row">' : '' }
-            <div class="column">
-                <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''}" data-player-id="${ player.Latest.Identifier }">
-                    <span class="css-timestamp">${ formatDate(new Date(player.LatestTimestamp)) }</span>
-                    <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
-                    <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
-                    <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
+        if (player.Latest.Own) {
+            content += `
+                ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
+                <div class="column">
+                    <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''}" data-player-id="${ player.Latest.Identifier }">
+                        <span class="css-timestamp">${ formatDate(new Date(player.LatestTimestamp)) }</span>
+                        <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
+                        <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
+                        <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
+                    </div>
                 </div>
-            </div>
-            ${ i % 5 == 4 || i == players.length - 1 ? '</div>' : '' }
-        `;
+            `;
+            index++;
+        } else if (State.otherPlayersEnabled) {
+            contentOther += `
+                ${ indexOther % 5 == 0 ? `${ indexOther != 0 ? '</div>' : '' }<div class="row">` : '' }
+                <div class="column">
+                    <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''}" data-player-id="${ player.Latest.Identifier }">
+                        <span class="css-timestamp">${ formatDate(new Date(player.LatestTimestamp)) }</span>
+                        <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
+                        <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
+                        <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
+                    </div>
+                </div>
+            `;
+            indexOther++;
+        }
     }
+
+    // Add endings
+    content += '</div>';
+    contentOther += '</div>';
 
     // jQuery
     $('#ol-list').html(content);
-    $('#ol-list [data-player-id]').on('click', function () {
+    $('#ol-list-other').html(contentOther);
+
+    $('[data-player-id]').on('click', function () {
         Handle.call(EVENT_OWNPLAYER_SHOW, $(this).attr('data-player-id'));
+    });
+
+    $('[data-player-id]').on('contextmenu', function (e) {
+        UI.RemoveButton.show($(this).attr('data-player-id'), e, EVENT_OWNPLAYERS_LOAD);
+        e.preventDefault();
     });
 });
 
@@ -238,6 +275,11 @@ Handle.bind(EVT_BROWSE_LOAD, function () {
     $('[data-group-id]').on('click', function () {
         State.setGroup($(this).attr('data-group-id'));
         Handle.call(EVT_GROUP_SHOW);
+    });
+
+    $('[data-group-id]').on('contextmenu', function (e) {
+        UI.RemoveButton.show($(this).attr('data-group-id'), e, EVT_BROWSE_LOAD);
+        e.preventDefault();
     });
 });
 
@@ -698,7 +740,8 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
 
 // Initialization
 Handle.bind(EVT_INIT, function () {
-    UI.FloatingSettings.init();
+    // Initialize all UI elements
+    Object.values(UI).forEach(e => e.init());
 
     // Player search
     $('#psearch').on('change', function () {
@@ -737,6 +780,11 @@ Handle.bind(EVT_INIT, function () {
         $('#pl-table [data-player]').on('click', function () {
             var player = Database.Players[$(this).attr('data-player')];
             Handle.call(EVT_PLAYER_LOAD, player.Latest.Identifier, player.LatestTimestamp);
+        });
+
+        $('#pl-table [data-player]').on('contextmenu', function (e) {
+            UI.RemoveButton.show($(this).attr('data-player'), e, EVENT_PLAYERS_REFRESH);
+            e.preventDefault();
         });
     });
 
@@ -1023,4 +1071,8 @@ Handle.bind(EVT_PLAYERS_LOAD, function () {
         $('#pl-settings')[0].style.setProperty('background', '');
         $('#pl-settings')[0].style.setProperty('color', '');
     }
+});
+
+Handle.bind(EVENT_PLAYERS_REFRESH, function () {
+    $('#psearch').trigger('change');
 });

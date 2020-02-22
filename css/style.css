@@ -20,6 +20,13 @@ body {
     font-size: 85%;
 }
 
+#pp-remove {
+    position: absolute;
+    padding: 0;
+    border: none;
+    z-index: 99;
+}
+
 body.dimmed {
     overflow: hidden !important;
     margin-right: 17px !important;
@@ -370,6 +377,12 @@ h3.file-selected {
 }
 
 .css-gl-show-other {
+    position: fixed;
+    bottom: 1em;
+    right: 1.5em;
+}
+
+.css-ol-show-other {
     position: fixed;
     bottom: 1em;
     right: 1em;

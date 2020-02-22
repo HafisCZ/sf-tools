@@ -123,6 +123,15 @@ const Database = new (class {
         }
     }
 
+    removeByID (... identifiers) {
+        for (var identifier of identifiers) {
+            delete Database.Players[identifier];
+            delete Database.Groups[identifier];
+        }
+
+        this.update();
+    }
+
     add (... files) {
         var tempGroups = {};
         var tempPlayers = {};
@@ -291,6 +300,17 @@ const UpdateService = {
                 p.prefix = 's1_de';
                 updated = true;
             }
+            if (!p.id) {
+                p.id = p.prefix + '_p' + (p.own ? p.save[1] : p.save[0]);
+                updated = true;
+            }
+        }
+
+        for (var i = 0, g; g = file.groups[i]; i++) {
+            if (!g.id) {
+                g.id = g.prefix + '_g' + g.save[0];
+                updated = true;
+            }
         }
 
         return updated;
@@ -392,8 +412,11 @@ const Storage = new (class {
                         } else if (key.includes('owngroupsave')) {
                             group.save = val.split('/').map(a => Number(a));
                             group.own = true;
+                            group.id = prefix + '_g' + group.save[0];
                         } else if (key.includes('groupSave')) {
                             group.save = val.split('/').map(a => Number(a));
+                            group.own = false;
+                            group.id = prefix + '_g' + group.save[0];
                         }
                     }
 
@@ -420,9 +443,12 @@ const Storage = new (class {
                             player.fortressrank = Number(val);
                         } else if (key.includes('playerlookat')) {
                             player.save = val.split('/').map(a => Number(a));
+                            player.own = false;
+                            player.id = player.prefix + '_p' + player.save[0];
                         } else if (key.includes('playerSave')) {
                             player.save = val.split('/').map(a => Number(a));
                             player.own = true;
+                            player.id = player.prefix + '_p' + player.save[1];
                         } else if (key.includes('petbonus') || key.includes('petsSave')) {
                             player.pets = val.split('/').map(a => Number(a));
                         } else if (key.includes('serverversion')) {
@@ -459,6 +485,34 @@ const Storage = new (class {
         Database.remove(this.current[index].timestamp);
 
         this.current.splice(index, 1);
+    }
+
+    removeByID (... identifiers) {
+        var changed = [];
+
+        for (var i = 0, file; file = this.current[i]; i++) {
+            var change = false;
+            for (var j = 0, group; group = file.groups[j]; j++) {
+                if (identifiers.includes(group.id)) {
+                    file.groups.splice(j--, 1);
+                    change = true;
+                }
+            }
+            for (var j = 0, player; player = file.players[j]; j++) {
+                if (identifiers.includes(player.id)) {
+                    file.players.splice(j--, 1);
+                    change = true;
+                }
+            }
+            if (change) {
+                changed.push(file);
+            }
+        }
+
+        if (changed.length) {
+            Database.removeByID(... identifiers);
+            this.save(... changed);
+        }
     }
 
     merge (indexes) {
@@ -638,6 +692,67 @@ const UI = {
         // Load contents
         load () {
             this.$area.val(this.code).trigger('input');
+        }
+    })(),
+    RemoveButton: new (class {
+        // Globals
+        init () {
+            this.$parent = $('#pp-remove');
+            this.$button = $('#pp-remove-button');
+            this.timer = null;
+            this.hidden = true;
+
+            this.winlistener = (e) => {
+                if (!this.hidden) this.hide();
+                e.stopPropagation();
+            };
+            $(window).on('click', this.winlistener);
+
+            $('#pp-remove-button').on('click', () => this.remove());
+
+            $('#pp-remove-button').on('mouseenter', () => {
+                if (this.timer) {
+                    clearTimeout(this.timer);
+                    this.timer = null;
+                }
+            });
+
+            $('#pp-remove-button').on('mouseleave', () => {
+                if (!this.timer) {
+                    this.timer = setTimeout(() => this.hide(), 1500);
+                }
+            });
+        }
+
+        // Show
+        show (identifier, e, onChangeEvent) {
+            this.identifier = identifier;
+            this.onChangeEvent = onChangeEvent;
+
+            var bounds = e.currentTarget.getBoundingClientRect();
+            var x = window.scrollX + bounds.left + bounds.width;
+            var y = window.scrollY + bounds.top;
+
+            this.hidden = false;
+
+            this.$parent.css('top', `${ y }px`).css('left', `${ x }px`).show();
+            this.$button.trigger('mouseenter');
+            this.$button.trigger('mouseleave');
+            this.$parent.transition('stop all').transition('show');
+        }
+
+        // Remove
+        remove () {
+            Storage.removeByID(this.identifier);
+            Handle.call(this.onChangeEvent);
+            this.hide();
+        }
+
+        // Hide
+        hide () {
+            this.hidden = true;
+            this.$button.trigger('mouseenter');
+            this.$parent.transition('stop').transition('fade');
         }
     })()
 };
