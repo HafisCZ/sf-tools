@@ -719,7 +719,9 @@ const UI = {
 
             $('#pp-remove-button').on('mouseleave', () => {
                 if (!this.timer) {
-                    this.timer = setTimeout(() => this.hide(), 1500);
+                    this.timer = setTimeout(() => {
+                        if (!this.hidden) this.hide();
+                    }, 1500);
                 }
             });
         }
