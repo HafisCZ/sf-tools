@@ -748,13 +748,19 @@ Handle.bind(EVT_INIT, function () {
         var terms = $('#psearch').val().toLowerCase().split(' ').filter(term => term.trim().length);
         var items = [];
 
+        var tp = Number(State.playersTimestamp);
+
         var table = State.getCachedTable();
         var tablePlayers = new PlayersTableArray();
 
         for (var player of Object.values(Database.Players)) {
-            var matches = terms.reduce((total, term) => total + ((player.Latest.Name.toLowerCase().includes(term) || player.Latest.Prefix.includes(term) || PLAYER_CLASS_SEARCH[player.Latest.Class].includes(term) || (player.Latest.hasGuild() && player.Latest.Group.Name.toLowerCase().includes(term))) ? 1 : 0), 0);
-            if (matches == terms.length) {
-                tablePlayers.add(player.Latest, player.LatestTimestamp == Database.Latest);
+            var x = player.List.find(x => x[0] <= tp);
+            if (x) {
+                var p = x[1];
+                var matches = terms.reduce((total, term) => total + ((p.Name.toLowerCase().includes(term) || p.Prefix.includes(term) || PLAYER_CLASS_SEARCH[p.Class].includes(term) || (p.hasGuild() && p.Group.Name.toLowerCase().includes(term))) ? 1 : 0), 0);
+                if (matches == terms.length) {
+                    tablePlayers.add(p, p.Timestamp == tp);
+                }
             }
         }
 
@@ -778,8 +784,7 @@ Handle.bind(EVT_INIT, function () {
         });
 
         $('#pl-table [data-player]').on('click', function () {
-            var player = Database.Players[$(this).attr('data-player')];
-            Handle.call(EVT_PLAYER_LOAD, player.Latest.Identifier, player.LatestTimestamp);
+            Handle.call(EVT_PLAYER_LOAD, $(this).attr('data-player'), $(this).attr('data-timestamp'));
         });
 
         $('#pl-table [data-player]').on('contextmenu', function (e) {
@@ -1061,7 +1066,6 @@ Handle.bind(EVENT_PLAYERS_SHOW, function () {
 // Loading player list
 Handle.bind(EVT_PLAYERS_LOAD, function () {
     State.cacheTable(new Table(Settings.load('players')));
-    $('#psearch').val('').trigger('change');
 
     // Extra settings
     if (Settings.exists('players')) {
@@ -1071,6 +1075,26 @@ Handle.bind(EVT_PLAYERS_LOAD, function () {
         $('#pl-settings')[0].style.setProperty('background', '');
         $('#pl-settings')[0].style.setProperty('color', '');
     }
+
+    var values = [];
+    for (var file of Object.values(Storage.files())) {
+        values.push({
+            name: formatDate(new Date(file.timestamp)),
+            value: file.timestamp,
+            selected: file.timestamp == Database.Latest
+        });
+    }
+    values.sort((a, b) => b.value - a.value);
+
+    $('#pl-dropdown').dropdown({
+        values: values
+    }).dropdown('setting', 'onChange', function (value, text) {
+        State.playersTimestamp = value;
+        Handle.call(EVENT_PLAYERS_REFRESH);
+    });
+
+    State.playersTimestamp = Database.Latest;
+    $('#psearch').val('').trigger('change');
 });
 
 Handle.bind(EVENT_PLAYERS_REFRESH, function () {
