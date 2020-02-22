@@ -54,19 +54,21 @@ const GROUP_ROLES = [
 const FIGHT_TYPES = {
     PlayerVsPlayer: 0,
     Quest: 1,
+    Battle: 2,
+    Raid: 3,
     Dungeon: 4,
     Tower: 5,
-    FortAttack: 8,
-    FortDefend: 9,
-    FortRevenge: 109,
     PlayerPortal: 6,
     GuildPortal: 7,
+    FortAttack: 8,
+    FortDefend: 9,
     Shadow: 12,
-    Underworld: 16,
-    GuildPet: 17,
     PetsDungeon: 13,
     PetsAttack: 14,
-    PetsDefend: 15
+    PetsDefend: 15,
+    Underworld: 16,
+    GuildPet: 17,
+    FortRevenge: 109
 };
 
 function getFightTargetName (type, name, face) {
