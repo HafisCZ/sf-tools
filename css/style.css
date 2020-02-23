@@ -20,13 +20,6 @@ body {
     font-size: 85%;
 }
 
-#pp-remove {
-    position: absolute;
-    padding: 0;
-    border: none;
-    z-index: 99;
-}
-
 body.dimmed {
     overflow: hidden !important;
     margin-right: 17px !important;
@@ -382,6 +375,12 @@ h3.file-selected {
     right: 1.5em;
 }
 
+.css-show-hidden {
+    position: fixed;
+    bottom: 3em;
+    right: 3.7em;
+}
+
 .css-ol-show-other {
     position: fixed;
     bottom: 1em;
@@ -403,4 +402,8 @@ h3.file-selected {
 .css-compact-grid .column {
     padding-top: 0.3em !important;
     padding-bottom: 0.3em !important;
+}
+
+.css-entry-hidden {
+    opacity: 0.5;
 }

@@ -314,6 +314,23 @@ const UpdateService = {
         }
 
         return updated;
+    },
+    mergeInto : function (a, b) {
+        if (!a.version) {
+            a.version = b.version;
+        }
+
+        for (var p of b.players) {
+            if (!a.players.find(bp => bp.prefix == p.prefix && (p.own ? (p.save[1] == bp.save[1]) : (p.save[0] == bp.save[0])))) {
+                a.players.push(p);
+            }
+        }
+
+        for (var g of b.groups) {
+            if (!a.groups.find(bg => bg.prefix == g.prefix && bg.save[0] == g.save[0])) {
+                a.groups.push(g);
+            }
+        }
     }
 };
 
@@ -352,13 +369,24 @@ const Storage = new (class {
     import (content) {
         try {
             var json = JSON.parse(content);
-            var list = json.filter(file => (this.current.find(cfile => cfile.timestamp == file.timestamp) == null));
-            list.forEach(f => UpdateService.update(f));
+            var files = [];
 
-            Database.add(... list);
+            for (var file of json) {
+                UpdateService.update(file);
 
-            this.current.push(... list);
-            this.save(... list);
+                var existingFile = this.current.find(f => f.timestamp == file.timestamp);
+                if (existingFile) {
+                    UpdateService.mergeInto(existingFile, file);
+                    file = existingFile;
+                } else {
+                    this.current.push(file);
+                }
+
+                files.push(file);
+            }
+
+            Database.add(... files);
+            this.save(... files);
         } catch (exception) {
             throw exception.lineNumber + ' ' + exception;
         }
@@ -462,18 +490,17 @@ const Storage = new (class {
                 }
             }
 
-            if (this.current.find(x => x.timestamp == file.timestamp)) {
-                return;
-            }
-
-            if (file.players.length == 0) {
-                throw 'The file must contain at least one player.';
-            }
-
             UpdateService.update(file);
-            Database.add(file);
 
-            this.current.push(file);
+            var existingFile = this.current.find(f => f.timestamp == file.timestamp);
+            if (existingFile) {
+                UpdateService.mergeInto(existingFile, file);
+                file = existingFile;
+            } else {
+                this.current.push(file);
+            }
+
+            Database.add(file);
             this.save(file);
         } catch (exception) {
             throw exception.lineNumber + ' ' + exception;
@@ -522,21 +549,7 @@ const Storage = new (class {
 
         var base = files[0];
         for (var i = 1, file; file = files[i]; i++) {
-            if (!base.version) {
-                base.version = file.version;
-            }
-
-            for (var p of file.players) {
-                if (!base.players.find(bp => bp.prefix == p.prefix && (p.own ? (p.save[1] == bp.save[1]) : (p.save[0] == bp.save[0])))) {
-                    base.players.push(p);
-                }
-            }
-
-            for (var g of file.groups) {
-                if (!base.groups.find(bg => bg.prefix == g.prefix && bg.save[0] == g.save[0])) {
-                    base.groups.push(g);
-                }
-            }
+            UpdateService.mergeInto(base, file);
         }
 
         timestamps.forEach(t => {
@@ -564,6 +577,22 @@ const State = new (class {
         this.sortBy = null;
         this.sortStyle = null;
         this.cachedTable = null;
+        this.hidden = Preferences.get('hidden', []);
+    }
+
+    hideByID (identifier) {
+        var index = this.hidden.indexOf(identifier);
+        if (index >= 0) {
+            this.hidden.splice(index, 1);
+        } else {
+            this.hidden.push(identifier);
+        }
+
+        Preferences.set('hidden', this.hidden);
+    }
+
+    getHidden () {
+        return this.hidden;
     }
 
     setGroup (groupID, timestamp, referenceTimestamp) {
@@ -692,69 +721,6 @@ const UI = {
         // Load contents
         load () {
             this.$area.val(this.code).trigger('input');
-        }
-    })(),
-    RemoveButton: new (class {
-        // Globals
-        init () {
-            this.$parent = $('#pp-remove');
-            this.$button = $('#pp-remove-button');
-            this.timer = null;
-            this.hidden = true;
-
-            this.winlistener = (e) => {
-                if (!this.hidden) this.hide();
-                e.stopPropagation();
-            };
-            $(window).on('click', this.winlistener);
-
-            $('#pp-remove-button').on('click', () => this.remove());
-
-            $('#pp-remove-button').on('mouseenter', () => {
-                if (this.timer) {
-                    clearTimeout(this.timer);
-                    this.timer = null;
-                }
-            });
-
-            $('#pp-remove-button').on('mouseleave', () => {
-                if (!this.timer) {
-                    this.timer = setTimeout(() => {
-                        if (!this.hidden) this.hide();
-                    }, 1500);
-                }
-            });
-        }
-
-        // Show
-        show (identifier, e, onChangeEvent) {
-            this.identifier = identifier;
-            this.onChangeEvent = onChangeEvent;
-
-            var bounds = e.currentTarget.getBoundingClientRect();
-            var x = window.scrollX + bounds.left + bounds.width;
-            var y = window.scrollY + bounds.top;
-
-            this.hidden = false;
-
-            this.$parent.css('top', `${ y }px`).css('left', `${ x }px`).show();
-            this.$button.trigger('mouseenter');
-            this.$button.trigger('mouseleave');
-            this.$parent.transition('stop all').transition('show');
-        }
-
-        // Remove
-        remove () {
-            Storage.removeByID(this.identifier);
-            Handle.call(this.onChangeEvent);
-            this.hide();
-        }
-
-        // Hide
-        hide () {
-            this.hidden = true;
-            this.$button.trigger('mouseenter');
-            this.$parent.transition('stop').transition('fade');
         }
     })()
 };

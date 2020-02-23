@@ -8,6 +8,7 @@
 
         <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
         <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="css/plugins.css"/>
 
         <link rel="preload" href="res/group.png" as="image"/>
 
@@ -16,6 +17,8 @@
 
         <script src="vendor/js/semantic.min.js"></script>
         <script src="vendor/js/components/state.min.js"></script>
+
+        <script src="js/plugins.js"></script>
 
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
@@ -61,6 +64,12 @@
                     <label>Show other guilds</label>
                 </div>
             </div>
+            <div class="css-show-hidden">
+                <div class="ui checkbox" id="gl-show-hidden">
+                    <input type="checkbox">
+                    <label>Show hidden</label>
+                </div>
+            </div>
         </div>
 
         <div class="ui main container hidden sf-container" id="container-me">
@@ -75,6 +84,12 @@
                 <div class="ui checkbox" id="ol-show-other">
                     <input type="checkbox">
                     <label>Show other players</label>
+                </div>
+            </div>
+            <div class="css-show-hidden">
+                <div class="ui checkbox" id="ol-show-hidden">
+                    <input type="checkbox">
+                    <label>Show hidden</label>
                 </div>
             </div>
         </div>
@@ -192,6 +207,12 @@
             <table class="ui celled structured table table-group" id="pl-table">
 
             </table>
+            <div class="css-show-hidden">
+                <div class="ui checkbox" id="pl-show-hidden">
+                    <input type="checkbox">
+                    <label>Show hidden</label>
+                </div>
+            </div>
         </div>
 
         <div class="ui main container hidden sf-container" id="container-player">
@@ -303,9 +324,9 @@
             </div>
         </div>
 
-        <div id="pp-remove" class="ui custom popup right center">
-            <div id="pp-remove-button" class="ui fluid basic button">Delete permanently</div>
-        </div>
+        <div id="context-players" class="ui custom popup right center"></div>
+        <div id="context-ownplayers" class="ui custom popup right center"></div>
+        <div id="context-groups" class="ui custom popup right center"></div>
 
         <script type="text/javascript">
             // Init
@@ -418,6 +439,18 @@
 
             $('#ol-show-other').checkbox('uncheck').on('change', function () {
                 Handle.call(EVENT_OWNPLAYERS_TOGGLE, $(this).checkbox('is checked'));
+            });
+
+            $('#gl-show-hidden').checkbox('uncheck').on('change', function () {
+                Handle.call(EVENT_GUILDS_TOGGLE_HIDDEN, $(this).checkbox('is checked'));
+            });
+
+            $('#ol-show-hidden').checkbox('uncheck').on('change', function () {
+                Handle.call(EVENT_OWNPLAYERS_TOGGLE_HIDDEN, $(this).checkbox('is checked'));
+            });
+
+            $('#pl-show-hidden').checkbox('uncheck').on('change', function () {
+                Handle.call(EVENT_PLAYERS_TOGGLE_HIDDEN, $(this).checkbox('is checked'));
             });
 
             // Show first screen

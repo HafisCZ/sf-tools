@@ -26,15 +26,18 @@ const EVENT_COPY = 10001;
 const EVENT_SAVE = 10002;
 
 const EVENT_GUILDS_TOGGLE = 20000;
+const EVENT_GUILDS_TOGGLE_HIDDEN = 20001;
 
 const EVENT_GUILD_SETTINGS_SHOW = 21000;
 
 const EVENT_PLAYERS_SHOW = 22000;
 const EVENT_PLAYERS_SETTINGS_SHOW = 22001;
 const EVENT_PLAYERS_REFRESH = 22002;
+const EVENT_PLAYERS_TOGGLE_HIDDEN = 22003;
 
 const EVENT_OWNPLAYERS_LOAD = 23000;
 const EVENT_OWNPLAYERS_TOGGLE = 23001;
+const EVENT_OWNPLAYERS_TOGGLE_HIDDEN = 23002;
 
 const EVENT_OWNPLAYER_SHOW = 24000;
 const EVENT_OWNPLAYER_SETTINGS_SHOW = 24001;
@@ -49,6 +52,21 @@ Handle.bind(EVENT_GUILD_SETTINGS_SHOW, function () {
 
 Handle.bind(EVENT_OWNPLAYER_SETTINGS_SHOW, function () {
     UI.FloatingSettings.show(State.player.Latest.Identifier, EVENT_OWNPLAYER_SHOW);
+});
+
+Handle.bind(EVENT_GUILDS_TOGGLE_HIDDEN, function (visible) {
+    State.showHiddenGuilds = visible;
+    Handle.call(EVT_BROWSE_LOAD);
+});
+
+Handle.bind(EVENT_OWNPLAYERS_TOGGLE_HIDDEN, function (visible) {
+    State.showHiddenOwnPlayers = visible;
+    Handle.call(EVENT_OWNPLAYERS_LOAD);
+});
+
+Handle.bind(EVENT_PLAYERS_TOGGLE_HIDDEN, function (visible) {
+    State.showHiddenPlayers = visible;
+    Handle.call(EVENT_PLAYERS_REFRESH);
 });
 
 Handle.bind(EVENT_GUILDS_TOGGLE, function (visible) {
@@ -175,11 +193,16 @@ Handle.bind(EVENT_OWNPLAYERS_LOAD, function () {
 
     // Create grid
     for (var i = 0, player; player = players[i]; i++) {
+        var hidden = State.getHidden().includes(player.Latest.Identifier);
+        if (!State.showHiddenOwnPlayers && hidden) {
+            continue;
+        }
+
         if (player.Latest.Own) {
             content += `
                 ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
                 <div class="column">
-                    <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''}" data-player-id="${ player.Latest.Identifier }">
+                    <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-player-id="${ player.Latest.Identifier }">
                         <span class="css-timestamp">${ formatDate(new Date(player.LatestTimestamp)) }</span>
                         <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
                         <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
@@ -192,7 +215,7 @@ Handle.bind(EVENT_OWNPLAYERS_LOAD, function () {
             contentOther += `
                 ${ indexOther % 5 == 0 ? `${ indexOther != 0 ? '</div>' : '' }<div class="row">` : '' }
                 <div class="column">
-                    <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''}" data-player-id="${ player.Latest.Identifier }">
+                    <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-player-id="${ player.Latest.Identifier }">
                         <span class="css-timestamp">${ formatDate(new Date(player.LatestTimestamp)) }</span>
                         <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
                         <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
@@ -216,10 +239,7 @@ Handle.bind(EVENT_OWNPLAYERS_LOAD, function () {
         Handle.call(EVENT_OWNPLAYER_SHOW, $(this).attr('data-player-id'));
     });
 
-    $('[data-player-id]').on('contextmenu', function (e) {
-        UI.RemoveButton.show($(this).attr('data-player-id'), e, EVENT_OWNPLAYERS_LOAD);
-        e.preventDefault();
-    });
+    $('#context-ownplayers').context('bind', $('[data-player-id]'));
 });
 
 Handle.bind(EVT_BROWSE_LOAD, function () {
@@ -236,11 +256,16 @@ Handle.bind(EVT_BROWSE_LOAD, function () {
 
     // Loop all groups
     for (var i = 0, group; group = groups[i]; i++) {
+        var hidden = State.getHidden().includes(group.Latest.Identifier);
+        if (!State.showHiddenGuilds && hidden) {
+            continue;
+        }
+
         if (group.Latest.Own) {
             contentOwn += `
                 ${ indexOwn % 5 == 0 ? `${ indexOwn != 0 ? '</div>' : '' }<div class="row">` : '' }
                 <div class="column">
-                    <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''}" data-group-id="${group.Latest.Identifier}">
+                    <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-group-id="${group.Latest.Identifier}">
                         <span class="css-timestamp">${ formatDate(new Date(group.LatestTimestamp)) }</span>
                         <img class="ui medium centered image" src="res/group.png">
                         <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
@@ -253,7 +278,7 @@ Handle.bind(EVT_BROWSE_LOAD, function () {
             contentOther += `
                 ${ indexOther % 5 == 0 ? `${ indexOther != 0 ? '</div>' : '' }<div class="row">` : '' }
                 <div class="column">
-                    <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''}" data-group-id="${group.Latest.Identifier}">
+                    <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-group-id="${group.Latest.Identifier}">
                         <span class="css-timestamp">${ formatDate(new Date(group.LatestTimestamp)) }</span>
                         <img class="ui medium centered image" src="res/group.png">
                         <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
@@ -277,10 +302,7 @@ Handle.bind(EVT_BROWSE_LOAD, function () {
         Handle.call(EVT_GROUP_SHOW);
     });
 
-    $('[data-group-id]').on('contextmenu', function (e) {
-        UI.RemoveButton.show($(this).attr('data-group-id'), e, EVT_BROWSE_LOAD);
-        e.preventDefault();
-    });
+    $('#context-groups').context('bind', $('[data-group-id]'));
 });
 
 Handle.bind(EVT_FILES_UPLOAD, function (files) {
@@ -743,6 +765,63 @@ Handle.bind(EVT_INIT, function () {
     // Initialize all UI elements
     Object.values(UI).forEach(e => e.init());
 
+    $('#context-players').context('create', {
+        items: [
+            {
+                label: 'Show / Hide',
+                action: (source) => {
+                    State.hideByID(source.attr('data-player'));
+                    Handle.call(EVENT_PLAYERS_REFRESH);
+                }
+            },
+            {
+                label: 'Remove permanently',
+                action: (source) => {
+                    Storage.removeByID(source.attr('data-player'));
+                    Handle.call(EVENT_PLAYERS_REFRESH);
+                }
+            }
+        ]
+    });
+
+    $('#context-groups').context('create', {
+        items: [
+            {
+                label: 'Show / Hide',
+                action: (source) => {
+                    State.hideByID(source.attr('data-group-id'));
+                    Handle.call(EVT_BROWSE_LOAD);
+                }
+            },
+            {
+                label: 'Remove permanently',
+                action: (source) => {
+                    Storage.removeByID(source.attr('data-group-id'));
+                    Handle.call(EVT_BROWSE_LOAD);
+                }
+            }
+        ]
+    });
+
+    $('#context-ownplayers').context('create', {
+        items: [
+            {
+                label: 'Show / Hide',
+                action: (source) => {
+                    State.hideByID(source.attr('data-player-id'));
+                    Handle.call(EVENT_OWNPLAYERS_LOAD);
+                }
+            },
+            {
+                label: 'Remove permanently',
+                action: (source) => {
+                    Storage.removeByID(source.attr('data-player-id'));
+                    Handle.call(EVENT_OWNPLAYERS_LOAD);
+                }
+            }
+        ]
+    });
+
     // Player search
     $('#psearch').on('change', function () {
         var terms = $('#psearch').val().toLowerCase().split(' ').filter(term => term.trim().length);
@@ -754,12 +833,17 @@ Handle.bind(EVT_INIT, function () {
         var tablePlayers = new PlayersTableArray();
 
         for (var player of Object.values(Database.Players)) {
+            var hidden = State.getHidden().includes(player.Latest.Identifier);
+            if (!State.showHiddenPlayers && hidden) {
+                continue;
+            }
+
             var x = player.List.find(x => x[0] <= tp);
             if (x) {
                 var p = x[1];
                 var matches = terms.reduce((total, term) => total + ((p.Name.toLowerCase().includes(term) || p.Prefix.includes(term) || PLAYER_CLASS_SEARCH[p.Class].includes(term) || (p.hasGuild() && p.Group.Name.toLowerCase().includes(term))) ? 1 : 0), 0);
                 if (matches == terms.length) {
-                    tablePlayers.add(p, p.Timestamp == tp);
+                    tablePlayers.add(p, p.Timestamp == tp, hidden);
                 }
             }
         }
@@ -787,10 +871,7 @@ Handle.bind(EVT_INIT, function () {
             Handle.call(EVT_PLAYER_LOAD, $(this).attr('data-player'), $(this).attr('data-timestamp'));
         });
 
-        $('#pl-table [data-player]').on('contextmenu', function (e) {
-            UI.RemoveButton.show($(this).attr('data-player'), e, EVENT_PLAYERS_REFRESH);
-            e.preventDefault();
-        });
+        $('#context-players').context('bind', $('#pl-table [data-player]'));
     });
 
     // Settings syntax highlighting

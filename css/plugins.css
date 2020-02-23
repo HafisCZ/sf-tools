@@ -1,0 +1,14 @@
+.css-context-menu {
+    position: absolute !important;
+    padding: 0 !important;
+    z-index: 99 !important;
+}
+
+.css-context-menu-item {
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.css-context-menu::before {
+    top: 25% !important;
+}
