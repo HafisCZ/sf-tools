@@ -316,7 +316,7 @@ const UpdateService = {
         return updated;
     },
     mergeInto : function (a, b) {
-        if (!a.version) {
+        if (!a.version || a.version < b.version) {
             a.version = b.version;
         }
 
@@ -437,14 +437,14 @@ const Storage = new (class {
                             group.members = val.split(',');
                         } else if (key.includes('groupknights')) {
                             group.knights = val.split(',').map(a => Number(a));
-                        } else if (key.includes('owngroupsave')) {
+                        } else if (key.includes('owngroupsave') && group.own == undefined) {
                             group.save = val.split('/').map(a => Number(a));
                             group.own = true;
-                            group.id = prefix + '_g' + group.save[0];
-                        } else if (key.includes('groupSave')) {
+                            group.id = group.prefix + '_g' + group.save[0];
+                        } else if (key.includes('groupSave') && group.own == undefined) {
                             group.save = val.split('/').map(a => Number(a));
                             group.own = false;
-                            group.id = prefix + '_g' + group.save[0];
+                            group.id = group.prefix + '_g' + group.save[0];
                         }
                     }
 
