@@ -66,8 +66,10 @@ function * filterPlayaJSON (o, tt = [], a = []) {
 }
 
 function compareItems (a, b) {
-    if (typeof(a) == 'string') {
-        return a.localeCompare(b);
+    if (typeof(a) == 'string' && typeof(b) == 'string') {
+        if (a == '') return 1;
+        else if (b == '') return -1;
+        else return a.localeCompare(b);
     } else {
         return b - a;
     }
