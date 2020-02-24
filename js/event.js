@@ -729,6 +729,9 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="left aligned column font-big">Quarry</div>
                         <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Quarry, config.getEntrySafe('Quarry').color) }">${ player.Fortress.Quarry }</div>
                         <div class="column"></div>
+                        <div class="left aligned column font-big">Gem Mine</div>
+                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.GemMine, config.getEntrySafe('Gem Mine').color) }">${ player.Fortress.GemMine }</div>
+                        <div class="column"></div>
                         <div class="left aligned column font-big">Academy</div>
                         <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Academy, config.getEntrySafe('Academy').color) }">${ player.Fortress.Academy }</div>
                         <div class="column"></div>
