@@ -479,7 +479,9 @@ class SFPlayer {
         }
     }
 
-    evaluateRunes () {
+    evaluateCommon () {
+        this.PrimaryAttribute = this.getPrimaryAttribute();
+
         this.Runes = {
             Gold: 0,
             Chance: 0,
@@ -532,6 +534,8 @@ class SFPlayer {
                 }
             }
         }
+
+        this.Health = Math.ceil((1 + this.Runes.Health / 100) * (1 + this.Dungeons.Player / 100) * (this.Potions.Life ? 1.25 : 1) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5) ? 5 : (this.Class == 2 ? 2 : 4)));
     }
 }
 
@@ -736,8 +740,7 @@ class SFOtherPlayer extends SFPlayer {
         this.Identifier = data.prefix + '_p' + this.ID;
 
         this.Group.Identifier = this.Group.Name ? `${ data.prefix }_g${ this.Group.ID }` : null;
-        this.PrimaryAttribute = this.getPrimaryAttribute();
-        this.evaluateRunes();
+        this.evaluateCommon();
     }
 }
 
@@ -963,7 +966,6 @@ class SFOwnPlayer extends SFPlayer {
         this.Identifier = data.prefix + '_p' + this.ID;
 
         this.Group.Identifier = this.Group.Name ? `${ data.prefix }_g${ this.Group.ID }` : null;
-        this.PrimaryAttribute = this.getPrimaryAttribute();
-        this.evaluateRunes();
+        this.evaluateCommon();
     }
 }

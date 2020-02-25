@@ -76,7 +76,7 @@ function createGenericHeader (name, defaults, ptr) {
         }, cell => {
             var aa = cell.players.map(p => ptr(p.player)).filter(x => x != undefined);
             var bb = cell.players.map(p => ptr(p.compare)).filter(x => x != undefined);
-            if (aa.length == 0 || bb.length == 0)
+            if (aa.length == 0 || bb.length == 0) return CellGenerator.Plain('?', last);
             var a = cell.operation(aa);
             var b = cell.operation(bb);
             return CellGenerator.Cell((CompareEval.evaluate(a, header.value) || a) + (header.difference ? CellGenerator.Difference(header.flip ? (b - a) : (a - b), header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
@@ -111,6 +111,7 @@ const ReservedHeaders = {
     // Character
     'Level': createGenericHeader('Level', { width: 100 }, p => p.Level),
     'Honor': createGenericHeader('Honor', { width: 100 }, p => p.Honor),
+    'Health': createGenericHeader('Health', { width: 100 }, p => p.Health),
     'Armor': createGenericHeader('Armor', { width: 100 }, p => p.Armor),
     'Mirror': createGenericHeader('Mirror', { width: 100 }, p => p.Mirror ? 13 : p.MirrorPieces),
     'Equipment': createGenericHeader('Equipment', { width: 130 }, p => Object.values(p.Items).reduce((total, i) => total + i.getItemLevel(), 0)),
@@ -159,6 +160,9 @@ const ReservedHeaders = {
     'Fire Resist': createGenericHeader('Fire Resistance', { width: 110 }, p => p.Runes.ResistanceFire),
     'Cold Resist': createGenericHeader('Cold Resistance', { width: 110 }, p => p.Runes.ResistanceCold),
     'Lightning Resist': createGenericHeader('Lightning Resistance', { width: 110 }, p => p.Runes.ResistanceLightning),
+    'Fire Damage': createGenericHeader('Fire Damage', { width: 110 }, p => p.Runes.DamageFire),
+    'Cold Damage': createGenericHeader('Cold Damage', { width: 110 }, p => p.Runes.DamageCold),
+    'Lightning Damage': createGenericHeader('Lightning Damage', { width: 110 }, p => p.Runes.DamageLightning),
 
     // Special headers
     'Class': function (group, header, last) {
