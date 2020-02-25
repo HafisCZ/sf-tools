@@ -535,7 +535,7 @@ class SFPlayer {
             }
         }
 
-        this.Health = Math.ceil((1 + this.Runes.Health / 100) * (1 + this.Dungeons.Player / 100) * (this.Potions.Life ? 1.25 : 1) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5) ? 5 : (this.Class == 2 ? 2 : 4)));
+        this.Health = Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5) ? 5 : (this.Class == 2 ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
     }
 }
 

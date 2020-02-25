@@ -553,6 +553,9 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                         <div class="column"><br></div>
                         <div class="column"></div>
                         <div class="column"></div>
+                        <div class="left aligned column font-big">Health</div>
+                        <div class="column"></div>
+                        <div class="column">${ player.Health }</div>
                         <div class="left aligned column font-big">Armor</div>
                         <div class="column"></div>
                         <div class="column">${ player.Armor }</div>
