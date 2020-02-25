@@ -589,7 +589,7 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                             <div class="left aligned column font-big">Guild join date</div>
                             <div class="column"></div>
                             <div class="column">${ formatDate(player.Group.Joined) }</div>
-                            ${ player.Group.Role != -1 ? `
+                            ${ player.Group.Role != undefined ? `
                                 <div class="left aligned column font-big">Role</div>
                                 <div class="column"></div>
                                 <div class="column">${ GROUP_ROLES[player.Group.Role] }</div>
