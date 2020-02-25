@@ -10,5 +10,5 @@
 }
 
 .css-context-menu::before {
-    top: 25% !important;
+    top: 1.25em !important;
 }

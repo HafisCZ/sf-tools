@@ -411,6 +411,8 @@ class SFGroup {
 
 class SFPlayer {
     constructor (data) {
+        this.Data = data;
+
         this.Own = data.own;
         this.Timestamp = data.timestamp;
 

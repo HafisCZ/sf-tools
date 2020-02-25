@@ -24,6 +24,7 @@ const EVT_PLAYER_LOAD = 5000;
 // Better event names
 const EVENT_COPY = 10001;
 const EVENT_SAVE = 10002;
+const EVENT_COPY_PLAYER = 10003;
 
 const EVENT_GUILDS_TOGGLE = 20000;
 const EVENT_GUILDS_TOGGLE_HIDDEN = 20001;
@@ -126,6 +127,15 @@ Handle.bind(EVT_SHOWSCREEN, function (s) {
 Handle.bind(EVT_SHOWERROR, function (e) {
     $('#modal-error-content').html(e);
     $('#modal-error').modal('show');
+});
+
+Handle.bind(EVENT_COPY_PLAYER, function (player) {
+    const element = document.createElement('textarea');
+    element.value = JSON.stringify(player.Data);
+    document.body.appendChild(element);
+    element.select();
+    document.execCommand('copy');
+    document.body.removeChild(element);
 });
 
 Handle.bind(EVT_FILES_LOAD, function () {
@@ -781,6 +791,12 @@ Handle.bind(EVT_INIT, function () {
                 }
             },
             {
+                label: 'Copy',
+                action: (source) => {
+                    Handle.call(EVENT_COPY_PLAYER, Database.Players[source.attr('data-player')][source.attr('data-timestamp')]);
+                }
+            },
+            {
                 label: 'Remove permanently',
                 action: (source) => {
                     Storage.removeByID(source.attr('data-player'));
@@ -816,6 +832,12 @@ Handle.bind(EVT_INIT, function () {
                 action: (source) => {
                     State.hideByID(source.attr('data-player-id'));
                     Handle.call(EVENT_OWNPLAYERS_LOAD);
+                }
+            },
+            {
+                label: 'Copy',
+                action: (source) => {
+                    Handle.call(EVENT_COPY_PLAYER, Database.Players[source.attr('data-player-id')].Latest);
                 }
             },
             {
