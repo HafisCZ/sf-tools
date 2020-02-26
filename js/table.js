@@ -91,6 +91,25 @@ function createGenericHeader (name, defaults, ptr) {
     };
 }
 
+function createPercentageHeader (name, ptr, ref) {
+    return function (group, header, last) {
+        group.add((header.alias || name) + (header.percentage ? ' %' : ''), header, {
+            width: 100 + (header.percentage ? 20 : 0)
+        }, cell => {
+            var a = header.percentage ? Math.trunc(100 * ptr(cell.player) / ref(cell.player)) : ptr(cell.player);
+            var b = header.percentage ? Math.trunc(100 * ptr(cell.compare) / ref(cell.compare)) : ptr(cell.compare);
+            return CellGenerator.Cell((CompareEval.evaluate(a, header.value) || a) + (header.percentage ? '%' : '') + (header.difference ? CellGenerator.Difference(header.flip ? (b - a) : (a - b), header.brackets) : ''), CompareEval.evaluate(a, header.color), '', last);
+        }, cell => {
+            var a = cell.operation(cell.players.map(p => (header.percentage ? Math.trunc(100 * ptr(p.player) / ref(p.player)) : ptr(p.player))));
+            var b = cell.operation(cell.players.map(p => (header.percentage ? Math.trunc(100 * ptr(p.compare) / ref(p.compare)) : ptr(p.compare))));
+            return CellGenerator.Cell((CompareEval.evaluate(a, header.value) || a) + (header.percentage ? '%' : '') + (header.difference ? CellGenerator.Difference(header.flip ? (b - a) : (a - b), header.brackets) : ''), '', CompareEval.evaluate(a, header.color));
+        }, cell => {
+            var a = header.percentage ? Math.trunc(100 * ptr(cell) / ref(cell)) : ptr(cell);
+            return CellGenerator.Cell((CompareEval.evaluate(a, header.value) || a) + (header.percentage ? '%' : ''), CompareEval.evaluate(a, header.color), '', last);
+        }, player => header.percentage ? (ptr(player) / ref(player)) : ptr(player));
+    };
+}
+
 const ReservedHeaders = {
     // Attributes
     'Strength': createGenericHeader('Str', { width: 100 }, p => p.Strength.Total),
@@ -101,28 +120,20 @@ const ReservedHeaders = {
     'Attribute': createGenericHeader('Attribute', { width: 100 }, p => p.PrimaryAttribute.Total),
 
     // Bonus Attributes
-    'Strength Bonus': createGenericHeader('Str Bonus', { width: 100 }, p => p.Strength.Bonus),
-    'Dexterity Bonus': createGenericHeader('Dex Bonus', { width: 100 }, p => p.Dexterity.Bonus),
-    'Intelligence Bonus': createGenericHeader('Int Bonus', { width: 100 }, p => p.Intelligence.Bonus),
-    'Constitution Bonus': createGenericHeader('Con Bonus', { width: 100 }, p => p.Constitution.Bonus),
-    'Luck Bonus': createGenericHeader('Lck Bonus', { width: 100 }, p => p.Luck.Bonus),
-    'Bonus': createGenericHeader('Bonus', { width: 100 }, p => p.PrimaryAttribute.Bonus),
-
-    // Percentage bonus
-    'Strength Bonus %': createGenericHeader('Str Bonus %', { width: 120 }, p => Math.trunc(100 * p.Strength.Bonus / p.Strength.Total)),
-    'Dexterity Bonus %': createGenericHeader('Dex Bonus %', { width: 120 }, p => Math.trunc(100 * p.Dexterity.Bonus / p.Dexterity.Total)),
-    'Intelligence Bonus %': createGenericHeader('Int Bonus %', { width: 120 }, p => Math.trunc(100 * p.Intelligence.Bonus / p.Intelligence.Total)),
-    'Constitution Bonus %': createGenericHeader('Con Bonus %', { width: 120 }, p => Math.trunc(100 * p.Constitution.Bonus / p.Constitution.Total)),
-    'Luck Bonus %': createGenericHeader('Lck Bonus %', { width: 120 }, p => Math.trunc(100 * p.Luck.Bonus / p.Luck.Total)),
-    'Bonus %': createGenericHeader('Bonus %', { width: 100 }, p => Math.trunc(100 * p.PrimaryAttribute.Bonus / p.PrimaryAttribute.Total)),
+    'Strength Bonus': createPercentageHeader('Str Bonus', p => p.Strength.Bonus, p => p.Strength.Total),
+    'Dexterity Bonus': createPercentageHeader('Dex Bonus', p => p.Dexterity.Bonus, p => p.Dexterity.Total),
+    'Intelligence Bonus': createPercentageHeader('Int Bonus', p => p.Intelligence.Bonus, p => p.Intelligence.Total),
+    'Constitution Bonus': createPercentageHeader('Con Bonus', p => p.Constitution.Bonus, p => p.Constitution.Total),
+    'Luck Bonus': createPercentageHeader('Lck Bonus', p => p.Luck.Bonus, p => p.Luck.Total),
+    'Bonus': createPercentageHeader('Bonus', p => p.PrimaryAttribute.Bonus, p => p.PrimaryAttribute.Total),
 
     // Base Attributes
-    'Base Strength': createGenericHeader('Base Str', { width: 100 }, p => p.Strength.Base),
-    'Base Dexterity': createGenericHeader('Base Dex', { width: 100 }, p => p.Dexterity.Base),
-    'Base Intelligence': createGenericHeader('Base Int', { width: 100 }, p => p.Intelligence.Base),
-    'Base Constitution': createGenericHeader('Base Con', { width: 100 }, p => p.Constitution.Base),
-    'Base Luck': createGenericHeader('Base Lck', { width: 100 }, p => p.Luck.Base),
-    'Base': createGenericHeader('Base', { width: 100 }, p => p.PrimaryAttribute.Base),
+    'Base Strength': createPercentageHeader('Base Str', p => p.Strength.Base, p => p.Strength.Total),
+    'Base Dexterity': createPercentageHeader('Base Dex', p => p.Dexterity.Base, p => p.Dexterity.Total),
+    'Base Intelligence': createPercentageHeader('Base Int', p => p.Intelligence.Base, p => p.Intelligence.Total),
+    'Base Constitution': createPercentageHeader('Base Con', p => p.Constitution.Base, p => p.Constitution.Total),
+    'Base Luck': createPercentageHeader('Base Lck', p => p.Luck.Base, p => p.Luck.Total),
+    'Base': createPercentageHeader('Base', p => p.PrimaryAttribute.Base, p => p.PrimaryAttribute.Total),
 
     // Character
     'Level': createGenericHeader('Level', { width: 100 }, p => p.Level),
@@ -178,7 +189,7 @@ const ReservedHeaders = {
     'Rune XP': createGenericHeader('Rune XP', { width: 100 }, p => p.Runes.XP),
     'Rune Chance': createGenericHeader('Rune Chance', { width: 100 }, p => p.Runes.Chance),
     'Rune Quality': createGenericHeader('Rune Quality', { width: 100 }, p => p.Runes.Quality),
-    'Rune Health': createGenericHeader('Rune Health', { width: 100 }, p => p.Runes.Health),
+    'Rune Health': createGenericHeader('Rune Health', { width: 120 }, p => p.Runes.Health),
     'Rune Damage': createGenericHeader('Rune Damage', { width: 100 }, p => p.Runes.Damage),
     'Rune Resist': createGenericHeader('Rune Resistance', { width: 110 }, p => p.Runes.Resistance),
     'Fire Resist': createGenericHeader('Fire Resistance', { width: 110 }, p => p.Runes.ResistanceFire),
