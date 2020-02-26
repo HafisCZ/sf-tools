@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Fight Simulator</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/html2canvas.js"></script>
+
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/components/state.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/playa.js"></script>
+        <script src="js/simulator.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body class="margin-none-bottom">
+        <div class="ui fixed borderless huge menu">
+            <div class="header item">SFTools</div>
+            <div class="right menu">
+                <a class="item" href="index.html"><i class="small reply icon"></i>Go back</a>
+            </div>
+        </div>
+
+        <div class="ui main container">
+            <div class="ui five columns middle aligned grid">
+                <div class="four wide column">
+
+                </div>
+                <div class="two wide column">
+
+                </div>
+                <div class="four wide column">
+                    <h1 class="ui centered header">Fight Simulator</h1>
+                </div>
+                <div class="two wide column">
+
+                </div>
+                <div class="four wide wide column">
+
+                </div>
+            </div>
+            <div class="ui two columns grid">
+                <div class="column">
+                    <div class="ui form">
+                        <div class="field">
+                            <label>Player A</label>
+                            <input type="text" id="fs-a">
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui form">
+                        <div class="field">
+                            <label>Player B</label>
+                            <input type="text" id="fs-b">
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui form">
+                        <div class="field">
+                            <label>Gladiator</label>
+                            <input type="text" id="fs-aglad">
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui form">
+                        <div class="field">
+                            <label>Gladiator</label>
+                            <input type="text" id="fs-bglad">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui grid">
+                <div class="one wide column">
+
+                </div>
+                <div class="six wide column">
+                    <button class="ui button" type="submit" id="fs-run">Simulate</button>
+                </div>
+                <div class="two wide column">
+
+                </div>
+                <div class="six wide column">
+                    <h1 class="ui header" id="fs-result-a"></h1>
+                    <h1 class="ui header" id="fs-result-b"></h1>
+                </div>
+                <div class="one wide column">
+
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $('#fs-run').click(function () {
+                var a = JSON.parse($('#fs-a').val());
+                var b = JSON.parse($('#fs-b').val());
+                var glada = Number($('#fs-aglad').val()) || 0;
+                var gladb = Number($('#fs-bglad').val()) || 0;
+
+                var s = new FSBattle(a.own ? new SFOwnPlayer(a) : new SFOtherPlayer(a), b.own ? new SFOwnPlayer(b) : new SFOtherPlayer(b));
+
+                var wa = 0, wb = 0;
+                for (var i = 0; i < 100000; i++) {
+                    var r = s.fight(glada, gladb);
+                    if (r) {
+                        wb++;
+                    } else {
+                        wa++;
+                    }
+                }
+
+                $('#fs-result-a').text(`Player A: ${ wa }`);
+                $('#fs-result-b').text(`Player B: ${ wb }`);
+            });
+        </script>
+    </body>
+</html>

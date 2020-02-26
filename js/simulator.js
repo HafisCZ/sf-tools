@@ -54,14 +54,14 @@ class FSModel {
 
     getSpecialDamage (target) {
         if (this.model.Class == 5 && (target.model.Class != 2 && target.model.Class != 5)) {
-            return Math.min(target.getHealth(), this.getHealth()) / 3;
+            return Math.min(target.model.Health, this.model.Health) / 3;
         } else {
             return 0;
         }
     }
 }
 
-function FSBattle {
+class FSBattle {
     constructor (modelA, modelB) {
         this.modelA = modelA;
         this.modelB = modelB;
@@ -70,18 +70,32 @@ function FSBattle {
     fight (glad1, glad2) {
         // Create fight models
         var a = new FSModel(this.modelA);
+        a.p = 0;
+
         var b = new FSModel(this.modelB);
+        b.p = 1;
 
         // Create damage ranges
         a.range1 = a.getDamageRange(a.weapon1, b);
         b.range1 = b.getDamageRange(b.weapon1, a);
 
+        a.crit1 = a.getCriticalMultiplier(a.weapon1, glad1);
+        b.crit1 = b.getCriticalMultiplier(b.weapon1, glad2);
+
+        a.skipchance = a.getSkipChance(b);
+        b.skipchance = b.getSkipChance(a);
+
+        a.critchance = a.getCriticalChance(b);
+        b.critchance = b.getCriticalChance(a);
+
         if (a.weapon2) {
             a.range2 = a.getDamageRange(a.weapon2, b);
+            a.crit2 = a.getCriticalMultiplier(a.weapon2, glad1);
         }
 
         if (b.weapon2) {
             b.range2 = b.getDamageRange(b.weapon2, a);
+            b.crit2 = b.getCriticalMultiplier(b.weapon2, glad2);
         }
 
         // Decide who starts first
@@ -93,24 +107,46 @@ function FSBattle {
         }
 
         // Turns
-        var turn = 1;
+        var turn = 0;
 
         // Special damage for first round only
         var sdmg = a.getSpecialDamage(b);
-        of (sdmg) {
+        if (sdmg) {
             b.health -= sdmg;
             turn++;
         }
 
         // Run until someone is dead
-        while (a.health && b.health) {
-            this.attack(turn++, a, b);
+        while (a.health > 0 && b.health > 0) {
+            turn = this.attack(turn, a, b);
+            if (b.health > 0) {
+                turn = this.attack(turn, b, a);
+            }
         }
 
-        return a.health ? a : b;
+        return a.health > 0 ? a.p : b.p;
     }
 
     attack (turn, a, b) {
+        // First attack
+        if (!rand(b.skipchance)) {
+            b.health -= (1 + turn++ / 6) * (rand(a.critchance) ? a.crit1 : 1) * (a.range1.min + Math.random() * (a.range1.max - a.range1.min + 1));
+        }
 
+        // Second attack from assassin
+        if (a.weapon2) {
+            if (!rand(b.skipchance)) {
+                b.health -= (1 + turn++ / 6) * (rand(a.critchance) ? a.crit2 : 1) * (a.range2.min + Math.random() * (a.range2.max - a.range2.min + 1));
+            }
+        }
+
+        // Second attack from berserker
+        if (rand(a.model.secondAttackChance)) {
+            if (!rand(b.skipchance)) {
+                b.health -= (1 + turn++ / 6) * (rand(a.critchance) ? a.crit1 : 1) * (a.range1.min + Math.random() * (a.range1.max - a.range1.min + 1));
+            }
+        }
+
+        return turn;
     }
 }
