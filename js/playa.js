@@ -576,6 +576,9 @@ class SFPlayer {
         }
 
         this.Health = Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5) ? 5 : (this.Class == 2 ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
+
+        this.Dungeons.Normal.Total = this.Dungeons.Normal.reduce((a, b) => a + b, 0);
+        this.Dungeons.Shadow.Total = this.Dungeons.Shadow.reduce((a, b) => a + b, 0);
     }
 }
 
@@ -673,8 +676,8 @@ class SFOtherPlayer extends SFPlayer {
         };
         dataType.skip(1); // skip
         this.Book = Math.max(0, dataType.long() - 10000);
-        this.Dungeons.Normal[10] = dataType.long();
-        this.Dungeons.Normal[11] = dataType.long();
+        this.Dungeons.Normal[10] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[11] = Math.max(0, dataType.long() - 2);
         this.Group.Joined = new Date(dataType.long() * 1000);
         this.Flags = {
             Bits: dataType.long()
@@ -686,17 +689,17 @@ class SFOtherPlayer extends SFPlayer {
         };
         this.Damage.Avg = (this.Damage.Min + this.Damage.Max) / 2;
         dataType.skip(12); // skip
-        this.Dungeons.Normal[0] = dataType.long();
-        this.Dungeons.Normal[1] = dataType.long();
-        this.Dungeons.Normal[2] = dataType.long();
-        this.Dungeons.Normal[3] = dataType.long();
-        this.Dungeons.Normal[4] = dataType.long();
-        this.Dungeons.Normal[5] = dataType.long();
-        this.Dungeons.Normal[6] = dataType.long();
-        this.Dungeons.Normal[7] = dataType.long();
-        this.Dungeons.Normal[8] = dataType.long();
-        this.Dungeons.Normal[9] = dataType.long();
-        this.Dungeons.Normal[12] = dataType.long() - 120;
+        this.Dungeons.Normal[0] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[1] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[2] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[3] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[4] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[5] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[6] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[7] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[8] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[9] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[12] = Math.max(0, dataType.long() - 122);
         this.Potions = [{
             Type: getPotionType(dataType.long()),
             Size: dataType.skip(5).long()
@@ -730,8 +733,8 @@ class SFOtherPlayer extends SFPlayer {
             Treasury: dataType.long(),
             Smithy: dataType.long(),
             Fortifications: dataType.long(),
-            Wood: dataType.skip(8).long(),
-            Stone: dataType.long()
+            RaidWood: dataType.skip(8).long(),
+            RaidStone: dataType.long()
         }
         dataType.skip(14); // skip
         this.Fortress.Upgrade = {
@@ -744,22 +747,22 @@ class SFOtherPlayer extends SFPlayer {
         dataType.short(); // skip
         this.Dungeons.Group = dataType.byte();
         this.Dungeons.Player = dataType.byte();
-        this.Dungeons.Normal[13] = dataType.long();
+        this.Dungeons.Normal[13] = Math.max(0, dataType.long() - 2);
         this.Dungeons.Shadow = [
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte()
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2)
         ];
         dataType.clear(); // skip
 
@@ -871,7 +874,8 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(118); // skip
         this.Mount = dataType.short();
         this.Dungeons = {
-            Normal: []
+            Normal: [],
+            Extra: {}
         };
         this.Dungeons.Tower = dataType.short();
         dataType.skip(148); // skip
@@ -882,8 +886,8 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(2); // skip
         this.Book = Math.max(0, dataType.long() - 10000);
         dataType.skip(2); // skip
-        this.Dungeons.Normal[10] = dataType.long();
-        this.Dungeons.Normal[11] = dataType.long();
+        this.Dungeons.Normal[10] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[11] = Math.max(0, dataType.long() - 2);
         this.Group.Joined = new Date(dataType.long() * 1000);
         this.Flags = {
             Bits: dataType.long()
@@ -899,17 +903,17 @@ class SFOwnPlayer extends SFPlayer {
         };
         this.Damage.Avg = (this.Damage.Min + this.Damage.Max) / 2;
         dataType.skip(30); // skip
-        this.Dungeons.Normal[0] = dataType.long();
-        this.Dungeons.Normal[1] = dataType.long();
-        this.Dungeons.Normal[2] = dataType.long();
-        this.Dungeons.Normal[3] = dataType.long();
-        this.Dungeons.Normal[4] = dataType.long();
-        this.Dungeons.Normal[5] = dataType.long();
-        this.Dungeons.Normal[6] = dataType.long();
-        this.Dungeons.Normal[7] = dataType.long();
-        this.Dungeons.Normal[8] = dataType.long();
-        this.Dungeons.Normal[9] = dataType.long();
-        this.Dungeons.Normal[12] = dataType.long() - 120;
+        this.Dungeons.Normal[0] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[1] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[2] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[3] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[4] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[5] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[6] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[7] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[8] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[9] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Normal[12] = Math.max(0, dataType.long() - 122);
         this.Toilet = {
             Aura: dataType.long(),
             Fill: dataType.long()
@@ -954,8 +958,13 @@ class SFOwnPlayer extends SFPlayer {
             Wood: dataType.skip(8).long(),
             Stone: dataType.long()
         }
-        this.Dungeons.Normal[13] = dataType.long();
-        dataType.skip(24); // skip
+        this.Dungeons.Normal[13] = Math.max(0, dataType.long() - 2);
+        dataType.skip(11); // skip
+        this.Dungeons.Twister = Math.max(0, dataType.long() - 2);
+        dataType.skip(3); // skip
+        this.Fortress.RaidWood = dataType.long();
+        this.Fortress.RaidStone = dataType.long();
+        dataType.skip(7); // skip
         this.Fortress.Upgrade = {
             Building: dataType.long(),
             Finish: new Date(dataType.long() * 1000)
@@ -963,24 +972,29 @@ class SFOwnPlayer extends SFPlayer {
         this.Fortress.Upgrades = dataType.skip(8).long();
         this.Fortress.Honor = dataType.long();
         this.Fortress.Rank = dataType.long();
-        dataType.skip(14); // skip
+        dataType.skip(7); // skip
+        if (dataType.long() * 1000 > data.Timestamp) {
+            this.Fortress.RaidWood += this.Fortress.Wood / 10;
+            this.Fortress.RaidStone += this.Fortress.Stone / 10;
+        }
+        dataType.skip(6); // skip
         this.Fortress.Knights = dataType.long();
         dataType.skip(5); // skip
         this.Dungeons.Shadow = [
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte()
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2),
+            Math.max(0, dataType.byte() - 2)
         ];
         dataType.clear(); // skip
         dataType.skip(15); // skip

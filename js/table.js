@@ -113,6 +113,7 @@ const ReservedHeaders = {
     'Honor': createGenericHeader('Honor', { width: 100 }, p => p.Honor),
     'Health': createGenericHeader('Health', { width: 100 }, p => p.Health),
     'Armor': createGenericHeader('Armor', { width: 100 }, p => p.Armor),
+    'Space': createGenericHeader('Space', { width: 100 }, p => p.Fortress.Treasury + 5),
     'Mirror': createGenericHeader('Mirror', { width: 100 }, p => p.Mirror ? 13 : p.MirrorPieces),
     'Equipment': createGenericHeader('Equipment', { width: 130 }, p => Object.values(p.Items).reduce((total, i) => total + i.getItemLevel(), 0)),
 
@@ -125,6 +126,9 @@ const ReservedHeaders = {
     'Tower': createGenericHeader('Tower', { width: 100 }, p => p.Dungeons.Tower),
     'Portal': createGenericHeader('Portal', { width: 100 }, p => p.Dungeons.Player),
     'Guild Portal': createGenericHeader('Guild Portal', { width: 130 }, p => p.Dungeons.Group),
+    'Twister': createGenericHeader('Twister', { width: 100 }, p => p.Dungeons.Twister),
+    'Dungeon': createGenericHeader('Dungeon', { width: 100 }, p => p.Dungeons.Normal.Total),
+    'Shadow Dungeon': createGenericHeader('Shadow', { width: 100 }, p => p.Dungeons.Shadow.Total),
 
     // Fortress
     'Fortress': createGenericHeader('Fortress', { width: 100 }, p => p.Fortress.Fortress),
@@ -141,6 +145,10 @@ const ReservedHeaders = {
     'Mage Tower': createGenericHeader('Mages', { width: 100 }, p => p.Fortress.MageTower),
     'Treasury': createGenericHeader('Treasury', { width: 100 }, p => p.Fortress.Treasury),
     'Smithy': createGenericHeader('Smithy', { width: 100 }, p => p.Fortress.Smithy),
+    'Wood': createGenericHeader('Wood', { width: 100 }, p => p.Fortress.Wood),
+    'Stone': createGenericHeader('Stone', { width: 100 }, p => p.Fortress.Stone),
+    'Raid Wood': createGenericHeader('Raid Wood', { width: 100 }, p => p.Fortress.RaidWood),
+    'Raid Stone': createGenericHeader('Raid Stone', { width: 100 }, p => p.Fortress.RaidStone),
 
     // Pets
     'Shadow': createGenericHeader('Shadow', { width: 100 }, p => p.Pets.Shadow),

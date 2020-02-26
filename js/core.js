@@ -404,7 +404,11 @@ const Storage = new (class {
         try {
             var json = JSON.parse(content);
             var raws = [];
-            for (var [key, val, url] of filterPlayaJSON(json)) {
+            for (var [key, val, url, ts] of filterPlayaJSON(json)) {
+                if (ts) {
+                    timestamp = ts;
+                }
+
                 if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername'))) {
                     var url = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
                     if (url.length > 2) {

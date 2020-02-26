@@ -54,10 +54,11 @@ function * filterPlayaJSON (o, tt = [], a = []) {
     for (var i in o) {
         if (i == 'url') {
             a[0] = o[i];
+        } else if (i == 'startedDateTime' && !a[1]) {
+            a[1] = Date.parse(o[i]);
         } else {
             const t = tt.concat(i);
-            yield [i, o[i], a[0]];
-
+            yield [i, o[i], a[0], a[1]];
             if (o[i] != null && typeof(o[i]) == 'object') {
                 yield * filterPlayaJSON(o[i], t, a);
             }
