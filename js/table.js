@@ -100,6 +100,22 @@ const ReservedHeaders = {
     'Luck': createGenericHeader('Lck', { width: 100 }, p => p.Luck.Total),
     'Attribute': createGenericHeader('Attribute', { width: 100 }, p => p.PrimaryAttribute.Total),
 
+    // Bonus Attributes
+    'Strength Bonus': createGenericHeader('Str Bonus', { width: 100 }, p => p.Strength.Bonus),
+    'Dexterity Bonus': createGenericHeader('Dex Bonus', { width: 100 }, p => p.Dexterity.Bonus),
+    'Intelligence Bonus': createGenericHeader('Int Bonus', { width: 100 }, p => p.Intelligence.Bonus),
+    'Constitution Bonus': createGenericHeader('Con Bonus', { width: 100 }, p => p.Constitution.Bonus),
+    'Luck Bonus': createGenericHeader('Lck Bonus', { width: 100 }, p => p.Luck.Bonus),
+    'Bonus': createGenericHeader('Bonus', { width: 100 }, p => p.PrimaryAttribute.Bonus),
+
+    // Percentage bonus
+    'Strength Bonus %': createGenericHeader('Str Bonus %', { width: 120 }, p => Math.trunc(100 * p.Strength.Bonus / p.Strength.Total)),
+    'Dexterity Bonus %': createGenericHeader('Dex Bonus %', { width: 120 }, p => Math.trunc(100 * p.Dexterity.Bonus / p.Dexterity.Total)),
+    'Intelligence Bonus %': createGenericHeader('Int Bonus %', { width: 120 }, p => Math.trunc(100 * p.Intelligence.Bonus / p.Intelligence.Total)),
+    'Constitution Bonus %': createGenericHeader('Con Bonus %', { width: 120 }, p => Math.trunc(100 * p.Constitution.Bonus / p.Constitution.Total)),
+    'Luck Bonus %': createGenericHeader('Lck Bonus %', { width: 120 }, p => Math.trunc(100 * p.Luck.Bonus / p.Luck.Total)),
+    'Bonus %': createGenericHeader('Bonus %', { width: 100 }, p => Math.trunc(100 * p.PrimaryAttribute.Bonus / p.PrimaryAttribute.Total)),
+
     // Base Attributes
     'Base Strength': createGenericHeader('Base Str', { width: 100 }, p => p.Strength.Base),
     'Base Dexterity': createGenericHeader('Base Dex', { width: 100 }, p => p.Dexterity.Base),

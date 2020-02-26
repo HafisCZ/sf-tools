@@ -937,6 +937,7 @@ Handle.bind(EVT_INIT, function () {
             <a class="item" data-tab="tab2">Rules</a>
             <a class="item" data-tab="tab3">Categories</a>
             <a class="item" data-tab="tab4">Headers</a>
+            <a class="item" data-tab="tab5">Headers II</a>
         </div>
         <div class="ui active tab basic segment padding-none" data-tab="tab0">
             <div>
@@ -995,7 +996,7 @@ Handle.bind(EVT_INIT, function () {
         </div>
         <div class="ui tab basic segment padding-none" data-tab="tab1">
             <b>Options</b>:</br>
-            You can use options to customize headers and reserved categories. Options must be placed after creating header or reserved category and will be effective only until another is created.</br>
+            You can use options to customize headers and categories. Place them before first category to apply them to everything, or after creating a category to apply them only to the category. Place them after a header to affect single header.</br>
             </br>
             <div class="ui css-compact-grid grid">
                 <div class="five wide column">
@@ -1147,7 +1148,15 @@ Handle.bind(EVT_INIT, function () {
             These headers are reserved and already contain a path. If you want to have a custom header with the same name as a reserved header, you will have to use different name and then rename them using the <code>alias</code> option.</br>
             </br>
             <div class="ui three column css-compact-grid grid">
-                ${ SP_KEYWORD_HEADER_RESERVED.map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
+                ${ SP_KEYWORD_HEADER_RESERVED.slice(0, 69).map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
+            </div>
+        </div>
+        <div class="ui tab basic segment padding-none" data-tab="tab5">
+            <b>Predefined headers</b>:</br>
+            These headers are reserved and already contain a path. If you want to have a custom header with the same name as a reserved header, you will have to use different name and then rename them using the <code>alias</code> option.</br>
+            </br>
+            <div class="ui three column css-compact-grid grid">
+                ${ SP_KEYWORD_HEADER_RESERVED.slice(69).map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
             </div>
         </div>
     `);
