@@ -176,7 +176,43 @@ const Database = new (class {
                         }
                     } else {
                         player.Group.Pet = group.Pets[index];
+
+                        player.Fortress.Fortress = undefined;
+                        player.Fortress.Wall = undefined;
+                        player.Fortress.Warriors = undefined;
+                        player.Fortress.Mages = undefined;
+                        player.Fortress.Archers = undefined;
+                        player.Fortress.Fortress = undefined;
+                        player.Fortress.LaborerQuarters = undefined;
+                        player.Fortress.WoodcutterGuild = undefined;
+                        player.Fortress.Quarry = undefined;
+                        player.Fortress.GemMine = undefined;
+                        player.Fortress.Academy = undefined;
+                        player.Fortress.ArcheryGuild = undefined;
+                        player.Fortress.Barracks = undefined;
+                        player.Fortress.MageTower = undefined;
+                        player.Fortress.Treasury = undefined;
+                        player.Fortress.Smithy = undefined;
+                        player.Fortress.Fortifications = undefined;
                     }
+                } else if (!player.Own) {
+                    player.Fortress.Fortress = undefined;
+                    player.Fortress.Wall = undefined;
+                    player.Fortress.Warriors = undefined;
+                    player.Fortress.Mages = undefined;
+                    player.Fortress.Archers = undefined;
+                    player.Fortress.Fortress = undefined;
+                    player.Fortress.LaborerQuarters = undefined;
+                    player.Fortress.WoodcutterGuild = undefined;
+                    player.Fortress.Quarry = undefined;
+                    player.Fortress.GemMine = undefined;
+                    player.Fortress.Academy = undefined;
+                    player.Fortress.ArcheryGuild = undefined;
+                    player.Fortress.Barracks = undefined;
+                    player.Fortress.MageTower = undefined;
+                    player.Fortress.Treasury = undefined;
+                    player.Fortress.Smithy = undefined;
+                    player.Fortress.Fortifications = undefined;
                 }
 
                 if (!tempPlayers[player.Identifier]) {

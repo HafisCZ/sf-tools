@@ -57,6 +57,14 @@ class SFItem {
         }
     }
 
+    getRune (rune) {
+        if (this.AttributeTypes[2] == rune) {
+            return this.Attributes[2];
+        } else {
+            return 0;
+        }
+    }
+
     getItemLevel () {
         var num = this.Attributes[0];
 
@@ -477,6 +485,32 @@ class SFPlayer {
             case 2:
                 return this.Intelligence;
             default:
+                return { };
+        }
+    }
+
+    getDamageReduction (player) {
+        if (this.Class == 6) {
+            return Math.min(0.25, this.Armor / 2 / player.Level);
+        } else if (this.Class == 5) {
+            return Math.min(0.10, this.Armor / player.Level) + 0.4;
+        } else {
+            return Math.min(this.getMaximumDamageReduction(), this.Armor / player.Level);
+        }
+    }
+
+    getMaximumDamageReduction () {
+        switch (this.Class) {
+            case 1:
+            case 5:
+            case 6:
+                return 0.50
+            case 3:
+            case 4:
+                return 0.25;
+            case 2:
+                return 0.10;
+            default:
                 return 0;
         }
     }
@@ -535,6 +569,10 @@ class SFPlayer {
                     this.Runes.Damage += value;
                 }
             }
+        }
+
+        if (this.Class == 4) {
+            this.Runes.Damage = Math.trunc(this.Runes.Damage / 2);
         }
 
         this.Health = Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5) ? 5 : (this.Class == 2 ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));

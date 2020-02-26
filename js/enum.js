@@ -8,6 +8,21 @@ const PLAYER_CLASS = [
     'Berserker'
 ];
 
+const RUNE = {
+    GOLD: 31,
+    EPIC_FIND: 32,
+    ITEM_QUALITY: 33,
+    XP: 34,
+    HEALTH: 35,
+    FIRE_RESISTANCE: 36,
+    COLD_RESISTANCE: 37,
+    LIGHTNING_RESISTANCE: 38,
+    TOTAL_RESITANCE: 39,
+    FIRE_DAMAGE: 40,
+    COLD_DAMAGE: 41,
+    LIGHTNING_DAMAGE: 42
+};
+
 const PLAYER_CLASS_SEARCH = [
     '',
     'warrior',
