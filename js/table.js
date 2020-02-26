@@ -949,9 +949,10 @@ const SettingsParser = (function () {
 
         pushHeader () {
             if (this.h) {
-                merge(this.h, this.g);
-
                 if ((SP_KEYWORD_HEADER_RESERVED.includes(this.h.name) || this.h.path) && this.c) {
+                    merge(this.h, this.g);
+                    merge(this.h, this.c);
+
                     this.c.h.push(this.h);
                 }
 
@@ -1015,7 +1016,7 @@ const SettingsParser = (function () {
                     } else {
                         this.h[param].push(arg);
                     }
-                } else if (this.c) {
+                } else if (this.c && SP_KEYWORD_CATEGORY_RESERVED.includes(this.c.name)) {
                     if (!this.c[param]) {
                         this.c[param] = [ arg ];
                     } else {
