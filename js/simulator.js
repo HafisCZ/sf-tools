@@ -37,9 +37,7 @@ class FSModel {
     }
 
     getDamageReduction (source) {
-        if (this.model.Class == 6) {
-            return Math.min(25, this.model.Armor / 2 / source.model.Level);
-        } else if (this.model.Class == 5) {
+        if (this.model.Class == 5) {
             return Math.min(10, this.model.Armor / source.model.Level) + 40;
         } else {
             return Math.min(this.getMaximumDamageReduction(), this.model.Armor / source.model.Level);
