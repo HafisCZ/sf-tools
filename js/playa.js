@@ -942,8 +942,8 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(11); // skip
         this.Dungeons.Twister = Math.max(0, dataType.long() - 2);
         dataType.skip(3); // skip
-        this.Fortress.RaidWood = dataType.long() / 2;
-        this.Fortress.RaidStone = dataType.long() / 2;
+        this.Fortress.RaidWood = Math.trunc(dataType.long() / 2);
+        this.Fortress.RaidStone = Math.trunc(dataType.long() / 2);
         dataType.skip(7); // skip
         this.Fortress.Upgrade = {
             Building: dataType.long(),
@@ -953,9 +953,9 @@ class SFOwnPlayer extends SFPlayer {
         this.Fortress.Honor = dataType.long();
         this.Fortress.Rank = dataType.long();
         dataType.skip(7); // skip
-        if (dataType.long() * 1000 + correctDate(data.prefix) > data.Timestamp) {
-            this.Fortress.RaidWood += this.Fortress.Wood / 10;
-            this.Fortress.RaidStone += this.Fortress.Stone / 10;
+        if (dataType.long() * 1000 + correctDate(data.prefix) < data.timestamp) {
+            this.Fortress.RaidWood += Math.trunc(this.Fortress.Wood / 10);
+            this.Fortress.RaidStone += Math.trunc(this.Fortress.Stone / 10);
         }
         dataType.skip(6); // skip
         this.Fortress.Knights = dataType.long();
