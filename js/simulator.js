@@ -1,8 +1,16 @@
+function getRune (weapon, rune) {
+    if (weapon.AttributeTypes[2] == rune) {
+        return weapon.Attributes[2];
+    } else {
+        return 0;
+    }
+}
+
 class FSModel {
     constructor (player) {
         this.model = player;
 
-        this.health = player.Health;
+        this.health = player.getHealth();
         this.weapon1 = player.Items.Wpn1;
         if (player.Class == 4) {
             this.weapon2 = player.Items.Wpn2;
@@ -10,6 +18,48 @@ class FSModel {
 
         this.first = player.Items.Hand.HasEnchantment;
         this.secondAttackChance = player.Class == 6 ? 50 : 0;
+    }
+
+    getDefenseAtribute (source) {
+        switch (source.model.Class) {
+            case 1:
+            case 5:
+            case 6:
+                return this.model.Strength;
+            case 3:
+            case 4:
+                return this.model.Dexterity;
+            case 2:
+                return this.model.Intelligence;
+            default:
+                return { };
+        }
+    }
+
+    getDamageReduction (source) {
+        if (this.model.Class == 6) {
+            return Math.min(25, this.model.Armor / 2 / source.model.Level);
+        } else if (this.model.Class == 5) {
+            return Math.min(10, this.model.Armor / source.model.Level) + 40;
+        } else {
+            return Math.min(this.getMaximumDamageReduction(), this.model.Armor / source.model.Level);
+        }
+    }
+
+    getMaximumDamageReduction () {
+        switch (this.model.Class) {
+            case 1:
+            case 5:
+                return 50
+            case 6:
+            case 3:
+            case 4:
+                return 25;
+            case 2:
+                return 10;
+            default:
+                return 0;
+        }
     }
 
     getSkipChance (source) {
@@ -29,20 +79,20 @@ class FSModel {
         return Math.min(50, this.model.Luck.Total * 2.5 / target.model.Level);
     }
 
-    getCriticalMultiplier (weapon, gladiator) {
-        return 2 * (1 + gladiator * 0.05) * (weapon.HasEnchantment ? 1.05 : 1);
+    getCriticalMultiplier (weapon) {
+        return 2 * (1 + this.model.Fortress.Gladiator * 0.05) * (weapon.HasEnchantment ? 1.05 : 1);
     }
 
     getDamageRange (weapon, target) {
-        let multPhysical = target.model.getDamageReduction(this.model);
-        let multFire = (1 - target.model.Runes.ResistanceFire / 100) * (weapon.getRune(RUNE.FIRE_DAMAGE) / 100);
-        let multCold = (1 - target.model.Runes.ResistanceCold / 100) * (weapon.getRune(RUNE.COLD_DAMAGE) / 100);
-        let multLightning = (1 - target.model.Runes.ResistanceLightning / 100) * (weapon.getRune(RUNE.LIGHTNING_DAMAGE) / 100);
+        let multPhysical = 1 - target.getDamageReduction(this) / 100;
+        let multFire = (1 - target.model.Runes.ResistanceFire / 100) * (getRune(weapon, RUNE.FIRE_DAMAGE) / 100);
+        let multCold = (1 - target.model.Runes.ResistanceCold / 100) * (getRune(weapon, RUNE.COLD_DAMAGE) / 100);
+        let multLightning = (1 - target.model.Runes.ResistanceLightning / 100) * (getRune(weapon, RUNE.LIGHTNING_DAMAGE) / 100);
 
-        let mult = (1 + this.model.Dungeons.Group / 100) * multPhysical * (1 + multFire + multCold + multLightning);
+        let mult = (1 + this.model.Dungeons.Group / 100) * multPhysical * (1 + multFire + multCold + multLightning) * (this.model.Class == 2 && target.model.Class == 6 ? 2 : 1);
 
         let attributeAttack = this.model.getPrimaryAttribute().Total;
-        let attributeDefense = target.model.getDefenseAtribute(this.model).Total;
+        let attributeDefense = target.getDefenseAtribute(this).Total;
 
         let damageMultiplier = mult * (1 + attributeAttack / 10 - Math.min(attributeAttack / 2, attributeDefense / 2) / 10);
 
@@ -53,10 +103,20 @@ class FSModel {
     }
 
     getSpecialDamage (target) {
-        if (this.model.Class == 5 && (target.model.Class != 2 && target.model.Class != 5)) {
-            return Math.min(target.model.Health, this.model.Health) / 3;
+        if (this.model.Class == 5) {
+            switch (target.model.Class) {
+                case 1:
+                case 3:
+                case 4:
+                case 6: {
+                    return Math.min(target.health, this.health) / 3;
+                }
+                default: {
+                    return 0;
+                }
+            }
         } else {
-            return 0;
+            return -1;
         }
     }
 }
@@ -67,7 +127,7 @@ class FSBattle {
         this.modelB = modelB;
     }
 
-    fight (glad1, glad2) {
+    fight () {
         // Create fight models
         var a = new FSModel(this.modelA);
         a.p = 0;
@@ -79,8 +139,8 @@ class FSBattle {
         a.range1 = a.getDamageRange(a.weapon1, b);
         b.range1 = b.getDamageRange(b.weapon1, a);
 
-        a.crit1 = a.getCriticalMultiplier(a.weapon1, glad1);
-        b.crit1 = b.getCriticalMultiplier(b.weapon1, glad2);
+        a.crit1 = a.getCriticalMultiplier(a.weapon1);
+        b.crit1 = b.getCriticalMultiplier(b.weapon1);
 
         a.skipchance = a.getSkipChance(b);
         b.skipchance = b.getSkipChance(a);
@@ -90,12 +150,12 @@ class FSBattle {
 
         if (a.weapon2) {
             a.range2 = a.getDamageRange(a.weapon2, b);
-            a.crit2 = a.getCriticalMultiplier(a.weapon2, glad1);
+            a.crit2 = a.getCriticalMultiplier(a.weapon2);
         }
 
         if (b.weapon2) {
             b.range2 = b.getDamageRange(b.weapon2, a);
-            b.crit2 = b.getCriticalMultiplier(b.weapon2, glad2);
+            b.crit2 = b.getCriticalMultiplier(b.weapon2);
         }
 
         // Decide who starts first
@@ -110,10 +170,18 @@ class FSBattle {
         var turn = 0;
 
         // Special damage for first round only
-        var sdmg = a.getSpecialDamage(b);
-        if (sdmg) {
-            b.health -= sdmg;
+        var as = a.getSpecialDamage(b);
+        var bs = b.getSpecialDamage(a);
+        if (as >= 0 || bs >= 0) {
             turn++;
+
+            if (as > 0) {
+                b.health -= as;
+            }
+
+            if (bs > 0) {
+                a.health -= bs;
+            }
         }
 
         // Run until someone is dead

@@ -203,6 +203,21 @@ function getObjectAt (obj, path) {
     return obj;
 }
 
+function setObjectAt (obj, path, val) {
+    var sub = path.split('.');
+    for (var i = 0; i < sub.length; i++) {
+        if (i == sub.length - 1) {
+            obj[sub[i]] = val;
+        } else {
+            if (obj[sub[i]] == undefined) {
+                obj[sub[i]] = { };
+            }
+
+            obj = obj[sub[i]];
+        }
+    }
+}
+
 // Download
 function download(e,d){let o=document.createElement("a");o.download=e,o.href=URL.createObjectURL(d),document.body.appendChild(o),o.click(),URL.revokeObjectURL(o.href),document.body.removeChild(o)}
 

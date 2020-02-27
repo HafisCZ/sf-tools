@@ -21,6 +21,42 @@
         <script src="js/simulator.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+
+        <style>
+            .bordered .fields:last-of-type {
+                margin-bottom: 0;
+            }
+
+            .bordered {
+                padding: 0.5em;
+                margin-bottom: 0.5em;
+            }
+
+            .bordered.bone {
+                border: 1px solid orange;
+            }
+
+            .bordered.btwo {
+                border: 1px solid purple;
+            }
+
+            .bordered.bthree {
+                border: 1px solid blue;
+            }
+
+            .bordered.bfour {
+                border: 1px solid red;
+            }
+
+            .bordered.bfive {
+                border: 1px solid green;
+            }
+
+            .bordered.bsix {
+                border: 1px solid pink;
+            }
+
+        </style>
     </head>
     <body class="margin-none-bottom">
         <div class="ui fixed borderless huge menu">
@@ -32,52 +68,424 @@
 
         <div class="ui main container">
             <div class="ui five columns middle aligned grid">
-                <div class="four wide column">
-
-                </div>
                 <div class="two wide column">
 
+                </div>
+                <div class="four wide column">
+                    <h2 class="ui centered header">Fighter A</h2>
                 </div>
                 <div class="four wide column">
                     <h1 class="ui centered header">Fight Simulator</h1>
                 </div>
-                <div class="two wide column">
-
+                <div class="four wide column">
+                    <h2 class="ui centered header">Fighter B</h2>
                 </div>
-                <div class="four wide wide column">
+                <div class="two wide wide column">
 
                 </div>
             </div>
             <div class="ui two columns grid">
                 <div class="column">
-                    <div class="ui form">
-                        <div class="field">
-                            <label>Player A</label>
-                            <input type="text" id="fs-a">
+                    <div class="ui form" id="fs-a">
+                        <div class="bordered bone">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Class</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="1" data-path="Class">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="1">Warrior</div>
+                                            <div class="item" data-value="2">Mage</div>
+                                            <div class="item" data-value="3">Scout</div>
+                                            <div class="item" data-value="4">Assassin</div>
+                                            <div class="item" data-value="5">Battle Mage</div>
+                                            <div class="item" data-value="6">Berserker</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Level</label>
+                                    <input type="text" data-path="Level">
+                                </div>
+                            </div>
+                            <div class="five fields">
+                                <div class="field">
+                                    <label>Str</label>
+                                    <input type="text" data-path="Strength.Total">
+                                </div>
+                                <div class="field">
+                                    <label>Dex</label>
+                                    <input type="text" data-path="Dexterity.Total">
+                                </div>
+                                <div class="field">
+                                    <label>Int</label>
+                                    <input type="text" data-path="Intelligence.Total">
+                                </div>
+                                <div class="field">
+                                    <label>Con</label>
+                                    <input type="text" data-path="Constitution.Total">
+                                </div>
+                                <div class="field">
+                                    <label>Lck</label>
+                                    <input type="text" data-path="Luck.Total">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered btwo">
+                            <div class="five fields">
+                                <div class="field">
+                                    <label>Min</label>
+                                    <input type="text" data-path="Items.Wpn1.DamageMin">
+                                </div>
+                                <div class="field">
+                                    <label>Max</label>
+                                    <input type="text" data-path="Items.Wpn1.DamageMax">
+                                </div>
+                                <div class="field">
+                                    <label>Crit</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="0" data-path="Items.Wpn1.HasEnchantment">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="false">No</div>
+                                            <div class="item" data-value="true">Yes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Rune</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="0" data-path="Items.Wpn1.AttributeTypes.2">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">None</div>
+                                            <div class="item" data-value="40">Fire</div>
+                                            <div class="item" data-value="41">Cold</div>
+                                            <div class="item" data-value="42">Lightning</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label></br></label>
+                                    <input type="text" data-path="Items.Wpn1.Attributes.2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bthree" id="fs-a-2">
+                            <div class="five fields">
+                                <div class="field">
+                                    <label>Min</label>
+                                    <input type="text" data-path="Items.Wpn2.DamageMin">
+                                </div>
+                                <div class="field">
+                                    <label>Max</label>
+                                    <input type="text" data-path="Items.Wpn2.DamageMax">
+                                </div>
+                                <div class="field">
+                                    <label>Crit</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="0" data-path="Items.Wpn2.HasEnchantment">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="false">No</div>
+                                            <div class="item" data-value="true">Yes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Rune</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="0" data-path="Items.Wpn2.AttributeTypes.2">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">None</div>
+                                            <div class="item" data-value="40">Fire</div>
+                                            <div class="item" data-value="41">Cold</div>
+                                            <div class="item" data-value="42">Lightning</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label></br></label>
+                                    <input type="text" data-path="Items.Wpn2.Attributes.2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bfour">
+                            <div class="four fields">
+                                <div class="field">
+                                    <label>Armor</label>
+                                    <input type="text" data-path="Armor">
+                                </div>
+                                <div class="field">
+                                    <label>Fire</label>
+                                    <input type="text" data-path="Runes.ResistanceFire">
+                                </div>
+                                <div class="field">
+                                    <label>Cold</label>
+                                    <input type="text" data-path="Runes.ResistanceCold">
+                                </div>
+                                <div class="field">
+                                    <label>Lightning</label>
+                                    <input type="text" data-path="Runes.ResistanceLightning">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bfive">
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Portal Health</label>
+                                    <input type="text" data-path="Dungeons.Player">
+                                </div>
+                                <div class="field">
+                                    <label>Rune Health</label>
+                                    <input type="text" data-path="Runes.Health">
+                                </div>
+                                <div class="field">
+                                    <label>Life Potion</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="0" data-path="Potions.Life">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">No</div>
+                                            <div class="item" data-value="25">Yes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bsix">
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Portal Damage</label>
+                                    <input type="text" data-path="Dungeons.Group">
+                                </div>
+                                <div class="field">
+                                    <label>Gladiator</label>
+                                    <input type="text" data-path="Fortress.Gladiator">
+                                </div>
+                                <div class="field">
+                                    <label>Shadow of the Cowboy</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="0" data-path="Items.Hand.HasEnchantment">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="false">No</div>
+                                            <div class="item" data-value="true">Yes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="column">
-                    <div class="ui form">
-                        <div class="field">
-                            <label>Player B</label>
-                            <input type="text" id="fs-b">
+                    <div class="ui form" id="fs-b">
+                        <div class="bordered bone">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Class</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="1" data-path="Class">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="1">Warrior</div>
+                                            <div class="item" data-value="2">Mage</div>
+                                            <div class="item" data-value="3">Scout</div>
+                                            <div class="item" data-value="4">Assassin</div>
+                                            <div class="item" data-value="5">Battle Mage</div>
+                                            <div class="item" data-value="6">Berserker</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Level</label>
+                                    <input type="text" data-path="Level">
+                                </div>
+                            </div>
+                            <div class="five fields">
+                                <div class="field">
+                                    <label>Str</label>
+                                    <input type="text" data-path="Strength.Total">
+                                </div>
+                                <div class="field">
+                                    <label>Dex</label>
+                                    <input type="text" data-path="Dexterity.Total">
+                                </div>
+                                <div class="field">
+                                    <label>Int</label>
+                                    <input type="text" data-path="Intelligence.Total">
+                                </div>
+                                <div class="field">
+                                    <label>Con</label>
+                                    <input type="text" data-path="Constitution.Total">
+                                </div>
+                                <div class="field">
+                                    <label>Lck</label>
+                                    <input type="text" data-path="Luck.Total">
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="ui form">
-                        <div class="field">
-                            <label>Gladiator</label>
-                            <input type="text" id="fs-aglad">
+                        <div class="bordered btwo">
+                            <div class="five fields">
+                                <div class="field">
+                                    <label>Min</label>
+                                    <input type="text" data-path="Items.Wpn1.DamageMin">
+                                </div>
+                                <div class="field">
+                                    <label>Max</label>
+                                    <input type="text" data-path="Items.Wpn1.DamageMax">
+                                </div>
+                                <div class="field">
+                                    <label>Crit</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="0" data-path="Items.Wpn1.HasEnchantment">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="false">No</div>
+                                            <div class="item" data-value="true">Yes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Rune</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="0" data-path="Items.Wpn1.AttributeTypes.2">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">None</div>
+                                            <div class="item" data-value="40">Fire</div>
+                                            <div class="item" data-value="41">Cold</div>
+                                            <div class="item" data-value="42">Lightning</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label></br></label>
+                                    <input type="text" data-path="Items.Wpn1.Attributes.2">
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="ui form">
-                        <div class="field">
-                            <label>Gladiator</label>
-                            <input type="text" id="fs-bglad">
+                        <div class="bordered bthree" id="fs-b-2">
+                            <div class="five fields">
+                                <div class="field">
+                                    <label>Min</label>
+                                    <input type="text" data-path="Items.Wpn2.DamageMin">
+                                </div>
+                                <div class="field">
+                                    <label>Max</label>
+                                    <input type="text" data-path="Items.Wpn2.DamageMax">
+                                </div>
+                                <div class="field">
+                                    <label>Crit</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="0" data-path="Items.Wpn2.HasEnchantment">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="false">No</div>
+                                            <div class="item" data-value="true">Yes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Rune</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="0" data-path="Items.Wpn2.AttributeTypes.2">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">None</div>
+                                            <div class="item" data-value="40">Fire</div>
+                                            <div class="item" data-value="41">Cold</div>
+                                            <div class="item" data-value="42">Lightning</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label></br></label>
+                                    <input type="text" data-path="Items.Wpn2.Attributes.2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bfour">
+                            <div class="four fields">
+                                <div class="field">
+                                    <label>Armor</label>
+                                    <input type="text" data-path="Armor">
+                                </div>
+                                <div class="field">
+                                    <label>Fire</label>
+                                    <input type="text" data-path="Runes.ResistanceFire">
+                                </div>
+                                <div class="field">
+                                    <label>Cold</label>
+                                    <input type="text" data-path="Runes.ResistanceCold">
+                                </div>
+                                <div class="field">
+                                    <label>Lightning</label>
+                                    <input type="text" data-path="Runes.ResistanceLightning">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bfive">
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Portal Health</label>
+                                    <input type="text" data-path="Dungeons.Player">
+                                </div>
+                                <div class="field">
+                                    <label>Rune Health</label>
+                                    <input type="text" data-path="Runes.Health">
+                                </div>
+                                <div class="field">
+                                    <label>Life Potion</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="0" data-path="Potions.Life">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">No</div>
+                                            <div class="item" data-value="25">Yes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bsix">
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Portal Damage</label>
+                                    <input type="text" data-path="Dungeons.Group">
+                                </div>
+                                <div class="field">
+                                    <label>Gladiator</label>
+                                    <input type="text" data-path="Fortress.Gladiator">
+                                </div>
+                                <div class="field">
+                                    <label>Shadow of the Cowboy</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input type="hidden" value="0" data-path="Items.Hand.HasEnchantment">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="false">No</div>
+                                            <div class="item" data-value="true">Yes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -103,17 +511,56 @@
         </div>
 
         <script type="text/javascript">
-            $('#fs-run').click(function () {
-                var a = JSON.parse($('#fs-a').val());
-                var b = JSON.parse($('#fs-b').val());
-                var glada = Number($('#fs-aglad').val()) || 0;
-                var gladb = Number($('#fs-bglad').val()) || 0;
+            $('.dropdown').dropdown();
 
-                var s = new FSBattle(a.own ? new SFOwnPlayer(a) : new SFOtherPlayer(a), b.own ? new SFOwnPlayer(b) : new SFOtherPlayer(b));
+            // Hide second weapon unless player is assassin
+            $('#fs-a [data-path="Class"]').change(function () {
+                $('#fs-a-2').toggle($(this).val() == 4);
+            }).trigger('change');
+
+            $('#fs-b [data-path="Class"]').change(function () {
+                $('#fs-b-2').toggle($(this).val() == 4);
+            }).trigger('change');
+
+            // Fill and read forms
+            function fill (parent, object) {
+                parent.find('[data-path]').each(function () {
+                    $(this).val(getObjectAt(object, $(this).attr('data-path')));
+                });
+            }
+
+            function read (parent) {
+                var object = new SFPlayer();
+                parent.find('[data-path]').each(function () {
+                    var val = $(this).val();
+                    setObjectAt(object, $(this).attr('data-path'), val == 'true' ? true : (val == 'false' ? false : Number(val)));
+                });
+                return object;
+            }
+
+            // On paste event handler
+            $('#fs-a input, #fs-b input').on('paste', function (event) {
+                event.stopPropagation();
+            });
+
+            $('#fs-a, #fs-b').on('paste', function (event) {
+                try {
+                    var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
+                    fill($(this), data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
+                    $('.dropdown').dropdown();
+                    $(this).find('[data-path="Class"]').trigger('change');
+                } catch (e) {
+
+                }
+            });
+
+            // Run simulation
+            $('#fs-run').click(function () {
+                var s = new FSBattle(read($('#fs-a')), read($('#fs-b')));
 
                 var wa = 0, wb = 0;
                 for (var i = 0; i < 100000; i++) {
-                    var r = s.fight(glada, gladb);
+                    var r = s.fight();
                     if (r) {
                         wb++;
                     } else {
@@ -121,8 +568,8 @@
                     }
                 }
 
-                $('#fs-result-a').text(`Player A: ${ wa }`);
-                $('#fs-result-b').text(`Player B: ${ wb }`);
+                $('#fs-result-a').text(`Fighter A: ${ wa }`);
+                $('#fs-result-b').text(`Fighter B: ${ wb }`);
             });
         </script>
     </body>

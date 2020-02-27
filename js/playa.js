@@ -418,7 +418,7 @@ class SFGroup {
 }
 
 class SFPlayer {
-    constructor (data) {
+    init (data) {
         this.Data = data;
 
         this.Own = data.own;
@@ -473,46 +473,8 @@ class SFPlayer {
         }
     }
 
-    getDefenseAtribute (player) {
-        switch (player.Class) {
-            case 1:
-            case 5:
-            case 6:
-                return this.Strength;
-            case 3:
-            case 4:
-                return this.Dexterity;
-            case 2:
-                return this.Intelligence;
-            default:
-                return { };
-        }
-    }
-
-    getDamageReduction (player) {
-        if (this.Class == 6) {
-            return Math.min(0.25, this.Armor / 2 / player.Level);
-        } else if (this.Class == 5) {
-            return Math.min(0.10, this.Armor / player.Level) + 0.4;
-        } else {
-            return Math.min(this.getMaximumDamageReduction(), this.Armor / player.Level);
-        }
-    }
-
-    getMaximumDamageReduction () {
-        switch (this.Class) {
-            case 1:
-            case 5:
-            case 6:
-                return 0.50
-            case 3:
-            case 4:
-                return 0.25;
-            case 2:
-                return 0.10;
-            default:
-                return 0;
-        }
+    getHealth () {
+        return Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5) ? 5 : (this.Class == 2 ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
     }
 
     evaluateCommon () {
@@ -571,11 +533,25 @@ class SFPlayer {
             }
         }
 
+        this.Runes.Gold = Math.min(50, this.Runes.Gold);
+        this.Runes.Chance = Math.min(50, this.Runes.Chance);
+        this.Runes.Quality = Math.min(5, this.Runes.Quality);
+        this.Runes.XP = Math.min(10, this.Runes.XP);
+        this.Runes.Health = Math.min(15, this.Runes.Health);
+        this.Runes.Resistance = Math.min(75, this.Runes.Resistance);
+        this.Runes.ResistanceFire = Math.min(75, this.Runes.ResistanceFire);
+        this.Runes.ResistanceCold = Math.min(75, this.Runes.ResistanceCold);
+        this.Runes.ResistanceLightning = Math.min(75, this.Runes.ResistanceLightning);
+        this.Runes.Damage = Math.min(60, this.Runes.Damage);
+        this.Runes.DamageFire = Math.min(60, this.Runes.DamageFire);
+        this.Runes.DamageCold = Math.min(60, this.Runes.DamageCold);
+        this.Runes.DamageLightning = Math.min(60, this.Runes.DamageLightning);
+
         if (this.Class == 4) {
             this.Runes.Damage = Math.trunc(this.Runes.Damage / 2);
         }
 
-        this.Health = Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5) ? 5 : (this.Class == 2 ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
+        this.Health = this.getHealth();
 
         this.Dungeons.Normal.Total = this.Dungeons.Normal.reduce((a, b) => a + b, 0);
         this.Dungeons.Shadow.Total = this.Dungeons.Shadow.reduce((a, b) => a + b, 0);
@@ -584,7 +560,9 @@ class SFPlayer {
 
 class SFOtherPlayer extends SFPlayer {
     constructor (data) {
-        super(data);
+        super();
+
+        this.init(data);
 
         var dataType = new ComplexDataType(data.save);
         dataType.assert(256);
@@ -789,7 +767,9 @@ class SFOtherPlayer extends SFPlayer {
 
 class SFOwnPlayer extends SFPlayer {
     constructor (data) {
-        super(data);
+        super();
+
+        this.init(data);
 
         var dataType = new ComplexDataType(data.save);
         dataType.assert(650);
