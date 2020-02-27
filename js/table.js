@@ -29,6 +29,8 @@ class HeaderGroup {
     }
 }
 
+//const HEADER_REGEX = /^header (?:(?:\w*|[\w ]*)\w)(?: *[\+\-\*\\] *(?:\w*|[\w ]*)\w)*$/gm;
+
 const ReservedCategories = {
     'Potions': function (group, category, last) {
         // Potion 1
@@ -126,6 +128,8 @@ const ReservedHeaders = {
     'Constitution Bonus': createPercentageHeader('Con Bonus', p => p.Constitution.Bonus, p => p.Constitution.Total),
     'Luck Bonus': createPercentageHeader('Lck Bonus', p => p.Luck.Bonus, p => p.Luck.Total),
     'Bonus': createPercentageHeader('Bonus', p => p.PrimaryAttribute.Bonus, p => p.PrimaryAttribute.Total),
+
+    'Base Sum': createPercentageHeader('Base Sum', p => p.PrimaryAttribute.Base + p.Constitution.Base, p.PrimaryAttribute.Total + p.Constitution.Total),
 
     // Base Attributes
     'Base Strength': createPercentageHeader('Base Str', p => p.Strength.Base, p => p.Strength.Total),
