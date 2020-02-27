@@ -942,8 +942,8 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(11); // skip
         this.Dungeons.Twister = Math.max(0, dataType.long() - 2);
         dataType.skip(3); // skip
-        this.Fortress.RaidWood = dataType.long();
-        this.Fortress.RaidStone = dataType.long();
+        this.Fortress.RaidWood = dataType.long() / 2;
+        this.Fortress.RaidStone = dataType.long() / 2;
         dataType.skip(7); // skip
         this.Fortress.Upgrade = {
             Building: dataType.long(),

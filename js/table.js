@@ -129,7 +129,7 @@ const ReservedHeaders = {
     'Luck Bonus': createPercentageHeader('Lck Bonus', p => p.Luck.Bonus, p => p.Luck.Total),
     'Bonus': createPercentageHeader('Bonus', p => p.PrimaryAttribute.Bonus, p => p.PrimaryAttribute.Total),
 
-    'Base Sum': createPercentageHeader('Base Sum', p => p.PrimaryAttribute.Base + p.Constitution.Base, p.PrimaryAttribute.Total + p.Constitution.Total),
+    'Base Sum': createPercentageHeader('Base Sum', p => p.PrimaryAttribute.Base + p.Constitution.Base, p => p.PrimaryAttribute.Total + p.Constitution.Total),
 
     // Base Attributes
     'Base Strength': createPercentageHeader('Base Str', p => p.Strength.Base, p => p.Strength.Total),
