@@ -358,14 +358,14 @@
                     var node = doc.getElementById('gd-table');
                     var head = node.getElementsByTagName('thead')[0];
                     var row = doc.createElement('tr');
-                    row.innerHTML = `<td colspan="4" class="text-left">${ formatDate(new Date(Number(State.getGroupTimestamp()))) } - ${ formatDate(new Date(Number(State.getGroupReferenceTimestamp()))) }</td>`;
+                    row.innerHTML = `<td colspan="4" class="text-left">${ formatDate(Number(State.getGroupTimestamp())) } - ${ formatDate(Number(State.getGroupReferenceTimestamp())) }</td>`;
                     head.prepend(row);
                 });
             });
 
             $('#container-detail-copy').on('click', function () {
                 var node = document.createElement('div');
-                node.innerHTML = `${ formatDate(new Date(Number(State.getGroupTimestamp()))) } - ${ formatDate(new Date(Number(State.getGroupReferenceTimestamp()))) }`
+                node.innerHTML = `${ formatDate(Number(State.getGroupTimestamp())) } - ${ formatDate(Number(State.getGroupReferenceTimestamp())) }`
                 document.body.prepend(node);
                 var range = document.createRange();
                 range.selectNode(node);

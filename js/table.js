@@ -362,9 +362,9 @@ const ReservedHeaders = {
         group.add(header.alias || 'Timestamp', header, {
             width: 160,
         }, cell => {
-            return CellGenerator.Plain(formatDate(new Date(cell.player.Timestamp)), last);
+            return CellGenerator.Plain(formatDate(cell.player.Timestamp), last);
         }, null, cell => {
-            return CellGenerator.Plain(formatDate(new Date(cell.Timestamp)), last);
+            return CellGenerator.Plain(formatDate(cell.Timestamp), last);
         }, player => player.Timestamp);
     },
     'Guild Joined': function (group, header, last) {
@@ -506,7 +506,7 @@ class Table {
                 </tr>
             </thead>
             <tbody>
-                ${ join(players, (r, i) => `<tr>${ this.root.indexed ? `<td>${ i + 1 }</td>` : '' }<td class="border-right-thin">${ formatDate(new Date(r[0])) }</td>${ join(flat, h => h.generators.cell({ player: r[1], compare: i != players.length - 1 ? players[i + 1][1] : r[1] })) }</tr>`) }
+                ${ join(players, (r, i) => `<tr>${ this.root.indexed ? `<td>${ i + 1 }</td>` : '' }<td class="border-right-thin">${ formatDate(r[0]) }</td>${ join(flat, h => h.generators.cell({ player: r[1], compare: i != players.length - 1 ? players[i + 1][1] : r[1] })) }</tr>`) }
             </tbody>
         `, 200 + this.config.reduce((a, b) => a + b.width, 0) + (this.root.indexed ? 50 : 0)];
     }

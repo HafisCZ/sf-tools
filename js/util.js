@@ -5,7 +5,12 @@ function trail (c, n) {
 
 // Format date
 function formatDate (date) {
+    date = new Date(date);
     return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear() + ' ' + trail(date.getHours(), 2) + ':' + trail(date.getMinutes(), 2);
+}
+
+function correctDate (prefix) {
+    return -60 * 60 * 1000;
 }
 
 // Set toggle button to enabled state
@@ -226,8 +231,8 @@ const Weekends = {
         date.setDate(date.getDate() - date.getDay() + (date.getDay() ? 1 : -6));
         date.setHours(0, 0, 0);
         let week = Math.trunc(date.getTime() / (7 * 24 * 3600 * 1000)) % 4;
-        let beg = new Date(date.getTime() + 5 * 24 * 60 * 60 * 1000 + 1);
-        let end = new Date(date.getTime() + 7 * 24 * 60 * 60 * 1000 - 1000);
+        let beg = date.getTime() + 5 * 24 * 60 * 60 * 1000 + 1;
+        let end = date.getTime() + 7 * 24 * 60 * 60 * 1000 - 1000;
         return [this.Type[week], formatDate(beg), formatDate(end)];
     }
 }

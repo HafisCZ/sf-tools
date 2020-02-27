@@ -150,7 +150,7 @@ Handle.bind(EVT_FILES_LOAD, function () {
             <div class="ui segment">
                 <div class="ui middle aligned grid">
                     <div class="four wide text-center column">
-                        <h3 class="ui margin-tiny-top header clickable" data-file="${ index }">${formatDate(new Date(file.timestamp))}</h3>
+                        <h3 class="ui margin-tiny-top header clickable" data-file="${ index }">${formatDate(file.timestamp)}</h3>
                     </div>
                     <div class="three wide column">
                         <div class="ui label">
@@ -213,7 +213,7 @@ Handle.bind(EVENT_OWNPLAYERS_LOAD, function () {
                 ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
                 <div class="column">
                     <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-player-id="${ player.Latest.Identifier }">
-                        <span class="css-timestamp">${ formatDate(new Date(player.LatestTimestamp)) }</span>
+                        <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
                         <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
                         <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
                         <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
@@ -226,7 +226,7 @@ Handle.bind(EVENT_OWNPLAYERS_LOAD, function () {
                 ${ indexOther % 5 == 0 ? `${ indexOther != 0 ? '</div>' : '' }<div class="row">` : '' }
                 <div class="column">
                     <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-player-id="${ player.Latest.Identifier }">
-                        <span class="css-timestamp">${ formatDate(new Date(player.LatestTimestamp)) }</span>
+                        <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
                         <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
                         <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
                         <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
@@ -276,7 +276,7 @@ Handle.bind(EVT_BROWSE_LOAD, function () {
                 ${ indexOwn % 5 == 0 ? `${ indexOwn != 0 ? '</div>' : '' }<div class="row">` : '' }
                 <div class="column">
                     <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-group-id="${group.Latest.Identifier}">
-                        <span class="css-timestamp">${ formatDate(new Date(group.LatestTimestamp)) }</span>
+                        <span class="css-timestamp">${ formatDate(group.LatestTimestamp) }</span>
                         <img class="ui medium centered image" src="res/group.png">
                         <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
                         <h3 class="ui margin-none-top centered header">${group.Latest.Name}</h3>
@@ -289,7 +289,7 @@ Handle.bind(EVT_BROWSE_LOAD, function () {
                 ${ indexOther % 5 == 0 ? `${ indexOther != 0 ? '</div>' : '' }<div class="row">` : '' }
                 <div class="column">
                     <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-group-id="${group.Latest.Identifier}">
-                        <span class="css-timestamp">${ formatDate(new Date(group.LatestTimestamp)) }</span>
+                        <span class="css-timestamp">${ formatDate(group.LatestTimestamp) }</span>
                         <img class="ui medium centered image" src="res/group.png">
                         <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
                         <h3 class="ui margin-none-top centered header">${group.Latest.Name}</h3>
@@ -404,14 +404,14 @@ Handle.bind(EVT_GROUP_LOAD_HEADER, function () {
 
     for (var [ timestamp, g ] of group.List) {
         listSelect.push({
-            name: formatDate(new Date(timestamp)),
+            name: formatDate(timestamp),
             value: timestamp,
             selected: timestamp == State.getGroupTimestamp()
         });
 
         if (timestamp <= State.getGroupTimestamp()) {
             listReference.push({
-                name: formatDate(new Date(timestamp)),
+                name: formatDate(timestamp),
                 value: timestamp
             });
         }
@@ -540,7 +540,7 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
     $('#modal-player').html(`
         <div class="ui text-center extreme header margin-none-bottom padding-none-bottom">${ player.Name }</div>
         <div class="ui text-center huge header padding-none-top margin-remove-top">${ PLAYER_CLASS[player.Class] } <span style="color: ${ CompareEval.evaluate(player.Level, config.getEntrySafe('Level').color) }">${ player.Level }</span></div>
-        <div class="ui text-center big header padding-none-top padding-none-bottom">${ formatDate(new Date(player.Timestamp)) }</div>
+        <div class="ui text-center big header padding-none-top padding-none-bottom">${ formatDate(player.Timestamp) }</div>
         <div class="content text-center">
             <div class="ui two columns grid">
                 <div class="column">
@@ -1197,7 +1197,7 @@ Handle.bind(EVT_PLAYERS_LOAD, function () {
     var values = [];
     for (var file of Object.values(Storage.files())) {
         values.push({
-            name: formatDate(new Date(file.timestamp)),
+            name: formatDate(file.timestamp),
             value: file.timestamp,
             selected: file.timestamp == Database.Latest
         });
