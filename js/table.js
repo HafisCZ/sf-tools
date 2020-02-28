@@ -981,8 +981,8 @@ const SettingsParser = (function () {
         pushHeader () {
             if (this.h) {
                 if ((SP_KEYWORD_HEADER_RESERVED.includes(this.h.name) || this.h.path) && this.c) {
-                    merge(this.h, this.g);
                     merge(this.h, this.c);
+                    merge(this.h, this.g);
 
                     this.c.h.push(this.h);
                 }
