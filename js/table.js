@@ -119,7 +119,7 @@ const ReservedHeaders = {
     'Intelligence': createGenericHeader('Int', { width: 100 }, p => p.Intelligence.Total),
     'Constitution': createGenericHeader('Con', { width: 100 }, p => p.Constitution.Total),
     'Luck': createGenericHeader('Lck', { width: 100 }, p => p.Luck.Total),
-    'Attribute': createGenericHeader('Attribute', { width: 100 }, p => p.PrimaryAttribute.Total),
+    'Attribute': createGenericHeader('Attribute', { width: 100 }, p => p.Primary.Total),
 
     // Bonus Attributes
     'Strength Bonus': createPercentageHeader('Str Bonus', p => p.Strength.Bonus, p => p.Strength.Total),
@@ -127,9 +127,9 @@ const ReservedHeaders = {
     'Intelligence Bonus': createPercentageHeader('Int Bonus', p => p.Intelligence.Bonus, p => p.Intelligence.Total),
     'Constitution Bonus': createPercentageHeader('Con Bonus', p => p.Constitution.Bonus, p => p.Constitution.Total),
     'Luck Bonus': createPercentageHeader('Lck Bonus', p => p.Luck.Bonus, p => p.Luck.Total),
-    'Bonus': createPercentageHeader('Bonus', p => p.PrimaryAttribute.Bonus, p => p.PrimaryAttribute.Total),
+    'Bonus': createPercentageHeader('Bonus', p => p.Primary.Bonus, p => p.Primary.Total),
 
-    'Base Sum': createPercentageHeader('Base Sum', p => p.PrimaryAttribute.Base + p.Constitution.Base, p => p.PrimaryAttribute.Total + p.Constitution.Total),
+    'Base Sum': createPercentageHeader('Base Sum', p => p.Primary.Base + p.Constitution.Base, p => p.Primary.Total + p.Constitution.Total),
 
     // Base Attributes
     'Base Strength': createPercentageHeader('Base Str', p => p.Strength.Base, p => p.Strength.Total),
@@ -137,7 +137,7 @@ const ReservedHeaders = {
     'Base Intelligence': createPercentageHeader('Base Int', p => p.Intelligence.Base, p => p.Intelligence.Total),
     'Base Constitution': createPercentageHeader('Base Con', p => p.Constitution.Base, p => p.Constitution.Total),
     'Base Luck': createPercentageHeader('Base Lck', p => p.Luck.Base, p => p.Luck.Total),
-    'Base': createPercentageHeader('Base', p => p.PrimaryAttribute.Base, p => p.PrimaryAttribute.Total),
+    'Base': createPercentageHeader('Base', p => p.Primary.Base, p => p.Primary.Total),
 
     // Character
     'Level': createGenericHeader('Level', { width: 100 }, p => p.Level),
@@ -444,28 +444,44 @@ class Table {
                     if (ReservedHeaders[header.name]) {
                         ReservedHeaders[header.name](group, header, hlast);
                     } else {
+                        var ptr;
+                        if (header.op) {
+                            ptr = player => {
+                                var base = getObjectAt(player, header.path);
+                                for (var [ op, path ] of header.op) {
+                                    var val = isNaN(path) ? (getObjectAt(player, path) || 0) : Number(path);
+                                    if (op == 'add') base += val;
+                                    else if (op == 'subtract') base -= val;
+                                    else if (op == 'multiply') base *= val;
+                                    else if (op == 'divide') base /= val;
+                                }
+                                return (base % 1 != 0 ? base.toFixed(2) : base);
+                            };
+                        } else {
+                            ptr = player => getObjectAt(player, header.path);
+                        }
+
                         group.add(header.alias || header.name, header, {
                             width: 100
                         }, cell => {
-                            var a = getObjectAt(cell.player, header.path);
+                            var a = ptr(cell.player);
                             if (a == undefined) return CellGenerator.Plain('?', hlast);
-
-                            var b = getObjectAt(cell.compare, header.path);
+                            var b = ptr(cell.compare);
                             var c = header.flip ? (b - a) : (a - b);
                             return CellGenerator.Cell(CompareEval.evaluate(a, header.value) || a + (header.difference ? CellGenerator.Difference(Number.isInteger(c) ? c : c.toFixed(2), header.brackets) : ''), CompareEval.evaluate(a, header.color), '', hlast);
                         }, cell => {
-                            var aa = cell.players.map(p => getObjectAt(p.player, header.path)).filter(x => x != undefined);
-                            var bb = cell.players.map(p => getObjectAt(p.compare, header.path)).filter(x => x != undefined);
+                            var aa = cell.players.map(p => ptr(p.player)).filter(x => x != undefined);
+                            var bb = cell.players.map(p => ptr(p.compare)).filter(x => x != undefined);
                             if (!aa.length || !bb.length) return CellGenerator.Plain('?');
                             var a = cell.operation(aa);
                             var b = cell.operation(bb);
                             var c = header.flip ? (b - a) : (a - b);
                             return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(c, header.brackets) : ''), '', CompareEval.evaluate(a, header.color), false);
                         }, cell => {
-                            var a = getObjectAt(cell, header.path);
+                            var a = ptr(cell);
                             if (a == undefined) return CellGenerator.Plain('?', hlast);
                             return CellGenerator.Cell(CompareEval.evaluate(a, header.value) || a, CompareEval.evaluate(a, header.color), '', hlast);
-                        }, player => getObjectAt(player, header.path));
+                        }, player => ptr(player));
                     }
                 });
             }
@@ -838,8 +854,9 @@ const SP_KEYWORD_HEADER = 'header';
 const SP_KEYWORD_GLOBAL_BOOL = [ 'members', 'indexed' ];
 const SP_KEYWORD_PARAMETER_BOOL = [ 'difference', 'percentage', 'hydra', 'flip', 'visible', 'brackets', 'statistics', 'maximum', 'members', 'indexed', 'grail' ];
 const SP_KEYWORD_PARAMETER_NUMBER = [ 'width' ];
-const SP_KEYWORD_PARAMETER_STRING = [ 'path', 'alias' ];
+const SP_KEYWORD_PARAMETER_STRING = [ 'path', 'alias', 'add', 'subtract', 'multiply', 'divide' ];
 const SP_KEYWORD_PARAMETER_ARRAY = [ 'color', 'value' ];
+const SP_KEYWORD_PARAMETER_OP = [ 'add', 'subtract', 'multiply', 'divide' ];
 
 // Reserved values
 const SP_KEYWORD_CATEGORY_RESERVED = Object.keys(ReservedCategories);
@@ -1065,6 +1082,12 @@ const SettingsParser = (function () {
             }
         }
 
+        addOpParam (param, arg) {
+            if (param && arg) {
+                this.addArrayParam('op', [ param, arg ]);
+            }
+        }
+
         addStringParam (param, arg) {
             if (param && arg) {
                 this.addRawParam(param, arg);
@@ -1094,6 +1117,7 @@ const SettingsParser = (function () {
 
                 if (SP_KEYWORD_PARAMETER_BOOL.includes(key)) this.addBoolParam(key, arg);
                 else if (SP_KEYWORD_PARAMETER_NUMBER.includes(key)) this.addNumberParam(key, arg);
+                else if (SP_KEYWORD_PARAMETER_OP.includes(key)) this.addOpParam(key, arg);
                 else if (SP_KEYWORD_PARAMETER_STRING.includes(key)) this.addStringParam(key, arg);
                 else if (SP_KEYWORD_PARAMETER_ARRAY.includes(key)) {
                     var value = parseArrayParameterArgument(arg, key == 'color');

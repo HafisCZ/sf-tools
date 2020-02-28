@@ -478,7 +478,7 @@ class SFPlayer {
     }
 
     evaluateCommon () {
-        this.PrimaryAttribute = this.getPrimaryAttribute();
+        this.Primary = this.getPrimaryAttribute();
 
         this.Runes = {
             Gold: 0,
