@@ -126,6 +126,44 @@ class FSModel {
     }
 }
 
+function runBattle (modelA, modelB) {
+    var battle = new FSBattle(modelA, modelB);
+    var wins = 0;
+    for (var i = 0; i < 1E5; i++) {
+        if (battle.fight() == 0) {
+            wins++;
+        }
+    }
+
+    var a = new FSModel(0, modelA);
+    var b = new FSModel(1, modelB);
+    a.weapon1.range = a.getDamageRange(a.weapon1, b);
+    a.weapon1.crit = a.getCriticalMultiplier(a.weapon1);
+    if (a.weapon2) {
+        a.weapon2.range = a.getDamageRange(a.weapon2, b);
+        a.weapon2.crit = a.getCriticalMultiplier(a.weapon2);
+    }
+    b.weapon1.range = b.getDamageRange(b.weapon1, a);
+    b.weapon1.crit = b.getCriticalMultiplier(b.weapon1);
+    if (b.weapon2) {
+        b.weapon2.range = b.getDamageRange(b.weapon2, a);
+        b.weapon2.crit = b.getCriticalMultiplier(b.weapon2);
+    }
+    a.skipchance = a.getSkipChance(b);
+    a.critchance = a.getCriticalChance(b);
+    b.skipchance = b.getSkipChance(a);
+    b.critchance = b.getCriticalChance(a);
+    a.special = a.getSpecialDamage(b);
+    b.special = b.getSpecialDamage(a);
+
+    return {
+        wins: wins,
+        example: battle.fight(true),
+        a: a,
+        b: b
+    }
+}
+
 class FSBattle {
     constructor (modelA, modelB) {
         this.modelA = modelA;

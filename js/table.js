@@ -17,7 +17,8 @@ class HeaderGroup {
                 statistics: statgen,
                 list: listgen
             },
-            sort: sort
+            sort: sort,
+            sortkey: `${ this.name }.${ this.length }.${ name }`
         };
 
         merge(header, settings);
@@ -28,8 +29,6 @@ class HeaderGroup {
         this.length++;
     }
 }
-
-//const HEADER_REGEX = /^header (?:(?:\w*|[\w ]*)\w)(?: *[\+\-\*\\] *(?:\w*|[\w ]*)\w)*$/gm;
 
 const ReservedCategories = {
     'Potions': function (group, category, last) {
@@ -562,7 +561,7 @@ class Table {
                     players.sort((a, b) => a.player.Potions.reduce((c, p) => c + p.Size, 0) - b.player.Potions.reduce((c, p) => c + p.Size, 0));
                 }
             } else {
-                var sort = flat.find(h => h.name == sortby);
+                var sort = flat.find(h => h.sortkey == sortby);
                 if (sort) {
                     if ((sortstyle == 1 && !sort.flip) || (sortstyle == 2 && sort.flip)) {
                         players.sort((a, b) => compareItems(sort.sort(a.player), sort.sort(b.player)));
@@ -583,7 +582,7 @@ class Table {
                     ${ join(this.config, (g, index, array) => `<td ${ g.name == 'Potions' ? `style="width:${ g.width }px"` : '' } colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable-key="_potions" data-sortable="${ sortby == '_potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`) }
                 </tr>
                 <tr>
-                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" data-sortable-key="${ h.name }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
+                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.sortkey ? sortstyle : 0 }" data-sortable-key="${ h.sortkey }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
                 </tr>
                 <tr>
                     ${ this.root.indexed ? '<td colspan="1" class="border-bottom-thick"></td>' : '' }
@@ -622,7 +621,7 @@ class Table {
                     players.sort((a, b) => a.player.Potions.reduce((c, p) => c + p.Size, 0) - b.player.Potions.reduce((c, p) => c + p.Size, 0));
                 }
             } else {
-                var sort = flat.find(h => h.name == sortby);
+                var sort = flat.find(h => h.sortkey == sortby);
                 if (sort) {
                     if ((sortstyle == 1 && !sort.flip) || (sortstyle == 2 && sort.flip)) {
                         players.sort((a, b) => compareItems(sort.sort(a.player), sort.sort(b.player)));
@@ -647,7 +646,7 @@ class Table {
                     ${ cw < 400 || flat.length < 3 ? joinN(Math.max(1, 3 - flat.length), x => `<td style="width: ${ (400 - cw) / Math.max(1, 3 - flat.length) }px"></td>`) : '' }
                 </tr>
                 <tr>
-                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.name ? sortstyle : 0 }" data-sortable-key="${ h.name }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
+                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => h.name == '' ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.sortkey ? sortstyle : 0 }" data-sortable-key="${ h.sortkey }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
                 </tr>
                 <tr>
                     ${ this.root.indexed ? '<td colspan="1" class="border-bottom-thick"></td>' : '' }

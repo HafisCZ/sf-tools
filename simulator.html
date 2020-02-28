@@ -96,6 +96,20 @@
 
                 </div>
             </div>
+            <div class="ui middle aligned grid bordered-simple">
+                <div class="two wide column"></div>
+                <div class="four wide column">
+                    <button class="ui fluid button" type="submit" id="fs-run">Simulate</button>
+                </div>
+                <div class="one wide column"></div>
+                <div class="four wide column">
+                    <h1 class="ui centered header" id="fs-result"></h1>
+                </div>
+                <div class="four wide column">
+                    <h1 class="ui centered header" id="fs-ratio"></h1>
+                </div>
+                <div class="one wide column"></div>
+            </div>
             <div class="ui two columns grid">
                 <div class="column">
                     <div class="ui form" id="fs-a">
@@ -104,7 +118,7 @@
                                 <div class="field">
                                     <label>Class</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="1" data-path="Class">
+                                        <input class="text-center" type="hidden" value="1" data-path="Class">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -119,29 +133,29 @@
                                 </div>
                                 <div class="field">
                                     <label>Level</label>
-                                    <input type="text" data-path="Level">
+                                    <input class="text-center" type="text" data-path="Level">
                                 </div>
                             </div>
                             <div class="five fields">
                                 <div class="field">
                                     <label>Str</label>
-                                    <input type="text" data-path="Strength.Total">
+                                    <input class="text-center" type="text" data-path="Strength.Total">
                                 </div>
                                 <div class="field">
                                     <label>Dex</label>
-                                    <input type="text" data-path="Dexterity.Total">
+                                    <input class="text-center" type="text" data-path="Dexterity.Total">
                                 </div>
                                 <div class="field">
                                     <label>Int</label>
-                                    <input type="text" data-path="Intelligence.Total">
+                                    <input class="text-center" type="text" data-path="Intelligence.Total">
                                 </div>
                                 <div class="field">
                                     <label>Con</label>
-                                    <input type="text" data-path="Constitution.Total">
+                                    <input class="text-center" type="text" data-path="Constitution.Total">
                                 </div>
                                 <div class="field">
                                     <label>Lck</label>
-                                    <input type="text" data-path="Luck.Total">
+                                    <input class="text-center" type="text" data-path="Luck.Total">
                                 </div>
                             </div>
                         </div>
@@ -149,16 +163,16 @@
                             <div class="five fields">
                                 <div class="field">
                                     <label>Min</label>
-                                    <input type="text" data-path="Items.Wpn1.DamageMin">
+                                    <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin">
                                 </div>
                                 <div class="field">
                                     <label>Max</label>
-                                    <input type="text" data-path="Items.Wpn1.DamageMax">
+                                    <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax">
                                 </div>
                                 <div class="field">
                                     <label>Crit</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="0" data-path="Items.Wpn1.HasEnchantment">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn1.HasEnchantment">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -170,7 +184,7 @@
                                 <div class="field">
                                     <label>Rune</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="0" data-path="Items.Wpn1.AttributeTypes.2">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn1.AttributeTypes.2">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -183,7 +197,7 @@
                                 </div>
                                 <div class="field">
                                     <label></br></label>
-                                    <input type="text" data-path="Items.Wpn1.Attributes.2">
+                                    <input class="text-center" type="text" data-path="Items.Wpn1.Attributes.2">
                                 </div>
                             </div>
                         </div>
@@ -191,16 +205,16 @@
                             <div class="five fields">
                                 <div class="field">
                                     <label>Min</label>
-                                    <input type="text" data-path="Items.Wpn2.DamageMin">
+                                    <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin">
                                 </div>
                                 <div class="field">
                                     <label>Max</label>
-                                    <input type="text" data-path="Items.Wpn2.DamageMax">
+                                    <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax">
                                 </div>
                                 <div class="field">
                                     <label>Crit</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="0" data-path="Items.Wpn2.HasEnchantment">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn2.HasEnchantment">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -212,7 +226,7 @@
                                 <div class="field">
                                     <label>Rune</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="0" data-path="Items.Wpn2.AttributeTypes.2">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn2.AttributeTypes.2">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -225,7 +239,7 @@
                                 </div>
                                 <div class="field">
                                     <label></br></label>
-                                    <input type="text" data-path="Items.Wpn2.Attributes.2">
+                                    <input class="text-center" type="text" data-path="Items.Wpn2.Attributes.2">
                                 </div>
                             </div>
                         </div>
@@ -233,19 +247,19 @@
                             <div class="four fields">
                                 <div class="field">
                                     <label>Armor</label>
-                                    <input type="text" data-path="Armor">
+                                    <input class="text-center" type="text" data-path="Armor">
                                 </div>
                                 <div class="field">
                                     <label>Fire</label>
-                                    <input type="text" data-path="Runes.ResistanceFire">
+                                    <input class="text-center" type="text" data-path="Runes.ResistanceFire">
                                 </div>
                                 <div class="field">
                                     <label>Cold</label>
-                                    <input type="text" data-path="Runes.ResistanceCold">
+                                    <input class="text-center" type="text" data-path="Runes.ResistanceCold">
                                 </div>
                                 <div class="field">
                                     <label>Lightning</label>
-                                    <input type="text" data-path="Runes.ResistanceLightning">
+                                    <input class="text-center" type="text" data-path="Runes.ResistanceLightning">
                                 </div>
                             </div>
                         </div>
@@ -253,16 +267,16 @@
                             <div class="three fields">
                                 <div class="field">
                                     <label>Portal Health</label>
-                                    <input type="text" data-path="Dungeons.Player">
+                                    <input class="text-center" type="text" data-path="Dungeons.Player">
                                 </div>
                                 <div class="field">
                                     <label>Rune Health</label>
-                                    <input type="text" data-path="Runes.Health">
+                                    <input class="text-center" type="text" data-path="Runes.Health">
                                 </div>
                                 <div class="field">
                                     <label>Life Potion</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="0" data-path="Potions.Life">
+                                        <input class="text-center" type="hidden" value="0" data-path="Potions.Life">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -277,16 +291,16 @@
                             <div class="three fields">
                                 <div class="field">
                                     <label>Portal Damage</label>
-                                    <input type="text" data-path="Dungeons.Group">
+                                    <input class="text-center" type="text" data-path="Dungeons.Group">
                                 </div>
                                 <div class="field">
                                     <label>Gladiator</label>
-                                    <input type="text" data-path="Fortress.Gladiator">
+                                    <input class="text-center" type="text" data-path="Fortress.Gladiator">
                                 </div>
                                 <div class="field">
                                     <label>Shadow of the Cowboy</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="0" data-path="Items.Hand.HasEnchantment">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Hand.HasEnchantment">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -306,7 +320,7 @@
                                 <div class="field">
                                     <label>Class</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="1" data-path="Class">
+                                        <input class="text-center" type="hidden" value="1" data-path="Class">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -321,29 +335,29 @@
                                 </div>
                                 <div class="field">
                                     <label>Level</label>
-                                    <input type="text" data-path="Level">
+                                    <input class="text-center" type="text" data-path="Level">
                                 </div>
                             </div>
                             <div class="five fields">
                                 <div class="field">
                                     <label>Str</label>
-                                    <input type="text" data-path="Strength.Total">
+                                    <input class="text-center" type="text" data-path="Strength.Total">
                                 </div>
                                 <div class="field">
                                     <label>Dex</label>
-                                    <input type="text" data-path="Dexterity.Total">
+                                    <input class="text-center" type="text" data-path="Dexterity.Total">
                                 </div>
                                 <div class="field">
                                     <label>Int</label>
-                                    <input type="text" data-path="Intelligence.Total">
+                                    <input class="text-center" type="text" data-path="Intelligence.Total">
                                 </div>
                                 <div class="field">
                                     <label>Con</label>
-                                    <input type="text" data-path="Constitution.Total">
+                                    <input class="text-center" type="text" data-path="Constitution.Total">
                                 </div>
                                 <div class="field">
                                     <label>Lck</label>
-                                    <input type="text" data-path="Luck.Total">
+                                    <input class="text-center" type="text" data-path="Luck.Total">
                                 </div>
                             </div>
                         </div>
@@ -351,16 +365,16 @@
                             <div class="five fields">
                                 <div class="field">
                                     <label>Min</label>
-                                    <input type="text" data-path="Items.Wpn1.DamageMin">
+                                    <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin">
                                 </div>
                                 <div class="field">
                                     <label>Max</label>
-                                    <input type="text" data-path="Items.Wpn1.DamageMax">
+                                    <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax">
                                 </div>
                                 <div class="field">
                                     <label>Crit</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="0" data-path="Items.Wpn1.HasEnchantment">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn1.HasEnchantment">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -372,7 +386,7 @@
                                 <div class="field">
                                     <label>Rune</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="0" data-path="Items.Wpn1.AttributeTypes.2">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn1.AttributeTypes.2">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -385,7 +399,7 @@
                                 </div>
                                 <div class="field">
                                     <label></br></label>
-                                    <input type="text" data-path="Items.Wpn1.Attributes.2">
+                                    <input class="text-center" type="text" data-path="Items.Wpn1.Attributes.2">
                                 </div>
                             </div>
                         </div>
@@ -393,16 +407,16 @@
                             <div class="five fields">
                                 <div class="field">
                                     <label>Min</label>
-                                    <input type="text" data-path="Items.Wpn2.DamageMin">
+                                    <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin">
                                 </div>
                                 <div class="field">
                                     <label>Max</label>
-                                    <input type="text" data-path="Items.Wpn2.DamageMax">
+                                    <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax">
                                 </div>
                                 <div class="field">
                                     <label>Crit</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="0" data-path="Items.Wpn2.HasEnchantment">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn2.HasEnchantment">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -414,7 +428,7 @@
                                 <div class="field">
                                     <label>Rune</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="0" data-path="Items.Wpn2.AttributeTypes.2">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn2.AttributeTypes.2">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -427,7 +441,7 @@
                                 </div>
                                 <div class="field">
                                     <label></br></label>
-                                    <input type="text" data-path="Items.Wpn2.Attributes.2">
+                                    <input class="text-center" type="text" data-path="Items.Wpn2.Attributes.2">
                                 </div>
                             </div>
                         </div>
@@ -435,19 +449,19 @@
                             <div class="four fields">
                                 <div class="field">
                                     <label>Armor</label>
-                                    <input type="text" data-path="Armor">
+                                    <input class="text-center" type="text" data-path="Armor">
                                 </div>
                                 <div class="field">
                                     <label>Fire</label>
-                                    <input type="text" data-path="Runes.ResistanceFire">
+                                    <input class="text-center" type="text" data-path="Runes.ResistanceFire">
                                 </div>
                                 <div class="field">
                                     <label>Cold</label>
-                                    <input type="text" data-path="Runes.ResistanceCold">
+                                    <input class="text-center" type="text" data-path="Runes.ResistanceCold">
                                 </div>
                                 <div class="field">
                                     <label>Lightning</label>
-                                    <input type="text" data-path="Runes.ResistanceLightning">
+                                    <input class="text-center" type="text" data-path="Runes.ResistanceLightning">
                                 </div>
                             </div>
                         </div>
@@ -455,16 +469,16 @@
                             <div class="three fields">
                                 <div class="field">
                                     <label>Portal Health</label>
-                                    <input type="text" data-path="Dungeons.Player">
+                                    <input class="text-center" type="text" data-path="Dungeons.Player">
                                 </div>
                                 <div class="field">
                                     <label>Rune Health</label>
-                                    <input type="text" data-path="Runes.Health">
+                                    <input class="text-center" type="text" data-path="Runes.Health">
                                 </div>
                                 <div class="field">
                                     <label>Life Potion</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="0" data-path="Potions.Life">
+                                        <input class="text-center" type="hidden" value="0" data-path="Potions.Life">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -479,16 +493,16 @@
                             <div class="three fields">
                                 <div class="field">
                                     <label>Portal Damage</label>
-                                    <input type="text" data-path="Dungeons.Group">
+                                    <input class="text-center" type="text" data-path="Dungeons.Group">
                                 </div>
                                 <div class="field">
                                     <label>Gladiator</label>
-                                    <input type="text" data-path="Fortress.Gladiator">
+                                    <input class="text-center" type="text" data-path="Fortress.Gladiator">
                                 </div>
                                 <div class="field">
                                     <label>Shadow of the Cowboy</label>
                                     <div class="ui selection compact dropdown">
-                                        <input type="hidden" value="0" data-path="Items.Hand.HasEnchantment">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Hand.HasEnchantment">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -502,19 +516,17 @@
                     </div>
                 </div>
             </div>
-            <div class="ui middle aligned grid bordered-simple">
-                <div class="two wide column"></div>
-                <div class="four wide column">
-                    <button class="ui fluid button" type="submit" id="fs-run">Simulate</button>
+            <div class="ui two columns grid">
+                <div class="column">
+                    <div class="ui form" id="fs-detail-a">
+
+                    </div>
                 </div>
-                <div class="one wide column"></div>
-                <div class="four wide column">
-                    <h1 class="ui centered header" id="fs-result"></h1>
+                <div class="column">
+                    <div class="ui form" id="fs-detail-b">
+
+                    </div>
                 </div>
-                <div class="four wide column">
-                    <h1 class="ui centered header" id="fs-ratio"></h1>
-                </div>
-                <div class="one wide column"></div>
             </div>
             <div class="ui centered grid spaced" id="fs-debug">
 
@@ -554,6 +566,8 @@
                 event.stopPropagation();
             });
 
+            $('#fs-detail-a, #fs-detail-b').hide();
+
             $('#fs-a, #fs-b').on('paste', function (event) {
                 try {
                     var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
@@ -567,20 +581,164 @@
 
             // Run simulation
             $('#fs-run').click(function () {
-                var s = new FSBattle(read($('#fs-a')), read($('#fs-b')));
+                var battle = runBattle(read($('#fs-a')), read($('#fs-b')));
 
-                var wa = 0, wb = 0;
-                for (var i = 0; i < 100000; i++) {
-                    var r = s.fight();
-                    if (r) {
-                        wb++;
-                    } else {
-                        wa++;
-                    }
-                }
+                $('#fs-result').text(`${ (100 * battle.wins / 1E5).toFixed(1) }%`);
+                $('#fs-ratio').text(`${ battle.wins } / ${ 1E5 - battle.wins }`);
 
-                $('#fs-result').text(`${ (wa / 1000).toFixed(1) }%`);
-                $('#fs-ratio').text(`${ wa } / ${ wb }`);
+                $('#fs-detail-a').show().html(`
+                    <div class="bordered bfour">
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Health</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.health)) }">
+                            </div>
+                            <div class="field">
+                                <label>Damage reduction</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.getDamageReduction(battle.b))) }">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bordered bthree">
+                        <div class="four fields">
+                            <div class="field">
+                                <label>Skip chance</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.skipchance)) }">
+                            </div>
+                            <div class="field">
+                                <label>Crit chance</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.critchance)) }">
+                            </div>
+                            <div class="field">
+                                <label>Special damage</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.special)) }">
+                            </div>
+                            <div class="field">
+                                <label>Second attack</label>
+                                <input class="text-center" disabled type="text" value="${ battle.a.secondAttack }">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bordered btwo">
+                        <div class="four fields">
+                            <div class="field">
+                                <label>Minimum damage</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.range.min)) }">
+                            </div>
+                            <div class="field">
+                                <label>Maximum damage</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.range.max)) }">
+                            </div>
+                            <div class="field">
+                                <label>Minimum critical</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.crit * battle.a.weapon1.range.min)) }">
+                            </div>
+                            <div class="field">
+                                <label>Maximum critical</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.crit * battle.a.weapon1.range.max)) }">
+                            </div>
+                        </div>
+                    </div>
+                    ${ battle.a.weapon2 ? `
+                        <div class="bordered bone">
+                            <div class="four fields">
+                                <div class="field">
+                                    <label>Minimum damage</label>
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.range.min)) }">
+                                </div>
+                                <div class="field">
+                                    <label>Maximum damage</label>
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.range.max)) }">
+                                </div>
+                                <div class="field">
+                                    <label>Minimum critical</label>
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.crit * battle.a.weapon2.range.min)) }">
+                                </div>
+                                <div class="field">
+                                    <label>Maximum critical</label>
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.crit * battle.a.weapon2.range.max)) }">
+                                </div>
+                            </div>
+                        </div>
+                    ` : '' }
+                `);
+
+                $('#fs-detail-b').show().html(`
+                    <div class="bordered bfour">
+                        <div class="two fields">
+                            <div class="field">
+                                <label>Health</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.health)) }">
+                            </div>
+                            <div class="field">
+                                <label>Damage reduction</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.getDamageReduction(battle.a))) }">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bordered bthree">
+                        <div class="four fields">
+                            <div class="field">
+                                <label>Skip chance</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.skipchance)) }">
+                            </div>
+                            <div class="field">
+                                <label>Crit chance</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.critchance)) }">
+                            </div>
+                            <div class="field">
+                                <label>Special damage</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.special)) }">
+                            </div>
+                            <div class="field">
+                                <label>Second attack</label>
+                                <input class="text-center" disabled type="text" value="${ battle.b.secondAttack }">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bordered btwo">
+                        <div class="four fields">
+                            <div class="field">
+                                <label>Minimum damage</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.range.min)) }">
+                            </div>
+                            <div class="field">
+                                <label>Maximum damage</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.range.max)) }">
+                            </div>
+                            <div class="field">
+                                <label>Minimum critical</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.crit * battle.b.weapon1.range.min)) }">
+                            </div>
+                            <div class="field">
+                                <label>Maximum critical</label>
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.crit * battle.b.weapon1.range.max)) }">
+                            </div>
+                        </div>
+                    </div>
+                    ${ battle.b.weapon2 ? `
+                        <div class="bordered bone">
+                            <div class="four fields">
+                                <div class="field">
+                                    <label>Minimum damage</label>
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.range.min)) }">
+                                </div>
+                                <div class="field">
+                                    <label>Maximum damage</label>
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.range.max)) }">
+                                </div>
+                                <div class="field">
+                                    <label>Minimum critical</label>
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.crit * battle.b.weapon2.range.min)) }">
+                                </div>
+                                <div class="field">
+                                    <label>Maximum critical</label>
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.crit * battle.b.weapon2.range.max)) }">
+                                </div>
+                            </div>
+                        </div>
+                    ` : '' }
+                `);
 
                 $('#fs-debug').html(`
                     <div class="row bordered-simple">
@@ -605,7 +763,7 @@
                         </div>
                         <div class="one wide column"></div>
                     </div>
-                    ` + join(s.fight(true), function (round) {
+                    ` + join(battle.example, function (round) {
                     return `
                         <div class="row bordered-simple ${ round.source.p ? 'btwo' : 'bone' }">
                             <div class="one wide column"></div>
