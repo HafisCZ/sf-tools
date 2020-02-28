@@ -1,3 +1,4 @@
+// Get rune from weapon
 function getRune (weapon, rune) {
     if (weapon.AttributeTypes[2] == rune) {
         return weapon.Attributes[2];
@@ -6,8 +7,14 @@ function getRune (weapon, rune) {
     }
 }
 
+// Get random
+function rand (perc) {
+    return perc > 0 && (Math.random() * 100 < perc);
+}
+
 class FSModel {
-    constructor (player) {
+    constructor (p, player) {
+        this.p = p;
         this.model = player;
 
         this.health = player.getHealth();
@@ -17,7 +24,7 @@ class FSModel {
         }
 
         this.first = player.Items.Hand.HasEnchantment;
-        this.secondAttackChance = player.Class == 6 ? 50 : 0;
+        this.secondAttack = player.Class == 6 ? 50 : 0;
     }
 
     getDefenseAtribute (source) {
@@ -125,38 +132,38 @@ class FSBattle {
         this.modelB = modelB;
     }
 
-    fight () {
+    fight (debug) {
+        if (debug) {
+            this.debug = [];
+        }
+
         // Create fight models
-        var a = new FSModel(this.modelA);
-        a.p = 0;
+        var a = new FSModel(0, this.modelA);
+        var b = new FSModel(1, this.modelB);
 
-        var b = new FSModel(this.modelB);
-        b.p = 1;
+        // Damage
+        a.weapon1.range = a.getDamageRange(a.weapon1, b);
+        a.weapon1.crit = a.getCriticalMultiplier(a.weapon1);
+        if (a.weapon2) {
+            a.weapon2.range = a.getDamageRange(a.weapon2, b);
+            a.weapon2.crit = a.getCriticalMultiplier(a.weapon2);
+        }
 
-        // Create damage ranges
-        a.range1 = a.getDamageRange(a.weapon1, b);
-        b.range1 = b.getDamageRange(b.weapon1, a);
+        b.weapon1.range = b.getDamageRange(b.weapon1, a);
+        b.weapon1.crit = b.getCriticalMultiplier(b.weapon1);
+        if (b.weapon2) {
+            b.weapon2.range = b.getDamageRange(b.weapon2, a);
+            b.weapon2.crit = b.getCriticalMultiplier(b.weapon2);
+        }
 
-        a.crit1 = a.getCriticalMultiplier(a.weapon1);
-        b.crit1 = b.getCriticalMultiplier(b.weapon1);
-
+        // Chances
         a.skipchance = a.getSkipChance(b);
-        b.skipchance = b.getSkipChance(a);
-
         a.critchance = a.getCriticalChance(b);
+
+        b.skipchance = b.getSkipChance(a);
         b.critchance = b.getCriticalChance(a);
 
-        if (a.weapon2) {
-            a.range2 = a.getDamageRange(a.weapon2, b);
-            a.crit2 = a.getCriticalMultiplier(a.weapon2);
-        }
-
-        if (b.weapon2) {
-            b.range2 = b.getDamageRange(b.weapon2, a);
-            b.crit2 = b.getCriticalMultiplier(b.weapon2);
-        }
-
-        // Decide who starts first
+        // Swap first & second
         var afirst = (a.first == b.first) ? rand(50) : a.first;
         if (afirst == false) {
             var c = a;
@@ -164,14 +171,14 @@ class FSBattle {
             b = c;
         }
 
-        // Turns
-        var turn = 0;
+        // Turn counter
+        this.turn = 0;
 
         // Special damage for first round only
         var as = a.getSpecialDamage(b);
         var bs = b.getSpecialDamage(a);
         if (as >= 0 || bs >= 0) {
-            turn++;
+            this.turn++;
 
             if (as > 0) {
                 b.health -= as;
@@ -180,39 +187,99 @@ class FSBattle {
             if (bs > 0) {
                 a.health -= bs;
             }
+
+            if (as >= 0 && bs >= 0) {
+                if (this.debug) {
+                    this.debug.push({
+                        turn: 0,
+                        source: a,
+                        target: b,
+                        skipped: false,
+                        critted: false,
+                        rage: 1,
+                        damage: 0
+                    });
+                }
+            } else if (as >= 0) {
+                if (this.debug) {
+                    this.debug.push({
+                        turn: 0,
+                        source: a,
+                        target: b,
+                        skipped: false,
+                        critted: false,
+                        rage: 1,
+                        damage: Math.trunc(as)
+                    });
+                }
+            } else if (bs >= 0) {
+                if (this.debug) {
+                    this.debug.push({
+                        turn: 0,
+                        source: b,
+                        target: a,
+                        skipped: false,
+                        critted: false,
+                        rage: 1,
+                        damage: Math.trunc(bs)
+                    });
+                }
+            }
         }
 
         // Run until someone is dead
         while (a.health > 0 && b.health > 0) {
-            turn = this.attack(turn, a, b);
+            this.attack(a, b);
+            if (a.weapon2) {
+                this.attack(a, b, a.weapon2);
+            } else if (rand(a.secondAttack)) {
+                this.attack(a, b);
+            }
+
             if (b.health > 0) {
-                turn = this.attack(turn, b, a);
+                this.attack(b, a);
+                if (b.weapon2) {
+                    this.attack(b, a, b.weapon2);
+                } else if (rand(b.secondAttack)) {
+                    this.attack(b, a);
+                }
             }
         }
 
-        return a.health > 0 ? a.p : b.p;
+        if (this.debug) {
+            return this.debug;
+        } else {
+            return a.health > 0 ? a.p : b.p;
+        }
     }
 
-    attack (turn, a, b) {
-        // First attack
-        if (!rand(b.skipchance)) {
-            b.health -= (1 + turn++ / 6) * (rand(a.critchance) ? a.crit1 : 1) * (a.range1.min + Math.random() * (a.range1.max - a.range1.min + 1));
+    attack (source, target, weapon = source.weapon1) {
+        var skipped = rand(target.skipchance);
+        var critted = rand(source.critchance);
+        var turn = this.turn++;
+        var rage = 1 + turn / 6;
+
+        var damage = rage * (Math.random() * (1 + weapon.range.max - weapon.range.min) + weapon.range.min);
+        if (critted) {
+            damage *= weapon.crit;
         }
 
-        // Second attack from assassin
-        if (a.weapon2) {
-            if (!rand(b.skipchance)) {
-                b.health -= (1 + turn++ / 6) * (rand(a.critchance) ? a.crit2 : 1) * (a.range2.min + Math.random() * (a.range2.max - a.range2.min + 1));
-            }
+        if (skipped) {
+            damage = 0;
+        } else {
+            target.health -= damage;
         }
 
-        // Second attack from berserker
-        if (rand(a.model.secondAttackChance)) {
-            if (!rand(b.skipchance)) {
-                b.health -= (1 + turn++ / 6) * (rand(a.critchance) ? a.crit1 : 1) * (a.range1.min + Math.random() * (a.range1.max - a.range1.min + 1));
-            }
+        if (this.debug) {
+            this.debug.push({
+                turn: turn,
+                source: source,
+                target: target,
+                skipped: skipped,
+                critted: critted,
+                rage: rage.toFixed(2),
+                damage: Math.trunc(damage)
+            });
         }
-
-        return turn;
     }
 }

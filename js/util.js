@@ -116,10 +116,6 @@ function getAt(obj, ... path) {
     return x;
 }
 
-function rand (percent) {
-    return percent && (Math.random() * 100 < percent);
-}
-
 // Complex datatype
 class ComplexDataType {
     constructor (values) {

@@ -32,28 +32,40 @@
                 margin-bottom: 0.5em;
             }
 
-            .bordered.bone {
+            .bordered-simple {
+                margin-bottom: 0.35em;
+                padding-top: 0.5em !important;
+                padding-bottom: 0.5em !important;
+                margin-right: 1em;
+                margin-left: 1em;
+            }
+
+            .bone {
                 border: 1px solid orange;
             }
 
-            .bordered.btwo {
+            .btwo {
                 border: 1px solid purple;
             }
 
-            .bordered.bthree {
+            .bthree {
                 border: 1px solid blue;
             }
 
-            .bordered.bfour {
+            .bfour {
                 border: 1px solid red;
             }
 
-            .bordered.bfive {
+            .bfive {
                 border: 1px solid green;
             }
 
-            .bordered.bsix {
+            .bsix {
                 border: 1px solid pink;
+            }
+
+            .spaced {
+                margin-top: 2em !important;
             }
 
         </style>
@@ -490,23 +502,22 @@
                     </div>
                 </div>
             </div>
-            <div class="ui grid">
-                <div class="one wide column">
+            <div class="ui middle aligned grid bordered-simple">
+                <div class="two wide column"></div>
+                <div class="four wide column">
+                    <button class="ui fluid button" type="submit" id="fs-run">Simulate</button>
+                </div>
+                <div class="one wide column"></div>
+                <div class="four wide column">
+                    <h1 class="ui centered header" id="fs-result"></h1>
+                </div>
+                <div class="four wide column">
+                    <h1 class="ui centered header" id="fs-ratio"></h1>
+                </div>
+                <div class="one wide column"></div>
+            </div>
+            <div class="ui centered grid spaced" id="fs-debug">
 
-                </div>
-                <div class="six wide column">
-                    <button class="ui button" type="submit" id="fs-run">Simulate</button>
-                </div>
-                <div class="two wide column">
-
-                </div>
-                <div class="six wide column">
-                    <h1 class="ui header" id="fs-result-a"></h1>
-                    <h1 class="ui header" id="fs-result-b"></h1>
-                </div>
-                <div class="one wide column">
-
-                </div>
             </div>
         </div>
 
@@ -568,8 +579,58 @@
                     }
                 }
 
-                $('#fs-result-a').text(`Fighter A: ${ wa }`);
-                $('#fs-result-b').text(`Fighter B: ${ wb }`);
+                $('#fs-result').text(`${ (wa / 1000).toFixed(1) }%`);
+                $('#fs-ratio').text(`${ wa } / ${ wb }`);
+
+                $('#fs-debug').html(`
+                    <div class="row bordered-simple">
+                        <div class="one wide column"></div>
+                        <div class="one wide column">
+                            <h2 class="ui centered header">Turn</h2>
+                        </div>
+                        <div class="one wide column">
+                            <h2 class="ui centered header">Rage</h2>
+                        </div>
+                        <div class="four wide column">
+                            <h2 class="ui centered header">Attacker</h2>
+                        </div>
+                        <div class="two wide column">
+                            <h2 class="ui centered header">Critted</h2>
+                        </div>
+                        <div class="two wide column">
+                            <h2 class="ui centered header">Skipped</h2>
+                        </div>
+                        <div class="four wide column">
+                            <h2 class="ui centered header">Damage dealt</h2>
+                        </div>
+                        <div class="one wide column"></div>
+                    </div>
+                    ` + join(s.fight(true), function (round) {
+                    return `
+                        <div class="row bordered-simple ${ round.source.p ? 'btwo' : 'bone' }">
+                            <div class="one wide column"></div>
+                            <div class="one wide text-center column">
+                                ${ round.turn }
+                            </div>
+                            <div class="one wide text-center column">
+                                ${ round.rage }
+                            </div>
+                            <div class="four wide text-center column">
+                                <b>${ round.source.p ? 'Fighter B' : 'Fighter A' }</b>
+                            </div>
+                            <div class="two wide text-center column">
+                                ${ round.critted ? '<b>Yes</b>' : '' }
+                            </div>
+                            <div class="two wide text-center column">
+                                ${ round.skipped ? '<b>Yes</b>' : '' }
+                            </div>
+                            <div class="four wide text-center column">
+                                ${ round.critted ? `<b class="foreground-red">${ formatAsSpacedNumber(round.damage) }</b>` : formatAsSpacedNumber(round.damage) }
+                            </div>
+                            <div class="one wide column"></div>
+                        </div>
+                    `;
+                }));
             });
         </script>
     </body>
