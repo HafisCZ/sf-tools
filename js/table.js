@@ -592,7 +592,7 @@ class Table {
                 </tr>
             </thead>
             <tbody>
-                ${ join(players, (r, i) => `<tr class="${ r.hidden ? 'css-entry-hidden' : '' }">${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }" data-timestamp="${ r.player.Timestamp }">${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`) }
+                ${ join(players, (r, i) => `<tr class="${ r.hidden ? 'css-entry-hidden' : '' }">${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest || !this.root.outdated ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }" data-timestamp="${ r.player.Timestamp }">${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`) }
             </tbody>
         `, 100 + 250 + this.config.reduce((a, b) => a + b.width, 0) + (this.root.indexed ? 50 : 0)];
     }
@@ -851,8 +851,8 @@ const SP_KEYWORD_CATEGORY = 'category';
 const SP_KEYWORD_HEADER = 'header';
 
 // Parameters
-const SP_KEYWORD_GLOBAL_BOOL = [ 'members', 'indexed' ];
-const SP_KEYWORD_PARAMETER_BOOL = [ 'difference', 'percentage', 'hydra', 'flip', 'visible', 'brackets', 'statistics', 'maximum', 'members', 'indexed', 'grail' ];
+const SP_KEYWORD_GLOBAL_BOOL = [ 'members', 'indexed', 'outdated' ];
+const SP_KEYWORD_PARAMETER_BOOL = [ 'difference', 'percentage', 'hydra', 'flip', 'visible', 'brackets', 'statistics', 'maximum', 'members', 'indexed', 'grail', 'outdated' ];
 const SP_KEYWORD_PARAMETER_NUMBER = [ 'width' ];
 const SP_KEYWORD_PARAMETER_STRING = [ 'path', 'alias', 'add', 'subtract', 'multiply', 'divide' ];
 const SP_KEYWORD_PARAMETER_ARRAY = [ 'color', 'value' ];
@@ -1101,7 +1101,7 @@ const SettingsParser = (function () {
         }
 
         parse (text) {
-            this.root = { c: [] };
+            this.root = { c: [], outdated: true };
             this.c = null;
             this.h = null;
             this.g = {};
