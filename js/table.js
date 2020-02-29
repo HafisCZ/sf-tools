@@ -383,12 +383,12 @@ const ReservedHeaders = {
         group.add(header.alias || 'Aura', header, {
             width: 100
         }, cell => {
-            if (!cell.player.Toilet) return CellGenerator.Plain('?', last);
+            if (!cell.player.Toilet.Aura) return CellGenerator.Plain('?', last);
             return CellGenerator.Cell(cell.player.Toilet.Aura + (header.difference ? CellGenerator.Difference(cell.player.Toilet.Aura - cell.compare.Toilet.Aura, header.brackets) : ''), CompareEval.evaluate(cell.player.Toilet.Aura, header.color), '', last);
         }, null, cell => {
-            if (!cell.Toilet) return CellGenerator.Plain('?', last);
+            if (!cell.Toilet.Aura) return CellGenerator.Plain('?', last);
             return CellGenerator.Cell(cell.Toilet.Aura, CompareEval.evaluate(cell.Toilet.Aura, header.color), '', last);
-        }, player => player.Toilet ? player.Toilet.Aura : 0);
+        }, player => player.Toilet.Aura || 0);
     }
 };
 
@@ -443,28 +443,27 @@ class Table {
                     if (ReservedHeaders[header.name]) {
                         ReservedHeaders[header.name](group, header, hlast);
                     } else {
-                        var ptr = header.ptr;
                         group.add(header.alias || header.name, header, {
                             width: 100
                         }, cell => {
-                            var a = ptr(cell.player);
+                            var a = header.ptr(cell.player);
                             if (a == undefined) return CellGenerator.Plain('?', hlast);
-                            var b = ptr(cell.compare);
+                            var b = header.ptr(cell.compare);
                             var c = header.flip ? (b - a) : (a - b);
                             return CellGenerator.Cell(CompareEval.evaluate(a, header.value) || a + (header.difference ? CellGenerator.Difference(Number.isInteger(c) ? c : c.toFixed(2), header.brackets) : ''), CompareEval.evaluate(a, header.color), '', hlast);
                         }, cell => {
-                            var aa = cell.players.map(p => ptr(p.player)).filter(x => x != undefined);
-                            var bb = cell.players.map(p => ptr(p.compare)).filter(x => x != undefined);
+                            var aa = cell.players.map(p => header.ptr(p.player)).filter(x => x != undefined);
+                            var bb = cell.players.map(p => header.ptr(p.compare)).filter(x => x != undefined);
                             if (!aa.length || !bb.length) return CellGenerator.Plain('?');
                             var a = cell.operation(aa);
                             var b = cell.operation(bb);
                             var c = header.flip ? (b - a) : (a - b);
                             return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(c, header.brackets) : ''), '', CompareEval.evaluate(a, header.color), false);
                         }, cell => {
-                            var a = ptr(cell);
+                            var a = header.ptr(cell);
                             if (a == undefined) return CellGenerator.Plain('?', hlast);
                             return CellGenerator.Cell(CompareEval.evaluate(a, header.value) || a, CompareEval.evaluate(a, header.color), '', hlast);
-                        }, player => ptr(player));
+                        }, header.ptr);
                     }
                 });
             }
@@ -839,7 +838,7 @@ const SP_KEYWORD_PARAMETER_BOOL = [ 'difference', 'percentage', 'hydra', 'flip',
 const SP_KEYWORD_PARAMETER_NUMBER = [ 'width' ];
 const SP_KEYWORD_PARAMETER_STRING = [ 'path', 'alias', 'add', 'subtract', 'multiply', 'divide' ];
 const SP_KEYWORD_PARAMETER_ARRAY = [ 'color', 'value' ];
-const SP_KEYWORD_PARAMETER_OP = [ 'add', 'subtract', 'multiply', 'divide' ];
+const SP_KEYWORD_PARAMETER_OP = [ 'path', 'add', 'subtract', 'multiply', 'divide' ];
 
 // Reserved values
 const SP_KEYWORD_CATEGORY_RESERVED = Object.keys(ReservedCategories);
@@ -847,6 +846,93 @@ const SP_KEYWORD_HEADER_RESERVED = Object.keys(ReservedHeaders);
 const SP_KEYWORD_BOOL = [ 'on', 'off' ];
 const SP_KEYWORD_SPECIAL = [ 'static' ];
 const SP_KEYWORD_EQ = [ 'above', 'below', 'or', 'equal', 'default' ];
+
+const SP_KEYWORD_MAPPING = {
+    'Level': p => p.Level,
+    'Strength': p => p.Strength.Total,
+    'Dexterity': p => p.Dexterity.Total,
+    'Intelligence': p => p.Intelligence.Total,
+    'Constitution': p => p.Constitution.Total,
+    'Luck': p => p.Luck.Total,
+    'Attribute': p => p.Primary.Total,
+    'Strength Bonus': p => p.Strength.Bonus,
+    'Dexterity Bonus': p => p.Dexterity.Bonus,
+    'Intelligence Bonus': p => p.Intelligence.Bonus,
+    'Constitution Bonus': p => p.Constitution.Bonus,
+    'Luck Bonus': p => p.Luck.Bonus,
+    'Bonus': p => p.Primary.Bonus,
+    'Base Strength': p => p.Strength.Base,
+    'Base Dexterity': p => p.Dexterity.Base,
+    'Base Intelligence': p => p.Intelligence.Base,
+    'Base Constitution': p => p.Constitution.Base,
+    'Base Luck': p => p.Luck.Base,
+    'Base': p => p.Primary.Base,
+    'Honor': p => p.Honor,
+    'Health': p => p.Health,
+    'Armor': p => p.Armor,
+    'Space': p => 5 + p.Fortress.Treasury,
+    'Mirror': p => p.Mirror ? 13 : p.MirrorPieces,
+    'Equipment': p => Object.values(p.Items).reduce((c, i) => c + (i.Attributes[0] > 0 ? i.getItemLevel() : 0), 0),
+    'Treasure': p => p.Group.Treasure,
+    'Intructor': p => p.Group.Intructor,
+    'Pet': p => p.Group.Pet,
+    'Tower': p => p.Dungeons.Tower,
+    'Portal': p => p.Dungeons.Player,
+    'Guild Portal': p => p.Dungeons.Group,
+    'Twister': p => p.Dungeons.Twister,
+    'Dungeon': p => p.Dungeons.Normal.Total,
+    'Shadow Dungeon': p => p.Dungeons.Shadow.Total,
+    'Fortress': p => p.Fortress.Fortress,
+    'Upgrades': p => p.Fortress.Upgrades,
+    'Gem Mine': p => p.Fortress.GemMine,
+    'Fortress Honor': p => p.Fortress.Honor,
+    'Wall': p => p.Fortress.Fortifications,
+    'Quarters': p => p.Fortress.LaborerQuarters,
+    'Woodcutter': p => p.Fortress.WoodcutterGuild,
+    'Quarry': p => p.Fortress.Quarry,
+    'Academy': p => p.Fortress.Academy,
+    'Archery Guild': p => p.Fortress.ArcheryGuild,
+    'Barracks': p => p.Fortress.Barracks,
+    'Mage Tower': p => p.Fortress.MageTower,
+    'Treasury': p => p.Fortress.Treasury,
+    'Smithy': p => p.Fortress.Smithy,
+    'Wood': p => p.Fortress.Wood,
+    'Stone': p => p.Fortress.Stone,
+    'Raid Wood': p => p.Fortress.RaidWood,
+    'Raid Stone': p => p.Fortress.RaidStone,
+    'Shadow': p => p.Pets.Shadow,
+    'Light': p => p.Pets.Light,
+    'Earth': p => p.Pets.Earth,
+    'Fire': p => p.Pets.Fire,
+    'Water': p => p.Pets.Water,
+    'Rune Gold': p => p.Runes.Gold,
+    'Rune XP': p => p.Runes.XP,
+    'Rune Chance': p => p.Runes.Chance,
+    'Rune Quality': p => p.Runes.Quality,
+    'Rune Health': p => p.Runes.Health,
+    'Rune Damage': p => p.Runes.Damage,
+    'Rune Resist': p => p.Runes.Resistance,
+    'Fire Resist': p => p.Runes.ResistanceFire,
+    'Cold Resist': p => p.Runes.ResistanceCold,
+    'Lightning Resist': p => p.Runes.ResistanceLightning,
+    'Fire Damage': p => p.Runes.DamageFire,
+    'Cold Damage': p => p.Runes.DamageCold,
+    'Lightning Damage': p => p.Runes.DamageLightning,
+    'Class': p => p.Class,
+    'Rank': p => p.Rank,
+    'Mount': p => p.Mount,
+    'Awards': p => p.Achievements.Owned,
+    'Album': p => p.Book,
+    'Knights': p => p.Fortress.Knights,
+    'Fortress Rank': p => p.Fortress.Rank,
+    'Building': p => p.Fortress.Upgrade.Building,
+    'Last Active': p => p.LastOnline,
+    'Timestamp': p => p.Timestamp,
+    'Guild Joined': p => p.Group.Joined,
+    'Aura': p => p.Toilet.Aura
+};
+
+const SP_KEYWORD_MAPPING_KEYS = Object.keys(SP_KEYWORD_MAPPING);
 
 const SP_KEYWORD_EQ_MAP = {
     'above or equal': 'ae',
@@ -943,6 +1029,9 @@ const SettingsParser = (function () {
                 if (SP_KEYWORD_HEADER == a && SP_KEYWORD_HEADER_RESERVED.includes(b)) {
                     content.push(`<span class="ta-keyword">${ a }</span>&nbsp;<span class="ta-reserved">${ b.replace(/ /, '&nbsp;') }</span>`);
                     continue;
+                } else if (SP_KEYWORD_PARAMETER_OP.includes(a) && SP_KEYWORD_MAPPING_KEYS.includes(b)) {
+                    content.push(`<span class="ta-keyword">${ a }</span>&nbsp;<span class="ta-reserved">${ b.replace(/ /, '&nbsp;') }</span>`);
+                    continue;
                 }
 
                 for (var i = 0, l = words.length; i < l; i++) {
@@ -980,29 +1069,28 @@ const SettingsParser = (function () {
 
         pushHeader () {
             if (this.h) {
-                if ((SP_KEYWORD_HEADER_RESERVED.includes(this.h.name) || this.h.path) && this.c) {
+                if ((SP_KEYWORD_HEADER_RESERVED.includes(this.h.name) || this.h.path != undefined) && this.c) {
                     merge(this.h, this.c);
                     merge(this.h, this.g);
 
-                    if (this.h.path) {
+                    if (this.h.path != undefined) {
+                        var h = this.h.path;
+                        var o = this.h.op;
+
                         if (this.h.op) {
-                            var h = this.h.path;
-                            var o = this.h.op;
                             this.h.ptr = (p) => {
-                                var base = getObjectAt(p, h);
-                                for (var [ op, path ] of o) {
-                                    var val = isNaN(path) ? (getObjectAt(p, path) || 0) : Number(path);
-                                    if (op == 'add') base += val;
-                                    else if (op == 'subtract') base -= val;
-                                    else if (op == 'multiply') base *= val;
-                                    else if (op == 'divide') base /= val;
+                                var base = h(p);
+                                for (var [ k, op ] of o) {
+                                    var v = typeof(op) == 'function' ? op(p) : op;
+                                    if (k == 'add') base += v;
+                                    else if (k == 'subtract') base -= v;
+                                    else if (k == 'multiply') base *= v;
+                                    else if (k == 'divide') base /= v;
                                 }
                                 return (base % 1 != 0 ? base.toFixed(2) : base);
                             };
                         } else {
-                            this.h.ptr = (p) => {
-                                return getObjectAt(p, h);
-                            };
+                            this.h.ptr = h;
                         }
                     }
 
@@ -1088,8 +1176,17 @@ const SettingsParser = (function () {
         }
 
         addOpParam (param, arg) {
-            if (param && arg) {
-                this.addArrayParam('op', [ param, arg ]);
+            var farg;
+            if (isNaN(arg)) {
+                farg = SP_KEYWORD_MAPPING[arg] || (p => getObjectAt(p, arg));
+            } else {
+                farg = Number(arg);
+            }
+
+            if (param == 'path') {
+                this.addRawParam('path', typeof(farg) == 'function' ? farg : () => farg);
+            } else {
+                this.addArrayParam('op', [ param, farg ]);
             }
         }
 

@@ -423,6 +423,7 @@ class SFPlayer {
 
         this.Own = data.own;
         this.Timestamp = data.timestamp;
+        this.Toilet = { };
 
         this.Achievements = [];
         this.Achievements.Owned = 0;
