@@ -99,7 +99,7 @@ class FSModel {
         let attributeAttack = this.model.getPrimaryAttribute().Total;
         let attributeDefense = target.getDefenseAtribute(this).Total;
 
-        let damageMultiplier = mult * (1 + attributeAttack / 10 - Math.min(attributeAttack / 2, attributeDefense / 2) / 10);
+        let damageMultiplier = mult * (1 + Math.max(attributeAttack / 2, attributeAttack - attributeDefense / 2) / 10);
 
         return {
             min: damageMultiplier * weapon.DamageMin,
@@ -109,16 +109,16 @@ class FSModel {
 
     getSpecialDamage (target) {
         if (this.model.Class == 5) {
-            switch (target.model.Class) {
-                case 1:
-                case 3:
-                case 4:
-                case 6: {
-                    return Math.min(target.health, this.health) / 3;
-                }
-                default: {
-                    return 0;
-                }
+            if (target.model.Class == 5 || target.model.Class == 2) {
+                return 0;
+            } else if (target.model.Level < this.model.Level + 10 || target.model.Class == 6) {
+                return target.health / 3;
+            } else if (target.model.Class == 1) {
+                return this.health / 4;
+            } else if (target.model.Class == 3 || target.model.Class == 4) {
+                return this.health / 5;
+            } else {
+                return 0;
             }
         } else {
             return -1;
@@ -137,6 +137,7 @@ function runBattle (modelA, modelB) {
 
     var a = new FSModel(0, modelA);
     var b = new FSModel(1, modelB);
+
     a.weapon1.range = a.getDamageRange(a.weapon1, b);
     a.weapon1.crit = a.getCriticalMultiplier(a.weapon1);
     if (a.weapon2) {

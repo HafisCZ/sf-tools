@@ -443,23 +443,7 @@ class Table {
                     if (ReservedHeaders[header.name]) {
                         ReservedHeaders[header.name](group, header, hlast);
                     } else {
-                        var ptr;
-                        if (header.op) {
-                            ptr = player => {
-                                var base = getObjectAt(player, header.path);
-                                for (var [ op, path ] of header.op) {
-                                    var val = isNaN(path) ? (getObjectAt(player, path) || 0) : Number(path);
-                                    if (op == 'add') base += val;
-                                    else if (op == 'subtract') base -= val;
-                                    else if (op == 'multiply') base *= val;
-                                    else if (op == 'divide') base /= val;
-                                }
-                                return (base % 1 != 0 ? base.toFixed(2) : base);
-                            };
-                        } else {
-                            ptr = player => getObjectAt(player, header.path);
-                        }
-
+                        var ptr = header.ptr;
                         group.add(header.alias || header.name, header, {
                             width: 100
                         }, cell => {
@@ -999,6 +983,28 @@ const SettingsParser = (function () {
                 if ((SP_KEYWORD_HEADER_RESERVED.includes(this.h.name) || this.h.path) && this.c) {
                     merge(this.h, this.c);
                     merge(this.h, this.g);
+
+                    if (this.h.path) {
+                        if (this.h.op) {
+                            var h = this.h.path;
+                            var o = this.h.op;
+                            this.h.ptr = (p) => {
+                                var base = getObjectAt(p, h);
+                                for (var [ op, path ] of o) {
+                                    var val = isNaN(path) ? (getObjectAt(p, path) || 0) : Number(path);
+                                    if (op == 'add') base += val;
+                                    else if (op == 'subtract') base -= val;
+                                    else if (op == 'multiply') base *= val;
+                                    else if (op == 'divide') base /= val;
+                                }
+                                return (base % 1 != 0 ? base.toFixed(2) : base);
+                            };
+                        } else {
+                            this.h.ptr = (p) => {
+                                return getObjectAt(p, h);
+                            };
+                        }
+                    }
 
                     this.c.h.push(this.h);
                 }
