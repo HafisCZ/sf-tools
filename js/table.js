@@ -836,9 +836,9 @@ const SP_KEYWORD_HEADER = 'header';
 const SP_KEYWORD_GLOBAL_BOOL = [ 'members', 'indexed', 'outdated' ];
 const SP_KEYWORD_PARAMETER_BOOL = [ 'difference', 'percentage', 'hydra', 'flip', 'visible', 'brackets', 'statistics', 'maximum', 'members', 'indexed', 'grail', 'outdated' ];
 const SP_KEYWORD_PARAMETER_NUMBER = [ 'width' ];
-const SP_KEYWORD_PARAMETER_STRING = [ 'path', 'alias', 'add', 'subtract', 'multiply', 'divide' ];
+const SP_KEYWORD_PARAMETER_STRING = [ 'path', 'alias', 'add', 'subtract', 'multiply', 'divide', 'expr' ];
 const SP_KEYWORD_PARAMETER_ARRAY = [ 'color', 'value' ];
-const SP_KEYWORD_PARAMETER_OP = [ 'path', 'add', 'subtract', 'multiply', 'divide' ];
+const SP_KEYWORD_PARAMETER_OP = [ 'path', 'add', 'subtract', 'multiply', 'divide', 'expr' ];
 
 // Reserved values
 const SP_KEYWORD_CATEGORY_RESERVED = Object.keys(ReservedCategories);
@@ -971,6 +971,180 @@ const SP_KEYWORD_CONSTANTS = {
     'berserker': '6'
 };
 
+const AST_OPERATORS = {
+    '*': (a, b) => a * b,
+    '/': (a, b) => a / b,
+    '+': (a, b) => a + b,
+    '-': (a, b) => a - b,
+    '>': (a, b) => a > b,
+    '<': (a, b) => a < b,
+    '==': (a, b) => a == b,
+    '>=': (a, b) => a >= b,
+    '<=': (a, b) => a <= b
+};
+
+class AST {
+    constructor (string) {
+        this.tokens = string.split(/([\(|\)|\+|\-|\/|\*|\>\=|\<\=|\=\=|\>|\<|\?|\:])/).map(token => token.trim()).filter(token => token.length);
+        this.expression = this.evalExpression();
+    }
+
+    peek (i) {
+        return this.tokens[i || 0];
+    }
+
+    get () {
+        var v = this.tokens.shift();
+        return isNaN(v) ? v : Number(v);
+    }
+
+    getVal () {
+        var val = this.get();
+        if (['+', '-'].includes(val)) {
+            val = {
+                a: val == '+' ? 1 : -1,
+                b: this.get(),
+                op: AST_OPERATORS['*']
+            }
+        }
+
+        return val;
+    }
+
+    evalBracketExpression () {
+        this.get();
+        var v = this.evalExpression();
+        this.get();
+        return v;
+    }
+
+    evalRankedExpression () {
+        var left, right, op;
+        if (this.peek() == '(') {
+            left = this.evalBracketExpression();
+        } else {
+            left = this.getVal();
+        }
+
+        while (['*', '/'].includes(this.peek())) {
+            op = this.get();
+
+            if (this.peek() == '(') {
+                right = this.evalBracketExpression();
+            } else {
+                right = this.get();
+            }
+
+            left = {
+                a: left,
+                b: right,
+                op: AST_OPERATORS[op]
+            }
+        }
+
+        return left;
+    }
+
+    evalSimpleExpression () {
+        var left, right, op;
+
+        left = this.evalRankedExpression();
+
+        while (['+', '-'].includes(this.peek())) {
+            op = this.get();
+
+            if (this.peek() == '(') {
+                right = this.evalBracketExpression();
+            } else {
+                right = this.evalRankedExpression();
+            }
+
+            left = {
+                a: left,
+                b: right,
+                op: AST_OPERATORS[op]
+            }
+        }
+
+        return left;
+    }
+
+    evalBoolExpression () {
+        var left, right, op;
+
+        left = this.evalSimpleExpression();
+
+        while (['>', '<', '<=', '>=', '=='].includes(this.peek())) {
+            op = this.get();
+
+            if (this.peek() == '(') {
+                right = this.evalBracketExpression();
+            } else {
+                right = this.evalSimpleExpression();
+            }
+
+            left = {
+                a: left,
+                b: right,
+                op: AST_OPERATORS[op]
+            }
+        }
+
+        return left;
+    }
+
+    evalExpression () {
+        var left, tr, fl;
+
+        left = this.evalBoolExpression();
+
+        if (this.peek() == '?') {
+            this.get();
+
+            if (this.peek() == '(') {
+                tr = this.evalBracketExpression();
+            } else {
+                tr = this.evalBoolExpression();
+            }
+
+            if (this.peek() == ':') {
+                this.get();
+
+                if (this.peek() == '(') {
+                    fl = this.evalBracketExpression();
+                } else {
+                    fl = this.evalBoolExpression();
+                }
+
+                left = {
+                    a: left,
+                    b: tr,
+                    c: fl,
+                    op: (a, b, c) => {
+                        return a ? b : c;
+                    }
+                }
+            }
+        }
+
+        return left;
+    }
+
+    eval (p, node = this.expression) {
+        if (typeof(node) == 'object') {
+            return node.op(this.eval(p, node.a), this.eval(p, node.b), node.c != undefined ? this.eval(p, node.c) : undefined);
+        } else if (typeof(node) == 'string') {
+            if (SP_KEYWORD_MAPPING[node]) {
+                return SP_KEYWORD_MAPPING[node](p);
+            } else {
+                return getObjectAt(p, node);
+            }
+        } else {
+            return node;
+        }
+    }
+}
+
 // Setting parser
 const SettingsParser = (function () {
     // Helper functions
@@ -1069,11 +1243,21 @@ const SettingsParser = (function () {
 
         pushHeader () {
             if (this.h) {
-                if ((SP_KEYWORD_HEADER_RESERVED.includes(this.h.name) || this.h.path != undefined) && this.c) {
+                if ((SP_KEYWORD_HEADER_RESERVED.includes(this.h.name) || this.h.path != undefined || this.h.expr != undefined) && this.c) {
                     merge(this.h, this.c);
                     merge(this.h, this.g);
 
-                    if (this.h.path != undefined) {
+                    if (this.h.expr != undefined) {
+                        try {
+                            var ast = new AST(this.h.expr);
+                            this.h.ptr = (p) => {
+                                var v = ast.eval(p);
+                                return isNaN(v) ? undefined : (v % 1 != 0 ? v.toFixed(2) : v);
+                            }
+                        } catch (ex) {
+                            this.h.ptr = (p) => undefined;
+                        }
+                    } else if (this.h.path != undefined) {
                         var h = this.h.path;
                         var o = this.h.op;
 
@@ -1176,17 +1360,21 @@ const SettingsParser = (function () {
         }
 
         addOpParam (param, arg) {
-            var farg;
-            if (isNaN(arg)) {
-                farg = SP_KEYWORD_MAPPING[arg] || (p => getObjectAt(p, arg));
+            if (param == 'expr') {
+                this.addRawParam('expr', arg);
             } else {
-                farg = Number(arg);
-            }
+                var farg;
+                if (isNaN(arg)) {
+                    farg = SP_KEYWORD_MAPPING[arg] || (p => getObjectAt(p, arg));
+                } else {
+                    farg = Number(arg);
+                }
 
-            if (param == 'path') {
-                this.addRawParam('path', typeof(farg) == 'function' ? farg : () => farg);
-            } else {
-                this.addArrayParam('op', [ param, farg ]);
+                if (param == 'path') {
+                    this.addRawParam('path', typeof(farg) == 'function' ? farg : () => farg);
+                } else {
+                    this.addArrayParam('op', [ param, farg ]);
+                }
             }
         }
 
