@@ -324,6 +324,7 @@ h3.file-selected {
     border: 1px solid transparent;
     pointer-events: none;
     color: black;
+    width: 1000%;
 }
 
 .ta-area {
@@ -332,6 +333,7 @@ h3.file-selected {
     max-height: calc(100vh - 12em) !important;
     height: calc(100vh - 12em) !important;
     resize: none !important;
+    overflow: auto;
 }
 
 .ta-area::selection {

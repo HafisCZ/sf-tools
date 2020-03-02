@@ -980,12 +980,14 @@ const AST_OPERATORS = {
     '<': (a, b) => a < b,
     '==': (a, b) => a == b,
     '>=': (a, b) => a >= b,
-    '<=': (a, b) => a <= b
+    '<=': (a, b) => a <= b,
+    '||': (a, b) => a || b,
+    '&&': (a, b) => a && b
 };
 
 class AST {
     constructor (string) {
-        this.tokens = string.split(/([\(|\)|\+|\-|\/|\*|\>\=|\<\=|\=\=|\>|\<|\?|\:])/).map(token => token.trim()).filter(token => token.length);
+        this.tokens = string.split(/(\|\||\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:)/).map(token => token.trim()).filter(token => token.length);
         this.expression = this.evalExpression();
     }
 
@@ -1093,10 +1095,34 @@ class AST {
         return left;
     }
 
+    evalBoolMergeExpression () {
+        var left, right, op;
+
+        left = this.evalBoolExpression();
+
+        while (['||', '&&'].includes(this.peek())) {
+            op = this.get();
+
+            if (this.peek() == '(') {
+                right = this.evalBracketExpression();
+            } else {
+                right = this.evalBoolExpression();
+            }
+
+            left = {
+                a: left,
+                b: right,
+                op: AST_OPERATORS[op]
+            }
+        }
+
+        return left;
+    }
+
     evalExpression () {
         var left, tr, fl;
 
-        left = this.evalBoolExpression();
+        left = this.evalBoolMergeExpression();
 
         if (this.peek() == '?') {
             this.get();
@@ -1104,7 +1130,7 @@ class AST {
             if (this.peek() == '(') {
                 tr = this.evalBracketExpression();
             } else {
-                tr = this.evalBoolExpression();
+                tr = this.evalBoolMergeExpression();
             }
 
             if (this.peek() == ':') {
@@ -1113,7 +1139,7 @@ class AST {
                 if (this.peek() == '(') {
                     fl = this.evalBracketExpression();
                 } else {
-                    fl = this.evalBoolExpression();
+                    fl = this.evalBoolMergeExpression();
                 }
 
                 left = {
@@ -1128,6 +1154,18 @@ class AST {
         }
 
         return left;
+    }
+
+    toString (node = this.expression) {
+        if (typeof(node) == 'object') {
+            if (node.c != undefined) {
+                return `(${ this.toString(node.a) } ? ${ this.toString(node.b) } : ${ this.toString(node.c) })`;
+            } else {
+                return `(${ this.toString(node.a) } ${ node.op.name } ${ this.toString(node.b) })`;
+            }
+        } else {
+            return `${ node }`;
+        }
     }
 
     eval (p, node = this.expression) {

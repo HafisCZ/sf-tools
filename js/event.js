@@ -909,20 +909,19 @@ Handle.bind(EVT_INIT, function () {
         var $c = $a.children('textarea');
         $b.css('top', $c.css('padding-top'));
         $b.css('left', $c.css('padding-left'));
-        $b.css('margin-right', '30px');
         $b.css('font', $c.css('font'));
         $b.css('font-family', $c.css('font-family'));
         $b.css('line-height', $c.css('line-height'));
-        $c.css('overflow-x', 'hidden');
         $c.on('input', function () {
             var val = $(this).val();
             $b.html(SettingsParser.highlight(val));
         });
         $c.trigger('input');
         $c.on('scroll', function () {
-            var scroll = $(this).scrollTop();
-            $b.css('transform', scroll > 0 ? `translateY(${ -scroll }px)` : '');
-            $b.css('clip-path', `inset(${ scroll }px 0px 0px 0px)`);
+            var sy = $(this).scrollTop();
+            var sx = $(this).scrollLeft();
+            $b.css('transform', `translate(${ -sx }px, ${ -sy }px)`);
+            $b.css('clip-path', `inset(${ sy }px ${ sx }px 0px 0px)`);
         });
     }
 
