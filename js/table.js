@@ -440,7 +440,7 @@ class Table {
                 category.h.forEach((header, hi, ha) => {
                     var hlast = (!glast && hi == ha.length - 1) || (hi != ha.length - 1 && ha[hi + 1].name == 'Awards') || (hi != ha.length - 1 && header.name == 'Awards');
 
-                    if (ReservedHeaders[header.name]) {
+                    if (!header.ptr && ReservedHeaders[header.name]) {
                         ReservedHeaders[header.name](group, header, hlast);
                     } else {
                         group.add(header.alias || header.name, header, {
@@ -847,6 +847,11 @@ const SP_KEYWORD_BOOL = [ 'on', 'off' ];
 const SP_KEYWORD_SPECIAL = [ 'static' ];
 const SP_KEYWORD_EQ = [ 'above', 'below', 'or', 'equal', 'default' ];
 
+const SP_KEYWORD_INTERNAL = {
+    'undefined': undefined,
+    'null': null
+};
+
 const SP_KEYWORD_MAPPING = {
     'Level': p => p.Level,
     'Strength': p => p.Strength.Total,
@@ -932,8 +937,6 @@ const SP_KEYWORD_MAPPING = {
     'Aura': p => p.Toilet.Aura
 };
 
-const SP_KEYWORD_MAPPING_KEYS = Object.keys(SP_KEYWORD_MAPPING);
-
 const SP_KEYWORD_EQ_MAP = {
     'above or equal': 'ae',
     'below or equal': 'be',
@@ -984,12 +987,18 @@ const AST_OPERATORS = {
     '||': (a, b) => a || b,
     '&&': (a, b) => a && b,
     '?': (a, b, c) => a ? b : c,
-    'min': (a) => Math.min(... a),
-    'max': (a) => Math.max(... a),
+    'u-': (a) => -a
+};
+
+const AST_FUNCTIONS = {
     'trunc': (a) => Math.trunc(a),
     'ceil': (a) => Math.ceil(a),
     'floor': (a) => Math.floor(a),
-    'u-': (a) => -a
+};
+
+const AST_FUNCTIONS_VAR = {
+    'min': (a) => Math.min(... a),
+    'max': (a) => Math.max(... a)
 };
 
 class AST {
@@ -1017,7 +1026,7 @@ class AST {
             var v;
             if (this.peek() == '(') {
                 v = this.evalBracketExpression();
-            } else if (['trunc', 'ceil', 'floor', 'min', 'max'].includes(this.peek())) {
+            } else if (AST_FUNCTIONS[this.peek()] || AST_FUNCTIONS_VAR[this.peek()]) {
                 v = this.getVal();
             } else {
                 v = this.get();
@@ -1027,12 +1036,12 @@ class AST {
                 a: v,
                 op: AST_OPERATORS['u-']
             };
-        } else if (['trunc', 'ceil', 'floor'].includes(val)) {
+        } else if (AST_FUNCTIONS[val]) {
             return {
                 a: this.evalBracketExpression(),
-                op: AST_OPERATORS[val]
+                op: AST_FUNCTIONS[val]
             };
-        } else if (['min', 'max'].includes(val)) {
+        } else if (AST_FUNCTIONS_VAR[val]) {
             var a = [];
             this.get();
 
@@ -1050,7 +1059,7 @@ class AST {
             this.get();
             return {
                 a: a,
-                op: AST_OPERATORS[val]
+                op: AST_FUNCTIONS_VAR[val]
             };
         } else {
             return val;
@@ -1234,7 +1243,9 @@ class AST {
                 return node.op();
             }
         } else if (typeof(node) == 'string') {
-            if (SP_KEYWORD_MAPPING[node]) {
+            if (SP_KEYWORD_INTERNAL[node]) {
+                return SP_KEYWORD_INTERNAL[node];
+            } else if (SP_KEYWORD_MAPPING[node]) {
                 return SP_KEYWORD_MAPPING[node](p);
             } else {
                 return getObjectAt(p, node);
@@ -1303,9 +1314,6 @@ const SettingsParser = (function () {
                 if (SP_KEYWORD_HEADER == a && SP_KEYWORD_HEADER_RESERVED.includes(b)) {
                     content.push(`<span class="ta-keyword">${ a }</span>&nbsp;<span class="ta-reserved">${ b.replace(/ /, '&nbsp;') }</span>`);
                     continue;
-                } else if (SP_KEYWORD_PARAMETER_OP.includes(a) && SP_KEYWORD_MAPPING_KEYS.includes(b)) {
-                    content.push(`<span class="ta-keyword">${ a }</span>&nbsp;<span class="ta-reserved">${ b.replace(/ /, '&nbsp;') }</span>`);
-                    continue;
                 }
 
                 for (var i = 0, l = words.length; i < l; i++) {
@@ -1355,7 +1363,7 @@ const SettingsParser = (function () {
                                 if (isNaN(v)) {
                                     return undefined;
                                 } else {
-                                    return v % 1 != 0 ? v.toFixed(2) : v;
+                                    return Number.isInteger(v) ? v : v.toFixed(2);
                                 }
                             };
                         } else {
