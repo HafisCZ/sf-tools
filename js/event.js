@@ -936,7 +936,7 @@ Handle.bind(EVT_INIT, function () {
             <a class="item" data-tab="tab2">Rules</a>
             <a class="item" data-tab="tab3">Categories</a>
             <a class="item" data-tab="tab4">Headers</a>
-            <a class="item" data-tab="tab5">Headers II</a>
+            <a class="item" data-tab="tab5">Custom</a>
         </div>
         <div class="ui active tab basic segment padding-none" data-tab="tab0">
             <div>
@@ -955,6 +955,12 @@ Handle.bind(EVT_INIT, function () {
                     </div>
                     <div class="eleven wide column">
                         Show index at the start of each row. If you want the index to stay static while sorting, use value <code>static</code>.
+                    </div>
+                    <div class="five wide column">
+                        <code>outdated</code>
+                    </div>
+                    <div class="eleven wide column">
+                        Displays outdated rows in red color. This option is enabled by default.
                     </div>
                 </div>
             </div>
@@ -1076,10 +1082,10 @@ Handle.bind(EVT_INIT, function () {
             </br>
             <div class="ui css-compact-grid grid">
                 <div class="five wide column">
-                    <code>path PATH</code>
+                    <code>expr EXPRESSION</code>
                 </div>
                 <div class="eleven wide column">
-                    This option is required for custom headers and contains the path to the value you want to show.
+                    This option is required for custom headers and contains the expression of the value you want to show.
                 </div>
                 <div class="five wide column">
                     <code>flip BOOL</code>
@@ -1147,15 +1153,74 @@ Handle.bind(EVT_INIT, function () {
             These headers are reserved and already contain a path. If you want to have a custom header with the same name as a reserved header, you will have to use different name and then rename them using the <code>alias</code> option.</br>
             </br>
             <div class="ui three column css-compact-grid grid">
-                ${ SP_KEYWORD_HEADER_RESERVED.slice(0, 69).map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
+                ${ SP_KEYWORD_HEADER_RESERVED.map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
             </div>
         </div>
         <div class="ui tab basic segment padding-none" data-tab="tab5">
-            <b>Predefined headers</b>:</br>
-            These headers are reserved and already contain a path. If you want to have a custom header with the same name as a reserved header, you will have to use different name and then rename them using the <code>alias</code> option.</br>
+            <b>Custom headers</b>:</br>
+            You can create your own header by specifying expression using the <code>expr</code> option.</br>
             </br>
-            <div class="ui three column css-compact-grid grid">
-                ${ SP_KEYWORD_HEADER_RESERVED.slice(69).map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
+            <div>
+            You can use most common mathematical operators and functions to build a expression that suits your needs. Furthermore, the expressions accept any constants, including any of reserved header names or custom paths.</br>
+            </div>
+            </br>
+            <b>Available operators and functions:</b></br>
+            </br>
+            <div class="ui text-center css-compact-grid grid">
+                <div class="four wide column">
+                    <code>( a )</code>
+                </div>
+                <div class="four wide column">
+                    <code>a + b</code>
+                </div>
+                <div class="four wide column">
+                    <code>a - b</code>
+                </div>
+                <div class="four wide column">
+                    <code>a * b</code>
+                </div>
+                <div class="four wide column">
+                    <code>a / b</code>
+                </div>
+                <div class="four wide column">
+                    <code>a && b</code>
+                </div>
+                <div class="four wide column">
+                    <code>a || b</code>
+                </div>
+                <div class="four wide column">
+                    <code>a ? b : c</code>
+                </div>
+                <div class="four wide column">
+                    <code>a > b</code>
+                </div>
+                <div class="four wide column">
+                    <code>a >= b</code>
+                </div>
+                <div class="four wide column">
+                    <code>a < b</code>
+                </div>
+                <div class="four wide column">
+                    <code>a <= b</code>
+                </div>
+                <div class="four wide column">
+                    <code>a == b</code>
+                </div>
+                <div class="four wide column">
+                    <code>min(a, b)</code>
+                </div>
+                <div class="four wide column">
+                    <code>max(a, b)</code>
+                </div>
+                <div class="four wide column">
+                    <code>ceil(a)</code>
+                </div>
+                <div class="four wide column">
+                    <code>floor(a)</code>
+                </div>
+                <div class="four wide column">
+                    <code>trunc(a)</code>
+                </div>
             </div>
         </div>
     `);

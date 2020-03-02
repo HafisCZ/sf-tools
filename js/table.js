@@ -836,9 +836,9 @@ const SP_KEYWORD_HEADER = 'header';
 const SP_KEYWORD_GLOBAL_BOOL = [ 'members', 'indexed', 'outdated' ];
 const SP_KEYWORD_PARAMETER_BOOL = [ 'difference', 'percentage', 'hydra', 'flip', 'visible', 'brackets', 'statistics', 'maximum', 'members', 'indexed', 'grail', 'outdated' ];
 const SP_KEYWORD_PARAMETER_NUMBER = [ 'width' ];
-const SP_KEYWORD_PARAMETER_STRING = [ 'path', 'alias', 'add', 'subtract', 'multiply', 'divide', 'expr' ];
+const SP_KEYWORD_PARAMETER_STRING = [ 'alias', 'expr' ];
 const SP_KEYWORD_PARAMETER_ARRAY = [ 'color', 'value' ];
-const SP_KEYWORD_PARAMETER_OP = [ 'path', 'add', 'subtract', 'multiply', 'divide', 'expr' ];
+const SP_KEYWORD_PARAMETER_OP = [ 'expr' ];
 
 // Reserved values
 const SP_KEYWORD_CATEGORY_RESERVED = Object.keys(ReservedCategories);
@@ -982,12 +982,18 @@ const AST_OPERATORS = {
     '>=': (a, b) => a >= b,
     '<=': (a, b) => a <= b,
     '||': (a, b) => a || b,
-    '&&': (a, b) => a && b
+    '&&': (a, b) => a && b,
+    '?': (a, b, c) => a ? b : c,
+    'min': (a) => Math.min(... a),
+    'max': (a) => Math.max(... a),
+    'trunc': (a) => Math.trunc(a),
+    'ceil': (a) => Math.ceil(a),
+    'floor': (a) => Math.floor(a)
 };
 
 class AST {
     constructor (string) {
-        this.tokens = string.split(/(\|\||\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:)/).map(token => token.trim()).filter(token => token.length);
+        this.tokens = string.split(/(\|\||\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\,)/).map(token => token.trim()).filter(token => token.length);
         this.expression = this.evalExpression();
     }
 
@@ -1008,6 +1014,31 @@ class AST {
                 b: this.get(),
                 op: AST_OPERATORS['*']
             }
+        } else if (['trunc', 'ceil', 'floor'].includes(val)) {
+            val = {
+                a: this.evalBracketExpression(),
+                op: AST_OPERATORS[val]
+            };
+        } else if (['min', 'max'].includes(val)) {
+            var a = [];
+            this.get();
+
+            a.push(this.evalExpression());
+            while ([','].includes(this.peek())) {
+                this.get();
+
+                if (this.peek() == '(') {
+                    a.push(this.evalBracketExpression());
+                } else {
+                    a.push(this.evalExpression());
+                }
+            }
+
+            this.get();
+            val = {
+                a: a,
+                op: AST_OPERATORS[val]
+            };
         }
 
         return val;
@@ -1146,9 +1177,7 @@ class AST {
                     a: left,
                     b: tr,
                     c: fl,
-                    op: (a, b, c) => {
-                        return a ? b : c;
-                    }
+                    op: AST_OPERATORS['?']
                 }
             }
         }
@@ -1156,12 +1185,22 @@ class AST {
         return left;
     }
 
+    isValid () {
+        return this.tokens.length == 0;
+    }
+
     toString (node = this.expression) {
         if (typeof(node) == 'object') {
             if (node.c != undefined) {
-                return `(${ this.toString(node.a) } ? ${ this.toString(node.b) } : ${ this.toString(node.c) })`;
+                return `?(${ this.toString(node.a) }, ${ this.toString(node.b) }, ${ this.toString(node.c) })`;
+            } else if (node.b != undefined) {
+                return `${ node.op.name }(${ this.toString(node.a) }, ${ this.toString(node.b) })`;
+            } else if (Array.isArray(node.a)) {
+                return `${ node.op.name }(${ node.a.map(x => this.toString(x)).join(', ') })`
+            } else if (node.a != undefined) {
+                return `${ node.op.name }(${ this.toString(node.a) })`;
             } else {
-                return `(${ this.toString(node.a) } ${ node.op.name } ${ this.toString(node.b) })`;
+                return `${ node.op.name }()`
             }
         } else {
             return `${ node }`;
@@ -1170,7 +1209,17 @@ class AST {
 
     eval (p, node = this.expression) {
         if (typeof(node) == 'object') {
-            return node.op(this.eval(p, node.a), this.eval(p, node.b), node.c != undefined ? this.eval(p, node.c) : undefined);
+            if (node.c != undefined) {
+                return node.op(this.eval(p, node.a), this.eval(p, node.b), this.eval(p, node.c));
+            } else if (node.b != undefined) {
+                return node.op(this.eval(p, node.a), this.eval(p, node.b));
+            } else if (Array.isArray(node.a)) {
+                return node.op(node.a.map(x => this.eval(p, x)));
+            } else if (node.a != undefined) {
+                return node.op(this.eval(p, node.a));
+            } else {
+                return node.op();
+            }
         } else if (typeof(node) == 'string') {
             if (SP_KEYWORD_MAPPING[node]) {
                 return SP_KEYWORD_MAPPING[node](p);
@@ -1281,38 +1330,23 @@ const SettingsParser = (function () {
 
         pushHeader () {
             if (this.h) {
-                if ((SP_KEYWORD_HEADER_RESERVED.includes(this.h.name) || this.h.path != undefined || this.h.expr != undefined) && this.c) {
+                if ((SP_KEYWORD_HEADER_RESERVED.includes(this.h.name) || this.h.expr != undefined) && this.c) {
                     merge(this.h, this.c);
                     merge(this.h, this.g);
 
                     if (this.h.expr != undefined) {
-                        try {
-                            var ast = new AST(this.h.expr);
-                            this.h.ptr = (p) => {
+                        var ast = new AST(this.h.expr);
+                        if (ast.isValid()) {
+                            this.h.ptr = p => {
                                 var v = ast.eval(p);
-                                return isNaN(v) ? undefined : (v % 1 != 0 ? v.toFixed(2) : v);
-                            }
-                        } catch (ex) {
-                            this.h.ptr = (p) => undefined;
-                        }
-                    } else if (this.h.path != undefined) {
-                        var h = this.h.path;
-                        var o = this.h.op;
-
-                        if (this.h.op) {
-                            this.h.ptr = (p) => {
-                                var base = h(p);
-                                for (var [ k, op ] of o) {
-                                    var v = typeof(op) == 'function' ? op(p) : op;
-                                    if (k == 'add') base += v;
-                                    else if (k == 'subtract') base -= v;
-                                    else if (k == 'multiply') base *= v;
-                                    else if (k == 'divide') base /= v;
+                                if (isNaN(v)) {
+                                    return undefined;
+                                } else {
+                                    return v % 1 != 0 ? v.toFixed(2) : v;
                                 }
-                                return (base % 1 != 0 ? base.toFixed(2) : base);
                             };
                         } else {
-                            this.h.ptr = h;
+                            this.h.ptr = p => undefined;
                         }
                     }
 
@@ -1398,21 +1432,8 @@ const SettingsParser = (function () {
         }
 
         addOpParam (param, arg) {
-            if (param == 'expr') {
-                this.addRawParam('expr', arg);
-            } else {
-                var farg;
-                if (isNaN(arg)) {
-                    farg = SP_KEYWORD_MAPPING[arg] || (p => getObjectAt(p, arg));
-                } else {
-                    farg = Number(arg);
-                }
-
-                if (param == 'path') {
-                    this.addRawParam('path', typeof(farg) == 'function' ? farg : () => farg);
-                } else {
-                    this.addArrayParam('op', [ param, farg ]);
-                }
+            if (this.h) {
+                this.h[param] = arg;
             }
         }
 
