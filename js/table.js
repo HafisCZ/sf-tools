@@ -988,13 +988,14 @@ const AST_OPERATORS = {
     'max': (a) => Math.max(... a),
     'trunc': (a) => Math.trunc(a),
     'ceil': (a) => Math.ceil(a),
-    'floor': (a) => Math.floor(a)
+    'floor': (a) => Math.floor(a),
+    'u-': (a) => -a
 };
 
 class AST {
     constructor (string) {
         this.tokens = string.split(/(\|\||\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\,)/).map(token => token.trim()).filter(token => token.length);
-        this.expression = this.evalExpression();
+        this.root = this.evalExpression();
     }
 
     peek (i) {
@@ -1006,16 +1007,28 @@ class AST {
         return isNaN(v) ? v : Number(v);
     }
 
+    getRoot () {
+        return this.root;
+    }
+
     getVal () {
         var val = this.get();
-        if (['+', '-'].includes(val)) {
-            val = {
-                a: val == '+' ? 1 : -1,
-                b: this.get(),
-                op: AST_OPERATORS['*']
+        if (val == '-') {
+            var v;
+            if (this.peek() == '(') {
+                v = this.evalBracketExpression();
+            } else if (['trunc', 'ceil', 'floor', 'min', 'max'].includes(this.peek())) {
+                v = this.getVal();
+            } else {
+                v = this.get();
             }
+
+            return {
+                a: v,
+                op: AST_OPERATORS['u-']
+            };
         } else if (['trunc', 'ceil', 'floor'].includes(val)) {
-            val = {
+            return {
                 a: this.evalBracketExpression(),
                 op: AST_OPERATORS[val]
             };
@@ -1035,13 +1048,13 @@ class AST {
             }
 
             this.get();
-            val = {
+            return {
                 a: a,
                 op: AST_OPERATORS[val]
             };
+        } else {
+            return val;
         }
-
-        return val;
     }
 
     evalBracketExpression () {
@@ -1065,7 +1078,7 @@ class AST {
             if (this.peek() == '(') {
                 right = this.evalBracketExpression();
             } else {
-                right = this.get();
+                right = this.getVal();
             }
 
             left = {
@@ -1189,13 +1202,13 @@ class AST {
         return this.tokens.length == 0;
     }
 
-    toString (node = this.expression) {
+    toString (node = this.root) {
         if (typeof(node) == 'object') {
             if (node.c != undefined) {
                 return `?(${ this.toString(node.a) }, ${ this.toString(node.b) }, ${ this.toString(node.c) })`;
             } else if (node.b != undefined) {
                 return `${ node.op.name }(${ this.toString(node.a) }, ${ this.toString(node.b) })`;
-            } else if (Array.isArray(node.a)) {
+            } else if (node.a != undefined && Array.isArray(node.a)) {
                 return `${ node.op.name }(${ node.a.map(x => this.toString(x)).join(', ') })`
             } else if (node.a != undefined) {
                 return `${ node.op.name }(${ this.toString(node.a) })`;
@@ -1207,13 +1220,13 @@ class AST {
         }
     }
 
-    eval (p, node = this.expression) {
+    eval (p, node = this.root) {
         if (typeof(node) == 'object') {
             if (node.c != undefined) {
                 return node.op(this.eval(p, node.a), this.eval(p, node.b), this.eval(p, node.c));
             } else if (node.b != undefined) {
                 return node.op(this.eval(p, node.a), this.eval(p, node.b));
-            } else if (Array.isArray(node.a)) {
+            } else if (node.a != undefined && Array.isArray(node.a)) {
                 return node.op(node.a.map(x => this.eval(p, x)));
             } else if (node.a != undefined) {
                 return node.op(this.eval(p, node.a));
