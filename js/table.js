@@ -1356,7 +1356,7 @@ const SettingsCommands = [
     }),
     // Local
     // value - Add default value
-    new SettingsCommand(/^(value) (default) (@?\w+[\w ]*)$/, function (root, string) {
+    new SettingsCommand(/^(value) (default) (@?\S+[\S ]*)$/, function (root, string) {
         var [ , key, condition, a ] = this.match(string);
         var a = (a[0] == '@' ? SettingsConstants[a.slice(1)] : a);
 
@@ -1398,7 +1398,7 @@ const SettingsCommands = [
     }),
     // Local
     // value - Add value based on condition
-    new SettingsCommand(/^(value) (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?\w+) (@?\w+[\w ]*)$/, function (root, string) {
+    new SettingsCommand(/^(value) (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?\w+) (@?\S+[\S ]*)$/, function (root, string) {
         var [ , key, condition, reference, a ] = this.match(string);
         var reference = (reference[0] == '@' ? SettingsConstants[reference.slice(1)] : (isNaN(reference) ? undefined : Number(reference)));
         var a = (a[0] == '@' ? SettingsConstants[a.slice(1)] : a);
