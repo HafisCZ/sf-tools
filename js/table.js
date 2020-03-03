@@ -446,23 +446,50 @@ class Table {
                         group.add(header.alias || header.name, header, {
                             width: 100
                         }, cell => {
-                            var a = header.expr(cell.player);
-                            if (a == undefined) return CellGenerator.Plain('?', hlast);
-                            var b = header.expr(cell.compare);
-                            var c = header.flip ? (b - a) : (a - b);
-                            return CellGenerator.Cell(CompareEval.evaluate(a, header.value) || a + (header.difference ? CellGenerator.Difference(Number.isInteger(c) ? c : c.toFixed(2), header.brackets) : ''), CompareEval.evaluate(a, header.color), '', hlast);
+                            var value = header.expr(cell.player);
+                            if (value == undefined) {
+                                return CellGenerator.Plain('?', hlast);
+                            }
+
+                            var reference = header.difference ? header.expr(cell.compare) : '';
+                            if (reference) {
+                                reference = header.flip ? (reference - value) : (value - reference);
+                                reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
+                            }
+
+                            var color = CompareEval.evaluate(value, header.color);
+                            var value = CompareEval.evaluate(value, header.value) || value;
+
+                            return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast);
                         }, cell => {
-                            var aa = cell.players.map(p => header.expr(p.player)).filter(x => x != undefined);
-                            var bb = cell.players.map(p => header.expr(p.compare)).filter(x => x != undefined);
-                            if (!aa.length || !bb.length) return CellGenerator.Plain('?');
-                            var a = cell.operation(aa);
-                            var b = cell.operation(bb);
-                            var c = header.flip ? (b - a) : (a - b);
-                            return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(c, header.brackets) : ''), '', CompareEval.evaluate(a, header.color), false);
+                            var value = cell.players.map(p => header.expr(p.player)).filter(x => x != undefined);
+                            if (value.length == 0) {
+                                return CellGenerator.Plain('?');
+                            }
+
+                            value = cell.operation(value);
+
+                            var reference = header.difference ? cell.players.map(p => header.expr(p.compare)).filter(x => x != undefined) : '';
+                            if (reference && reference.length) {
+                                reference = cell.operation(reference);
+                                reference = header.flip ? (reference - value) : (value - reference);
+                                reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
+                            }
+
+                            var color = CompareEval.evaluate(value, header.color);
+                            var value = CompareEval.evaluate(value, header.value) || value;
+
+                            return CellGenerator.Cell(value + reference, '', color);
                         }, cell => {
-                            var a = header.expr(cell);
-                            if (a == undefined) return CellGenerator.Plain('?', hlast);
-                            return CellGenerator.Cell(CompareEval.evaluate(a, header.value) || a, CompareEval.evaluate(a, header.color), '', hlast);
+                            var value = header.expr(cell);
+                            if (value == undefined) {
+                                return CellGenerator.Plain('?', hlast);
+                            }
+
+                            var color = CompareEval.evaluate(value, header.color);
+                            var value = CompareEval.evaluate(value, header.value) || value;
+
+                            return CellGenerator.Cell(value, color, header.visible ? '' : color, hlast);
                         }, header.expr);
                     }
                 });
@@ -574,7 +601,7 @@ class Table {
                 </tr>
             </thead>
             <tbody>
-                ${ join(players, (r, i) => `<tr class="${ r.hidden ? 'css-entry-hidden' : '' }">${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest || !this.root.outdated ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }" data-timestamp="${ r.player.Timestamp }">${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`, 0, this.root.performance ? 500 : undefined) }
+                ${ join(players, (r, i) => `<tr class="${ r.hidden ? 'css-entry-hidden' : '' }">${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest || !this.root.outdated ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }" data-timestamp="${ r.player.Timestamp }">${ r.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`, 0, this.root.performance ? 500 : undefined) }
             </tbody>
         `, 100 + 250 + this.config.reduce((a, b) => a + b.width, 0) + (this.root.indexed ? 50 : 0)];
     }
@@ -638,7 +665,7 @@ class Table {
                 </tr>
             </thead>
             <tbody>
-                ${ join(players, (r, i) => `<tr>${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td class="border-right-thin clickable" data-player="${ r.player.Identifier }">${ r.player.Name }</td>${ join(flat, h => h.generators.cell(r)) }</tr>`) }
+                ${ join(players, (r, i) => `<tr>${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td class="border-right-thin clickable" data-player="${ r.player.Identifier }">${ r.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ r.player.Name }</td>${ join(flat, h => h.generators.cell(r)) }</tr>`) }
         `;
 
         // Add statistics
@@ -816,7 +843,7 @@ const CompareEval = {
 
     // Evaluation
     evaluate (val, rules) {
-        var def = null;
+        var def = undefined;
         for (var [ eq, ref, out ] of rules || []) {
             if (eq == 'd') {
                 def = out;
@@ -1516,8 +1543,9 @@ const SettingsParser = new (class {
         this.currentHeader = null;
 
         this.globals = {};
-        this.shared = {};
-
+        this.shared = {
+            visible: true
+        };
         this.categoryShared = {};
     }
 
