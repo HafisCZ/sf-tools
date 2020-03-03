@@ -18,6 +18,16 @@ function setEnabled (element) {
     element.text('Enabled').addClass('active');
 }
 
+function getCSSColor(string) {
+    var style = new Option().style;
+    style.color = string;
+    if (style.color == '') {
+        style.color = `#${ string }`;
+    }
+
+    return style.color;
+}
+
 // Set toggle button to disabled state
 function setDisabled (element) {
     element.text('Disabled').removeClass('active');
@@ -218,9 +228,9 @@ function setObjectAt (obj, path, val) {
 function download(e,d){let o=document.createElement("a");o.download=e,o.href=URL.createObjectURL(d),document.body.appendChild(o),o.click(),URL.revokeObjectURL(o.href),document.body.removeChild(o)}
 
 // Fast join array to string
-function join (a, c) {
+function join (a, c, b, m) {
     var r = '';
-    for (var i = 0, l = a.length; i < l; ++i) r += c(a[i], i, a);
+    for (var i = (b != undefined ? b : 0), l = m == undefined ? a.length : Math.min(a.length, m); i < l; ++i) r += c(a[i], i, a);
     return r;
 }
 

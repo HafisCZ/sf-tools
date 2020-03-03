@@ -440,30 +440,30 @@ class Table {
                 category.h.forEach((header, hi, ha) => {
                     var hlast = (!glast && hi == ha.length - 1) || (hi != ha.length - 1 && ha[hi + 1].name == 'Awards') || (hi != ha.length - 1 && header.name == 'Awards');
 
-                    if (!header.ptr && ReservedHeaders[header.name]) {
+                    if (!header.expr && ReservedHeaders[header.name]) {
                         ReservedHeaders[header.name](group, header, hlast);
                     } else {
                         group.add(header.alias || header.name, header, {
                             width: 100
                         }, cell => {
-                            var a = header.ptr(cell.player);
+                            var a = header.expr(cell.player);
                             if (a == undefined) return CellGenerator.Plain('?', hlast);
-                            var b = header.ptr(cell.compare);
+                            var b = header.expr(cell.compare);
                             var c = header.flip ? (b - a) : (a - b);
                             return CellGenerator.Cell(CompareEval.evaluate(a, header.value) || a + (header.difference ? CellGenerator.Difference(Number.isInteger(c) ? c : c.toFixed(2), header.brackets) : ''), CompareEval.evaluate(a, header.color), '', hlast);
                         }, cell => {
-                            var aa = cell.players.map(p => header.ptr(p.player)).filter(x => x != undefined);
-                            var bb = cell.players.map(p => header.ptr(p.compare)).filter(x => x != undefined);
+                            var aa = cell.players.map(p => header.expr(p.player)).filter(x => x != undefined);
+                            var bb = cell.players.map(p => header.expr(p.compare)).filter(x => x != undefined);
                             if (!aa.length || !bb.length) return CellGenerator.Plain('?');
                             var a = cell.operation(aa);
                             var b = cell.operation(bb);
                             var c = header.flip ? (b - a) : (a - b);
                             return CellGenerator.Cell(a + (header.difference ? CellGenerator.Difference(c, header.brackets) : ''), '', CompareEval.evaluate(a, header.color), false);
                         }, cell => {
-                            var a = header.ptr(cell);
+                            var a = header.expr(cell);
                             if (a == undefined) return CellGenerator.Plain('?', hlast);
                             return CellGenerator.Cell(CompareEval.evaluate(a, header.value) || a, CompareEval.evaluate(a, header.color), '', hlast);
-                        }, header.ptr);
+                        }, header.expr);
                     }
                 });
             }
@@ -574,7 +574,7 @@ class Table {
                 </tr>
             </thead>
             <tbody>
-                ${ join(players, (r, i) => `<tr class="${ r.hidden ? 'css-entry-hidden' : '' }">${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest || !this.root.outdated ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }" data-timestamp="${ r.player.Timestamp }">${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`) }
+                ${ join(players, (r, i) => `<tr class="${ r.hidden ? 'css-entry-hidden' : '' }">${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest || !this.root.outdated ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }" data-timestamp="${ r.player.Timestamp }">${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`, 0, this.root.performance ? 500 : undefined) }
             </tbody>
         `, 100 + 250 + this.config.reduce((a, b) => a + b.width, 0) + (this.root.indexed ? 50 : 0)];
     }
@@ -794,7 +794,7 @@ class Settings {
 
     getEntry (name) {
         for (var i = 0, c; c = this.root.c[i]; i++) {
-            if (c.name == name && SP_KEYWORD_CATEGORY_RESERVED.includes(c.name)) return c;
+            if (c.name == name && ReservedCategories[c.name]) return c;
             else if (!c.h) continue;
             else for (var j = 0, h; h = c.h[j]; j++) if (h.name == name) return h;
         }
@@ -827,25 +827,6 @@ const CompareEval = {
         return def || '';
     }
 }
-
-// Control markers
-const SP_KEYWORD_CATEGORY = 'category';
-const SP_KEYWORD_HEADER = 'header';
-
-// Parameters
-const SP_KEYWORD_GLOBAL_BOOL = [ 'members', 'indexed', 'outdated' ];
-const SP_KEYWORD_PARAMETER_BOOL = [ 'difference', 'percentage', 'hydra', 'flip', 'visible', 'brackets', 'statistics', 'maximum', 'members', 'indexed', 'grail', 'outdated' ];
-const SP_KEYWORD_PARAMETER_NUMBER = [ 'width' ];
-const SP_KEYWORD_PARAMETER_STRING = [ 'alias', 'expr' ];
-const SP_KEYWORD_PARAMETER_ARRAY = [ 'color', 'value' ];
-const SP_KEYWORD_PARAMETER_OP = [ 'expr' ];
-
-// Reserved values
-const SP_KEYWORD_CATEGORY_RESERVED = Object.keys(ReservedCategories);
-const SP_KEYWORD_HEADER_RESERVED = Object.keys(ReservedHeaders);
-const SP_KEYWORD_BOOL = [ 'on', 'off' ];
-const SP_KEYWORD_SPECIAL = [ 'static' ];
-const SP_KEYWORD_EQ = [ 'above', 'below', 'or', 'equal', 'default' ];
 
 const SP_KEYWORD_INTERNAL = {
     'undefined': undefined,
@@ -935,43 +916,6 @@ const SP_KEYWORD_MAPPING = {
     'Timestamp': p => p.Timestamp,
     'Guild Joined': p => p.Group.Joined,
     'Aura': p => p.Toilet.Aura
-};
-
-const SP_KEYWORD_EQ_MAP = {
-    'above or equal': 'ae',
-    'below or equal': 'be',
-    'equal or above': 'ae',
-    'equal or below': 'be',
-    'above': 'a',
-    'below': 'b',
-    'equal': 'e',
-    'default': 'd'
-};
-
-const SP_KEYWORD_EQ_REGEX = new RegExp(Object.keys(SP_KEYWORD_EQ_MAP).join('|'), 'gi');
-
-const SP_KEYWORD_CONSTANTS = {
-    'green': '#00c851',
-    'orange': '#ffbb33',
-    'red': '#ff3547',
-    '15min': '0',
-    '1hour': '1',
-    '12hours': '2',
-    '1day': '3',
-    '3days': '4',
-    '7days': '5',
-    '21days': '6',
-    'mount10': '1',
-    'mount20': '2',
-    'mount30': '3',
-    'mount50': '4',
-    'none': '0',
-    'warrior': '1',
-    'mage': '2',
-    'scout': '3',
-    'assassin': '4',
-    'battlemage': '5',
-    'berserker': '6'
 };
 
 const AST_OPERATORS = {
@@ -1243,7 +1187,9 @@ class AST {
                 return node.op();
             }
         } else if (typeof(node) == 'string') {
-            if (SP_KEYWORD_INTERNAL[node]) {
+            if (node[0] == '@') {
+                return SettingsConstants[node.slice(1)]
+            } else if (SP_KEYWORD_INTERNAL[node]) {
                 return SP_KEYWORD_INTERNAL[node];
             } else if (SP_KEYWORD_MAPPING[node]) {
                 return SP_KEYWORD_MAPPING[node](p);
@@ -1256,252 +1202,400 @@ class AST {
     }
 }
 
-// Setting parser
-const SettingsParser = (function () {
-    // Helper functions
-    function split3 (text, delim) {
-        var i = text.indexOf(delim);
-        if (i == -1) {
-            return [ text ];
+class SettingsCommand {
+    constructor (regexp, parse, format) {
+        this.regexp = regexp;
+        this.match = string => string.match(this.regexp);
+        this.parse = parse;
+        this.format = format;
+    }
+
+    isValid (string) {
+        return this.regexp.test(string);
+    }
+};
+
+const ARG_MAP = {
+    'off': 0,
+    'on': 1,
+    'static': 2,
+    'above or equal': 'ae',
+    'below or equal': 'be',
+    'equal or above': 'ae',
+    'equal or below': 'be',
+    'above': 'a',
+    'below': 'b',
+    'equal': 'e',
+    'default': 'd'
+};
+
+const SFormat = {
+    Normal: string => string.replace(/ /g, '&nbsp;'),
+    Keyword: string => `<span class="ta-keyword">${ string.replace(/ /g, '&nbsp;') }</span>`,
+    Color: (string, color = string) => `<span class="ta-color" style="color: ${ color };">${ string.replace(/ /g, '&nbsp;') }</span>`,
+    Comment: string => `<span class="ta-comment">${ string.replace(/ /g, '&nbsp;') }</span>`,
+    Constant: string => `<span class="ta-constant">${ string.replace(/ /g, '&nbsp;') }</span>`,
+    Reserved: string => `<span class="ta-reserved">${ string.replace(/ /g, '&nbsp;') }</span>`,
+    Error: string => `<span class="ta-error">${ string.replace(/ /g, '&nbsp;') }</span>`,
+    Bool: (string, bool = string) => `<span class="ta-boolean-${ bool }">${ string.replace(/ /g, '&nbsp;') }</span>`
+};
+
+const SettingsCommands = [
+    // Create new category
+    new SettingsCommand(/^(category) (\w+[\w ]*)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.createCategory(a);
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ ReservedCategories[a] ? SFormat.Reserved(a) : SFormat.Normal(a) }`;
+    }),
+    // Create new header
+    new SettingsCommand(/^(header) (\w+[\w ]*)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.createHeader(a);
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ ReservedHeaders[a] ? SFormat.Reserved(a) : SFormat.Normal(a) }`;
+    }),
+    // Global
+    // indexed - Show indexes in first column of the table
+    new SettingsCommand(/^(indexed) (on|off|static)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setGlobalVariable(key, ARG_MAP[a]);
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a, a == 'static' ? 'on' : a) }`;
+    }),
+    // Global
+    // members - Show member classes and changes
+    // outdated - Mark outdated entries with red text
+    new SettingsCommand(/^(members|outdated|performance) (on|off)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setGlobalVariable(key, ARG_MAP[a]);
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
+    }),
+    // Local Shared
+    // difference - Show difference between two points in time
+    // percentage - Show field as a percentage
+    // hydra - Show hydra achievement
+    // flip - Treat lower value as better
+    // visible - Show text on the background
+    // brackets - Show difference within brackets
+    // statistics - Show statistics of a column
+    // maximum - Show maximum knights based on fortress level
+    // grail - Show grail achievement
+    new SettingsCommand(/^(difference|percentage|hydra|flip|visible|brackets|statistics|maximum|grail) (on|off)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setLocalSharedVariable(key, ARG_MAP[a]);
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
+    }),
+    // Local Shared
+    // width - Width of a column
+    new SettingsCommand(/^(width) (\d+)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setLocalSharedVariable(key, Number(a));
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ a }`;
+    }),
+    // Local
+    // alias - Override name of the column
+    new SettingsCommand(/^(alias) (\w+[\w ]*)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setLocalVariable(key, a);
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ a }`;
+    }),
+    // Local
+    // expr - Set expression to the column
+    new SettingsCommand(/^(expr) (.+)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        var ast = new AST(a);
+
+        if (ast.isValid()) {
+            root.setLocalVariable(key, player => {
+                var value = ast.eval(player);
+                return isNaN(value) ? undefined : (Number.isInteger(value) ? value : value.toFixed(2));
+            });
+        }
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+    }),
+    // Local
+    // value - Add default value
+    new SettingsCommand(/^(value) (default) (@?\w+[\w ]*)$/, function (root, string) {
+        var [ , key, condition, a ] = this.match(string);
+        var a = (a[0] == '@' ? SettingsConstants[a.slice(1)] : a);
+
+        if (a != undefined) {
+            root.setLocalArrayVariable(key, ARG_MAP[condition], 0, a);
+        }
+    }, function (string) {
+        var [ , key, condition, a ] = this.match(string);
+
+        if (a[0] == '@') {
+            a = SettingsConstants[a.slice(1)] != undefined ? SFormat.Constant(a) : SFormat.Error(a);
         } else {
-            var b = text.substring(i + delim.length);
-            var j = b.indexOf(delim);
-            if (j == -1) {
-                return [ text.substring(0, i), b ];
+            a = SFormat.Normal(a);
+        }
+
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ a }`;
+    }),
+    // Local
+    // color - Add default color
+    new SettingsCommand(/^(color) (default) (@?\w+)$/, function (root, string) {
+        var [ , key, condition, a ] = this.match(string);
+        var a = (a[0] == '@' ? SettingsConstants[a.slice(1)] : a);
+
+        if (a != undefined && getCSSColor(a)) {
+            root.setLocalArrayVariable(key, ARG_MAP[condition], 0, getCSSColor(a));
+        }
+    }, function (string) {
+        var [ , key, condition, a ] = this.match(string);
+
+        if (a[0] == '@') {
+            a = SettingsConstants[a.slice(1)] != undefined ? SFormat.Constant(a) : SFormat.Error(a);
+        } else if (getCSSColor(a)) {
+            a = SFormat.Color(a, getCSSColor(a));
+        } else {
+            a = SFormat.Error(a);
+        }
+
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ a }`;
+    }),
+    // Local
+    // value - Add value based on condition
+    new SettingsCommand(/^(value) (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?\w+) (@?\w+[\w ]*)$/, function (root, string) {
+        var [ , key, condition, reference, a ] = this.match(string);
+        var reference = (reference[0] == '@' ? SettingsConstants[reference.slice(1)] : (isNaN(reference) ? undefined : Number(reference)));
+        var a = (a[0] == '@' ? SettingsConstants[a.slice(1)] : a);
+
+        if (reference != undefined && a != undefined) {
+            root.setLocalArrayVariable(key, ARG_MAP[condition], reference, a);
+        }
+    }, function (string) {
+        var [ , key, condition, reference, a ] = this.match(string);
+
+        if (reference[0] == '@') {
+            reference = SettingsConstants[reference.slice(1)] != undefined ? SFormat.Constant(reference) : SFormat.Error(reference);
+        } else {
+            reference = SFormat.Normal(reference);
+        }
+
+        if (a[0] == '@') {
+            a = SettingsConstants[a.slice(1)] != undefined ? SFormat.Constant(a) : SFormat.Error(a);
+        } else {
+            a = SFormat.Normal(a);
+        }
+
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ reference } ${ a }`;
+    }),
+    // local
+    // color - Add color based on condition
+    new SettingsCommand(/^(color) (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?\w+) (@?\w+)$/, function (root, string) {
+        var [ , key, condition, reference, a ] = this.match(string);
+        var reference = (reference[0] == '@' ? SettingsConstants[reference.slice(1)] : (isNaN(reference) ? undefined : Number(reference)));
+        var a = (a[0] == '@' ? SettingsConstants[a.slice(1)] : a);
+
+        if (reference != undefined && a != undefined && getCSSColor(a)) {
+            root.setLocalArrayVariable(key, ARG_MAP[condition], reference, getCSSColor(a));
+        }
+    }, function (string) {
+        var [ , key, condition, reference, a ] = this.match(string);
+
+        if (reference[0] == '@') {
+            reference = SettingsConstants[reference.slice(1)] != undefined ? SFormat.Constant(reference) : SFormat.Error(reference);
+        } else {
+            reference = SFormat.Normal(reference);
+        }
+
+        if (a[0] == '@') {
+            a = SettingsConstants[a.slice(1)] != undefined ? SFormat.Constant(a) : SFormat.Error(a);
+        } else if (getCSSColor(a)) {
+            a = SFormat.Color(a, getCSSColor(a));
+        } else {
+            a = SFormat.Error(a);
+        }
+
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ reference } ${ a }`;
+    })
+];
+
+const SettingsConstants = {
+    'green': '#00c851',
+    'orange': '#ffbb33',
+    'red': '#ff3547',
+    '15min': '0',
+    '1hour': '1',
+    '12hours': '2',
+    '1day': '3',
+    '3days': '4',
+    '7days': '5',
+    '21days': '6',
+    'mount10': '1',
+    'mount20': '2',
+    'mount30': '3',
+    'mount50': '4',
+    'none': '0',
+    'warrior': '1',
+    'mage': '2',
+    'scout': '3',
+    'assassin': '4',
+    'battlemage': '5',
+    'berserker': '6'
+};
+
+const SettingsParser = new (class {
+    format (string) {
+        var content = '';
+        for (var line of string.split('\n')) {
+            var comment = undefined;
+            if (line.indexOf('#') != -1) {
+                [line, comment] = line.split('#');
+            }
+
+            var trimmed = line.trim();
+            var spaces = line.match(/\s+$/);
+
+            var command = SettingsCommands.find(command => command.isValid(trimmed));
+            if (command) {
+                content += command.format(trimmed);
             } else {
-                return [ text.substring(0, i), b.substring(0, j), b.substring(j + delim.length).trim() ];
+                content += SFormat.Error(trimmed);
             }
+
+            if (spaces) {
+                content += spaces[0].replace(/ /g, '&nbsp;');
+            }
+
+            if (comment != undefined) {
+                content += SFormat.Comment(`#${ comment }`);
+            }
+
+            content += '</br>';
         }
+
+        return content;
     }
 
-    function parseArrayParameterArgument(text, color) {
-        if (text) {
-            var val = text.replace(SP_KEYWORD_EQ_REGEX, matched => SP_KEYWORD_EQ_MAP[matched]);
-            var arr, [ eq, a, b ] = arr = split3(val, ' ');
+    parse (string) {
+        this.clear();
 
-            if (arr.length == 2 && eq == 'd') {
-                if (!color || isCSSColor(a)) return [ eq, 0, a ];
-                else if (isCSSColor(`#${ a }`)) return [ eq, 0, `#${ a }` ];
-            } else if (arr.length == 3 && Object.values(SP_KEYWORD_EQ_MAP).includes(eq) && !isNaN(a)) {
-                if (!color || isCSSColor(b)) return [ eq, Number(a), b ];
-                else if (isCSSColor(`#${ b }`)) return [ eq, Number(a), `#${ b }` ];
-            } else return null;
+        for (var line of string.split('\n')) {
+            if (line.indexOf('#') != -1) {
+                [ line ] = line.split('#');
+            }
+
+            var trimmed = line.trim();
+
+            var command = SettingsCommands.find(command => command.isValid(trimmed));
+            if (command) {
+                command.parse(this, trimmed);
+            }
+        }
+
+        this.pushCategory();
+
+        return this.root;
+    }
+
+    clear () {
+        this.root = {
+            c: [],
+            outdated: true,
+            performance: true
+        };
+
+        this.currentCategory = null;
+        this.currentHeader = null;
+
+        this.globals = {};
+        this.shared = {};
+
+        this.categoryShared = {};
+    }
+
+    createHeader (name) {
+        this.pushHeader();
+        this.currentHeader = {
+            name: name
+        };
+    }
+
+    pushHeader () {
+        if (this.currentCategory && this.currentHeader && (ReservedHeaders[this.currentHeader.name] || this.currentHeader.expr)) {
+            merge(this.currentHeader, this.categoryShared);
+            merge(this.currentHeader, this.shared);
+
+            this.currentCategory.h.push(this.currentHeader);
+        }
+
+        this.currentHeader = null;
+    }
+
+    createCategory (name) {
+        this.pushCategory();
+
+        this.categoryShared = {};
+        this.currentCategory = {
+            name: name,
+            h: []
+        };
+    }
+
+    pushCategory () {
+        if (this.currentCategory) {
+            this.pushHeader();
+
+            if (ReservedCategories[this.currentCategory.name]) {
+                merge(this.currentCategory, this.shared);
+            }
+
+            this.root.c.push(this.currentCategory);
+        }
+
+        this.currentCategory = null;
+    }
+
+    setGlobalVariable (key, value) {
+        this.root[key] = value;
+    }
+
+    setLocalSharedVariable (key, value) {
+        if (this.currentHeader) {
+            this.setLocalVariable(key, value);
+        } else if (this.currentCategory && ReservedCategories[this.currentCategory.name]) {
+            this.currentCategory[key] = value;
+        } else if (this.currentCategory) {
+            this.categoryShared[key] = value;
         } else {
-            return null;
+            this.shared[key] = value;
         }
     }
 
-    // Is valid css color?
-    function isCSSColor(string) {
-        var style = new Option().style;
-        style.color = string;
-        return style.color != '';
+    setLocalVariable (key, value) {
+        var object = this.currentCategory && ReservedCategories[this.currentCategory.name] ? this.currentCategory : this.currentHeader;
+        if (object) {
+            object[key] = value;
+        }
     }
 
-    // Parser itself
-    return new (class {
-        highlight (text) {
-            var content = [];
-            for (var row of text.split('\n')) {
-                var comment = row.indexOf('#') != -1;
-                var [ wordPart, ... commentPart ] = row.split('#');
-                var words, [a, ... b] = words = wordPart.split(' ');
-
-                b = b.join(' ');
-
-                var rcontent = [];
-
-                if (SP_KEYWORD_HEADER == a && SP_KEYWORD_HEADER_RESERVED.includes(b)) {
-                    content.push(`<span class="ta-keyword">${ a }</span>&nbsp;<span class="ta-reserved">${ b.replace(/ /, '&nbsp;') }</span>`);
-                    continue;
-                }
-
-                for (var i = 0, l = words.length; i < l; i++) {
-                    var word = words[i];
-
-                    if (SP_KEYWORD_PARAMETER_ARRAY.includes(words[0]) && ((words[1] == 'default' && i == 2) || (i == 3) || (i == 5)) && (isCSSColor(word) || isCSSColor(`#${ word }`))) {
-                        if (isCSSColor(word)) rcontent.push(`<span class="ta-color" style="color: ${ word }">${ word }</span>`);
-                        else rcontent.push(`<span class="ta-color" style="color: #${ word }">${ word }</span>`);
-                    } else if (word[0] == '@' && Object.keys(SP_KEYWORD_CONSTANTS).includes(word.slice(1))) rcontent.push(`<span class="ta-constant">${ word }</span>`);
-                    else if (SP_KEYWORD_CATEGORY == words[0] && SP_KEYWORD_CATEGORY_RESERVED.includes(word)) rcontent.push(`<span class="ta-reserved">${ word }</span>`);
-                    else if (SP_KEYWORD_HEADER == words[0] && SP_KEYWORD_HEADER_RESERVED.includes(word)) rcontent.push(`<span class="ta-reserved">${ word }</span>`);
-                    else if (SP_KEYWORD_PARAMETER_BOOL.includes(word)) rcontent.push(`<span class="ta-keyword">${ word }</span>`);
-                    else if (SP_KEYWORD_GLOBAL_BOOL.includes(word)) rcontent.push(`<span class="ta-keyword">${ word }</span>`);
-                    else if (SP_KEYWORD_PARAMETER_NUMBER.includes(word)) rcontent.push(`<span class="ta-keyword">${ word }</span>`);
-                    else if (SP_KEYWORD_PARAMETER_STRING.includes(word)) rcontent.push(`<span class="ta-keyword">${ word }</span>`);
-                    else if (SP_KEYWORD_PARAMETER_ARRAY.includes(word)) rcontent.push(`<span class="ta-keyword">${ word }</span>`);
-                    else if (SP_KEYWORD_PARAMETER_BOOL.includes(words[0]) && SP_KEYWORD_BOOL.includes(word)) rcontent.push(`<span class="ta-boolean-${ word }">${ word }</span>`);
-                    else if (words[0] == 'indexed' && SP_KEYWORD_SPECIAL == word) rcontent.push(`<span class="ta-boolean-on">static</span>`);
-                    else if (SP_KEYWORD_PARAMETER_ARRAY.includes(words[0]) && SP_KEYWORD_EQ.includes(word)) rcontent.push(`<span class="ta-constant">${ word }</span>`);
-                    else if (SP_KEYWORD_CATEGORY == word) rcontent.push(`<span class="ta-keyword">${ word }</span>`);
-                    else if (SP_KEYWORD_HEADER == word) rcontent.push(`<span class="ta-keyword">${ word }</span>`);
-                    else rcontent.push(word);
-                }
-
-                if (comment) {
-                    content.push(`${ rcontent.join('&nbsp;') }<span class="ta-comment">#${ commentPart }</span>`);
-                    continue;
-                }
-
-                content.push(rcontent.join('&nbsp;'));
+    setLocalArrayVariable (key, condition, reference, value) {
+        var object = this.currentCategory && ReservedCategories[this.currentCategory.name] ? this.currentCategory : this.currentHeader;
+        if (object) {
+            if (!object[key]) {
+                object[key] = [];
             }
 
-            return content.join('</br>');
+            object[key].push([ condition, reference, value ]);
         }
-
-        pushHeader () {
-            if (this.h) {
-                if ((SP_KEYWORD_HEADER_RESERVED.includes(this.h.name) || this.h.expr != undefined) && this.c) {
-                    merge(this.h, this.c);
-                    merge(this.h, this.g);
-
-                    if (this.h.expr != undefined) {
-                        var ast = new AST(this.h.expr);
-                        if (ast.isValid()) {
-                            this.h.ptr = p => {
-                                var v = ast.eval(p);
-                                if (isNaN(v)) {
-                                    return undefined;
-                                } else {
-                                    return Number.isInteger(v) ? v : v.toFixed(2);
-                                }
-                            };
-                        } else {
-                            this.h.ptr = p => undefined;
-                        }
-                    }
-
-                    this.c.h.push(this.h);
-                }
-
-                this.h = null;
-            }
-        }
-
-        pushCategory () {
-            if (this.c) {
-                this.pushHeader();
-                if (this.c.h.length || SP_KEYWORD_CATEGORY_RESERVED.includes(this.c.name)) {
-                    if (SP_KEYWORD_CATEGORY_RESERVED.includes(this.c.name)) {
-                        merge(this.c, this.g);
-                    }
-
-                    this.root.c.push(this.c);
-                }
-
-                this.c = null;
-            }
-        }
-
-        addCategory (arg) {
-            if (arg) {
-                this.pushCategory();
-                this.c = {
-                    name: arg,
-                    h: []
-                };
-            }
-        }
-
-        addHeader (arg) {
-            if (arg) {
-                this.pushHeader();
-                this.h = {
-                    name: arg
-                };
-            }
-        }
-
-        addRawParam (param, arg) {
-            if (param) {
-                if (SP_KEYWORD_GLOBAL_BOOL.includes(param)) {
-                    this.root[param] = arg;
-                } else if (this.h) {
-                    this.h[param] = arg;
-                } else if (this.c) {
-                    this.c[param] = arg;
-                } else {
-                    this.g[param] = arg;
-                }
-            }
-        }
-
-        addArrayParam (param, arg) {
-            if (param) {
-                if (this.h) {
-                    if (!this.h[param]) {
-                        this.h[param] = [ arg ];
-                    } else {
-                        this.h[param].push(arg);
-                    }
-                } else if (this.c && SP_KEYWORD_CATEGORY_RESERVED.includes(this.c.name)) {
-                    if (!this.c[param]) {
-                        this.c[param] = [ arg ];
-                    } else {
-                        this.c[param].push(arg);
-                    }
-                }
-            }
-        }
-
-        addBoolParam (param, arg) {
-            if (param && SP_KEYWORD_BOOL.includes(arg)) {
-                this.addRawParam(param, arg == 'on');
-            } else if (param == 'indexed' && arg == 'static') {
-                this.addRawParam(param, 2);
-            }
-        }
-
-        addOpParam (param, arg) {
-            if (this.h) {
-                this.h[param] = arg;
-            }
-        }
-
-        addStringParam (param, arg) {
-            if (param && arg) {
-                this.addRawParam(param, arg);
-            }
-        }
-
-        addNumberParam (param, arg) {
-            if (param && arg && !isNaN(arg)) {
-                this.addRawParam(param, Number(arg));
-            }
-        }
-
-        parse (text) {
-            this.root = { c: [], outdated: true };
-            this.c = null;
-            this.h = null;
-            this.g = {};
-
-            for (var row of text.split('\n')) {
-                var [key, arg] = row.split('#')[0].split(/ (.+)/).filter(x => x);
-                if (!key || !arg) continue;
-                arg = arg.trim();
-                for (var m of arg.match(/( @\w+\b)/g) || []) {
-                    var x = m.split('@');
-                    arg = arg.replace(`@${ x[1] }`, SP_KEYWORD_CONSTANTS[x[1]]);
-                }
-
-                if (SP_KEYWORD_PARAMETER_BOOL.includes(key)) this.addBoolParam(key, arg);
-                else if (SP_KEYWORD_PARAMETER_NUMBER.includes(key)) this.addNumberParam(key, arg);
-                else if (SP_KEYWORD_PARAMETER_OP.includes(key)) this.addOpParam(key, arg);
-                else if (SP_KEYWORD_PARAMETER_STRING.includes(key)) this.addStringParam(key, arg);
-                else if (SP_KEYWORD_PARAMETER_ARRAY.includes(key)) {
-                    var value = parseArrayParameterArgument(arg, key == 'color');
-                    if (value) {
-                        this.addArrayParam(key, value);
-                    }
-                } else if (SP_KEYWORD_HEADER == key) this.addHeader(arg);
-                else if (SP_KEYWORD_CATEGORY == key) this.addCategory(arg);
-            }
-
-            this.pushCategory();
-            return this.root;
-        }
-    })();
+    }
 })();
 
 const DEFAULT_SETTINGS = `# Show member list

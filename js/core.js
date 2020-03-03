@@ -698,7 +698,7 @@ const UI = {
             this.code = Settings.load(identifier).getCode();
 
             // Show modal
-            this.$modal.modal({ centered: false }).modal('show');
+            this.$modal.modal({ centered: false, transition: 'fade' }).modal('show');
 
             // Show contents
             this.load();

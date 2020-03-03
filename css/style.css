@@ -357,6 +357,12 @@ h3.file-selected {
     color: #175e5a;
 }
 
+.ta-error {
+    text-decoration: underline;
+    text-decoration-color: red;
+    text-decoration-style: dashed;
+}
+
 .ta-boolean-on {
     text-shadow: -0.06ex 0 green, 0.06ex 0 green;
     color: green;

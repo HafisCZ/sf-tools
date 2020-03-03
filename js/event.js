@@ -531,6 +531,8 @@ Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
         State.setSort(header, State.getSort() == header ? (State.getSortStyle() + 1) % 3 : 1);
         Handle.call(EVT_GROUP_LOAD_TABLE);
     });
+
+    $('#context-members').context('bind', $('[data-player]'));
 });
 
 Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
@@ -772,7 +774,8 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
         </div>
     `);
     $('#modal-player').modal({
-        centered: false
+        centered: false,
+        transition: 'fade'
     }).modal('show');
 });
 
@@ -850,6 +853,17 @@ Handle.bind(EVT_INIT, function () {
         ]
     });
 
+    $('#context-members').context('create', {
+        items: [
+            {
+                label: 'Copy',
+                action: (source) => {
+                    Handle.call(EVENT_COPY_PLAYER, Database.Players[source.attr('data-player')].Latest);
+                }
+            }
+        ]
+    });
+
     // Player search
     $('#psearch').on('change', function () {
         var terms = $('#psearch').val().toLowerCase().split(' ').filter(term => term.trim().length);
@@ -914,7 +928,7 @@ Handle.bind(EVT_INIT, function () {
         $b.css('line-height', $c.css('line-height'));
         $c.on('input', function () {
             var val = $(this).val();
-            $b.html(SettingsParser.highlight(val));
+            $b.html(SettingsParser.format(val));
         });
         $c.trigger('input');
         $c.on('scroll', function () {
@@ -962,6 +976,12 @@ Handle.bind(EVT_INIT, function () {
                     <div class="eleven wide column">
                         Displays outdated rows in red color. This option is enabled by default.
                     </div>
+                    <div class="five wide column">
+                        <code>performance</code>
+                    </div>
+                    <div class="eleven wide column">
+                        Limits the number of displayed entries to 500. This option is enabled by default.
+                    </div>
                 </div>
             </div>
             </br>
@@ -996,7 +1016,7 @@ Handle.bind(EVT_INIT, function () {
             <b>Predefined constants</b>:</br>
             </br>
             <div class="ui five column css-compact-grid grid">
-                ${ Object.keys(SP_KEYWORD_CONSTANTS).map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
+                ${ Object.keys(SettingsConstants).map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
             </div>
         </div>
         <div class="ui tab basic segment padding-none" data-tab="tab1">
@@ -1145,7 +1165,7 @@ Handle.bind(EVT_INIT, function () {
             These categories are reserved and contain a set of predefined headers. You can set options to them as you would with headers as they will be set to all child headers. They cannot contain any other headers.</br>
             </br>
             <div class="ui three column css-compact-grid grid">
-                ${ SP_KEYWORD_CATEGORY_RESERVED.map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
+                ${ Object.keys(ReservedCategories).map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
             </div>
         </div>
         <div class="ui tab basic segment padding-none" data-tab="tab4">
@@ -1153,7 +1173,7 @@ Handle.bind(EVT_INIT, function () {
             These headers are reserved and already contain a path. If you want to have a custom header with the same name as a reserved header, you will have to use different name and then rename them using the <code>alias</code> option.</br>
             </br>
             <div class="ui three column css-compact-grid grid">
-                ${ SP_KEYWORD_HEADER_RESERVED.map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
+                ${ Object.keys(ReservedHeaders).map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
             </div>
         </div>
         <div class="ui tab basic segment padding-none" data-tab="tab5">
