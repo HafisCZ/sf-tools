@@ -84,8 +84,8 @@ class FSModel {
         return Math.min(50, this.model.Luck.Total * 2.5 / target.model.Level);
     }
 
-    getCriticalMultiplier (weapon) {
-        return 2 * (1 + this.model.Fortress.Gladiator * 0.05) * (weapon.HasEnchantment ? 1.05 : 1);
+    getCriticalMultiplier (weapon, target) {
+        return 2 * (1 + Math.max(0, this.model.Fortress.Gladiator - target.model.Fortress.Gladiator) * 0.05) * (weapon.HasEnchantment ? 1.05 : 1);
     }
 
     getDamageRange (weapon, target) {
@@ -139,16 +139,16 @@ function runBattle (modelA, modelB) {
     var b = new FSModel(1, modelB);
 
     a.weapon1.range = a.getDamageRange(a.weapon1, b);
-    a.weapon1.crit = a.getCriticalMultiplier(a.weapon1);
+    a.weapon1.crit = a.getCriticalMultiplier(a.weapon1, b);
     if (a.weapon2) {
         a.weapon2.range = a.getDamageRange(a.weapon2, b);
-        a.weapon2.crit = a.getCriticalMultiplier(a.weapon2);
+        a.weapon2.crit = a.getCriticalMultiplier(a.weapon2, b);
     }
     b.weapon1.range = b.getDamageRange(b.weapon1, a);
-    b.weapon1.crit = b.getCriticalMultiplier(b.weapon1);
+    b.weapon1.crit = b.getCriticalMultiplier(b.weapon1, a);
     if (b.weapon2) {
         b.weapon2.range = b.getDamageRange(b.weapon2, a);
-        b.weapon2.crit = b.getCriticalMultiplier(b.weapon2);
+        b.weapon2.crit = b.getCriticalMultiplier(b.weapon2, a);
     }
     a.skipchance = a.getSkipChance(b);
     a.critchance = a.getCriticalChance(b);
@@ -182,17 +182,17 @@ class FSBattle {
 
         // Damage
         a.weapon1.range = a.getDamageRange(a.weapon1, b);
-        a.weapon1.crit = a.getCriticalMultiplier(a.weapon1);
+        a.weapon1.crit = a.getCriticalMultiplier(a.weapon1, b);
         if (a.weapon2) {
             a.weapon2.range = a.getDamageRange(a.weapon2, b);
-            a.weapon2.crit = a.getCriticalMultiplier(a.weapon2);
+            a.weapon2.crit = a.getCriticalMultiplier(a.weapon2, b);
         }
 
         b.weapon1.range = b.getDamageRange(b.weapon1, a);
-        b.weapon1.crit = b.getCriticalMultiplier(b.weapon1);
+        b.weapon1.crit = b.getCriticalMultiplier(b.weapon1, a);
         if (b.weapon2) {
             b.weapon2.range = b.getDamageRange(b.weapon2, a);
-            b.weapon2.crit = b.getCriticalMultiplier(b.weapon2);
+            b.weapon2.crit = b.getCriticalMultiplier(b.weapon2, a);
         }
 
         // Chances
