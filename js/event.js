@@ -1011,7 +1011,7 @@ Handle.bind(EVT_INIT, function () {
             </div>
             </br>
             <b>Constants</b>:</br>
-            You can use any of the predefined constants below. All constants are prefixed by the character <code>@</code>.</br>
+            You can use any of the predefined constants below (applies to <code>expr</code>, <code>value</code> and <code>color</code>). All constants are prefixed by the character <code>@</code>.</br>
             </br>
             <b>Predefined constants</b>:</br>
             </br>
@@ -1035,6 +1035,12 @@ Handle.bind(EVT_INIT, function () {
                 </div>
                 <div class="eleven wide column">
                     Change the width of the header. In case of a reserved category, it will be applied to all it's child headers.
+                </div>
+                <div class="five wide column">
+                    <code>extra WORD</code>
+                </div>
+                <div class="eleven wide column">
+                    Appends word to all cells in the column.
                 </div>
                 <div class="five wide column">
                     <code>difference BOOL</code>
