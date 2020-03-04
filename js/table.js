@@ -650,7 +650,7 @@ class Table {
                 </tr>
             </thead>
             <tbody>
-                ${ join(players, (r, i) => `<tr class="${ r.hidden ? 'css-entry-hidden' : '' }">${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest || !this.root.outdated ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }" data-timestamp="${ r.player.Timestamp }">${ r.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`, 0, this.root.performance ? 500 : undefined) }
+                ${ join(players, (r, i) => `<tr class="${ r.hidden ? 'css-entry-hidden' : '' }">${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest || !this.root.outdated ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }" data-timestamp="${ r.player.Timestamp }">${ r.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ r.player.Name }</td>${ join(flat, h => h.generators.list(r.player)) }</tr>`, 0, this.root.performance) }
             </tbody>
         `, 100 + 250 + this.config.reduce((a, b) => a + b.width, 0) + (this.root.indexed ? 50 : 0)];
     }
@@ -1343,9 +1343,18 @@ const SettingsCommands = [
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a, a == 'static' ? 'on' : a) }`;
     }),
     // Global
+    // indexed - Show indexes in first column of the table
+    new SettingsCommand(/^(performance) (\d+)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setGlobalVariable(key, Number(a));
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+    }),
+    // Global
     // members - Show member classes and changes
     // outdated - Mark outdated entries with red text
-    new SettingsCommand(/^(members|outdated|performance) (on|off)$/, function (root, string) {
+    new SettingsCommand(/^(members|outdated) (on|off)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setGlobalVariable(key, ARG_MAP[a]);
     }, function (string) {
@@ -1605,8 +1614,7 @@ const SettingsParser = new (class {
     clear () {
         this.root = {
             c: [],
-            outdated: true,
-            performance: true
+            outdated: true
         };
 
         this.currentCategory = null;

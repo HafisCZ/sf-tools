@@ -980,7 +980,7 @@ Handle.bind(EVT_INIT, function () {
                         <code>performance</code>
                     </div>
                     <div class="eleven wide column">
-                        Limits the number of displayed entries to 500. This option is enabled by default.
+                        Limits the number of displayed entries to specified number.
                     </div>
                 </div>
             </div>
