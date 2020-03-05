@@ -1380,12 +1380,23 @@ const SettingsCommands = [
     }),
     // Local Shared
     // width - Width of a column
-    new SettingsCommand(/^(width) (\d+)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.setLocalSharedVariable(key, Number(a));
+    new SettingsCommand(/^(width) ((@?)(\S+))$/, function (root, string) {
+        var [ , key, arg, prefix, value ] = this.match(string);
+        var val = Constants.GetValue(prefix, value);
+
+        if (val != undefined && !isNaN(val)) {
+            root.setLocalSharedVariable(key, Number(val));
+        }
     }, function (string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+        var [ , key, arg, prefix, value ] = this.match(string);
+
+        if (Constants.IsConstant(prefix, value)) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
+        } else if (prefix == '@' || isNaN(value)) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
+        } else {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
+        }
     }),
     // Local
     // extra - Ending characters for each cell (example %)
@@ -1398,23 +1409,23 @@ const SettingsCommands = [
     }),
     // Local
     // alias - Override name of the column
-    new SettingsCommand(/^(alias) (@?\w+[\w ]*)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        var a = (a[0] == '@' ? SettingsConstants[a.slice(1)] : a);
+    new SettingsCommand(/^(alias) ((@?)(\w+[\w ]*))$/, function (root, string) {
+        var [ , key, arg, prefix, value ] = this.match(string);
+        var val = Constants.GetValue(prefix, value);
 
-        if (a != undefined) {
-            root.setLocalVariable(key, a);
+        if (val != undefined) {
+            root.setLocalVariable(key, val);
         }
     }, function (string) {
-        var [ , key, a ] = this.match(string);
+        var [ , key, arg, prefix, value ] = this.match(string);
 
-        if (a[0] == '@') {
-            a = SettingsConstants[a.slice(1)] != undefined ? SFormat.Constant(a) : SFormat.Error(a);
+        if (Constants.IsConstant(prefix, value)) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
+        } else if (prefix == '@' || isNaN(value)) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
         } else {
-            a = SFormat.Normal(a);
+            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
         }
-
-        return `${ SFormat.Keyword(key) } ${ a }`;
     }),
     // Local
     // expr - Set expression to the column
@@ -1434,101 +1445,107 @@ const SettingsCommands = [
     }),
     // Local
     // value - Add default value
-    new SettingsCommand(/^(value) (default) (@?\S+[\S ]*)$/, function (root, string) {
-        var [ , key, condition, a ] = this.match(string);
-        var a = (a[0] == '@' ? SettingsConstants[a.slice(1)] : a);
+    new SettingsCommand(/^(value) (default) ((@?)(\S+[\S ]*))$/, function (root, string) {
+        var [ , key, condition, arg, prefix, value ] = this.match(string);
+        var val = Constants.GetValue(prefix, value);
 
-        if (a != undefined) {
-            root.setLocalArrayVariable(key, ARG_MAP[condition], 0, a);
+        if (val != undefined) {
+            root.setLocalArrayVariable(key, ARG_MAP[condition], 0, val);
         }
     }, function (string) {
-        var [ , key, condition, a ] = this.match(string);
+        var [ , key, condition, arg, prefix, value ] = this.match(string);
 
-        if (a[0] == '@') {
-            a = SettingsConstants[a.slice(1)] != undefined ? SFormat.Constant(a) : SFormat.Error(a);
+        if (Constants.IsConstant(prefix, value)) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Constant(arg) }`;
+        } else if (prefix == '@') {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Error(arg) }`;
         } else {
-            a = SFormat.Normal(a);
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Normal(arg) }`;
         }
-
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ a }`;
     }),
     // Local
     // color - Add default color
-    new SettingsCommand(/^(color) (default) (@?\w+)$/, function (root, string) {
-        var [ , key, condition, a ] = this.match(string);
-        var a = (a[0] == '@' ? SettingsConstants[a.slice(1)] : a);
+    new SettingsCommand(/^(color) (default) ((@?)(\w+))$/, function (root, string) {
+        var [ , key, condition, arg, prefix, value ] = this.match(string);
+        var val = getCSSColor(Constants.GetValue(prefix, value));
 
-        if (a != undefined && getCSSColor(a)) {
-            root.setLocalArrayVariable(key, ARG_MAP[condition], 0, getCSSColor(a));
+        if (val != undefined && val) {
+            root.setLocalArrayVariable(key, ARG_MAP[condition], 0, val);
         }
     }, function (string) {
-        var [ , key, condition, a ] = this.match(string);
+        var [ , key, condition, arg, prefix, value ] = this.match(string);
+        var val = getCSSColor(Constants.GetValue(prefix, value));
 
-        if (a[0] == '@') {
-            a = SettingsConstants[a.slice(1)] != undefined ? SFormat.Constant(a) : SFormat.Error(a);
-        } else if (getCSSColor(a)) {
-            a = SFormat.Color(a, getCSSColor(a));
+        if (Constants.IsConstant(prefix, value) && val) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Constant(arg) }`;
+        } else if (prefix == '@' || !val) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Error(arg) }`;
         } else {
-            a = SFormat.Error(a);
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Color(arg, val) }`;
         }
-
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ a }`;
     }),
     // Local
     // value - Add value based on condition
-    new SettingsCommand(/^(value) (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?\w+) (@?\S+[\S ]*)$/, function (root, string) {
-        var [ , key, condition, reference, a ] = this.match(string);
-        var reference = (reference[0] == '@' ? SettingsConstants[reference.slice(1)] : (isNaN(reference) ? undefined : Number(reference)));
-        var a = (a[0] == '@' ? SettingsConstants[a.slice(1)] : a);
+    new SettingsCommand(/^(value) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(\w+)) ((@?)(\S+[\S ]*))$/, function (root, string) {
+        var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
+        var reference = Constants.GetValue(rprefix, rvalue);
+        var val = Constants.GetValue(prefix, value);
 
-        if (reference != undefined && a != undefined) {
-            root.setLocalArrayVariable(key, ARG_MAP[condition], reference, a);
+        if (reference != undefined && val != undefined && !isNaN(reference)) {
+            root.setLocalArrayVariable(key, ARG_MAP[condition], reference, val);
         }
     }, function (string) {
-        var [ , key, condition, reference, a ] = this.match(string);
+        var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
 
-        if (reference[0] == '@') {
-            reference = SettingsConstants[reference.slice(1)] != undefined ? SFormat.Constant(reference) : SFormat.Error(reference);
+        if (Constants.IsConstant(rprefix, rvalue)) {
+            rarg = SFormat.Constant(rarg);
+        } else if (rprefix == '@') {
+            rarg = SFormat.Error(rarg);
         } else {
-            reference = SFormat.Normal(reference);
+            rarg = SFormat.Normal(rarg);
         }
 
-        if (a[0] == '@') {
-            a = SettingsConstants[a.slice(1)] != undefined ? SFormat.Constant(a) : SFormat.Error(a);
+        if (Constants.IsConstant(prefix, value)) {
+            arg = SFormat.Constant(arg);
+        } else if (prefix == '@') {
+            arg = SFormat.Error(arg);
         } else {
-            a = SFormat.Normal(a);
+            arg = SFormat.Normal(arg);
         }
 
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ reference } ${ a }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ rarg } ${ arg }`;
     }),
     // local
     // color - Add color based on condition
-    new SettingsCommand(/^(color) (equal or above|above or equal|below or equal|equal or below|equal|above|below) (@?\w+) (@?\w+)$/, function (root, string) {
-        var [ , key, condition, reference, a ] = this.match(string);
-        var reference = (reference[0] == '@' ? SettingsConstants[reference.slice(1)] : (isNaN(reference) ? undefined : Number(reference)));
-        var a = (a[0] == '@' ? SettingsConstants[a.slice(1)] : a);
+    new SettingsCommand(/^(color) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(\w+)) ((@?)(\w+))$/, function (root, string) {
+        var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
+        var reference = Constants.GetValue(rprefix, rvalue);
+        var val = getCSSColor(Constants.GetValue(prefix, value));
 
-        if (reference != undefined && a != undefined && getCSSColor(a)) {
-            root.setLocalArrayVariable(key, ARG_MAP[condition], reference, getCSSColor(a));
+        if (reference != undefined && val != undefined && !isNaN(reference) && val) {
+            root.setLocalArrayVariable(key, ARG_MAP[condition], reference, val);
         }
     }, function (string) {
-        var [ , key, condition, reference, a ] = this.match(string);
+        var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
+        var val = getCSSColor(Constants.GetValue(prefix, value));
 
-        if (reference[0] == '@') {
-            reference = SettingsConstants[reference.slice(1)] != undefined ? SFormat.Constant(reference) : SFormat.Error(reference);
+        if (Constants.IsConstant(rprefix, rvalue)) {
+            rarg = SFormat.Constant(rarg);
+        } else if (rprefix == '@') {
+            rarg = SFormat.Error(rarg);
         } else {
-            reference = SFormat.Normal(reference);
+            rarg = SFormat.Normal(rarg);
         }
 
-        if (a[0] == '@') {
-            a = SettingsConstants[a.slice(1)] != undefined ? SFormat.Constant(a) : SFormat.Error(a);
-        } else if (getCSSColor(a)) {
-            a = SFormat.Color(a, getCSSColor(a));
+        if (Constants.IsConstant(prefix, value) && val) {
+            arg = SFormat.Constant(arg);
+        } else if (prefix == '@' || !val) {
+            arg = SFormat.Error(arg);
         } else {
-            a = SFormat.Error(a);
+            arg = SFormat.Color(arg, val);
         }
 
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ reference } ${ a }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ rarg } ${ arg }`;
     })
 ];
 
@@ -1554,8 +1571,22 @@ const SettingsConstants = {
     'assassin': '4',
     'battlemage': '5',
     'berserker': '6',
-    'empty': ''
+    'empty': '',
+    'tiny': '15',
+    'small': '60',
+    'normal': '100',
+    'large': '160',
+    'huge': '200'
 };
+
+const Constants = {
+    GetValue: function (tag, key) {
+        return tag == '@' ? SettingsConstants[key] : key;
+    },
+    IsConstant: function (tag, key) {
+        return tag == '@' && SettingsConstants[key] != undefined;
+    }
+}
 
 const SettingsParser = new (class {
     format (string) {
