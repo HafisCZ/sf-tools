@@ -1389,10 +1389,11 @@ const SettingsCommands = [
         }
     }, function (string) {
         var [ , key, arg, prefix, value ] = this.match(string);
+        var val = Constants.GetValue(prefix, value);
 
-        if (Constants.IsConstant(prefix, value)) {
+        if (Constants.IsConstant(prefix, value) && !isNaN(val)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
-        } else if (prefix == '@' || isNaN(value)) {
+        } else if (prefix == '@' || isNaN(val)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
         } else {
             return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
@@ -1421,7 +1422,7 @@ const SettingsCommands = [
 
         if (Constants.IsConstant(prefix, value)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
-        } else if (prefix == '@' || isNaN(value)) {
+        } else if (prefix == '@') {
             return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
         } else {
             return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
