@@ -26,110 +26,315 @@
 
         <div class="ui main container margin-medium-bottom">
             <h2 class="ui header">Options</h2>
-            <h3 class="ui header">expr <a class="ui small black label">Overrides reserved column name</a></h3>
+            <br/>
+            <div class="ui grid css-compact-grid">
+                <div class="two wide text-center column">
+                    <a class="ui small red label">Global</a>
+                </div>
+                <div class="fourteen wide column">
+                    Option can be set before first category.
+                </div>
+                <div class="two wide text-center column">
+                    <a class="ui small blue label">Shared</a>
+                </div>
+                <div class="fourteen wide column">
+                    Option can be set before creating a header within a category.
+                </div>
+                <div class="two wide text-center column">
+                    <a class="ui small green label">Local</a>
+                </div>
+                <div class="fourteen wide column">
+                    Option can be set after creating a header.
+                </div>
+                <div class="two wide text-center column">
+                    <a class="ui small black label">Override</a>
+                </div>
+                <div class="fourteen wide column">
+                    Option overrides the effect of another option.
+                </div>
+            </div>
+            <br/>
+            <h3 class="ui header">alias <a class="ui small green label">Local</a></h3>
             <hr/>
-            <p>
-                This option specifies an expression that will be used for calculating the cell's value.
-            </p>
-            <h3 class="ui header">format <a class="ui small black label">Overrides <code>extra</code> option</a></h3>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to change the name of the column when necessary.<br/>
+                        If you are using <code>expr</code> option, then you do not need to change the name even if it is reserved.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Level</code></div>
+                    <div><code>alias New Column Name</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">brackets <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
             <hr/>
-            <p>
-                This option specifies an expression that will be used for determing what will be displayed in the cell.<br/>
-                It does not affect sorting in any way.
-            </p>
-            <h3 class="ui header">brackets <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to enable or disable brackets around the difference.<br/>
+                        Please note that this option requires the <code>difference</code> option to be enabled, otherwise you will not see any changes.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Level</code></div>
+                    <div><code>difference on</code></div>
+                    <div><code>brackets on</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">color <a class="ui small green label">Local</a></h3>
             <hr/>
-            <p>
-                Use this option to set whether you want brackets around the difference in the cell.
-            </p>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to create a rule that will apply a color to the cell when a condition is met. You can use several conditions, including <code>equal</code>, <code>above</code>, <code>below</code>, <code>above or equal</code> and <code>below or equal</code>. <br/>
+                        Please note that their order matters, so the color of the first met condition will be applied.<br/>
+                        If you want a color used by default, when no condition is met, then use <code>default</code> condition. The position of this default condition does not mattter.</br>
+                        You can use constant or any valid css color (omit # character if your color has one).
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Level</code></div>
+                    <div><code>color default orange</code></div>
+                    <div><code>color above or equal 300 red</code></div>
+                    <div><code>color above 200 @green</code></div>
+                    <div><code>color equal 100 ff15ff</code></div>
+                </div>
+            </div>
             <h3 class="ui header">debug <a class="ui small red label">Global</a></h3>
             <hr/>
-            <p>
-                Show limited debug information in the browser's console.
-            </p>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to show simple debug information in the browser's console. It will show warnings if an option is invalid and information about all used expressions via <code>expr</code> or <code>format</code> options.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>debug on</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">difference <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to show a difference between current and previous value. You have to select a reference time for the difference to appear.<br/>
+                        In case that the player was not present at the selected time, then the earliest one is picked instead.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Level</code></div>
+                    <div><code>difference on</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">expr <a class="ui small green label">Local</a> <a class="ui small black label">Overrides reserved column name</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to specify which value should the cell contain. You can use most of common operators, constants, header names and functions.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Resistance</code></div>
+                    <div><code>expr trunc(min(Armor / Level + (Class == @battlemage ? 40 : 0), ((Class == @warrior || Class == @battlemage) ? 50 : (Class == @mage ? 10 : 25))))</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">extra <a class="ui small green label">Local</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to append a string at the end of a cell. This option does not work if you are using <code>format</code> option.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Life Potion</code></div>
+                    <div><code>expr Potions.Life</code></div>
+                    <div><code>extra %</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">flip <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to treat lower values as better. This will have effect only when sorting and when showing difference.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header My Rank</code></div>
+                    <div><code>expr Rank</code></div>
+                    <div><code>flip on</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">format <a class="ui small green label">Local</a> <a class="ui small black label">Overrides <code>extra</code> option</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to change the displayed value of the cell. Does not work if a <code>value</code> option is specified.<br/>
+                        This option functions the same way as <code>expr</code> does and you can use most of common operators, constants, header names and functions.<br/>
+                        The keyword <code>this</code> is used to get the current cell value.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Active Before</code></div>
+                    <div><code>expr Timestamp - Last Active</code></div>
+                    <div><code>format duration(this)</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">grail <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to indicate whether player has found the Holy Grail. Does work only for <code>Album</code> header.<br/>
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Album</code></div>
+                    <div><code>grail on</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">hydra <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to indicate whether player has the Dehydration achievement. Does work only for <code>Awards</code> header.<br/>
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Awards</code></div>
+                    <div><code>hydra on</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">maximum <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to show the maximum amount of knights that player can have. Does work only for <code>Knights</code> header.<br/>
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Knights</code></div>
+                    <div><code>maximum on</code></div>
+                </div>
+            </div>
             <h3 class="ui header">members <a class="ui small red label">Global</a></h3>
             <hr/>
-            <p>
-                Show class structure of the guild and members that left or joined in the selected timespan.
-            </p>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to show amount of players per class and a list of players that left and joined between now and a reference point in time.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>members on</code></div>
+                </div>
+            </div>
             <h3 class="ui header">outdated <a class="ui small red label">Global</a></h3>
             <hr/>
-            <p>
-                Highlight players that are not the most recent. This option is enabled by default.
-            </p>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to highlight players that are not up to date. This option is enabled by default.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>outdated off</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">percentage <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to show the value as a percentage instead. Does work only for <code>Album</code> and <code>Mount</code> header.<br/>
+                        In case of <code>Album</code> header, the percentage of collected items instead of the amount of collected items is displayed.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Album</code></div>
+                    <div><code>percentage on</code></div>
+                </div>
+            </div>
             <h3 class="ui header">performance <a class="ui small red label">Global</a></h3>
             <hr/>
-            <p>
-                Limits the number of displayed players to specified value.<br/>
-                This option applies only to the Players tab and should be used if you are working with larger amount of players (above 1000).
-            </p>
-            <h3 class="ui header">alias</h3>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to limit the maximum amount of displayed entries in the Players tab. Sorting and search will display only the top number of results.<br/>
+                        This is meant for performance reasons, when you reach player count above 2000.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>performance 500</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">statistics <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
             <hr/>
-            <p>
-                Changes the name of the column.
-            </p>
-            <h3 class="ui header">width <a class="ui small blue label">Shared</a></h3>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to enable statistics for a column. It will show minimum, maximum and average values.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Level</code></div>
+                    <div><code>statistics on</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">value <a class="ui small green label">Local</a> <a class="ui small black label">Overrides <code>format</code> option</a></h3>
             <hr/>
-            <p>
-                Changes the width of the column.
-            </p>
-            <h3 class="ui header">extra</h3>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to create a rule that will apply a value to the cell when a condition is met. You can use several conditions, including <code>equal</code>, <code>above</code>, <code>below</code>, <code>above or equal</code> and <code>below or equal</code>. <br/>
+                        Please note that their order matters, so the value of the first met condition will be applied.<br/>
+                        If you want a value used by default, when no condition is met, then use <code>default</code> condition. The position of this default condition does not mattter.</br>
+                        This option will override <code>format</code> option.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Level</code></div>
+                    <div><code>value default Small</code></div>
+                    <div><code>value above or equal 300 > 300</code></div>
+                    <div><code>value above 200 > 200</code></div>
+                    <div><code>value equal 100 100</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">visible <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
             <hr/>
-            <p>
-                Appends a string at the end of the cell content. It does not apply if you are using <code>format</code> option.
-            </p>
-            <h3 class="ui header">difference <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to hide the value if the cell is colored. The value will still be there but will be drawn with background color instead.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Level</code></div>
+                    <div><code>color above or equal 100 red</code></div>
+                    <div><code>color below 100 green</code></div>
+                    <div><code>visible off</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">width <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a></h3>
             <hr/>
-            <p>
-                This options allows the cells to show difference against selected timespan.
-            </p>
-            <h3 class="ui header">statistics <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
-            <hr/>
-            <p>
-                This option shows a smallmum, average and maximum values in the column. This has effect only within Guilds tab.
-            </p>
-            <h3 class="ui header">percentage <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
-            <hr/>
-            <p>
-                This option does the same thing as <code>extra %</code> option would do, but works only for few selected reserved column names.
-            </p>
-            <h3 class="ui header">hydra <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
-            <hr/>
-            <p>
-                This option shows whether player has the Dehydration achievement, but works only for <code>Awards</code> column.
-            </p>
-            <h3 class="ui header">grail <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
-            <hr/>
-            <p>
-                This option shows whether player has the Holy Grail unlocked, but works only for <code>Album</code> column.
-            </p>
-            <h3 class="ui header">visible <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
-            <hr/>
-            <p>
-                This option determines, if the cell content should be shown or not (it will be drawn with the highlight color, if any is used).
-            </p>
-            <h3 class="ui header">maximum <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
-            <hr/>
-            <p>
-                This option shows the maximum knights player can currently have, but works only for <code>Knights</code> column.
-            </p>
-            <h3 class="ui header">flip <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
-            <hr/>
-            <p>
-                This option will treat lower values as better when sorting.
-            </p>
-            <h3 class="ui header">color</h3>
-            <hr/>
-            <p>
-                This option will create a color rule for cell. The first that matches current value will be used.<br/>
-                In case that no color rules match, the default will be used.
-            </p>
-            <h3 class="ui header">value <a class="ui small black label">Overrides <code>format</code> option</a></h3>
-            <hr/>
-            <p>
-                This option will create a value rule for cell. The first that matches current value will be used.<br/>
-                In case that no color rules match, the default will be used.
-            </p>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to change the width of a column. You can use a number or any of <code>tiny</code>, <code>small</code>, <code>normal</code> and <code>large</code> constants.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Level</code></div>
+                    <div><code>width @large</code></div>
+                </div>
+            </div>
         </div>
 
         <script type="text/javascript">
