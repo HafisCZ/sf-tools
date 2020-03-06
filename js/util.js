@@ -54,6 +54,7 @@ function clamp (a, b, c) {
 }
 
 function formatAsSpacedNumber(n) {
+    n = Math.trunc(n);
     return n.toString().split('').map((char, i, array) => ((array.length - 1 - i) % 3 == 2) && i != 0 ? (' ' + char) : char).join('');
 }
 

@@ -17,6 +17,7 @@ const EVT_FILES_REMOVE = 3001;
 const EVT_FILES_UPLOAD = 3002;
 const EVT_FILES_IMPORT = 3003;
 const EVT_FILES_EXPORT = 3004;
+const EVT_FILE_EXPORT = 3005;
 const EVT_FILE_MERGE = 100001;
 const EVT_BROWSE_LOAD = 4000;
 const EVT_PLAYER_LOAD = 5000;
@@ -340,9 +341,16 @@ Handle.bind(EVT_FILES_EXPORT, function () {
 });
 
 Handle.bind(EVT_FILE_MERGE, function () {
-    var files = $('.file-selected.clickable').toArray().map(e => $(e).attr('data-file'));
+    var files = $('.file-selected.clickable').toArray().map(e => Number($(e).attr('data-file')));
     if (files.length > 1) {
         Storage.merge(files);
+    }
+});
+
+Handle.bind(EVT_FILE_EXPORT, function () {
+    var files = $('.file-selected.clickable').toArray().map(e => Number($(e).attr('data-file')));
+    if (files.length > 0) {
+        Storage.export(files);
     }
 });
 

@@ -141,6 +141,12 @@
                                 <i class="small clone outline icon"></i> Merge selected
                             </label>
                         </div>
+                        <br/>
+                        <div>
+                            <label class="fluid ui button" id="sf-file-export">
+                                <i class="small download icon icon"></i> Export selected
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -406,6 +412,11 @@
 
             $('#sf-file-merge').on('click', function () {
                 Handle.call(EVT_FILE_MERGE);
+                Handle.call(EVT_FILES_LOAD);
+            });
+
+            $('#sf-file-export').on('click', function () {
+                Handle.call(EVT_FILE_EXPORT);
                 Handle.call(EVT_FILES_LOAD);
             });
 

@@ -782,38 +782,48 @@ class Table {
                 `;
             }
 
+            var widskip = 1;
+            for (var i = 0, wid = 60; wid > 0 && i < flat.length; i++) {
+                wid -= flat[i].width;
+                if (wid > 0) {
+                    widskip++;
+                } else {
+                    break;
+                }
+            }
+
             content += `
                 <tr>
                     <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Warrior</td>
-                    <td>${ classes[0] }</td>
+                    <td colspan="${ widskip }">${ classes[0] }</td>
                     ${ joined.length > 0 ? `
                         <td class="border-right-thin" rowspan="3" colspan="1">Joined</td>
-                        <td colspan="${ Math.max(1, flat.length - 2) }" rowspan="3">${ joined.join(', ') }</td>
+                        <td colspan="${ Math.max(1, flat.length - 1 - widskip) }" rowspan="3">${ joined.join(', ') }</td>
                     ` : '' }
                 </tr>
                 <tr>
                     <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Mage</td>
-                    <td>${ classes[1] }</td>
+                    <td colspan="${ widskip }">${ classes[1] }</td>
                 </tr>
                 <tr>
                     <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Scout</td>
-                    <td>${ classes[2] }</td>
+                    <td colspan="${ widskip }">${ classes[2] }</td>
                 </tr>
                 <tr>
                     <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Assassin</td>
-                    <td>${ classes[3] }</td>
+                    <td colspan="${ widskip }">${ classes[3] }</td>
                     ${ kicked.length > 0 ? `
                         <td class="border-right-thin" rowspan="3" colspan="1">Left</td>
-                        <td colspan="${ Math.max(1, flat.length - 2) }" rowspan="3">${ kicked.join(', ') }</td>
+                        <td colspan="${ Math.max(1, flat.length - 1 - widskip) }" rowspan="3">${ kicked.join(', ') }</td>
                     ` : '' }
                 </tr>
                 <tr>
                     <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Battle Mage</td>
-                    <td>${ classes[4] }</td>
+                    <td colspan="${ widskip }">${ classes[4] }</td>
                 </tr>
                 <tr>
                     <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Berserker</td>
-                    <td>${ classes[5] }</td>
+                    <td colspan="${ widskip }">${ classes[5] }</td>
                 </tr>
             `;
         }
@@ -1036,11 +1046,11 @@ const AST_FUNCTIONS = {
     'trunc': (a) => Math.trunc(a),
     'ceil': (a) => Math.ceil(a),
     'floor': (a) => Math.floor(a),
-
     'datetime': (a) => formatDate(a),
     'number': (a) => Number.isInteger(a) ? a : a.toFixed(2),
     'duration': (a) => formatDuration(a),
-    'date': (a) => formatDateOnly(a)
+    'date': (a) => formatDateOnly(a),
+    'fnumber': (a) => formatAsSpacedNumber(a)
 };
 
 const AST_FUNCTIONS_VAR = {

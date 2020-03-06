@@ -392,12 +392,17 @@ const Storage = new (class {
         }
     }
 
-    export () {
+    export (indexes) {
         download('archive.json', new Blob([
-            JSON.stringify(this.current)
+            JSON.stringify(indexes ? this.current.filter((file, index) => indexes.includes(index)) : this.current)
         ], {
             type: 'application/json'
         }));
+    }
+
+    merge (indexes) {
+        var timestamps = indexes.map(i => this.current[i].timestamp);
+        var files = this.current.filter(f => timestamps.includes(f.timestamp))
     }
 
     add (content, timestamp) {
