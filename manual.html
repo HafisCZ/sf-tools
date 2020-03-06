@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Manual</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/components/state.min.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu">
+            <div class="header item">SFTools</div>
+            <div class="right menu">
+                <a class="item" href="index.html"><i class="small reply icon"></i>Go back</a>
+            </div>
+        </div>
+
+        <div class="ui main container margin-medium-bottom">
+            <h2 class="ui header">Options</h2>
+            <h3 class="ui header">expr <a class="ui small black label">Overrides reserved column name</a></h3>
+            <hr/>
+            <p>
+                This option specifies an expression that will be used for calculating the cell's value.
+            </p>
+            <h3 class="ui header">format <a class="ui small black label">Overrides <code>extra</code> option</a></h3>
+            <hr/>
+            <p>
+                This option specifies an expression that will be used for determing what will be displayed in the cell.<br/>
+                It does not affect sorting in any way.
+            </p>
+            <h3 class="ui header">brackets <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
+            <hr/>
+            <p>
+                Use this option to set whether you want brackets around the difference in the cell.
+            </p>
+            <h3 class="ui header">debug <a class="ui small red label">Global</a></h3>
+            <hr/>
+            <p>
+                Show limited debug information in the browser's console.
+            </p>
+            <h3 class="ui header">members <a class="ui small red label">Global</a></h3>
+            <hr/>
+            <p>
+                Show class structure of the guild and members that left or joined in the selected timespan.
+            </p>
+            <h3 class="ui header">outdated <a class="ui small red label">Global</a></h3>
+            <hr/>
+            <p>
+                Highlight players that are not the most recent. This option is enabled by default.
+            </p>
+            <h3 class="ui header">performance <a class="ui small red label">Global</a></h3>
+            <hr/>
+            <p>
+                Limits the number of displayed players to specified value.<br/>
+                This option applies only to the Players tab and should be used if you are working with larger amount of players (above 1000).
+            </p>
+            <h3 class="ui header">alias</h3>
+            <hr/>
+            <p>
+                Changes the name of the column.
+            </p>
+            <h3 class="ui header">width <a class="ui small blue label">Shared</a></h3>
+            <hr/>
+            <p>
+                Changes the width of the column.
+            </p>
+            <h3 class="ui header">extra</h3>
+            <hr/>
+            <p>
+                Appends a string at the end of the cell content. It does not apply if you are using <code>format</code> option.
+            </p>
+            <h3 class="ui header">difference <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
+            <hr/>
+            <p>
+                This options allows the cells to show difference against selected timespan.
+            </p>
+            <h3 class="ui header">statistics <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
+            <hr/>
+            <p>
+                This option shows a smallmum, average and maximum values in the column. This has effect only within Guilds tab.
+            </p>
+            <h3 class="ui header">percentage <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
+            <hr/>
+            <p>
+                This option does the same thing as <code>extra %</code> option would do, but works only for few selected reserved column names.
+            </p>
+            <h3 class="ui header">hydra <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
+            <hr/>
+            <p>
+                This option shows whether player has the Dehydration achievement, but works only for <code>Awards</code> column.
+            </p>
+            <h3 class="ui header">grail <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
+            <hr/>
+            <p>
+                This option shows whether player has the Holy Grail unlocked, but works only for <code>Album</code> column.
+            </p>
+            <h3 class="ui header">visible <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
+            <hr/>
+            <p>
+                This option determines, if the cell content should be shown or not (it will be drawn with the highlight color, if any is used).
+            </p>
+            <h3 class="ui header">maximum <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
+            <hr/>
+            <p>
+                This option shows the maximum knights player can currently have, but works only for <code>Knights</code> column.
+            </p>
+            <h3 class="ui header">flip <a class="ui small red label">Global</a> <a class="ui small blue label">Shared</a></h3>
+            <hr/>
+            <p>
+                This option will treat lower values as better when sorting.
+            </p>
+            <h3 class="ui header">color</h3>
+            <hr/>
+            <p>
+                This option will create a color rule for cell. The first that matches current value will be used.<br/>
+                In case that no color rules match, the default will be used.
+            </p>
+            <h3 class="ui header">value <a class="ui small black label">Overrides <code>format</code> option</a></h3>
+            <hr/>
+            <p>
+                This option will create a value rule for cell. The first that matches current value will be used.<br/>
+                In case that no color rules match, the default will be used.
+            </p>
+        </div>
+
+        <script type="text/javascript">
+
+        </script>
+    </body>
+</html>
