@@ -23,6 +23,12 @@ const RUNE = {
     LIGHTNING_DAMAGE: 42
 };
 
+const PLAYER_ACTIONS = [
+    'Idle',
+    'Working',
+    'Questing'
+];
+
 const PLAYER_CLASS_SEARCH = [
     '',
     'warrior',

@@ -4,9 +4,24 @@ function trail (c, n) {
 }
 
 // Format date
+function formatDateOnly (date) {
+    if (date == '') return '';
+    date = new Date(date);
+    return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear();
+}
+
+// Format datetime
 function formatDate (date) {
+    if (date == '') return '';
     date = new Date(date);
     return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear() + ' ' + trail(date.getHours(), 2) + ':' + trail(date.getMinutes(), 2);
+}
+
+function formatDuration (duration) {
+    var days = Math.trunc(duration / (1000 * 60 * 60 * 24));
+    var hours = Math.trunc((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.trunc((duration % (1000 * 60 * 60)) / (1000 * 60));
+    return trail(days, 2) + ':' + trail(hours, 2) + ':' + trail(minutes, 2);
 }
 
 function correctDate (prefix) {

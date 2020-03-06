@@ -556,6 +556,11 @@ class SFPlayer {
 
         this.Dungeons.Normal.Total = this.Dungeons.Normal.reduce((a, b) => a + b, 0);
         this.Dungeons.Shadow.Total = this.Dungeons.Shadow.reduce((a, b) => a + b, 0);
+
+        if (this.Action.Status < 0 || this.Action.Finish < this.Timestamp) {
+            this.Action.Status = 0;
+            this.Action.Index = 0;
+        }
     }
 }
 
@@ -630,7 +635,14 @@ class SFOtherPlayer extends SFPlayer {
         this.Intelligence.Total = this.Intelligence.Base + this.Intelligence.Bonus;
         this.Constitution.Total = this.Constitution.Base + this.Constitution.Bonus;
         this.Luck.Total = this.Luck.Base + this.Luck.Bonus;
-        dataType.skip(8); // skip
+        dataType.skip(5); // skip
+        this.Action = {
+            Status: dataType.short()
+        };
+        dataType.short(); // Skip
+        this.Action.Index = dataType.short();
+        dataType.short(); // Skip
+        this.Action.Finish = dataType.long() * 1000 + correctDate(data.prefix);
         this.Items = {
             Head: new SFItem(dataType.sub(12)),
             Body: new SFItem(dataType.sub(12)),
@@ -839,7 +851,14 @@ class SFOwnPlayer extends SFPlayer {
         this.Intelligence.Total = this.Intelligence.Base + this.Intelligence.Bonus;
         this.Constitution.Total = this.Constitution.Base + this.Constitution.Bonus;
         this.Luck.Total = this.Luck.Base + this.Luck.Bonus;
-        dataType.skip(8); // skip
+        dataType.skip(5); // skip
+        this.Action = {
+            Status: dataType.short()
+        };
+        dataType.short(); // Skip
+        this.Action.Index = dataType.short();
+        dataType.short(); // Skip
+        this.Action.Finish = dataType.long() * 1000 + correctDate(data.prefix);
         this.Items = {
             Head: new SFItem(dataType.sub(12)),
             Body: new SFItem(dataType.sub(12)),

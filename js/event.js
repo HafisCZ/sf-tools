@@ -959,6 +959,12 @@ Handle.bind(EVT_INIT, function () {
                 </br>
                 <div class="ui css-compact-grid grid">
                     <div class="five wide column">
+                        <code>debug</code>
+                    </div>
+                    <div class="eleven wide column">
+                        Display some debug information.
+                    </div>
+                    <div class="five wide column">
                         <code>members</code>
                     </div>
                     <div class="eleven wide column">
@@ -1112,6 +1118,12 @@ Handle.bind(EVT_INIT, function () {
                 </div>
                 <div class="eleven wide column">
                     This option is required for custom headers and contains the expression of the value you want to show.
+                </div>
+                <div class="five wide column">
+                    <code>format EXPRESSION</code>
+                </div>
+                <div class="eleven wide column">
+                    This option can be used to format the displayed value. It does not interfere with sorting.
                 </div>
                 <div class="five wide column">
                     <code>flip BOOL</code>

@@ -391,6 +391,24 @@ const ReservedHeaders = {
             return CellGenerator.Cell(FORTRESS_BUILDINGS[cell.Fortress.Upgrade.Building], CompareEval.evaluate(cell.Fortress.Upgrade.Building, header.color) || '', '', last);
         }, player => player.Fortress.Upgrade.Building == 0 ? -1 : (12 - player.Fortress.Upgrade.Building));
     },
+    'Status': function (group, header, last) {
+        group.add(header.alias != undefined ? header.alias : 'Status', header, {
+            width: 100,
+        }, cell => {
+            return CellGenerator.Cell(PLAYER_ACTIONS[Math.max(0, cell.player.Action.Status)], CompareEval.evaluate(cell.player.Action.Status, header.color) || '', '', last);
+        }, null, cell => {
+            return CellGenerator.Cell(PLAYER_ACTIONS[Math.max(0, cell.Action.Status)], CompareEval.evaluate(cell.Action.Status, header.color) || '', '', last);
+        }, player => player.Action.Status);
+    },
+    'Action Finish': function (group, header, last) {
+        group.add(header.alias != undefined ? header.alias : 'Action Finish', header, {
+            width: 160,
+        }, cell => {
+            return CellGenerator.Cell(cell.player.Action.Finish < 0 ? '' : formatDate(cell.player.Action.Finish), CompareEval.evaluate(cell.player.Action.Finish, header.color) || '', '', last);
+        }, null, cell => {
+            return CellGenerator.Cell(cell.Action.Finish < 0 ? '' : formatDate(cell.Action.Finish), CompareEval.evaluate(cell.Action.Finish, header.color) || '', '', last);
+        }, player => player.Action.Finish);
+    },
     'Last Active': function (group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Last Active', header, {
             width: 160,
@@ -503,9 +521,9 @@ class Table {
                             var color = CompareEval.evaluate(value, header.color) || '';
 
                             var displayValue = CompareEval.evaluate(value, header.value);
-                            var value = displayValue != undefined ? displayValue : value;
+                            var value = displayValue != undefined ? (displayValue + (header.extra || '')) : (header.format ? header.format(cell.player, value) : value);
 
-                            return CellGenerator.Cell(value + (header.extra || '') + reference, color, header.visible ? '' : color, hlast);
+                            return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast);
                         }, cell => {
                             var value = cell.players.map(p => header.expr(p.player)).filter(x => x != undefined);
                             if (value.length == 0) {
@@ -524,9 +542,9 @@ class Table {
                             var color = CompareEval.evaluate(value, header.color) || '';
 
                             var displayValue = CompareEval.evaluate(value, header.value);
-                            var value = displayValue != undefined ? displayValue : value;
+                            var value = displayValue != undefined ? (displayValue + (header.extra || '')) : value;
 
-                            return CellGenerator.Cell(value + (header.extra || '') + reference, '', color);
+                            return CellGenerator.Cell(value + reference, '', color);
                         }, cell => {
                             var value = header.expr(cell);
                             if (value == undefined) {
@@ -536,9 +554,9 @@ class Table {
                             var color = CompareEval.evaluate(value, header.color) || '';
 
                             var displayValue = CompareEval.evaluate(value, header.value);
-                            var value = displayValue != undefined ? displayValue : value;
+                            var value = displayValue != undefined ? (displayValue + (header.extra || '')) : (header.format ? header.format(cell, value) : value);
 
-                            return CellGenerator.Cell(value + (header.extra || ''), color, header.visible ? '' : color, hlast);
+                            return CellGenerator.Cell(value, color, header.visible ? '' : color, hlast);
                         }, header.expr);
                     }
                 });
@@ -930,6 +948,9 @@ const SP_KEYWORD_MAPPING = {
     'Base Luck': p => p.Luck.Base,
     'Base': p => p.Primary.Base,
     'Honor': p => p.Honor,
+    'Action Index': p => p.Action.Index,
+    'Status': p => p.Action.Status,
+    'Action Finish': p => p.Action.Finish,
     'Health': p => p.Health,
     'Armor': p => p.Armor,
     'Space': p => 5 + p.Fortress.Treasury,
@@ -1007,13 +1028,19 @@ const AST_OPERATORS = {
     '||': (a, b) => a || b,
     '&&': (a, b) => a && b,
     '?': (a, b, c) => a ? b : c,
-    'u-': (a) => -a
+    'u-': (a) => -a,
+    's': (a) => a
 };
 
 const AST_FUNCTIONS = {
     'trunc': (a) => Math.trunc(a),
     'ceil': (a) => Math.ceil(a),
     'floor': (a) => Math.floor(a),
+    
+    'datetime': (a) => formatDate(a),
+    'number': (a) => Number.isInteger(a) ? a : a.toFixed(2),
+    'duration': (a) => formatDuration(a),
+    'date': (a) => formatDateOnly(a)
 };
 
 const AST_FUNCTIONS_VAR = {
@@ -1023,8 +1050,11 @@ const AST_FUNCTIONS_VAR = {
 
 class AST {
     constructor (string) {
-        this.tokens = string.split(/(\|\||\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\,)/).map(token => token.trim()).filter(token => token.length);
+        this.tokens = string.split(/(\".*\"|\|\||\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\,)/).map(token => token.trim()).filter(token => token.length);
         this.root = this.evalExpression();
+        if (SettingsParser.debug) {
+            console.info(`[ EXPRESSION ]\nInput: ${ string }\nOutput: ${ this.toString() }\nErrors: ${ this.tokens.length }`);
+        }
     }
 
     peek (i) {
@@ -1042,7 +1072,13 @@ class AST {
 
     getVal () {
         var val = this.get();
-        if (val == '-') {
+        if (val[0] == '"') {
+            return {
+                a: val.slice(1, val.length - 1),
+                op: AST_OPERATORS['s'],
+                noeval: true
+            }
+        } else if (val == '-') {
             var v;
             if (this.peek() == '(') {
                 v = this.evalBracketExpression();
@@ -1251,7 +1287,8 @@ class AST {
 
     eval (p, node = this.root) {
         if (typeof(node) == 'object') {
-            if (node.c != undefined) {
+            if (node.noeval) return node.a;
+            else if (node.c != undefined) {
                 return node.op(this.eval(p, node.a), this.eval(p, node.b), this.eval(p, node.c));
             } else if (node.b != undefined) {
                 return node.op(this.eval(p, node.a), this.eval(p, node.b));
@@ -1264,6 +1301,37 @@ class AST {
             }
         } else if (typeof(node) == 'string') {
             if (node[0] == '@') {
+                return SettingsConstants[node.slice(1)]
+            } else if (SP_KEYWORD_INTERNAL[node]) {
+                return SP_KEYWORD_INTERNAL[node];
+            } else if (SP_KEYWORD_MAPPING[node]) {
+                return SP_KEYWORD_MAPPING[node](p);
+            } else {
+                return getObjectAt(p, node);
+            }
+        } else {
+            return node;
+        }
+    }
+
+    eval2 (p, arg, node = this.root) {
+        if (typeof(node) == 'object') {
+            if (node.noeval) return node.a;
+            else if (node.c != undefined) {
+                return node.op(this.eval2(p, arg, node.a), this.eval2(p, arg, node.b), this.eval2(p, arg, node.c));
+            } else if (node.b != undefined) {
+                return node.op(this.eval2(p, arg, node.a), this.eval2(p, arg, node.b));
+            } else if (node.a != undefined && Array.isArray(node.a)) {
+                return node.op(node.a.map(x => this.eval2(p, arg, arg, x)));
+            } else if (node.a != undefined) {
+                return node.op(this.eval2(p, arg, node.a));
+            } else {
+                return node.op();
+            }
+        } else if (typeof(node) == 'string') {
+            if (node == 'this') {
+                return arg;
+            } else if (node[0] == '@') {
                 return SettingsConstants[node.slice(1)]
             } else if (SP_KEYWORD_INTERNAL[node]) {
                 return SP_KEYWORD_INTERNAL[node];
@@ -1305,6 +1373,11 @@ const ARG_MAP = {
     'default': 'd'
 };
 
+const ARG_FORMATTERS = {
+    'number': (p, x) => Number.isInteger(x) ? x : x.toFixed(2),
+    'date': (p, x) => formatDate(x)
+}
+
 const SFormat = {
     Normal: string => string.replace(/ /g, '&nbsp;'),
     Keyword: string => `<span class="ta-keyword">${ string.replace(/ /g, '&nbsp;') }</span>`,
@@ -1317,6 +1390,14 @@ const SFormat = {
 };
 
 const SettingsCommands = [
+    // debug - Show debug information about settings in the console
+    new SettingsCommand(/^(debug) (on|off)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.enableDebug(ARG_MAP[a]);
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
+    }),
     // Create new category
     new SettingsCommand(/^(category) (\w+[\w ]*)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
@@ -1409,6 +1490,28 @@ const SettingsCommands = [
         return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
     }),
     // Local
+    // format - Specifies formatter for the field
+    new SettingsCommand(/^(format) (.*)$/, function (root, string) {
+        var [ , key, arg ] = this.match(string);
+        if (ARG_FORMATTERS[arg]) {
+            root.setLocalVariable(key, ARG_FORMATTERS[arg]);
+        } else {
+            var ast = new AST(arg);
+            if (ast.isValid()) {
+                root.setLocalVariable(key, (player, val) => {
+                    return ast.eval2(player, val);
+                });
+            }
+        }
+    }, function (string) {
+        var [ , key, arg ] = this.match(string);
+        if (ARG_FORMATTERS[arg]) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
+        } else {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
+        }
+    }),
+    // Local
     // alias - Override name of the column
     new SettingsCommand(/^(alias) ((@?)(\w+[\w ]*))$/, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -1433,11 +1536,10 @@ const SettingsCommands = [
     new SettingsCommand(/^(expr) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         var ast = new AST(a);
-
         if (ast.isValid()) {
             root.setLocalVariable(key, player => {
                 var value = ast.eval(player);
-                return isNaN(value) ? undefined : (Number.isInteger(value) ? value : value.toFixed(2));
+                return typeof(value) == 'string' ? value : (isNaN(value) ? undefined : value);
             });
         }
     }, function (string) {
@@ -1590,6 +1692,10 @@ const Constants = {
 }
 
 const SettingsParser = new (class {
+    enableDebug (enable) {
+        this.debug = enable;
+    }
+
     format (string) {
         var content = '';
         for (var line of string.split('\n')) {
@@ -1624,6 +1730,7 @@ const SettingsParser = new (class {
 
     parse (string) {
         this.clear();
+        console.clear();
 
         for (var line of string.split('\n')) {
             if (line.indexOf('#') != -1) {
@@ -1635,6 +1742,10 @@ const SettingsParser = new (class {
             var command = SettingsCommands.find(command => command.isValid(trimmed));
             if (command) {
                 command.parse(this, trimmed);
+            } else {
+                if (line != '' && SettingsParser.debug) {
+                    console.warn(`[ INVALID OPTION ]\nLine: ${ line }\n`);
+                }
             }
         }
 
@@ -1644,6 +1755,7 @@ const SettingsParser = new (class {
     }
 
     clear () {
+        this.debug = false;
         this.root = {
             c: [],
             outdated: true
