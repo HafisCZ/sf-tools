@@ -1036,7 +1036,7 @@ const AST_FUNCTIONS = {
     'trunc': (a) => Math.trunc(a),
     'ceil': (a) => Math.ceil(a),
     'floor': (a) => Math.floor(a),
-    
+
     'datetime': (a) => formatDate(a),
     'number': (a) => Number.isInteger(a) ? a : a.toFixed(2),
     'duration': (a) => formatDuration(a),
@@ -1447,12 +1447,11 @@ const SettingsCommands = [
     // percentage - Show field as a percentage
     // hydra - Show hydra achievement
     // flip - Treat lower value as better
-    // visible - Show text on the background
     // brackets - Show difference within brackets
     // statistics - Show statistics of a column
     // maximum - Show maximum knights based on fortress level
     // grail - Show grail achievement
-    new SettingsCommand(/^(difference|percentage|hydra|flip|visible|brackets|statistics|maximum|grail) (on|off)$/, function (root, string) {
+    new SettingsCommand(/^(difference|percentage|hydra|flip|brackets|statistics|maximum|grail) (on|off)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setLocalSharedVariable(key, ARG_MAP[a]);
     }, function (string) {
@@ -1488,6 +1487,15 @@ const SettingsCommands = [
     }, function (string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+    }),
+    // Local
+    // visible - Show text on the background
+    new SettingsCommand(/^(visible) (on|off)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setLocalSharedVariable(key, ARG_MAP[a]);
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
     }),
     // Local
     // format - Specifies formatter for the field
@@ -1765,10 +1773,10 @@ const SettingsParser = new (class {
         this.currentHeader = null;
 
         this.globals = {};
-        this.shared = {
+        this.shared = {};
+        this.categoryShared = {
             visible: true
         };
-        this.categoryShared = {};
     }
 
     createHeader (name) {
@@ -1792,7 +1800,10 @@ const SettingsParser = new (class {
     createCategory (name) {
         this.pushCategory();
 
-        this.categoryShared = {};
+        this.categoryShared = {
+            visible: true
+        };
+
         this.currentCategory = {
             name: name,
             h: []
