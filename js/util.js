@@ -5,20 +5,21 @@ function trail (c, n) {
 
 // Format date
 function formatDateOnly (date) {
-    if (date == '' || date == undefined || date <= 0) return '';
-    date = new Date(date);
+    if (date == '' || date == undefined) return '';
+    date = new Date(Math.max(0, date));
     return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear();
 }
 
 // Format datetime
 function formatDate (date) {
-    if (date == '' || date == undefined || date <= 0) return '';
-    date = new Date(date);
+    if (date == '' || date == undefined) return '';
+    date = new Date(Math.max(0, date));
     return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear() + ' ' + trail(date.getHours(), 2) + ':' + trail(date.getMinutes(), 2);
 }
 
 function formatDuration (duration) {
-    if (duration == '' || duration == undefined || duration <= 0) return '';
+    if (duration == '' || duration == undefined) return '';
+    duration = Math.max(0, duration);
     var days = Math.trunc(duration / (1000 * 60 * 60 * 24));
     var hours = Math.trunc((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     var minutes = Math.trunc((duration % (1000 * 60 * 60)) / (1000 * 60));
@@ -216,6 +217,7 @@ class ComplexDataType {
 }
 
 function getObjectAt (obj, path) {
+    if (!obj) return null;
     var sub = path.split('.');
     for (var i = 0; i < sub.length; i++) {
         obj = obj[sub[i]];

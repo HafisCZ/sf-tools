@@ -615,7 +615,7 @@ Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
                                 <div class="column">${ GROUP_ROLES[player.Group.Role] }</div>
                             ` : '' }
                         ` : '' }
-                        ${ player.Fortress.Upgrade.Building ? `
+                        ${ player.Fortress.Upgrade.Building >= 0 ? `
                             <div class="column"><br></div>
                             <div class="column"></div>
                             <div class="column"></div>
@@ -1199,7 +1199,7 @@ Handle.bind(EVT_INIT, function () {
             These headers are reserved and already contain a path. If you want to have a custom header with the same name as a reserved header, you will have to use different name and then rename them using the <code>alias</code> option.</br>
             </br>
             <div class="ui three column css-compact-grid grid">
-                ${ Object.keys(ReservedHeaders).map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
+                ${ Object.keys(SP_KEYWORD_MAPPING).map(c => `<div class="left aligned column"><code>${ c }</code></div>`).join('') }
             </div>
         </div>
         <div class="ui tab basic segment padding-none" data-tab="tab5">

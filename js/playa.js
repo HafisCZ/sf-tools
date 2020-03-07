@@ -561,6 +561,8 @@ class SFPlayer {
             this.Action.Status = 0;
             this.Action.Index = 0;
         }
+
+        this.Fortress.Upgrade.Building == 0 ? -1 : (12 - this.Fortress.Upgrade.Building);
     }
 }
 
