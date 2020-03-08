@@ -438,7 +438,6 @@ class SFPlayer {
             }
         }
 
-        this.Achievements.Runes = this.Achievements[70].Owned + this.Achievements[71].Owned + this.Achievements[72].Owned + this.Achievements[73].Owned + this.Achievements[74].Owned;
         this.Achievements.Dehydration = this.Achievements[63].Owned;
         this.Achievements.Grail = this.Achievements[76].Owned;
     }
@@ -495,42 +494,105 @@ class SFPlayer {
             DamageFire: 0,
             DamageCold: 0,
             DamageLightning: 0,
-            Resistance: 0
+            Resistance: 0,
+            Runes: 0,
+            Achievements: 0
         };
+
+        if (this.Achievements[74].Owned) {
+            this.Runes.Runes = 33;
+            this.Runes.Achievements = 33;
+        } else if (this.Achievements[73].Owned) {
+            this.Runes.Runes = 24;
+            this.Runes.Achievements = 24;
+        } else if (this.Achievements[72].Owned) {
+            this.Runes.Runes = 18;
+            this.Runes.Achievements = 18;
+        } else if (this.Achievements[71].Owned) {
+            this.Runes.Runes = 12;
+            this.Runes.Achievements = 12;
+        } else if (this.Achievements[70].Owned) {
+            this.Runes.Runes = 6;
+            this.Runes.Achievements = 6;
+        }
 
         for (var item of Object.values(this.Items)) {
             if (item.HasRune) {
                 var rune = item.AttributeTypes[2];
                 var value = item.Attributes[2];
 
-                if (rune == 31) this.Runes.Gold += value;
-                else if (rune == 32) this.Runes.Chance += value;
-                else if (rune == 33) this.Runes.Quality += value;
-                else if (rune == 34) this.Runes.XP += value;
-                else if (rune == 35) this.Runes.Health += value;
-                else if (rune == 36) {
+                if (rune == 31) {
+                    this.Runes.Gold += value;
+                    if (RUNE_VALUE.GOLD(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.GOLD(value);
+                    }
+                } else if (rune == 32) {
+                    this.Runes.Chance += value;
+                    if (RUNE_VALUE.EPIC_FIND(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.EPIC_FIND(value);
+                    }
+                } else if (rune == 33) {
+                    this.Runes.Quality += value;
+                    if (RUNE_VALUE.ITEM_QUALITY(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.ITEM_QUALITY(value);
+                    }
+                } else if (rune == 34) {
+                    this.Runes.XP += value;
+                    if (RUNE_VALUE.XP(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.XP(value);
+                    }
+                } else if (rune == 35) {
+                    this.Runes.Health += value;
+                    if (RUNE_VALUE.HEALTH(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.HEALTH(value);
+                    }
+                } else if (rune == 36) {
                     this.Runes.ResistanceFire += value;
                     this.Runes.Resistance += Math.trunc(value / 3);
+                    if (RUNE_VALUE.SINGLE_RESISTANCE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.SINGLE_RESISTANCE(value);
+                    }
                 } else if (rune == 37) {
                     this.Runes.ResistanceCold += value;
                     this.Runes.Resistance += Math.trunc(value / 3);
+                    if (RUNE_VALUE.SINGLE_RESISTANCE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.SINGLE_RESISTANCE(value);
+                    }
                 } else if (rune == 38) {
                     this.Runes.ResistanceLightning += value;
                     this.Runes.Resistance += Math.trunc(value / 3);
+                    if (RUNE_VALUE.SINGLE_RESISTANCE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.SINGLE_RESISTANCE(value);
+                    }
                 } else if (rune == 39) {
                     this.Runes.ResistanceFire += value;
                     this.Runes.ResistanceCold += value;
                     this.Runes.ResistanceLightning += value;
                     this.Runes.Resistance += value;
+                    // Ignored due to old total resistance
+                    /*
+                        if (RUNE_VALUE.TOTAL_RESISTANCE(value) > this.Runes.Runes) {
+                            this.Runes.Runes = RUNE_VALUE.TOTAL_RESISTANCE(value);
+                        }
+                    */
                 } else if (rune == 40) {
                     this.Runes.DamageFire += value;
                     this.Runes.Damage += value;
+                    if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.ELEMENTAL_DAMAGE(value);
+                    }
                 } else if (rune == 41) {
                     this.Runes.DamageCold += value;
                     this.Runes.Damage += value;
+                    if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.ELEMENTAL_DAMAGE(value);
+                    }
                 } else if (rune == 42) {
                     this.Runes.DamageLightning += value;
                     this.Runes.Damage += value;
+                    if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.ELEMENTAL_DAMAGE(value);
+                    }
                 }
             }
         }

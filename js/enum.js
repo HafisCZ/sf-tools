@@ -8,21 +8,6 @@ const PLAYER_CLASS = [
     'Berserker'
 ];
 
-const RUNE = {
-    GOLD: 31,
-    EPIC_FIND: 32,
-    ITEM_QUALITY: 33,
-    XP: 34,
-    HEALTH: 35,
-    FIRE_RESISTANCE: 36,
-    COLD_RESISTANCE: 37,
-    LIGHTNING_RESISTANCE: 38,
-    TOTAL_RESITANCE: 39,
-    FIRE_DAMAGE: 40,
-    COLD_DAMAGE: 41,
-    LIGHTNING_DAMAGE: 42
-};
-
 const PLAYER_ACTIONS = [
     'Idle',
     'Working',
@@ -911,15 +896,6 @@ const ACHIEVEMENTS = [
   "NORDICSHADOW"
 ];
 
-const ACHIEVEMENTS_RUNES = [
-    '',
-    'Million+',
-    'Trillion+',
-    'Quintillion+',
-    'Septillion+',
-    'Decillion+'
-];
-
 const FORTRESS_BUILDINGS = [
     'Fortress',
     'Laborers\' Quarters',
@@ -993,3 +969,142 @@ const POTION_DEXTERITY_LARGE = 12;
 const POTION_INTELLIGENCE_LARGE = 13;
 const POTION_CONSTITUTION_LARGE = 14;
 const POTION_LUCK_LARGE = 15;
+
+// Rune / Rune table
+const RUNE = {
+    GOLD: 31,
+    EPIC_FIND: 32,
+    ITEM_QUALITY: 33,
+    XP: 34,
+    HEALTH: 35,
+    FIRE_RESISTANCE: 36,
+    COLD_RESISTANCE: 37,
+    LIGHTNING_RESISTANCE: 38,
+    TOTAL_RESITANCE: 39,
+    FIRE_DAMAGE: 40,
+    COLD_DAMAGE: 41,
+    LIGHTNING_DAMAGE: 42
+};
+
+const RUNE_VALUE = {
+    GOLD: function (rune) {
+        return rune < 2 ? 0 : (3 + 2 * (rune - 2));
+    },
+    EPIC_FIND: function (rune) {
+        return rune < 2 ? 0 : (3 + 2 * (rune - 2));
+    },
+    ITEM_QUALITY: function (rune) {
+        switch (rune) {
+            case 1: return 3;
+            case 2: return 19;
+            default: return 0;
+        }
+    },
+    XP: function (rune) {
+        switch (rune) {
+            case 1: return 3;
+            case 2: return 9;
+            case 3: return 25;
+            case 4: return 35;
+            case 5: return 45;
+            default: return 0;
+        }
+    },
+    HEALTH: function (rune) {
+        switch (rune) {
+            case 1: return 3;
+            case 2: return 6;
+            case 3: return 17;
+            case 4: return 23;
+            case 5: return 30;
+            case 6: return 36;
+            case 7: return 43;
+            default: return 0;
+        }
+    },
+    SINGLE_RESISTANCE: function (rune) {
+        switch (rune) {
+            case 3: return 3;
+            case 4: return 4;
+            case 5: return 6;
+            case 6: return 8;
+            case 7: return 9;
+            case 8: return 10;
+            case 9: return 12;
+            case 10: return 13;
+            case 11: return 14;
+            case 12: return 15;
+            case 13: return 17;
+            case 14: return 18;
+            case 15: return 20;
+            case 16: return 21;
+            case 17: return 22;
+            case 18: return 23;
+            case 19: return 25;
+            case 20: return 26;
+            case 21: return 27;
+            case 22: return 28;
+            case 23: return 30;
+            case 24: return 31;
+            case 25: return 32;
+            case 26: return 33;
+            case 27: return 35;
+            case 28: return 36;
+            case 29: return 38;
+            case 30: return 40;
+            case 31: return 41;
+            case 32: return 42;
+            case 33: return 43;
+            case 34: return 45;
+            case 35: return 46;
+            default: return 0;
+        }
+    },
+    TOTAL_RESISTANCE: function (rune) {
+        switch (rune) {
+            case 2: return 3;
+            case 3: return 12;
+            case 4: return 15;
+            case 5: return 20;
+            case 6: return 23;
+            case 7: return 27;
+            case 8: return 31;
+            case 9: return 34;
+            case 10: return 38;
+            case 11: return 42;
+            default: return 0;
+        }
+    },
+    ELEMENTAL_DAMAGE: function (rune) {
+        switch (rune) {
+            case 2: return 3;
+            case 3: return 4;
+            case 4: return 6;
+            case 5: return 8;
+            case 6: return 10;
+            case 7: return 11;
+            case 8: return 12;
+            case 9: return 15;
+            case 10: return 16;
+            case 11: return 17;
+            case 12: return 19;
+            case 13: return 21;
+            case 14: return 23;
+            case 15: return 24;
+            case 16: return 26;
+            case 17: return 28;
+            case 18: return 29;
+            case 19: return 31;
+            case 20: return 32;
+            case 21: return 34;
+            case 22: return 36;
+            case 23: return 38;
+            case 24: return 39;
+            case 25: return 40;
+            case 26: return 42;
+            case 27: return 44;
+            case 28: return 46;
+            default: return 0;
+        }
+    }
+}
