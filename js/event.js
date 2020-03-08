@@ -891,7 +891,7 @@ Handle.bind(EVT_INIT, function () {
             var x = player.List.find(x => x[0] <= tp);
             if (x) {
                 var p = x[1];
-                var matches = terms.reduce((total, term) => total + ((p.Name.toLowerCase().includes(term) || p.Prefix.includes(term) || PLAYER_CLASS_SEARCH[p.Class].includes(term) || (p.hasGuild() && p.Group.Name.toLowerCase().includes(term))) ? 1 : 0), 0);
+                var matches = terms.reduce((total, term) => total + (((term == 'latest' && player.LatestTimestamp == Database.Latest) || p.Name.toLowerCase().includes(term) || p.Prefix.includes(term) || PLAYER_CLASS_SEARCH[p.Class].includes(term) || (p.hasGuild() && p.Group.Name.toLowerCase().includes(term))) ? 1 : 0), 0);
                 if (matches == terms.length) {
                     tablePlayers.add(p, p.Timestamp == tp, hidden);
                 }

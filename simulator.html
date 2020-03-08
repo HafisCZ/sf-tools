@@ -81,7 +81,16 @@
         <div class="ui main container">
             <div class="ui five columns middle aligned grid">
                 <div class="two wide column">
-
+                    <div class="ui mini form">
+                        <div class="two fields">
+                            <div class="field">
+                                <input class="text-center" type="text" id="fs-selftest" placeholder="Test">
+                            </div>
+                            <div class="field">
+                                <input class="text-center" type="text" id="fs-selftest-result" disabled>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="four wide column">
                     <h2 class="ui centered header">Fighter A</h2>
@@ -566,6 +575,23 @@
                 event.stopPropagation();
             });
 
+            $('#fs-selftest-result').val('');
+            $('#fs-selftest').val('');
+
+            var selftest = null;
+            $('#fs-selftest').on('input', function (event) {
+                try {
+                    var data = JSON.parse($(this).val());
+                    if (typeof(data) == 'object' && data.rounds) {
+                        selftest = data;
+                    } else {
+                        selftest = null;
+                    }
+                } catch (e) {
+                    selftest = null;
+                }
+            }).trigger('input');
+
             $('#fs-detail-a, #fs-detail-b').hide();
 
             $('#fs-a, #fs-b').on('paste', function (event) {
@@ -584,6 +610,34 @@
             // Run simulation
             $('#fs-run').click(function () {
                 var battle = runBattle(read($('#fs-a')), read($('#fs-b')));
+
+                if (selftest) {
+                    var errors = 0;
+
+                    for (var i = 0, round; round = selftest.rounds[i]; i++) {
+                        var rage = 1 + i / 6;
+                        var source = selftest.a == round.source ? battle.a : battle.b;
+
+                        if ((round.type % 10) <= 1) {
+                            var rdmg = round.damage / (rage * (round.crit ? source.weapon1.crit : 1));
+                            if (rdmg < source.weapon1.range.min || rdmg > source.weapon1.range.max) {
+                                errors++;
+                            }
+
+                            if (source.model.Class == 4 && selftest.rounds[i++] && (selftest.rounds[i] % 10) <= 10) {
+                                round = selftest.rounds[i];
+                                rdmg = round.damage / (rage * (round.crit ? source.weapon2.crit : 1));
+                                if (rdmg < source.weapon2.range.min || rdmg > source.weapon2.range.max) {
+                                    errors++;
+                                }
+                            }
+                        }
+                    }
+
+                    $('#fs-selftest-result').val(errors);
+                } else {
+                    $('#fs-selftest-result').val('');
+                }
 
                 $('#fs-result').text(`${ (100 * battle.wins / 1E5).toFixed(1) }%`);
                 $('#fs-ratio').text(`${ battle.wins } / ${ 1E5 - battle.wins }`);
