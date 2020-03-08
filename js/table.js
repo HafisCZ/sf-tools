@@ -775,6 +775,11 @@ const SP_KEYWORD_MAPPING = {
     'Honor': {
         expr: p => p.Honor
     },
+    'Runes': {
+        expr: p => p.Achievements.Runes,
+        format: (p, x) => ACHIEVEMENTS_RUNES[x],
+        width: 120
+    },
     'Action Index': {
         expr: p => p.Action.Index
     },

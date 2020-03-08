@@ -438,6 +438,7 @@ class SFPlayer {
             }
         }
 
+        this.Achievements.Runes = this.Achievements[70].Owned + this.Achievements[71].Owned + this.Achievements[72].Owned + this.Achievements[73].Owned + this.Achievements[74].Owned;
         this.Achievements.Dehydration = this.Achievements[63].Owned;
         this.Achievements.Grail = this.Achievements[76].Owned;
     }

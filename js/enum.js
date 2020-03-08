@@ -911,6 +911,15 @@ const ACHIEVEMENTS = [
   "NORDICSHADOW"
 ];
 
+const ACHIEVEMENTS_RUNES = [
+    '',
+    'Million+',
+    'Trillion+',
+    'Quintillion+',
+    'Septillion+',
+    'Decillion+'
+];
+
 const FORTRESS_BUILDINGS = [
     'Fortress',
     'Laborers\' Quarters',
