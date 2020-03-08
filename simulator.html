@@ -598,7 +598,7 @@
                 try {
                     var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
                     var player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
-                    player.Fortress.Gladiator = 15;
+                    player.Fortress.Gladiator = player.Fortress.Gladiator || 15;
                     fill($(this), player);
                     $('.dropdown').dropdown();
                     $(this).find('[data-path="Class"]').trigger('change');

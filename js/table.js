@@ -994,6 +994,10 @@ const SP_KEYWORD_MAPPING = {
     },
     'Aura': {
         expr: p => p.Toilet.Aura
+    },
+    'Gladiator': {
+        expr: p => p.Fortress.Gladiator,
+        format: (p, x) => (x == 0 ? '' : (x == 1 ? '1+' : (x == 5 ? '5+' : (x == 10 ? '10+' : 15))))
     }
 };
 

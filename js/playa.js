@@ -626,6 +626,18 @@ class SFPlayer {
         }
 
         this.Fortress.Upgrade.Building == 0 ? -1 : (12 - this.Fortress.Upgrade.Building);
+
+        if (this.Achievements[50].Owned) {
+            this.Fortress.Gladiator = 15;
+        } else if (this.Achievements[51].Owned) {
+            this.Fortress.Gladiator = 10;
+        } else if (this.Achievements[52].Owned) {
+            this.Fortress.Gladiator = 5;
+        } else if (this.Level < 110) {
+            this.Fortress.Gladiator = 0;
+        } else {
+            this.Fortress.Gladiator = 1;
+        }
     }
 }
 
