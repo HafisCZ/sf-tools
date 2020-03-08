@@ -1289,6 +1289,8 @@ class AST {
                 return SP_KEYWORD_INTERNAL[node];
             } else if (SP_KEYWORD_MAPPING[node]) {
                 return SP_KEYWORD_MAPPING[node].expr(p);
+            } else if (SettingsParser.root.vars[node]) {
+                return SettingsParser.root.vars[node](p);
             } else {
                 return getObjectAt(p, node);
             }
@@ -1320,6 +1322,8 @@ class AST {
                 return SP_KEYWORD_INTERNAL[node];
             } else if (SP_KEYWORD_MAPPING[node] && p) {
                 return SP_KEYWORD_MAPPING[node].expr(p);
+            } else if (SettingsParser.root.vars[node]) {
+                return SettingsParser.root.vars[node](p);
             } else {
                 return getObjectAt(p, node);
             }
@@ -1362,6 +1366,7 @@ const ARG_MAP = {
 
 const ARG_FORMATTERS = {
     'number': (p, x) => Number.isInteger(x) ? x : x.toFixed(2),
+    'fnumber': (p, x) => formatAsSpacedNumber(x),
     'date': (p, x) => formatDate(x),
     'duration': (p, x) => formatDuration(x),
     'default': (p, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
@@ -1379,6 +1384,19 @@ const SFormat = {
 };
 
 const SettingsCommands = [
+    // Global
+    // var - Create a variable
+    new SettingsCommand(/^(set) (\w+[\w ]*) as (.+)$/, function (root, string) {
+        var [ , key, name, a ] = this.match(string);
+        var ast = new AST(a);
+        if (ast.isValid()) {
+            root.setVariable(name, player => ast.eval(player));
+        }
+    }, function (string) {
+        var [ , key, name, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ SFormat.Normal(a) }`;
+    }),
+    // Global
     // debug - Show debug information about settings in the console
     new SettingsCommand(/^(debug) (on|off)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
@@ -1766,6 +1784,7 @@ const SettingsParser = new (class {
         this.debug = false;
         this.root = {
             c: [],
+            vars: {},
             outdated: true
         };
 
@@ -1777,6 +1796,10 @@ const SettingsParser = new (class {
         this.categoryShared = {
             visible: true
         };
+    }
+
+    setVariable (name, ast) {
+        this.root.vars[name] = ast;
     }
 
     createHeader (name) {

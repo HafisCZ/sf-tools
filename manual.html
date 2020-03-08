@@ -189,7 +189,8 @@
                     <p>
                         Use this option to change the displayed value of the cell. Does not work if a <code>value</code> option is specified.<br/>
                         This option functions the same way as <code>expr</code> does and you can use most of common operators, constants, header names and functions.<br/>
-                        The keyword <code>this</code> is used to get the current cell value.
+                        The keyword <code>this</code> is used to get the current cell value.<br/>
+                        Any of <code>number</code>, <code>fnumber</code>, <code>duration</code>, <code>date</code> and <code>default</code> arguments can be also used without specifying a complete expression.
                     </p>
                 </div>
                 <div class="column">
@@ -286,6 +287,23 @@
                 </div>
                 <div class="column">
                     <div><code>performance 500</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">set <a class="ui small red label">Global</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        You can use this option to create a custom variable that can be later used in any expression.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>set Resistance as Armor / Level</code></div>
+                    <div><code>set Max Resistance as Class == @warrior || Class == @battlemage ? 50 : (Class == @mage ? 10 : 25)</code></div>
+                    <div><br/></div>
+                    <div><code>header Resistance</code></div>
+                    <div><code>expr min(Resistance + (Class == @battlemage ? 40 : 0), Max Resistance)</code></div>
+                    <div><code>format trunc(this) + "%"</code></div>
                 </div>
             </div>
             <h3 class="ui header">statistics <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
