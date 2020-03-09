@@ -874,34 +874,100 @@ Handle.bind(EVT_INIT, function () {
 
     // Player search
     $('#psearch').on('change', function () {
-        var terms = $('#psearch').val().toLowerCase().split(' ').filter(term => term.trim().length);
-        var items = [];
+        // Parse input search string
+        var search = $('#psearch').val().split(/(?:\s|\b)(c|p|g|s|e|l):/);
+console.log(search);
+        // First is global search
+        var terms = [
+            {
+                test: function (arg, player, timestamp) {
+                    var matches = arg.reduce((total, term) => {
+                        if (player.Name.toLowerCase().includes(term) || player.Prefix.includes(term) || PLAYER_CLASS_SEARCH[player.Class].includes(term) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(term))) {
+                            return total + 1;
+                        } else {
+                            return total;
+                        }
+                    }, 0);
+                    return (matches == arg.length);
+                },
+                arg: search[0].toLowerCase().split(' ')
+            }
+        ];
 
-        var tp = Number(State.playersTimestamp);
+        // Create groups based on search tokens
+        // c - class
+        // p - player name
+        // g - guild name
+        // s - server name
+        // l - latest
+        // e - expression
+        for (var i = 1; i < search.length; i += 2) {
+            var key = search[i];
+            var arg = (search[i + 1] || '').trim();
+
+            if (key == 'c') {
+                terms.push({
+                    test: (arg, player, timestamp) => PLAYER_CLASS_SEARCH[player.Class] == arg,
+                    arg: arg.toLowerCase()
+                });
+            } else if (key == 'p') {
+                terms.push({
+                    test: (arg, player, timestamp) => player.Name.toLowerCase().includes(arg),
+                    arg: arg.toLowerCase()
+                });
+            } else if (key == 'g') {
+                terms.push({
+                    test: (arg, player, timestamp) => player.hasGuild() && player.Group.Name.toLowerCase().includes(arg),
+                    arg: arg.toLowerCase()
+                });
+            } else if (key == 's') {
+                terms.push({
+                    test: (arg, player, timestamp) => player.Prefix.includes(arg),
+                    arg: arg.toLowerCase()
+                });
+            } else if (key == 'l') {
+                terms.push({
+                    test: (arg, player, timestamp) => player.Timestamp == timestamp,
+                    arg: arg.toLowerCase()
+                });
+            } else if (key == 'e') {
+                terms.push({
+                    test: (arg, player, timestamp) => arg.eval(player),
+                    arg: new AST(arg)
+                });
+            }
+        }
+
+        // Table
+        var timestamp = Number(State.playersTimestamp);
+        var tableEntries = new PlayersTableArray();
 
         var table = State.getCachedTable();
-        var tablePlayers = new PlayersTableArray();
+        var sortStyle = State.getSortStyle();
+        var sortBy = State.getSort();
 
+        // Fill table
         for (var player of Object.values(Database.Players)) {
             var hidden = State.getHidden().includes(player.Latest.Identifier);
             if (!State.showHiddenPlayers && hidden) {
                 continue;
             }
 
-            var x = player.List.find(x => x[0] <= tp);
-            if (x) {
-                var p = x[1];
-                var matches = terms.reduce((total, term) => total + (((term == 'latest' && player.LatestTimestamp == Database.Latest) || p.Name.toLowerCase().includes(term) || p.Prefix.includes(term) || PLAYER_CLASS_SEARCH[p.Class].includes(term) || (p.hasGuild() && p.Group.Name.toLowerCase().includes(term))) ? 1 : 0), 0);
-                if (matches == terms.length) {
-                    tablePlayers.add(p, p.Timestamp == tp, hidden);
+            var currentPlayer = player.List.find(entry => entry[0] <= timestamp);
+            if (currentPlayer) {
+                var matches = true;
+                for (var term of terms) {
+                    matches &= term.test(term.arg, currentPlayer[1], timestamp);
+                }
+
+                if (matches) {
+                    tableEntries.add(currentPlayer[1], currentPlayer[1].Timestamp == timestamp, hidden);
                 }
             }
         }
 
-        var sortStyle = State.getSortStyle();
-        var sortBy = State.getSort();
-
-        var [content, w] = table.createPlayersTable(tablePlayers, sortBy, sortStyle);
+        // Generate table
+        var [content, w] = table.createPlayersTable(tableEntries, sortBy, sortStyle);
 
         $('#pl-table').html(content);
         $('#pl-table').css('position', 'absolute');
