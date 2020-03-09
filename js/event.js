@@ -875,8 +875,8 @@ Handle.bind(EVT_INIT, function () {
     // Player search
     $('#psearch').on('change', function () {
         // Parse input search string
-        var search = $('#psearch').val().split(/(?:\s|\b)(c|p|g|s|e|l):/);
-console.log(search);
+        var search = $('#psearch').val().split(/(?:\s|\b)(c|p|g|s|e|l|f):/);
+
         // First is global search
         var terms = [
             {
@@ -894,6 +894,8 @@ console.log(search);
             }
         ];
 
+        var perf = undefined;
+
         // Create groups based on search tokens
         // c - class
         // p - player name
@@ -901,6 +903,7 @@ console.log(search);
         // s - server name
         // l - latest
         // e - expression
+        // f - first x
         for (var i = 1; i < search.length; i += 2) {
             var key = search[i];
             var arg = (search[i + 1] || '').trim();
@@ -935,6 +938,8 @@ console.log(search);
                     test: (arg, player, timestamp) => arg.eval(player),
                     arg: new AST(arg)
                 });
+            } else if (key == 'f') {
+                perf = isNaN(arg) ? 1 : Math.max(1, Number(arg));
             }
         }
 
@@ -967,7 +972,7 @@ console.log(search);
         }
 
         // Generate table
-        var [content, w] = table.createPlayersTable(tableEntries, sortBy, sortStyle);
+        var [content, w] = table.createPlayersTable(tableEntries, sortBy, sortStyle, perf);
 
         $('#pl-table').html(content);
         $('#pl-table').css('position', 'absolute');
