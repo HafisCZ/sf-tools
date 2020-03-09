@@ -792,7 +792,8 @@ const SP_KEYWORD_MAPPING = {
         format: (p, x) => x < 0 ? formatDate(x) : ''
     },
     'Health': {
-        expr: p => p.Health
+        expr: p => p.Health,
+        width: 120
     },
     'Armor': {
         expr: p => p.Armor
@@ -1019,25 +1020,22 @@ const AST_OPERATORS = {
 };
 
 const AST_FUNCTIONS = {
-    'trunc': (a) => Math.trunc(a),
-    'ceil': (a) => Math.ceil(a),
-    'floor': (a) => Math.floor(a),
-    'datetime': (a) => formatDate(a),
-    'number': (a) => Number.isInteger(a) ? a : a.toFixed(2),
-    'duration': (a) => formatDuration(a),
-    'date': (a) => formatDateOnly(a),
-    'fnumber': (a) => formatAsSpacedNumber(a),
-    'small': (a) => CellGenerator.Small(a)
-};
-
-const AST_FUNCTIONS_VAR = {
+    'trunc': (a) => Math.trunc(a[0]),
+    'ceil': (a) => Math.ceil(a[0]),
+    'floor': (a) => Math.floor(a[0]),
+    'datetime': (a) => formatDate(a[0]),
+    'number': (a) => Number.isInteger(a[0]) ? a[0] : a[0].toFixed(2),
+    'duration': (a) => formatDuration(a[0]),
+    'date': (a) => formatDateOnly(a[0]),
+    'fnumber': (a) => formatAsSpacedNumber(a[0]),
+    'small': (a) => CellGenerator.Small(a[0]),
     'min': (a) => Math.min(... a),
     'max': (a) => Math.max(... a)
 };
 
 class AST {
     constructor (string) {
-        this.tokens = string.split(/(\"[^\"]*\"|\|\||\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\,)/).map(token => token.trim()).filter(token => token.length);
+        this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(/(\'[^\']*\'|\"[^\"]*\"|\|\||\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\,)/).map(token => token.trim()).filter(token => token.length);
         this.root = this.evalExpression();
         if (SettingsParser.debug) {
             console.info(`[ EXPRESSION ]\nInput: ${ string }\nOutput: ${ this.toString() }\nErrors: ${ this.tokens.length }`);
@@ -1059,9 +1057,9 @@ class AST {
 
     getVal () {
         var val = this.get();
-        if (val[0] == '"') {
+        if (val[0] == '\"' || val[0] == '\'') {
             return {
-                a: val.slice(1, val.length - 1),
+                a: val.slice(1, val.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\''),
                 op: AST_OPERATORS['s'],
                 noeval: true
             }
@@ -1069,7 +1067,7 @@ class AST {
             var v;
             if (this.peek() == '(') {
                 v = this.evalBracketExpression();
-            } else if (AST_FUNCTIONS[this.peek()] || AST_FUNCTIONS_VAR[this.peek()]) {
+            } else if (AST_FUNCTIONS[this.peek()]) {
                 v = this.getVal();
             } else {
                 v = this.get();
@@ -1079,12 +1077,7 @@ class AST {
                 a: v,
                 op: AST_OPERATORS['u-']
             };
-        } else if (AST_FUNCTIONS[val]) {
-            return {
-                a: this.evalBracketExpression(),
-                op: AST_FUNCTIONS[val]
-            };
-        } else if (AST_FUNCTIONS_VAR[val]) {
+        } else if (AST_FUNCTIONS[val] || (/\w+/.test(val) && this.peek() == '(')) {
             var a = [];
             this.get();
 
@@ -1102,7 +1095,7 @@ class AST {
             this.get();
             return {
                 a: a,
-                op: AST_FUNCTIONS_VAR[val]
+                op: AST_FUNCTIONS[val] ? AST_FUNCTIONS[val] : val
             };
         } else {
             return val;
@@ -1261,7 +1254,7 @@ class AST {
             } else if (node.b != undefined) {
                 return `${ node.op.name }(${ this.toString(node.a) }, ${ this.toString(node.b) })`;
             } else if (node.a != undefined && Array.isArray(node.a)) {
-                return `${ node.op.name }(${ node.a.map(x => this.toString(x)).join(', ') })`
+                return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.a.map(x => this.toString(x)).join(', ') })`
             } else if (node.a != undefined) {
                 return `${ node.op.name }(${ this.toString(node.a) })`;
             } else {
@@ -1272,54 +1265,39 @@ class AST {
         }
     }
 
-    eval (p, node = this.root) {
+    eval (p, arg = undefined, node = this.root) {
         if (typeof(node) == 'object') {
             if (node.noeval) return node.a;
             else if (node.c != undefined) {
-                return node.op(this.eval(p, node.a), this.eval(p, node.b), this.eval(p, node.c));
+                return node.op(this.eval(p, arg, node.a), this.eval(p, arg, node.b), this.eval(p, arg, node.c));
             } else if (node.b != undefined) {
-                return node.op(this.eval(p, node.a), this.eval(p, node.b));
+                return node.op(this.eval(p, arg, node.a), this.eval(p, arg, node.b));
             } else if (node.a != undefined && Array.isArray(node.a)) {
-                return node.op(node.a.map(x => this.eval(p, x)));
-            } else if (node.a != undefined) {
-                return node.op(this.eval(p, node.a));
-            } else {
-                return node.op();
-            }
-        } else if (typeof(node) == 'string') {
-            if (node[0] == '@') {
-                return SettingsConstants[node.slice(1)]
-            } else if (SP_KEYWORD_INTERNAL[node]) {
-                return SP_KEYWORD_INTERNAL[node];
-            } else if (SP_KEYWORD_MAPPING[node]) {
-                return SP_KEYWORD_MAPPING[node].expr(p);
-            } else if (SettingsParser.root.vars[node]) {
-                return SettingsParser.root.vars[node](p);
-            } else {
-                return getObjectAt(p, node);
-            }
-        } else {
-            return node;
-        }
-    }
+                if (typeof(node.op) == 'string') {
+                    var func = SettingsParser.root.func[node.op];
+                    if (func) {
+                        var map = {};
+                        for (var i = 0; i < func.arg.length; i++) {
+                            map[func.arg[i]] = this.eval(p, arg, node.a[i]);
+                        }
 
-    eval2 (p, arg, node = this.root) {
-        if (typeof(node) == 'object') {
-            if (node.noeval) return node.a;
-            else if (node.c != undefined) {
-                return node.op(this.eval2(p, arg, node.a), this.eval2(p, arg, node.b), this.eval2(p, arg, node.c));
-            } else if (node.b != undefined) {
-                return node.op(this.eval2(p, arg, node.a), this.eval2(p, arg, node.b));
-            } else if (node.a != undefined && Array.isArray(node.a)) {
-                return node.op(node.a.map(x => this.eval2(p, arg, arg, x)));
+                        return func.ast(p, map);
+                    } else {
+                        return undefined;
+                    }
+                } else {
+                    return node.op(node.a.map(x => this.eval(p, arg, x)));
+                }
             } else if (node.a != undefined) {
-                return node.op(this.eval2(p, arg, node.a));
+                return node.op(this.eval(p, arg, node.a));
             } else {
                 return node.op();
             }
         } else if (typeof(node) == 'string') {
             if (node == 'this') {
                 return arg;
+            } else if (typeof(arg) == 'object') {
+                return arg[node];
             } else if (node[0] == '@') {
                 return SettingsConstants[node.slice(1)]
             } else if (SP_KEYWORD_INTERNAL[node]) {
@@ -1376,18 +1354,34 @@ const ARG_FORMATTERS = {
     'default': (p, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
 }
 
+function escapeHTML(string) {
+    return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/ /g, "&nbsp;");
+}
+
 const SFormat = {
-    Normal: string => string.replace(/ /g, '&nbsp;'),
-    Keyword: string => `<span class="ta-keyword">${ string.replace(/ /g, '&nbsp;') }</span>`,
-    Color: (string, color = string) => `<span class="ta-color" style="color: ${ color };">${ string.replace(/ /g, '&nbsp;') }</span>`,
-    Comment: string => `<span class="ta-comment">${ string.replace(/ /g, '&nbsp;') }</span>`,
-    Constant: string => `<span class="ta-constant">${ string.replace(/ /g, '&nbsp;') }</span>`,
-    Reserved: string => `<span class="ta-reserved">${ string.replace(/ /g, '&nbsp;') }</span>`,
-    Error: string => `<span class="ta-error">${ string.replace(/ /g, '&nbsp;') }</span>`,
-    Bool: (string, bool = string) => `<span class="ta-boolean-${ bool }">${ string.replace(/ /g, '&nbsp;') }</span>`
+    Normal: string => escapeHTML(string),
+    Keyword: string => `<span class="ta-keyword">${ escapeHTML(string) }</span>`,
+    Color: (string, color = string) => `<span class="ta-color" style="color: ${ color };">${ escapeHTML(string) }</span>`,
+    Comment: string => `<span class="ta-comment">${ escapeHTML(string) }</span>`,
+    Constant: string => `<span class="ta-constant">${ escapeHTML(string) }</span>`,
+    Reserved: string => `<span class="ta-reserved">${ escapeHTML(string) }</span>`,
+    Error: string => `<span class="ta-error">${ escapeHTML(string) }</span>`,
+    Bool: (string, bool = string) => `<span class="ta-boolean-${ bool }">${ escapeHTML(string) }</span>`
 };
 
 const SettingsCommands = [
+    // Global
+    // var - Create a function
+    new SettingsCommand(/^(set) (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/, function (root, string) {
+        var [ , key, name, args, a ] = this.match(string);
+        var ast = new AST(a);
+        if (ast.isValid()) {
+            root.setFunction(name, args.split(','), (player, args) => ast.eval(player, args));
+        }
+    }, function (string) {
+        var [ , key, name, args, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with') } ${ args.split(',').map(arg => SFormat.Constant(arg)).join(',') } ${ SFormat.Keyword('as') } ${ SFormat.Normal(a) }`;
+    }),
     // Global
     // var - Create a variable
     new SettingsCommand(/^(set) (\w+[\w ]*) as (.+)$/, function (root, string) {
@@ -1410,7 +1404,7 @@ const SettingsCommands = [
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
     }),
     // Create new category
-    new SettingsCommand(/^(category) (\w+[\w ]*)$/, function (root, string) {
+    new SettingsCommand(/^(category) (\S+[\S ]*)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.createCategory(a);
     }, function (string) {
@@ -1418,7 +1412,7 @@ const SettingsCommands = [
         return `${ SFormat.Keyword(key) } ${ ReservedCategories[a] ? SFormat.Reserved(a) : SFormat.Normal(a) }`;
     }),
     // Create new header
-    new SettingsCommand(/^(header) (\w+[\w ]*)$/, function (root, string) {
+    new SettingsCommand(/^(header) (\S+[\S ]*)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.createHeader(a);
     }, function (string) {
@@ -1527,7 +1521,7 @@ const SettingsCommands = [
             var ast = new AST(arg);
             if (ast.isValid()) {
                 root.setLocalVariable(key, (player, val) => {
-                    return ast.eval2(player, val);
+                    return ast.eval(player, val);
                 });
             }
         }
@@ -1789,6 +1783,7 @@ const SettingsParser = new (class {
         this.root = {
             c: [],
             vars: {},
+            func: {},
             outdated: true
         };
 
@@ -1804,6 +1799,13 @@ const SettingsParser = new (class {
 
     setVariable (name, ast) {
         this.root.vars[name] = ast;
+    }
+
+    setFunction (name, arg, ast) {
+        this.root.func[name] = {
+            arg: arg,
+            ast: ast
+        };
     }
 
     createHeader (name) {
