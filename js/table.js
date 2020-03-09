@@ -1376,7 +1376,7 @@ const SettingsCommands = [
         var [ , key, name, args, a ] = this.match(string);
         var ast = new AST(a);
         if (ast.isValid()) {
-            root.setFunction(name, args.split(','), (player, args) => ast.eval(player, args));
+            root.setFunction(name, args.split(',').map(arg => arg.trim()), (player, args) => ast.eval(player, args));
         }
     }, function (string) {
         var [ , key, name, args, a ] = this.match(string);
