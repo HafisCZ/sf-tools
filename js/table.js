@@ -1296,8 +1296,13 @@ class AST {
         } else if (typeof(node) == 'string') {
             if (node == 'this') {
                 return arg;
-            } else if (typeof(arg) == 'object') {
-                return arg[node];
+            } else if (typeof(arg) == 'object' && (arg[node] || arg[node.split('.', 1)[0]])) {
+                if (arg[node]) {
+                    return arg[node];
+                } else {
+                    var [key, path] = node.split(/\.(.*)/, 2);
+                    return getObjectAt(arg[key], path);
+                }
             } else if (node[0] == '@') {
                 return SettingsConstants[node.slice(1)]
             } else if (SP_KEYWORD_INTERNAL[node]) {

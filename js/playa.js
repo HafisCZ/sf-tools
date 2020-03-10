@@ -36,11 +36,23 @@ class SFItem {
         this.DamageMax = damageMax;
         this.DamageAverage = (damageMax + damageMin) / 2;
         this.Upgrades = upgradeLevel;
-        this.Value = gold / 100;
-        this.Mushrooms = coins;
         this.AttributeTypes = attributeType;
         this.Attributes = attributeValue;
         this.HasEnchantment = enchantmentType > 0;
+
+        this.SellPrice = {
+            Gold: gold / 100
+        }
+
+        var dismantle = this.getDismantleReward();
+        this.DismantlePrice = {
+            Metal: dismantle.Metal,
+            Crystal: dismantle.Crystal
+        }
+
+        var sell = this.getBlacksmithPrice();
+        this.SellPrice.Metal = sell.Metal;
+        this.SellPrice.Crystal = sell.Crystal;
     }
 
     getBlacksmithQuality () {
@@ -93,7 +105,10 @@ class SFItem {
 
     getBlacksmithSocketPrice () {
         if (this.type == 0 || this.Type == 2 || this.Type > 10) {
-            return [0, 0];
+            return {
+                Metal: 0,
+                Crystal: 0
+            };
         } else {
             var num = this.getItemLevel();
             var quality = this.getBlacksmithQuality();
@@ -119,13 +134,19 @@ class SFItem {
                 }
             }
 
-            return [Math.floor(num * num2 / 100), Math.max(10, Math.floor(num * num3 / 100) * 10)];
+            return {
+                Metal: Math.floor(num * num2 / 100),
+                Crystal: Math.max(10, Math.floor(num * num3 / 100) * 10)
+            };
         }
     }
 
     getBlacksmithUpgradePrice () {
         if (this.Type == 0 || this.Type > 10) {
-            return [0, 0];
+            return {
+                Metal: 0,
+                Crystal: 0
+            };
         } else {
             var num = this.getItemLevel();
             var quality = this.getBlacksmithQuality();
@@ -201,13 +222,19 @@ class SFItem {
                 num3 *= 2;
             }
 
-            return [num2, num3];
+            return {
+                Metal: num2,
+                Crystal: num3
+            };
         }
     }
 
     getBlacksmithPrice () {
-        if (this.Value == 0 && this.Type == 1) {
-            return [0, 0];
+        if (this.SellPrice.Gold == 0 && this.Type == 1) {
+            return {
+                Metal: 0,
+                Crystal: 0
+            };
         } else {
             var num = 0;
             var num2 = 0;
@@ -218,20 +245,26 @@ class SFItem {
                 this.Attributes[0] = Math.trunc( this.Attributes[0] / 1.04);
                 var price = this.getBlacksmithUpgradePrice();
 
-                num += price[0];
-                num2 += price[1];
+                num += price.Metal;
+                num2 += price.Crystal;
             }
 
             this.Upgrades = upgrades;
             this.Attributes[0] = num3;
 
-            return [num, num2];
+            return {
+                Metal: num,
+                Crystal: num2
+            };
         }
     }
 
     getDismantleReward () {
         if (this.Type == 0 || this.Type > 10) {
-            return [0, 0];
+            return {
+                Metal: 0,
+                Crystal: 0
+            };
         } else {
             var num = this.getItemLevel();
             var quality = this.getBlacksmithQuality();
@@ -264,7 +297,10 @@ class SFItem {
             }
 
             var sell = this.getBlacksmithPrice();
-            return [ num2 + sell[0], num3 + sell[1] ];
+            return {
+                Metal: num2 + sell.Metal,
+                Crystal: num3 + sell.Crystal
+            };
         }
     }
 }
