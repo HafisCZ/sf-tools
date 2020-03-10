@@ -14,6 +14,8 @@
         <script src="vendor/js/semantic.min.js"></script>
         <script src="vendor/js/components/state.min.js"></script>
 
+        <script src="js/table.js"></script>
+
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
     <body>
@@ -71,7 +73,7 @@
                     f:
                 </div>
                 <div class="fourteen wide column">
-                    Show only the first amount of entries.
+                    Show only the first amount of entries. This keyword does bypass the <code>performance</code> option in your settings.
                 </div>
             </div>
             <br/>
@@ -356,6 +358,21 @@
                     <div><code>format trunc(this) + "%"</code></div>
                 </div>
             </div>
+            <h3 class="ui header">set with<a class="ui small red label">Global</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        You can use this option to create a function that can be later used in any expression.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>set Between with Value, Min, Max as Value > Min && Value < Max</code></div>
+                    <div><br/></div>
+                    <div><code>header Between 1M and 5M</code></div>
+                    <div><code>expr Between(Items.Wpn1.SellPrice.Gold, 1000000, 5000000)</code></div>
+                </div>
+            </div>
             <h3 class="ui header">statistics <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
             <hr/>
             <div class="ui two column grid">
@@ -416,10 +433,89 @@
                     <div><code>width @large</code></div>
                 </div>
             </div>
+            <br/>
+            <h2 class="ui header">Expressions</h2>
+            <br/>
+            <p>
+                You can use all available operators, functions and constants in the expression. That includes also self created variables and functions.<br/>
+                You have also <code>undefined</code> and <code>null</code> values available to you for use.<br/>
+                Also comments are allowed using " or ' characters, any other occurences must be escaped (must start and end with the same character).<br/>
+                If you want to reduce an array (for example count the amount of crystals in ones equipped items), then you can use the function <code>each</code> which takes the array object and a custom function as a parameter. It will return a sum of all values created by the function. The function should accept one parameter, but it is not required.<br/>
+                When creating an expression for <code>format</code> option, you can access the original value of the cell by using the <code>this</code> word.
+            </p>
+            <h2 class="ui header">Operators</h2>
+            <br/>
+            <div class="ui five columns grid css-compact-grid">
+                <div class="text-center column">
+                    <code>-A</code>
+                </div>
+                <div class="text-center column">
+                    <code>!A</code>
+                </div>
+                <div class="text-center column">
+                    <code>(A)</code>
+                </div>
+                <div class="text-center column">
+                    <code>A + B</code>
+                </div>
+                <div class="text-center column">
+                    <code>A - B</code>
+                </div>
+                <div class="text-center column">
+                    <code>A * B</code>
+                </div>
+                <div class="text-center column">
+                    <code>A / B</code>
+                </div>
+                <div class="text-center column">
+                    <code>A > B</code>
+                </div>
+                <div class="text-center column">
+                    <code>A < B</code>
+                </div>
+                <div class="text-center column">
+                    <code>A == B</code>
+                </div>
+                <div class="text-center column">
+                    <code>A >= B</code>
+                </div>
+                <div class="text-center column">
+                    <code>A <= B</code>
+                </div>
+                <div class="text-center column">
+                    <code>A && B</code>
+                </div>
+                <div class="text-center column">
+                    <code>A || B</code>
+                </div>
+                <div class="text-center column">
+                    <code>A ? B : C</code>
+                </div>
+            </div>
+            <br/>
+            <h2 class="ui header">Functions</h2>
+            <br/>
+            <div class="ui five columns grid css-compact-grid" id="manual-functions">
+
+            </div>
+            <br/>
+            <h2 class="ui header">Constants</h2>
+            <br/>
+            <div class="ui five columns grid css-compact-grid" id="manual-constants">
+
+            </div>
+            <br/>
+            <h2 class="ui header">Header names</h2>
+            <br/>
+            <div class="ui five columns grid css-compact-grid" id="manual-headers">
+
+            </div>
         </div>
 
         <script type="text/javascript">
-
+            $('#manual-constants').html(Object.keys(SettingsConstants).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
+            $('#manual-headers').html(Object.keys(SP_KEYWORD_MAPPING).map(header => `<div class="text-center column">${ header }</div>`).join(''));
+            $('#manual-functions').html(Object.keys(AST_FUNCTIONS).map(func => `<div class="text-center column">${ func }</div>`).join(''));
         </script>
     </body>
 </html>

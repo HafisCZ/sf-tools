@@ -1016,7 +1016,8 @@ const AST_OPERATORS = {
     '&&': a => a[0] && a[1],
     '?': a => a[0] ? a[1] : a[2],
     'u-': a => -a[0],
-    's': a => a[0]
+    's': a => a[0],
+    '!': a => a[0] ? false : true
 };
 
 const AST_FUNCTIONS = {
@@ -1036,7 +1037,7 @@ const AST_FUNCTIONS = {
 
 class AST {
     constructor (string) {
-        this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(/(\'[^\']*\'|\"[^\"]*\"|\|\||\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\,)/).map(token => token.trim()).filter(token => token.length);
+        this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(/(\'[^\']*\'|\"[^\"]*\"|\|\||\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\,)/).map(token => token.trim()).filter(token => token.length);
         this.root = this.evalExpression();
         if (SettingsParser.debug) {
             console.info(`[ EXPRESSION ]\nInput: ${ string }\nOutput: ${ this.toString() }\nErrors: ${ this.tokens.length }`);
@@ -1068,7 +1069,7 @@ class AST {
             var v;
             if (this.peek() == '(') {
                 v = this.evalBracketExpression();
-            } else if (AST_FUNCTIONS[this.peek()]) {
+            } else if (AST_FUNCTIONS[this.peek()] || (/\w+/.test(this.peek()) && this.peek(1) == '(')) {
                 v = this.getVal();
             } else {
                 v = this.get();
@@ -1077,6 +1078,20 @@ class AST {
             return {
                 args: [ v ],
                 op: AST_OPERATORS['u-']
+            };
+        } else if (val == '!') {
+            var v;
+            if (this.peek() == '(') {
+                v = this.evalBracketExpression();
+            } else if (AST_FUNCTIONS[this.peek()] || (/\w+/.test(this.peek()) && this.peek(1) == '(')) {
+                v = this.getVal();
+            } else {
+                v = this.get();
+            }
+
+            return {
+                args: [ v ],
+                op: AST_OPERATORS['!']
             };
         } else if (AST_FUNCTIONS[val] || (/\w+/.test(val) && this.peek() == '(')) {
             var a = [];
