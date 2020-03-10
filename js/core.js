@@ -693,6 +693,7 @@ const UI = {
             $('#fl-save').on('click', () => this.save());
             $('#fl-clear').on('click', () => this.load());
             $('#fl-remove').on('click', () => this.remove());
+            $('#fl-copy').on('click', () => this.copy());
         }
 
         // Show modal
@@ -707,6 +708,10 @@ const UI = {
 
             // Show contents
             this.load();
+        }
+
+        copy () {
+            Handle.call(EVENT_COPY, 'fl-code');
         }
 
         // Save settings

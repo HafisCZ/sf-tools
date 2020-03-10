@@ -155,7 +155,7 @@
         <div class="ui main container hidden" id="container-settings">
             <div class="ui three columns middle aligned grid">
                 <div class="column">
-
+                    <button class="ui left floated button" id="container-settings-copy"><i class="copy icon"></i>Copy</button>
                 </div>
                 <div class="column">
                     <h1 class="ui header text-white centered">Settings</h1>
@@ -298,7 +298,7 @@
         <div class="ui basic large modal text-white" id="fl-modal">
             <div class="ui three columns middle aligned grid">
                 <div class="seven wide column">
-
+                    <button class="ui left floated button" id="fl-copy"><i class="copy icon"></i>Copy</button>
                 </div>
                 <div class="two wide column">
                     <h1 class="ui header text-white centered">Settings</h1>
@@ -396,6 +396,10 @@
 
             $('#pl-copy').on('click', function () {
                 Handle.call(EVENT_COPY, 'pl-table');
+            });
+
+            $('#container-settings-copy').on('click', function () {
+                Handle.call(EVENT_COPY, 'sg-code');
             });
 
             $('#od-save').on('click', function () {

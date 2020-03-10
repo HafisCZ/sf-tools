@@ -1003,20 +1003,20 @@ const SP_KEYWORD_MAPPING = {
 };
 
 const AST_OPERATORS = {
-    '*': (a, b) => a * b,
-    '/': (a, b) => a / b,
-    '+': (a, b) => a + b,
-    '-': (a, b) => a - b,
-    '>': (a, b) => a > b,
-    '<': (a, b) => a < b,
-    '==': (a, b) => a == b,
-    '>=': (a, b) => a >= b,
-    '<=': (a, b) => a <= b,
-    '||': (a, b) => a || b,
-    '&&': (a, b) => a && b,
-    '?': (a, b, c) => a ? b : c,
-    'u-': (a) => -a,
-    's': (a) => a
+    '*': a => a[0] * a[1],
+    '/': a => a[0] / a[1],
+    '+': a => a[0] + a[1],
+    '-': a => a[0] - a[1],
+    '>': a => a[0] > a[1],
+    '<': a => a[0] < a[1],
+    '==': a => a[0] == a[1],
+    '>=': a => a[0] >= a[1],
+    '<=': a => a[0] <= a[1],
+    '||': a => a[0] || a[1],
+    '&&': a => a[0] && a[1],
+    '?': a => a[0] ? a[1] : a[2],
+    'u-': a => -a[0],
+    's': a => a[0]
 };
 
 const AST_FUNCTIONS = {
@@ -1030,7 +1030,8 @@ const AST_FUNCTIONS = {
     'fnumber': (a) => formatAsSpacedNumber(a[0]),
     'small': (a) => CellGenerator.Small(a[0]),
     'min': (a) => Math.min(... a),
-    'max': (a) => Math.max(... a)
+    'max': (a) => Math.max(... a),
+    'sum': (a) => a.reduce((t, a) => t + a, 0)
 };
 
 class AST {
@@ -1059,7 +1060,7 @@ class AST {
         var val = this.get();
         if (val[0] == '\"' || val[0] == '\'') {
             return {
-                a: val.slice(1, val.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\''),
+                args: [ val.slice(1, val.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\'') ],
                 op: AST_OPERATORS['s'],
                 noeval: true
             }
@@ -1074,7 +1075,7 @@ class AST {
             }
 
             return {
-                a: v,
+                args: [ v ],
                 op: AST_OPERATORS['u-']
             };
         } else if (AST_FUNCTIONS[val] || (/\w+/.test(val) && this.peek() == '(')) {
@@ -1094,7 +1095,7 @@ class AST {
 
             this.get();
             return {
-                a: a,
+                args: a,
                 op: AST_FUNCTIONS[val] ? AST_FUNCTIONS[val] : val
             };
         } else {
@@ -1127,8 +1128,7 @@ class AST {
             }
 
             left = {
-                a: left,
-                b: right,
+                args: [ left, right ],
                 op: AST_OPERATORS[op]
             }
         }
@@ -1151,8 +1151,7 @@ class AST {
             }
 
             left = {
-                a: left,
-                b: right,
+                args: [ left, right ],
                 op: AST_OPERATORS[op]
             }
         }
@@ -1175,8 +1174,7 @@ class AST {
             }
 
             left = {
-                a: left,
-                b: right,
+                args: [ left, right ],
                 op: AST_OPERATORS[op]
             }
         }
@@ -1199,8 +1197,7 @@ class AST {
             }
 
             left = {
-                a: left,
-                b: right,
+                args: [ left, right ],
                 op: AST_OPERATORS[op]
             }
         }
@@ -1232,9 +1229,7 @@ class AST {
                 }
 
                 left = {
-                    a: left,
-                    b: tr,
-                    c: fl,
+                    args: [ left, tr, fl ],
                     op: AST_OPERATORS['?']
                 }
             }
@@ -1248,71 +1243,63 @@ class AST {
     }
 
     toString (node = this.root) {
-        if (typeof(node) == 'object') {
-            if (node.c != undefined) {
-                return `?(${ this.toString(node.a) }, ${ this.toString(node.b) }, ${ this.toString(node.c) })`;
-            } else if (node.b != undefined) {
-                return `${ node.op.name }(${ this.toString(node.a) }, ${ this.toString(node.b) })`;
-            } else if (node.a != undefined && Array.isArray(node.a)) {
-                return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.a.map(x => this.toString(x)).join(', ') })`
-            } else if (node.a != undefined) {
-                return `${ node.op.name }(${ this.toString(node.a) })`;
-            } else {
-                return `${ node.op.name }()`
-            }
-        } else {
-            return `${ node }`;
-        }
+        return 'Not supported at this time';
     }
 
-    eval (p, arg = undefined, node = this.root) {
+    eval (player, environment = undefined, node = this.root) {
         if (typeof(node) == 'object') {
-            if (node.noeval) return node.a;
-            else if (node.c != undefined) {
-                return node.op(this.eval(p, arg, node.a), this.eval(p, arg, node.b), this.eval(p, arg, node.c));
-            } else if (node.b != undefined) {
-                return node.op(this.eval(p, arg, node.a), this.eval(p, arg, node.b));
-            } else if (node.a != undefined && Array.isArray(node.a)) {
-                if (typeof(node.op) == 'string') {
-                    var func = SettingsParser.root.func[node.op];
-                    if (func) {
-                        var map = {};
-                        for (var i = 0; i < func.arg.length; i++) {
-                            map[func.arg[i]] = this.eval(p, arg, node.a[i]);
+            if (node.noeval) {
+                return node.args[0];
+            } else if (typeof(node.op) == 'string') {
+                if (node.op == 'each' && node.args.length >= 2) {
+                    var object = Object.values(this.eval(player, environment, node.args[0]) || {});
+                    var mapper = SettingsParser.root.func[node.args[1]];
+                    if (mapper) {
+                        var sum = 0;
+                        for (var i = 0; i < object.length; i++) {
+                            var env = {};
+                            for (var j = 0; j < mapper.arg.length; j++) {
+                                env[mapper.arg[j]] = object[i];
+                            }
+                            sum += mapper.ast(player, env);
                         }
-
-                        return func.ast(p, map);
+                        return sum;
                     } else {
                         return undefined;
                     }
+                } else if (SettingsParser.root.func[node.op]) {
+                    var mapper = SettingsParser.root.func[node.op];
+                    var env = {};
+                    for (var i = 0; i < mapper.arg.length; i++) {
+                        env[mapper.arg[i]] = this.eval(player, environment, node.args[i]);
+                    }
+                    return mapper.ast(player, env);
                 } else {
-                    return node.op(node.a.map(x => this.eval(p, arg, x)));
+                    return undefined;
                 }
-            } else if (node.a != undefined) {
-                return node.op(this.eval(p, arg, node.a));
             } else {
-                return node.op();
+                return node.op(node.args.map(arg => this.eval(player, environment, arg)));
             }
         } else if (typeof(node) == 'string') {
             if (node == 'this') {
-                return arg;
-            } else if (typeof(arg) == 'object' && (arg[node] || arg[node.split('.', 1)[0]])) {
-                if (arg[node]) {
-                    return arg[node];
+                return environment;
+            } else if (typeof(environment) == 'object' && (environment[node] || environment[node.split('.', 1)[0]])) {
+                if (environment[node]) {
+                    return environment[node];
                 } else {
                     var [key, path] = node.split(/\.(.*)/, 2);
-                    return getObjectAt(arg[key], path);
+                    return getObjectAt(environment[key], path);
                 }
             } else if (node[0] == '@') {
                 return SettingsConstants[node.slice(1)]
             } else if (SP_KEYWORD_INTERNAL[node]) {
                 return SP_KEYWORD_INTERNAL[node];
-            } else if (SP_KEYWORD_MAPPING[node] && p) {
-                return SP_KEYWORD_MAPPING[node].expr(p);
+            } else if (SP_KEYWORD_MAPPING[node] && player) {
+                return SP_KEYWORD_MAPPING[node].expr(player);
             } else if (SettingsParser.root.vars[node]) {
-                return SettingsParser.root.vars[node](p);
+                return SettingsParser.root.vars[node](player);
             } else {
-                return getObjectAt(p, node);
+                return getObjectAt(player, node);
             }
         } else {
             return node;
