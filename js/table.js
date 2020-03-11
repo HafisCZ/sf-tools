@@ -368,11 +368,7 @@ class Table {
         this.nodiff = true;
 
         // Prepare bulk variables
-        for (var [name, data] of Object.entries(SettingsParser.root.bvars)) {
-            var env = {};
-            env[data.arg] = players.map(p => p.player);
-            data.value = data.ast.eval(null, env);
-        }
+        SettingsParser.prepare(players.map(p => p.player));
 
         // Flatten the headers
         var flat = this.flatten();
@@ -443,11 +439,7 @@ class Table {
         this.nodiff = false;
 
         // Prepare bulk variables
-        for (var [name, data] of Object.entries(SettingsParser.root.bvars)) {
-            var env = {};
-            env[data.arg] = players.map(p => p.player);
-            data.value = data.ast.eval(null, env);
-        }
+        SettingsParser.prepare(players.map(p => p.player));
 
         // Flatten the headers
         var flat = this.flatten();
@@ -825,8 +817,8 @@ const SP_KEYWORD_MAPPING = {
     'Treasure': {
         expr: p => p.Group.Treasure
     },
-    'Intructor': {
-        expr: p => p.Group.Intructor
+    'Instructor': {
+        expr: p => p.Group.Instructor
     },
     'Pet': {
         expr: p => p.Group.Pet
@@ -1283,6 +1275,10 @@ class AST {
         return this.tokens.length == 0;
     }
 
+    getConstantValue () {
+        return this.eval(undefined, undefined);
+    }
+
     toString (node = this.root) {
         return 'Not supported at this time';
     }
@@ -1360,7 +1356,7 @@ class AST {
                     return getObjectAt(environment[key], path);
                 }
             } else if (SettingsParser.root.vars[node]) {
-                return SettingsParser.root.vars[node].eval(player);
+                return SettingsParser.root.vars[node].value || SettingsParser.root.vars[node].ast.eval(player);
             } else if (SettingsParser.root.bvars[node]) {
                 return SettingsParser.root.bvars[node].value;
             } else if (node[0] == '@') {
@@ -1686,12 +1682,12 @@ const SettingsCommands = [
     }),
     // Local
     // value - Add value based on condition
-    new SettingsCommand(/^(value) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(\w+)) ((@?)(\S+[\S ]*))$/, function (root, string) {
+    new SettingsCommand(/^(value) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(\w+[\w ]*)) ((@?)(\S+[\S ]*))$/, function (root, string) {
         var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
         var reference = Constants.GetValue(rprefix, rvalue);
         var val = Constants.GetValue(prefix, value);
 
-        if (reference != undefined && val != undefined && !isNaN(reference)) {
+        if (reference != undefined && val != undefined) {
             root.setLocalArrayVariable(key, ARG_MAP[condition], reference, val);
         }
     }, function (string) {
@@ -1717,12 +1713,12 @@ const SettingsCommands = [
     }),
     // local
     // color - Add color based on condition
-    new SettingsCommand(/^(color) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(\w+)) ((@?)(\w+))$/, function (root, string) {
+    new SettingsCommand(/^(color) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(\w+[\w ]*)) ((@?)(\w+))$/, function (root, string) {
         var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
         var reference = Constants.GetValue(rprefix, rvalue);
         var val = getCSSColor(Constants.GetValue(prefix, value));
 
-        if (reference != undefined && val != undefined && !isNaN(reference) && val) {
+        if (reference != undefined && val != undefined) {
             root.setLocalArrayVariable(key, ARG_MAP[condition], reference, val);
         }
     }, function (string) {
@@ -1853,6 +1849,43 @@ const SettingsParser = new (class {
         return this.root;
     }
 
+    prepareArray (object) {
+        if (object) {
+            for (var i = 0; i < object.length; i++) {
+                var key = object[i][1];
+                if (isNaN(key)) {
+                    var val = this.root.bvars[key] ? this.root.bvars[key].value : (this.root.vars[key] && this.root.vars[key].value ? this.root.vars[key].value : undefined);
+                    if (val == undefined) {
+                        object.splice(i--, 1);
+                    } else {
+                        object[i][1] = Number(val);
+                    }
+                }
+            }
+        }
+    }
+
+    prepare (players) {
+        for (var [name, data] of Object.entries(this.root.bvars)) {
+            var env = {};
+            env[data.arg] = players;
+            data.value = data.ast.eval(null, env);
+        }
+
+        for (var [name, data] of Object.entries(this.root.vars)) {
+            data.value = data.ast.getConstantValue();
+        }
+
+        for (var category of this.root.c) {
+            this.prepareArray(category.value);
+            this.prepareArray(category.color);
+            for (var header of category.h) {
+                this.prepareArray(header.value);
+                this.prepareArray(header.color);
+            }
+        }
+    }
+
     clear () {
         this.debug = false;
         this.root = {
@@ -1874,7 +1907,9 @@ const SettingsParser = new (class {
     }
 
     setVariable (name, ast) {
-        this.root.vars[name] = ast;
+        this.root.vars[name] = {
+            ast: ast
+        };
     }
 
     setBulkVariable (name, arg, ast) {

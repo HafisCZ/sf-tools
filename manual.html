@@ -27,53 +27,44 @@
         </div>
 
         <div class="ui main container margin-medium-bottom">
-            <h2 class="ui header">Search keywords</h2>
-            <p>
-                You can combine classic search with any of these keywords (you can use multiple keywords of the same type at once).
-            </p>
+            <h2 class="ui header">Table structure</h2>
             <br/>
-            <div class="ui grid css-compact-grid">
-                <div class="two wide text-center column">
-                    c:
+            <p>
+                You can create columns that suit your needs. Before creating a column, you need to create a category that the column will belong to.<br/>
+
+            </p>
+            <h3 class="ui header">Creating a category</h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        You can create a category using the keyword <code>category</code> and its name. The name can contain all characters, including spaces.<br/>
+                        A single category can contain one or more columns.<br/>
+                        Keep in mind, that there is a one reserved category that behaves like a single column. The name of the category is <code>Potions</code> and it includes three columns with potion sizes.
+                    </p>
                 </div>
-                <div class="fourteen wide column">
-                    Filter by class name, where you can use <code>warrior</code>, <code>mage</code>, <code>scout</code>, <code>assassin</code>, <code>battle mage</code> or <code>berserker</code> as an argument.<br/>
+                <div class="column">
+                    <div><code>category General</code></div>
+                    <div><br/></div>
+                    <div><code># The only reserved category</code></div>
+                    <div><code>category Potions</code></div>
                 </div>
-                <div class="two wide text-center column">
-                    p:
+            </div>
+            <h3 class="ui header">Creating a column</h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        You can create a column using the keyword <code>header</code> and its name. The name can contain all characters, including spaces.<br/>
+                        Keep in mind, that there are some reserved header names (they are shown on the bottom of this page). The reserved headers often contain already predefined expression and sometimes their own formatting.<br/>
+                        You can override the expression using the <code>expr</code> keyword if you want, but in some cases you will lose all special formatting (if you are using <code>Album</code>, <code>Mount</code>, <code>Awards</code>, <code>Last Active</code> or <code>Knights</code> header).
+                    </p>
                 </div>
-                <div class="fourteen wide column">
-                    Filter by player name. It does not require exact match.
-                </div>
-                <div class="two wide text-center column">
-                    g:
-                </div>
-                <div class="fourteen wide column">
-                    Filter by guild name. It does not require exact match.
-                </div>
-                <div class="two wide text-center column">
-                    s:
-                </div>
-                <div class="fourteen wide column">
-                    Filter by server name. It does not require exact match.
-                </div>
-                <div class="two wide text-center column">
-                    l:
-                </div>
-                <div class="fourteen wide column">
-                    Show only the latest entries.
-                </div>
-                <div class="two wide text-center column">
-                    e:
-                </div>
-                <div class="fourteen wide column">
-                    Filter by an expresssion. You can use any normal expression that you would use within the <code>expr</code> option in your settings.
-                </div>
-                <div class="two wide text-center column">
-                    f:
-                </div>
-                <div class="fourteen wide column">
-                    Show only the first amount of entries. This keyword does bypass the <code>performance</code> option in your settings.
+                <div class="column">
+                    <div><code># Category must be created for the column to exist in</code></div>
+                    <div><code>category General</code></div>
+                    <div><code>header Level</code></div>
+                    <div><code>header Album</code></div>
                 </div>
             </div>
             <br/>
@@ -557,6 +548,56 @@
             <br/>
             <div class="ui five columns grid css-compact-grid" id="manual-headers">
 
+            </div>
+            <br/>
+            <h2 class="ui header">Search keywords</h2>
+            <p>
+                You can combine classic search with any of these keywords (you can use multiple keywords of the same type at once).
+            </p>
+            <br/>
+            <div class="ui grid css-compact-grid">
+                <div class="two wide text-center column">
+                    c:
+                </div>
+                <div class="fourteen wide column">
+                    Filter by class name, where you can use <code>warrior</code>, <code>mage</code>, <code>scout</code>, <code>assassin</code>, <code>battle mage</code> or <code>berserker</code> as an argument.<br/>
+                </div>
+                <div class="two wide text-center column">
+                    p:
+                </div>
+                <div class="fourteen wide column">
+                    Filter by player name. It does not require exact match.
+                </div>
+                <div class="two wide text-center column">
+                    g:
+                </div>
+                <div class="fourteen wide column">
+                    Filter by guild name. It does not require exact match.
+                </div>
+                <div class="two wide text-center column">
+                    s:
+                </div>
+                <div class="fourteen wide column">
+                    Filter by server name. It does not require exact match.
+                </div>
+                <div class="two wide text-center column">
+                    l:
+                </div>
+                <div class="fourteen wide column">
+                    Show only the latest entries.
+                </div>
+                <div class="two wide text-center column">
+                    e:
+                </div>
+                <div class="fourteen wide column">
+                    Filter by an expresssion. You can use any normal expression that you would use within the <code>expr</code> option in your settings.
+                </div>
+                <div class="two wide text-center column">
+                    f:
+                </div>
+                <div class="fourteen wide column">
+                    Show only the first amount of entries. This keyword does bypass the <code>performance</code> option in your settings.
+                </div>
             </div>
         </div>
 
