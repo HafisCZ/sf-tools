@@ -373,6 +373,21 @@
                     <div><code>expr Between(Items.Wpn1.SellPrice.Gold, 1000000, 5000000)</code></div>
                 </div>
             </div>
+            <h3 class="ui header">set with all<a class="ui small red label">Global</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        You can use this option to create a variable, that requires a parameter name and a array function. It will be applied to the whole player list and can be later used in any expressions.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>set Pet Average with all Players as each(slice(Players, 0, 25),P.Group.Pet) / Players.length</code></div>
+                    <div><br/></div>
+                    <div><code>header Pet Difference</code></div>
+                    <div><code>expr trunc(Pet - Pet Average)</code></div>
+                </div>
+            </div>
             <h3 class="ui header">statistics <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
             <hr/>
             <div class="ui two column grid">
@@ -497,6 +512,17 @@
             <br/>
             <div class="ui five columns grid css-compact-grid" id="manual-functions">
 
+            </div>
+            <br/>
+            <h2 class="ui header">Array Functions</h2>
+            <br/>
+            <div class="ui five columns grid css-compact-grid" id="manual-functions">
+                <div class="text-center column">
+                    <code>each</code>
+                </div>
+                <div class="text-center column">
+                    <code>slice</code>
+                </div>
             </div>
             <br/>
             <h2 class="ui header">Constants</h2>

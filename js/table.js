@@ -367,6 +367,13 @@ class Table {
     createPlayersTable (players, sortby, sortstyle, perf) {
         this.nodiff = true;
 
+        // Prepare bulk variables
+        for (var [name, data] of Object.entries(SettingsParser.root.bvars)) {
+            var env = {};
+            env[data.arg] = players.map(p => p.player);
+            data.value = data.ast.eval(null, env);
+        }
+
         // Flatten the headers
         var flat = this.flatten();
 
@@ -434,6 +441,13 @@ class Table {
 
     createStatisticsTable (players, joined, kicked, sortby, sortstyle) {
         this.nodiff = false;
+
+        // Prepare bulk variables
+        for (var [name, data] of Object.entries(SettingsParser.root.bvars)) {
+            var env = {};
+            env[data.arg] = players.map(p => p.player);
+            data.value = data.ast.eval(null, env);
+        }
 
         // Flatten the headers
         var flat = this.flatten();
@@ -1276,24 +1290,34 @@ class AST {
                             for (var j = 0; j < mapper.arg.length; j++) {
                                 env[mapper.arg[j]] = object[i];
                             }
-                            sum += mapper.ast(player, env);
+                            sum += mapper.ast.eval(player, env);
                         }
                         return sum;
                     } else {
-                        return undefined;
+                        var sum = 0;
+                        for (var i = 0; i < object.length; i++) {
+                            var env = {};
+                            env[node.args[1].split('.', 1)[0]] = object[i];
+                            sum += this.eval(player, env, node.args[1]);
+                        }
+                        return sum;
                     }
+                } else if (node.op == 'slice' && node.args.length >= 3) {
+                    return Object.values(this.eval(player, environment, node.args[0])).slice(Number(node.args[1]), Number(node.args[2]));
                 } else if (SettingsParser.root.func[node.op]) {
                     var mapper = SettingsParser.root.func[node.op];
                     var env = {};
                     for (var i = 0; i < mapper.arg.length; i++) {
                         env[mapper.arg[i]] = this.eval(player, environment, node.args[i]);
                     }
-                    return mapper.ast(player, env);
+                    return mapper.ast.eval(player, env);
                 } else {
                     return undefined;
                 }
-            } else {
+            } else if (node.op) {
                 return node.op(node.args.map(arg => this.eval(player, environment, arg)));
+            } else {
+                return node;
             }
         } else if (typeof(node) == 'string') {
             if (node == 'this') {
@@ -1305,14 +1329,16 @@ class AST {
                     var [key, path] = node.split(/\.(.*)/, 2);
                     return getObjectAt(environment[key], path);
                 }
+            } else if (SettingsParser.root.vars[node]) {
+                return SettingsParser.root.vars[node].eval(player);
+            } else if (SettingsParser.root.bvars[node]) {
+                return SettingsParser.root.bvars[node].value;
             } else if (node[0] == '@') {
                 return SettingsConstants[node.slice(1)]
             } else if (SP_KEYWORD_INTERNAL[node]) {
                 return SP_KEYWORD_INTERNAL[node];
             } else if (SP_KEYWORD_MAPPING[node] && player) {
                 return SP_KEYWORD_MAPPING[node].expr(player);
-            } else if (SettingsParser.root.vars[node]) {
-                return SettingsParser.root.vars[node](player);
             } else {
                 return getObjectAt(player, node);
             }
@@ -1378,24 +1404,36 @@ const SFormat = {
 
 const SettingsCommands = [
     // Global
-    // var - Create a function
+    // set static
+    new SettingsCommand(/^(set) (\w+[\w ]*) with all (\w+[\w ]*) as (.+)$/, function (root, string) {
+        var [ , key, name, arg, asts ] = this.match(string);
+        var ast = new AST(asts);
+        if (ast.isValid()) {
+            root.setBulkVariable(name, arg, ast);
+        }
+    }, function (string) {
+        var [ , key, name, arg, asts ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with all') } ${ SFormat.Constant(arg) } ${ SFormat.Keyword('as') } ${ SFormat.Normal(asts) }`;
+    }),
+    // Global
+    // set with - Create a function
     new SettingsCommand(/^(set) (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/, function (root, string) {
         var [ , key, name, args, a ] = this.match(string);
         var ast = new AST(a);
         if (ast.isValid()) {
-            root.setFunction(name, args.split(',').map(arg => arg.trim()), (player, args) => ast.eval(player, args));
+            root.setFunction(name, args.split(',').map(arg => arg.trim()), ast);
         }
     }, function (string) {
         var [ , key, name, args, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with') } ${ args.split(',').map(arg => SFormat.Constant(arg)).join(',') } ${ SFormat.Keyword('as') } ${ SFormat.Normal(a) }`;
     }),
     // Global
-    // var - Create a variable
+    // set - Create a variable
     new SettingsCommand(/^(set) (\w+[\w ]*) as (.+)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
         var ast = new AST(a);
         if (ast.isValid()) {
-            root.setVariable(name, player => ast.eval(player));
+            root.setVariable(name, ast);
         }
     }, function (string) {
         var [ , key, name, a ] = this.match(string);
@@ -1790,6 +1828,7 @@ const SettingsParser = new (class {
         this.root = {
             c: [],
             vars: {},
+            bvars: {},
             func: {},
             outdated: true
         };
@@ -1806,6 +1845,13 @@ const SettingsParser = new (class {
 
     setVariable (name, ast) {
         this.root.vars[name] = ast;
+    }
+
+    setBulkVariable (name, arg, ast) {
+        this.root.bvars[name] = {
+            arg: arg,
+            ast: ast
+        }
     }
 
     setFunction (name, arg, ast) {
