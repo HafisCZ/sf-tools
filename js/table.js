@@ -1031,7 +1031,8 @@ const AST_OPERATORS = {
     '?': a => a[0] ? a[1] : a[2],
     'u-': a => -a[0],
     's': a => a[0],
-    '!': a => a[0] ? false : true
+    '!': a => a[0] ? false : true,
+    '[': a => typeof(a[0]) == 'object' ? a[0][a[1]] : undefined
 };
 
 const AST_FUNCTIONS = {
@@ -1044,14 +1045,14 @@ const AST_FUNCTIONS = {
     'date': (a) => formatDateOnly(a[0]),
     'fnumber': (a) => formatAsSpacedNumber(a[0]),
     'small': (a) => CellGenerator.Small(a[0]),
-    'min': (a) => Math.min(... a),
-    'max': (a) => Math.max(... a),
-    'sum': (a) => a.reduce((t, a) => t + a, 0)
+    'min': (a) => Array.isArray(a[0]) ? Math.min(... a[0]) : Math.min(... a),
+    'max': (a) => Array.isArray(a[0]) ? Math.max(... a[0]) : Math.max(... a),
+    'sum': (a) => Array.isArray(a[0]) ? a[0].reduce((t, a) => t + a, 0) : a.reduce((t, a) => t + a, 0)
 };
 
 class AST {
     constructor (string) {
-        this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(/(\'[^\']*\'|\"[^\"]*\"|\|\||\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\,)/).map(token => token.trim()).filter(token => token.length);
+        this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(/(\'[^\']*\'|\"[^\"]*\"|\|\||\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\[|\]|\,)/).map(token => token.trim()).filter(token => token.length);
         this.root = this.evalExpression();
         if (SettingsParser.debug) {
             console.info(`[ EXPRESSION ]\nInput: ${ string }\nOutput: ${ this.toString() }\nErrors: ${ this.tokens.length }`);
@@ -1074,7 +1075,7 @@ class AST {
     getVal () {
         var val = this.get();
         if (val[0] == '\"' || val[0] == '\'') {
-            return {
+            val = {
                 args: [ val.slice(1, val.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\'') ],
                 op: AST_OPERATORS['s'],
                 noeval: true
@@ -1089,7 +1090,7 @@ class AST {
                 v = this.get();
             }
 
-            return {
+            val = {
                 args: [ v ],
                 op: AST_OPERATORS['u-']
             };
@@ -1103,7 +1104,7 @@ class AST {
                 v = this.get();
             }
 
-            return {
+            val = {
                 args: [ v ],
                 op: AST_OPERATORS['!']
             };
@@ -1112,7 +1113,7 @@ class AST {
             this.get();
 
             a.push(this.evalExpression());
-            while ([','].includes(this.peek())) {
+            while (this.peek() == ',') {
                 this.get();
 
                 if (this.peek() == '(') {
@@ -1123,13 +1124,24 @@ class AST {
             }
 
             this.get();
-            return {
+            val = {
                 args: a,
                 op: AST_FUNCTIONS[val] ? AST_FUNCTIONS[val] : val
             };
-        } else {
-            return val;
         }
+
+        while (this.peek() == '[') {
+            this.get();
+
+            val = {
+                args: [ val, this.evalExpression() ],
+                op: AST_OPERATORS['[']
+            };
+
+            this.get();
+        }
+
+        return val;
     }
 
     evalBracketExpression () {
@@ -1283,8 +1295,8 @@ class AST {
                 if (node.op == 'each' && node.args.length >= 2) {
                     var object = Object.values(this.eval(player, environment, node.args[0]) || {});
                     var mapper = SettingsParser.root.func[node.args[1]];
+                    var sum = 0;
                     if (mapper) {
-                        var sum = 0;
                         for (var i = 0; i < object.length; i++) {
                             var env = {};
                             for (var j = 0; j < mapper.arg.length; j++) {
@@ -1292,16 +1304,34 @@ class AST {
                             }
                             sum += mapper.ast.eval(player, env);
                         }
-                        return sum;
                     } else {
-                        var sum = 0;
                         for (var i = 0; i < object.length; i++) {
                             var env = {};
                             env[node.args[1].split('.', 1)[0]] = object[i];
                             sum += this.eval(player, env, node.args[1]);
                         }
-                        return sum;
                     }
+                    return sum;
+                } else if (node.op == 'map' && node.args.length >= 2) {
+                    var object = Object.values(this.eval(player, environment, node.args[0]) || {});
+                    var mapper = SettingsParser.root.func[node.args[1]];
+                    var sum = [];
+                    if (mapper) {
+                        for (var i = 0; i < object.length; i++) {
+                            var env = {};
+                            for (var j = 0; j < mapper.arg.length; j++) {
+                                env[mapper.arg[j]] = object[i];
+                            }
+                            sum.push(mapper.ast.eval(player, env));
+                        }
+                    } else {
+                        for (var i = 0; i < object.length; i++) {
+                            var env = {};
+                            env[node.args[1].split('.', 1)[0]] = object[i];
+                            sum.push(this.eval(player, env, node.args[1]));
+                        }
+                    }
+                    return sum;
                 } else if (node.op == 'slice' && node.args.length >= 3) {
                     return Object.values(this.eval(player, environment, node.args[0])).slice(Number(node.args[1]), Number(node.args[2]));
                 } else if (SettingsParser.root.func[node.op]) {

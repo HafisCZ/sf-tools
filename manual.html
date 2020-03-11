@@ -378,7 +378,8 @@
             <div class="ui two column grid">
                 <div class="column">
                     <p>
-                        You can use this option to create a variable, that requires a parameter name and a array function. It will be applied to the whole player list and can be later used in any expressions.
+                        You can use this option to create a variable, that requires a parameter name and a array function. It will be applied to the whole player list and can be later used in any expressions.<br/>
+                        The result of this expression should be always a constant value. Having an array as an output and manipulating it further within non-withall option can cause unnecessary performance issues.
                     </p>
                 </div>
                 <div class="column">
@@ -454,7 +455,7 @@
             <p>
                 You can use all available operators, functions and constants in the expression. That includes also self created variables and functions.<br/>
                 You have also <code>undefined</code> and <code>null</code> values available to you for use.<br/>
-                Also comments are allowed using " or ' characters, any other occurences must be escaped (must start and end with the same character).<br/>
+                You can use " and ' within strings, but they must be escaped with \ and start and end with the same character.<br/>
                 If you want to reduce an array (for example count the amount of crystals in ones equipped items), then you can use the function <code>each</code> which takes the array object and a custom function as a parameter. It will return a sum of all values created by the function. The function should accept one parameter, but it is not required.<br/>
                 When creating an expression for <code>format</code> option, you can access the original value of the cell by using the <code>this</code> word.
             </p>
@@ -469,6 +470,15 @@
                 </div>
                 <div class="text-center column">
                     <code>(A)</code>
+                </div>
+                <div class="text-center column">
+                    <code>"A"</code>
+                </div>
+                <div class="text-center column">
+                    <code>'A'</code>
+                </div>
+                <div class="text-center column">
+                    <code>A[B]</code>
                 </div>
                 <div class="text-center column">
                     <code>A + B</code>
@@ -522,6 +532,18 @@
                 </div>
                 <div class="text-center column">
                     <code>slice</code>
+                </div>
+                <div class="text-center column">
+                    <code>map</code>
+                </div>
+                <div class="text-center column">
+                    <code>min</code>
+                </div>
+                <div class="text-center column">
+                    <code>max</code>
+                </div>
+                <div class="text-center column">
+                    <code>sum</code>
                 </div>
             </div>
             <br/>
