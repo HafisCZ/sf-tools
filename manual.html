@@ -14,6 +14,7 @@
         <script src="vendor/js/semantic.min.js"></script>
         <script src="vendor/js/components/state.min.js"></script>
 
+        <script src="js/ast.js"></script>
         <script src="js/table.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
@@ -38,7 +39,7 @@
             <div class="ui two column grid">
                 <div class="column">
                     <p>
-                        You can create a category using the keyword <code>category</code> and its name. The name can contain all characters, including spaces.<br/>
+                        You can create a category using the keyword <code>category</code> and its name. The name can contain all characters, including spaces. If you want a category without a name, you can leave it empty.<br/>
                         A single category can contain one or more columns.<br/>
                         Keep in mind, that there is a one reserved category that behaves like a single column. The name of the category is <code>Potions</code> and it includes three columns with potion sizes.
                     </p>
@@ -161,18 +162,6 @@
                     <div><code>color above or equal 300 red</code></div>
                     <div><code>color above 200 @green</code></div>
                     <div><code>color equal 100 ff15ff</code></div>
-                </div>
-            </div>
-            <h3 class="ui header">debug <a class="ui small red label">Global</a></h3>
-            <hr/>
-            <div class="ui two column grid">
-                <div class="column">
-                    <p>
-                        Use this option to show simple debug information in the browser's console. It will show warnings if an option is invalid and information about all used expressions via <code>expr</code> or <code>format</code> options.
-                    </p>
-                </div>
-                <div class="column">
-                    <div><code>debug on</code></div>
                 </div>
             </div>
             <h3 class="ui header">difference <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
@@ -601,7 +590,7 @@
         </div>
 
         <script type="text/javascript">
-            $('#manual-constants').html(Object.keys(SettingsConstants).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
+            $('#manual-constants').html(Object.keys(Constants.Values).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
             $('#manual-headers').html(Object.keys(SP_KEYWORD_MAPPING).map(header => `<div class="text-center column">${ header }</div>`).join(''));
             $('#manual-functions').html(Object.keys(AST_FUNCTIONS).map(func => `<div class="text-center column">${ func }</div>`).join(''));
         </script>

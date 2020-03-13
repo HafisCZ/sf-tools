@@ -1,1080 +1,1303 @@
-// Event types
-const EVT_NONE = 0;
-const EVT_SHOWSCREEN = 1;
-const EVT_SHOWERROR = 2;
-const EVT_INIT = 5;
-const EVT_SHOWCRITICAL = 6;
-
-const EVT_GROUP_SHOW = 1000; // Show
-const EVT_GROUP_SORT = 1001; // Toggle sort mode
-const EVT_GROUP_LOAD_TABLE = 1002; // Load table
-const EVT_GROUP_LOAD_HEADER = 1003; // Load header
-const EVT_SETTINGS_SAVE = 2000;
-const EVT_SETTINGS_LOAD = 2001;
-const EVT_PLAYERS_LOAD = 6000;
-const EVT_FILES_LOAD = 3000;
-const EVT_FILES_REMOVE = 3001;
-const EVT_FILES_UPLOAD = 3002;
-const EVT_FILES_IMPORT = 3003;
-const EVT_FILES_EXPORT = 3004;
-const EVT_FILE_EXPORT = 3005;
-const EVT_FILE_MERGE = 100001;
-const EVT_BROWSE_LOAD = 4000;
-const EVT_PLAYER_LOAD = 5000;
-
-// Better event names
-const EVENT_COPY = 10001;
-const EVENT_SAVE = 10002;
-const EVENT_COPY_PLAYER = 10003;
-
-const EVENT_GUILDS_TOGGLE = 20000;
-const EVENT_GUILDS_TOGGLE_HIDDEN = 20001;
-
-const EVENT_GUILD_SETTINGS_SHOW = 21000;
-
-const EVENT_PLAYERS_SHOW = 22000;
-const EVENT_PLAYERS_SETTINGS_SHOW = 22001;
-const EVENT_PLAYERS_REFRESH = 22002;
-const EVENT_PLAYERS_TOGGLE_HIDDEN = 22003;
-
-const EVENT_OWNPLAYERS_LOAD = 23000;
-const EVENT_OWNPLAYERS_TOGGLE = 23001;
-const EVENT_OWNPLAYERS_TOGGLE_HIDDEN = 23002;
-
-const EVENT_OWNPLAYER_SHOW = 24000;
-const EVENT_OWNPLAYER_SETTINGS_SHOW = 24001;
-
-Handle.bind(EVENT_PLAYERS_SETTINGS_SHOW, function () {
-    UI.FloatingSettings.show('players', EVT_PLAYERS_LOAD);
-});
-
-Handle.bind(EVENT_GUILD_SETTINGS_SHOW, function () {
-    UI.FloatingSettings.show(State.getGroupID(), EVT_GROUP_LOAD_TABLE);
-});
-
-Handle.bind(EVENT_OWNPLAYER_SETTINGS_SHOW, function () {
-    UI.FloatingSettings.show(State.player.Latest.Identifier, EVENT_OWNPLAYER_SHOW);
-});
-
-Handle.bind(EVENT_GUILDS_TOGGLE_HIDDEN, function (visible) {
-    State.showHiddenGuilds = visible;
-    Handle.call(EVT_BROWSE_LOAD);
-});
-
-Handle.bind(EVENT_OWNPLAYERS_TOGGLE_HIDDEN, function (visible) {
-    State.showHiddenOwnPlayers = visible;
-    Handle.call(EVENT_OWNPLAYERS_LOAD);
-});
-
-Handle.bind(EVENT_PLAYERS_TOGGLE_HIDDEN, function (visible) {
-    State.showHiddenPlayers = visible;
-    Handle.call(EVENT_PLAYERS_REFRESH);
-});
-
-Handle.bind(EVENT_GUILDS_TOGGLE, function (visible) {
-    State.otherEnabled = visible;
-    Handle.call(EVT_BROWSE_LOAD);
-});
-
-Handle.bind(EVENT_OWNPLAYERS_TOGGLE, function (visible) {
-    State.otherPlayersEnabled = visible;
-    Handle.call(EVENT_OWNPLAYERS_LOAD);
-});
-
-// Show group
-Handle.bind(EVENT_OWNPLAYER_SHOW, function (identifier) {
-    Handle.call(EVT_SHOWSCREEN, 'container-player');
-
-    identifier = identifier || State.player.Latest.Identifier;
-
-    if (Settings.exists(identifier)) {
-        $('#od-settings')[0].style.setProperty('background', '#21ba45', 'important');
-        $('#od-settings')[0].style.setProperty('color', 'white', 'important');
-    } else {
-        $('#od-settings')[0].style.setProperty('background', '');
-        $('#od-settings')[0].style.setProperty('color', '');
+// View
+class View {
+    constructor (parent) {
+        this.$parent = $(`#${ parent }`);
     }
 
-    var player = Database.Players[identifier];
-    State.player = player;
+    show () {
 
-    var table = new Table(Settings.load(identifier));
-    var [content, w] = table.createHistoryTable(player.List);
-
-    $('#od-table').html(content);
-    $('#od-table').css('position', 'absolute');
-    $('#od-table').css('width', `${ w }px`);
-    $('#od-table').css('left', `calc(50vw - 9px - ${ w / 2 }px)`);
-    if ($('#od-table').css('left').slice(0, -2) < 0) {
-        $('#od-table').css('left', '0px');
-    }
-    $('#od-name').text(player.Latest.Name);
-});
-
-// Bindings
-Handle.bind(EVT_NONE, function (... args) {
-    console.log(... args);
-});
-
-Handle.bind(EVT_SHOWCRITICAL, function (s) {
-    $('#sf-loader-content').html(`<h1 class="ui header white">${ s }</h1>`);
-})
-
-Handle.bind(EVT_SHOWSCREEN, function (s) {
-    $('.ui.container').addClass('hidden');
-    $(`#${s}`).removeClass('hidden');
-});
-
-Handle.bind(EVT_SHOWERROR, function (e) {
-    $('#modal-error-content').html(e);
-    $('#modal-error').modal('show');
-});
-
-Handle.bind(EVENT_COPY_PLAYER, function (player) {
-    const element = document.createElement('textarea');
-    element.value = JSON.stringify(player.Data);
-    document.body.appendChild(element);
-    element.select();
-    document.execCommand('copy');
-    document.body.removeChild(element);
-});
-
-Handle.bind(EVT_FILES_LOAD, function () {
-    // Show counts
-    $('#container-files-statistics-groups').text(Object.keys(Database.Groups).length);
-    $('#container-files-statistics-players').text(Object.keys(Database.Players).length);
-    $('#container-files-statistics-files').text(Storage.files().length);
-
-    // Prepare list
-    var content = Storage.files().map(function (file, index) {
-        return `
-            <div class="ui segment">
-                <div class="ui middle aligned grid">
-                    <div class="four wide text-center column">
-                        <h3 class="ui margin-tiny-top header clickable" data-file="${ index }">${formatDate(file.timestamp)}</h3>
-                    </div>
-                    <div class="three wide column">
-                        <div class="ui label">
-                            Groups
-                            <div class="detail">${ file.groups.length }</div>
-                        </div>
-                    </div>
-                    <div class="five wide column">
-                        <div class="ui label">
-                            Players
-                            <div class="detail">${ file.players.length }</div>
-                        </div>
-                    </div>
-                    <div class="four wide right aligned column">
-                        <div><span class="text-muted margin-medium-right">${ file.version || 'Unknown version' }</span> <i class="trash alternate glow outline icon" data-file-id="${index}"></i></div>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-
-    content.reverse();
-
-    $('#container-files-list').html(content.join(''));
-    $('.ui.sticky').sticky({
-        context: '#container-files-list',
-        offset: 70
-    });
-
-    $('#container-files-list [data-file]').on('click', function () {
-        $(this).toggleClass('file-selected');
-    });
-
-    $('[data-file-id]').on('click', function () {
-        Handle.call(EVT_FILES_REMOVE, $(this).attr('data-file-id'));
-    });
-});
-
-Handle.bind(EVENT_OWNPLAYERS_LOAD, function () {
-    // Variables
-    var content = '';
-    var contentOther = '';
-
-    var index = 0;
-    var indexOther = 0;
-
-    // Own players
-    var players = Object.values(Database.Players);
-    players.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
-
-    // Create grid
-    for (var i = 0, player; player = players[i]; i++) {
-        var hidden = State.getHidden().includes(player.Latest.Identifier);
-        if (!State.showHiddenOwnPlayers && hidden) {
-            continue;
-        }
-
-        if (player.Latest.Own) {
-            content += `
-                ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
-                <div class="column">
-                    <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-player-id="${ player.Latest.Identifier }">
-                        <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
-                        <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
-                        <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
-                        <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
-                    </div>
-                </div>
-            `;
-            index++;
-        } else if (State.otherPlayersEnabled) {
-            contentOther += `
-                ${ indexOther % 5 == 0 ? `${ indexOther != 0 ? '</div>' : '' }<div class="row">` : '' }
-                <div class="column">
-                    <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-player-id="${ player.Latest.Identifier }">
-                        <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
-                        <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
-                        <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
-                        <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
-                    </div>
-                </div>
-            `;
-            indexOther++;
-        }
     }
 
-    // Add endings
-    content += '</div>';
-    contentOther += '</div>';
+    load () {
 
-    // jQuery
-    $('#ol-list').html(content);
-    $('#ol-list-other').html(contentOther);
-
-    $('[data-player-id]').on('click', function () {
-        Handle.call(EVENT_OWNPLAYER_SHOW, $(this).attr('data-player-id'));
-    });
-
-    $('#context-ownplayers').context('bind', $('[data-player-id]'));
-});
-
-Handle.bind(EVT_BROWSE_LOAD, function () {
-    // Content strings
-    var contentOwn = '';
-    var contentOther = '';
-
-    // Loop variables
-    var indexOwn = 0;
-    var indexOther = 0;
-
-    var groups = Object.values(Database.Groups);
-    groups.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
-
-    // Loop all groups
-    for (var i = 0, group; group = groups[i]; i++) {
-        var hidden = State.getHidden().includes(group.Latest.Identifier);
-        if (!State.showHiddenGuilds && hidden) {
-            continue;
-        }
-
-        if (group.Latest.Own) {
-            contentOwn += `
-                ${ indexOwn % 5 == 0 ? `${ indexOwn != 0 ? '</div>' : '' }<div class="row">` : '' }
-                <div class="column">
-                    <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-group-id="${group.Latest.Identifier}">
-                        <span class="css-timestamp">${ formatDate(group.LatestTimestamp) }</span>
-                        <img class="ui medium centered image" src="res/group.png">
-                        <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
-                        <h3 class="ui margin-none-top centered header">${group.Latest.Name}</h3>
-                    </div>
-                </div>
-            `;
-            indexOwn++;
-        } else if (State.otherEnabled) {
-            contentOther += `
-                ${ indexOther % 5 == 0 ? `${ indexOther != 0 ? '</div>' : '' }<div class="row">` : '' }
-                <div class="column">
-                    <div class="ui segment clickable ${Database.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-group-id="${group.Latest.Identifier}">
-                        <span class="css-timestamp">${ formatDate(group.LatestTimestamp) }</span>
-                        <img class="ui medium centered image" src="res/group.png">
-                        <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
-                        <h3 class="ui margin-none-top centered header">${group.Latest.Name}</h3>
-                    </div>
-                </div>
-            `;
-            indexOther++;
-        }
     }
 
-    // Add endings
-    contentOwn += '</div>';
-    contentOther += '</div>';
+    refresh () {
 
-    // jQuery
-    $('#gl-guilds-own').html(contentOwn);
-    $('#gl-guilds-other').html(contentOther);
-    $('[data-group-id]').on('click', function () {
-        State.setGroup($(this).attr('data-group-id'));
-        Handle.call(EVT_GROUP_SHOW);
-    });
-
-    $('#context-groups').context('bind', $('[data-group-id]'));
-});
-
-Handle.bind(EVT_FILES_UPLOAD, function (files) {
-    Array.from(files).forEach(function (file, index, array) {
-        var reader = new FileReader();
-        reader.readAsText(file, 'UTF-8');
-        reader.onload = event => {
-            try {
-                Storage.add(event.target.result, file.lastModified);
-                Handle.call(EVT_FILES_LOAD);
-            } catch (e) {
-                Handle.call(EVT_SHOWERROR, 'A problem occured while trying to import this file.<br><br>' + e);
-            }
-        };
-    });
-});
-
-Handle.bind(EVT_FILES_REMOVE, function (index) {
-    Storage.remove(index);
-    Handle.call(EVT_FILES_LOAD);
-});
-
-Handle.bind(EVT_FILES_EXPORT, function () {
-    Storage.export();
-});
-
-Handle.bind(EVT_FILE_MERGE, function () {
-    var files = $('.file-selected.clickable').toArray().map(e => Number($(e).attr('data-file')));
-    if (files.length > 1) {
-        Storage.merge(files);
     }
-});
+}
 
-Handle.bind(EVT_FILE_EXPORT, function () {
-    var files = $('.file-selected.clickable').toArray().map(e => Number($(e).attr('data-file')));
-    if (files.length > 0) {
-        Storage.export(files);
-    }
-});
+// Group Detail View
+class GroupDetailView extends View {
+    constructor (parent) {
+        super(parent);
 
-Handle.bind(EVT_FILES_IMPORT, function (files) {
-    Array.from(files).forEach(function (file, index, array) {
-        var reader = new FileReader();
-        reader.readAsText(file, 'UTF-8');
-        reader.onload = event => {
-            try {
-                Storage.import(event.target.result);
-                Handle.call(EVT_FILES_LOAD);
-            } catch (e) {
-                Handle.call(EVT_SHOWERROR, 'A problem occured while trying to import this file.<br><br>' + e);
-            }
-        };
-    });
-});
+        this.$table = this.$parent.find('[data-op="table"]');
 
-// Show group
-Handle.bind(EVT_GROUP_SHOW, function () {
-    Handle.call(EVT_SHOWSCREEN, 'container-detail');
-    Handle.call(EVT_GROUP_LOAD_HEADER);
-    Handle.call(EVT_GROUP_LOAD_TABLE);
-});
+        // Copy
+        this.$parent.find('[data-op="copy"]').click(() => {
+            var node = document.createElement('div');
+            node.innerHTML = `${ formatDate(Number(this.timestamp)) } - ${ formatDate(Number(this.reference)) }`;
 
-Handle.bind(EVENT_SAVE, function (selector, filename, onclone) {
-    html2canvas(document.getElementById(selector), {
-        logging: false,
-        onclone: onclone
-    }).then(function (canvas) {
-        canvas.toBlob(function (blob) {
-            window.download(`${ filename }.png`, blob);
-        });
-    });
-});
+            document.body.prepend(node);
+            var range = document.createRange();
+            range.selectNode(node);
 
-Handle.bind(EVENT_COPY, function (selector, extra) {
-    var range = document.createRange();
-    range.selectNode(document.getElementById(selector));
+            var range2 = document.createRange();
+            range2.selectNode(this.$table.get(0));
 
-    window.getSelection().removeAllRanges();
+            window.getSelection().removeAllRanges();
 
-    if (extra) {
-        window.getSelection().addRange(extra);
-    }
+            window.getSelection().addRange(range);
+            window.getSelection().addRange(range2);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
 
-    window.getSelection().addRange(range);
-    document.execCommand('copy');
-    window.getSelection().removeAllRanges();
-});
-
-Handle.bind(EVT_GROUP_LOAD_HEADER, function () {
-    State.clearSort();
-
-    var group = State.getGroup();
-
-    var listSelect = [];
-    var listReference = [];
-
-    for (var [ timestamp, g ] of group.List) {
-        listSelect.push({
-            name: formatDate(timestamp),
-            value: timestamp,
-            selected: timestamp == State.getGroupTimestamp()
+            document.body.removeChild(node);
         });
 
-        if (timestamp <= State.getGroupTimestamp()) {
-            listReference.push({
-                name: formatDate(timestamp),
-                value: timestamp
-            });
-        }
-    }
-
-    listReference[0].selected = true;
-
-    $('#container-detail-name').text(group.Latest.Name);
-    $('#container-detail-select-dropdown').dropdown({
-        values: listSelect
-    });
-
-    $('#container-detail-compare-dropdown').dropdown({
-        values: listReference
-    });
-
-    $('#container-detail-select-dropdown').dropdown('setting', 'onChange', function (value, text) {
-        State.setTimestamp(value);
-        State.setReference(value);
-        Handle.call(EVT_GROUP_LOAD_HEADER);
-        Handle.call(EVT_GROUP_LOAD_TABLE);
-    });
-
-    $('#container-detail-compare-dropdown').dropdown('setting', 'onChange', function (value, text) {
-        State.setReference(value);
-        State.clearSort();
-        Handle.call(EVT_GROUP_LOAD_TABLE);
-    });
-});
-
-Handle.bind(EVT_GROUP_LOAD_TABLE, function () {
-    // Current state
-    var group = State.getGroup();
-    var groupCurrent = State.getGroupCurrent();
-    var groupCurrentTimestamp = State.getGroupTimestamp();
-    var groupReference = State.getGroupReference();
-    var groupReferenceTimestamp = State.getGroupReferenceTimestamp();
-
-    // Current members
-    var members = [];
-    for (var memberID of groupCurrent.Members) {
-        if (Database.Players[memberID] && Database.Players[memberID][groupCurrentTimestamp]) {
-            members.push(Database.Players[memberID][groupCurrentTimestamp]);
-        }
-    }
-
-    // Reference members
-    var membersReferences = [];
-    for (var member of members) {
-        var player = Database.Players[member.Identifier];
-        if (player) {
-            var playerReference = player[groupReferenceTimestamp];
-            if (playerReference && playerReference.Group.Identifier == groupCurrent.Identifier) {
-                membersReferences.push(playerReference);
-            } else {
-                var xx = player.List.concat();
-                xx.reverse();
-                var ts = xx.find(p => p[0] >= groupReferenceTimestamp && p[1].Group.Identifier == groupCurrent.Identifier);
-                if (ts) {
-                    membersReferences.push(ts[1]);
+        // Save
+        this.$parent.find('[data-op="save"]').click(() => {
+            html2canvas(this.$table.get(0), {
+                logging: false,
+                onclone: (doc) => {
+                    $(doc).find('[data-op="table"]').find('thead').prepend($(`<tr><td colspan="4" class="text-left">${ formatDate(Number(this.timestamp)) } - ${ formatDate(Number(this.reference)) }</td></tr>`));
                 }
+            }).then((canvas) => {
+                canvas.toBlob((blob) => {
+                    window.download(`${ this.group.Latest.Name }.${ this.timestamp }${ this.timestamp != this.reference ? `.${ this.reference }` : '' }`, blob);
+                });
+            });
+        });
+
+        // Context menu
+        this.$context = $('<div class="ui custom popup right center"></div>');
+        this.$parent.prepend(this.$context);
+
+        this.$context.context('create', {
+            items: [
+                {
+                    label: 'Copy',
+                    action: (source) => {
+                        const element = document.createElement('textarea');
+                        element.value = JSON.stringify(Database.Players[source.attr('data-id')][this.timestamp].Data);
+
+                        document.body.appendChild(element);
+
+                        element.select();
+
+                        document.execCommand('copy');
+                        document.body.removeChild(element);
+                    }
+                }
+            ]
+        });
+
+        // Configuration
+        this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
+            UI.SettingsFloat.show(this.identifier);
+        });
+
+        this.$name = this.$parent.find('[data-op="name"]');
+        this.$timestamp = this.$parent.find('[data-op="timestamp"]');
+        this.$reference = this.$parent.find('[data-op="reference"]');
+    }
+
+    show (identitifier) {
+        this.identifier = identitifier;
+        this.group = Database.Groups[identitifier];
+
+        this.$name.text(this.group.Latest.Name);
+
+        this.timestamp = this.group.LatestTimestamp;
+        this.reference = this.group.LatestTimestamp;
+
+        var listTimestamp = [];
+        var listReference = [];
+
+        for (var [ timestamp, g ] of this.group.List) {
+            listTimestamp.push({
+                name: formatDate(timestamp),
+                value: timestamp,
+                selected: timestamp == this.timestamp
+            });
+
+            if (timestamp <= this.timestamp) {
+                listReference.push({
+                    name: formatDate(timestamp),
+                    value: timestamp
+                });
             }
-        } else {
-            membersReferences.push(member);
         }
+
+        listReference[0].selected = true;
+
+        // Dropdowns
+        this.$timestamp.dropdown({
+            values: listTimestamp
+        }).dropdown('setting', 'onChange', (value, text) => {
+            this.timestamp = value;
+            this.reference = value;
+
+            var subref = listReference.slice(listReference.findIndex(entry => entry.value == this.reference));
+            for (var i = 0; i < subref.length; i++) {
+                subref[i].selected = i == 0;
+            }
+
+            this.$reference.dropdown({
+                values: subref
+            }).dropdown('setting', 'onChange', (value, text) => {
+                this.reference = value;
+                this.load();
+            });
+
+            this.load();
+        });
+
+        this.$reference.dropdown({
+            values: listReference
+        }).dropdown('setting', 'onChange', (value, text) => {
+            this.reference = value;
+            this.load();
+        });
+
+        this.table = null;
+        this.sorting = {};
+
+        this.load();
     }
 
-    // Table columns
-    if (Settings.exists(groupCurrent.Identifier)) {
-        $('#container-detail-settings')[0].style.setProperty('background', '#21ba45', 'important');
-        $('#container-detail-settings')[0].style.setProperty('color', 'white', 'important');
-    } else {
-        $('#container-detail-settings')[0].style.setProperty('background', '');
-        $('#container-detail-settings')[0].style.setProperty('color', '');
+    load () {
+        if (Settings.exists(this.identifier)) {
+            this.$configure.get(0).style.setProperty('background', '#21ba45', 'important');
+            this.$configure.get(0).style.setProperty('color', 'white', 'important');
+        } else {
+            this.$configure.get(0).style.setProperty('background', '');
+            this.$configure.get(0).style.setProperty('color', '');
+        }
+
+        if (this.table) {
+            this.sorting = this.table.sorting;
+        }
+
+        this.table = new TableInstance(Settings.load(this.identifier), TableType.Group);
+
+        var current = this.group[this.timestamp];
+        var reference = this.group[this.reference];
+
+        // Joined and kicked members
+        var joined = current.Members.filter(id => !reference.Members.includes(id)).map(id => {
+            return getAt(Database.Players, id, this.timestamp, 'Name') || getAt(Database.Players, id, 'List', 0, 1, 'Name') || id;
+        });
+
+        var kicked = reference.Members.filter(id => !current.Members.includes(id)).map(id => {
+            return getAt(Database.Players, id, this.timestamp, 'Name') || getAt(Database.Players, id, 'List', 0, 1, 'Name') || id;
+        });
+
+        // Members
+        var members = [];
+        for (var id of current.Members) {
+            if (Database.Players[id] && Database.Players[id][this.timestamp]) {
+                members.push(Database.Players[id][this.timestamp]);
+            }
+        }
+
+        // Reference members
+        var membersReferences = [];
+        for (var member of members) {
+            var player = Database.Players[member.Identifier];
+            if (player) {
+                var playerReference = player[this.reference];
+                if (playerReference && playerReference.Group.Identifier == this.identifier) {
+                    membersReferences.push(playerReference);
+                } else {
+                    var xx = player.List.concat();
+                    xx.reverse();
+                    var ts = xx.find(p => p[0] >= this.reference && p[1].Group.identifier == this.identifier);
+                    if (ts) {
+                        membersReferences.push(ts[1]);
+                    }
+                }
+            } else {
+                membersReferences.push(member);
+            }
+        }
+
+        // Add entries
+        var entries = new GroupTableArray(joined, kicked);
+        members.forEach(function (player) {
+            entries.add(player, membersReferences.find(c => c.Identifier == player.Identifier));
+        });
+
+        this.table.setEntries(entries);
+
+        this.table.sorting = this.sorting;
+        this.table.sort();
+
+        this.refresh();
     }
 
-    // Load settings
-    var config = Settings.load(groupCurrent.Identifier);
+    refresh () {
+        var [content, size ] = this.table.getTableContent();
 
-    // Create table
-    var table = new Table(config);
-    var tablePlayers = new StatisticsTableArray();
+        this.$table.html(content).css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
+        if (this.$table.css('left').slice(0, -2) < 0) {
+            this.$table.css('left', '0px');
+        }
 
-    // Add players
-    members.forEach(function (player) {
-        tablePlayers.add(player, membersReferences.find(c => c.Identifier == player.Identifier));
-    });
+        this.$parent.find('[data-sortable]').click((event) => {
+            this.table.setSorting($(event.target).attr('data-sortable-key'));
+            this.refresh();
+        });
 
-    // Member exchanges
-    var joined = groupCurrent.Members.filter(id => !groupReference.Members.includes(id)).map(id => {
-        return getAt(Database.Players, id, groupCurrentTimestamp, 'Name') || getAt(Database.Players, id, 'List', 0, 1, 'Name') || id;
-    });
-    var kicked = groupReference.Members.filter(id => !groupCurrent.Members.includes(id)).map(id => {
-        return getAt(Database.Players, id, groupCurrentTimestamp, 'Name') || getAt(Database.Players, id, 'List', 0, 1, 'Name') || id;
-    });
+        this.$parent.find('[data-id]').click((event) => {
+            UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp);
+        });
 
-    // Sort members if requested
-    var sortStyle = State.getSortStyle();
-    var sortBy = State.getSort();
+        this.$context.context('bind', this.$parent.find('[data-id]'));
+    }
+}
 
-    var [content, w] = table.createStatisticsTable(tablePlayers, joined, kicked, sortBy, sortStyle);
-
-    $('#gd-table').html(content);
-    $('#gd-table').css('position', 'absolute');
-    $('#gd-table').css('width', `${ w }px`);
-    $('#gd-table').css('left', `calc(50vw - 9px - ${ w / 2 }px)`);
-    if ($('#gd-table').css('left').slice(0, -2) < 0) {
-        $('#gd-table').css('left', '0px');
+// Player Detail FLot View
+class PlayerDetailFloatView extends View {
+    constructor (player) {
+        super(player);
     }
 
-    $('[data-player]').on('click', function () {
-        Handle.call(EVT_PLAYER_LOAD, $(this).attr('data-player'), State.getGroupTimestamp());
-    });
+    show (identifier, timestamp) {
+        var player = Database.Players[identifier];
+        player = player[Math.min(timestamp, player.LatestTimestamp)];
 
-    $('[data-sortable]').on('click', function () {
-        var header = $(this).attr('data-sortable-key');
-        State.setSort(header, State.getSort() == header ? (State.getSortStyle() + 1) % 3 : 1);
-        Handle.call(EVT_GROUP_LOAD_TABLE);
-    });
+        var config = Settings.load(UI.current.identifier || player.Identifier);
 
-    $('#context-members').context('bind', $('[data-player]'));
-});
-
-Handle.bind(EVT_PLAYER_LOAD, function (identifier, timestamp) {
-    var config = State.getGroupID() ? Settings.load(State.getGroupID()) : Settings.load();
-    var player = Database.Players[identifier][timestamp];
-
-    $('#modal-player').html(`
-        <div class="ui text-center extreme header margin-none-bottom padding-none-bottom">${ player.Name }</div>
-        <div class="ui text-center huge header padding-none-top margin-remove-top">${ PLAYER_CLASS[player.Class] } <span style="color: ${ CompareEval.evaluate(player.Level, config.getEntrySafe('Level').color) }">${ player.Level }</span></div>
-        <div class="ui text-center big header padding-none-top padding-none-bottom">${ formatDate(player.Timestamp) }</div>
-        <div class="content text-center">
-            <div class="ui two columns grid">
-                <div class="column">
-                    <div class="ui three columns grid player-small">
-                        <div class="left aligned column font-big">Strength</div>
-                        <div class="column"></div>
-                        <div class="column">${ player.Strength.Total }</div>
-                        <div class="left aligned column font-big">Dexterity</div>
-                        <div class="column"></div>
-                        <div class="column">${ player.Dexterity.Total }</div>
-                        <div class="left aligned column font-big">Intelligence</div>
-                        <div class="column"></div>
-                        <div class="column">${ player.Intelligence.Total }</div>
-                        <div class="left aligned column font-big">Constitution</div>
-                        <div class="column"></div>
-                        <div class="column">${ player.Constitution.Total }</div>
-                        <div class="left aligned column font-big">Luck</div>
-                        <div class="column"></div>
-                        <div class="column">${ player.Luck.Total }</div>
-                        <div class="column"><br></div>
-                        <div class="column"></div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Health</div>
-                        <div class="column"></div>
-                        <div class="column">${ player.Health }</div>
-                        <div class="left aligned column font-big">Armor</div>
-                        <div class="column"></div>
-                        <div class="column">${ player.Armor }</div>
-                        <div class="left aligned column font-big">Damage</div>
-                        <div class="column"></div>
-                        <div class="column">${ player.Damage.Min } - ${ player.Damage.Max }</div>
-                        <div class="column"><br></div>
-                        <div class="column"></div>
-                        <div class="column"></div>
-                        ${ player.hasGuild() ? `
-                            ${ player.Group.Own ? `
-                                <div class="left aligned column font-big">Treasure</div>
-                                <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Treasure, config.getEntrySafe('Treasure').color) };">${ player.Group.Treasure }</div>
-                                <div class="left aligned column font-big">Instructor</div>
-                                <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Instructor, config.getEntrySafe('Instructor').color) }">${ player.Group.Instructor }</div>
-                                <div class="left aligned column font-big">Pet</div>
-                                <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Pet, config.getEntrySafe('Pet').color) }">${ player.Group.Pet }</div>
-                                <div class="left aligned column font-big">Knights</div>
-                                <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Knights, config.getEntrySafe('Knights').color) }">${ player.Fortress.Knights }</div>
-                                <div class="column"><br></div>
-                                <div class="column"></div>
-                                <div class="column"></div>
-                            ` : '' }
-                            <div class="left aligned column font-big">Guild</div>
+        this.$parent.html(`
+            <div class="ui text-center extreme header margin-none-bottom padding-none-bottom">${ player.Name }</div>
+            <div class="ui text-center huge header padding-none-top margin-remove-top">${ PLAYER_CLASS[player.Class] } <span style="color: ${ CompareEval.evaluate(player.Level, config.getEntrySafe('Level').color) }">${ player.Level }</span></div>
+            <div class="ui text-center big header padding-none-top padding-none-bottom">${ formatDate(player.Timestamp) }</div>
+            <div class="content text-center">
+                <div class="ui two columns grid">
+                    <div class="column">
+                        <div class="ui three columns grid player-small">
+                            <div class="left aligned column font-big">Strength</div>
                             <div class="column"></div>
-                            <div class="column">${ player.Group.Name }</div>
-                            <div class="left aligned column font-big">Guild join date</div>
+                            <div class="column">${ player.Strength.Total }</div>
+                            <div class="left aligned column font-big">Dexterity</div>
                             <div class="column"></div>
-                            <div class="column">${ formatDate(player.Group.Joined) }</div>
-                            ${ player.Group.Role != undefined ? `
-                                <div class="left aligned column font-big">Role</div>
-                                <div class="column"></div>
-                                <div class="column">${ GROUP_ROLES[player.Group.Role] }</div>
-                            ` : '' }
-                        ` : '' }
-                        ${ player.Fortress.Upgrade.Building >= 0 ? `
+                            <div class="column">${ player.Dexterity.Total }</div>
+                            <div class="left aligned column font-big">Intelligence</div>
+                            <div class="column"></div>
+                            <div class="column">${ player.Intelligence.Total }</div>
+                            <div class="left aligned column font-big">Constitution</div>
+                            <div class="column"></div>
+                            <div class="column">${ player.Constitution.Total }</div>
+                            <div class="left aligned column font-big">Luck</div>
+                            <div class="column"></div>
+                            <div class="column">${ player.Luck.Total }</div>
                             <div class="column"><br></div>
                             <div class="column"></div>
                             <div class="column"></div>
-                            <div class="seven wide left aligned column font-big">Currently building</div>
-                            <div class="four wide column"></div>
-                            <div class="five wide column">${ FORTRESS_BUILDINGS[player.Fortress.Upgrade.Building] }</div>
-                            <div class="left aligned column font-big"></div>
+                            <div class="left aligned column font-big">Health</div>
                             <div class="column"></div>
-                            <div class="column">${ formatDate(player.Fortress.Upgrade.Finish) }</div>
-                        ` : '' }
-                        <div class="column"><br></div>
-                        <div class="column"></div>
-                        <div class="column"></div>
-                        ${ player.Fortress.Fortifications ? `
-                            <div class="left aligned column font-big">Wall</div>
-                            <div class="column">${ player.Fortress.Fortifications }</div>
-                            <div class="column">${ player.Fortress.Wall }</div>
-                        ` : '' }
-                        ${ player.Fortress.Barracks ? `
-                            <div class="left aligned column font-big">Warriors</div>
-                            <div class="column">${ player.Fortress.Barracks * 3 }x</div>
-                            <div class="column">${ player.Fortress.Warriors }</div>
-                        ` : '' }
-                        ${ player.Fortress.ArcheryGuild ? `
-                            <div class="left aligned column font-big">Archers</div>
-                            <div class="column">${ player.Fortress.ArcheryGuild * 2 }x</div>
-                            <div class="column">${ player.Fortress.Archers }</div>
-                        ` : '' }
-                        ${ player.Fortress.MageTower ? `
-                            <div class="left aligned column font-big">Mages</div>
-                            <div class="column">${ player.Fortress.MageTower }x</div>
-                            <div class="column">${ player.Fortress.Mages }</div>
-                        ` : '' }
-                        <div class="column"><br></div>
-                        <div class="column"></div>
-                        <div class="column"></div>
-                        ${ player.Runes.Gold ? `
-                            <div class="left aligned column font-big">Bonus Gold</div>
+                            <div class="column">${ player.Health }</div>
+                            <div class="left aligned column font-big">Armor</div>
                             <div class="column"></div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Gold, config.getEntrySafe('Rune Gold').color) }">${ player.Runes.Gold }%</div>
-                        ` : '' }
-                        ${ player.Runes.XP ? `
-                            <div class="left aligned column font-big">Bonus XP</div>
+                            <div class="column">${ player.Armor }</div>
+                            <div class="left aligned column font-big">Damage</div>
                             <div class="column"></div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.XP, config.getEntrySafe('Rune XP').color) }">${ player.Runes.XP }%</div>
-                        ` : '' }
-                        ${ player.Runes.Chance ? `
-                            <div class="left aligned column font-big">Epic Chance</div>
+                            <div class="column">${ player.Damage.Min } - ${ player.Damage.Max }</div>
+                            <div class="column"><br></div>
                             <div class="column"></div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Chance, config.getEntrySafe('Rune Chance').color) }">${ player.Runes.Chance }%</div>
-                        ` : '' }
-                        ${ player.Runes.Quality ? `
-                            <div class="left aligned column font-big">Item Quality</div>
                             <div class="column"></div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Quality, config.getEntrySafe('Rune Quality').color) }">${ player.Runes.Quality }%</div>
-                        ` : '' }
-                        ${ player.Runes.Health ? `
-                            <div class="left aligned column font-big">Bonus Health</div>
+                            ${ player.hasGuild() ? `
+                                ${ player.Group.Own ? `
+                                    <div class="left aligned column font-big">Treasure</div>
+                                    <div class="column"></div>
+                                    <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Treasure, config.getEntrySafe('Treasure').color) };">${ player.Group.Treasure }</div>
+                                    <div class="left aligned column font-big">Instructor</div>
+                                    <div class="column"></div>
+                                    <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Instructor, config.getEntrySafe('Instructor').color) }">${ player.Group.Instructor }</div>
+                                    <div class="left aligned column font-big">Pet</div>
+                                    <div class="column"></div>
+                                    <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Pet, config.getEntrySafe('Pet').color) }">${ player.Group.Pet }</div>
+                                    <div class="left aligned column font-big">Knights</div>
+                                    <div class="column"></div>
+                                    <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Knights, config.getEntrySafe('Knights').color) }">${ player.Fortress.Knights }</div>
+                                    <div class="column"><br></div>
+                                    <div class="column"></div>
+                                    <div class="column"></div>
+                                ` : '' }
+                                <div class="left aligned column font-big">Guild</div>
+                                <div class="column"></div>
+                                <div class="column">${ player.Group.Name }</div>
+                                <div class="left aligned column font-big">Guild join date</div>
+                                <div class="column"></div>
+                                <div class="column">${ formatDate(player.Group.Joined) }</div>
+                                ${ player.Group.Role != undefined ? `
+                                    <div class="left aligned column font-big">Role</div>
+                                    <div class="column"></div>
+                                    <div class="column">${ GROUP_ROLES[player.Group.Role] }</div>
+                                ` : '' }
+                            ` : '' }
+                            ${ player.Fortress.Upgrade.Building >= 0 ? `
+                                <div class="column"><br></div>
+                                <div class="column"></div>
+                                <div class="column"></div>
+                                <div class="seven wide left aligned column font-big">Currently building</div>
+                                <div class="four wide column"></div>
+                                <div class="five wide column">${ FORTRESS_BUILDINGS[player.Fortress.Upgrade.Building] }</div>
+                                <div class="left aligned column font-big"></div>
+                                <div class="column"></div>
+                                <div class="column">${ formatDate(player.Fortress.Upgrade.Finish) }</div>
+                            ` : '' }
+                            <div class="column"><br></div>
                             <div class="column"></div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Health, config.getEntrySafe('Rune Health').color) }">${ player.Runes.Health }%</div>
-                        ` : '' }
-                        ${ player.Runes.Damage ? `
-                            <div class="left aligned column font-big">Elemental Dmg</div>
                             <div class="column"></div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Damage, config.getEntrySafe('Rune Damage').color) }">${ player.Runes.Damage }%</div>
-                        ` : '' }
-                        ${ player.Runes.ResistanceFire ? `
-                            <div class="left aligned column font-big">Fire Resist</div>
+                            ${ player.Fortress.Fortifications ? `
+                                <div class="left aligned column font-big">Wall</div>
+                                <div class="column">${ player.Fortress.Fortifications }</div>
+                                <div class="column">${ player.Fortress.Wall }</div>
+                            ` : '' }
+                            ${ player.Fortress.Barracks ? `
+                                <div class="left aligned column font-big">Warriors</div>
+                                <div class="column">${ player.Fortress.Barracks * 3 }x</div>
+                                <div class="column">${ player.Fortress.Warriors }</div>
+                            ` : '' }
+                            ${ player.Fortress.ArcheryGuild ? `
+                                <div class="left aligned column font-big">Archers</div>
+                                <div class="column">${ player.Fortress.ArcheryGuild * 2 }x</div>
+                                <div class="column">${ player.Fortress.Archers }</div>
+                            ` : '' }
+                            ${ player.Fortress.MageTower ? `
+                                <div class="left aligned column font-big">Mages</div>
+                                <div class="column">${ player.Fortress.MageTower }x</div>
+                                <div class="column">${ player.Fortress.Mages }</div>
+                            ` : '' }
+                            <div class="column"><br></div>
                             <div class="column"></div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.ResistanceFire, config.getEntrySafe('Fire Resist').color) }">${ player.Runes.ResistanceFire }%</div>
-                        ` : '' }
-                        ${ player.Runes.ResistanceCold ? `
-                            <div class="left aligned column font-big">Cold Resist</div>
                             <div class="column"></div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.ResistanceCold, config.getEntrySafe('Cold Resist').color) }">${ player.Runes.ResistanceCold }%</div>
-                        ` : '' }
-                        ${ player.Runes.ResistanceLightning ? `
-                            <div class="left aligned column font-big">Lightning Resist</div>
-                            <div class="column"></div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.ResistanceLightning, config.getEntrySafe('Lightning Resist').color) }">${ player.Runes.ResistanceLightning }%</div>
-                        ` : '' }
+                            ${ player.Runes.Gold ? `
+                                <div class="left aligned column font-big">Bonus Gold</div>
+                                <div class="column"></div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Gold, config.getEntrySafe('Rune Gold').color) }">${ player.Runes.Gold }%</div>
+                            ` : '' }
+                            ${ player.Runes.XP ? `
+                                <div class="left aligned column font-big">Bonus XP</div>
+                                <div class="column"></div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.XP, config.getEntrySafe('Rune XP').color) }">${ player.Runes.XP }%</div>
+                            ` : '' }
+                            ${ player.Runes.Chance ? `
+                                <div class="left aligned column font-big">Epic Chance</div>
+                                <div class="column"></div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Chance, config.getEntrySafe('Rune Chance').color) }">${ player.Runes.Chance }%</div>
+                            ` : '' }
+                            ${ player.Runes.Quality ? `
+                                <div class="left aligned column font-big">Item Quality</div>
+                                <div class="column"></div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Quality, config.getEntrySafe('Rune Quality').color) }">${ player.Runes.Quality }%</div>
+                            ` : '' }
+                            ${ player.Runes.Health ? `
+                                <div class="left aligned column font-big">Bonus Health</div>
+                                <div class="column"></div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Health, config.getEntrySafe('Rune Health').color) }">${ player.Runes.Health }%</div>
+                            ` : '' }
+                            ${ player.Runes.Damage ? `
+                                <div class="left aligned column font-big">Elemental Dmg</div>
+                                <div class="column"></div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Damage, config.getEntrySafe('Rune Damage').color) }">${ player.Runes.Damage }%</div>
+                            ` : '' }
+                            ${ player.Runes.ResistanceFire ? `
+                                <div class="left aligned column font-big">Fire Resist</div>
+                                <div class="column"></div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.ResistanceFire, config.getEntrySafe('Fire Resist').color) }">${ player.Runes.ResistanceFire }%</div>
+                            ` : '' }
+                            ${ player.Runes.ResistanceCold ? `
+                                <div class="left aligned column font-big">Cold Resist</div>
+                                <div class="column"></div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.ResistanceCold, config.getEntrySafe('Cold Resist').color) }">${ player.Runes.ResistanceCold }%</div>
+                            ` : '' }
+                            ${ player.Runes.ResistanceLightning ? `
+                                <div class="left aligned column font-big">Lightning Resist</div>
+                                <div class="column"></div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.ResistanceLightning, config.getEntrySafe('Lightning Resist').color) }">${ player.Runes.ResistanceLightning }%</div>
+                            ` : '' }
+                        </div>
                     </div>
-                </div>
-                <div class="column">
-                    <div class="ui three columns grid player-small">
-                        <div class="left aligned column font-big">Scrapbook</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(100 * player.Book / SCRAPBOOK_COUNT, config.getEntrySafe('Album').color) }">${ Number(100 * player.Book / SCRAPBOOK_COUNT).toFixed(2) }%</div>
-                        <div class="column">${ player.Book } out of ${ SCRAPBOOK_COUNT }</div>
-                        <div class="left aligned column font-big">Mount</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Mount, config.getEntrySafe('Mount').color) }">${ player.Mount ? (PLAYER_MOUNT[player.Mount] + '%') : 'None' }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Achievements</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Achievements.Owned, config.getEntrySafe('Awards').color) }">${ Math.trunc(100 * player.Achievements.Owned / ACHIEVEMENT_COUNT) }%${ config.getEntrySafe('Awards').hydra && player.Achievements.Dehydration ? '<span> H</span>' : '' }</div>
-                        <div class="column">${ player.Achievements.Owned } out of ${ ACHIEVEMENT_COUNT }</div>
-                        <div class="left aligned column font-big">Health Bonus</div>
-                        <div class="column">${ player.Dungeons.Player }%</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Damage Bonus</div>
-                        <div class="column">${ player.Dungeons.Group }%</div>
-                        <div class="column"></div>
-                        <div class="column"><br></div>
-                        <div class="column"></div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Potions</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Potions[0].Size, config.getEntrySafe('Potions').color) }">${ player.Potions[0].Size ? `${ player.Potions[0].Size }%` : '' }</div>
-                        <div class="left aligned column">${ player.Potions[0].Size ? POTIONS[player.Potions[0].Type] : '' }</div>
-                        <div class="left aligned column font-big"><br></div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Potions[1].Size, config.getEntrySafe('Potions').color) }">${ player.Potions[1].Size ? `${ player.Potions[1].Size }%` : '' }</div>
-                        <div class="left aligned column">${ player.Potions[1].Size ? POTIONS[player.Potions[1].Type] : '' }</div>
-                        <div class="left aligned column font-big"><br></div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Potions[2].Size, config.getEntrySafe('Potions').color) }">${ player.Potions[2].Size ? `${ player.Potions[2].Size }%` : '' }</div>
-                        <div class="left aligned column">${ player.Potions[2].Size ? POTIONS[player.Potions[2].Type] : '' }</div>
-                        <div class="column"><br></div>
-                        <div class="column"></div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Upgrades</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Upgrades, config.getEntrySafe('Upgrades').color) }">${ player.Fortress.Upgrades }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Rank</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Rank, config.getEntrySafe('Fortress Rank').color) }">${ player.Fortress.Rank }</div>
-                        <div class="left aligned column" style="color: ${ CompareEval.evaluate(player.Fortress.Honor, config.getEntrySafe('Fortress Honor').color) }">(${ player.Fortress.Honor })</div>
-                        <div class="column"><br></div>
-                        <div class="column"></div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Fortress</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Fortress, config.getEntrySafe('Fortress').color) }">${ player.Fortress.Fortress }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Quarters</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.LaborerQuarters, config.getEntrySafe('Quarters').color) }">${ player.Fortress.LaborerQuarters }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Woodcutter</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.WoodcutterGuild, config.getEntrySafe('Woodcutter').color) }">${ player.Fortress.WoodcutterGuild }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Quarry</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Quarry, config.getEntrySafe('Quarry').color) }">${ player.Fortress.Quarry }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Gem Mine</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.GemMine, config.getEntrySafe('Gem Mine').color) }">${ player.Fortress.GemMine }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Academy</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Academy, config.getEntrySafe('Academy').color) }">${ player.Fortress.Academy }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Archery Guild</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.ArcheryGuild, config.getEntrySafe('Archery Guild').color) }">${ player.Fortress.ArcheryGuild }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Barracks</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Barracks, config.getEntrySafe('Barracks').color) }">${ player.Fortress.Barracks }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Mage Tower</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.MageTower, config.getEntrySafe('Mage Tower').color) }">${ player.Fortress.MageTower }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Treasury</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Treasury, config.getEntrySafe('Treasury').color) }">${ player.Fortress.Treasury }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Smithy</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Smithy, config.getEntrySafe('Smithy').color) }">${ player.Fortress.Smithy }</div>
-                        <div class="column"></div>
-                        <div class="left aligned column font-big">Fortifications</div>
-                        <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Fortifications, config.getEntrySafe('Wall').color) }">${ player.Fortress.Fortifications }</div>
-                        <div class="column"></div>
+                    <div class="column">
+                        <div class="ui three columns grid player-small">
+                            <div class="left aligned column font-big">Scrapbook</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(100 * player.Book / SCRAPBOOK_COUNT, config.getEntrySafe('Album').color) }">${ Number(100 * player.Book / SCRAPBOOK_COUNT).toFixed(2) }%</div>
+                            <div class="column">${ player.Book } out of ${ SCRAPBOOK_COUNT }</div>
+                            <div class="left aligned column font-big">Mount</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Mount, config.getEntrySafe('Mount').color) }">${ player.Mount ? (PLAYER_MOUNT[player.Mount] + '%') : 'None' }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Achievements</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Achievements.Owned, config.getEntrySafe('Awards').color) }">${ Math.trunc(100 * player.Achievements.Owned / ACHIEVEMENT_COUNT) }%${ config.getEntrySafe('Awards').hydra && player.Achievements.Dehydration ? '<span> H</span>' : '' }</div>
+                            <div class="column">${ player.Achievements.Owned } out of ${ ACHIEVEMENT_COUNT }</div>
+                            <div class="left aligned column font-big">Health Bonus</div>
+                            <div class="column">${ player.Dungeons.Player }%</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Damage Bonus</div>
+                            <div class="column">${ player.Dungeons.Group }%</div>
+                            <div class="column"></div>
+                            <div class="column"><br></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Potions</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Potions[0].Size, config.getEntrySafe('Potions').color) }">${ player.Potions[0].Size ? `${ player.Potions[0].Size }%` : '' }</div>
+                            <div class="left aligned column">${ player.Potions[0].Size ? POTIONS[player.Potions[0].Type] : '' }</div>
+                            <div class="left aligned column font-big"><br></div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Potions[1].Size, config.getEntrySafe('Potions').color) }">${ player.Potions[1].Size ? `${ player.Potions[1].Size }%` : '' }</div>
+                            <div class="left aligned column">${ player.Potions[1].Size ? POTIONS[player.Potions[1].Type] : '' }</div>
+                            <div class="left aligned column font-big"><br></div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Potions[2].Size, config.getEntrySafe('Potions').color) }">${ player.Potions[2].Size ? `${ player.Potions[2].Size }%` : '' }</div>
+                            <div class="left aligned column">${ player.Potions[2].Size ? POTIONS[player.Potions[2].Type] : '' }</div>
+                            <div class="column"><br></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Upgrades</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Upgrades, config.getEntrySafe('Upgrades').color) }">${ player.Fortress.Upgrades }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Rank</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Rank, config.getEntrySafe('Fortress Rank').color) }">${ player.Fortress.Rank }</div>
+                            <div class="left aligned column" style="color: ${ CompareEval.evaluate(player.Fortress.Honor, config.getEntrySafe('Fortress Honor').color) }">(${ player.Fortress.Honor })</div>
+                            <div class="column"><br></div>
+                            <div class="column"></div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Fortress</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Fortress, config.getEntrySafe('Fortress').color) }">${ player.Fortress.Fortress }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Quarters</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.LaborerQuarters, config.getEntrySafe('Quarters').color) }">${ player.Fortress.LaborerQuarters }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Woodcutter</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.WoodcutterGuild, config.getEntrySafe('Woodcutter').color) }">${ player.Fortress.WoodcutterGuild }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Quarry</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Quarry, config.getEntrySafe('Quarry').color) }">${ player.Fortress.Quarry }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Gem Mine</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.GemMine, config.getEntrySafe('Gem Mine').color) }">${ player.Fortress.GemMine }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Academy</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Academy, config.getEntrySafe('Academy').color) }">${ player.Fortress.Academy }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Archery Guild</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.ArcheryGuild, config.getEntrySafe('Archery Guild').color) }">${ player.Fortress.ArcheryGuild }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Barracks</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Barracks, config.getEntrySafe('Barracks').color) }">${ player.Fortress.Barracks }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Mage Tower</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.MageTower, config.getEntrySafe('Mage Tower').color) }">${ player.Fortress.MageTower }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Treasury</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Treasury, config.getEntrySafe('Treasury').color) }">${ player.Fortress.Treasury }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Smithy</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Smithy, config.getEntrySafe('Smithy').color) }">${ player.Fortress.Smithy }</div>
+                            <div class="column"></div>
+                            <div class="left aligned column font-big">Fortifications</div>
+                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Fortifications, config.getEntrySafe('Wall').color) }">${ player.Fortress.Fortifications }</div>
+                            <div class="column"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `);
-    $('#modal-player').modal({
-        centered: false,
-        transition: 'fade'
-    }).modal('show');
-});
+        `);
 
-// Initialization
-Handle.bind(EVT_INIT, function () {
-    // Initialize all UI elements
-    Object.values(UI).forEach(e => e.init());
+        this.$parent.modal({
+            centered: false,
+            transition: 'fade'
+        }).modal('show');
+    }
+}
 
-    $('#context-players').context('create', {
-        items: [
-            {
-                label: 'Show / Hide',
-                action: (source) => {
-                    State.hideByID(source.attr('data-player'));
-                    Handle.call(EVENT_PLAYERS_REFRESH);
-                }
-            },
-            {
-                label: 'Copy',
-                action: (source) => {
-                    Handle.call(EVENT_COPY_PLAYER, Database.Players[source.attr('data-player')][source.attr('data-timestamp')]);
-                }
-            },
-            {
-                label: 'Remove permanently',
-                action: (source) => {
-                    Storage.removeByID(source.attr('data-player'));
-                    Handle.call(EVENT_PLAYERS_REFRESH);
-                }
-            }
-        ]
-    });
+// History View
+class PlayerHistoryView extends View {
+    constructor (parent) {
+        super(parent);
 
-    $('#context-groups').context('create', {
-        items: [
-            {
-                label: 'Show / Hide',
-                action: (source) => {
-                    State.hideByID(source.attr('data-group-id'));
-                    Handle.call(EVT_BROWSE_LOAD);
-                }
-            },
-            {
-                label: 'Remove permanently',
-                action: (source) => {
-                    Storage.removeByID(source.attr('data-group-id'));
-                    Handle.call(EVT_BROWSE_LOAD);
-                }
-            }
-        ]
-    });
+        this.$table = this.$parent.find('[data-op="table"]');
 
-    $('#context-ownplayers').context('create', {
-        items: [
-            {
-                label: 'Show / Hide',
-                action: (source) => {
-                    State.hideByID(source.attr('data-player-id'));
-                    Handle.call(EVENT_OWNPLAYERS_LOAD);
-                }
-            },
-            {
-                label: 'Copy',
-                action: (source) => {
-                    Handle.call(EVENT_COPY_PLAYER, Database.Players[source.attr('data-player-id')].Latest);
-                }
-            },
-            {
-                label: 'Remove permanently',
-                action: (source) => {
-                    Storage.removeByID(source.attr('data-player-id'));
-                    Handle.call(EVENT_OWNPLAYERS_LOAD);
-                }
-            }
-        ]
-    });
+        // Copy
+        this.$parent.find('[data-op="copy"]').click(() => {
+            var range = document.createRange();
+            range.selectNode(this.$table.get(0));
 
-    $('#context-members').context('create', {
-        items: [
-            {
-                label: 'Copy',
-                action: (source) => {
-                    Handle.call(EVENT_COPY_PLAYER, Database.Players[source.attr('data-player')].Latest);
-                }
-            }
-        ]
-    });
+            window.getSelection().removeAllRanges();
 
-    // Player search
-    $('#psearch').on('change', function () {
-        // Parse input search string
-        var search = $('#psearch').val().split(/(?:\s|\b)(c|p|g|s|e|l|f):/);
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+        });
 
-        // First is global search
-        var terms = [
-            {
-                test: function (arg, player, timestamp) {
-                    var matches = arg.reduce((total, term) => {
-                        if (player.Name.toLowerCase().includes(term) || player.Prefix.includes(term) || PLAYER_CLASS_SEARCH[player.Class].includes(term) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(term))) {
-                            return total + 1;
-                        } else {
-                            return total;
-                        }
-                    }, 0);
-                    return (matches == arg.length);
+        // Save
+        this.$parent.find('[data-op="save"]').click(() => {
+            html2canvas(this.$table.get(0), {
+                logging: false
+            }).then((canvas) => {
+                canvas.toBlob((blob) => {
+                    window.download(`${ this.player.Name }.png`, blob);
+                });
+            });
+        });
+
+        // Configuration
+        this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
+            UI.SettingsFloat.show(this.identifier);
+        });
+
+        this.$name = this.$parent.find('[data-op="name"]');
+    }
+
+    show (identifier = this.identifier) {
+        this.identifier = identifier;
+
+        this.list = Database.Players[identifier].List;
+        this.player = Database.Players[identifier].Latest;
+
+        this.$name.text(this.player.Name);
+
+        // Table instance
+        this.table = new TableInstance(Settings.load(identifier), TableType.History);
+        this.table.setEntries(this.list);
+
+        // Configuration indicator
+        if (Settings.exists(identifier)) {
+            this.$configure.get(0).style.setProperty('background', '#21ba45', 'important');
+            this.$configure.get(0).style.setProperty('color', 'white', 'important');
+        } else {
+            this.$configure.get(0).style.setProperty('background', '');
+            this.$configure.get(0).style.setProperty('color', '');
+        }
+
+        var [ content, size ] = this.table.getTableContent();
+
+        this.$table.html(content).css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
+        if (this.$table.css('left').slice(0, -2) < 0) {
+            this.$table.css('left', '0px');
+        }
+    }
+}
+
+// Browse View
+class BrowseView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$table = this.$parent.find('[data-op="table"]');
+
+        // Copy
+        this.$parent.find('[data-op="copy"]').click(() => {
+            var range = document.createRange();
+            range.selectNode(this.$table.get(0));
+
+            window.getSelection().removeAllRanges();
+
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+        });
+
+        // Save
+        this.$parent.find('[data-op="save"]').click(() => {
+            html2canvas(this.$table.get(0), {
+                logging: false
+            }).then((canvas) => {
+                canvas.toBlob((blob) => {
+                    window.download(`players.${ this.timestamp }.png`, blob);
+                });
+            });
+        });
+
+        this.hidden = false;
+
+        // Context menu
+        this.$context = $('<div class="ui custom popup right center"></div>');
+        this.$parent.prepend(this.$context);
+
+        this.$context.context('create', {
+            items: [
+                {
+                    label: 'Show / Hide',
+                    action: (source) => {
+                        Database.hide(source.attr('data-id'));
+                        this.$filter.trigger('change');
+                    }
                 },
-                arg: search[0].toLowerCase().split(' ')
-            }
-        ];
+                {
+                    label: 'Copy',
+                    action: (source) => {
+                        const element = document.createElement('textarea');
+                        element.value = JSON.stringify(Database.Players[source.attr('data-id')].Latest.Data);
 
-        var perf = undefined;
+                        document.body.appendChild(element);
 
-        // Create groups based on search tokens
-        // c - class
-        // p - player name
-        // g - guild name
-        // s - server name
-        // l - latest
-        // e - expression
-        // f - first x
-        for (var i = 1; i < search.length; i += 2) {
-            var key = search[i];
-            var arg = (search[i + 1] || '').trim();
+                        element.select();
 
-            if (key == 'c') {
-                terms.push({
-                    test: (arg, player, timestamp) => PLAYER_CLASS_SEARCH[player.Class] == arg,
-                    arg: arg.toLowerCase()
-                });
-            } else if (key == 'p') {
-                terms.push({
-                    test: (arg, player, timestamp) => player.Name.toLowerCase().includes(arg),
-                    arg: arg.toLowerCase()
-                });
-            } else if (key == 'g') {
-                terms.push({
-                    test: (arg, player, timestamp) => player.hasGuild() && player.Group.Name.toLowerCase().includes(arg),
-                    arg: arg.toLowerCase()
-                });
-            } else if (key == 's') {
-                terms.push({
-                    test: (arg, player, timestamp) => player.Prefix.includes(arg),
-                    arg: arg.toLowerCase()
-                });
-            } else if (key == 'l') {
-                terms.push({
-                    test: (arg, player, timestamp) => player.Timestamp == timestamp,
-                    arg: arg.toLowerCase()
-                });
-            } else if (key == 'e') {
-                terms.push({
-                    test: (arg, player, timestamp) => arg.eval(player),
-                    arg: new AST(arg)
-                });
-            } else if (key == 'f') {
-                perf = isNaN(arg) ? 1 : Math.max(1, Number(arg));
-            }
-        }
-
-        // Table
-        var timestamp = Number(State.playersTimestamp);
-        var tableEntries = new PlayersTableArray();
-
-        var table = State.getCachedTable();
-        var sortStyle = State.getSortStyle();
-        var sortBy = State.getSort();
-
-        // Fill table
-        for (var player of Object.values(Database.Players)) {
-            var hidden = State.getHidden().includes(player.Latest.Identifier);
-            if (!State.showHiddenPlayers && hidden) {
-                continue;
-            }
-
-            var currentPlayer = player.List.find(entry => entry[0] <= timestamp);
-            if (currentPlayer) {
-                var matches = true;
-                for (var term of terms) {
-                    matches &= term.test(term.arg, currentPlayer[1], timestamp);
+                        document.execCommand('copy');
+                        document.body.removeChild(element);
+                    }
+                },
+                {
+                    label: 'Remove permanently',
+                    action: (source) => {
+                        Storage.removeByID(source.attr('data-id'));
+                        this.$filter.trigger('change');
+                    }
                 }
-
-                if (matches) {
-                    tableEntries.add(currentPlayer[1], currentPlayer[1].Timestamp == timestamp, hidden);
-                }
-            }
-        }
-
-        // Generate table
-        var [content, w] = table.createPlayersTable(tableEntries, sortBy, sortStyle, perf);
-
-        $('#pl-table').html(content);
-        $('#pl-table').css('position', 'absolute');
-        $('#pl-table').css('width', `${ w }px`);
-        $('#pl-table').css('left', `calc(50vw - 9px - ${ w / 2 }px)`);
-        if ($('#pl-table').css('left').slice(0, -2) < 0) {
-            $('#pl-table').css('left', '0px');
-        }
-
-        $('#pl-table [data-sortable]').on('click', function () {
-            var header = $(this).attr('data-sortable-key');
-            State.setSort(header, State.getSort() == header ? (State.getSortStyle() + 1) % 3 : 1);
-            $('#psearch').trigger('change');
+            ]
         });
 
-        $('#pl-table [data-player]').on('click', function () {
-            Handle.call(EVT_PLAYER_LOAD, $(this).attr('data-player'), $(this).attr('data-timestamp'));
+        // Configuration
+        this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
+            UI.SettingsFloat.show('players');
         });
 
-        $('#context-players').context('bind', $('#pl-table [data-player]'));
-    });
+        // Hidden toggle
+        this.$parent.find('[data-op="hidden"]').checkbox('uncheck').change((event) => {
+            this.hidden = $(event.currentTarget).checkbox('is checked');
+            this.$filter.trigger('change');
+        });
 
-    // Settings syntax highlighting
-    function enableHighlighting (el) {
-        var $a = el;
-        var $b = $a.children('.ta-content');
-        var $c = $a.children('textarea');
-        $b.css('top', $c.css('padding-top'));
-        $b.css('left', $c.css('padding-left'));
-        $b.css('font', $c.css('font'));
-        $b.css('font-family', $c.css('font-family'));
-        $b.css('line-height', $c.css('line-height'));
-        $c.on('input', function () {
+        // Filter
+        this.$filter = this.$parent.find('[data-op="filter"]');
+        this.$filter.change((event) => {
+            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f):/);
+
+            var terms = [
+                {
+                   test: function (arg, player, timestamp) {
+                       var matches = arg.reduce((total, term) => {
+                           if (player.Name.toLowerCase().includes(term) || player.Prefix.includes(term) || PLAYER_CLASS_SEARCH[player.Class].includes(term) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(term))) {
+                               return total + 1;
+                           } else {
+                               return total;
+                           }
+                       }, 0);
+                       return (matches == arg.length);
+                   },
+                   arg: filter[0].toLowerCase().split(' ')
+                }
+            ];
+
+            var perf = undefined;
+            for (var i = 1; i < filter.length; i += 2) {
+                var key = filter[i];
+                var arg = (filter[i + 1] || '').trim();
+
+                if (key == 'c') {
+                    terms.push({
+                        test: (arg, player, timestamp) => PLAYER_CLASS_SEARCH[player.Class] == arg,
+                        arg: arg.toLowerCase()
+                    });
+                } else if (key == 'p') {
+                    terms.push({
+                        test: (arg, player, timestamp) => player.Name.toLowerCase().includes(arg),
+                        arg: arg.toLowerCase()
+                    });
+                } else if (key == 'g') {
+                    terms.push({
+                        test: (arg, player, timestamp) => player.hasGuild() && player.Group.Name.toLowerCase().includes(arg),
+                        arg: arg.toLowerCase()
+                    });
+                } else if (key == 's') {
+                    terms.push({
+                        test: (arg, player, timestamp) => player.Prefix.includes(arg),
+                        arg: arg.toLowerCase()
+                    });
+                } else if (key == 'l') {
+                    terms.push({
+                        test: (arg, player, timestamp) => player.Timestamp == timestamp,
+                        arg: arg.toLowerCase()
+                    });
+                } else if (key == 'e') {
+                    terms.push({
+                        test: (arg, player, timestamp) => arg.eval(player),
+                        arg: new AST(arg)
+                    });
+                } else if (key == 'f') {
+                    perf = isNaN(arg) ? 1 : Math.max(1, Number(arg));
+                }
+            }
+
+            var entries = new PlayersTableArray(perf);
+
+            for (var player of Object.values(Database.Players)) {
+                var hidden = Database.Hidden.includes(player.Latest.Identifier);
+                if (this.hidden || !hidden) {
+                    var currentPlayer = player.List.find(entry => entry[0] <= this.timestamp);
+                    if (currentPlayer) {
+                        var matches = true;
+                        for (var term of terms) {
+                            matches &= term.test(term.arg, currentPlayer[1], this.timestamp);
+                        }
+
+                        if (matches) {
+                            entries.add(currentPlayer[1], currentPlayer[1].Timestamp == this.timestamp, hidden);
+                        }
+                    }
+                }
+            }
+
+            this.table.setEntries(entries);
+
+            this.table.sorting = this.sorting;
+            this.table.sort();
+
+            this.refresh();
+        });
+    }
+
+    show () {
+        // Timestamp selector
+        var timestamps = [];
+        for (var file of Object.values(Storage.files())) {
+            timestamps.push({
+                name: formatDate(file.timestamp),
+                value: file.timestamp,
+                selected: file.timestamp == Database.Latest
+            });
+        }
+
+        timestamps.sort((a, b) => b.value - a.value);
+
+        this.$parent.find('[data-op="timestamp"]').dropdown({
+            values: timestamps
+        }).dropdown('setting', 'onChange', (value, text) => {
+            this.timestamp = value;
+            this.$filter.trigger('change');
+        });
+
+        this.$filter.val('');
+
+        this.timestamp = Database.Latest;
+        this.table = null;
+        this.sorting = {};
+
+        this.load();
+    }
+
+    load () {
+        // Table instance
+        if (this.table) {
+            this.sorting = this.table.sorting;
+        }
+
+        this.table = new TableInstance(Settings.load('players'), TableType.Players);
+
+        // Configuration indicator
+        if (Settings.exists('players')) {
+            this.$configure.get(0).style.setProperty('background', '#21ba45', 'important');
+            this.$configure.get(0).style.setProperty('color', 'white', 'important');
+        } else {
+            this.$configure.get(0).style.setProperty('background', '');
+            this.$configure.get(0).style.setProperty('color', '');
+        }
+
+        this.$filter.trigger('change');
+    }
+
+    refresh () {
+        var [ content, size ] = this.table.getTableContent();
+
+        this.$table.html(content).css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
+        if (this.$table.css('left').slice(0, -2) < 0) {
+            this.$table.css('left', '0px');
+        }
+
+        this.$parent.find('[data-sortable]').click((event) => {
+            this.table.setSorting($(event.target).attr('data-sortable-key'));
+            this.refresh();
+        });
+
+        this.$parent.find('[data-id]').click((event) => {
+            UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp);
+        });
+
+        this.$context.context('bind', this.$parent.find('[data-id]'));
+    }
+}
+
+// Groups View
+class GroupsView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$list = this.$parent.find('[data-op="list"]');
+        this.$list2 = this.$parent.find('[data-op="list-secondary"]');
+
+        this.$parent.find('[data-op="hidden"]').checkbox('uncheck').change((event) => {
+            this.hidden = $(event.currentTarget).checkbox('is checked');
+            this.show();
+        });
+
+        this.$parent.find('[data-op="others"]').checkbox('uncheck').change((event) => {
+            this.others = $(event.currentTarget).checkbox('is checked');
+            this.show();
+        });
+
+        this.hidden = false;
+        this.others = false;
+
+        this.$context = $('<div class="ui custom popup right center"></div>');
+        this.$parent.prepend(this.$context);
+
+        this.$context.context('create', {
+            items: [
+                {
+                    label: 'Show / Hide',
+                    action: (source) => {
+                        Database.hide(source.attr('data-id'));
+                        this.show();
+                    }
+                },
+                {
+                    label: 'Remove permanently',
+                    action: (source) => {
+                        Storage.removeByID(source.attr('data-id'));
+                        this.show();
+                    }
+                }
+            ]
+        });
+    }
+
+    show () {
+        var content = '';
+        var content2 = '';
+
+        var index = 0;
+        var index2 = 0;
+
+        var groups = Object.values(Database.Groups);
+        groups.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
+
+        for (var i = 0, group; group = groups[i]; i++) {
+            var hidden = Database.Hidden.includes(group.Latest.Identifier);
+            if (this.hidden || !hidden) {
+                if (group.Latest.Own) {
+                    content += `
+                        ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
+                        <div class="column">
+                            <div class="ui segment clickable ${ Database.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
+                                <span class="css-timestamp">${ formatDate(group.LatestTimestamp) }</span>
+                                <img class="ui medium centered image" src="res/group.png">
+                                <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
+                                <h3 class="ui margin-none-top centered header">${ group.Latest.Name }</h3>
+                            </div>
+                        </div>
+                    `;
+                    index++;
+                } else if (this.others) {
+                    content2 += `
+                        ${ index2 % 5 == 0 ? `${ index2 != 0 ? '</div>' : '' }<div class="row">` : '' }
+                        <div class="column">
+                            <div class="ui segment clickable ${ Database.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
+                                <span class="css-timestamp">${ formatDate(group.LatestTimestamp) }</span>
+                                <img class="ui medium centered image" src="res/group.png">
+                                <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
+                                <h3 class="ui margin-none-top centered header">${ group.Latest.Name }</h3>
+                            </div>
+                        </div>
+                    `;
+                    index2++;
+                }
+            }
+        }
+
+        // Add endings
+        content += '</div>';
+        content2 += '</div>';
+
+        this.$list.html(content);
+        this.$list2.html(content2);
+
+        this.$parent.find('[data-id]').click(function () {
+            UI.show(UI.GroupDetail, $(this).attr('data-id'));
+        });
+
+        this.$context.context('bind', this.$parent.find('[data-id]'));
+    }
+}
+
+// Players View
+class PlayersView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$list = this.$parent.find('[data-op="list"]');
+        this.$list2 = this.$parent.find('[data-op="list-secondary"]');
+
+        this.$parent.find('[data-op="hidden"]').checkbox('uncheck').change((event) => {
+            this.hidden = $(event.currentTarget).checkbox('is checked');
+            this.show();
+        });
+
+        this.$parent.find('[data-op="others"]').checkbox('uncheck').change((event) => {
+            this.others = $(event.currentTarget).checkbox('is checked');
+            this.show();
+        });
+
+        this.hidden = false;
+        this.others = false;
+
+        this.$context = $('<div class="ui custom popup right center"></div>');
+        this.$parent.prepend(this.$context);
+
+        this.$context.context('create', {
+            items: [
+                {
+                    label: 'Show / Hide',
+                    action: (source) => {
+                        Database.hide(source.attr('data-id'));
+                        this.show();
+                    }
+                },
+                {
+                    label: 'Copy',
+                    action: (source) => {
+                        const element = document.createElement('textarea');
+                        element.value = JSON.stringify(Database.Players[source.attr('data-id')].Latest.Data);
+
+                        document.body.appendChild(element);
+
+                        element.select();
+
+                        document.execCommand('copy');
+                        document.body.removeChild(element);
+                    }
+                },
+                {
+                    label: 'Remove permanently',
+                    action: (source) => {
+                        Storage.removeByID(source.attr('data-id'));
+                        this.show();
+                    }
+                }
+            ]
+        });
+    }
+
+    show () {
+        var content = '';
+        var content2 = '';
+
+        var index = 0;
+        var index2 = 0;
+
+        var players = Object.values(Database.Players);
+        players.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
+
+        for (var i = 0, player; player = players[i]; i++) {
+            var hidden = Database.Hidden.includes(player.Latest.Identifier);
+            if (this.hidden || !hidden) {
+                if (player.Latest.Own) {
+                    content += `
+                        ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
+                        <div class="column">
+                            <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ player.Latest.Identifier }">
+                                <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
+                                <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
+                                <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
+                                <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
+                            </div>
+                        </div>
+                    `;
+                    index++;
+                } else if (this.others) {
+                    content2 += `
+                        ${ index2 % 5 == 0 ? `${ index2 != 0 ? '</div>' : '' }<div class="row">` : '' }
+                        <div class="column">
+                            <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ player.Latest.Identifier }">
+                                <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
+                                <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
+                                <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
+                                <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
+                            </div>
+                        </div>
+                    `;
+                    index2++;
+                }
+            }
+        }
+
+        // Add endings
+        content += '</div>';
+        content2 += '</div>';
+
+        this.$list.html(content);
+        this.$list2.html(content2);
+
+        this.$parent.find('[data-id]').click(function () {
+            UI.show(UI.PlayerHistory, $(this).attr('data-id'));
+        });
+
+        this.$context.context('bind', this.$parent.find('[data-id]'));
+    }
+}
+
+// Files View
+class FilesView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$list = this.$parent.find('[data-op="list"]');
+
+        // Import archive file
+        this.$parent.find('[data-op="import"]').change((event) => {
+            Array.from(event.files).forEach(file => {
+                var reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+                reader.onload = e => {
+                    try {
+                        Storage.import(event.target.result);
+                        this.show();
+                    } catch (exception) {
+                        UI.Exception.show('A problem occured while trying to import this file.<br><br>' + exception);
+                    }
+                }
+            });
+        });
+
+        // Export archive file
+        this.$parent.find('[data-op="export"]').click(() => {
+            Storage.export();
+        })
+
+        // Export archive file from selected files
+        this.$parent.find('[data-op="export-partial"]').click(() => {
+            var array = this.$parent.find('.file-selected').toArray().map(object => Number($(object).attr('data-id')));
+            if (array.length > 0) {
+                Storage.export(array);
+            }
+        });
+
+        // Merge selected files
+        this.$parent.find('[data-op="merge"]').click(() => {
+            var array = this.$parent.find('.file-selected').toArray().map(object => Number($(object).attr('data-id')));
+            if (array.length > 1) {
+                Storage.merge(array);
+                this.show();
+            }
+        });
+
+        // Upload
+        this.$parent.find('[data-op="upload"]').change((event) => {
+            Array.from(event.files).forEach(file => {
+                var reader = new FileReader();
+                reader.readAsText(file, 'UTF-8');
+                reader.onload = e => {
+                    try {
+                        Storage.add(event.target.result, file.lastModified);
+                        this.show();
+                    } catch (exception) {
+                        UI.Exception.show('A problem occured while trying to upload this file.<br><br>' + exception);
+                    }
+                }
+            });
+        });
+
+        // Statistics
+        this.$gcount = this.$parent.find('[data-op="gcount"]');
+        this.$pcount = this.$parent.find('[data-op="pcount"]');
+        this.$fcount = this.$parent.find('[data-op="fcount"]');
+    }
+
+    show () {
+        this.$gcount.text(Object.keys(Database.Groups).length);
+        this.$pcount.text(Object.keys(Database.Players).length);
+        this.$fcount.text(Storage.files().length);
+
+        // Page content
+        var content = Storage.files().map(function (file, index) {
+            return `
+                <div class="ui segment">
+                    <div class="ui middle aligned grid">
+                        <div class="four wide text-center column">
+                            <h3 class="ui margin-tiny-top header clickable" data-id="${ index }">${ formatDate(file.timestamp) }</h3>
+                        </div>
+                        <div class="three wide column">
+                            <div class="ui label">
+                                Groups
+                                <div class="detail">${ file.groups.length }</div>
+                            </div>
+                        </div>
+                        <div class="five wide column">
+                            <div class="ui label">
+                                Players
+                                <div class="detail">${ file.players.length }</div>
+                            </div>
+                        </div>
+                        <div class="four wide right aligned column">
+                            <div><span class="text-muted margin-medium-right">${ file.version || 'Unknown version' }</span> <i class="trash alternate glow outline icon" data-remove-id="${ index }"></i></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        content.reverse();
+
+        this.$list.html(content.join('')).find('[data-id]').click(function () {
+            $(this).toggleClass('file-selected');
+        });
+
+        // Remove file
+        this.$parent.find('[data-remove-id]').click((event) => {
+            Storage.remove($(event.target).attr('data-remove-id'));
+            this.show();
+        });
+
+        // Bind stuff
+        $('.ui.sticky').sticky({
+            context: this.$list.get(0),
+            offset: 70
+        });
+    }
+}
+
+// Settings View
+class SettingsView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$area = this.$parent.find('textarea');
+        this.$wrapper = this.$parent.find('.ta-wrapper');
+        var $b = this.$parent.find('.ta-content');
+
+        // CSS
+        $b.css('top', this.$area.css('padding-top'));
+        $b.css('left', this.$area.css('padding-left'));
+        $b.css('font', this.$area.css('font'));
+        $b.css('font-family', this.$area.css('font-family'));
+        $b.css('line-height', this.$area.css('line-height'));
+
+        // Input
+        this.$area.on('input', function () {
             var val = $(this).val();
-            $b.html(SettingsParser.format(val));
-        });
-        $c.trigger('input');
-        $c.on('scroll', function () {
+            $b.html(Settings.format(val));
+        }).trigger('input');
+
+        // Scroll
+        this.$area.on('scroll', function () {
             var sy = $(this).scrollTop();
             var sx = $(this).scrollLeft();
             $b.css('transform', `translate(${ -sx }px, ${ -sy }px)`);
             $b.css('clip-path', `inset(${ sy }px ${ sx }px 0px 0px)`);
         });
-    }
 
-    enableHighlighting($('#fl-code'));
-    enableHighlighting($('#sg-code'));
+        // Button events
+        this.$parent.find('[data-op="save"]').click(() => this.save());
+        this.$parent.find('[data-op="load"]').click(() => this.refresh());
+        this.$parent.find('[data-op="remove"]').click(() => this.remove());
 
-    $('.menu .item').tab();
-});
+        this.$parent.find('[data-op="copy"]').click(() => {
+            // Copy text area content
+            var range = document.createRange();
+            range.selectNode(this.$wrapper.get(0));
 
-// Saving global settings
-Handle.bind(EVT_SETTINGS_SAVE, function () {
-    Settings.save($('#sg-code textarea').val());
-});
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
 
-// Loading global settings
-Handle.bind(EVT_SETTINGS_LOAD, function () {
-    $('#sg-code textarea').val(Settings.load().getCode());
-    $('#sg-code textarea').trigger('input');
-});
+            document.execCommand('copy');
 
-Handle.bind(EVENT_PLAYERS_SHOW, function () {
-    State.unsetGroup();
-    State.clearSort();
-    Handle.call(EVT_PLAYERS_LOAD);
-});
+            window.getSelection().removeAllRanges();
+        });
 
-// Loading player list
-Handle.bind(EVT_PLAYERS_LOAD, function () {
-    State.cacheTable(new Table(Settings.load('players')));
-
-    // Extra settings
-    if (Settings.exists('players')) {
-        $('#pl-settings')[0].style.setProperty('background', '#21ba45', 'important');
-        $('#pl-settings')[0].style.setProperty('color', 'white', 'important');
-    } else {
-        $('#pl-settings')[0].style.setProperty('background', '');
-        $('#pl-settings')[0].style.setProperty('color', '');
-    }
-
-    var values = [];
-    for (var file of Object.values(Storage.files())) {
-        values.push({
-            name: formatDate(file.timestamp),
-            value: file.timestamp,
-            selected: file.timestamp == Database.Latest
+        this.$parent.find('[data-op="manual"]').click(() => {
+            // Open manual
+            window.open('manual.html', '_blank');
         });
     }
-    values.sort((a, b) => b.value - a.value);
 
-    $('#pl-dropdown').dropdown({
-        values: values
-    }).dropdown('setting', 'onChange', function (value, text) {
-        State.playersTimestamp = value;
-        Handle.call(EVENT_PLAYERS_REFRESH);
-    });
+    save () {
+        this.code = this.$area.val();
+        Settings.save(this.code, this.identifier);
+        this.hide();
+    }
 
-    State.playersTimestamp = Database.Latest;
-    $('#psearch').val('').trigger('change');
-});
+    refresh () {
+        this.$area.val(this.code).trigger('input');
+    }
 
-Handle.bind(EVENT_PLAYERS_REFRESH, function () {
-    $('#psearch').trigger('change');
-});
+    remove () {
+        this.hide();
+    }
+
+    hide () {
+
+    }
+
+    show (identifier) {
+        this.identifier = identifier;
+        this.code = Settings.load(identifier).getCode();
+
+        this.refresh();
+    }
+}
+
+// Settings View within a modal
+class SettingsFloatView extends SettingsView {
+    constructor (parent) {
+        super(parent);
+    }
+
+    show (identifier) {
+        this.$parent.modal({
+            centered: false,
+            transition: 'fade'
+        }).modal('show');
+
+        super.show(identifier);
+    }
+
+    hide () {
+        this.$parent.modal('hide');
+        UI.current.load();
+    }
+
+    remove () {
+        Settings.remove(this.identifier);
+        super.remove();
+    }
+}
+
+// Loader View
+class LoaderView extends View {
+    constructor (parent) {
+        super(parent);
+    }
+
+    alert (text) {
+        this.$parent.find('[data-op="text"]').html(`<h1 class="ui header white">${ text }</h1>`);
+    }
+}
+
+// Exception View
+class ExceptionView extends View {
+    constructor (parent) {
+        super(parent);
+    }
+
+    alert (text) {
+        this.$parent.find('[data-op="content"]').html(text);
+        this.$parent.modal('show');
+    }
+}
+
+// UI object collection
+const UI = {
+    current: null,
+    show: function (screen, ... arguments) {
+        UI.current = screen;
+
+        $('.ui.container').addClass('hidden');
+
+        screen.$parent.removeClass('hidden');
+        screen.show(... arguments);
+    },
+    initialize: function () {
+        UI.Loader = new LoaderView('modal-loader');
+        UI.Exception = new ExceptionView('modal-exception');
+        UI.Settings = new SettingsView('view-settings');
+        UI.SettingsFloat = new SettingsFloatView('modal-settings');
+        UI.Files = new FilesView('view-files');
+        UI.Players = new PlayersView('view-players');
+        UI.Groups = new GroupsView('view-groups');
+        UI.Browse = new BrowseView('view-browse');
+        UI.PlayerHistory = new PlayerHistoryView('view-history');
+        UI.PlayerDetail = new PlayerDetailFloatView('modal-playerdetail');
+        UI.GroupDetail = new GroupDetailView('view-groupdetail');
+    }
+}

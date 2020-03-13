@@ -9,7 +9,7 @@ class HeaderGroup {
         this.headers = [];
     }
 
-    add (name, settings, defaults, cellgen, statgen, sort) {
+    add (name, settings, defaults, cellgen, statgen, sort, span = 1) {
         var header = {
             name: name,
             generators: {
@@ -17,7 +17,8 @@ class HeaderGroup {
                 statistics: statgen
             },
             sort: sort,
-            sortkey: `${ this.name }.${ this.length }.${ name }`
+            sortkey: `${ this.name }.${ name }.${ this.length }`,
+            span: span
         };
 
         merge(header, settings);
@@ -31,32 +32,19 @@ class HeaderGroup {
 
 const ReservedCategories = {
     'Potions': function (group, category, last) {
-        // Potion 1
-        group.add('', category, {
-            width: 33
+        group.add('Potions', category, {
+            width: 110
         }, (player) => {
-            var potion = player.Potions[0].Size;
-            var color = CompareEval.evaluate(potion, category.color) || '';
-            return CellGenerator.Cell(potion, color, category.visible ? '' : color);
-        }, null, player => player.Potions[0].Size);
+            var potion0 = player.Potions[0].Size;
+            var potion1 = player.Potions[1].Size;
+            var potion2 = player.Potions[2].Size;
 
-        // Potion 2
-        group.add('', category, {
-            width: 33
-        }, player => {
-            var potion = player.Potions[1].Size;
-            var color = CompareEval.evaluate(potion, category.color) || '';
-            return CellGenerator.Cell(potion, color, category.visible ? '' : color);
-        }, null, player => player.Potions[1].Size);
+            var color0 = CompareEval.evaluate(potion0, category.color) || '';
+            var color1 = CompareEval.evaluate(potion1, category.color) || '';
+            var color2 = CompareEval.evaluate(potion2, category.color) || '';
 
-        // Potion 3
-        group.add('', category, {
-            width: 33
-        }, player => {
-            var potion = player.Potions[2].Size;
-            var color = CompareEval.evaluate(potion, category.color) || '';
-            return CellGenerator.Cell(potion, color, category.visible ? '' : color, !last);
-        }, null, player => player.Potions[2].Size);
+            return CellGenerator.Cell(potion0, color0, category.visible ? '' : color0) + CellGenerator.Cell(potion1, color1, category.visible ? '' : color1) + CellGenerator.Cell(potion2, color2, category.visible ? '' : color2, last);
+        }, null, player => player.Potions.reduce((c, p) => c + p.Size, 0), 3);
     }
 };
 
@@ -223,8 +211,10 @@ function merge (a, b) {
 
 // Special array for players only
 class PlayersTableArray extends Array {
-    constructor (... args) {
-        super(... args);
+    constructor (perf) {
+        super();
+
+        this.perf = perf;
     }
 
     add (player, latest, hidden) {
@@ -232,10 +222,13 @@ class PlayersTableArray extends Array {
     }
 }
 
-// Special array for statistics only
-class StatisticsTableArray extends Array {
-    constructor (... args) {
-        super(... args);
+// Special array for group only
+class GroupTableArray extends Array {
+    constructor (joined, kicked) {
+        super();
+
+        this.joined = joined;
+        this.kicked = kicked;
     }
 
     add (player, compare) {
@@ -243,20 +236,33 @@ class StatisticsTableArray extends Array {
     }
 }
 
-// Table generator
-class Table {
-    // Init
-    constructor (settings) {
-        this.root = settings.getRoot();
+// Table Type
+const TableType = {
+    History: 0,
+    Players: 1,
+    Group: 2
+}
 
+// Table instance
+class TableInstance {
+    constructor (settings, type) {
+        // Parameters
+        this.settings = settings;
+        this.type = type;
+        this.sorting = {};
+
+        if (type == TableType.Players) {
+            this.nodiff = true;
+        }
+
+        // Column configuration
         this.config = [];
-
-        this.root.c.forEach((category, ci, ca) => {
-            var group = new HeaderGroup(category.name, category.name == 'Potions');
+        this.settings.c.forEach((category, ci, ca) => {
+            var group = new HeaderGroup(category.name, category.name == 'Potions' || category.empty);
             var glast = ci == ca.length - 1;
 
             if (ReservedCategories[category.name]) {
-                ReservedCategories[category.name](group, category, glast);
+                ReservedCategories[category.name](group, category, !glast);
             } else {
                 category.h.forEach((header, hi, ha) => {
                     var hlast = (!glast && hi == ha.length - 1) || header.border >= 2 || (hi != ha.length - 1 && (ha[hi + 1].border == 1 || ha[hi + 1].border == 3));
@@ -319,6 +325,11 @@ class Table {
 
             this.addHeader(group);
         });
+
+        this.flat = this.config.reduce((array, group) => {
+            array.push(... group.headers);
+            return array;
+        }, []);
     }
 
     addHeader (... groups) {
@@ -329,229 +340,284 @@ class Table {
         });
     }
 
-    flatten () {
-        return this.config.reduce((array, group) => {
-            array.push(... group.headers);
-            return array;
-        }, []);
+    // Get current table content
+    getTableContent () {
+        if (this.type == TableType.History) {
+            return this.createHistoryTable();
+        } else if (this.type == TableType.Players) {
+            return this.createPlayersTable();
+        } else if (this.type == TableType.Group) {
+            return this.createGroupTable();
+        }
     }
 
-    createHistoryTable (players) {
-        this.nodiff = false;
+    // Set players
+    setEntries (array) {
+        // Entry array
+        this.array = array;
 
-        var flat = this.flatten();
+        // Calculate constants
+        if (this.type != TableType.History) {
+            this.settings.evaluateConstants(array.map(p => p.player));
+        }
 
-        // Main body
-        return [`
-            <thead>
-                <tr>
-                    ${ this.root.indexed ? `<td style="width: 50px" colspan="1" rowspan="2">#</td>` : '' }
-                    <td style="width: 200px" colspan="1" rowspan="2" class="border-right-thin">Date</td>
-                    ${ join(this.config, (g, index, array) => `<td ${ g.name == 'Potions' ? `style="width:${ g.width }px"` : '' } colspan="${ g.length }" class="${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' }>${ g.name }</td>`) }
-                </tr>
-                <tr>
-                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => g.empty ? '' : `<td width="${ h.width }" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
-                </tr>
-                <tr>
-                    ${ this.root.indexed ? '<td class="border-bottom-thick"></td>' : '' }
-                    <td class="border-bottom-thick border-right-thin"></td>
-                    ${ join(this.config, (g, index, array) => `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`) }
-                </tr>
-            </thead>
-            <tbody>
-                ${ join(players, (r, i) => `<tr>${ this.root.indexed ? `<td>${ i + 1 }</td>` : '' }<td class="border-right-thin">${ formatDate(r[0]) }</td>${ join(flat, h => h.generators.cell(r[1], i != players.length - 1 ? players[i + 1][1] : r[1])) }</tr>`) }
-            </tbody>
-        `, 200 + this.config.reduce((a, b) => a + b.width, 0) + (this.root.indexed ? 50 : 0)];
+        // Generate table entries
+        this.generateEntries();
     }
 
-    createPlayersTable (players, sortby, sortstyle, perf) {
-        this.nodiff = true;
+    // Generate entries
+    generateEntries () {
+        this.entries = [];
 
-        // Prepare bulk variables
-        SettingsParser.prepare(players.map(p => p.player));
+        if (this.type == TableType.History) {
+            for (var i = 0; i < this.array.length; i++) {
+                var [ timestamp, player ] = this.array[i];
 
-        // Flatten the headers
-        var flat = this.flatten();
+                var entry = {
+                    // Row
+                    content: `
+                        <tr>
+                            ${ this.settings.globals.indexed ? `<td>${ i + 1 }</td>` : '' }
+                            <td class="border-right-thin">${ formatDate(timestamp) }</td>
+                            ${ join(this.flat, h => h.generators.cell(player, i != this.array.length - 1 ? this.array[i + 1][1] : player)) }
+                        </tr>
+                    `,
+                };
 
-        // Sort players usign desired method
-        if (sortstyle) {
-            if (sortby == '_name') {
-                if (sortstyle == 1) {
-                    players.sort((a, b) => a.player.Name.localeCompare(b.player.Name));
-                } else {
-                    players.sort((a, b) => b.player.Name.localeCompare(a.player.Name));
+                this.entries.push(entry);
+            }
+        } else if (this.type == TableType.Players) {
+            for (var i = 0; i < this.array.length; i++) {
+                var item = this.array[i];
+
+                var entry = {
+                    // Row
+                    content: `
+                        <tr class="${ item.hidden ? 'css-entry-hidden' : '' }">
+                            ${ this.settings.globals.indexed ? `<td data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</td>` : '' }
+                            <td>${ item.player.Prefix }</td>
+                            <td class="border-right-thin clickable ${ item.latest || !this.settings.globals.outdated ? '' : 'foreground-red' }" data-id="${ item.player.Identifier }">${ item.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ item.player.Name }</td>
+                            ${ join(this.flat, h => h.generators.cell(item.player)) }
+                        </tr>
+                    `,
+                    sorting: {
+                        '_name': item.player.Name,
+                        '_index': item.index,
+                        '_server': item.player.Prefix
+                    }
+                };
+
+                for (var column of this.flat) {
+                    entry.sorting[column.sortkey] = column.sort(item.player);
                 }
-            } else if (sortby == '_index') {
-                if (sortstyle == 1) {
-                    players.sort((a, b) => a.index - b.index);
-                } else {
-                    players.sort((a, b) => b.index - a.index);
+
+                this.entries.push(entry);
+            }
+        } else if (this.type == TableType.Group) {
+            for (var i = 0; i < this.array.length; i++) {
+                var item = this.array[i];
+
+                var entry = {
+                    // Row
+                    content: `
+                        <tr>
+                            ${ this.settings.globals.indexed ? `<td data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</td>` : '' }
+                            <td class="border-right-thin clickable" data-id="${ item.player.Identifier }">${ item.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ item.player.Name }</td>
+                            ${ join(this.flat, h => h.generators.cell(item.player, item.compare)) }
+                        </tr>
+                    `,
+                    sorting: {
+                        '_name': item.player.Name,
+                        '_index': item.index,
+                    }
+                };
+
+                for (var column of this.flat) {
+                    entry.sorting[column.sortkey] = column.sort(item.player);
                 }
-            } else if (sortby == '_server') {
-                if (sortstyle == 1) {
-                    players.sort((a, b) => a.player.Prefix.localeCompare(b.player.Prefix));
+
+                this.entries.push(entry);
+            }
+        }
+    }
+
+    setSorting(key = undefined) {
+        this.sorting = {
+            key: key,
+            order: key == undefined ? 0 : (this.sorting.key != key ? 1 : (this.sorting.order == 2 ? 0 : (this.sorting.order + 1)))
+        }
+
+        this.sort();
+    }
+
+    // Set sorting
+    sort () {
+        if (this.sorting.order) {
+            if (this.sorting.key == '_name') {
+                if (this.sorting.order == 1) {
+                    this.entries.sort((a, b) => a.sorting['_name'].localeCompare(b.sorting['_name']));
                 } else {
-                    players.sort((a, b) => b.player.Prefix.localeCompare(a.player.Prefix));
+                    this.entries.sort((a, b) => b.sorting['_name'].localeCompare(a.sorting['_name']));
                 }
-            } else if (sortby == '_potions') {
-                if (sortstyle == 1) {
-                    players.sort((a, b) => b.player.Potions.reduce((c, p) => c + p.Size, 0) - a.player.Potions.reduce((c, p) => c + p.Size, 0));
+            } else if (this.sorting.key == '_index') {
+                if (this.sorting.order == 1) {
+                    this.entries.sort((a, b) => a.sorting['_index'] - b.sorting['_index']);
                 } else {
-                    players.sort((a, b) => a.player.Potions.reduce((c, p) => c + p.Size, 0) - b.player.Potions.reduce((c, p) => c + p.Size, 0));
+                    this.entries.sort((a, b) => b.sorting['_index'] - a.sorting['_index']);
+                }
+            } else if (this.sorting.key == '_server') {
+                if (this.sorting.order == 1) {
+                    this.entries.sort((a, b) => a.sorting['_server'].localeCompare(b.sorting['_server']));
+                } else {
+                    this.entries.sort((a, b) => b.sorting['_server'].localeCompare(a.sorting['_server']));
                 }
             } else {
-                var sort = flat.find(h => h.sortkey == sortby);
+                var sort = this.flat.find(h => h.sortkey == this.sorting.key);
                 if (sort) {
-                    if ((sortstyle == 1 && !sort.flip) || (sortstyle == 2 && sort.flip)) {
-                        players.sort((a, b) => compareItems(sort.sort(a.player), sort.sort(b.player)));
-                    } else if ((sortstyle == 2 && !sort.flip) || (sortstyle == 1 && sort.flip)) {
-                        players.sort((a, b) => compareItems(sort.sort(b.player), sort.sort(a.player)));
+                    if ((this.sorting.order == 1 && !sort.flip) || (this.sorting.order == 2 && sort.flip)) {
+                        this.entries.sort((a, b) => compareItems(a.sorting[sort.sortkey], b.sorting[sort.sortkey]));
+                    } else if ((this.sorting.order == 2 && !sort.flip) || (this.sorting.order == 1 && sort.flip)) {
+                        this.entries.sort((a, b) => compareItems(b.sorting[sort.sortkey], a.sorting[sort.sortkey]));
                     }
                 }
             }
+        } else {
+            this.entries.sort((a, b) => a.sorting['_index'] - b.sorting['_index']);
         }
-
-        // Add main body
-        return [`
-            <thead>
-                <tr>
-                    ${ this.root.indexed ? `<td style="width: 50px" colspan="1" rowspan="2" class="clickable" ${ this.root.indexed != 2 ? ` data-sortable="${ sortby == '_index' ? sortstyle : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
-                    <td style="width: 100px" colspan="1" rowspan="2" class="clickable" data-sortable="${ sortby == '_server' ? sortstyle : 0 }" data-sortable-key="_server">Server</td>
-                    <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == '_name' ? sortstyle : 0 }" data-sortable-key="_name">Name</td>
-                    ${ join(this.config, (g, index, array) => `<td ${ g.name == 'Potions' ? `style="width:${ g.width }px"` : '' } colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable-key="_potions" data-sortable="${ sortby == '_potions' ? sortstyle : 0 }"` : '' }>${ g.name }</td>`) }
-                </tr>
-                <tr>
-                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => g.empty ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.sortkey ? sortstyle : 0 }" data-sortable-key="${ h.sortkey }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
-                </tr>
-                <tr>
-                    ${ this.root.indexed ? '<td colspan="1" class="border-bottom-thick"></td>' : '' }
-                    <td colspan="2" class="border-bottom-thick border-right-thin"></td>
-                    ${ join(this.config, (g, index, array) => `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`) }
-                </tr>
-            </thead>
-            <tbody>
-                ${ join(players, (r, i) => `<tr class="${ r.hidden ? 'css-entry-hidden' : '' }">${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td>${ r.player.Prefix }</td><td class="border-right-thin clickable ${ r.latest || !this.root.outdated ? '' : 'foreground-red' }" data-player="${ r.player.Identifier }" data-timestamp="${ r.player.Timestamp }">${ r.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ r.player.Name }</td>${ join(flat, h => h.generators.cell(r.player)) }</tr>`, 0, perf == undefined ? this.root.performance : perf) }
-            </tbody>
-        `, 100 + 250 + this.config.reduce((a, b) => a + b.width, 0) + (this.root.indexed ? 50 : 0)];
     }
 
-    createStatisticsTable (players, joined, kicked, sortby, sortstyle) {
-        this.nodiff = false;
+    // Create history table
+    createHistoryTable () {
+        var size = 200 + (this.settings.globals.indexed ? 50 : 0) + this.flat.reduce((a, b) => a + b.width, 0);
+        return [
+            `
+                <thead>
+                    <tr>
+                        ${ this.settings.globals.indexed ? `<td width="50" colspan="1" rowspan="2">#</td>` : '' }
+                        <td width="200" colspan="1" rowspan="2" class="border-right-thin">Date</td>
+                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
+                    </tr>
+                    <tr>
+                        ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
+                    </tr>
+                    <tr>
+                        ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
+                        <td class="border-bottom-thick border-right-thin"></td>
+                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
+                    </tr>
+                </thead>
+                <tbody>
+                    ${ join(this.entries, e => e.content) }
+                </tbody>
+            `,
+            size
+        ];
+    }
 
-        // Prepare bulk variables
-        SettingsParser.prepare(players.map(p => p.player));
+    // Create players table
+    createPlayersTable () {
+        var size = 350 + (this.settings.globals.indexed ? 50 : 0) + this.flat.reduce((a, b) => a + b.width, 0);
+        return [
+            `
+                <thead>
+                    <tr>
+                        ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? `data-sortalbe="${ this.sorting.key == '_index' ? this.sorting.order : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
+                        <td width="100" rowspan="2" class="clickable" data-sortable="${ this.sorting.key == '_server' ? this.sorting.order : 0 }" data-sortable-key="_server">Server</td>
+                        <td width="250" rowspan="2" class="border-right-thin clickable" data-sortable="${ this.sorting.key == '_name' ? this.sorting.order : 0 }" data-sortable-key="_name">Name</td>
+                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" data-sortable="${ h.sortkey == this.sorting.key ? this.sorting.order : 0 }">${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
+                    <tr>
+                        ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" data-sortable="${ h.sortkey == this.sorting.key ? this.sorting.order : 0 }">${ h.name }</td>`)) }
+                    </tr>
+                    <tr>
+                        ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
+                        <td class="border-bottom-thick border-right-thin" colspan="2"></td>
+                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
+                    </tr>
+                </thead>
+                <tbody>
+                    ${ join(this.entries, (e, ei) => e.content.replace(/\<td data\-indexed\=\"2\"\>\d*\<\/td\>/, `<td data-indexed="2">${ ei + 1 }</td>`), 0, this.array.perf == undefined ? this.settings.globals.performance : this.array.perf) }
+                </tbody>
+            `,
+            size
+        ];
+    }
 
-        // Flatten the headers
-        var flat = this.flatten();
+    // Create group table
+    createGroupTable () {
+        var sizeDynamic = this.config.reduce((a, b) => a + b.width, 0);
+        var size = 250 + (this.settings.globals.indexed ? 50 : 0) + Math.max(400, sizeDynamic);
 
-        // Sort players usign desired method
-        if (sortstyle) {
-            if (sortby == '_name') {
-                if (sortstyle == 1) {
-                    players.sort((a, b) => a.player.Name.localeCompare(b.player.Name));
-                } else {
-                    players.sort((a, b) => b.player.Name.localeCompare(a.player.Name));
-                }
-            } else if (sortby == '_index'){
-                if (sortstyle == 1) {
-                    players.sort((a, b) => a.index - b.index);
-                } else {
-                    players.sort((a, b) => b.index - a.index);
-                }
-            } else if (sortby == '_potions') {
-                if (sortstyle == 1) {
-                    players.sort((a, b) => b.player.Potions.reduce((c, p) => c + p.Size, 0) - a.player.Potions.reduce((c, p) => c + p.Size, 0));
-                } else {
-                    players.sort((a, b) => a.player.Potions.reduce((c, p) => c + p.Size, 0) - b.player.Potions.reduce((c, p) => c + p.Size, 0));
-                }
-            } else {
-                var sort = flat.find(h => h.sortkey == sortby);
-                if (sort) {
-                    if ((sortstyle == 1 && !sort.flip) || (sortstyle == 2 && sort.flip)) {
-                        players.sort((a, b) => compareItems(sort.sort(a.player), sort.sort(b.player)));
-                    } else if ((sortstyle == 2 && !sort.flip) || (sortstyle == 1 && sort.flip)) {
-                        players.sort((a, b) => compareItems(sort.sort(b.player), sort.sort(a.player)));
-                    }
-                }
-            }
-        }
-
-        // Current width
-        var cw = this.config.reduce((a, b) => a + b.width, 0);
-        var w = (this.root.indexed ? 50 : 0) + 250 + Math.max(400, cw);
-
-        // Add main body
         var content = `
-            <thead>
-                <tr>
-                    ${ this.root.indexed ? `<td style="width: 50px" colspan="1" rowspan="2" class="clickable" ${ this.root.indexed != 2 ? ` data-sortable="${ sortby == '_index' ? sortstyle : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
-                    <td style="width: 250px" colspan="1" rowspan="2" class="border-right-thin clickable" data-sortable="${ sortby == '_name' ? sortstyle : 0 }" data-sortable-key="_name">Name</td>
-                    ${ join(this.config, (g, index, array) => `<td style="width:${ g.width }px" colspan="${ g.length }" class="${ g.name == 'Potions' ? 'clickable' : '' } ${ index != array.length -1 ? 'border-right-thin' : '' }" ${ g.empty ? 'rowspan="2"' : '' } ${ g.name == 'Potions' ? `data-sortable="${ sortby == '_potions' ? sortstyle : 0 }" data-sortable-key="_potions"` : '' }>${ g.name }</td>`) }
-                    ${ cw < 400 || flat.length < 3 ? joinN(Math.max(1, 3 - flat.length), x => `<td style="width: ${ (400 - cw) / Math.max(1, 3 - flat.length) }px"></td>`) : '' }
-                </tr>
-                <tr>
-                    ${ join(this.config, (g, index, array) => join(g.headers, (h, hindex, harray) => g.empty ? '' : `<td width="${ h.width }" data-sortable="${ sortby == h.sortkey ? sortstyle : 0 }" data-sortable-key="${ h.sortkey }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
-                </tr>
-                <tr>
-                    ${ this.root.indexed ? '<td colspan="1" class="border-bottom-thick"></td>' : '' }
-                    <td colspan="1" class="border-bottom-thick border-right-thin"></td>
-                    ${ join(this.config, (g, index, array) => `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`) }
-                </tr>
-            </thead>
+        <thead>
+            <tr>
+                ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? `data-sortalbe="${ this.sorting.key == '_index' ? this.sorting.order : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
+                <td width="250" rowspan="2" class="border-right-thin clickable" data-sortable="${ this.sorting.key == '_name' ? this.sorting.order : 0 }" data-sortable-key="_name">Name</td>
+                ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" data-sortable="${ h.sortkey == this.sorting.key ? this.sorting.order : 0 }">${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
+            <tr>
+                ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" data-sortable="${ h.sortkey == this.sorting.key ? this.sorting.order : 0 }">${ h.name }</td>`)) }
+            </tr>
+            <tr>
+                ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
+                <td class="border-bottom-thick border-right-thin"></td>
+                ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
+            </tr>
+        </thead>
             <tbody>
-                ${ join(players, (r, i) => `<tr>${ this.root.indexed ? `<td>${ (this.root.indexed == 1 ? r.index : i) + 1 }</td>` : '' }<td class="border-right-thin clickable" data-player="${ r.player.Identifier }">${ r.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ r.player.Name }</td>${ join(flat, h => h.generators.cell(r.player, r.compare)) }</tr>`) }
+                ${ join(this.entries, (e, ei) => e.content.replace(/\<td data\-indexed\=\"2\"\>\d*\<\/td\>/, `<td data-indexed="2">${ ei + 1 }</td>`)) }
         `;
 
-        // Add statistics
-        var showMembers = this.root.members;
-        var showStatistics = flat.reduce((c, h) => c + (h.statistics ? 1 : 0), 0) > 0;
+        var showMembers = this.settings.globals.members;
+        var showSummary = this.flat.reduce((a, b) => a || b.statistics, false);
 
-        if (showMembers || showStatistics) {
+        if (showMembers || showSummary) {
             content += `
-                <tr><td colspan="${ flat.length + 1 + (this.root.indexed ? 1 : 0) }"></td></tr>
+                <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
             `;
         }
 
-        if (showStatistics) {
+        if (showSummary) {
             content += `
                 <tr>
-                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }></td>
-                    ${ join(flat, (h, i) => (h.statistics && h.generators.statistics) ? `<td>${ h.name }</td>` : '<td></td>') }
+                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                    ${ join(this.flat, (h, i) => `<td colspan="${ h.span }">${ h.statistics && h.generators.statistics ? h.name : '' }</td>`) }
                 </tr>
                 <tr>
-                    <td class="border-right-thin border-bottom-thick" ${ this.root.indexed ? 'colspan="2"' : '' }></td>
-                    <td class="border-bottom-thick" colspan="${ flat.length }"></td>
+                    <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                    ${ join(this.flat, (h, index, array) => `<td class="border-bottom-thick" colspan=${ h.span }></td>`) }
                 </tr>
                 <tr>
-                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Minimum</td>
-                    ${ join(flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(players, ar => Math.min(... ar)) : '<td></td>') }
+                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Minimum</td>
+                    ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => Math.min(... ar)) : `<td colspan=${ h.span }></td>`) }
                 </tr>
                 <tr>
-                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Average</td>
-                    ${ join(flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(players, ar => Math.trunc(ar.reduce((a, b) => a + b, 0) / ar.length)) : '<td></td>') }
+                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Average</td>
+                    ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => Math.trunc(ar.reduce((a, b) => a + b, 0) / ar.length)) : `<td colspan=${ h.span }></td>`) }
                 </tr>
                 <tr>
-                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Maximum</td>
-                    ${ join(flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(players, ar => Math.max(... ar)) : '<td></td>') }
+                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Maximum</td>
+                    ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => Math.max(... ar)) : `<td colspan=${ h.span }></td>`) }
                 </tr>
             `;
         }
 
         if (showMembers) {
-            var classes = players.reduce((c, p) => { c[p.player.Class - 1]++; return c; }, [0, 0, 0, 0, 0, 0]);
+            var classes = this.array.reduce((c, p) => {
+                c[p.player.Class - 1]++;
+                return c;
+            }, [0, 0, 0, 0, 0, 0]);
 
-            if (showStatistics) {
+            if (showSummary) {
                 content += `
                     <tr>
-                        <td class="border-right-thin border-bottom-thick" ${ this.root.indexed ? 'colspan="2"' : '' }></td>
-                        <td class="border-bottom-thick" colspan="${ flat.length }"></td>
+                        <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                        ${ join(this.flat, (h, index, array) => `<td class="border-bottom-thick" colspan=${ h.span }></td>`) }
                     </tr>
                 `;
             }
 
             var widskip = 1;
-            for (var i = 0, wid = 60; wid > 0 && i < flat.length; i++) {
-                wid -= flat[i].width;
+            for (var i = 0, wid = 60; wid > 0 && i < this.flat.length; i++) {
+                wid -= this.flat[i].width;
                 if (wid > 0) {
                     widskip++;
                 } else {
@@ -561,41 +627,44 @@ class Table {
 
             content += `
                 <tr>
-                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Warrior</td>
+                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Warrior</td>
                     <td colspan="${ widskip }">${ classes[0] }</td>
-                    ${ joined.length > 0 ? `
+                    ${ this.array.joined.length > 0 ? `
                         <td class="border-right-thin" rowspan="3" colspan="1">Joined</td>
-                        <td colspan="${ Math.max(1, flat.length - 1 - widskip) }" rowspan="3">${ joined.join(', ') }</td>
+                        <td colspan="${ Math.max(1, this.flat.length - 1 - widskip) }" rowspan="3">${ this.array.joined.join(', ') }</td>
                     ` : '' }
                 </tr>
                 <tr>
-                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Mage</td>
+                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Mage</td>
                     <td colspan="${ widskip }">${ classes[1] }</td>
                 </tr>
                 <tr>
-                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Scout</td>
+                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Scout</td>
                     <td colspan="${ widskip }">${ classes[2] }</td>
                 </tr>
                 <tr>
-                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Assassin</td>
+                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Assassin</td>
                     <td colspan="${ widskip }">${ classes[3] }</td>
-                    ${ kicked.length > 0 ? `
+                    ${ this.array.kicked.length > 0 ? `
                         <td class="border-right-thin" rowspan="3" colspan="1">Left</td>
-                        <td colspan="${ Math.max(1, flat.length - 1 - widskip) }" rowspan="3">${ kicked.join(', ') }</td>
+                        <td colspan="${ Math.max(1, this.flat.length - 1 - widskip) }" rowspan="3">${ this.array.kicked.join(', ') }</td>
                     ` : '' }
                 </tr>
                 <tr>
-                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Battle Mage</td>
+                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Battle Mage</td>
                     <td colspan="${ widskip }">${ classes[4] }</td>
                 </tr>
                 <tr>
-                    <td class="border-right-thin" ${ this.root.indexed ? 'colspan="2"' : '' }>Berserker</td>
+                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Berserker</td>
                     <td colspan="${ widskip }">${ classes[5] }</td>
                 </tr>
             `;
         }
 
-        return [content + '</tbody>', w];
+        return [
+            content + '</tbody>',
+            size
+        ];
     }
 }
 
@@ -623,60 +692,6 @@ const CellGenerator = {
     }
 }
 
-// Settings
-class Settings {
-    static save (settings, identifier) {
-        Preferences.set(identifier ? `settings/${ identifier }` : 'settings', settings);
-    }
-
-    static remove (identifier) {
-        Preferences.remove(identifier ? `settings/${ identifier }` : 'settings');
-    }
-
-    static exists (identifier) {
-        return Preferences.exists(identifier ? `settings/${ identifier }` : 'settings');
-    }
-
-    static empty () {
-        var settings = new Settings();
-
-        settings.code = '';
-        settings.root = SettingsParser.parse('');
-
-        return settings;
-    }
-
-    static load (identifier) {
-        var settings = new Settings();
-
-        settings.code = Preferences.get(`settings/${ identifier }`, Preferences.get('settings', DEFAULT_SETTINGS));
-        settings.root = SettingsParser.parse(settings.code);
-
-        return settings;
-    }
-
-    getRoot () {
-        return this.root;
-    }
-
-    getCode () {
-        return this.code;
-    }
-
-    getEntry (name) {
-        for (var i = 0, c; c = this.root.c[i]; i++) {
-            if (c.name == name && ReservedCategories[c.name]) return c;
-            else if (!c.h) continue;
-            else for (var j = 0, h; h = c.h[j]; j++) if (h.name == name) return h;
-        }
-        return null;
-    }
-
-    getEntrySafe (name) {
-        return this.getEntry(name) || {};
-    }
-}
-
 const CompareEval = {
     // Available rules
     e: (val, ref) => val == ref,
@@ -697,682 +712,7 @@ const CompareEval = {
         }
         return def;
     }
-}
-
-const SP_KEYWORD_INTERNAL = {
-    'undefined': undefined,
-    'null': null
 };
-
-const SP_KEYWORD_MAPPING = {
-    'ID': {
-        expr: p => p.ID
-    },
-    'Role': {
-        expr: p => p.Group.Role,
-        flip: true,
-        format: (p, x) => p.hasGuild() ? '?' : GROUP_ROLES[cell.Group.Role]
-    },
-    'Level': {
-        expr: p => p.Level
-    },
-    'Guild': {
-        expr: p => p.Group.Name || ''
-    },
-    'Strength': {
-        expr: p => p.Strength.Total
-    },
-    'Dexterity': {
-        expr: p => p.Dexterity.Total
-    },
-    'Intelligence': {
-        expr: p => p.Intelligence.Total
-    },
-    'Constitution': {
-        expr: p => p.Constitution.Total
-    },
-    'Luck': {
-        expr: p => p.Luck.Total
-    },
-    'Attribute': {
-        expr: p => p.Primary.Total
-    },
-    'Strength Bonus': {
-        expr: p => p.Strength.Bonus,
-        alias: 'Str Bonus'
-    },
-    'Dexterity Bonus': {
-        expr: p => p.Dexterity.Bonus,
-        alias: 'Dex Bonus'
-    },
-    'Intelligence Bonus': {
-        expr: p => p.Intelligence.Bonus,
-        alias: 'Int Bonus'
-    },
-    'Constitution Bonus': {
-        expr: p => p.Constitution.Bonus,
-        alias: 'Con Bonus'
-    },
-    'Luck Bonus': {
-        expr: p => p.Luck.Bonus,
-        alias: 'Lck Bonus'
-    },
-    'Bonus': {
-        expr: p => p.Primary.Bonus
-    },
-    'Base Strength': {
-        expr: p => p.Strength.Base
-    },
-    'Base Dexterity': {
-        expr: p => p.Dexterity.Base
-    },
-    'Base Intelligence': {
-        expr: p => p.Intelligence.Base
-    },
-    'Base Constitution': {
-        expr: p => p.Constitution.Base
-    },
-    'Base Luck': {
-        expr: p => p.Luck.Base
-    },
-    'Base': {
-        expr: p => p.Primary.Base
-    },
-    'Honor': {
-        expr: p => p.Honor
-    },
-    'Runes': {
-        expr: p => p.Runes.Runes,
-        format: (p, x) => `e${ x }`,
-        width: 100
-    },
-    'Action Index': {
-        expr: p => p.Action.Index
-    },
-    'Status': {
-        expr: p => p.Action.Status,
-        format: (p, x) => PLAYER_ACTIONS[Math.max(0, x)]
-    },
-    'Action Finish': {
-        expr: p => p.Action.Finish,
-        format: (p, x) => x < 0 ? formatDate(x) : ''
-    },
-    'Health': {
-        expr: p => p.Health,
-        width: 120
-    },
-    'Armor': {
-        expr: p => p.Armor
-    },
-    'Space': {
-        expr: p => 5 + p.Fortress.Treasury
-    },
-    'Mirror': {
-        expr: p => p.Mirror ? 13 : p.MirrorPieces
-    },
-    'Equipment': {
-        expr: p => Object.values(p.Items).reduce((c, i) => c + (i.Attributes[0] > 0 ? i.getItemLevel() : 0), 0),
-        width: 130
-    },
-    'Treasure': {
-        expr: p => p.Group.Treasure
-    },
-    'Instructor': {
-        expr: p => p.Group.Instructor
-    },
-    'Pet': {
-        expr: p => p.Group.Pet
-    },
-    'Tower': {
-        expr: p => p.Dungeons.Tower
-    },
-    'Portal': {
-        expr: p => p.Dungeons.Player
-    },
-    'Guild Portal': {
-        expr: p => p.Dungeons.Group,
-        width: 130
-    },
-    'Twister': {
-        expr: p => p.Dungeons.Twister
-    },
-    'Dungeon': {
-        expr: p => p.Dungeons.Normal.Total
-    },
-    'Shadow Dungeon': {
-        expr: p => p.Dungeons.Shadow.Total
-    },
-    'Fortress': {
-        expr: p => p.Fortress.Fortress
-    },
-    'Upgrades': {
-        expr: p => p.Fortress.Upgrades
-    },
-    'Gem Mine': {
-        expr: p => p.Fortress.GemMine
-    },
-    'Fortress Honor': {
-        expr: p => p.Fortress.Honor,
-        width: 130
-    },
-    'Wall': {
-        expr: p => p.Fortress.Fortifications
-    },
-    'Quarters': {
-        expr: p => p.Fortress.LaborerQuarters
-    },
-    'Woodcutter': {
-        expr: p => p.Fortress.WoodcutterGuild
-    },
-    'Quarry': {
-        expr: p => p.Fortress.Quarry
-    },
-    'Academy': {
-        expr: p => p.Fortress.Academy
-    },
-    'Archery Guild': {
-        expr: p => p.Fortress.ArcheryGuild
-    },
-    'Barracks': {
-        expr: p => p.Fortress.Barracks
-    },
-    'Mage Tower': {
-        expr: p => p.Fortress.MageTower
-    },
-    'Treasury': {
-        expr: p => p.Fortress.Treasury
-    },
-    'Smithy': {
-        expr: p => p.Fortress.Smithy
-    },
-    'Wood': {
-        expr: p => p.Fortress.Wood
-    },
-    'Stone': {
-        expr: p => p.Fortress.Stone
-    },
-    'Raid Wood': {
-        expr: p => p.Fortress.RaidWood
-    },
-    'Raid Stone': {
-        expr: p => p.Fortress.RaidStone
-    },
-    'Shadow': {
-        expr: p => p.Pets.Shadow
-    },
-    'Light': {
-        expr: p => p.Pets.Light
-    },
-    'Earth': {
-        expr: p => p.Pets.Earth
-    },
-    'Fire': {
-        expr: p => p.Pets.Fire
-    },
-    'Water': {
-        expr: p => p.Pets.Water
-    },
-    'Rune Gold': {
-        expr: p => p.Runes.Gold
-    },
-    'Rune XP': {
-        expr: p => p.Runes.XP
-    },
-    'Rune Chance': {
-        expr: p => p.Runes.Chance
-    },
-    'Rune Quality': {
-        expr: p => p.Runes.Quality
-    },
-    'Rune Health': {
-        expr: p => p.Runes.Health,
-        width: 120
-    },
-    'Rune Damage': {
-        expr: p => p.Runes.Damage,
-        width: 110
-    },
-    'Rune Resist': {
-        expr: p => p.Runes.Resistance,
-        width: 110
-    },
-    'Fire Resist': {
-        expr: p => p.Runes.ResistanceFire,
-        width: 110
-    },
-    'Cold Resist': {
-        expr: p => p.Runes.ResistanceCold,
-        width: 110
-    },
-    'Lightning Resist': {
-        expr: p => p.Runes.ResistanceLightning,
-        width: 110
-    },
-    'Fire Damage': {
-        expr: p => p.Runes.DamageFire,
-        width: 110
-    },
-    'Cold Damage': {
-        expr: p => p.Runes.DamageCold,
-        width: 110
-    },
-    'Lightning Damage': {
-        expr: p => p.Runes.DamageLightning,
-        width: 110
-    },
-    'Class': {
-        expr: p => p.Class,
-        format: (p, x) => PLAYER_CLASS[x]
-    },
-    'Rank': {
-        expr: p => p.Rank,
-        flip: true
-    },
-    'Mount': {
-        expr: p => p.Mount
-    },
-    'Awards': {
-        expr: p => p.Achievements.Owned
-    },
-    'Album': {
-        expr: p => p.Book
-    },
-    'Knights': {
-        expr: p => p.Fortress.Knights
-    },
-    'Fortress Rank': {
-        expr: p => p.Fortress.Rank
-    },
-    'Building': {
-        expr: p => p.Fortress.Upgrade.Building,
-        width: 180,
-        format: (p, x) => FORTRESS_BUILDINGS[x]
-    },
-    'Last Active': {
-        expr: p => p.LastOnline,
-    },
-    'Timestamp': {
-        expr: p => p.Timestamp,
-        format: (p, x) => formatDate(x)
-    },
-    'Guild Joined': {
-        expr: p => p.Group.Joined,
-        format: (p, x) => p.hasGuild() ? formatDate(x) : ''
-    },
-    'Aura': {
-        expr: p => p.Toilet.Aura
-    },
-    'Gladiator': {
-        expr: p => p.Fortress.Gladiator,
-        format: (p, x) => (x == 0 ? '' : (x == 1 ? '1+' : (x == 5 ? '5+' : (x == 10 ? '10+' : 15))))
-    }
-};
-
-const AST_OPERATORS = {
-    '*': a => a[0] * a[1],
-    '/': a => a[0] / a[1],
-    '+': a => a[0] + a[1],
-    '-': a => a[0] - a[1],
-    '>': a => a[0] > a[1],
-    '<': a => a[0] < a[1],
-    '==': a => a[0] == a[1],
-    '>=': a => a[0] >= a[1],
-    '<=': a => a[0] <= a[1],
-    '||': a => a[0] || a[1],
-    '&&': a => a[0] && a[1],
-    '?': a => a[0] ? a[1] : a[2],
-    'u-': a => -a[0],
-    's': a => a[0],
-    '!': a => a[0] ? false : true,
-    '[': a => typeof(a[0]) == 'object' ? a[0][a[1]] : undefined
-};
-
-const AST_FUNCTIONS = {
-    'trunc': (a) => Math.trunc(a[0]),
-    'ceil': (a) => Math.ceil(a[0]),
-    'floor': (a) => Math.floor(a[0]),
-    'datetime': (a) => formatDate(a[0]),
-    'number': (a) => Number.isInteger(a[0]) ? a[0] : a[0].toFixed(2),
-    'duration': (a) => formatDuration(a[0]),
-    'date': (a) => formatDateOnly(a[0]),
-    'fnumber': (a) => formatAsSpacedNumber(a[0]),
-    'small': (a) => CellGenerator.Small(a[0]),
-    'min': (a) => Array.isArray(a[0]) ? Math.min(... a[0]) : Math.min(... a),
-    'max': (a) => Array.isArray(a[0]) ? Math.max(... a[0]) : Math.max(... a),
-    'sum': (a) => Array.isArray(a[0]) ? a[0].reduce((t, a) => t + a, 0) : a.reduce((t, a) => t + a, 0)
-};
-
-class AST {
-    constructor (string) {
-        this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(/(\'[^\']*\'|\"[^\"]*\"|\|\||\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\[|\]|\,)/).map(token => token.trim()).filter(token => token.length);
-        this.root = this.evalExpression();
-        if (SettingsParser.debug) {
-            console.info(`[ EXPRESSION ]\nInput: ${ string }\nOutput: ${ this.toString() }\nErrors: ${ this.tokens.length }`);
-        }
-    }
-
-    peek (i) {
-        return this.tokens[i || 0];
-    }
-
-    get () {
-        var v = this.tokens.shift();
-        return isNaN(v) ? v : Number(v);
-    }
-
-    getRoot () {
-        return this.root;
-    }
-
-    getVal () {
-        var val = this.get();
-        if (val[0] == '\"' || val[0] == '\'') {
-            val = {
-                args: [ val.slice(1, val.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\'') ],
-                op: AST_OPERATORS['s'],
-                noeval: true
-            }
-        } else if (val == '-') {
-            var v;
-            if (this.peek() == '(') {
-                v = this.evalBracketExpression();
-            } else if (AST_FUNCTIONS[this.peek()] || (/\w+/.test(this.peek()) && this.peek(1) == '(')) {
-                v = this.getVal();
-            } else {
-                v = this.get();
-            }
-
-            val = {
-                args: [ v ],
-                op: AST_OPERATORS['u-']
-            };
-        } else if (val == '!') {
-            var v;
-            if (this.peek() == '(') {
-                v = this.evalBracketExpression();
-            } else if (AST_FUNCTIONS[this.peek()] || (/\w+/.test(this.peek()) && this.peek(1) == '(')) {
-                v = this.getVal();
-            } else {
-                v = this.get();
-            }
-
-            val = {
-                args: [ v ],
-                op: AST_OPERATORS['!']
-            };
-        } else if (AST_FUNCTIONS[val] || (/\w+/.test(val) && this.peek() == '(')) {
-            var a = [];
-            this.get();
-
-            a.push(this.evalExpression());
-            while (this.peek() == ',') {
-                this.get();
-
-                if (this.peek() == '(') {
-                    a.push(this.evalBracketExpression());
-                } else {
-                    a.push(this.evalExpression());
-                }
-            }
-
-            this.get();
-            val = {
-                args: a,
-                op: AST_FUNCTIONS[val] ? AST_FUNCTIONS[val] : val
-            };
-        }
-
-        while (this.peek() == '[') {
-            this.get();
-
-            val = {
-                args: [ val, this.evalExpression() ],
-                op: AST_OPERATORS['[']
-            };
-
-            this.get();
-        }
-
-        return val;
-    }
-
-    evalBracketExpression () {
-        this.get();
-        var v = this.evalExpression();
-        this.get();
-        return v;
-    }
-
-    evalRankedExpression () {
-        var left, right, op;
-        if (this.peek() == '(') {
-            left = this.evalBracketExpression();
-        } else {
-            left = this.getVal();
-        }
-
-        while (['*', '/'].includes(this.peek())) {
-            op = this.get();
-
-            if (this.peek() == '(') {
-                right = this.evalBracketExpression();
-            } else {
-                right = this.getVal();
-            }
-
-            left = {
-                args: [ left, right ],
-                op: AST_OPERATORS[op]
-            }
-        }
-
-        return left;
-    }
-
-    evalSimpleExpression () {
-        var left, right, op;
-
-        left = this.evalRankedExpression();
-
-        while (['+', '-'].includes(this.peek())) {
-            op = this.get();
-
-            if (this.peek() == '(') {
-                right = this.evalBracketExpression();
-            } else {
-                right = this.evalRankedExpression();
-            }
-
-            left = {
-                args: [ left, right ],
-                op: AST_OPERATORS[op]
-            }
-        }
-
-        return left;
-    }
-
-    evalBoolExpression () {
-        var left, right, op;
-
-        left = this.evalSimpleExpression();
-
-        while (['>', '<', '<=', '>=', '=='].includes(this.peek())) {
-            op = this.get();
-
-            if (this.peek() == '(') {
-                right = this.evalBracketExpression();
-            } else {
-                right = this.evalSimpleExpression();
-            }
-
-            left = {
-                args: [ left, right ],
-                op: AST_OPERATORS[op]
-            }
-        }
-
-        return left;
-    }
-
-    evalBoolMergeExpression () {
-        var left, right, op;
-
-        left = this.evalBoolExpression();
-
-        while (['||', '&&'].includes(this.peek())) {
-            op = this.get();
-
-            if (this.peek() == '(') {
-                right = this.evalBracketExpression();
-            } else {
-                right = this.evalBoolExpression();
-            }
-
-            left = {
-                args: [ left, right ],
-                op: AST_OPERATORS[op]
-            }
-        }
-
-        return left;
-    }
-
-    evalExpression () {
-        var left, tr, fl;
-
-        left = this.evalBoolMergeExpression();
-
-        if (this.peek() == '?') {
-            this.get();
-
-            if (this.peek() == '(') {
-                tr = this.evalBracketExpression();
-            } else {
-                tr = this.evalBoolMergeExpression();
-            }
-
-            if (this.peek() == ':') {
-                this.get();
-
-                if (this.peek() == '(') {
-                    fl = this.evalBracketExpression();
-                } else {
-                    fl = this.evalBoolMergeExpression();
-                }
-
-                left = {
-                    args: [ left, tr, fl ],
-                    op: AST_OPERATORS['?']
-                }
-            }
-        }
-
-        return left;
-    }
-
-    isValid () {
-        return this.tokens.length == 0;
-    }
-
-    getConstantValue () {
-        return this.eval(undefined, undefined);
-    }
-
-    toString (node = this.root) {
-        return 'Not supported at this time';
-    }
-
-    eval (player, environment = undefined, node = this.root) {
-        if (typeof(node) == 'object') {
-            if (node.noeval) {
-                return node.args[0];
-            } else if (typeof(node.op) == 'string') {
-                if (node.op == 'each' && node.args.length >= 2) {
-                    var object = Object.values(this.eval(player, environment, node.args[0]) || {});
-                    var mapper = SettingsParser.root.func[node.args[1]];
-                    var sum = 0;
-                    if (mapper) {
-                        for (var i = 0; i < object.length; i++) {
-                            var env = {};
-                            for (var j = 0; j < mapper.arg.length; j++) {
-                                env[mapper.arg[j]] = object[i];
-                            }
-                            sum += mapper.ast.eval(player, env);
-                        }
-                    } else {
-                        for (var i = 0; i < object.length; i++) {
-                            var env = {};
-                            env[node.args[1].split('.', 1)[0]] = object[i];
-                            sum += this.eval(player, env, node.args[1]);
-                        }
-                    }
-                    return sum;
-                } else if (node.op == 'map' && node.args.length >= 2) {
-                    var object = Object.values(this.eval(player, environment, node.args[0]) || {});
-                    var mapper = SettingsParser.root.func[node.args[1]];
-                    var sum = [];
-                    if (mapper) {
-                        for (var i = 0; i < object.length; i++) {
-                            var env = {};
-                            for (var j = 0; j < mapper.arg.length; j++) {
-                                env[mapper.arg[j]] = object[i];
-                            }
-                            sum.push(mapper.ast.eval(player, env));
-                        }
-                    } else {
-                        for (var i = 0; i < object.length; i++) {
-                            var env = {};
-                            env[node.args[1].split('.', 1)[0]] = object[i];
-                            sum.push(this.eval(player, env, node.args[1]));
-                        }
-                    }
-                    return sum;
-                } else if (node.op == 'slice' && node.args.length >= 3) {
-                    return Object.values(this.eval(player, environment, node.args[0])).slice(Number(node.args[1]), Number(node.args[2]));
-                } else if (SettingsParser.root.func[node.op]) {
-                    var mapper = SettingsParser.root.func[node.op];
-                    var env = {};
-                    for (var i = 0; i < mapper.arg.length; i++) {
-                        env[mapper.arg[i]] = this.eval(player, environment, node.args[i]);
-                    }
-                    return mapper.ast.eval(player, env);
-                } else {
-                    return undefined;
-                }
-            } else if (node.op) {
-                return node.op(node.args.map(arg => this.eval(player, environment, arg)));
-            } else {
-                return node;
-            }
-        } else if (typeof(node) == 'string') {
-            if (node == 'this') {
-                return environment;
-            } else if (typeof(environment) == 'object' && (environment[node] || environment[node.split('.', 1)[0]])) {
-                if (environment[node]) {
-                    return environment[node];
-                } else {
-                    var [key, path] = node.split(/\.(.*)/, 2);
-                    return getObjectAt(environment[key], path);
-                }
-            } else if (SettingsParser.root.vars[node]) {
-                return SettingsParser.root.vars[node].value || SettingsParser.root.vars[node].ast.eval(player);
-            } else if (SettingsParser.root.bvars[node]) {
-                return SettingsParser.root.bvars[node].value;
-            } else if (node[0] == '@') {
-                return SettingsConstants[node.slice(1)]
-            } else if (SP_KEYWORD_INTERNAL[node]) {
-                return SP_KEYWORD_INTERNAL[node];
-            } else if (SP_KEYWORD_MAPPING[node] && player) {
-                return SP_KEYWORD_MAPPING[node].expr(player);
-            } else {
-                return getObjectAt(player, node);
-            }
-        } else {
-            return node;
-        }
-    }
-}
 
 class SettingsCommand {
     constructor (regexp, parse, format) {
@@ -1435,7 +775,7 @@ const SettingsCommands = [
         var [ , key, name, arg, asts ] = this.match(string);
         var ast = new AST(asts);
         if (ast.isValid()) {
-            root.setBulkVariable(name, arg, ast);
+            root.setVariable(name, arg, ast);
         }
     }, function (string) {
         var [ , key, name, arg, asts ] = this.match(string);
@@ -1459,7 +799,7 @@ const SettingsCommands = [
         var [ , key, name, a ] = this.match(string);
         var ast = new AST(a);
         if (ast.isValid()) {
-            root.setVariable(name, ast);
+            root.setVariable(name, undefined, ast);
         }
     }, function (string) {
         var [ , key, name, a ] = this.match(string);
@@ -1469,18 +809,22 @@ const SettingsCommands = [
     // debug - Show debug information about settings in the console
     new SettingsCommand(/^(debug) (on|off)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.enableDebug(ARG_MAP[a]);
+
     }, function (string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
     }),
     // Create new category
-    new SettingsCommand(/^(category) (\S+[\S ]*)$/, function (root, string) {
+    new SettingsCommand(/^(category)(?: (\S+[\S ]*))?$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.createCategory(a);
+        root.createCategory(a, a == undefined);
     }, function (string) {
         var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ ReservedCategories[a] ? SFormat.Reserved(a) : SFormat.Normal(a) }`;
+        if (a != undefined) {
+            return `${ SFormat.Keyword(key) } ${ ReservedCategories[a] ? SFormat.Reserved(a) : SFormat.Normal(a) }`;
+        } else {
+            return `${ SFormat.Keyword(key) }`;
+        }
     }),
     // Create new header
     new SettingsCommand(/^(header) (\S+[\S ]*)$/, function (root, string) {
@@ -1547,7 +891,7 @@ const SettingsCommands = [
         var [ , key, arg, prefix, value ] = this.match(string);
         var val = Constants.GetValue(prefix, value);
 
-        if (Constants.IsConstant(prefix, value) && !isNaN(val)) {
+        if (Constants.IsValid(prefix, value) && !isNaN(val)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
         } else if (prefix == '@' || isNaN(val)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
@@ -1592,7 +936,7 @@ const SettingsCommands = [
             var ast = new AST(arg);
             if (ast.isValid()) {
                 root.setLocalVariable(key, (player, val) => {
-                    return ast.eval(player, val);
+                    return ast.eval(player, root, val);
                 });
             }
         }
@@ -1616,7 +960,7 @@ const SettingsCommands = [
     }, function (string) {
         var [ , key, arg, prefix, value ] = this.match(string);
 
-        if (Constants.IsConstant(prefix, value)) {
+        if (Constants.IsValid(prefix, value)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
         } else if (prefix == '@') {
             return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
@@ -1630,8 +974,8 @@ const SettingsCommands = [
         var [ , key, a ] = this.match(string);
         var ast = new AST(a);
         if (ast.isValid()) {
-            root.setLocalVariable(key, player => {
-                var value = ast.eval(player);
+            root.setLocalVariable(key, (player) => {
+                var value = ast.eval(player, root);
                 return typeof(value) == 'string' ? value : (isNaN(value) ? undefined : value);
             });
         }
@@ -1651,7 +995,7 @@ const SettingsCommands = [
     }, function (string) {
         var [ , key, condition, arg, prefix, value ] = this.match(string);
 
-        if (Constants.IsConstant(prefix, value)) {
+        if (Constants.IsValid(prefix, value)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Constant(arg) }`;
         } else if (prefix == '@') {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Error(arg) }`;
@@ -1672,7 +1016,7 @@ const SettingsCommands = [
         var [ , key, condition, arg, prefix, value ] = this.match(string);
         var val = getCSSColor(Constants.GetValue(prefix, value));
 
-        if (Constants.IsConstant(prefix, value) && val) {
+        if (Constants.IsValid(prefix, value) && val) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Constant(arg) }`;
         } else if (prefix == '@' || !val) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Error(arg) }`;
@@ -1693,7 +1037,7 @@ const SettingsCommands = [
     }, function (string) {
         var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
 
-        if (Constants.IsConstant(rprefix, rvalue)) {
+        if (Constants.IsValid(rprefix, rvalue)) {
             rarg = SFormat.Constant(rarg);
         } else if (rprefix == '@') {
             rarg = SFormat.Error(rarg);
@@ -1701,7 +1045,7 @@ const SettingsCommands = [
             rarg = SFormat.Normal(rarg);
         }
 
-        if (Constants.IsConstant(prefix, value)) {
+        if (Constants.IsValid(prefix, value)) {
             arg = SFormat.Constant(arg);
         } else if (prefix == '@') {
             arg = SFormat.Error(arg);
@@ -1725,7 +1069,7 @@ const SettingsCommands = [
         var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
         var val = getCSSColor(Constants.GetValue(prefix, value));
 
-        if (Constants.IsConstant(rprefix, rvalue)) {
+        if (Constants.IsValid(rprefix, rvalue)) {
             rarg = SFormat.Constant(rarg);
         } else if (rprefix == '@') {
             rarg = SFormat.Error(rarg);
@@ -1733,7 +1077,7 @@ const SettingsCommands = [
             rarg = SFormat.Normal(rarg);
         }
 
-        if (Constants.IsConstant(prefix, value) && val) {
+        if (Constants.IsValid(prefix, value) && val) {
             arg = SFormat.Constant(arg);
         } else if (prefix == '@' || !val) {
             arg = SFormat.Error(arg);
@@ -1745,74 +1089,115 @@ const SettingsCommands = [
     })
 ];
 
-const SettingsConstants = {
-    'green': '#00c851',
-    'orange': '#ffbb33',
-    'red': '#ff3547',
-    '15min': '0',
-    '1hour': '1',
-    '12hours': '2',
-    '1day': '3',
-    '3days': '4',
-    '7days': '5',
-    '21days': '6',
-    'mount10': '1',
-    'mount20': '2',
-    'mount30': '3',
-    'mount50': '4',
-    'none': '0',
-    'warrior': '1',
-    'mage': '2',
-    'scout': '3',
-    'assassin': '4',
-    'battlemage': '5',
-    'berserker': '6',
-    'empty': '',
-    'tiny': '15',
-    'small': '60',
-    'normal': '100',
-    'large': '160',
-    'huge': '200'
-};
-
 const Constants = {
+    // Get value of a constant or pass the key though
     GetValue: function (tag, key) {
-        return tag == '@' ? SettingsConstants[key] : key;
+        return tag == '@' ? this.Values[key] : key;
     },
-    IsConstant: function (tag, key) {
-        return tag == '@' && SettingsConstants[key] != undefined;
+    // Check if the constant is valid
+    IsValid: function (tag, key) {
+        return tag == '@' && this.Values[key] != undefined;
+    },
+    // Individual constants
+    Values: {
+        'green': '#00c851',
+        'orange': '#ffbb33',
+        'red': '#ff3547',
+        '15min': '0',
+        '1hour': '1',
+        '12hours': '2',
+        '1day': '3',
+        '3days': '4',
+        '7days': '5',
+        '21days': '6',
+        'mount10': '1',
+        'mount20': '2',
+        'mount30': '3',
+        'mount50': '4',
+        'none': '0',
+        'warrior': '1',
+        'mage': '2',
+        'scout': '3',
+        'assassin': '4',
+        'battlemage': '5',
+        'berserker': '6',
+        'empty': '',
+        'tiny': '15',
+        'small': '60',
+        'normal': '100',
+        'large': '160',
+        'huge': '200'
     }
 }
 
-const SettingsParser = new (class {
-    enableDebug (enable) {
-        this.debug = enable;
+class Settings {
+    // Save
+    static save (settings, identifier) {
+        Preferences.set(identifier ? `settings/${ identifier }` : 'settings', settings);
     }
 
-    format (string) {
+    // Remove
+    static remove (identifier) {
+        Preferences.remove(identifier ? `settings/${ identifier }` : 'settings');
+    }
+
+    // Exists
+    static exists (identifier) {
+        return Preferences.exists(identifier ? `settings/${ identifier }` : 'settings');
+    }
+
+    // Create empty settings
+    static empty () {
+        return new Settings('');
+    }
+
+    // Load settings
+    static load (identifier) {
+        return new Settings(Preferences.get(`settings/${ identifier }`, Preferences.get('settings', DEFAULT_SETTINGS)));
+    }
+
+    // Get code
+    getCode () {
+        return this.code;
+    }
+
+    // Get entry
+    getEntry (name) {
+        for (var i = 0, c; c = this.c[i]; i++) {
+            if (c.name == name && ReservedCategories[c.name]) return c;
+            else for (var j = 0, h; h = c.h[j]; j++) if (h.name == name) return h;
+        }
+        return null;
+    }
+
+    getEntrySafe (name) {
+        return this.getEntry(name) || {};
+    }
+
+    // Format code
+    static format (string) {
         var content = '';
         for (var line of string.split('\n')) {
-            var comment = undefined;
-            if (line.indexOf('#') != -1) {
-                [line, comment] = line.split('#');
+            var comment;
+            var commentIndex = line.indexOf('#');
+
+            if (commentIndex != -1) {
+                comment = line.slice(commentIndex);
+                line = line.slice(0, commentIndex);
             }
 
             var trimmed = line.trim();
-            var spaces = line.match(/\s+$/);
+            var spacing = line.match(/\s+$/);
 
             var command = SettingsCommands.find(command => command.isValid(trimmed));
-            if (command) {
-                content += command.format(trimmed);
-            } else {
-                content += SFormat.Error(trimmed);
+            content += command ? command.format(trimmed) : SFormat.Error(trimmed);
+
+            if (spacing) {
+                content += spacing[0].replace(/ /g, '&nbsp;');
             }
 
-            if (spaces) {
-                content += spaces[0].replace(/ /g, '&nbsp;');
-            }
-
-            if (comment != undefined) {
-                content += SFormat.Comment(`#${ comment }`);
+            if (commentIndex != -1) {
+                content += SFormat.Comment(comment);
             }
 
             content += '</br>';
@@ -1821,116 +1206,102 @@ const SettingsParser = new (class {
         return content;
     }
 
-    parse (string) {
-        this.clear();
-        if (SettingsParser.debug) {
-            console.clear();
-        }
+    constructor (string) {
+        this.code = string;
 
-        for (var line of string.split('\n')) {
-            if (line.indexOf('#') != -1) {
-                [ line ] = line.split('#');
-            }
+        // Root variables
+        this.c = [];
+        this.vars = {};
+        this.func = {};
 
-            var trimmed = line.trim();
-
-            var command = SettingsCommands.find(command => command.isValid(trimmed));
-            if (command) {
-                command.parse(this, trimmed);
-            } else {
-                if (line != '' && SettingsParser.debug) {
-                    console.warn(`[ INVALID OPTION ]\nLine: ${ line }\n`);
-                }
-            }
-        }
-
-        this.pushCategory();
-
-        return this.root;
-    }
-
-    prepareArray (object) {
-        if (object) {
-            for (var i = 0; i < object.length; i++) {
-                var key = object[i][1];
-                if (isNaN(key)) {
-                    var val = this.root.bvars[key] ? this.root.bvars[key].value : (this.root.vars[key] && this.root.vars[key].value ? this.root.vars[key].value : undefined);
-                    if (val == undefined) {
-                        object.splice(i--, 1);
-                    } else {
-                        object[i][1] = Number(val);
-                    }
-                }
-            }
-        }
-    }
-
-    prepare (players) {
-        for (var [name, data] of Object.entries(this.root.bvars)) {
-            var env = {};
-            env[data.arg] = players;
-            data.value = data.ast.eval(null, env);
-        }
-
-        for (var [name, data] of Object.entries(this.root.vars)) {
-            data.value = data.ast.getConstantValue();
-        }
-
-        for (var category of this.root.c) {
-            this.prepareArray(category.value);
-            this.prepareArray(category.color);
-            for (var header of category.h) {
-                this.prepareArray(header.value);
-                this.prepareArray(header.color);
-            }
-        }
-    }
-
-    clear () {
-        this.debug = false;
-        this.root = {
-            c: [],
-            vars: {},
-            bvars: {},
-            func: {},
+        this.globals = {
             outdated: true
         };
 
+        // Temporary
         this.currentCategory = null;
         this.currentHeader = null;
 
-        this.globals = {};
         this.shared = {};
         this.categoryShared = {
             visible: true
         };
+
+        // Parsing
+        for (var line of string.split('\n')) {
+            var commentIndex = line.indexOf('#');
+            if (commentIndex != -1) {
+                line = line.slice(0, commentIndex);
+            }
+
+            var trimmed = line.trim();
+            var command = SettingsCommands.find(command => command.isValid(trimmed));
+            if (command) {
+                command.parse(this, trimmed);
+            }
+        }
+
+        this.pushCategory();
     }
 
-    setVariable (name, ast) {
-        this.root.vars[name] = {
-            ast: ast
-        };
+    // Evaluate constants
+    evaluateConstants (players) {
+        // Evaluate constants
+        for (var [name, data] of Object.entries(this.vars)) {
+            var scope = {};
+            if (data.arg) {
+                scope[data.arg] = players;
+            }
+
+            data.value = data.ast.eval(undefined, this, scope);
+        }
+
+        // Push constants into color / value options
+        for (var category of this.c) {
+            this.evaluateArrayConstants(category.value);
+            this.evaluateArrayConstants(category.color);
+
+            for (var header of category.h) {
+                this.evaluateArrayConstants(header.value);
+                this.evaluateArrayConstants(header.color);
+            }
+        }
     }
 
-    setBulkVariable (name, arg, ast) {
-        this.root.bvars[name] = {
-            arg: arg,
-            ast: ast
+    evaluateArrayConstants (array) {
+        for (var i = 0; array && i < array.length; i++) {
+            var key = array[i][3];
+            if (isNaN(key)) {
+                key = (this.vars[key] && this.vars[key].value) ? this.vars[key].value : undefined;
+                if (key != undefined) {
+                    array[i][1] = Number(key);
+                } else {
+                    array.splice(i--, 1);
+                }
+            }
+        }
+    }
+
+    // Option handlers
+    setVariable (name, arg, ast) {
+        this.vars[name] = {
+            ast: ast,
+            arg: arg
         }
     }
 
     setFunction (name, arg, ast) {
-        this.root.func[name] = {
-            arg: arg,
-            ast: ast
-        };
+        this.func[name] = {
+            ast: ast,
+            arg: arg
+        }
     }
 
     createHeader (name) {
         this.pushHeader();
         this.currentHeader = {
             name: name
-        };
+        }
     }
 
     pushHeader () {
@@ -1953,7 +1324,7 @@ const SettingsParser = new (class {
         this.currentHeader = null;
     }
 
-    createCategory (name) {
+    createCategory (name, empty) {
         this.pushCategory();
 
         this.categoryShared = {
@@ -1962,6 +1333,7 @@ const SettingsParser = new (class {
 
         this.currentCategory = {
             name: name,
+            empty: empty,
             h: []
         };
     }
@@ -1974,14 +1346,14 @@ const SettingsParser = new (class {
                 merge(this.currentCategory, this.shared);
             }
 
-            this.root.c.push(this.currentCategory);
+            this.c.push(this.currentCategory);
         }
 
         this.currentCategory = null;
     }
 
     setGlobalVariable (key, value) {
-        this.root[key] = value;
+        this.globals[key] = value;
     }
 
     setLocalSharedVariable (key, value) {
@@ -2010,10 +1382,10 @@ const SettingsParser = new (class {
                 object[key] = [];
             }
 
-            object[key].push([ condition, reference, value ]);
+            object[key].push([ condition, reference, value, reference ]);
         }
     }
-})();
+};
 
 const DEFAULT_SETTINGS = `# Show member list
 members on

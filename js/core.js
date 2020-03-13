@@ -69,35 +69,6 @@ const FileDatabase = new (class {
 
 })();
 
-// Event Handler
-const Handle = new (class {
-
-    constructor () {
-        this.listeners = {};
-    }
-
-    bind (event, listener) {
-        if (this.listeners[event]) {
-            this.listeners[event].push(listener);
-        } else {
-            this.listeners[event] = [ listener ];
-        }
-    }
-
-    unbind (event, listener) {
-        if (this.listeners[event] && this.listeners[event].indexOf(listener)) {
-            this.listeners[event].splice(this.listners[event].indexOf(listener), 1);
-        }
-    }
-
-    call (event, ... args) {
-        if (this.listeners[event]) {
-            this.listeners[event].forEach(listener => listener(... args));
-        }
-    }
-
-})();
-
 // Database
 const Database = new (class {
 
@@ -229,6 +200,8 @@ const Database = new (class {
     }
 
     update () {
+        this.Changed = Date.now();
+
         this.Latest = 0;
 
         for (const [identifier, player] of Object.entries(this.Players)) {
@@ -282,6 +255,20 @@ const Database = new (class {
         }
     }
 
+    constructor () {
+        this.Hidden = Preferences.get('hidden', []);
+    }
+
+    hide (identifier) {
+        var index = this.Hidden.indexOf(identifier);
+        if (index >= 0) {
+            this.Hidden.splice(index, 1);
+        } else {
+            this.Hidden.push(identifier);
+        }
+
+        Preferences.set('hidden', this.Hidden);
+    }
 })();
 
 const UpdateService = {
@@ -578,164 +565,3 @@ const Storage = new (class {
         return this.current;
     }
 })();
-
-const State = new (class {
-    constructor () {
-        this.groupID = null;
-        this.groupTimestamp = null;
-        this.groupReferenceTimestamp = null;
-        this.sortBy = null;
-        this.sortStyle = null;
-        this.cachedTable = null;
-        this.hidden = Preferences.get('hidden', []);
-    }
-
-    hideByID (identifier) {
-        var index = this.hidden.indexOf(identifier);
-        if (index >= 0) {
-            this.hidden.splice(index, 1);
-        } else {
-            this.hidden.push(identifier);
-        }
-
-        Preferences.set('hidden', this.hidden);
-    }
-
-    getHidden () {
-        return this.hidden;
-    }
-
-    setGroup (groupID, timestamp, referenceTimestamp) {
-        this.groupID = groupID;
-        this.groupTimestamp = timestamp || Database.Groups[groupID].LatestTimestamp;
-        this.groupReferenceTimestamp = referenceTimestamp || Database.Groups[groupID].LatestTimestamp;
-    }
-
-    cacheTable (table) {
-        this.cachedTable = table;
-    }
-
-    getCachedTable () {
-        return this.cachedTable;
-    }
-
-    getSort () {
-        return this.sortBy;
-    }
-
-    setSort (by, style) {
-        this.sortBy = by;
-        this.sortStyle = style;
-    }
-
-    getSortStyle () {
-        return this.sortStyle;
-    }
-
-    clearSort () {
-        this.sortBy = null;
-        this.sortStyle = 0;
-    }
-
-    unsetGroup () {
-        this.groupID = null;
-    }
-
-    setReference (referenceTimestamp) {
-        this.groupReferenceTimestamp = referenceTimestamp;
-    }
-
-    setTimestamp (timestamp) {
-        this.groupTimestamp = timestamp;
-    }
-
-    toggleSort () {
-        this.sortByLevel = !this.sortByLevel;
-    }
-
-    reset () {
-        this.groupTimestamp = this.getGroup().LatestTimestamp;
-        this.groupReferenceTimestamp = this.groupTimestamp;
-    }
-
-    getGroupID () {
-        return this.groupID;
-    }
-
-    getGroupTimestamp () {
-        return this.groupTimestamp;
-    }
-
-    getGroupReferenceTimestamp () {
-        return this.groupReferenceTimestamp;
-    }
-
-    getGroup () {
-        return Database.Groups[this.groupID];
-    }
-
-    getGroupCurrent () {
-        return Database.Groups[this.groupID][this.groupTimestamp];
-    }
-
-    getGroupReference () {
-        return Database.Groups[this.groupID][this.groupReferenceTimestamp];
-    }
-})();
-
-// Better screen management
-const UI = {
-    FloatingSettings: new (class {
-        // Globals
-        init () {
-            this.$modal = $('#fl-modal');
-            this.$area = $('#fl-code textarea');
-
-            $('#fl-save').on('click', () => this.save());
-            $('#fl-clear').on('click', () => this.load());
-            $('#fl-remove').on('click', () => this.remove());
-            $('#fl-copy').on('click', () => this.copy());
-        }
-
-        // Show modal
-        show (identifier, onChangeEvent) {
-            // Options
-            this.identifier = identifier;
-            this.onChangeEvent = onChangeEvent;
-            this.code = Settings.load(identifier).getCode();
-
-            // Show modal
-            this.$modal.modal({ centered: false, transition: 'fade' }).modal('show');
-
-            // Show contents
-            this.load();
-        }
-
-        copy () {
-            Handle.call(EVENT_COPY, 'fl-code');
-        }
-
-        // Save settings
-        save () {
-            Settings.save(this.$area.val(), this.identifier);
-            this.hide();
-        }
-
-        // Remove settings
-        remove () {
-            Settings.remove(this.identifier);
-            this.hide();
-        }
-
-        // Hide (called only if changed)
-        hide () {
-            this.$modal.modal('hide');
-            Handle.call(this.onChangeEvent);
-        }
-
-        // Load contents
-        load () {
-            this.$area.val(this.code).trigger('input');
-        }
-    })()
-};

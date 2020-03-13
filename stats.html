@@ -26,7 +26,10 @@
         <script src="js/playa.js"></script>
 
         <script src="js/core.js"></script>
+
+        <script src="js/ast.js"></script>
         <script src="js/table.js"></script>
+
         <script src="js/event.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
@@ -34,116 +37,72 @@
     <body>
         <div class="ui fixed borderless huge menu">
             <div class="header item">SFTools</div>
-            <a class="item" id="show-container-me"><i class="small user icon"></i>Me</a>
-            <a class="item" id="show-container-browse"><i class="small archive icon"></i>Guilds</a>
-            <a class="item" id="show-container-players"><i class="small database icon"></i>Players</a>
-            <a class="item" id="show-container-files"><i class="small upload icon"></i>Files</a>
-            <a class="item" id="show-container-settings"><i class="small cog icon"></i>Settings</a>
+            <a class="item" id="show-players"><i class="small user icon"></i>Me</a>
+            <a class="item" id="show-groups"><i class="small archive icon"></i>Guilds</a>
+            <a class="item" id="show-browse"><i class="small database icon"></i>Players</a>
+            <a class="item" id="show-files"><i class="small upload icon"></i>Files</a>
+            <a class="item" id="show-settings"><i class="small cog icon"></i>Settings</a>
             <div class="right menu">
                 <a class="item" href="index.html"><i class="small reply icon"></i>Go back</a>
             </div>
         </div>
 
-        <div id="9nGg23I" class="ui main container">
-            <div class="ui active dimmer" id="sf-loader-content">
+        <!-- LoaderView -->
+        <div id="modal-loader" class="ui main container">
+            <div class="ui active dimmer" data-op="text">
                 <div class="ui large text loader">Loading</div>
             </div>
         </div>
 
-        <div class="ui main container hidden sf-container" id="container-browse">
-            <div class="ui five column grid" id="gl-guilds-own">
-
-            </div>
-            <div class="ui five column grid margin-large-top" id="gl-guilds-other">
-
-            </div>
-            <!-- Show all guilds checkbox -->
-            <div class="css-gl-show-other">
-                <div class="ui checkbox" id="gl-show-other">
-                    <input type="checkbox">
-                    <label>Show other guilds</label>
-                </div>
-            </div>
-            <div class="css-show-hidden">
-                <div class="ui checkbox" id="gl-show-hidden">
-                    <input type="checkbox">
-                    <label>Show hidden</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="ui main container hidden sf-container" id="container-me">
-            <div class="ui five column grid" id="ol-list">
-
-            </div>
-            <div class="ui five column grid margin-large-top" id="ol-list-other">
-
-            </div>
-            <!-- Show all players checkbox -->
-            <div class="css-ol-show-other">
-                <div class="ui checkbox" id="ol-show-other">
-                    <input type="checkbox">
-                    <label>Show other players</label>
-                </div>
-            </div>
-            <div class="css-show-hidden">
-                <div class="ui checkbox" id="ol-show-hidden">
-                    <input type="checkbox">
-                    <label>Show hidden</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="ui main container hidden sf-container" id="container-files">
+        <!-- FilesView -->
+        <div id="view-files" class="ui main container hidden sf-container">
             <div class="ui grid">
-                <div class="twelve wide column" id="container-files-list">
-
-                </div>
+                <div class="twelve wide column" data-op="list"></div>
                 <div class="four wide column">
                     <div class="ui segment sticky">
                         <div class="ui small two vertical statistics">
                             <div class="statistic">
-                                <div class="value" id="container-files-statistics-groups"></div>
+                                <div class="value" data-op="gcount"></div>
                                 <div class="label">Groups</div>
                             </div>
                             <div class="statistic">
-                                <div class="value" id="container-files-statistics-players"></div>
+                                <div class="value" data-op="pcount"></div>
                                 <div class="label">Players</div>
                             </div>
                         </div>
                         <br>
                         <div class="ui small one vertical statistics">
                             <div class="statistic">
-                                <div class="value" id="container-files-statistics-files"></div>
+                                <div class="value" data-op="fcount"></div>
                                 <div class="label">Files</div>
                             </div>
                         </div>
                         <br>
                         <div>
-                            <label class="fluid ui secondary button" for="container-files-add">
+                            <label class="fluid ui secondary button">
                                 <i class="small upload icon"></i> Upload
                             </label>
-                            <input type="file" multiple id="container-files-add" class="hidden">
+                            <input type="file" multiple data-op="upload" class="hidden">
                         </div>
                         <br>
                         <div class="ui two buttons">
-                            <label class="ui left attached secondary basic button text-center" for="container-files-import">
+                            <label class="ui left attached secondary basic button text-center">
                                  <i class="small upload icon"></i> Import
                             </label>
-                            <input type="file" id="container-files-import" class="hidden">
-                            <div class="ui right attached secondary basic button text-center" id="container-files-export">
+                            <input type="file" data-op="import" class="hidden">
+                            <div class="ui right attached secondary basic button text-center" data-op="export">
                                  <i class="small download icon"></i> Export
                             </div>
                         </div>
                         <br><br>
                         <div>
-                            <label class="fluid ui button" id="sf-file-merge">
+                            <label class="fluid ui button" data-op="merge">
                                 <i class="small clone outline icon"></i> Merge selected
                             </label>
                         </div>
                         <br/>
                         <div>
-                            <label class="fluid ui button" id="sf-file-export">
+                            <label class="fluid ui button" data-op="export-partial">
                                 <i class="small download icon icon"></i> Export selected
                             </label>
                         </div>
@@ -152,27 +111,26 @@
             </div>
         </div>
 
-        <div class="ui main container hidden" id="container-settings">
+        <!-- SettingsView -->
+        <div id="view-settings" class="ui main container hidden">
             <div class="ui three columns middle aligned grid">
                 <div class="column">
-                    <button class="ui left floated button" id="container-settings-copy">Copy</button>
-                    <button class="ui left floated button" onclick="window.open('manual.html', '_blank');">Open settings manual</button>
+                    <button class="ui left floated button" data-op="copy">Copy</button>
+                    <button class="ui left floated button" data-op="manual">Open settings manual</button>
                 </div>
                 <div class="column">
                     <h1 class="ui header text-white centered">Settings</h1>
                 </div>
                 <div class="column">
-                    <button class="ui right floated secondary button" type="submit" id="container-settings-save">Save</button>
-                    <button class="ui right floated button margin-medium-right" type="submit" id="container-settings-clear">Clear</button>
+                    <button class="ui right floated secondary button" type="submit" data-op="save">Save</button>
+                    <button class="ui right floated button margin-medium-right" type="submit" data-op="load">Clear</button>
                 </div>
             </div>
             <div class="ui basic segment">
                 <div class="ui form">
                     <div class="field">
-                        <div class="ta-wrapper" id="sg-code">
-                            <div class="ta-content">
-
-                            </div>
+                        <div class="ta-wrapper">
+                            <div class="ta-content"></div>
                             <textarea wrap="off" class="ta-area" spellcheck="false"></textarea>
                         </div>
                     </div>
@@ -180,74 +138,148 @@
             </div>
         </div>
 
-        <div class="ui main container hidden sf-container" id="container-players">
-            <div class="ui basic segment margin-none-bottom padding-none-bottom">
-                <div class="ui grid">
-                    <div class="three wide middle aligned column">
-                        <div class="ui scrolling dropdown" id="pl-dropdown">
-                            <div class="default text"></div>
-                            <i class="dropdown icon"></i>
-                        </div>
-                    </div>
-                    <div class="ten wide middle aligned column">
-                        <div class="ui fluid icon input pl-searchbar">
-                            <input class="prompt" type="text" placeholder="Filter players by server, class, guild and/or username" id="psearch">
-                            <i class="search icon"></i>
-                        </div>
-                    </div>
-                    <div class="three wide column">
-                        <div class="ui small basic icon right floated buttons">
-                            <button class="ui button" data-tooltip="Save as image" id="pl-save"><i class="download icon"></i></button>
-                            <button class="ui button" data-tooltip="Copy table" id="pl-copy"><i class="copy icon"></i></button>
-                            <button class="ui button" data-tooltip="Custom settings" id="pl-settings"><i class="cog icon"></i></button>
+        <!-- SettingsFloatView -->
+        <div id="modal-settings" class="ui basic large modal text-white">
+            <div class="ui three columns middle aligned grid">
+                <div class="seven wide column">
+                    <button class="ui left floated button" data-op="copy">Copy</button>
+                    <button class="ui left floated button" data-op="manual">Open settings manual</button>
+                </div>
+                <div class="two wide column">
+                    <h1 class="ui header text-white centered">Settings</h1>
+                </div>
+                <div class="seven wide column">
+                    <button class="ui right floated secondary button" type="submit" data-op="save">Save</button>
+                    <button class="ui right floated button margin-medium-right" type="submit" data-op="load">Clear</button>
+                    <button class="ui right floated button margin-medium-right" type="submit" data-op="remove">Remove custom settings</button>
+                </div>
+            </div>
+            <div class="ui basic segment">
+                <div class="ui form">
+                    <div class="field">
+                        <div class="ta-wrapper">
+                            <div class="ta-content"></div>
+                            <textarea wrap="off" class="ta-area" spellcheck="false"></textarea>
                         </div>
                     </div>
                 </div>
             </div>
-            <table class="ui celled structured table table-group" id="pl-table">
+        </div>
 
-            </table>
+        <!-- PlayersView -->
+        <div id="view-players" class="ui main container hidden sf-container">
+            <div class="ui five column grid" data-op="list"></div>
+            <div class="ui five column grid margin-large-top" data-op="list-secondary"></div>
+            <div class="css-ol-show-other">
+                <div class="ui checkbox" data-op="others">
+                    <input type="checkbox">
+                    <label>Show other players</label>
+                </div>
+            </div>
             <div class="css-show-hidden">
-                <div class="ui checkbox" id="pl-show-hidden">
+                <div class="ui checkbox" data-op="hidden">
                     <input type="checkbox">
                     <label>Show hidden</label>
                 </div>
             </div>
         </div>
 
-        <div class="ui main container hidden sf-container" id="container-player">
+        <!-- GroupsView -->
+        <div id="view-groups" class="ui main container hidden sf-container">
+            <div class="ui five column grid" data-op="list"></div>
+            <div class="ui five column grid margin-large-top" data-op="list-secondary"></div>
+            <div class="css-gl-show-other">
+                <div class="ui checkbox" data-op="others">
+                    <input type="checkbox">
+                    <label>Show other guilds</label>
+                </div>
+            </div>
+            <div class="css-show-hidden">
+                <div class="ui checkbox" data-op="hidden">
+                    <input type="checkbox">
+                    <label>Show hidden</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- BrowseView -->
+        <div id="view-browse" class="ui main container hidden sf-container">
             <div class="ui basic segment margin-none-bottom padding-none-bottom">
                 <div class="ui grid">
-                    <div class="three wide column">
-
+                    <div class="three wide middle aligned column">
+                        <div class="ui scrolling dropdown" data-op="timestamp">
+                            <div class="default text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
                     </div>
                     <div class="ten wide middle aligned column">
-                        <h1 class="ui centered header" id="od-name"></h1>
+                        <div class="ui fluid icon input pl-searchbar">
+                            <input class="prompt" type="text" placeholder="Filter players by server, class, guild and/or username" data-op="filter">
+                            <i class="search icon"></i>
+                        </div>
                     </div>
                     <div class="three wide column">
                         <div class="ui small basic icon right floated buttons">
-                            <button class="ui button" data-tooltip="Save as image" id="od-save"><i class="download icon"></i></button>
-                            <button class="ui button" data-tooltip="Copy table" id="od-copy"><i class="copy icon"></i></button>
-                            <button class="ui button" data-tooltip="Custom settings" id="od-settings"><i class="cog icon"></i></button>
+                            <button class="ui button" data-tooltip="Save as image" data-op="save"><i class="download icon"></i></button>
+                            <button class="ui button" data-tooltip="Copy table" data-op="copy"><i class="copy icon"></i></button>
+                            <button class="ui button" data-tooltip="Custom settings" data-op="configure"><i class="cog icon"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
-            <table class="ui celled structured table table-group" id="od-table">
-
-            </table>
+            <table class="ui celled structured table table-group" data-op="table"></table>
+            <div class="css-show-hidden">
+                <div class="ui checkbox" data-op="hidden">
+                    <input type="checkbox">
+                    <label>Show hidden</label>
+                </div>
+            </div>
         </div>
 
-        <div class="ui main container hidden sf-container" id="container-detail" data-current-group="">
-            <div class="ui segment center aligned basic">
-                <div class="ui extreme header" id="container-detail-name"></div>
-            </div>
+        <!-- PlayerDetailFloatView -->
+        <div id="modal-playerdetail" class="ui basic modal margin-none-top"></div>
 
+        <!-- PlayerHistoryView -->
+        <div id="view-history" class="ui main container hidden sf-container">
+            <div class="ui basic segment margin-none-bottom padding-none-bottom">
+                <div class="ui grid">
+                    <div class="three wide column"></div>
+                    <div class="ten wide middle aligned column">
+                        <h1 class="ui centered header" data-op="name"></h1>
+                    </div>
+                    <div class="three wide column">
+                        <div class="ui small basic icon right floated buttons">
+                            <button class="ui button" data-tooltip="Save as image" data-op="save"><i class="download icon"></i></button>
+                            <button class="ui button" data-tooltip="Copy table" data-op="copy"><i class="copy icon"></i></button>
+                            <button class="ui button" data-tooltip="Custom settings" data-op="configure"><i class="cog icon"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="ui celled structured table table-group" data-op="table"></table>
+        </div>
+
+        <!-- ExceptionView -->
+        <div id="modal-exception" class="ui basic modal">
+            <div class="ui icon header">
+                <i class="exclamation triangle icon"></i>
+                Error
+            </div>
+            <div class="content text-center">
+                <p data-op="content"></p>
+            </div>
+        </div>
+
+        <!-- GroupDetailView -->
+        <div id="view-groupdetail" class="ui main container hidden sf-container">
+            <div class="ui segment center aligned basic">
+                <div class="ui extreme header" data-op="name"></div>
+            </div>
             <div class="ui basic segment margin-none-bottom padding-none-bottom">
                 <div class="ui grid">
                     <div class="three wide middle aligned column">
-                        <div class="ui scrolling dropdown" id="container-detail-select-dropdown">
-                            <div class="default text" id="container-detail-select-text"></div>
+                        <div class="ui scrolling dropdown" data-op="timestamp">
+                            <div class="default text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
@@ -255,215 +287,37 @@
                         compared to
                     </div>
                     <div class="three wide middle aligned column">
-                        <div class="ui scrolling dropdown" id="container-detail-compare-dropdown">
-                            <div class="default text" id="container-detail-compare-text"></div>
+                        <div class="ui scrolling dropdown" data-op="reference">
+                            <div class="default text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="eight wide column">
                         <div class="ui small basic icon right floated buttons">
-                            <button class="ui button" data-tooltip="Save as image" id="container-detail-save"><i class="download icon"></i></button>
-                            <button class="ui button" data-tooltip="Copy table" id="container-detail-copy"><i class="copy icon"></i></button>
-                            <button class="ui button" data-tooltip="Custom settings" id="container-detail-settings"><i class="cog icon"></i></button>
+                            <button class="ui button" data-tooltip="Save as image" data-op="save"><i class="download icon"></i></button>
+                            <button class="ui button" data-tooltip="Copy table" data-op="copy"><i class="copy icon"></i></button>
+                            <button class="ui button" data-tooltip="Custom settings" data-op="configure"><i class="cog icon"></i></button>
                         </div>
                     </div>
                 </div>
             </div>
-            <table class="ui celled structured table table-group" id="gd-table">
-
-            </table>
+            <table class="ui celled structured table table-group" data-op="table"></table>
         </div>
 
-        <div class="ui basic modal" id="modal-error">
-            <div class="ui icon header">
-                <i class="exclamation triangle icon"></i>
-                Error
-            </div>
-            <div class="content text-center">
-                <p id="modal-error-content"></p>
-            </div>
-        </div>
-
-        <div class="ui basic modal margin-none-top" id="modal-player">
-
-        </div>
-
-        <!-- Floating Settings Modal -->
-        <div class="ui basic large modal text-white" id="fl-modal">
-            <div class="ui three columns middle aligned grid">
-                <div class="seven wide column">
-                    <button class="ui left floated button" id="fl-copy">Copy</button>
-                    <button class="ui left floated button" onclick="window.open('manual.html', '_blank');">Open settings manual</button>
-                </div>
-                <div class="two wide column">
-                    <h1 class="ui header text-white centered">Settings</h1>
-                </div>
-                <div class="seven wide column">
-                    <button class="ui right floated secondary button" type="submit" id="fl-save">Save</button>
-                    <button class="ui right floated button margin-medium-right" type="submit" id="fl-clear">Clear</button>
-                    <button class="ui right floated button margin-medium-right" type="submit" id="fl-remove">Remove custom settings</button>
-                </div>
-            </div>
-            <div class="ui basic segment">
-                <div class="ui form">
-                    <div class="field">
-                        <div class="ta-wrapper" id="fl-code">
-                            <div class="ta-content">
-
-                            </div>
-                            <textarea wrap="off" class="ta-area" spellcheck="false"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="context-players" class="ui custom popup right center"></div>
-        <div id="context-ownplayers" class="ui custom popup right center"></div>
-        <div id="context-groups" class="ui custom popup right center"></div>
-        <div id="context-members" class="ui custom popup right center"></div>
-
+        <!-- UI Handler -->
         <script type="text/javascript">
-            // Init
-            Handle.call(EVT_INIT);
-
-            // Listeners
-            $('#container-files-add').on('change', function () {
-                Handle.call(EVT_FILES_UPLOAD, this.files);
-            });
-
-            $('#container-files-export').on('click', function () {
-                Handle.call(EVT_FILES_EXPORT);
-            });
-
-            $('#container-files-import').on('change', function () {
-                Handle.call(EVT_FILES_IMPORT, this.files);
-            });
-
-            $('#container-settings-save').on('click', function () {
-                Handle.call(EVT_SETTINGS_SAVE);
-            });
-
-            $('#container-settings-clear').on('click', function () {
-                Handle.call(EVT_SETTINGS_LOAD);
-            });
-
-            $('#container-detail-save').on('click', function () {
-                Handle.call(EVENT_SAVE, 'gd-table', `${ State.getGroupCurrent().Name }.${ State.getGroupTimestamp() }${ State.getGroupReferenceTimestamp() != State.getGroupTimestamp() ? `.${ State.getGroupReferenceTimestamp() }` : '' }`, function (doc) {
-                    var node = doc.getElementById('gd-table');
-                    var head = node.getElementsByTagName('thead')[0];
-                    var row = doc.createElement('tr');
-                    row.innerHTML = `<td colspan="4" class="text-left">${ formatDate(Number(State.getGroupTimestamp())) } - ${ formatDate(Number(State.getGroupReferenceTimestamp())) }</td>`;
-                    head.prepend(row);
-                });
-            });
-
-            $('#container-detail-copy').on('click', function () {
-                var node = document.createElement('div');
-                node.innerHTML = `${ formatDate(Number(State.getGroupTimestamp())) } - ${ formatDate(Number(State.getGroupReferenceTimestamp())) }`
-                document.body.prepend(node);
-                var range = document.createRange();
-                range.selectNode(node);
-
-                Handle.call(EVENT_COPY, 'gd-table', range);
-
-                document.body.removeChild(node);
-            });
-
-            $('#container-detail-settings').on('click', function () {
-                Handle.call(EVENT_GUILD_SETTINGS_SHOW);
-            });
-
-            $('#od-settings').on('click', function () {
-                Handle.call(EVENT_OWNPLAYER_SETTINGS_SHOW);
-            });
-
-            $('#pl-save').on('click', function () {
-                Handle.call(EVENT_SAVE, 'pl-table', 'players');
-            });
-
-            $('#pl-copy').on('click', function () {
-                Handle.call(EVENT_COPY, 'pl-table');
-            });
-
-            $('#container-settings-copy').on('click', function () {
-                Handle.call(EVENT_COPY, 'sg-code');
-            });
-
-            $('#od-save').on('click', function () {
-                Handle.call(EVENT_SAVE, 'od-table', State.player.Latest.Name);
-            });
-
-            $('#od-copy').on('click', function () {
-                Handle.call(EVENT_COPY, 'od-table');
-            });
-
-            $('#pl-settings').on('click', function () {
-                Handle.call(EVENT_PLAYERS_SETTINGS_SHOW);
-            });
-
-            $('#sf-file-merge').on('click', function () {
-                Handle.call(EVT_FILE_MERGE);
-                Handle.call(EVT_FILES_LOAD);
-            });
-
-            $('#sf-file-export').on('click', function () {
-                Handle.call(EVT_FILE_EXPORT);
-                Handle.call(EVT_FILES_LOAD);
-            });
-
-            $('#show-container-browse').on('click', function () {
-                Handle.call(EVT_SHOWSCREEN, 'container-browse');
-                Handle.call(EVT_BROWSE_LOAD);
-            });
-
-            $('#show-container-files').on('click', function () {
-                Handle.call(EVT_SHOWSCREEN, 'container-files');
-                Handle.call(EVT_FILES_LOAD);
-            });
-
-            $('#show-container-settings').on('click', function () {
-                Handle.call(EVT_SHOWSCREEN, 'container-settings');
-                Handle.call(EVT_SETTINGS_LOAD);
-            });
-
-            $('#show-container-me').on('click', function () {
-                Handle.call(EVT_SHOWSCREEN, 'container-me');
-                Handle.call(EVENT_OWNPLAYERS_LOAD);
-            });
-
-            $('#show-container-players').on('click', function () {
-                Handle.call(EVT_SHOWSCREEN, 'container-players');
-                Handle.call(EVENT_PLAYERS_SHOW);
-            });
-
-            $('#gl-show-other').checkbox('uncheck').on('change', function () {
-                Handle.call(EVENT_GUILDS_TOGGLE, $(this).checkbox('is checked'));
-            });
-
-            $('#ol-show-other').checkbox('uncheck').on('change', function () {
-                Handle.call(EVENT_OWNPLAYERS_TOGGLE, $(this).checkbox('is checked'));
-            });
-
-            $('#gl-show-hidden').checkbox('uncheck').on('change', function () {
-                Handle.call(EVENT_GUILDS_TOGGLE_HIDDEN, $(this).checkbox('is checked'));
-            });
-
-            $('#ol-show-hidden').checkbox('uncheck').on('change', function () {
-                Handle.call(EVENT_OWNPLAYERS_TOGGLE_HIDDEN, $(this).checkbox('is checked'));
-            });
-
-            $('#pl-show-hidden').checkbox('uncheck').on('change', function () {
-                Handle.call(EVENT_PLAYERS_TOGGLE_HIDDEN, $(this).checkbox('is checked'));
-            });
-
-            // Show first screen
+            UI.initialize();
             Storage.load(function () {
-                Handle.call(EVT_BROWSE_LOAD);
-                Handle.call(EVT_SHOWSCREEN, 'container-browse');
+                UI.show(UI.Groups);
+
+                $('#show-players').click(() => UI.show(UI.Players));
+                $('#show-groups').click(() => UI.show(UI.Groups));
+                $('#show-browse').click(() => UI.show(UI.Browse));
+                $('#show-files').click(() => UI.show(UI.Files));
+                $('#show-settings').click(() => UI.show(UI.Settings));
             }, function () {
                 // Firefox private mode
-                Handle.call(EVT_SHOWCRITICAL, "Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
+                UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
             });
         </script>
     </body>
