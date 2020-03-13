@@ -355,6 +355,16 @@ h3.file-selected {
     color: #b300b3;
 }
 
+.ta-reserved-protected {
+    text-shadow: -0.06ex 0 #7132a8, 0.06ex 0 #7132a8;
+    color: #7132a8;
+}
+
+.ta-reserved-private {
+    text-shadow: -0.06ex 0 #3269a8, 0.06ex 0 #3269a8;
+    color: #3269a8;
+}
+
 .ta-color {
     text-decoration: underline;
 }

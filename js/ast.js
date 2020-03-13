@@ -349,8 +349,12 @@ class AST {
                 }
             } else if (node[0] == '@') {
                 return Constants.Values[node.slice(1)];
-            } else if (SP_KEYWORD_MAPPING[node] && player) {
-                return SP_KEYWORD_MAPPING[node].expr(player);
+            } else if (SP_KEYWORD_MAPPING_0[node] && player) {
+                return SP_KEYWORD_MAPPING_0[node].expr(player);
+            } else if (SP_KEYWORD_MAPPING_1[node] && player) {
+                return SP_KEYWORD_MAPPING_1[node].expr(player);
+            } else if (SP_KEYWORD_MAPPING_2[node] && player) {
+                return SP_KEYWORD_MAPPING_2[node].expr(player);
             } else {
                 return getObjectAt(player, node);
             }
@@ -360,7 +364,7 @@ class AST {
     }
 }
 
-const SP_KEYWORD_MAPPING = {
+const SP_KEYWORD_MAPPING_0 = {
     'ID': {
         expr: p => p.ID
     },
@@ -470,15 +474,6 @@ const SP_KEYWORD_MAPPING = {
         expr: p => Object.values(p.Items).reduce((c, i) => c + (i.Attributes[0] > 0 ? i.getItemLevel() : 0), 0),
         width: 130
     },
-    'Treasure': {
-        expr: p => p.Group.Treasure
-    },
-    'Instructor': {
-        expr: p => p.Group.Instructor
-    },
-    'Pet': {
-        expr: p => p.Group.Pet
-    },
     'Tower': {
         expr: p => p.Dungeons.Tower
     },
@@ -488,9 +483,6 @@ const SP_KEYWORD_MAPPING = {
     'Guild Portal': {
         expr: p => p.Dungeons.Group,
         width: 130
-    },
-    'Twister': {
-        expr: p => p.Dungeons.Twister
     },
     'Dungeon': {
         expr: p => p.Dungeons.Normal.Total
@@ -633,9 +625,6 @@ const SP_KEYWORD_MAPPING = {
     'Album': {
         expr: p => p.Book
     },
-    'Knights': {
-        expr: p => p.Fortress.Knights
-    },
     'Fortress Rank': {
         expr: p => p.Fortress.Rank
     },
@@ -655,11 +644,34 @@ const SP_KEYWORD_MAPPING = {
         expr: p => p.Group.Joined,
         format: (p, x) => p.hasGuild() ? formatDate(x) : ''
     },
-    'Aura': {
-        expr: p => p.Toilet.Aura
-    },
     'Gladiator': {
         expr: p => p.Fortress.Gladiator,
         format: (p, x) => (x == 0 ? '' : (x == 1 ? '1+' : (x == 5 ? '5+' : (x == 10 ? '10+' : 15))))
+    }
+};
+
+// Protected
+const SP_KEYWORD_MAPPING_1 = {
+    'Knights': {
+        expr: p => p.Fortress.Knights
+    },
+    'Treasure': {
+        expr: p => p.Group.Treasure
+    },
+    'Instructor': {
+        expr: p => p.Group.Instructor
+    },
+    'Pet': {
+        expr: p => p.Group.Pet
+    }
+};
+
+// Private
+const SP_KEYWORD_MAPPING_2 = {
+    'Aura': {
+        expr: p => p.Toilet.Aura
+    },
+    'Twister': {
+        expr: p => p.Dungeons.Twister
     }
 };

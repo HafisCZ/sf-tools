@@ -764,6 +764,8 @@ const SFormat = {
     Comment: string => `<span class="ta-comment">${ escapeHTML(string) }</span>`,
     Constant: string => `<span class="ta-constant">${ escapeHTML(string) }</span>`,
     Reserved: string => `<span class="ta-reserved">${ escapeHTML(string) }</span>`,
+    ReservedProtected: string => `<span class="ta-reserved-protected">${ escapeHTML(string) }</span>`,
+    ReservedPrivate: string => `<span class="ta-reserved-private">${ escapeHTML(string) }</span>`,
     Error: string => `<span class="ta-error">${ escapeHTML(string) }</span>`,
     Bool: (string, bool = string) => `<span class="ta-boolean-${ bool }">${ escapeHTML(string) }</span>`
 };
@@ -832,7 +834,15 @@ const SettingsCommands = [
         root.createHeader(a);
     }, function (string) {
         var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ (SP_KEYWORD_MAPPING[a] || ReservedHeaders[a]) ? SFormat.Reserved(a) : SFormat.Normal(a) }`;
+        if (SP_KEYWORD_MAPPING_0[a]) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Reserved(a) }`;
+        } else if (SP_KEYWORD_MAPPING_1[a]) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.ReservedProtected(a) }`;
+        } else if (SP_KEYWORD_MAPPING_2[a]) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.ReservedPrivate(a) }`;
+        } else {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+        }
     }),
     // Global
     // indexed - Show indexes in first column of the table
@@ -1315,7 +1325,7 @@ class Settings {
     pushHeader () {
         if (this.currentCategory && this.currentHeader) {
             var reserved = ReservedHeaders[this.currentHeader.name];
-            var mapping = SP_KEYWORD_MAPPING[this.currentHeader.name];
+            var mapping = SP_KEYWORD_MAPPING_0[this.currentHeader.name] || SP_KEYWORD_MAPPING_1[this.currentHeader.name] || SP_KEYWORD_MAPPING_2[this.currentHeader.name];
 
             if (!this.currentHeader.expr && mapping && !reserved) {
                 merge(this.currentHeader, mapping);

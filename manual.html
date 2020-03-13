@@ -69,37 +69,78 @@
                 </div>
             </div>
             <h2 class="ui header">Header names</h2>
+            <hr/>
+            <p>
+                Headers that are available for all players.
+            </p>
             <br/>
-            <div class="ui five columns grid css-compact-grid" id="manual-headers">
+            <div class="ui five columns grid css-compact-grid ta-reserved" id="manual-headers-0">
 
             </div>
+            <br/>
+            <hr/>
+            <p>
+                Headers that are avaiable only to you and your guild members. Using them for other players will result in unknown <code>?</code> value to be displayed.
+            </p>
+            <br/>
+            <div class="ui five columns grid css-compact-grid ta-reserved-protected" id="manual-headers-1">
+
+            </div>
+            <br/>
+            <hr/>
+            <p>
+                Headers that are avaiable only to your own characters. Using them for other players will result in unknown <code>?</code> value to be displayed.
+            </p>
+            <br/>
+            <div class="ui five columns grid css-compact-grid ta-reserved-private" id="manual-headers-2">
+
+            </div>
+            <br/>
             <br/>
             <h2 class="ui header">Options</h2>
             <br/>
             <div class="ui grid css-compact-grid">
-                <div class="two wide text-center column">
+                <div class="three wide text-center column">
                     <a class="ui small red label">Global</a>
                 </div>
-                <div class="fourteen wide column">
+                <div class="thirteen wide column">
                     Option can be set before first category.
                 </div>
-                <div class="two wide text-center column">
+                <div class="three wide text-center column">
                     <a class="ui small blue label">Shared</a>
                 </div>
-                <div class="fourteen wide column">
+                <div class="thirteen wide column">
                     Option can be set before creating a header within a category.
                 </div>
-                <div class="two wide text-center column">
+                <div class="three wide text-center column">
                     <a class="ui small green label">Local</a>
                 </div>
-                <div class="fourteen wide column">
+                <div class="thirteen wide column">
                     Option can be set after creating a header.
                 </div>
-                <div class="two wide text-center column">
+                <div class="three wide text-center column">
                     <a class="ui small black label">Override</a>
                 </div>
-                <div class="fourteen wide column">
+                <div class="thirteen wide column">
                     Option overrides the effect of another option.
+                </div>
+                <div class="three wide text-center column">
+                    <a class="ui small orange label">Guilds</a>
+                </div>
+                <div class="thirteen wide column">
+                    This option does work only in tables within the Guilds tab.
+                </div>
+                <div class="three wide text-center column">
+                    <a class="ui small purple label">Players</a>
+                </div>
+                <div class="thirteen wide column">
+                    This option does work only in tables within the Players tab.
+                </div>
+                <div class="three wide text-center column">
+                    <a class="ui small teal label">Me</a>
+                </div>
+                <div class="thirteen wide column">
+                    This option does work only in tables within the Me tab.
                 </div>
             </div>
             <br/>
@@ -164,7 +205,7 @@
                     <div><code>color equal 100 ff15ff</code></div>
                 </div>
             </div>
-            <h3 class="ui header">difference <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
+            <h3 class="ui header">difference <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a> <a class="ui small orange label">Guilds</a> <a class="ui small teal label">Me</a></h3>
             <hr/>
             <div class="ui two column grid">
                 <div class="column">
@@ -275,7 +316,7 @@
                     <div><code>maximum on</code></div>
                 </div>
             </div>
-            <h3 class="ui header">members <a class="ui small red label">Global</a></h3>
+            <h3 class="ui header">members <a class="ui small red label">Global</a> <a class="ui small orange label">Guilds</a></h3>
             <hr/>
             <div class="ui two column grid">
                 <div class="column">
@@ -287,7 +328,7 @@
                     <div><code>members on</code></div>
                 </div>
             </div>
-            <h3 class="ui header">outdated <a class="ui small red label">Global</a></h3>
+            <h3 class="ui header">outdated <a class="ui small red label">Global</a> <a class="ui small purple label">Players</a></h3>
             <hr/>
             <div class="ui two column grid">
                 <div class="column">
@@ -313,7 +354,7 @@
                     <div><code>percentage on</code></div>
                 </div>
             </div>
-            <h3 class="ui header">performance <a class="ui small red label">Global</a></h3>
+            <h3 class="ui header">performance <a class="ui small red label">Global</a> <a class="ui small purple label">Players</a></h3>
             <hr/>
             <div class="ui two column grid">
                 <div class="column">
@@ -374,7 +415,7 @@
                     <div><code>expr trunc(Pet - Pet Average)</code></div>
                 </div>
             </div>
-            <h3 class="ui header">statistics <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
+            <h3 class="ui header">statistics <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a> <a class="ui small orange label">Guilds</a></h3>
             <hr/>
             <div class="ui two column grid">
                 <div class="column">
@@ -591,8 +632,11 @@
 
         <script type="text/javascript">
             $('#manual-constants').html(Object.keys(Constants.Values).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
-            $('#manual-headers').html(Object.keys(SP_KEYWORD_MAPPING).map(header => `<div class="text-center column">${ header }</div>`).join(''));
             $('#manual-functions').html(Object.keys(AST_FUNCTIONS).map(func => `<div class="text-center column">${ func }</div>`).join(''));
+
+            $('#manual-headers-0').html(Object.keys(SP_KEYWORD_MAPPING_0).map(header => `<div class="text-center column">${ header }</div>`).join(''));
+            $('#manual-headers-1').html(Object.keys(SP_KEYWORD_MAPPING_1).map(header => `<div class="text-center column">${ header }</div>`).join(''));
+            $('#manual-headers-2').html(Object.keys(SP_KEYWORD_MAPPING_2).map(header => `<div class="text-center column">${ header }</div>`).join(''));
         </script>
     </body>
 </html>
