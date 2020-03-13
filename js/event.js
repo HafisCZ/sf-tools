@@ -540,7 +540,7 @@ class PlayerHistoryView extends View {
         this.$name = this.$parent.find('[data-op="name"]');
     }
 
-    show (identifier = this.identifier) {
+    show (identifier) {
         this.identifier = identifier;
 
         this.list = Database.Players[identifier].List;
@@ -548,12 +548,16 @@ class PlayerHistoryView extends View {
 
         this.$name.text(this.player.Name);
 
+        this.load();
+    }
+
+    load () {
         // Table instance
-        this.table = new TableInstance(Settings.load(identifier), TableType.History);
+        this.table = new TableInstance(Settings.load(this.identifier), TableType.History);
         this.table.setEntries(this.list);
 
         // Configuration indicator
-        if (Settings.exists(identifier)) {
+        if (Settings.exists(this.identifier)) {
             this.$configure.get(0).style.setProperty('background', '#21ba45', 'important');
             this.$configure.get(0).style.setProperty('color', 'white', 'important');
         } else {
