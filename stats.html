@@ -113,17 +113,24 @@
 
         <!-- SettingsView -->
         <div id="view-settings" class="ui main container hidden">
-            <div class="ui three columns middle aligned grid">
-                <div class="column">
-                    <button class="ui left floated button" data-op="copy">Copy</button>
-                    <button class="ui left floated button" data-op="manual">Open settings manual</button>
+            <div class="ui middle aligned grid">
+                <div class="six wide column">
+                    <button class="ui left floated button margin-medium-right small" data-op="copy">Copy</button>
+                    <button class="ui left floated button small" data-op="manual">Open settings manual</button>
                 </div>
-                <div class="column">
+                <div class="three wide column">
                     <h1 class="ui header text-white centered">Settings</h1>
                 </div>
-                <div class="column">
-                    <button class="ui right floated secondary button" type="submit" data-op="save">Save</button>
-                    <button class="ui right floated button margin-medium-right" type="submit" data-op="load">Clear</button>
+                <div class="three wide column">
+                    <div class="ui scrolling fluid small dropdown" data-op="items">
+                        <div class="default text"></div>
+                        <i class="dropdown icon"></i>
+                    </div>
+                </div>
+                <div class="four wide column">
+                    <button class="ui right floated secondary small button" type="submit" data-op="save">Save</button>
+                    <button class="ui right floated button margin-small-right small" type="submit" data-op="load">Clear</button>
+                    <button class="ui right floated button margin-small-right small" type="submit" data-op="remove">Remove</button>
                 </div>
             </div>
             <div class="ui basic segment">
@@ -142,16 +149,16 @@
         <div id="modal-settings" class="ui basic large modal text-white">
             <div class="ui three columns middle aligned grid">
                 <div class="seven wide column">
-                    <button class="ui left floated button" data-op="copy">Copy</button>
-                    <button class="ui left floated button" data-op="manual">Open settings manual</button>
+                    <button class="ui left floated button margin-medium-right small" data-op="copy">Copy</button>
+                    <button class="ui left floated button small" data-op="manual">Open settings manual</button>
                 </div>
                 <div class="two wide column">
                     <h1 class="ui header text-white centered">Settings</h1>
                 </div>
                 <div class="seven wide column">
-                    <button class="ui right floated secondary button" type="submit" data-op="save">Save</button>
-                    <button class="ui right floated button margin-medium-right" type="submit" data-op="load">Clear</button>
-                    <button class="ui right floated button margin-medium-right" type="submit" data-op="remove">Remove custom settings</button>
+                    <button class="ui right floated secondary button small" type="submit" data-op="save">Save</button>
+                    <button class="ui right floated button margin-small-right small" type="submit" data-op="load">Clear</button>
+                    <button class="ui right floated button margin-small-right small" type="submit" data-op="remove">Remove</button>
                 </div>
             </div>
             <div class="ui basic segment">

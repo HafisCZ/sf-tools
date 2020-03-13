@@ -1146,6 +1146,11 @@ class Settings {
         return Preferences.exists(identifier ? `settings/${ identifier }` : 'settings');
     }
 
+    // Keys
+    static get () {
+        return Preferences.keys().filter(key => key.includes('settings/')).map(key => key.substring(key.indexOf('/') + 1));
+    }
+
     // Create empty settings
     static empty () {
         return new Settings('');

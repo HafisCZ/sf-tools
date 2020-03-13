@@ -21,6 +21,10 @@ const Preferences = new (class {
         delete this.storage[key];
     }
 
+    keys () {
+        return Object.keys(this.storage);
+    }
+
 })(window);
 
 // IndexedDB Setup

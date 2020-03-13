@@ -1199,6 +1199,8 @@ class SettingsView extends View {
             // Open manual
             window.open('manual.html', '_blank');
         });
+
+        this.$items = this.$parent.find('[data-op="items"]');
     }
 
     save () {
@@ -1212,7 +1214,8 @@ class SettingsView extends View {
     }
 
     remove () {
-        this.hide();
+        Settings.remove(this.identifier);
+        this.show();
     }
 
     hide () {
@@ -1222,6 +1225,28 @@ class SettingsView extends View {
     show (identifier) {
         this.identifier = identifier;
         this.code = Settings.load(identifier).getCode();
+
+        if (this.$items.length) {
+            var items = [{
+                name: 'settings',
+                value: '',
+                selected: identifier != undefined
+            }];
+
+            for (var key of Settings.get()) {
+                items.push({
+                    name: key,
+                    value: key,
+                    selected: identifier == key
+                });
+            }
+
+            this.$items.dropdown({
+                values: items
+            }).dropdown('setting', 'onChange', (value, text) => {
+                this.show(value);
+            });
+        }
 
         this.refresh();
     }
@@ -1249,7 +1274,7 @@ class SettingsFloatView extends SettingsView {
 
     remove () {
         Settings.remove(this.identifier);
-        super.remove();
+        this.hide();
     }
 }
 

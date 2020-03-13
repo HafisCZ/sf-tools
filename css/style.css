@@ -167,6 +167,10 @@ input:disabled {
     margin-right: 1.0em !important;
 }
 
+.margin-small-right {
+    margin-right: 0.5em !important;
+}
+
 .border-red {
     border-color: red !important;
 }
