@@ -501,7 +501,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Fortress Honor': {
         expr: p => p.Fortress.Honor,
-        width: 130
+        width: 150
     },
     'Wall': {
         expr: p => p.Fortress.Fortifications
@@ -567,46 +567,48 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Runes.XP
     },
     'Rune Chance': {
-        expr: p => p.Runes.Chance
+        expr: p => p.Runes.Chance,
+        width: 130
     },
     'Rune Quality': {
-        expr: p => p.Runes.Quality
+        expr: p => p.Runes.Quality,
+        width: 130
     },
     'Rune Health': {
         expr: p => p.Runes.Health,
-        width: 120
+        width: 130
     },
     'Rune Damage': {
         expr: p => p.Runes.Damage,
-        width: 110
+        width: 130
     },
     'Rune Resist': {
         expr: p => p.Runes.Resistance,
-        width: 110
+        width: 130
     },
     'Fire Resist': {
         expr: p => p.Runes.ResistanceFire,
-        width: 110
+        width: 130
     },
     'Cold Resist': {
         expr: p => p.Runes.ResistanceCold,
-        width: 110
+        width: 130
     },
     'Lightning Resist': {
         expr: p => p.Runes.ResistanceLightning,
-        width: 110
+        width: 160
     },
     'Fire Damage': {
         expr: p => p.Runes.DamageFire,
-        width: 110
+        width: 130
     },
     'Cold Damage': {
         expr: p => p.Runes.DamageCold,
-        width: 110
+        width: 130
     },
     'Lightning Damage': {
         expr: p => p.Runes.DamageLightning,
-        width: 110
+        width: 160
     },
     'Class': {
         expr: p => p.Class,
@@ -626,7 +628,8 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Book
     },
     'Fortress Rank': {
-        expr: p => p.Fortress.Rank
+        expr: p => p.Fortress.Rank,
+        width: 130
     },
     'Building': {
         expr: p => p.Fortress.Upgrade.Building,

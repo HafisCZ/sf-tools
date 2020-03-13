@@ -271,7 +271,7 @@ class TableInstance {
                         ReservedHeaders[header.name](group, header, hlast);
                     } else {
                         group.add((header.alias != undefined ? header.alias : header.name), header, {
-                            width: 100
+                            width: Math.max(100, (header.alias || header.name).length * 12)
                         }, (player, compare) => {
                             var value = header.expr(player);
                             if (value == undefined) {
@@ -575,6 +575,8 @@ class TableInstance {
             `;
         }
 
+        var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
+
         if (showSummary) {
             content += `
                 <tr>
@@ -583,7 +585,7 @@ class TableInstance {
                 </tr>
                 <tr>
                     <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                    ${ join(this.flat, (h, index, array) => `<td class="border-bottom-thick" colspan=${ h.span }></td>`) }
+                    <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
                 </tr>
                 <tr>
                     <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Minimum</td>
@@ -610,7 +612,7 @@ class TableInstance {
                 content += `
                     <tr>
                         <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                        ${ join(this.flat, (h, index, array) => `<td class="border-bottom-thick" colspan=${ h.span }></td>`) }
+                        <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
                     </tr>
                 `;
             }

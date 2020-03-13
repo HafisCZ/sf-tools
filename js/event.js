@@ -55,7 +55,7 @@ class GroupDetailView extends View {
                 }
             }).then((canvas) => {
                 canvas.toBlob((blob) => {
-                    window.download(`${ this.group.Latest.Name }.${ this.timestamp }${ this.timestamp != this.reference ? `.${ this.reference }` : '' }`, blob);
+                    window.download(`${ this.group.Latest.Name }.${ this.timestamp }${ this.timestamp != this.reference ? `.${ this.reference }` : '' }.png`, blob);
                 });
             });
         });
