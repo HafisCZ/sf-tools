@@ -1036,12 +1036,12 @@ class FilesView extends View {
 
         // Import archive file
         this.$parent.find('[data-op="import"]').change((event) => {
-            Array.from(event.files).forEach(file => {
+            Array.from(event.target.files).forEach(file => {
                 var reader = new FileReader();
                 reader.readAsText(file, 'UTF-8');
                 reader.onload = e => {
                     try {
-                        Storage.import(event.target.result);
+                        Storage.import(e.target.result);
                         this.show();
                     } catch (exception) {
                         UI.Exception.show('A problem occured while trying to import this file.<br><br>' + exception);
@@ -1074,12 +1074,12 @@ class FilesView extends View {
 
         // Upload
         this.$parent.find('[data-op="upload"]').change((event) => {
-            Array.from(event.files).forEach(file => {
+            Array.from(event.target.files).forEach(file => {
                 var reader = new FileReader();
                 reader.readAsText(file, 'UTF-8');
                 reader.onload = e => {
                     try {
-                        Storage.add(event.target.result, file.lastModified);
+                        Storage.add(e.target.result, file.lastModified);
                         this.show();
                     } catch (exception) {
                         UI.Exception.show('A problem occured while trying to upload this file.<br><br>' + exception);
