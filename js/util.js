@@ -217,12 +217,12 @@ class ComplexDataType {
 }
 
 function getObjectAt (obj, path) {
-    if (!obj) return null;
+    if (!obj) return undefined;
     var sub = path.split('.');
     for (var i = 0; i < sub.length; i++) {
         obj = obj[sub[i]];
         if (obj == undefined) {
-            return null;
+            return undefined;
         }
     }
     return obj;

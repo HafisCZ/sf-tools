@@ -1254,6 +1254,9 @@ class Settings {
             }
 
             data.value = data.ast.eval(undefined, this, scope);
+            if (isNaN(data.value)) {
+                data.value = undefined;
+            }
         }
 
         // Push constants into color / value options
