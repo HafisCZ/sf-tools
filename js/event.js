@@ -1228,14 +1228,24 @@ class SettingsView extends View {
 
         if (this.$items.length) {
             var items = [{
-                name: 'settings',
+                name: 'Default',
                 value: '',
                 selected: identifier != undefined
             }];
 
             for (var key of Settings.get()) {
+                var name = key;
+
+                if (key == 'players') {
+                    name = 'Players';
+                } else if (Database.Players[key]) {
+                    name = 'P: ' + Database.Players[key].Latest.Name;
+                } else if (Database.Groups[key]) {
+                    name = 'G: ' + Database.Groups[key].Latest.Name;
+                }
+
                 items.push({
-                    name: key,
+                    name: name,
                     value: key,
                     selected: identifier == key
                 });
