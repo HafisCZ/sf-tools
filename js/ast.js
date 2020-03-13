@@ -95,11 +95,7 @@ class AST {
             while (this.peek() == ',') {
                 this.get();
 
-                if (this.peek() == '(') {
-                    a.push(this.evalBracketExpression());
-                } else {
-                    a.push(this.evalExpression());
-                }
+                a.push(this.evalExpression());
             }
 
             this.get();
