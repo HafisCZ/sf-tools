@@ -392,11 +392,6 @@ const Storage = new (class {
         }));
     }
 
-    merge (indexes) {
-        var timestamps = indexes.map(i => this.current[i].timestamp);
-        var files = this.current.filter(f => timestamps.includes(f.timestamp))
-    }
-
     add (content, timestamp) {
         try {
             var json = JSON.parse(content);
