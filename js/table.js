@@ -516,7 +516,7 @@ class TableInstance {
 
     // Create players table
     createPlayersTable () {
-        var server = this.settings.globals.server == undefined ? 0 : this.settings.globals.server;
+        var server = this.settings.globals.server == undefined ? 100 : this.settings.globals.server;
         var name = this.settings.globals.name == undefined ? 250 : this.settings.globals.name;
 
         var size = name + server + (this.settings.globals.indexed ? 50 : 0) + this.flat.reduce((a, b) => a + b.width, 0);
