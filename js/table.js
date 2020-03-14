@@ -248,7 +248,8 @@ class TableInstance {
         // Parameters
         this.settings = settings;
         this.type = type;
-        this.sorting = {};
+
+        this.sorting = [];
 
         if (type == TableType.Players) {
             this.nodiff = true;
@@ -351,12 +352,12 @@ class TableInstance {
     }
 
     // Set players
-    setEntries (array) {
+    setEntries (array, skipeval) {
         // Entry array
         this.array = array;
 
         // Calculate constants
-        if (this.type != TableType.History) {
+        if (this.type != TableType.History && !skipeval) {
             this.settings.evaluateConstants(array.map(p => p.player));
         }
 
@@ -441,9 +442,18 @@ class TableInstance {
     }
 
     setSorting(key = undefined) {
-        this.sorting = {
-            key: key,
-            order: key == undefined ? 0 : (this.sorting.key != key ? 1 : (this.sorting.order == 2 ? 0 : (this.sorting.order + 1)))
+        var index = this.sorting.findIndex(sort => sort.key == key);
+        if (index == -1) {
+            var obj = this.flat.find(header => header.sortkey == key);
+            this.sorting.push({
+                key: key,
+                flip: obj == undefined ? (key == '_index') : obj.flip,
+                order: 1
+            });
+        } else if (this.sorting[index].order === 2) {
+            this.sorting.splice(index, 1);
+        } else {
+            this.sorting[index].order += 1;
         }
 
         this.sort();
@@ -451,38 +461,27 @@ class TableInstance {
 
     // Set sorting
     sort () {
-        if (this.sorting.order) {
-            if (this.sorting.key == '_name') {
-                if (this.sorting.order == 1) {
-                    this.entries.sort((a, b) => a.sorting['_name'].localeCompare(b.sorting['_name']));
-                } else {
-                    this.entries.sort((a, b) => b.sorting['_name'].localeCompare(a.sorting['_name']));
+        if (this.sorting.length) {
+            this.entries.sort((a, b) => {
+                var { key, flip, order } = this.sorting[0];
+                var result = ((order == 1 && !flip) || (order == 2 && flip)) ? compareItems(a.sorting[key], b.sorting[key]) : compareItems(b.sorting[key], a.sorting[key]);
+
+                for (var i = 1; i < this.sorting.length; i++) {
+                    var { key, flip, order } = this.sorting[i];
+                    result = result || (((order == 1 && !flip) || (order == 2 && flip)) ? compareItems(a.sorting[key], b.sorting[key]) : compareItems(b.sorting[key], a.sorting[key]));
                 }
-            } else if (this.sorting.key == '_index') {
-                if (this.sorting.order == 1) {
-                    this.entries.sort((a, b) => a.sorting['_index'] - b.sorting['_index']);
-                } else {
-                    this.entries.sort((a, b) => b.sorting['_index'] - a.sorting['_index']);
-                }
-            } else if (this.sorting.key == '_server') {
-                if (this.sorting.order == 1) {
-                    this.entries.sort((a, b) => a.sorting['_server'].localeCompare(b.sorting['_server']));
-                } else {
-                    this.entries.sort((a, b) => b.sorting['_server'].localeCompare(a.sorting['_server']));
-                }
-            } else {
-                var sort = this.flat.find(h => h.sortkey == this.sorting.key);
-                if (sort) {
-                    if ((this.sorting.order == 1 && !sort.flip) || (this.sorting.order == 2 && sort.flip)) {
-                        this.entries.sort((a, b) => compareItems(a.sorting[sort.sortkey], b.sorting[sort.sortkey]));
-                    } else if ((this.sorting.order == 2 && !sort.flip) || (this.sorting.order == 1 && sort.flip)) {
-                        this.entries.sort((a, b) => compareItems(b.sorting[sort.sortkey], a.sorting[sort.sortkey]));
-                    }
-                }
-            }
+
+                return result || (a.sorting['_index'] - b.sorting['_index']);
+            });
         } else {
             this.entries.sort((a, b) => a.sorting['_index'] - b.sorting['_index']);
         }
+    }
+
+    // Sorting attributes for HTML
+    getSortingTag (key) {
+        var index = this.sorting.findIndex(s => s.key == key);
+        return `data-sortable-key="${ key }" data-sortable="${ this.sorting[index] ? this.sorting[index].order : 0 }" data-sortable-index=${ this.sorting.length == 1 ? '' : (index + 1) }`;
     }
 
     // Create history table
@@ -524,12 +523,12 @@ class TableInstance {
             `
                 <thead>
                     <tr>
-                        ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? `data-sortable="${ this.sorting.key == '_index' ? this.sorting.order : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
-                        ${ server ? `<td width="${ server }" rowspan="2" class="clickable" data-sortable="${ this.sorting.key == '_server' ? this.sorting.order : 0 }" data-sortable-key="_server">Server</td>` : '' }
-                        <td width="${ name }" rowspan="2" class="border-right-thin clickable" data-sortable="${ this.sorting.key == '_name' ? this.sorting.order : 0 }" data-sortable-key="_name">Name</td>
-                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" data-sortable="${ h.sortkey == this.sorting.key ? this.sorting.order : 0 }">${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
+                        ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                        ${ server ? `<td width="${ server }" rowspan="2" class="clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
+                        <td width="${ name }" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
                     <tr>
-                        ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" data-sortable="${ h.sortkey == this.sorting.key ? this.sorting.order : 0 }">${ h.name }</td>`)) }
+                        ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`)) }
                     </tr>
                     <tr>
                         ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
@@ -555,11 +554,11 @@ class TableInstance {
         var content = `
         <thead>
             <tr>
-                ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? `data-sortable="${ this.sorting.key == '_index' ? this.sorting.order : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
-                <td width="${ name }" rowspan="2" class="border-right-thin clickable" data-sortable="${ this.sorting.key == '_name' ? this.sorting.order : 0 }" data-sortable-key="_name">Name</td>
-                ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" data-sortable="${ h.sortkey == this.sorting.key ? this.sorting.order : 0 }">${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
+                ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                <td width="${ name }" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
             <tr>
-                ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" data-sortable="${ h.sortkey == this.sorting.key ? this.sorting.order : 0 }">${ h.name }</td>`)) }
+                ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`)) }
             </tr>
             <tr>
                 ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }

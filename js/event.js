@@ -151,7 +151,7 @@ class GroupDetailView extends View {
             this.load();
         });
 
-        this.sorting = {};
+        this.sorting = undefined;
 
         this.load();
     }
@@ -220,7 +220,10 @@ class GroupDetailView extends View {
 
         this.table.setEntries(entries);
 
-        this.table.sorting = this.sorting;
+        if (this.sorting != undefined) {
+            this.table.sorting = this.sorting;
+        }
+
         this.table.sort();
 
         this.refresh();
@@ -654,13 +657,14 @@ class BrowseView extends View {
         // Hidden toggle
         this.$parent.find('[data-op="hidden"]').checkbox('uncheck').change((event) => {
             this.hidden = $(event.currentTarget).checkbox('is checked');
+            this.recalculate = true;
             this.$filter.trigger('change');
         });
 
         // Filter
         this.$filter = this.$parent.find('[data-op="filter"]');
         this.$filter.change((event) => {
-            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f):/);
+            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|k):/);
 
             var terms = [
                 {
@@ -709,12 +713,19 @@ class BrowseView extends View {
                         arg: arg.toLowerCase()
                     });
                 } else if (key == 'e') {
-                    terms.push({
-                        test: (arg, player, timestamp) => arg.eval(player),
-                        arg: new AST(arg)
-                    });
+                    var ast = new AST(arg);
+                    if (ast.isValid()) {
+                        terms.push({
+                            test: (arg, player, timestamp) => arg.eval(player, this.table.settings),
+                            arg: ast
+                        });
+                    }
                 } else if (key == 'f') {
                     perf = isNaN(arg) ? 1 : Math.max(1, Number(arg));
+                }
+
+                if (key == 'k') {
+                    this.recalculate = true;
                 }
             }
 
@@ -737,12 +748,17 @@ class BrowseView extends View {
                 }
             }
 
-            this.table.setEntries(entries);
+            this.table.setEntries(entries, !this.recalculate);
 
-            this.table.sorting = this.sorting;
+            if (this.sorting != undefined) {
+                this.table.sorting = this.sorting;
+            }
+
             this.table.sort();
 
             this.refresh();
+
+            this.recalculate = false;
         });
     }
 
@@ -763,13 +779,14 @@ class BrowseView extends View {
             values: timestamps
         }).dropdown('setting', 'onChange', (value, text) => {
             this.timestamp = value;
+            this.recalculate = true;
             this.$filter.trigger('change');
         });
 
         this.$filter.val('');
 
         this.timestamp = Database.Latest;
-        this.sorting = {};
+        this.sorting = undefined;
 
         this.load();
     }
@@ -787,6 +804,7 @@ class BrowseView extends View {
             this.$configure.get(0).style.setProperty('color', '');
         }
 
+        this.recalculate = true;
         this.$filter.trigger('change');
     }
 
