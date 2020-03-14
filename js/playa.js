@@ -482,18 +482,6 @@ class SFPlayer {
         return this.Group.Identifier != null;
     }
 
-    getInactiveDuration () {
-        var dif = this.Timestamp - this.LastOnline;
-        if (dif < 900000) return 0;
-        else if (dif < 3600000) return 1;
-        else if (dif < 43200000) return 2;
-        else if (dif < 86400000) return 3;
-        else if (dif < 259200000) return 4;
-        else if (dif < 604800000) return 5;
-        else if (dif < 1814400000) return 6;
-        else return 7;
-    }
-
     getPrimaryAttribute () {
         switch (this.Class) {
             case 1:

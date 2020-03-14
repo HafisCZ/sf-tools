@@ -26,11 +26,12 @@ const AST_FUNCTIONS = {
     'number': (a) => Number.isInteger(a[0]) ? a[0] : a[0].toFixed(2),
     'duration': (a) => formatDuration(a[0]),
     'date': (a) => formatDateOnly(a[0]),
-    'fnumber': (a) => formatAsSpacedNumber(a[0]),
+    'fnumber': (a) => formatAsSpacedNumber(a[0], a[1] != undefined ? a[1] : '&nbsp'),
     'small': (a) => CellGenerator.Small(a[0]),
     'min': (a) => Array.isArray(a[0]) ? Math.min(... a[0]) : Math.min(... a),
     'max': (a) => Array.isArray(a[0]) ? Math.max(... a[0]) : Math.max(... a),
-    'sum': (a) => Array.isArray(a[0]) ? a[0].reduce((t, a) => t + a, 0) : a.reduce((t, a) => t + a, 0)
+    'sum': (a) => Array.isArray(a[0]) ? a[0].reduce((t, a) => t + a, 0) : a.reduce((t, a) => t + a, 0),
+    'now': (a) => Date.now()
 };
 
 class AST {
@@ -92,18 +93,26 @@ class AST {
             var a = [];
             this.get();
 
-            a.push(this.evalExpression());
-            while (this.peek() == ',') {
+            if (this.peek() == ')') {
                 this.get();
-
+                val = {
+                    args: a,
+                    op: AST_FUNCTIONS[val] ? AST_FUNCTIONS[val] : val
+                };
+            } else {
                 a.push(this.evalExpression());
-            }
+                while (this.peek() == ',') {
+                    this.get();
 
-            this.get();
-            val = {
-                args: a,
-                op: AST_FUNCTIONS[val] ? AST_FUNCTIONS[val] : val
-            };
+                    a.push(this.evalExpression());
+                }
+
+                this.get();
+                val = {
+                    args: a,
+                    op: AST_FUNCTIONS[val] ? AST_FUNCTIONS[val] : val
+                };
+            }
         }
 
         while (this.peek() == '[') {

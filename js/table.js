@@ -33,7 +33,7 @@ class HeaderGroup {
 const ReservedCategories = {
     'Potions': function (group, category, last) {
         group.add('Potions', category, {
-            width: 110
+            width: 109
         }, (player) => {
             var potion0 = player.Potions[0].Size;
             var potion1 = player.Potions[1].Size;
@@ -189,12 +189,11 @@ const ReservedHeaders = {
         group.add(header.alias != undefined ? header.alias : 'Last Active', header, {
             width: 160,
         }, (player, compare) => {
-            var a = player.getInactiveDuration();
-
+            var a = Math.max(0, player.Timestamp - player.LastOnline);
             var color = CompareEval.evaluate(a, header.color) || '';
 
             var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, player.LastOnline) : formatDate(player.LastOnline));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, a) : formatDate(player.LastOnline));
 
             return CellGenerator.Cell(displayValue, color, header.visible ? '' : color, last);
         }, null, player => player.LastOnline);
@@ -870,7 +869,7 @@ const SettingsCommands = [
     // Create new category
     new SettingsCommand(/^(category)(?: (\S+[\S ]*))?$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.createCategory(a, a == undefined);
+        root.createCategory(a || '', a == undefined);
     }, function (string) {
         var [ , key, a ] = this.match(string);
         if (a != undefined) {
@@ -1164,13 +1163,13 @@ const Constants = {
         'green': '#00c851',
         'orange': '#ffbb33',
         'red': '#ff3547',
-        '15min': '0',
-        '1hour': '1',
-        '12hours': '2',
-        '1day': '3',
-        '3days': '4',
-        '7days': '5',
-        '21days': '6',
+        '15min': '900000',
+        '1hour': '3600000',
+        '12hours': '43200000',
+        '1day': '86400000',
+        '3days': '259200000',
+        '7days': '604800000',
+        '21days': '1814400000',
         'mount10': '1',
         'mount20': '2',
         'mount30': '3',

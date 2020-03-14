@@ -151,7 +151,6 @@ class GroupDetailView extends View {
             this.load();
         });
 
-        this.table = null;
         this.sorting = {};
 
         this.load();
@@ -237,6 +236,10 @@ class GroupDetailView extends View {
 
         this.$parent.find('[data-sortable]').click((event) => {
             this.table.setSorting($(event.target).attr('data-sortable-key'));
+            if (this.table) {
+                this.sorting = this.table.sorting;
+            }
+
             this.refresh();
         });
 
@@ -766,7 +769,6 @@ class BrowseView extends View {
         this.$filter.val('');
 
         this.timestamp = Database.Latest;
-        this.table = null;
         this.sorting = {};
 
         this.load();
@@ -774,10 +776,6 @@ class BrowseView extends View {
 
     load () {
         // Table instance
-        if (this.table) {
-            this.sorting = this.table.sorting;
-        }
-
         this.table = new TableInstance(Settings.load('players'), TableType.Players);
 
         // Configuration indicator
@@ -802,6 +800,10 @@ class BrowseView extends View {
 
         this.$parent.find('[data-sortable]').click((event) => {
             this.table.setSorting($(event.target).attr('data-sortable-key'));
+            if (this.table) {
+                this.sorting = this.table.sorting;
+            }
+
             this.refresh();
         });
 

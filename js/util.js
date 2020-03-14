@@ -23,7 +23,7 @@ function formatDuration (duration) {
     var days = Math.trunc(duration / (1000 * 60 * 60 * 24));
     var hours = Math.trunc((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     var minutes = Math.trunc((duration % (1000 * 60 * 60)) / (1000 * 60));
-    return trail(days, 2) + ':' + trail(hours, 2) + ':' + trail(minutes, 2);
+    return trail(days, Math.max(2, days.toString().length)) + ':' + trail(hours, 2) + ':' + trail(minutes, 2);
 }
 
 function correctDate (prefix) {
@@ -55,9 +55,9 @@ function clamp (a, b, c) {
     return Math.min(c, Math.max(b, a));
 }
 
-function formatAsSpacedNumber(n) {
+function formatAsSpacedNumber(n, delim = '&nbsp') {
     n = Math.trunc(n);
-    return n.toString().split('').map((char, i, array) => ((array.length - 1 - i) % 3 == 2) && i != 0 ? (' ' + char) : char).join('');
+    return n.toString().split('').map((char, i, array) => ((array.length - 1 - i) % 3 == 2) && i != 0 ? (delim + char) : char).join('');
 }
 
 // Iterator
