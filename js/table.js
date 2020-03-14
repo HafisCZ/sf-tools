@@ -395,7 +395,7 @@ class TableInstance {
                     content: `
                         <tr class="${ item.hidden ? 'css-entry-hidden' : '' }">
                             ${ this.settings.globals.indexed ? `<td data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</td>` : '' }
-                            <td>${ item.player.Prefix }</td>
+                            ${ this.settings.globals.server == undefined || this.settings.globals.server > 0 ? `<td>${ item.player.Prefix }</td>` : '' }
                             <td class="border-right-thin clickable ${ item.latest || !this.settings.globals.outdated ? '' : 'foreground-red' }" data-id="${ item.player.Identifier }">${ item.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ item.player.Name }</td>
                             ${ join(this.flat, h => h.generators.cell(item.player)) }
                         </tr>
@@ -428,7 +428,7 @@ class TableInstance {
                     `,
                     sorting: {
                         '_name': item.player.Name,
-                        '_index': item.index,
+                        '_index': item.index
                     }
                 };
 
@@ -516,21 +516,25 @@ class TableInstance {
 
     // Create players table
     createPlayersTable () {
-        var size = 350 + (this.settings.globals.indexed ? 50 : 0) + this.flat.reduce((a, b) => a + b.width, 0);
+        var server = this.settings.globals.server == undefined ? 0 : this.settings.globals.server;
+        var name = this.settings.globals.name == undefined ? 250 : this.settings.globals.name;
+
+        var size = name + server + (this.settings.globals.indexed ? 50 : 0) + this.flat.reduce((a, b) => a + b.width, 0);
+
         return [
             `
                 <thead>
                     <tr>
-                        ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? `data-sortalbe="${ this.sorting.key == '_index' ? this.sorting.order : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
-                        <td width="100" rowspan="2" class="clickable" data-sortable="${ this.sorting.key == '_server' ? this.sorting.order : 0 }" data-sortable-key="_server">Server</td>
-                        <td width="250" rowspan="2" class="border-right-thin clickable" data-sortable="${ this.sorting.key == '_name' ? this.sorting.order : 0 }" data-sortable-key="_name">Name</td>
+                        ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? `data-sortable="${ this.sorting.key == '_index' ? this.sorting.order : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
+                        ${ server ? `<td width="${ server }" rowspan="2" class="clickable" data-sortable="${ this.sorting.key == '_server' ? this.sorting.order : 0 }" data-sortable-key="_server">Server</td>` : '' }
+                        <td width="${ name }" rowspan="2" class="border-right-thin clickable" data-sortable="${ this.sorting.key == '_name' ? this.sorting.order : 0 }" data-sortable-key="_name">Name</td>
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" data-sortable="${ h.sortkey == this.sorting.key ? this.sorting.order : 0 }">${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
                     <tr>
                         ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" data-sortable="${ h.sortkey == this.sorting.key ? this.sorting.order : 0 }">${ h.name }</td>`)) }
                     </tr>
                     <tr>
                         ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
-                        <td class="border-bottom-thick border-right-thin" colspan="2"></td>
+                        <td class="border-bottom-thick border-right-thin" colspan="${ server ? 2 : 1 }"></td>
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
                     </tr>
                 </thead>
@@ -544,14 +548,16 @@ class TableInstance {
 
     // Create group table
     createGroupTable () {
+        var name = this.settings.globals.name == undefined ? 250 : this.settings.globals.name;
+
         var sizeDynamic = this.config.reduce((a, b) => a + b.width, 0);
-        var size = 250 + (this.settings.globals.indexed ? 50 : 0) + Math.max(400, sizeDynamic);
+        var size = name + (this.settings.globals.indexed ? 50 : 0) + Math.max(400, sizeDynamic);
 
         var content = `
         <thead>
             <tr>
-                ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? `data-sortalbe="${ this.sorting.key == '_index' ? this.sorting.order : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
-                <td width="250" rowspan="2" class="border-right-thin clickable" data-sortable="${ this.sorting.key == '_name' ? this.sorting.order : 0 }" data-sortable-key="_name">Name</td>
+                ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? `data-sortable="${ this.sorting.key == '_index' ? this.sorting.order : 0 }" data-sortable-key="_index"` : '' }>#</td>` : '' }
+                <td width="${ name }" rowspan="2" class="border-right-thin clickable" data-sortable="${ this.sorting.key == '_name' ? this.sorting.order : 0 }" data-sortable-key="_name">Name</td>
                 ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" data-sortable="${ h.sortkey == this.sorting.key ? this.sorting.order : 0 }">${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
             <tr>
                 ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" data-sortable="${ h.sortkey == this.sorting.key ? this.sorting.order : 0 }">${ h.name }</td>`)) }
@@ -747,6 +753,11 @@ const ARG_MAP = {
     'none': 0
 };
 
+const ARG_MAP_SERVER = {
+    'off': 0,
+    'on': 100
+}
+
 const ARG_FORMATTERS = {
     'number': (p, x) => Number.isInteger(x) ? x : x.toFixed(2),
     'fnumber': (p, x) => formatAsSpacedNumber(x),
@@ -810,13 +821,51 @@ const SettingsCommands = [
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ SFormat.Normal(a) }`;
     }),
     // Global
-    // debug - Show debug information about settings in the console
-    new SettingsCommand(/^(debug) (on|off)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-
+    // server - show, hide or set width
+    new SettingsCommand(/^(server) ((@?)(\S+))$/, function (root, string) {
+        var [ , key, arg, prefix, value ] = this.match(string);
+        var val = Constants.GetValue(prefix, value);
+        if (val != undefined) {
+            if (isNaN(val)) {
+                val = ARG_MAP_SERVER[value];
+            }
+            if (!isNaN(val)) {
+                root.setGlobalVariable(key, Number(val));
+            }
+        }
     }, function (string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
+        var [ , key, arg, prefix, value ] = this.match(string);
+        var val = Constants.GetValue(prefix, value);
+        if (val != undefined && !isNaN(value)) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
+        } else if (ARG_MAP_SERVER[val] != undefined) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
+        } else if (!isNaN(val)) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
+        } else {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
+        }
+    }),
+    // Global
+    // name - set width of the name column
+    new SettingsCommand(/^(name) ((@?)(\S+))$/, function (root, string) {
+        var [ , key, arg, prefix, value ] = this.match(string);
+        var val = Constants.GetValue(prefix, value);
+
+        if (val != undefined && !isNaN(val)) {
+            root.setGlobalVariable(key, Number(val));
+        }
+    }, function (string) {
+        var [ , key, arg, prefix, value ] = this.match(string);
+        var val = Constants.GetValue(prefix, value);
+
+        if (Constants.IsValid(prefix, value) && !isNaN(val)) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
+        } else if (prefix == '@' || isNaN(val)) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
+        } else {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
+        }
     }),
     // Create new category
     new SettingsCommand(/^(category)(?: (\S+[\S ]*))?$/, function (root, string) {
