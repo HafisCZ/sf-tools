@@ -244,6 +244,14 @@ class GroupDetailView extends View {
             }
 
             this.refresh();
+        }).contextmenu((event) => {
+            event.preventDefault();
+            this.table.removeSorting($(event.target).attr('data-sortable-key'));
+            if (this.table) {
+                this.sorting = this.table.sorting;
+            }
+
+            this.refresh();
         });
 
         this.$parent.find('[data-id]').click((event) => {
@@ -818,6 +826,14 @@ class BrowseView extends View {
 
         this.$parent.find('[data-sortable]').click((event) => {
             this.table.setSorting($(event.target).attr('data-sortable-key'));
+            if (this.table) {
+                this.sorting = this.table.sorting;
+            }
+
+            this.refresh();
+        }).contextmenu((event) => {
+            event.preventDefault();
+            this.table.removeSorting($(event.target).attr('data-sortable-key'));
             if (this.table) {
                 this.sorting = this.table.sorting;
             }

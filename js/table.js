@@ -441,7 +441,15 @@ class TableInstance {
         }
     }
 
-    setSorting(key = undefined) {
+    removeSorting (key) {
+        var index = this.sorting.findIndex(sort => sort.key == key);
+        if (index != -1) {
+            this.sorting.splice(index, 1);
+            this.sort();
+        }
+    }
+
+    setSorting (key = undefined) {
         var index = this.sorting.findIndex(sort => sort.key == key);
         if (index == -1) {
             var obj = this.flat.find(header => header.sortkey == key);
@@ -450,10 +458,8 @@ class TableInstance {
                 flip: obj == undefined ? (key == '_index') : obj.flip,
                 order: 1
             });
-        } else if (this.sorting[index].order === 2) {
-            this.sorting.splice(index, 1);
         } else {
-            this.sorting[index].order += 1;
+            this.sorting[index].order = this.sorting[index].order == 1 ? 2 : 1;
         }
 
         this.sort();
