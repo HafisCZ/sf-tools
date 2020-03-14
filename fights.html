@@ -340,12 +340,12 @@
                                                 <div class="two fields">
                                                     <div class="field">
                                                         <label>Health</label>
-                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fighterA.MaximumLife) }" disabled class="text-center">
+                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fighterA.MaximumLife, ' ') }" disabled class="text-center">
                                                     </div>
                                                     ${ tab.fighterA.Life != tab.fighterA.MaximumLife ? `
                                                         <div class="field">
                                                             <label>Current Health</label>
-                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fighterA.Life) }" disabled class="text-center">
+                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fighterA.Life, ' ') }" disabled class="text-center">
                                                         </div>
                                                     ` : '' }
                                                 </div>
@@ -397,12 +397,12 @@
                                                 <div class="two fields">
                                                     <div class="field">
                                                         <label>Health</label>
-                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fighterB.MaximumLife) }" disabled class="text-center">
+                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fighterB.MaximumLife, ' ') }" disabled class="text-center">
                                                     </div>
                                                     ${ tab.fighterB.Life != tab.fighterB.MaximumLife ? `
                                                         <div class="field">
                                                             <label>Current Health</label>
-                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fighterB.Life) }" disabled class="text-center">
+                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fighterB.Life, ' ') }" disabled class="text-center">
                                                         </div>
                                                     ` : '' }
                                                 </div>
@@ -420,7 +420,7 @@
                                                                 <div class="three wide column"><b>${ round.target.Name }</b></div>
                                                                 <div class="one wide column"></div>
                                                                 <div class="two wide column text-center ${ round.attackCrit ? 'foreground-red' : '' }">${ ATTACK_TYPES[round.attackType] }</div>
-                                                                <div class="three wide column text-right ${ round.attackCrit ? 'foreground-red text-bold' : '' }">${ round.attackDamage ? formatAsSpacedNumber(round.attackDamage) : '' }</div>
+                                                                <div class="three wide column text-right ${ round.attackCrit ? 'foreground-red text-bold' : '' }">${ round.attackDamage ? formatAsSpacedNumber(round.attackDamage, ' ') : '' }</div>
                                                                 <div class="one wide column"></div>
                                                             </div>
                                                         </div>

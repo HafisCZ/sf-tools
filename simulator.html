@@ -647,11 +647,11 @@
                         <div class="two fields">
                             <div class="field">
                                 <label>Health</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.health)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.health), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Damage reduction</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.getDamageReduction(battle.b))) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.getDamageReduction(battle.b)), ' ') }">
                             </div>
                         </div>
                     </div>
@@ -659,15 +659,15 @@
                         <div class="four fields">
                             <div class="field">
                                 <label>Skip chance</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.skipchance)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.skipchance), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Crit chance</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.critchance)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.critchance), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Special damage</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.special)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.max(0, Math.trunc(battle.a.special)), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Second attack</label>
@@ -679,19 +679,19 @@
                         <div class="four fields">
                             <div class="field">
                                 <label>Minimum damage</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.range.min)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.range.min), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Maximum damage</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.range.max)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.range.max), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Minimum critical</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.crit * battle.a.weapon1.range.min)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.crit * battle.a.weapon1.range.min), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Maximum critical</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.crit * battle.a.weapon1.range.max)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.crit * battle.a.weapon1.range.max), ' ') }">
                             </div>
                         </div>
                     </div>
@@ -700,19 +700,19 @@
                             <div class="four fields">
                                 <div class="field">
                                     <label>Minimum damage</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.range.min)) }">
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.range.min), ' ') }">
                                 </div>
                                 <div class="field">
                                     <label>Maximum damage</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.range.max)) }">
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.range.max), ' ') }">
                                 </div>
                                 <div class="field">
                                     <label>Minimum critical</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.crit * battle.a.weapon2.range.min)) }">
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.crit * battle.a.weapon2.range.min), ' ') }">
                                 </div>
                                 <div class="field">
                                     <label>Maximum critical</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.crit * battle.a.weapon2.range.max)) }">
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.crit * battle.a.weapon2.range.max), ' ') }">
                                 </div>
                             </div>
                         </div>
@@ -724,11 +724,11 @@
                         <div class="two fields">
                             <div class="field">
                                 <label>Health</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.health)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.health), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Damage reduction</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.getDamageReduction(battle.a))) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.getDamageReduction(battle.a)), ' ') }">
                             </div>
                         </div>
                     </div>
@@ -736,15 +736,15 @@
                         <div class="four fields">
                             <div class="field">
                                 <label>Skip chance</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.skipchance)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.skipchance), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Crit chance</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.critchance)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.critchance), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Special damage</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.special)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.max(0, Math.trunc(battle.b.special)), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Second attack</label>
@@ -756,19 +756,19 @@
                         <div class="four fields">
                             <div class="field">
                                 <label>Minimum damage</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.range.min)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.range.min), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Maximum damage</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.range.max)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.range.max), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Minimum critical</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.crit * battle.b.weapon1.range.min)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.crit * battle.b.weapon1.range.min), ' ') }">
                             </div>
                             <div class="field">
                                 <label>Maximum critical</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.crit * battle.b.weapon1.range.max)) }">
+                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.crit * battle.b.weapon1.range.max), ' ') }">
                             </div>
                         </div>
                     </div>
@@ -777,19 +777,19 @@
                             <div class="four fields">
                                 <div class="field">
                                     <label>Minimum damage</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.range.min)) }">
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.range.min), ' ') }">
                                 </div>
                                 <div class="field">
                                     <label>Maximum damage</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.range.max)) }">
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.range.max), ' ') }">
                                 </div>
                                 <div class="field">
                                     <label>Minimum critical</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.crit * battle.b.weapon2.range.min)) }">
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.crit * battle.b.weapon2.range.min), ' ') }">
                                 </div>
                                 <div class="field">
                                     <label>Maximum critical</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.crit * battle.b.weapon2.range.max)) }">
+                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.crit * battle.b.weapon2.range.max), ' ') }">
                                 </div>
                             </div>
                         </div>
@@ -839,7 +839,7 @@
                                 ${ round.skipped ? '<b>Yes</b>' : '' }
                             </div>
                             <div class="four wide text-center column">
-                                ${ round.critted ? `<b class="foreground-red">${ formatAsSpacedNumber(round.damage) }</b>` : formatAsSpacedNumber(round.damage) }
+                                ${ round.critted ? `<b class="foreground-red">${ formatAsSpacedNumber(round.damage, ' ') }</b>` : formatAsSpacedNumber(round.damage, ' ') }
                             </div>
                             <div class="one wide column"></div>
                         </div>
