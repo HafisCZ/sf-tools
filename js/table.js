@@ -1291,10 +1291,9 @@ class Settings {
     evaluateArrayConstants (array) {
         for (var i = 0; array && i < array.length; i++) {
             var key = array[i][3];
-            if (isNaN(key)) {
-                key = (this.vars[key] && this.vars[key].value) ? this.vars[key].value : undefined;
-                if (key != undefined) {
-                    array[i][1] = Number(key);
+            if (isNaN(key) && this.vars[key]) {
+                if (this.vars[key].value != undefined) {
+                    array[i][1] = Number(this.vars[key].value);
                 } else {
                     array.splice(i--, 1);
                 }

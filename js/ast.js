@@ -21,6 +21,7 @@ const AST_FUNCTIONS = {
     'trunc': (a) => Math.trunc(a[0]),
     'ceil': (a) => Math.ceil(a[0]),
     'floor': (a) => Math.floor(a[0]),
+    'abs': (a) => Math.abs(a[0]),
     'datetime': (a) => formatDate(a[0]),
     'number': (a) => Number.isInteger(a[0]) ? a[0] : a[0].toFixed(2),
     'duration': (a) => formatDuration(a[0]),
@@ -264,7 +265,8 @@ class AST {
                 return node.args[0];
             } else if (typeof(node.op) == 'string') {
                 if (node.op == 'each' && node.args.length >= 2) {
-                    var object = Object.values(this.eval(player, environment, scope, node.args[0]) || {});
+                    var generated = this.eval(player, environment, scope, node.args[0]) || {};
+                    var object = Array.isArray(generated) ? generated : Object.values(generated);
                     var mapper = environment.func[node.args[1]];
                     var sum = 0;
                     if (mapper) {
@@ -284,7 +286,8 @@ class AST {
                     }
                     return sum;
                 } else if (node.op == 'map' && node.args.length >= 2) {
-                    var object = Object.values(this.eval(player, environment, scope, node.args[0]) || {});
+                    var generated = this.eval(player, environment, scope, node.args[0]) || {};
+                    var object = Array.isArray(generated) ? generated : Object.values(generated);
                     var mapper = environment.func[node.args[1]];
                     var sum = [];
                     if (mapper) {
@@ -304,7 +307,9 @@ class AST {
                     }
                     return sum;
                 } else if (node.op == 'slice' && node.args.length >= 3) {
-                    return Object.values(this.eval(player, environment, scope, node.args[0])).slice(Number(node.args[1]), Number(node.args[2]));
+                    var generated = this.eval(player, environment, scope, node.args[0]) || {};
+                    var object = Array.isArray(generated) ? generated : Object.values(generated);
+                    return object.slice(Number(node.args[1]), Number(node.args[2]));
                 } else if (environment.func[node.op]) {
                     var mapper = environment.func[node.op];
                     var scope2 = {};
@@ -330,6 +335,10 @@ class AST {
             } else if (node == 'null') {
                 // Return nulll
                 return null;
+            } else if (node == 'true') {
+                return true;
+            } else if (node == 'false') {
+                return false;
             } else if (typeof(scope) == 'object' && (scope[node] || scope[node.split('.', 1)[0]])) {
                 // Return scope variable
                 if (scope[node]) {
