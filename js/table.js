@@ -362,8 +362,10 @@ class TableInstance {
 
             if (this.type == TableType.Players) {
                 players.sim = sim;
+                players.perf = array.perf || this.settings.globals.performance;
             } else {
                 players.sim = this.settings.globals.simulator;
+                players.perf = array.length;
             }
 
             this.settings.evaluateConstants(players);
@@ -1373,7 +1375,7 @@ class Settings {
 
         // Add simulator output
         if (players.sim) {
-            var simulated = players.slice(0, players.sim).map(player => {
+            var simulated = players.slice(0, players.perf).map(player => {
                 return {
                     player: player
                 };
