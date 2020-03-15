@@ -183,6 +183,7 @@ class GroupDetailView extends View {
             this.sorting = this.table.sorting;
         }
 
+        this.sorting = undefined;
         this.table = new TableInstance(Settings.load(this.identifier), TableType.Group);
 
         var current = this.group[this.timestamp];
@@ -837,6 +838,7 @@ class BrowseView extends View {
 
     load () {
         // Table instance
+        this.sorting = undefined;
         this.table = new TableInstance(Settings.load('players'), TableType.Players);
 
         // Configuration indicator
