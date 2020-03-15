@@ -68,6 +68,63 @@
                 margin-top: 2em !important;
             }
 
+            .selectable {
+                -moz-user-select: -moz-none;
+                -khtml-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                padding-bottom: 0.25em !important;
+                padding-top: 0.25em !important;
+            }
+
+            .selectable div {
+                padding: 0 !important;
+            }
+
+            .selectable-header div {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
+            .selected {
+                background-color: rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+            }
+
+            .nselected {
+                cursor: pointer;
+            }
+
+            [data-sort-style] {
+                position: relative;
+                margin-top: -15px;
+                padding-top: 15px;
+                margin-bottom: -15px;
+                padding-bottom: 15px;
+                margin-right: -10px;
+                padding-right: 10px;
+                margin-left: -10px;
+                padding-left: 10px;
+            }
+
+            [data-sort-style="1"]::before {
+                content: "\f0de";
+                font-family: Icons;
+                position: absolute;
+                left: 1px;
+                top: -3px;
+                transform: scale(0.7);
+            }
+
+            [data-sort-style="2"]::before {
+                content: "\f0dd";
+                font-family: Icons;
+                position: absolute;
+                left: 1px;
+                bottom: 0px;
+                transform: scale(0.7);
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
@@ -79,55 +136,38 @@
         </div>
 
         <div class="ui main container">
+            <!-- Header -->
             <div class="ui five columns middle aligned grid">
                 <div class="two wide column">
-                    <div class="ui mini form">
-                        <div class="two fields">
-                            <div class="field">
-                                <input class="text-center" type="text" id="fs-selftest" placeholder="Test">
-                            </div>
-                            <div class="field">
-                                <input class="text-center" type="text" id="fs-selftest-result" disabled>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
                 <div class="four wide column">
-                    <h2 class="ui centered header">Fighter A</h2>
+
                 </div>
                 <div class="four wide column">
                     <h1 class="ui centered header">Fight Simulator</h1>
                 </div>
                 <div class="four wide column">
-                    <h2 class="ui centered header">Fighter B</h2>
+
                 </div>
                 <div class="two wide wide column">
 
                 </div>
             </div>
-            <div class="ui middle aligned grid bordered-simple">
-                <div class="two wide column"></div>
-                <div class="four wide column">
-                    <button class="ui fluid button" type="submit" id="fs-run">Simulate</button>
-                </div>
-                <div class="one wide column"></div>
-                <div class="four wide column">
-                    <h1 class="ui centered header" id="fs-result"></h1>
-                </div>
-                <div class="four wide column">
-                    <h1 class="ui centered header" id="fs-ratio"></h1>
-                </div>
-                <div class="one wide column"></div>
-            </div>
             <div class="ui two columns grid">
+                <!-- Player edit field -->
                 <div class="column">
-                    <div class="ui form" id="fs-a">
+                    <div class="ui form" id="sim-editor">
                         <div class="bordered bone">
+                            <div class="field">
+                                <label>Name</label>
+                                <input class="text-center" type="text" data-path="Name" data-type="string">
+                            </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label>Class</label>
                                     <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="1" data-path="Class">
+                                        <input class="text-center" type="hidden" value="1" data-type="number1" data-path="Class">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -181,7 +221,7 @@
                                 <div class="field">
                                     <label>Crit</label>
                                     <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn1.HasEnchantment">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn1.HasEnchantment" data-type="bool">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -193,7 +233,7 @@
                                 <div class="field">
                                     <label>Rune</label>
                                     <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn1.AttributeTypes.2">
+                                        <input class="text-center" type="hidden" value="0" data-type="number" data-path="Items.Wpn1.AttributeTypes.2">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -210,7 +250,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bordered bthree" id="fs-a-2">
+                        <div class="bordered bthree" data-optional="Weapon2">
                             <div class="five fields">
                                 <div class="field">
                                     <label>Min</label>
@@ -223,7 +263,7 @@
                                 <div class="field">
                                     <label>Crit</label>
                                     <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn2.HasEnchantment">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn2.HasEnchantment" data-type="bool">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -235,7 +275,7 @@
                                 <div class="field">
                                     <label>Rune</label>
                                     <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn2.AttributeTypes.2">
+                                        <input class="text-center" type="hidden" data-type="number" value="0" data-path="Items.Wpn2.AttributeTypes.2">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -285,7 +325,7 @@
                                 <div class="field">
                                     <label>Life Potion</label>
                                     <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Potions.Life">
+                                        <input class="text-center" type="hidden" value="0" data-type="number" data-path="Potions.Life">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -309,7 +349,7 @@
                                 <div class="field">
                                     <label>Shadow of the Cowboy</label>
                                     <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Hand.HasEnchantment">
+                                        <input class="text-center" type="hidden" value="0" data-path="Items.Hand.HasEnchantment" data-type="bool">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -322,530 +362,347 @@
                         </div>
                     </div>
                 </div>
+                <!-- Player list -->
                 <div class="column">
-                    <div class="ui form" id="fs-b">
-                        <div class="bordered bone">
-                            <div class="two fields">
-                                <div class="field">
-                                    <label>Class</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="1" data-path="Class">
-                                        <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="1">Warrior</div>
-                                            <div class="item" data-value="2">Mage</div>
-                                            <div class="item" data-value="3">Scout</div>
-                                            <div class="item" data-value="4">Assassin</div>
-                                            <div class="item" data-value="5">Battle Mage</div>
-                                            <div class="item" data-value="6">Berserker</div>
-                                        </div>
+                    <div class="ui grid">
+                        <div class="row">
+                            <div class="five wide column">
+                                <button class="ui fluid small button" type="submit" id="sim-add"><i class="arrow right icon"></i> Add player</button>
+                            </div>
+                            <div class="three wide column">
+                                <button class="ui fluid small button" type="submit" id="sim-save">Save</button>
+                            </div>
+                            <div class="on wide column"></div>
+                            <div class="three wide column">
+                                <div class="ui small form">
+                                    <div class="field" data-tooltip="Amount of fights per two players. Use lower value if using simulator with large amount of people.">
+                                        <input class="text-center fluid" type="text" id="sim-iterations" value="10000">
                                     </div>
                                 </div>
-                                <div class="field">
-                                    <label>Level</label>
-                                    <input class="text-center" type="text" data-path="Level">
-                                </div>
                             </div>
-                            <div class="five fields">
-                                <div class="field">
-                                    <label>Str</label>
-                                    <input class="text-center" type="text" data-path="Strength.Total">
-                                </div>
-                                <div class="field">
-                                    <label>Dex</label>
-                                    <input class="text-center" type="text" data-path="Dexterity.Total">
-                                </div>
-                                <div class="field">
-                                    <label>Int</label>
-                                    <input class="text-center" type="text" data-path="Intelligence.Total">
-                                </div>
-                                <div class="field">
-                                    <label>Con</label>
-                                    <input class="text-center" type="text" data-path="Constitution.Total">
-                                </div>
-                                <div class="field">
-                                    <label>Lck</label>
-                                    <input class="text-center" type="text" data-path="Luck.Total">
-                                </div>
+                            <div class="four wide column">
+                                <button class="ui fluid small button" type="submit" id="sim-run">Simulate</button>
                             </div>
                         </div>
-                        <div class="bordered btwo">
-                            <div class="five fields">
-                                <div class="field">
-                                    <label>Min</label>
-                                    <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin">
-                                </div>
-                                <div class="field">
-                                    <label>Max</label>
-                                    <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax">
-                                </div>
-                                <div class="field">
-                                    <label>Crit</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn1.HasEnchantment">
-                                        <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="false">No</div>
-                                            <div class="item" data-value="true">Yes</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label>Rune</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn1.AttributeTypes.2">
-                                        <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="0">None</div>
-                                            <div class="item" data-value="40">Fire</div>
-                                            <div class="item" data-value="41">Cold</div>
-                                            <div class="item" data-value="42">Lightning</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label></br></label>
-                                    <input class="text-center" type="text" data-path="Items.Wpn1.Attributes.2">
-                                </div>
+                        <div class="row clickable selectable-header">
+                            <div class="two wide text-center column">
+                                <span data-sort="class">
+                                    Class
+                                </span>
+                            </div>
+                            <div class="two wide column">
+                                <span data-sort="level">
+                                    Level
+                                </span>
+                            </div>
+                            <div class="five wide column">
+                                <span data-sort="name">
+                                    Name
+                                </span>
+                            </div>
+                            <div class="two wide text-center column">
+                                <span data-sort="avg">
+                                    Win %
+                                </span>
+                            </div>
+                            <div class="two wide text-center column">
+                                <span data-sort="min">
+                                    Min %
+                                </span>
+                            </div>
+                            <div class="two wide text-center column">
+                                <span data-sort="max">
+                                    Max %
+                                </span>
+                            </div>
+                            <div class="one wide column">
+
                             </div>
                         </div>
-                        <div class="bordered bthree" id="fs-b-2">
-                            <div class="five fields">
-                                <div class="field">
-                                    <label>Min</label>
-                                    <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin">
-                                </div>
-                                <div class="field">
-                                    <label>Max</label>
-                                    <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax">
-                                </div>
-                                <div class="field">
-                                    <label>Crit</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn2.HasEnchantment">
-                                        <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="false">No</div>
-                                            <div class="item" data-value="true">Yes</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label>Rune</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn2.AttributeTypes.2">
-                                        <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="0">None</div>
-                                            <div class="item" data-value="40">Fire</div>
-                                            <div class="item" data-value="41">Cold</div>
-                                            <div class="item" data-value="42">Lightning</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label></br></label>
-                                    <input class="text-center" type="text" data-path="Items.Wpn2.Attributes.2">
-                                </div>
+                        <div class="row padding-none">
+                            <div class="sixteen wide column">
+                                <hr/>
                             </div>
                         </div>
-                        <div class="bordered bfour">
-                            <div class="four fields">
-                                <div class="field">
-                                    <label>Armor</label>
-                                    <input class="text-center" type="text" data-path="Armor">
-                                </div>
-                                <div class="field">
-                                    <label>Fire</label>
-                                    <input class="text-center" type="text" data-path="Runes.ResistanceFire">
-                                </div>
-                                <div class="field">
-                                    <label>Cold</label>
-                                    <input class="text-center" type="text" data-path="Runes.ResistanceCold">
-                                </div>
-                                <div class="field">
-                                    <label>Lightning</label>
-                                    <input class="text-center" type="text" data-path="Runes.ResistanceLightning">
+                        <div class="row">
+                            <div class="sixteen wide column">
+                                <div class="ui middle aligned grid" id="sim-players">
+
                                 </div>
                             </div>
-                        </div>
-                        <div class="bordered bfive">
-                            <div class="three fields">
-                                <div class="field">
-                                    <label>Portal Health</label>
-                                    <input class="text-center" type="text" data-path="Dungeons.Player">
-                                </div>
-                                <div class="field">
-                                    <label>Rune Health</label>
-                                    <input class="text-center" type="text" data-path="Runes.Health">
-                                </div>
-                                <div class="field">
-                                    <label>Life Potion</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Potions.Life">
-                                        <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="0">No</div>
-                                            <div class="item" data-value="25">Yes</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bordered bsix">
-                            <div class="three fields">
-                                <div class="field">
-                                    <label>Portal Damage</label>
-                                    <input class="text-center" type="text" data-path="Dungeons.Group">
-                                </div>
-                                <div class="field">
-                                    <label>Gladiator</label>
-                                    <input class="text-center" type="text" data-path="Fortress.Gladiator">
-                                </div>
-                                <div class="field">
-                                    <label>Shadow of the Cowboy</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Hand.HasEnchantment">
-                                        <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="false">No</div>
-                                            <div class="item" data-value="true">Yes</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <div>
                     </div>
                 </div>
-            </div>
-            <div class="ui two columns grid">
-                <div class="column">
-                    <div class="ui form" id="fs-detail-a">
-
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="ui form" id="fs-detail-b">
-
-                    </div>
-                </div>
-            </div>
-            <div class="ui centered grid spaced" id="fs-debug">
-
             </div>
         </div>
 
         <script type="text/javascript">
-            $('.dropdown').dropdown();
-
-            // Hide second weapon unless player is assassin
-            $('#fs-a [data-path="Class"]').change(function () {
-                $('#fs-a-2').toggle($(this).val() == 4);
+            // Init
+            //$('.dropdown').dropdown();
+            $('[data-path="Class"]').change(function () {
+                $('.dropdown').dropdown();
+                $('[data-optional="Weapon2"]').toggle($(this).val() == 4);
             }).trigger('change');
-
-            $('#fs-b [data-path="Class"]').change(function () {
-                $('#fs-b-2').toggle($(this).val() == 4);
-            }).trigger('change');
+            $('[data-path]').on('input', () => valid());
 
             // Fill and read forms
-            function fill (parent, object) {
-                parent.find('[data-path]').each(function () {
+            function fill (object) {
+                $('[data-path]').each(function () {
                     $(this).val(getObjectAt(object, $(this).attr('data-path')));
                 });
+
+                $('[data-path="Class"]').trigger('change');
             }
 
-            function read (parent) {
+            function clear () {
+                $('[data-path]').each(function () {
+                    var type = $(this).attr('data-type');
+                    if (type == 'bool') {
+                        $(this).val('false');
+                    } else if (type == 'number') {
+                        $(this).val('0');
+                    } else if (type == 'number1') {
+                        $(this).val('1');
+                    } else {
+                        $(this).val('');
+                    }
+                });
+
+                $('[data-path="Class"]').trigger('change');
+            }
+
+            function read () {
                 var object = new SFPlayer();
-                parent.find('[data-path]').each(function () {
+                $('#sim-editor').find('[data-path]').each(function () {
+                    var key = $(this).attr('data-path');
+                    var type = $(this).attr('data-type');
                     var val = $(this).val();
-                    setObjectAt(object, $(this).attr('data-path'), val == 'true' ? true : (val == 'false' ? false : Number(val)));
+
+                    if (type == 'bool') {
+                        setObjectAt(object, key, val == 'true');
+                    } else if (type == 'string') {
+                        setObjectAt(object, key, val);
+                    } else {
+                        setObjectAt(object, key, Number(val));
+                    }
                 });
                 return object;
             }
 
+            function valid () {
+                return $('[data-path]').toArray().reduce((errors, element) => {
+                    var key = $(element).attr('data-path');
+                    var type = $(element).attr('data-type');
+                    var val = $(element).val();
+
+                    if (type == 'bool' || type == 'string' || !isNaN(val)) {
+                        $(element).parent('.field').removeClass('error');
+                        return errors;
+                    } else {
+                        $(element).parent('.field').addClass('error');
+                        return errors + 1;
+                    }
+                }, 0) == 0;
+            }
+
             // On paste event handler
-            $('#fs-a input, #fs-b input').on('paste', function (event) {
+            $('#sim-editor input').on('paste', function (event) {
                 event.stopPropagation();
             });
 
-            $('#fs-selftest-result').val('');
-            $('#fs-selftest').val('');
-
-            var selftest = null;
-            $('#fs-selftest').on('input', function (event) {
-                try {
-                    var data = JSON.parse($(this).val());
-                    if (typeof(data) == 'object' && data.rounds) {
-                        selftest = data;
-                    } else {
-                        selftest = null;
-                    }
-                } catch (e) {
-                    selftest = null;
-                }
-            }).trigger('input');
-
-            $('#fs-detail-a, #fs-detail-b').hide();
-
-            $('#fs-a, #fs-b').on('paste', function (event) {
+            $('#sim-editor').on('paste', function (event) {
                 try {
                     var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
-                    var player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
-                    player.Fortress.Gladiator = player.Fortress.Gladiator || 15;
-                    fill($(this), player);
-                    $('.dropdown').dropdown();
-                    $(this).find('[data-path="Class"]').trigger('change');
+                    if (Array.isArray(data)) {
+                        players = [];
+
+                        for (var d of data) {
+                            var player = d.own ? new SFOwnPlayer(d) : new SFOtherPlayer(d);
+                            player.Fortress.Gladiator = player.Fortress.Gladiator || 15;
+                            players.push({
+                                player: player,
+                                score: null,
+                                index: iterator++
+                            });
+                        }
+
+                        showPlayers();
+                    } else {
+                        var player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
+                        player.Fortress.Gladiator = player.Fortress.Gladiator || 15;
+
+                        fill(player);
+                    }
                 } catch (e) {
 
                 }
             });
 
             // Run simulation
-            $('#fs-run').click(function () {
-                var battle = runBattle(read($('#fs-a')), read($('#fs-b')));
+            $('#sim-run').click(function () {
+                new FightSimulator().simulate(players, Number($('#sim-iterations').val()) || 10000);
+                selected = -1;
 
-                if (selftest) {
-                    var errors = 0;
+                setSort('avg', 0);
+            });
 
-                    for (var i = 0, round; round = selftest.rounds[i]; i++) {
-                        var rage = 1 + i / 6;
-                        var source = selftest.a == round.source ? battle.a : battle.b;
+            var selected = -1;
 
-                        if ((round.type % 10) <= 1) {
-                            var rdmg = round.damage / (rage * (round.crit ? source.weapon1.crit : 1));
-                            if (rdmg < source.weapon1.range.min || rdmg > source.weapon1.range.max) {
-                                errors++;
-                            }
+            var players = [];
+            var iterator = 0;
 
-                            if (source.model.Class == 4 && selftest.rounds[i++] && (selftest.rounds[i] % 10) <= 10) {
-                                round = selftest.rounds[i];
-                                rdmg = round.damage / (rage * (round.crit ? source.weapon2.crit : 1));
-                                if (rdmg < source.weapon2.range.min || rdmg > source.weapon2.range.max) {
-                                    errors++;
-                                }
-                            }
+            $('#sim-save').click(function () {
+                if (valid()) {
+                    if (selected != -1) {
+                        var index = players.findIndex(p => p.index == selected);
+                        if (index != -1) {
+                            players[index].player = read();
+                            players[index].score = null;
                         }
+
+                        showPlayers();
+                    } else {
+                        $('#sim-add').trigger('click');
+                    }
+                }
+            });
+
+            $('#sim-add').click(function () {
+                if (valid()) {
+                    var player = read();
+                    if (player.Name == '') {
+                        player.Name = `Player ${ players.length + 1 }`;
                     }
 
-                    $('#fs-selftest-result').val(errors);
+                    selected = iterator++;
+                    players.push({
+                        player: player,
+                        score: null,
+                        index: selected
+                    });
+
+                    clear();
+
+                    showPlayers();
+                }
+            });
+
+            var sort = '';
+            var order = 0;
+
+            $('[data-sort]').click(function () {
+                setSort($(this).attr('data-sort'));
+            });
+
+            function setSort (key, ord) {
+                if (ord == undefined) {
+                    if (sort == key) {
+                        order = (order + 1) % 2;
+                    } else {
+                        sort = key;
+                        order = 0;
+                    }
                 } else {
-                    $('#fs-selftest-result').val('');
+                    sort = key;
+                    order = ord;
                 }
 
-                $('#fs-result').text(`${ (100 * battle.wins / 1E5).toFixed(1) }%`);
-                $('#fs-ratio').text(`${ battle.wins } / ${ 1E5 - battle.wins }`);
+                showPlayers();
+            }
 
-                $('#fs-detail-a').show().html(`
-                    <div class="bordered bfour">
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Health</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.health), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Damage reduction</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.getDamageReduction(battle.b)), ' ') }">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bordered bthree">
-                        <div class="four fields">
-                            <div class="field">
-                                <label>Skip chance</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.skipchance), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Crit chance</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.critchance), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Special damage</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.max(0, Math.trunc(battle.a.special)), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Second attack</label>
-                                <input class="text-center" disabled type="text" value="${ battle.a.secondAttack }">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bordered btwo">
-                        <div class="four fields">
-                            <div class="field">
-                                <label>Minimum damage</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.range.min), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Maximum damage</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.range.max), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Minimum critical</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.crit * battle.a.weapon1.range.min), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Maximum critical</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon1.crit * battle.a.weapon1.range.max), ' ') }">
-                            </div>
-                        </div>
-                    </div>
-                    ${ battle.a.weapon2 ? `
-                        <div class="bordered bone">
-                            <div class="four fields">
-                                <div class="field">
-                                    <label>Minimum damage</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.range.min), ' ') }">
-                                </div>
-                                <div class="field">
-                                    <label>Maximum damage</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.range.max), ' ') }">
-                                </div>
-                                <div class="field">
-                                    <label>Minimum critical</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.crit * battle.a.weapon2.range.min), ' ') }">
-                                </div>
-                                <div class="field">
-                                    <label>Maximum critical</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.a.weapon2.crit * battle.a.weapon2.range.max), ' ') }">
-                                </div>
-                            </div>
-                        </div>
-                    ` : '' }
-                `);
+            function showPlayers () {
+                if (order == 0) {
+                    if (sort == 'class') {
+                        players.sort((a, b) => a.player.Class - b.player.Class);
+                    } else if (sort == 'level') {
+                        players.sort((a, b) => b.player.Level - a.player.Level);
+                    } else if (sort == 'name') {
+                        players.sort((a, b) => a.player.Name.localeCompare(b.player.Name));
+                    } else if (sort == 'avg') {
+                        players.sort((a, b) => b.score && a.score && (b.score.avg - a.score.avg));
+                    } else if (sort == 'min') {
+                        players.sort((a, b) => b.score && a.score && (b.score.min - a.score.min));
+                    } else if (sort == 'max') {
+                        players.sort((a, b) => b.score && a.score && (b.score.max - a.score.max));
+                    }
+                } else {
+                    if (sort == 'class') {
+                        players.sort((b, a) => a.player.Class - b.player.Class);
+                    } else if (sort == 'level') {
+                        players.sort((b, a) => b.player.Level - a.player.Level);
+                    } else if (sort == 'name') {
+                        players.sort((b, a) => a.player.Name.localeCompare(b.player.Name));
+                    } else if (sort == 'avg') {
+                        players.sort((b, a) => b.score && a.score && (b.score.avg - a.score.avg));
+                    } else if (sort == 'min') {
+                        players.sort((b, a) => b.score && a.score && (b.score.min - a.score.min));
+                    } else if (sort == 'max') {
+                        players.sort((b, a) => b.score && a.score && (b.score.max - a.score.max));
+                    }
+                }
 
-                $('#fs-detail-b').show().html(`
-                    <div class="bordered bfour">
-                        <div class="two fields">
-                            <div class="field">
-                                <label>Health</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.health), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Damage reduction</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.getDamageReduction(battle.a)), ' ') }">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bordered bthree">
-                        <div class="four fields">
-                            <div class="field">
-                                <label>Skip chance</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.skipchance), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Crit chance</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.critchance), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Special damage</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.max(0, Math.trunc(battle.b.special)), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Second attack</label>
-                                <input class="text-center" disabled type="text" value="${ battle.b.secondAttack }">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bordered btwo">
-                        <div class="four fields">
-                            <div class="field">
-                                <label>Minimum damage</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.range.min), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Maximum damage</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.range.max), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Minimum critical</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.crit * battle.b.weapon1.range.min), ' ') }">
-                            </div>
-                            <div class="field">
-                                <label>Maximum critical</label>
-                                <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon1.crit * battle.b.weapon1.range.max), ' ') }">
-                            </div>
-                        </div>
-                    </div>
-                    ${ battle.b.weapon2 ? `
-                        <div class="bordered bone">
-                            <div class="four fields">
-                                <div class="field">
-                                    <label>Minimum damage</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.range.min), ' ') }">
-                                </div>
-                                <div class="field">
-                                    <label>Maximum damage</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.range.max), ' ') }">
-                                </div>
-                                <div class="field">
-                                    <label>Minimum critical</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.crit * battle.b.weapon2.range.min), ' ') }">
-                                </div>
-                                <div class="field">
-                                    <label>Maximum critical</label>
-                                    <input class="text-center" disabled type="text" value="${ formatAsSpacedNumber(Math.trunc(battle.b.weapon2.crit * battle.b.weapon2.range.max), ' ') }">
-                                </div>
-                            </div>
-                        </div>
-                    ` : '' }
-                `);
+                $('[data-sort]').each(function () {
+                    $(this).attr('data-sort-style', $(this).attr('data-sort') == sort ? (order + 1) : 0);
+                });
 
-                $('#fs-debug').html(`
-                    <div class="row bordered-simple">
-                        <div class="one wide column"></div>
-                        <div class="one wide column">
-                            <h2 class="ui centered header">Turn</h2>
-                        </div>
-                        <div class="one wide column">
-                            <h2 class="ui centered header">Rage</h2>
-                        </div>
-                        <div class="four wide column">
-                            <h2 class="ui centered header">Attacker</h2>
-                        </div>
-                        <div class="two wide column">
-                            <h2 class="ui centered header">Critted</h2>
-                        </div>
-                        <div class="two wide column">
-                            <h2 class="ui centered header">Skipped</h2>
-                        </div>
-                        <div class="four wide column">
-                            <h2 class="ui centered header">Damage dealt</h2>
-                        </div>
-                        <div class="one wide column"></div>
-                    </div>
-                    ` + join(battle.example, function (round) {
-                    return `
-                        <div class="row bordered-simple ${ round.source.p ? 'btwo' : 'bone' }">
-                            <div class="one wide column"></div>
-                            <div class="one wide text-center column">
-                                ${ round.turn }
+                var content = '';
+
+                for (var i = 0; i < players.length; i++) {
+                    var player = players[i].player;
+                    var score = players[i].score;
+                    var index = players[i].index;
+
+                    content += `
+                        <div class="row selectable ${ index == selected ? 'selected' : 'nselected' }" data-index="${ index }">
+                            <div class="two wide text-center column">
+                                <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
                             </div>
                             <div class="one wide text-center column">
-                                ${ round.rage }
-                            </div>
-                            <div class="four wide text-center column">
-                                <b>${ round.source.p ? 'Fighter B' : 'Fighter A' }</b>
-                            </div>
-                            <div class="two wide text-center column">
-                                ${ round.critted ? '<b>Yes</b>' : '' }
-                            </div>
-                            <div class="two wide text-center column">
-                                ${ round.skipped ? '<b>Yes</b>' : '' }
-                            </div>
-                            <div class="four wide text-center column">
-                                ${ round.critted ? `<b class="foreground-red">${ formatAsSpacedNumber(round.damage, ' ') }</b>` : formatAsSpacedNumber(round.damage, ' ') }
+                                <b>${ player.Level }</b>
                             </div>
                             <div class="one wide column"></div>
+                            <div class="five wide column">
+                                <b>${ player.Name }</b>
+                            </div>
+                            <div class="two wide text-center column">
+                                ${ score ? `${ Math.trunc(score.avg * 10000) / 100 }%` : '' }
+                            </div>
+                            <div class="two wide text-center column">
+                                ${ score ? `${ Math.trunc(score.min * 10000) / 100 }%` : '' }
+                            </div>
+                            <div class="two wide text-center column">
+                                ${ score ? `${ Math.trunc(score.max * 10000) / 100 }%` : '' }
+                            </div>
+                            <div class="one wide column">
+                                <i class="trash alternate glow outline icon" data-index-trash="${ i }"></i>
+                            </div>
                         </div>
                     `;
-                }));
-            });
+                }
+
+                $('#sim-players').html(content);
+
+                $('[data-index]').click(function () {
+                    selected = Number($(this).attr('data-index'));
+                    fill(players.find(p => p.index == selected).player);
+
+                    showPlayers();
+                });
+
+                $('[data-index-trash]').click(function () {
+                    var sel = Number($(this).attr('data-index-trash'));
+                    players.splice(sel, 1);
+
+                    var ss = players.findIndex(p => p.index == selected);
+                    if (ss == -1) {
+                        clear();
+                    }
+
+                    selected = ss;
+
+                    showPlayers();
+                });
+            }
         </script>
     </body>
 </html>

@@ -1,326 +1,225 @@
-// Get rune from weapon
-function getRune (weapon, rune) {
-    if (weapon.AttributeTypes[2] == rune) {
-        return weapon.Attributes[2];
-    } else {
-        return 0;
-    }
+function getRuneValue (item, rune) {
+    return item.AttributeTypes[2] == rune ? item.Attributes[2] : 0;
 }
 
-// Get random
-function rand (perc) {
-    return perc > 0 && (Math.random() * 100 < perc);
+function getRandom (success) {
+    return success > 0 && (Math.random() * 100 < success);
 }
 
-class FSModel {
-    constructor (p, player) {
-        this.p = p;
-        this.model = player;
-
-        this.health = player.getHealth();
-        this.weapon1 = player.Items.Wpn1;
-        if (player.Class == 4) {
-            this.weapon2 = player.Items.Wpn2;
-        }
-
-        this.first = player.Items.Hand.HasEnchantment;
-        this.secondAttack = player.Class == 6 ? 50 : 0;
+class FighterModel {
+    constructor (index, player) {
+        this.Index = index;
+        this.Player = player;
     }
 
+    // Get defense attribute against a player
     getDefenseAtribute (source) {
-        switch (source.model.Class) {
-            case 1:
-            case 5:
-            case 6:
-                return this.model.Strength;
-            case 3:
-            case 4:
-                return this.model.Dexterity;
-            case 2:
-                return this.model.Intelligence;
-            default:
-                return { };
-        }
+        return source.Player.Class == 2 ? this.Player.Intelligence : (source.Player.Class == 3 || source.Player.Class == 4 ? this.Player.Dexterity : this.Player.Strength);
     }
 
+    // Get damage reduction against a player
     getDamageReduction (source) {
-        if (source.model.Class == 2) {
-            return 0;
-        } else if (this.model.Class == 5) {
-            return Math.min(10, this.model.Armor / source.model.Level) + 40;
-        } else {
-            return Math.min(this.getMaximumDamageReduction(), this.model.Armor / source.model.Level);
-        }
+        return source.Player.Class == 2 ? 0 : Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level + (this.Player.Class == 5 ? 40 : 0));
     }
 
+    // Get maximum damage reduction
     getMaximumDamageReduction () {
-        switch (this.model.Class) {
-            case 1:
-            case 5:
-                return 50
-            case 6:
-            case 3:
-            case 4:
-                return 25;
-            case 2:
-                return 10;
-            default:
-                return 0;
-        }
+        return this.Player.Class % 4 == 1 ? 50 : (this.Player.Class == 2 ? 10 : 25);
     }
 
-    getSkipChance (source) {
-        if (source.model.Class == 2) {
-            return 0;
-        } else {
-            switch (this.model.Class) {
-                case 1: return 25;
-                case 3:
-                case 4: return 50;
-                default: return 0;
-            }
-        }
+    // Get block chance
+    getBlockChance (source) {
+        return source.Player.Class == 2 ? 0 : (this.Player.Class == 1 ? 25 : (this.Player.Class == 3 || this.Player.Class == 4 ? 50 : 0));
     }
 
+    // Get critical chance
     getCriticalChance (target) {
-        return Math.min(50, this.model.Luck.Total * 2.5 / target.model.Level);
+        return Math.min(50, this.Player.Luck.Total * 2.5 / target.Player.Level);
     }
 
+    // Get critical damage multiplier
     getCriticalMultiplier (weapon, target) {
-        return 2 * (1 + Math.max(0, this.model.Fortress.Gladiator - target.model.Fortress.Gladiator) * 0.05) * (weapon.HasEnchantment ? 1.05 : 1);
+        return 2 * (1 + 0.05 * Math.max(0, this.Player.Fortress.Gladiator - target.Player.Fortress.Gladiator)) * (weapon.HasEnchantment ? 1.05 : 1);
     }
 
+    // Get damage range
     getDamageRange (weapon, target) {
-        let multPhysical = 1 - target.getDamageReduction(this) / 100;
-        let multFire = (1 - target.model.Runes.ResistanceFire / 100) * (getRune(weapon, RUNE.FIRE_DAMAGE) / 100);
-        let multCold = (1 - target.model.Runes.ResistanceCold / 100) * (getRune(weapon, RUNE.COLD_DAMAGE) / 100);
-        let multLightning = (1 - target.model.Runes.ResistanceLightning / 100) * (getRune(weapon, RUNE.LIGHTNING_DAMAGE) / 100);
+        let mp = 1 - target.getDamageReduction(this) / 100;
+        let mf = (1 - target.Player.Runes.ResistanceFire / 100) * (getRuneValue(weapon, RUNE.FIRE_DAMAGE) / 100);
+        let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE.COLD_DAMAGE) / 100);
+        let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE.LIGHTNING_DAMAGE) / 100);
 
-        let mult = (1 + this.model.Dungeons.Group / 100) * multPhysical * (1 + multFire + multCold + multLightning) * (this.model.Class == 2 && target.model.Class == 6 ? 2 : 1);
+        let m = (1 + this.Player.Dungeons.Group / 100) * mp * (1 + mf + mc + ml) * (this.Player.Class == 2 && target.Player.Class == 6 ? 2 : 1);
 
-        let attributeAttack = this.model.getPrimaryAttribute().Total;
-        let attributeDefense = target.getDefenseAtribute(this).Total;
+        let aa = this.Player.getPrimaryAttribute().Total;
+        let ad = target.getDefenseAtribute(this).Total;
 
-        let damageMultiplier = mult * (1 + Math.max(attributeAttack / 2, attributeAttack - attributeDefense / 2) / 10);
+        let dm = m * (1 + Math.max(aa / 2, aa - ad / 2) / 10);
 
         return {
-            min: damageMultiplier * weapon.DamageMin,
-            max: damageMultiplier * weapon.DamageMax
+            Max: dm * weapon.DamageMin,
+            Min: dm * weapon.DamageMax
         };
     }
 
+    // Get special damage
     getSpecialDamage (target) {
-        if (this.model.Class == 5) {
-            if (target.model.Class == 5 || target.model.Class == 2) {
+        if (this.Player.Class == 5) {
+            if (target.Player.Class == 5 || target.Player.Class == 2) {
                 return 0;
-            } else if (target.model.Level < this.model.Level + 10 || target.model.Class == 6) {
-                return target.health / 3;
-            } else if (target.model.Class == 1) {
-                return this.health / 4;
-            } else if (target.model.Class == 3 || target.model.Class == 4) {
-                return this.health / 5;
+            } else if (target.Player.Level < this.Player.Level + 10 || target.Player.Class == 6) {
+                return target.Health / 3;
+            } else if (target.Player.Class == 1) {
+                return this.Health / 4;
+            } else if (target.Player.Class == 3 || target.Player.Class == 4) {
+                return this.Health / 5;
             } else {
                 return 0;
             }
         } else {
+            // -1 if player cannot cast special damage
             return -1;
         }
     }
-}
 
-function runBattle (modelA, modelB) {
-    var battle = new FSBattle(modelA, modelB);
-    var wins = 0;
-    for (var i = 0; i < 1E5; i++) {
-        if (battle.fight() == 0) {
-            wins++;
+    // Initialize model
+    initialize (target) {
+        // Health
+        this.Health = this.Player.getHealth();
+
+        // Round modifiers
+        this.AttackFirst = this.Player.Items.Hand.HasEnchantment;
+        this.RepeatAttackChance = this.Player.Class == 6 ? 50 : 0;
+        this.SkipChance = this.getBlockChance(target);
+        this.CriticalChance = this.getCriticalChance(target);
+
+        // Weapon
+        var weapon1 = this.Player.Items.Wpn1;
+        this.Weapon1 = {
+            Range: this.getDamageRange(weapon1, target),
+            Critical: this.getCriticalMultiplier(weapon1, target)
         }
-    }
 
-    var a = new FSModel(0, modelA);
-    var b = new FSModel(1, modelB);
-
-    a.weapon1.range = a.getDamageRange(a.weapon1, b);
-    a.weapon1.crit = a.getCriticalMultiplier(a.weapon1, b);
-    if (a.weapon2) {
-        a.weapon2.range = a.getDamageRange(a.weapon2, b);
-        a.weapon2.crit = a.getCriticalMultiplier(a.weapon2, b);
-    }
-    b.weapon1.range = b.getDamageRange(b.weapon1, a);
-    b.weapon1.crit = b.getCriticalMultiplier(b.weapon1, a);
-    if (b.weapon2) {
-        b.weapon2.range = b.getDamageRange(b.weapon2, a);
-        b.weapon2.crit = b.getCriticalMultiplier(b.weapon2, a);
-    }
-    a.skipchance = a.getSkipChance(b);
-    a.critchance = a.getCriticalChance(b);
-    b.skipchance = b.getSkipChance(a);
-    b.critchance = b.getCriticalChance(a);
-    a.special = a.getSpecialDamage(b);
-    b.special = b.getSpecialDamage(a);
-
-    return {
-        wins: wins,
-        example: battle.fight(true),
-        a: a,
-        b: b
+        // Weapon 2
+        var weapon2 = this.Player.Class == 4 ? this.Player.Items.Wpn2 : undefined;
+        if (weapon2) {
+            this.Weapon2 = {
+                Range: this.getDamageRange(weapon2, target),
+                Critical: this.getCriticalMultiplier(weapon2, target)
+            }
+        }
     }
 }
 
-class FSBattle {
-    constructor (modelA, modelB) {
-        this.modelA = modelA;
-        this.modelB = modelB;
+class FightSimulator {
+    // Fight group
+    simulate (players, iterations = 100000) {
+        var scores = [];
+        for (var i = 0; i < players.length; i++) {
+            var score = 0;
+            var min = iterations;
+            var max = 0;
+            for (var j = 0; j < players.length; j++) {
+                if (i != j) {
+                    var s = 0;
+                    for (var k = 0; k < iterations; k++) {
+                        s += this.fight(players[i].player, players[j].player);
+                    }
+
+                    score += s;
+
+                    if (s > max) {
+                        max = s;
+                    }
+
+                    if (s < min) {
+                        min = s;
+                    }
+                }
+            }
+
+            players[i].score = {
+                avg: score / (players.length - 1) / iterations,
+                min: min / iterations,
+                max: max / iterations
+            };
+        }
     }
 
-    fight (debug) {
-        if (debug) {
-            this.debug = [];
-        }
+    // Fight
+    fight (source, target) {
+        // Create fighters
+        this.a = new FighterModel(0, source);
+        this.b = new FighterModel(1, target);
 
-        // Create fight models
-        var a = new FSModel(0, this.modelA);
-        var b = new FSModel(1, this.modelB);
+        // Initialize fighters
+        this.a.initialize(this.b);
+        this.b.initialize(this.a);
 
-        // Damage
-        a.weapon1.range = a.getDamageRange(a.weapon1, b);
-        a.weapon1.crit = a.getCriticalMultiplier(a.weapon1, b);
-        if (a.weapon2) {
-            a.weapon2.range = a.getDamageRange(a.weapon2, b);
-            a.weapon2.crit = a.getCriticalMultiplier(a.weapon2, b);
-        }
-
-        b.weapon1.range = b.getDamageRange(b.weapon1, a);
-        b.weapon1.crit = b.getCriticalMultiplier(b.weapon1, a);
-        if (b.weapon2) {
-            b.weapon2.range = b.getDamageRange(b.weapon2, a);
-            b.weapon2.crit = b.getCriticalMultiplier(b.weapon2, a);
-        }
-
-        // Chances
-        a.skipchance = a.getSkipChance(b);
-        a.critchance = a.getCriticalChance(b);
-
-        b.skipchance = b.getSkipChance(a);
-        b.critchance = b.getCriticalChance(a);
-
-        // Swap first & second
-        var afirst = (a.first == b.first) ? rand(50) : a.first;
-        if (afirst == false) {
-            var c = a;
-            a = b;
-            b = c;
+        // Decide who starts first
+        if (this.a.AttackFirst && this.b.AttackFirst ? getRandom(50) : this.a.AttackFirst) {
+            [this.a, this.b] = [this.b, this.a];
         }
 
         // Turn counter
         this.turn = 0;
 
-        // Special damage for first round only
-        var as = a.getSpecialDamage(b);
-        var bs = b.getSpecialDamage(a);
+        // Special damage
+        var as = this.a.getSpecialDamage(this.b);
+        var bs = this.b.getSpecialDamage(this.a);
         if (as >= 0 || bs >= 0) {
             this.turn++;
 
             if (as > 0) {
-                b.health -= as;
+                this.b.Health -= as;
             }
 
             if (bs > 0) {
-                a.health -= bs;
-            }
-
-            if (as >= 0 && bs >= 0) {
-                if (this.debug) {
-                    this.debug.push({
-                        turn: 0,
-                        source: a,
-                        target: b,
-                        skipped: false,
-                        critted: false,
-                        rage: 1,
-                        damage: 0
-                    });
-                }
-            } else if (as >= 0) {
-                if (this.debug) {
-                    this.debug.push({
-                        turn: 0,
-                        source: a,
-                        target: b,
-                        skipped: false,
-                        critted: false,
-                        rage: 1,
-                        damage: Math.trunc(as)
-                    });
-                }
-            } else if (bs >= 0) {
-                if (this.debug) {
-                    this.debug.push({
-                        turn: 0,
-                        source: b,
-                        target: a,
-                        skipped: false,
-                        critted: false,
-                        rage: 1,
-                        damage: Math.trunc(bs)
-                    });
-                }
+                this.a.Health -= bs;
             }
         }
 
-        // Run until someone is dead
-        while (a.health > 0 && b.health > 0) {
-            this.attack(a, b);
-            if (a.weapon2) {
-                this.attack(a, b, a.weapon2);
-            } else if (rand(a.secondAttack)) {
-                this.attack(a, b);
+        // Run simulation
+        while (this.a.Health > 0 && this.b.Health > 0) {
+            this.attack(this.a, this.b);
+            if (this.a.Weapon2) {
+                this.attack(this.a, this.b, this.a.Weapon2);
+            } else if (getRandom(this.a.secondAttack)) {
+                this.attack(this.a, this.b);
             }
 
-            if (b.health > 0) {
-                this.attack(b, a);
-                if (b.weapon2) {
-                    this.attack(b, a, b.weapon2);
-                } else if (rand(b.secondAttack)) {
-                    this.attack(b, a);
+            if (this.b.Health > 0) {
+                this.attack(this.b, this.a);
+                if (this.b.Weapon2) {
+                    this.attack(this.b, this.a, this.b.Weapon2);
+                } else if (getRandom(this.b.secondAttack)) {
+                    this.attack(this.b, this.a);
                 }
             }
+
+            if (this.turn > 100) {
+                break;
+            }
         }
 
-        if (this.debug) {
-            return this.debug;
-        } else {
-            return a.health > 0 ? a.p : b.p;
-        }
+        // Winner
+        return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
     }
 
-    attack (source, target, weapon = source.weapon1) {
-        var skipped = rand(target.skipchance);
-        var critted = rand(source.critchance);
+    // Attack
+    attack (source, target, weapon = source.Weapon1) {
+        // Rage
         var turn = this.turn++;
         var rage = 1 + turn / 6;
 
-        var damage = rage * (Math.random() * (1 + weapon.range.max - weapon.range.min) + weapon.range.min);
-        if (critted) {
-            damage *= weapon.crit;
-        }
+        // Test for skip
+        if (!getRandom(target.SkipChance)) {
+            var damage = rage * (Math.random() * (1 + weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
+            if (getRandom(source.CriticalChance)) {
+                damage *= weapon.Critical;
+            }
 
-        if (skipped) {
-            damage = 0;
-        } else {
-            target.health -= damage;
-        }
-
-        if (this.debug) {
-            this.debug.push({
-                turn: turn,
-                source: source,
-                target: target,
-                skipped: skipped,
-                critted: critted,
-                rage: rage.toFixed(2),
-                damage: Math.trunc(damage)
-            });
+            target.Health -= damage;
         }
     }
 }

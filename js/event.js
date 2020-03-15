@@ -46,6 +46,20 @@ class GroupDetailView extends View {
             document.body.removeChild(node);
         });
 
+        // Copy 2
+        this.$parent.find('[data-op="copy-sim"]').click(() => {
+            const element = document.createElement('textarea');
+
+            element.value = JSON.stringify(this.table.array.map(p => p.player.Data));
+
+            document.body.appendChild(element);
+
+            element.select();
+
+            document.execCommand('copy');
+            document.body.removeChild(element);
+        });
+
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
             html2canvas(this.$table.get(0), {
@@ -657,6 +671,26 @@ class BrowseView extends View {
             ]
         });
 
+        // Copy 2
+        this.$parent.find('[data-op="copy-sim"]').click(() => {
+            const element = document.createElement('textarea');
+
+            var array = this.table.array;
+            var slice = this.table.array.perf || this.table.settings.globals.performance;
+            if (slice) {
+                array = array.slice(0, slice);
+            }
+
+            element.value = JSON.stringify(array.map(p => p.player.Data));
+
+            document.body.appendChild(element);
+
+            element.select();
+
+            document.execCommand('copy');
+            document.body.removeChild(element);
+        });
+
         // Configuration
         this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
             UI.SettingsFloat.show('players');
@@ -672,7 +706,7 @@ class BrowseView extends View {
         // Filter
         this.$filter = this.$parent.find('[data-op="filter"]');
         this.$filter.change((event) => {
-            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|k):/);
+            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r):/);
 
             var terms = [
                 {
@@ -730,9 +764,7 @@ class BrowseView extends View {
                     }
                 } else if (key == 'f') {
                     perf = isNaN(arg) ? 1 : Math.max(1, Number(arg));
-                }
-
-                if (key == 'k') {
+                } else if (key == 'r') {
                     this.recalculate = true;
                 }
             }

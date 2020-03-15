@@ -138,6 +138,7 @@ const Database = new (class {
 
                     let index = group.Members.findIndex(identifier => identifier == player.Identifier);
 
+                    player.Group.Group = group;
                     player.Group.Role = group.Roles[index];
                     player.Group.Index = index;
 

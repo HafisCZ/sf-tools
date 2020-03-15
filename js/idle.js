@@ -85,6 +85,10 @@ class Building {
         }
     }
 
+    getUpgradePriceUnsafe (level, bulk) {
+        return Math.ceil(this.initialCost * Math.pow(1.03, level) * (1 - Math.pow(1.03, bulk)) / -0.03);
+    }
+
     getCycleDuration (level) {
         return this.initialDuration * Math.pow(0.8, Building.getNearestBreakpoint(level));
     }
