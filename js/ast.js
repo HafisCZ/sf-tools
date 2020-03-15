@@ -373,6 +373,8 @@ class AST {
                 return SP_KEYWORD_MAPPING_1[node].expr(player);
             } else if (SP_KEYWORD_MAPPING_2[node] && player) {
                 return SP_KEYWORD_MAPPING_2[node].expr(player);
+            } else if (SP_KEYWORD_MAPPING_3[node] && player) {
+                return SP_KEYWORD_MAPPING_3[node].expr(player, environment);
             } else {
                 return getObjectAt(player, node);
             }
@@ -696,3 +698,46 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Dungeons.Twister
     }
 };
+
+// Special
+const SP_KEYWORD_MAPPING_3 = {
+    'Simulator Avg': {
+        expr: (p, e) => {
+            if (e.vars.SimulatorOutput) {
+                var score = e.vars.SimulatorOutput.value[p.Identifier];
+                return score ? score.avg : undefined;
+            } else {
+                return undefined;
+            }
+        },
+        alias: 'Win Avg %',
+        width: 120,
+        format: (p, x) => `${ (100 * x).toFixed(2) }%`
+    },
+    'Simulator Min': {
+        expr: (p, e) => {
+            if (e.vars.SimulatorOutput) {
+                var score = e.vars.SimulatorOutput.value[p.Identifier];
+                return score ? score.min : undefined;
+            } else {
+                return undefined;
+            }
+        },
+        alias: 'Win Min %',
+        width: 120,
+        format: (p, x) => `${ (100 * x).toFixed(2) }%`
+    },
+    'Simulator Max': {
+        expr: (p, e) => {
+            if (e.vars.SimulatorOutput) {
+                var score = e.vars.SimulatorOutput.value[p.Identifier];
+                return score ? score.max : undefined;
+            } else {
+                return undefined;
+            }
+        },
+        alias: 'Win Max %',
+        width: 120,
+        format: (p, x) => `${ (100 * x).toFixed(2) }%`
+    }
+}

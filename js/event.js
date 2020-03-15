@@ -706,7 +706,7 @@ class BrowseView extends View {
         // Filter
         this.$filter = this.$parent.find('[data-op="filter"]');
         this.$filter.change((event) => {
-            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r):/);
+            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x):/);
 
             var terms = [
                 {
@@ -724,6 +724,7 @@ class BrowseView extends View {
                 }
             ];
 
+            var sim = undefined;
             var perf = undefined;
             for (var i = 1; i < filter.length; i += 2) {
                 var key = filter[i];
@@ -766,6 +767,9 @@ class BrowseView extends View {
                     perf = isNaN(arg) ? 1 : Math.max(1, Number(arg));
                 } else if (key == 'r') {
                     this.recalculate = true;
+                } else if (key == 'x' && !isNaN(arg)) {
+                    this.recalculate = true;
+                    sim = isNaN(arg) ? 1 : Math.max(1, Number(arg));
                 }
             }
 
@@ -788,7 +792,7 @@ class BrowseView extends View {
                 }
             }
 
-            this.table.setEntries(entries, !this.recalculate);
+            this.table.setEntries(entries, !this.recalculate, sim);
 
             if (this.sorting != undefined) {
                 this.table.sorting = this.sorting;

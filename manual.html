@@ -96,6 +96,15 @@
 
             </div>
             <br/>
+            <hr/>
+            <p>
+                Special headers for the Fight Simulator.
+            </p>
+            <br/>
+            <div class="ui five columns grid css-compact-grid ta-reserved-special" id="manual-headers-3">
+
+            </div>
+            <br/>
             <br/>
             <h2 class="ui header">Options</h2>
             <br/>
@@ -443,6 +452,20 @@
                     <div><code>expr trunc(Pet - Pet Average)</code></div>
                 </div>
             </div>
+            <h3 class="ui header">simulator<a class="ui small red label">Global</a> <a class="ui small orange label">Guilds</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to enable simulator function for guilds. Specify the amount of repeats per single fight to maximize the accuracy. Higher values however lead to significant performance loss, so use at your own risk.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>simulator 100</code></div>
+                    <div><br/></div>
+                    <div><code>header Simulator Average</code></div>
+                </div>
+            </div>
             <h3 class="ui header">statistics <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a> <a class="ui small orange label">Guilds</a></h3>
             <hr/>
             <div class="ui two column grid">
@@ -661,6 +684,12 @@
                 <div class="fourteen wide column">
                     Force recalculation of <code>set with all</code> values. Using this keyword can cause unwanted effects when filtering by expression and using <code>set with all</code> values.
                 </div>
+                <div class="two wide text-center column">
+                    x:
+                </div>
+                <div class="fourteen wide column">
+                    Enable simulator within the Players tab.
+                </div>
             </div>
         </div>
 
@@ -671,6 +700,7 @@
             $('#manual-headers-0').html(Object.keys(SP_KEYWORD_MAPPING_0).map(header => `<div class="text-center column">${ header }</div>`).join(''));
             $('#manual-headers-1').html(Object.keys(SP_KEYWORD_MAPPING_1).map(header => `<div class="text-center column">${ header }</div>`).join(''));
             $('#manual-headers-2').html(Object.keys(SP_KEYWORD_MAPPING_2).map(header => `<div class="text-center column">${ header }</div>`).join(''));
+            $('#manual-headers-3').html(Object.keys(SP_KEYWORD_MAPPING_3).map(header => `<div class="text-center column">${ header }</div>`).join(''));
         </script>
     </body>
 </html>

@@ -210,7 +210,7 @@ function merge (a, b) {
 
 // Special array for players only
 class PlayersTableArray extends Array {
-    constructor (perf) {
+    constructor (perf, sim) {
         super();
 
         this.perf = perf;
@@ -273,12 +273,12 @@ class TableInstance {
                         group.add((header.alias != undefined ? header.alias : header.name), header, {
                             width: Math.max(100, (header.alias || header.name).length * 12)
                         }, (player, compare) => {
-                            var value = header.expr(player);
+                            var value = header.expr(player, this.settings);
                             if (value == undefined) {
                                 return CellGenerator.Plain('?', hlast);
                             }
 
-                            var reference = ((!this.nodiff && header.difference && compare) ? header.expr(compare) : '') || '';
+                            var reference = ((!this.nodiff && header.difference && compare) ? header.expr(compare, this.settings) : '') || '';
                             if (reference) {
                                 reference = header.flip ? (reference - value) : (value - reference);
                                 reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
@@ -291,14 +291,14 @@ class TableInstance {
 
                             return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast);
                         }, (players, operation) => {
-                            var value = players.map(p => header.expr(p.player)).filter(x => x != undefined);
+                            var value = players.map(p => header.expr(p.player, this.settings)).filter(x => x != undefined);
                             if (value.length == 0) {
                                 return CellGenerator.Plain('?');
                             }
 
                             value = operation(value);
 
-                            var reference = header.difference ? players.map(p => header.expr(p.compare)).filter(x => x != undefined) : '';
+                            var reference = header.difference ? players.map(p => header.expr(p.compare, this.settings)).filter(x => x != undefined) : '';
                             if (reference && reference.length) {
                                 reference = operation(reference);
                                 reference = header.flip ? (reference - value) : (value - reference);
@@ -308,11 +308,11 @@ class TableInstance {
                             var color = CompareEval.evaluate(value, header.color) || '';
 
                             var displayValue = CompareEval.evaluate(value, header.value);
-                            var value = displayValue != undefined ? displayValue : (value + (header.extra || ''));
+                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(null, value) : (value + (header.extra || '')));
 
                             return CellGenerator.Cell(value + reference, '', color);
                         }, player => {
-                            var value = header.expr(player);
+                            var value = header.expr(player, this.settings);
                             if (value == undefined) {
                                 return -1;
                             } else {
@@ -352,13 +352,21 @@ class TableInstance {
     }
 
     // Set players
-    setEntries (array, skipeval) {
+    setEntries (array, skipeval, sim) {
         // Entry array
         this.array = array;
 
         // Calculate constants
         if (this.type != TableType.History && !skipeval) {
-            this.settings.evaluateConstants(array.map(p => p.player));
+            var players = array.map(p => p.player);
+
+            if (this.type == TableType.Players) {
+                players.sim = sim;
+            } else {
+                players.sim = this.settings.globals.simulator;
+            }
+
+            this.settings.evaluateConstants(players);
         }
 
         // Generate table entries
@@ -543,7 +551,7 @@ class TableInstance {
                     </tr>
                 </thead>
                 <tbody>
-                    ${ join(this.entries, (e, ei) => e.content.replace(/\<td data\-indexed\=\"2\"\>\d*\<\/td\>/, `<td data-indexed="2">${ ei + 1 }</td>`), 0, this.array.perf == undefined ? this.settings.globals.performance : this.array.perf) }
+                    ${ join(this.entries, (e, ei) => e.content.replace(/\<td data\-indexed\=\"2\"\>\d*\<\/td\>/, `<td data-indexed="2">${ ei + 1 }</td>`), 0, this.array.perf || this.settings.globals.performance) }
                 </tbody>
             `,
             size
@@ -783,6 +791,7 @@ const SFormat = {
     Reserved: string => `<span class="ta-reserved">${ escapeHTML(string) }</span>`,
     ReservedProtected: string => `<span class="ta-reserved-protected">${ escapeHTML(string) }</span>`,
     ReservedPrivate: string => `<span class="ta-reserved-private">${ escapeHTML(string) }</span>`,
+    ReservedSpecial: string => `<span class="ta-reserved-special">${ escapeHTML(string) }</span>`,
     Error: string => `<span class="ta-error">${ escapeHTML(string) }</span>`,
     Bool: (string, bool = string) => `<span class="ta-boolean-${ bool }">${ escapeHTML(string) }</span>`
 };
@@ -895,6 +904,8 @@ const SettingsCommands = [
             return `${ SFormat.Keyword(key) } ${ SFormat.ReservedProtected(a) }`;
         } else if (SP_KEYWORD_MAPPING_2[a]) {
             return `${ SFormat.Keyword(key) } ${ SFormat.ReservedPrivate(a) }`;
+        } else if (SP_KEYWORD_MAPPING_3[a]) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.ReservedSpecial(a) }`;
         } else {
             return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
         }
@@ -962,6 +973,24 @@ const SettingsCommands = [
             return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
         } else {
             return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
+        }
+    }),
+    // Global
+    // simulator - Amount of simulator fights per duo
+    new SettingsCommand(/^(simulator) (\d+)$/, function (root, string) {
+        var [ , key, arg ] = this.match(string);
+
+        if (!isNaN(arg) && arg > 0) {
+            root.setGlobalVariable(key, Number(arg));
+        }
+    }, function (string) {
+        var [ , key, arg, prefix, value ] = this.match(string);
+        var val = Constants.GetValue(prefix, value);
+
+        if (!isNaN(arg) && arg > 0) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
+        } else {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
         }
     }),
     // Local
@@ -1318,14 +1347,16 @@ class Settings {
     evaluateConstants (players) {
         // Evaluate constants
         for (var [name, data] of Object.entries(this.vars)) {
-            var scope = {};
-            if (data.arg) {
-                scope[data.arg] = players;
-            }
+            if (data.ast) {
+                var scope = {};
+                if (data.arg) {
+                    scope[data.arg] = players;
+                }
 
-            data.value = data.ast.eval(undefined, this, scope);
-            if (isNaN(data.value)) {
-                data.value = undefined;
+                data.value = data.ast.eval(undefined, this, scope);
+                if (isNaN(data.value)) {
+                    data.value = undefined;
+                }
             }
         }
 
@@ -1338,6 +1369,28 @@ class Settings {
                 this.evaluateArrayConstants(header.value);
                 this.evaluateArrayConstants(header.color);
             }
+        }
+
+        // Add simulator output
+        if (players.sim) {
+            var simulated = players.slice(0, players.sim).map(player => {
+                return {
+                    player: player
+                };
+            });
+
+            new FightSimulator().simulate(simulated, players.sim);
+
+            var results = {};
+            for (var obj of simulated) {
+                results[obj.player.Identifier] = obj.score;
+            }
+
+            this.vars['SimulatorOutput'] = {
+                value: results
+            }
+        } else {
+            delete this.vars['SimulatorOutput'];
         }
     }
 
@@ -1379,7 +1432,7 @@ class Settings {
     pushHeader () {
         if (this.currentCategory && this.currentHeader) {
             var reserved = ReservedHeaders[this.currentHeader.name];
-            var mapping = SP_KEYWORD_MAPPING_0[this.currentHeader.name] || SP_KEYWORD_MAPPING_1[this.currentHeader.name] || SP_KEYWORD_MAPPING_2[this.currentHeader.name];
+            var mapping = SP_KEYWORD_MAPPING_0[this.currentHeader.name] || SP_KEYWORD_MAPPING_1[this.currentHeader.name] || SP_KEYWORD_MAPPING_2[this.currentHeader.name] || SP_KEYWORD_MAPPING_3[this.currentHeader.name];
 
             if (!this.currentHeader.expr && mapping && !reserved) {
                 merge(this.currentHeader, mapping);
