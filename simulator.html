@@ -540,10 +540,17 @@
 
             // Run simulation
             $('#sim-run').click(function () {
-                new FightSimulator().simulate(players, Number($('#sim-iterations').val()) || 10000);
-                selected = -1;
+                for (var i = 0; i < players.length; i++) {
+                    players[i].score = null;
+                }
+                showPlayers();
 
-                setSort('avg', 0);
+                setTimeout(function () {
+                    new FightSimulator().simulate(players, Number($('#sim-iterations').val()) || 10000);
+                    selected = -1;
+
+                    setSort('avg', 0);
+                }, 500);
             });
 
             var selected = -1;
