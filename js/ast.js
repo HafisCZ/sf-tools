@@ -6,6 +6,7 @@ const AST_OPERATORS = {
     '>': a => a[0] > a[1],
     '<': a => a[0] < a[1],
     '==': a => a[0] == a[1],
+    '!=': a => a[0] != a[1],
     '>=': a => a[0] >= a[1],
     '<=': a => a[0] <= a[1],
     '||': a => a[0] || a[1],
@@ -36,8 +37,44 @@ const AST_FUNCTIONS = {
 
 class AST {
     constructor (string) {
-        this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(/(\'[^\']*\'|\"[^\"]*\"|\|\||\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\[|\]|\,)/).map(token => token.trim()).filter(token => token.length);
+        this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(/(\'[^\']*\'|\"[^\"]*\"|\|\||\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\[|\]|\,)/).map(token => token.trim()).filter(token => token.length);
         this.root = this.evalExpression();
+    }
+
+    static format (string) {
+        var content = '';
+        var tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(/(\'[^\']*\'|\"[^\"]*\"|\|\||\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\[|\]|\,)/);
+
+        for (var i = 0, token, value; i < tokens.length; i++) {
+            token = tokens[i];
+            if (/\S/.test(token)) {
+                var [, prefix, token, suffix] = token.match(/(\s*)(.*\S)(\s*)/);
+
+                if (token && ['\'', '\"'].includes(token[0])) {
+                    value = token[0] + SFormat.Comment(token.slice(1, token.length - 1).replace(/\u2023/g, '\\\"').replace(/\u2043/g, '\\\'')) + token[token.length - 1];
+                } else if (AST_FUNCTIONS[token] || ['each', 'map', 'slice'].includes(token)) {
+                    value = SFormat.Constant(token);
+                } else if (SP_KEYWORD_MAPPING_0[token]) {
+                    value = SFormat.Reserved(token);
+                } else if (SP_KEYWORD_MAPPING_1[token]) {
+                    value = SFormat.ReservedProtected(token);
+                } else if (SP_KEYWORD_MAPPING_2[token]) {
+                    value = SFormat.ReservedPrivate(token);
+                } else if (SP_KEYWORD_MAPPING_3[token]) {
+                    value = SFormat.ReservedSpecial(token);
+                } else if (token[0] == '@' && Constants.Values[token.slice(1)]) {
+                    value = SFormat.Constant(token);
+                } else {
+                    value = SFormat.Normal(token);
+                }
+
+                content += SFormat.Normal(prefix) + value + SFormat.Normal(suffix);
+            } else {
+                content += SFormat.Normal(token);
+            }
+        }
+
+        return content;
     }
 
     peek (i) {
@@ -190,7 +227,7 @@ class AST {
 
         left = this.evalSimpleExpression();
 
-        while (['>', '<', '<=', '>=', '=='].includes(this.peek())) {
+        while (['>', '<', '<=', '>=', '==', '!='].includes(this.peek())) {
             op = this.get();
 
             if (this.peek() == '(') {

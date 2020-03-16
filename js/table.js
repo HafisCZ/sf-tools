@@ -809,7 +809,7 @@ const SettingsCommands = [
         }
     }, function (string) {
         var [ , key, name, arg, asts ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with all') } ${ SFormat.Constant(arg) } ${ SFormat.Keyword('as') } ${ SFormat.Normal(asts) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with all') } ${ SFormat.Constant(arg) } ${ SFormat.Keyword('as') } ${ AST.format(asts) }`;
     }),
     // Global
     // set with - Create a function
@@ -821,7 +821,7 @@ const SettingsCommands = [
         }
     }, function (string) {
         var [ , key, name, args, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with') } ${ args.split(',').map(arg => SFormat.Constant(arg)).join(',') } ${ SFormat.Keyword('as') } ${ SFormat.Normal(a) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with') } ${ args.split(',').map(arg => SFormat.Constant(arg)).join(',') } ${ SFormat.Keyword('as') } ${ AST.format(a) }`;
     }),
     // Global
     // set - Create a variable
@@ -833,7 +833,7 @@ const SettingsCommands = [
         }
     }, function (string) {
         var [ , key, name, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ SFormat.Normal(a) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a) }`;
     }),
     // Global
     // server - show, hide or set width
@@ -1041,7 +1041,7 @@ const SettingsCommands = [
         if (ARG_FORMATTERS[arg]) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
         } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
+            return `${ SFormat.Keyword(key) } ${ AST.format(a) }`;
         }
     }),
     // Local
@@ -1077,7 +1077,7 @@ const SettingsCommands = [
         }
     }, function (string) {
         var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+        return `${ SFormat.Keyword(key) } ${ AST.format(a) }`;
     }),
     // Local
     // value - Add default value
