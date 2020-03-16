@@ -358,17 +358,13 @@ class TableInstance {
 
         // Calculate constants
         if (this.type != TableType.History && !skipeval) {
-            var players = array.map(p => p.player);
+            var players = [ ... array ];
 
             if (this.type == TableType.Players) {
-                players.sim = sim;
-                players.perf = array.perf || this.settings.globals.performance;
+                this.settings.evaluateConstants(players, sim, array.perf || this.settings.globals.performance);
             } else {
-                players.sim = this.settings.globals.simulator;
-                players.perf = array.length;
+                this.settings.evaluateConstants(players, this.settings.globals.simulator, array.length, true);
             }
-
-            this.settings.evaluateConstants(players);
         }
 
         // Generate table entries
@@ -1346,7 +1342,7 @@ class Settings {
     }
 
     // Evaluate constants
-    evaluateConstants (players) {
+    evaluateConstants (players, sim, perf, compare) {
         // Evaluate constants
         for (var [name, data] of Object.entries(this.vars)) {
             if (data.ast) {
@@ -1374,25 +1370,49 @@ class Settings {
         }
 
         // Add simulator output
-        if (players.sim) {
-            var simulated = players.slice(0, players.perf).map(player => {
-                return {
-                    player: player
-                };
-            });
+        if (sim) {
+            var array = players.slice(0, perf);
+            var array1 = [];
+            var array2 = [];
 
-            new FightSimulator().simulate(simulated, players.sim);
+            if (compare) {
+                for (var player of array) {
+                    array1.push({
+                        player: player.player
+                    });
 
-            var results = {};
-            for (var obj of simulated) {
-                results[obj.player.Identifier] = obj.score;
+                    array2.push({
+                        player: player.compare
+                    });
+                }
+
+                new FightSimulator().simulate(array1, sim);
+                new FightSimulator().simulate(array2, sim);
+            } else {
+                for (var player of array) {
+                    array1.push({
+                        player: player.player
+                    });
+                }
+
+                new FightSimulator().simulate(array1, sim);
             }
 
-            this.vars['SimulatorOutput'] = {
+            var results = {};
+            for (var result of array1) {
+                results[result.player.Identifier] = { };
+                results[result.player.Identifier][result.player.Timestamp] = result.score;
+            }
+
+            for (var result of array2) {
+                results[result.player.Identifier][result.player.Timestamp] = result.score;
+            }
+
+            this.vars['Simulator'] = {
                 value: results
             }
         } else {
-            delete this.vars['SimulatorOutput'];
+            delete this.vars['Simulator'];
         }
     }
 

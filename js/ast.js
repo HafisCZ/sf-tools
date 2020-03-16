@@ -740,8 +740,8 @@ const SP_KEYWORD_MAPPING_2 = {
 const SP_KEYWORD_MAPPING_3 = {
     'Simulator Avg': {
         expr: (p, e) => {
-            if (e.vars.SimulatorOutput) {
-                var score = e.vars.SimulatorOutput.value[p.Identifier];
+            if (e.vars.Simulator && e.vars.Simulator.value[p.Identifier]) {
+                var score = e.vars.Simulator.value[p.Identifier][p.Timestamp];
                 return score ? score.avg : undefined;
             } else {
                 return undefined;
@@ -749,12 +749,12 @@ const SP_KEYWORD_MAPPING_3 = {
         },
         alias: 'Win Avg %',
         width: 120,
-        format: (p, x) => `${ (100 * x).toFixed(2) }%`
+        format: (p, x) => `${ (x).toFixed(2) }%`
     },
     'Simulator Min': {
         expr: (p, e) => {
-            if (e.vars.SimulatorOutput) {
-                var score = e.vars.SimulatorOutput.value[p.Identifier];
+            if (e.vars.Simulator && e.vars.Simulator.value[p.Identifier]) {
+                var score = e.vars.Simulator.value[p.Identifier][p.Timestamp];
                 return score ? score.min : undefined;
             } else {
                 return undefined;
@@ -762,12 +762,12 @@ const SP_KEYWORD_MAPPING_3 = {
         },
         alias: 'Win Min %',
         width: 120,
-        format: (p, x) => `${ (100 * x).toFixed(2) }%`
+        format: (p, x) => `${ (x).toFixed(2) }%`
     },
     'Simulator Max': {
         expr: (p, e) => {
-            if (e.vars.SimulatorOutput) {
-                var score = e.vars.SimulatorOutput.value[p.Identifier];
+            if (e.vars.Simulator && e.vars.Simulator.value[p.Identifier]) {
+                var score = e.vars.Simulator.value[p.Identifier][p.Timestamp];
                 return score ? score.max : undefined;
             } else {
                 return undefined;
@@ -775,6 +775,6 @@ const SP_KEYWORD_MAPPING_3 = {
         },
         alias: 'Win Max %',
         width: 120,
-        format: (p, x) => `${ (100 * x).toFixed(2) }%`
+        format: (p, x) => `${ (x).toFixed(2) }%`
     }
 }

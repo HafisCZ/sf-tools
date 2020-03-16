@@ -139,9 +139,9 @@ class FightSimulator {
             }
 
             players[i].score = {
-                avg: score / (players.length - 1) / iterations,
-                min: min / iterations,
-                max: max / iterations
+                avg: 100 * score / (players.length - 1) / iterations,
+                min: 100 * min / iterations,
+                max: 100 * max / iterations
             };
         }
     }

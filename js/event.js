@@ -217,7 +217,7 @@ class GroupDetailView extends View {
                 } else {
                     var xx = player.List.concat();
                     xx.reverse();
-                    var ts = xx.find(p => p[0] >= this.reference && p[1].Group.identifier == this.identifier);
+                    var ts = xx.find(p => p[0] >= this.reference && p[1].Group.Identifier == this.identifier);
                     if (ts) {
                         membersReferences.push(ts[1]);
                     }

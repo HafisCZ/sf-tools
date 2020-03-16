@@ -672,13 +672,13 @@
                                 <b>${ player.Name }</b>
                             </div>
                             <div class="two wide text-center column">
-                                ${ score ? `${ Math.trunc(score.avg * 10000) / 100 }%` : '' }
+                                ${ score ? `${ score.avg.toFixed(2) }%` : '' }
                             </div>
                             <div class="two wide text-center column">
-                                ${ score ? `${ Math.trunc(score.min * 10000) / 100 }%` : '' }
+                                ${ score ? `${ score.min.toFixed(2) }%` : '' }
                             </div>
                             <div class="two wide text-center column">
-                                ${ score ? `${ Math.trunc(score.max * 10000) / 100 }%` : '' }
+                                ${ score ? `${ score.max.toFixed(2) }%` : '' }
                             </div>
                             <div class="one wide column">
                                 <i class="trash alternate glow outline icon" data-index-trash="${ i }"></i>
