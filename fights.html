@@ -65,9 +65,6 @@
                 </div>
                 <div class="two wide column text-center">
                     <div class="ui icon buttons">
-                        <button class="ui button" id="fi-clone">
-                            <i class="copy file code icon"></i>
-                        </button>
                         <button class="ui button" id="fi-copy">
                             <i class="copy outline icon"></i>
                         </button>
@@ -94,37 +91,6 @@
                     $('[data-tab]').removeClass('active');
                     $(`[data-tab="${ $(this).val() }"]`).addClass('active');
                 });
-
-                function cloneToClipboard (tab) {
-                    var el = document.createElement('div');
-
-                    el.innerHTML = JSON.stringify({
-                        a: tab.fighterA.ID,
-                        b: tab.fighterB.ID,
-                        rounds: tab.rounds.map(round => {
-                            return {
-                                crit: round.attackCrit,
-                                type: round.attackType,
-                                damage: round.attackDamage,
-                                source: round.attacker.ID,
-                                target: round.target.ID
-                            };
-                        })
-                    });
-
-                    document.body.appendChild(el);
-
-                    // Create range, select element and copy
-                    var range = document.createRange();
-                    range.selectNode(el);
-                    window.getSelection().removeAllRanges();
-                    window.getSelection().addRange(range);
-                    document.execCommand('copy');
-                    window.getSelection().removeAllRanges();
-
-                    // Destroy element
-                    document.body.removeChild(el);
-                }
 
                 function copyToClipboard (... tabs) {
                     var content = [];
@@ -252,11 +218,6 @@
                     ], {
                         type: 'application/json'
                     }));
-                });
-
-                $('#fi-clone').on('click', function () {
-                    if ($('[data-tab]').length == 0) return;
-                    cloneToClipboard(tabs[$('[data-tab].active').attr('data-tab')]);
                 });
 
                 $('#fi-copy').on('click', function () {
