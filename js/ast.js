@@ -423,18 +423,24 @@ class AST {
 
 const SP_KEYWORD_MAPPING_0 = {
     'ID': {
-        expr: p => p.ID
+        expr: p => p.ID,
+        difference: false,
+        statistics: false
     },
     'Role': {
         expr: p => p.Group.Role,
         flip: true,
-        format: (p, x) => p.hasGuild() ? '?' : GROUP_ROLES[cell.Group.Role]
+        format: (p, x) => p.hasGuild() ? '?' : GROUP_ROLES[cell.Group.Role],
+        difference: false,
+        statistics: false
     },
     'Level': {
         expr: p => p.Level
     },
     'Guild': {
-        expr: p => p.Group.Name || ''
+        expr: p => p.Group.Name || '',
+        difference: false,
+        statistics: false
     },
     'Strength': {
         expr: p => p.Strength.Total
@@ -453,6 +459,102 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Attribute': {
         expr: p => p.Primary.Total
+    },
+    'Strength Pet': {
+        expr: p => p.Strength.Pet,
+        width: 110
+    },
+    'Dexterity Pet': {
+        expr: p => p.Dexterity.Pet,
+        width: 110
+    },
+    'Intelligence Pet': {
+        expr: p => p.Intelligence.Pet,
+        width: 110
+    },
+    'Constitution Pet': {
+        expr: p => p.Constitution.Pet,
+        width: 110
+    },
+    'Luck Pet': {
+        expr: p => p.Luck.Pet,
+        width: 110
+    },
+    'Attribute Pet': {
+        expr: p => p.Primary.Pet,
+        width: 110
+    },
+    'Strength Equipment': {
+        expr: p => p.Strength.Equipment,
+        width: 110
+    },
+    'Dexterity Equipment': {
+        expr: p => p.Dexterity.Equipment,
+        width: 110
+    },
+    'Intelligence Equipment': {
+        expr: p => p.Intelligence.Equipment,
+        width: 110
+    },
+    'Constitution Equipment': {
+        expr: p => p.Constitution.Equipment,
+        width: 110
+    },
+    'Luck Equipment': {
+        expr: p => p.Luck.Equipment,
+        width: 110
+    },
+    'Attribute Equipment': {
+        expr: p => p.Primary.Equipment,
+        width: 110
+    },
+    'Strength Potion': {
+        expr: p => p.Strength.Potion,
+        width: 110
+    },
+    'Dexterity Potion': {
+        expr: p => p.Dexterity.Potion,
+        width: 110
+    },
+    'Intelligence Potion': {
+        expr: p => p.Intelligence.Potion,
+        width: 110
+    },
+    'Constitution Potion': {
+        expr: p => p.Constitution.Potion,
+        width: 110
+    },
+    'Luck Potion': {
+        expr: p => p.Luck.Potion,
+        width: 110
+    },
+    'Attribute Potion': {
+        expr: p => p.Primary.Potion,
+        width: 110
+    },
+    'Strength Class': {
+        expr: p => p.Strength.Class,
+        width: 110
+    },
+    'Dexterity Class': {
+        expr: p => p.Dexterity.Class,
+        width: 110
+    },
+    'Intelligence Class': {
+        expr: p => p.Intelligence.Class,
+        width: 110
+    },
+    'Constitution Class': {
+        expr: p => p.Constitution.Class,
+        width: 110
+    },
+    'Luck Class': {
+        expr: p => p.Luck.Class,
+        width: 110
+    },
+    'Attribute Class': {
+        expr: p => p.Primary.Class,
+        width: 110
     },
     'Strength Bonus': {
         expr: p => p.Strength.Bonus,
@@ -504,15 +606,21 @@ const SP_KEYWORD_MAPPING_0 = {
         width: 100
     },
     'Action Index': {
-        expr: p => p.Action.Index
+        expr: p => p.Action.Index,
+        difference: false,
+        statistics: false
     },
     'Status': {
         expr: p => p.Action.Status,
-        format: (p, x) => PLAYER_ACTIONS[Math.max(0, x)]
+        format: (p, x) => PLAYER_ACTIONS[Math.max(0, x)],
+        difference: false,
+        statistics: false
     },
     'Action Finish': {
         expr: p => p.Action.Finish,
-        format: (p, x) => x < 0 ? formatDate(x) : ''
+        format: (p, x) => x < 0 ? formatDate(x) : '',
+        difference: false,
+        statistics: false
     },
     'Health': {
         expr: p => p.Health,
@@ -533,6 +641,9 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Tower': {
         expr: p => p.Dungeons.Tower
+    },
+    'Raids': {
+        expr: p => p.Dungeons.Raid
     },
     'Portal': {
         expr: p => p.Dungeons.Player
@@ -669,7 +780,9 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Class': {
         expr: p => p.Class,
-        format: (p, x) => PLAYER_CLASS[x]
+        format: (p, x) => PLAYER_CLASS[x],
+        difference: false,
+        statistics: false
     },
     'Rank': {
         expr: p => p.Rank,
@@ -691,22 +804,36 @@ const SP_KEYWORD_MAPPING_0 = {
     'Building': {
         expr: p => p.Fortress.Upgrade.Building,
         width: 180,
-        format: (p, x) => FORTRESS_BUILDINGS[x]
+        format: (p, x) => FORTRESS_BUILDINGS[x],
+        difference: false,
+        statistics: false
     },
     'Last Active': {
         expr: p => p.LastOnline,
+        difference: false,
+        statistics: false
     },
     'Timestamp': {
         expr: p => p.Timestamp,
-        format: (p, x) => formatDate(x)
+        format: (p, x) => formatDate(x),
+        difference: false,
+        statistics: false
     },
     'Guild Joined': {
         expr: p => p.Group.Joined,
-        format: (p, x) => p.hasGuild() ? formatDate(x) : ''
+        format: (p, x) => p.hasGuild() ? formatDate(x) : '',
+        difference: false,
+        statistics: false
     },
     'Gladiator': {
         expr: p => p.Fortress.Gladiator,
         format: (p, x) => (x == 0 ? '' : (x == 1 ? '1+' : (x == 5 ? '5+' : (x == 10 ? '10+' : 15))))
+    },
+    'XP': {
+        expr: p => p.XP
+    },
+    'Level XP': {
+        expr: p => p.XPNext
     }
 };
 
@@ -729,10 +856,49 @@ const SP_KEYWORD_MAPPING_1 = {
 // Private
 const SP_KEYWORD_MAPPING_2 = {
     'Aura': {
-        expr: p => p.Toilet.Aura
+        expr: p => p.Toilet.Aura,
+        statistics: false
     },
     'Twister': {
-        expr: p => p.Dungeons.Twister
+        expr: p => p.Dungeons.Twister,
+        statistics: false
+    },
+    'Shrooms': {
+        expr: p => p.Mushrooms ? p.Mushrooms.Current : undefined,
+        statistics: false
+    },
+    'Shrooms Total': {
+        expr: p => p.Mushrooms ? p.Mushrooms.Total : undefined,
+        statistics: false
+    },
+    'Shrooms Free': {
+        expr: p => p.Mushrooms ? p.Mushrooms.Free : undefined,
+        statistics: false
+    },
+    'Shrooms Paid': {
+        expr: p => p.Mushrooms ? p.Mushrooms.Paid : undefined,
+        statistics: false
+    },
+    'Hourglass': {
+        expr: p => p.Hourglass,
+        statistics: false
+    },
+    'Own Dungeon': {
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Normal.Total : undefined,
+        statistics: false,
+        width: 120
+    },
+    'Own Shadow': {
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow.Total : undefined,
+        statistics: false,
+        width: 120
+    },
+    'Potion Expire': {
+        expr: p => p.Potions[0].Size == 0 ? 0 : Math.min(... (p.Potions.filter(pot => pot.Size > 0).map(pot => pot.Expire))),
+        format: (p, x) => x == 0 ? '' : formatDate(x),
+        width: 160,
+        difference: false,
+        statistics: false
     }
 };
 

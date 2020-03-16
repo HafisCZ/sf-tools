@@ -18,7 +18,7 @@ class SFItem {
         var socketPower = dataType.short();
 
         this.Socket = socket;
-        this.GemType = socket >= 10 ? (socket % 10) : -1;
+        this.GemType = socket >= 10 ? (1 + (socket % 10)) : 0;
         this.HasSocket = socket > 0;
         this.GemValue = socketPower;
         this.HasGem = socket > 1;
@@ -502,8 +502,60 @@ class SFPlayer {
         return Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5) ? 5 : (this.Class == 2 ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
     }
 
+    getEquipmentBonus (attribute) {
+        var bonus = 0;
+        for (var item of Object.values(this.Items)) {
+            for (var i = 0; i < 3; i++) {
+                if (item.AttributeTypes[i] == attribute.Type || item.AttributeTypes[i] == 6 || item.AttributeTypes[i] == attribute.Type + 20 || (attribute.Type > 3 && item.AttributeTypes[i] >= 21 && item.AttributeTypes[i] <= 23)) {
+                    bonus += item.Attributes[i];
+                }
+            }
+
+            if (item.HasGem && (item.GemType == attribute.Type || item.GemType == 6)) {
+                bonus += item.GemValue * (item.Type == 1 && this.Class != 4 ? 2 : 1);
+            }
+        }
+
+        return bonus;
+    }
+
+    getClassBonus (attribute) {
+        if (this.Class >= 5) {
+            return Math.ceil(attribute.Equipment * 11 / 100);
+        } else {
+            return 0;
+        }
+    }
+
+    getPotionBonus (attribute) {
+        for (var potion of this.Potions) {
+            if (potion.Type == attribute.Type) {
+                return Math.ceil((attribute.Base + attribute.Class + attribute.Equipment) * potion.Size / 100);
+            }
+        }
+
+        return 0;
+    }
+
+    getPetBonus (attribute, pet) {
+        return Math.ceil((attribute.Base + attribute.Equipment + attribute.Class + attribute.Potion) * pet / 100);
+    }
+
     evaluateCommon () {
         this.Primary = this.getPrimaryAttribute();
+
+        for (var attribute of [ this.Strength, this.Dexterity, this.Intelligence, this.Constitution, this.Luck ]) {
+            attribute.Total = attribute.Base + attribute.Bonus;
+            attribute.Equipment = this.getEquipmentBonus(attribute);
+            attribute.Class = this.getClassBonus(attribute);
+            attribute.Potion = this.getPotionBonus(attribute);
+        }
+
+        this.Strength.Pet = this.getPetBonus(this.Strength, this.Pets.Water);
+        this.Dexterity.Pet = this.getPetBonus(this.Dexterity, this.Pets.Light);
+        this.Intelligence.Pet = this.getPetBonus(this.Intelligence, this.Pets.Earth);
+        this.Constitution.Pet = this.getPetBonus(this.Constitution, this.Pets.Shadow);
+        this.Luck.Pet = this.getPetBonus(this.Luck, this.Pets.Fire);
 
         this.Runes = {
             Gold: 0,
@@ -712,30 +764,30 @@ class SFOtherPlayer extends SFPlayer {
         this.Class = dataType.short();
         dataType.clear(); // skip
         this.Strength = {
+            Type: 1,
             Base: dataType.long(),
             Bonus: dataType.skip(4).long()
         };
         this.Dexterity = {
+            Type: 2,
             Base: dataType.back(5).long(),
             Bonus: dataType.skip(4).long()
         };
         this.Intelligence = {
+            Type: 3,
             Base: dataType.back(5).long(),
             Bonus: dataType.skip(4).long()
         };
         this.Constitution = {
+            Type: 4,
             Base: dataType.back(5).long(),
             Bonus: dataType.skip(4).long()
         };
         this.Luck = {
+            Type: 5,
             Base: dataType.back(5).long(),
             Bonus: dataType.skip(4).long()
         };
-        this.Strength.Total = this.Strength.Base + this.Strength.Bonus;
-        this.Dexterity.Total = this.Dexterity.Base + this.Dexterity.Bonus;
-        this.Intelligence.Total = this.Intelligence.Base + this.Intelligence.Bonus;
-        this.Constitution.Total = this.Constitution.Base + this.Constitution.Bonus;
-        this.Luck.Total = this.Luck.Base + this.Luck.Bonus;
         dataType.skip(5); // skip
         this.Action = {
             Status: dataType.short()
@@ -761,7 +813,8 @@ class SFOtherPlayer extends SFPlayer {
             Normal: []
         };
         this.Dungeons.Tower = dataType.short();
-        dataType.skip(1); // skip
+        this.Dungeons.Raid = dataType.short();
+        dataType.short();
         this.Group = {
             ID: dataType.long(),
             Name: data.groupname
@@ -898,7 +951,12 @@ class SFOwnPlayer extends SFPlayer {
         this.XPNext = dataType.long();
         this.Honor = dataType.long();
         this.Rank = dataType.long();
-        dataType.skip(5); // skip
+        dataType.skip(2); // skip
+        this.Mushrooms = {
+            Current: dataType.long(),
+            Total: dataType.long()
+        }
+        dataType.skip(1);
         this.Face = {
             Mouth: dataType.long(),
             Hair: {
@@ -928,30 +986,30 @@ class SFOwnPlayer extends SFPlayer {
         this.Class = dataType.short();
         dataType.clear(); // skip
         this.Strength = {
+            Type: 1,
             Base: dataType.long(),
             Bonus: dataType.skip(4).long()
         };
         this.Dexterity = {
+            Type: 2,
             Base: dataType.back(5).long(),
             Bonus: dataType.skip(4).long()
         };
         this.Intelligence = {
+            Type: 3,
             Base: dataType.back(5).long(),
             Bonus: dataType.skip(4).long()
         };
         this.Constitution = {
+            Type: 4,
             Base: dataType.back(5).long(),
             Bonus: dataType.skip(4).long()
         };
         this.Luck = {
+            Type: 5,
             Base: dataType.back(5).long(),
             Bonus: dataType.skip(4).long()
         };
-        this.Strength.Total = this.Strength.Base + this.Strength.Bonus;
-        this.Dexterity.Total = this.Dexterity.Base + this.Dexterity.Bonus;
-        this.Intelligence.Total = this.Intelligence.Base + this.Intelligence.Bonus;
-        this.Constitution.Total = this.Constitution.Base + this.Constitution.Bonus;
-        this.Luck.Total = this.Luck.Base + this.Luck.Bonus;
         dataType.skip(5); // skip
         this.Action = {
             Status: dataType.short()
@@ -976,15 +1034,23 @@ class SFOwnPlayer extends SFPlayer {
         this.Mount = dataType.short();
         this.Dungeons = {
             Normal: [],
-            Extra: {}
+            Extra: {
+                Normal: [],
+                Shadow: []
+            }
         };
         this.Dungeons.Tower = dataType.short();
-        dataType.skip(148); // skip
+        dataType.skip(146); // skip
+        this.Dungeons.Raid = dataType.short();
+        dataType.short();
+        dataType.skip(1); // skip
         this.Group = {
             ID: dataType.long(),
             Name: data.groupname
         };
-        dataType.skip(2); // skip
+        dataType.skip(1); // skip
+        this.Mushrooms.Paid = dataType.long();
+        this.Mushrooms.Free = this.Mushrooms.Total - this.Mushrooms.Paid;
         this.Book = Math.max(0, dataType.long() - 10000);
         dataType.skip(2); // skip
         this.Dungeons.Normal[10] = Math.max(0, dataType.long() - 2);
@@ -1021,13 +1087,16 @@ class SFOwnPlayer extends SFPlayer {
         }
         this.Potions = [{
             Type: getPotionType(dataType.long()),
-            Size: dataType.skip(5).long()
+            Expire: dataType.skip(2).long() * 1000 + correctDate(data.prefix),
+            Size: dataType.skip(2).long()
         }, {
             Type: getPotionType(dataType.back(6).long()),
-            Size: dataType.skip(5).long()
+            Expire: dataType.skip(2).long() * 1000 + correctDate(data.prefix),
+            Size: dataType.skip(2).long()
         }, {
             Type: getPotionType(dataType.back(6).long()),
-            Size: dataType.skip(5).long()
+            Expire: dataType.skip(2).long() * 1000 + correctDate(data.prefix),
+            Size: dataType.skip(2).long()
         }];
         this.Potions.sort((a, b) => b.Size - a.Size);
         this.Potions.Life = dataType.long();
@@ -1055,10 +1124,13 @@ class SFOwnPlayer extends SFPlayer {
             MageTower: dataType.long(),
             Treasury: dataType.long(),
             Smithy: dataType.long(),
-            Fortifications: dataType.long(),
-            Wood: dataType.skip(8).long(),
-            Stone: dataType.long()
+            Fortifications: dataType.long()
         }
+        dataType.skip(6);
+        this.Hourglass = dataType.long();
+        dataType.skip(1);
+        this.Fortress.Wood = dataType.long();
+        this.Fortress.Stone = dataType.long();
         this.Dungeons.Normal[13] = Math.max(0, dataType.long() - 2);
         dataType.skip(11); // skip
         this.Dungeons.Twister = Math.max(0, dataType.long() - 2);
@@ -1098,11 +1170,22 @@ class SFOwnPlayer extends SFPlayer {
             Math.max(0, dataType.byte() - 2)
         ];
         dataType.clear(); // skip
-        dataType.skip(15); // skip
+        dataType.skip(12); // skip
+        this.Dungeons.Extra.Normal[1] = Math.max(0, dataType.long() - 2);
+        this.Dungeons.Extra.Shadow[1] = Math.max(0, dataType.long() - 2);
+        dataType.skip(1); // skip
         this.Group.Treasure = dataType.long();
         this.Group.Instructor = dataType.long();
         dataType.skip(4); // skip
         this.Group.Pet = dataType.long();
+        dataType.skip(1);
+        this.Dungeons.Extra.Youtube = Math.max(0, dataType.long() - 2);
+        dataType.skip(16);
+        this.Dungeons.Extra.Normal[2] = Math.max(0, dataType.byte() - 2);
+        this.Dungeons.Extra.Shadow[2] = Math.max(0, dataType.byte() - 2);
+
+        this.Dungeons.Extra.Normal[0] = Math.max(0, data.tower[150] - 2);
+        this.Dungeons.Extra.Shadow[0] = Math.max(0, data.tower[298] - 2);
 
         dataType = new ComplexDataType(data.pets);
         dataType.assert(288);
@@ -1122,5 +1205,8 @@ class SFOwnPlayer extends SFPlayer {
 
         this.Group.Identifier = this.Group.Name ? `${ data.prefix }_g${ this.Group.ID }` : null;
         this.evaluateCommon();
+
+        this.Dungeons.Extra.Normal.Total = this.Dungeons.Normal.Total + this.Dungeons.Extra.Normal.reduce((a, b) => a + b, 0);
+        this.Dungeons.Extra.Shadow.Total = this.Dungeons.Shadow.Total + this.Dungeons.Extra.Shadow.reduce((a, b) => a + b, 0);
     }
 }

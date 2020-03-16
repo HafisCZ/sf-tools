@@ -289,6 +289,12 @@ const UpdateService = {
                 p.achievements = new Array(160).fill(0);
                 updated = true;
             }
+
+            if (p.own && !p.tower) {
+                p.tower = new Array(476).fill(0);
+                updated = true;
+            }
+
             if (!p.prefix) {
                 p.prefix = 's1_de';
                 updated = true;
@@ -478,6 +484,8 @@ const Storage = new (class {
                             player.pets = val.split('/').map(a => Number(a));
                         } else if (key.includes('serverversion')) {
                             file.version = Number(val);
+                        } else if (key.includes('towerSave')) {
+                            player.tower = val.split('/').map(a => Number(a));
                         }
                     }
 
