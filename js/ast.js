@@ -888,6 +888,11 @@ const SP_KEYWORD_MAPPING_2 = {
         statistics: false,
         width: 120
     },
+    'Youtube': {
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Youtube : undefined,
+        statistics: false,
+        width: 120
+    },
     'Own Shadow': {
         expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow.Total : undefined,
         statistics: false,
