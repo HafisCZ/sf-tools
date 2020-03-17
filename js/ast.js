@@ -52,7 +52,7 @@ class AST {
 
                 if (token && ['\'', '\"'].includes(token[0])) {
                     value = token[0] + SFormat.Comment(token.slice(1, token.length - 1).replace(/\u2023/g, '\\\"').replace(/\u2043/g, '\\\'')) + token[token.length - 1];
-                } else if (AST_FUNCTIONS[token] || ['each', 'map', 'slice'].includes(token)) {
+                } else if (AST_FUNCTIONS[token] || ['each', 'map', 'slice', 'this', 'undefined', 'null'].includes(token)) {
                     value = SFormat.Constant(token);
                 } else if (SP_KEYWORD_MAPPING_0[token]) {
                     value = SFormat.Reserved(token);
