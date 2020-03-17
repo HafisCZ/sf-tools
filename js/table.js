@@ -1037,7 +1037,7 @@ const SettingsCommands = [
         if (ARG_FORMATTERS[arg]) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
         } else {
-            return `${ SFormat.Keyword(key) } ${ AST.format(a) }`;
+            return `${ SFormat.Keyword(key) } ${ AST.format(arg) }`;
         }
     }),
     // Local
