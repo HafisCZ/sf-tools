@@ -144,6 +144,12 @@ class FightSimulator {
                 max: 100 * max / iterations
             };
         }
+
+        if (players.length == 2) {
+            players[1].score.avg = 100 - players[0].score.avg,
+            players[1].score.min = players[1].score.avg;
+            players[1].score.max = players[1].score.avg;
+        }
     }
 
     // Fight
