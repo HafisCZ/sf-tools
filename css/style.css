@@ -127,6 +127,20 @@ input:disabled {
     margin-bottom: 0.5em !important;
 }
 
+.css-template-item {
+    padding-top: 0.5em !important;
+    padding-bottom: 0 !important;
+    line-height: 1 !important;
+}
+
+.css-template-buttons {
+    height: 100% !important;
+}
+
+.css-template-list {
+    margin-top: 1em !important;
+}
+
 .margin-none-bottom {
     margin-bottom: 0 !important;
 }

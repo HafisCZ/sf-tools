@@ -1222,6 +1222,24 @@ const Constants = {
     }
 }
 
+class Templates {
+    static save (settings, label) {
+        Preferences.set(`templates/${ label }`, settings);
+    }
+
+    static remove (label) {
+        Preferences.remove(`templates/${ label }`);
+    }
+
+    static get () {
+        return Preferences.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
+    }
+
+    static load (label) {
+        return new Settings(Preferences.get(`templates/${ label }`, DEFAULT_SETTINGS));
+    }
+}
+
 class Settings {
     // Save
     static save (settings, identifier) {

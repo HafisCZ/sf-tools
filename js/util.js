@@ -48,6 +48,11 @@ function calculateAttributePrice (attribute) {
 
 function calculateTotalAttributePrice (attribute) {
     var price = 0;
+    if (attribute > 3200) {
+        price += 1E7 * (attribute - 3200);
+        attribute -= 3200;
+    }
+
     for (var i = 0; i < attribute; i++) {
         price += calculateAttributePrice(attribute);
     }

@@ -1279,6 +1279,58 @@ class SettingsView extends View {
         });
 
         this.$items = this.$parent.find('[data-op="items"]');
+
+        this.$templateName = this.$parent.find('[data-op="template-name"]');
+        this.$templateList = this.$parent.find('[data-op="template-list"]');
+        this.$parent.find('[data-op="template-save"]').click(() => {
+            var name = this.$templateName.val();
+            if (name.length > 0) {
+                Templates.save(this.$area.val(), name);
+            }
+
+            this.refreshTemplates();
+        });
+
+        this.refreshTemplates();
+
+        this.$parent.find('[data-op="template-default"]').click(() => {
+            this.code = DEFAULT_SETTINGS;
+            this.refresh();
+        });
+    }
+
+    refreshTemplates () {
+        var content = '';
+
+        var templates = Templates.get();
+        templates.sort((a, b) => b.localeCompare(a));
+
+        for (var key of templates) {
+            content += `
+                <div class="row css-template-item">
+                    <div class="ten wide column">
+                        <b>${ key }</b>
+                    </div>
+                    <div class="six wide column css-template-buttons">
+                        <div class="ui icon right floated small buttons">
+                            <button class="ui button" data-template-remove="${ key }"><i class="trash alternate outline icon"></i></button>
+                            <button class="ui button" data-template-load="${ key }"><i class="play icon"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        this.$templateList.html(content);
+        this.$templateList.find('[data-template-remove]').click((event) => {
+            Templates.remove($(event.currentTarget).attr('data-template-remove'));
+            this.refreshTemplates();
+        });
+
+        this.$templateList.find('[data-template-load]').click((event) => {
+            this.code = Templates.load($(event.currentTarget).attr('data-template-load')).getCode();
+            this.refresh();
+        });
     }
 
     save () {
