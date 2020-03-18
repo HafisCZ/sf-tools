@@ -541,21 +541,22 @@ class SFPlayer {
         return Math.ceil((attribute.Base + attribute.Equipment + attribute.Class + attribute.Potion) * pet / 100);
     }
 
+    addCalculatedAttributes (attribute, pet) {
+        attribute.Total = attribute.Base + attribute.Bonus;
+        attribute.Equipment = this.getEquipmentBonus(attribute);
+        attribute.Class = this.getClassBonus(attribute);
+        attribute.Potion = this.getPotionBonus(attribute);
+        attribute.Pet =  this.getPetBonus(attribute, pet);
+    }
+
     evaluateCommon () {
         this.Primary = this.getPrimaryAttribute();
 
-        for (var attribute of [ this.Strength, this.Dexterity, this.Intelligence, this.Constitution, this.Luck ]) {
-            attribute.Total = attribute.Base + attribute.Bonus;
-            attribute.Equipment = this.getEquipmentBonus(attribute);
-            attribute.Class = this.getClassBonus(attribute);
-            attribute.Potion = this.getPotionBonus(attribute);
-        }
-
-        this.Strength.Pet = this.getPetBonus(this.Strength, this.Pets.Water);
-        this.Dexterity.Pet = this.getPetBonus(this.Dexterity, this.Pets.Light);
-        this.Intelligence.Pet = this.getPetBonus(this.Intelligence, this.Pets.Earth);
-        this.Constitution.Pet = this.getPetBonus(this.Constitution, this.Pets.Shadow);
-        this.Luck.Pet = this.getPetBonus(this.Luck, this.Pets.Fire);
+        this.addCalculatedAttributes(this.Strength, this.Pets.Water);
+        this.addCalculatedAttributes(this.Dexterity, this.Pets.Light);
+        this.addCalculatedAttributes(this.Intelligence, this.Pets.Earth);
+        this.addCalculatedAttributes(this.Constitution, this.Pets.Shadow);
+        this.addCalculatedAttributes(this.Luck, this.Pets.Fire);
 
         this.Runes = {
             Gold: 0,
