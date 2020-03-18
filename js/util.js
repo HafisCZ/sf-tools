@@ -26,6 +26,35 @@ function formatDuration (duration) {
     return trail(days, Math.max(2, days.toString().length)) + ':' + trail(hours, 2) + ':' + trail(minutes, 2);
 }
 
+const GOLD_CURVE = [ 0, 25, 50, 75 ];
+function getGoldCurve (value) {
+    for (var i = GOLD_CURVE.length; i < 800; i++) {
+        GOLD_CURVE[i] = Math.min(Math.floor((GOLD_CURVE[i - 1] + Math.floor(GOLD_CURVE[Math.floor(i / 2)] / 3) + Math.floor(GOLD_CURVE[Math.floor(i / 3)] / 4)) / 5) * 5, 1E9);
+    }
+
+    return GOLD_CURVE[value];
+}
+
+function calculateAttributePrice (attribute) {
+    var price = 0;
+    for (var i = 0; i < 5; i++) {
+        var num = Math.floor(1 + (attribute + i) / 5);
+        price = num >= 800 ? 5E9 : (price + getGoldCurve(num));
+    }
+
+    price = 5 * Math.floor(Math.floor(price / 5) / 5) / 100;
+    return price < 10 ? price : Math.min(1E7, Math.floor(price));
+}
+
+function calculateTotalAttributePrice (attribute) {
+    var price = 0;
+    for (var i = 0; i < attribute; i++) {
+        price += calculateAttributePrice(attribute);
+    }
+
+    return price;
+}
+
 function correctDate (prefix) {
     return -60 * 60 * 1000;
 }

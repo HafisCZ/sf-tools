@@ -480,6 +480,54 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Luck.Pet,
         width: 110
     },
+    'Base Cost': {
+        expr: p => p.Primary.NextCost,
+        format: (p, x) => formatAsSpacedNumber(x)
+    },
+    'Strength Cost': {
+        expr: p => p.Strength.NextCost,
+        format: (p, x) => formatAsSpacedNumber(x)
+    },
+    'Dexterity Cost': {
+        expr: p => p.Dexterity.NextCost,
+        format: (p, x) => formatAsSpacedNumber(x)
+    },
+    'Intelligence Cost': {
+        expr: p => p.Intelligence.NextCost,
+        format: (p, x) => formatAsSpacedNumber(x)
+    },
+    'Constitution Cost': {
+        expr: p => p.Constitution.NextCost,
+        format: (p, x) => formatAsSpacedNumber(x)
+    },
+    'Luck Cost': {
+        expr: p => p.Luck.NextCost,
+        format: (p, x) => formatAsSpacedNumber(x)
+    },
+    'Base Total Cost': {
+        expr: p => p.Primary.TotalCost,
+        format: (p, x) => formatAsSpacedNumber(x)
+    },
+    'Strength Total Cost': {
+        expr: p => p.Strength.TotalCost,
+        format: (p, x) => formatAsSpacedNumber(x)
+    },
+    'Dexterity Total Cost': {
+        expr: p => p.Dexterity.TotalCost,
+        format: (p, x) => formatAsSpacedNumber(x)
+    },
+    'Intelligence Total Cost': {
+        expr: p => p.Intelligence.TotalCost,
+        format: (p, x) => formatAsSpacedNumber(x)
+    },
+    'Constitution Total Cost': {
+        expr: p => p.Constitution.TotalCost,
+        format: (p, x) => formatAsSpacedNumber(x)
+    },
+    'Luck Total Cost': {
+        expr: p => p.Luck.TotalCost,
+        format: (p, x) => formatAsSpacedNumber(x)
+    },
     'Attribute Pet': {
         expr: p => p.Primary.Pet,
         width: 110

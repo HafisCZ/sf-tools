@@ -547,6 +547,8 @@ class SFPlayer {
         attribute.Class = this.getClassBonus(attribute);
         attribute.Potion = this.getPotionBonus(attribute);
         attribute.Pet =  this.getPetBonus(attribute, pet);
+        attribute.NextCost = calculateAttributePrice(attribute.Base - this.Achievements.Owned * 5);
+        attribute.TotalCost = calculateTotalAttributePrice(attribute.Base - this.Achievements.Owned * 5);
     }
 
     evaluateCommon () {
