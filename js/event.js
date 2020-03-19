@@ -1294,8 +1294,7 @@ class SettingsView extends View {
         this.refreshTemplates();
 
         this.$parent.find('[data-op="template-default"]').click(() => {
-            this.code = DEFAULT_SETTINGS;
-            this.refresh();
+            this.$area.val(DEFAULT_SETTINGS).trigger('input');
         });
     }
 
@@ -1328,8 +1327,7 @@ class SettingsView extends View {
         });
 
         this.$templateList.find('[data-template-load]').click((event) => {
-            this.code = Templates.load($(event.currentTarget).attr('data-template-load')).getCode();
-            this.refresh();
+            this.$area.val(Templates.load($(event.currentTarget).attr('data-template-load')).getCode()).trigger('input');
         });
     }
 
