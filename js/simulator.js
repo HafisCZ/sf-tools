@@ -206,18 +206,22 @@ class FightSimulator {
         // Run simulation
         while (this.a.Health > 0 && this.b.Health > 0) {
             this.attack(this.a, this.b);
-            if (this.a.Weapon2) {
+            if (this.a.Weapon2 && this.b.Health > 0) {
                 this.attack(this.a, this.b, this.a.Weapon2);
-            } else if (getRandom(this.a.RepeatAttackChance)) {
-                this.attack(this.a, this.b);
+            } else if (this.a.RepeatAttackChance) {
+                while (getRandom(this.a.RepeatAttackChance) && this.b.Health > 0) {
+                    this.attack(this.a, this.b);
+                }
             }
 
             if (this.b.Health > 0) {
                 this.attack(this.b, this.a);
-                if (this.b.Weapon2) {
+                if (this.b.Weapon2 && this.a.Health > 0) {
                     this.attack(this.b, this.a, this.b.Weapon2);
-                } else if (getRandom(this.b.RepeatAttackChance)) {
-                    this.attack(this.b, this.a);
+                } else if (this.b.RepeatAttackChance) {
+                    while (getRandom(this.b.RepeatAttackChance) && this.a.Health > 0) {
+                        this.attack(this.b, this.a);
+                    }
                 }
             }
 
