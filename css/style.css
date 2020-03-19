@@ -58,6 +58,11 @@ body.dimmed .menu {
     cursor: pointer !important;
 }
 
+.glow-y:hover {
+    color: darkgreen !important;
+    cursor: pointer !important;
+}
+
 .nopad {
     padding-top: 1.0em !important;
 }
@@ -131,6 +136,11 @@ input:disabled {
     padding-top: 0.5em !important;
     padding-bottom: 0 !important;
     line-height: 1 !important;
+}
+
+.css-small-row {
+    padding-top: 0 !important;
+    padding-bottom: 0.5em !important;
 }
 
 .css-template-buttons {

@@ -40,6 +40,10 @@
                 margin-left: 1em;
             }
 
+            .bnone {
+                border: 1px solid transparent;
+            }
+
             .bone {
                 border: 1px solid orange;
             }
@@ -365,20 +369,45 @@
                 <!-- Player list -->
                 <div class="column">
                     <div class="ui grid">
-                        <div class="row">
+                        <div class="css-small-row row">
                             <div class="five wide column">
-                                <button class="ui fluid small button" type="submit" id="sim-add"><i class="arrow right icon"></i> Add player</button>
+                                <button class="ui fluid small button" type="submit" id="sim-add"><i class="small arrow right icon"></i> Add player</button>
                             </div>
-                            <div class="three wide column">
+                            <div class="five wide column">
                                 <button class="ui fluid small button" type="submit" id="sim-save">Save</button>
                             </div>
-                            <div class="on wide column"></div>
-                            <div class="three wide column">
+                            <div class="two wide column">
+
+                            </div>
+                            <div class="four wide column">
+
+                            </div>
+                        </div>
+                        <div class="css-small-row row">
+                            <div class="five wide column">
                                 <div class="ui small form">
                                     <div class="field" data-tooltip="Amount of fights per two players. Use lower value if using simulator with large amount of people.">
                                         <input class="text-center fluid" type="text" id="sim-iterations" value="10000">
                                     </div>
                                 </div>
+                            </div>
+                            <div class="five wide column">
+                                <div class="ui form">
+                                    <div class="field">
+                                        <div class="ui fluid selection compact dropdown">
+                                            <input class="text-center" type="hidden" value="0" id="sim-mode">
+                                            <i class="dropdown icon"></i>
+                                            <div class="default text"></div>
+                                            <div class="menu">
+                                                <div class="item" data-value="0">All vs All</div>
+                                                <div class="item" data-value="1">One vs All</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="two wide column">
+
                             </div>
                             <div class="four wide column">
                                 <button class="ui fluid small button" type="submit" id="sim-run">Simulate</button>
@@ -395,7 +424,7 @@
                                     Level
                                 </span>
                             </div>
-                            <div class="five wide column">
+                            <div class="four wide column">
                                 <span data-sort="name">
                                     Name
                                 </span>
@@ -414,6 +443,9 @@
                                 <span data-sort="max">
                                     Max %
                                 </span>
+                            </div>
+                            <div class="one wide column">
+
                             </div>
                             <div class="one wide column">
 
@@ -538,6 +570,17 @@
                 }
             });
 
+            var mode = 0;
+            $('#sim-mode').change(function () {
+                mode = Number($(this).val());
+
+                for (var p of players) {
+                    p.score = null;
+                }
+                yourself = -1;
+                clearSort();
+            });
+
             // Run simulation
             $('#sim-run').click(function () {
                 for (var i = 0; i < players.length; i++) {
@@ -546,14 +589,22 @@
                 showPlayers();
 
                 setTimeout(function () {
-                    new FightSimulator().simulate(players, Number($('#sim-iterations').val()) || 10000);
-                    selected = -1;
+                    if (players.length) {
+                        if (mode == 0) {
+                            new FightSimulator().simulate(players, Number($('#sim-iterations').val()) || 10000);
+                        } else {
+                            new FightSimulator().simulateSingle(players.find(p => p.index == yourself), players, Number($('#sim-iterations').val()) || 10000);
+                        }
 
-                    setSort('avg', 0);
+                        selected = -1;
+
+                        setSort('avg', 0);
+                    }
                 }, 500);
             });
 
             var selected = -1;
+            var yourself = -1;
 
             var players = [];
             var iterator = 0;
@@ -617,6 +668,13 @@
                 showPlayers();
             }
 
+            function clearSort () {
+                sort = '';
+                order = 0;
+
+                showPlayers();
+            }
+
             function showPlayers () {
                 if (order == 0) {
                     if (sort == 'class') {
@@ -654,13 +712,19 @@
 
                 var content = '';
 
+                if (mode == 1 && yourself == -1) {
+                    if (players.length) {
+                        yourself = players[0].index;
+                    }
+                }
+
                 for (var i = 0; i < players.length; i++) {
                     var player = players[i].player;
                     var score = players[i].score;
                     var index = players[i].index;
 
                     content += `
-                        <div class="row selectable ${ index == selected ? 'selected' : 'nselected' }" data-index="${ index }">
+                        <div class="row selectable ${ index == selected ? 'selected' : 'nselected' } ${ mode == 1 && index == yourself ? 'btwo' : 'bnone' }" data-index="${ index }">
                             <div class="two wide text-center column">
                                 <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
                             </div>
@@ -668,7 +732,7 @@
                                 <b>${ player.Level }</b>
                             </div>
                             <div class="one wide column"></div>
-                            <div class="five wide column">
+                            <div class="four wide column">
                                 <b>${ player.Name }</b>
                             </div>
                             <div class="two wide text-center column">
@@ -680,8 +744,11 @@
                             <div class="two wide text-center column">
                                 ${ score ? `${ score.max.toFixed(2) }%` : '' }
                             </div>
-                            <div class="one wide column">
-                                <i class="trash alternate glow outline icon" data-index-trash="${ i }"></i>
+                            <div class="one wide text-center column">
+                                ${ mode == 1 && index != yourself ? `<i class="user circle icon glow-y" data-index-crown="${ i }"></i>` : ''}
+                            </div>
+                            <div class="one wide text-center column">
+                                <i class="trash right aligned alternate glow outline icon" data-index-trash="${ i }"></i>
                             </div>
                         </div>
                     `;
@@ -692,6 +759,12 @@
                 $('[data-index]').click(function () {
                     selected = Number($(this).attr('data-index'));
                     fill(players.find(p => p.index == selected).player);
+
+                    showPlayers();
+                });
+
+                $('[data-index-crown]').click(function () {
+                    yourself = players[Number($(this).attr('data-index-crown'))].index;
 
                     showPlayers();
                 });

@@ -152,6 +152,29 @@ class FightSimulator {
         }
     }
 
+    // Fight 1v1s only
+    simulateSingle (player, players, iterations = 100000) {
+        var scores = [];
+        for (var i = 0; i < players.length; i++) {
+            var score = 0;
+            for (var j = 0; j < iterations; j++) {
+                score += this.fight(player.player, players[i].player);
+            }
+
+            players[i].score = {
+                avg: 100 * score / iterations,
+                min: 100 * score / iterations,
+                max: 100 * score / iterations
+            }
+        }
+
+        if (players.length == 2) {
+            players[1].score.avg = 100 - players[0].score.avg,
+            players[1].score.min = players[1].score.avg;
+            players[1].score.max = players[1].score.avg;
+        }
+    }
+
     // Fight
     fight (source, target) {
         // Create fighters
