@@ -25,6 +25,11 @@ const Preferences = new (class {
         return Object.keys(this.storage);
     }
 
+    temporary () {
+        this.storage = { };
+        this.anonymous = true;
+    }
+
 })(window);
 
 // IndexedDB Setup
@@ -35,40 +40,61 @@ window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.ms
 // File Database
 const FileDatabase = new (class {
 
+    temporary () {
+        this.anonymous = true;
+    }
+
     ready (callback, error) {
-        var request = window.indexedDB.open('database', 1);
-
-        request.onsuccess = (e) => {
-            this.db = request.result;
+        if (this.anonymous) {
+            this.db = { };
             callback();
-        }
+        } else {
+            var request = window.indexedDB.open('database', 1);
 
-        request.onupgradeneeded = function (e) {
-            e.target.result.createObjectStore('files', { keyPath: 'timestamp' });
-        }
+            request.onsuccess = (e) => {
+                this.db = request.result;
+                callback();
+            }
 
-        request.onerror = error;
+            request.onupgradeneeded = function (e) {
+                e.target.result.createObjectStore('files', { keyPath: 'timestamp' });
+            }
+
+            request.onerror = error;
+        }
     }
 
     set (object) {
-        this.db.transaction(['files'], 'readwrite').objectStore('files').put(object);
+        if (this.anonymous) {
+            this.db[object.timestamp] = object;
+        } else {
+            this.db.transaction(['files'], 'readwrite').objectStore('files').put(object);
+        }
     }
 
     get (callback) {
-        var result = [];
-        this.db.transaction('files').objectStore('files').openCursor().onsuccess = function (event) {
-            var cursor = event.target.result;
-            if (cursor) {
-                result.push(cursor.value);
-                cursor.continue();
-            } else {
-                callback(result);
+        if (this.anonymous) {
+            callback(Object.values(this.db));
+        } else {
+            var result = [];
+            this.db.transaction('files').objectStore('files').openCursor().onsuccess = function (event) {
+                var cursor = event.target.result;
+                if (cursor) {
+                    result.push(cursor.value);
+                    cursor.continue();
+                } else {
+                    callback(result);
+                }
             }
         }
     }
 
     remove (key) {
-        this.db.transaction(['files'], 'readwrite').objectStore('files').delete(key);
+        if (this.anonymous) {
+            delete this.db[key];
+        } else {
+            this.db.transaction(['files'], 'readwrite').objectStore('files').delete(key);
+        }
     }
 
 })();
@@ -334,8 +360,12 @@ const UpdateService = {
 };
 
 const Storage = new (class {
+    load (callback, error, anonymous) {
+        if (anonymous) {
+            Preferences.temporary();
+            FileDatabase.temporary();
+        }
 
-    load (callback, error) {
         FileDatabase.ready(() => {
             FileDatabase.get((current) => {
                 this.current = current;

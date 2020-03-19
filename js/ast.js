@@ -305,6 +305,14 @@ class AST {
         return this.tokens.length == 0;
     }
 
+    toString (node = this.root) {
+        if (typeof(node) == 'object') {
+            return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.args.map(arg => this.toString(arg)).join(', ') })`;
+        } else {
+            return node;
+        }
+    }
+
     eval (player, environment = { func: { }, vars: { } }, scope = undefined, node = this.root) {
         if (typeof(node) == 'object') {
             if (node.noeval) {
