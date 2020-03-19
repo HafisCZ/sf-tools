@@ -45,6 +45,7 @@
             <a class="item" id="show-files"><i class="small upload icon"></i>Files</a>
             <a class="item" id="show-settings"><i class="small cog icon"></i>Settings</a>
             <div class="right menu" id="show-right-menu">
+                <a class="item" href="stats.html?anonymous"><i class="small user secret icon"></i></a>
                 <a class="item" href="index.html"><i class="small reply icon"></i>Go back</a>
             </div>
         </div>
@@ -362,12 +363,9 @@
         <!-- UI Handler -->
         <script type="text/javascript">
             var anonymous = /^.*\?anonymous$/.test(window.location.href);
-            $('#show-right-menu').prepend($('<a class="item" href="stats.html"><i class="user secret icon"></i></a>').click(function () {
-                window.open('stats.html?anonymous', '');
-            }));
 
-            UI.initialize();
             Storage.load(function () {
+                UI.initialize();
                 UI.show(UI.Groups);
 
                 $('#show-players').click(() => UI.show(UI.Players));

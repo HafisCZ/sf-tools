@@ -1451,8 +1451,6 @@ const UI = {
         screen.show(... arguments);
     },
     initialize: function () {
-        UI.Loader = new LoaderView('modal-loader');
-        UI.Exception = new ExceptionView('modal-exception');
         UI.Settings = new SettingsView('view-settings');
         UI.SettingsFloat = new SettingsFloatView('modal-settings');
         UI.Files = new FilesView('view-files');
@@ -1462,5 +1460,8 @@ const UI = {
         UI.PlayerHistory = new PlayerHistoryView('view-history');
         UI.PlayerDetail = new PlayerDetailFloatView('modal-playerdetail');
         UI.GroupDetail = new GroupDetailView('view-groupdetail');
-    }
+    },
+
+    Loader: new LoaderView('modal-loader'),
+    Exception: new ExceptionView('modal-exception')
 }
