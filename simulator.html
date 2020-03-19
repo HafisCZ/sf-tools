@@ -225,7 +225,7 @@
                                 <div class="field">
                                     <label>Crit</label>
                                     <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn1.HasEnchantment" data-type="bool">
+                                        <input class="text-center" type="hidden" value="false" data-path="Items.Wpn1.HasEnchantment" data-type="bool">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -267,7 +267,7 @@
                                 <div class="field">
                                     <label>Crit</label>
                                     <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Wpn2.HasEnchantment" data-type="bool">
+                                        <input class="text-center" type="hidden" value="false" data-path="Items.Wpn2.HasEnchantment" data-type="bool">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -353,7 +353,7 @@
                                 <div class="field">
                                     <label>Shadow of the Cowboy</label>
                                     <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-path="Items.Hand.HasEnchantment" data-type="bool">
+                                        <input class="text-center" type="hidden" value="false" data-path="Items.Hand.HasEnchantment" data-type="bool">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
                                         <div class="menu">
@@ -470,6 +470,8 @@
 
         <script type="text/javascript">
             // Init
+            $('#sim-mode').val(0);
+
             //$('.dropdown').dropdown();
             $('[data-path="Class"]').change(function () {
                 $('.dropdown').dropdown();
