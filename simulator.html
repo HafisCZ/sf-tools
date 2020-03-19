@@ -782,6 +782,11 @@
 
                     selected = ss;
 
+                    var sx = players.findIndex(p => p.index == yourself);
+                    if (sx == -1) {
+                        yourself = -1;
+                    }
+
                     showPlayers();
                 });
             }

@@ -57,8 +57,8 @@ class FighterModel {
         let dm = m * (1 + Math.max(aa / 2, aa - ad / 2) / 10);
 
         return {
-            Max: dm * weapon.DamageMin,
-            Min: dm * weapon.DamageMax
+            Max: Math.ceil(dm * weapon.DamageMin),
+            Min: Math.ceil(dm * weapon.DamageMax)
         };
     }
 
@@ -68,11 +68,11 @@ class FighterModel {
             if (target.Player.Class == 5 || target.Player.Class == 2) {
                 return 0;
             } else if (target.Player.Level < this.Player.Level + 10 || target.Player.Class == 6) {
-                return target.Health / 3;
+                return Math.ceil(target.Health / 3);
             } else if (target.Player.Class == 1) {
-                return this.Health / 4;
+                return Math.ceil(this.Health / 4);
             } else if (target.Player.Class == 3 || target.Player.Class == 4) {
-                return this.Health / 5;
+                return Math.ceil(this.Health / 5);
             } else {
                 return 0;
             }
@@ -119,6 +119,7 @@ class FightSimulator {
             var score = 0;
             var min = iterations;
             var max = 0;
+
             for (var j = 0; j < players.length; j++) {
                 if (i != j) {
                     var s = 0;
@@ -167,12 +168,6 @@ class FightSimulator {
                 max: 100 * score / iterations
             }
         }
-
-        if (players.length == 2) {
-            players[1].score.avg = 100 - players[0].score.avg,
-            players[1].score.min = players[1].score.avg;
-            players[1].score.max = players[1].score.avg;
-        }
     }
 
     // Fight
@@ -213,7 +208,7 @@ class FightSimulator {
             this.attack(this.a, this.b);
             if (this.a.Weapon2) {
                 this.attack(this.a, this.b, this.a.Weapon2);
-            } else if (getRandom(this.a.secondAttack)) {
+            } else if (getRandom(this.a.RepeatAttackChance)) {
                 this.attack(this.a, this.b);
             }
 
@@ -221,7 +216,7 @@ class FightSimulator {
                 this.attack(this.b, this.a);
                 if (this.b.Weapon2) {
                     this.attack(this.b, this.a, this.b.Weapon2);
-                } else if (getRandom(this.b.secondAttack)) {
+                } else if (getRandom(this.b.RepeatAttackChance)) {
                     this.attack(this.b, this.a);
                 }
             }
@@ -248,7 +243,7 @@ class FightSimulator {
                 damage *= weapon.Critical;
             }
 
-            target.Health -= damage;
+            target.Health -= Math.ceil(damage);
         }
     }
 }
