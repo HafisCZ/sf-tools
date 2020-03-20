@@ -331,6 +331,11 @@ class AST {
                             }
                             sum += mapper.ast.eval(player, environment, scope2);
                         }
+                    } else if (SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]]) {
+                        var expr = SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]];
+                        for (var i = 0; i < object.length; i++) {
+                            sum += expr.expr(object[i]);
+                        }
                     } else {
                         for (var i = 0; i < object.length; i++) {
                             var scope2 = {};
@@ -351,6 +356,11 @@ class AST {
                                 scope2[mapper.arg[j]] = object[i];
                             }
                             sum.push(mapper.ast.eval(player, environment, scope2));
+                        }
+                    } else if (SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]]) {
+                        var expr = SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]];
+                        for (var i = 0; i < object.length; i++) {
+                            sum.push(expr.expr(object[i]));
                         }
                     } else {
                         for (var i = 0; i < object.length; i++) {

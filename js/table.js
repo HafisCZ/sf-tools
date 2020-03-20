@@ -1366,7 +1366,7 @@ class Settings {
             if (data.ast) {
                 var scope = {};
                 if (data.arg) {
-                    scope[data.arg] = players;
+                    scope[data.arg] = players.map(p => p.player);
                 }
 
                 data.value = data.ast.eval(undefined, this, scope);

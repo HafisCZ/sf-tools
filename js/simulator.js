@@ -45,6 +45,7 @@ class FighterModel {
     // Get damage range
     getDamageRange (weapon, target) {
         let mp = 1 - target.getDamageReduction(this) / 100;
+
         let mf = (1 - target.Player.Runes.ResistanceFire / 100) * (getRuneValue(weapon, RUNE.FIRE_DAMAGE) / 100);
         let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE.COLD_DAMAGE) / 100);
         let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE.LIGHTNING_DAMAGE) / 100);
@@ -57,8 +58,8 @@ class FighterModel {
         let dm = m * (1 + Math.max(aa / 2, aa - ad / 2) / 10);
 
         return {
-            Max: Math.ceil(dm * weapon.DamageMin),
-            Min: Math.ceil(dm * weapon.DamageMax)
+            Max: Math.ceil(dm * weapon.DamageMax),
+            Min: Math.ceil(dm * weapon.DamageMin)
         };
     }
 
@@ -179,6 +180,9 @@ class FightSimulator {
         // Initialize fighters
         this.a.initialize(this.b);
         this.b.initialize(this.a);
+        
+        //console.log(source.Name, this.a.Weapon1.Range.Min, this.a.Weapon1.Range.Max, ...(this.a.Weapon2 ? [ this.a.Weapon2.Range.Min, this.a.Weapon2.Range.Max ] : []));
+        //console.log(target.Name, this.b.Weapon1.Range.Min, this.b.Weapon1.Range.Max, ...(this.b.Weapon2 ? [ this.b.Weapon2.Range.Min, this.b.Weapon2.Range.Max ] : []));
 
         // Decide who starts first
         if (this.a.AttackFirst && this.b.AttackFirst ? getRandom(50) : this.a.AttackFirst) {

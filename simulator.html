@@ -552,7 +552,7 @@
 
                         for (var d of data) {
                             var player = d.own ? new SFOwnPlayer(d) : new SFOtherPlayer(d);
-                            player.Fortress.Gladiator = player.Fortress.Gladiator || 15;
+                            player.Fortress.Gladiator = player.Fortress.Gladiator == undefined ? 15 : player.Fortress.Gladiator;
                             players.push({
                                 player: player,
                                 score: null,
@@ -563,7 +563,7 @@
                         showPlayers();
                     } else {
                         var player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
-                        player.Fortress.Gladiator = player.Fortress.Gladiator || 15;
+                        player.Fortress.Gladiator = player.Fortress.Gladiator == undefined ? 15 : player.Fortress.Gladiator;
 
                         fill(player);
                     }
