@@ -467,3 +467,7 @@ h3.file-selected {
 .css-entry-hidden {
     opacity: 0.5;
 }
+
+.css-entry-opaque tr.css-entry:nth-child(even) {
+    background-color: #7d7d7d3f;
+}
