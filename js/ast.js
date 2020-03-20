@@ -912,7 +912,8 @@ const SP_KEYWORD_MAPPING_1 = {
         expr: p => p.Group.Treasure
     },
     'Instructor': {
-        expr: p => p.Group.Instructor
+        expr: p => p.Group.Instructor,
+        width: 100
     },
     'Pet': {
         expr: p => p.Group.Pet
