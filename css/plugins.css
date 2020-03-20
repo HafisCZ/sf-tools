@@ -12,3 +12,30 @@
 .css-context-menu::before {
     top: 1.25em !important;
 }
+
+.css-search-entry {
+	padding-top: .78571429em;
+	padding-bottom: .78571429em;
+    line-height: 1em;
+    padding-left: 1em;
+	margin: 0;
+    cursor: pointer;
+}
+
+.css-search-popup {
+    position: absolute !important;
+    padding: 0 !important;
+    z-index: 99 !important;
+    top: 2.7em !important;
+    text-align: left !important;
+    box-shadow: none !important;
+}
+
+.css-search-entry:hover {
+    background-color: rgba(33, 186, 69, 0.5);
+}
+
+.css-search-dropdown {
+    margin-right: 2em !important;
+    cursor: pointer !important;
+}

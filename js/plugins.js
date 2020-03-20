@@ -1,5 +1,91 @@
 (function ($) {
 
+    $.fn.searchfield = function (command, arg) {
+        return this.each(function () {
+            var $this = $(this);
+
+            if (command == 'create') {
+                var $parent = $this.parent('div');
+
+                this.$popup = $('<div class="ui fluid basic popup css-search-popup"></div>');
+                this.popup = this.$popup.get(0);
+
+                this.array = [];
+                this.limit = arg;
+                this.shown = false;
+
+                this.$popup.on('redraw', () => {
+                    this.$popup.html('');
+
+                    for (var i = 0; i < this.array.length; i++) {
+                        this.$popup.append($(`<div class="css-search-entry" data-entry=${ btoa(this.array[i]) }>${ this.array[i] }</div>`).on('click', event => {
+                            $this.searchfield('select', atob($(event.currentTarget).attr('data-entry')));
+                        }));
+                    }
+                });
+
+                $parent.prepend(this.$popup);
+                $parent.append($('<i class="angle double down link icon css-search-dropdown"></i>').mouseenter(event => {
+                    if (!this.shown) {
+                        $this.searchfield('show');
+                    }
+                }));
+
+                $this.keydown(event => {
+                    if (event.which == 13) {
+                        $this.searchfield('add', $this.val());
+                    }
+
+                    if (this.shown) {
+                        $this.searchfield('hide');
+                    }
+                });
+
+                $parent.mouseleave(() => {
+                    if (this.shown) {
+                        $this.searchfield('hide');
+                    }
+                });
+            } else if (command == 'add' && arg) {
+                if (this.array[0] != arg) {
+                    var index = this.array.findIndex(item => item == arg);
+                    if (index != -1) {
+                        this.array.splice(index, 1);
+                    }
+
+                    this.array.splice(0, 0, arg);
+                    if (this.array.length > this.limit) {
+                        this.array.pop();
+                    }
+
+                    this.$popup.trigger('redraw');
+                }
+            } else if (command == 'toggle') {
+                if (this.shown) {
+                    this.shown = false;
+                    this.$popup.hide();
+                } else if (this.array.length) {
+                    this.shown = true;
+                    this.$popup.show();
+                }
+            } else if (command == 'hide') {
+                if (this.shown) {
+                    this.shown = false;
+                    this.$popup.hide();
+                }
+            } else if (command == 'show') {
+                if (!this.shown && this.array.length) {
+                    this.shown = true;
+                    this.$popup.show();
+                }
+            } else if (command == 'select') {
+                $this.val(arg).searchfield('hide').trigger('change');
+            }
+
+            return $this;
+        });
+    };
+
     $.fn.context = function (command, param) {
         return this.each(function () {
             var menu = $(this);

@@ -705,8 +705,7 @@ class BrowseView extends View {
         });
 
         // Filter
-        this.$filter = this.$parent.find('[data-op="filter"]');
-        this.$filter.change((event) => {
+        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield('create', 5).change((event) => {
             var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x):/);
 
             var terms = [
