@@ -124,6 +124,16 @@ const Database = new (class {
         }
     }
 
+    removeByIDSingle (identifier, timestamp) {
+        if (Database.Players[identifier]) {
+            delete Database.Players[identifier][timestamp];
+        } else if (Database.Groups[identifier]) {
+            delete Database.Groups[identifier][timestamp];
+        }
+
+        this.update();
+    }
+
     removeByID (... identifiers) {
         for (var identifier of identifiers) {
             delete Database.Players[identifier];
@@ -547,6 +557,38 @@ const Storage = new (class {
         Database.remove(this.current[index].timestamp);
 
         this.current.splice(index, 1);
+    }
+
+    removeByIDSingle (identifier, timestamp) {
+        var changed = null;
+
+        for (var i = 0, file; file = this.current[i]; i++) {
+            var change = false;
+
+            for (var j = 0, group; group = file.groups[j]; j++) {
+                if (group.id == identifier && group.timestamp == timestamp) {
+                    file.groups.splice(j--, 1);
+                    change = true;
+                }
+            }
+
+            for (var j = 0, player; player = file.players[j]; j++) {
+                if (player.id == identifier && player.timestamp == timestamp) {
+                    file.players.splice(j--, 1);
+                    change = true;
+                }
+            }
+
+            if (change) {
+                changed = file;
+                break;
+            }
+        }
+
+        if (changed) {
+            Database.removeByIDSingle(identifier, timestamp);
+            this.save(changed);
+        }
     }
 
     removeByID (... identifiers) {

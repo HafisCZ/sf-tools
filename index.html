@@ -99,7 +99,7 @@
             .footer-repo {
                 height: 2.5em;
                 width: 100%;
-                position: absolute;
+                position: fixed;
                 bottom: 0;
                 text-align: left;
                 padding-left: 1em;
@@ -108,7 +108,7 @@
             .footer-legal {
                 height: 5.75em;
                 width: 100%;
-                position: absolute;
+                position: fixed;
                 bottom: 0;
                 text-align: right;
                 padding-right: 1em;
@@ -121,64 +121,88 @@
             <div class="ui three column grid">
                 <div class="row">
                     <div class="column">
-                        <div class="dvselection" onclick="location.href='stats.html';">
-                            <div class="dvdescription">
-                                Track progress of yourself and your guild
+                        <a href="stats.html">
+                            <div class="dvselection">
+                                <div class="dvdescription">
+                                    Track progress of yourself and your guild
+                                </div>
+                                <div class="dvheader singleline">
+                                    Statistics
+                                </div>
                             </div>
-                            <div class="dvheader singleline">
-                                Statistics
-                            </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="column">
-                        <div class="dvselection" onclick="location.href='manual.html';">
-                            <div class="dvdescription">
-                                How to do magic with tables and more
+                        <a href="manual.html">
+                            <div class="dvselection">
+                                <div class="dvdescription">
+                                    How to do magic with tables and more
+                                </div>
+                                <div class="dvheader singleline">
+                                    Manual
+                                </div>
                             </div>
-                            <div class="dvheader singleline">
-                                Manual
-                            </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="column">
-                        <div class="dvselection" onclick="location.href='idle.html';">
-                            <div class="dvdescription">
-                                Check the production of your Arena Manager
+                        <a href="idle.html">
+                            <div class="dvselection">
+                                <div class="dvdescription">
+                                    Check the production of your Arena Manager
+                                </div>
+                                <div class="dvheader twoline">
+                                    Arena Manager
+                                </div>
                             </div>
-                            <div class="dvheader twoline">
-                                Arena Manager
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 <div class="row">
                     <div class="column">
-                        <div class="dvselection" onclick="location.href='compare.html';">
-                            <div class="dvdescription">
-                                Look at what changes if you equip the new item
+                        <a href="compare.html">
+                            <div class="dvselection">
+                                <div class="dvdescription">
+                                    Look at what changes if you equip the new item
+                                </div>
+                                <div class="dvheader twoline">
+                                    Item Comparison
+                                </div>
                             </div>
-                            <div class="dvheader twoline">
-                                Item Comparison
-                            </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="column">
-                        <div class="dvselection" onclick="location.href='fights.html';">
-                            <div class="dvdescription">
-                                Display all PVP fights stored within archive file
+                        <a href="fights.html">
+                            <div class="dvselection">
+                                <div class="dvdescription">
+                                    Display all PVP fights stored within archive file
+                                </div>
+                                <div class="dvheader singleline">
+                                    Fight viewer
+                                </div>
                             </div>
-                            <div class="dvheader singleline">
-                                Fight viewer
-                            </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="column">
-                        <div class="dvselection" onclick="location.href='simulator.html';">
+                        <a href="simulator.html">
+                            <div class="dvselection">
+                                <div class="dvdescription">
+                                    Simulate the probable outcome of a PvP battle
+                                </div>
+                                <div class="dvheader twoline">
+                                    Fight Simulator
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <div class="dvselection wip">
                             <div class="dvdescription">
-                                Simulate the probable outcome of a PvP battle
+                                Calculate the optimal attribute upgrade path
                             </div>
                             <div class="dvheader twoline">
-                                Fight Simulator
+                                Attribute Optimizer
                             </div>
                         </div>
                     </div>

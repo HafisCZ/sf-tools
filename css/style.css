@@ -2,10 +2,6 @@
     background-color: #212121;
 }
 
-.ui.menu.fixed a.item, .ui.menu.fixed div.item {
-    color: white !important;
-}
-
 body {
     margin-top: 5em;
     height: auto;
@@ -470,4 +466,36 @@ h3.file-selected {
 
 .css-entry-opaque tr.css-entry:nth-child(even) {
     background-color: #7d7d7d3f;
+}
+
+.css-small {
+    font-size: 80%;
+    margin-top: 0.1em;
+}
+
+.css-temporary {
+    position: absolute;
+    font-size: 50%;
+    top: 4em;
+    color: orange;
+}
+
+.css-devmode {
+    position: absolute;
+    font-size: 50%;
+    top: 4em;
+    color: #6ed1ff;
+}
+
+.ui.menu.css-menu a, .ui.menu.css-menu div {
+    color: white;
+}
+
+.ui.menu.css-menu a:hover {
+    color: white;
+}
+
+.css-nohoriz {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }

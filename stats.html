@@ -37,16 +37,17 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
     <body>
-        <div class="ui fixed borderless huge menu">
-            <div class="header item">SFTools</div>
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item">SFTools <span class="css-temporary hidden">Temporary</span><span class="css-devmode hidden">Developer Mode</span></div>
             <a class="item" id="show-players"><i class="small user icon"></i>Me</a>
             <a class="item" id="show-groups"><i class="small archive icon"></i>Guilds</a>
             <a class="item" id="show-browse"><i class="small database icon"></i>Players</a>
             <a class="item" id="show-files"><i class="small upload icon"></i>Files</a>
             <a class="item" id="show-settings"><i class="small cog icon"></i>Settings</a>
+            <a class="item hidden" id="show-developer"><i class="small bug icon"></i>Developer</a>
             <div class="right menu" id="show-right-menu">
-                <a class="item" href="stats.html?anonymous" target="_blank"><i class="small user secret icon"></i></a>
-                <a class="item" href="index.html"><i class="small reply icon"></i>Go back</a>
+                <a class="item" href="stats.html?anonymous" target="_blank"><i class="small user secret icon"></i><span class="css-small">Temporary session<span></a>
+                <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
             </div>
         </div>
 
@@ -360,9 +361,60 @@
             <table class="ui celled structured table table-group" data-op="table"></table>
         </div>
 
+        <!-- DeveloperView -->
+        <div id="view-developer" class="ui main container hidden sf-container">
+            <div class="ui two column grid">
+                <div class="column css-nohoriz">
+                    <table class="ui celled structured table table-group">
+                        <thead>
+                            <tr>
+                                <td width="180">Name</td>
+                                <td width="180">Identifier</td>
+                                <td width="160">Timestamp</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="border-bottom-thick"></td>
+                            </tr>
+                        </thead>
+                        <tbody data-op="players">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="column css-nohoriz">
+                    <table class="ui celled structured table table-group">
+                        <thead>
+                            <tr>
+                                <td width="180">Name</td>
+                                <td width="180">Identifier</td>
+                                <td width="160">Timestamp</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="border-bottom-thick"></td>
+                            </tr>
+                        </thead>
+                        <tbody data-op="groups">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- UI Handler -->
         <script type="text/javascript">
             var anonymous = /^.*\?anonymous$/.test(window.location.href);
+            if (anonymous) {
+                $('.css-temporary').removeClass('hidden');
+            }
+
+            var dev = /^.*\?dev$/.test(window.location.href);
+            if (dev) {
+                $('.css-devmode').removeClass('hidden');
+                $('#show-developer').removeClass('hidden');
+            }
 
             Storage.load(function () {
                 UI.initialize();
@@ -373,6 +425,7 @@
                 $('#show-browse').click(() => UI.show(UI.Browse));
                 $('#show-files').click(() => UI.show(UI.Files));
                 $('#show-settings').click(() => UI.show(UI.Settings));
+                $('#show-developer').click(() => UI.show(UI.Developer));
             }, function () {
                 // Firefox private mode
                 UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");

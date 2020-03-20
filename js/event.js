@@ -17,6 +17,43 @@ class View {
     }
 }
 
+// Developer View
+class DeveloperView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$players = this.$parent.find('[data-op="players"]');
+        this.$groups = this.$parent.find('[data-op="groups"]');
+    }
+
+    show () {
+        var players = '';
+        var groups = '';
+
+        for (var obj of Object.values(Database.Players)) {
+            for (var [timestamp, sobj] of obj.List) {
+                players += `<tr><td>${ sobj.Name }</td><td>${ sobj.Identifier }</td><td>${ formatDate(timestamp) }</td><td class="text-left"><i class="small trash alternate glow outline icon" data-remove-id="${ sobj.Identifier }" data-remove-ts="${ timestamp }"></i></td></tr>`;
+            }
+        }
+
+        for (var obj of Object.values(Database.Groups)) {
+            for (var [timestamp, sobj] of obj.List) {
+                groups += `<tr><td>${ sobj.Name }</td><td>${ sobj.Identifier }</td><td>${ formatDate(timestamp) }</td><td class="text-left"><i class="small trash alternate glow outline icon" data-remove-id="${ sobj.Identifier }" data-remove-ts="${ timestamp }"></i></td></tr>`;
+            }
+        }
+
+        this.$players.html(players);
+        this.$groups.html(groups);
+
+        $('[data-remove-id][data-remove-ts]').click((event) => {
+            var obj = $(event.currentTarget);
+            Storage.removeByIDSingle(obj.attr('data-remove-id'), obj.attr('data-remove-ts'));
+
+            this.show();
+        });
+    }
+}
+
 // Group Detail View
 class GroupDetailView extends View {
     constructor (parent) {
@@ -1459,6 +1496,7 @@ const UI = {
         UI.PlayerHistory = new PlayerHistoryView('view-history');
         UI.PlayerDetail = new PlayerDetailFloatView('modal-playerdetail');
         UI.GroupDetail = new GroupDetailView('view-groupdetail');
+        UI.Developer = new DeveloperView('view-developer');
     },
 
     Loader: new LoaderView('modal-loader'),
