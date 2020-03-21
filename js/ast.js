@@ -32,7 +32,8 @@ const AST_FUNCTIONS = {
     'min': (a) => Array.isArray(a[0]) ? Math.min(... a[0]) : Math.min(... a),
     'max': (a) => Array.isArray(a[0]) ? Math.max(... a[0]) : Math.max(... a),
     'sum': (a) => Array.isArray(a[0]) ? a[0].reduce((t, a) => t + a, 0) : a.reduce((t, a) => t + a, 0),
-    'now': (a) => Date.now()
+    'now': (a) => Date.now(),
+    'len': (a) => a[0] != undefined ? (Array.isArray(a[0]) ? a[0].length : Object.values(a[0]).length) : undefined
 };
 
 class AST {
@@ -321,6 +322,10 @@ class AST {
                 if (node.op == 'each' && node.args.length >= 2) {
                     var generated = this.eval(player, environment, scope, node.args[0]) || {};
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
+                    if (!object.length) {
+                        return undefined;
+                    }
+
                     var mapper = environment.func[node.args[1]];
                     var sum = 0;
                     if (mapper) {
@@ -347,6 +352,10 @@ class AST {
                 } else if (node.op == 'map' && node.args.length >= 2) {
                     var generated = this.eval(player, environment, scope, node.args[0]) || {};
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
+                    if (!object.length) {
+                        return undefined;
+                    }
+
                     var mapper = environment.func[node.args[1]];
                     var sum = [];
                     if (mapper) {
@@ -373,6 +382,10 @@ class AST {
                 } else if (node.op == 'slice' && node.args.length >= 3) {
                     var generated = this.eval(player, environment, scope, node.args[0]) || {};
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
+                    if (!object.length) {
+                        return undefined;
+                    }
+
                     return object.slice(Number(node.args[1]), Number(node.args[2]));
                 } else if (environment.func[node.op]) {
                     var mapper = environment.func[node.op];
@@ -572,6 +585,54 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Attribute Equipment': {
         expr: p => p.Primary.Equipment,
+        width: 110
+    },
+    'Strength Items': {
+        expr: p => p.Strength.Items,
+        width: 110
+    },
+    'Dexterity Items': {
+        expr: p => p.Dexterity.Items,
+        width: 110
+    },
+    'Intelligence Items': {
+        expr: p => p.Intelligence.Items,
+        width: 110
+    },
+    'Constitution Items': {
+        expr: p => p.Constitution.Items,
+        width: 110
+    },
+    'Luck Items': {
+        expr: p => p.Luck.Items,
+        width: 110
+    },
+    'Attribute Items': {
+        expr: p => p.Primary.Items,
+        width: 110
+    },
+    'Strength Gems': {
+        expr: p => p.Strength.Gems,
+        width: 110
+    },
+    'Dexterity Gems': {
+        expr: p => p.Dexterity.Gems,
+        width: 110
+    },
+    'Intelligence Gems': {
+        expr: p => p.Intelligence.Gems,
+        width: 110
+    },
+    'Constitution Gems': {
+        expr: p => p.Constitution.Gems,
+        width: 110
+    },
+    'Luck Gems': {
+        expr: p => p.Luck.Gems,
+        width: 110
+    },
+    'Attribute Gems': {
+        expr: p => p.Primary.Gems,
         width: 110
     },
     'Strength Potion': {

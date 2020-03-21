@@ -519,6 +519,30 @@ class SFPlayer {
         return bonus;
     }
 
+    getEquipmentItemBonus (attribute) {
+        var bonus = 0;
+        for (var item of Object.values(this.Items)) {
+            for (var i = 0; i < 3; i++) {
+                if (item.AttributeTypes[i] == attribute.Type || item.AttributeTypes[i] == 6 || item.AttributeTypes[i] == attribute.Type + 20 || (attribute.Type > 3 && item.AttributeTypes[i] >= 21 && item.AttributeTypes[i] <= 23)) {
+                    bonus += item.Attributes[i];
+                }
+            }
+        }
+
+        return bonus;
+    }
+
+    getEquipmentGemBonus (attribute) {
+        var bonus = 0;
+        for (var item of Object.values(this.Items)) {
+            if (item.HasGem && (item.GemType == attribute.Type || item.GemType == 6)) {
+                bonus += item.GemValue * (item.Type == 1 && this.Class != 4 ? 2 : 1);
+            }
+        }
+
+        return bonus;
+    }
+
     getClassBonus (attribute) {
         if (this.Class >= 5) {
             return Math.ceil(attribute.Equipment * 11 / 100);
@@ -543,7 +567,9 @@ class SFPlayer {
 
     addCalculatedAttributes (attribute, pet) {
         attribute.Total = attribute.Base + attribute.Bonus;
-        attribute.Equipment = this.getEquipmentBonus(attribute);
+        attribute.Items = this.getEquipmentItemBonus(attribute);
+        attribute.Gems = this.getEquipmentGemBonus(attribute);
+        attribute.Equipment = attribute.Items + attribute.Gems;
         attribute.Class = this.getClassBonus(attribute);
         attribute.Potion = this.getPotionBonus(attribute);
         attribute.Pet =  this.getPetBonus(attribute, pet);
