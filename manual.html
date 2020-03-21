@@ -195,7 +195,7 @@
                     <div><code>brackets on</code></div>
                 </div>
             </div>
-            <h3 class="ui header">color <a class="ui small green label">Local</a></h3>
+            <h3 class="ui header">color <a class="ui small green label">Local</a> <a class="ui small black label">Overrides <code>expc</code> option</a></h3>
             <hr/>
             <div class="ui two column grid">
                 <div class="column">
@@ -239,6 +239,19 @@
                 <div class="column">
                     <div><code>header Resistance</code></div>
                     <div><code>expr trunc(min(Armor / Level + (Class == @battlemage ? 40 : 0), ((Class == @warrior || Class == @battlemage) ? 50 : (Class == @mage ? 10 : 25))))</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">expc <a class="ui small green label">Local</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to specify with which color should be the cell highlighted. You can use most of common operators, constants, header names and functions.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Resistance</code></div>
+                    <div><code>expc Class == @BattleMage ? 'red' : 'orange'</code></div>
                 </div>
             </div>
             <h3 class="ui header">extra <a class="ui small green label">Local</a></h3>

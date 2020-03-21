@@ -416,15 +416,15 @@ class AST {
                 return true;
             } else if (node == 'false') {
                 return false;
-            } else if (typeof(scope) == 'object' && (scope[node] || scope[node.split('.', 1)[0]])) {
+            } else if (typeof(scope) == 'object' && (scope[node] != undefined || scope[node.split('.', 1)[0]] != undefined)) {
                 // Return scope variable
-                if (scope[node]) {
+                if (scope[node] != undefined) {
                     return scope[node];
                 } else {
                     var [key, path] = node.split(/\.(.*)/, 2);
                     return getObjectAt(scope[key], path);
                 }
-            } else if (environment.vars[node]) {
+            } else if (environment.vars[node] != undefined) {
                 // Return variable
                 if (environment.vars[node].value != undefined) {
                     return environment.vars[node].value;
