@@ -36,6 +36,7 @@ class SFItem {
         this.DamageMax = damageMax;
         this.DamageAverage = (damageMax + damageMin) / 2;
         this.Upgrades = upgradeLevel;
+        this.UpgradeMultiplier = Math.pow(1.03, upgradeLevel);
         this.AttributeTypes = attributeType;
         this.Attributes = attributeValue;
         this.HasEnchantment = enchantmentType > 0;
@@ -532,6 +533,21 @@ class SFPlayer {
         return bonus;
     }
 
+    getEquipmentUpgradeBonus (attribute) {
+        var bonus = 0;
+        for (var item of Object.values(this.Items)) {
+            if (item.Upgrades > 0) {
+                for (var i = 0; i < 3; i++) {
+                    if (item.AttributeTypes[i] == attribute.Type || item.AttributeTypes[i] == 6 || item.AttributeTypes[i] == attribute.Type + 20 || (attribute.Type > 3 && item.AttributeTypes[i] >= 21 && item.AttributeTypes[i] <= 23)) {
+                        bonus += item.Attributes[i] - Math.floor(item.Attributes[i] / item.UpgradeMultiplier);
+                    }
+                }
+            }
+        }
+
+        return bonus;
+    }
+
     getEquipmentGemBonus (attribute) {
         var bonus = 0;
         for (var item of Object.values(this.Items)) {
@@ -570,6 +586,7 @@ class SFPlayer {
         attribute.Items = this.getEquipmentItemBonus(attribute);
         attribute.Gems = this.getEquipmentGemBonus(attribute);
         attribute.Equipment = attribute.Items + attribute.Gems;
+        attribute.Upgrades = this.getEquipmentUpgradeBonus(attribute);
         attribute.Class = this.getClassBonus(attribute);
         attribute.Potion = this.getPotionBonus(attribute);
         attribute.Pet =  this.getPetBonus(attribute, pet);

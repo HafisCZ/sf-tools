@@ -611,6 +611,30 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Primary.Items,
         width: 110
     },
+    'Strength Upgrades': {
+        expr: p => p.Strength.Upgrades,
+        width: 110
+    },
+    'Dexterity Upgrades': {
+        expr: p => p.Dexterity.Upgrades,
+        width: 110
+    },
+    'Intelligence Upgrades': {
+        expr: p => p.Intelligence.Upgrades,
+        width: 110
+    },
+    'Constitution Upgrades': {
+        expr: p => p.Constitution.Upgrades,
+        width: 110
+    },
+    'Luck Upgrades': {
+        expr: p => p.Luck.Upgrades,
+        width: 110
+    },
+    'Attribute Upgrades': {
+        expr: p => p.Primary.Upgrades,
+        width: 110
+    },
     'Strength Gems': {
         expr: p => p.Strength.Gems,
         width: 110
