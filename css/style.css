@@ -474,20 +474,22 @@ h3.file-selected {
 }
 
 .css-temporary {
+    color: orange;
     position: absolute;
     font-size: 50%;
     top: 4em;
-    color: orange;
+    width: 20em;
 }
 
 .css-devmode {
+    color: #6ed1ff;
     position: absolute;
     font-size: 50%;
-    top: 4em;
-    color: #6ed1ff;
+    top: 0.75em;
+    width: 20em;
 }
 
-.ui.menu.css-menu a, .ui.menu.css-menu div {
+.ui.menu.css-menu .item {
     color: white;
 }
 

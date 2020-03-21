@@ -46,7 +46,7 @@
             <a class="item" id="show-settings"><i class="small cog icon"></i>Settings</a>
             <a class="item hidden" id="show-developer"><i class="small bug icon"></i>Developer</a>
             <div class="right menu" id="show-right-menu">
-                <a class="item" href="stats.html?anonymous" target="_blank"><i class="small user secret icon"></i><span class="css-small">Temporary session<span></a>
+                <a class="item" href="stats.html?temp" target="_blank"><i class="small user secret icon"></i><span class="css-small">Temporary session<span></a>
                 <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
             </div>
         </div>
@@ -405,12 +405,12 @@
 
         <!-- UI Handler -->
         <script type="text/javascript">
-            var anonymous = /^.*\?anonymous$/.test(window.location.href);
+            var anonymous = /^.*\?(dev\&)?temp(\&dev)?$/.test(window.location.href);
             if (anonymous) {
                 $('.css-temporary').removeClass('hidden');
             }
 
-            var dev = /^.*\?dev$/.test(window.location.href);
+            var dev = /^.*\?(temp\&)?dev(\&temp)?$/.test(window.location.href);
             if (dev) {
                 $('.css-devmode').removeClass('hidden');
                 $('#show-developer').removeClass('hidden');
@@ -429,7 +429,7 @@
             }, function () {
                 // Firefox private mode
                 UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
-            }, anonymous);
+            }, anonymous, dev);
         </script>
     </body>
 </html>

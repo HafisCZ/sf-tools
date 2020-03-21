@@ -370,10 +370,16 @@ const UpdateService = {
 };
 
 const Storage = new (class {
-    load (callback, error, anonymous) {
-        if (anonymous) {
+    load (callback, error, temp, dev) {
+        if (temp) {
             Preferences.temporary();
             FileDatabase.temporary();
+
+            Database.Temporary = true;
+        }
+
+        if (dev) {
+            Database.Developer = true;
         }
 
         FileDatabase.ready(() => {
