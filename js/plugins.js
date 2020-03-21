@@ -11,6 +11,8 @@
                 this.popup = this.$popup.get(0);
 
                 this.array = [];
+                this.starred = Preferences.get('starred', []);
+
                 this.limit = arg;
                 this.shown = false;
 
@@ -18,9 +20,25 @@
                     this.$popup.html('');
 
                     for (var i = 0; i < this.array.length; i++) {
-                        this.$popup.append($(`<div class="css-search-entry" data-entry=${ btoa(this.array[i]) }>${ this.array[i] }</div>`).on('click', event => {
+                        var star = $(`<i class="star outline icon css-star" data-entry="${ i }"></i>`).on('click', event => {
+                            $this.searchfield('favorite', $(event.currentTarget).attr('data-entry'));
+                            event.stopPropagation();
+                        });
+
+                        this.$popup.append($(`<div class="css-search-entry" data-entry="${ btoa(this.array[i]) }">${ this.array[i] }</div>`).on('click', event => {
                             $this.searchfield('select', atob($(event.currentTarget).attr('data-entry')));
-                        }));
+                        }).append(star));
+                    }
+
+                    for (var i = 0; i < this.starred.length; i++) {
+                        var star = $(`<i class="star icon css-unstar" data-entry="${ i }"></i>`).on('click', event => {
+                            $this.searchfield('unfavorite', $(event.currentTarget).attr('data-entry'));
+                            event.stopPropagation();
+                        });
+
+                        this.$popup.append($(`<div class="css-search-entry" data-entry="${ btoa(this.starred[i]) }">${ this.starred[i] }</div>`).on('click', event => {
+                            $this.searchfield('select', atob($(event.currentTarget).attr('data-entry')));
+                        }).append(star));
                     }
                 });
 
@@ -46,25 +64,45 @@
                         $this.searchfield('hide');
                     }
                 });
+
+                this.$popup.trigger('redraw');
             } else if (command == 'add' && arg) {
                 if (this.array[0] != arg) {
-                    var index = this.array.findIndex(item => item == arg);
-                    if (index != -1) {
-                        this.array.splice(index, 1);
-                    }
+                    var fav = this.starred.findIndex(item => item == arg);
+                    if (fav == -1) {
+                        var index = this.array.findIndex(item => item == arg);
+                        if (index != -1) {
+                            this.array.splice(index, 1);
+                        }
 
-                    this.array.splice(0, 0, arg);
-                    if (this.array.length > this.limit) {
-                        this.array.pop();
-                    }
+                        this.array.splice(0, 0, arg);
+                        if (this.array.length > this.limit) {
+                            this.array.pop();
+                        }
 
-                    this.$popup.trigger('redraw');
+                        this.$popup.trigger('redraw');
+                    }
+                }
+            } else if (command == 'favorite') {
+                var [ item ] = this.array.splice(arg, 1);
+                this.starred.push(item);
+                this.$popup.trigger('redraw');
+
+                Preferences.set('starred', this.starred);
+            } else if (command == 'unfavorite') {
+                this.starred.splice(arg, 1);
+                this.$popup.trigger('redraw');
+
+                Preferences.set('starred', this.starred);
+
+                if (this.starred.length == 0 && this.array.length == 0) {
+                    $this.searchfield('hide');
                 }
             } else if (command == 'toggle') {
                 if (this.shown) {
                     this.shown = false;
                     this.$popup.hide();
-                } else if (this.array.length) {
+                } else if (this.array.length || this.starred.length) {
                     this.shown = true;
                     this.$popup.show();
                 }
@@ -74,7 +112,7 @@
                     this.$popup.hide();
                 }
             } else if (command == 'show') {
-                if (!this.shown && this.array.length) {
+                if (!this.shown && (this.array.length || this.starred.length)) {
                     this.shown = true;
                     this.$popup.show();
                 }

@@ -31,11 +31,25 @@
     box-shadow: none !important;
 }
 
-.css-search-entry:hover {
-    background-color: rgba(33, 186, 69, 0.5);
-}
-
 .css-search-dropdown {
     margin-right: 2em !important;
     cursor: pointer !important;
+}
+
+.icon.css-star, .icon.css-unstar {
+    float: right;
+    margin-right: .9em;
+    opacity: 0.5;
+}
+
+.icon.css-unstar:hover::before {
+    font-family: outline-icons;
+}
+
+.icon.css-star:hover::before {
+    font-family: Icons;
+}
+
+.icon.css-star:hover, .icon.css-unstar:hover {
+    opacity: 1;
 }
