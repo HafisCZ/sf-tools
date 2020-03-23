@@ -1329,8 +1329,24 @@ class SettingsView extends View {
 
         this.refreshTemplates();
 
-        this.$parent.find('[data-op="template-default"]').click(() => {
-            this.$area.val(DEFAULT_SETTINGS).trigger('input');
+        var pretemps = '';
+        for (var [ key, value ] of Object.entries(PredefinedTemplates)) {
+            pretemps += `
+                <div class="row css-template-item">
+                    <div class="ten wide column">
+                        <b>${ key }</b>
+                    </div>
+                    <div class="six wide column css-template-buttons">
+                        <div class="ui icon right floated small buttons">
+                            <button class="ui button" data-template-predef="${ key }"><i class="play icon"></i></button>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        this.$parent.find('[data-op="template-predef"]').html(pretemps);
+        this.$parent.find('[data-template-predef]').click(event => {
+            this.$area.val(PredefinedTemplates[$(event.currentTarget).attr('data-template-predef')]).trigger('input');
         });
     }
 
