@@ -747,8 +747,6 @@ class SFPlayer {
             this.Action.Index = 0;
         }
 
-        this.Fortress.Upgrade.Building == 0 ? -1 : (12 - this.Fortress.Upgrade.Building);
-
         if (this.Achievements[50].Owned) {
             this.Fortress.Gladiator = 15;
         } else if (this.Achievements[51].Owned) {
@@ -929,7 +927,7 @@ class SFOtherPlayer extends SFPlayer {
         }
         dataType.skip(14); // skip
         this.Fortress.Upgrade = {
-            Building: dataType.long(),
+            Building: dataType.long() - 1,
             Finish: dataType.long() * 1000 + correctDate(data.prefix)
         }
         this.Fortress.Upgrades = dataType.skip(1).long();
@@ -1185,7 +1183,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Fortress.RaidStone = Math.trunc(dataType.long() / 2);
         dataType.skip(7); // skip
         this.Fortress.Upgrade = {
-            Building: dataType.long(),
+            Building: dataType.long() - 1,
             Finish: dataType.long() * 1000 + correctDate(data.prefix)
         }
         this.Fortress.Upgrades = dataType.skip(8).long();

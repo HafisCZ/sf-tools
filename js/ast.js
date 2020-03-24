@@ -835,7 +835,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Action Finish': {
         expr: p => p.Action.Finish,
-        format: (p, x) => x < 0 ? formatDate(x) : '',
+        format: (p, x) => x < 0 ? '' : formatDate(x),
         difference: false,
         statistics: false
     },
@@ -1021,7 +1021,13 @@ const SP_KEYWORD_MAPPING_0 = {
     'Building': {
         expr: p => p.Fortress.Upgrade.Building,
         width: 180,
-        format: (p, x) => FORTRESS_BUILDINGS[x],
+        format: (p, x) => FORTRESS_BUILDINGS[x] || '',
+        difference: false,
+        statistics: false
+    },
+    'Building Finish': {
+        expr: p => p.Fortress.Upgrade.Finish,
+        format: (p, x) => x < 0 ? '' : formatDate(x),
         difference: false,
         statistics: false
     },
