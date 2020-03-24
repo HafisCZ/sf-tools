@@ -370,7 +370,7 @@ class AST {
         }
     }
 
-    eval (player, environment = { func: { }, vars: { } }, scope = undefined, node = this.root) {
+    eval (player, environment = { func: { }, vars: { }, svars: { } }, scope = undefined, node = this.root) {
         if (typeof(node) == 'object') {
             if (node.noeval) {
                 return node.args[0];
@@ -527,7 +527,7 @@ const SP_KEYWORD_MAPPING_0 = {
     'Role': {
         expr: p => p.Group.Role,
         flip: true,
-        format: (p, x) => p.hasGuild() ? '?' : GROUP_ROLES[cell.Group.Role],
+        format: (p, e, x) => p.hasGuild() ? '?' : GROUP_ROLES[cell.Group.Role],
         difference: false,
         statistics: false
     },
@@ -579,51 +579,51 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Base Cost': {
         expr: p => p.Primary.NextCost,
-        format: (p, x) => formatAsSpacedNumber(x)
+        format: (p, e, x) => formatAsSpacedNumber(x)
     },
     'Strength Cost': {
         expr: p => p.Strength.NextCost,
-        format: (p, x) => formatAsSpacedNumber(x)
+        format: (p, e, x) => formatAsSpacedNumber(x)
     },
     'Dexterity Cost': {
         expr: p => p.Dexterity.NextCost,
-        format: (p, x) => formatAsSpacedNumber(x)
+        format: (p, e, x) => formatAsSpacedNumber(x)
     },
     'Intelligence Cost': {
         expr: p => p.Intelligence.NextCost,
-        format: (p, x) => formatAsSpacedNumber(x)
+        format: (p, e, x) => formatAsSpacedNumber(x)
     },
     'Constitution Cost': {
         expr: p => p.Constitution.NextCost,
-        format: (p, x) => formatAsSpacedNumber(x)
+        format: (p, e, x) => formatAsSpacedNumber(x)
     },
     'Luck Cost': {
         expr: p => p.Luck.NextCost,
-        format: (p, x) => formatAsSpacedNumber(x)
+        format: (p, e, x) => formatAsSpacedNumber(x)
     },
     'Base Total Cost': {
         expr: p => p.Primary.TotalCost,
-        format: (p, x) => formatAsSpacedNumber(x)
+        format: (p, e, x) => formatAsSpacedNumber(x)
     },
     'Strength Total Cost': {
         expr: p => p.Strength.TotalCost,
-        format: (p, x) => formatAsSpacedNumber(x)
+        format: (p, e, x) => formatAsSpacedNumber(x)
     },
     'Dexterity Total Cost': {
         expr: p => p.Dexterity.TotalCost,
-        format: (p, x) => formatAsSpacedNumber(x)
+        format: (p, e, x) => formatAsSpacedNumber(x)
     },
     'Intelligence Total Cost': {
         expr: p => p.Intelligence.TotalCost,
-        format: (p, x) => formatAsSpacedNumber(x)
+        format: (p, e, x) => formatAsSpacedNumber(x)
     },
     'Constitution Total Cost': {
         expr: p => p.Constitution.TotalCost,
-        format: (p, x) => formatAsSpacedNumber(x)
+        format: (p, e, x) => formatAsSpacedNumber(x)
     },
     'Luck Total Cost': {
         expr: p => p.Luck.TotalCost,
-        format: (p, x) => formatAsSpacedNumber(x)
+        format: (p, e, x) => formatAsSpacedNumber(x)
     },
     'Attribute Pet': {
         expr: p => p.Primary.Pet,
@@ -819,7 +819,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Runes': {
         expr: p => p.Runes.Runes,
-        format: (p, x) => `e${ x }`,
+        format: (p, e, x) => `e${ x }`,
         width: 100
     },
     'Action Index': {
@@ -829,13 +829,13 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Status': {
         expr: p => p.Action.Status,
-        format: (p, x) => PLAYER_ACTIONS[Math.max(0, x)],
+        format: (p, e, x) => PLAYER_ACTIONS[Math.max(0, x)],
         difference: false,
         statistics: false
     },
     'Action Finish': {
         expr: p => p.Action.Finish,
-        format: (p, x) => x < 0 ? '' : formatDate(x),
+        format: (p, e, x) => x < 0 ? '' : formatDate(x),
         difference: false,
         statistics: false
     },
@@ -997,7 +997,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Class': {
         expr: p => p.Class,
-        format: (p, x) => PLAYER_CLASS[x],
+        format: (p, e, x) => PLAYER_CLASS[x],
         difference: false,
         statistics: false
     },
@@ -1021,13 +1021,13 @@ const SP_KEYWORD_MAPPING_0 = {
     'Building': {
         expr: p => p.Fortress.Upgrade.Building,
         width: 180,
-        format: (p, x) => FORTRESS_BUILDINGS[x] || '',
+        format: (p, e, x) => FORTRESS_BUILDINGS[x] || '',
         difference: false,
         statistics: false
     },
     'Building Finish': {
         expr: p => p.Fortress.Upgrade.Finish,
-        format: (p, x) => x < 0 ? '' : formatDate(x),
+        format: (p, e, x) => x < 0 ? '' : formatDate(x),
         difference: false,
         statistics: false
     },
@@ -1038,19 +1038,19 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Timestamp': {
         expr: p => p.Timestamp,
-        format: (p, x) => formatDate(x),
+        format: (p, e, x) => formatDate(x),
         difference: false,
         statistics: false
     },
     'Guild Joined': {
         expr: p => p.Group.Joined,
-        format: (p, x) => p.hasGuild() ? formatDate(x) : '',
+        format: (p, e, x) => p.hasGuild() ? formatDate(x) : '',
         difference: false,
         statistics: false
     },
     'Gladiator': {
         expr: p => p.Fortress.Gladiator,
-        format: (p, x) => (x == 0 ? '' : (x == 1 ? '1+' : (x == 5 ? '5+' : (x == 10 ? '10+' : 15))))
+        format: (p, e, x) => (x == 0 ? '' : (x == 1 ? '1+' : (x == 5 ? '5+' : (x == 10 ? '10+' : 15))))
     },
     'XP': {
         expr: p => p.XP
@@ -1124,7 +1124,7 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Potion Expire': {
         expr: p => p.Potions[0].Size == 0 ? 0 : Math.min(... (p.Potions.filter(pot => pot.Size > 0).map(pot => pot.Expire))),
-        format: (p, x) => x == 0 ? '' : formatDate(x),
+        format: (p, e, x) => x == 0 ? '' : formatDate(x),
         width: 160,
         difference: false,
         statistics: false
@@ -1136,40 +1136,37 @@ const SP_KEYWORD_MAPPING_3 = {
     'Simulator Avg': {
         expr: (p, e) => {
             if (e.vars.Simulator && e.vars.Simulator.value[p.Identifier]) {
-                var score = e.vars.Simulator.value[p.Identifier][p.Timestamp];
-                return score ? score.avg : undefined;
+                return e.vars.Simulator.value[p.Identifier].avg;
             } else {
                 return undefined;
             }
         },
         alias: 'Win Avg %',
         width: 120,
-        format: (p, x) => `${ (x).toFixed(2) }%`
+        format: (p, e, x) => `${ (x).toFixed(2) }%`
     },
     'Simulator Min': {
         expr: (p, e) => {
             if (e.vars.Simulator && e.vars.Simulator.value[p.Identifier]) {
-                var score = e.vars.Simulator.value[p.Identifier][p.Timestamp];
-                return score ? score.min : undefined;
+                return e.vars.Simulator.value[p.Identifier].min;
             } else {
                 return undefined;
             }
         },
         alias: 'Win Min %',
         width: 120,
-        format: (p, x) => `${ (x).toFixed(2) }%`
+        format: (p, e, x) => `${ (x).toFixed(2) }%`
     },
     'Simulator Max': {
         expr: (p, e) => {
             if (e.vars.Simulator && e.vars.Simulator.value[p.Identifier]) {
-                var score = e.vars.Simulator.value[p.Identifier][p.Timestamp];
-                return score ? score.max : undefined;
+                return e.vars.Simulator.value[p.Identifier].max;
             } else {
                 return undefined;
             }
         },
         alias: 'Win Max %',
         width: 120,
-        format: (p, x) => `${ (x).toFixed(2) }%`
+        format: (p, e, x) => `${ (x).toFixed(2) }%`
     }
 }

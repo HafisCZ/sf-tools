@@ -31,7 +31,7 @@ class HeaderGroup {
 }
 
 const ReservedCategories = {
-    'Potions': function (group, category, last) {
+    'Potions': function (root, group, category, last) {
         group.add(category.alias != undefined ? category.alias : 'Potions', category, {
             width: 109
         }, (player) => {
@@ -40,22 +40,22 @@ const ReservedCategories = {
             var potion2 = player.Potions[2].Size;
 
             var color0 = CompareEval.evaluate(potion0, category.color);
-            color0 = (color0 != undefined ? color0 : (category.expc ? category.expc(player, player.Potions[0]) : '')) || '';
+            color0 = (color0 != undefined ? color0 : (category.expc ? category.expc(player, root, player.Potions[0]) : '')) || '';
 
             var color1 = CompareEval.evaluate(potion1, category.color);
-            color1 = (color1 != undefined ? color1 : (category.expc ? category.expc(player, player.Potions[1]) : '')) || '';
+            color1 = (color1 != undefined ? color1 : (category.expc ? category.expc(player, root, player.Potions[1]) : '')) || '';
 
             var color2 = CompareEval.evaluate(potion2, category.color);
-            color2 = (color2 != undefined ? color2 : (category.expc ? category.expc(player, player.Potions[2]) : '')) || '';
+            color2 = (color2 != undefined ? color2 : (category.expc ? category.expc(player, root, player.Potions[2]) : '')) || '';
 
             var displayValue0 = CompareEval.evaluate(potion0, category.value);
-            displayValue0 = displayValue0 != undefined ? displayValue0 : (category.format ? category.format(player, player.Potions[0]) : undefined);
+            displayValue0 = displayValue0 != undefined ? displayValue0 : (category.format ? category.format(player, root, player.Potions[0]) : undefined);
 
             var displayValue1 = CompareEval.evaluate(potion1, category.value);
-            displayValue1 = displayValue1 != undefined ? displayValue1 : (category.format ? category.format(player, player.Potions[1]) : undefined);
+            displayValue1 = displayValue1 != undefined ? displayValue1 : (category.format ? category.format(player, root, player.Potions[1]) : undefined);
 
             var displayValue2 = CompareEval.evaluate(potion2, category.value);
-            displayValue2 = displayValue2 != undefined ? displayValue2 : (category.format ? category.format(player, player.Potions[2]) : undefined);
+            displayValue2 = displayValue2 != undefined ? displayValue2 : (category.format ? category.format(player, root, player.Potions[2]) : undefined);
 
             return CellGenerator.Cell(displayValue0 == undefined ? potion0 : displayValue0, color0, category.visible ? '' : color0) + CellGenerator.Cell(displayValue1 == undefined ? potion1 : displayValue1, color1, category.visible ? '' : color1) + CellGenerator.Cell(displayValue2 == undefined ? potion2 : displayValue2, color2, category.visible ? '' : color2, last);
         }, null, player => player.Potions.reduce((c, p) => c + p.Size, 0), 3);
@@ -63,15 +63,15 @@ const ReservedCategories = {
 };
 
 const ReservedHeaders = {
-    'Mount': function (group, header, last) {
+    'Mount': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Mount', header, {
             width: 80
         }, (player, compare) => {
             var color = CompareEval.evaluate(player.Mount, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, player.Mount) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(player, root, player.Mount) : '')) || '';
 
             var displayValue = CompareEval.evaluate(player.Mount, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, player.Mount) : undefined);
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, player.Mount) : undefined);
 
             if (displayValue != undefined) {
                 return CellGenerator.Cell(displayValue, color, header.visible ? '' : color, last);
@@ -82,10 +82,10 @@ const ReservedHeaders = {
             var a = operation(players.map(p => p.player.Mount));
 
             var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(null, a) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(null, root, a) : '')) || '';
 
             var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, a) : undefined);
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, root, a) : undefined);
 
             if (displayValue != undefined) {
                 return CellGenerator.Cell(displayValue, '', color);
@@ -94,7 +94,7 @@ const ReservedHeaders = {
             }
         }, player => player.Mount);
     },
-    'Awards': function (group, header, last) {
+    'Awards': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Awards', header, {
             width: 100
         }, (player, compare) => {
@@ -104,10 +104,10 @@ const ReservedHeaders = {
             }
 
             var color = CompareEval.evaluate(player.Achievements.Owned, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, player.Achievements.Owned) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(player, root, player.Achievements.Owned) : '')) || '';
 
             var displayValue = CompareEval.evaluate(player.Achievements.Owned, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, player.Achievements.Owned) : (player.Achievements.Owned + (header.extra || '')));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, player.Achievements.Owned) : (player.Achievements.Owned + (header.extra || '')));
 
             return CellGenerator.Cell(displayValue + (header.hydra && player.Achievements.Dehydration ? CellGenerator.Small(' H') : '') + reference, color, header.visible ? '' : color, last);
         }, (players, operation) => {
@@ -120,22 +120,22 @@ const ReservedHeaders = {
             }
 
             var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(null, a) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(null, root, a) : '')) || '';
 
             var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, a) : (a + (header.extra || '')));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, root, a) : (a + (header.extra || '')));
 
             return CellGenerator.Cell(displayValue + reference, '', color);
         }, player => player.Achievements.Owned);
     },
-    'Album': function (group, header, last) {
+    'Album': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Album', header, {
             width: 100 + (header.difference ? 30 : 0) + (header.grail ? 15 : 0)
         }, (player, compare) => {
             var value = header.percentage ? 100 * player.Book / SCRAPBOOK_COUNT : player.Book;
 
             var color = CompareEval.evaluate(value, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, value) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(player, root, value) : '')) || '';
 
             var reference = (!this.nodiff && header.difference && compare) ? (header.percentage ? (100 * compare.Book / SCRAPBOOK_COUNT) : compare.Book) : '';
             if (reference) {
@@ -143,7 +143,7 @@ const ReservedHeaders = {
             }
 
             var displayValue = CompareEval.evaluate(value, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, value) : (header.percentage ? value.toFixed(2) : value));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, value) : (header.percentage ? value.toFixed(2) : value));
 
             return CellGenerator.Cell(displayValue + ((header.percentage || header.extra) ? (header.extra || '%') : '') + (header.grail && player.Achievements.Grail ? CellGenerator.Small(' G') : '') + reference, color, header.visible ? '' : color, last);
         }, (players, operation) => {
@@ -151,7 +151,7 @@ const ReservedHeaders = {
             var b = operation(players.map(p => header.percentage ? 100 * p.compare.Book / SCRAPBOOK_COUNT : p.compare.Book));
 
             var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, a) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(player, root, a) : '')) || '';
 
             var reference = header.difference ? b : '';
             if (reference) {
@@ -159,12 +159,12 @@ const ReservedHeaders = {
             }
 
             var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, a) : (header.percentage ? a.toFixed(2) : a));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, root, a) : (header.percentage ? a.toFixed(2) : a));
 
             return CellGenerator.Cell(displayValue + ((header.percentage || header.extra) ? (header.extra || '%') : '') + reference, '', color);
         }, player => player.Book);
     },
-    'Knights': function (group, header, last) {
+    'Knights': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Knights', header, {
             width: 100
         }, (player, compare) => {
@@ -178,10 +178,10 @@ const ReservedHeaders = {
             }
 
             var color = CompareEval.evaluate(player.Fortress.Knights, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, player.Fortress.Knights) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(player, root, player.Fortress.Knights) : '')) || '';
 
             var displayValue = CompareEval.evaluate(player.Fortress.Knights, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, player.Fortress.Knights) : undefined);
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, player.Fortress.Knights) : undefined);
 
             if (displayValue != undefined) {
                 return CellGenerator.Cell(displayValue + reference, color, header.visible ? '' : color, last);
@@ -201,25 +201,25 @@ const ReservedHeaders = {
             }
 
             var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, a) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(player, root, a) : '')) || '';
 
             var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, a) : (a + (header.extra || '')));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, root, a) : (a + (header.extra || '')));
 
             return CellGenerator.Cell(displayValue + reference, '', color);
         }, player => player.Fortress.Knights == undefined ? -1 : player.Fortress.Knights);
     },
-    'Last Active': function (group, header, last) {
+    'Last Active': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Last Active', header, {
             width: 160,
         }, (player, compare) => {
             var a = Math.max(0, player.Timestamp - player.LastOnline);
 
             var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, a) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(player, root, a) : '')) || '';
 
             var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, a) : formatDate(player.LastOnline));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, a) : formatDate(player.LastOnline));
 
             return CellGenerator.Cell(displayValue, color, header.visible ? '' : color, last);
         }, null, player => player.LastOnline);
@@ -249,11 +249,14 @@ class PlayersTableArray extends Array {
 
 // Special array for group only
 class GroupTableArray extends Array {
-    constructor (joined, kicked) {
+    constructor (joined, kicked, ts, rs) {
         super();
 
         this.joined = joined;
         this.kicked = kicked;
+
+        this.timestamp = ts;
+        this.reference = rs;
     }
 
     add (player, compare) {
@@ -288,13 +291,13 @@ class TableInstance {
             var glast = ci == ca.length - 1;
 
             if (ReservedCategories[category.name]) {
-                ReservedCategories[category.name](group, category, !glast);
+                ReservedCategories[category.name](this.settings, group, category, !glast);
             } else {
                 category.h.forEach((header, hi, ha) => {
                     var hlast = (!glast && hi == ha.length - 1) || header.border >= 2 || (hi != ha.length - 1 && (ha[hi + 1].border == 1 || ha[hi + 1].border == 3));
 
                     if (!header.expr && ReservedHeaders[header.name]) {
-                        ReservedHeaders[header.name](group, header, hlast);
+                        ReservedHeaders[header.name](this.settings, group, header, hlast);
                     } else {
                         group.add((header.alias != undefined ? header.alias : header.name), header, {
                             width: Math.max(100, (header.alias || header.name).length * 12)
@@ -304,17 +307,17 @@ class TableInstance {
                                 return CellGenerator.Plain('?', hlast);
                             }
 
-                            var reference = ((!this.nodiff && header.difference && compare) ? header.expr(compare, this.settings) : '') || '';
+                            var reference = ((!this.nodiff && header.difference && compare) ? header.expr(compare, this.settings.getCompareEnvironment()) : '') || '';
                             if (reference) {
                                 reference = header.flip ? (reference - value) : (value - reference);
                                 reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
                             }
 
                             var color = CompareEval.evaluate(value, header.color);
-                            color = (color != undefined ? color : (header.expc ? header.expc(player, value) : '')) || '';
+                            color = (color != undefined ? color : (header.expc ? header.expc(player, this.settings, value) : '')) || '';
 
                             var displayValue = CompareEval.evaluate(value, header.value);
-                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, value) : (value + (header.extra || '')));
+                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, this.settings, value) : (value + (header.extra || '')));
 
                             return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast);
                         }, (players, operation) => {
@@ -325,7 +328,7 @@ class TableInstance {
 
                             value = operation(value);
 
-                            var reference = header.difference ? players.map(p => header.expr(p.compare, this.settings)).filter(x => x != undefined) : '';
+                            var reference = header.difference ? players.map(p => header.expr(p.compare, this.settings.getCompareEnvironment())).filter(x => x != undefined) : '';
                             if (reference && reference.length) {
                                 reference = operation(reference);
                                 reference = header.flip ? (reference - value) : (value - reference);
@@ -333,10 +336,10 @@ class TableInstance {
                             }
 
                             var color = CompareEval.evaluate(value, header.color);
-                            color = (color != undefined ? color : (header.expc ? header.expc(null, value) : '')) || '';
+                            color = (color != undefined ? color : (header.expc ? header.expc(null, this.settings, value) : '')) || '';
 
                             var displayValue = CompareEval.evaluate(value, header.value);
-                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(null, value) : (value + (header.extra || '')));
+                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(null, this.settings, value) : (value + (header.extra || '')));
 
                             return CellGenerator.Cell(value + reference, '', color);
                         }, player => {
@@ -391,6 +394,8 @@ class TableInstance {
             if (this.type == TableType.Players) {
                 this.settings.evaluateConstants(players, sim, array.perf || this.settings.globals.performance);
             } else {
+                players.timestamp = array.timestamp;
+                players.reference = array.reference;
                 this.settings.evaluateConstants(players, this.settings.globals.simulator, array.length, true);
             }
         }
@@ -1055,8 +1060,8 @@ const SettingsCommands = [
         } else {
             var ast = new AST(arg);
             if (ast.isValid()) {
-                root.setLocalVariable(key, (player, val) => {
-                    return ast.eval(player, root, val);
+                root.setLocalVariable(key, (player, env, val) => {
+                    return ast.eval(player, env, val);
                 });
             }
         }
@@ -1094,8 +1099,8 @@ const SettingsCommands = [
         var [ , key, a ] = this.match(string);
         var ast = new AST(a);
         if (ast.isValid()) {
-            root.setLocalVariable(key, (player) => {
-                var value = ast.eval(player, root);
+            root.setLocalVariable(key, (player, env) => {
+                var value = ast.eval(player, env);
                 return typeof(value) == 'string' ? value : (isNaN(value) ? undefined : value);
             });
         }
@@ -1109,8 +1114,8 @@ const SettingsCommands = [
         var [ , key, a ] = this.match(string);
         var ast = new AST(a);
         if (ast.isValid()) {
-            root.setLocalVariable(key, (player, val) => {
-                return getCSSColor(ast.eval(player, root, val));
+            root.setLocalVariable(key, (player, env, val) => {
+                return getCSSColor(ast.eval(player, env, val));
             });
         }
     }, function (string) {
@@ -1363,12 +1368,26 @@ class Settings {
         return content;
     }
 
+    getEnvironment () {
+        return this;
+    }
+
+    getCompareEnvironment () {
+        return {
+            func: this.func,
+            vars: this.cvars,
+            svars: this.svars
+        }
+    }
+
     constructor (string) {
         this.code = string;
 
         // Root variables
         this.c = [];
         this.vars = {};
+        this.svars = {};
+        this.cvars = {};
         this.func = {};
 
         this.globals = {
@@ -1407,13 +1426,32 @@ class Settings {
         for (var [name, data] of Object.entries(this.vars)) {
             if (data.ast) {
                 var scope = {};
+                var scope2 = {};
+
                 if (data.arg) {
                     scope[data.arg] = players.map(p => p.player);
+
+                    if (compare) {
+                        scope2[data.arg] = players.map(p => p.compare);
+                    }
                 }
 
                 data.value = data.ast.eval(undefined, this, scope);
                 if (isNaN(data.value)) {
                     data.value = undefined;
+                }
+
+                if (compare) {
+                    var val = data.ast.eval(undefined, this, scope2);
+                    if (isNaN(val)) {
+                        val = undefined;
+                    }
+
+                    this.cvars[name] = {
+                        value: val,
+                        ast: data.ast,
+                        arg: data.arg
+                    };
                 }
             }
         }
@@ -1435,7 +1473,7 @@ class Settings {
             var array1 = [];
             var array2 = [];
 
-            if (compare) {
+            if (compare && players.reference != players.timestamp) {
                 for (var player of array) {
                     array1.push({
                         player: player.player
@@ -1460,19 +1498,31 @@ class Settings {
 
             var results = {};
             for (var result of array1) {
-                results[result.player.Identifier] = { };
-                results[result.player.Identifier][result.player.Timestamp] = result.score;
-            }
-
-            for (var result of array2) {
-                results[result.player.Identifier][result.player.Timestamp] = result.score;
+                results[result.player.Identifier] = result.score;
             }
 
             this.vars['Simulator'] = {
                 value: results
             }
+
+            if (compare && players.reference != players.timestamp) {
+                var cresults = { };
+
+                for (var result of array2) {
+                    cresults[result.player.Identifier] = result.score;
+                }
+
+                this.cvars['Simulator'] = {
+                    value: cresults
+                }
+            } else if (compare) {
+                this.cvars['Simulator'] = {
+                    value: results
+                }
+            }
         } else {
             delete this.vars['Simulator'];
+            delete this.cvars['Simulator'];
         }
     }
 

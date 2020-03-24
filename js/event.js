@@ -265,7 +265,7 @@ class GroupDetailView extends View {
         }
 
         // Add entries
-        var entries = new GroupTableArray(joined, kicked);
+        var entries = new GroupTableArray(joined, kicked, this.timestamp, this.reference);
         members.forEach(function (player) {
             entries.add(player, membersReferences.find(c => c.Identifier == player.Identifier));
         });

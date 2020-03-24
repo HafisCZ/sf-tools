@@ -67,7 +67,7 @@ indexed static # Show static index column on left side
 
 category General
 
-header UP
+header UP # This column indicates how recent the player information is
 expr now() - Timestamp # Calculate how long ago was the player captured
 width 40 # Set column width to 40 pixels
 flip on # Treat lower values as better
@@ -94,7 +94,7 @@ color equal 4 red
 color equal 5 violet
 color equal 6 orange
 
-header Gear
+header Gear # This column indicates what gear has the player equipped
 expr (Rune Gold + Rune XP >= 50 ? "Q" : "F") # Add gold and xp runes and decide whether gear is for quests or not
 width @small
 color equal Q lightblue
@@ -157,7 +157,7 @@ color default red
 
 category Activity
 
-header Status
+header Status # This column indicates what the player is doing right now
 alias ATM
 width 30
 color equal 0 @red
@@ -175,7 +175,7 @@ color equal 2  darkorange
 color equal 1  darkorange
 color default @red
 
-header Last Active
+header Last Active # This column indicated how long ago was the player active (referenced against capture date)
 color above @21days darkred
 color above @7days red
 color above @3days darkorange
