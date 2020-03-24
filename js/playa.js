@@ -567,6 +567,16 @@ class SFPlayer {
         }
     }
 
+    getPotionSize (attribute) {
+        for (var potion of this.Potions) {
+            if (potion.Type == attribute.Type) {
+                return potion.Size;
+            }
+        }
+
+        return 0;
+    }
+
     getPotionBonus (attribute) {
         for (var potion of this.Potions) {
             if (potion.Type == attribute.Type) {
@@ -592,6 +602,7 @@ class SFPlayer {
         attribute.Pet =  this.getPetBonus(attribute, pet);
         attribute.NextCost = calculateAttributePrice(attribute.Base - this.Achievements.Owned * 5);
         attribute.TotalCost = calculateTotalAttributePrice(attribute.Base - this.Achievements.Owned * 5);
+        attribute.PotionSize = this.getPotionSize(attribute);
     }
 
     evaluateCommon () {

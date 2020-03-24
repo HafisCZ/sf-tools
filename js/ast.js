@@ -557,6 +557,24 @@ const SP_KEYWORD_MAPPING_0 = {
     'Attribute': {
         expr: p => p.Primary.Total
     },
+    'Strength Size': {
+        expr: p => p.Strength.PotionSize
+    },
+    'Dexterity Size': {
+        expr: p => p.Dexterity.PotionSize
+    },
+    'Intelligence Size': {
+        expr: p => p.Intelligence.PotionSize
+    },
+    'Constitution Size': {
+        expr: p => p.Constitution.PotionSize
+    },
+    'Luck Size': {
+        expr: p => p.Luck.PotionSize
+    },
+    'Attribute Size': {
+        expr: p => p.Primary.PotionSize
+    },
     'Strength Pet': {
         expr: p => p.Strength.Pet,
         width: 110
@@ -816,6 +834,10 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Honor': {
         expr: p => p.Honor
+    },
+    'Life Potion': {
+        expr: p => p.Potions.Life == 25,
+        format: (p, e, x) => x ? 'Yes' : 'No'
     },
     'Runes': {
         expr: p => p.Runes.Runes,
