@@ -731,7 +731,7 @@ class BrowseView extends View {
 
         // Configuration
         this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
-            UI.SettingsFloat.show('players');
+            UI.SettingsFloat.show('players', PredefinedTemplates['Players Default']);
         });
 
         // Hidden toggle
@@ -875,7 +875,7 @@ class BrowseView extends View {
     load () {
         // Table instance
         this.sorting = undefined;
-        this.table = new TableInstance(Settings.load('players'), TableType.Players);
+        this.table = new TableInstance(Settings.load('players', PredefinedTemplates['Players Default']), TableType.Players);
 
         // Configuration indicator
         if (Settings.exists('players')) {
@@ -1402,9 +1402,9 @@ class SettingsView extends View {
 
     }
 
-    show (identifier) {
+    show (identifier, def) {
         this.identifier = identifier;
-        this.code = Settings.load(identifier).getCode();
+        this.code = Settings.load(identifier, def).getCode();
 
         if (this.$items.length) {
             var items = [{
@@ -1448,13 +1448,13 @@ class SettingsFloatView extends SettingsView {
         super(parent);
     }
 
-    show (identifier) {
+    show (identifier, def) {
         this.$parent.modal({
             centered: false,
             transition: 'fade'
         }).modal('show');
 
-        super.show(identifier);
+        super.show(identifier, def);
     }
 
     hide () {

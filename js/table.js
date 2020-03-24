@@ -1309,8 +1309,8 @@ class Settings {
     }
 
     // Load settings
-    static load (identifier) {
-        return new Settings(Preferences.get(`settings/${ identifier }`, Preferences.get('settings', PredefinedTemplates.Default)));
+    static load (identifier, def) {
+        return new Settings(Preferences.get(`settings/${ identifier }`, def || Preferences.get('settings', PredefinedTemplates.Default)));
     }
 
     // Get code
