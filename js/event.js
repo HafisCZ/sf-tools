@@ -136,7 +136,7 @@ class GroupDetailView extends View {
 
         // Configuration
         this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
-            UI.SettingsFloat.show(this.identifier);
+            UI.SettingsFloat.show(this.identifier, PredefinedTemplates['Guilds Default']);
         });
 
         this.$name = this.$parent.find('[data-op="name"]');
@@ -221,7 +221,7 @@ class GroupDetailView extends View {
         }
 
         this.sorting = undefined;
-        this.table = new TableInstance(Settings.load(this.identifier), TableType.Group);
+        this.table = new TableInstance(Settings.load(this.identifier, PredefinedTemplates['Guilds Default']), TableType.Group);
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];

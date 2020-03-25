@@ -181,5 +181,166 @@ color above @7days red
 color above @3days darkorange
 color above @1day orange
 color above @12hours yellow
-color default @green`
+color default @green`,
+    'Guilds Default': `# Created by Acclamator
+
+# Show member list
+members off
+name @normal
+
+# Global settings
+statistics on # Show statistics below the table
+difference on # Show difference
+brackets on
+indexed static
+
+
+category
+header UP
+statistics off
+expr now()-Timestamp
+width 40
+flip on
+color above @21days darkred
+color above @7days red
+color above @3days darkorange
+color above @1day orange
+color above @12hours yellow
+color default @green
+value default @empty
+difference off
+
+
+category General
+
+header Class
+width @small
+value equal 1 W
+value equal 2 M
+value equal 3 S
+value equal 4 A
+value equal 5 BM
+value equal 6 B
+color equal 1 1874CD
+color equal 2 darkorchid
+color equal 3 lawngreen
+color equal 4 red
+color equal 5 violet
+color equal 6 orange
+difference off
+
+header Rank
+width @small
+
+header Level
+width @small
+
+header Awards
+width @small
+hydra on # Show hydra
+
+header Album
+percentage on
+color above 90 green
+color above 80 yellow
+color above 70 orange
+color above 60 darkorange
+color above 50 red
+color default darkred
+
+
+category Bonuses
+
+header Treasury
+width @small
+alias Gold
+header Instructor
+width @small
+alias EXP
+header Knights
+width @small
+difference off
+header Pet
+width @small
+
+
+category Fights
+
+header Gear
+expr (Rune Gold + Rune XP >= 50 ? "Q" : "F")
+width @small
+color equal Q lightblue
+color equal F orange
+difference off
+statistics off
+
+header Attribute
+alias Main
+difference off
+header Constitution
+alias Con
+difference off
+
+header Portal
+
+
+category Potion
+difference off
+
+header Attribute Size
+alias M
+statistics off
+color equal 25 @green
+color equal 15 yellow
+color default @red
+value default @empty
+width 10
+
+header Constitution Size
+alias C
+statistics off
+color equal 25 @green
+color equal 15 yellow
+color default @red
+value default @empty
+width 10
+
+header Life Potion
+alias E
+statistics off
+color equal 1 @green
+color equal 0 @red
+value default @empty
+width 10
+
+
+category Activity
+difference off
+
+header Status
+alias ATM
+width 30
+color equal 0 @red
+color equal 1 @orange
+color equal 2 @green
+value equal 0 I
+value equal 1 W
+value equal 2 Q
+
+header Mount
+percentage on
+color equal 4 @green
+color equal 3 @orange
+color equal 2  orange
+color equal 1  darkorange
+color default @red
+
+header Last Active
+color above @21days darkred
+color above @7days red
+color above @3days darkorange
+color above @1day orange
+color above @12hours yellow
+color default @green
+`
 };

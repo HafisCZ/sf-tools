@@ -49,6 +49,32 @@ const POTIONS = [
     'Life'
 ];
 
+const GEMTYPES = [
+    '',
+    'Strength',
+    'Dexterity',
+    'Intelligence',
+    'Constitution',
+    'Luck',
+    'Black'
+];
+
+const RUNETYPES = [
+    '',
+    'Gold',
+    'Epic Chance',
+    'Item Quality',
+    'XP',
+    'Health',
+    'Fire Resist',
+    'Cold Resist',
+    'Lightning Resist',
+    'Total Resist',
+    'Fire Damage',
+    'Cold Damage',
+    'Lightning Damage'
+];
+
 const GROUP_ROLES = [
     '',
     'Leader',
@@ -88,6 +114,19 @@ function getFightTargetName (type, name, face) {
         return 'Unknown';
     }
 }
+
+const ITEM_TYPES = [
+    'Head',
+    'Body',
+    'Hand',
+    'Feet',
+    'Neck',
+    'Belt',
+    'Ring',
+    'Misc',
+    'Wpn1',
+    'Wpn2',
+];
 
 const NAME_UNIT_UNDERWORLD = {
     0: 'Goblin',

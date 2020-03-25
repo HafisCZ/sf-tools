@@ -212,6 +212,10 @@ input:disabled {
     padding: 0 !important;
 }
 
+.border-bottom-thin {
+    border-bottom: 1px solid black !important;
+}
+
 .table-group {
     text-align: center !important;
     font-family: 'Roboto', sans-serif !important;
@@ -395,6 +399,16 @@ h3.file-selected {
 .ta-reserved-special {
     text-shadow: -0.06ex 0 #a37500, 0.06ex 0 #a37500;
     color: #a37500;
+}
+
+.ta-reserved-itemized {
+    text-shadow: -0.06ex 0 #3CB371, 0.06ex 0 #3CB371;
+    color: #3CB371;
+}
+
+.ta-reserved-itemizable {
+    text-shadow: -0.06ex 0 #eb4034, 0.06ex 0 #eb4034;
+    color: #eb4034;
 }
 
 .ta-color {

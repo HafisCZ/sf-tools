@@ -68,6 +68,20 @@
                     <div><code>header Album</code></div>
                 </div>
             </div>
+            <h3 class="ui header">Creating a itemized column</h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        You can create a itemized column using the keywords <code>itemized by</code>. First parameter is a itemizable header name, the second itemized header name, which will be applied to the itemizable value. Please be aware that using this column type can cause severe performance issues when generating the table.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code># Category must be created for the column to exist in</code></div>
+                    <div><code>category General</code></div>
+                    <div><code>itemized Items by Item Attribute</code></div>
+                </div>
+            </div>
             <h2 class="ui header">Header names</h2>
             <hr/>
             <p>
@@ -102,6 +116,24 @@
             </p>
             <br/>
             <div class="ui five columns grid css-compact-grid ta-reserved-special" id="manual-headers-3">
+
+            </div>
+            <br/>
+            <hr/>
+            <p>
+                Itemizable headers
+            </p>
+            <br/>
+            <div class="ui five columns grid css-compact-grid ta-reserved-itemizable" id="manual-headers-5">
+
+            </div>
+            <br/>
+            <hr/>
+            <p>
+                Headers useable only within itemized headers
+            </p>
+            <br/>
+            <div class="ui five columns grid css-compact-grid ta-reserved-itemized" id="manual-headers-4">
 
             </div>
             <br/>
@@ -732,6 +764,8 @@
             $('#manual-headers-1').html(Object.keys(SP_KEYWORD_MAPPING_1).map(header => `<div class="text-center column">${ header }</div>`).join(''));
             $('#manual-headers-2').html(Object.keys(SP_KEYWORD_MAPPING_2).map(header => `<div class="text-center column">${ header }</div>`).join(''));
             $('#manual-headers-3').html(Object.keys(SP_KEYWORD_MAPPING_3).map(header => `<div class="text-center column">${ header }</div>`).join(''));
+            $('#manual-headers-4').html(Object.keys(SP_KEYWORD_MAPPING_4).map(header => `<div class="text-center column">${ header }</div>`).join(''));
+            $('#manual-headers-5').html(Object.keys(SP_KEYWORD_MAPPING_5).map(header => `<div class="text-center column">${ header }</div>`).join(''));
         </script>
     </body>
 </html>

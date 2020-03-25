@@ -1,5 +1,5 @@
 class SFItem {
-    constructor (data) {
+    constructor (data, i) {
         var dataType = ComplexDataType.create(data);
         dataType.assert(12);
 
@@ -17,6 +17,7 @@ class SFItem {
         var upgradeLevel = dataType.byte();
         var socketPower = dataType.short();
 
+        this.Slot = i;
         this.Socket = socket;
         this.GemType = socket >= 10 ? (1 + (socket % 10)) : 0;
         this.HasSocket = socket > 0;
@@ -54,6 +55,39 @@ class SFItem {
         var sell = this.getBlacksmithPrice();
         this.SellPrice.Metal = sell.Metal;
         this.SellPrice.Crystal = sell.Crystal;
+
+        this.Strength = this.getAttribute(1);
+        this.Dexterity = this.getAttribute(2);
+        this.Intelligence = this.getAttribute(3);
+        this.Constitution = this.getAttribute(4);
+        this.Luck = this.getAttribute(5);
+
+        this.RuneType = this.getRuneType();
+        this.RuneValue = this.getRuneValue();
+    }
+
+    getAttribute (id) {
+        for (var i = 0; i < 3; i++) {
+            if (this.AttributeTypes[i] == id || this.AttributeTypes[i] == 6 || this.AttributeTypes[i] == 20 + id) {
+                return {
+                    Type: id,
+                    Value: this.Attributes[i]
+                };
+            }
+        }
+        
+        return {
+            Type: id,
+            Value: 0
+        };
+    }
+
+    getRuneType () {
+        return Math.max(0, this.AttributeTypes[2] - 30);
+    }
+
+    getRuneValue () {
+        return this.AttributeTypes[2] > 30 ? this.Attributes[2] : 0;
     }
 
     getBlacksmithQuality () {
@@ -852,16 +886,16 @@ class SFOtherPlayer extends SFPlayer {
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + correctDate(data.prefix);
         this.Items = {
-            Head: new SFItem(dataType.sub(12)),
-            Body: new SFItem(dataType.sub(12)),
-            Hand: new SFItem(dataType.sub(12)),
-            Feet: new SFItem(dataType.sub(12)),
-            Neck: new SFItem(dataType.sub(12)),
-            Belt: new SFItem(dataType.sub(12)),
-            Ring: new SFItem(dataType.sub(12)),
-            Misc: new SFItem(dataType.sub(12)),
-            Wpn1: new SFItem(dataType.sub(12)),
-            Wpn2: new SFItem(dataType.sub(12))
+            Head: new SFItem(dataType.sub(12), 0),
+            Body: new SFItem(dataType.sub(12), 1),
+            Hand: new SFItem(dataType.sub(12), 2),
+            Feet: new SFItem(dataType.sub(12), 3),
+            Neck: new SFItem(dataType.sub(12), 4),
+            Belt: new SFItem(dataType.sub(12), 5),
+            Ring: new SFItem(dataType.sub(12), 6),
+            Misc: new SFItem(dataType.sub(12), 7),
+            Wpn1: new SFItem(dataType.sub(12), 8),
+            Wpn2: new SFItem(dataType.sub(12), 9)
         };
         this.Mount = dataType.short();
         this.Dungeons = {
@@ -1074,16 +1108,16 @@ class SFOwnPlayer extends SFPlayer {
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + correctDate(data.prefix);
         this.Items = {
-            Head: new SFItem(dataType.sub(12)),
-            Body: new SFItem(dataType.sub(12)),
-            Hand: new SFItem(dataType.sub(12)),
-            Feet: new SFItem(dataType.sub(12)),
-            Neck: new SFItem(dataType.sub(12)),
-            Belt: new SFItem(dataType.sub(12)),
-            Ring: new SFItem(dataType.sub(12)),
-            Misc: new SFItem(dataType.sub(12)),
-            Wpn1: new SFItem(dataType.sub(12)),
-            Wpn2: new SFItem(dataType.sub(12))
+            Head: new SFItem(dataType.sub(12), 0),
+            Body: new SFItem(dataType.sub(12), 1),
+            Hand: new SFItem(dataType.sub(12), 2),
+            Feet: new SFItem(dataType.sub(12), 3),
+            Neck: new SFItem(dataType.sub(12), 4),
+            Belt: new SFItem(dataType.sub(12), 5),
+            Ring: new SFItem(dataType.sub(12), 6),
+            Misc: new SFItem(dataType.sub(12), 7),
+            Wpn1: new SFItem(dataType.sub(12), 8),
+            Wpn2: new SFItem(dataType.sub(12), 9)
         };
         dataType.skip(118); // skip
         this.Mount = dataType.short();
