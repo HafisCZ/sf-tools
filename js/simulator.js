@@ -50,7 +50,7 @@ class FighterModel {
         let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE.COLD_DAMAGE) / 100);
         let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE.LIGHTNING_DAMAGE) / 100);
 
-        let m = (1 + this.Player.Dungeons.Group / 100) * mp * (1 + mf + mc + ml) * (this.Player.Class == 2 && target.Player.Class == 6 ? 2 : 1);
+        let m = (1 + this.Player.Dungeons.Group / 100) * mp * (1 + mf + mc + ml) * (this.Player.Class == 2 && target.Player.Class == 6 ? 2 : (this.Player.Class == 6 ? 1.5 : 1));
 
         let aa = this.Player.getPrimaryAttribute().Total;
         let ad = target.getDefenseAtribute(this).Total;
@@ -180,7 +180,7 @@ class FightSimulator {
         // Initialize fighters
         this.a.initialize(this.b);
         this.b.initialize(this.a);
-        
+
         //console.log(source.Name, this.a.Weapon1.Range.Min, this.a.Weapon1.Range.Max, ...(this.a.Weapon2 ? [ this.a.Weapon2.Range.Min, this.a.Weapon2.Range.Max ] : []));
         //console.log(target.Name, this.b.Weapon1.Range.Min, this.b.Weapon1.Range.Max, ...(this.b.Weapon2 ? [ this.b.Weapon2.Range.Min, this.b.Weapon2.Range.Max ] : []));
 
