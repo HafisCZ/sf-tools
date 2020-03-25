@@ -469,7 +469,7 @@ class TableInstance {
 
                 var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
 
-                var indexedCol = this.settings.globals.indexed ? `<td data-indexed="${ this.settings.globals.indexed }" valign="top" rowspan="${ height }">${ i + 1 }</td>` : undefined;
+                var indexedCol = this.settings.globals.indexed ? `<td valign="top" rowspan="${ height }"><ispan data-indexed="${ this.settings.globals.indexed }">${ i + 1 }</ispan></td>` : undefined;
                 var nameCol = `<td class="border-right-thin" valign="top" rowspan="${ height }">${ formatDate(timestamp) }</td>`;
 
                 var content = '';
@@ -515,7 +515,7 @@ class TableInstance {
 
                 var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
 
-                var indexedCol = this.settings.globals.indexed ? `<td data-indexed="${ this.settings.globals.indexed }" valign="top" rowspan="${ height }">${ item.index + 1 }</td>` : undefined;
+                var indexedCol = this.settings.globals.indexed ? `<td valign="top" rowspan="${ height }"><ispan data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</ispan></td>` : undefined;
                 var serverCol = this.settings.globals.server == undefined || this.settings.globals.server > 0 ? `<td valign="top" rowspan="${ height }">${ item.player.Prefix }</td>` : undefined;
                 var nameCol = `<td class="border-right-thin clickable ${ item.latest || !this.settings.globals.outdated ? '' : 'foreground-red' }" valign="top" rowspan="${ height }" data-id="${ item.player.Identifier }">${ item.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ item.player.Name }</td>`;
 
@@ -580,7 +580,7 @@ class TableInstance {
 
                 var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
 
-                var indexedCol = this.settings.globals.indexed ? `<td data-indexed="${ this.settings.globals.indexed }" valign="top" rowspan="${ height }">${ item.index + 1 }</td>` : undefined;
+                var indexedCol = this.settings.globals.indexed ? `<td valign="top" rowspan="${ height }"><ispan data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</ispan></td>` : undefined;
                 var nameCol = `<td class="border-right-thin clickable" valign="top" rowspan="${ height }" data-id="${ item.player.Identifier }">${ item.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ item.player.Name }</td>`;
 
                 var content = '';
@@ -731,7 +731,7 @@ class TableInstance {
                     </tr>
                 </thead>
                 <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
-                    ${ join(this.entries, (e, ei) => e.content.replace(/\<td data\-indexed\=\"2\"\>\d*\<\/td\>/, `<td data-indexed="2">${ ei + 1 }</td>`), 0, this.array.perf || this.settings.globals.performance) }
+                    ${ join(this.entries, (e, ei) => e.content.replace(/\<ispan data\-indexed\=\"2\"\>\d*\<\/ispan\>/, `<ispan data-indexed="2">${ ei + 1 }</ispan>`), 0, this.array.perf || this.settings.globals.performance) }
                 </tbody>
             `,
             size
@@ -761,7 +761,7 @@ class TableInstance {
             </tr>
         </thead>
             <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
-                ${ join(this.entries, (e, ei) => e.content.replace(/\<td data\-indexed\=\"2\"\>\d*\<\/td\>/, `<td data-indexed="2">${ ei + 1 }</td>`)) }
+                ${ join(this.entries, (e, ei) => e.content.replace(/\<ispan data\-indexed\=\"2\"\>\d*\<\/ispan\>/, `<ispan data-indexed="2">${ ei + 1 }</ispan>`)) }
         `;
 
         var showMembers = this.settings.globals.members;
