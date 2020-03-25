@@ -40,7 +40,7 @@ const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\{|\}|\|\||\!\=|\!|\&\&|\>\=|\<\=|\=\
 class AST {
     constructor (string) {
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(AST_REGEXP).map(token => token.trim()).filter(token => token.length);
-        this.root = this.evalExpression();console.log(this.root);
+        this.root = this.evalExpression();
     }
 
     static format (string) {
