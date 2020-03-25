@@ -482,6 +482,10 @@ h3.file-selected {
     background-color: #7d7d7d3f;
 }
 
+.css-maxi-row tr.css-entry {
+    height: 2.87em !important;
+}
+
 .css-small {
     font-size: 80%;
     margin-top: 0.1em;

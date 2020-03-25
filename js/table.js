@@ -467,7 +467,7 @@ class TableInstance {
                     columns[j] = this.flat[j].generators.cell(player, i != this.array.length - 1 ? this.array[i + 1][1] : player);
                 }
 
-                var height = columns.reduce((highest, column) => Array.isArray(column) ? Math.max(highest, column.length) : 1, 0);
+                var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
 
                 var indexedCol = this.settings.globals.indexed ? `<td data-indexed="${ this.settings.globals.indexed }" valign="top" rowspan="${ height }">${ i + 1 }</td>` : undefined;
                 var nameCol = `<td class="border-right-thin" valign="top" rowspan="${ height }">${ formatDate(timestamp) }</td>`;
@@ -513,7 +513,7 @@ class TableInstance {
                     columns[j] = this.flat[j].generators.cell(item.player);
                 }
 
-                var height = columns.reduce((highest, column) => Array.isArray(column) ? Math.max(highest, column.length) : 1, 0);
+                var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
 
                 var indexedCol = this.settings.globals.indexed ? `<td data-indexed="${ this.settings.globals.indexed }" valign="top" rowspan="${ height }">${ item.index + 1 }</td>` : undefined;
                 var serverCol = this.settings.globals.server == undefined || this.settings.globals.server > 0 ? `<td valign="top" rowspan="${ height }">${ item.player.Prefix }</td>` : undefined;
@@ -578,7 +578,7 @@ class TableInstance {
                     columns[j] = this.flat[j].generators.cell(item.player, item.compare);
                 }
 
-                var height = columns.reduce((highest, column) => Array.isArray(column) ? Math.max(highest, column.length) : 1, 0);
+                var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
 
                 var indexedCol = this.settings.globals.indexed ? `<td data-indexed="${ this.settings.globals.indexed }" valign="top" rowspan="${ height }">${ item.index + 1 }</td>` : undefined;
                 var nameCol = `<td class="border-right-thin clickable" valign="top" rowspan="${ height }" data-id="${ item.player.Identifier }">${ item.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ item.player.Name }</td>`;
@@ -698,7 +698,7 @@ class TableInstance {
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
                     </tr>
                 </thead>
-                <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' }">
+                <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ join(this.entries, e => e.content) }
                 </tbody>
             `,
@@ -730,7 +730,7 @@ class TableInstance {
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
                     </tr>
                 </thead>
-                <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' }">
+                <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ join(this.entries, (e, ei) => e.content.replace(/\<td data\-indexed\=\"2\"\>\d*\<\/td\>/, `<td data-indexed="2">${ ei + 1 }</td>`), 0, this.array.perf || this.settings.globals.performance) }
                 </tbody>
             `,
@@ -760,7 +760,7 @@ class TableInstance {
                 ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
             </tr>
         </thead>
-            <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' }">
+            <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                 ${ join(this.entries, (e, ei) => e.content.replace(/\<td data\-indexed\=\"2\"\>\d*\<\/td\>/, `<td data-indexed="2">${ ei + 1 }</td>`)) }
         `;
 
@@ -1127,7 +1127,7 @@ const SettingsCommands = [
     // Global
     // members - Show member classes and changes
     // outdated - Mark outdated entries with red text
-    new SettingsCommand(/^(members|outdated|opaque) (on|off)$/, function (root, string) {
+    new SettingsCommand(/^(members|outdated|opaque|large rows) (on|off)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setGlobalVariable(key, ARG_MAP[a]);
     }, function (string) {
