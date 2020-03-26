@@ -9,7 +9,7 @@ class HeaderGroup {
         this.headers = [];
     }
 
-    add (name, settings, defaults, cellgen, statgen, sort, span = 1) {
+    add (name, settings, defaults, cellgen, statgen, sort, last, span = 1) {
         var header = {
             name: name,
             generators: {
@@ -18,7 +18,8 @@ class HeaderGroup {
             },
             sort: sort,
             sortkey: `${ this.name }.${ name }.${ this.length }`,
-            span: span
+            span: span,
+            bordered: last
         };
 
         merge(header, settings);
@@ -58,7 +59,7 @@ const ReservedCategories = {
             displayValue2 = displayValue2 != undefined ? displayValue2 : (category.format ? category.format(player, root, player.Potions[2]) : undefined);
 
             return CellGenerator.Cell(displayValue0 == undefined ? potion0 : displayValue0, color0, category.visible ? '' : color0) + CellGenerator.Cell(displayValue1 == undefined ? potion1 : displayValue1, color1, category.visible ? '' : color1) + CellGenerator.Cell(displayValue2 == undefined ? potion2 : displayValue2, color2, category.visible ? '' : color2, last);
-        }, null, player => player.Potions.reduce((c, p) => c + p.Size, 0), 3);
+        }, null, player => player.Potions.reduce((c, p) => c + p.Size, 0), last, 3);
     }
 };
 
@@ -92,7 +93,7 @@ const ReservedHeaders = {
             } else {
                 return CellGenerator.Cell(PLAYER_MOUNT[a] + ((header.percentage || header.extra) && a ? (header.extra || '%') : ''), '', CompareEval.evaluate(a, header.color) || '');
             }
-        }, player => player.Mount);
+        }, player => player.Mount, last);
     },
     'Awards': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Awards', header, {
@@ -126,7 +127,7 @@ const ReservedHeaders = {
             displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, root, a) : (a + (header.extra || '')));
 
             return CellGenerator.Cell(displayValue + reference, '', color);
-        }, player => player.Achievements.Owned);
+        }, player => player.Achievements.Owned, last);
     },
     'Album': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Album', header, {
@@ -162,7 +163,7 @@ const ReservedHeaders = {
             displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, root, a) : (header.percentage ? a.toFixed(2) : a));
 
             return CellGenerator.Cell(displayValue + ((header.percentage || header.extra) ? (header.extra || '%') : '') + reference, '', color);
-        }, player => player.Book);
+        }, player => player.Book, last);
     },
     'Knights': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Knights', header, {
@@ -207,7 +208,7 @@ const ReservedHeaders = {
             displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, root, a) : (a + (header.extra || '')));
 
             return CellGenerator.Cell(displayValue + reference, '', color);
-        }, player => player.Fortress.Knights == undefined ? -1 : player.Fortress.Knights);
+        }, player => player.Fortress.Knights == undefined ? -1 : player.Fortress.Knights, last);
     },
     'Last Active': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Last Active', header, {
@@ -222,7 +223,7 @@ const ReservedHeaders = {
             displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, a) : formatDate(player.LastOnline));
 
             return CellGenerator.Cell(displayValue, color, header.visible ? '' : color, last);
-        }, null, player => player.LastOnline);
+        }, null, player => player.LastOnline, last);
     }
 };
 
@@ -347,7 +348,7 @@ class TableInstance {
                             }
 
                             return items == undefined ? -1 : items;
-                        });
+                        }, hlast);
                     } else {
                         group.add((header.alias != undefined ? header.alias : header.name), header, {
                             width: Math.max(100, (header.alias || header.name).length * 12)
@@ -399,7 +400,7 @@ class TableInstance {
                             } else {
                                 return value;
                             }
-                        });
+                        }, hlast);
                     }
                 });
             }
@@ -469,8 +470,8 @@ class TableInstance {
 
                 var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
 
-                var indexedCol = this.settings.globals.indexed ? `<td valign="top" rowspan="${ height }"><ispan data-indexed="${ this.settings.globals.indexed }">${ i + 1 }</ispan></td>` : undefined;
-                var nameCol = `<td class="border-right-thin" valign="top" rowspan="${ height }">${ formatDate(timestamp) }</td>`;
+                var indexedCol = this.settings.globals.indexed ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }"><ispan data-indexed="${ this.settings.globals.indexed }">${ i + 1 }</ispan></td>` : undefined;
+                var nameCol = `<td class="border-right-thin" ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }">${ formatDate(timestamp) }</td>`;
 
                 var content = '';
 
@@ -489,11 +490,11 @@ class TableInstance {
 
                     for (var k = 0; k < columns.length; k++) {
                         if (Array.isArray(columns[k])) {
-                            content += columns[k][j] || CellGenerator.Empty();
+                            content += columns[k][j] || CellGenerator.Empty(this.flat[k].bordered);
                         } else if (j == 0) {
                             content += columns[k];
                         } else {
-                            content += CellGenerator.Empty();
+                            content += CellGenerator.Empty(this.flat[k].bordered);
                         }
                     }
 
@@ -515,9 +516,9 @@ class TableInstance {
 
                 var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
 
-                var indexedCol = this.settings.globals.indexed ? `<td valign="top" rowspan="${ height }"><ispan data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</ispan></td>` : undefined;
-                var serverCol = this.settings.globals.server == undefined || this.settings.globals.server > 0 ? `<td valign="top" rowspan="${ height }">${ item.player.Prefix }</td>` : undefined;
-                var nameCol = `<td class="border-right-thin clickable ${ item.latest || !this.settings.globals.outdated ? '' : 'foreground-red' }" valign="top" rowspan="${ height }" data-id="${ item.player.Identifier }">${ item.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ item.player.Name }</td>`;
+                var indexedCol = this.settings.globals.indexed ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }"><ispan data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</ispan></td>` : undefined;
+                var serverCol = this.settings.globals.server == undefined || this.settings.globals.server > 0 ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }">${ item.player.Prefix }</td>` : undefined;
+                var nameCol = `<td class="border-right-thin clickable ${ item.latest || !this.settings.globals.outdated ? '' : 'foreground-red' }" ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" data-id="${ item.player.Identifier }">${ item.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ item.player.Name }</td>`;
 
                 var content = '';
 
@@ -542,11 +543,11 @@ class TableInstance {
 
                     for (var k = 0; k < columns.length; k++) {
                         if (Array.isArray(columns[k])) {
-                            content += columns[k][j] || CellGenerator.Empty();
+                            content += columns[k][j] || CellGenerator.Empty(this.flat[k].bordered);
                         } else if (j == 0) {
                             content += columns[k];
                         } else {
-                            content += CellGenerator.Empty();
+                            content += CellGenerator.Empty(this.flat[k].bordered);
                         }
                     }
 
@@ -580,8 +581,8 @@ class TableInstance {
 
                 var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
 
-                var indexedCol = this.settings.globals.indexed ? `<td valign="top" rowspan="${ height }"><ispan data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</ispan></td>` : undefined;
-                var nameCol = `<td class="border-right-thin clickable" valign="top" rowspan="${ height }" data-id="${ item.player.Identifier }">${ item.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ item.player.Name }</td>`;
+                var indexedCol = this.settings.globals.indexed ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }"><ispan data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</ispan></td>` : undefined;
+                var nameCol = `<td class="border-right-thin clickable" ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" data-id="${ item.player.Identifier }">${ item.player.Identifier == 'w27_net_p268175' ? '<i class="chess queen icon"></i>' : '' }${ item.player.Name }</td>`;
 
                 var content = '';
 
@@ -600,11 +601,11 @@ class TableInstance {
 
                     for (var k = 0; k < columns.length; k++) {
                         if (Array.isArray(columns[k])) {
-                            content += columns[k][j] || CellGenerator.Empty();
+                            content += columns[k][j] || CellGenerator.Empty(this.flat[k].bordered);
                         } else if (j == 0) {
                             content += columns[k];
                         } else {
-                            content += CellGenerator.Empty();
+                            content += CellGenerator.Empty(this.flat[k].bordered);
                         }
                     }
 
@@ -745,8 +746,7 @@ class TableInstance {
         var sizeDynamic = this.config.reduce((a, b) => a + b.width, 0);
         var size = name + (this.settings.globals.indexed ? 50 : 0) + Math.max(400, sizeDynamic);
 
-        var content = `
-        <thead>
+        var table = `
             <tr>
                 ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
                 <td width="${ name }" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
@@ -759,24 +759,18 @@ class TableInstance {
                 <td class="border-bottom-thick border-right-thin"></td>
                 ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
             </tr>
-        </thead>
-            <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                 ${ join(this.entries, (e, ei) => e.content.replace(/\<ispan data\-indexed\=\"2\"\>\d*\<\/ispan\>/, `<ispan data-indexed="2">${ ei + 1 }</ispan>`)) }
         `;
 
+        var statistics = '';
+        var members = '';
+
         var showMembers = this.settings.globals.members;
         var showSummary = this.flat.reduce((a, b) => a || b.statistics, false);
-
-        if (showMembers || showSummary) {
-            content += `
-                <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
-            `;
-        }
-
         var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
 
         if (showSummary) {
-            content += `
+            statistics += `
                 <tr>
                     <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
                     ${ join(this.flat, (h, i) => `<td colspan="${ h.span }">${ h.statistics && h.generators.statistics ? h.name : '' }</td>`) }
@@ -800,20 +794,42 @@ class TableInstance {
             `;
         }
 
-        if (showMembers) {
-            var classes = this.array.reduce((c, p) => {
-                c[p.player.Class - 1]++;
-                return c;
-            }, [0, 0, 0, 0, 0, 0]);
-
+        if (this.settings.extras.length) {
             if (showSummary) {
-                content += `
+                statistics += `
                     <tr>
                         <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
                         <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
                     </tr>
                 `;
             }
+
+            var widskip = 1;
+            for (var i = 0, wid = 100; wid > 0 && i < this.flat.length; i++) {
+                wid -= this.flat[i].width;
+                if (wid > 0) {
+                    widskip++;
+                } else {
+                    break;
+                }
+            }
+
+            for (var extra of this.settings.extras) {
+                var val = extra.flip ? (extra.compare - extra.value) : (extra.value - extra.compare);
+                statistics += `
+                    <tr>
+                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
+                        <td colspan="${ widskip }">${ extra.value + (extra.difference ? CellGenerator.Difference(val, extra.brackets, isNaN(val) ? val : (Number.isInteger(val) ? val : val.toFixed(2))) : '') }</td>
+                    </tr>
+                `;
+            }
+        }
+
+        if (showMembers) {
+            var classes = this.array.reduce((c, p) => {
+                c[p.player.Class - 1]++;
+                return c;
+            }, [0, 0, 0, 0, 0, 0]);
 
             var widskip = 1;
             for (var i = 0, wid = 60; wid > 0 && i < this.flat.length; i++) {
@@ -825,13 +841,15 @@ class TableInstance {
                 }
             }
 
-            content += `
+            var colcount = this.flat.reduce((c, x) => c + x.span, 0);
+
+            members += `
                 <tr>
                     <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Warrior</td>
                     <td colspan="${ widskip }">${ classes[0] }</td>
                     ${ this.array.joined.length > 0 ? `
                         <td class="border-right-thin" rowspan="3" colspan="1">Joined</td>
-                        <td colspan="${ Math.max(1, this.flat.length - 1 - widskip) }" rowspan="3">${ this.array.joined.join(', ') }</td>
+                        <td colspan="${ Math.max(1, colcount - 1 - widskip) }" rowspan="3">${ this.array.joined.join(', ') }</td>
                     ` : '' }
                 </tr>
                 <tr>
@@ -847,7 +865,7 @@ class TableInstance {
                     <td colspan="${ widskip }">${ classes[3] }</td>
                     ${ this.array.kicked.length > 0 ? `
                         <td class="border-right-thin" rowspan="3" colspan="1">Left</td>
-                        <td colspan="${ Math.max(1, this.flat.length - 1 - widskip) }" rowspan="3">${ this.array.kicked.join(', ') }</td>
+                        <td colspan="${ Math.max(1, colcount - 1 - widskip) }" rowspan="3">${ this.array.kicked.join(', ') }</td>
                     ` : '' }
                 </tr>
                 <tr>
@@ -861,8 +879,90 @@ class TableInstance {
             `;
         }
 
+        var content = '';
+
+        if (this.settings.globals.layout == 1) {
+            if (statistics) {
+                if (showSummary) {
+                    content += statistics + `
+                        <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
+                    `;
+                } else {
+                    content += statistics + `
+                        <tr>
+                            <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                            <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
+                        </tr>
+                        <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
+                    `;
+                }
+            }
+
+            content += table;
+
+            if (members) {
+                content += `
+                    <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
+                    <tr>
+                        <td class="border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                        <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
+                    </tr>
+                `;
+
+                content += members;
+            }
+        } else if (this.settings.globals.layout == 2) {
+            if (members) {
+                content += members + `
+                    <tr>
+                        <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                        <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
+                    </tr>
+                    <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
+                `;
+            }
+
+            content += table;
+
+            if (statistics) {
+                content += `
+                    <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
+                `;
+
+                content += statistics;
+            }
+        } else {
+            content += table;
+
+            if (statistics) {
+                content += `
+                    <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
+                `;
+
+                content += statistics;
+            }
+
+            if (members) {
+                content += `
+                    <tr>
+                        <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                        <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
+                    </tr>
+                `;
+
+                content += members;
+            }
+        }
+
         return [
-            content + '</tbody>',
+            `
+                <thead>
+
+                </thead>
+                <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
+                    ${ content }
+                </tbody>
+            `,
             size
         ];
     }
@@ -883,8 +983,8 @@ const CellGenerator = {
         return d != 0 ? ` <span>${ b ? '(' : '' }${ d > 0 ? '+' : '' }${ c == null ? d : c }${ b ? ')' : '' }</span>` : '';
     },
     // Empty cell
-    Empty: function () {
-        return '<td></td>';
+    Empty: function (b) {
+        return `<td ${ b ? 'class="border-right-thin"' : '' }></td>`;
     },
     // Small text,
     Small: function (c) {
@@ -942,7 +1042,10 @@ const ARG_MAP = {
     'left': 1,
     'right': 2,
     'both': 3,
-    'none': 0
+    'none': 0,
+    'table': 0,
+    'statistics': 1,
+    'members': 2,
 };
 
 const ARG_MAP_SERVER = {
@@ -979,6 +1082,15 @@ const SFormat = {
 };
 
 const SettingsCommands = [
+    // Global
+    // set static
+    new SettingsCommand(/^(layout) (table|statistics|members)$/, function (root, string) {
+        var [ , key, order ] = this.match(string);
+        root.setGlobalVariable(key, ARG_MAP[order]);
+    }, function (string) {
+        var [ , key, order ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(order) }`;
+    }),
     // Global
     // set static
     new SettingsCommand(/^(set) (\w+[\w ]*) with all (\w+[\w ]*) as (.+)$/, function (root, string) {
@@ -1091,6 +1203,17 @@ const SettingsCommands = [
         } else {
             return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
         }
+    }),
+    // Create new statistics row
+    new SettingsCommand(/^(show) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
+        var [ , key, name, a ] = this.match(string);
+        var ast = new AST(a);
+        if (ast.isValid()) {
+            root.addExtraRow(name, ast);
+        }
+    }, function (string) {
+        var [ , key, name, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a) }`;
     }),
     // Create new itemized header
     new SettingsCommand(/^(itemized) (\S+[\S ]*) by (\S+[\S ]*)$/, function (root, string) {
@@ -1553,6 +1676,7 @@ class Settings {
         this.svars = {};
         this.cvars = {};
         this.func = {};
+        this.extras = [];
 
         this.globals = {
             outdated: true
@@ -1561,6 +1685,7 @@ class Settings {
         // Temporary
         this.currentCategory = null;
         this.currentHeader = null;
+        this.currentExtra = null;
 
         this.shared = {};
         this.categoryShared = {
@@ -1616,6 +1741,23 @@ class Settings {
                         ast: data.ast,
                         arg: data.arg
                     };
+                }
+            }
+        }
+
+        // Extra statistics rows
+        if (compare) {
+            for (var data of this.extras) {
+                if (data.ast) {
+                    data.value = data.ast.eval(undefined, this, players.map(p => p.player));
+                    if (isNaN(data.value)) {
+                        data.value = undefined;
+                    }
+
+                    data.compare = data.ast.eval(undefined, this.getCompareEnvironment(), players.map(p => p.compare));
+                    if (isNaN(data.compare)) {
+                        data.compare = undefined;
+                    }
                 }
             }
         }
@@ -1703,6 +1845,23 @@ class Settings {
         }
     }
 
+    addExtraRow (name, ast) {
+        this.currentExtra = {
+            name: name,
+            ast: ast
+        };
+    }
+
+    pushExtraRow () {
+        if (this.currentExtra) {
+            merge(this.currentExtra, this.shared);
+
+            this.extras.push(this.currentExtra);
+        }
+
+        this.currentExtra = null;
+    }
+
     // Option handlers
     setVariable (name, arg, ast) {
         this.vars[name] = {
@@ -1734,6 +1893,7 @@ class Settings {
     }
 
     pushHeader () {
+        this.pushExtraRow();
         if (this.currentCategory && this.currentHeader) {
             var reserved = ReservedHeaders[this.currentHeader.name];
             var mapping = SP_KEYWORD_MAPPING_0[this.currentHeader.name] || SP_KEYWORD_MAPPING_1[this.currentHeader.name] || SP_KEYWORD_MAPPING_2[this.currentHeader.name] || SP_KEYWORD_MAPPING_3[this.currentHeader.name] || SP_KEYWORD_MAPPING_4[this.currentHeader.name];
@@ -1768,9 +1928,8 @@ class Settings {
     }
 
     pushCategory () {
+        this.pushHeader();
         if (this.currentCategory) {
-            this.pushHeader();
-
             if (ReservedCategories[this.currentCategory.name]) {
                 merge(this.currentCategory, this.shared);
             }
@@ -1786,7 +1945,9 @@ class Settings {
     }
 
     setLocalSharedVariable (key, value) {
-        if (this.currentHeader) {
+        if (this.currentExtra) {
+            this.currentExtra[key] = value
+        } else if (this.currentHeader) {
             this.setLocalVariable(key, value);
         } else if (this.currentCategory && ReservedCategories[this.currentCategory.name]) {
             this.currentCategory[key] = value;
