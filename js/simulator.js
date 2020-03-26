@@ -52,6 +52,14 @@ class FighterModel {
 
         let m = (1 + this.Player.Dungeons.Group / 100) * mp * (1 + mf + mc + ml) * (this.Player.Class == 2 && target.Player.Class == 6 ? 2 : (this.Player.Class == 6 ? 1.5 : 1));
 
+        if (this.Player.Class == 2 && target.Player.Class == 6) {
+            m = m * (2 / 1);
+        } else if (this.Player.Class == 6) {
+            m = m * (3 / 2);
+        } else if (this.Player.Class == 4) {
+            m = m * (3 / 5);
+        }
+
         let aa = this.Player.getPrimaryAttribute().Total;
         let ad = target.getDefenseAtribute(this).Total;
 
