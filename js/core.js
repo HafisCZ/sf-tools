@@ -238,6 +238,8 @@ const Database = new (class {
         this.Groups = {};
 
         this.add(... files);
+
+        this.Hidden = Preferences.get('hidden', []);
     }
 
     update () {
@@ -294,10 +296,6 @@ const Database = new (class {
                 this.Latest = group.LatestTimestamp;
             }
         }
-    }
-
-    constructor () {
-        this.Hidden = Preferences.get('hidden', []);
     }
 
     hide (identifier) {
