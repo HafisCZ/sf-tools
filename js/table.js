@@ -1846,6 +1846,7 @@ class Settings {
     }
 
     addExtraRow (name, ast) {
+        this.pushExtraRow();
         this.currentExtra = {
             name: name,
             ast: ast
