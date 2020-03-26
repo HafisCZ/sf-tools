@@ -86,97 +86,120 @@
         </div>
 
         <script type="text/javascript">
-            (function ($) {
-                $('#fi-select').on('change', function () {
-                    $('[data-tab]').removeClass('active');
-                    $(`[data-tab="${ $(this).val() }"]`).addClass('active');
-                });
+            $('#fi-select').on('change', function () {
+                $('[data-tab]').removeClass('active');
+                $(`[data-tab="${ $(this).val() }"]`).addClass('active');
+            });
 
-                function copyToClipboard (... tabs) {
-                    var content = [];
+            function copyToClipboard (... tabs) {
+                var content = [];
 
-                    // Convert all tabs into tables
-                    for (var tab of tabs) {
-                        var rows = [];
-
-                        Object.entries(tab.fighterA).forEach(([key, val]) => {
-                            if (val instanceof SFItem) {
-                                rows.push([ key ]);
-                                rows.push([ '', 'MinDmg', val.DamageMin ]);
-                                rows.push([ '', 'MaxDmg', val.DamageMax ]);
-                            } else if (key == 'Face') {
-                                rows.push([ key, val.Mouth ]);
-                            } else {
-                                rows.push([ key, val ]);
-                            }
-                        });
-
-                        Object.entries(tab.fighterB).forEach(([key, val]) => {
-                            if (val instanceof SFItem) {
-                                rows.push([ key ]);
-                                rows.push([ '', 'MinDmg', val.DamageMin ]);
-                                rows.push([ '', 'MaxDmg', val.DamageMax ]);
-                            } else if (key == 'Face') {
-                                rows.push([ key, val.Mouth ]);
-                            } else {
-                                rows.push([ key, val ]);
-                            }
-                        });
-
-                        rows.push([ 'index', 'attacker', 'target', 'type', 'damage' ]);
-                        tab.rounds.forEach((round, i) => {
-                            rows.push([ i, round.attacker.ID, round.target.ID, ATTACK_TYPES[round.attackType], round.attackDamage ]);
-                        });
-
-                        content.push(rows);
-                    }
-
-                    var maxColumns = Math.max(... content[0].map(r => r.length));
-                    var maxRows = Math.max(... content.map(r => r.length));
-
+                // Convert all tabs into tables
+                for (var tab of tabs) {
                     var rows = [];
-                    for (var c of content) {
-                        for (var i = 0; i < maxRows; i++) {
-                            var x = [];
-                            if (c[i]) {
-                                x.push(... c[i].map(y => `<td>${ y }</td>`));
-                            }
-                            while (x.length < maxColumns) {
-                                x.push(`<td></td>`);
-                            }
-                            if (rows[i]) {
-                                rows[i].push(...x);
-                            } else {
-                                rows[i] = x;
-                            }
+
+                    Object.entries(tab.fighterA).forEach(([key, val]) => {
+                        if (val instanceof SFItem) {
+                            rows.push([ key ]);
+                            rows.push([ '', 'MinDmg', val.DamageMin ]);
+                            rows.push([ '', 'MaxDmg', val.DamageMax ]);
+                        } else if (key == 'Face') {
+                            rows.push([ key, val.Mouth ]);
+                        } else {
+                            rows.push([ key, val ]);
                         }
-                    }
+                    });
 
-                    // Create element
-                    var el = document.createElement('table');
-                    el.innerHTML = `<tbody>${ rows.map(r => `<tr>${ r.join('') }</tr>`).join('') }</tbody>`;
-                    document.body.appendChild(el);
+                    Object.entries(tab.fighterB).forEach(([key, val]) => {
+                        if (val instanceof SFItem) {
+                            rows.push([ key ]);
+                            rows.push([ '', 'MinDmg', val.DamageMin ]);
+                            rows.push([ '', 'MaxDmg', val.DamageMax ]);
+                        } else if (key == 'Face') {
+                            rows.push([ key, val.Mouth ]);
+                        } else {
+                            rows.push([ key, val ]);
+                        }
+                    });
 
-                    // Create range, select element and copy
-                    var range = document.createRange();
-                    range.selectNode(el);
-                    window.getSelection().removeAllRanges();
-                    window.getSelection().addRange(range);
-                    document.execCommand('copy');
-                    window.getSelection().removeAllRanges();
+                    rows.push([ 'index', 'attacker', 'target', 'type', 'damage' ]);
+                    tab.rounds.forEach((round, i) => {
+                        rows.push([ i, round.attacker.ID, round.target.ID, ATTACK_TYPES[round.attackType], round.attackDamage ]);
+                    });
 
-                    // Destroy element
-                    document.body.removeChild(el);
+                    content.push(rows);
                 }
 
-                $('#fi-select').val('');
+                var maxColumns = Math.max(... content[0].map(r => r.length));
+                var maxRows = Math.max(... content.map(r => r.length));
 
-                $('#fi-save').on('click', function () {
-                    if ($('[data-tab]').length == 0) return;
-                    var tab = tabs[$('[data-tab].active').attr('data-tab')];
+                var rows = [];
+                for (var c of content) {
+                    for (var i = 0; i < maxRows; i++) {
+                        var x = [];
+                        if (c[i]) {
+                            x.push(... c[i].map(y => `<td>${ y }</td>`));
+                        }
+                        while (x.length < maxColumns) {
+                            x.push(`<td></td>`);
+                        }
+                        if (rows[i]) {
+                            rows[i].push(...x);
+                        } else {
+                            rows[i] = x;
+                        }
+                    }
+                }
 
-                    download(`${ tab.fighterA.Name }/${ tab.fighterB.Name }.json`, new Blob([
-                        JSON.stringify({
+                // Create element
+                var el = document.createElement('table');
+                el.innerHTML = `<tbody>${ rows.map(r => `<tr>${ r.join('') }</tr>`).join('') }</tbody>`;
+                document.body.appendChild(el);
+
+                // Create range, select element and copy
+                var range = document.createRange();
+                range.selectNode(el);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+
+                // Destroy element
+                document.body.removeChild(el);
+            }
+
+            $('#fi-select').val('');
+
+            $('#fi-save').on('click', function () {
+                if ($('[data-tab]').length == 0) return;
+                var tab = tabs[$('[data-tab].active').attr('data-tab')];
+
+                download(`${ tab.fighterA.Name }/${ tab.fighterB.Name }.json`, new Blob([
+                    JSON.stringify({
+                        targetA: tab.fighterA,
+                        targetB: tab.fighterB,
+                        rounds: tab.rounds.map(round => {
+                            return {
+                                attackCrit: round.attackCrit,
+                                attackType: round.attackType,
+                                attackMissed: round.attackMissed,
+                                attackDamage: round.attackDamage,
+                                attacker: round.attacker.ID,
+                                target: round.target.ID
+                            };
+                        })
+                    })
+                ], {
+                    type: 'application/json'
+                }));
+            });
+
+            $('#fi-saveall').on('click', function () {
+                if ($('[data-tab]').length == 0) return;
+
+                download(`fights.json`, new Blob([
+                    JSON.stringify(tabs.map(tab => {
+                        return {
                             targetA: tab.fighterA,
                             targetB: tab.fighterB,
                             rounds: tab.rounds.map(round => {
@@ -189,384 +212,392 @@
                                     target: round.target.ID
                                 };
                             })
-                        })
-                    ], {
-                        type: 'application/json'
-                    }));
-                });
+                        };
+                    }))
+                ], {
+                    type: 'application/json'
+                }));
+            });
 
-                $('#fi-saveall').on('click', function () {
-                    if ($('[data-tab]').length == 0) return;
+            $('#fi-copy').on('click', function () {
+                if ($('[data-tab]').length == 0) return;
+                copyToClipboard(tabs[$('[data-tab].active').attr('data-tab')]);
+            });
 
-                    download(`fights.json`, new Blob([
-                        JSON.stringify(tabs.map(tab => {
-                            return {
-                                targetA: tab.fighterA,
-                                targetB: tab.fighterB,
-                                rounds: tab.rounds.map(round => {
-                                    return {
-                                        attackCrit: round.attackCrit,
-                                        attackType: round.attackType,
-                                        attackMissed: round.attackMissed,
-                                        attackDamage: round.attackDamage,
-                                        attacker: round.attacker.ID,
-                                        target: round.target.ID
-                                    };
-                                })
-                            };
-                        }))
-                    ], {
-                        type: 'application/json'
-                    }));
-                });
+            $('#fi-copyall').on('click', function () {
+                if ($('[data-tab]').length == 0) return;
+                copyToClipboard(... tabs);
+            });
 
-                $('#fi-copy').on('click', function () {
-                    if ($('[data-tab]').length == 0) return;
-                    copyToClipboard(tabs[$('[data-tab].active').attr('data-tab')]);
-                });
+            var tabs = [];
+            var tabsadded = false;
 
-                $('#fi-copyall').on('click', function () {
-                    if ($('[data-tab]').length == 0) return;
-                    copyToClipboard(... tabs);
-                });
+            function processData (critmult = 2) {
+                var ranges = {};
 
-                var tabs = [];
-                var tabsadded = false;
+                for (var tab of tabs) {
+                    for (var i = 0; i < tab.rounds.length; i++) {
+                        var round = tab.rounds[i];
+                        if (round.attackType % 10 == 0 || round.attackType % 10 == 1) {
+                            var id = round.attacker.ID;
+                            var rage = 1 + i / 6;
+                            var crit = round.attackCrit ? critmult : 1;
 
-                // Remove all tabs
-                function clearTabs() {
-                    tabs = [];
+                            var damage = Math.trunc((round.attackDamage / crit) / rage);
+
+                            if (ranges[id] == undefined) {
+                                ranges[id] = {
+                                    min: damage,
+                                    max: damage,
+                                    name: round.attacker.Name
+                                }
+                            } else {
+                                if (ranges[id].min > damage) {
+                                    ranges[id].min = damage;
+                                } else if (ranges[id].max < damage) {
+                                    ranges[id].max = damage;
+                                }
+                            }
+                        }
+                    }
                 }
 
-                // Add new tab
-                function addTab(... tab) {
-                    tabs.push(... tab);
-                }
+                return ranges;
+            }
 
-                // Update document
-                function updateTabs() {
-                    if (tabs.length) {
-                        $('#fi-content').show();
-                        $('#fi-select-items').html(tabs.map((tab, index) => `<div class="item${ !tabsadded && index == 0 ? ' active selected' : '' }" data-value="${ index }"><div class="fi-wrap"><div class="fi-left">${ index + 1 }.</div><div class="fi-right"><span class="${ tab.winner.ID != tab.fighterA.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterA.Name }</span></br><span class="${ tab.winner.ID != tab.fighterB.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterB.Name }</span></div></div></div>`).join(''));
-                        $('#fi-content-pages').html(tabs.map((tab, index) => `
-                            <div class="ui tab basic segment${ !tabsadded && index == 0 ? ' active' : '' }${ index == 0 ? ' margin-medium-top' : '' }" data-tab="${ index }">
-                                <div class="ui small form">
-                                    <div class="ui grid">
-                                        <div class="two columns row">
-                                            <div class="column">
-                                                <h2 class="ui centered header ${ tab.winner.ID != tab.fighterA.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterA.Name }</h2>
-                                                <div class="two fields">
-                                                    <div class="field">
-                                                        <label>Class</label>
-                                                        <input type="text" value="${ PLAYER_CLASS[tab.fighterA.Class] }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Level</label>
-                                                        <input type="text" value="${ tab.fighterA.Level }" disabled class="text-center">
-                                                    </div>
-                                                </div>
-                                                <div class="two fields">
-                                                    <div class="field">
-                                                        <label>Minimum damage</label>
-                                                        <input type="text" value="${ tab.fighterA.Wpn1.DamageMin || '' }${ tab.fighterA.Wpn2.DamageMin ? ` (${ tab.fighterA.Wpn2.DamageMin })` : '' }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Maximum damage</label>
-                                                        <input type="text" value="${ tab.fighterA.Wpn1.DamageMax || '' }${ tab.fighterA.Wpn2.DamageMax ? ` (${ tab.fighterA.Wpn2.DamageMax })` : '' }" disabled class="text-center">
-                                                    </div>
-                                                </div>
-                                                <div class="five fields">
-                                                    <div class="field">
-                                                        <label>Strength</label>
-                                                        <input type="text" value="${ tab.fighterA.Strength }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Dexterity</label>
-                                                        <input type="text" value="${ tab.fighterA.Dexterity }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Intelligence</label>
-                                                        <input type="text" value="${ tab.fighterA.Intelligence }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Constitution</label>
-                                                        <input type="text" value="${ tab.fighterA.Constitution }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Luck</label>
-                                                        <input type="text" value="${ tab.fighterA.Luck }" disabled class="text-center">
-                                                    </div>
+            // Remove all tabs
+            function clearTabs() {
+                tabs = [];
+            }
 
+            // Add new tab
+            function addTab(... tab) {
+                tabs.push(... tab);
+            }
+
+            // Update document
+            function updateTabs() {
+                if (tabs.length) {
+                    $('#fi-content').show();
+                    $('#fi-select-items').html(tabs.map((tab, index) => `<div class="item${ !tabsadded && index == 0 ? ' active selected' : '' }" data-value="${ index }"><div class="fi-wrap"><div class="fi-left">${ index + 1 }.</div><div class="fi-right"><span class="${ tab.winner.ID != tab.fighterA.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterA.Name }</span></br><span class="${ tab.winner.ID != tab.fighterB.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterB.Name }</span></div></div></div>`).join(''));
+                    $('#fi-content-pages').html(tabs.map((tab, index) => `
+                        <div class="ui tab basic segment${ !tabsadded && index == 0 ? ' active' : '' }${ index == 0 ? ' margin-medium-top' : '' }" data-tab="${ index }">
+                            <div class="ui small form">
+                                <div class="ui grid">
+                                    <div class="two columns row">
+                                        <div class="column">
+                                            <h2 class="ui centered header ${ tab.winner.ID != tab.fighterA.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterA.Name }</h2>
+                                            <div class="two fields">
+                                                <div class="field">
+                                                    <label>Class</label>
+                                                    <input type="text" value="${ PLAYER_CLASS[tab.fighterA.Class] }" disabled class="text-center">
                                                 </div>
-                                                <div class="two fields">
-                                                    <div class="field">
-                                                        <label>Health</label>
-                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fighterA.MaximumLife, ' ') }" disabled class="text-center">
-                                                    </div>
-                                                    ${ tab.fighterA.Life != tab.fighterA.MaximumLife ? `
-                                                        <div class="field">
-                                                            <label>Current Health</label>
-                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fighterA.Life, ' ') }" disabled class="text-center">
-                                                        </div>
-                                                    ` : '' }
+                                                <div class="field">
+                                                    <label>Level</label>
+                                                    <input type="text" value="${ tab.fighterA.Level }" disabled class="text-center">
                                                 </div>
                                             </div>
-                                            <div class="column">
-                                                <h2 class="ui centered header ${ tab.winner.ID != tab.fighterB.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterB.Name }</h2>
-                                                <div class="two fields">
-                                                    <div class="field">
-                                                        <label>Class</label>
-                                                        <input type="text" value="${ PLAYER_CLASS[tab.fighterB.Class] }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Level</label>
-                                                        <input type="text" value="${ tab.fighterB.Level }" disabled class="text-center">
-                                                    </div>
+                                            <div class="two fields">
+                                                <div class="field">
+                                                    <label>Minimum damage</label>
+                                                    <input type="text" value="${ tab.fighterA.Wpn1.DamageMin || '' }${ tab.fighterA.Wpn2.DamageMin ? ` (${ tab.fighterA.Wpn2.DamageMin })` : '' }" disabled class="text-center">
                                                 </div>
-                                                <div class="two fields">
-                                                    <div class="field">
-                                                        <label>Minimum damage</label>
-                                                        <input type="text" value="${ tab.fighterB.Wpn1.DamageMin || (tab.fighterB.ApproximateDamageMin ? `~ ${ tab.fighterB.ApproximateDamageMin }` : '') }${ tab.fighterB.Wpn2.DamageMin ? ` (${ tab.fighterB.Wpn2.DamageMin })` : '' }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Maximum damage</label>
-                                                        <input type="text" value="${ tab.fighterB.Wpn1.DamageMax || (tab.fighterB.ApproximateDamageMax ? `~ ${ tab.fighterB.ApproximateDamageMax }` : '') }${ tab.fighterB.Wpn2.DamageMax ? ` (${ tab.fighterB.Wpn2.DamageMax })` : '' }" disabled class="text-center">
-                                                    </div>
+                                                <div class="field">
+                                                    <label>Maximum damage</label>
+                                                    <input type="text" value="${ tab.fighterA.Wpn1.DamageMax || '' }${ tab.fighterA.Wpn2.DamageMax ? ` (${ tab.fighterA.Wpn2.DamageMax })` : '' }" disabled class="text-center">
                                                 </div>
-                                                <div class="five  fields">
-                                                    <div class="field">
-                                                        <label>Strength</label>
-                                                        <input type="text" value="${ tab.fighterB.Strength }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Dexterity</label>
-                                                        <input type="text" value="${ tab.fighterB.Dexterity }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Intelligence</label>
-                                                        <input type="text" value="${ tab.fighterB.Intelligence }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Constitution</label>
-                                                        <input type="text" value="${ tab.fighterB.Constitution }" disabled class="text-center">
-                                                    </div>
-                                                    <div class="field">
-                                                        <label>Luck</label>
-                                                        <input type="text" value="${ tab.fighterB.Luck}" disabled class="text-center">
-                                                    </div>
+                                            </div>
+                                            <div class="five fields">
+                                                <div class="field">
+                                                    <label>Strength</label>
+                                                    <input type="text" value="${ tab.fighterA.Strength }" disabled class="text-center">
                                                 </div>
-                                                <div class="two fields">
-                                                    <div class="field">
-                                                        <label>Health</label>
-                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fighterB.MaximumLife, ' ') }" disabled class="text-center">
-                                                    </div>
-                                                    ${ tab.fighterB.Life != tab.fighterB.MaximumLife ? `
-                                                        <div class="field">
-                                                            <label>Current Health</label>
-                                                            <input type="text" value="${ formatAsSpacedNumber(tab.fighterB.Life, ' ') }" disabled class="text-center">
-                                                        </div>
-                                                    ` : '' }
+                                                <div class="field">
+                                                    <label>Dexterity</label>
+                                                    <input type="text" value="${ tab.fighterA.Dexterity }" disabled class="text-center">
                                                 </div>
+                                                <div class="field">
+                                                    <label>Intelligence</label>
+                                                    <input type="text" value="${ tab.fighterA.Intelligence }" disabled class="text-center">
+                                                </div>
+                                                <div class="field">
+                                                    <label>Constitution</label>
+                                                    <input type="text" value="${ tab.fighterA.Constitution }" disabled class="text-center">
+                                                </div>
+                                                <div class="field">
+                                                    <label>Luck</label>
+                                                    <input type="text" value="${ tab.fighterA.Luck }" disabled class="text-center">
+                                                </div>
+
+                                            </div>
+                                            <div class="two fields">
+                                                <div class="field">
+                                                    <label>Health</label>
+                                                    <input type="text" value="${ formatAsSpacedNumber(tab.fighterA.MaximumLife, ' ') }" disabled class="text-center">
+                                                </div>
+                                                ${ tab.fighterA.Life != tab.fighterA.MaximumLife ? `
+                                                    <div class="field">
+                                                        <label>Current Health</label>
+                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fighterA.Life, ' ') }" disabled class="text-center">
+                                                    </div>
+                                                ` : '' }
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="column">
-                                                ${ tab.rounds.map((round, i) => `
-                                                        <div class="ui basic segment ${ i % 2 ? 'undertone' : '' }">
-                                                            <div class="ui grid">
-                                                                <div class="one wide column"></div>
-                                                                <div class="one wide column">${ i + 1 }</div>
-                                                                <div class="three wide column text-right"><b>${ round.attacker.Name }</b></div>
-                                                                <div class="one wide column text-center">></div>
-                                                                <div class="three wide column"><b>${ round.target.Name }</b></div>
-                                                                <div class="one wide column"></div>
-                                                                <div class="two wide column text-center ${ round.attackCrit ? 'foreground-red' : '' }">${ ATTACK_TYPES[round.attackType] }</div>
-                                                                <div class="three wide column text-right ${ round.attackCrit ? 'foreground-red text-bold' : '' }">${ round.attackDamage ? formatAsSpacedNumber(round.attackDamage, ' ') : '' }</div>
-                                                                <div class="one wide column"></div>
-                                                            </div>
-                                                        </div>
-                                                    `).join('')
-                                                }
+                                        <div class="column">
+                                            <h2 class="ui centered header ${ tab.winner.ID != tab.fighterB.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterB.Name }</h2>
+                                            <div class="two fields">
+                                                <div class="field">
+                                                    <label>Class</label>
+                                                    <input type="text" value="${ PLAYER_CLASS[tab.fighterB.Class] }" disabled class="text-center">
+                                                </div>
+                                                <div class="field">
+                                                    <label>Level</label>
+                                                    <input type="text" value="${ tab.fighterB.Level }" disabled class="text-center">
+                                                </div>
                                             </div>
+                                            <div class="two fields">
+                                                <div class="field">
+                                                    <label>Minimum damage</label>
+                                                    <input type="text" value="${ tab.fighterB.Wpn1.DamageMin || (tab.fighterB.ApproximateDamageMin ? `~ ${ tab.fighterB.ApproximateDamageMin }` : '') }${ tab.fighterB.Wpn2.DamageMin ? ` (${ tab.fighterB.Wpn2.DamageMin })` : '' }" disabled class="text-center">
+                                                </div>
+                                                <div class="field">
+                                                    <label>Maximum damage</label>
+                                                    <input type="text" value="${ tab.fighterB.Wpn1.DamageMax || (tab.fighterB.ApproximateDamageMax ? `~ ${ tab.fighterB.ApproximateDamageMax }` : '') }${ tab.fighterB.Wpn2.DamageMax ? ` (${ tab.fighterB.Wpn2.DamageMax })` : '' }" disabled class="text-center">
+                                                </div>
+                                            </div>
+                                            <div class="five  fields">
+                                                <div class="field">
+                                                    <label>Strength</label>
+                                                    <input type="text" value="${ tab.fighterB.Strength }" disabled class="text-center">
+                                                </div>
+                                                <div class="field">
+                                                    <label>Dexterity</label>
+                                                    <input type="text" value="${ tab.fighterB.Dexterity }" disabled class="text-center">
+                                                </div>
+                                                <div class="field">
+                                                    <label>Intelligence</label>
+                                                    <input type="text" value="${ tab.fighterB.Intelligence }" disabled class="text-center">
+                                                </div>
+                                                <div class="field">
+                                                    <label>Constitution</label>
+                                                    <input type="text" value="${ tab.fighterB.Constitution }" disabled class="text-center">
+                                                </div>
+                                                <div class="field">
+                                                    <label>Luck</label>
+                                                    <input type="text" value="${ tab.fighterB.Luck}" disabled class="text-center">
+                                                </div>
+                                            </div>
+                                            <div class="two fields">
+                                                <div class="field">
+                                                    <label>Health</label>
+                                                    <input type="text" value="${ formatAsSpacedNumber(tab.fighterB.MaximumLife, ' ') }" disabled class="text-center">
+                                                </div>
+                                                ${ tab.fighterB.Life != tab.fighterB.MaximumLife ? `
+                                                    <div class="field">
+                                                        <label>Current Health</label>
+                                                        <input type="text" value="${ formatAsSpacedNumber(tab.fighterB.Life, ' ') }" disabled class="text-center">
+                                                    </div>
+                                                ` : '' }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="column">
+                                            ${ tab.rounds.map((round, i) => `
+                                                    <div class="ui basic segment ${ i % 2 ? 'undertone' : '' }">
+                                                        <div class="ui grid">
+                                                            <div class="one wide column"></div>
+                                                            <div class="one wide column">${ i + 1 }</div>
+                                                            <div class="three wide column text-right"><b>${ round.attacker.Name }</b></div>
+                                                            <div class="one wide column text-center">></div>
+                                                            <div class="three wide column"><b>${ round.target.Name }</b></div>
+                                                            <div class="one wide column"></div>
+                                                            <div class="two wide column text-center ${ round.attackCrit ? 'foreground-red' : '' }">${ ATTACK_TYPES[round.attackType] }</div>
+                                                            <div class="three wide column text-right ${ round.attackCrit ? 'foreground-red text-bold' : '' }">${ round.attackDamage ? formatAsSpacedNumber(round.attackDamage, ' ') : '' }</div>
+                                                            <div class="one wide column"></div>
+                                                        </div>
+                                                    </div>
+                                                `).join('')
+                                            }
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        `).join(''));
-                        if (!tabsadded) {
-                            $('#fi-select').val('0');
-                        } else {
-                            $('#fi-select').trigger('change');
-                        }
-                        tabsadded = true;
+                        </div>
+                    `).join(''));
+                    if (!tabsadded) {
+                        $('#fi-select').val('0');
                     } else {
-                        $('.dropdown').dropdown();
-                        $('#fi-content').hide();
-                        $('#fi-select-items').html('');
-                        $('#fi-content-pages').html('');
-                        $('#fi-select').parent('.dropdown').children('.text').text('');
-                        tabsadded = false;
+                        $('#fi-select').trigger('change');
                     }
-
+                    tabsadded = true;
+                } else {
                     $('.dropdown').dropdown();
+                    $('#fi-content').hide();
+                    $('#fi-select-items').html('');
+                    $('#fi-content-pages').html('');
+                    $('#fi-select').parent('.dropdown').children('.text').text('');
+                    tabsadded = false;
                 }
 
-                // Clear error
-                function clearError() {
-                    $('#fi-error').hide();
-                    $('#fi-error').text('');
-                }
+                $('.dropdown').dropdown();
+            }
 
-                // Show error
-                function showError(msg) {
-                    $('#fi-error').show();
-                    $('#fi-error').text(msg);
-                }
+            // Clear error
+            function clearError() {
+                $('#fi-error').hide();
+                $('#fi-error').text('');
+            }
 
-                // Parse file
-                function parseTabs(json) {
-                    var fights = [];
-                    var raws = [];
+            // Show error
+            function showError(msg) {
+                $('#fi-error').show();
+                $('#fi-error').text(msg);
+            }
 
-                    for (var [k, v] of filterPlayaJSON(json)) {
-                        if (k == 'text' && v.includes('fightheader')) {
-                            var cr = [];
-                            for (var [kb, vb] of parsePlayaResponse(v)) {
-                                if (kb.includes('.fighters')) {
-                                    cr.push(['fighters', vb].join(':'));
-                                } else if (kb.includes('.r')) {
-                                    cr.push(['r', vb].join(':'));
-                                } else if (kb.includes('winnerid')) {
-                                    cr.push(['winnerid', vb].join(':'));
-                                    raws.push(cr.join('&'));
-                                    cr = [];
-                                }
+            // Parse file
+            function parseTabs(json) {
+                var fights = [];
+                var raws = [];
+
+                for (var [k, v] of filterPlayaJSON(json)) {
+                    if (k == 'text' && v.includes('fightheader')) {
+                        var cr = [];
+                        for (var [kb, vb] of parsePlayaResponse(v)) {
+                            if (kb.includes('.fighters')) {
+                                cr.push(['fighters', vb].join(':'));
+                            } else if (kb.includes('.r')) {
+                                cr.push(['r', vb].join(':'));
+                            } else if (kb.includes('winnerid')) {
+                                cr.push(['winnerid', vb].join(':'));
+                                raws.push(cr.join('&'));
+                                cr = [];
                             }
                         }
                     }
+                }
 
-                    for (var raw of raws) {
-                        var msg = {};
-                        for (var [k, v] of parsePlayaResponse(raw)) {
-                            msg[k] = v.split(/[/,]/g).map(d => isNaN(d) ? d : Number(d));
+                for (var raw of raws) {
+                    var msg = {};
+                    for (var [k, v] of parsePlayaResponse(raw)) {
+                        msg[k] = v.split(/[/,]/g).map(d => isNaN(d) ? d : Number(d));
+                    }
+
+                    if (msg['fighters'] && msg['winnerid'] && msg['r'] && Object.values(FIGHT_TYPES).includes(msg['fighters'][0])) {
+                        var fightType = msg['fighters'][0];
+
+                        // Fighter A (always a player)
+                        var fighterA = new SFFighter(msg['fighters'].slice(5, 52));
+                        if (fighterA.isMonster()) {
+                            fighterA.Name = getFightTargetName(fightType, fighterA.Name, fighterA.getMonsterID());
                         }
 
-                        if (msg['fighters'] && msg['winnerid'] && msg['r'] && Object.values(FIGHT_TYPES).includes(msg['fighters'][0])) {
-                            var fightType = msg['fighters'][0];
+                        // Fighter B (player or monster)
+                        var fighterB = new SFFighter(msg['fighters'].slice(52, 99));
+                        if (fighterB.isMonster() || !isNaN(fighterB.Name)) {
+                            fighterB.Name = getFightTargetName(fightType, fighterB.Name, fighterB.getMonsterID());
+                        }
 
-                            // Fighter A (always a player)
-                            var fighterA = new SFFighter(msg['fighters'].slice(5, 52));
-                            if (fighterA.isMonster()) {
-                                fighterA.Name = getFightTargetName(fightType, fighterA.Name, fighterA.getMonsterID());
-                            }
+                        // Winner
+                        var winner = msg['winnerid'][0] == fighterA.ID ? fighterA : fighterB;
 
-                            // Fighter B (player or monster)
-                            var fighterB = new SFFighter(msg['fighters'].slice(52, 99));
-                            if (fighterB.isMonster() || !isNaN(fighterB.Name)) {
-                                fighterB.Name = getFightTargetName(fightType, fighterB.Name, fighterB.getMonsterID());
-                            }
-
-                            // Winner
-                            var winner = msg['winnerid'][0] == fighterA.ID ? fighterA : fighterB;
-
-                            // Looping though all rounds
-                            var rounds = [];
-                            for (var i = 0; i < msg['r'].length / 3; i++) {
-                                var [
-                                    attackerID,
-                                    attackType,
-                                    targetHealthLeft
-                                ] = msg['r'].slice(i * 3, i * 3 + 3);
-                                rounds.push({
-                                    attacker: attackerID == fighterA.ID ? fighterA : fighterB,
-                                    target: attackerID == fighterA.ID ? fighterB : fighterA,
-                                    attackType: attackType,
-                                    attackCrit: attackType % 10 == 1,
-                                    attackMissed: (attackType % 10 == 3) || (attackType % 10 == 4),
-                                    targetHealthLeft: targetHealthLeft
-                                });
-                            }
-
-                            for (var i = 0, round; round = rounds[i]; i++) {
-                                round.attackDamage = (() => {
-                                    for (var j = i - 1; j >= 0; j--) {
-                                        if (rounds[j].attacker == round.attacker) {
-                                            return rounds[j].targetHealthLeft;
-                                        }
-                                    }
-
-                                    return round.target.Life;
-                                })() - round.targetHealthLeft;
-                            }
-
-                            if (fighterB.isMonster() && rounds.length) {
-                                var min = Number.MAX_SAFE_INTEGER;
-                                var max = 0;
-
-                                for (var i = 0, round; round = rounds[i]; i++) {
-                                    if (round.attacker == fighterB && (round.attackCrit || round.attackType % 10 == 0)) {
-                                        var damage = round.attackDamage / (round.attackCrit ? 2 : 1) / (1 + i / 6);
-
-                                        if (damage < min) {
-                                            min = damage;
-                                        }
-
-                                        if (damage > max) {
-                                            max = damage;
-                                        }
-                                    }
-                                }
-
-                                // Armor reduction, using maximum armor per class
-                                var armorMultiplier = 1 - fighterA.getMaximumDamageReduction();
-
-                                // Primary attribute
-                                var primaryAttribute = fighterB.getPrimaryAttribute();
-                                var defenseAttribute = fighterA.getDefenseAtribute(fighterB) / 2;
-                                if (defenseAttribute > primaryAttribute / 2) {
-                                    defenseAttribute = primaryAttribute / 2;
-                                }
-
-                                var attributeMultiplier = 1 + (primaryAttribute / 10 - defenseAttribute / 10);
-
-                                fighterB.ApproximateDamageMin = Math.trunc(min / attributeMultiplier / armorMultiplier);
-                                fighterB.ApproximateDamageMax = Math.trunc(max / attributeMultiplier / armorMultiplier);
-                            }
-
-                            fights.push({
-                                fighterA: fighterA,
-                                fighterB: fighterB,
-                                rounds: rounds,
-                                winner: winner
+                        // Looping though all rounds
+                        var rounds = [];
+                        for (var i = 0; i < msg['r'].length / 3; i++) {
+                            var [
+                                attackerID,
+                                attackType,
+                                targetHealthLeft
+                            ] = msg['r'].slice(i * 3, i * 3 + 3);
+                            rounds.push({
+                                attacker: attackerID == fighterA.ID ? fighterA : fighterB,
+                                target: attackerID == fighterA.ID ? fighterB : fighterA,
+                                attackType: attackType,
+                                attackCrit: attackType % 10 == 1,
+                                attackMissed: (attackType % 10 == 3) || (attackType % 10 == 4),
+                                targetHealthLeft: targetHealthLeft
                             });
                         }
-                    }
 
-                    return fights;
+                        for (var i = 0, round; round = rounds[i]; i++) {
+                            round.attackDamage = (() => {
+                                for (var j = i - 1; j >= 0; j--) {
+                                    if (rounds[j].attacker == round.attacker) {
+                                        return rounds[j].targetHealthLeft;
+                                    }
+                                }
+
+                                return round.target.Life;
+                            })() - round.targetHealthLeft;
+                        }
+
+                        if (fighterB.isMonster() && rounds.length) {
+                            var min = Number.MAX_SAFE_INTEGER;
+                            var max = 0;
+
+                            for (var i = 0, round; round = rounds[i]; i++) {
+                                if (round.attacker == fighterB && (round.attackCrit || round.attackType % 10 == 0)) {
+                                    var damage = round.attackDamage / (round.attackCrit ? 2 : 1) / (1 + i / 6);
+
+                                    if (damage < min) {
+                                        min = damage;
+                                    }
+
+                                    if (damage > max) {
+                                        max = damage;
+                                    }
+                                }
+                            }
+
+                            // Armor reduction, using maximum armor per class
+                            var armorMultiplier = 1 - fighterA.getMaximumDamageReduction();
+
+                            // Primary attribute
+                            var primaryAttribute = fighterB.getPrimaryAttribute();
+                            var defenseAttribute = fighterA.getDefenseAtribute(fighterB) / 2;
+                            if (defenseAttribute > primaryAttribute / 2) {
+                                defenseAttribute = primaryAttribute / 2;
+                            }
+
+                            var attributeMultiplier = 1 + (primaryAttribute / 10 - defenseAttribute / 10);
+
+                            fighterB.ApproximateDamageMin = Math.trunc(min / attributeMultiplier / armorMultiplier);
+                            fighterB.ApproximateDamageMax = Math.trunc(max / attributeMultiplier / armorMultiplier);
+                        }
+
+                        fights.push({
+                            fighterA: fighterA,
+                            fighterB: fighterB,
+                            rounds: rounds,
+                            winner: winner
+                        });
+                    }
                 }
 
-                // Event handlers
-                $('#fi-open').on('change', function () {
-                    Array.from(this.files).forEach(file => {
-                        var r = new FileReader();
-                        r.readAsText(file, 'UTF-8');
-                        r.onload = event => {
-                            try {
-                                clearError();
-                                addTab(... parseTabs(JSON.parse(event.target.result)));
-                                updateTabs();
-                            } catch (exception) {
-                                showError(exception);
-                            }
-                        };
-                    });
-                });
+                return fights;
+            }
 
-                $('#fi-clear').on('click', function () {
-                    clearTabs();
-                    updateTabs();
+            // Event handlers
+            $('#fi-open').on('change', function () {
+                Array.from(this.files).forEach(file => {
+                    var r = new FileReader();
+                    r.readAsText(file, 'UTF-8');
+                    r.onload = event => {
+                        try {
+                            clearError();
+                            addTab(... parseTabs(JSON.parse(event.target.result)));
+                            updateTabs();
+                        } catch (exception) {
+                            showError(exception);
+                        }
+                    };
                 });
-            })(jQuery);
+            });
+
+            $('#fi-clear').on('click', function () {
+                clearTabs();
+                updateTabs();
+            });
         </script>
     </body>
 </html>
