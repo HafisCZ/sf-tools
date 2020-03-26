@@ -380,7 +380,10 @@
 
                             </div>
                             <div class="four wide column">
-
+                                <div class="ui tiny basic icon fluid two buttons">
+                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy current" id="sim-copy"><i class="outline copy icon"></i> 1</button>
+                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy everyone" id="sim-copyall"><i class="copy icon"></i> All</button>
+                                </div>
                             </div>
                         </div>
                         <div class="css-small-row row">
@@ -546,26 +549,38 @@
 
             $('#sim-editor').on('paste', function (event) {
                 try {
-                    var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
+                    var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));console.log(data);
                     if (Array.isArray(data)) {
                         players = [];
 
                         for (var d of data) {
-                            var player = d.own ? new SFOwnPlayer(d) : new SFOtherPlayer(d);
-                            player.Fortress.Gladiator = 0;
-                            players.push({
-                                player: player,
-                                score: null,
-                                index: iterator++
-                            });
+                            if (d.Class) {
+                                players.push({
+                                    player: d,
+                                    score: null,
+                                    index: iterator++
+                                });
+                            } else {
+                                var player = d.own ? new SFOwnPlayer(d) : new SFOtherPlayer(d);
+                                player.Fortress.Gladiator = 0;
+                                players.push({
+                                    player: player,
+                                    score: null,
+                                    index: iterator++
+                                });
+                            }
                         }
 
                         showPlayers();
                     } else {
-                        var player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
-                        player.Fortress.Gladiator = 0;
+                        if (data.Class) {
+                            fill(data);
+                        } else {
+                            var player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
+                            player.Fortress.Gladiator = 0;
 
-                        fill(player);
+                            fill(player);
+                        }
                     }
                 } catch (e) {
 
@@ -626,6 +641,23 @@
                     }
                 }
             });
+
+            $('#sim-copy').click(function () {
+                copy(read());
+            });
+
+            $('#sim-copyall').click(function () {
+                copy(players.map(p => p.player));
+            });
+
+            function copy (content) {
+                const element = document.createElement('textarea');
+                element.value = JSON.stringify(content);
+                document.body.appendChild(element);
+                element.select();
+                document.execCommand('copy');
+                document.body.removeChild(element);
+            }
 
             $('#sim-add').click(function () {
                 if (valid()) {
