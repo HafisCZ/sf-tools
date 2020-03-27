@@ -746,6 +746,11 @@ class TableInstance {
         var sizeDynamic = this.config.reduce((a, b) => a + b.width, 0);
         var size = name + (this.settings.globals.indexed ? 50 : 0) + Math.max(400, sizeDynamic);
 
+        var showMembers = this.settings.globals.members;
+        var showSummary = this.flat.reduce((a, b) => a || b.statistics, false);
+        var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
+
+        // Table block
         var table = `
             <tr>
                 ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
@@ -762,13 +767,8 @@ class TableInstance {
                 ${ join(this.entries, (e, ei) => e.content.replace(/\<ispan data\-indexed\=\"2\"\>\d*\<\/ispan\>/, `<ispan data-indexed="2">${ ei + 1 }</ispan>`)) }
         `;
 
+        // Statistics block
         var statistics = '';
-        var members = '';
-
-        var showMembers = this.settings.globals.members;
-        var showSummary = this.flat.reduce((a, b) => a || b.statistics, false);
-        var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
-
         if (showSummary) {
             statistics += `
                 <tr>
@@ -794,16 +794,29 @@ class TableInstance {
             `;
         }
 
-        if (this.settings.extras.length) {
-            if (showSummary) {
-                statistics += `
-                    <tr>
-                        <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                        <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
-                    </tr>
-                `;
-            }
+        // Content spacers
+        var linedSpacer = `
+            <tr>
+                <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
+            </tr>
+        `;
 
+        var linedSpacerTop = `
+            <tr>
+                <td class="border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
+            </tr>
+        `;
+
+        var spacer = `
+            <tr>
+                <td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td>
+            </tr>
+        `;
+
+        var details = '';
+        if (this.settings.extras.length) {
             var widskip = 1;
             for (var i = 0, wid = 100; wid > 0 && i < this.flat.length; i++) {
                 wid -= this.flat[i].width;
@@ -816,7 +829,7 @@ class TableInstance {
 
             for (var extra of this.settings.extras) {
                 var val = extra.flip ? (extra.compare - extra.value) : (extra.value - extra.compare);
-                statistics += `
+                details += `
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
                         <td colspan="${ widskip }">${ extra.value + (extra.difference ? CellGenerator.Difference(val, extra.brackets, isNaN(val) ? val : (Number.isInteger(val) ? val : val.toFixed(2))) : '') }</td>
@@ -825,6 +838,8 @@ class TableInstance {
             }
         }
 
+        // Members block
+        var members = '';
         if (showMembers) {
             var classes = this.array.reduce((c, p) => {
                 c[p.player.Class - 1]++;
@@ -880,76 +895,27 @@ class TableInstance {
         }
 
         var content = '';
+        for (var i = 0; i < this.settings.globals.layout.length; i++) {
+            var block = this.settings.globals.layout[i];
+            var prev = i == 0 ? 0 : this.settings.globals.layout[i - 1];
 
-        if (this.settings.globals.layout == 1) {
-            if (statistics) {
-                if (showSummary) {
-                    content += statistics + `
-                        <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
-                    `;
-                } else {
-                    content += statistics + `
-                        <tr>
-                            <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                            <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
-                        </tr>
-                        <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
-                    `;
-                }
+            if (i == 1 && block == 1 && prev >= 3) {
+                content += linedSpacer + spacer;
+            } else if (i > 0 && block != 1 && prev >= 2) {
+                content += linedSpacer;
+            } else if (prev == 1 && i == this.settings.globals.layout.length - 1) {
+                content += spacer + linedSpacerTop;
+            } else {
+                content += spacer;
             }
 
-            content += table;
-
-            if (members) {
-                content += `
-                    <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
-                    <tr>
-                        <td class="border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                        <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
-                    </tr>
-                `;
-
-                content += members;
-            }
-        } else if (this.settings.globals.layout == 2) {
-            if (members) {
-                content += members + `
-                    <tr>
-                        <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                        <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
-                    </tr>
-                    <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
-                `;
-            }
-
-            content += table;
-
-            if (statistics) {
-                content += `
-                    <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
-                `;
-
+            if (block == 1) {
+                content += table;
+            } else if (block == 2) {
                 content += statistics;
-            }
-        } else {
-            content += table;
-
-            if (statistics) {
-                content += `
-                    <tr><td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td></tr>
-                `;
-
-                content += statistics;
-            }
-
-            if (members) {
-                content += `
-                    <tr>
-                        <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                        <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
-                    </tr>
-                `;
-
+            } else if (block == 3) {
+                content += details;
+            } else if (block == 4) {
                 content += members;
             }
         }
@@ -1042,11 +1008,15 @@ const ARG_MAP = {
     'left': 1,
     'right': 2,
     'both': 3,
-    'none': 0,
-    'table': 0,
-    'statistics': 1,
-    'members': 2,
+    'none': 0
 };
+
+const ARG_LAYOUT = {
+    'table': 1,
+    'statistics': 2,
+    'details': 3,
+    'members': 4
+}
 
 const ARG_MAP_SERVER = {
     'off': 0,
@@ -1084,12 +1054,12 @@ const SFormat = {
 const SettingsCommands = [
     // Global
     // set static
-    new SettingsCommand(/^(layout) (table|statistics|members)$/, function (root, string) {
+    new SettingsCommand(/^(layout) ((table|statistics|members|details)\s*(\,\s*(table|statistics|members|details))*)$/, function (root, string) {
         var [ , key, order ] = this.match(string);
-        root.setGlobalVariable(key, ARG_MAP[order]);
+        root.setGlobalVariable(key, order.split(',').map(o => ARG_LAYOUT[o.trim()]));
     }, function (string) {
         var [ , key, order ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(order) }`;
+        return `${ SFormat.Keyword(key) } ${ order.split(',').map(o => SFormat.Constant(o)).join(',') }`;
     }),
     // Global
     // set static
@@ -1679,7 +1649,8 @@ class Settings {
         this.extras = [];
 
         this.globals = {
-            outdated: true
+            outdated: true,
+            layout: [ 1, 2, 3, 4 ]
         };
 
         // Temporary
