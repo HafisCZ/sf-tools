@@ -75,7 +75,7 @@ class SFItem {
                 };
             }
         }
-        
+
         return {
             Type: id,
             Value: 0
@@ -459,6 +459,16 @@ class SFGroup {
         this.MemberCount = data.save[3];
         this.Honor = data.save[13];
         this.Pet = data.save[378];
+
+        var dataType = new ComplexDataType(data.save.slice(4, 8));
+        dataType.short();
+        this.PortalLife = dataType.short();
+        dataType.short();
+        this.PortalLife += dataType.short() * 65536;
+        dataType.short();
+        this.PortalPercent = dataType.short();
+        dataType.short();
+        this.PortalFloor = dataType.short();
 
         this.Members = data.save.slice(14, 64).map(mid => (data.prefix + '_p' + mid));
         this.Roles = data.save.slice(314, 364);

@@ -821,18 +821,45 @@ class TableInstance {
             for (var i = 0, wid = 100; wid > 0 && i < this.flat.length; i++) {
                 wid -= this.flat[i].width;
                 if (wid > 0) {
-                    widskip++;
+                    widskip += this.flat[i].span;
                 } else {
                     break;
                 }
             }
 
             for (var extra of this.settings.extras) {
-                var val = extra.flip ? (extra.compare - extra.value) : (extra.value - extra.compare);
+                var lw = widskip;
+                if (extra.width) {
+                    var lw = 1;
+                    for (var i = 0, wid = extra.width; wid > 0 && i < this.flat.length; i++) {
+                        wid -= this.flat[i].width;
+                        if (wid > 0) {
+                            lw += this.flat[i].span;;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                var value = extra.eval.value;
+                var reference = extra.difference && !isNaN(extra.eval.compare) ? extra.eval.compare : '';
+
+                if (reference && !isNaN(reference)) {
+                    reference = extra.flip ? (reference - value) : (value - reference);
+                    reference = CellGenerator.Difference(reference, extra.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
+                }
+
+                var color = CompareEval.evaluate(value, extra.color);
+                color = (color != undefined ? color : (extra.expc ? extra.expc(player, this.settings, value) : '')) || '';
+
+                var displayValue = CompareEval.evaluate(value, extra.value);
+                var value = displayValue != undefined ? displayValue : (extra.format ? extra.format(player, this.settings, value) : (value + (extra.extra || '')));
+
+                var cell = CellGenerator.WideCell(SFormat.Normal(value + reference), color, lw);
                 details += `
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
-                        <td colspan="${ widskip }">${ extra.value + (extra.difference ? CellGenerator.Difference(val, extra.brackets, isNaN(val) ? val : (Number.isInteger(val) ? val : val.toFixed(2))) : '') }</td>
+                        ${ cell }
                     </tr>
                 `;
             }
@@ -850,7 +877,7 @@ class TableInstance {
             for (var i = 0, wid = 60; wid > 0 && i < this.flat.length; i++) {
                 wid -= this.flat[i].width;
                 if (wid > 0) {
-                    widskip++;
+                    widskip += this.flat[i].span;
                 } else {
                     break;
                 }
@@ -951,6 +978,10 @@ const CellGenerator = {
     // Simple cell
     Cell: function (c, b, f, bo) {
         return `<td class="${ bo ? 'border-right-thin' : '' }" style="color: ${ f }; background-color: ${ b }">${ c }</td>`;
+    },
+    // Wide cell
+    WideCell: function (c, b, w) {
+        return `<td colspan="${ w }" style="background-color: ${ b }">${ c }</td>`;
     },
     // Plain cell
     Plain: function (c, bo) {
@@ -1709,13 +1740,13 @@ class Settings {
                     }
                 }
 
-                data.value = data.ast.eval(undefined, this, scope);
+                data.value = data.ast.eval(compare ? players[0].player : undefined, this, scope);
                 if (isNaN(data.value)) {
                     data.value = undefined;
                 }
 
                 if (compare) {
-                    var val = data.ast.eval(undefined, this, scope2);
+                    var val = data.ast.eval(players[0].compare, this, scope2);
                     if (isNaN(val)) {
                         val = undefined;
                     }
@@ -1733,15 +1764,10 @@ class Settings {
         if (compare) {
             for (var data of this.extras) {
                 if (data.ast) {
-                    data.value = data.ast.eval(undefined, this, players.map(p => p.player));
-                    if (isNaN(data.value)) {
-                        data.value = undefined;
-                    }
-
-                    data.compare = data.ast.eval(undefined, this.getCompareEnvironment(), players.map(p => p.compare));
-                    if (isNaN(data.compare)) {
-                        data.compare = undefined;
-                    }
+                    data.eval = {
+                        value: data.ast.eval(players[0].player, this, players.map(p => p.player)),
+                        compare: data.ast.eval(players[0].compare, this.getCompareEnvironment(), players.map(p => p.compare))
+                    };
                 }
             }
         }
@@ -1951,13 +1977,21 @@ class Settings {
     }
 
     setLocalArrayVariable (key, condition, reference, value) {
-        var object = this.currentCategory && ReservedCategories[this.currentCategory.name] ? this.currentCategory : this.currentHeader;
-        if (object) {
-            if (!object[key]) {
-                object[key] = [];
+        if (this.currentExtra) {
+            if (!this.currentExtra[key]) {
+                this.currentExtra[key] = [];
             }
 
-            object[key].push([ condition, reference, value, reference ]);
+            this.currentExtra[key].push([ condition, reference, value, reference ]);
+        } else {
+            var object = this.currentCategory && ReservedCategories[this.currentCategory.name] ? this.currentCategory : this.currentHeader;
+            if (object) {
+                if (!object[key]) {
+                    object[key] = [];
+                }
+
+                object[key].push([ condition, reference, value, reference ]);
+            }
         }
     }
 };

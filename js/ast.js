@@ -11,6 +11,7 @@ const AST_OPERATORS = {
     '<=': a => a[0] <= a[1],
     '||': a => a[0] || a[1],
     '&&': a => a[0] && a[1],
+    '%': a => a[0] % a[1],
     '?': a => a[0] ? a[1] : a[2],
     'u-': a => -a[0],
     's': a => a[0],
@@ -35,7 +36,7 @@ const AST_FUNCTIONS = {
     'len': (a) => a[0] != undefined ? (Array.isArray(a[0]) ? a[0].length : Object.values(a[0]).length) : undefined
 };
 
-const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\{|\}|\|\||\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\[|\]|\,)/;
+const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\[|\]|\,)/;
 
 class AST {
     constructor (string) {
@@ -55,7 +56,7 @@ class AST {
 
                 if (token != undefined && token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
                     value = token[0] + SFormat.Comment(token.slice(1, token.length - 1)) + token[token.length - 1];
-                } else if (AST_FUNCTIONS[token] != undefined || ['each', 'map', 'slice', 'this', 'undefined', 'null', 'filter'].includes(token)) {
+                } else if (AST_FUNCTIONS[token] != undefined || ['each', 'map', 'slice', 'this', 'undefined', 'null', 'filter', 'format'].includes(token)) {
                     value = SFormat.Constant(token);
                 } else if (SP_KEYWORD_MAPPING_0[token] != undefined) {
                     value = SFormat.Reserved(token);
@@ -265,7 +266,7 @@ class AST {
 
         left = this.evalRankedExpression();
 
-        while (['+', '-'].includes(this.peek())) {
+        while (['+', '-', '%'].includes(this.peek())) {
             op = this.get();
 
             if (this.peek() == '(') {
@@ -379,7 +380,16 @@ class AST {
             if (node.noeval) {
                 return node.args[0];
             } else if (typeof(node.op) == 'string') {
-                if (node.op == 'each' && node.args.length >= 2) {
+                if (node.op == 'format' && node.args.length > 0) {
+                    var str = this.eval(player, environment, scope, node.args[0]);
+                    var arg = node.args.slice(1).map(a => this.eval(player, environment, scope, a));
+
+                    for (key in arg) {
+                        str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
+                    }
+
+                    return str;
+                } else if (node.op == 'each' && node.args.length >= 2) {
                     var generated = this.eval(player, environment, scope, node.args[0]) || {};
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
@@ -1136,6 +1146,15 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Level XP': {
         expr: p => p.XPNext
+    },
+    'Guild Portal Floor': {
+        expr: p => p.Group.Group ? p.Group.Group.PortalFloor : undefined
+    },
+    'Guild Portal Life': {
+        expr: p => p.Group.Group ? p.Group.Group.PortalLife : undefined
+    },
+    'Guild Portal Percent': {
+        expr: p => p.Group.Group ? p.Group.Group.PortalPercent : undefined
     }
 };
 
