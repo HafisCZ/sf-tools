@@ -50,7 +50,7 @@ class FighterModel {
         let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE.COLD_DAMAGE) / 100);
         let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE.LIGHTNING_DAMAGE) / 100);
 
-        let m = (1 + this.Player.Dungeons.Group / 100) * mp * (1 + mf + mc + ml) * (this.Player.Class == 2 && target.Player.Class == 6 ? 2 : (this.Player.Class == 6 ? 1.5 : 1));
+        let m = (1 + this.Player.Dungeons.Group / 100) * mp * (1 + mf + mc + ml);
 
         if (this.Player.Class == 2 && target.Player.Class == 6) {
             m = m * (2 / 1);
@@ -244,6 +244,7 @@ class FightSimulator {
                         this.b.revive();
                     }
 
+                    this.turn++;
                     this.attack(this.a, this.b);
                 }
             }
@@ -266,6 +267,7 @@ class FightSimulator {
                             this.a.revive();
                         }
 
+                        this.turn++;
                         this.attack(this.b, this.a);
                     }
                 }
