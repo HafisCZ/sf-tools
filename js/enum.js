@@ -5,7 +5,8 @@ const PLAYER_CLASS = [
     'Scout',
     'Assassin',
     'Battle Mage',
-    'Berserker'
+    'Berserker',
+    'Demon Hunter'
 ];
 
 const PLAYER_ACTIONS = [
@@ -21,7 +22,8 @@ const PLAYER_CLASS_SEARCH = [
     'scout',
     'assassin',
     'battle mage',
-    'berserker'
+    'berserker',
+    'demon hunter'
 ];
 
 const PLAYER_MOUNT = [

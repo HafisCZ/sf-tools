@@ -1529,6 +1529,7 @@ const Constants = {
         'assassin': '4',
         'battlemage': '5',
         'berserker': '6',
+        'demonhunter': '7',
         'empty': '',
         'tiny': '15',
         'small': '60',

@@ -87,12 +87,14 @@ value equal 3 S
 value equal 4 A
 value equal 5 BM
 value equal 6 B
+value equal 7 DH
 color equal 1 1874CD
 color equal 2 darkorchid
 color equal 3 lawngreen
 color equal 4 red
 color equal 5 violet
 color equal 6 orange
+color equal 7 eb605e
 
 header Gear # This column indicates what gear has the player equipped
 expr (Rune Gold + Rune XP >= 50 ? "Q" : "F") # Add gold and xp runes and decide whether gear is for quests or not
@@ -221,13 +223,14 @@ value equal 3 S
 value equal 4 A
 value equal 5 BM
 value equal 6 B
+value equal 7 DH
 color equal 1 1874CD
 color equal 2 darkorchid
 color equal 3 lawngreen
 color equal 4 red
 color equal 5 violet
 color equal 6 orange
-difference off
+color equal 7 eb605e
 
 header Rank
 width @small
