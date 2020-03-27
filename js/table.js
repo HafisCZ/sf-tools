@@ -1200,21 +1200,25 @@ const SettingsCommands = [
         }
     }),
     // Create new header
-    new SettingsCommand(/^(header) (\S+[\S ]*)$/, function (root, string) {
+    new SettingsCommand(/^(header)(?: (\S+[\S ]*))?$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.createHeader(a);
+        root.createHeader(a || '');
     }, function (string) {
         var [ , key, a ] = this.match(string);
-        if (SP_KEYWORD_MAPPING_0[a]) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Reserved(a) }`;
-        } else if (SP_KEYWORD_MAPPING_1[a]) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.ReservedProtected(a) }`;
-        } else if (SP_KEYWORD_MAPPING_2[a]) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.ReservedPrivate(a) }`;
-        } else if (SP_KEYWORD_MAPPING_3[a]) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.ReservedSpecial(a) }`;
+        if (a != undefined) {
+            if (SP_KEYWORD_MAPPING_0[a]) {
+                return `${ SFormat.Keyword(key) } ${ SFormat.Reserved(a) }`;
+            } else if (SP_KEYWORD_MAPPING_1[a]) {
+                return `${ SFormat.Keyword(key) } ${ SFormat.ReservedProtected(a) }`;
+            } else if (SP_KEYWORD_MAPPING_2[a]) {
+                return `${ SFormat.Keyword(key) } ${ SFormat.ReservedPrivate(a) }`;
+            } else if (SP_KEYWORD_MAPPING_3[a]) {
+                return `${ SFormat.Keyword(key) } ${ SFormat.ReservedSpecial(a) }`;
+            } else {
+                return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+            }
         } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+            return `${ SFormat.Keyword(key) }`;
         }
     }),
     // Create new statistics row
