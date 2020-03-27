@@ -850,12 +850,12 @@ class TableInstance {
                 }
 
                 var color = CompareEval.evaluate(value, extra.color);
-                color = (color != undefined ? color : (extra.expc ? extra.expc(player, this.settings, value) : '')) || '';
+                color = (color != undefined ? color : (extra.expc ? extra.expc(undefined, this.settings, value) : '')) || '';
 
                 var displayValue = CompareEval.evaluate(value, extra.value);
-                var value = displayValue != undefined ? displayValue : (extra.format ? extra.format(player, this.settings, value) : (value + (extra.extra || '')));
+                var value = displayValue != undefined ? displayValue : (extra.format ? extra.format(undefined, this.settings, value) : (value + (extra.extra || '')));
 
-                var cell = CellGenerator.WideCell(SFormat.Normal(value + reference), color, lw);
+                var cell = CellGenerator.WideCell(SFormat.Normal(value) + reference, color, lw);
                 details += `
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
@@ -1970,9 +1970,13 @@ class Settings {
     }
 
     setLocalVariable (key, value) {
-        var object = this.currentCategory && ReservedCategories[this.currentCategory.name] ? this.currentCategory : this.currentHeader;
-        if (object) {
-            object[key] = value;
+        if (this.currentExtra) {
+            this.currentExtra[key] = value;
+        } else {
+            var object = this.currentCategory && ReservedCategories[this.currentCategory.name] ? this.currentCategory : this.currentHeader;
+            if (object) {
+                object[key] = value;
+            }
         }
     }
 
