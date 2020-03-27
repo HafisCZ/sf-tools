@@ -400,6 +400,7 @@ class SFFighter {
             case 1:
             case 5:
             case 6:
+            case 7:
                 return 0.50
             case 3:
             case 4:
@@ -419,6 +420,7 @@ class SFFighter {
                 return this.Strength;
             case 3:
             case 4:
+            case 7:
                 return this.Dexterity;
             case 2:
                 return this.Intelligence;
@@ -435,6 +437,7 @@ class SFFighter {
                 return this.Strength;
             case 3:
             case 4:
+            case 7:
                 return this.Dexterity;
             case 2:
                 return this.Intelligence;
@@ -535,6 +538,7 @@ class SFPlayer {
                 return this.Strength;
             case 3:
             case 4:
+            case 7:
                 return this.Dexterity;
             case 2:
                 return this.Intelligence;
@@ -604,7 +608,7 @@ class SFPlayer {
     }
 
     getClassBonus (attribute) {
-        if (this.Class >= 5) {
+        if (this.Class == 5 || this.Class == 6) {
             return Math.ceil(attribute.Equipment * 11 / 100);
         } else {
             return 0;

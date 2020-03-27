@@ -181,6 +181,7 @@
                                             <div class="item" data-value="4">Assassin</div>
                                             <div class="item" data-value="5">Battle Mage</div>
                                             <div class="item" data-value="6">Berserker</div>
+                                            <div class="item" data-value="7">Demon Hunter</div>
                                         </div>
                                     </div>
                                 </div>
@@ -547,16 +548,25 @@
                 event.stopPropagation();
             });
 
+            // Helper function
+            function merge (a, b) {
+                for (var [k, v] of Object.entries(b)) {
+                    if (!a.hasOwnProperty(k)) a[k] = b[k];
+                }
+
+                return a;
+            }
+
             $('#sim-editor').on('paste', function (event) {
                 try {
-                    var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));console.log(data);
+                    var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
                     if (Array.isArray(data)) {
                         players = [];
 
                         for (var d of data) {
                             if (d.Class) {
                                 players.push({
-                                    player: d,
+                                    player: merge(new SFPlayer(), d),
                                     score: null,
                                     index: iterator++
                                 });
@@ -564,7 +574,7 @@
                                 var player = d.own ? new SFOwnPlayer(d) : new SFOtherPlayer(d);
                                 player.Fortress.Gladiator = 0;
                                 players.push({
-                                    player: player,
+                                    player: merge(new SFPlayer(), player),
                                     score: null,
                                     index: iterator++
                                 });
@@ -583,7 +593,7 @@
                         }
                     }
                 } catch (e) {
-
+                
                 }
             });
 

@@ -14,7 +14,7 @@ class FighterModel {
 
     // Get defense attribute against a player
     getDefenseAtribute (source) {
-        return source.Player.Class == 2 ? this.Player.Intelligence : (source.Player.Class == 3 || source.Player.Class == 4 ? this.Player.Dexterity : this.Player.Strength);
+        return source.Player.Class == 2 ? this.Player.Intelligence : (source.Player.Class == 3 || source.Player.Class == 4 || source.Player.Class == 7 ? this.Player.Dexterity : this.Player.Strength);
     }
 
     // Get damage reduction against a player
@@ -24,7 +24,7 @@ class FighterModel {
 
     // Get maximum damage reduction
     getMaximumDamageReduction () {
-        return this.Player.Class % 4 == 1 ? 50 : (this.Player.Class == 2 ? 10 : 25);
+        return this.Player.Class % 4 == 1 || this.Player.Class == 7 ? 50 : (this.Player.Class == 2 ? 10 : 25);
     }
 
     // Get block chance
@@ -80,7 +80,7 @@ class FighterModel {
                 return Math.ceil(target.Health / 3);
             } else if (target.Player.Class == 1) {
                 return Math.ceil(this.Health / 4);
-            } else if (target.Player.Class == 3 || target.Player.Class == 4) {
+            } else if (target.Player.Class == 3 || target.Player.Class == 4 || target.Player.Class == 7) {
                 return Math.ceil(this.Health / 5);
             } else {
                 return 0;
@@ -88,6 +88,15 @@ class FighterModel {
         } else {
             // -1 if player cannot cast special damage
             return -1;
+        }
+    }
+
+    // Get special death
+    getRevivalChance (source) {
+        if (this.Player.Class == 7 && source.Player.Class != 2) {
+            return 25;
+        } else {
+            return 0;
         }
     }
 
@@ -101,6 +110,7 @@ class FighterModel {
         this.RepeatAttackChance = this.Player.Class == 6 ? 50 : 0;
         this.SkipChance = this.getBlockChance(target);
         this.CriticalChance = this.getCriticalChance(target);
+        this.RevivalChance = this.getRevivalChance(target);
 
         // Weapon
         var weapon1 = this.Player.Items.Wpn1;
@@ -117,6 +127,10 @@ class FighterModel {
                 Critical: this.getCriticalMultiplier(weapon2, target)
             }
         }
+    }
+
+    revive () {
+        this.Health = this.Player.getHealth();
     }
 }
 
@@ -218,23 +232,47 @@ class FightSimulator {
         // Run simulation
         while (this.a.Health > 0 && this.b.Health > 0) {
             this.attack(this.a, this.b);
-            if (this.a.Weapon2 && this.b.Health > 0) {
+            if (this.a.Weapon2) {
+                if (this.b.Health <= 0 && getRandom(this.b.RevivalChance)) {
+                    this.b.revive();
+                }
+
                 this.attack(this.a, this.b, this.a.Weapon2);
             } else if (this.a.RepeatAttackChance) {
-                while (getRandom(this.a.RepeatAttackChance) && this.b.Health > 0) {
+                while (getRandom(this.a.RepeatAttackChance)) {
+                    if (this.b.Health <= 0 && getRandom(this.b.RevivalChance)) {
+                        this.b.revive();
+                    }
+
                     this.attack(this.a, this.b);
                 }
             }
 
+            if (this.b.Health <= 0 && getRandom(this.b.RevivalChance)) {
+                this.b.revive();
+            }
+
             if (this.b.Health > 0) {
                 this.attack(this.b, this.a);
-                if (this.b.Weapon2 && this.a.Health > 0) {
+                if (this.b.Weapon2) {
+                    if (this.a.Health <= 0 && getRandom(this.a.RevivalChance)) {
+                        this.a.revive();
+                    }
+
                     this.attack(this.b, this.a, this.b.Weapon2);
                 } else if (this.b.RepeatAttackChance) {
-                    while (getRandom(this.b.RepeatAttackChance) && this.a.Health > 0) {
+                    while (getRandom(this.b.RepeatAttackChance)) {
+                        if (this.a.Health <= 0 && getRandom(this.a.RevivalChance)) {
+                            this.a.revive();
+                        }
+
                         this.attack(this.b, this.a);
                     }
                 }
+            }
+
+            if (this.a.Health <= 0 && getRandom(this.a.RevivalChance)) {
+                this.a.revive();
             }
 
             if (this.turn > 100) {
