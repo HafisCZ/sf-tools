@@ -894,16 +894,28 @@ class TableInstance {
             `;
         }
 
+        var layout = this.settings.globals.layout.filter(block => {
+            if (block == 1) {
+                return true;
+            } else if (block == 2) {
+                return showSummary;
+            } else if (block == 3) {
+                return this.settings.extras.length;
+            } else if (block == 4) {
+                return showMembers;
+            }
+        });
+
         var content = '';
-        for (var i = 0; i < this.settings.globals.layout.length; i++) {
-            var block = this.settings.globals.layout[i];
-            var prev = i == 0 ? 0 : this.settings.globals.layout[i - 1];
+        for (var i = 0; i < layout.length; i++) {
+            var block = layout[i];
+            var prev = i == 0 ? 0 : layout[i - 1];
 
             if (i == 1 && block == 1 && prev >= 3) {
                 content += linedSpacer + spacer;
             } else if (i > 0 && block != 1 && prev >= 2) {
                 content += linedSpacer;
-            } else if (prev == 1 && i == this.settings.globals.layout.length - 1) {
+            } else if (prev == 1 && i == layout.length - 1) {
                 content += spacer + linedSpacerTop;
             } else {
                 content += spacer;
