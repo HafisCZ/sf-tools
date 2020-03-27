@@ -811,7 +811,7 @@ class TableInstance {
 
         var spacer = `
             <tr>
-                <td colspan="${ this.flat.length + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td>
+                <td colspan="${ dividerSpan + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td>
             </tr>
         `;
 
