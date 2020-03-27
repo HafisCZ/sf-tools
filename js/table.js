@@ -944,7 +944,7 @@ class TableInstance {
                 content += linedSpacer;
             } else if (prev == 1 && i == layout.length - 1 && block != 2) {
                 content += spacer + linedSpacerTop;
-            } else {
+            } else if (i != 0 && block != 1) {
                 content += spacer;
             }
 
