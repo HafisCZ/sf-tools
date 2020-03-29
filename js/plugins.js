@@ -49,6 +49,10 @@
                     }
                 }));
 
+                $parent.append($('<i class="close icon link icon css-search-clear"></i>').click(event => {
+                    $this.searchfield('clear');
+                }));
+
                 $this.keydown(event => {
                     if (event.which == 13) {
                         $this.searchfield('add', $this.val());
@@ -116,6 +120,8 @@
                     this.shown = true;
                     this.$popup.show();
                 }
+            } else if (command == 'clear'){
+                $this.val('').trigger('change');
             } else if (command == 'select') {
                 $this.val(arg).searchfield('hide').trigger('change');
             }

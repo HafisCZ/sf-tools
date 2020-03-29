@@ -207,7 +207,7 @@ class FightSimulator {
         //console.log(target.Name, this.b.Weapon1.Range.Min, this.b.Weapon1.Range.Max, ...(this.b.Weapon2 ? [ this.b.Weapon2.Range.Min, this.b.Weapon2.Range.Max ] : []));
 
         // Decide who starts first
-        if (this.a.AttackFirst && this.b.AttackFirst ? getRandom(50) : this.a.AttackFirst) {
+        if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
             [this.a, this.b] = [this.b, this.a];
         }
 
@@ -253,29 +253,7 @@ class FightSimulator {
                 this.b.revive();
             }
 
-            if (this.b.Health > 0) {
-                this.attack(this.b, this.a);
-                if (this.b.Weapon2) {
-                    if (this.a.Health <= 0 && getRandom(this.a.RevivalChance)) {
-                        this.a.revive();
-                    }
-
-                    this.attack(this.b, this.a, this.b.Weapon2);
-                } else if (this.b.RepeatAttackChance) {
-                    while (getRandom(this.b.RepeatAttackChance)) {
-                        if (this.a.Health <= 0 && getRandom(this.a.RevivalChance)) {
-                            this.a.revive();
-                        }
-
-                        this.turn++;
-                        this.attack(this.b, this.a);
-                    }
-                }
-            }
-
-            if (this.a.Health <= 0 && getRandom(this.a.RevivalChance)) {
-                this.a.revive();
-            }
+            [this.a, this.b] = [this.b, this.a];
 
             if (this.turn > 100) {
                 break;
