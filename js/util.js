@@ -54,7 +54,7 @@ function calculateTotalAttributePrice (attribute) {
     }
 
     for (var i = 0; i < attribute; i++) {
-        price += calculateAttributePrice(attribute);
+        price += calculateAttributePrice(i);
     }
 
     return price;
