@@ -1226,6 +1226,14 @@ const SP_KEYWORD_MAPPING_2 = {
         width: 160,
         difference: false,
         statistics: false
+    },
+    'Crystals': {
+        expr: p => p.Crystals,
+        statistics: false
+    },
+    'Metal': {
+        expr: p => p.Metal,
+        statistics: false
     }
 };
 

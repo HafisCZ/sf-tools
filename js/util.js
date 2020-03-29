@@ -194,6 +194,10 @@ class ComplexDataType {
         }
     }
 
+    empty () {
+        return this.values.length <= this.ptr;
+    }
+
     long () {
         return this.values[this.ptr++];
     }

@@ -319,6 +319,7 @@ const UpdateService = {
                 p.pets = p.own ? new Array(288).fill(0) : new Array(6).fill(0);
                 updated = true;
             }
+
             if (!p.achievements) {
                 p.achievements = new Array(160).fill(0);
                 updated = true;
@@ -329,10 +330,16 @@ const UpdateService = {
                 updated = true;
             }
 
+            if (p.own && !p.chest) {
+                p.chest = [];
+                updated = true;
+            }
+
             if (!p.prefix) {
                 p.prefix = 's1_de';
                 updated = true;
             }
+
             if (!p.id) {
                 p.id = p.prefix + '_p' + (p.own ? p.save[1] : p.save[0]);
                 updated = true;
@@ -530,6 +537,8 @@ const Storage = new (class {
                             file.version = Number(val);
                         } else if (key.includes('towerSave')) {
                             player.tower = val.split('/').map(a => Number(a));
+                        } else if (key.includes('fortresschest')) {
+                            player.chest = val.split('/').map(a => Number(a));
                         }
                     }
 

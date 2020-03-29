@@ -1133,7 +1133,18 @@ class SFOwnPlayer extends SFPlayer {
             Wpn1: new SFItem(dataType.sub(12), 8),
             Wpn2: new SFItem(dataType.sub(12), 9)
         };
-        dataType.skip(118); // skip
+        this.Inventory = {
+            Backpack: [],
+            Chest: [],
+            Shop: []
+        };
+        for (var i = 0; i < 5; i++) {
+            var item = new SFItem(dataType.sub(12));
+            if (item.Type > 0) {
+                this.Inventory.Backpack.push(item);
+            }
+        }
+        dataType.skip(58); // skip
         this.Mount = dataType.short();
         this.Dungeons = {
             Normal: [],
@@ -1143,7 +1154,20 @@ class SFOwnPlayer extends SFPlayer {
             }
         };
         this.Dungeons.Tower = dataType.short();
-        dataType.skip(146); // skip
+        dataType.skip(1);
+        for (var i = 0; i < 6; i++) {
+            var item = new SFItem(dataType.sub(12));
+            if (item.Type > 0) {
+                this.Inventory.Shop.push(item);
+            }
+        }
+        dataType.skip(1);
+        for (var i = 0; i < 6; i++) {
+            var item = new SFItem(dataType.sub(12));
+            if (item.Type > 0) {
+                this.Inventory.Shop.push(item);
+            }
+        }
         this.Dungeons.Raid = dataType.short();
         dataType.short();
         dataType.skip(1); // skip
@@ -1301,6 +1325,9 @@ class SFOwnPlayer extends SFPlayer {
             Fire: dataType.long(),
             Water: dataType.long()
         };
+        dataType.skip(146);
+        this.Metal = dataType.long();
+        this.Crystals = dataType.long();
 
         this.Name = data.name;
         this.Prefix = data.prefix.replace('_', ' ');
@@ -1311,5 +1338,18 @@ class SFOwnPlayer extends SFPlayer {
 
         this.Dungeons.Extra.Normal.Total = this.Dungeons.Normal.Total + this.Dungeons.Extra.Normal.reduce((a, b) => a + b, 0);
         this.Dungeons.Extra.Shadow.Total = this.Dungeons.Shadow.Total + this.Dungeons.Extra.Shadow.reduce((a, b) => a + b, 0);
+
+        dataType = new ComplexDataType(data.chest);
+
+        for (var i = 0; i < 40 && !dataType.empty(); i++) {
+            var item = new SFItem(dataType.sub(12));
+            if (item.Type > 0) {
+                if (i >= 15) {
+                    this.Inventory.Chest.push(item);
+                } else {
+                    this.Inventory.Backpack.push(item);
+                }
+            }
+        }
     }
 }
