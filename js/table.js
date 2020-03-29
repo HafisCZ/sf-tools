@@ -152,7 +152,7 @@ const ReservedHeaders = {
             var b = operation(players.map(p => header.percentage ? 100 * p.compare.Book / SCRAPBOOK_COUNT : p.compare.Book));
 
             var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, root, a) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(null, root, a) : '')) || '';
 
             var reference = header.difference ? b : '';
             if (reference) {
@@ -202,7 +202,7 @@ const ReservedHeaders = {
             }
 
             var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, root, a) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(null, root, a) : '')) || '';
 
             var displayValue = CompareEval.evaluate(a, header.value);
             displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, root, a) : (a + (header.extra || '')));
