@@ -65,6 +65,7 @@
                                             <div class="item" data-value="3">Assassin</div>
                                             <div class="item" data-value="4">Battle Mage</div>
                                             <div class="item" data-value="5">Berserker</div>
+                                            <div class="item" data-value="6">Demon Hunter</div>
                                         </div>
                                     </div>
                                 </div>
@@ -536,6 +537,7 @@
                 function getMaxDamageReduction (player) {
                     switch (player.class) {
                         case 0:
+                        case 6:
                             return 0.5;
                         case 1:
                         case 4:
@@ -559,6 +561,7 @@
                             return attributes.int;
                         case 2:
                         case 3:
+                        case 6:
                             return attributes.dex;
                         default:
                             return 0;
