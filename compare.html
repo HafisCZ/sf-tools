@@ -87,10 +87,6 @@
                                         <label>Damage Bonus (Guild)</label>
                                         <input type="text" id="damagebonus">
                                     </div>
-                                    <div class="field">
-                                        <label>Gladiator %</label>
-                                        <input type="text" id="gladiator">
-                                    </div>
                                 </div>
                                 <div class="field">
                                     <label>Armor</label>
@@ -495,7 +491,7 @@
                         lck: get('#luck'),
                         lckmult: (1 + get('#luckpotion')) * (1 + get('#luckpet') / 100),
                         damagemult: 1 + get('#damagebonus') / 100,
-                        critmult: 2 * (1 + get('#gladiator') / 100),
+                        critmult: 2 * (1 + 0 / 100),
                         healthmult: (1 + get('#healthbonus') / 100) * (1 + get('#potion')),
                         armor: get('#armor')
                     };
