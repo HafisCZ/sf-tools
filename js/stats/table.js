@@ -358,9 +358,11 @@ class TableInstance {
                             }
 
                             var reference = ((header.difference && compare) ? header.expr(compare, this.settings.getCompareEnvironment()) : '') || '';
-                            if (reference) {
+                            if (reference && !isNaN(reference)) {
                                 reference = header.flip ? (reference - value) : (value - reference);
                                 reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
+                            } else {
+                                reference = '';
                             }
 
                             var color = CompareEval.evaluate(value, header.color);
@@ -381,8 +383,14 @@ class TableInstance {
                             var reference = header.difference ? players.map(p => header.expr(p.compare, this.settings.getCompareEnvironment())).filter(x => x != undefined) : '';
                             if (reference && reference.length) {
                                 reference = operation(reference);
-                                reference = header.flip ? (reference - value) : (value - reference);
-                                reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
+                                if (!isNaN(reference)) {
+                                    reference = header.flip ? (reference - value) : (value - reference);
+                                    reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
+                                } else {
+                                    reference = '';
+                                }
+                            } else {
+                                reference = '';
                             }
 
                             var color = CompareEval.evaluate(value, header.color);
