@@ -19,21 +19,18 @@
         <script src="vendor/js/components/state.min.js"></script>
 
         <script src="js/plugins.js"></script>
-
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
 
-        <script src="js/playa.js"></script>
+        <script src="js/core/playa.js"></script>
+        <script src="js/core/core.js"></script>
+        <script src="js/core/simulator.js"></script>
+        <script src="js/core/ast.js"></script>
 
-        <script src="js/core.js"></script>
+        <script src="js/stats/templates.js"></script>
+        <script src="js/stats/table.js"></script>
 
-        <script src="js/simulator.js"></script>
-
-        <script src="js/ast.js"></script>
-        <script src="js/templates.js"></script>
-        <script src="js/table.js"></script>
-
-        <script src="js/event.js"></script>
+        <script src="js/stats/event.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
@@ -384,8 +381,8 @@
 
         <!-- UI Handler -->
         <script type="text/javascript">
-            var anonymous = /^.*\?(dev\&)?temp(\&dev)?$/.test(window.location.href);
-            if (anonymous) {
+            var temp = /^.*\?(dev\&)?temp(\&dev)?$/.test(window.location.href);
+            if (temp) {
                 $('.css-temporary').removeClass('hidden');
             }
 
@@ -408,7 +405,10 @@
             }, function () {
                 // Firefox private mode
                 UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
-            }, anonymous, dev);
+            }, {
+                temporary: temp,
+                developer: dev
+            });
         </script>
     </body>
 </html>

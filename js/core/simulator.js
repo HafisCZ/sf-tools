@@ -57,7 +57,7 @@ class FighterModel {
         } else if (this.Player.Class == 6) {
             m = m * (3 / 2);
         } else if (this.Player.Class == 4) {
-            m = m * (3 / 5);
+            m = m * (5 / 8);
         }
 
         let aa = this.Player.getPrimaryAttribute().Total;

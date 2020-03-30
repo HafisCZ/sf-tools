@@ -519,3 +519,21 @@ h3.file-selected {
     padding-left: 0 !important;
     padding-right: 0 !important;
 }
+
+.css-dark {
+    background-color: #141414;
+}
+
+.css-inventory-player.css-transparent {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+
+.css-inventory-player.css-transparent .muted {
+    color: gray !important;
+}
+
+.css-dark .ui.header {
+    color: white;
+}

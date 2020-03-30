@@ -149,6 +149,10 @@ const Database = new (class {
 
         for (var file of files) {
             for (var data of file.groups) {
+                if (this.Filters.Group && !this.Filters.Group(data)) {
+                    continue;
+                }
+
                 data.timestamp = file.timestamp;
                 let group = new SFGroup(data);
                 group.MembersPresent = 0;
@@ -160,6 +164,10 @@ const Database = new (class {
             }
 
             for (var data of file.players) {
+                if (this.Filters.Player && !this.Filters.Player(data)) {
+                    continue;
+                }
+
                 data.timestamp = file.timestamp;
                 let player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
 
@@ -233,9 +241,14 @@ const Database = new (class {
         this.update();
     }
 
-    from (files) {
+    from (files, pfilter, gfilter) {
         this.Players = {};
         this.Groups = {};
+
+        this.Filters = {
+            Player: pfilter,
+            Group: gfilter
+        };
 
         this.add(... files);
 
@@ -375,15 +388,15 @@ const UpdateService = {
 };
 
 const Storage = new (class {
-    load (callback, error, temp, dev) {
-        if (temp) {
+    load (callback, error, args) {
+        if (args.temporary) {
             Preferences.temporary();
             FileDatabase.temporary();
 
             Database.Temporary = true;
         }
 
-        if (dev) {
+        if (args.developer) {
             Database.Developer = true;
         }
 
@@ -403,7 +416,7 @@ const Storage = new (class {
                     this.save(... this.current);
                 }
 
-                Database.from(this.current);
+                Database.from(this.current, args.pfilter, args.gfilter);
                 callback();
             });
         }, error);

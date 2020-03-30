@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Statistics</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="css/plugins.css"/>
+
+        <link rel="preload" href="res/group.png" as="image"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/html2canvas.js"></script>
+
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/components/state.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+
+        <script src="js/core/playa.js"></script>
+        <script src="js/core/core.js"></script>
+        <script src="js/core/simulator.js"></script>
+
+        <script src="js/inventory/event.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body class="css-dark">
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item">SFTools <span class="css-devmode hidden">Developer Mode</span></div>
+            <div class="right menu" id="show-right-menu">
+                <a id="show-back" href="index.html" class="item"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
+            </div>
+        </div>
+
+        <!-- LoaderView -->
+        <div id="modal-loader" class="ui main container">
+            <div class="ui active dimmer" data-op="text">
+                <div class="ui large text loader">Loading</div>
+            </div>
+        </div>
+
+        <!-- PlayerSelectView -->
+        <div id="view-playerselect" class="ui main container hidden sf-container">
+            <div class="ui five column grid" data-op="list"></div>
+        </div>
+
+        <!-- InventoryView -->
+        <div id="view-inventory" class="ui main container hidden sf-container">
+            <div class="ui five column grid" data-op="list"></div>
+        </div>
+
+        <!-- ExceptionView -->
+        <div id="modal-exception" class="ui basic modal">
+            <div class="ui icon header">
+                <i class="exclamation triangle icon"></i>
+                Error
+            </div>
+            <div class="content text-center">
+                <p data-op="content"></p>
+            </div>
+        </div>
+
+        <!-- UI Handler -->
+        <script type="text/javascript">
+            var dev = /^.*\?dev$/.test(window.location.href);
+            if (dev) {
+                $('.css-devmode').removeClass('hidden');
+            }
+
+            Storage.load(function () {
+                UI.initialize();
+
+                var id = window.location.href.match(/^.*\?id=(.*)$/);
+                if (id && Database.Players[id[1]]) {
+                    UI.show(UI.Inventory, id[1]);
+
+                    $('#show-back').click(function (event) {
+                        event.preventDefault();
+                        UI.show(UI.PlayerSelect);
+
+                        $('#show-back').off('click');
+                    });
+                } else {
+                    UI.show(UI.PlayerSelect);
+                }
+            }, function () {
+                // Firefox private mode
+                UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
+            }, {
+                temporary: false,
+                developer: dev,
+                pfilter: p => p.own,
+                gfilter: g => false
+            });
+        </script>
+    </body>
+</html>
