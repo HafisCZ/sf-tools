@@ -810,7 +810,7 @@ class BrowseView extends View {
                 }
             }
 
-            var entries = new PlayersTableArray(perf);
+            var entries = new PlayersTableArray(perf, this.timestamp, this.reference);
 
             for (var player of Object.values(Database.Players)) {
                 var hidden = Database.Hidden.includes(player.Latest.Identifier);
@@ -823,7 +823,11 @@ class BrowseView extends View {
                         }
 
                         if (matches) {
-                            entries.add(currentPlayer[1], currentPlayer[1].Timestamp == this.timestamp, hidden);
+                            var xx = player.List.concat();
+                            xx.reverse();
+                            var ts = xx.find(p => p[0] >= this.reference);
+
+                            entries.add(currentPlayer[1], (ts || currentPlayer)[1], currentPlayer[1].Timestamp == this.timestamp, hidden);
                         }
                     }
                 }
@@ -846,8 +850,16 @@ class BrowseView extends View {
     show () {
         // Timestamp selector
         var timestamps = [];
+        var references = [];
+
         for (var file of Object.values(Storage.files())) {
             timestamps.push({
+                name: formatDate(file.timestamp),
+                value: file.timestamp,
+                selected: file.timestamp == Database.Latest
+            });
+
+            references.push({
                 name: formatDate(file.timestamp),
                 value: file.timestamp,
                 selected: file.timestamp == Database.Latest
@@ -855,18 +867,43 @@ class BrowseView extends View {
         }
 
         timestamps.sort((a, b) => b.value - a.value);
+        references.sort((a, b) => b.value - a.value);
+
+        this.$reference = this.$parent.find('[data-op="reference"]');
 
         this.$parent.find('[data-op="timestamp"]').dropdown({
             values: timestamps
         }).dropdown('setting', 'onChange', (value, text) => {
             this.timestamp = value;
+            this.reference = value;
             this.recalculate = true;
+
+            var subref = references.slice(references.findIndex(entry => entry.value == this.reference));
+            for (var i = 0; i < subref.length; i++) {
+                subref[i].selected = i == 0;
+            }
+
+            this.$reference.dropdown({
+                values: subref
+            }).dropdown('setting', 'onChange', (value, text) => {
+                this.reference = value;
+                this.$filter.trigger('change');
+            });
+
+            this.$filter.trigger('change');
+        });
+
+        this.$reference.dropdown({
+            values: references
+        }).dropdown('setting', 'onChange', (value, text) => {
+            this.reference = value;
             this.$filter.trigger('change');
         });
 
         this.$filter.val('');
 
         this.timestamp = Database.Latest;
+        this.reference = Database.Latest;
         this.sorting = undefined;
 
         this.load();

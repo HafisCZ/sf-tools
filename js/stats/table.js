@@ -99,7 +99,7 @@ const ReservedHeaders = {
         group.add(header.alias != undefined ? header.alias : 'Awards', header, {
             width: 100
         }, (player, compare) => {
-            var reference = (!this.nodiff && header.difference && compare) ? compare.Achievements.Owned : '';
+            var reference = (header.difference && compare) ? compare.Achievements.Owned : '';
             if (reference) {
                 reference = CellGenerator.Difference(player.Achievements.Owned - reference, header.brackets);
             }
@@ -138,7 +138,7 @@ const ReservedHeaders = {
             var color = CompareEval.evaluate(value, header.color);
             color = (color != undefined ? color : (header.expc ? header.expc(player, root, value) : '')) || '';
 
-            var reference = (!this.nodiff && header.difference && compare) ? (header.percentage ? (100 * compare.Book / SCRAPBOOK_COUNT) : compare.Book) : '';
+            var reference = (header.difference && compare) ? (header.percentage ? (100 * compare.Book / SCRAPBOOK_COUNT) : compare.Book) : '';
             if (reference) {
                 reference = CellGenerator.Difference(value - reference, header.brackets, header.percentage ? (value - reference).toFixed(2) : (value - reference));
             }
@@ -173,7 +173,7 @@ const ReservedHeaders = {
                 return CellGenerator.Plain('?', last);
             }
 
-            var reference = (!this.nodiff && header.difference && compare) ? compare.Fortress.Knights : '';
+            var reference = (header.difference && compare) ? compare.Fortress.Knights : '';
             if (reference) {
                 reference = CellGenerator.Difference(player.Fortress.Knights - reference, header.brackets);
             }
@@ -237,14 +237,17 @@ function merge (a, b) {
 
 // Special array for players only
 class PlayersTableArray extends Array {
-    constructor (perf, sim) {
+    constructor (perf, ts, rs) {
         super();
 
         this.perf = perf;
+
+        this.timestamp = ts;
+        this.reference = rs;
     }
 
-    add (player, latest, hidden) {
-        super.push({ player: player, latest: latest, index: this.length, hidden: hidden });
+    add (player, compare, latest, hidden) {
+        super.push({ player: player, compare: compare || player, latest: latest, index: this.length, hidden: hidden });
     }
 }
 
@@ -281,10 +284,6 @@ class TableInstance {
 
         this.sorting = [];
 
-        if (type == TableType.Players) {
-            this.nodiff = true;
-        }
-
         // Column configuration
         this.config = [];
         this.settings.c.forEach((category, ci, ca) => {
@@ -313,7 +312,7 @@ class TableInstance {
                             }
 
                             var cmp = undefined;
-                            if (compare && header.difference && !this.nodiff) {
+                            if (compare && header.difference) {
                                 cmp = header.itemized.expr(compare, this.settings);
                             }
 
@@ -358,7 +357,7 @@ class TableInstance {
                                 return CellGenerator.Plain('?', hlast);
                             }
 
-                            var reference = ((!this.nodiff && header.difference && compare) ? header.expr(compare, this.settings.getCompareEnvironment()) : '') || '';
+                            var reference = ((header.difference && compare) ? header.expr(compare, this.settings.getCompareEnvironment()) : '') || '';
                             if (reference) {
                                 reference = header.flip ? (reference - value) : (value - reference);
                                 reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
@@ -441,13 +440,13 @@ class TableInstance {
         // Calculate constants
         if (this.type != TableType.History && !skipeval) {
             var players = [ ... array ];
+            players.timestamp = array.timestamp;
+            players.reference = array.reference;
 
             if (this.type == TableType.Players) {
-                this.settings.evaluateConstants(players, sim, array.perf || this.settings.globals.performance);
+                this.settings.evaluateConstants(players, sim, array.perf || this.settings.globals.performance, this.type);
             } else {
-                players.timestamp = array.timestamp;
-                players.reference = array.reference;
-                this.settings.evaluateConstants(players, this.settings.globals.simulator, array.length, true);
+                this.settings.evaluateConstants(players, this.settings.globals.simulator, array.length, this.type);
             }
         }
 
@@ -511,7 +510,7 @@ class TableInstance {
 
                 var columns = [];
                 for (var j = 0; j < this.flat.length; j++) {
-                    columns[j] = this.flat[j].generators.cell(item.player);
+                    columns[j] = this.flat[j].generators.cell(item.player, item.compare);
                 }
 
                 var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
@@ -1729,7 +1728,7 @@ class Settings {
     }
 
     // Evaluate constants
-    evaluateConstants (players, sim, perf, compare) {
+    evaluateConstants (players, sim, perf, tabletype) {
         // Evaluate constants
         for (var [name, data] of Object.entries(this.vars)) {
             if (data.ast) {
@@ -1738,34 +1737,29 @@ class Settings {
 
                 if (data.arg) {
                     scope[data.arg] = players.map(p => p.player);
-
-                    if (compare) {
-                        scope2[data.arg] = players.map(p => p.compare);
-                    }
+                    scope2[data.arg] = players.map(p => p.compare);
                 }
 
-                data.value = data.ast.eval(compare ? players[0].player : undefined, this, scope);
+                data.value = data.ast.eval(players[0].player, this, scope);
                 if (isNaN(data.value)) {
                     data.value = undefined;
                 }
 
-                if (compare) {
-                    var val = data.ast.eval(players[0].compare, this, scope2);
-                    if (isNaN(val)) {
-                        val = undefined;
-                    }
-
-                    this.cvars[name] = {
-                        value: val,
-                        ast: data.ast,
-                        arg: data.arg
-                    };
+                var val = data.ast.eval(players[0].compare, this, scope2);
+                if (isNaN(val)) {
+                    val = undefined;
                 }
+
+                this.cvars[name] = {
+                    value: val,
+                    ast: data.ast,
+                    arg: data.arg
+                };
             }
         }
 
         // Extra statistics rows
-        if (compare) {
+        if (tabletype == TableType.Group) {
             for (var data of this.extras) {
                 if (data.ast) {
                     data.eval = {
@@ -1793,7 +1787,7 @@ class Settings {
             var array1 = [];
             var array2 = [];
 
-            if (compare && players.reference != players.timestamp) {
+            if (players.reference != players.timestamp) {
                 for (var player of array) {
                     array1.push({
                         player: player.player
@@ -1825,7 +1819,7 @@ class Settings {
                 value: results
             }
 
-            if (compare && players.reference != players.timestamp) {
+            if (players.reference != players.timestamp) {
                 var cresults = { };
 
                 for (var result of array2) {
@@ -1835,7 +1829,7 @@ class Settings {
                 this.cvars['Simulator'] = {
                     value: cresults
                 }
-            } else if (compare) {
+            } else {
                 this.cvars['Simulator'] = {
                     value: results
                 }
