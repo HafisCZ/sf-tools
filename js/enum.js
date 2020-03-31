@@ -61,6 +61,16 @@ const GEMTYPES = [
     'Black'
 ];
 
+const GEMATTRIBUTES = [
+    '',
+    'Strength',
+    'Dexterity',
+    'Intelligence',
+    'Constitution',
+    'Luck',
+    'All'
+];
+
 const RUNETYPES = [
     '',
     'Gold',
@@ -970,7 +980,7 @@ const GUILD_ROLE_MEMBER = 3;
 const GUILD_ROLE_INVITED = 4;
 
 // Constants
-const SCRAPBOOK_COUNT = 2170;
+const SCRAPBOOK_COUNT = 2180;
 const ACHIEVEMENT_COUNT = 80;
 
 // Attributes

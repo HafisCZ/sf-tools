@@ -584,11 +584,13 @@ h3.file-selected {
 }
 
 .css-inventory-item {
-    height: 15em;
+    height: 31em;
     border: 1px gray solid;
     padding: .25em;
 
     color: white;
+    position: relative;
+    font-size: 90%;
 }
 
 .css-inventory-item-header {
@@ -596,36 +598,94 @@ h3.file-selected {
     font-weight: bold;
 }
 
-.css-inventory-item-attribute-group {
+.css-inventory-item-attribute {
     margin-top: 1em;
     padding-left: .5em;
+
+    display: flex;
+    flex-direction: column;
+    align-content: left;
 }
 
-.css-inventory-item-attribute {
+.css-inventory-item-attribute .item {
 
-}
-
-.css-inventory-item-extra-group {
-    position: absolute;
-    right: 1em;
-    top: 3.15em;
 }
 
 .css-inventory-item-extra {
-
+    position: absolute;
+    top: 12em;
+    padding-left: .5em;
+    display: flex;
+    flex-direction: column;
+    align-content: left;
 }
 
-.css-inventory-item-price-group {
-    position: absolute;
-    left: 1em;
-    bottom: 1em;
+.css-inventory-item-extra .item {
+    text-align: left;
 }
 
 .css-inventory-item-price {
+    position: absolute;
+    left:.75em;
+    bottom: .5em;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-content: left;
+}
 
+.css-inventory-item-sub3 {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.css-inventory-item-sub3 .item {
+    flex: 0 0 33%;
+}
+
+.css-inventory-item-sub3a {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.css-inventory-item-sub3a .item:nth-child(1) {
+    flex: 0 0 25%;
+    text-align: center;
+}
+
+.css-inventory-item-sub3a .item:nth-child(2) {
+    flex: 0 0 45%;
+    text-align: center;
+}
+
+.css-inventory-item-sub3a .item:nth-child(31) {
+    flex: 0 0 30%;
 }
 
 #view-inventory {
     padding-left: 5em !important;
     padding-right: 5em !important;
+}
+
+.css-inventory-sub {
+    font-weight: normal;
+    font-style: italic;
+}
+
+.css-inventory-sub.socketed {
+    color: orange;
+}
+
+.css-inventory-sub.runed {
+    color: cyan;
+}
+
+.css-inventory-sub.washed {
+    color: lightgreen;
 }

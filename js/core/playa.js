@@ -174,6 +174,31 @@ class SFItem {
         }
     }
 
+    getBlacksmithUpgradePriceRange (max = 20) {
+        var attributes = [ ...this.Attributes ];
+        var upgrades = this.Upgrades;
+        var price = {
+            Metal: 0,
+            Crystal: 0
+        };
+
+        for (var i = this.Upgrades; i < max; i++) {
+            var p = this.getBlacksmithUpgradePrice();
+            price.Metal += p.Metal;
+            price.Crystal += p.Crystal;
+
+            this.Upgrades++;
+            for (var j = 0; j < 2; j++) {
+                this.Attributes[j] = Math.trunc(1.03 * this.Attributes[j]);
+            }
+        }
+
+        this.Attributes = attributes;
+        this.Upgrades = upgrades;
+
+        return price;
+    }
+
     getBlacksmithUpgradePrice () {
         if (this.Type == 0 || this.Type > 10) {
             return {
