@@ -537,3 +537,95 @@ h3.file-selected {
 .css-dark .ui.header {
     color: white;
 }
+
+.css-inventory-segment[data-op="equipped"] {
+    border: 1px solid white;
+}
+
+.css-inventory-segment[data-op="backpack"] {
+    border: 1px solid red;
+}
+
+.css-inventory-segment[data-op="chest"] {
+    border: 1px solid green;
+}
+
+.css-inventory-segment[data-op="shops"] {
+    border: 1px solid orange;
+}
+
+.css-inventory-segment .ui.header {
+    color: lightgray;
+    padding-left: .75em;
+    padding-top: .25em;
+    padding-bottom: .25em;
+    margin: 0;
+}
+
+.css-inventory-segment {
+    margin-bottom: .25em;
+    padding: 0;
+}
+
+.css-inventory-segment .grid {
+    margin-top: -.25em;
+    margin-bottom: .25em;
+}
+
+.css-inventory-segment .grid .row {
+    padding: 0;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.css-inventory-segment .grid .column {
+    padding: .25em !important;
+    margin: 0 !important;
+}
+
+.css-inventory-item {
+    height: 15em;
+    border: 1px gray solid;
+    padding: .25em;
+
+    color: white;
+}
+
+.css-inventory-item-header {
+    text-align: center;
+    font-weight: bold;
+}
+
+.css-inventory-item-attribute-group {
+    margin-top: 1em;
+    padding-left: .5em;
+}
+
+.css-inventory-item-attribute {
+
+}
+
+.css-inventory-item-extra-group {
+    position: absolute;
+    right: 1em;
+    top: 3.15em;
+}
+
+.css-inventory-item-extra {
+
+}
+
+.css-inventory-item-price-group {
+    position: absolute;
+    left: 1em;
+    bottom: 1em;
+}
+
+.css-inventory-item-price {
+
+}
+
+#view-inventory {
+    padding-left: 5em !important;
+    padding-right: 5em !important;
+}

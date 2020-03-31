@@ -118,16 +118,26 @@ function getFightTargetName (type, name, face) {
 }
 
 const ITEM_TYPES = [
-    'Head',
-    'Body',
-    'Hand',
-    'Feet',
-    'Neck',
+    '',
+    'Weapon',
+    'Shield',
+    'Armor',
+    'Shoes',
+    'Gloves',
+    'Helmet',
     'Belt',
+    'Necklace',
     'Ring',
-    'Misc',
-    'Wpn1',
-    'Wpn2',
+    'Talisman',
+    'Key',
+    'Potion',
+    'Scrapbook',
+    'Scroll',
+    'Gem',
+    'Egg',
+    'Hourglass',
+    'Heart',
+    'Wheel'
 ];
 
 const NAME_UNIT_UNDERWORLD = {

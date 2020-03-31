@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>SFTools - Statistics</title>
+        <title>SFTools - Inventory</title>
 
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -50,8 +50,40 @@
         </div>
 
         <!-- InventoryView -->
-        <div id="view-inventory" class="ui main container hidden sf-container">
-            <div class="ui five column grid" data-op="list"></div>
+        <div id="view-inventory" class="ui main fluid container hidden sf-container">
+            <h1 class="ui centered header" data-op="name"></h1>
+            <div class="ui grid">
+                <div class="four wide column">
+                    <div class="css-inventory-segment" data-op="equipped">
+                        <h3 class="ui header">Equipped items</h3>
+                        <div class="ui one column grid" data-op="list">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="twelve wide column">
+                    <div class="css-inventory-segment" data-op="backpack">
+                        <h3 class="ui header">Backpack</h3>
+                        <div class="ui four column grid" data-op="list">
+
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="css-inventory-segment" data-op="chest">
+                        <h3 class="ui header">Chest</h3>
+                        <div class="ui four column grid" data-op="list">
+
+                        </div>
+                    </div>
+                    <br/>
+                    <div class="css-inventory-segment" data-op="shops">
+                        <h3 class="ui header">Weapon & Magic shop</h3>
+                        <div class="ui four column grid" data-op="list">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- ExceptionView -->
@@ -78,13 +110,7 @@
                 var id = window.location.href.match(/^.*\?id=(.*)$/);
                 if (id && Database.Players[id[1]]) {
                     UI.show(UI.Inventory, id[1]);
-
-                    $('#show-back').click(function (event) {
-                        event.preventDefault();
-                        UI.show(UI.PlayerSelect);
-
-                        $('#show-back').off('click');
-                    });
+                    UI.reset(true);
                 } else {
                     UI.show(UI.PlayerSelect);
                 }
