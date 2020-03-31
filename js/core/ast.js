@@ -1361,7 +1361,7 @@ const SP_KEYWORD_MAPPING_4 = {
         difference: false
     },
     'Item Name': {
-        expr: (p, e, i) => i.Type,
+        expr: (p, e, i) => i.Slot,
         format: (p, e, x) => x == 2 && p.Class == 4 ? ITEM_TYPES[1] : ITEM_TYPES[x],
         difference: false
     },

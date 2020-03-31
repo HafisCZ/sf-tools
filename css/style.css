@@ -563,7 +563,7 @@ h3.file-selected {
 }
 
 .css-inventory-segment {
-    margin-bottom: .25em;
+    margin-bottom: 1em;
     padding: 0;
 }
 
@@ -593,9 +593,37 @@ h3.file-selected {
     font-size: 90%;
 }
 
+.css-inventory-item[data-eid].selected {
+    border: 1px cyan solid;
+    box-shadow: 0px 0px 2px 2px cyan;
+}
+
+.css-inventory-item.selected {
+    border: 1px gold solid;
+    box-shadow: 0px 0px 2px 2px gold;
+}
+
 .css-inventory-item-header {
     text-align: center;
     font-weight: bold;
+    padding-bottom: 0.15em;
+    border-bottom: 1px gray solid;
+}
+
+.css-inventory-item.micro {
+    height: 2.15em;
+}
+
+.css-inventory-item.micro .css-inventory-item-header {
+    border-bottom: none;
+}
+
+.css-inventory-item.micro .front {
+    display: none;
+}
+
+.css-inventory-item.micro .back {
+    display: none;
 }
 
 .css-inventory-item-attribute {
@@ -607,8 +635,41 @@ h3.file-selected {
     align-content: left;
 }
 
-.css-inventory-item-attribute .item {
+.css-inventory-comparison {
+    margin-top: 1em;
+    padding-left: .5em;
 
+    display: flex;
+    flex-direction: column;
+    align-content: left;
+}
+
+.css-inventory-comparison .item {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.css-inventory-comparison .item.red {
+    color: red;
+}
+
+.css-inventory-comparison .item.green {
+    color: green;
+}
+
+.css-inventory-comparison .sub {
+    flex: 0 0 50%;
+}
+
+.css-inventory-comparison .sub:nth-child(1) {
+    text-align: right;
+    padding-right: 1em;
+}
+
+.css-inventory-comparison .sub:nth-child(2) {
+    text-align: left;
 }
 
 .css-inventory-item-extra {
@@ -688,4 +749,8 @@ h3.file-selected {
 
 .css-inventory-sub.washed {
     color: lightgreen;
+}
+
+.css-inventory-hidden {
+    opacity: 30%;
 }

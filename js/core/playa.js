@@ -1,5 +1,9 @@
 class SFItem {
-    constructor (data) {
+    static empty () {
+        return new SFItem(new Array(12).fill(0));
+    }
+
+    constructor (data, slot) {
         var dataType = ComplexDataType.create(data);
         dataType.assert(12);
 
@@ -17,6 +21,7 @@ class SFItem {
         var upgradeLevel = dataType.byte();
         var socketPower = dataType.short();
 
+        this.Slot = slot;
         this.GemType = socket >= 10 ? (1 + (socket % 10)) : 0;
         this.HasSocket = socket > 0;
         this.GemValue = socketPower;
@@ -923,16 +928,16 @@ class SFOtherPlayer extends SFPlayer {
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + correctDate(data.prefix);
         this.Items = {
-            Head: new SFItem(dataType.sub(12)),
-            Body: new SFItem(dataType.sub(12)),
-            Hand: new SFItem(dataType.sub(12)),
-            Feet: new SFItem(dataType.sub(12)),
-            Neck: new SFItem(dataType.sub(12)),
-            Belt: new SFItem(dataType.sub(12)),
-            Ring: new SFItem(dataType.sub(12)),
-            Misc: new SFItem(dataType.sub(12)),
-            Wpn1: new SFItem(dataType.sub(12)),
-            Wpn2: new SFItem(dataType.sub(12))
+            Head: new SFItem(dataType.sub(12), 6),
+            Body: new SFItem(dataType.sub(12), 3),
+            Hand: new SFItem(dataType.sub(12), 5),
+            Feet: new SFItem(dataType.sub(12), 4),
+            Neck: new SFItem(dataType.sub(12), 8),
+            Belt: new SFItem(dataType.sub(12), 7),
+            Ring: new SFItem(dataType.sub(12), 9),
+            Misc: new SFItem(dataType.sub(12), 10),
+            Wpn1: new SFItem(dataType.sub(12), 1),
+            Wpn2: new SFItem(dataType.sub(12), 2)
         };
         this.Mount = dataType.short();
         this.Dungeons = {
@@ -1145,16 +1150,16 @@ class SFOwnPlayer extends SFPlayer {
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + correctDate(data.prefix);
         this.Items = {
-            Head: new SFItem(dataType.sub(12)),
-            Body: new SFItem(dataType.sub(12)),
-            Hand: new SFItem(dataType.sub(12)),
-            Feet: new SFItem(dataType.sub(12)),
-            Neck: new SFItem(dataType.sub(12)),
-            Belt: new SFItem(dataType.sub(12)),
-            Ring: new SFItem(dataType.sub(12)),
-            Misc: new SFItem(dataType.sub(12)),
-            Wpn1: new SFItem(dataType.sub(12)),
-            Wpn2: new SFItem(dataType.sub(12))
+            Head: new SFItem(dataType.sub(12), 6),
+            Body: new SFItem(dataType.sub(12), 3),
+            Hand: new SFItem(dataType.sub(12), 5),
+            Feet: new SFItem(dataType.sub(12), 4),
+            Neck: new SFItem(dataType.sub(12), 8),
+            Belt: new SFItem(dataType.sub(12), 7),
+            Ring: new SFItem(dataType.sub(12), 9),
+            Misc: new SFItem(dataType.sub(12), 10),
+            Wpn1: new SFItem(dataType.sub(12), 1),
+            Wpn2: new SFItem(dataType.sub(12), 2)
         };
         this.Inventory = {
             Backpack: [],
