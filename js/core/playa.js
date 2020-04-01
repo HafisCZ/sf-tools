@@ -1356,6 +1356,10 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(16);
         this.Dungeons.Extra.Normal[2] = Math.max(0, dataType.byte() - 2);
         this.Dungeons.Extra.Shadow[2] = Math.max(0, dataType.byte() - 2);
+        dataType.short();
+        dataType.skip(5);
+        this.Dungeons.Extra.Normal[3] = Math.max(0, dataType.short() - 2);
+        this.Dungeons.Extra.Shadow[3] = Math.max(0, dataType.short() - 2);
 
         this.Dungeons.Extra.Normal[0] = Math.max(0, data.tower[150] - 2);
         this.Dungeons.Extra.Shadow[0] = Math.max(0, data.tower[298] - 2);
