@@ -575,6 +575,23 @@ class SFPlayer {
         }
     }
 
+    getMaximumDamageReduction () {
+        switch (this.Class) {
+            case 1:
+            case 5:
+            case 6:
+            case 7:
+                return 50;
+            case 3:
+            case 4:
+                return 25;
+            case 2:
+                return 10;
+            default:
+                return 0;
+        }
+    }
+
     getHealth () {
         return Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5) ? 5 : (this.Class == 2 ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
     }
@@ -683,6 +700,7 @@ class SFPlayer {
 
     evaluateCommon () {
         this.Primary = this.getPrimaryAttribute();
+        this.ClassBonus = this.Class == 5 || this.Class == 6;
 
         this.addCalculatedAttributes(this.Strength, this.Pets.Water);
         this.addCalculatedAttributes(this.Dexterity, this.Pets.Light);

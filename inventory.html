@@ -52,6 +52,18 @@
         <!-- InventoryView -->
         <div id="view-inventory" class="ui main fluid container hidden sf-container">
             <div class="ui grid">
+                <div class="sixteen wide right aligned column">
+                    <div class="ui checkbox" data-op="nogem">
+                        <input type="checkbox">
+                        <label style="color: white;">Ignore gems</label>
+                    </div>
+                    <div class="ui checkbox" data-op="noupgrade" style="margin-left: 3em;">
+                        <input type="checkbox">
+                        <label style="color: white;">Ignore upgrades</label>
+                    </div>
+                </div>
+            </div>
+            <div class="ui grid">
                 <div class="three wide column">
                     <div class="css-inventory-segment" data-op="equipped">
                         <h3 class="ui header">Equipped items</h3>

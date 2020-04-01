@@ -584,7 +584,7 @@ h3.file-selected {
 }
 
 .css-inventory-item {
-    height: 31em;
+    height: 33em;
     border: 1px gray solid;
     padding: .25em;
 
@@ -655,8 +655,12 @@ h3.file-selected {
     color: red;
 }
 
+.css-inventory-comparison .item.orange {
+    color: orange;
+}
+
 .css-inventory-comparison .item.green {
-    color: green;
+    color: lightgreen;
 }
 
 .css-inventory-comparison .sub {
@@ -741,16 +745,24 @@ h3.file-selected {
 
 .css-inventory-sub.socketed {
     color: orange;
+    font-size: 95%;
 }
 
 .css-inventory-sub.runed {
     color: cyan;
+    font-size: 95%;
 }
 
 .css-inventory-sub.washed {
     color: lightgreen;
+    font-size: 95%;
 }
 
 .css-inventory-hidden {
     opacity: 30%;
+}
+
+.css-inventory-sub.enchanted {
+    color: magenta;
+    font-size: 95%;
 }
