@@ -474,17 +474,12 @@ function getComparison (player, base, item, nogem, noupgrade) {
     }
 
     for (var i = 0; i < 5; i++) {
-        var mult = (1 + at[i].PotionSize / 100) * (1 + pb[i] / 100) * (player.ClassBonus ? 1.11 : 1);
-        attr[i] = Math.trunc((ia[i] - ca[i]) * mult);
-        gems[i] = Math.trunc((getRealGemValue(player, item, i + 1) - getRealGemValue(player, base, i + 1)) * mult);
-    }
+        var mult = (1 + at[i].PotionSize / 100);
+        var mult2 = (1 + pb[i] / 100);
+        var mult3 = (player.ClassBonus ? 1.11 : 1);
 
-    out.Ref.Hel = player.Health;
-    var mhel = (1 + item.getRune(5) / 100) * (1 + player.Potions.Life / 100) * (player.Level + 1) * (1 + player.Dungeons.Group / 100) * (player.Class == 1 || player.Class == 5 ? 5 : (player.Class == 2 ? 2 : 4));
-    if (nogem) {
-        out.Hel = Math.trunc((player.Constitution.Total + attr[3]) * mhel);
-    } else {
-        out.Hel = Math.trunc((player.Constitution.Total + attr[3] + gems[3]) * mhel);
+        attr[i] = Math.ceil(Math.ceil(Math.ceil(ia[i] * mult) * mult2) * mult3) - Math.ceil(Math.ceil(Math.ceil(ca[i] * mult) * mult2) * mult3);
+        gems[i] = Math.ceil(Math.ceil(Math.ceil(getRealGemValue(player, item, i + 1) * mult) * mult2) * mult3) - Math.ceil(Math.ceil(Math.ceil(getRealGemValue(player, base, i + 1) * mult) * mult2) * mult3);
     }
 
     out.Ref.Str = player.Strength.Total;
@@ -499,15 +494,23 @@ function getComparison (player, base, item, nogem, noupgrade) {
     out.Con = out.Ref.Con + attr[3] + (nogem ? 0 : gems[3]);
     out.Lck = out.Ref.Lck + attr[4] + (nogem ? 0 : gems[4]);
 
+    var mult = (1 + player.Potions.Life / 100);
+    var mult2 = (1 + player.Dungeons.Player / 100);
+    var mult3 = (player.Class == 1 || player.Class == 5 ? 5 : (player.Class == 2 ? 2 : 4));
+    var mult4 = player.Level + 1;
+
+    out.Ref.Hel = Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(out.Ref.Con * mult4) * mult3) * mult2) * mult) * (1 + player.Runes.Health / 100));
+    out.Hel = Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(out.Con * mult4) * mult3) * mult2) * mult) * (1 + (player.Runes.Health + item.getRune(5) - base.getRune(5)) / 100));
+
     out.Ref.Arm = player.Armor;
     out.Ref.Vin = player.Damage.Min;
     out.Ref.Vax = player.Damage.Max;
-    out.Ref.Vag = Math.trunc((player.Damage.Min + player.Damage.Max) / 2);
+    out.Ref.Vag = Math.ceil((player.Damage.Min + player.Damage.Max) / 2);
 
     if (item.Type == 1) {
         out.Vin = item.DamageMin;
         out.Vax = item.DamageMax;
-        out.Vag = Math.trunc((item.DamageMin + item.DamageMax) / 2);
+        out.Vag = Math.ceil((item.DamageMin + item.DamageMax) / 2);
         out.Arm = player.Armor;
     } else {
         out.Vin = out.Ref.Vin;
@@ -516,23 +519,23 @@ function getComparison (player, base, item, nogem, noupgrade) {
         out.Arm = player.Armor + item.Armor - base.Armor;
     }
 
-    out.Ref.Red = Math.trunc(Math.min(666, player.Armor / getMaxReduction(player.Class)));
-    out.Red = Math.trunc(Math.min(666, out.Arm / getMaxReduction(player.Class)));
+    out.Ref.Red = Math.ceil(Math.min(666, player.Armor / getMaxReduction(player.Class)));
+    out.Red = Math.ceil(Math.min(666, out.Arm / getMaxReduction(player.Class)));
 
-    out.Ref.Cri = Math.trunc(Math.min(666, player.Luck.Total / 20));
-    out.Cri = Math.trunc(Math.min(666, out.Lck / 20));
+    out.Ref.Cri = Math.ceil(Math.min(666, player.Luck.Total / 20));
+    out.Cri = Math.ceil(Math.min(666, out.Lck / 20));
 
     var po = at[player.Primary.Type - 1].Total;
-    var pa = attr[player.Primary.Type - 1] + (nogem ? 0 : gems[player.Primary.Type - 1]);
+    var pa = po + attr[player.Primary.Type - 1] + (nogem ? 0 : gems[player.Primary.Type - 1]);
     var dm = (1 + player.Dungeons.Group / 100);
 
-    out.Ref.Min = out.Ref.Vin * dm * (1 + po / 10);
-    out.Ref.Max = out.Ref.Vax * dm * (1 + po / 10);
-    out.Ref.Avg = Math.trunc((out.Ref.Min + out.Ref.Max) / 2);
+    out.Ref.Min = Math.floor(out.Ref.Vin * dm * (1 + po / 10));
+    out.Ref.Max = Math.ceil(out.Ref.Vax * dm * (1 + po / 10));
+    out.Ref.Avg = Math.ceil((out.Ref.Min + out.Ref.Max) / 2);
 
-    out.Min = out.Vin * dm * (1 + pa / 10);
-    out.Max = out.Vax * dm * (1 + pa / 10);
-    out.Avg = Math.trunc((out.Min + out.Max) / 2);
+    out.Min = Math.floor(out.Vin * dm * (1 + pa / 10));
+    out.Max = Math.ceil(out.Vax * dm * (1 + pa / 10));
+    out.Avg = Math.ceil((out.Min + out.Max) / 2);
 
     return out;
 }

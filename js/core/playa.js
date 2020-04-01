@@ -108,7 +108,7 @@ class SFItem {
     }
 
     getRune (rune) {
-        if (this.AttributeTypes[2] == rune) {
+        if (this.AttributeTypes[2] - 30 == rune) {
             return this.Attributes[2];
         } else {
             return 0;
