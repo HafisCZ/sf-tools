@@ -766,3 +766,20 @@ h3.file-selected {
     color: magenta;
     font-size: 95%;
 }
+
+.frozen {
+    pointer-events: none;
+    animation: opacity-pulse 2s infinite;
+}
+
+@keyframes opacity-pulse {
+    0% {
+        opacity: 80%;
+    }
+    50% {
+        opacity: 20%;
+    }
+    100% {
+        opacity: 80%
+    }
+}

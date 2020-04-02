@@ -130,6 +130,13 @@
                 bottom: 0px;
                 transform: scale(0.7);
             }
+
+            .debug {
+                position: absolute;
+                top: 5em;
+                left: 1em;
+                font-size: 80%;
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
@@ -138,6 +145,10 @@
             <div class="right menu">
                 <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
             </div>
+        </div>
+
+        <div class="debug">
+
         </div>
 
         <div class="ui main container">
@@ -183,6 +194,9 @@
                                             <div class="item" data-value="5">Battle Mage</div>
                                             <div class="item" data-value="6">Berserker</div>
                                             <div class="item" data-value="7">Demon Hunter</div>
+                                            <div class="item disabled" data-value="8">Druid</div>
+                                            <div class="ui divider"></div>
+                                            <div class="item" data-value="20">Necromancer</div>
                                         </div>
                                     </div>
                                 </div>
@@ -379,7 +393,7 @@
                                 <button class="ui fluid small button" type="submit" id="sim-save">Save</button>
                             </div>
                             <div class="two wide column">
-
+                                <button class="ui tiny basic icon fluid button" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="sim-insert"><i class="paste icon"></i></button>
                             </div>
                             <div class="four wide column">
                                 <div class="ui tiny basic icon fluid two buttons">
@@ -484,6 +498,16 @@
             }).trigger('change');
             $('[data-path]').on('input', () => valid());
 
+            var insertMode = false;
+            $('#sim-insert').click(function () {
+                insertMode = !insertMode;
+                if (insertMode) {
+                    this.style.setProperty('background', '#21ba45', 'important');
+                } else {
+                    this.style.setProperty('background', '');
+                }
+            });
+
             // Fill and read forms
             function fill (object) {
                 $('[data-path]').each(function () {
@@ -508,6 +532,22 @@
                 });
 
                 $('[data-path="Class"]').trigger('change');
+            }
+
+            function toggleAll (dis) {
+                if (dis) {
+                    $('.ui.main.container').addClass('frozen');
+                } else {
+                    $('.ui.main.container').removeClass('frozen');
+                }
+            }
+
+            function logClear () {
+                $('.debug').html('');
+            }
+
+            function logLine (line) {
+                $('.debug').append(`${ line }</br>`);
             }
 
             function read () {
@@ -562,7 +602,9 @@
                 try {
                     var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
                     if (Array.isArray(data)) {
-                        players = [];
+                        if (!insertMode) {
+                            players = [];
+                        }
 
                         for (var d of data) {
                             if (d.Class) {
@@ -611,24 +653,69 @@
 
             // Run simulation
             $('#sim-run').click(function () {
-                for (var i = 0; i < players.length; i++) {
-                    players[i].score = null;
-                }
-                showPlayers();
+                if (players.length > 1) {
+                    logClear();
 
-                setTimeout(function () {
-                    if (players.length) {
-                        if (mode == 0) {
-                            new FightSimulator().simulate(players, Number($('#sim-iterations').val()) || 10000);
-                        } else {
-                            new FightSimulator().simulateSingle(players.find(p => p.index == yourself), players, Number($('#sim-iterations').val()) || 10000);
-                        }
-
-                        selected = -1;
-
-                        setSort('avg', 0);
+                    for (var i = 0; i < players.length; i++) {
+                        players[i].score = null;
                     }
-                }, 500);
+
+                    showPlayers();
+                    toggleAll(true);
+
+                    var iterations = Number($('#sim-iterations').val()) || 10000;
+
+                    var blockSize = 5;
+                    if (iterations < 500) {
+                        blockSize = 25;
+                    } else if (iterations < 5000) {
+                        blockSize = 10;
+                    }
+
+                    var blocks = Math.ceil(players.length / blockSize);
+                    var results = [];
+
+                    logLine(`BLOCK SIZE: <b>${ blockSize }</b>`);
+                    logLine(`ITERATIONS: <b><b>${ iterations }</b>`);
+
+                    logLine(`<b><br/>STARTING ${ blocks } THREADS</b>`);
+
+                    for (var i = 0; i < players.length; i+= blockSize) {
+                        var block = players.slice(i, i + blockSize);
+                        var worker = new Worker('js/core/simulator.js');
+
+                        worker.addEventListener('message', function (message) {
+                            if (message.data.command == 'finished') {
+                                results.push(... message.data.results);
+
+                                logLine(`THREAD FINISHED IN <b>${ message.data.time / 1000 }</b> SECONDS`);
+
+                                if (results.length == players.length) {
+                                    toggleAll();
+
+                                    players = results;
+                                    selected = -1;
+                                    setSort('avg', 0);
+                                }
+                            }
+                        }, false);
+
+                        if (mode == 0) {
+                            worker.postMessage({
+                                player: block,
+                                players: players,
+                                iterations: iterations
+                            });
+                        } else{
+                            worker.postMessage({
+                                single: true,
+                                player: players.find(p => p.index == yourself),
+                                players: block,
+                                iterations: iterations
+                            });
+                        }
+                    }
+                }
             });
 
             var selected = -1;
