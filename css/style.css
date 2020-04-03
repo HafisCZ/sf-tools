@@ -593,14 +593,34 @@ h3.file-selected {
     font-size: 90%;
 }
 
+.css-inventory-segment.css-basis-segment {
+    border: 1px solid white;
+}
+
+.css-basis-header {
+    text-align: center;
+    font-weight: bold;
+    margin-top: -0.3em;
+    border-bottom: 1px gray solid;
+}
+
+.css-basis {
+    height: 55em;
+    border: 1px transparent solid;
+    padding: .25em;
+    color: white;
+    position: relative;
+    font-size: 100%;
+}
+
 .css-inventory-item[data-eid].selected {
     border: 1px cyan solid;
     box-shadow: 0px 0px 2px 2px cyan;
 }
 
 .css-inventory-item.selected {
-    border: 1px gold solid;
-    box-shadow: 0px 0px 2px 2px gold;
+    border: 1px lightgreen solid;
+    box-shadow: 0px 0px 2px 2px lightgreen;
 }
 
 .css-inventory-item-header {
@@ -673,6 +693,17 @@ h3.file-selected {
 }
 
 .css-inventory-comparison .sub:nth-child(2) {
+    text-align: left;
+}
+
+.css-inventory-comparison .csub:nth-child(1) {
+    flex: 0 0 40%;
+    text-align: right;
+    padding-right: 1em;
+}
+
+.css-inventory-comparison .csub:nth-child(2) {
+    flex: 0 0 60%;
     text-align: left;
 }
 

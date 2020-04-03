@@ -133,7 +133,6 @@ function * filterPlayaJSON (o, tt = [], a = []) {
     }
 }
 
-
 // Complex datatype
 class ComplexDataType {
     constructor (values) {

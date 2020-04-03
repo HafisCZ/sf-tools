@@ -285,7 +285,7 @@ function toGrid (player, items, ignoreCost) {
 
     for (var i = 0; i < items.length; i++) {
         content += `
-            ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
+            ${ index % 4 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
             <div class="column">
                 ${ getItemElement(player, items[i], ignoreCost) }
             </div>
@@ -325,6 +325,15 @@ function getCompareLine (cur, ref, label) {
             </div>
         `;
     }
+}
+
+function getBasisLine (value, label, warn) {
+    return `
+        <div class="item ${ warn ? 'orange' : '' }">
+            <div class="csub">${ formatAsSpacedNumber(Math.trunc(value)) }</div>
+            <div class="csub">${ label }</div>
+        </div>
+    `;
 }
 
 function getCompareRuneLine (base, item) {
@@ -446,9 +455,40 @@ function getMaxReduction (c) {
     }
 }
 
-function getComparison (player, base, item, nogem, noupgrade) {
+function getComparisonBase (player) {
+    var ref = {};
+
+    ref.Str = player.Strength.Total;
+    ref.Dex = player.Dexterity.Total;
+    ref.Int = player.Intelligence.Total;
+    ref.Con = player.Constitution.Total;
+    ref.Lck = player.Luck.Total;
+
+    var mult = (1 + player.Potions.Life / 100);
+    var mult2 = (1 + player.Dungeons.Player / 100);
+    var mult3 = (player.Class == 1 || player.Class == 5 ? 5 : (player.Class == 2 ? 2 : 4));
+    var mult4 = player.Level + 1;
+    ref.Hel = Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(ref.Con * mult4) * mult3) * mult2) * mult) * (1 + player.Runes.Health / 100));
+
+    ref.Arm = player.Armor;
+    ref.Vin = player.Damage.Min;
+    ref.Vax = player.Damage.Max;
+    ref.Vag = Math.ceil((player.Damage.Min + player.Damage.Max) / 2);
+
+    ref.Red = Math.ceil(Math.min(666, player.Armor / getMaxReduction(player.Class)));
+    ref.Cri = Math.ceil(Math.min(666, player.Luck.Total / 20));
+
+    var dm = (1 + player.Primary.Total / 10) * (1 + player.Dungeons.Group / 100);
+    ref.Min = Math.floor(ref.Vin * dm);
+    ref.Max = Math.ceil(ref.Vax * dm);
+    ref.Avg = Math.ceil((ref.Min + ref.Max) / 2);
+
+    return ref;
+}
+
+function getComparison (basis, player, base, item, nogem, noupgrade) {
     var out = {
-        Ref: {}
+        Ref: basis
     };
 
     // Attribute arrays
@@ -482,12 +522,6 @@ function getComparison (player, base, item, nogem, noupgrade) {
         gems[i] = Math.ceil(Math.ceil(Math.ceil(getRealGemValue(player, item, i + 1) * mult) * mult2) * mult3) - Math.ceil(Math.ceil(Math.ceil(getRealGemValue(player, base, i + 1) * mult) * mult2) * mult3);
     }
 
-    out.Ref.Str = player.Strength.Total;
-    out.Ref.Dex = player.Dexterity.Total;
-    out.Ref.Int = player.Intelligence.Total;
-    out.Ref.Con = player.Constitution.Total;
-    out.Ref.Lck = player.Luck.Total;
-
     out.Str = out.Ref.Str + attr[0] + (nogem ? 0 : gems[0]);
     out.Dex = out.Ref.Dex + attr[1] + (nogem ? 0 : gems[1]);
     out.Int = out.Ref.Int + attr[2] + (nogem ? 0 : gems[2]);
@@ -498,14 +532,7 @@ function getComparison (player, base, item, nogem, noupgrade) {
     var mult2 = (1 + player.Dungeons.Player / 100);
     var mult3 = (player.Class == 1 || player.Class == 5 ? 5 : (player.Class == 2 ? 2 : 4));
     var mult4 = player.Level + 1;
-
-    out.Ref.Hel = Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(out.Ref.Con * mult4) * mult3) * mult2) * mult) * (1 + player.Runes.Health / 100));
     out.Hel = Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(out.Con * mult4) * mult3) * mult2) * mult) * (1 + (player.Runes.Health + item.getRune(5) - base.getRune(5)) / 100));
-
-    out.Ref.Arm = player.Armor;
-    out.Ref.Vin = player.Damage.Min;
-    out.Ref.Vax = player.Damage.Max;
-    out.Ref.Vag = Math.ceil((player.Damage.Min + player.Damage.Max) / 2);
 
     if (item.Type == 1) {
         out.Vin = item.DamageMin;
@@ -519,19 +546,11 @@ function getComparison (player, base, item, nogem, noupgrade) {
         out.Arm = player.Armor + item.Armor - base.Armor;
     }
 
-    out.Ref.Red = Math.ceil(Math.min(666, player.Armor / getMaxReduction(player.Class)));
     out.Red = Math.ceil(Math.min(666, out.Arm / getMaxReduction(player.Class)));
-
-    out.Ref.Cri = Math.ceil(Math.min(666, player.Luck.Total / 20));
     out.Cri = Math.ceil(Math.min(666, out.Lck / 20));
 
-    var po = at[player.Primary.Type - 1].Total;
-    var pa = po + attr[player.Primary.Type - 1] + (nogem ? 0 : gems[player.Primary.Type - 1]);
+    var pa = at[player.Primary.Type - 1].Total + attr[player.Primary.Type - 1] + (nogem ? 0 : gems[player.Primary.Type - 1]);
     var dm = (1 + player.Dungeons.Group / 100);
-
-    out.Ref.Min = Math.floor(out.Ref.Vin * dm * (1 + po / 10));
-    out.Ref.Max = Math.ceil(out.Ref.Vax * dm * (1 + po / 10));
-    out.Ref.Avg = Math.ceil((out.Ref.Min + out.Ref.Max) / 2);
 
     out.Min = Math.floor(out.Vin * dm * (1 + pa / 10));
     out.Max = Math.ceil(out.Vax * dm * (1 + pa / 10));
@@ -540,8 +559,58 @@ function getComparison (player, base, item, nogem, noupgrade) {
     return out;
 }
 
-function getComparisonElement (player, base, item, nogem, noupgrade) {
-    var compare = getComparison(player, base, item, nogem, noupgrade);
+function getBasisElement (b, player) {
+    var cats = [
+        (player.Runes.Gold ? getBasisLine(player.Runes.Gold, 'Gold') : '') +
+        (player.Runes.XP ? getBasisLine(player.Runes.XP, 'XP') : '') +
+        (player.Runes.Health ? getBasisLine(player.Runes.Health, 'Health') : ''),
+
+        (player.Runes.Chance ? getBasisLine(player.Runes.Chance, 'Epic Chance') : '') +
+        (player.Runes.Quality ? getBasisLine(player.Runes.Quality, 'Item Quality') : ''),
+
+        (player.Runes.ResistanceFire ? getBasisLine(player.Runes.ResistanceFire, 'Fire Resistance') : '') +
+        (player.Runes.ResistanceCold ? getBasisLine(player.Runes.ResistanceCold, 'Cold Resistance') : '') +
+        (player.Runes.ResistanceLightning ? getBasisLine(player.Runes.ResistanceLightning, 'Lightning Resistance') : ''),
+
+        (player.Runes.DamageFire ? getBasisLine(player.Runes.DamageFire, 'Fire Damage') : '') +
+        (player.Runes.DamageCold ? getBasisLine(player.Runes.DamageCold, 'Cold Damage') : '') +
+        (player.Runes.DamageLightning ? getBasisLine(player.Runes.DamageLightning, 'Lightning Damage') : '')
+    ];
+
+    return `
+        ${ getBasisLine(player.Level, 'Level') }
+        <div class="item">&nbsp;</div>
+        ${ getBasisLine(b.Str, 'Strength') }
+        ${ getBasisLine(b.Dex, 'Dexterity') }
+        ${ getBasisLine(b.Int, 'Intelligence') }
+        ${ getBasisLine(b.Con, 'Constitution') }
+        ${ getBasisLine(b.Lck, 'Luck') }
+        <div class="item">&nbsp;</div>
+        ${ getBasisLine(b.Hel, 'Health') }
+        ${ getBasisLine(b.Arm, 'Armor') }
+        ${ getBasisLine(b.Red, 'Max Reduction Level', b.Red < player.Level) }
+        <div class="item">&nbsp;</div>
+        ${ getBasisLine(b.Vin, 'Minimum Range') }
+        ${ getBasisLine(b.Vax, 'Maximum Range') }
+        ${ getBasisLine(b.Vag, 'Average Range') }
+        ${ getBasisLine(b.Cri, 'Max Crit Chance Level', b.Cri < player.Level) }
+        <div class="item">&nbsp;</div>
+        ${ getBasisLine(b.Min, 'Minimum Damage') }
+        ${ getBasisLine(b.Max, 'Maximum Damage') }
+        ${ getBasisLine(b.Avg, 'Average Damage') }
+        <div class="item">&nbsp;</div>
+        ${ cats[0] }
+        ${ cats[0] ? '<div class="item">&nbsp;</div>' : '' }
+        ${ cats[1] }
+        ${ cats[1] ? '<div class="item">&nbsp;</div>' : '' }
+        ${ cats[2] }
+        ${ cats[2] ? '<div class="item">&nbsp;</div>' : '' }
+        ${ cats[3] }
+    `;
+}
+
+function getComparisonElement (basis, player, base, item, nogem, noupgrade) {
+    var compare = getComparison(basis, player, base, item, nogem, noupgrade);
     var cats = [
         getCompareLine(compare.Str, compare.Ref.Str, 'Strength') +
         getCompareLine(compare.Dex, compare.Ref.Dex, 'Dexterity') +
@@ -553,14 +622,14 @@ function getComparisonElement (player, base, item, nogem, noupgrade) {
         getCompareLine(compare.Arm, compare.Ref.Arm, 'Armor') +
         getCompareLine(compare.Red, compare.Ref.Red, 'Max Reduction Level'),
 
-        getCompareLine(compare.Min, compare.Ref.Min, 'Minimum Damage') +
-        getCompareLine(compare.Max, compare.Ref.Max, 'Maximum Damage') +
-        getCompareLine(compare.Avg, compare.Ref.Avg, 'Average Damage') +
-        getCompareLine(compare.Cri, compare.Ref.Cri, 'Max Crit Chance Level'),
-
         getCompareLine(compare.Vin, compare.Ref.Vin, 'Minimum Range') +
         getCompareLine(compare.Vax, compare.Ref.Vax, 'Maximum Range') +
-        getCompareLine(compare.Vag, compare.Ref.Vag, 'Average Range'),
+        getCompareLine(compare.Vag, compare.Ref.Vag, 'Average Range') +
+        getCompareLine(compare.Cri, compare.Ref.Cri, 'Max Crit Chance Level'),
+
+        getCompareLine(compare.Min, compare.Ref.Min, 'Minimum Damage') +
+        getCompareLine(compare.Max, compare.Ref.Max, 'Maximum Damage') +
+        getCompareLine(compare.Avg, compare.Ref.Avg, 'Average Damage'),
 
         getCompareRuneLine(base, item) +
         getCompareSocketLine(base, item)
@@ -591,7 +660,23 @@ function isAllowedType (item) {
     return item.Type >= 1 && item.Type <= 10;
 }
 
-// Character select view
+// Resources View
+class ResourcesView extends View {
+    constructor (parent) {
+        super(parent);
+    }
+
+    show (id) {
+        $('#show-compare, #show-crystal').show();
+        $('#show-compare').on('click', () => {
+            UI.show(UI.Inventory, id);
+        });
+
+        UI.reset(true);
+    }
+}
+
+// Inventory View
 class InventoryView extends View {
     constructor (parent) {
         super(parent);
@@ -601,15 +686,31 @@ class InventoryView extends View {
         this.$shops = this.$parent.find('[data-op="shops"] [data-op="list"]');
         this.$equipped = this.$parent.find('[data-op="equipped"] [data-op="list"]');
         this.$name = this.$parent.find('[data-op="name"] [data-op="list"]');
+
+        this.$parent.find('[data-op="flip"]').click(() => {
+            if (this.CompareBase != null) {
+                if (this.CompareItems.length > 0) {
+                    this.CompareItems = [];
+                } else {
+                    this.CompareItems = [ ... this.backpack.filter(i => this.CompareBase && i.Type == this.CompareBase.Type && i.Class == this.CompareBase.Class), ... this.chest.filter(i => this.CompareBase && i.Type == this.CompareBase.Type && i.Class == this.CompareBase.Class), ... this.shops.filter(i => this.CompareBase && i.Type == this.CompareBase.Type && i.Class == this.CompareBase.Class) ];
+                }
+
+                this.refresh();
+            }
+        });
     }
 
     show (id) {
-        $(document).on('contextmenu', function () {
-            event.preventDefault();
+        $('#show-compare, #show-crystal').show();
+        $('#show-crystal').on('click', () => {
+            UI.show(UI.Resources, id);
         });
 
         UI.reset(true);
         this.Player = Database.Players[id].Latest;
+        this.Basis = getComparisonBase(this.Player);
+
+        this.$parent.find('[data-op="basis"]').html(getBasisElement(this.Basis, this.Player));
 
         this.EquippedItems = [];
         this.Items = [];
@@ -717,7 +818,7 @@ class InventoryView extends View {
                 if (items.find(it => it.InventoryID == item.InventoryID)) {
                     $(e).addClass('selected');
                     $(e).find('.front').hide();
-                    $(e).find('.back').show().html(getComparisonElement(this.Player, base, item, this.NoGem, this.NoUpgrade));
+                    $(e).find('.back').show().html(getComparisonElement(this.Basis, this.Player, base, item, this.NoGem, this.NoUpgrade));
                 } else {
                     $(e).removeClass('selected');
                     $(e).find('.front').show();
@@ -812,14 +913,20 @@ const UI = {
     show: function (screen, ... arguments) {
         UI.current = screen;
 
+        $('#show-compare, #show-crystal').off('click').hide();
         $('.ui.container').addClass('hidden');
 
         screen.$parent.removeClass('hidden');
         screen.show(... arguments);
     },
     initialize: function () {
+        $(document).on('contextmenu', function () {
+            event.preventDefault();
+        });
+
         UI.PlayerSelect = new PlayerSelectView('view-playerselect');
         UI.Inventory = new InventoryView('view-inventory');
+        UI.Resources = new ResourcesView('view-resources');
     },
     preinitialize: function () {
         UI.Loader = new LoaderView('modal-loader');

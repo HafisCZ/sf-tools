@@ -32,6 +32,8 @@
     <body class="css-dark">
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item">SFTools <span class="css-devmode hidden">Developer Mode</span></div>
+            <a class="item" id="show-compare"><i class="small compress icon"></i>Inventory</a>
+            <a class="item" id="show-crystal"><i class="small exchange icon"></i>Resources</a>
             <div class="right menu" id="show-right-menu">
                 <a id="show-back" href="index.html" class="item"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
             </div>
@@ -49,10 +51,16 @@
             <div class="ui five column grid" data-op="list"></div>
         </div>
 
+        <!-- ResourcesView -->
+        <div id="view-resources" class="ui main fluid container hidden sf-container">
+
+        </div>
+
         <!-- InventoryView -->
         <div id="view-inventory" class="ui main fluid container hidden sf-container">
             <div class="ui grid">
                 <div class="sixteen wide right aligned column">
+                    <button class="ui basic inverted mini button" style="margin-right: 3em;" data-op="flip">Flip All</button>
                     <div class="ui checkbox" data-op="nogem">
                         <input type="checkbox">
                         <label style="color: white;">Ignore gems</label>
@@ -72,23 +80,43 @@
                         </div>
                     </div>
                 </div>
-                <div class="thirteen wide column">
+                <div class="ten wide column">
                     <div class="css-inventory-segment" data-op="backpack">
                         <h3 class="ui header">Backpack</h3>
-                        <div class="ui five column grid" data-op="list">
+                        <div class="ui four column grid" data-op="list">
 
                         </div>
                     </div>
                     <div class="css-inventory-segment" data-op="chest">
                         <h3 class="ui header">Chest</h3>
-                        <div class="ui five column grid" data-op="list">
+                        <div class="ui four column grid" data-op="list">
 
                         </div>
                     </div>
                     <div class="css-inventory-segment" data-op="shops">
                         <h3 class="ui header">Weapon & Magic shop</h3>
-                        <div class="ui five column grid" data-op="list">
+                        <div class="ui four column grid" data-op="list">
 
+                        </div>
+                    </div>
+                </div>
+                <div class="three wide column">
+                    <div class="css-inventory-segment css-basis-segment">
+                        <div class="ui one column grid">
+                            <div class="row">
+                                <div class="column">
+                                    <div class="css-basis">
+                                        <div class="css-basis-header">
+                                            <h3 class="ui header">Overview</h3>
+                                        </div>
+                                        <div class="front">
+                                            <div class="css-inventory-comparison" data-op="basis">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -112,6 +140,8 @@
             if (dev) {
                 $('.css-devmode').removeClass('hidden');
             }
+
+            $('#show-compare, #show-crystal').hide();
 
             UI.preinitialize();
             Storage.load(function () {
