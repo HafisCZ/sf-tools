@@ -145,7 +145,7 @@ category Fortress
 header Gem Mine
 width @small
 
-header Treasure
+header Treasury
 width @small
 
 header Raid
