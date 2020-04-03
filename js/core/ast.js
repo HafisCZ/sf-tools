@@ -1155,6 +1155,90 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Guild Portal Percent': {
         expr: p => p.Group.Group ? p.Group.Group.PortalPercent : undefined
+    },
+    '1 Catacombs': {
+        expr: p => p.Dungeons.Normal[0]
+    },
+    '2 Mines': {
+        expr: p => p.Dungeons.Normal[1]
+    },
+    '3 Ruins': {
+        expr: p => p.Dungeons.Normal[2]
+    },
+    '4 Grotto': {
+        expr: p => p.Dungeons.Normal[3]
+    },
+    '5 Altar': {
+        expr: p => p.Dungeons.Normal[4]
+    },
+    '6 Tree': {
+        expr: p => p.Dungeons.Normal[5]
+    },
+    '7 Magma': {
+        expr: p => p.Dungeons.Normal[6]
+    },
+    '8 Temple': {
+        expr: p => p.Dungeons.Normal[7]
+    },
+    '9 Pyramid': {
+        expr: p => p.Dungeons.Normal[8]
+    },
+    '10 Circus': {
+        expr: p => p.Dungeons.Normal[9]
+    },
+    '11 Fortress': {
+        expr: p => p.Dungeons.Normal[10]
+    },
+    '12 Hell': {
+        expr: p => p.Dungeons.Normal[11]
+    },
+    '13 Floor': {
+        expr: p => p.Dungeons.Normal[12]
+    },
+    '14 Easteros': {
+        expr: p => p.Dungeons.Normal[13]
+    },
+    'S1 Catacombs': {
+        expr: p => p.Dungeons.Shadow[0]
+    },
+    'S2 Mines': {
+        expr: p => p.Dungeons.Shadow[1]
+    },
+    'S3 Ruins': {
+        expr: p => p.Dungeons.Shadow[2]
+    },
+    'S4 Grotto': {
+        expr: p => p.Dungeons.Shadow[3]
+    },
+    'S5 Altar': {
+        expr: p => p.Dungeons.Shadow[4]
+    },
+    'S6 Tree': {
+        expr: p => p.Dungeons.Shadow[5]
+    },
+    'S7 Magma': {
+        expr: p => p.Dungeons.Shadow[6]
+    },
+    'S8 Temple': {
+        expr: p => p.Dungeons.Shadow[7]
+    },
+    'S9 Pyramid': {
+        expr: p => p.Dungeons.Shadow[8]
+    },
+    'S10 Circus': {
+        expr: p => p.Dungeons.Shadow[9]
+    },
+    'S11 Fortress': {
+        expr: p => p.Dungeons.Shadow[10]
+    },
+    'S12 Hell': {
+        expr: p => p.Dungeons.Shadow[11]
+    },
+    'S13 Floor': {
+        expr: p => p.Dungeons.Shadow[12]
+    },
+    'S14 Easteros': {
+        expr: p => p.Dungeons.Shadow[13]
     }
 };
 
@@ -1234,6 +1318,30 @@ const SP_KEYWORD_MAPPING_2 = {
     'Metal': {
         expr: p => p.Metal,
         statistics: false
+    },
+    '15 Academy': {
+        expr: p => p.Dungeons.Extra.Normal[0]
+    },
+    '16 Hemorridor': {
+        expr: p => p.Dungeons.Extra.Normal[1]
+    },
+    '17 Nordic': {
+        expr: p => p.Dungeons.Extra.Normal[2]
+    },
+    '18 Greek': {
+        expr: p => p.Dungeons.Extra.Normal[3]
+    },
+    'S15 Academy': {
+        expr: p => p.Dungeons.Extra.Shadow[0]
+    },
+    'S16 Hemorridor': {
+        expr: p => p.Dungeons.Extra.Shadow[1]
+    },
+    'S17 Nordic': {
+        expr: p => p.Dungeons.Extra.Shadow[2]
+    },
+    'S18 Greek': {
+        expr: p => p.Dungeons.Extra.Shadow[3]
     }
 };
 
