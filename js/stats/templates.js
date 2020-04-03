@@ -145,7 +145,7 @@ category Fortress
 header Gem Mine
 width @small
 
-header Treasury
+header Treasure
 width @small
 
 header Raid
@@ -254,7 +254,7 @@ color default darkred
 
 category Bonuses
 
-header Treasury
+header Treasure
 width @small
 alias Gold
 header Instructor
