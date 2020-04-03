@@ -478,7 +478,7 @@ function getComparisonBase (player) {
     ref.Red = Math.ceil(Math.min(666, player.Armor / getMaxReduction(player.Class)));
     ref.Cri = Math.ceil(Math.min(666, player.Luck.Total / 20));
 
-    var dm = (1 + player.Primary.Total / 10) * (1 + player.Dungeons.Group / 100);
+    var dm = (1 + player.Primary.Total / 10) * (1 + player.Dungeons.Group / 100) * (1 + player.Runes.Damage / 100);
     ref.Min = Math.floor(ref.Vin * dm);
     ref.Max = Math.ceil(ref.Vax * dm);
     ref.Avg = Math.ceil((ref.Min + ref.Max) / 2);
@@ -549,8 +549,24 @@ function getComparison (basis, player, base, item, nogem, noupgrade) {
     out.Red = Math.ceil(Math.min(666, out.Arm / getMaxReduction(player.Class)));
     out.Cri = Math.ceil(Math.min(666, out.Lck / 20));
 
+    if (item.Type == 1) {
+        var rvin = out.Ref.Vin;
+        var rvax = out.Ref.Vax;
+        var rvag = out.Ref.Vag;
+
+        rvin = base.DamageMin;
+        rvax = base.DamageMax;
+        rvag = Math.ceil((base.DamageMin + base.DamageMax) / 2);
+
+        var dd = (1 + player.Primary.Total / 10) * (1 + player.Dungeons.Group / 100) * (1 + (base.getRune(10) + base.getRune(11) + base.getRune(12)) / 100);
+        out.Ref.Min = Math.floor(rvin * dd);
+        out.Ref.Rax = Math.ceil(rvax * dd);
+        out.Ref.Rvg = Math.ceil((out.Ref.Min + out.Ref.Rax) / 2);
+    }
+
     var pa = at[player.Primary.Type - 1].Total + attr[player.Primary.Type - 1] + (nogem ? 0 : gems[player.Primary.Type - 1]);
-    var dm = (1 + player.Dungeons.Group / 100);
+    var rn = item.Type == 1 ? (item.getRune(10) + item.getRune(11) + item.getRune(12)) : player.Runes.Damage;
+    var dm = (1 + player.Dungeons.Group / 100) * (1 + rn / 100);
 
     out.Min = Math.floor(out.Vin * dm * (1 + pa / 10));
     out.Max = Math.ceil(out.Vax * dm * (1 + pa / 10));
