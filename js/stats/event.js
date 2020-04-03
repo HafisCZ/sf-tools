@@ -1195,7 +1195,7 @@ class FilesView extends View {
                         Storage.import(e.target.result);
                         this.show();
                     } catch (exception) {
-                        UI.Exception.show('A problem occured while trying to import this file.<br><br>' + exception);
+                        UI.Exception.alert('A problem occured while trying to import this file.<br><br>' + exception);
                     }
                 }
             });
@@ -1233,7 +1233,7 @@ class FilesView extends View {
                         Storage.add(e.target.result, file.lastModified);
                         this.show();
                     } catch (exception) {
-                        UI.Exception.show('A problem occured while trying to upload this file.<br><br>' + exception);
+                        UI.Exception.alert('A problem occured while trying to upload this file.<br><br>' + exception);
                     }
                 }
             });
@@ -1551,7 +1551,8 @@ const UI = {
         UI.GroupDetail = new GroupDetailView('view-groupdetail');
         UI.Developer = new DeveloperView('view-developer');
     },
-
-    Loader: new LoaderView('modal-loader'),
-    Exception: new ExceptionView('modal-exception')
+    preinitialize: function () {
+        UI.Loader = new LoaderView('modal-loader');
+        UI.Exception = new ExceptionView('modal-exception');
+    }
 }

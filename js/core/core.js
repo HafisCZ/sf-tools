@@ -323,46 +323,99 @@ const Database = new (class {
     }
 })();
 
+const PlayerUpdaters = [
+    p => {
+        if (!p.pets) {
+            p.pets = [];
+            return true;
+        } else {
+            return false;
+        }
+    },
+    p => {
+        if (!p.achievements) {
+            p.achievements = [];
+            return true;
+        } else if (p.achievements.length == 60) {
+            p.achievements = [ ... p.achievements.slice(0, 60), ... new Array(20).fill(0), ... p.achievements.slice(60, 120), ... new Array(20).fill(0) ];
+            return true;
+        } else if (p.achievements.length == 70) {
+            p.achievements = [ ... p.achievements.slice(0, 70), ... new Array(10).fill(0), ... p.achievements.slice(70, 140), ... new Array(10).fill(0) ];
+            return true;
+        } else {
+            return false;
+        }
+    },
+    p => {
+        if (p.own && !p.tower) {
+            p.tower = [];
+            return true;
+        } else {
+            return false;
+        }
+    },
+    p => {
+        if (p.own && !p.chest) {
+            p.chest = [];
+            return true;
+        } else {
+            return false;
+        }
+    },
+    p => {
+        if (p.own && !p.witch) {
+            p.witch = [];
+            return true;
+        } else {
+            return false;
+        }
+    },
+    p => {
+        if (!p.prefix) {
+            p.prefix = 's1_de';
+            return true;
+        } else {
+            return false;
+        }
+    },
+    p => {
+        if (!p.id) {
+            p.id = p.prefix + '_p' + (p.own ? p.save[1] : p.save[0]);
+            return true;
+        } else {
+            return false;
+        }
+    }
+];
+
+const GroupUpdaters = [
+    g => {
+        if (!g.id) {
+            g.id = g.prefix + '_g' + g.save[0];
+            return true;
+        } else {
+            return false;
+        }
+    }
+];
+
 const UpdateService = {
     update: function (file) {
         var updated = false;
 
         for (var i = 0, p; p = file.players[i]; i++) {
-            if (!p.pets) {
-                p.pets = p.own ? new Array(288).fill(0) : new Array(6).fill(0);
-                updated = true;
-            }
-
-            if (!p.achievements) {
-                p.achievements = new Array(160).fill(0);
-                updated = true;
-            }
-
-            if (p.own && !p.tower) {
-                p.tower = new Array(476).fill(0);
-                updated = true;
-            }
-
-            if (p.own && !p.chest) {
-                p.chest = [];
-                updated = true;
-            }
-
-            if (!p.prefix) {
-                p.prefix = 's1_de';
-                updated = true;
-            }
-
-            if (!p.id) {
-                p.id = p.prefix + '_p' + (p.own ? p.save[1] : p.save[0]);
-                updated = true;
+            for (var updater of PlayerUpdaters) {
+                if (updater(p)) {
+                    updated = true;
+                }
             }
         }
 
         for (var i = 0, g; g = file.groups[i]; i++) {
-            if (!g.id) {
-                g.id = g.prefix + '_g' + g.save[0];
-                updated = true;
+            for (var updater of GroupUpdaters) {
+                if (updater(g)) {
+                    updated = true;
+                }
             }
         }
 
@@ -385,7 +438,7 @@ const UpdateService = {
             }
         }
     }
-};
+}
 
 const Storage = new (class {
     load (callback, error, args) {
@@ -430,29 +483,25 @@ const Storage = new (class {
     }
 
     import (content) {
-        try {
-            var json = JSON.parse(content);
-            var files = [];
+        var json = JSON.parse(content);
+        var files = [];
 
-            for (var file of json) {
-                UpdateService.update(file);
+        for (var file of json) {
+            UpdateService.update(file);
 
-                var existingFile = this.current.find(f => f.timestamp == file.timestamp);
-                if (existingFile) {
-                    UpdateService.mergeInto(existingFile, file);
-                    file = existingFile;
-                } else {
-                    this.current.push(file);
-                }
-
-                files.push(file);
+            var existingFile = this.current.find(f => f.timestamp == file.timestamp);
+            if (existingFile) {
+                UpdateService.mergeInto(existingFile, file);
+                file = existingFile;
+            } else {
+                this.current.push(file);
             }
 
-            Database.add(... files);
-            this.save(... files);
-        } catch (exception) {
-            throw exception.lineNumber + ' ' + exception;
+            files.push(file);
         }
+
+        Database.add(... files);
+        this.save(... files);
     }
 
     export (indexes) {
@@ -464,118 +513,116 @@ const Storage = new (class {
     }
 
     add (content, timestamp) {
-        try {
-            var json = JSON.parse(content);
-            var raws = [];
-            for (var [key, val, url, ts] of filterPlayaJSON(json)) {
-                if (ts) {
-                    timestamp = ts;
-                }
-
-                if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername'))) {
-                    var url = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
-                    if (url.length > 2) {
-                        raws.push([val, url[1] + '_' + url[2]]);
-                    }
-                }
+        var json = JSON.parse(content);
+        var raws = [];
+        for (var [key, val, url, ts] of filterPlayaJSON(json)) {
+            if (ts) {
+                timestamp = ts;
             }
 
-            var file = {
-                groups: [],
-                players: [],
-                timestamp: timestamp,
-                version: 0
-            }
-
-            for (var pair of raws) {
-                var [raw, prefix] = pair;
-
-                if (raw.includes('groupSave') || raw.includes('groupsave')) {
-                    var group = {
-                        prefix: prefix || 's1_de'
-                    };
-
-                    for (var [key, val] of parsePlayaResponse(raw)) {
-                        if (key.includes('groupname')) {
-                            group.name = val;
-                        } else if (key.includes('grouprank')) {
-                            group.rank = Number(val);
-                        } else if (key.includes('groupmember')) {
-                            group.members = val.split(',');
-                        } else if (key.includes('groupknights')) {
-                            group.knights = val.split(',').map(a => Number(a));
-                        } else if (key.includes('owngroupsave') && group.own == undefined) {
-                            group.save = val.split('/').map(a => Number(a));
-                            group.own = true;
-                            group.id = group.prefix + '_g' + group.save[0];
-                        } else if (key.includes('groupSave') && group.own == undefined) {
-                            group.save = val.split('/').map(a => Number(a));
-                            group.own = false;
-                            group.id = group.prefix + '_g' + group.save[0];
-                        }
-                    }
-
-                    if (!file.groups.find(g => g.name === group.name) && group.rank) {
-                        file.groups.push(group);
-                    }
-                }
-
-                if (raw.includes('otherplayername') || raw.includes('ownplayername')) {
-                    let player = {
-                        prefix: prefix || 's1_de'
-                    };
-
-                    for (var [key, val] of parsePlayaResponse(raw)) {
-                        if (key.includes('groupname')) {
-                            player.groupname = val;
-                        } else if (key.includes('name')) {
-                            player.name = val;
-                        } else if (key.includes('unitlevel')) {
-                            player.units = val.split('/').map(a => Number(a));
-                        } else if (key.includes('achievement') && !key.includes('new')) {
-                            player.achievements = val.split('/').map(a => Number(a));
-                        } else if (key.includes('fortressrank')) {
-                            player.fortressrank = Number(val);
-                        } else if (key.includes('playerlookat')) {
-                            player.save = val.split('/').map(a => Number(a));
-                            player.own = false;
-                            player.id = player.prefix + '_p' + player.save[0];
-                        } else if (key.includes('playerSave')) {
-                            player.save = val.split('/').map(a => Number(a));
-                            player.own = true;
-                            player.id = player.prefix + '_p' + player.save[1];
-                        } else if (key.includes('petbonus') || key.includes('petsSave')) {
-                            player.pets = val.split('/').map(a => Number(a));
-                        } else if (key.includes('serverversion')) {
-                            file.version = Number(val);
-                        } else if (key.includes('towerSave')) {
-                            player.tower = val.split('/').map(a => Number(a));
-                        } else if (key.includes('fortresschest')) {
-                            player.chest = val.split('/').map(a => Number(a));
-                        }
-                    }
-
-                    if (!file.players.find(p => p.name === player.name)) {
-                        file.players.push(player);
-                    }
+            if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername'))) {
+                var url = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
+                if (url.length > 2) {
+                    raws.push([val, url[1] + '_' + url[2]]);
                 }
             }
-
-            UpdateService.update(file);
-
-            var existingFile = this.current.find(f => f.timestamp == file.timestamp);
-            if (existingFile) {
-                UpdateService.mergeInto(existingFile, file);
-                file = existingFile;
-            } else {
-                this.current.push(file);
-            }
-
-            Database.add(file);
-            this.save(file);
-        } catch (exception) {
-            throw exception.lineNumber + ' ' + exception;
         }
+
+        var file = {
+            groups: [],
+            players: [],
+            timestamp: timestamp,
+            version: 0
+        }
+
+        for (var pair of raws) {
+            var [raw, prefix] = pair;
+
+            if (raw.includes('groupSave') || raw.includes('groupsave')) {
+                var group = {
+                    prefix: prefix || 's1_de'
+                };
+
+                for (var [key, val] of parsePlayaResponse(raw)) {
+                    if (key.includes('groupname')) {
+                        group.name = val;
+                    } else if (key.includes('grouprank')) {
+                        group.rank = Number(val);
+                    } else if (key.includes('groupmember')) {
+                        group.members = val.split(',');
+                    } else if (key.includes('groupknights')) {
+                        group.knights = val.split(',').map(a => Number(a));
+                    } else if (key.includes('owngroupsave') && group.own == undefined) {
+                        group.save = val.split('/').map(a => Number(a));
+                        group.own = true;
+                        group.id = group.prefix + '_g' + group.save[0];
+                    } else if (key.includes('groupSave') && group.own == undefined) {
+                        group.save = val.split('/').map(a => Number(a));
+                        group.own = false;
+                        group.id = group.prefix + '_g' + group.save[0];
+                    }
+                }
+
+                if (!file.groups.find(g => g.name === group.name) && group.rank) {
+                    file.groups.push(group);
+                }
+            }
+
+            if (raw.includes('otherplayername') || raw.includes('ownplayername')) {
+                let player = {
+                    prefix: prefix || 's1_de'
+                };
+
+                for (var [key, val] of parsePlayaResponse(raw)) {
+                    if (key.includes('groupname')) {
+                        player.groupname = val;
+                    } else if (key.includes('name')) {
+                        player.name = val;
+                    } else if (key.includes('unitlevel')) {
+                        player.units = val.split('/').map(a => Number(a));
+                    } else if (key.includes('achievement') && !key.includes('new')) {
+                        player.achievements = val.split('/').map(a => Number(a));
+                    } else if (key.includes('fortressrank')) {
+                        player.fortressrank = Number(val);
+                    } else if (key.includes('playerlookat')) {
+                        player.save = val.split('/').map(a => Number(a));
+                        player.own = false;
+                        player.id = player.prefix + '_p' + player.save[0];
+                    } else if (key.includes('playerSave')) {
+                        player.save = val.split('/').map(a => Number(a));
+                        player.own = true;
+                        player.id = player.prefix + '_p' + player.save[1];
+                    } else if (key.includes('petbonus') || key.includes('petsSave')) {
+                        player.pets = val.split('/').map(a => Number(a));
+                    } else if (key.includes('serverversion')) {
+                        file.version = Number(val);
+                    } else if (key.includes('towerSave')) {
+                        player.tower = val.split('/').map(a => Number(a));
+                    } else if (key.includes('fortresschest')) {
+                        player.chest = val.split('/').map(a => Number(a));
+                    } else if (key.includes('witchData')) {
+                        player.witch = val.split('/').map(a => Number(a));
+                    }
+                }
+
+                if (!file.players.find(p => p.name === player.name)) {
+                    file.players.push(player);
+                }
+            }
+        }
+
+        UpdateService.update(file);
+
+        var existingFile = this.current.find(f => f.timestamp == file.timestamp);
+        if (existingFile) {
+            UpdateService.mergeInto(existingFile, file);
+            file = existingFile;
+        } else {
+            this.current.push(file);
+        }
+
+        Database.add(file);
+        this.save(file);
     }
 
     remove (index) {
@@ -671,3 +718,85 @@ const Storage = new (class {
         return this.current;
     }
 })();
+
+// Complex datatype
+class ComplexDataType {
+    constructor (values) {
+        this.values = values || [];
+        this.ptr = 0;
+        this.bytes = [];
+    }
+
+    static create (data) {
+        if (data instanceof ComplexDataType) {
+            return data;
+        } else {
+            return new ComplexDataType(data);
+        }
+    }
+
+    empty () {
+        return this.values.length <= this.ptr;
+    }
+
+    long () {
+        return this.values[this.ptr++] || 0;
+    }
+
+    string () {
+        return this.values[this.ptr++] || '';
+    }
+
+    split () {
+        var word = this.long();
+        this.bytes = [word % 0x100, (word >> 8) % 0x100, (word >> 16) % 0x100, (word >> 24) % 0x100];
+    }
+
+    short () {
+        if (!this.bytes.length) {
+            this.split();
+        }
+
+        return this.bytes.shift() + (this.bytes.shift() << 8);
+    }
+
+    byte () {
+        if (!this.bytes.length) {
+            this.split();
+        }
+
+        return this.bytes.shift();
+    }
+
+    assert (size, soft) {
+        if (this.values.length < size) {
+            if (soft) {
+                ComplexDataType.Errors++;
+            } else {
+                throw `ComplexDataType Exception: Expected ${ size } values but ${ this.values.length } were supplied!`;
+            }
+        }
+    }
+
+    sub (size) {
+        var b = this.values.slice(this.ptr, this.ptr + size);
+        this.ptr += size;
+        return new ComplexDataType(b);
+    }
+
+    clear () {
+        this.bytes = [];
+    }
+
+    skip (size) {
+        this.ptr += size;
+        return this;
+    }
+
+    back (size) {
+        this.ptr -= size;
+        return this;
+    }
+}
+
+ComplexDataType.Errors = 0;

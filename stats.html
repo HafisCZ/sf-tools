@@ -397,6 +397,7 @@
                 $('#show-developer').removeClass('hidden');
             }
 
+            UI.preinitialize();
             Storage.load(function () {
                 UI.initialize();
                 UI.show(UI.Groups);

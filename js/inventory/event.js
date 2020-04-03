@@ -821,7 +821,8 @@ const UI = {
         UI.PlayerSelect = new PlayerSelectView('view-playerselect');
         UI.Inventory = new InventoryView('view-inventory');
     },
-
-    Loader: new LoaderView('modal-loader'),
-    Exception: new ExceptionView('modal-exception')
+    preinitialize: function () {
+        UI.Loader = new LoaderView('modal-loader');
+        UI.Exception = new ExceptionView('modal-exception');
+    }
 }

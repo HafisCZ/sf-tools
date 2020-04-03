@@ -491,7 +491,7 @@ class SFGroup {
         this.Honor = data.save[13];
         this.Pet = data.save[378];
 
-        var dataType = new ComplexDataType(data.save.slice(4, 8));
+        var dataType = ComplexDataType.create(data.save.slice(4, 8));
         dataType.short();
         this.PortalLife = dataType.short();
         dataType.short();
@@ -535,7 +535,8 @@ class SFPlayer {
 
         this.Own = data.own;
         this.Timestamp = data.timestamp;
-        this.Toilet = { };
+        this.Toilet = {};
+        this.Witch = {};
 
         this.Achievements = [];
         this.Achievements.Owned = 0;
@@ -872,8 +873,8 @@ class SFOtherPlayer extends SFPlayer {
 
         this.init(data);
 
-        var dataType = new ComplexDataType(data.save);
-        dataType.assert(256);
+        var dataType = ComplexDataType.create(data.save);
+        dataType.assert(256, true);
 
         this.ID = dataType.long();
         this.LastOnline = dataType.long() * 1000 + correctDate(data.prefix);
@@ -1060,8 +1061,8 @@ class SFOtherPlayer extends SFPlayer {
         ];
         dataType.clear(); // skip
 
-        dataType = new ComplexDataType(data.pets);
-        dataType.assert(6);
+        dataType = ComplexDataType.create(data.pets);
+        dataType.assert(6, true);
 
         dataType.skip(1); // skip
         this.Pets = {
@@ -1087,7 +1088,7 @@ class SFOwnPlayer extends SFPlayer {
 
         this.init(data);
 
-        var dataType = new ComplexDataType(data.save);
+        var dataType = ComplexDataType.create(data.save);
         dataType.assert(650);
 
         dataType.skip(1); // skip
@@ -1364,8 +1365,8 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Extra.Normal[0] = Math.max(0, data.tower[150] - 2);
         this.Dungeons.Extra.Shadow[0] = Math.max(0, data.tower[298] - 2);
 
-        dataType = new ComplexDataType(data.pets);
-        dataType.assert(288);
+        dataType = ComplexDataType.create(data.pets);
+        dataType.assert(288, true);
 
         dataType.skip(104); // skip
         this.Pets = {
@@ -1389,7 +1390,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Extra.Normal.Total = this.Dungeons.Normal.Total + this.Dungeons.Extra.Normal.reduce((a, b) => a + b, 0);
         this.Dungeons.Extra.Shadow.Total = this.Dungeons.Shadow.Total + this.Dungeons.Extra.Shadow.reduce((a, b) => a + b, 0);
 
-        dataType = new ComplexDataType(data.chest);
+        dataType = ComplexDataType.create(data.chest);
 
         for (var i = 0; i < 40 && !dataType.empty(); i++) {
             var item = new SFItem(dataType.sub(12));
@@ -1400,6 +1401,39 @@ class SFOwnPlayer extends SFPlayer {
                     this.Inventory.Backpack.push(item);
                 }
             }
+        }
+
+        dataType = ComplexDataType.create(data.witch);
+        this.Witch.Stage = dataType.long();
+        this.Witch.Items = dataType.long();
+        this.Witch.ItemsNext = Math.max(0, dataType.long());
+        this.Witch.Items = Math.min(this.Witch.Items, this.Witch.ItemsNext);
+
+        dataType.skip(5);
+
+        this.Witch.Scrolls = [];
+        for (var i = 0; i < 9; i++) {
+            var index = dataType.long();
+            var picIndex = dataType.long();
+            var date = dataType.long() * 1000 + correctDate(data.prefix);
+
+            var type = picIndex % 1000;
+
+            this.Witch.Scrolls[{
+                11: 0,
+                31: 1,
+                41: 2,
+                51: 3,
+                61: 4,
+                71: 5,
+                81: 6,
+                91: 7,
+                101: 8
+            }[type]] = {
+                Date: date,
+                Type: type,
+                Owned: date > 0
+            };
         }
     }
 }

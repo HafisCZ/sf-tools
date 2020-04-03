@@ -1768,11 +1768,12 @@ class Settings {
 
         // Extra statistics rows
         if (tabletype == TableType.Group) {
+            var param = players.find(p => p.player.Own) || players[0];
             for (var data of this.extras) {
                 if (data.ast) {
                     data.eval = {
-                        value: data.ast.eval(players[0].player, this, players.map(p => p.player)),
-                        compare: data.ast.eval(players[0].compare, this.getCompareEnvironment(), players.map(p => p.compare))
+                        value: data.ast.eval(param.player, this, players.map(p => p.player)),
+                        compare: data.ast.eval(param.compare, this.getCompareEnvironment(), players.map(p => p.compare))
                     };
                 }
             }

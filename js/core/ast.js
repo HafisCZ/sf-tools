@@ -1147,15 +1147,6 @@ const SP_KEYWORD_MAPPING_0 = {
     'Level XP': {
         expr: p => p.XPNext
     },
-    'Guild Portal Floor': {
-        expr: p => p.Group.Group ? p.Group.Group.PortalFloor : undefined
-    },
-    'Guild Portal Life': {
-        expr: p => p.Group.Group ? p.Group.Group.PortalLife : undefined
-    },
-    'Guild Portal Percent': {
-        expr: p => p.Group.Group ? p.Group.Group.PortalPercent : undefined
-    },
     '1 Catacombs': {
         expr: p => p.Dungeons.Normal[0]
     },
@@ -1239,6 +1230,18 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'S14 Easteros': {
         expr: p => p.Dungeons.Shadow[13]
+    },
+    'Achievements': {
+        expr: p => p.Achievements.Owned
+    },
+    'Pets Unlocked': {
+        expr: p => p.Achievements[36].Owned
+    },
+    'Grail Unlocked': {
+        expr: p => p.Achievements[76].Owned
+    },
+    'Hydra Dead': {
+        expr: p => p.Achievements[63].Owned
     }
 };
 
@@ -1256,6 +1259,15 @@ const SP_KEYWORD_MAPPING_1 = {
     },
     'Pet': {
         expr: p => p.Group.Pet
+    },
+    'Guild Portal Floor': {
+        expr: p => p.Group.Group ? p.Group.Group.PortalFloor : undefined
+    },
+    'Guild Portal Life': {
+        expr: p => p.Group.Group ? p.Group.Group.PortalLife : undefined
+    },
+    'Guild Portal Percent': {
+        expr: p => p.Group.Group ? p.Group.Group.PortalPercent : undefined
     }
 };
 
@@ -1342,6 +1354,15 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'S18 Greek': {
         expr: p => p.Dungeons.Extra.Shadow[3]
+    },
+    'Scrolls': {
+        expr: p => p.Witch.Stage
+    },
+    'Witch Items': {
+        expr: p => p.Witch.Items
+    },
+    'Witch Items Required': {
+        expr: p => p.Witch.ItemsNext
     }
 };
 
