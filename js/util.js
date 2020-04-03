@@ -133,6 +133,89 @@ function * filterPlayaJSON (o, tt = [], a = []) {
     }
 }
 
+
+// Complex datatype
+class ComplexDataType {
+    constructor (values) {
+        this.values = values || [];
+        this.ptr = 0;
+        this.bytes = [];
+    }
+
+    static create (data) {
+        if (data instanceof ComplexDataType) {
+            return data;
+        } else {
+            return new ComplexDataType(data);
+        }
+    }
+
+    empty () {
+        return this.values.length <= this.ptr;
+    }
+
+    long () {
+        return this.values[this.ptr++] || 0;
+    }
+
+    string () {
+        return this.values[this.ptr++] || '';
+    }
+
+    split () {
+        var word = this.long();
+        this.bytes = [word % 0x100, (word >> 8) % 0x100, (word >> 16) % 0x100, (word >> 24) % 0x100];
+    }
+
+    short () {
+        if (!this.bytes.length) {
+            this.split();
+        }
+
+        return this.bytes.shift() + (this.bytes.shift() << 8);
+    }
+
+    byte () {
+        if (!this.bytes.length) {
+            this.split();
+        }
+
+        return this.bytes.shift();
+    }
+
+    assert (size, soft) {
+        if (this.values.length < size) {
+            if (soft) {
+                ComplexDataType.Errors++;
+            } else {
+                throw `ComplexDataType Exception: Expected ${ size } values but ${ this.values.length } were supplied!`;
+            }
+        }
+    }
+
+    sub (size) {
+        var b = this.values.slice(this.ptr, this.ptr + size);
+        this.ptr += size;
+        return new ComplexDataType(b);
+    }
+
+    clear () {
+        this.bytes = [];
+    }
+
+    skip (size) {
+        this.ptr += size;
+        return this;
+    }
+
+    back (size) {
+        this.ptr -= size;
+        return this;
+    }
+}
+
+ComplexDataType.Errors = 0;
+
 function compareItems (a, b) {
     if (typeof(a) == 'string' && typeof(b) == 'string') {
         if (a == '') return 1;
