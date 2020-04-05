@@ -1461,10 +1461,9 @@ class SFOwnPlayer extends SFPlayer {
             dataType = ComplexDataType.create(data.tower);
             dataType.skip(3);
             var bert = {
-                Level: dataType.long(),
-                Class: dataType.long()
+                Level: dataType.long()
             };
-            dataType.skip(17);
+            dataType.skip(18);
             bert.Armor = dataType.long();
             bert.Damage = {
                 Min: dataType.long(),
@@ -1485,10 +1484,9 @@ class SFOwnPlayer extends SFPlayer {
             };
             dataType.skip(6);
             var mark = {
-                Level: dataType.long(),
-                Class: dataType.long()
+                Level: dataType.long()
             };
-            dataType.skip(17);
+            dataType.skip(18);
             mark.Armor = dataType.long();
             mark.Damage = {
                 Min: dataType.long(),
@@ -1509,10 +1507,9 @@ class SFOwnPlayer extends SFPlayer {
             };
             dataType.skip(6);
             var kuni = {
-                Level: dataType.long(),
-                Class: dataType.long()
+                Level: dataType.long()
             };
-            dataType.skip(17);
+            dataType.skip(18);
             kuni.Armor = dataType.long();
             kuni.Damage = {
                 Min: dataType.long(),
@@ -1532,6 +1529,9 @@ class SFOwnPlayer extends SFPlayer {
                 Wpn2: new SFItem(dataType.sub(12), 2)
             };
 
+            bert.Class = 1;
+            mark.Class = 2;
+            kuni.Class = 3;
             this.Companions.Bert = new SFCompanion(this, bert, this.Inventory.Bert);
             this.Companions.Mark = new SFCompanion(this, mark, this.Inventory.Mark);
             this.Companions.Kunigunde = new SFCompanion(this, kuni, this.Inventory.Kunigunde);
