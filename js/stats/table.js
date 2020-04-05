@@ -332,7 +332,7 @@ class TableInstance {
                                     return CellGenerator.Plain('?', hlast);
                                 }
 
-                                var reference = (cmp ? header.expr(compare, this.settings.getCompareEnvironment(), cmp[key]) : '') || '';
+                                var reference = cmp ? header.expr(compare, this.settings.getCompareEnvironment(), cmp[key]) : undefined;
                                 if (reference) {
                                     reference = header.flip ? (reference - value) : (value - reference);
                                     reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
@@ -367,8 +367,8 @@ class TableInstance {
                                 return CellGenerator.Plain('?', hlast);
                             }
 
-                            var reference = ((header.difference && compare) ? header.expr(compare, this.settings.getCompareEnvironment()) : '') || '';
-                            if (reference && !isNaN(reference)) {
+                            var reference = (header.difference && compare) ? header.expr(compare, this.settings.getCompareEnvironment()) : undefined;
+                            if (!isNaN(reference)) {
                                 reference = header.flip ? (reference - value) : (value - reference);
                                 reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
                             } else {
@@ -390,7 +390,7 @@ class TableInstance {
 
                             value = operation(value);
 
-                            var reference = header.difference ? players.map(p => header.expr(p.compare, this.settings.getCompareEnvironment())).filter(x => x != undefined) : '';
+                            var reference = header.difference ? players.map(p => header.expr(p.compare, this.settings.getCompareEnvironment())).filter(x => x != undefined) : undefined;
                             if (reference && reference.length) {
                                 reference = operation(reference);
                                 if (!isNaN(reference)) {
