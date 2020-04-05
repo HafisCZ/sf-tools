@@ -455,8 +455,32 @@ function getMaxReduction (c) {
     }
 }
 
-function getComparisonBase (player) {
+function getComparisonBase (player, char) {
     var ref = {};
+
+    if (char == 1) {
+        player = player.Companions.Bert;
+    } else if (char == 2) {
+        player = player.Companions.Mark;
+    } else if (char == 3) {
+        player = player.Companions.Kunigunde;
+    }
+
+    ref.Level = player.Level;
+
+    ref.Runes = {
+        Gold: player.Runes.Gold,
+        XP: player.Runes.XP,
+        Health: player.Runes.Health,
+        Chance: player.Runes.Chance,
+        Quality: player.Runes.Quality,
+        ResistanceFire: player.Runes.ResistanceFire,
+        ResistanceCold: player.Runes.ResistanceCold,
+        ResistanceLightning: player.Runes.ResistanceLightning,
+        DamageFire: player.Runes.DamageFire,
+        DamageCold: player.Runes.DamageCold,
+        DamageLightning: player.Runes.DamageLightning
+    };
 
     ref.Str = player.Strength.Total;
     ref.Dex = player.Dexterity.Total;
@@ -465,7 +489,7 @@ function getComparisonBase (player) {
     ref.Lck = player.Luck.Total;
 
     var mult = (1 + player.Potions.Life / 100);
-    var mult2 = (1 + player.Dungeons.Player / 100);
+    var mult2 = (1 + player.Dungeons.Player / 100 + (char == 1 ? 0.33 : 0));
     var mult3 = (player.Class == 1 || player.Class == 5 ? 5 : (player.Class == 2 ? 2 : 4));
     var mult4 = player.Level + 1;
     ref.Hel = Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(ref.Con * mult4) * mult3) * mult2) * mult) * (1 + player.Runes.Health / 100));
@@ -486,10 +510,18 @@ function getComparisonBase (player) {
     return ref;
 }
 
-function getComparison (basis, player, base, item, nogem, noupgrade) {
+function getComparison (basis, player, char, base, item, nogem, noupgrade) {
     var out = {
         Ref: basis
     };
+
+    if (char == 1) {
+        player = player.Companions.Bert;
+    } else if (char == 2) {
+        player = player.Companions.Mark;
+    } else if (char == 3) {
+        player = player.Companions.Kunigunde;
+    }
 
     // Attribute arrays
     var pb = [ player.Pets.Water, player.Pets.Light, player.Pets.Earth, player.Pets.Shadow, player.Pets.Fire ];
@@ -529,7 +561,7 @@ function getComparison (basis, player, base, item, nogem, noupgrade) {
     out.Lck = out.Ref.Lck + attr[4] + (nogem ? 0 : gems[4]);
 
     var mult = (1 + player.Potions.Life / 100);
-    var mult2 = (1 + player.Dungeons.Player / 100);
+    var mult2 = (1 + player.Dungeons.Player / 100 + (char == 1 ? 0.33 : 0));
     var mult3 = (player.Class == 1 || player.Class == 5 ? 5 : (player.Class == 2 ? 2 : 4));
     var mult4 = player.Level + 1;
     out.Hel = Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(out.Con * mult4) * mult3) * mult2) * mult) * (1 + (player.Runes.Health + item.getRune(5) - base.getRune(5)) / 100));
@@ -575,26 +607,26 @@ function getComparison (basis, player, base, item, nogem, noupgrade) {
     return out;
 }
 
-function getBasisElement (b, player) {
+function getBasisElement (b) {
     var cats = [
-        (player.Runes.Gold ? getBasisLine(player.Runes.Gold, 'Gold') : '') +
-        (player.Runes.XP ? getBasisLine(player.Runes.XP, 'XP') : '') +
-        (player.Runes.Health ? getBasisLine(player.Runes.Health, 'Health') : ''),
+        (b.Runes.Gold ? getBasisLine(b.Runes.Gold, 'Gold') : '') +
+        (b.Runes.XP ? getBasisLine(b.Runes.XP, 'XP') : '') +
+        (b.Runes.Health ? getBasisLine(b.Runes.Health, 'Health') : ''),
 
-        (player.Runes.Chance ? getBasisLine(player.Runes.Chance, 'Epic Chance') : '') +
-        (player.Runes.Quality ? getBasisLine(player.Runes.Quality, 'Item Quality') : ''),
+        (b.Runes.Chance ? getBasisLine(b.Runes.Chance, 'Epic Chance') : '') +
+        (b.Runes.Quality ? getBasisLine(b.Runes.Quality, 'Item Quality') : ''),
 
-        (player.Runes.ResistanceFire ? getBasisLine(player.Runes.ResistanceFire, 'Fire Resistance') : '') +
-        (player.Runes.ResistanceCold ? getBasisLine(player.Runes.ResistanceCold, 'Cold Resistance') : '') +
-        (player.Runes.ResistanceLightning ? getBasisLine(player.Runes.ResistanceLightning, 'Lightning Resistance') : ''),
+        (b.Runes.ResistanceFire ? getBasisLine(b.Runes.ResistanceFire, 'Fire Resistance') : '') +
+        (b.Runes.ResistanceCold ? getBasisLine(b.Runes.ResistanceCold, 'Cold Resistance') : '') +
+        (b.Runes.ResistanceLightning ? getBasisLine(b.Runes.ResistanceLightning, 'Lightning Resistance') : ''),
 
-        (player.Runes.DamageFire ? getBasisLine(player.Runes.DamageFire, 'Fire Damage') : '') +
-        (player.Runes.DamageCold ? getBasisLine(player.Runes.DamageCold, 'Cold Damage') : '') +
-        (player.Runes.DamageLightning ? getBasisLine(player.Runes.DamageLightning, 'Lightning Damage') : '')
+        (b.Runes.DamageFire ? getBasisLine(b.Runes.DamageFire, 'Fire Damage') : '') +
+        (b.Runes.DamageCold ? getBasisLine(b.Runes.DamageCold, 'Cold Damage') : '') +
+        (b.Runes.DamageLightning ? getBasisLine(b.Runes.DamageLightning, 'Lightning Damage') : '')
     ];
 
     return `
-        ${ getBasisLine(player.Level, 'Level') }
+        ${ getBasisLine(b.Level, 'Level') }
         <div class="item">&nbsp;</div>
         ${ getBasisLine(b.Str, 'Strength') }
         ${ getBasisLine(b.Dex, 'Dexterity') }
@@ -604,12 +636,12 @@ function getBasisElement (b, player) {
         <div class="item">&nbsp;</div>
         ${ getBasisLine(b.Hel, 'Health') }
         ${ getBasisLine(b.Arm, 'Armor') }
-        ${ getBasisLine(b.Red, 'Max Reduction Level', b.Red < player.Level) }
+        ${ getBasisLine(b.Red, 'Max Reduction Level', b.Red < b.Level) }
         <div class="item">&nbsp;</div>
         ${ getBasisLine(b.Vin, 'Minimum Range') }
         ${ getBasisLine(b.Vax, 'Maximum Range') }
         ${ getBasisLine(b.Vag, 'Average Range') }
-        ${ getBasisLine(b.Cri, 'Max Crit Chance Level', b.Cri < player.Level) }
+        ${ getBasisLine(b.Cri, 'Max Crit Chance Level', b.Cri < b.Level) }
         <div class="item">&nbsp;</div>
         ${ getBasisLine(b.Min, 'Minimum Damage') }
         ${ getBasisLine(b.Max, 'Maximum Damage') }
@@ -625,8 +657,8 @@ function getBasisElement (b, player) {
     `;
 }
 
-function getComparisonElement (basis, player, base, item, nogem, noupgrade) {
-    var compare = getComparison(basis, player, base, item, nogem, noupgrade);
+function getComparisonElement (basis, player, char, base, item, nogem, noupgrade) {
+    var compare = getComparison(basis, player, char, base, item, nogem, noupgrade);
     var cats = [
         getCompareLine(compare.Str, compare.Ref.Str, 'Strength') +
         getCompareLine(compare.Dex, compare.Ref.Dex, 'Dexterity') +
@@ -697,65 +729,43 @@ class InventoryView extends View {
     constructor (parent) {
         super(parent);
 
+        // Equipped
+        this.$equipped = this.$parent.find('[data-op="equipped"] [data-op="list"]');
+
+        // Inventories
         this.$backpack = this.$parent.find('[data-op="backpack"] [data-op="list"]');
         this.$chest = this.$parent.find('[data-op="chest"] [data-op="list"]');
         this.$shops = this.$parent.find('[data-op="shops"] [data-op="list"]');
-        this.$equipped = this.$parent.find('[data-op="equipped"] [data-op="list"]');
-        this.$name = this.$parent.find('[data-op="name"] [data-op="list"]');
+        this.$player = this.$parent.find('[data-op="player"] [data-op="list"]');
+        this.$bert = this.$parent.find('[data-op="bert"] [data-op="list"]');
+        this.$mark = this.$parent.find('[data-op="mark"] [data-op="list"]');
+        this.$kunigunde = this.$parent.find('[data-op="kunigunde"] [data-op="list"]');
 
+        // Basis
+        this.$basis = this.$parent.find('[data-op="basis"]');
+
+        // Flipper
         this.$parent.find('[data-op="flip"]').click(() => {
             if (this.CompareBase != null) {
                 if (this.CompareItems.length > 0) {
                     this.CompareItems = [];
                 } else {
-                    this.CompareItems = [ ... this.backpack.filter(i => this.CompareBase && i.Type == this.CompareBase.Type && i.Class == this.CompareBase.Class), ... this.chest.filter(i => this.CompareBase && i.Type == this.CompareBase.Type && i.Class == this.CompareBase.Class), ... this.shops.filter(i => this.CompareBase && i.Type == this.CompareBase.Type && i.Class == this.CompareBase.Class) ];
+                    this.CompareItems = [
+                        ... this.Items.filter(i => this.CompareBase && i.Type == this.CompareBase.Type && i.Class == this.CompareBase.Class)
+                    ];
                 }
 
                 this.refresh();
             }
         });
-    }
 
-    show (id) {
-        $('#show-compare, #show-crystal').show();
-        $('#show-crystal').on('click', () => {
-            UI.show(UI.Resources, id);
-        });
-
-        UI.reset(true);
-        this.Player = Database.Players[id].Latest;
-        this.Basis = getComparisonBase(this.Player);
-
-        this.$parent.find('[data-op="basis"]').html(getBasisElement(this.Basis, this.Player));
-
-        this.EquippedItems = [];
-        this.Items = [];
-
-        this.CompareBase = null;
-        this.CompareItems = [];
-
-        this.$equipped.html(toList(this.Player, Object.values(this.Player.Items).filter(i => i.Slot != 2 || this.Player.Class == 4).map(i => mapToInventory(this.EquippedItems, i))));
-
-        this.$parent.find('.css-inventory-item[data-eid]').click((event) => {
-            var e = $(event.currentTarget);
-            var id = e.attr('data-eid');
-            if (this.CompareBase != null && this.CompareBase.InventoryID == id) {
-                this.CompareBase = null;
-            } else {
-                this.CompareBase = this.EquippedItems[id];
-            }
-
-            this.CompareItems = [];
+        // Characters
+        this.$parent.find('[data-op="swap"]').click(e => {
+            this.setCharacterSelection($(e.currentTarget).attr('data-arg'));
             this.refresh();
-        }).on('contextmenu', function () {
-            event.preventDefault();
-            $(this).toggleClass('micro');
         });
 
-        this.backpack = this.Player.Inventory.Backpack.filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
-        this.chest = this.Player.Inventory.Chest.filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
-        this.shops = this.Player.Inventory.Shop.filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
-
+        // Checkboxes
         this.$parent.find('[data-op="nogem"]').checkbox('uncheck').change((event) => {
             this.NoGem = $(event.currentTarget).checkbox('is checked');
             this.refresh();
@@ -765,128 +775,176 @@ class InventoryView extends View {
             this.NoUpgrade = $(event.currentTarget).checkbox('is checked');
             this.refresh();
         });
+    }
 
+    show (id) {
+        $('#show-compare, #show-crystal').show();
+        $('#show-crystal').on('click', () => UI.show(UI.Resources, id));
+        UI.reset(true);
+
+        this.$parent.find('[data-op="list"]').html('');
+
+        // Current player
+        this.Player = Database.Players[id].Latest;
+        this.Items = [];
+
+        // Micro-ing
+        this.Micro = new Set();
+
+        // Comparison
+        this.Selected = 0;
+        this.CompareBase = null;
+        this.CompareItems = [];
+
+        // Ignore upgrades and gems
+        this.NoUpgrade = false;
+        this.NoGem = false;
+
+        // Generated item lists
+        this.backpack = this.Player.Inventory.Backpack.filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
+        this.chest = this.Player.Inventory.Chest.filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
+        this.shops = this.Player.Inventory.Shop.filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
+        this.player = Object.values(this.Player.Items).filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
+        this.bert = Object.values(this.Player.Inventory.Bert).filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
+        this.mark = Object.values(this.Player.Inventory.Mark).filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
+        this.kunigunde = Object.values(this.Player.Inventory.Kunigunde).filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
+
+        if (!this.Player.Companions) {
+            this.$parent.find('.css-companions').hide();
+        } else {
+            this.$parent.find('.css-companions').show();
+        }
+
+        // Set other stuff
+        this.setCharacterSelection(0);
         this.refresh();
     }
 
-    refresh () {
-        var base = this.CompareBase;
-        var items = this.CompareItems;
-
-        if (base == null) {
-            if (this.backpack.length) {
-                this.$backpack.html(toGrid(this.Player, this.backpack));
-                this.$backpack.parent('[data-op="backpack"]').show();
+    refreshBlock ($el, items, nosell, filter) {
+        if (items && items.length) {
+            var array = filter ? items.filter(filter) : items;
+            if (array.length) {
+                $el.html(toGrid(this.Player, array, nosell)).parent('[data-op]').show();
             } else {
-                this.$backpack.parent('[data-op="backpack"]').hide();
+                $el.parent('[data-op]').hide();
             }
-
-            if (this.chest.length) {
-                this.$chest.html(toGrid(this.Player, this.chest));
-                this.$chest.parent('[data-op="chest"]').show();
-            } else {
-                this.$chest.parent('[data-op="chest"]').hide();
-            }
-
-            if (this.shops.length) {
-                this.$shops.html(toGrid(this.Player, this.shops, true));
-                this.$shops.parent('[data-op="shops"]').show();
-            } else {
-                this.$shops.parent('[data-op="shops"]').hide();
-            }
-
-            this.$parent.find('.css-inventory-item[data-eid]').each((i, e) => {
-                $(e).removeClass('selected');
-            });
         } else {
-            var backpack = this.backpack.filter(i => this.CompareBase && i.Type == this.CompareBase.Type && i.Class == this.CompareBase.Class);
-            if (backpack.length) {
-                this.$backpack.html(toGrid(this.Player, backpack));
-                this.$backpack.parent('[data-op="backpack"]').show();
-            } else {
-                this.$backpack.parent('[data-op="backpack"]').hide();
-            }
-
-            var chest = this.chest.filter(i => this.CompareBase && i.Type == this.CompareBase.Type && i.Class == this.CompareBase.Class);
-            if (chest.length) {
-                this.$chest.html(toGrid(this.Player, chest));
-                this.$chest.parent('[data-op="chest"]').show();
-            } else {
-                this.$chest.parent('[data-op="chest"]').hide();
-            }
-
-            var shops = this.shops.filter(i => this.CompareBase && i.Type == this.CompareBase.Type && i.Class == this.CompareBase.Class);
-            if (shops.length) {
-                this.$shops.html(toGrid(this.Player, shops, true));
-                this.$shops.parent('[data-op="shops"]').show();
-            } else {
-                this.$shops.parent('[data-op="shops"]').hide();
-            }
-
-            this.$parent.find('.css-inventory-item[data-id]').each((i, e) => {
-                var item = this.Items[$(e).attr('data-id')];
-                if (item.Type == base.Type && item.Class == base.Class) {
-                    $(e).addClass('clickable');
-                } else {
-                    $(e).addClass('css-inventory-hidden');
-                }
-
-                if (items.find(it => it.InventoryID == item.InventoryID)) {
-                    $(e).addClass('selected');
-                    $(e).find('.front').hide();
-                    $(e).find('.back').show().html(getComparisonElement(this.Basis, this.Player, base, item, this.NoGem, this.NoUpgrade));
-                } else {
-                    $(e).removeClass('selected');
-                    $(e).find('.front').show();
-                    $(e).find('.back').hide();
-                }
-            }).click((event) => {
-                if (this.CompareBase) {
-                    var id = $(event.currentTarget).attr('data-id');
-                    var item = this.Items[id];
-
-                    if (item.Type == this.CompareBase.Type && item.Class == this.CompareBase.Class) {
-                        var pos = this.CompareItems.findIndex(it => it.InventoryID == id);
-                        if (pos == -1) {
-                            this.CompareItems.push(this.Items[id]);
-                        } else {
-                            this.CompareItems.splice(pos, 1);
-                        }
-
-                        this.refresh();
-                    }
-                }
-            });;
-
-            this.$parent.find('.css-inventory-item[data-eid]').each((i, e) => {
-                var id = $(e).attr('data-eid');
-                if (base != null && base.InventoryID == id) {
-                    $(e).addClass('selected');
-                } else {
-                    $(e).removeClass('selected');
-                }
-            });
+            $el.parent('[data-op]').hide();
         }
     }
 
-    bindToClick (el) {
-        el.click((event) => {
-            if (this.CompareBase) {
-                var id = $(event.currentTarget).attr('data-id');
-                var item = this.Items[id];
+    setCharacterSelection (id) {
+        this.selectEquippedItem();
 
-                if (item.Type == this.CompareBase.Type && item.Class == this.CompareBase.Class) {
-                    var pos = this.CompareItems.findIndex(it => it.InventoryID == id);
-                    if (pos == -1) {
-                        this.CompareItems.push(this.Items[id]);
-                    } else {
-                        this.CompareItems.splice(pos, 1);
-                    }
-
-                    this.refresh();
-                }
+        this.Selected = id;
+        this.$parent.find('[data-op="swap"]').each((i, e) => {
+            if (id == $(e).attr('data-arg')) {
+                $(e).addClass('selected');
+            } else {
+                $(e).removeClass('selected');
             }
         });
+
+        this.Basis = getComparisonBase(this.Player, id);
+        this.$basis.html(getBasisElement(this.Basis));
+    }
+
+    isCorrectType (i) {
+        return this.CompareBase && i.Type == this.CompareBase.Type && i.Class == this.CompareBase.Class;
+    }
+
+    selectEquippedItem (id) {
+        this.CompareBase = this.CompareBase != null && this.CompareBase.InventoryID == id ? null : this.Items.find(i => i.InventoryID == id);
+        this.CompareItems = [];
+    }
+
+    refresh () {
+        // Character selection
+        if (this.Selected == 0) {
+            this.$equipped.html(toList(this.Player, this.player.filter(i => i.Slot != 2 || this.Player.Class == 4)));
+        } else if (this.Selected == 1) {
+            this.$equipped.html(toList(this.Player, this.bert));
+        } else if (this.Selected == 2) {
+            this.$equipped.html(toList(this.Player, this.mark));
+        } else if (this.Selected == 3) {
+            this.$equipped.html(toList(this.Player, this.kunigunde));
+        }
+
+        // Character click callback
+        this.$parent.find('[data-eid]').each((i, e) => {
+            var id = $(e).attr('data-eid');
+
+            if (this.CompareBase && id == this.CompareBase.InventoryID) {
+                $(e).addClass('selected');
+            }
+
+            if (this.Micro.has(id)) {
+                $(e).removeClass('micro');
+            }
+        }).click(event => {
+            this.selectEquippedItem($(event.currentTarget).attr('data-eid'));
+            this.refresh();
+        }).contextmenu(event => {
+            event.preventDefault();
+
+            var id = $(event.currentTarget).attr('data-eid');
+
+            if (this.Micro.has(id)) {
+                this.Micro.delete(id);
+            } else {
+                this.Micro.add(id);
+            }
+
+            this.refresh();
+        });
+
+        if (this.CompareBase == null) {
+            // Inventory refresh
+            this.refreshBlock(this.$backpack, this.backpack, false);
+            this.refreshBlock(this.$chest, this.chest, false);
+            this.refreshBlock(this.$shops, this.shops, true);
+            this.refreshBlock(this.$player, this.Selected == 0 ? null : this.player, false);
+            this.refreshBlock(this.$bert, this.Selected == 1 ? null : this.bert, false);
+            this.refreshBlock(this.$mark, this.Selected == 2 ? null : this.mark, false);
+            this.refreshBlock(this.$kunigunde, this.Selected == 3 ? null : this.kunigunde, false);
+        } else {
+            // Inventory refresh
+            this.refreshBlock(this.$backpack, this.backpack, false, i => this.isCorrectType(i));
+            this.refreshBlock(this.$chest, this.chest, false, i => this.isCorrectType(i));
+            this.refreshBlock(this.$shops, this.shops, true, i => this.isCorrectType(i));
+            this.refreshBlock(this.$player, this.Selected == 0 ? null : this.player, false, i => this.isCorrectType(i));
+            this.refreshBlock(this.$bert, this.Selected == 1 ? null : this.bert, false, i => this.isCorrectType(i));
+            this.refreshBlock(this.$mark, this.Selected == 2 ? null : this.mark, false, i => this.isCorrectType(i));
+            this.refreshBlock(this.$kunigunde, this.Selected == 3 ? null : this.kunigunde, false, i => this.isCorrectType(i));
+
+            var base = this.CompareBase;
+            this.$parent.find('[data-id]').each((i, e) => {
+                var $this = $(e);
+
+                var id = $this.attr('data-id');
+                var item = this.Items[id];
+
+                if (item.Type == base.Type && item.Class == base.Class) {
+                    $this.addClass('clickable');
+                }
+
+                if (this.CompareItems.find(it => it.InventoryID == item.InventoryID)) {
+                    $this.addClass('selected');
+                    $this.find('.front').hide();
+                    $this.find('.back').show().html(getComparisonElement(this.Basis, this.Player, this.Selected, base, item, this.NoGem, this.NoUpgrade));
+                }
+            }).click(event => {
+                var id = $(event.currentTarget).attr('data-id');
+                var pos = this.CompareItems.findIndex(i => i.InventoryID == id);
+                if (pos == -1) {
+                    this.CompareItems.push(this.Items[id]);
+                } else {
+                    this.CompareItems.splice(pos, 1);
+                }
+
+                this.refresh();
+            });
+        }
     }
 }
 

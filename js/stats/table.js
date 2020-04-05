@@ -102,6 +102,8 @@ const ReservedHeaders = {
             var reference = (header.difference && compare) ? compare.Achievements.Owned : '';
             if (reference) {
                 reference = CellGenerator.Difference(player.Achievements.Owned - reference, header.brackets);
+            } else {
+                reference = '';
             }
 
             var color = CompareEval.evaluate(player.Achievements.Owned, header.color);
@@ -118,6 +120,8 @@ const ReservedHeaders = {
             var reference = header.difference ? b : '';
             if (reference) {
                 reference = CellGenerator.Difference(a - b, header.brackets);
+            } else {
+                reference = '';
             }
 
             var color = CompareEval.evaluate(a, header.color);
@@ -141,6 +145,8 @@ const ReservedHeaders = {
             var reference = (header.difference && compare) ? (header.percentage ? (100 * compare.Book / SCRAPBOOK_COUNT) : compare.Book) : '';
             if (reference) {
                 reference = CellGenerator.Difference(value - reference, header.brackets, header.percentage ? (value - reference).toFixed(2) : (value - reference));
+            } else {
+                reference = '';
             }
 
             var displayValue = CompareEval.evaluate(value, header.value);
@@ -157,6 +163,8 @@ const ReservedHeaders = {
             var reference = header.difference ? b : '';
             if (reference) {
                 reference = CellGenerator.Difference(a - reference, header.brackets, header.percentage ? (a - reference).toFixed(2) : (a - reference));
+            } else {
+                reference = '';
             }
 
             var displayValue = CompareEval.evaluate(a, header.value);
@@ -176,6 +184,8 @@ const ReservedHeaders = {
             var reference = (header.difference && compare) ? compare.Fortress.Knights : '';
             if (reference) {
                 reference = CellGenerator.Difference(player.Fortress.Knights - reference, header.brackets);
+            } else {
+                reference = '';
             }
 
             var color = CompareEval.evaluate(player.Fortress.Knights, header.color);
@@ -199,6 +209,8 @@ const ReservedHeaders = {
             var reference = header.difference ? b : '';
             if (reference) {
                 reference = CellGenerator.Difference(a - b, header.brackets);
+            } else {
+                reference = '';
             }
 
             var color = CompareEval.evaluate(a, header.color);

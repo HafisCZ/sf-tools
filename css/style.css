@@ -550,6 +550,22 @@ h3.file-selected {
     border: 1px solid green;
 }
 
+.css-inventory-segment[data-op="player"] {
+    border: 1px solid yellow;
+}
+
+.css-inventory-segment[data-op="bert"] {
+    border: 1px solid lightblue;
+}
+
+.css-inventory-segment[data-op="mark"] {
+    border: 1px solid lightgreen;
+}
+
+.css-inventory-segment[data-op="kunigunde"] {
+    border: 1px solid lightyellow;
+}
+
 .css-inventory-segment[data-op="shops"] {
     border: 1px solid orange;
 }
@@ -590,7 +606,7 @@ h3.file-selected {
 
     color: white;
     position: relative;
-    font-size: 90%;
+    font-size: 85%;
 }
 
 .css-inventory-segment.css-basis-segment {
@@ -647,7 +663,7 @@ h3.file-selected {
 }
 
 .css-inventory-item-attribute {
-    margin-top: 1em;
+    margin-top: 0.5em;
     padding-left: .5em;
 
     display: flex;
@@ -656,7 +672,7 @@ h3.file-selected {
 }
 
 .css-inventory-comparison {
-    margin-top: 1em;
+    margin-top: .5em;
     padding-left: .5em;
 
     display: flex;
@@ -789,13 +805,13 @@ h3.file-selected {
     font-size: 95%;
 }
 
-.css-inventory-hidden {
-    opacity: 30%;
-}
-
 .css-inventory-sub.enchanted {
     color: magenta;
     font-size: 95%;
+}
+
+.css-mtop-1-5em {
+    margin-top: 1.5em;
 }
 
 .frozen {
@@ -813,4 +829,43 @@ h3.file-selected {
     100% {
         opacity: 80%
     }
+}
+
+.css-companions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 5em;
+    margin-bottom: 1.5em;
+}
+
+.css-companion {
+    width: 70px;
+}
+
+.css-options {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: 6.5em;
+}
+
+.css-options-left {
+    flex: 1 0 50%;
+}
+
+.css-options-right {
+    flex: 1 0 50%;
+
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-around;
+    align-items: center;
+}
+
+.selected[data-op="swap"] {
+    border: 1px magenta solid;
+    box-shadow: 0px 0px 2px 2px magenta;
 }

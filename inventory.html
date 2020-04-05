@@ -59,20 +59,13 @@
         <!-- InventoryView -->
         <div id="view-inventory" class="ui main fluid container hidden sf-container">
             <div class="ui grid">
-                <div class="sixteen wide right aligned column">
-                    <button class="ui basic inverted mini button" style="margin-right: 3em;" data-op="flip">Flip All</button>
-                    <div class="ui checkbox" data-op="nogem">
-                        <input type="checkbox">
-                        <label style="color: white;">Ignore gems</label>
-                    </div>
-                    <div class="ui checkbox" data-op="noupgrade" style="margin-left: 3em;">
-                        <input type="checkbox">
-                        <label style="color: white;">Ignore upgrades</label>
-                    </div>
-                </div>
-            </div>
-            <div class="ui grid">
                 <div class="three wide column">
+                    <div class="css-companions clickable">
+                        <img class="css-companion" data-op="swap" data-arg="0" src="res/portrait.png"></img>
+                        <img class="css-companion" data-op="swap" data-arg="1" src="res/portrait1.png"></img>
+                        <img class="css-companion" data-op="swap" data-arg="2" src="res/portrait2.png"></img>
+                        <img class="css-companion" data-op="swap" data-arg="3" src="res/portrait3.png"></img>
+                    </div>
                     <div class="css-inventory-segment" data-op="equipped">
                         <h3 class="ui header">Equipped items</h3>
                         <div class="ui one column grid" data-op="list">
@@ -93,6 +86,30 @@
 
                         </div>
                     </div>
+                    <div class="css-inventory-segment" data-op="player">
+                        <h3 class="ui header">Player</h3>
+                        <div class="ui four column grid" data-op="list">
+
+                        </div>
+                    </div>
+                    <div class="css-inventory-segment" data-op="bert">
+                        <h3 class="ui header">Bert</h3>
+                        <div class="ui four column grid" data-op="list">
+
+                        </div>
+                    </div>
+                    <div class="css-inventory-segment" data-op="mark">
+                        <h3 class="ui header">Mark</h3>
+                        <div class="ui four column grid" data-op="list">
+
+                        </div>
+                    </div>
+                    <div class="css-inventory-segment" data-op="kunigunde">
+                        <h3 class="ui header">Kunigunde</h3>
+                        <div class="ui four column grid" data-op="list">
+
+                        </div>
+                    </div>
                     <div class="css-inventory-segment" data-op="shops">
                         <h3 class="ui header">Weapon & Magic shop</h3>
                         <div class="ui four column grid" data-op="list">
@@ -100,7 +117,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="three wide column">
+                <div class="three wide right aligned column">
+                    <div class="css-options">
+                        <button class="css-options-left ui basic inverted mini button" data-op="flip">Flip All</button>
+                        <div class="css-options-right">
+                            <div class="ui checkbox" data-op="nogem">
+                                <input type="checkbox">
+                                <label style="color: white;">Ignore gems</label>
+                            </div>
+                            <div class="ui checkbox" data-op="noupgrade">
+                                <input type="checkbox">
+                                <label style="color: white;">Ignore upgrades</label>
+                            </div>
+                        </div>
+                    </div>
                     <div class="css-inventory-segment css-basis-segment">
                         <div class="ui one column grid">
                             <div class="row">

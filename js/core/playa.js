@@ -21,6 +21,7 @@ class SFItem {
         var upgradeLevel = dataType.byte();
         var socketPower = dataType.short();
 
+        this.Data = data.values || data;
         this.Slot = slot;
         this.GemType = socket >= 10 ? (1 + (socket % 10)) : 0;
         this.HasSocket = socket > 0;
@@ -67,6 +68,12 @@ class SFItem {
 
         this.RuneType = this.getRuneType();
         this.RuneValue = this.getRuneValue();
+    }
+
+    morph (type) {
+        var data = [ ... this.Data ];
+        data[5] = type;
+        return new SFItem(data);
     }
 
     getAttribute (id) {
@@ -686,7 +693,6 @@ class SFPlayer {
     }
 
     addCalculatedAttributes (attribute, pet) {
-        attribute.Total = attribute.Base + attribute.Bonus;
         attribute.Items = this.getEquipmentItemBonus(attribute);
         attribute.Gems = this.getEquipmentGemBonus(attribute);
         attribute.Equipment = attribute.Items + attribute.Gems;
@@ -697,6 +703,12 @@ class SFPlayer {
         attribute.NextCost = calculateAttributePrice(attribute.Base - this.Achievements.Owned * 5);
         attribute.TotalCost = calculateTotalAttributePrice(attribute.Base - this.Achievements.Owned * 5);
         attribute.PotionSize = this.getPotionSize(attribute);
+
+        if (!attribute.Bonus) {
+            attribute.Total = attribute.Base + attribute.Pet + attribute.Potion + attribute.Class + attribute.Equipment;
+        } else {
+            attribute.Total = attribute.Base + attribute.Bonus;
+        }
     }
 
     evaluateCommon () {
@@ -1183,7 +1195,10 @@ class SFOwnPlayer extends SFPlayer {
         this.Inventory = {
             Backpack: [],
             Chest: [],
-            Shop: []
+            Shop: [],
+            Bert: {},
+            Mark: {},
+            Kunigunde: {}
         };
         for (var i = 0; i < 5; i++) {
             var item = new SFItem(dataType.sub(12));
@@ -1362,9 +1377,6 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Extra.Normal[3] = Math.max(0, dataType.short() - 2);
         this.Dungeons.Extra.Shadow[3] = Math.max(0, dataType.short() - 2);
 
-        this.Dungeons.Extra.Normal[0] = Math.max(0, data.tower[150] - 2);
-        this.Dungeons.Extra.Shadow[0] = Math.max(0, data.tower[298] - 2);
-
         dataType = ComplexDataType.create(data.pets);
         dataType.assert(288, true);
 
@@ -1435,5 +1447,264 @@ class SFOwnPlayer extends SFPlayer {
                 Owned: date > 0
             };
         }
+
+        if (data.tower.length) {
+            this.Dungeons.Extra.Normal[0] = Math.max(0, data.tower[150] - 2);
+            this.Dungeons.Extra.Shadow[0] = Math.max(0, data.tower[298] - 2);
+
+            this.Companions = {
+                Bert: {},
+                Mark: {},
+                Kunigunde: {}
+            };
+
+            dataType = ComplexDataType.create(data.tower);
+            dataType.skip(3);
+            var bert = {
+                Level: dataType.long(),
+                Class: dataType.long()
+            };
+            dataType.skip(17);
+            bert.Armor = dataType.long();
+            bert.Damage = {
+                Min: dataType.long(),
+                Max: dataType.long()
+            };
+            bert.Damage.Avg = Math.trunc((bert.Damage.Min + bert.Damage.Max) / 2);
+            this.Inventory.Bert = {
+                Head: new SFItem(dataType.sub(12), 6),
+                Body: new SFItem(dataType.sub(12), 3),
+                Hand: new SFItem(dataType.sub(12), 5),
+                Feet: new SFItem(dataType.sub(12), 4),
+                Neck: new SFItem(dataType.sub(12), 8),
+                Belt: new SFItem(dataType.sub(12), 7),
+                Ring: new SFItem(dataType.sub(12), 9),
+                Misc: new SFItem(dataType.sub(12), 10),
+                Wpn1: new SFItem(dataType.sub(12), 1),
+                Wpn2: new SFItem(dataType.sub(12), 2)
+            };
+            dataType.skip(6);
+            var mark = {
+                Level: dataType.long(),
+                Class: dataType.long()
+            };
+            dataType.skip(17);
+            mark.Armor = dataType.long();
+            mark.Damage = {
+                Min: dataType.long(),
+                Max: dataType.long()
+            };
+            mark.Damage.Avg = Math.trunc((mark.Damage.Min + mark.Damage.Max) / 2);
+            this.Inventory.Mark = {
+                Head: new SFItem(dataType.sub(12), 6),
+                Body: new SFItem(dataType.sub(12), 3),
+                Hand: new SFItem(dataType.sub(12), 5),
+                Feet: new SFItem(dataType.sub(12), 4),
+                Neck: new SFItem(dataType.sub(12), 8),
+                Belt: new SFItem(dataType.sub(12), 7),
+                Ring: new SFItem(dataType.sub(12), 9),
+                Misc: new SFItem(dataType.sub(12), 10),
+                Wpn1: new SFItem(dataType.sub(12), 1),
+                Wpn2: new SFItem(dataType.sub(12), 2)
+            };
+            dataType.skip(6);
+            var kuni = {
+                Level: dataType.long(),
+                Class: dataType.long()
+            };
+            dataType.skip(17);
+            kuni.Armor = dataType.long();
+            kuni.Damage = {
+                Min: dataType.long(),
+                Max: dataType.long()
+            };
+            kuni.Damage.Avg = Math.trunc((kuni.Damage.Min + kuni.Damage.Max) / 2);
+            this.Inventory.Kunigunde = {
+                Head: new SFItem(dataType.sub(12), 6),
+                Body: new SFItem(dataType.sub(12), 3),
+                Hand: new SFItem(dataType.sub(12), 5),
+                Feet: new SFItem(dataType.sub(12), 4),
+                Neck: new SFItem(dataType.sub(12), 8),
+                Belt: new SFItem(dataType.sub(12), 7),
+                Ring: new SFItem(dataType.sub(12), 9),
+                Misc: new SFItem(dataType.sub(12), 10),
+                Wpn1: new SFItem(dataType.sub(12), 1),
+                Wpn2: new SFItem(dataType.sub(12), 2)
+            };
+
+            this.Companions.Bert = new SFCompanion(this, bert, this.Inventory.Bert);
+            this.Companions.Mark = new SFCompanion(this, mark, this.Inventory.Mark);
+            this.Companions.Kunigunde = new SFCompanion(this, kuni, this.Inventory.Kunigunde);
+        } else {
+            this.Dungeons.Extra.Normal[0] = 0;
+            this.Dungeons.Extra.Shadow[0] = 0;
+        }
+    }
+}
+
+class SFCompanion extends SFPlayer {
+    constructor (player, comp, items) {
+        super();
+
+        this.Level = comp.Level;
+        this.Class = comp.Class;
+        this.Armor = comp.Armor;
+        this.Damage = comp.Damage;
+        this.Potions = player.Potions;
+        this.Pets = player.Pets;
+        this.Dungeons = player.Dungeons;
+        this.Achievements = player.Achievements;
+
+        this.Items = items;
+        for (var [ key, item ] of Object.entries(this.Items)) {
+            if (this.Class == 2 && item.AttributeTypes[0] == 21) {
+                this.Items[key] = item.morph(23);
+            } else if (this.Class == 2 && item.AttributeTypes[0] == 1) {
+                this.Items[key] = item.morph(3);
+            };
+        }
+
+        this.Strength = {
+            Base: player.Strength.Base,
+            Type: 1
+        };
+
+        this.Dexterity = {
+            Base: player.Dexterity.Base,
+            Type: 2
+        };
+
+        this.Intelligence = {
+            Base: player.Intelligence.Base,
+            Type: 3
+        };
+
+        this.Constitution = {
+            Base: player.Constitution.Base,
+            Type: 4
+        };
+
+        this.Luck = {
+            Base: player.Luck.Base,
+            Type: 5
+        };
+
+        this.Primary = this.getPrimaryAttribute();
+
+        var pa = [ this.Strength, this.Dexterity, this.Intelligence ];
+        if (this.Primary.Type != player.Primary.Type) {
+            [ pa[this.Primary.Type - 1].Base, pa[player.Primary.Type - 1].Base ] = [ pa[player.Primary.Type - 1].Base, pa[this.Primary.Type - 1].Base ];
+        }
+
+        this.addCalculatedAttributes(this.Strength, player.Pets.Water);
+        this.addCalculatedAttributes(this.Dexterity, player.Pets.Light);
+        this.addCalculatedAttributes(this.Intelligence, player.Pets.Earth);
+        this.addCalculatedAttributes(this.Constitution, player.Pets.Shadow);
+        this.addCalculatedAttributes(this.Luck, player.Pets.Fire);
+
+        this.Runes = {
+            Gold: 0,
+            Chance: 0,
+            Quality: 0,
+            XP: 0,
+            Health: 0,
+            ResistanceFire: 0,
+            ResistanceCold: 0,
+            ResistanceLightning: 0,
+            Damage: 0,
+            DamageFire: 0,
+            DamageCold: 0,
+            DamageLightning: 0,
+            Resistance: 0
+        };
+
+        for (var item of Object.values(this.Items)) {
+            if (item.HasRune) {
+                var rune = item.AttributeTypes[2];
+                var value = item.Attributes[2];
+
+                if (rune == 31) {
+                    this.Runes.Gold += value;
+                    if (RUNE_VALUE.GOLD(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.GOLD(value);
+                    }
+                } else if (rune == 32) {
+                    this.Runes.Chance += value;
+                    if (RUNE_VALUE.EPIC_FIND(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.EPIC_FIND(value);
+                    }
+                } else if (rune == 33) {
+                    this.Runes.Quality += value;
+                    if (RUNE_VALUE.ITEM_QUALITY(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.ITEM_QUALITY(value);
+                    }
+                } else if (rune == 34) {
+                    this.Runes.XP += value;
+                    if (RUNE_VALUE.XP(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.XP(value);
+                    }
+                } else if (rune == 35) {
+                    this.Runes.Health += value;
+                    if (RUNE_VALUE.HEALTH(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.HEALTH(value);
+                    }
+                } else if (rune == 36) {
+                    this.Runes.ResistanceFire += value;
+                    this.Runes.Resistance += Math.trunc(value / 3);
+                    if (RUNE_VALUE.SINGLE_RESISTANCE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.SINGLE_RESISTANCE(value);
+                    }
+                } else if (rune == 37) {
+                    this.Runes.ResistanceCold += value;
+                    this.Runes.Resistance += Math.trunc(value / 3);
+                    if (RUNE_VALUE.SINGLE_RESISTANCE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.SINGLE_RESISTANCE(value);
+                    }
+                } else if (rune == 38) {
+                    this.Runes.ResistanceLightning += value;
+                    this.Runes.Resistance += Math.trunc(value / 3);
+                    if (RUNE_VALUE.SINGLE_RESISTANCE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.SINGLE_RESISTANCE(value);
+                    }
+                } else if (rune == 39) {
+                    this.Runes.ResistanceFire += value;
+                    this.Runes.ResistanceCold += value;
+                    this.Runes.ResistanceLightning += value;
+                    this.Runes.Resistance += value;
+                } else if (rune == 40) {
+                    this.Runes.DamageFire += value;
+                    this.Runes.Damage += value;
+                    if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.ELEMENTAL_DAMAGE(value);
+                    }
+                } else if (rune == 41) {
+                    this.Runes.DamageCold += value;
+                    this.Runes.Damage += value;
+                    if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.ELEMENTAL_DAMAGE(value);
+                    }
+                } else if (rune == 42) {
+                    this.Runes.DamageLightning += value;
+                    this.Runes.Damage += value;
+                    if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
+                        this.Runes.Runes = RUNE_VALUE.ELEMENTAL_DAMAGE(value);
+                    }
+                }
+            }
+        }
+
+        this.Runes.Gold = Math.min(50, this.Runes.Gold);
+        this.Runes.Chance = Math.min(50, this.Runes.Chance);
+        this.Runes.Quality = Math.min(5, this.Runes.Quality);
+        this.Runes.XP = Math.min(10, this.Runes.XP);
+        this.Runes.Health = Math.min(15, this.Runes.Health);
+        this.Runes.Resistance = Math.min(75, this.Runes.Resistance);
+        this.Runes.ResistanceFire = Math.min(75, this.Runes.ResistanceFire);
+        this.Runes.ResistanceCold = Math.min(75, this.Runes.ResistanceCold);
+        this.Runes.ResistanceLightning = Math.min(75, this.Runes.ResistanceLightning);
+        this.Runes.Damage = Math.min(60, this.Runes.Damage);
+        this.Runes.DamageFire = Math.min(60, this.Runes.DamageFire);
+        this.Runes.DamageCold = Math.min(60, this.Runes.DamageCold);
+        this.Runes.DamageLightning = Math.min(60, this.Runes.DamageLightning);
     }
 }
