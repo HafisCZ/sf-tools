@@ -482,8 +482,7 @@ const Storage = new (class {
         }
     }
 
-    import (content) {
-        var json = JSON.parse(content);
+    import (json) {
         var files = [];
 
         for (var file of json) {
@@ -514,6 +513,14 @@ const Storage = new (class {
 
     add (content, timestamp) {
         var json = JSON.parse(content);
+        if (Array.isArray(json)) {
+            this.import(json);
+        } else {
+            this.importSingle(json, timestamp);
+        }
+    }
+
+    importSingle (json, timestamp) {
         var raws = [];
         for (var [key, val, url, ts] of filterPlayaJSON(json)) {
             if (ts) {

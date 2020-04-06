@@ -499,6 +499,14 @@ h3.file-selected {
     width: 20em;
 }
 
+.css-temporary-navi {
+    color: orange;
+    position: absolute;
+    font-size: 50%;
+    top: 28%;
+    left: 26%;
+}
+
 .css-devmode {
     color: #6ed1ff;
     position: absolute;
@@ -810,8 +818,16 @@ h3.file-selected {
     font-size: 95%;
 }
 
-.css-mtop-1-5em {
-    margin-top: 1.5em;
+.sf-margin.top-05 {
+    margin-top: 0.5em;
+}
+
+.sf-margin.top-10 {
+    margin-top: 1.0em;
+}
+
+.sf-margin.top-20 {
+    margin-top: 2.0em;
 }
 
 .frozen {

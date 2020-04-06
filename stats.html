@@ -82,32 +82,19 @@
                         <br>
                         <div>
                             <label class="fluid ui secondary button" for="button-upload">
-                                <i class="small upload icon"></i> Upload
+                                <i class="small upload icon"></i> Upload / Import
                             </label>
                             <input type="file" multiple data-op="upload" class="hidden" id="button-upload">
                         </div>
-                        <br>
-                        <div class="ui two buttons">
-                            <label class="ui left attached secondary basic button text-center" for="button-import">
-                                 <i class="small upload icon"></i> Import
-                            </label>
-                            <input type="file" data-op="import" id="button-import" class="hidden">
-                            <div class="ui right attached secondary basic button text-center" data-op="export">
-                                 <i class="small download icon"></i> Export
-                            </div>
-                        </div>
-                        <br><br>
-                        <div>
-                            <label class="fluid ui button" data-op="merge">
-                                <i class="small clone outline icon"></i> Merge selected
-                            </label>
-                        </div>
-                        <br/>
-                        <div>
-                            <label class="fluid ui button" data-op="export-partial">
-                                <i class="small download icon icon"></i> Export selected
-                            </label>
-                        </div>
+                        <label class="fluid ui button sf-margin top-20" data-op="merge">
+                            <i class="small clone outline icon"></i> Merge selected
+                        </label>
+                        <label class="fluid ui secondary basic button sf-margin top-20" data-op="export">
+                            <i class="small download icon icon"></i> Export all
+                        </label>
+                        <label class="fluid ui button sf-margin top-05" data-op="export-partial">
+                            <i class="small download icon icon"></i> Export selected
+                        </label>
                     </div>
                 </div>
             </div>

@@ -1185,22 +1185,6 @@ class FilesView extends View {
 
         this.$list = this.$parent.find('[data-op="list"]');
 
-        // Import archive file
-        this.$parent.find('[data-op="import"]').change((event) => {
-            Array.from(event.target.files).forEach(file => {
-                var reader = new FileReader();
-                reader.readAsText(file, 'UTF-8');
-                reader.onload = e => {
-                    try {
-                        Storage.import(e.target.result);
-                        this.show();
-                    } catch (exception) {
-                        UI.Exception.alert('A problem occured while trying to import this file.<br><br>' + exception);
-                    }
-                }
-            });
-        });
-
         // Export archive file
         this.$parent.find('[data-op="export"]').click(() => {
             Storage.export();
