@@ -700,8 +700,8 @@ class SFPlayer {
         attribute.Class = this.getClassBonus(attribute);
         attribute.Potion = this.getPotionBonus(attribute);
         attribute.Pet =  this.getPetBonus(attribute, pet);
-        attribute.NextCost = calculateAttributePrice(attribute.Base - this.Achievements.Owned * 5);
-        attribute.TotalCost = calculateTotalAttributePrice(attribute.Base - this.Achievements.Owned * 5);
+        attribute.NextCost = calculateAttributePrice(attribute.Purchased ? attribute.Purchased : (attribute.Base - this.Achievements.Owned * 5));
+        attribute.TotalCost = calculateTotalAttributePrice(attribute.Purchased ? attribute.Purchased : (attribute.Base - this.Achievements.Owned * 5));
         attribute.PotionSize = this.getPotionSize(attribute);
 
         if (!attribute.Bonus) {
@@ -1172,7 +1172,11 @@ class SFOwnPlayer extends SFPlayer {
             Base: dataType.back(5).long(),
             Bonus: dataType.skip(4).long()
         };
-        dataType.skip(5); // skip
+        this.Strength.Purchased = dataType.long();
+        this.Dexterity.Purchased = dataType.long();
+        this.Intelligence.Purchased = dataType.long();
+        this.Constitution.Purchased = dataType.long();
+        this.Luck.Purchased = dataType.long();
         this.Action = {
             Status: dataType.short()
         };
