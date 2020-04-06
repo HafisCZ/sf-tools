@@ -675,6 +675,20 @@
 
                     var blocks = Math.ceil(players.length / blockSize);
                     var results = [];
+                    var ladder = [];
+
+                    if (mode == 2) {
+                        logLine(`GENERATING LADDER`);
+
+                        ladder = [ ... players ];
+                        new FightSimulator().simulateMultiple(ladder, ladder, 100);
+
+                        ladder.sort((a, b) => a.score.avg - b.score.avg);
+
+                        for (var i = 0; i < ladder.length; i++) {
+                            ladder[i].score = null;
+                        }
+                    }
 
                     logLine(`BLOCK SIZE: <b>${ blockSize }</b>`);
                     logLine(`ITERATIONS: <b><b>${ iterations }</b>`);
@@ -703,15 +717,23 @@
 
                         if (mode == 0) {
                             worker.postMessage({
+                                mode: 0,
                                 player: block,
                                 players: players,
                                 iterations: iterations
                             });
-                        } else {
+                        } else if (mode == 1) {
                             worker.postMessage({
-                                single: true,
+                                mode: 1,
                                 player: players.find(p => p.index == yourself),
                                 players: block,
+                                iterations: iterations
+                            });
+                        } else {
+                            worker.postMessage({
+                                mode: 2,
+                                player: block,
+                                players: ladder,
                                 iterations: iterations
                             });
                         }
@@ -851,6 +873,24 @@
                     }
                 }
 
+                if (mode > 0) {
+                    $('[data-sort="min"]').hide();
+                    if (mode == 1) {
+                        $('[data-sort="max"]').hide();
+                    } else {
+                        $('[data-sort="max"]').show();
+                    }
+                } else {
+                    $('[data-sort="min"]').show();
+                    $('[data-sort="max"]').show();
+                }
+
+                if (mode == 2) {
+                    $('[data-sort="max"]').text('Ladder');
+                } else {
+                    $('[data-sort="max"]').text('Max %');
+                }
+
                 for (var i = 0; i < players.length; i++) {
                     var player = players[i].player;
                     var score = players[i].score;
@@ -869,13 +909,13 @@
                                 <b>${ player.Name }</b>
                             </div>
                             <div class="two wide text-center column">
-                                ${ score ? `${ score.avg.toFixed(2) }%` : '' }
+                                ${ score ? (mode == 2 ? `${ score.avg } pt` : `${ score.avg.toFixed(2) }%`) : '' }
                             </div>
                             <div class="two wide text-center column">
-                                ${ score ? `${ score.min.toFixed(2) }%` : '' }
+                                ${ score && score.min != undefined ? `${ score.min.toFixed(2) }%` : '' }
                             </div>
                             <div class="two wide text-center column">
-                                ${ score ? `${ score.max.toFixed(2) }%` : '' }
+                                ${ score ? (mode == 2 ? `${ score.max }` : `${ score.max.toFixed(2) }%`) : '' }
                             </div>
                             <div class="one wide text-center column">
                                 ${ mode == 1 && index != yourself ? `<i class="user circle icon glow-y" data-index-crown="${ i }"></i>` : ''}

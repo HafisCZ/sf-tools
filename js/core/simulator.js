@@ -386,15 +386,22 @@ self.addEventListener('message', function (message) {
     // Sent vars
     var player = message.data.player;
     var players = message.data.players;
-    var single = message.data.single;
+    var mode = message.data.mode;
     var iterations = message.data.iterations || 100000;
 
     // Sim type decision
-    if (single) {
+    if (mode == 1) {
         new FightSimulator().simulateSingle(player, players, iterations);
         self.postMessage({
             command: 'finished',
             results: players,
+            time: Date.now() - ts
+        });
+    } else if (mode == 2) {
+        new FightSimulator().simulateTournament(player, players, iterations);
+        self.postMessage({
+            command: 'finished',
+            results: player,
             time: Date.now() - ts
         });
     } else {
@@ -408,6 +415,11 @@ self.addEventListener('message', function (message) {
 
     self.close();
 });
+
+function shuffle (arr) {
+    arr.sort(() => Math.random() - 0.5);
+    return arr;
+}
 
 class FightSimulator {
     // Fight group
@@ -497,6 +509,30 @@ class FightSimulator {
         }
     }
 
+    // Tournament only
+    simulateTournament (player, players, iterations) {
+        for (var i = 0; i < player.length; i++) {
+            player[i].score = {
+                avg: 0,
+                max: players.findIndex(p => p.index == player[i].index)
+            };
+
+            for (var j = 0; j < players.length; j++) {
+                var s = 0;
+                this.cache(player[i].player, players[j].player);
+                for (var k = 0; k < iterations; k++) {
+                    s += this.fight();
+                }
+
+                if (s > iterations / 2) {
+                    player[i].score.avg++;
+                } else {
+                    break;
+                }
+            }
+        }
+    }
+
     // Fight 1v1s only
     simulateSingle (player, players, iterations = 100000) {
         var scores = [];
@@ -508,9 +544,7 @@ class FightSimulator {
             }
 
             players[i].score = {
-                avg: 100 * score / iterations,
-                min: 100 * score / iterations,
-                max: 100 * score / iterations
+                avg: 100 * score / iterations
             }
         }
     }
