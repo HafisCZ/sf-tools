@@ -420,6 +420,7 @@
                                             <div class="menu">
                                                 <div class="item" data-value="0">All vs All</div>
                                                 <div class="item" data-value="1">One vs All</div>
+                                                <div class="item" data-value="2">Tournament</div>
                                             </div>
                                         </div>
                                     </div>
@@ -706,7 +707,7 @@
                                 players: players,
                                 iterations: iterations
                             });
-                        } else{
+                        } else {
                             worker.postMessage({
                                 single: true,
                                 player: players.find(p => p.index == yourself),

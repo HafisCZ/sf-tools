@@ -1770,21 +1770,39 @@ class Settings {
                     scope2[data.arg] = players.map(p => p.compare);
                 }
 
-                data.value = data.ast.eval(players[0].player, this, scope);
-                if (isNaN(data.value)) {
-                    data.value = undefined;
-                }
+                if (tabletype == TableType.Group) {
+                    data.value = data.ast.eval(players[0].player, this, scope);
+                    if (isNaN(data.value)) {
+                        data.value = undefined;
+                    }
 
-                var val = data.ast.eval(players[0].compare, this, scope2);
-                if (isNaN(val)) {
-                    val = undefined;
-                }
+                    var val = data.ast.eval(players[0].compare, this, scope2);
+                    if (isNaN(val)) {
+                        val = undefined;
+                    }
 
-                this.cvars[name] = {
-                    value: val,
-                    ast: data.ast,
-                    arg: data.arg
-                };
+                    this.cvars[name] = {
+                        value: val,
+                        ast: data.ast,
+                        arg: data.arg
+                    };
+                } else {
+                    data.value = data.ast.eval(null, this, scope);
+                    if (isNaN(data.value)) {
+                        data.value = undefined;
+                    }
+
+                    var val = data.ast.eval(null, this, scope2);
+                    if (isNaN(val)) {
+                        val = undefined;
+                    }
+
+                    this.cvars[name] = {
+                        value: val,
+                        ast: data.ast,
+                        arg: data.arg
+                    };
+                }
             }
         }
 
