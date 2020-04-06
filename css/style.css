@@ -499,14 +499,6 @@ h3.file-selected {
     width: 20em;
 }
 
-.css-temporary-navi {
-    color: orange;
-    position: absolute;
-    font-size: 50%;
-    top: 28%;
-    left: 26%;
-}
-
 .css-devmode {
     color: #6ed1ff;
     position: absolute;

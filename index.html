@@ -113,6 +113,19 @@
                 text-align: right;
                 padding-right: 1em;
             }
+
+            .dvholder {
+                position: relative;
+            }
+
+            .dvchild {
+                position: absolute;
+                left: 0;
+                top: -1.5em;
+
+                color: orange;
+                font-size: 50%;
+            }
         </style>
     </head>
     <body>
@@ -138,8 +151,7 @@
                                 Create temporary instance of Statistics
                             </div>
                             <div class="dvheader singleline">
-                                Statistics
-                                <span class="css-temporary-navi">Temporary</span>
+                                <span class="dvholder">Playground<span class="dvchild">Temporary</span></span>
                             </div>
                         </div>
                     </a>
