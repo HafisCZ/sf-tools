@@ -599,7 +599,7 @@
                 return a;
             }
 
-            $('#sim-editor').on('paste', function (event) {
+            $(document.body).on('paste', function (event) {
                 try {
                     var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
                     if (Array.isArray(data)) {
