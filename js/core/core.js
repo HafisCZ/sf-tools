@@ -423,6 +423,11 @@ const UpdateService = {
             }
         }
 
+        if (file.offset == undefined) {
+            file.offset = DEFAULT_OFFSET;
+            updated = true;
+        }
+
         return updated;
     },
     mergeInto : function (a, b) {
