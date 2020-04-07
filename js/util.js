@@ -60,10 +60,6 @@ function calculateTotalAttributePrice (attribute) {
     return price;
 }
 
-function correctDate (prefix) {
-    return -60 * 60 * 1000;
-}
-
 // Set toggle button to enabled state
 function setEnabled (element) {
     element.text('Enabled').addClass('active');
@@ -122,7 +118,7 @@ function * filterPlayaJSON (o, tt = [], a = []) {
         if (i == 'url') {
             a[0] = o[i];
         } else if (i == 'startedDateTime' && !a[1]) {
-            a[1] = Date.parse(o[i]);
+            a[1] = new Date(o[i]);
         } else {
             const t = tt.concat(i);
             yield [i, o[i], a[0], a[1]];

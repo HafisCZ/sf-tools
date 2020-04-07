@@ -99,6 +99,8 @@ const FileDatabase = new (class {
 
 })();
 
+const DEFAULT_OFFSET = -60 * 60 * 1000;
+
 // Database
 const Database = new (class {
 
@@ -154,6 +156,7 @@ const Database = new (class {
                 }
 
                 data.timestamp = file.timestamp;
+                data.offset = file.offset || DEFAULT_OFFSET;
                 let group = new SFGroup(data);
                 group.MembersPresent = 0;
 
@@ -169,6 +172,7 @@ const Database = new (class {
                 }
 
                 data.timestamp = file.timestamp;
+                data.offset = file.offset || DEFAULT_OFFSET;
                 let player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
 
                 let groupID = player.hasGuild() ? Object.keys(tempGroups).find(id => {
@@ -520,11 +524,12 @@ const Storage = new (class {
         }
     }
 
-    importSingle (json, timestamp) {
+    importSingle (json, timestamp, offset = DEFAULT_OFFSET) {
         var raws = [];
         for (var [key, val, url, ts] of filterPlayaJSON(json)) {
             if (ts) {
-                timestamp = ts;
+                timestamp = ts.getTime();
+                offset = ts.getTimezoneOffset() * 60 * 1000;
             }
 
             if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername'))) {
@@ -539,6 +544,7 @@ const Storage = new (class {
             groups: [],
             players: [],
             timestamp: timestamp,
+            offset: offset,
             version: 0
         }
 

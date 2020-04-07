@@ -889,7 +889,7 @@ class SFOtherPlayer extends SFPlayer {
         dataType.assert(256, true);
 
         this.ID = dataType.long();
-        this.LastOnline = dataType.long() * 1000 + correctDate(data.prefix);
+        this.LastOnline = dataType.long() * 1000 + data.offset;
         this.Level = dataType.short();
         dataType.clear(); // skip
         this.XP = dataType.long();
@@ -957,7 +957,7 @@ class SFOtherPlayer extends SFPlayer {
         dataType.short(); // Skip
         this.Action.Index = dataType.short();
         dataType.short(); // Skip
-        this.Action.Finish = dataType.long() * 1000 + correctDate(data.prefix);
+        this.Action.Finish = dataType.long() * 1000 + data.offset;
         this.Items = {
             Head: new SFItem(dataType.sub(12), 6),
             Body: new SFItem(dataType.sub(12), 3),
@@ -985,7 +985,7 @@ class SFOtherPlayer extends SFPlayer {
         this.Book = Math.max(0, dataType.long() - 10000);
         this.Dungeons.Normal[10] = Math.max(0, dataType.long() - 2);
         this.Dungeons.Normal[11] = Math.max(0, dataType.long() - 2);
-        this.Group.Joined = dataType.long() * 1000 + correctDate(data.prefix);
+        this.Group.Joined = dataType.long() * 1000 + data.offset;
         this.Flags = {
             Bits: dataType.long()
         };
@@ -1046,7 +1046,7 @@ class SFOtherPlayer extends SFPlayer {
         dataType.skip(14); // skip
         this.Fortress.Upgrade = {
             Building: dataType.long() - 1,
-            Finish: dataType.long() * 1000 + correctDate(data.prefix)
+            Finish: dataType.long() * 1000 + data.offset
         }
         this.Fortress.Upgrades = dataType.skip(1).long();
         this.Fortress.Honor = dataType.long();
@@ -1105,7 +1105,7 @@ class SFOwnPlayer extends SFPlayer {
 
         dataType.skip(1); // skip
         this.ID = dataType.long();
-        this.LastOnline = dataType.long() * 1000 + correctDate(data.prefix);
+        this.LastOnline = dataType.long() * 1000 + data.offset;
         dataType.skip(4); // skip
         this.Level = dataType.short();
         dataType.clear();
@@ -1183,7 +1183,7 @@ class SFOwnPlayer extends SFPlayer {
         dataType.short(); // Skip
         this.Action.Index = dataType.short();
         dataType.short(); // Skip
-        this.Action.Finish = dataType.long() * 1000 + correctDate(data.prefix);
+        this.Action.Finish = dataType.long() * 1000 + data.offset;
         this.Items = {
             Head: new SFItem(dataType.sub(12), 6),
             Body: new SFItem(dataType.sub(12), 3),
@@ -1248,7 +1248,7 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(2); // skip
         this.Dungeons.Normal[10] = Math.max(0, dataType.long() - 2);
         this.Dungeons.Normal[11] = Math.max(0, dataType.long() - 2);
-        this.Group.Joined = dataType.long() * 1000 + correctDate(data.prefix);
+        this.Group.Joined = dataType.long() * 1000 + data.offset;
         this.Flags = {
             Bits: dataType.long()
         };
@@ -1280,15 +1280,15 @@ class SFOwnPlayer extends SFPlayer {
         }
         this.Potions = [{
             Type: getPotionType(dataType.long()),
-            Expire: dataType.skip(2).long() * 1000 + correctDate(data.prefix),
+            Expire: dataType.skip(2).long() * 1000 + data.offset,
             Size: dataType.skip(2).long()
         }, {
             Type: getPotionType(dataType.back(6).long()),
-            Expire: dataType.skip(2).long() * 1000 + correctDate(data.prefix),
+            Expire: dataType.skip(2).long() * 1000 + data.offset,
             Size: dataType.skip(2).long()
         }, {
             Type: getPotionType(dataType.back(6).long()),
-            Expire: dataType.skip(2).long() * 1000 + correctDate(data.prefix),
+            Expire: dataType.skip(2).long() * 1000 + data.offset,
             Size: dataType.skip(2).long()
         }];
         this.Potions.sort((a, b) => b.Size - a.Size);
@@ -1333,13 +1333,13 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(7); // skip
         this.Fortress.Upgrade = {
             Building: dataType.long() - 1,
-            Finish: dataType.long() * 1000 + correctDate(data.prefix)
+            Finish: dataType.long() * 1000 + data.offset
         }
         this.Fortress.Upgrades = dataType.skip(8).long();
         this.Fortress.Honor = dataType.long();
         this.Fortress.Rank = dataType.long();
         dataType.skip(7); // skip
-        if (dataType.long() * 1000 + correctDate(data.prefix) < data.timestamp) {
+        if (dataType.long() * 1000 + data.offset < data.timestamp) {
             this.Fortress.RaidWood += Math.trunc(this.Fortress.Wood / 10);
             this.Fortress.RaidStone += Math.trunc(this.Fortress.Stone / 10);
         }
@@ -1431,7 +1431,7 @@ class SFOwnPlayer extends SFPlayer {
         for (var i = 0; i < 9; i++) {
             var index = dataType.long();
             var picIndex = dataType.long();
-            var date = dataType.long() * 1000 + correctDate(data.prefix);
+            var date = dataType.long() * 1000 + data.offset;
 
             var type = picIndex % 1000;
 
