@@ -70,7 +70,7 @@ class ResourcesView extends View {
         this.$kunigunde = this.$parent.find('[data-op="kunigunde"] [data-op="list"]');
 
         // Summary
-        this.$basis = this.$parent.find('[data-op="summary"]');
+        this.$summary = this.$parent.find('[data-op="summary"]');
     }
 
     show (id) {
@@ -85,24 +85,130 @@ class ResourcesView extends View {
         this.Player = Database.Players[id].Latest;
         this.Items = [];
 
-        // Upgrades
-        this.Upgrades = {};
+        // Dismantling
         this.Dismantles = [];
 
         // Items
         this.inventory = [
-            ... mapArray(this.Player.Inventory.Backpack, this.Items),
-            ... mapArray(this.Player.Inventory.Chest, this.Items)
+            ... mapArray(this.Player.Inventory.Backpack, this.Items, true),
+            ... mapArray(this.Player.Inventory.Chest, this.Items, true)
         ];
 
-        this.player = mapArray(this.Player.Items, this.Items);
-        this.bert = mapArray(this.Player.Inventory.Bert, this.Items);
-        this.mark = mapArray(this.Player.Inventory.Mark, this.Items);
-        this.kunigunde = mapArray(this.Player.Inventory.Kunigunde, this.Items);
+        this.player = mapArray(this.Player.Items, this.Items, true);
+        this.bert = mapArray(this.Player.Inventory.Bert, this.Items, true);
+        this.mark = mapArray(this.Player.Inventory.Mark, this.Items, true);
+        this.kunigunde = mapArray(this.Player.Inventory.Kunigunde, this.Items, true);
+
+        for (var item of Object.values(this.Items)) {
+            item.BaseUpgrades = item.Upgrades;
+        }
+
+        this.refresh();
+    }
+
+    refresh () {
+        // Calculate prices
+        var dismantle = this.Dismantles.reduce((total, item) => {
+            return {
+                Metal: total.Metal + item.DismantlePrice.Metal,
+                Crystal: total.Crystal + item.DismantlePrice.Crystal
+            };
+        }, { Metal: 0, Crystal: 0 });
+
+        var sell = this.Dismantles.reduce((total, item) => {
+            return {
+                Metal: total.Metal + item.SellPrice.Metal,
+                Crystal: total.Crystal + item.SellPrice.Crystal
+            };
+        }, { Metal: 0, Crystal: 0, Gold: 0 });
+
+        // Current values
+        this.Current = {
+            Metal: this.Player.Metal,
+            Crystal: this.Player.Crystals
+        };
+
+        // Spent values
+        this.Used = {
+            Metal: 0,
+            Crystal: 0
+        };
+
+        for (var item of Object.values(this.Items)) {
+            var cost = item.Original.getBlacksmithUpgradePriceRange(item.Upgrades);
+            this.Used.Metal += cost.Metal;
+            this.Used.Crystal += cost.Crystal;
+        }
+
+        this.Ready = {
+            Metal: this.Current.Metal + dismantle.Metal - this.Used.Metal,
+            Crystal: this.Current.Crystal + dismantle.Crystal - this.Used.Crystal
+        };
+
+        // Summary
+        this.$summary.html(`
+            <div class="item sf-margin bottom-05">
+                <b>Current resources</b>
+            </div>
+            <div class="item">
+                <div class="dsub">${ formatAsSpacedNumber(this.Current.Metal) }</div>
+                <div class="dsub"><img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
+            </div>
+            <div class="item">
+                <div class="dsub">${ formatAsSpacedNumber(this.Current.Crystal) }</div>
+                <div class="dsub"><img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
+            </div>
+            <div class="item sf-margin bottom-05 top-20">
+                <b>Sold resources</b>
+            </div>
+            <div class="item">
+                <div class="dsub">${ formatAsSpacedNumber(sell.Metal) }</div>
+                <div class="dsub"><img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
+            </div>
+            <div class="item">
+                <div class="dsub">${ formatAsSpacedNumber(sell.Crystal) }</div>
+                <div class="dsub"><img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
+            </div>
+            <div class="item sf-margin bottom-05 top-20">
+                <b>Dismantled resources</b>
+            </div>
+            <div class="item">
+                <div class="dsub">${ formatAsSpacedNumber(dismantle.Metal) }</div>
+                <div class="dsub"><img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
+            </div>
+            <div class="item">
+                <div class="dsub">${ formatAsSpacedNumber(dismantle.Crystal) }</div>
+                <div class="dsub"><img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
+            </div>
+            <div class="item sf-margin bottom-05 top-20">
+
+            </div>
+            <div class="item sf-margin bottom-05 top-20">
+                <b>Spendable resources</b>
+            </div>
+            <div class="item ${ this.Ready.Metal < 0 ? 'red' : '' }">
+                <div class="dsub">${ formatAsSpacedNumber(this.Ready.Metal) }</div>
+                <div class="dsub"><img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
+            </div>
+            <div class="item ${ this.Ready.Crystal < 0 ? 'red' : '' }">
+                <div class="dsub">${ formatAsSpacedNumber(this.Ready.Crystal) }</div>
+                <div class="dsub"><img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
+            </div>
+            <div class="item sf-margin bottom-05 top-20">
+                <b>Used resources</b>
+            </div>
+            <div class="item">
+                <div class="dsub">${ formatAsSpacedNumber(this.Used.Metal) }</div>
+                <div class="dsub"><img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
+            </div>
+            <div class="item">
+                <div class="dsub">${ formatAsSpacedNumber(this.Used.Crystal) }</div>
+                <div class="dsub"><img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img></div>
+            </div>
+        `);
 
         // Blocks
         this.refreshBlock(this.$inventory, this.inventory);
-
         this.refreshBlock(this.$player, this.player);
         this.refreshBlock(this.$bert, this.bert);
         this.refreshBlock(this.$mark, this.mark);
@@ -120,42 +226,53 @@ class ResourcesView extends View {
             this.refresh();
         });
 
-        this.refresh();
-    }
-
-    refresh () {
-        this.$parent.find('[data-id]').each((i, e) => {
-            var $this = $(e);
-
-            var id = $this.attr('data-id');
-            var item = this.Items[id];
-
-            if (this.Dismantles.find(it => it.InventoryID == item.InventoryID)) {
-                $this.addClass('selected');
-            } else {
-                $this.removeClass('selected');
+        this.$parent.find('[data-op="add"]').click(event => {
+            var id = $(event.currentTarget).attr('data-id');
+            if (this.Items[id].Upgrades < 20) {
+                this.Items[id].upgradeTo(this.Items[id].Upgrades + 1);
             }
+
+            this.refresh();
         });
 
-        var dismantleTotal = this.Dismantles.reduce((total, item) => {
-            return {
-                Metal: total.Metal + item.DismantlePrice.Metal,
-                Crystal: total.Crystal + item.DismantlePrice.Crystal
-            };
-        }, { Metal: 0, Crystal: 0 });
+        this.$parent.find('[data-op="sub"]').click(event => {
+            var id = $(event.currentTarget).attr('data-id');
+            if (this.Items[id].Upgrades > this.Items[id].BaseUpgrades) {
+                this.Items[id].upgradeTo(this.Items[id].Upgrades - 1);
+            }
 
+            this.refresh();
+        });
 
+        this.$parent.find('[data-op="ladd"]').click(event => {
+            var id = $(event.currentTarget).attr('data-id');
+            if (this.Items[id].Upgrades < 20) {
+                this.Items[id].upgradeTo(20);
+            }
+
+            this.refresh();
+        });
+
+        this.$parent.find('[data-op="lsub"]').click(event => {
+            var id = $(event.currentTarget).attr('data-id');
+            if (this.Items[id].Upgrades > this.Items[id].BaseUpgrades) {
+                this.Items[id].upgradeTo(this.Items[id].BaseUpgrades);
+            }
+
+            this.refresh();
+        });
     }
 
     getItemElement (item) {
+        var sell = item.getBlacksmithPrice();
+        var dismantle = item.getDismantleReward();
         var upgradePrice = item.getBlacksmithUpgradePrice();
         var upgradeRange = item.getBlacksmithUpgradePriceRange();
 
-        var double = item.Type == 1 && (this.Player.Class != 1 || this.Player.Class != 4);
-        var toileted = item.SellPrice.Gold == 0 && item.SellPrice.Metal == 0 && item.SellPrice.Crystal == 0;
+        var toileted = sell.Metal == 0 && sell.Crystal == 0;
 
         return `
-            <div class="css-resource-item" data-id="${ item.InventoryID }">
+            <div class="css-resource-item ${ this.Dismantles.find(it => it.InventoryID == item.InventoryID) ? 'selected' : '' }" data-id="${ item.InventoryID }">
                 <div class="css-inventory-item-header clickable">
                     ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }
                     ${ toileted ? '<span class="css-inventory-sub washed">Washed</span> ' : '' }
@@ -164,10 +281,26 @@ class ResourcesView extends View {
                     ${ item.HasRune ? ` <span class="css-inventory-sub runed">${ getNiceRuneText(item.RuneType) }</span>` : '' }
                 </div>
                 <div class="css-resource-item-body">
-                    ${ toileted ? '' : getLocalizedValue('Sell:', item.SellPrice.Gold, item.SellPrice.Metal, item.SellPrice.Crystal) }
-                    ${ item.DismantlePrice.Metal == 0 && item.DismantlePrice.Crystal == 0 ? '' : getLocalizedBlacksmith('Dismantle:', item.DismantlePrice.Metal, item.DismantlePrice.Crystal) }
-                    ${ item.Upgrades < 20 ? getLocalizedBlacksmith2(`Upgrade:`, upgradePrice.Metal, upgradePrice.Crystal, upgradeRange.Metal, upgradeRange.Crystal) : '' }
-                    ${ item.Upgrades ? `<div class="item"><b>Upgrades</b> ${ item.Upgrades }/20</div>` : '' }
+                    ${ toileted ? '' : getLocalizedValue('Sell:', sell.Gold, sell.Metal, sell.Crystal) }
+                    ${ item.DismantlePrice.Metal == 0 && item.DismantlePrice.Crystal == 0 ? '' : getLocalizedBlacksmith('Dismantle:', dismantle.Metal, dismantle.Crystal) }
+                    ${ item.Upgrades < 20 ? getLocalizedBlacksmith2(`Upgrade:`, upgradePrice.Metal, upgradePrice.Crystal, upgradeRange.Metal, upgradeRange.Crystal, this.Ready) : '' }
+                </div>
+                <div class="css-resource-item-footer">
+                    <div data-op="lsub" data-id="${ item.InventoryID }">
+                        <span class="noptr">${ item.BaseUpgrades }</span>
+                    </div>
+                    <div data-op="sub" data-id="${ item.InventoryID }">
+                        <span class="noptr">-</span>
+                    </div>
+                    <div data-op="upgrades">
+                        ${ item.BaseUpgrades }${ item.BaseUpgrades != item.Upgrades ? ` + ${ item.Upgrades - item.BaseUpgrades }` : '' }
+                    </div>
+                    <div data-op="add" data-id="${ item.InventoryID }">
+                        <span class="noptr">+</span>
+                    </div>
+                    <div data-op="ladd" data-id="${ item.InventoryID }">
+                        <span class="noptr">20</span>
+                    </div>
                 </div>
             </div>
         `;
@@ -275,7 +408,7 @@ function getLocalizedBlacksmith (label, metal, crystals) {
     `;
 }
 
-function getLocalizedBlacksmith2 (label, metal, crystals, metal2, crystals2) {
+function getLocalizedBlacksmith2 (label, metal, crystals, metal2, crystals2, ready) {
     var m = '';
     if (metal) {
         m = `<img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img> ${ formatAsSpacedNumber(metal) }`;
@@ -300,18 +433,18 @@ function getLocalizedBlacksmith2 (label, metal, crystals, metal2, crystals2) {
         <div class="item">
             <div><b>${ label }</b></div>
             <div class="css-inventory-item-sub3">
-                <div class="item">
+                <div class="item ${ ready && metal > ready.Metal ? 'red' : 'green' }">
                     ${ m }
                 </div>
-                <div class="item">
+                <div class="item ${ ready && crystals > ready.Crystal ? 'red' : 'green' }">
                     ${ c }
                 </div>
             </div>
             <div class="css-inventory-item-sub3">
-                <div class="item">
+                <div class="item ${ ready && metal2 > ready.Metal ? 'red' : 'green' }">
                     ${ m2 }
                 </div>
-                <div class="item">
+                <div class="item ${ ready && crystals2 > ready.Crystal ? 'red' : 'green' }">
                     ${ c2 }
                 </div>
             </div>
@@ -764,11 +897,21 @@ function mapToInventory (items, item) {
     return item;
 }
 
-function mapArray (array, items) {
+function mapArray (array, items, clone = false) {
     if (!Array.isArray(array)) {
         array = Object.values(array);
     }
-    return array.filter(i => isAllowedType(i)).map(i => mapToInventory(items, i));
+
+    return array.filter(i => isAllowedType(i)).map(i => {
+        if (clone) {
+            var cloned = i.clone();
+            cloned.Original = i;
+
+            return mapToInventory(items, cloned);
+        } else {
+            return mapToInventory(items, i);
+        }
+    });
 }
 
 function isAllowedType (item) {
@@ -1128,7 +1271,7 @@ const UI = {
     },
     initialize: function () {
         $(document).on('contextmenu', function () {
-            event.preventDefault();
+            //event.preventDefault();
         });
 
         UI.PlayerSelect = new PlayerSelectView('view-playerselect');

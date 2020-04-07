@@ -76,6 +76,10 @@ class SFItem {
         return new SFItem(data);
     }
 
+    clone () {
+        return new SFItem(this.Data);
+    }
+
     getAttribute (id) {
         for (var i = 0; i < 3; i++) {
             if (this.AttributeTypes[i] == id || this.AttributeTypes[i] == 6 || this.AttributeTypes[i] == 20 + id || (id > 3 && this.AttributeTypes[i] >= 21 && this.AttributeTypes[i] <= 23)) {
@@ -183,6 +187,25 @@ class SFItem {
                 Metal: Math.floor(num * num2 / 100),
                 Crystal: Math.max(10, Math.floor(num * num3 / 100) * 10)
             };
+        }
+    }
+
+    upgradeTo (upgrades) {
+        upgrades = Math.max(0, Math.min(20, upgrades));
+        if (upgrades > this.Upgrades) {
+            while (this.Upgrades != upgrades) {
+                this.Upgrades++;
+                for (var j = 0; j < 2; j++) {
+                    this.Attributes[j] = Math.trunc(1.03 * this.Attributes[j]);
+                }
+            }
+        } else if (upgrades < this.Upgrades) {
+            while (this.Upgrades != upgrades) {
+                this.Upgrades--;
+                for (var j = 0; j < 2; j++) {
+                    this.Attributes[j] = Math.trunc((1 / 1.03) * this.Attributes[j]);
+                }
+            }
         }
     }
 
@@ -352,7 +375,7 @@ class SFItem {
                     num3 = 5 + this.getBlacksmithRandom(5);
                     break;
                 }
-                case 2: {
+                case 3: {
                     num2 = 25 + this.getBlacksmithRandom(25);
                     num3 = 50 + this.getBlacksmithRandom(50);
                     break;
