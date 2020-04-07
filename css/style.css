@@ -579,7 +579,6 @@ h3.file-selected {
 }
 
 .css-inventory-segment {
-    margin-bottom: 1em;
     padding: 0;
 }
 
@@ -609,6 +608,16 @@ h3.file-selected {
     font-size: 85%;
 }
 
+.css-resource-item {
+    height: 25em;
+    border: 1px gray solid;
+    padding: .25em;
+
+    color: white;
+    position: relative;
+    font-size: 85%;
+}
+
 .css-inventory-segment.css-basis-segment {
     border: 1px solid white;
 }
@@ -629,6 +638,16 @@ h3.file-selected {
     font-size: 100%;
 }
 
+.css-summary {
+    height: 61.5em;
+    border: 1px transparent solid;
+    padding: .25em;
+    padding-bottom: 0;
+    color: white;
+    position: relative;
+    font-size: 100%;
+}
+
 .css-inventory-item[data-eid].selected {
     border: 1px cyan solid;
     box-shadow: 0px 0px 2px 2px cyan;
@@ -637,6 +656,11 @@ h3.file-selected {
 .css-inventory-item.selected {
     border: 1px lightgreen solid;
     box-shadow: 0px 0px 2px 2px lightgreen;
+}
+
+.css-resource-item.selected {
+    border: 1px orange solid;
+    box-shadow: 0px 0px 2px 2px orange;
 }
 
 .css-inventory-item-header {
@@ -665,6 +689,15 @@ h3.file-selected {
 .css-inventory-item-attribute {
     margin-top: 0.5em;
     padding-left: .5em;
+
+    display: flex;
+    flex-direction: column;
+    align-content: left;
+}
+
+.css-resource-item-body {
+    margin-top: 0.5em;
+    padding-left: 0.5em;
 
     display: flex;
     flex-direction: column;
@@ -780,9 +813,10 @@ h3.file-selected {
     flex: 0 0 30%;
 }
 
-#view-inventory {
+#view-inventory, #view-resources {
     padding-left: 5em !important;
     padding-right: 5em !important;
+    margin-bottom: 0;
 }
 
 .css-inventory-sub {

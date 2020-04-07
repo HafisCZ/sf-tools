@@ -57,6 +57,149 @@ class PlayerSelectView extends View {
     }
 }
 
+// Resources View
+class ResourcesView extends View {
+    constructor (parent) {
+        super(parent);
+
+        // Blocks
+        this.$inventory = this.$parent.find('[data-op="backpack"] [data-op="list"]');
+        this.$player = this.$parent.find('[data-op="player"] [data-op="list"]');
+        this.$bert = this.$parent.find('[data-op="bert"] [data-op="list"]');
+        this.$mark = this.$parent.find('[data-op="mark"] [data-op="list"]');
+        this.$kunigunde = this.$parent.find('[data-op="kunigunde"] [data-op="list"]');
+
+        // Summary
+        this.$basis = this.$parent.find('[data-op="summary"]');
+    }
+
+    show (id) {
+        $('#show-compare, #show-crystal').show().off('click');
+        $('#show-compare').on('click', () => UI.show(UI.Inventory, id));
+        UI.reset(true);
+
+        // Clear
+        this.$parent.find('[data-op="list"]').html('');
+
+        // Current player
+        this.Player = Database.Players[id].Latest;
+        this.Items = [];
+
+        // Upgrades
+        this.Upgrades = {};
+        this.Dismantles = [];
+
+        // Items
+        this.inventory = [
+            ... mapArray(this.Player.Inventory.Backpack, this.Items),
+            ... mapArray(this.Player.Inventory.Chest, this.Items)
+        ];
+
+        this.player = mapArray(this.Player.Items, this.Items);
+        this.bert = mapArray(this.Player.Inventory.Bert, this.Items);
+        this.mark = mapArray(this.Player.Inventory.Mark, this.Items);
+        this.kunigunde = mapArray(this.Player.Inventory.Kunigunde, this.Items);
+
+        // Blocks
+        this.refreshBlock(this.$inventory, this.inventory);
+
+        this.refreshBlock(this.$player, this.player);
+        this.refreshBlock(this.$bert, this.bert);
+        this.refreshBlock(this.$mark, this.mark);
+        this.refreshBlock(this.$kunigunde, this.kunigunde);
+
+        this.$parent.find('[data-id] .clickable').click(event => {
+            var id = $(event.currentTarget).parent('[data-id]').attr('data-id');
+            var pos = this.Dismantles.findIndex(i => i.InventoryID == id);
+            if (pos == -1) {
+                this.Dismantles.push(this.Items[id]);
+            } else {
+                this.Dismantles.splice(pos, 1);
+            }
+
+            this.refresh();
+        });
+
+        this.refresh();
+    }
+
+    refresh () {
+        this.$parent.find('[data-id]').each((i, e) => {
+            var $this = $(e);
+
+            var id = $this.attr('data-id');
+            var item = this.Items[id];
+
+            if (this.Dismantles.find(it => it.InventoryID == item.InventoryID)) {
+                $this.addClass('selected');
+            } else {
+                $this.removeClass('selected');
+            }
+        });
+
+        var dismantleTotal = this.Dismantles.reduce((total, item) => {
+            return {
+                Metal: total.Metal + item.DismantlePrice.Metal,
+                Crystal: total.Crystal + item.DismantlePrice.Crystal
+            };
+        }, { Metal: 0, Crystal: 0 });
+
+
+    }
+
+    getItemElement (item) {
+        var upgradePrice = item.getBlacksmithUpgradePrice();
+        var upgradeRange = item.getBlacksmithUpgradePriceRange();
+
+        var double = item.Type == 1 && (this.Player.Class != 1 || this.Player.Class != 4);
+        var toileted = item.SellPrice.Gold == 0 && item.SellPrice.Metal == 0 && item.SellPrice.Crystal == 0;
+
+        return `
+            <div class="css-resource-item" data-id="${ item.InventoryID }">
+                <div class="css-inventory-item-header clickable">
+                    ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }
+                    ${ toileted ? '<span class="css-inventory-sub washed">Washed</span> ' : '' }
+                    ${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }
+                    ${ ITEM_TYPES[item.Type] } (${ PLAYER_CLASS[item.Class] })
+                    ${ item.HasRune ? ` <span class="css-inventory-sub runed">${ getNiceRuneText(item.RuneType) }</span>` : '' }
+                </div>
+                <div class="css-resource-item-body">
+                    ${ toileted ? '' : getLocalizedValue('Sell:', item.SellPrice.Gold, item.SellPrice.Metal, item.SellPrice.Crystal) }
+                    ${ item.DismantlePrice.Metal == 0 && item.DismantlePrice.Crystal == 0 ? '' : getLocalizedBlacksmith('Dismantle:', item.DismantlePrice.Metal, item.DismantlePrice.Crystal) }
+                    ${ item.Upgrades < 20 ? getLocalizedBlacksmith2(`Upgrade:`, upgradePrice.Metal, upgradePrice.Crystal, upgradeRange.Metal, upgradeRange.Crystal) : '' }
+                    ${ item.Upgrades ? `<div class="item"><b>Upgrades</b> ${ item.Upgrades }/20</div>` : '' }
+                </div>
+            </div>
+        `;
+    }
+
+    toGrid (items) {
+        var content = '';
+        var index = 0;
+
+        for (var i = 0; i < items.length; i++) {
+            content += `
+                ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
+                <div class="column">
+                    ${ this.getItemElement(items[i]) }
+                </div>
+            `;
+
+            index++;
+        }
+
+        return content + '</div>';
+    }
+
+    refreshBlock ($el, items) {
+        if (items && items.length) {
+            $el.html(this.toGrid(items)).parent('[data-op]').show();
+        } else {
+            $el.parent('[data-op]').hide();
+        }
+    }
+}
+
 function getLocalizedRune (type, value) {
     return `
         <div class="item"><b>${ RUNETYPES[type] }</b> +${ value }% <img src="res/rune${ type }.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; margin-left: -0.25em; display: inline-block;"></img></div>
@@ -228,89 +371,6 @@ function getNiceRuneText (rune) {
         case 12: return 'of Lightning';
         default: return 'of Error';
     }
-}
-
-function getItemElement (player, item, ignoreCost, isEquip) {
-    if (item.Type == 0) {
-        return `
-            <div class="css-inventory-item ${ isEquip ? 'clickable' : '' }" ${ isEquip ? 'data-eid' : 'data-id' }="${ item.InventoryID }">
-                <div class="css-inventory-item-header">
-                    Empty slot for ${ ITEM_TYPES[item.Slot == 2 && player.Class == 4 ? 1 : item.Slot] } (${ PLAYER_CLASS[player.Class] })
-                </div>
-            </div>
-        `;
-    } else {
-        var upgradePrice = item.getBlacksmithUpgradePrice();
-        var upgradeRange = item.getBlacksmithUpgradePriceRange();
-        var double = item.Type == 1 && (player.Class != 1 || player.Class != 4);
-        var toileted = item.SellPrice.Gold == 0 && item.SellPrice.Metal == 0 && item.SellPrice.Crystal == 0 && !ignoreCost;
-
-        return `
-            <div class="css-inventory-item ${ isEquip ? 'clickable micro' : '' }" ${ isEquip ? 'data-eid' : 'data-id' }="${ item.InventoryID }">
-                <div class="css-inventory-item-header">
-                    ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ toileted ? '<span class="css-inventory-sub washed">Washed</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }${ ITEM_TYPES[item.Type] } (${ PLAYER_CLASS[item.Class] })${ item.HasRune ? ` <span class="css-inventory-sub runed">${ getNiceRuneText(item.RuneType) }</span>` : '' }
-                </div>
-                <div class="front">
-                    <div class="css-inventory-item-attribute">
-                        ${ item.Strength.Value ? getLocalizedAttribute(item.Strength, item.Upgrades, item.GemType, item.GemValue, double) : '' }
-                        ${ item.Dexterity.Value ? getLocalizedAttribute(item.Dexterity, item.Upgrades, item.GemType, item.GemValue, double) : '' }
-                        ${ item.Intelligence.Value ? getLocalizedAttribute(item.Intelligence, item.Upgrades, item.GemType, item.GemValue, double) : '' }
-                        ${ item.Constitution.Value ? getLocalizedAttribute(item.Constitution, item.Upgrades, item.GemType, item.GemValue, double) : '' }
-                        ${ item.Luck.Value ? getLocalizedAttribute(item.Luck, item.Upgrades, item.GemType, item.GemValue, double) : '' }
-                    </div>
-                    <div class="css-inventory-item-extra">
-                        ${ item.Type == 1 ? `<div class="item"><b>Damage range</b> ${ item.DamageMin } - ${ item.DamageMax }</div>` : '' }
-                        ${ item.Type > 1 && item.Type < 8 ? `<div class="item"><b>Armor</b> ${ item.Armor }</div>` : '' }
-                        ${ item.HasGem ? getLocalizedGem(item.GemType, item.GemValue) : '' }
-                        ${ item.HasRune ? getLocalizedRune(item.RuneType, item.RuneValue) : '' }
-                        ${ item.Upgrades ? `<div class="item"><b>Upgrades</b> ${ item.Upgrades }/20</div>` : '' }
-                    </div>
-                    <div class="css-inventory-item-price">
-                        ${ ignoreCost || (item.SellPrice.Gold == 0 && item.SellPrice.Metal == 0 && item.SellPrice.Crystal == 0) ? '' : getLocalizedValue('Sell:', item.SellPrice.Gold, item.SellPrice.Metal, item.SellPrice.Crystal) }
-                        ${ (item.DismantlePrice.Metal == 0 && item.DismantlePrice.Crystal == 0) ? '' : getLocalizedBlacksmith('Dismantle:', item.DismantlePrice.Metal, item.DismantlePrice.Crystal) }
-                        ${ item.Upgrades < 20 ? getLocalizedBlacksmith2(`Upgrade:`, upgradePrice.Metal, upgradePrice.Crystal, upgradeRange.Metal, upgradeRange.Crystal) : '' }
-                    </div>
-                </div>
-                <div class="back" style="display: none;">
-
-                </div>
-            </div>
-        `;
-    }
-}
-
-function toGrid (player, items, ignoreCost) {
-    var content = '';
-    var index = 0;
-
-    for (var i = 0; i < items.length; i++) {
-        content += `
-            ${ index % 4 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
-            <div class="column">
-                ${ getItemElement(player, items[i], ignoreCost) }
-            </div>
-        `;
-
-        index++;
-    }
-
-    return content + '</div>';
-}
-
-function toList (player, items) {
-    var content = '';
-
-    for (var i = 0; i < items.length; i++) {
-        content += `
-            <div class="row">
-                <div class="column">
-                    ${ getItemElement(player, items[i], false, true) }
-                </div>
-            </div>
-        `;
-    }
-
-    return content;
 }
 
 function getCompareLine (cur, ref, label) {
@@ -704,24 +764,15 @@ function mapToInventory (items, item) {
     return item;
 }
 
-function isAllowedType (item) {
-    return item.Type >= 1 && item.Type <= 10;
+function mapArray (array, items) {
+    if (!Array.isArray(array)) {
+        array = Object.values(array);
+    }
+    return array.filter(i => isAllowedType(i)).map(i => mapToInventory(items, i));
 }
 
-// Resources View
-class ResourcesView extends View {
-    constructor (parent) {
-        super(parent);
-    }
-
-    show (id) {
-        $('#show-compare, #show-crystal').show();
-        $('#show-compare').on('click', () => {
-            UI.show(UI.Inventory, id);
-        });
-
-        UI.reset(true);
-    }
+function isAllowedType (item) {
+    return item.Type >= 1 && item.Type <= 10;
 }
 
 // Inventory View
@@ -778,7 +829,7 @@ class InventoryView extends View {
     }
 
     show (id) {
-        $('#show-compare, #show-crystal').show();
+        $('#show-compare, #show-crystal').show().off('click');
         $('#show-crystal').on('click', () => UI.show(UI.Resources, id));
         UI.reset(true);
 
@@ -801,13 +852,12 @@ class InventoryView extends View {
         this.NoGem = false;
 
         // Generated item lists
-        this.backpack = this.Player.Inventory.Backpack.filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
-        this.chest = this.Player.Inventory.Chest.filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
-        this.shops = this.Player.Inventory.Shop.filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
-        this.player = Object.values(this.Player.Items).filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
-        this.bert = Object.values(this.Player.Inventory.Bert).filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
-        this.mark = Object.values(this.Player.Inventory.Mark).filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
-        this.kunigunde = Object.values(this.Player.Inventory.Kunigunde).filter(i => isAllowedType(i)).map(i => mapToInventory(this.Items, i));
+        this.backpack = mapArray(this.Player.Inventory.Backpack, this.Items);
+        this.chest = mapArray(this.Player.Inventory.Chest, this.Items);
+        this.player = mapArray(this.Player.Items, this.Items);
+        this.bert = mapArray(this.Player.Inventory.Bert, this.Items);
+        this.mark = mapArray(this.Player.Inventory.Mark, this.Items);
+        this.kunigunde = mapArray(this.Player.Inventory.Kunigunde, this.Items);
 
         if (!this.Player.Companions) {
             this.$parent.find('.css-companions').hide();
@@ -824,7 +874,7 @@ class InventoryView extends View {
         if (items && items.length) {
             var array = filter ? items.filter(filter) : items;
             if (array.length) {
-                $el.html(toGrid(this.Player, array, nosell)).parent('[data-op]').show();
+                $el.html(this.toGrid(array, nosell)).parent('[data-op]').show();
             } else {
                 $el.parent('[data-op]').hide();
             }
@@ -861,13 +911,13 @@ class InventoryView extends View {
     refresh () {
         // Character selection
         if (this.Selected == 0) {
-            this.$equipped.html(toList(this.Player, this.player.filter(i => i.Slot != 2 || this.Player.Class == 4)));
+            this.$equipped.html(this.toList(this.player.filter(i => i.Slot != 2 || this.Player.Class == 4)));
         } else if (this.Selected == 1) {
-            this.$equipped.html(toList(this.Player, this.bert));
+            this.$equipped.html(this.toList(this.bert));
         } else if (this.Selected == 2) {
-            this.$equipped.html(toList(this.Player, this.mark));
+            this.$equipped.html(this.toList(this.mark));
         } else if (this.Selected == 3) {
-            this.$equipped.html(toList(this.Player, this.kunigunde));
+            this.$equipped.html(this.toList(this.kunigunde));
         }
 
         // Character click callback
@@ -945,6 +995,89 @@ class InventoryView extends View {
                 this.refresh();
             });
         }
+    }
+
+    getItemElement (item, ignoreCost, isEquip) {
+        if (item.Type == 0) {
+            return `
+                <div class="css-inventory-item ${ isEquip ? 'clickable' : '' }" ${ isEquip ? 'data-eid' : 'data-id' }="${ item.InventoryID }">
+                    <div class="css-inventory-item-header">
+                        Empty slot for ${ ITEM_TYPES[item.Slot == 2 && this.Player.Class == 4 ? 1 : item.Slot] } (${ PLAYER_CLASS[this.Player.Class] })
+                    </div>
+                </div>
+            `;
+        } else {
+            var upgradePrice = item.getBlacksmithUpgradePrice();
+            var upgradeRange = item.getBlacksmithUpgradePriceRange();
+            var double = item.Type == 1 && (this.Player.Class != 1 || this.Player.Class != 4);
+            var toileted = item.SellPrice.Gold == 0 && item.SellPrice.Metal == 0 && item.SellPrice.Crystal == 0 && !ignoreCost;
+
+            return `
+                <div class="css-inventory-item ${ isEquip ? 'clickable micro' : '' }" ${ isEquip ? 'data-eid' : 'data-id' }="${ item.InventoryID }">
+                    <div class="css-inventory-item-header">
+                        ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ toileted ? '<span class="css-inventory-sub washed">Washed</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }${ ITEM_TYPES[item.Type] } (${ PLAYER_CLASS[item.Class] })${ item.HasRune ? ` <span class="css-inventory-sub runed">${ getNiceRuneText(item.RuneType) }</span>` : '' }
+                    </div>
+                    <div class="front">
+                        <div class="css-inventory-item-attribute">
+                            ${ item.Strength.Value ? getLocalizedAttribute(item.Strength, item.Upgrades, item.GemType, item.GemValue, double) : '' }
+                            ${ item.Dexterity.Value ? getLocalizedAttribute(item.Dexterity, item.Upgrades, item.GemType, item.GemValue, double) : '' }
+                            ${ item.Intelligence.Value ? getLocalizedAttribute(item.Intelligence, item.Upgrades, item.GemType, item.GemValue, double) : '' }
+                            ${ item.Constitution.Value ? getLocalizedAttribute(item.Constitution, item.Upgrades, item.GemType, item.GemValue, double) : '' }
+                            ${ item.Luck.Value ? getLocalizedAttribute(item.Luck, item.Upgrades, item.GemType, item.GemValue, double) : '' }
+                        </div>
+                        <div class="css-inventory-item-extra">
+                            ${ item.Type == 1 ? `<div class="item"><b>Damage range</b> ${ item.DamageMin } - ${ item.DamageMax }</div>` : '' }
+                            ${ item.Type > 1 && item.Type < 8 ? `<div class="item"><b>Armor</b> ${ item.Armor }</div>` : '' }
+                            ${ item.HasGem ? getLocalizedGem(item.GemType, item.GemValue) : '' }
+                            ${ item.HasRune ? getLocalizedRune(item.RuneType, item.RuneValue) : '' }
+                            ${ item.Upgrades ? `<div class="item"><b>Upgrades</b> ${ item.Upgrades }/20</div>` : '' }
+                        </div>
+                        <div class="css-inventory-item-price">
+                            ${ ignoreCost || (item.SellPrice.Gold == 0 && item.SellPrice.Metal == 0 && item.SellPrice.Crystal == 0) ? '' : getLocalizedValue('Sell:', item.SellPrice.Gold, item.SellPrice.Metal, item.SellPrice.Crystal) }
+                            ${ (item.DismantlePrice.Metal == 0 && item.DismantlePrice.Crystal == 0) ? '' : getLocalizedBlacksmith('Dismantle:', item.DismantlePrice.Metal, item.DismantlePrice.Crystal) }
+                            ${ item.Upgrades < 20 ? getLocalizedBlacksmith2(`Upgrade:`, upgradePrice.Metal, upgradePrice.Crystal, upgradeRange.Metal, upgradeRange.Crystal) : '' }
+                        </div>
+                    </div>
+                    <div class="back" style="display: none;">
+
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    toGrid (items, ignoreCost) {
+        var content = '';
+        var index = 0;
+
+        for (var i = 0; i < items.length; i++) {
+            content += `
+                ${ index % 4 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
+                <div class="column">
+                    ${ this.getItemElement(items[i], ignoreCost) }
+                </div>
+            `;
+
+            index++;
+        }
+
+        return content + '</div>';
+    }
+
+    toList (items) {
+        var content = '';
+
+        for (var i = 0; i < items.length; i++) {
+            content += `
+                <div class="row">
+                    <div class="column">
+                        ${ this.getItemElement(items[i], false, true) }
+                    </div>
+                </div>
+            `;
+        }
+
+        return content;
     }
 }
 
