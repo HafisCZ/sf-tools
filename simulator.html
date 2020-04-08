@@ -186,18 +186,7 @@
                                         <input class="text-center" type="hidden" value="1" data-type="number1" data-path="Class">
                                         <i class="dropdown icon"></i>
                                         <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="1">Warrior</div>
-                                            <div class="item" data-value="2">Mage</div>
-                                            <div class="item" data-value="3">Scout</div>
-                                            <div class="item" data-value="4">Assassin</div>
-                                            <div class="item" data-value="5">Battle Mage</div>
-                                            <div class="item" data-value="6">Berserker</div>
-                                            <div class="item" data-value="7">Demon Hunter</div>
-                                            <div class="item disabled" data-value="8">Druid</div>
-                                            <div class="ui divider"></div>
-                                            <div class="item" data-value="20">Necromancer</div>
-                                        </div>
+                                        <div class="menu" id="sim-classlist"></div>
                                     </div>
                                 </div>
                                 <div class="field">
@@ -491,6 +480,17 @@
         <script type="text/javascript">
             // Init
             $('#sim-mode').val(0);
+
+            $('#sim-classlist').html('');
+            for (var [ id, name ] of Object.entries(ClassMap)) {
+                $('#sim-classlist').append(`<div class="item ${ hasImplementation(id) ? '' : 'disabled' }" data-value="${ id }">${ name }</div>`);
+            }
+            if (Object.getOwnPropertyNames(ClassMapExt).length > 0) {
+                $('#sim-classlist').append('<div class="ui divider"></div>');
+            }
+            for (var [ id, name ] of Object.entries(ClassMapExt)) {
+                $('#sim-classlist').append(`<div class="item ${ hasImplementation(id) ? '' : 'disabled' }" data-value="${ id }">${ name }</div>`);
+            }
 
             //$('.dropdown').dropdown();
             $('[data-path="Class"]').change(function () {

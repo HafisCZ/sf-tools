@@ -35,6 +35,25 @@ const DRUID = 8;
 // New testing classes
 const NECROMANCER = 20;
 
+const ClassMap = {
+    1: 'Warrior',
+    2: 'Mage',
+    3: 'Scout',
+    4: 'Assassin',
+    5: 'Battle Mage',
+    6: 'Berserker',
+    7: 'Demon Hunter',
+    8: 'Druid'
+};
+
+const ClassMapExt = {
+    20: 'Necromancer'
+};
+
+function hasImplementation (c) {
+    return c != 8;
+}
+
 class FighterModel {
     static create (index, player) {
         switch (player.Class) {
@@ -150,6 +169,25 @@ class FighterModel {
         }
     }
 
+    // Health multiplier
+    getHealthMultiplier () {
+        switch (this.Player.Class) {
+            case WARRIOR:
+            case BATTLEMAGE:
+                return 5;
+            case DEMONHUNTER:
+            case SCOUT:
+            case ASSASSIN:
+            case BERSERKER:
+                return 4;
+            case MAGE:
+            case NECROMANCER:
+                return 2;
+            default:
+                return 0;
+        }
+    }
+
     // Critical Chance
     getCriticalChance (target) {
         return Math.min(50, this.Player.Luck.Total * 2.5 / target.Player.Level);
@@ -166,7 +204,7 @@ class FighterModel {
         var b = 1 + this.Player.Dungeons.Player / 100;
         var c = 1 + this.Player.Runes.Health / 100;
         var d = this.Player.Level + 1;
-        var e = this.Player.Class == WARRIOR || this.Player.Class == BATTLEMAGE ? 5 : (this.Player.Class == MAGE || this.Player.Class == NECROMANCER ? 2 : 4)
+        var e = this.getHealthMultiplier();
 
         return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(this.Player.Constitution.Total * a) * b) * c) * d) * e);
     }
@@ -199,21 +237,14 @@ class FighterModel {
         this.SkipChance = this.getBlockChance(target);
         this.CriticalChance = this.getCriticalChance(target);
         this.TotalHealth = this.getHealth();
-this.RepeatAttackChance = this.Player.Class == 6 ? 50 : 0;this.RevivalChance = this.getRevivalChance(target);
+
         // Weapon
         var weapon = this.Player.Items.Wpn1;
         this.Weapon1 = {
             Range: this.getDamageRange(weapon, target),
             Critical: this.getCriticalMultiplier(weapon, target)
-        }
-    }    getRevivalChance (source) {
-        if (this.Player.Class == 7 && source.Player.Class != 2) {
-            return 25;
-        } else {
-            return 0;
-        }
+        };
     }
-
 
     onFightStart (target) {
         return false;
@@ -356,26 +387,30 @@ class DruidModel extends FighterModel {
     }
 }
 
-class NecromancerModel extends FighterModel {
+class NecromancerModel extends MageModel {
     constructor (i, p) {
         super(i, p);
         this.DamageDealt = true;
+        this.DamageTaken = true;
     }
 
     onDamageDealt (target, damage) {
-        this.Health += damage / 5;
+        if (getRandom(25)) {
+            this.Health += damage / 2;
+        } else {
+            this.Health += damage / 4;
+        }
     }
 
-    getDamageRange (weapon, target) {
-        if (target.Player.Class == BERSERKER) {
-            var range = super.getDamageRange(weapon, target);
-            return {
-                Max: Math.ceil(range.Max * 2),
-                Min: Math.ceil(range.Min * 2)
+    onDamageTaken (target, damage) {
+        var alive = super.onDamageTaken(target, damage);
+        if (alive) {
+            if (getRandom(25)) {
+                this.Health += damage / 4;
             }
-        } else {
-            return super.getDamageRange(weapon, target);
         }
+
+        return alive;
     }
 }
 
@@ -415,11 +450,6 @@ self.addEventListener('message', function (message) {
 
     self.close();
 });
-
-function shuffle (arr) {
-    arr.sort(() => Math.random() - 0.5);
-    return arr;
-}
 
 class FightSimulator {
     // Fight group
