@@ -983,23 +983,6 @@ const GUILD_ROLE_INVITED = 4;
 const SCRAPBOOK_COUNT = 2180;
 const ACHIEVEMENT_COUNT = 80;
 
-// Attributes
-const ATTRIBUTE_NONE = 0;
-const ATTRIBUTE_STRENGTH = 1;
-const ATTRIBUTE_DEXTERITY = 2;
-const ATTRIBUTE_INTELLIGENCE = 3;
-const ATTRIBUTE_CONSTITUTION = 4;
-const ATTRIBUTE_LUCK = 5;
-
-// Classes
-const CLASS_NONE = 0;
-const CLASS_WARRIOR = 1;
-const CLASS_MAGE = 2;
-const CLASS_SCOUT = 3;
-const CLASS_ASSASSIN = 4;
-const CLASS_WARLOCK = 5;
-const CLASS_BERSERKER = 6;
-
 // Potions
 const POTION_NONE = 0;
 const POTION_STRENGTH = 1;
