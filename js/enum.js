@@ -1039,6 +1039,7 @@ const RUNE_VALUE = {
         return rune < 2 ? 0 : (3 + 2 * (rune - 2));
     },
     ITEM_QUALITY: function (rune) {
+        if (rune > 2) return 19;
         switch (rune) {
             case 1: return 3;
             case 2: return 19;
@@ -1046,6 +1047,7 @@ const RUNE_VALUE = {
         }
     },
     XP: function (rune) {
+        if (rune > 5) return 45;
         switch (rune) {
             case 1: return 3;
             case 2: return 9;
@@ -1056,6 +1058,7 @@ const RUNE_VALUE = {
         }
     },
     HEALTH: function (rune) {
+        if (rune > 7) return 43;
         switch (rune) {
             case 1: return 3;
             case 2: return 6;
@@ -1068,6 +1071,7 @@ const RUNE_VALUE = {
         }
     },
     SINGLE_RESISTANCE: function (rune) {
+        if (rune > 35) return 46;
         switch (rune) {
             case 3: return 3;
             case 4: return 4;
@@ -1106,6 +1110,7 @@ const RUNE_VALUE = {
         }
     },
     TOTAL_RESISTANCE: function (rune) {
+        if (rune > 11) return 42;
         switch (rune) {
             case 2: return 3;
             case 3: return 12;
@@ -1121,6 +1126,7 @@ const RUNE_VALUE = {
         }
     },
     ELEMENTAL_DAMAGE: function (rune) {
+        if (rune > 28) return 46;
         switch (rune) {
             case 2: return 3;
             case 3: return 4;
