@@ -433,18 +433,18 @@ function getLocalizedBlacksmith2 (label, metal, crystals, metal2, crystals2, rea
         <div class="item">
             <div><b>${ label }</b></div>
             <div class="css-inventory-item-sub3">
-                <div class="item ${ ready && metal > ready.Metal ? 'red' : 'green' }">
+                <div class="item ${ ready ? (metal > ready.Metal ? 'red' : 'green') : '' }">
                     ${ m }
                 </div>
-                <div class="item ${ ready && crystals > ready.Crystal ? 'red' : 'green' }">
+                <div class="item ${ ready ? (crystals > ready.Crystal ? 'red' : 'green') : '' }">
                     ${ c }
                 </div>
             </div>
             <div class="css-inventory-item-sub3">
-                <div class="item ${ ready && metal2 > ready.Metal ? 'red' : 'green' }">
+                <div class="item ${ ready ? (metal2 > ready.Metal ? 'red' : 'green') : '' }">
                     ${ m2 }
                 </div>
-                <div class="item ${ ready && crystals2 > ready.Crystal ? 'red' : 'green' }">
+                <div class="item ${ ready ? (crystals2 > ready.Crystal ? 'red' : 'green') : '' }">
                     ${ c2 }
                 </div>
             </div>

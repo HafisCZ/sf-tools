@@ -1429,15 +1429,17 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Extra.Normal.Total = this.Dungeons.Normal.Total + this.Dungeons.Extra.Normal.reduce((a, b) => a + b, 0);
         this.Dungeons.Extra.Shadow.Total = this.Dungeons.Shadow.Total + this.Dungeons.Extra.Shadow.reduce((a, b) => a + b, 0);
 
-        dataType = ComplexDataType.create(data.chest);
+        if (!Database.Partial) {
+            dataType = ComplexDataType.create(data.chest);
 
-        for (var i = 0; i < 40 && !dataType.empty(); i++) {
-            var item = new SFItem(dataType.sub(12));
-            if (item.Type > 0) {
-                if (i >= 15) {
-                    this.Inventory.Chest.push(item);
-                } else {
-                    this.Inventory.Backpack.push(item);
+            for (var i = 0; i < 40 && !dataType.empty(); i++) {
+                var item = new SFItem(dataType.sub(12));
+                if (item.Type > 0) {
+                    if (i >= 15) {
+                        this.Inventory.Chest.push(item);
+                    } else {
+                        this.Inventory.Backpack.push(item);
+                    }
                 }
             }
         }
@@ -1475,7 +1477,7 @@ class SFOwnPlayer extends SFPlayer {
             };
         }
 
-        if (data.tower.length) {
+        if (data.tower.length && !Database.Partial) {
             this.Dungeons.Extra.Normal[0] = Math.max(0, data.tower[150] - 2);
             this.Dungeons.Extra.Shadow[0] = Math.max(0, data.tower[298] - 2);
 

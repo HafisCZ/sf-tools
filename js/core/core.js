@@ -462,6 +462,8 @@ const Storage = new (class {
             Database.Developer = true;
         }
 
+        Database.Partial = args.partial ? true : false;
+
         FileDatabase.ready(() => {
             FileDatabase.get((current) => {
                 this.current = current;
