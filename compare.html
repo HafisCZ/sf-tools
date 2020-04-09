@@ -22,6 +22,21 @@
         <script src="js/core/core.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+
+        <style>
+            .ic-warn-parent {
+                position: relative;
+            }
+
+            .ic-warn {
+                position: absolute;
+                top: 1.5em;
+                left: -2em;
+                font-size: 50%;
+                color: red;
+                width: 30em;
+            }
+        </style>
     </head>
     <body>
         <div class="ui fixed borderless huge menu css-menu">
@@ -40,7 +55,7 @@
                     </div>
                 </div>
                 <div class="column">
-                    <h1 class="ui header centered">Item comparison</h1>
+                    <h1 class="ui header centered ic-warn-parent">Item comparison<span class="ic-warn">This tool is no longer maintained in favor of Inventory Manager</span></h1>
                 </div>
                 <div class="column">
                     <a class="ui button right floated" id="save">Save</a>
@@ -669,10 +684,6 @@
                         min: Math.trunc(rep.min) - Math.trunc(cur.min),
                         max: Math.trunc(rep.max) - Math.trunc(cur.max),
                         avg: Math.trunc(rep.avg) - Math.trunc(cur.avg),
-                        cmin: Math.trunc(rep.cmin) - Math.trunc(cur.cmin),
-                        cmax: Math.trunc(rep.cmax) - Math.trunc(cur.cmax),
-                        cavg: Math.trunc(rep.cavg) - Math.trunc(cur.cavg),
-                        tavg: Math.trunc(rep.tavg) - Math.trunc(cur.tavg),
                         rune: Math.trunc(rep.rune) - Math.trunc(cur.rune)
                     };
 

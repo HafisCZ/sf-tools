@@ -622,7 +622,6 @@ function getCompareSocketLine (base, item) {
     }
 }
 
-
 function getRealGemValue (player, item, type) {
     if (item.GemType == type || item.GemType == 6) {
         if (player.Class != 1 && player.Class != 4 && item.Type == 1) {
