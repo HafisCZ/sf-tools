@@ -18,7 +18,14 @@
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
 
+        <script>
+            // To bypass including core
+            const Database = {
+                Partial: true
+            };
+        </script>
         <script src="js/core/playa.js"></script>
+
         <script src="js/core/simulator.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
@@ -637,7 +644,7 @@
                         }
                     }
                 } catch (e) {
-
+                    console.info(e);
                 }
             });
 
