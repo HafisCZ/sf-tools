@@ -922,7 +922,7 @@
                                 ${ score && score.min != undefined ? `${ score.min.toFixed(2) }%` : '' }
                             </div>
                             <div class="two wide text-center column">
-                                ${ score ? (mode == 2 ? `${ score.max }` : `${ score.max.toFixed(2) }%`) : '' }
+                                ${ score && score.max != undefined ? (mode == 2 ? `${ score.max }` : `${ score.max.toFixed(2) }%`) : '' }
                             </div>
                             <div class="one wide text-center column">
                                 ${ mode == 1 && index != yourself ? `<i class="user circle icon glow-y" data-index-crown="${ i }"></i>` : ''}
