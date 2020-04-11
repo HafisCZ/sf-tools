@@ -783,22 +783,9 @@ class PetModel {
     initialize (target) {
         var multa = (this.Class == WARRIOR ? 2 : (this.Class == MAGE ? 4.5 : 2.5)) * (this.Level + 1);
         var multb = (1 + Math.max(this.Attribute / 2, this.Attribute - target.getDefenseAtribute(this)) / 10);
-        var multc = (1 - target.getDamageReduction(this) / 100);
 
-        this.Damage = Math.trunc(multa * multb * multc);
+        this.Damage = Math.trunc(multa * multb);
         this.CriticalChance = Math.min(50, this.Attribute * 20 / 6 / target.Level);
-    }
-
-    getDamageReduction(source) {
-        if (source.Class == MAGE) {
-            return 0;
-        } else {
-            switch (this.Class) {
-                case WARRIOR: return 50;
-                case SCOUT: return 25;
-                case MAGE: return 10;
-            }
-        }
     }
 
     getDefenseAtribute (source) {
