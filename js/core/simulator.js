@@ -425,7 +425,14 @@ self.addEventListener('message', function (message) {
     var iterations = message.data.iterations || 100000;
 
     // Sim type decision
-    if (mode == 1) {
+    if (mode == 0) {
+        new FightSimulator().simulateMultiple(player, players, iterations);
+        self.postMessage({
+            command: 'finished',
+            results: player,
+            time: Date.now() - ts
+        });
+    } else if (mode == 1) {
         new FightSimulator().simulateSingle(player, players, iterations);
         self.postMessage({
             command: 'finished',
@@ -439,11 +446,11 @@ self.addEventListener('message', function (message) {
             results: player,
             time: Date.now() - ts
         });
-    } else {
-        new FightSimulator().simulateMultiple(player, players, iterations);
+    } else if (mode == 999) {
+        var r = new PetSimulator().simulate(players[0], players[1]);
         self.postMessage({
             command: 'finished',
-            results: player,
+            results: r,
             time: Date.now() - ts
         });
     }
@@ -700,6 +707,180 @@ class FightSimulator {
             return Math.ceil(damage)
         } else {
             return 0;
+        }
+    }
+}
+
+const Habitat = {
+    Shadow: 0,
+    Light: 1,
+    Earth: 2,
+    Fire: 3,
+    Water: 4
+}
+
+const PET_CLASS_MAP = [
+    [
+        2, 0, 0, 1, 1,
+        1, 2, 2, 2, 0,
+        1, 1, 2, 2, 0,
+        0, 1, 0, 0, 2
+    ],
+    [
+        0, 0, 1, 1, 2,
+        2, 1, 0, 0, 1,
+        1, 2, 2, 1, 1,
+        0, 0, 0, 1, 2
+    ],
+    [
+        0, 0, 2, 2, 0,
+        2, 1, 1, 0, 0,
+        2, 0, 2, 2, 1,
+        1, 1, 0, 0, 0
+    ],
+    [
+        2, 2, 0, 1, 1,
+        2, 2, 1, 0, 1,
+        1, 2, 2, 2, 2,
+        2, 1, 0, 1, 0
+    ],
+    [
+        1, 0, 0, 0, 0,
+        2, 0, 2, 2, 0,
+        1, 1, 1, 0, 1,
+        1, 0, 1, 0, 2
+    ]
+];
+
+const PET_FACTOR_MAP = [
+    10, 11, 12, 13, 14, 16, 18, 20, 25, 30, 35, 40, 50, 60, 70, 80, 100, 130, 160, 160
+];
+
+const PET_HABITAT_MAP = [
+    1, 3, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70, 75
+];
+
+class PetModel {
+    constructor (index, habitat, pet, level, bonus, gladiator) {
+        this.Index = index;
+
+        // Sets
+        this.Habitat = habitat;
+        this.Pet = pet;
+        this.Level = level;
+        this.Bonus = bonus;
+        this.Gladiator = gladiator;
+
+        // Vars
+        this.Class = PET_CLASS_MAP[this.Habitat][this.Pet - 1] + 1;
+        this.Attribute = Math.trunc(PET_FACTOR_MAP[this.Pet - 1] * (this.Level + 1) * (1 + this.Bonus / 100));
+        this.DefenseAttribute = Math.trunc(this.Attribute / 2);
+        this.TotalHealth = (this.Level + 1) * this.Attribute * (this.Class == WARRIOR ? 5 : (this.Class == MAGE ? 2 : 4));
+        this.Critical = 2 * (1 + 5 * this.Gladiator / 100);
+        this.SkipChance = this.Class == WARRIOR ? 25 : (this.Class == MAGE ? 0 : 50);
+    }
+
+    initialize (target) {
+        var multa = (this.Class == WARRIOR ? 2 : (this.Class == MAGE ? 4.5 : 2.5)) * (this.Level + 1);
+        var multb = (1 + Math.max(this.Attribute / 2, this.Attribute - target.getDefenseAtribute(this)) / 10);
+        var multc = (1 - target.getDamageReduction(this) / 100);
+
+        this.Damage = Math.trunc(multa * multb * multc);
+        this.CriticalChance = Math.min(50, this.Attribute * 20 / 6 / target.Level);
+    }
+
+    getDamageReduction(source) {
+        if (source.Class == MAGE) {
+            return 0;
+        } else {
+            switch (this.Class) {
+                case WARRIOR: return 50;
+                case SCOUT: return 25;
+                case MAGE: return 10;
+            }
+        }
+    }
+
+    getDefenseAtribute (source) {
+        return this.Class == source.Class ? this.Attribute : this.DefenseAttribute;
+    }
+
+    static getBonus (pack, at100, at200) {
+        return 5 * Math.trunc(pack + at200 + at100 / 2);
+    }
+
+    static fromPet (index, habitat, pet, level, pack, at100, at200, gladiator) {
+        return new PetModel(index, habitat, pet, level, 5 * Math.trunc(pack + at100 / 2 + at200), gladiator);
+    }
+
+    static fromHabitat (index, habitat, pet) {
+        return new PetModel(index, habitat, pet, PET_HABITAT_MAP[pet - 1], 5 * pet, 0);
+    }
+
+    static fromObject (obj) {
+        if (obj.Boss) {
+            return PetModel.fromHabitat(obj.Index, obj.Habitat, obj.Pet);
+        } else {
+            return PetModel.fromPet(obj.Index, obj.Habitat, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At200, obj.Gladiator);
+        }
+    }
+}
+
+class PetSimulator {
+    simulate (source, target, iterations = 1e7) {
+        this.ca = PetModel.fromObject(source);
+        this.cb = PetModel.fromObject(target);
+
+        this.ca.initialize(this.cb);
+        this.cb.initialize(this.ca);
+
+        var score = 0;
+        for (var i = 0; i < iterations; i++) {
+            score += this.fight();
+        }
+
+        return score / iterations;
+    }
+
+    fight () {
+        this.a = this.ca;
+        this.b = this.cb;
+
+        this.a.Health = this.a.TotalHealth;
+        this.b.Health = this.b.TotalHealth;
+
+        this.turn = 0;
+
+        if (getRandom(50)) {
+            [this.a, this.b] = [this.b, this.a];
+        }
+
+        while (this.a.Health > 0 && this.b.Health > 0) {
+            if (!this.attack(this.a, this.b)) {
+                break;
+            }
+
+            [this.a, this.b] = [this.b, this.a];
+        }
+
+        return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
+    }
+
+    attack (source, target) {
+        var turn = this.turn++;
+        var rage = 1 + turn / 6;
+
+        if (!getRandom(target.SkipChance)) {
+            var damage = rage * source.Damage;
+            if (getRandom(source.CriticalChance)) {
+                damage *= source.Critical;
+            }
+
+            target.Health -= damage;
+
+            return target.Health > 0;
+        } else {
+            return true;
         }
     }
 }

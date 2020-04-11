@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Fight Simulator</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/semantic.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/core/simulator.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+
+        <style>
+            .bordered .fields:last-of-type {
+                margin-bottom: 0;
+            }
+
+            .bordered {
+                padding: 0.5em;
+                margin-bottom: 0.5em;
+            }
+
+            .bordered-simple {
+                margin-bottom: 0.35em;
+                padding-top: 0.5em !important;
+                padding-bottom: 0.5em !important;
+                margin-right: 1em;
+                margin-left: 1em;
+            }
+
+            .bnone {
+                border: 1px solid transparent;
+            }
+
+            .bone {
+                border: 1px solid orange;
+            }
+
+            .btwo {
+                border: 1px solid purple;
+            }
+
+            .bthree {
+                border: 1px solid blue;
+            }
+
+            .bfour {
+                border: 1px solid red;
+            }
+
+            .bfive {
+                border: 1px solid green;
+            }
+
+            .bsix {
+                border: 1px solid pink;
+            }
+
+            .spaced {
+                margin-top: 2em !important;
+            }
+        </style>
+    </head>
+    <body class="margin-none-bottom">
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item">SFTools</div>
+            <div class="right menu">
+                <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
+            </div>
+        </div>
+
+        <div class="ui main container">
+            <!-- Header -->
+            <div class="ui five columns middle aligned grid">
+                <div class="two wide column">
+
+                </div>
+                <div class="four wide column">
+
+                </div>
+                <div class="four wide column">
+                    <h1 class="ui centered header">Pet Simulator</h1>
+                </div>
+                <div class="two wide column">
+
+                </div>
+                <div class="two wide column">
+                    <button class="ui fluid small button" type="submit" id="sim-run">Run</button>
+                </div>
+                <div class="two wide wide column" id="sim-result">
+
+                </div>
+            </div>
+            <div class="ui two columns grid">
+                <!-- First -->
+                <div class="column">
+                    <div class="ui form">
+                        <div class="bordered bone" id="sim-a">
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Type</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" value="0" data-path="Habitat">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">Shadow</div>
+                                            <div class="item" data-value="1">Light</div>
+                                            <div class="item" data-value="2">Earth</div>
+                                            <div class="item" data-value="3">Fire</div>
+                                            <div class="item" data-value="4">Water</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Pet</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" value="1" data-path="Pet">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <!-- <div class="item" data-value="1">Something</div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="two fields">
+                                        <div class="field">
+                                            <div class="field">
+                                                <label>Habitat</label>
+                                                <div class="ui selection compact dropdown">
+                                                    <input class="text-center" type="hidden" value="0" data-path="Boss">
+                                                    <i class="dropdown icon"></i>
+                                                    <div class="default text"></div>
+                                                    <div class="menu">
+                                                        <div class="item" data-value="0">No</div>
+                                                        <div class="item" data-value="1">Yes</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="field">
+                                            <label>Level</label>
+                                            <input class="text-center" data-path="Level">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Pack</label>
+                                    <input class="text-center" data-path="Pack">
+                                </div>
+                                <div class="field">
+                                    <label>At 100+</label>
+                                    <input class="text-center" data-path="At100">
+                                </div>
+                                <div class="field">
+                                    <label>At 200</label>
+                                    <input class="text-center" data-path="At200">
+                                </div>
+                            </div>
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Gladiator</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" value="0" data-path="Gladiator">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">None</div>
+                                            <div class="item" data-value="1">1 (5%)</div>
+                                            <div class="item" data-value="2">2 (10%)</div>
+                                            <div class="item" data-value="3">3 (15%)</div>
+                                            <div class="item" data-value="4">4 (20%)</div>
+                                            <div class="item" data-value="5">5 (25%)</div>
+                                            <div class="item" data-value="6">6 (30%)</div>
+                                            <div class="item" data-value="7">7 (35%)</div>
+                                            <div class="item" data-value="8">8 (40%)</div>
+                                            <div class="item" data-value="9">9 (45%)</div>
+                                            <div class="item" data-value="10">10 (50%)</div>
+                                            <div class="item" data-value="11">11 (55%)</div>
+                                            <div class="item" data-value="12">12 (60%)</div>
+                                            <div class="item" data-value="13">13 (65%)</div>
+                                            <div class="item" data-value="14">14 (70%)</div>
+                                            <div class="item" data-value="15">15 (75%)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Player list -->
+                <div class="column">
+                    <div class="ui form">
+                        <div class="bordered btwo" id="sim-b">
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Type</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" value="0" data-path="Habitat">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">Shadow</div>
+                                            <div class="item" data-value="1">Light</div>
+                                            <div class="item" data-value="2">Earth</div>
+                                            <div class="item" data-value="3">Fire</div>
+                                            <div class="item" data-value="4">Water</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Pet</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" value="1" data-path="Pet">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <!-- <div class="item" data-value="1">Something</div> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="two fields">
+                                        <div class="field">
+                                            <div class="field">
+                                                <label>Habitat</label>
+                                                <div class="ui selection compact dropdown">
+                                                    <input class="text-center" type="hidden" value="0" data-path="Boss">
+                                                    <i class="dropdown icon"></i>
+                                                    <div class="default text"></div>
+                                                    <div class="menu">
+                                                        <div class="item" data-value="0">No</div>
+                                                        <div class="item" data-value="1">Yes</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="field">
+                                            <label>Level</label>
+                                            <input class="text-center" data-path="Level">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Pack</label>
+                                    <input class="text-center" data-path="Pack">
+                                </div>
+                                <div class="field">
+                                    <label>At 100+</label>
+                                    <input class="text-center" data-path="At100">
+                                </div>
+                                <div class="field">
+                                    <label>At 200</label>
+                                    <input class="text-center" data-path="At200">
+                                </div>
+                            </div>
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Gladiator</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" value="0" data-path="Gladiator">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">None</div>
+                                            <div class="item" data-value="1">1 (5%)</div>
+                                            <div class="item" data-value="2">2 (10%)</div>
+                                            <div class="item" data-value="3">3 (15%)</div>
+                                            <div class="item" data-value="4">4 (20%)</div>
+                                            <div class="item" data-value="5">5 (25%)</div>
+                                            <div class="item" data-value="6">6 (30%)</div>
+                                            <div class="item" data-value="7">7 (35%)</div>
+                                            <div class="item" data-value="8">8 (40%)</div>
+                                            <div class="item" data-value="9">9 (45%)</div>
+                                            <div class="item" data-value="10">10 (50%)</div>
+                                            <div class="item" data-value="11">11 (55%)</div>
+                                            <div class="item" data-value="12">12 (60%)</div>
+                                            <div class="item" data-value="13">13 (65%)</div>
+                                            <div class="item" data-value="14">14 (70%)</div>
+                                            <div class="item" data-value="15">15 (75%)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            function getMonsterName (habitat, pet) {
+                return NAME_MONSTER[800 + habitat * 20 + pet];
+            }
+
+            function setupBlock ($parent) {
+                $parent.find('[data-path="Boss"]').change(function () {
+                    var $sel = $parent.find('[data-path="Pack"], [data-path="At100"], [data-path="At200"], [data-path="Level"]').parent('.field');
+                    var $sel2 = $parent.find('[data-path="Gladiator"]').parent('.dropdown').parent('.field');
+                    if ($(this).val() == 0) {
+                        $sel.removeClass('disabled');
+                        $sel2.removeClass('disabled');
+                    } else {
+                        $sel.addClass('disabled');
+                        $sel2.addClass('disabled');
+                    }
+                });
+
+                $parent.find('[data-path="Habitat"]').change(function () {
+                    var habitat = $(this).val();
+                    var petlist = [];
+
+                    for (var i = 0; i < 20; i++) {
+                        petlist.push({
+                            value: i + 1,
+                            name: `${ i + 1 } ${ getMonsterName(habitat, i) }`,
+                            selected: i == 0
+                        });
+                    }
+
+                    $parent.find('[data-path="Pet"]').parent('.dropdown').dropdown({
+                        values: petlist
+                    });
+                }).trigger('change');
+
+                $parent.find('[data-path]').on('input', function () {
+                    validate();
+                });
+            }
+
+            var a = null;
+            var b = null;
+
+            setupBlock($('#sim-a'), a);
+            setupBlock($('#sim-b'), b);
+
+            $('.dropdown').dropdown();
+
+            function fill ($parent, object) {
+                $parent.find('[data-path]').each(function () {
+                    $(this).val(getObjectAt(object, $(this).attr('data-path')));
+                });
+            }
+
+            function read ($parent) {
+                var object = {};
+                $parent.find('[data-path]').each(function () {
+                    setObjectAt(object, $(this).attr('data-path'), Number($(this).val()));
+                });
+                return object;
+            }
+
+            function validate () {
+                return $('[data-path]').toArray().reduce((errors, element) => {
+                    if (isNaN($(element).val())) {
+                        $(element).parent('.field').addClass('error');
+                        return errors + 1;
+                    } else {
+                        $(element).parent('.field').removeClass('error');
+                        return errors;
+                    }
+                }, 0) == 0;
+            }
+
+            function freeze () {
+                $('.ui.main.container').toggleClass('frozen');
+            }
+
+            // Run simulation
+            $('#sim-run').click(function () {
+                if (validate()) {
+                    var a = read($('#sim-a'));
+                    var b = read($('#sim-b'));
+
+                    if (a && b && (a.Level > 0 || a.Boss) && (b.Level > 0 || b.Boss)) {
+                        a.Index = 0;
+                        b.Index = 1;
+
+                        freeze();
+
+                        var worker = new Worker('js/core/simulator.js');
+
+                        worker.addEventListener('message', function (message) {
+                            if (message.data.command == 'finished') {
+                                $('#sim-result').html((message.data.results * 100).toFixed(2) + '%');
+                                freeze();
+                            }
+                        }, false);
+
+                        worker.postMessage({
+                            mode: 999,
+                            players: [a, b]
+                        });
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
