@@ -855,7 +855,7 @@ class PetSimulator {
 
     attack (source, target) {
         var turn = this.turn++;
-        var rage = 1 + turn / 6;
+        var rage = (4 + 0.5 * turn) / (3 + 0.5 * turn);
 
         if (!getRandom(target.SkipChance)) {
             var damage = rage * source.Damage;
