@@ -449,8 +449,14 @@
                     fill($('#sim-a'), a);
                     fill($('#sim-b'), b);
 
+                    $('#sim-a').find('[data-path="Gladiator"]').parent('.dropdown').dropdown('set selected', a.Gladiator);
+                    $('#sim-b').find('[data-path="Gladiator"]').parent('.dropdown').dropdown('set selected', b.Gladiator);
+
                     $('#sim-a').find('[data-path="Habitat"]').parent('.dropdown').dropdown('set selected', a.Habitat);
                     $('#sim-b').find('[data-path="Habitat"]').parent('.dropdown').dropdown('set selected', b.Habitat);
+
+                    $('#sim-a').find('[data-path="Boss"]').parent('.dropdown').dropdown('set selected', a.Boss);
+                    $('#sim-b').find('[data-path="Boss"]').parent('.dropdown').dropdown('set selected', b.Boss);
 
                     $('#sim-a').find('[data-path="Pet"]').val(a.Pet).parent('.dropdown').dropdown('set selected', a.Pet);
                     $('#sim-b').find('[data-path="Pet"]').val(b.Pet).parent('.dropdown').dropdown('set selected', b.Pet);
