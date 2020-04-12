@@ -28,14 +28,6 @@
                 margin-bottom: 0.5em;
             }
 
-            .bordered-simple {
-                margin-bottom: 0.35em;
-                padding-top: 0.5em !important;
-                padding-bottom: 0.5em !important;
-                margin-right: 1em;
-                margin-left: 1em;
-            }
-
             .bnone {
                 border: 1px solid transparent;
             }
@@ -54,18 +46,6 @@
 
             .bfour {
                 border: 1px solid red;
-            }
-
-            .bfive {
-                border: 1px solid green;
-            }
-
-            .bsix {
-                border: 1px solid pink;
-            }
-
-            .spaced {
-                margin-top: 2em !important;
             }
         </style>
     </head>
@@ -102,8 +82,8 @@
             <div class="ui two columns grid">
                 <!-- First -->
                 <div class="column">
-                    <div class="ui form">
-                        <div class="bordered bone" id="sim-a">
+                    <div class="ui form" id="sim-a">
+                        <div class="bordered bone">
                             <div class="three fields">
                                 <div class="field">
                                     <label>Type</label>
@@ -197,12 +177,54 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="bordered bthree" data-debug="">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Class</label>
+                                    <input class="text-center" disabled data-dpath="Class" data-type="class">
+                                </div>
+                                <div class="field">
+                                    <label>Health</label>
+                                    <input class="text-center" disabled data-dpath="TotalHealth">
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Attribute</label>
+                                    <input class="text-center" disabled data-dpath="Attribute">
+                                </div>
+                                <div class="field">
+                                    <label>Defense</label>
+                                    <input class="text-center" disabled data-dpath="DefenseAttribute">
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Skip Chance</label>
+                                    <input class="text-center" data-dpath="SkipChance" disabled data-type="percentage">
+                                </div>
+                                <div class="field">
+                                    <label>Critical Chance</label>
+                                    <input class="text-center" data-dpath="CriticalChance" disabled data-opt data-type="percentage">
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Damage</label>
+                                    <input class="text-center" data-dpath="Damage" disabled data-opt>
+                                </div>
+                                <div class="field">
+                                    <label>Critical</label>
+                                    <input class="text-center" data-dpath="Critical" disabled>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Player list -->
                 <div class="column">
-                    <div class="ui form">
-                        <div class="bordered btwo" id="sim-b">
+                    <div class="ui form" id="sim-b">
+                        <div class="bordered btwo">
                             <div class="three fields">
                                 <div class="field">
                                     <label>Type</label>
@@ -293,6 +315,48 @@
                                             <div class="item" data-value="15">15 (75%)</div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bfour" data-debug="">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Class</label>
+                                    <input class="text-center" disabled data-dpath="Class" data-type="class">
+                                </div>
+                                <div class="field">
+                                    <label>Health</label>
+                                    <input class="text-center" disabled data-dpath="TotalHealth">
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Attribute</label>
+                                    <input class="text-center" disabled data-dpath="Attribute">
+                                </div>
+                                <div class="field">
+                                    <label>Defense</label>
+                                    <input class="text-center" disabled data-dpath="DefenseAttribute">
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Skip Chance</label>
+                                    <input class="text-center" data-dpath="SkipChance" disabled data-type="percentage">
+                                </div>
+                                <div class="field">
+                                    <label>Critical Chance</label>
+                                    <input class="text-center" data-dpath="CriticalChance" disabled data-opt data-type="percentage">
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Damage</label>
+                                    <input class="text-center" data-dpath="Damage" disabled data-opt>
+                                </div>
+                                <div class="field">
+                                    <label>Critical</label>
+                                    <input class="text-center" data-dpath="Critical" disabled>
                                 </div>
                             </div>
                         </div>
@@ -306,7 +370,7 @@
                 return NAME_MONSTER[800 + habitat * 20 + pet];
             }
 
-            function setupBlock ($parent) {
+            function setupBlock ($parent, index) {
                 $parent.find('[data-path="Boss"]').change(function () {
                     var $sel = $parent.find('[data-path="Pack"], [data-path="At100"], [data-path="At200"], [data-path="Level"]').parent('.field');
                     var $sel2 = $parent.find('[data-path="Gladiator"]').parent('.dropdown').parent('.field');
@@ -336,23 +400,73 @@
                     });
                 }).trigger('change');
 
-                $parent.find('[data-path]').on('input', function () {
-                    validate();
-                });
+                $parent.find('[data-path]').on('input change', function () {
+                    var o = validate($parent) ? read($parent) : undefined;
+                    if (o && (o.Level || o.Boss)) {
+                        models[index] = PetModel.fromObject(o);
+                        $parent.find('[data-debug]').show();
+                    } else {
+                        models[index] = undefined;
+                        $parent.find('[data-debug]').hide();
+                    }
+
+                    refresh();
+                }).trigger('input');
             }
 
-            var a = null;
-            var b = null;
+            var models = [ undefined, undefined ];
 
-            setupBlock($('#sim-a'), a);
-            setupBlock($('#sim-b'), b);
+            setupBlock($('#sim-a'), 0);
+            setupBlock($('#sim-b'), 1);
 
             $('.dropdown').dropdown();
+
+            function refresh () {
+                var [a, b] = models;
+
+                if (a && b) {
+                    a.initialize(b);
+                    b.initialize(a);
+
+                    dfill($('#sim-a'), a, true);
+                    dfill($('#sim-b'), b, true);
+                } else if (a) {
+                    dfill($('#sim-a'), a);
+                } else if (b) {
+                    dfill($('#sim-b'), b);
+                }
+            }
 
             function fill ($parent, object) {
                 $parent.find('[data-path]').each(function () {
                     $(this).val(getObjectAt(object, $(this).attr('data-path')));
                 });
+            }
+
+            function dfill ($parent, object, init = false) {
+                $parent.find('[data-dpath]').each(function () {
+                    var type = $(this).attr('data-type');
+                    var val = getObjectAt(object, $(this).attr('data-dpath'));
+
+                    if (val == undefined) {
+                        $(this).val(' ');
+                    } else if ($(this).attr('data-dpath') == 'Critical') {
+                        $(this).val(`${ 100 * val }%`);
+                    } else if (type == 'class') {
+                        $(this).val(PLAYER_CLASS[val]);
+                    } else if (type == 'percentage') {
+                        $(this).val(val > 0 ? `${ val.toFixed(2) }%` : 'None');
+                    } else {
+                        $(this).val(formatAsSpacedNumber(val, ' '));
+                    }
+                });
+
+                var x = $parent.find('[data-dpath][data-opt]');
+                if (init) {
+                    x.show();
+                } else {
+                    x.hide();
+                }
             }
 
             function read ($parent) {
@@ -363,8 +477,8 @@
                 return object;
             }
 
-            function validate () {
-                return $('[data-path]').toArray().reduce((errors, element) => {
+            function validate ($parent = $(document.body)) {
+                return $parent.find('[data-path]').toArray().reduce((errors, element) => {
                     if (isNaN($(element).val())) {
                         $(element).parent('.field').addClass('error');
                         return errors + 1;
