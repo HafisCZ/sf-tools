@@ -63,13 +63,7 @@
                 <div class="two wide column">
 
                 </div>
-                <div class="three wide column">
-                    <div class="ui two small buttons">
-                        <button class="ui fluid button" type="submit" id="sim-save">Save</button>
-                        <button class="ui fluid button" type="submit" id="sim-load">Load</button>
-                    </div>
-                </div>
-                <div class="one wide column">
+                <div class="four wide column">
 
                 </div>
                 <div class="four wide column">
@@ -442,32 +436,6 @@
                     dfill($('#sim-b'), b);
                 }
             }
-
-            $('#sim-load').click(function () {
-                if (window.localStorage['pets/0']) {
-                    var [a, b] = JSON.parse(window.localStorage['pets/0']);
-                    fill($('#sim-a'), a);
-                    fill($('#sim-b'), b);
-
-                    $('#sim-a').find('[data-path="Gladiator"]').parent('.dropdown').dropdown('set selected', a.Gladiator);
-                    $('#sim-b').find('[data-path="Gladiator"]').parent('.dropdown').dropdown('set selected', b.Gladiator);
-
-                    $('#sim-a').find('[data-path="Habitat"]').parent('.dropdown').dropdown('set selected', a.Habitat);
-                    $('#sim-b').find('[data-path="Habitat"]').parent('.dropdown').dropdown('set selected', b.Habitat);
-
-                    $('#sim-a').find('[data-path="Boss"]').parent('.dropdown').dropdown('set selected', a.Boss);
-                    $('#sim-b').find('[data-path="Boss"]').parent('.dropdown').dropdown('set selected', b.Boss);
-
-                    $('#sim-a').find('[data-path="Pet"]').val(a.Pet).parent('.dropdown').dropdown('set selected', a.Pet);
-                    $('#sim-b').find('[data-path="Pet"]').val(b.Pet).parent('.dropdown').dropdown('set selected', b.Pet);
-
-                    $('[data-path="Boss"]').trigger('change');
-                }
-            });
-
-            $('#sim-save').click(function () {
-                window.localStorage['pets/0'] = JSON.stringify([ read($('#sim-a')), read($('#sim-b')) ]);
-            });
 
             function fill ($parent, object) {
                 $parent.find('[data-path]').each(function () {
