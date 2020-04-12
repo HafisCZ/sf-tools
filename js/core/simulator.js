@@ -789,7 +789,7 @@ class PetModel {
     }
 
     getDefenseAtribute (source) {
-        return this.Class == source.Class ? this.Attribute : this.DefenseAttribute;
+        return this.Class == source.Class ? (this.Attribute / 2) : this.DefenseAttribute;
     }
 
     static getBonus (pack, at100, at200) {
@@ -814,7 +814,7 @@ class PetModel {
 }
 
 class PetSimulator {
-    simulate (source, target, iterations = 1e7) {
+    simulate (source, target, iterations = 1e6) {
         this.ca = PetModel.fromObject(source);
         this.cb = PetModel.fromObject(target);
 
@@ -826,7 +826,7 @@ class PetSimulator {
             score += this.fight();
         }
 
-        return score / iterations;
+        return 100 * score / iterations;
     }
 
     fight () {

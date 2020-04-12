@@ -63,7 +63,13 @@
                 <div class="two wide column">
 
                 </div>
-                <div class="four wide column">
+                <div class="three wide column">
+                    <div class="ui two small buttons">
+                        <button class="ui fluid button" type="submit" id="sim-save">Save</button>
+                        <button class="ui fluid button" type="submit" id="sim-load">Load</button>
+                    </div>
+                </div>
+                <div class="one wide column">
 
                 </div>
                 <div class="four wide column">
@@ -437,6 +443,23 @@
                 }
             }
 
+            $('#sim-load').click(function () {
+                if (window.localStorage['pets/0']) {
+                    var [a, b] = JSON.parse(window.localStorage['pets/0']);
+                    fill($('#sim-a'), a);
+                    fill($('#sim-b'), b);
+
+                    $('#sim-a').find('[data-path="Pet"]').val(a.Pet).parent('.dropdown').dropdown();
+                    $('#sim-b').find('[data-path="Pet"]').val(b.Pet).parent('.dropdown').dropdown();
+
+                    $('[data-path="Boss"]').trigger('change');
+                }
+            });
+
+            $('#sim-save').click(function () {
+                window.localStorage['pets/0'] = JSON.stringify([ read($('#sim-a')), read($('#sim-b')) ]);
+            });
+
             function fill ($parent, object) {
                 $parent.find('[data-path]').each(function () {
                     $(this).val(getObjectAt(object, $(this).attr('data-path')));
@@ -449,7 +472,7 @@
                     var val = getObjectAt(object, $(this).attr('data-dpath'));
 
                     if (val == undefined) {
-                        $(this).val(' ');
+                        $(this).val('?');
                     } else if ($(this).attr('data-dpath') == 'Critical') {
                         $(this).val(`${ 100 * val }%`);
                     } else if (type == 'class') {
@@ -462,10 +485,8 @@
                 });
 
                 var x = $parent.find('[data-dpath][data-opt]');
-                if (init) {
-                    x.show();
-                } else {
-                    x.hide();
+                if (!init) {
+                    x.val('?');
                 }
             }
 
@@ -509,7 +530,7 @@
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
-                                $('#sim-result').html((message.data.results * 100).toFixed(2) + '%');
+                                $('#sim-result').html(message.data.results.toFixed(2) + '%');
                                 freeze();
                             }
                         }, false);
