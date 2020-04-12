@@ -449,11 +449,11 @@
                     fill($('#sim-a'), a);
                     fill($('#sim-b'), b);
 
-                    $('#sim-a').find('[data-path="Habitat"]').val(a.Habitat).parent('.dropdown').dropdown();
-                    $('#sim-b').find('[data-path="Habitat"]').val(b.Habitat).parent('.dropdown').dropdown();
+                    $('#sim-a').find('[data-path="Habitat"]').parent('.dropdown').dropdown('set selected', a.Habitat);
+                    $('#sim-b').find('[data-path="Habitat"]').parent('.dropdown').dropdown('set selected', b.Habitat);
 
-                    $('#sim-a').find('[data-path="Pet"]').val(a.Pet).parent('.dropdown').dropdown();
-                    $('#sim-b').find('[data-path="Pet"]').val(b.Pet).parent('.dropdown').dropdown();
+                    $('#sim-a').find('[data-path="Pet"]').val(a.Pet).parent('.dropdown').dropdown('set selected', a.Pet);
+                    $('#sim-b').find('[data-path="Pet"]').val(b.Pet).parent('.dropdown').dropdown('set selected', b.Pet);
 
                     $('[data-path="Boss"]').trigger('change');
                 }
