@@ -780,16 +780,16 @@ class PetModel {
     }
 
     initialize (target) {
-        var multa = (this.Class == WARRIOR ? 2 : (this.Class == MAGE ? 4.5 : 2.5)) * (this.Level + 1);
+        var multa = Math.trunc((this.Class == WARRIOR ? 2 : (this.Class == MAGE ? 4.5 : 2.5)) * (this.Level + 1));
         var multb = (1 + Math.max(this.Attribute / 2, this.Attribute - target.getDefenseAtribute(this)) / 10);
-
         this.Damage = Math.trunc(multa * multb);
+
         this.SkipChance = target.Class == MAGE ? 0 : (this.Class == WARRIOR ? 25 : (this.Class == MAGE ? 0 : 50));
         this.CriticalChance = Math.min(50, this.Attribute * 20 / 6 / target.Level);
     }
 
     getDefenseAtribute (source) {
-        return this.Class == source.Class ? (this.Attribute / 2) : this.DefenseAttribute;
+        return (this.Class == source.Class ? this.Attribute : this.DefenseAttribute) / 2;
     }
 
     static getBonus (pack, at100, at200) {
@@ -814,7 +814,7 @@ class PetModel {
 }
 
 class PetSimulator {
-    simulate (source, target, iterations = 1e6) {
+    simulate (source, target) {
         this.ca = PetModel.fromObject(source);
         this.cb = PetModel.fromObject(target);
 
@@ -822,11 +822,11 @@ class PetSimulator {
         this.cb.initialize(this.ca);
 
         var score = 0;
-        for (var i = 0; i < iterations; i++) {
+        for (var i = 0; i < 1E6; i++) {
             score += this.fight();
         }
 
-        return 100 * score / iterations;
+        return score / 1E4;
     }
 
     fight () {
@@ -858,13 +858,7 @@ class PetSimulator {
         var rage = 1 + turn / 6;
 
         if (!getRandom(target.SkipChance)) {
-            var damage = rage * source.Damage;
-            if (getRandom(source.CriticalChance)) {
-                damage *= source.Critical;
-            }
-
-            target.Health -= damage;
-
+            target.Health -= rage * source.Damage * (getRandom(source.CriticalChance) ? source.Critical : 1);
             return target.Health > 0;
         } else {
             return true;

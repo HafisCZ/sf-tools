@@ -63,7 +63,13 @@
                 <div class="two wide column">
 
                 </div>
-                <div class="four wide column">
+                <div class="three wide column">
+                    <div class="ui two small buttons">
+                        <button class="ui button" type="submit" id="sim-save">Save</button>
+                        <button class="ui button" type="submit" id="sim-load">Load</button>
+                    </div>
+                </div>
+                <div class="one wide column">
 
                 </div>
                 <div class="four wide column">
@@ -366,6 +372,8 @@
         </div>
 
         <script type="text/javascript">
+            const queueOps = [];
+
             function getMonsterName (habitat, pet) {
                 return NAME_MONSTER[800 + habitat * 20 + pet];
             }
@@ -398,6 +406,14 @@
                     $parent.find('[data-path="Pet"]').parent('.dropdown').dropdown({
                         values: petlist
                     });
+
+                    if (event && event.type == 'click') {
+                        $(this).trigger('squeuepop');
+                    }
+                }).on('squeuepop', function () {
+                    while (queueOps.length) {
+                        queueOps.pop()();
+                    }
                 }).trigger('change');
 
                 $parent.find('[data-path]').on('input change', function () {
@@ -421,6 +437,9 @@
 
             $('.dropdown').dropdown();
 
+            $('#sim-save').click(() => save());
+            $('#sim-load').click(() => load());
+
             function refresh () {
                 var [a, b] = models;
 
@@ -439,8 +458,16 @@
 
             function fill ($parent, object) {
                 $parent.find('[data-path]').each(function () {
-                    $(this).val(getObjectAt(object, $(this).attr('data-path')));
+                    if (!$(this).parent('.dropdown').length) {
+                        $(this).val(getObjectAt(object, $(this).attr('data-path')).toString());
+                    }
                 });
+
+                queueOps.push(() => $parent.find('[data-path="Pet"]').parent('.dropdown').dropdown('set selected', getObjectAt(object, 'Pet').toString()));
+                $parent.find('[data-path="Habitat"]').parent('.dropdown').dropdown('set selected', getObjectAt(object, 'Habitat').toString());
+
+                $parent.find('[data-path="Boss"]').parent('.dropdown').dropdown('set selected', getObjectAt(object, 'Boss').toString());
+                $parent.find('[data-path="Gladiator"]').parent('.dropdown').dropdown('set selected', getObjectAt(object, 'Gladiator').toString());
             }
 
             function dfill ($parent, object, init = false) {
@@ -464,6 +491,22 @@
                 var x = $parent.find('[data-dpath][data-opt]');
                 if (!init) {
                     x.val('?');
+                }
+            }
+
+            function save () {
+                localStorage['pets/0'] = JSON.stringify([ read($('#sim-a')), read($('#sim-b')) ]);
+            }
+
+            function load () {
+                if (localStorage['pets/0']) {
+                    var [ a, b ] = JSON.parse(localStorage['pets/0']);
+
+                    fill($('#sim-a'), a);
+                    fill($('#sim-b'), b);
+
+                    $('#sim-a').find('[data-path]').first().trigger('change');
+                    $('#sim-b').find('[data-path]').first().trigger('change');
                 }
             }
 
