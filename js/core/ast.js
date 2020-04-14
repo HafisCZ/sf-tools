@@ -1332,28 +1332,28 @@ const SP_KEYWORD_MAPPING_2 = {
         statistics: false
     },
     '15 Academy': {
-        expr: p => p.Dungeons.Extra.Normal[0]
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Normal[0] : undefined
     },
     '16 Hemorridor': {
-        expr: p => p.Dungeons.Extra.Normal[1]
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Normal[1] : undefined
     },
     '17 Nordic': {
-        expr: p => p.Dungeons.Extra.Normal[2]
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Normal[2] : undefined
     },
     '18 Greek': {
-        expr: p => p.Dungeons.Extra.Normal[3]
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Normal[3] : undefined
     },
     'S15 Academy': {
-        expr: p => p.Dungeons.Extra.Shadow[0]
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow[0] : undefined
     },
     'S16 Hemorridor': {
-        expr: p => p.Dungeons.Extra.Shadow[1]
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow[1] : undefined
     },
     'S17 Nordic': {
-        expr: p => p.Dungeons.Extra.Shadow[2]
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow[2] : undefined
     },
     'S18 Greek': {
-        expr: p => p.Dungeons.Extra.Shadow[3]
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow[3] : undefined
     },
     'Scrolls': {
         expr: p => p.Witch.Stage
