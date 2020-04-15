@@ -1242,6 +1242,24 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Hydra Dead': {
         expr: p => p.Achievements[63].Owned
+    },
+    'XP': {
+        expr: p => p.XP,
+        format: (p, e, x) => formatAsSpacedNumber(x),
+        format_diff: true,
+        statistics: false
+    },
+    'XP Required': {
+        expr: p => p.XPNext,
+        format: (p, e, x) => formatAsSpacedNumber(x),
+        format_diff: true,
+        statistics: false
+    },
+    'XP Total': {
+        expr: p => p.XPTotal,
+        format: (p, e, x) => formatAsSpacedNumber(x),
+        format_diff: true,
+        statistics: false
     }
 };
 

@@ -905,6 +905,8 @@ class SFPlayer {
         } else {
             this.Fortress.Gladiator = 1;
         }
+
+        this.XPTotal = this.XP + ExperienceTotal[Math.min(393, this.Level)] + Math.max(0, this.Level - 393) * 1500000000;
     }
 }
 

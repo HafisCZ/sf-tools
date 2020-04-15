@@ -347,7 +347,7 @@ class TableInstance {
                                 var reference = cmp ? header.expr(compare, this.settings.getCompareEnvironment(), cmp[key]) : undefined;
                                 if (reference) {
                                     reference = header.flip ? (reference - value) : (value - reference);
-                                    reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
+                                    reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(player, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
                                 }
 
                                 var color = CompareEval.evaluate(value, header.color);
@@ -382,7 +382,7 @@ class TableInstance {
                             var reference = (header.difference && compare) ? header.expr(compare, this.settings.getCompareEnvironment()) : undefined;
                             if (!isNaN(reference)) {
                                 reference = header.flip ? (reference - value) : (value - reference);
-                                reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
+                                reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(player, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
                             } else {
                                 reference = '';
                             }
@@ -407,7 +407,7 @@ class TableInstance {
                                 reference = operation(reference);
                                 if (!isNaN(reference)) {
                                     reference = header.flip ? (reference - value) : (value - reference);
-                                    reference = CellGenerator.Difference(reference, header.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
+                                    reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(null, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
                                 } else {
                                     reference = '';
                                 }
@@ -875,7 +875,9 @@ class TableInstance {
 
                 if (reference && !isNaN(reference)) {
                     reference = extra.flip ? (reference - value) : (value - reference);
-                    reference = CellGenerator.Difference(reference, extra.brackets, Number.isInteger(reference) ? reference : reference.toFixed(2));
+                    reference = CellGenerator.Difference(reference, extra.brackets, extra.format_diff ? extra.format(null, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
+                } else {
+                    reference = '';
                 }
 
                 var color = CompareEval.evaluate(value, extra.color);
@@ -1384,6 +1386,15 @@ const SettingsCommands = [
     }, function (string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
+    }),
+    // Local
+    // format - Specifies formatter for the field
+    new SettingsCommand(/^(format difference) (on|off)$/, function (root, string) {
+        var [ , key, arg ] = this.match(string);
+        root.setLocalSharedVariable('format_diff', ARG_MAP[arg]);
+    }, function (string) {
+        var [ , key, arg ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
     }),
     // Local
     // format - Specifies formatter for the field
