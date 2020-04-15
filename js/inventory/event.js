@@ -274,11 +274,13 @@ class ResourcesView extends View {
         return `
             <div class="css-resource-item ${ this.Dismantles.find(it => it.InventoryID == item.InventoryID) ? 'selected' : '' }" data-id="${ item.InventoryID }">
                 <div class="css-inventory-item-header clickable">
-                    ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }
-                    ${ toileted ? '<span class="css-inventory-sub washed">Washed</span> ' : '' }
-                    ${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }
-                    ${ ITEM_TYPES[item.Type] } (${ PLAYER_CLASS[item.Class] })
-                    ${ item.HasRune ? ` <span class="css-inventory-sub runed">${ getNiceRuneText(item.RuneType) }</span>` : '' }
+                    <div class="item">
+                        ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ toileted ? '<span class="css-inventory-sub washed">Washed</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }
+                    </div>
+                    <div class="item">
+                        ${ Loca.get(item.Type, item.Index, item.Class) } (${ PLAYER_CLASS[item.Class] })
+                        ${ item.HasRune ? ` <span class="css-inventory-sub runed nobr">${ getNiceRuneText(item.RuneType) }</span>` : '' }
+                    </div>
                 </div>
                 <div class="css-resource-item-body">
                     ${ toileted ? '' : getLocalizedValue('Sell:', sell.Gold, sell.Metal, sell.Crystal) }
@@ -1157,7 +1159,13 @@ class InventoryView extends View {
             return `
                 <div class="css-inventory-item ${ isEquip ? 'clickable micro' : '' }" ${ isEquip ? 'data-eid' : 'data-id' }="${ item.InventoryID }">
                     <div class="css-inventory-item-header">
-                        ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ toileted ? '<span class="css-inventory-sub washed">Washed</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }${ ITEM_TYPES[item.Type] } (${ PLAYER_CLASS[item.Class] })${ item.HasRune ? ` <span class="css-inventory-sub runed">${ getNiceRuneText(item.RuneType) }</span>` : '' }
+                        <div class="item">
+                            ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ toileted ? '<span class="css-inventory-sub washed">Washed</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }
+                        </div>
+                        <div class="item">
+                            ${ Loca.get(item.Type, item.Index, item.Class) } (${ PLAYER_CLASS[item.Class] })
+                            ${ item.HasRune ? ` <span class="css-inventory-sub runed nobr">${ getNiceRuneText(item.RuneType) }</span>` : '' }
+                        </div>
                     </div>
                     <div class="front">
                         <div class="css-inventory-item-attribute">

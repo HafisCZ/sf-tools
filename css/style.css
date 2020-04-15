@@ -599,7 +599,7 @@ h3.file-selected {
 }
 
 .css-inventory-item {
-    height: 33em;
+    height: 36em;
     border: 1px gray solid;
     padding: .25em;
 
@@ -609,7 +609,7 @@ h3.file-selected {
 }
 
 .css-resource-item {
-    height: 20em;
+    height: 23em;
     border: 1px gray solid;
     padding: .25em;
 
@@ -668,10 +668,11 @@ h3.file-selected {
     font-weight: bold;
     padding-bottom: 0.15em;
     border-bottom: 1px gray solid;
+    height: 5.5em;
 }
 
 .css-inventory-item.micro {
-    height: 2.15em;
+    height: 5.65em;
 }
 
 .css-inventory-item.micro .css-inventory-item-header {
@@ -693,6 +694,10 @@ h3.file-selected {
     display: flex;
     flex-direction: column;
     align-content: left;
+}
+
+.nobr {
+    white-space: nowrap;
 }
 
 .css-resource-item-body {
@@ -769,7 +774,7 @@ h3.file-selected {
 
 .css-inventory-item-extra {
     position: absolute;
-    top: 12em;
+    top: 15em;
     padding-left: .5em;
     display: flex;
     flex-direction: column;
