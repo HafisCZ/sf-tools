@@ -195,15 +195,19 @@ class SFItem {
         if (upgrades > this.Upgrades) {
             while (this.Upgrades != upgrades) {
                 this.Upgrades++;
-                for (var j = 0; j < 2; j++) {
-                    this.Attributes[j] = Math.trunc(1.03 * this.Attributes[j]);
+                for (var j = 0; j < 3; j++) {
+                    if (this.AttributeTypes[j] < 30) {
+                        this.Attributes[j] = Math.trunc(1.03 * this.Attributes[j]);
+                    }
                 }
             }
         } else if (upgrades < this.Upgrades) {
             while (this.Upgrades != upgrades) {
                 this.Upgrades--;
-                for (var j = 0; j < 2; j++) {
-                    this.Attributes[j] = Math.trunc((1 / 1.03) * this.Attributes[j]);
+                for (var j = 0; j < 3; j++) {
+                    if (this.AttributeTypes[j] < 30) {
+                        this.Attributes[j] = Math.trunc((1 / 1.03) * this.Attributes[j]);
+                    }
                 }
             }
         }
@@ -223,8 +227,10 @@ class SFItem {
             price.Crystal += p.Crystal;
 
             this.Upgrades++;
-            for (var j = 0; j < 2; j++) {
-                this.Attributes[j] = Math.trunc(1.03 * this.Attributes[j]);
+            for (var j = 0; j < 3; j++) {
+                if (this.AttributeTypes[j] < 30) {
+                    this.Attributes[j] = Math.trunc(1.03 * this.Attributes[j]);
+                }
             }
         }
 
