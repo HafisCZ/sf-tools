@@ -1141,12 +1141,6 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Fortress.Gladiator,
         format: (p, e, x) => (x == 0 ? '' : (x == 1 ? '1+' : (x == 5 ? '5+' : (x == 10 ? '10+' : 15))))
     },
-    'XP': {
-        expr: p => p.XP
-    },
-    'Level XP': {
-        expr: p => p.XPNext
-    },
     '1 Catacombs': {
         expr: p => p.Dungeons.Normal[0]
     },
