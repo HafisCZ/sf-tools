@@ -341,6 +341,7 @@ function getLocalizedTransmog (item) {
         return '';
     }
 
+    clone.upgradeTo(0);
     var clone = item.clone();
     var dismantle = item.getDismantlePrice();
 
