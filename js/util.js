@@ -137,14 +137,6 @@ class ComplexDataType {
         this.bytes = [];
     }
 
-    static create (data) {
-        if (data instanceof ComplexDataType) {
-            return data;
-        } else {
-            return new ComplexDataType(data);
-        }
-    }
-
     empty () {
         return this.values.length <= this.ptr;
     }
@@ -191,7 +183,7 @@ class ComplexDataType {
     sub (size) {
         var b = this.values.slice(this.ptr, this.ptr + size);
         this.ptr += size;
-        return new ComplexDataType(b);
+        return b;
     }
 
     clear () {

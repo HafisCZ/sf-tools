@@ -284,6 +284,7 @@ class ResourcesView extends View {
                 </div>
                 <div class="css-resource-item-body">
                     ${ toileted ? '' : getLocalizedValue('Sell:', sell.Gold, sell.Metal, sell.Crystal) }
+                    ${ getLocalizedTransmog(item.Original) }
                     ${ item.DismantlePrice.Metal == 0 && item.DismantlePrice.Crystal == 0 ? '' : getLocalizedBlacksmith('Dismantle:', dismantle.Metal, dismantle.Crystal) }
                     ${ item.Upgrades < 20 ? getLocalizedBlacksmith2(`Upgrade:`, upgradePrice.Metal, upgradePrice.Crystal, upgradeRange.Metal, upgradeRange.Crystal, this.Ready) : '' }
                 </div>
@@ -332,6 +333,54 @@ class ResourcesView extends View {
         } else {
             $el.parent('[data-op]').hide();
         }
+    }
+}
+
+function getLocalizedTransmog (item) {
+    if (item.Index < 50) {
+        return '';
+    }
+
+    var clone = item.clone();
+    var dismantle = item.getDismantlePrice();
+
+    var best = item.Index;
+    var bestPrice = item.getDismantlePrice();
+
+    clone.setPic(50);
+    while (Loca.get(clone.Type, clone.Index, clone.Class)) {
+        var price = clone.getDismantlePrice();
+        if (price.Crystal > bestPrice.Crystal) {
+            best = clone.Index;
+            bestPrice = price;
+        }
+
+        clone.setPic(clone.Index + 1);
+    }
+
+    var diff = {
+        Metal: bestPrice.Metal - dismantle.Metal,
+        Crystal: bestPrice.Crystal - dismantle.Crystal
+    };
+
+    clone.setPic(best);
+
+    if (diff.Crystal) {
+        return `
+            <div class="item">
+                <div>T: <b style="color: magenta;">${ Loca.get(clone.Type, clone.Index, clone.Class) }</b></div>
+                <div class="css-inventory-item-sub3">
+                    <div class="item">
+                        ${ diff.Metal != 0 ? `<img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img> ${ diff.Metal > 0 ? '+' : '' }${ formatAsSpacedNumber(diff.Metal) }` : '' }
+                    </div>
+                    <div class="item">
+                        ${ diff.Crystal != 0 ? `<img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img> ${ diff.Crystal > 0 ? '+' : '' }${ formatAsSpacedNumber(diff.Crystal) }` : '' }
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        return '';
     }
 }
 
@@ -1278,7 +1327,7 @@ const UI = {
     },
     initialize: function () {
         $(document).on('contextmenu', function () {
-            //event.preventDefault();
+            event.preventDefault();
         });
 
         UI.PlayerSelect = new PlayerSelectView('view-playerselect');

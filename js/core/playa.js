@@ -4,7 +4,7 @@ class SFItem {
     }
 
     constructor (data, slot) {
-        var dataType = ComplexDataType.create(data);
+        var dataType = new ComplexDataType(data);
         dataType.assert(12);
 
         var type = dataType.short();
@@ -21,7 +21,7 @@ class SFItem {
         var upgradeLevel = dataType.byte();
         var socketPower = dataType.short();
 
-        this.Data = data.values || data;
+        this.Data = data;
         this.Slot = slot;
         this.GemType = socket >= 10 ? (1 + (socket % 10)) : 0;
         this.HasSocket = socket > 0;
@@ -74,6 +74,11 @@ class SFItem {
         var data = [ ... this.Data ];
         data[5] = type;
         return new SFItem(data);
+    }
+
+    setPic (pic) {
+        this.Index = pic;
+        this.PicIndex = (this.Class - 1) * 1000 + pic;
     }
 
     clone () {
@@ -358,7 +363,7 @@ class SFItem {
         }
     }
 
-    getDismantleReward () {
+    getDismantlePrice () {
         if (this.Type == 0 || this.Type > 10) {
             return {
                 Metal: 0,
@@ -395,10 +400,25 @@ class SFItem {
                 num3 *= 2;
             }
 
+            return {
+                Metal: num2,
+                Crystal: num3
+            };
+        }
+    }
+
+    getDismantleReward () {
+        if (this.Type == 0 || this.Type > 10) {
+            return {
+                Metal: 0,
+                Crystal: 0
+            };
+        } else {
+            var dism = this.getDismantlePrice();
             var sell = this.getBlacksmithPrice();
             return {
-                Metal: num2 + sell.Metal,
-                Crystal: num3 + sell.Crystal
+                Metal: dism.Metal + sell.Metal,
+                Crystal: dism.Crystal + sell.Crystal
             };
         }
     }
@@ -406,7 +426,7 @@ class SFItem {
 
 class SFFighter {
     constructor (data) {
-        var dataType = ComplexDataType.create(data);
+        var dataType = new ComplexDataType(data);
         dataType.assert(47);
 
         this.ID = dataType.long();
@@ -527,7 +547,7 @@ class SFGroup {
         this.Honor = data.save[13];
         this.Pet = data.save[378];
 
-        var dataType = ComplexDataType.create(data.save.slice(4, 8));
+        var dataType = new ComplexDataType(data.save.slice(4, 8));
         dataType.short();
         this.PortalLife = dataType.short();
         dataType.short();
@@ -916,7 +936,7 @@ class SFOtherPlayer extends SFPlayer {
 
         this.init(data);
 
-        var dataType = ComplexDataType.create(data.save);
+        var dataType = new ComplexDataType(data.save);
         dataType.assert(256, true);
 
         this.ID = dataType.long();
@@ -1104,7 +1124,7 @@ class SFOtherPlayer extends SFPlayer {
         ];
         dataType.clear(); // skip
 
-        dataType = ComplexDataType.create(data.pets);
+        dataType = new ComplexDataType(data.pets);
         dataType.assert(6, true);
 
         dataType.skip(1); // skip
@@ -1131,7 +1151,7 @@ class SFOwnPlayer extends SFPlayer {
 
         this.init(data);
 
-        var dataType = ComplexDataType.create(data.save);
+        var dataType = new ComplexDataType(data.save);
         dataType.assert(650);
 
         dataType.skip(1); // skip
@@ -1412,7 +1432,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Extra.Normal[3] = Math.max(0, dataType.short() - 2);
         this.Dungeons.Extra.Shadow[3] = Math.max(0, dataType.short() - 2);
 
-        dataType = ComplexDataType.create(data.pets);
+        dataType = new ComplexDataType(data.pets);
         dataType.assert(288, true);
 
         dataType.skip(104); // skip
@@ -1438,7 +1458,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Extra.Shadow.Total = this.Dungeons.Shadow.Total + this.Dungeons.Extra.Shadow.reduce((a, b) => a + b, 0);
 
         if (!Database.Partial) {
-            dataType = ComplexDataType.create(data.chest);
+            dataType = new ComplexDataType(data.chest);
 
             for (var i = 0; i < 40 && !dataType.empty(); i++) {
                 var item = new SFItem(dataType.sub(12));
@@ -1452,7 +1472,7 @@ class SFOwnPlayer extends SFPlayer {
             }
         }
 
-        dataType = ComplexDataType.create(data.witch);
+        dataType = new ComplexDataType(data.witch);
         this.Witch.Stage = dataType.long();
         this.Witch.Items = dataType.long();
         this.Witch.ItemsNext = Math.max(0, dataType.long());
@@ -1495,7 +1515,7 @@ class SFOwnPlayer extends SFPlayer {
                 Kunigunde: {}
             };
 
-            dataType = ComplexDataType.create(data.tower);
+            dataType = new ComplexDataType(data.tower);
             dataType.skip(3);
             var bert = {
                 Level: dataType.long()
