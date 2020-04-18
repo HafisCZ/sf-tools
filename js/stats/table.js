@@ -1219,7 +1219,7 @@ const SettingsCommands = [
         }
     }),
     // Create new category
-    new SettingsCommand(/^(category)(?: (\S+[\S ]*))?$/, function (root, string) {
+    new SettingsCommand(/^(category)(?: (.+))?$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.createCategory(a || '', a == undefined);
     }, function (string) {
@@ -1231,7 +1231,7 @@ const SettingsCommands = [
         }
     }),
     // Create new header
-    new SettingsCommand(/^(header)(?: (\S+[\S ]*))?$/, function (root, string) {
+    new SettingsCommand(/^(header)(?: (.+))?$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.createHeader(a || '');
     }, function (string) {
@@ -1420,7 +1420,7 @@ const SettingsCommands = [
     }),
     // Local
     // alias - Override name of the column
-    new SettingsCommand(/^(alias) ((@?)(\w+[\w ]*))$/, function (root, string) {
+    new SettingsCommand(/^(alias) ((@?)(.*))$/, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
         var val = Constants.GetValue(prefix, value);
 
