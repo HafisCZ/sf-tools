@@ -1489,7 +1489,7 @@ class SettingsFloatView extends SettingsView {
     }
 }
 
-// Loader View
+// Setup View
 class LoaderView extends View {
     constructor (parent) {
         super(parent);
@@ -1497,6 +1497,19 @@ class LoaderView extends View {
 
     alert (text) {
         this.$parent.find('[data-op="text"]').html(`<h1 class="ui header white">${ text }</h1>`);
+    }
+}
+
+// Setup View
+class SetupView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$parent.find('[data-op="accept"]').click(function () {
+            localStorage.termsOK = true;
+
+            UI.show(UI.Groups);
+        });
     }
 }
 
@@ -1538,5 +1551,6 @@ const UI = {
     preinitialize: function () {
         UI.Loader = new LoaderView('modal-loader');
         UI.Exception = new ExceptionView('modal-exception');
+        UI.Setup = new SetupView('modal-setup');
     }
 }

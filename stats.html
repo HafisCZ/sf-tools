@@ -56,6 +56,36 @@
             </div>
         </div>
 
+        <!-- SetupView -->
+        <div id="modal-setup" class="ui main container hidden">
+            <div class="ui active dimmer" style="color: white;">
+                <h2 class="ui header white">Before you start ...</h2>
+                <p>
+                    Take a look <a href="https://cdn.discordapp.com/attachments/551830574940291073/681571313063952384/SFTools_Manual.pdf">here</a> and <a href="manual.html">here</a> to learn how to use this site.
+                </p>
+                <h2 class="ui header white" style="margin-top: 2em;">Usage terms</h2>
+                <div style="text-align: left; width: 30%;">
+                    <ul>
+                        <li>
+                            It is advised to never share HAR files, as they might contain private data.
+                            If needed, you can import & export the file to create safe to share version.
+                        </li>
+                        <li style="margin-top: 1em;">
+                            This site is distributed AS IS, without any warranties.
+                            It is your duty to archive your files in case new site update is not compatible with your data.
+                        </li>
+                        <li style="margin-top: 1em;">
+                            You are allowed to use, share and also clone this site freely, but it is not allowed to redistribute it or any of its parts in any way.
+                        </li>
+                        <li style="margin-top: 1em;">
+                            By using this site, you automatically agree to Playa Games' Terms of Service.
+                        </li>
+                    </ul>
+                </div>
+                <button class="ui green button" style="width: 20%; margin-top: 2em;" data-op="accept">I understand & accept these terms</button>
+            </div>
+        </div>
+
         <!-- FilesView -->
         <div id="view-files" class="ui main container hidden sf-container">
             <div class="ui grid">
@@ -385,6 +415,7 @@
             }
 
             UI.preinitialize();
+
             Storage.load(function () {
                 UI.initialize();
                 UI.show(UI.Groups);
@@ -395,6 +426,10 @@
                 $('#show-files').click(() => UI.show(UI.Files));
                 $('#show-settings').click(() => UI.show(UI.Settings));
                 $('#show-developer').click(() => UI.show(UI.Developer));
+
+                if (!localStorage.termsOK) {
+                    UI.show(UI.Setup);
+                }
             }, function () {
                 // Firefox private mode
                 UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
