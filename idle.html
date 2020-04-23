@@ -458,7 +458,7 @@
 
                     if (target) {
                         setField(getFieldId(i, 'share'), `+${ (100 * (building.getProductionRate(target) - building.getProductionRate(level)) * boost.rate * runeMultiplier / productionApproximate).toFixed(1) }%`);
-                        setField(getFieldId(i, 'rate'), `+${ Math.format(Math.trunc((building.getCycleProduction(target) - building.getCycleProduction(level)) * boost.money * runeMultiplier )) }`);
+                        setField(getFieldId(i, 'rate'), `+${ formatNumber(Math.trunc((building.getCycleProduction(target) - building.getCycleProduction(level)) * boost.money * runeMultiplier )) }`);
                     } else {
                         setField(getFieldId(i, 'share'), `${ (100 * building.getProductionRate(level) * boost.rate * runeMultiplier / productionApproximate).toFixed(1) }%`);
                         setMoneyField(getFieldId(i, 'rate'), building.getCycleProduction(level) * boost.money * runeMultiplier);
