@@ -1182,22 +1182,109 @@ class PlayersView extends View {
                 }
             ]
         });
+
+        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield('create', 5).change((event) => {
+            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|a):/);
+
+            var terms = [
+                {
+                   test: function (arg, player) {
+                       var matches = arg.reduce((total, term) => {
+                           if (player.Name.toLowerCase().includes(term) || player.Prefix.includes(term) || PLAYER_CLASS_SEARCH[player.Class].includes(term) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(term))) {
+                               return total + 1;
+                           } else {
+                               return total;
+                           }
+                       }, 0);
+                       return (matches == arg.length);
+                   },
+                   arg: filter[0].toLowerCase().split(' ')
+                }
+            ];
+
+            this.nosep = false;
+            for (var i = 1; i < filter.length; i += 2) {
+                var key = filter[i];
+                var arg = (filter[i + 1] || '').trim();
+
+                if (key == 'c') {
+                    terms.push({
+                        test: (arg, player) => PLAYER_CLASS_SEARCH[player.Class] == arg,
+                        arg: arg.toLowerCase()
+                    });
+                } else if (key == 'p') {
+                    terms.push({
+                        test: (arg, player) => player.Name.toLowerCase().includes(arg),
+                        arg: arg.toLowerCase()
+                    });
+                } else if (key == 'g') {
+                    terms.push({
+                        test: (arg, player) => player.hasGuild() && player.Group.Name.toLowerCase().includes(arg),
+                        arg: arg.toLowerCase()
+                    });
+                } else if (key == 's') {
+                    terms.push({
+                        test: (arg, player) => player.Prefix.includes(arg),
+                        arg: arg.toLowerCase()
+                    });
+                } else if (key == 'l') {
+                    terms.push({
+                        test: (arg, player) => player.Timestamp == Database.Latest,
+                        arg: arg.toLowerCase()
+                    });
+                } else if (key == 'e') {
+                    var ast = new AST(arg);
+                    if (ast.isValid()) {
+                        terms.push({
+                            test: (arg, player) => arg.eval(player, this.settings),
+                            arg: ast
+                        });
+                    }
+                } else if (key == 'a') {
+                    this.nosep = true;
+                }
+            }
+
+            this.entries = [];
+
+            for (var player of Object.values(Database.Players)) {
+                var hidden = Database.Hidden.includes(player.Latest.Identifier);
+                if (this.hidden || !hidden) {
+                    var matches = true;
+                    for (var term of terms) {
+                        matches &= term.test(term.arg, player.Latest, player.LatestTimestamp);
+                    }
+
+                    if (matches) {
+                        this.entries.push(player);
+                    }
+                }
+            }
+
+            this.entries.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
+
+            this.refresh();
+        });
     }
 
     show () {
+        this.settings = Settings.load();
+        this.$filter.trigger('change');
+    }
+
+    refresh () {
+        var players = this.entries;
+
         var content = '';
         var content2 = '';
 
         var index = 0;
         var index2 = 0;
 
-        var players = Object.values(Database.Players);
-        players.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
-
         for (var i = 0, player; player = players[i]; i++) {
             var hidden = Database.Hidden.includes(player.Latest.Identifier);
             if (this.hidden || !hidden) {
-                if (player.Latest.Own) {
+                if (player.Latest.Own || this.nosep) {
                     content += `
                         ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
                         <div class="column">

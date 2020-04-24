@@ -345,9 +345,11 @@ class TableInstance {
                                 }
 
                                 var reference = cmp ? header.expr(compare, this.settings.getCompareEnvironment(), cmp[key]) : undefined;
-                                if (reference) {
+                                if (reference != undefined) {
                                     reference = header.flip ? (reference - value) : (value - reference);
                                     reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(player, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
+                                } else {
+                                    reference = '';
                                 }
 
                                 var color = CompareEval.evaluate(value, header.color);
