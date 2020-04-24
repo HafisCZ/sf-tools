@@ -807,7 +807,7 @@ class BrowseView extends View {
 
         // Filter
         this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield('create', 5).change((event) => {
-            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x):/);
+            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h):/);
 
             var terms = [
                 {
@@ -827,6 +827,9 @@ class BrowseView extends View {
 
             var sim = undefined;
             var perf = undefined;
+
+            this.shidden = false;
+
             for (var i = 1; i < filter.length; i += 2) {
                 var key = filter[i];
                 var arg = (filter[i + 1] || '').trim();
@@ -871,6 +874,8 @@ class BrowseView extends View {
                 } else if (key == 'x' && !isNaN(arg)) {
                     this.recalculate = true;
                     sim = isNaN(arg) ? 1 : Math.max(1, Number(arg));
+                } else if (key == 'h') {
+                    this.shidden = true;
                 }
             }
 
@@ -878,7 +883,7 @@ class BrowseView extends View {
 
             for (var player of Object.values(Database.Players)) {
                 var hidden = Database.Hidden.includes(player.Latest.Identifier);
-                if (this.hidden || !hidden) {
+                if (this.hidden || !hidden || this.shidden) {
                     var currentPlayer = player.List.find(entry => entry[0] <= this.timestamp);
                     if (currentPlayer) {
                         var matches = true;
@@ -1184,7 +1189,7 @@ class PlayersView extends View {
         });
 
         this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield('create', 5).change((event) => {
-            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|a):/);
+            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|a|h|o):/);
 
             var terms = [
                 {
@@ -1202,7 +1207,10 @@ class PlayersView extends View {
                 }
             ];
 
+            this.shidden = false;
+            this.sother = false;
             this.nosep = false;
+
             for (var i = 1; i < filter.length; i += 2) {
                 var key = filter[i];
                 var arg = (filter[i + 1] || '').trim();
@@ -1242,6 +1250,10 @@ class PlayersView extends View {
                     }
                 } else if (key == 'a') {
                     this.nosep = true;
+                } else if (key == 'h') {
+                    this.shidden = true;
+                } else if (key == 'o') {
+                    this.sother = true;
                 }
             }
 
@@ -1249,7 +1261,7 @@ class PlayersView extends View {
 
             for (var player of Object.values(Database.Players)) {
                 var hidden = Database.Hidden.includes(player.Latest.Identifier);
-                if (this.hidden || !hidden) {
+                if (this.hidden || !hidden || this.shidden) {
                     var matches = true;
                     for (var term of terms) {
                         matches &= term.test(term.arg, player.Latest, player.LatestTimestamp);
@@ -1283,7 +1295,7 @@ class PlayersView extends View {
 
         for (var i = 0, player; player = players[i]; i++) {
             var hidden = Database.Hidden.includes(player.Latest.Identifier);
-            if (this.hidden || !hidden) {
+            if (this.hidden || !hidden || this.shidden) {
                 if (player.Latest.Own || this.nosep) {
                     content += `
                         ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
@@ -1297,7 +1309,7 @@ class PlayersView extends View {
                         </div>
                     `;
                     index++;
-                } else if (this.others) {
+                } else if (this.others || this.sother) {
                     content2 += `
                         ${ index2 % 5 == 0 ? `${ index2 != 0 ? '</div>' : '' }<div class="row">` : '' }
                         <div class="column">
@@ -1318,8 +1330,8 @@ class PlayersView extends View {
         content += '</div>';
         content2 += '</div>';
 
-        this.$list.html(content);
-        this.$list2.html(content2);
+        this.$list.html(index == 0 ? content2 : content);
+        this.$list2.html(index == 0 ? '' : content2);
 
         this.$parent.find('[data-id]').click(function () {
             UI.show(UI.PlayerHistory, $(this).attr('data-id'));
