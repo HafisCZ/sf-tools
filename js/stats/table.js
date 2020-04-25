@@ -730,7 +730,7 @@ class TableInstance {
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
                     </tr>
                 </thead>
-                <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
+                <tbody class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ join(this.entries, e => e.content) }
                 </tbody>
             `,
@@ -762,7 +762,7 @@ class TableInstance {
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
                     </tr>
                 </thead>
-                <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
+                <tbody class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ join(this.entries, (e, ei) => e.content.replace(/\<ispan data\-indexed\=\"2\"\>\d*\<\/ispan\>/, `<ispan data-indexed="2">${ ei + 1 }</ispan>`), 0, this.array.perf || this.settings.globals.performance) }
                 </tbody>
             `,
@@ -997,7 +997,7 @@ class TableInstance {
                 <thead>
 
                 </thead>
-                <tbody class="${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
+                <tbody class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ content }
                 </tbody>
             `,
@@ -1072,6 +1072,8 @@ class SettingsCommand {
 const ARG_MAP = {
     'off': 0,
     'on': 1,
+    'thick': 2,
+    'thin': 1,
     'static': 2,
     'above or equal': 'ae',
     'below or equal': 'be',
@@ -1289,7 +1291,16 @@ const SettingsCommands = [
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a, a == 'static' ? 'on' : a) }`;
     }),
     // Global
-    // indexed - Show indexes in first column of the table
+    // lined - Show lines between players
+    new SettingsCommand(/^(lined) (on|off|thin|thick)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setGlobalVariable(key, ARG_MAP[a]);
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a, a == 'thick' || a == 'thin' ? 'on' : a) }`;
+    }),
+    // Global
+    // performance - Set the amount of entries displayed
     new SettingsCommand(/^(performance) (\d+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setGlobalVariable(key, Number(a));

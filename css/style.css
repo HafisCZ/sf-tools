@@ -490,6 +490,14 @@ h3.file-selected {
     background-color: #7d7d7d3f;
 }
 
+.css-entry-lined tr.css-entry {
+    border-bottom: 1px solid black;
+}
+
+.css-entry-thicklined tr.css-entry {
+    border-bottom: 2px solid black;
+}
+
 .css-maxi-row tr.css-entry {
     height: 3em !important;
 }
