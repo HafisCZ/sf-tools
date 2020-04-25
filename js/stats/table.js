@@ -715,7 +715,7 @@ class TableInstance {
         var size = 200 + (this.settings.globals.indexed ? 50 : 0) + this.flat.reduce((a, b) => a + b.width, 0);
         return [
             `
-                <thead>
+                <thead style="${ this.settings.globals.font ? `font-size: ${ this.settings.globals.font };` : '' }">
                     <tr>
                         ${ this.settings.globals.indexed ? `<td width="50" colspan="1" rowspan="2">#</td>` : '' }
                         <td width="200" colspan="1" rowspan="2" class="border-right-thin">Date</td>
@@ -730,7 +730,7 @@ class TableInstance {
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
                     </tr>
                 </thead>
-                <tbody class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
+                <tbody style="${ this.settings.globals.font ? `font-size: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ join(this.entries, e => e.content) }
                 </tbody>
             `,
@@ -747,7 +747,7 @@ class TableInstance {
 
         return [
             `
-                <thead>
+                <thead style="${ this.settings.globals.font ? `font-size: ${ this.settings.globals.font };` : '' }">
                     <tr>
                         ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
                         ${ server ? `<td width="${ server }" rowspan="2" class="clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
@@ -762,7 +762,7 @@ class TableInstance {
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
                     </tr>
                 </thead>
-                <tbody class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
+                <tbody style="${ this.settings.globals.font ? `font-size: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ join(this.entries, (e, ei) => e.content.replace(/\<ispan data\-indexed\=\"2\"\>\d*\<\/ispan\>/, `<ispan data-indexed="2">${ ei + 1 }</ispan>`), 0, this.array.perf || this.settings.globals.performance) }
                 </tbody>
             `,
@@ -997,7 +997,7 @@ class TableInstance {
                 <thead>
 
                 </thead>
-                <tbody class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
+                <tbody style="${ this.settings.globals.font ? `font-size: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ content }
                 </tbody>
             `,
@@ -1307,6 +1307,17 @@ const SettingsCommands = [
     }, function (string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+    }),
+    // Global
+    // font - Set font size
+    new SettingsCommand(/^(font) (.+)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        if (getCSSFontSize(a)) {
+            root.setGlobalVariable(key, a);
+        }
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ getCSSFontSize(a) ? SFormat.Normal(a) : SFormat.Error(a) }`;
     }),
     // Global
     // members - Show member classes and changes

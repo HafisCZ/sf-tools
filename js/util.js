@@ -75,6 +75,12 @@ function getCSSColor(string) {
     return style.color;
 }
 
+function getCSSFontSize(string) {
+    var style = new Option().style;
+    style['font-size'] = string;
+    return style['font-size'];
+}
+
 // Set toggle button to disabled state
 function setDisabled (element) {
     element.text('Disabled').removeClass('active');
