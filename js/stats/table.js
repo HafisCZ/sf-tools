@@ -439,6 +439,16 @@ class TableInstance {
             this.addHeader(group);
         });
 
+        if (this.settings.globals.scale) {
+            var factor = this.settings.globals.scale / 100;
+            for (var category of this.config) {
+                category.width = Math.ceil(category.width * factor);
+                for (var header of category.headers) {
+                    header.width = Math.ceil(header.width * factor);
+                }
+            }
+        }
+
         this.flat = this.config.reduce((array, group) => {
             array.push(... group.headers);
             return array;
@@ -715,7 +725,7 @@ class TableInstance {
         var size = 200 + (this.settings.globals.indexed ? 50 : 0) + this.flat.reduce((a, b) => a + b.width, 0);
         return [
             `
-                <thead style="${ this.settings.globals.font ? `font-size: ${ this.settings.globals.font };` : '' }">
+                <thead style="${ this.settings.globals.scale || this.settings.globals.font ? `font-size: ${ this.settings.globals.font || `${ this.settings.globals.scale }%` };` : '' }">
                     <tr>
                         ${ this.settings.globals.indexed ? `<td width="50" colspan="1" rowspan="2">#</td>` : '' }
                         <td width="200" colspan="1" rowspan="2" class="border-right-thin">Date</td>
@@ -730,7 +740,7 @@ class TableInstance {
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
                     </tr>
                 </thead>
-                <tbody style="${ this.settings.globals.font ? `font-size: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
+                <tbody style="${ this.settings.globals.scale || this.settings.globals.font ? `font-size: ${ this.settings.globals.font || `${ this.settings.globals.scale }%` };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ join(this.entries, e => e.content) }
                 </tbody>
             `,
@@ -747,7 +757,7 @@ class TableInstance {
 
         return [
             `
-                <thead style="${ this.settings.globals.font ? `font-size: ${ this.settings.globals.font };` : '' }">
+                <thead style="${ this.settings.globals.scale || this.settings.globals.font ? `font-size: ${ this.settings.globals.font || `${ this.settings.globals.scale }%` };` : '' }">
                     <tr>
                         ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
                         ${ server ? `<td width="${ server }" rowspan="2" class="clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
@@ -762,7 +772,7 @@ class TableInstance {
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
                     </tr>
                 </thead>
-                <tbody style="${ this.settings.globals.font ? `font-size: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
+                <tbody style="${ this.settings.globals.scale || this.settings.globals.font ? `font-size: ${ this.settings.globals.font || `${ this.settings.globals.scale }%` };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ join(this.entries, (e, ei) => e.content.replace(/\<ispan data\-indexed\=\"2\"\>\d*\<\/ispan\>/, `<ispan data-indexed="2">${ ei + 1 }</ispan>`), 0, this.array.perf || this.settings.globals.performance) }
                 </tbody>
             `,
@@ -997,7 +1007,7 @@ class TableInstance {
                 <thead>
 
                 </thead>
-                <tbody style="${ this.settings.globals.font ? `font-size: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
+                <tbody style="${ this.settings.globals.scale || this.settings.globals.font ? `font-size: ${ this.settings.globals.font || `${ this.settings.globals.scale }%` };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ content }
                 </tbody>
             `,
@@ -1309,6 +1319,17 @@ const SettingsCommands = [
         return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
     }),
     // Global
+    // scale - Set font scale value
+    new SettingsCommand(/^(scale) (\d+)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        if (!isNaN(a) && Number(a) > 0) {
+            root.setGlobalVariable(key, Number(a));
+        }
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ !isNaN(a) && Number(a) > 0 ? SFormat.Normal(a) : SFormat.Error(a) }`;
+    }),
+    // Global
     // font - Set font size
     new SettingsCommand(/^(font) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
@@ -1610,6 +1631,7 @@ const Constants = {
         'green': '#00c851',
         'orange': '#ffbb33',
         'red': '#ff3547',
+        'blue': '#0064b4',
         '15min': '900000',
         '1hour': '3600000',
         '12hours': '43200000',
@@ -1629,6 +1651,7 @@ const Constants = {
         'battlemage': '5',
         'berserker': '6',
         'demonhunter': '7',
+        'druid': '8',
         'empty': '',
         'tiny': '15',
         'small': '60',
