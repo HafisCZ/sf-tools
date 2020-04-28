@@ -75,10 +75,14 @@ function getCSSColor(string) {
     return style.color;
 }
 
-function getCSSFontSize(string) {
+function getCSSFont(string) {
     var style = new Option().style;
-    style['font-size'] = string;
-    return style['font-size'];
+    style.font = string;
+    if (style.font == '') {
+        style.font = `${ string } Roboto`;
+    }
+
+    return style.font;
 }
 
 // Set toggle button to disabled state
