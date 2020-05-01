@@ -1254,6 +1254,54 @@ const SP_KEYWORD_MAPPING_0 = {
         format: (p, e, x) => formatAsSpacedNumber(x),
         format_diff: true,
         statistics: false
+    },
+    'Enchantments': {
+        expr: p => Object.values(p.Items).reduce((col, i) => col + (i.HasEnchantment ? 1 : 0), 0)
+    },
+    'Archeological Aura': {
+        expr: p => p.Items.Head.HasEnchantment ? 1 : 0,
+        difference: false,
+        statistics: false
+    },
+    'Marios Beard': {
+        expr: p => p.Items.Body.HasEnchantment ? 1 : 0,
+        difference: false,
+        statistics: false
+    },
+    'Shadow of the Cowboy': {
+        expr: p => p.Items.Hand.HasEnchantment ? 1 : 0,
+        difference: false,
+        statistics: false
+    },
+    '36960 Feet Boots': {
+        expr: p => p.Items.Feet.HasEnchantment ? 1 : 0,
+        difference: false,
+        statistics: false
+    },
+    'Unholy Acquisitiveness': {
+        expr: p => p.Items.Neck.HasEnchantment ? 1 : 0,
+        difference: false,
+        statistics: false
+    },
+    'Thirsty Wanderer': {
+        expr: p => p.Items.Belt.HasEnchantment ? 1 : 0,
+        difference: false,
+        statistics: false
+    },
+    'Grave Robbers Prayer': {
+        expr: p => p.Items.Ring.HasEnchantment ? 1 : 0,
+        difference: false,
+        statistics: false
+    },
+    'Robber Baron Ritual': {
+        expr: p => p.Items.Misc.HasEnchantment ? 1 : 0,
+        difference: false,
+        statistics: false
+    },
+    'Sword of Vengeance': {
+        expr: p => (p.Items.Wpn1.HasEnchantment ? 1 : 0) + (p.Items.Wpn2.HasEnchantment ? 1 : 0),
+        difference: false,
+        statistics: false
     }
 };
 
