@@ -289,7 +289,7 @@ const TableType = {
 
 // Easter eggs :)
 function getEasterEgg (id) {
-    if (id == 'w27_net_p268175' || id == 'w39_net_p321948') {
+    if (id == 'w27_net_p268175' || id == 'w39_net_p321948' || id == 'w40_net_p21790') {
         // #1 THE QUEEN
         return '<i class="chess queen icon"></i>';
     } else {
