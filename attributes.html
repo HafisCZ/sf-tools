@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Attribute Costs</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/html2canvas.js"></script>
+
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/components/state.min.js"></script>
+
+        <script src="js/util.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item">SFTools</div>
+            <div class="right menu">
+                <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
+            </div>
+        </div>
+
+        <div class="ui main container">
+            <div class="ui grid">
+                <div class="five wide column">
+                    <table class="ui celled structured table table-group">
+                        <thead>
+                            <tr>
+                                <td width="150">Attribute</td>
+                                <td width="150">Price</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="border-bottom-thick"></td>
+                            </tr>
+                        </thead>
+                        <tbody id="attribute-prices" style="text-align: center;">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="eleven wide column">
+                    <br/>
+                    <div class="ui segment">
+                        <h3 class="ui header">Calculate price at</h3>
+                        <div class="ui form">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Attribute</label>
+                                    <input type="text" id="priceat-attribute" val="0">
+                                </div>
+                                <div class="field">
+                                    <label>Cost</label>
+                                    <input type="text" disabled id="priceat-price">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui segment">
+                        <h3 class="ui header">Calculate price between</h3>
+                        <div class="ui form">
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>From</label>
+                                    <input type="text" id="pricebetween-from">
+                                </div>
+                                <div class="field">
+                                    <label>To</label>
+                                    <input type="text" id="pricebetween-to">
+                                </div>
+                                <div class="field">
+                                    <label>Cost</label>
+                                    <input type="text" disabled id="pricebetween-price">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            function validate (... elements) {
+                return elements.reduce((errors, element) => {
+                    if (isNaN($(element).val()) || $(element).val() < 1) {
+                        $(element).parent('.field').addClass('error');
+                        return errors + 1;
+                    } else {
+                        $(element).parent('.field').removeClass('error');
+                        return errors;
+                    }
+                }, 0) == 0;
+            }
+
+            var text = '';
+
+            for (var i = 0; i < 3155; i++) {
+                var cost = calculateAttributePrice(i);
+                text += `<tr><td>${ i + 1 }</td><td>${ cost >= 10 ? formatAsSpacedNumber(cost) : cost }</td></tr>`;
+            }
+
+            text += `<tr><td>3156 and above</td><td>${ formatAsSpacedNumber(10e6) }</td></tr>`;
+
+            $('#attribute-prices').html(text);
+
+            $('#priceat-attribute').on('change input', function () {
+                if (validate($(this))) {
+                    var value = Number($(this).val());
+
+                    var cost = calculateAttributePrice(value - 1);
+
+                    $('#priceat-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : cost);
+                }
+            });
+
+            $('#pricebetween-from, #pricebetween-to').on('change input', function () {
+                if (validate($('#pricebetween-from'), $('#pricebetween-to'))) {
+                    var from = Number($('#pricebetween-from').val());
+                    var to = Number($('#pricebetween-to').val());
+
+                    if (from > to) {
+                        [from, to] = [to, from];
+                    }
+
+                    var cost = calculateTotalAttributePrice(to - 1) - calculateTotalAttributePrice(from - 1);
+
+                    $('#pricebetween-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : cost);
+                }
+            });
+        </script>
+    </body>
+</html>
