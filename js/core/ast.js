@@ -594,7 +594,7 @@ const SP_KEYWORD_MAPPING_0 = {
     'Role': {
         expr: p => p.Group.Role,
         flip: true,
-        format: (p, e, x) => p.hasGuild() ? '?' : GROUP_ROLES[cell.Group.Role],
+        format: (p, e, x) => p.hasGuild() ? GROUP_ROLES[cell.Group.Role] : '',
         difference: false,
         statistics: false
     },
