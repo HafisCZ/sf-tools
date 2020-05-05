@@ -1022,26 +1022,31 @@ const RUNE_VALUE = {
         return rune < 2 ? 0 : (3 + 2 * (rune - 2));
     },
     ITEM_QUALITY: function (rune) {
-        if (rune > 2) return 19;
         switch (rune) {
             case 1: return 3;
             case 2: return 19;
+            case 3: return 50;
+            case 4: return 75;
+            case 5: return 99;
             default: return 0;
         }
     },
     XP: function (rune) {
-        if (rune > 5) return 45;
         switch (rune) {
             case 1: return 3;
             case 2: return 9;
             case 3: return 25;
             case 4: return 35;
             case 5: return 45;
+            case 6: return 55;
+            case 7: return 65;
+            case 8: return 75;
+            case 9: return 85;
+            case 10: return 95;
             default: return 0;
         }
     },
     HEALTH: function (rune) {
-        if (rune > 7) return 43;
         switch (rune) {
             case 1: return 3;
             case 2: return 6;
@@ -1050,95 +1055,32 @@ const RUNE_VALUE = {
             case 5: return 30;
             case 6: return 36;
             case 7: return 43;
+            case 8: return 50;
+            case 9: return 56;
+            case 10: return 64;
+            case 11: return 72;
+            case 12: return 80;
+            case 13: return 88;
+            case 14: return 94;
+            case 15: return 99;
             default: return 0;
         }
     },
     SINGLE_RESISTANCE: function (rune) {
-        if (rune > 35) return 46;
-        switch (rune) {
-            case 3: return 3;
-            case 4: return 4;
-            case 5: return 6;
-            case 6: return 8;
-            case 7: return 9;
-            case 8: return 10;
-            case 9: return 12;
-            case 10: return 13;
-            case 11: return 14;
-            case 12: return 15;
-            case 13: return 17;
-            case 14: return 18;
-            case 15: return 20;
-            case 16: return 21;
-            case 17: return 22;
-            case 18: return 23;
-            case 19: return 25;
-            case 20: return 26;
-            case 21: return 27;
-            case 22: return 28;
-            case 23: return 30;
-            case 24: return 31;
-            case 25: return 32;
-            case 26: return 33;
-            case 27: return 35;
-            case 28: return 36;
-            case 29: return 38;
-            case 30: return 40;
-            case 31: return 41;
-            case 32: return 42;
-            case 33: return 43;
-            case 34: return 45;
-            case 35: return 46;
-            default: return 0;
+        if (rune < 2) {
+            return 0;
+        } else {
+            return Math.floor((rune - 0.4) / 0.75);
         }
     },
     TOTAL_RESISTANCE: function (rune) {
-        if (rune > 11) return 42;
-        switch (rune) {
-            case 2: return 3;
-            case 3: return 12;
-            case 4: return 15;
-            case 5: return 20;
-            case 6: return 23;
-            case 7: return 27;
-            case 8: return 31;
-            case 9: return 34;
-            case 10: return 38;
-            case 11: return 42;
-            default: return 0;
-        }
+        return RUNE_VALUE.SINGLE_RESISTANCE(rune * 3);
     },
     ELEMENTAL_DAMAGE: function (rune) {
-        if (rune > 28) return 46;
-        switch (rune) {
-            case 2: return 3;
-            case 3: return 4;
-            case 4: return 6;
-            case 5: return 8;
-            case 6: return 10;
-            case 7: return 11;
-            case 8: return 12;
-            case 9: return 15;
-            case 10: return 16;
-            case 11: return 17;
-            case 12: return 19;
-            case 13: return 21;
-            case 14: return 23;
-            case 15: return 24;
-            case 16: return 26;
-            case 17: return 28;
-            case 18: return 29;
-            case 19: return 31;
-            case 20: return 32;
-            case 21: return 34;
-            case 22: return 36;
-            case 23: return 38;
-            case 24: return 39;
-            case 25: return 40;
-            case 26: return 42;
-            case 27: return 44;
-            case 28: return 46;
-            default: return 0;
+        if (rune < 2) {
+            return 0;
+        } else {
+            return Math.floor((rune - 0.3) / 0.6);
         }
     }
 }
