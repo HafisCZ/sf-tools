@@ -23,6 +23,8 @@
             const Database = {
                 Partial: true
             };
+            // To enable debug output
+            const Dev = /^.*\?dev$/.test(window.location.href);
         </script>
         <script src="js/core/playa.js"></script>
 
@@ -487,6 +489,9 @@
         <script type="text/javascript">
             // Init
             $('#sim-mode').val(0);
+            if (Dev) {
+                $('#sim-mode-dev').removeClass('disabled');
+            }
 
             $('#sim-classlist').html('');
             for (var [ id, name ] of Object.entries(ClassMap)) {
@@ -683,6 +688,7 @@
                     var blocks = Math.ceil(players.length / blockSize);
                     var results = [];
                     var ladder = [];
+                    var logs = [];
 
                     if (mode == 2) {
                         logLine(`GENERATING LADDER`);
@@ -709,6 +715,7 @@
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
                                 results.push(... message.data.results);
+                                logs.push(... message.data.logs);
 
                                 logLine(`THREAD FINISHED IN <b>${ message.data.time / 1000 }</b> SECONDS`);
 
@@ -718,6 +725,12 @@
                                     players = results;
                                     selected = -1;
                                     setSort('avg', 0);
+
+                                    if (Dev) {
+                                        download('logs.json', new Blob([ JSON.stringify(logs) ], {
+                                            type: 'application/json'
+                                        }));
+                                    }
                                 }
                             }
                         }, false);
@@ -727,21 +740,24 @@
                                 mode: 0,
                                 player: block,
                                 players: players,
-                                iterations: iterations
+                                iterations: iterations,
+                                dev: Dev
                             });
                         } else if (mode == 1) {
                             worker.postMessage({
                                 mode: 1,
                                 player: players.find(p => p.index == yourself),
                                 players: block,
-                                iterations: iterations
+                                iterations: iterations,
+                                dev: Dev
                             });
-                        } else {
+                        } else if (mode == 2) {
                             worker.postMessage({
                                 mode: 2,
                                 player: block,
                                 players: ladder,
-                                iterations: iterations
+                                iterations: iterations,
+                                dev: Dev
                             });
                         }
                     }

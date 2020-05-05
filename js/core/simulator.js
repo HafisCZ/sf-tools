@@ -423,27 +423,31 @@ self.addEventListener('message', function (message) {
     var players = message.data.players;
     var mode = message.data.mode;
     var iterations = message.data.iterations || 100000;
+    var logs = message.data.dev ? [] : null;
 
     // Sim type decision
     if (mode == 0) {
-        new FightSimulator().simulateMultiple(player, players, iterations);
+        new FightSimulator().simulateMultiple(player, players, iterations, logs);
         self.postMessage({
             command: 'finished',
             results: player,
+            logs: logs,
             time: Date.now() - ts
         });
     } else if (mode == 1) {
-        new FightSimulator().simulateSingle(player, players, iterations);
+        new FightSimulator().simulateSingle(player, players, iterations, logs);
         self.postMessage({
             command: 'finished',
             results: players,
+            logs: logs,
             time: Date.now() - ts
         });
     } else if (mode == 2) {
-        new FightSimulator().simulateTournament(player, players, iterations);
+        new FightSimulator().simulateTournament(player, players, iterations, logs);
         self.postMessage({
             command: 'finished',
             results: player,
+            logs: logs,
             time: Date.now() - ts
         });
     } else if (mode == 999) {
@@ -502,7 +506,8 @@ class FightSimulator {
     }
 
     // Fight 1vAl only
-    simulateMultiple (player, players, iterations = 100000) {
+    simulateMultiple (player, players, iterations = 100000, logs) {
+        this.logs = logs;
         var scores = [];
         for (var i = 0; i < player.length; i++) {
             var score = 0;
@@ -547,7 +552,8 @@ class FightSimulator {
     }
 
     // Tournament only
-    simulateTournament (player, players, iterations) {
+    simulateTournament (player, players, iterations, logs) {
+        this.logs = logs;
         for (var i = 0; i < player.length; i++) {
             player[i].score = {
                 avg: 0,
@@ -571,7 +577,8 @@ class FightSimulator {
     }
 
     // Fight 1v1s only
-    simulateSingle (player, players, iterations = 100000) {
+    simulateSingle (player, players, iterations = 100000, logs) {
+        this.logs = logs;
         var scores = [];
         for (var i = 0; i < players.length; i++) {
             var score = 0;
@@ -604,6 +611,50 @@ class FightSimulator {
         this.a = this.ca;
         this.b = this.cb;
 
+        if (this.logs) {
+            this.log = {
+                targetA: {
+                    ID: this.a.Player.ID || this.a.Index,
+                    Name: this.a.Player.Name,
+                    Level: this.a.Player.Level,
+                    MaximumLife: this.a.TotalHealth,
+                    Life: this.a.TotalHealth,
+                    Strength: this.a.Player.Strength.Total,
+                    Dexterity: this.a.Player.Dexterity.Total,
+                    Intelligence: this.a.Player.Intelligence.Total,
+                    Constitution: this.a.Player.Constitution.Total,
+                    Luck: this.a.Player.Luck.Total,
+                    Face: this.a.Player.Face,
+                    Race: this.a.Player.Race,
+                    Gender: this.a.Player.Gender,
+                    Class: this.a.Player.Class,
+                    Wpn1: this.a.Player.Items.Wpn1,
+                    Wpn2: this.a.Player.Items.Wpn2
+                },
+                targetB: {
+                    ID: this.b.Player.ID || this.b.Index,
+                    Name: this.b.Player.Name,
+                    Level: this.b.Player.Level,
+                    MaximumLife: this.a.TotalHealth,
+                    Life: this.a.TotalHealth,
+                    Strength: this.b.Player.Strength.Total,
+                    Dexterity: this.b.Player.Dexterity.Total,
+                    Intelligence: this.b.Player.Intelligence.Total,
+                    Constitution: this.b.Player.Constitution.Total,
+                    Luck: this.b.Player.Luck.Total,
+                    Face: this.b.Player.Face,
+                    Race: this.b.Player.Race,
+                    Gender: this.b.Player.Gender,
+                    Class: this.b.Player.Class,
+                    Wpn1: this.b.Player.Items.Wpn1,
+                    Wpn2: this.b.Player.Items.Wpn2
+                },
+                rounds: []
+            };
+
+            this.logs.push(this.log);
+        }
+
         this.a.Health = this.a.TotalHealth;
         this.b.Health = this.b.TotalHealth;
 
@@ -616,10 +667,41 @@ class FightSimulator {
 
             if (this.as > 0) {
                 this.b.Health -= this.as;
-            }
 
-            if (this.bs > 0) {
+                if (this.log) {
+                    this.log.rounds.push({
+                        attackCrit: false,
+                        attackType: 15,
+                        attackMissed: false,
+                        attackDamage: this.as,
+                        attacker: this.a.Player.ID || this.a.Index,
+                        target: this.b.Player.ID || this.b.Index
+                    });
+                }
+            } else if (this.bs > 0) {
                 this.a.Health -= this.bs;
+
+                if (this.log) {
+                    this.log.rounds.push({
+                        attackCrit: false,
+                        attackType: 15,
+                        attackMissed: false,
+                        attackDamage: this.bs,
+                        attacker: this.b.Player.ID || this.b.Index,
+                        target: this.a.Player.ID || this.a.Index
+                    });
+                }
+            } else {
+                if (this.log) {
+                    this.log.rounds.push({
+                        attackCrit: false,
+                        attackType: 16,
+                        attackMissed: true,
+                        attackDamage: 0,
+                        attacker: this.a.Player.ID || this.a.Index,
+                        target: this.b.Player.ID || this.b.Index
+                    });
+                }
             }
         }
 
@@ -698,16 +780,33 @@ class FightSimulator {
         var rage = 1 + turn / 6;
 
         // Test for skip
-        if (!getRandom(target.SkipChance)) {
-            var damage = rage * (Math.random() * (1 + weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
-            if (getRandom(source.CriticalChance)) {
+        var damage = 0;
+        var skipped = getRandom(target.SkipChance);
+        var critical = false;
+
+        if (!skipped) {
+            damage = rage * (Math.random() * (1 + weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
+
+            critical = getRandom(source.CriticalChance);
+            if (critical) {
                 damage *= weapon.Critical;
             }
 
-            return Math.ceil(damage)
-        } else {
-            return 0;
+            damage = Math.ceil(damage);
         }
+
+        if (this.log) {
+            this.log.rounds.push({
+                attackCrit: critical,
+                attackType: critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0),
+                attackMissed: skipped,
+                attackDamage: damage,
+                attacker: source.Player.ID || source.Index,
+                target: target.Player.ID || target.Index
+            });
+        }
+
+        return damage;
     }
 }
 
