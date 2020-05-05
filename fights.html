@@ -100,7 +100,7 @@
                     var rows = [];
 
                     Object.entries(tab.fighterA).forEach(([key, val]) => {
-                        if (val instanceof SFItem) {
+                        if (val instanceof SFItem || val.DamageMin != undefined) {
                             rows.push([ key ]);
                             rows.push([ '', 'MinDmg', val.DamageMin ]);
                             rows.push([ '', 'MaxDmg', val.DamageMax ]);
@@ -112,7 +112,7 @@
                     });
 
                     Object.entries(tab.fighterB).forEach(([key, val]) => {
-                        if (val instanceof SFItem) {
+                        if (val instanceof SFItem || val.DamageMin != undefined) {
                             rows.push([ key ]);
                             rows.push([ '', 'MinDmg', val.DamageMin ]);
                             rows.push([ '', 'MaxDmg', val.DamageMax ]);
@@ -276,6 +276,12 @@
                 tabs.push(... tab);
             }
 
+            const RUNES = {
+                40: 'Fire',
+                41: 'Cold',
+                42: 'Lightning'
+            };
+
             // Update document
             function updateTabs() {
                 if (tabs.length) {
@@ -298,16 +304,54 @@
                                                     <input type="text" value="${ tab.fighterA.Level }" disabled class="text-center">
                                                 </div>
                                             </div>
-                                            <div class="two fields">
+                                            <div class="${ tab.fighterA.Wpn1.AttributeTypes[2] >= 30 ? 'four' : 'two' } fields">
                                                 <div class="field">
                                                     <label>Minimum damage</label>
-                                                    <input type="text" value="${ tab.fighterA.Wpn1.DamageMin || '' }${ tab.fighterA.Wpn2.DamageMin ? ` (${ tab.fighterA.Wpn2.DamageMin })` : '' }" disabled class="text-center">
+                                                    <input type="text" value="${ tab.fighterA.Wpn1.DamageMin || '' }" disabled class="text-center">
                                                 </div>
                                                 <div class="field">
                                                     <label>Maximum damage</label>
-                                                    <input type="text" value="${ tab.fighterA.Wpn1.DamageMax || '' }${ tab.fighterA.Wpn2.DamageMax ? ` (${ tab.fighterA.Wpn2.DamageMax })` : '' }" disabled class="text-center">
+                                                    <input type="text" value="${ tab.fighterA.Wpn1.DamageMax || '' }" disabled class="text-center">
                                                 </div>
+                                                ${
+                                                    tab.fighterA.Wpn1.AttributeTypes[2] >= 30 ? `
+                                                        <div class="field">
+                                                            <label>Element type</label>
+                                                            <input type="text" value="${ RUNES[tab.fighterA.Wpn1.AttributeTypes[2]] }" disabled class="text-center">
+                                                        </div>
+                                                        <div class="field">
+                                                            <label>Element value</label>
+                                                            <input type="text" value="${ tab.fighterA.Wpn1.Attributes[2] }" disabled class="text-center">
+                                                        </div>
+                                                    ` : ''
+                                                }
                                             </div>
+                                            ${
+                                                tab.fighterA.Wpn2.DamageMin ? `
+                                                    <div class="${ tab.fighterA.Wpn2.AttributeTypes[2] >= 30 ? 'four' : 'two' } fields">
+                                                        <div class="field">
+                                                            <label>Minimum damage</label>
+                                                            <input type="text" value="${ tab.fighterA.Wpn2.DamageMin || '' }" disabled class="text-center">
+                                                        </div>
+                                                        <div class="field">
+                                                            <label>Maximum damage</label>
+                                                            <input type="text" value="${ tab.fighterA.Wpn2.DamageMax || '' }" disabled class="text-center">
+                                                        </div>
+                                                        ${
+                                                            tab.fighterA.Wpn2.AttributeTypes[2] >= 30 ? `
+                                                                <div class="field">
+                                                                    <label>Minimum damage</label>
+                                                                    <input type="text" value="${ RUNES[tab.fighterA.Wpn2.AttributeTypes[2]]  }" disabled class="text-center">
+                                                                </div>
+                                                                <div class="field">
+                                                                    <label>Maximum damage</label>
+                                                                    <input type="text" value="${ tab.fighterA.Wpn2.Attributes[2] }" disabled class="text-center">
+                                                                </div>
+                                                            ` : ''
+                                                        }
+                                                    </div>
+                                                ` : ''
+                                            }
                                             <div class="five fields">
                                                 <div class="field">
                                                     <label>Strength</label>
@@ -356,16 +400,54 @@
                                                     <input type="text" value="${ tab.fighterB.Level }" disabled class="text-center">
                                                 </div>
                                             </div>
-                                            <div class="two fields">
+                                            <div class="${ tab.fighterB.Wpn1.AttributeTypes[2] >= 30 ? 'four' : 'two' } fields">
                                                 <div class="field">
                                                     <label>Minimum damage</label>
-                                                    <input type="text" value="${ tab.fighterB.Wpn1.DamageMin || (tab.fighterB.ApproximateDamageMin ? `~ ${ tab.fighterB.ApproximateDamageMin }` : '') }${ tab.fighterB.Wpn2.DamageMin ? ` (${ tab.fighterB.Wpn2.DamageMin })` : '' }" disabled class="text-center">
+                                                    <input type="text" value="${ tab.fighterB.Wpn1.DamageMin || '' }" disabled class="text-center">
                                                 </div>
                                                 <div class="field">
                                                     <label>Maximum damage</label>
-                                                    <input type="text" value="${ tab.fighterB.Wpn1.DamageMax || (tab.fighterB.ApproximateDamageMax ? `~ ${ tab.fighterB.ApproximateDamageMax }` : '') }${ tab.fighterB.Wpn2.DamageMax ? ` (${ tab.fighterB.Wpn2.DamageMax })` : '' }" disabled class="text-center">
+                                                    <input type="text" value="${ tab.fighterB.Wpn1.DamageMax || '' }" disabled class="text-center">
                                                 </div>
+                                                ${
+                                                    tab.fighterB.Wpn1.AttributeTypes[2] >= 30 ? `
+                                                        <div class="field">
+                                                            <label>Element type</label>
+                                                            <input type="text" value="${ RUNES[tab.fighterB.Wpn1.AttributeTypes[2]] }" disabled class="text-center">
+                                                        </div>
+                                                        <div class="field">
+                                                            <label>Element value</label>
+                                                            <input type="text" value="${ tab.fighterB.Wpn1.Attributes[2] }" disabled class="text-center">
+                                                        </div>
+                                                    ` : ''
+                                                }
                                             </div>
+                                            ${
+                                                tab.fighterB.Wpn2.DamageMin ? `
+                                                    <div class="${ tab.fighterB.Wpn2.AttributeTypes[2] >= 30 ? 'four' : 'two' } fields">
+                                                        <div class="field">
+                                                            <label>Minimum damage</label>
+                                                            <input type="text" value="${ tab.fighterB.Wpn2.DamageMin || '' }" disabled class="text-center">
+                                                        </div>
+                                                        <div class="field">
+                                                            <label>Maximum damage</label>
+                                                            <input type="text" value="${ tab.fighterB.Wpn2.DamageMax || '' }" disabled class="text-center">
+                                                        </div>
+                                                        ${
+                                                            tab.fighterB.Wpn2.AttributeTypes[2] >= 30 ? `
+                                                                <div class="field">
+                                                                    <label>Minimum damage</label>
+                                                                    <input type="text" value="${ RUNES[tab.fighterB.Wpn2.AttributeTypes[2]]  }" disabled class="text-center">
+                                                                </div>
+                                                                <div class="field">
+                                                                    <label>Maximum damage</label>
+                                                                    <input type="text" value="${ tab.fighterB.Wpn2.Attributes[2] }" disabled class="text-center">
+                                                                </div>
+                                                            ` : ''
+                                                        }
+                                                    </div>
+                                                ` : ''
+                                            }
                                             <div class="five  fields">
                                                 <div class="field">
                                                     <label>Strength</label>
@@ -578,6 +660,26 @@
                 return fights;
             }
 
+            function reimport(json) {
+                return json.map(f => {
+                    return {
+                        fighterA: f.targetA,
+                        fighterB: f.targetB,
+                        winner: f.rounds[f.rounds.length - 1].target == f.targetA.ID ? f.targetB : f.targetA,
+                        rounds: f.rounds.map(r => {
+                            return {
+                                attackCrit: r.attackCrit,
+                                attackType: r.attackType,
+                                attackMissed: r.attackMissed,
+                                attackDamage: r.attackDamage,
+                                attacker: r.attacker == f.targetA.ID ? f.targetA : f.targetB,
+                                target: r.target == f.targetA.ID ? f.targetA : f.targetB
+                            };
+                        })
+                    };
+                });
+            }
+
             // Event handlers
             $('#fi-open').on('change', function () {
                 Array.from(this.files).forEach(file => {
@@ -586,7 +688,16 @@
                     r.onload = event => {
                         try {
                             clearError();
-                            addTab(... parseTabs(JSON.parse(event.target.result)));
+
+                            var data = JSON.parse(event.target.result);
+                            if (data.rounds) {
+                                addTab(... reimport([ data ]));
+                            } else if (Array.isArray(data)) {
+                                addTab(... reimport(data));
+                            } else {
+                                addTab(... parseTabs(data));
+                            }
+
                             updateTabs();
                         } catch (exception) {
                             showError(exception);
