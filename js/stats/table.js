@@ -58,7 +58,7 @@ const ReservedCategories = {
             var displayValue2 = CompareEval.evaluate(potion2, category.value);
             displayValue2 = displayValue2 != undefined ? displayValue2 : (category.format ? category.format(player, root, player.Potions[2]) : undefined);
 
-            return CellGenerator.Cell(displayValue0 == undefined ? potion0 : displayValue0, color0, category.visible ? '' : color0) + CellGenerator.Cell(displayValue1 == undefined ? potion1 : displayValue1, color1, category.visible ? '' : color1) + CellGenerator.Cell(displayValue2 == undefined ? potion2 : displayValue2, color2, category.visible ? '' : color2, last);
+            return CellGenerator.Cell(displayValue0 == undefined ? potion0 : displayValue0, color0, category.visible ? '' : color0, false, category.align) + CellGenerator.Cell(displayValue1 == undefined ? potion1 : displayValue1, color1, category.visible ? '' : color1, false, category.align) + CellGenerator.Cell(displayValue2 == undefined ? potion2 : displayValue2, color2, category.visible ? '' : color2, last, category.align);
         }, null, player => player.Potions.reduce((c, p) => c + p.Size, 0), last, 3);
     }
 };
@@ -75,9 +75,9 @@ const ReservedHeaders = {
             displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, player.Mount) : undefined);
 
             if (displayValue != undefined) {
-                return CellGenerator.Cell(displayValue, color, header.visible ? '' : color, last);
+                return CellGenerator.Cell(displayValue, color, header.visible ? '' : color, last, header.align);
             } else {
-                return CellGenerator.Cell(PLAYER_MOUNT[player.Mount] + ((header.percentage || header.extra) && player.Mount ? (header.extra || '%') : ''), color, header.visible ? '' : color, last);
+                return CellGenerator.Cell(PLAYER_MOUNT[player.Mount] + ((header.percentage || header.extra) && player.Mount ? (header.extra || '%') : ''), color, header.visible ? '' : color, last, header.align);
             }
         }, (players, operation) => {
             var a = operation(players.map(p => p.player.Mount));
@@ -112,7 +112,7 @@ const ReservedHeaders = {
             var displayValue = CompareEval.evaluate(player.Achievements.Owned, header.value);
             displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, player.Achievements.Owned) : (player.Achievements.Owned + (header.extra || '')));
 
-            return CellGenerator.Cell(displayValue + (header.hydra && player.Achievements.Dehydration ? CellGenerator.Small(' H') : '') + reference, color, header.visible ? '' : color, last);
+            return CellGenerator.Cell(displayValue + (header.hydra && player.Achievements.Dehydration ? CellGenerator.Small(' H') : '') + reference, color, header.visible ? '' : color, last, header.align);
         }, (players, operation) => {
             var a = operation(players.map(p => p.player.Achievements.Owned));
             var b = operation(players.map(p => p.compare.Achievements.Owned));
@@ -152,7 +152,7 @@ const ReservedHeaders = {
             var displayValue = CompareEval.evaluate(value, header.value);
             displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, value) : (header.percentage ? value.toFixed(2) : value));
 
-            return CellGenerator.Cell(displayValue + ((header.percentage || header.extra) ? (header.extra || '%') : '') + (header.grail && player.Achievements.Grail ? CellGenerator.Small(' G') : '') + reference, color, header.visible ? '' : color, last);
+            return CellGenerator.Cell(displayValue + ((header.percentage || header.extra) ? (header.extra || '%') : '') + (header.grail && player.Achievements.Grail ? CellGenerator.Small(' G') : '') + reference, color, header.visible ? '' : color, last, header.align);
         }, (players, operation) => {
             var a = operation(players.map(p => header.percentage ? 100 * p.player.Book / SCRAPBOOK_COUNT : p.player.Book));
             var b = operation(players.map(p => header.percentage ? 100 * p.compare.Book / SCRAPBOOK_COUNT : p.compare.Book));
@@ -195,9 +195,9 @@ const ReservedHeaders = {
             displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, player.Fortress.Knights) : undefined);
 
             if (displayValue != undefined) {
-                return CellGenerator.Cell(displayValue + reference, color, header.visible ? '' : color, last);
+                return CellGenerator.Cell(displayValue + reference, color, header.visible ? '' : color, last, header.align);
             } else {
-                return CellGenerator.Cell(player.Fortress.Knights + (header.maximum ? `/${ player.Fortress.Fortress }` : '') + reference, color, header.visible ? '' : color, last);
+                return CellGenerator.Cell(player.Fortress.Knights + (header.maximum ? `/${ player.Fortress.Fortress }` : '') + reference, color, header.visible ? '' : color, last, header.align);
             }
         }, (players, operation) => {
             var aa = players.map(p => p.player.Fortress.Knights).filter(x => x != undefined);
@@ -234,7 +234,7 @@ const ReservedHeaders = {
             var displayValue = CompareEval.evaluate(a, header.value);
             displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, a) : formatDate(player.LastOnline));
 
-            return CellGenerator.Cell(displayValue, color, header.visible ? '' : color, last);
+            return CellGenerator.Cell(displayValue, color, header.visible ? '' : color, last, header.align);
         }, null, player => player.LastOnline, last);
     }
 };
@@ -358,7 +358,7 @@ class TableInstance {
                                 var displayValue = CompareEval.evaluate(value, header.value);
                                 var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, this.settings, value) : (value + (header.extra || '')));
 
-                                cells.push(CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast));
+                                cells.push(CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align));
                             }
 
                             return cells;
@@ -395,7 +395,7 @@ class TableInstance {
                             var displayValue = CompareEval.evaluate(value, header.value);
                             var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, this.settings, value) : (value + (header.extra || '')));
 
-                            return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast);
+                            return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align);
                         }, (players, operation) => {
                             var value = players.map(p => header.expr(p.player, this.settings)).filter(x => x != undefined);
                             if (value.length == 0) {
@@ -898,7 +898,7 @@ class TableInstance {
                 var displayValue = CompareEval.evaluate(value, extra.value);
                 var value = displayValue != undefined ? displayValue : (extra.format ? extra.format(undefined, this.settings, value) : (value + (extra.extra || '')));
 
-                var cell = CellGenerator.WideCell(SFormat.Normal(value) + reference, color, lw);
+                var cell = CellGenerator.WideCell(SFormat.Normal(value) + reference, color, lw, extra.align);
                 details += `
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
@@ -1019,16 +1019,16 @@ class TableInstance {
 // Cell generators
 const CellGenerator = {
     // Simple cell
-    Cell: function (c, b, f, bo) {
-        return `<td class="${ bo ? 'border-right-thin' : '' }" style="color: ${ f }; background-color: ${ b }">${ c }</td>`;
+    Cell: function (c, b, f, bo, al) {
+        return `<td class="${ bo ? 'border-right-thin' : '' }" style="color: ${ f }; background-color: ${ b }; ${ al ? `text-align: ${ al };` : '' }">${ c }</td>`;
     },
     // Wide cell
-    WideCell: function (c, b, w) {
-        return `<td colspan="${ w }" style="background-color: ${ b }">${ c }</td>`;
+    WideCell: function (c, b, w, al) {
+        return `<td colspan="${ w }" style="background-color: ${ b }; ${ al ? `text-align: ${ al };` : '' }">${ c }</td>`;
     },
     // Plain cell
-    Plain: function (c, bo) {
-        return `<td class="${ bo ? 'border-right-thin' : '' }">${ c }</td>`;
+    Plain: function (c, bo, al) {
+        return `<td class="${ bo ? 'border-right-thin' : '' }" ${ al ? `style="text-align: ${ al };"` : '' }>${ c }</td>`;
     },
     // Difference
     Difference: function (d, b, c) {
@@ -1429,6 +1429,15 @@ const SettingsCommands = [
     new SettingsCommand(/^(border) (none|left|right|both)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setLocalSharedVariable(key, ARG_MAP[a]);
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
+    }),
+    // Local Shared
+    // align - Align column content
+    new SettingsCommand(/^(align) (left|right|center)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setLocalSharedVariable(key, a);
     }, function (string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
