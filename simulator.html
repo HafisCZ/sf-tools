@@ -715,7 +715,10 @@
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
                                 results.push(... message.data.results);
-                                logs.push(... message.data.logs);
+
+                                if (Dev) {
+                                    logs.push(... message.data.logs);
+                                }
 
                                 logLine(`THREAD FINISHED IN <b>${ message.data.time / 1000 }</b> SECONDS`);
 
