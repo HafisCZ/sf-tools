@@ -327,7 +327,7 @@
                                                 }
                                             </div>
                                             ${
-                                                tab.fighterA.Wpn2.DamageMin ? `
+                                                tab.fighterA.Wpn2.DamageMin && tab.fighterA.Class == 4 ? `
                                                     <div class="${ tab.fighterA.Wpn2.AttributeTypes[2] >= 30 ? 'four' : 'two' } fields">
                                                         <div class="field">
                                                             <label>Minimum damage</label>
@@ -423,7 +423,7 @@
                                                 }
                                             </div>
                                             ${
-                                                tab.fighterB.Wpn2.DamageMin ? `
+                                                tab.fighterB.Wpn2.DamageMin && tab.fighterB.Class == 4 ? `
                                                     <div class="${ tab.fighterB.Wpn2.AttributeTypes[2] >= 30 ? 'four' : 'two' } fields">
                                                         <div class="field">
                                                             <label>Minimum damage</label>
