@@ -550,7 +550,13 @@
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
-                                $('#sim-result').html(message.data.results.toFixed(2) + '%');
+                                var chance = message.data.results;
+                                if (chance < 0.01) {
+                                    $('#sim-result').html(message.data.results.toFixed(5) + '%');
+                                } else {
+                                    $('#sim-result').html(message.data.results.toFixed(2) + '%');
+                                }
+
                                 freeze();
                             }
                         }, false);
