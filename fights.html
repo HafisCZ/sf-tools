@@ -185,6 +185,7 @@
                                 attackType: round.attackType,
                                 attackMissed: round.attackMissed,
                                 attackDamage: round.attackDamage,
+                                attackSecondary: round.attackSecondary,
                                 attacker: round.attacker.ID,
                                 target: round.target.ID
                             };
@@ -209,6 +210,7 @@
                                     attackType: round.attackType,
                                     attackMissed: round.attackMissed,
                                     attackDamage: round.attackDamage,
+                                    attackSecondary: round.attackSecondary,
                                     attacker: round.attacker.ID,
                                     target: round.target.ID
                                 };
@@ -340,11 +342,11 @@
                                                         ${
                                                             tab.fighterA.Wpn2.AttributeTypes[2] >= 30 ? `
                                                                 <div class="field">
-                                                                    <label>Minimum damage</label>
+                                                                    <label>Element type</label>
                                                                     <input type="text" value="${ RUNES[tab.fighterA.Wpn2.AttributeTypes[2]]  }" disabled class="text-center">
                                                                 </div>
                                                                 <div class="field">
-                                                                    <label>Maximum damage</label>
+                                                                    <label>Element value</label>
                                                                     <input type="text" value="${ tab.fighterA.Wpn2.Attributes[2] }" disabled class="text-center">
                                                                 </div>
                                                             ` : ''
@@ -596,6 +598,7 @@
                                 attacker: attackerID == fighterA.ID ? fighterA : fighterB,
                                 target: attackerID == fighterA.ID ? fighterB : fighterA,
                                 attackType: attackType,
+                                attackSecondary: attackType >= 10 && attackType <= 14,
                                 attackCrit: attackType % 10 == 1,
                                 attackMissed: (attackType % 10 == 3) || (attackType % 10 == 4),
                                 targetHealthLeft: targetHealthLeft
@@ -672,6 +675,7 @@
                                 attackType: r.attackType,
                                 attackMissed: r.attackMissed,
                                 attackDamage: r.attackDamage,
+                                attackSecondary: r.attackSecondary,
                                 attacker: r.attacker == f.targetA.ID ? f.targetA : f.targetB,
                                 target: r.target == f.targetA.ID ? f.targetA : f.targetB
                             };

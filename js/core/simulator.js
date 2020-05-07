@@ -358,8 +358,9 @@ class BerserkerModel extends FighterModel {
     getDamageRange (weapon, target) {
         var range = super.getDamageRange(weapon, target);
         return {
-            Max: Math.ceil(range.Max * 3 / 2),
-            Min: Math.ceil(range.Min * 3 / 2)
+            // Thanks burningcherry for narrowing the hidden damage boost range
+            Max: Math.ceil(range.Max * 5 / 4),
+            Min: Math.ceil(range.Min * 5 / 4)
         }
     }
 
@@ -674,6 +675,7 @@ class FightSimulator {
                         attackType: 15,
                         attackMissed: false,
                         attackDamage: this.as,
+                        attackSecondary: false,
                         attacker: this.a.Player.ID || this.a.Index,
                         target: this.b.Player.ID || this.b.Index
                     });
@@ -686,6 +688,7 @@ class FightSimulator {
                         attackCrit: false,
                         attackType: 15,
                         attackMissed: false,
+                        attackSecondary: false,
                         attackDamage: this.bs,
                         attacker: this.b.Player.ID || this.b.Index,
                         target: this.a.Player.ID || this.a.Index
@@ -697,6 +700,7 @@ class FightSimulator {
                         attackCrit: false,
                         attackType: 16,
                         attackMissed: true,
+                        attackSecondary: false,
                         attackDamage: 0,
                         attacker: this.a.Player.ID || this.a.Index,
                         target: this.b.Player.ID || this.b.Index
@@ -801,6 +805,7 @@ class FightSimulator {
                 attackType: critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0),
                 attackMissed: skipped,
                 attackDamage: damage,
+                attackSecondary: weapon != source.Weapon1,
                 attacker: source.Player.ID || source.Index,
                 target: target.Player.ID || target.Index
             });

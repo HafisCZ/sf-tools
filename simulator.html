@@ -23,8 +23,6 @@
             const Database = {
                 Partial: true
             };
-            // To enable debug output
-            const Dev = /^.*\?dev$/.test(window.location.href);
         </script>
         <script src="js/core/playa.js"></script>
 
@@ -409,7 +407,7 @@
                                 </div>
                             </div>
                             <div class="five wide column">
-                                <div class="ui form">
+                                <div class="ui small form">
                                     <div class="field">
                                         <div class="ui fluid selection compact dropdown">
                                             <input class="text-center" type="hidden" value="0" id="sim-mode">
@@ -425,7 +423,7 @@
                                 </div>
                             </div>
                             <div class="two wide column">
-
+                                <button class="ui small basic icon fluid button" data-position="bottom center" data-tooltip="DANGEROUS: Enable fight data dump" id="sim-debug"><i class="file code outline icon"></i></button>
                             </div>
                             <div class="four wide column">
                                 <button class="ui fluid small button" type="submit" id="sim-run">Simulate</button>
@@ -487,12 +485,10 @@
         </div>
 
         <script type="text/javascript">
+            var Dev = false;
+
             // Init
             $('#sim-mode').val(0);
-            if (Dev) {
-                $('#sim-mode-dev').removeClass('disabled');
-            }
-
             $('#sim-classlist').html('');
             for (var [ id, name ] of Object.entries(ClassMap)) {
                 $('#sim-classlist').append(`<div class="item ${ hasImplementation(id) ? '' : 'disabled' }" data-value="${ id }">${ name }</div>`);
@@ -504,7 +500,6 @@
                 $('#sim-classlist').append(`<div class="item ${ hasImplementation(id) ? '' : 'disabled' }" data-value="${ id }">${ name }</div>`);
             }
 
-            //$('.dropdown').dropdown();
             $('[data-path="Class"]').change(function () {
                 $('.dropdown').dropdown();
                 $('[data-optional="Weapon2"]').toggle($(this).val() == 4);
@@ -516,6 +511,15 @@
                 insertMode = !insertMode;
                 if (insertMode) {
                     this.style.setProperty('background', '#21ba45', 'important');
+                } else {
+                    this.style.setProperty('background', '');
+                }
+            });
+
+            $('#sim-debug').click(function () {
+                Dev = !Dev;
+                if (Dev) {
+                    this.style.setProperty('background', '#eb8034', 'important');
                 } else {
                     this.style.setProperty('background', '');
                 }
