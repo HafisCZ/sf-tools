@@ -247,6 +247,11 @@
                             var crit = round.attackCrit ? critmult : 1;
 
                             var damage = Math.trunc((round.attackDamage / crit) / rage);
+                            var second = round.attackType >= 10 && round.attackType <= 14;
+
+                            if (second) {
+                                id = id + '_2';
+                            }
 
                             if (ranges[id] == undefined) {
                                 ranges[id] = {
