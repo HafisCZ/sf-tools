@@ -25,6 +25,11 @@ body.dimmed .menu {
     margin-right: 17px !important;
 }
 
+.text-purple {
+    color: magenta;
+    font-weight: bold;
+}
+
 .white {
     color: white !important;
 }

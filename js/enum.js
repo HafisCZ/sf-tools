@@ -871,7 +871,8 @@ const ATTACK_TYPES = {
     20: 'Normal',
     21: 'Critical',
     23: 'Blocked',
-    24: 'Evaded'
+    24: 'Evaded',
+    100: 'Revive'
 };
 
 const ACHIEVEMENTS = [

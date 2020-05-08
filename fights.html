@@ -239,11 +239,20 @@
                 var ranges = {};
 
                 for (var tab of tabs) {
+                    var rageoffset = 0;
                     for (var i = 0; i < tab.rounds.length; i++) {
                         var round = tab.rounds[i];
-                        if (round.attackType % 10 == 0 || round.attackType % 10 == 1) {
+                        if (round.attackType == 100) {
+                            rageoffset -= 1;
+                        }
+
+                        if (round.attackType != 100 && (round.attackType % 10 == 0 || round.attackType % 10 == 1)) {
+                            if (round.attackType >= 20) {
+                                rageoffset++;
+                            }
+
                             var id = round.attacker.ID;
-                            var rage = 1 + i / 6;
+                            var rage = 1 + (i + rageoffset) / 6;
                             var crit = round.attackCrit ? critmult : 1;
 
                             var damage = Math.trunc((round.attackDamage / crit) / rage);
@@ -502,7 +511,7 @@
                                                             <div class="one wide column text-center">></div>
                                                             <div class="three wide column"><b>${ round.target.Name }</b></div>
                                                             <div class="one wide column"></div>
-                                                            <div class="two wide column text-center ${ round.attackCrit ? 'foreground-red' : '' }">${ ATTACK_TYPES[round.attackType] }</div>
+                                                            <div class="two wide column text-center ${ round.attackCrit ? 'foreground-red' : '' } ${ round.attackType == 100 ? 'text-purple' : '' }">${ ATTACK_TYPES[round.attackType] }</div>
                                                             <div class="three wide column text-right ${ round.attackCrit ? 'foreground-red text-bold' : '' }">${ round.attackDamage ? formatAsSpacedNumber(round.attackDamage, ' ') : '' }</div>
                                                             <div class="one wide column"></div>
                                                         </div>
@@ -620,40 +629,10 @@
 
                                 return round.target.Life;
                             })() - round.targetHealthLeft;
-                        }
 
-                        if (fighterB.isMonster() && rounds.length) {
-                            var min = Number.MAX_SAFE_INTEGER;
-                            var max = 0;
-
-                            for (var i = 0, round; round = rounds[i]; i++) {
-                                if (round.attacker == fighterB && (round.attackCrit || round.attackType % 10 == 0)) {
-                                    var damage = round.attackDamage / (round.attackCrit ? 2 : 1) / (1 + i / 6);
-
-                                    if (damage < min) {
-                                        min = damage;
-                                    }
-
-                                    if (damage > max) {
-                                        max = damage;
-                                    }
-                                }
+                            if (round.attackType == 100) {
+                                round.attackDamage = 0;
                             }
-
-                            // Armor reduction, using maximum armor per class
-                            var armorMultiplier = 1 - fighterA.getMaximumDamageReduction();
-
-                            // Primary attribute
-                            var primaryAttribute = fighterB.getPrimaryAttribute();
-                            var defenseAttribute = fighterA.getDefenseAtribute(fighterB) / 2;
-                            if (defenseAttribute > primaryAttribute / 2) {
-                                defenseAttribute = primaryAttribute / 2;
-                            }
-
-                            var attributeMultiplier = 1 + (primaryAttribute / 10 - defenseAttribute / 10);
-
-                            fighterB.ApproximateDamageMin = Math.trunc(min / attributeMultiplier / armorMultiplier);
-                            fighterB.ApproximateDamageMax = Math.trunc(max / attributeMultiplier / armorMultiplier);
                         }
 
                         fights.push({

@@ -261,10 +261,10 @@ class FighterModel {
     onDamageTaken (source, damage) {
         this.Health -= damage;
         if (this.Health < 0) {
-            this.onDeath(source);
+            return this.onDeath(source) ? 2 : (this.Health > 0 ? 1 : 0);
         }
 
-        return this.Health > 0;
+        return this.Health > 0 ? 1 : 0;
     }
 
     onRoundEnded (action) {
@@ -378,7 +378,11 @@ class DemonHunterModel extends FighterModel {
     onDeath (source) {
         if (source.Player.Class != MAGE && source.Player.Class != NECROMANCER && getRandom(25)) {
             this.Health = this.getHealth();
+
+            return true;
         }
+
+        return false;
     }
 }
 
@@ -722,7 +726,21 @@ class FightSimulator {
             }
 
             if (this.b.DamageTaken) {
-                if (!this.b.onDamageTaken(this.a, damage)) {
+                var alive = this.b.onDamageTaken(this.a, damage);
+
+                if (alive == 2 && this.log) {
+                    this.log.rounds.push({
+                        attackCrit: false,
+                        attackType: 100,
+                        attackMissed: false,
+                        attackDamage: 0,
+                        attackSecondary: false,
+                        attacker: this.a.Player.ID || this.a.Index,
+                        target: this.b.Player.ID || this.b.Index
+                    });
+                }
+
+                if (alive == 0) {
                     break;
                 }
             } else {
@@ -739,7 +757,21 @@ class FightSimulator {
                 }
 
                 if (this.b.DamageTaken) {
-                    if (!this.b.onDamageTaken(this.a, damage2)) {
+                    var alive = this.b.onDamageTaken(this.a, damage2);
+
+                    if (alive == 2 && this.log) {
+                        this.log.rounds.push({
+                            attackCrit: false,
+                            attackType: 100,
+                            attackMissed: false,
+                            attackDamage: 0,
+                            attackSecondary: false,
+                            attacker: this.a.Player.ID || this.a.Index,
+                            target: this.b.Player.ID || this.b.Index
+                        });
+                    }
+
+                    if (alive == 0) {
                         break;
                     }
                 } else {
@@ -760,7 +792,21 @@ class FightSimulator {
                     }
 
                     if (this.b.DamageTaken) {
-                        return this.b.onDamageTaken(this.a, damage3);
+                        var alive = this.b.onDamageTaken(this.a, damage3);
+
+                        if (alive == 2 && this.log) {
+                            this.log.rounds.push({
+                                attackCrit: false,
+                                attackType: 100,
+                                attackMissed: false,
+                                attackDamage: 0,
+                                attackSecondary: false,
+                                attacker: this.a.Player.ID || this.a.Index,
+                                target: this.b.Player.ID || this.b.Index
+                            });
+                        }
+
+                        return alive > 0;
                     } else {
                         this.b.Health -= damage3;
                         return this.b.Health >= 0
