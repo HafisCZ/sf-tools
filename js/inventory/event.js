@@ -343,7 +343,7 @@ function getLocalizedTransmog (item) {
 
     var clone = item.clone();
     clone.upgradeTo(0);
-    
+
     var dismantle = item.getDismantlePrice();
 
     var best = item.Index;
@@ -762,10 +762,22 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
 
     if (char == 1) {
         player = player.Companions.Bert;
+        if (item.Class == 1) {
+            item = item.morph(2, 1);
+        }
     } else if (char == 2) {
         player = player.Companions.Mark;
+        if (item.Class == 2) {
+            item = item.morph(1, 3);
+        }
     } else if (char == 3) {
         player = player.Companions.Kunigunde;
+    } else if (player.Class == 5 && item.Class == 2) {
+        item = item.morph(3, 1);
+    } else if (player.Class == 4 && item.Class == 3 && item.Type == 1) {
+        item = item.morph(1, 2);
+    } else if (player.Class == 7 && item.Class == 1 && item.Type > 1) {
+        item = item.morph(1, 3);
     }
 
     // Attribute arrays
@@ -779,7 +791,7 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
 
     if (noupgrade) {
         var iascale = 1 / Math.pow(1.03, item.Upgrades);
-        var cascale = Math.pow(1.03, base.Upgrades);
+        var cascale = 1 / Math.pow(1.03, base.Upgrades);
 
         for (var i = 0; i < 5; i++) {
             ia[i] /= iascale;

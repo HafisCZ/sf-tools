@@ -1423,6 +1423,13 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Witch Items Required': {
         expr: p => p.Witch.ItemsNext
+    },
+    'Registered': {
+        expr: p => p.Registered,
+        format: (p, e, x) => x ? formatDate(x) : '',
+        width: 160,
+        difference: false,
+        statistics: false
     }
 };
 

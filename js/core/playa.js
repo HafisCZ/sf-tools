@@ -70,10 +70,20 @@ class SFItem {
         this.RuneValue = this.getRuneValue();
     }
 
-    morph (type) {
-        var data = [ ... this.Data ];
-        data[5] = type;
-        return new SFItem(data);
+    morph (from, to) {
+        if (this.Type <= 7) {
+            var data = [ ... this.Data ];
+            for (var i = 0; i < 3; i++) {
+                if (data[i + 4] == from) {
+                    data[i + 4] = to;
+                } else if (data[i + 4] == from + 20) {
+                    data[i + 4] = to + 20;
+                }
+            }
+            return new SFItem(data);
+        } else {
+            return new SFItem(this.Data);
+        }
     }
 
     setPic (pic) {
@@ -1157,7 +1167,8 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(1); // skip
         this.ID = dataType.long();
         this.LastOnline = dataType.long() * 1000 + data.offset;
-        dataType.skip(4); // skip
+        this.Registered = dataType.long() * 1000 + data.offset;
+        dataType.skip(3); // skip
         this.Level = dataType.short();
         dataType.clear();
         this.XP = dataType.long();
@@ -1614,10 +1625,10 @@ class SFCompanion extends SFPlayer {
 
         this.Items = items;
         for (var [ key, item ] of Object.entries(this.Items)) {
-            if (this.Class == 2 && item.AttributeTypes[0] == 21) {
-                this.Items[key] = item.morph(23);
-            } else if (this.Class == 2 && item.AttributeTypes[0] == 1) {
-                this.Items[key] = item.morph(3);
+            if (this.Class == 2 && this.Items[key].Class == 2) {
+                this.Items[key] = item.morph(1, 3);
+            } else if (this.Class == 1 && this.Items[key].Class == 1) {
+                this.Items[key] = item.morph(3, 1).morph(2, 1);
             };
         }
 
