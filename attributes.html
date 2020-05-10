@@ -96,6 +96,29 @@
                             </div>
                         </div>
                     </div>
+                    <div class="ui segment">
+                        <h3 class="ui header">Calculate city guard reward</h3>
+                        <div class="ui form">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Level</label>
+                                    <input type="text" id="guard-level">
+                                </div>
+                                <div class="field">
+                                    <label>Guild bonus %</label>
+                                    <input type="text" id="guard-guild">
+                                </div>
+                                <div class="field">
+                                    <label>Tower bonus %</label>
+                                    <input type="text" id="guard-tower">
+                                </div>
+                                <div class="field">
+                                    <label>Gold</label>
+                                    <input type="text" disabled id="guard-price">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,7 +126,7 @@
         <script type="text/javascript">
             function validate (... elements) {
                 return elements.reduce((errors, element) => {
-                    if (isNaN($(element).val()) || $(element).val() < 1) {
+                    if (isNaN($(element).val()) || $(element).val() < 0) {
                         $(element).parent('.field').addClass('error');
                         return errors + 1;
                     } else {
@@ -111,6 +134,10 @@
                         return errors;
                     }
                 }, 0) == 0;
+            }
+
+            function roundShort(value) {
+                return Math.trunc(value * 100) / 100;
             }
 
             var text = '';
@@ -127,10 +154,11 @@
             $('#priceat-attribute').on('change input', function () {
                 if (validate($(this))) {
                     var value = Number($(this).val());
+                    if (value < 1) value = 1;
 
                     var cost = calculateAttributePrice(value - 1);
 
-                    $('#priceat-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : cost);
+                    $('#priceat-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost));
                 }
             });
 
@@ -138,16 +166,39 @@
                 if (validate($(this))) {
                     var value = Number($(this).val());
                     if (value < 1) value = 1;
-                    else if (value > 600) value = 600;
+                    else if (value > 632) value = 632;
 
-                    var num = Math.trunc(getGoldCurve(value) / 5 / 2);
+                    var num = Math.trunc(getGoldCurve(value) / 10);
                     if (num > 9999) {
                         num = Math.trunc(num / 100) * 100;
                     }
 
                     num = num * 12 / 100;
 
-                    $('#reward-price').val(num >= 10 ? formatAsSpacedNumber(num, ' ') : num);
+                    $('#reward-price').val(num >= 10 ? formatAsSpacedNumber(num, ' ') : roundShort(num));
+                }
+            });
+
+            $('#guard-level, #guard-guild, #guard-tower').on('change input', function () {
+                if (validate($('#guard-level'), $('#guard-guild'), $('#guard-tower'))) {
+                    var level = Number($('#guard-level').val());
+                    if (level < 1) level = 1;
+                    else if (level > 632) level = 632;
+
+                    var guild = Number($('#guard-guild').val());
+                    if (guild > 200) guild = 200;
+
+                    var tower = Number($('#guard-tower').val());
+                    if (tower > 200) tower = 200;
+
+                    var num = Math.trunc(getGoldCurve(level) / 10);
+                    if (num > 9999) {
+                        num = Math.trunc(num / 100) * 100;
+                    }
+
+                    num = (num * 12 / 300) * (1 + guild / 100 + tower / 100);
+
+                    $('#guard-price').val(num >= 10 ? formatAsSpacedNumber(num, ' ') : roundShort(num));
                 }
             });
 
@@ -162,7 +213,7 @@
 
                     var cost = calculateTotalAttributePrice(to - 1) - calculateTotalAttributePrice(from - 1);
 
-                    $('#pricebetween-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : cost);
+                    $('#pricebetween-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost));
                 }
             });
         </script>
