@@ -596,8 +596,12 @@ const Storage = new (class {
                 for (var [key, val] of parsePlayaResponse(raw)) {
                     if (key.includes('groupname')) {
                         player.groupname = val;
-                    } else if (key.includes('name')) {
+                    } else if (key.includes('otherplayername')) {
                         player.name = val;
+                        player.own = false;
+                    } else if (key.includes('ownplayername')) {
+                        player.name = val;
+                        player.own = true;
                     } else if (key.includes('unitlevel')) {
                         player.units = val.split('/').map(a => Number(a));
                     } else if (key.includes('achievement') && !key.includes('new')) {
@@ -606,11 +610,9 @@ const Storage = new (class {
                         player.fortressrank = Number(val);
                     } else if (key.includes('playerlookat')) {
                         player.save = val.split('/').map(a => Number(a));
-                        player.own = false;
                         player.id = player.prefix + '_p' + player.save[0];
                     } else if (key.includes('playerSave')) {
                         player.save = val.split('/').map(a => Number(a));
-                        player.own = true;
                         player.id = player.prefix + '_p' + player.save[1];
                     } else if (key.includes('petbonus') || key.includes('petsSave')) {
                         player.pets = val.split('/').map(a => Number(a));
