@@ -972,11 +972,11 @@ class PetSimulator {
         this.cb.initialize(this.ca);
 
         var score = 0;
-        for (var i = 0; i < 5E7; i++) {
+        for (var i = 0; i < 1E7; i++) {
             score += this.fight();
         }
 
-        return score / 5E5;
+        return score / 1E5;
     }
 
     fight () {
