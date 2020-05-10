@@ -300,6 +300,36 @@
 
             // Update document
             function updateTabs() {
+                for (var tab of tabs) {
+                    tab.fighterA.Stats = {
+                        Hits: 0,
+                        Crits: 0,
+                        Skips: 0
+                    };
+
+                    tab.fighterB.Stats = {
+                        Hits: 0,
+                        Crits: 0,
+                        Skips: 0
+                    };
+
+                    for (var r of tab.rounds) {
+                        if (r.attackType == 15 || r.attackType == 16) {
+                            continue
+                        }
+
+                        if (r.attackMissed) {
+                            r.attacker.Stats.Skips++;
+                        } else {
+                            r.attacker.Stats.Hits++;
+
+                            if (r.attackCrit) {
+                                r.attacker.Stats.Crits++;
+                            }
+                        }
+                    }
+                }
+
                 if (tabs.length) {
                     $('#fi-content').show();
                     $('#fi-select-items').html(tabs.map((tab, index) => `<div class="item${ !tabsadded && index == 0 ? ' active selected' : '' }" data-value="${ index }"><div class="fi-wrap"><div class="fi-left">${ index + 1 }.</div><div class="fi-right"><span class="${ tab.winner.ID != tab.fighterA.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterA.Name }</span></br><span class="${ tab.winner.ID != tab.fighterB.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterB.Name }</span></div></div></div>`).join(''));
@@ -403,6 +433,20 @@
                                                     </div>
                                                 ` : '' }
                                             </div>
+                                            <div class="three fields">
+                                                <div class="field">
+                                                    <label>Total Hits</label>
+                                                    <input type="text" value="${ tab.fighterA.Stats.Hits }" disabled class="text-center">
+                                                </div>
+                                                <div class="field">
+                                                    <label>Critical Hits</label>
+                                                    <input type="text" value="${ tab.fighterA.Stats.Crits }" disabled class="text-center">
+                                                </div>
+                                                <div class="field">
+                                                    <label>Hits Evaded</label>
+                                                    <input type="text" value="${ tab.fighterA.Stats.Skips }" disabled class="text-center">
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="column">
                                             <h2 class="ui centered header ${ tab.winner.ID != tab.fighterB.ID ? 'foreground-red' : 'foreground-green' }">${ tab.fighterB.Name }</h2>
@@ -497,6 +541,20 @@
                                                         <input type="text" value="${ formatAsSpacedNumber(tab.fighterB.Life, ' ') }" disabled class="text-center">
                                                     </div>
                                                 ` : '' }
+                                            </div>
+                                            <div class="three fields">
+                                                <div class="field">
+                                                    <label>Total Hits</label>
+                                                    <input type="text" value="${ tab.fighterB.Stats.Hits }" disabled class="text-center">
+                                                </div>
+                                                <div class="field">
+                                                    <label>Critical Hits</label>
+                                                    <input type="text" value="${ tab.fighterB.Stats.Crits }" disabled class="text-center">
+                                                </div>
+                                                <div class="field">
+                                                    <label>Hits Evaded</label>
+                                                    <input type="text" value="${ tab.fighterB.Stats.Skips }" disabled class="text-center">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -594,7 +652,7 @@
                         // Fighter B (player or monster)
                         var fighterB = new SFFighter(msg['fighters'].slice(52, 99));
                         if (fighterB.isMonster() || !isNaN(fighterB.Name)) {
-                            fighterB.Name = getFightTargetName(fightType, fighterB.Name, fighterB.getMonsterID());
+                            fighterB.Name = getFightTargetName(fightType, fighterB.Name, fighterB.getMonsterID())
                         }
 
                         // Winner
