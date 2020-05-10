@@ -831,13 +831,12 @@ class FightSimulator {
 
         // Test for skip
         var damage = 0;
-        var critical = false;
+        var critical = getRandom(source.CriticalChance);
         var skipped = !critical ? getRandom(target.SkipChance) : false;
 
         if (!skipped) {
             damage = rage * (Math.random() * (1 + weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
 
-            critical = getRandom(source.CriticalChance);
             if (critical) {
                 damage *= weapon.Critical;
             }
@@ -1006,8 +1005,6 @@ class PetSimulator {
     attack (source, target) {
         var turn = this.turn++;
         var rage = 1 + turn / 6;
-
-        var damage = 0;
         var critical = getRandom(source.CriticalChance);
 
         if (critical || !getRandom(target.SkipChance)) {
