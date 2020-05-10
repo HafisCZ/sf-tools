@@ -588,30 +588,28 @@ const Storage = new (class {
                 }
             }
 
+            var own = raw.includes('ownplayername');
             if (raw.includes('otherplayername') || raw.includes('ownplayername')) {
                 let player = {
-                    prefix: prefix || 's1_de'
+                    prefix: prefix || 's1_de',
+                    own: own
                 };
 
                 for (var [key, val] of parsePlayaResponse(raw)) {
                     if (key.includes('groupname')) {
                         player.groupname = val;
-                    } else if (key.includes('otherplayername')) {
+                    } else if (key.includes('name')) {
                         player.name = val;
-                        player.own = false;
-                    } else if (key.includes('ownplayername')) {
-                        player.name = val;
-                        player.own = true;
                     } else if (key.includes('unitlevel')) {
                         player.units = val.split('/').map(a => Number(a));
                     } else if (key.includes('achievement') && !key.includes('new')) {
                         player.achievements = val.split('/').map(a => Number(a));
                     } else if (key.includes('fortressrank')) {
                         player.fortressrank = Number(val);
-                    } else if (key.includes('playerlookat')) {
+                    } else if (!own && key.includes('playerlookat')) {
                         player.save = val.split('/').map(a => Number(a));
                         player.id = player.prefix + '_p' + player.save[0];
-                    } else if (key.includes('playerSave')) {
+                    } else if (own && key.includes('playerSave')) {
                         player.save = val.split('/').map(a => Number(a));
                         player.id = player.prefix + '_p' + player.save[1];
                     } else if (key.includes('petbonus') || key.includes('petsSave')) {
