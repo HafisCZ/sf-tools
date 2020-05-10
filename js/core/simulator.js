@@ -832,7 +832,7 @@ class FightSimulator {
         // Test for skip
         var damage = 0;
         var critical = false;
-        var skipped = !critical ? getRandom(target.SkipChance) || false;
+        var skipped = !critical ? getRandom(target.SkipChance) : false;
 
         if (!skipped) {
             damage = rage * (Math.random() * (1 + weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
