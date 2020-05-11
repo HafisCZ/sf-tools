@@ -29,27 +29,10 @@
 
         <div class="ui main container">
             <div class="ui grid">
-                <div class="five wide column">
-                    <table class="ui celled structured table table-group">
-                        <thead>
-                            <tr>
-                                <td width="150">Attribute</td>
-                                <td width="150">Price</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="border-bottom-thick"></td>
-                            </tr>
-                        </thead>
-                        <tbody id="attribute-prices" style="text-align: center;">
-
-                        </tbody>
-                    </table>
-                </div>
-                <div class="eleven wide column">
-                    <br/>
+                <div class="sixteen wide column">
                     <div class="ui segment">
                         <h3 class="ui header">Calculate price at</h3>
-                        <div class="ui form">
+                        <div class="ui small form">
                             <div class="two fields">
                                 <div class="field">
                                     <label>Attribute</label>
@@ -64,7 +47,7 @@
                     </div>
                     <div class="ui segment">
                         <h3 class="ui header">Calculate price between</h3>
-                        <div class="ui form">
+                        <div class="ui small form">
                             <div class="three fields">
                                 <div class="field">
                                     <label>From</label>
@@ -82,43 +65,75 @@
                         </div>
                     </div>
                     <div class="ui segment">
-                        <h3 class="ui header">Calculate environment reward</h3>
-                        <div class="ui form">
-                            <div class="two fields">
+                        <h3 class="ui header">Calculate gold rewards</h3>
+                        <div class="ui small form">
+                            <div class="three fields">
                                 <div class="field">
                                     <label>Level</label>
-                                    <input type="text" id="reward-level">
-                                </div>
-                                <div class="field">
-                                    <label>Gold</label>
-                                    <input type="text" disabled id="reward-price">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ui segment">
-                        <h3 class="ui header">Calculate city guard reward</h3>
-                        <div class="ui form">
-                            <div class="two fields">
-                                <div class="field">
-                                    <label>Level</label>
-                                    <input type="text" id="guard-level">
+                                    <input type="text" id="gold-level">
                                 </div>
                                 <div class="field">
                                     <label>Guild bonus %</label>
-                                    <input type="text" id="guard-guild">
+                                    <input type="text" id="gold-guild">
                                 </div>
                                 <div class="field">
                                     <label>Tower bonus %</label>
-                                    <input type="text" id="guard-tower">
+                                    <input type="text" id="gold-tower">
+                                </div>
+                            </div>
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Environmental reward</label>
+                                    <input type="text" disabled id="gold-reward">
                                 </div>
                                 <div class="field">
-                                    <label>Gold</label>
-                                    <input type="text" disabled id="guard-price">
+                                    <label>Guard duty</label>
+                                    <input type="text" disabled id="gold-guard">
+                                </div>
+                                <div class="field">
+                                    <label>Dice game (3 of kind)</label>
+                                    <input type="text" disabled id="gold-dice">
+                                </div>
+                            </div>
+                            <div class="three fields">
+                                <div class="field"></div>
+                                <div class="field"></div>
+                                <div class="field">
+                                    <label>Dice game (4 of kind)</label>
+                                    <input type="text" disabled id="gold-dice2">
+                                </div>
+                            </div>
+                            <div class="three fields">
+                                <div class="field"></div>
+                                <div class="field"></div>
+                                <div class="field">
+                                    <label>Dice game (5 of kind)</label>
+                                    <input type="text" disabled id="gold-dice3">
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="sixteen wide column">
+                    <button class="ui right floated button small" id="copy-table-col" style="margin-bottom: 0.5em; margin-top: -1em; margin-left: 1em;">Copy table (comma)</button>
+                    <button class="ui right floated button small" id="copy-table" style="margin-bottom: 0.5em; margin-top: -1em;">Copy table</button>
+                    <table class="ui celled structured table table-group" id="data-table">
+                        <thead>
+                            <tr>
+                                <td width="150">Attribute / Level</td>
+                                <td width="150">Attribute Price</td>
+                                <td width="150">Gold Curve</td>
+                                <td width="150">Griffin</td>
+                                <td width="150">Guard Duty / Dice (3)</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" class="border-bottom-thick"></td>
+                            </tr>
+                        </thead>
+                        <tbody id="attribute-prices" class="opaque-rows" style="text-align: center;">
+
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -144,7 +159,24 @@
 
             for (var i = 0; i < 3155; i++) {
                 var cost = calculateAttributePrice(i);
-                text += `<tr><td>${ i + 1 }</td><td>${ cost >= 10 ? formatAsSpacedNumber(cost) : cost }</td></tr>`;
+
+                if (i < 632) {
+                    var curve = getGoldCurve(i + 1);
+
+                    var num = Math.trunc(curve / 10);
+                    if (num > 9999) num = Math.trunc(num / 100) * 100;
+                    num = num * 12 / 100;
+
+                    text += `<tr>
+                        <td>${ i + 1 }</td>
+                        <td>${ cost >= 10 ? formatAsSpacedNumber(cost) : roundShort(cost) }</td>
+                        <td>${ curve / 100 >= 10 ? formatAsSpacedNumber(curve / 100) : roundShort(curve / 100) }</td>
+                        <td>${ num >= 10 ? formatAsSpacedNumber(num) : roundShort(num) }</td>
+                        <td>${ num / 3 >= 10 ? formatAsSpacedNumber(num / 3) :roundShort(num / 3) }</td>
+                    </tr>`;
+                } else {
+                    text += `<tr><td>${ i + 1 }</td><td>${ cost >= 10 ? formatAsSpacedNumber(cost) : roundShort(cost) }</td></tr>`;
+                }
             }
 
             text += `<tr><td>3156 and above</td><td>${ formatAsSpacedNumber(10e6) }</td></tr>`;
@@ -162,46 +194,6 @@
                 }
             });
 
-            $('#reward-level').on('change input', function () {
-                if (validate($(this))) {
-                    var value = Number($(this).val());
-                    if (value < 1) value = 1;
-                    else if (value > 632) value = 632;
-
-                    var num = Math.trunc(getGoldCurve(value) / 10);
-                    if (num > 9999) {
-                        num = Math.trunc(num / 100) * 100;
-                    }
-
-                    num = num * 12 / 100;
-
-                    $('#reward-price').val(num >= 10 ? formatAsSpacedNumber(num, ' ') : roundShort(num));
-                }
-            });
-
-            $('#guard-level, #guard-guild, #guard-tower').on('change input', function () {
-                if (validate($('#guard-level'), $('#guard-guild'), $('#guard-tower'))) {
-                    var level = Number($('#guard-level').val());
-                    if (level < 1) level = 1;
-                    else if (level > 632) level = 632;
-
-                    var guild = Number($('#guard-guild').val());
-                    if (guild > 200) guild = 200;
-
-                    var tower = Number($('#guard-tower').val());
-                    if (tower > 200) tower = 200;
-
-                    var num = Math.trunc(getGoldCurve(level) / 10);
-                    if (num > 9999) {
-                        num = Math.trunc(num / 100) * 100;
-                    }
-
-                    num = (num * 12 / 300) * (1 + guild / 100 + tower / 100);
-
-                    $('#guard-price').val(num >= 10 ? formatAsSpacedNumber(num, ' ') : roundShort(num));
-                }
-            });
-
             $('#pricebetween-from, #pricebetween-to').on('change input', function () {
                 if (validate($('#pricebetween-from'), $('#pricebetween-to'))) {
                     var from = Number($('#pricebetween-from').val());
@@ -215,6 +207,64 @@
 
                     $('#pricebetween-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost));
                 }
+            });
+
+            $('#gold-level, #gold-guild, #gold-tower').on('change input', function () {
+                if (validate($('#gold-level'), $('#gold-guild'), $('#gold-tower'))) {
+                    var level = Number($('#gold-level').val());
+                    if (level < 1) level = 1;
+                    else if (level > 632) level = 632;
+
+                    var guild = Number($('#gold-guild').val());
+                    if (guild > 200) guild = 200;
+
+                    var tower = Number($('#gold-tower').val());
+                    if (tower > 100) tower = 100;
+
+                    var num = Math.trunc(getGoldCurve(level) / 10);
+                    if (num > 9999) {
+                        num = Math.trunc(num / 100) * 100;
+                    }
+
+                    num = num * 12 / 100;
+
+                    var guard = (num / 3) * (1 + guild / 100 + tower / 100);
+                    var reward = num;
+                    var dice = num / 3;
+
+                    $('#gold-guard').val(guard >= 10 ? formatAsSpacedNumber(guard, ' ') : roundShort(guard));
+                    $('#gold-reward').val(reward >= 10 ? formatAsSpacedNumber(reward, ' ') : roundShort(reward));
+
+                    $('#gold-dice').val(dice >= 10 ? formatAsSpacedNumber(dice, ' ') : roundShort(dice));
+                    $('#gold-dice2').val(dice * 5 >= 10 ? formatAsSpacedNumber(dice * 5, ' ') : roundShort(dice * 5));
+                    $('#gold-dice3').val(dice * 25 >= 10 ? formatAsSpacedNumber(dice * 25, ' ') : roundShort(dice * 25));
+                }
+            });
+
+            $('#copy-table').click(() => {
+                var range = document.createRange();
+                range.selectNode($('#data-table').get(0));
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+            });
+
+            $('#copy-table-col').click(() => {
+                $('#data-table').find('td').each(function (i, o) {
+                    $(o).html($(o).html().replace('.', ','));
+                });
+
+                var range = document.createRange();
+                range.selectNode($('#data-table').get(0));
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+
+                $('#data-table').find('td').each(function (i, o) {
+                    $(o).html($(o).html().replace(',', '.'));
+                });
             });
         </script>
     </body>
