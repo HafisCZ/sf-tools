@@ -67,7 +67,7 @@
                     <div class="ui segment">
                         <h3 class="ui header">Calculate gold rewards</h3>
                         <div class="ui small form">
-                            <div class="three fields">
+                            <div class="five fields">
                                 <div class="field">
                                     <label>Level</label>
                                     <input type="text" id="gold-level">
@@ -80,8 +80,16 @@
                                     <label>Tower bonus %</label>
                                     <input type="text" id="gold-tower">
                                 </div>
+                                <div class="field">
+                                    <label>Gem Mine</label>
+                                    <input type="text" id="gold-mine">
+                                </div>
+                                <div class="field">
+                                    <label>Gold Pit</label>
+                                    <input type="text" id="gold-pit">
+                                </div>
                             </div>
-                            <div class="three fields">
+                            <div class="five fields">
                                 <div class="field">
                                     <label>Environmental reward</label>
                                     <input type="text" disabled id="gold-reward">
@@ -94,21 +102,37 @@
                                     <label>Dice game (3 of kind)</label>
                                     <input type="text" disabled id="gold-dice">
                                 </div>
+                                <div class="field">
+                                    <label>Small gem</label>
+                                    <input type="text" disabled id="gold-gem">
+                                </div>
+                                <div class="field">
+                                    <label>Hourly gold pit</label>
+                                    <input type="text" disabled id="gold-hourly">
+                                </div>
                             </div>
-                            <div class="three fields">
+                            <div class="five fields">
                                 <div class="field"></div>
                                 <div class="field"></div>
                                 <div class="field">
                                     <label>Dice game (4 of kind)</label>
                                     <input type="text" disabled id="gold-dice2">
                                 </div>
+                                <div class="field">
+                                    <label>Medium gem</label>
+                                    <input type="text" disabled id="gold-gem2">
+                                </div>
                             </div>
-                            <div class="three fields">
+                            <div class="five fields">
                                 <div class="field"></div>
                                 <div class="field"></div>
                                 <div class="field">
                                     <label>Dice game (5 of kind)</label>
                                     <input type="text" disabled id="gold-dice3">
+                                </div>
+                                <div class="field">
+                                    <label>large gem</label>
+                                    <input type="text" disabled id="gold-gem3">
                                 </div>
                             </div>
                         </div>
@@ -153,6 +177,27 @@
 
             function roundShort(value) {
                 return Math.trunc(value * 100) / 100;
+            }
+
+            function getMineMultiplier(m) {
+                if (m <= 1) {
+                    return 1;
+                } else if (m >= 14) {
+                    return 24;
+                } else switch (m) {
+                    case 2: return 2;
+                    case 3: return 3;
+                    case 4: return 4;
+                    case 5: return 6;
+                    case 6: return 8;
+                    case 7: return 10;
+                    case 8: return 12;
+                    case 9: return 14;
+                    case 10: return 16;
+                    case 11: return 18;
+                    case 12: return 20;
+                    case 13: return 22;
+                }
             }
 
             var text = '';
@@ -209,8 +254,8 @@
                 }
             });
 
-            $('#gold-level, #gold-guild, #gold-tower').on('change input', function () {
-                if (validate($('#gold-level'), $('#gold-guild'), $('#gold-tower'))) {
+            $('#gold-level, #gold-guild, #gold-tower, #gold-mine, #gold-pit').on('change input', function () {
+                if (validate($('#gold-level'), $('#gold-guild'), $('#gold-tower'), $('#gold-mine'))) {
                     var level = Number($('#gold-level').val());
                     if (level < 1) level = 1;
                     else if (level > 632) level = 632;
@@ -220,6 +265,14 @@
 
                     var tower = Number($('#gold-tower').val());
                     if (tower > 100) tower = 100;
+
+                    var mine = Number($('#gold-mine').val());
+                    if (mine < 1) mine = 1;
+                    else if (mine > 14) mine = 14;
+
+                    var pit = Number($('#gold-pit').val());
+                    if (pit < 1) pit = 1;
+                    else if (pit > 100) pit = 100;
 
                     var num = Math.trunc(getGoldCurve(level) / 10);
                     if (num > 9999) {
@@ -232,12 +285,31 @@
                     var reward = num;
                     var dice = num / 3;
 
+                    var hourly = guard * pit / 100;
+
+                    var gem = num / 6;
+                    gem = Math.min(10E6, gem * getMineMultiplier(mine));
+
+                    var gem2 = Math.trunc(getGoldCurve(level + 5) / 10);
+                    if (gem2 > 9999) gem2 = Math.trunc(gem2 / 100) * 100;
+                    gem2 = Math.min(10E6, gem2 * 2 * getMineMultiplier(mine) / 100);
+
+                    var gem3 = Math.trunc(getGoldCurve(level + 10) / 10);
+                    if (gem3 > 9999) gem3 = Math.trunc(gem3 / 100) * 100;
+                    gem3 = Math.min(10E6, gem3 * 2 * getMineMultiplier(mine) / 100);
+
                     $('#gold-guard').val(guard >= 10 ? formatAsSpacedNumber(guard, ' ') : roundShort(guard));
                     $('#gold-reward').val(reward >= 10 ? formatAsSpacedNumber(reward, ' ') : roundShort(reward));
 
                     $('#gold-dice').val(dice >= 10 ? formatAsSpacedNumber(dice, ' ') : roundShort(dice));
                     $('#gold-dice2').val(dice * 5 >= 10 ? formatAsSpacedNumber(dice * 5, ' ') : roundShort(dice * 5));
                     $('#gold-dice3').val(dice * 25 >= 10 ? formatAsSpacedNumber(dice * 25, ' ') : roundShort(dice * 25));
+
+                    $('#gold-gem').val(gem >= 10 ? formatAsSpacedNumber(gem, ' ') : roundShort(gem));
+                    $('#gold-gem2').val(gem2 >= 10 ? formatAsSpacedNumber(gem2, ' ') : roundShort(gem2));
+                    $('#gold-gem3').val(gem3 >= 10 ? formatAsSpacedNumber(gem3, ' ') : roundShort(gem3));
+
+                    $('#gold-hourly').val(hourly >= 10 ? formatAsSpacedNumber(hourly, ' ') : roundShort(hourly));
                 }
             });
 
