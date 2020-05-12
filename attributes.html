@@ -95,7 +95,7 @@
                                     <input type="text" disabled id="gold-reward">
                                 </div>
                                 <div class="field">
-                                    <label>Guard duty</label>
+                                    <label>Hourly guard duty</label>
                                     <input type="text" disabled id="gold-guard">
                                 </div>
                                 <div class="field">
@@ -285,7 +285,8 @@
                     var reward = num;
                     var dice = num / 3;
 
-                    var hourly = guard * pit / 100;
+                    var hourly = Math.min(10E6, guard * pit / 100);
+                    var guard = Math.min(10E6, guard);
 
                     var gem = num / 6;
                     gem = Math.min(10E6, gem * getMineMultiplier(mine));
