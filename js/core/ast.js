@@ -970,6 +970,27 @@ const SP_KEYWORD_MAPPING_0 = {
     'Upgrades': {
         expr: p => p.Fortress.Upgrades
     },
+    'Warriors': {
+        expr: p => p.Fortress.Warriors
+    },
+    'Archers': {
+        expr: p => p.Fortress.Archers
+    },
+    'Mages': {
+        expr: p => p.Fortress.Mages
+    },
+    'Warrior Count': {
+        expr: p => p.Fortress.Barracks * 3
+    },
+    'Archer Count': {
+        expr: p => p.Fortress.ArcheryGuild * 2
+    },
+    'Mage Count': {
+        expr: p => p.Fortress.MageTower
+    },
+    'Upgrades': {
+        expr: p => p.Fortress.Upgrades
+    },
     'Gem Mine': {
         expr: p => p.Fortress.GemMine
     },
