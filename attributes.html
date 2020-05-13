@@ -122,6 +122,10 @@
                                     <label>Medium gem</label>
                                     <input type="text" disabled id="gold-gem2">
                                 </div>
+                                <div class="field">
+                                    <label>Gold pit time</label>
+                                    <input type="text" disabled id="gold-time">
+                                </div>
                             </div>
                             <div class="five fields">
                                 <div class="field"></div>
@@ -133,6 +137,10 @@
                                 <div class="field">
                                     <label>large gem</label>
                                     <input type="text" disabled id="gold-gem3">
+                                </div>
+                                <div class="field">
+                                    <label>Gold pit capacity</label>
+                                    <input type="text" disabled id="gold-capacity">
                                 </div>
                             </div>
                         </div>
@@ -288,6 +296,10 @@
                     var hourly = Math.min(10E6, guard * pit / 100);
                     var guard = Math.min(10E6, guard);
 
+                    var capacity = Math.min(10E6, hourly * 16) + Math.max(0, pit - 15) * 100000;
+
+                    var time = capacity / hourly;
+
                     var gem = num / 6;
                     gem = Math.min(10E6, gem * getMineMultiplier(mine));
 
@@ -311,6 +323,8 @@
                     $('#gold-gem3').val(gem3 >= 10 ? formatAsSpacedNumber(gem3, ' ') : roundShort(gem3));
 
                     $('#gold-hourly').val(hourly >= 10 ? formatAsSpacedNumber(hourly, ' ') : roundShort(hourly));
+                    $('#gold-capacity').val(formatAsSpacedNumber(capacity, ' '));
+                    $('#gold-time').val(Math.trunc(time) + ' hours ' + Math.trunc(60 * (time % 1)) + ' minutes');
                 }
             });
 
