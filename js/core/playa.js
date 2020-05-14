@@ -1603,6 +1603,9 @@ class SFOwnPlayer extends SFPlayer {
             this.Companions.Bert = new SFCompanion(this, bert, this.Inventory.Bert);
             this.Companions.Mark = new SFCompanion(this, mark, this.Inventory.Mark);
             this.Companions.Kunigunde = new SFCompanion(this, kuni, this.Inventory.Kunigunde);
+        } else if (data.tower) {
+            this.Dungeons.Extra.Normal[0] = Math.max(0, data.tower[150] - 2);
+            this.Dungeons.Extra.Shadow[0] = Math.max(0, data.tower[298] - 2);
         } else {
             this.Dungeons.Extra.Normal[0] = 0;
             this.Dungeons.Extra.Shadow[0] = 0;
