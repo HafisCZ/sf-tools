@@ -670,7 +670,7 @@
 
             // Run simulation
             $('#sim-run').click(function () {
-                if (players.length > 1) {
+                if (players.length > 1 && (mode != 1 || (mode == 1 && players.find(p => p.index == yourself)))) {
                     logClear();
 
                     for (var i = 0; i < players.length; i++) {
