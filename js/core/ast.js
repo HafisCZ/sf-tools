@@ -591,10 +591,30 @@ const SP_KEYWORD_MAPPING_0 = {
         difference: false,
         statistics: false
     },
+    'Identifier': {
+        expr: p => p.Identifier,
+        difference: false,
+        statistics: false
+    },
+    'Guild ID': {
+        expr: p => p.Group ? p.Group.ID : '',
+        difference: false,
+        statistics: false
+    },
+    'Guild Identifier': {
+        expr: p => p.Group ? p.Group.Identifier : '',
+        difference: false,
+        statistics: false
+    },
+    'Guild Rank': {
+        expr: p => p.Group ? p.Group.Rank : '',
+        difference: false,
+        statistics: false
+    },
     'Role': {
         expr: p => p.Group.Role,
         flip: true,
-        format: (p, e, x) => p.hasGuild() ? GROUP_ROLES[cell.Group.Role] : '',
+        format: (p, e, x) => p.hasGuild() ? GROUP_ROLES[p.Group.Role] : '',
         difference: false,
         statistics: false
     },

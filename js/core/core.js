@@ -189,6 +189,7 @@ const Database = new (class {
                     player.Group.Group = group;
                     player.Group.Role = group.Roles[index];
                     player.Group.Index = index;
+                    player.Group.Rank = group.Rank;
 
                     if (group.Own) {
                         player.Group.Own = true;
