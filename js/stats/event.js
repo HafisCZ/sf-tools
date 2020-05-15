@@ -1539,13 +1539,26 @@ class SettingsView extends View {
 
     refreshHistory () {
         var content = '';
+
         var history = Settings.getHistory();
 
         for (var i = history.length - 1; i >= 0; i--) {
+            var name = history[i].name;
+
+            if (name == 'players') {
+                name = 'Players';
+            } else if (name == 'settings') {
+                name = 'Settings';
+            } else if (Database.Players[name]) {
+                name = 'P: ' + Database.Players[name].Latest.Name;
+            } else if (Database.Groups[name]) {
+                name = 'G: ' + Database.Groups[name].Latest.Name;
+            }
+
             content += `
                 <div class="row css-template-item">
                     <div class="ten wide column">
-                        <b>${ history[i].name } (${ history[i].content.length })</b>
+                        <b>${ name } (${ history[i].content.length })</b>
                     </div>
                     <div class="six wide column css-template-buttons">
                         <div class="ui icon right floated small buttons">
@@ -1598,6 +1611,7 @@ class SettingsView extends View {
     save () {
         var code = this.$area.val();
         if (code !== this.code) {
+            Settings.addHistory(this.code, this.identifier);
             this.code = code;
             Settings.save(this.code, this.identifier);
         }

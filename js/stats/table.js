@@ -1693,7 +1693,6 @@ class Settings {
     // Save
     static save (settings, identifier) {
         Preferences.set(identifier ? `settings/${ identifier }` : 'settings', settings);
-        Settings.addHistory(settings, identifier ? `settings/${ identifier }` : 'settings');
     }
 
     // Remove
@@ -1715,7 +1714,7 @@ class Settings {
         return Preferences.get('settings_history', []);
     }
 
-    static addHistory (settings, identifier) {
+    static addHistory (settings, identifier = 'settings') {
         var history = Preferences.get('settings_history', []);
         history.push({
             name: identifier,
