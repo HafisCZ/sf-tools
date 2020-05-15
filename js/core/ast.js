@@ -1471,6 +1471,139 @@ const SP_KEYWORD_MAPPING_2 = {
         width: 160,
         difference: false,
         statistics: false
+    },
+    'Heart of Darkness': {
+        expr: p => p.Underworld ? p.Underworld.Heart : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Underworld Gate': {
+        expr: p => p.Underworld ? p.Underworld.Gate : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Gold Pit': {
+        expr: p => p.Underworld ? p.Underworld.GoldPit : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Extractor': {
+        expr: p => p.Underworld ? p.Underworld.Extractor : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Goblin Pit': {
+        expr: p => p.Underworld ? p.Underworld.GoblinPit : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Torture Chamber': {
+        expr: p => p.Underworld ? p.Underworld.Torture : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Gladiator Trainer': {
+        expr: p => p.Underworld ? p.Underworld.Gladiator : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Troll Block': {
+        expr: p => p.Underworld ? p.Underworld.TrollBlock : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Time Machine': {
+        expr: p => p.Underworld ? p.Underworld.TimeMachine : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Keeper': {
+        expr: p => p.Underworld ? p.Underworld.Keeper : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Souls': {
+        expr: p => p.Underworld ? p.Underworld.Souls : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Extractor Max': {
+        expr: p => p.Underworld ? p.Underworld.ExtractorMax : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Max Souls': {
+        expr: p => p.Underworld ? p.Underworld.MaxSouls : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Extractor Hourly': {
+        expr: p => p.Underworld ? p.Underworld.ExtractorHourly : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Gold Pit Max': {
+        expr: p => p.Underworld ? p.Underworld.GoldPitMax : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Gold Pit Hourly': {
+        expr: p => p.Underworld ? p.Underworld.GoldPitHourly : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Time Machine Thirst': {
+        expr: p => p.Underworld ? p.Underworld.TimeMachineThirst : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Time Machine Max': {
+        expr: p => p.Underworld ? p.Underworld.TimeMachineMax : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Time Machine Daily': {
+        expr: p => p.Underworld ? p.Underworld.TimeMachineDaily : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Underworld Building': {
+        expr: p => p.Underworld ? p.Underworld.Upgrade.Building : 0,
+        width: 180,
+        format: (p, e, x) => UNDERWORLD_BUILDINGS[x] || '',
+        difference: false,
+        statistics: false
+    },
+    'Underworld Building Finish': {
+        expr: p => p.Underworld ? p.Underworld.Upgrade.Finish : -1,
+        format: (p, e, x) => x < 0 ? '' : formatDate(x),
+        difference: false,
+        statistics: false
+    },
+    'Woodcutter Max': {
+        expr: p => p.Fortress.WoodcutterMax,
+        difference: false,
+        statistics: false
+    },
+    'Quarry Max': {
+        expr: p => p.Fortress.QuarryMax,
+        difference: false,
+        statistics: false
+    },
+    'Academy Max': {
+        expr: p => p.Fortress.AcademyMax,
+        difference: false,
+        statistics: false
+    },
+    'Wood Capacity': {
+        expr: p => p.Fortress.MaxWood,
+        difference: false,
+        statistics: false
+    },
+    'Stone Capacity': {
+        expr: p => p.Fortress.MaxStone,
+        difference: false,
+        statistics: false
     }
 };
 

@@ -1392,7 +1392,13 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(3); // skip
         this.Fortress.RaidWood = Math.trunc(dataType.long() / 2);
         this.Fortress.RaidStone = Math.trunc(dataType.long() / 2);
-        dataType.skip(7); // skip
+        dataType.skip(1); // skip
+        this.Fortress.WoodcutterMax = dataType.long();
+        this.Fortress.QuarryMax = dataType.long();
+        this.Fortress.AcademyMax = dataType.long();
+        this.Fortress.MaxWood = dataType.long();
+        this.Fortress.MaxStone = dataType.long();
+        dataType.skip(1); // skip
         this.Fortress.Upgrade = {
             Building: dataType.long() - 1,
             Finish: dataType.long() * 1000 + data.offset
@@ -1517,9 +1523,6 @@ class SFOwnPlayer extends SFPlayer {
         }
 
         if (data.tower.length && !Database.Partial) {
-            this.Dungeons.Extra.Normal[0] = Math.max(0, data.tower[150] - 2);
-            this.Dungeons.Extra.Shadow[0] = Math.max(0, data.tower[298] - 2);
-
             this.Companions = {
                 Bert: {},
                 Mark: {},
@@ -1603,9 +1606,43 @@ class SFOwnPlayer extends SFPlayer {
             this.Companions.Bert = new SFCompanion(this, bert, this.Inventory.Bert);
             this.Companions.Mark = new SFCompanion(this, mark, this.Inventory.Mark);
             this.Companions.Kunigunde = new SFCompanion(this, kuni, this.Inventory.Kunigunde);
-        } else if (data.tower) {
+        }
+
+        if (data.tower) {
             this.Dungeons.Extra.Normal[0] = Math.max(0, data.tower[150] - 2);
             this.Dungeons.Extra.Shadow[0] = Math.max(0, data.tower[298] - 2);
+
+            dataType = new ComplexDataType(data.tower.slice(448));
+            this.Underworld = {
+                Heart: dataType.long(),
+                Gate: dataType.long(),
+                GoldPit: dataType.long(),
+                Extractor: dataType.long(),
+                GoblinPit: dataType.long(),
+                Torture: dataType.long(),
+                Gladiator: dataType.long(),
+                TrollBlock: dataType.long(),
+                TimeMachine: dataType.long(),
+                Keeper: dataType.long(),
+                Souls: dataType.long(),
+                ExtractorSouls: dataType.long(),
+                ExtractorMax: dataType.long(),
+                MaxSouls: dataType.long()
+            };
+            dataType.skip(1);
+            this.Underworld.ExtractorHourly = dataType.long();
+            this.Underworld.GoldPitGold = dataType.long();
+            this.Underworld.GoldPitMax = dataType.long();
+            this.Underworld.GoldPitHourly = dataType.long();
+            dataType.skip(1);
+            this.Underworld.Upgrade = {
+                Building: dataType.long() - 1,
+                Finish: dataType.long() * 1000 + data.offset
+            }
+            dataType.skip(2);
+            this.Underworld.TimeMachineThirst = dataType.long();
+            this.Underworld.TimeMachineMax = dataType.long();
+            this.Underworld.TimeMachineDaily = dataType.long();
         } else {
             this.Dungeons.Extra.Normal[0] = 0;
             this.Dungeons.Extra.Shadow[0] = 0;

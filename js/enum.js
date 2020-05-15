@@ -958,6 +958,19 @@ const ACHIEVEMENTS = [
   "NORDICSHADOW"
 ];
 
+const UNDERWORLD_BUILDINGS = [
+    'Heart of Darkness',
+    'Underworld Gate',
+    'Gold Pit',
+    'Extractor',
+    'Goblin Pit',
+    'Torture Chamber',
+    'Gladiator Trainer',
+    'Troll Block',
+    'Time Machine',
+    'Keeper'
+];
+
 const FORTRESS_BUILDINGS = [
     'Fortress',
     'Laborers\' Quarters',
