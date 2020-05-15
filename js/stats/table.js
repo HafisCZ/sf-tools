@@ -1693,6 +1693,7 @@ class Settings {
     // Save
     static save (settings, identifier) {
         Preferences.set(identifier ? `settings/${ identifier }` : 'settings', settings);
+        Settings.addHistory(settings, identifier ? `settings/${ identifier }` : 'settings');
     }
 
     // Remove
@@ -1708,6 +1709,24 @@ class Settings {
     // Keys
     static get () {
         return Preferences.keys().filter(key => key.includes('settings/')).map(key => key.substring(key.indexOf('/') + 1));
+    }
+
+    static getHistory () {
+        return Preferences.get('settings_history', []);
+    }
+
+    static addHistory (settings, identifier) {
+        var history = Preferences.get('settings_history', []);
+        history.push({
+            name: identifier,
+            content: settings
+        });
+
+        if (history.length > 10) {
+            history.shift();
+        }
+
+        Preferences.set('settings_history', history);
     }
 
     // Create empty settings

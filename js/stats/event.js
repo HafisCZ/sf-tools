@@ -1502,6 +1502,8 @@ class SettingsView extends View {
 
         this.$templateName = this.$parent.find('[data-op="template-name"]');
         this.$templateList = this.$parent.find('[data-op="template-list"]');
+        this.$historyList = this.$parent.find('[data-op="history-list"]');
+
         this.$parent.find('[data-op="template-save"]').click(() => {
             var name = this.$templateName.val();
             if (name.length > 0) {
@@ -1512,6 +1514,7 @@ class SettingsView extends View {
         });
 
         this.refreshTemplates();
+        this.refreshHistory();
 
         var pretemps = '';
         for (var [ key, value ] of Object.entries(PredefinedTemplates)) {
@@ -1531,6 +1534,31 @@ class SettingsView extends View {
         this.$parent.find('[data-op="template-predef"]').html(pretemps);
         this.$parent.find('[data-template-predef]').click(event => {
             this.$area.val(PredefinedTemplates[$(event.currentTarget).attr('data-template-predef')]).trigger('input');
+        });
+    }
+
+    refreshHistory () {
+        var content = '';
+        var history = Settings.getHistory();
+
+        for (var i = history.length - 1; i >= 0; i--) {
+            content += `
+                <div class="row css-template-item">
+                    <div class="ten wide column">
+                        <b>${ history[i].name } (${ history[i].content.length })</b>
+                    </div>
+                    <div class="six wide column css-template-buttons">
+                        <div class="ui icon right floated small buttons">
+                            <button class="ui button" data-history-load="${ i }"><i class="play icon"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        this.$historyList.html(content);
+        this.$historyList.find('[data-history-load]').click((event) => {
+            this.$area.val(Settings.getHistory()[$(event.currentTarget).attr('data-history-load')].content).trigger('input');
         });
     }
 
@@ -1568,12 +1596,17 @@ class SettingsView extends View {
     }
 
     save () {
-        this.code = this.$area.val();
-        Settings.save(this.code, this.identifier);
+        var code = this.$area.val();
+        if (code !== this.code) {
+            this.code = code;
+            Settings.save(this.code, this.identifier);
+        }
+
         this.hide();
     }
 
     refresh () {
+        this.refreshHistory();
         this.$area.val(this.code).trigger('input');
     }
 
@@ -1583,7 +1616,7 @@ class SettingsView extends View {
     }
 
     hide () {
-
+        this.refreshHistory();
     }
 
     show (identifier, def) {
