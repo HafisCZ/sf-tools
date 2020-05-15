@@ -1621,6 +1621,7 @@ class SettingsView extends View {
 
     refresh () {
         this.refreshHistory();
+        this.refreshTemplates();
         this.$area.val(this.code).trigger('input');
     }
 
