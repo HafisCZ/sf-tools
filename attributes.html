@@ -296,7 +296,7 @@
                     var hourly = Math.min(10E6, guard * pit / 100);
                     var guard = Math.min(10E6, guard);
 
-                    var capacity = Math.min(10E6, hourly * 16) + Math.max(0, pit - 15) * 100000;
+                    var capacity = Math.min(10E6, dice * Math.min(pit, 15) * 8 * (pit / 100)) + Math.max(0, pit - 15) * 100000;
 
                     var time = capacity / hourly;
 
