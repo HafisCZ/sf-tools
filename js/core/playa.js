@@ -1631,14 +1631,14 @@ class SFOwnPlayer extends SFPlayer {
             };
             dataType.skip(1);
             this.Underworld.ExtractorHourly = dataType.long();
-            this.Underworld.GoldPitGold = dataType.long();
-            this.Underworld.GoldPitMax = dataType.long();
-            this.Underworld.GoldPitHourly = dataType.long();
+            this.Underworld.GoldPitGold = dataType.long() / 100;
+            this.Underworld.GoldPitMax = dataType.long() / 100;
+            this.Underworld.GoldPitHourly = dataType.long() / 100;
             dataType.skip(1);
             this.Underworld.Upgrade = {
                 Building: dataType.long() - 1,
                 Finish: dataType.long() * 1000 + data.offset
-            }
+            };
             dataType.skip(2);
             this.Underworld.TimeMachineThirst = dataType.long();
             this.Underworld.TimeMachineMax = dataType.long();

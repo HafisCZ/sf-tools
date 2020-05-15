@@ -1544,11 +1544,13 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Gold Pit Max': {
         expr: p => p.Underworld ? p.Underworld.GoldPitMax : undefined,
+        format: (p, e, x) => x ? formatAsSpacedNumber(x) : undefined,
         difference: false,
         statistics: false
     },
     'Gold Pit Hourly': {
         expr: p => p.Underworld ? p.Underworld.GoldPitHourly : undefined,
+        format: (p, e, x) => x ? formatAsSpacedNumber(x) : undefined,
         difference: false,
         statistics: false
     },

@@ -1535,6 +1535,8 @@ class SettingsView extends View {
         this.$parent.find('[data-template-predef]').click(event => {
             this.$area.val(PredefinedTemplates[$(event.currentTarget).attr('data-template-predef')]).trigger('input');
         });
+
+        this.torem = '';
     }
 
     refreshHistory () {
@@ -1589,7 +1591,7 @@ class SettingsView extends View {
                     </div>
                     <div class="six wide column css-template-buttons">
                         <div class="ui icon right floated small buttons">
-                            <button class="ui button" data-template-remove="${ key }"><i class="trash alternate outline icon"></i></button>
+                            <button class="ui button" data-template-remove="${ key }"><i class="trash ${ this.torem == key ? 'red' : '' } alternate outline icon"></i></button>
                             <button class="ui button" data-template-load="${ key }"><i class="play icon"></i></button>
                         </div>
                     </div>
@@ -1599,7 +1601,24 @@ class SettingsView extends View {
 
         this.$templateList.html(content);
         this.$templateList.find('[data-template-remove]').click((event) => {
-            Templates.remove($(event.currentTarget).attr('data-template-remove'));
+            var $el = $(event.currentTarget);
+            if ($el.find('i').hasClass('red')) {
+                Templates.remove(this.torem);
+
+                this.torem = '';
+            } else {
+                this.torem = $el.attr('data-template-remove');
+
+                if (this.tout) {
+                    clearTimeout(this.tout);
+                }
+
+                this.tout = setTimeout(() => {
+                    this.torem = '';
+                    this.refreshTemplates();
+                }, 1000);
+            }
+
             this.refreshTemplates();
         });
 
@@ -1632,11 +1651,13 @@ class SettingsView extends View {
 
     hide () {
         this.refreshHistory();
+        this.refreshTemplates();
     }
 
     show (identifier, def) {
         this.identifier = identifier;
         this.code = Settings.load(identifier, def).getCode();
+        this.torem = '';
 
         if (this.$items.length) {
             var items = [{
