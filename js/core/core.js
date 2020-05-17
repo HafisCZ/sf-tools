@@ -390,6 +390,14 @@ const PlayerUpdaters = [
         } else {
             return false;
         }
+    },
+    p => {
+        if (p.own && !p.idle) {
+            p.idle = [];
+            return true;
+        } else {
+            return false;
+        }
     }
 ];
 
@@ -623,6 +631,8 @@ const Storage = new (class {
                         player.chest = val.split('/').map(a => Number(a));
                     } else if (key.includes('witchData')) {
                         player.witch = val.split('/').map(a => Number(a));
+                    } else if (key.includes('idlegame')) {
+                        player.idle = val.split('/').map(a => Number(a));
                     }
                 }
 

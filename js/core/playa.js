@@ -1449,6 +1449,27 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Extra.Normal[3] = Math.max(0, dataType.short() - 2);
         this.Dungeons.Extra.Shadow[3] = Math.max(0, dataType.short() - 2);
 
+        if (data.idle) {
+            this.Idle = {
+                Sacrifices: data.idle[2],
+                Money: data.idle[73],
+                ReadyRunes: data.idle[75],
+                Runes: data.idle[76],
+                Upgrades: {
+                    Speed: data.idle.slice(43, 53),
+                    Money: data.idle.slice(53, 63)
+                }
+            };
+
+            if (data.idle[77]) {
+                for (var i = 0; i < 10; i++) {
+                    this.Idle.Upgrades.Money[i]++;
+                }
+            }
+
+            this.Idle.Upgrades.Total = this.Idle.Upgrades.Speed.reduce((a, b) => a + b, 0) + this.Idle.Upgrades.Money.reduce((a, b) => a + b, 0);
+        }
+
         dataType = new ComplexDataType(data.pets);
         dataType.assert(288, true);
 

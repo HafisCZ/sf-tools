@@ -1606,6 +1606,41 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Fortress.MaxStone,
         difference: false,
         statistics: false
+    },
+    'Sacrifices': {
+        expr: p => p.Idle ? p.Idle.Sacrifices : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Money': {
+        expr: p => p.Idle ? p.Idle.Money : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Runes Collected': {
+        expr: p => p.Idle ? p.Idle.Runes : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Runes Ready': {
+        expr: p => p.Idle ? p.Idle.ReadyRunes : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Idle Upgrades': {
+        expr: p => p.Idle ? p.Idle.Upgrades.Total : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Speed Upgrades': {
+        expr: p => p.Idle ? p.Idle.Upgrades.Speed : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Money Upgrades': {
+        expr: p => p.Idle ? p.Idle.Upgrades.Money : undefined,
+        difference: false,
+        statistics: false
     }
 };
 

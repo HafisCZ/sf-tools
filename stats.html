@@ -18,6 +18,13 @@
         <script src="vendor/js/semantic.min.js"></script>
         <script src="vendor/js/components/state.min.js"></script>
 
+        <script>
+            if (localStorage['settings']) {
+                localStorage['settings/me'] = localStorage['settings'];
+                delete localStorage['settings'];
+            }
+        </script>
+
         <script src="js/plugins.js"></script>
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
@@ -237,7 +244,11 @@
                             <i class="search icon"></i>
                         </div>
                     </div>
-                    <div class="three wide column"></div>
+                    <div class="three wide column">
+                        <div class="ui small basic icon right floated buttons">
+                            <button class="ui button" data-position="bottom center" data-tooltip="Custom settings" data-op="configure"><i class="cog icon"></i></button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="ui five column grid" data-op="list"></div>

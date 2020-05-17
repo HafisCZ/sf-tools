@@ -1685,7 +1685,7 @@ class Templates {
     }
 
     static load (label) {
-        return new Settings(Preferences.get(`templates/${ label }`, PredefinedTemplates.Default));
+        return new Settings(Preferences.get(`templates/${ label }`, ''));
     }
 }
 
@@ -1734,8 +1734,8 @@ class Settings {
     }
 
     // Load settings
-    static load (identifier, def) {
-        return new Settings(Preferences.get(`settings/${ identifier }`, def || Preferences.get('settings', PredefinedTemplates.Default)));
+    static load (identifier, def, template = '') {
+        return new Settings(Preferences.get(`settings/${ identifier }`, Preferences.get(`settings/${ def }`, template)));
     }
 
     // Get code

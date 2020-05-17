@@ -1,5 +1,5 @@
 const PredefinedTemplates = {
-    'Default': `# Show member list
+    'Me Default': `# Show member list
 members on
 
 # Global settings

@@ -200,7 +200,7 @@ class GroupDetailView extends View {
 
         // Configuration
         this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
-            UI.SettingsFloat.show(this.identifier, PredefinedTemplates['Guilds Default']);
+            UI.SettingsFloat.show(this.identifier, 'guilds', PredefinedTemplates['Guilds Default']);
         });
 
         this.$name = this.$parent.find('[data-op="name"]');
@@ -285,7 +285,7 @@ class GroupDetailView extends View {
         }
 
         this.sorting = undefined;
-        this.table = new TableInstance(Settings.load(this.identifier, PredefinedTemplates['Guilds Default']), TableType.Group);
+        this.table = new TableInstance(Settings.load(this.identifier, 'guilds', PredefinedTemplates['Guilds Default']), TableType.Group);
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -388,7 +388,7 @@ class PlayerDetailFloatView extends View {
         var player = Database.Players[identifier];
         player = player[Math.min(timestamp, player.LatestTimestamp)];
 
-        var config = Settings.load(UI.current.identifier || player.Identifier);
+        var config = Settings.load(UI.current.identifier, player.Identifier);
 
         this.$parent.html(`
             <div class="ui text-center extreme header margin-none-bottom padding-none-bottom">${ player.Name }</div>
@@ -664,7 +664,7 @@ class PlayerHistoryView extends View {
 
         // Configuration
         this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
-            UI.SettingsFloat.show(this.identifier);
+            UI.SettingsFloat.show(this.identifier, 'me', PredefinedTemplates['Me Default']);
         });
 
         this.$name = this.$parent.find('[data-op="name"]');
@@ -683,7 +683,7 @@ class PlayerHistoryView extends View {
 
     load () {
         // Table instance
-        this.table = new TableInstance(Settings.load(this.identifier), TableType.History);
+        this.table = new TableInstance(Settings.load(this.identifier, 'me', PredefinedTemplates['Me Default']), TableType.History);
         this.table.setEntries(this.list);
 
         // Configuration indicator
@@ -795,7 +795,7 @@ class BrowseView extends View {
 
         // Configuration
         this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
-            UI.SettingsFloat.show('players', PredefinedTemplates['Players Default']);
+            UI.SettingsFloat.show('players', 'players', PredefinedTemplates['Players Default']);
         });
 
         // Hidden toggle
@@ -981,7 +981,7 @@ class BrowseView extends View {
     load () {
         // Table instance
         this.sorting = undefined;
-        this.table = new TableInstance(Settings.load('players', PredefinedTemplates['Players Default']), TableType.Players);
+        this.table = new TableInstance(Settings.load('players', 'players', PredefinedTemplates['Players Default']), TableType.Players);
 
         // Configuration indicator
         if (Settings.exists('players')) {
@@ -1155,6 +1155,10 @@ class PlayersView extends View {
         this.$context = $('<div class="ui custom popup right center"></div>');
         this.$parent.prepend(this.$context);
 
+        this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
+            UI.SettingsFloat.show('me', 'me', PredefinedTemplates['Me Default']);
+        });
+
         this.$context.context('create', {
             items: [
                 {
@@ -1280,11 +1284,12 @@ class PlayersView extends View {
     }
 
     show () {
-        this.settings = Settings.load();
+        this.settings = Settings.load('me', 'me', PredefinedTemplates['Me Default']);
         this.$filter.trigger('change');
     }
 
     refresh () {
+        // Configuration indicator
         var players = this.entries;
 
         var content = '';
@@ -1338,6 +1343,18 @@ class PlayersView extends View {
         });
 
         this.$context.context('bind', this.$parent.find('[data-id]'));
+
+        this.load();
+    }
+
+    load () {
+        if (Settings.exists('me')) {
+            this.$configure.get(0).style.setProperty('background', '#21ba45', 'important');
+            this.$configure.get(0).style.setProperty('color', 'white', 'important');
+        } else {
+            this.$configure.get(0).style.setProperty('background', '');
+            this.$configure.get(0).style.setProperty('color', '');
+        }
     }
 }
 
@@ -1549,8 +1566,10 @@ class SettingsView extends View {
 
             if (name == 'players') {
                 name = 'Players';
-            } else if (name == 'settings') {
-                name = 'Settings';
+            } else if (name == 'me') {
+                name = 'Me';
+            } else if (name == 'guilds') {
+                name = 'Guilds';
             } else if (Database.Players[name]) {
                 name = 'P: ' + Database.Players[name].Latest.Name;
             } else if (Database.Groups[name]) {
@@ -1654,24 +1673,34 @@ class SettingsView extends View {
         this.refreshTemplates();
     }
 
-    show (identifier, def) {
+    show (identifier = 'players') {
         this.identifier = identifier;
-        this.code = Settings.load(identifier, def).getCode();
+        this.code = Settings.load(identifier, this.getDefault(identifier), this.getDefaultTemplate(identifier)).getCode();
         this.torem = '';
 
         if (this.$items.length) {
             var items = [{
-                name: 'Default',
-                value: '',
-                selected: identifier != undefined
+                name: 'Players',
+                value: 'players',
+                selected: identifier == undefined || identifier == 'players'
+            }, {
+                name: 'Me',
+                value: 'me',
+                selected: identifier == 'me'
+            }, {
+                name: 'Guilds',
+                value: 'guilds',
+                selected: identifier == 'guilds'
             }];
 
             for (var key of Settings.get()) {
                 var name = key;
 
-                if (key == 'players') {
-                    name = 'Players';
-                } else if (Database.Players[key]) {
+                if (key == 'me' || key == 'players' || key == 'guilds') {
+                    continue;
+                }
+
+                if (Database.Players[key]) {
                     name = 'P: ' + Database.Players[key].Latest.Name;
                 } else if (Database.Groups[key]) {
                     name = 'G: ' + Database.Groups[key].Latest.Name;
@@ -1686,12 +1715,32 @@ class SettingsView extends View {
 
             this.$items.dropdown({
                 values: items
-            }).dropdown('setting', 'onChange', (value, text) => {
+            }).dropdown('setting', 'onChange', (value, text, c) => {
                 this.show(value);
             });
         }
 
         this.refresh();
+    }
+
+    getDefault (v) {
+        if (v == 'players') {
+            return 'players';
+        } else if (v == 'me' || v.includes('_p')) {
+            return 'me';
+        } else {
+            return 'guilds';
+        }
+    }
+
+    getDefaultTemplate (v) {
+        if (v == 'players') {
+            return PredefinedTemplates['Players Default'];
+        } else if (v == 'me' || v.includes('_p')) {
+            return PredefinedTemplates['Me Default'];
+        } else {
+            return PredefinedTemplates['Guilds Default'];
+        }
     }
 }
 
