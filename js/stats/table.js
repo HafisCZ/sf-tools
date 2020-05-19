@@ -1112,11 +1112,11 @@ const ARG_MAP_SERVER = {
 }
 
 const ARG_FORMATTERS = {
-    'number': (p, x) => Number.isInteger(x) ? x : x.toFixed(2),
-    'fnumber': (p, x) => formatAsSpacedNumber(x),
-    'date': (p, x) => formatDate(x),
-    'duration': (p, x) => formatDuration(x),
-    'default': (p, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
+    'number': (p, e, x) => Number.isInteger(x) ? x : x.toFixed(2),
+    'fnumber': (p, e, x) => formatAsSpacedNumber(x),
+    'date': (p, e, x) => formatDate(x),
+    'duration': (p, e, x) => formatDuration(x),
+    'default': (p, e, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
 }
 
 function escapeHTML(string) {
