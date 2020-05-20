@@ -275,7 +275,7 @@ class ResourcesView extends View {
             <div class="css-resource-item ${ this.Dismantles.find(it => it.InventoryID == item.InventoryID) ? 'selected' : '' }" data-id="${ item.InventoryID }">
                 <div class="css-inventory-item-header clickable">
                     <div class="item">
-                        ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ toileted ? '<span class="css-inventory-sub washed">Washed</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }
+                        ${ item.HasEnchantment ? '<span class="css-inventory-sub enchanted">Enchanted</span> ' : '' }${ item.HasSocket ? '<span class="css-inventory-sub socketed">Socketed</span> ' : '' }
                     </div>
                     <div class="item">
                         ${ Loca.get(item.Type, item.Index, item.Class) } (${ PLAYER_CLASS[item.Class] })
