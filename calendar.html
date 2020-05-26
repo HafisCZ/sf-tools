@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Calendar</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="css/plugins.css"/>
+
+        <link rel="preload" href="res/group.png" as="image"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/html2canvas.js"></script>
+
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/components/state.min.js"></script>
+
+        <script src="js/plugins.js"></script>
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/pets/pets.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item">SFTools</div>
+            <div class="right menu" id="show-right-menu">
+                <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
+            </div>
+        </div>
+
+        <div class="ui main container sf-container">
+            <div class="ui grid" id="p-grid">
+
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var content = '';
+            var date = new Date();
+
+            for (var i = 0; i < Pets.length; i++) {
+                var pet = Pets[i];
+
+                var name = NAME_MONSTER[i + 800];
+                var image = `res/pets/monster${ 800 + i }.png`;
+                var description = PetDescriptions[i];
+
+                var possible = pet.Date(date);
+
+                content += `
+                    <div class="two wide column">
+                        <div class="ui basic segment ${ !possible ? 'css-entry-hidden' : '' }">
+                            <div class="css-img-container" data-html="<p>${ description }</p>" data-position="bottom center">
+                                <img class="ui centered image" src="${ image }">
+                            </div>
+                            <h3 class="ui margin-none-top centered header">${ name }</h3>
+                        </div>
+                    </div>
+                `;
+            }
+
+            $('#p-grid').html(content);
+            $('#p-grid .css-img-container').popup({
+               on: 'hover'
+            });
+        </script>
+    </body>
+</html>
