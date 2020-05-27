@@ -145,502 +145,602 @@ const Pets = [
     {
         Location: PetLocation.Nevermoor,
         Time: PetTime.Day,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.Maerwyn,
         Time: PetTime.Night,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.SprawlingJungle,
         Time: PetTime.Night,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.SplitCanyon,
         Time: PetTime.Night,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.BlackForest,
         Time: PetTime.Night,
-        Date: PetDate.Monday
+        Date: PetDate.Monday,
+        Special: false
     },
     {
         Location: PetLocation.BlackWaterSwamp,
         Time: PetTime.FirstHour,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.EvernightForest,
         Time: PetTime.Day,
-        Date: PetDate.Summer
+        Date: PetDate.Summer,
+        Special: false
     },
     {
         Location: PetLocation.SkullIsland,
         Time: PetTime.Day,
-        Date: PetDate.Winter
+        Date: PetDate.Winter,
+        Special: false
     },
     {
         Location: PetLocation.ShadowrockMountain,
         Time: PetTime.Night,
-        Date: PetDate.Friday
+        Date: PetDate.Friday,
+        Special: false
     },
     {
         Location: PetLocation.MoldyForest,
         Time: PetTime.Day,
-        Date: PetDate.Fall
+        Date: PetDate.Fall,
+        Special: false
     },
     {
         Location: PetLocation.FloodedCaldwell,
         Time: PetTime.Night,
-        Date: PetDate.Monday
+        Date: PetDate.Monday,
+        Special: false
     },
     {
         Location: PetLocation.TuskMountain,
         Time: PetTime.Night,
-        Date: PetDate.Tuesday
+        Date: PetDate.Tuesday,
+        Special: false
     },
     {
         Location: PetLocation.Erogenion,
         Time: PetTime.Night,
-        Date: PetDate.Wednesday
+        Date: PetDate.Wednesday,
+        Special: false
     },
     {
         Location: PetLocation.StumbleSteppe,
         Time: PetTime.Day,
-        Date: PetDate.Thursday
+        Date: PetDate.Thursday,
+        Special: false
     },
     {
         Location: PetLocation.BlackForest,
         Time: PetTime.Any,
-        Date: PetDate.Halloween
+        Date: PetDate.Halloween,
+        Special: false
     },
     {
         Location: PetLocation.Gnarogrim,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.BustedLands,
         Time: PetTime.Any,
-        Date: PetDate.EventXP
+        Date: PetDate.EventXP,
+        Special: false
     },
     {
         Location: PetLocation.RottenLands,
         Time: PetTime.Any,
-        Date:  PetDate.Friday13th
+        Date:  PetDate.Friday13th,
+        Special: false
     },
     {
         Location: PetLocation.PlainsOfOzkorr,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.SunburnDesert,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.StumbleSteppe,
         Time: PetTime.Day,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.MoldyForest,
         Time: PetTime.Night,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.Erogenion,
         Time: PetTime.Day,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.ShadowrockMountain,
         Time: PetTime.Day,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.SprawlingJungle,
         Time: PetTime.Night,
-        Date: PetDate.Spring
+        Date: PetDate.Spring,
+        Special: false
     },
     {
         Location: PetLocation.Nevermoor,
         Time: PetTime.Day,
-        Date: PetDate.Saturday
+        Date: PetDate.Saturday,
+        Special: false
     },
     {
         Location: PetLocation.SunburnDesert,
         Time: PetTime.Day,
-        Date: PetDate.Summer
+        Date: PetDate.Summer,
+        Special: false
     },
     {
         Location: PetLocation.FloodedCaldwell,
         Time: PetTime.Day,
-        Date: PetDate.Fall
+        Date: PetDate.Fall,
+        Special: false
     },
     {
         Location: PetLocation.SkullIsland,
         Time: PetTime.Night,
-        Date: PetDate.Monday
+        Date: PetDate.Monday,
+        Special: false
     },
     {
         Location: PetLocation.BustedLands,
         Time: PetTime.Day,
-        Date: PetDate.Tuesday
+        Date: PetDate.Tuesday,
+        Special: false
     },
     {
         Location: PetLocation.TuskMountain,
         Time: PetTime.Day,
-        Date: PetDate.Sunday
+        Date: PetDate.Sunday,
+        Special: false
     },
     {
         Location: PetLocation.Northrunt,
         Time: PetTime.Night,
-        Date: PetDate.Wednesday
+        Date: PetDate.Wednesday,
+        Special: false
     },
     {
         Location: PetLocation.EvernightForest,
         Time: PetTime.Day,
-        Date: PetDate.Thursday
+        Date: PetDate.Thursday,
+        Special: false
     },
     {
         Location: PetLocation.BlackWaterSwamp,
         Time: PetTime.Day,
-        Date: PetDate.Friday
+        Date: PetDate.Friday,
+        Special: false
     },
     {
         Location: PetLocation.Erogenion,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.Northrunt,
         Time: PetTime.Any,
-        Date: PetDate.December
+        Date: PetDate.December,
+        Special: false
     },
     {
         Location: PetLocation.SplitCanyon,
         Time: PetTime.Any,
-        Date: PetDate.AprilFools
+        Date: PetDate.AprilFools,
+        Special: false
     },
     {
         Location: PetLocation.Erogenion,
         Time: PetTime.Any,
-        Date: PetDate.EventEpic
+        Date: PetDate.EventEpic,
+        Special: false
     },
     {
         Location: PetLocation.RottenLands,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.PlainsOfOzkorr,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.StumbleSteppe,
         Time: PetTime.Day,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.Gnarogrim,
         Time: PetTime.Night,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.Erogenion,
         Time: PetTime.Day,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.BlackForest,
         Time: PetTime.Day,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.Northrunt,
         Time: PetTime.Night,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.TuskMountain,
         Time: PetTime.Day,
-        Date: PetDate.Summer
+        Date: PetDate.Summer,
+        Special: false
     },
     {
         Location: PetLocation.BlackWaterSwamp,
         Time: PetTime.Day,
-        Date: PetDate.Fall
+        Date: PetDate.Fall,
+        Special: false
     },
     {
         Location: PetLocation.SplitCanyon,
         Time: PetTime.Day,
-        Date: PetDate.Winter
+        Date: PetDate.Winter,
+        Special: false
     },
     {
         Location: PetLocation.Magmaron,
         Time: PetTime.Day,
-        Date: PetDate.Spring
+        Date: PetDate.Spring,
+        Special: false
     },
     {
         Location: PetLocation.Magmaron,
         Time: PetTime.Night,
-        Date: PetDate.Sunday
+        Date: PetDate.Sunday,
+        Special: false
     },
     {
         Location: PetLocation.Maerwyn,
         Time: PetTime.Day,
-        Date: PetDate.Monday
+        Date: PetDate.Monday,
+        Special: false
     },
     {
         Location: PetLocation.BustedLands,
         Time: PetTime.Night,
-        Date: PetDate.Tuesday
+        Date: PetDate.Tuesday,
+        Special: false
     },
     {
         Location: PetLocation.EvernightForest,
         Time: PetTime.Day,
-        Date: PetDate.Wednesday
+        Date: PetDate.Wednesday,
+        Special: false
     },
     {
         Location: PetLocation.RottenLands,
         Time: PetTime.Day,
-        Date: PetDate.Thursday
+        Date: PetDate.Thursday,
+        Special: false
     },
     {
         Location: PetLocation.Maerwyn,
         Time: PetTime.Any,
-        Date: PetDate.Easter
+        Date: PetDate.Easter,
+        Special: false
     },
     {
         Location: PetLocation.SprawlingJungle,
         Time: PetTime.Any,
-        Date: PetDate.Whitsun
+        Date: PetDate.Whitsun,
+        Special: false
     },
     {
         Location: PetLocation.PlainsOfOzkorr,
         Time: PetTime.Any,
-        Date: PetDate.EventGold
+        Date: PetDate.EventGold,
+        Special: false
     },
     {
         Location: PetLocation.StumbleSteppe,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.GemMine,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.MoldyForest,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.Nevermoor,
         Time: PetTime.Day,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.FloodedCaldwell,
         Time: PetTime.Night,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.BlackWaterSwamp,
         Time: PetTime.Night,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.TuskMountain,
         Time: PetTime.Day,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.BustedLands,
         Time: PetTime.Night,
-        Date: PetDate.Tuesday
+        Date: PetDate.Tuesday,
+        Special: false
     },
     {
         Location: PetLocation.MoldyForest,
         Time: PetTime.Night,
-        Date: PetDate.Fall
+        Date: PetDate.Fall,
+        Special: false
     },
     {
         Location: PetLocation.SplitCanyon,
         Time: PetTime.Day,
-        Date: PetDate.Monday
+        Date: PetDate.Monday,
+        Special: false
     },
     {
         Location: PetLocation.SunburnDesert,
         Time: PetTime.Day,
-        Date: PetDate.Spring
+        Date: PetDate.Spring,
+        Special: false
     },
     {
         Location: PetLocation.PlainsOfOzkorr,
         Time: PetTime.Day,
-        Date: PetDate.Winter
+        Date: PetDate.Winter,
+        Special: false
     },
     {
         Location: PetLocation.SprawlingJungle,
         Time: PetTime.Night,
-        Date: PetDate.Wednesday
+        Date: PetDate.Wednesday,
+        Special: false
     },
     {
         Location: PetLocation.StumbleSteppe,
         Time: PetTime.Day,
-        Date: PetDate.Thursday
+        Date: PetDate.Thursday,
+        Special: false
     },
     {
         Location: PetLocation.BlackForest,
         Time: PetTime.Day,
-        Date: PetDate.Summer
+        Date: PetDate.Summer,
+        Special: false
     },
     {
         Location: PetLocation.Magmaron,
         Time: PetTime.Day,
-        Date: PetDate.Friday
+        Date: PetDate.Friday,
+        Special: false
     },
     {
         Location: PetLocation.EvernightForest,
         Time: PetTime.Night,
-        Date: PetDate.Saturday
+        Date: PetDate.Saturday,
+        Special: false
     },
     {
         Location: PetLocation.MagicShop,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.Maerwyn,
         Time: PetTime.Any,
-        Date: PetDate.EventForest
+        Date: PetDate.EventForest,
+        Special: false
     },
     {
         Location: PetLocation.FloodedCaldwell,
         Time: PetTime.Any,
-        Date: PetDate.Valentine
+        Date: PetDate.Valentine,
+        Special: false
     },
     {
         Location: PetLocation.EvernightForest,
         Time: PetTime.Any,
-        Date: PetDate.NewYear
+        Date: PetDate.NewYear,
+        Special: false
     },
     {
         Location: PetLocation.SkullIsland,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.Gnarogrim,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.Magmaron,
         Time: PetTime.Day,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.SkullIsland,
         Time: PetTime.Day,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.EvernightForest,
         Time: PetTime.Night,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.Northrunt,
         Time: PetTime.Day,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: false
     },
     {
         Location: PetLocation.RottenLands,
         Time: PetTime.Day,
-        Date: PetDate.Monday
+        Date: PetDate.Monday,
+        Special: false
     },
     {
         Location: PetLocation.TuskMountain,
         Time: PetTime.Night,
-        Date: PetDate.Tuesday
+        Date: PetDate.Tuesday,
+        Special: false
     },
     {
         Location: PetLocation.SplitCanyon,
         Time: PetTime.Day,
-        Date: PetDate.Wednesday
+        Date: PetDate.Wednesday,
+        Special: false
     },
     {
         Location: PetLocation.FloodedCaldwell,
         Time: PetTime.Day,
-        Date: PetDate.Winter
+        Date: PetDate.Winter,
+        Special: false
     },
     {
         Location: PetLocation.MoldyForest,
         Time: PetTime.Night,
-        Date: PetDate.Thursday
+        Date: PetDate.Thursday,
+        Special: false
     },
     {
         Location: PetLocation.SkullIsland,
         Time: PetTime.Day,
-        Date: PetDate.Friday
+        Date: PetDate.Friday,
+        Special: false
     },
     {
         Location: PetLocation.BlackWaterSwamp,
         Time: PetTime.Day,
-        Date: PetDate.Saturday
+        Date: PetDate.Saturday,
+        Special: false
     },
     {
         Location: PetLocation.Erogenion,
         Time: PetTime.Night,
-        Date: PetDate.Fall
+        Date: PetDate.Fall,
+        Special: false
     },
     {
         Location: PetLocation.SprawlingJungle,
         Time: PetTime.Day,
-        Date: PetDate.Summer
+        Date: PetDate.Summer,
+        Special: false
     },
     {
         Location: PetLocation.ShadowrockMountain,
         Time: PetTime.Night,
-        Date: PetDate.Sunday
+        Date: PetDate.Sunday,
+        Special: false
     },
     {
         Location: PetLocation.SkullIsland,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.MagicShop,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.SkullIsland,
         Time: PetTime.Any,
-        Date: PetDate.Birthday
+        Date: PetDate.Birthday,
+        Special: false
     },
     {
         Location: PetLocation.Toilet,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.BustedLands,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     },
     {
         Location: PetLocation.Nevermoor,
         Time: PetTime.Any,
-        Date: PetDate.Any
+        Date: PetDate.Any,
+        Special: true
     }
 ];
 

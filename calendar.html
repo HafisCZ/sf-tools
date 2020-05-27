@@ -82,6 +82,11 @@
                 height: 69vh;
                 width: 100%;
             }
+
+            .today::after {
+                background: linear-gradient(#000, #000) no-repeat center/2px 100%;
+                content: "|";
+            }
         </style>
     </head>
     <body>
@@ -95,12 +100,16 @@
 
         <div class="pp-main">
             <div class="ui grid">
-                <div class="sixteen wide column">
-                    <i class="warning icon"></i> You cannot catch event specific pets during special events<br/>
+                <div class="four wide column">
                     <i class="circle icon" style="color: #32c700"></i> Can be caught anytime<br/>
+                    <i class="circle icon" style="color: #eb4034"></i> Can be caught anytime but has special requirements<br/>
                     <i class="circle icon" style="color: #FFA500"></i> Can be caught during the day (06:00 - 17:59)<br/>
                     <i class="circle icon" style="color: #2f2b90"></i> Can be caught during the night (00:00 - 05:59 and 18:00 - 23:59)<br/>
                     <i class="circle icon" style="color: #4B0082"></i> Can be caught during the witching hour (00:00 - 00:59)<br/><br/>
+                </div>
+                <div class="twelve wide column">
+                    <i class="warning icon"></i> You cannot catch event specific pets during special events<br/>
+                    <i class="warning icon"></i> Some events may be inaccurate because there is no set date
                 </div>
             </div>
             <table class="table-group fixed-header" style="margin: auto;">
@@ -152,9 +161,10 @@
                 $('#pp-head').html(`
                     <tr style="height: 4em;" class="border-bottom-thick">
                         <td class="border-right-thin">
-                            <div style="width: 12em; padding: 1em;">
-                                <div class="ui two basic buttons">
+                            <div style="width: 12em; padding: 0.5em;">
+                                <div class="ui three basic buttons">
                                     <div class="ui button" id="p-remove">- 7</div>
+                                    <div class="ui button" id="p-zero">0</div>
                                     <div class="ui button" id="p-add">+ 7</div>
                                 </div>
                             </div>
@@ -170,6 +180,11 @@
 
                 $('#p-remove').click(() => {
                     offset -= 7;
+                    refresh();
+                });
+
+                $('#p-zero').click(() => {
+                    offset = 0;
                     refresh();
                 });
 
@@ -199,7 +214,9 @@
                         var color = '';
                         var possible = Pets[i].Date(date);
                         if (possible) {
-                            if (Pets[i].Time == PetTime.Any) {
+                            if (Pets[i].Special) {
+                                color = '#eb4034';
+                            } else if (Pets[i].Time == PetTime.Any) {
                                 color = '#32c700';
                             } else if (Pets[i].Time == PetTime.Day) {
                                 color = '#FFA500';
@@ -210,7 +227,7 @@
                             }
                         }
 
-                        content += `<td class="text-center ${ date.getDay() == 0 ? 'border-right-thin' : '' }" style="background: ${ color }; width: 1.5em;"></td>`;
+                        content += `<td class="text-center ${ date.getDate() == now.getDate() && date.getMonth() == now.getMonth() && date.getFullYear() == now.getFullYear() ? 'today' : '' } ${ date.getDay() == 0 ? 'border-right-thin' : '' }" style="background: ${ color }; width: 1.5em;"></td>`;
                         date.setDate(date.getDate() + 1);
                     }
 
