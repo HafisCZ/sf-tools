@@ -32,6 +32,38 @@ const PetLocation = {
     Toilet: 203
 };
 
+const CompactWeekend = {
+    Type: {
+        'Epic': 0,
+        'Gold': 1,
+        'Forest' : 2,
+        'Experience' : 3
+    },
+    getNext: function (type, date = Date.now()) {
+        date = new Date(date);
+        date.setDate(date.getDate() - date.getDay() + (date.getDay() ? 1 : -6));
+        date.setHours(0, 0, 0);
+
+        let week = Math.trunc(date.getTime() / (7 * 24 * 3600 * 1000)) % 4;
+        while (week != type) {
+            date.setDate(date.getDate() + 7);
+            week = (week + 1) % 4;
+        }
+
+        let beg = date.getTime() + 4 * 24 * 60 * 60 * 1000 + 1;
+        let end = date.getTime() + 7 * 24 * 60 * 60 * 1000 - 1000;
+        return [beg, end];
+    },
+    getNextAny: function (date = Date.now()) {
+        date = new Date(date);
+        date.setDate(date.getDate() - date.getDay() + (date.getDay() ? 1 : -6));
+        date.setHours(0, 0, 0);
+        let beg = date.getTime() + 4 * 24 * 60 * 60 * 1000 + 1;
+        let end = date.getTime() + 7 * 24 * 60 * 60 * 1000 - 1000;
+        return [beg, end];
+    }
+}
+
 const PetDate = {
     Any: d => true,
     Summer: d => d.getMonth() >= 5 && d.getMonth() <= 7,
@@ -62,24 +94,50 @@ const PetDate = {
     AprilFools: d => d.getDate() == 1 && d.getMonth() == 3,
     NewYear: d => d.getDate() == 31 && d.getMonth() == 11 || d.getDate() == 1 && d.getMonth() == 0,
     Valentine: d => d.getDate() == 14 && d.getMonth() == 1,
-    Birthday: d => d.getDate() == 21 && d.getMonth() == 5,
+    Birthday: d => {
+        var range = CompactWeekend.getNextAny(new Date(`6/22/${ d.getFullYear() }`));
+        return d.getTime() >= range[0] && d.getTime() <= range[1];
+    },
     Easter: d => {
+        var easter = (function (year) {
+            var b = Math.floor(year / 100);
+            var h = (19 * (year % 19) + b - Math.floor(b / 4) - Math.floor((b - Math.floor((b + 8) / 25) + 1) / 3) + 15) % 30;
+            var l = (32 + 2 * (b % 4) + 2 * Math.floor((year % 100) / 4) - h - ((year % 100) % 4)) % 7;
+            var m = Math.floor(((year % 19) + 11 * h + 22 * l) / 451);
+            var n0 = (h + l + 7 * m + 114);
 
+            return new Date(year, Math.floor(n0 / 31) - 1, n0 % 31 + 1);
+        }(d.getFullYear()));
+        return easter.getDate() == d.getDate() && easter.getMonth() == d.getMonth();
     },
     EventXP: d => {
-
+        var range = CompactWeekend.getNext(3, d);
+        return d.getTime() >= range[0] && d.getTime() <= range[1];
     },
     EventEpic: d => {
-
+        var range = CompactWeekend.getNext(0, d);
+        return d.getTime() >= range[0] && d.getTime() <= range[1];
     },
     EventGold: d => {
-
+        var range = CompactWeekend.getNext(1, d);
+        return d.getTime() >= range[0] && d.getTime() <= range[1];
     },
     EventForest: d => {
-
+        var range = CompactWeekend.getNext(2, d);
+        return d.getTime() >= range[0] && d.getTime() <= range[1];
     },
     Whitsun: d => {
+        var whitsun = (function (year) {
+            var b = Math.floor(year / 100);
+            var h = (19 * (year % 19) + b - Math.floor(b / 4) - Math.floor((b - Math.floor((b + 8) / 25) + 1) / 3) + 15) % 30;
+            var l = (32 + 2 * (b % 4) + 2 * Math.floor((year % 100) / 4) - h - ((year % 100) % 4)) % 7;
+            var m = Math.floor(((year % 19) + 11 * h + 22 * l) / 451);
+            var n0 = (h + l + 7 * m + 114);
 
+            return new Date(year, Math.floor(n0 / 31) - 1, n0 % 31 + 1 + 7 * 7);
+        }(d.getFullYear()));
+        var range = CompactWeekend.getNextAny(whitsun);
+        return d.getTime() >= range[0] && d.getTime() <= range[1] + 24 * 60 * 60 * 1000;
     }
 }
 
@@ -602,11 +660,11 @@ const PetDescriptions = [
     'Can be found in Erogenion on Wednesday night.',
     'Can be found in Stumble Steppe on Thursday during the day.',
     'Can be found in Black Forest on Halloween.',
-    'Can be found in Gnarogrim. <br/>Required: Hall of fame top 1,000 or 50,000 honor when finishing the quest.',
+    'Can be found in Gnarogrim. Required: Hall of fame top 1,000 or 50,000 honor when finishing the quest.',
     'Can be found in Busted Lands during XP Event.',
     'Can be found in Rotten Lands on Friday the 13th.',
-    'Is rewarded for clearing the 13th dungeon of the Shadow World. <br/>Location: Plains of Oz\'Korr.',
-    'Can be found on the last floor of the Shadow Habitat. <br/>Location: Sunburn Desert.',
+    'Is rewarded for clearing the 13th dungeon of the Shadow World. Location: Plains of Oz\'Korr.',
+    'Can be found on the last floor of the Shadow Habitat. Location: Sunburn Desert.',
     'Can be found in Stumble Steppe during the day.',
     'Can be found in Moldy Forest at night.',
     'Can be found in Erogenion during the day.',
@@ -621,12 +679,12 @@ const PetDescriptions = [
     'Can be found in Northrunt on Wednesday night.',
     'Can be found in Evernight Forest on Thursday during the day.',
     'Can be found in Black Water Swamp on Friday during the day.',
-    'Can be found in Erogenion. <br/>Required: Guild hall of fame top 100 or 2,500 honor when finishing the quest.',
+    'Can be found in Erogenion. Required: Guild hall of fame top 100 or 2,500 honor when finishing the quest.',
     'Can be found in  Northrunt in December.',
     'Can be found in Split Canyon on April Fools\' Day. For real!',
     'Can be found in Erogenion during Epic Event.',
-    'Is a reward for clearing the Tower. <br/>Location: Rotten Lands.',
-    'Can be found on the last floor of the Light Habitat. <br/>Location: Plains of Oz\'Korr.',
+    'Is a reward for clearing the Tower. Location: Rotten Lands.',
+    'Can be found on the last floor of the Light Habitat. Location: Plains of Oz\'Korr.',
     'Can be found in Stumble Steppe during the day.',
     'Can be found in Gnarogrim at night.',
     'Can be found in Erogenion during the day.',
@@ -644,9 +702,9 @@ const PetDescriptions = [
     'Can be found in Maerwynn on Easter.',
     'Can be found in Sprawling Jungle on Whitsun.',
     'Can be found in Plains of Oz\'Korr during Gold Event.',
-    'Can be found in Stumble Steppe. <br/>Required: Fortress hall of fame top 100 or 2,500 honor when finishing the quest.',
-    'Can be found in the gem mine. <br/>Required: Mine level 20.',
-    'Can be found on the last floor of the Earth Habitat. <br/>Location: Moldy Forest.',
+    'Can be found in Stumble Steppe. Required: Fortress hall of fame top 100 or 2,500 honor when finishing the quest.',
+    'Can be found in the gem mine. Required: Mine level 20.',
+    'Can be found on the last floor of the Earth Habitat. Location: Moldy Forest.',
     'Can be found in Nevermoor during the day.',
     'Can be found in Flooded Caldwell at night.',
     'Can be found in Black Water Swamp at night.',
@@ -665,8 +723,8 @@ const PetDescriptions = [
     'Can be found in Maerwynn during Forest Rarities Event.',
     'Can be found in Flooded Caldwell on Valentine\'s Day.',
     'Can be found in Evernight Forest on New Year\'s Eve & Day.',
-    'Is a reward for clearing the single-player Demon Portal. <br/>Location: Skull Island.',
-    'Can be found on the last floor of the Fire Habitat. <br/>Location: Gnarogrim.',
+    'Is a reward for clearing the single-player Demon Portal. Location: Skull Island.',
+    'Can be found on the last floor of the Fire Habitat. Location: Gnarogrim.',
     'Can be found in Magmaron during the day.',
     'Can be found on Skull Island during the day.',
     'Can be found in Evernight Forest at night.',
@@ -681,10 +739,10 @@ const PetDescriptions = [
     'Can be found in Erogenion on fall nights.',
     'Can be found in Sprawling Jungle on summer days.',
     'Can be found on Shadowrock Mountain on Sunday night.',
-    'Can be found on Skull Island. <br/>Required: Pets hall of fame top 100 or 4,000 honor when finishing the quest.',
+    'Can be found on Skull Island. Required: Pets hall of fame top 100 or 4,000 honor when finishing the quest.',
     'Can\'t be found in the wild, but in your local magic shop.',
     'Can be found on Skull Island during the Birthday Event.',
-    'Can be found in the Arcane Toilet. <br/>Required: Aura level 20.',
-    'Is rewarded for the next quest after clearing dungeon 14. <br/>Location: Busted Lands.',
-    'Can be found on the last floor of the Water Habitat. <br/>Location: Nevermoor.'
+    'Can be found in the Arcane Toilet. Required: Aura level 20.',
+    'Is rewarded for the next quest after clearing dungeon 14. Location: Busted Lands.',
+    'Can be found on the last floor of the Water Habitat. Location: Nevermoor.'
 ];

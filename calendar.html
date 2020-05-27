@@ -24,50 +24,203 @@
         <script src="js/pets/pets.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+
+        <style>
+            .ui.grid.ppnopad > * {
+                padding: 0;
+            }
+
+            .ui.segment.ppnopad {
+                margin: 0;
+            }
+
+            .ui.grid.ppnopad0 > .column:not(.row) {
+                padding: 0.4rem;
+            }
+
+            .ui.header.ppnopad2 {
+                margin-bottom: 0;
+            }
+
+            .ppnopad3 {
+                height: 3rem;
+                font-size: 90%;
+            }
+
+            .css-img-container {
+                width: 30px;
+                height: 30px;
+                margin: auto;
+            }
+
+            .css-img-container img {
+                width: 30px;
+                height: 30px;
+            }
+
+            .pp-main {
+                margin: 1.5em;
+            }
+
+            .rotated {
+                transform: rotate(-90deg);
+            }
+
+            .table-group td:not(.border-bottom-thick) {
+                padding: 0 !important;
+            }
+
+            .fixed-header thead tr {
+                display: block;
+                margin-right: 17px;
+
+            }
+
+            .fixed-header tbody {
+                overflow: auto;
+                display: block;
+                height: 69vh;
+                width: 100%;
+            }
+        </style>
     </head>
     <body>
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item">SFTools</div>
-            <div class="right menu" id="show-right-menu">
+            <div class="item" id="p-date"></div>
+            <div class="right menu">
                 <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
             </div>
         </div>
 
-        <div class="ui main container sf-container">
-            <div class="ui grid" id="p-grid">
-
+        <div class="pp-main">
+            <div class="ui grid">
+                <div class="sixteen wide column">
+                    <i class="warning icon"></i> You cannot catch event specific pets during special events<br/>
+                    <i class="circle icon" style="color: #32c700"></i> Can be caught anytime<br/>
+                    <i class="circle icon" style="color: #FFA500"></i> Can be caught during the day (06:00 - 17:59)<br/>
+                    <i class="circle icon" style="color: #2f2b90"></i> Can be caught during the night (00:00 - 05:59 and 18:00 - 23:59)<br/>
+                    <i class="circle icon" style="color: #4B0082"></i> Can be caught during the witching hour (00:00 - 00:59)<br/><br/>
+                </div>
             </div>
+            <table class="table-group fixed-header" style="margin: auto;">
+                <thead id="pp-head">
+
+                </thead>
+                <tbody id="pp-body" class="opaque-rows">
+
+                </tbody>
+            </table>
         </div>
 
         <script type="text/javascript">
-            var content = '';
-            var date = new Date();
+            var offset = 0;
+            var now = new Date();
 
-            for (var i = 0; i < Pets.length; i++) {
-                var pet = Pets[i];
+            const PET_COLORS = [
+                '#A596CE',
+                '#E9D067',
+                '#ADC35A',
+                '#FDA700',
+                '#60CDEF'
+            ];
 
-                var name = NAME_MONSTER[i + 800];
-                var image = `res/pets/monster${ 800 + i }.png`;
-                var description = PetDescriptions[i];
+            function refresh() {
+                var timestamp = offset ? new Date().setDate(new Date().getDate() + offset) : Date.now();
 
-                var possible = pet.Date(date);
+                var date = new Date(timestamp);
+                var content = '';
 
-                content += `
-                    <div class="two wide column">
-                        <div class="ui basic segment ${ !possible ? 'css-entry-hidden' : '' }">
-                            <div class="css-img-container" data-html="<p>${ description }</p>" data-position="bottom center">
-                                <img class="ui centered image" src="${ image }">
+                const TOTAL_DAYS = 59;
+
+                for (var i = 0; i < TOTAL_DAYS; i++) {
+                    content += `
+                        <td class="${ date.getDay() == 0 ? 'border-right-thin' : '' }" style="width: 1.5em; height: 4em !important; position: relative;">
+                            ${ date.getDate() == now.getDate() && date.getMonth() == now.getMonth() && date.getFullYear() == now.getFullYear() ? `
+                                    <div class="rotated" style="position: absolute; left: -0.3em; top: 1em; width: 3em; height: 2em; font-weight: bold;">
+                                        TODAY
+                                    </div>
+                                ` : `
+                                    <div class="rotated" style="position: absolute; left: -0.3em; top: 1.25em; width: 3em; height: 2em;">
+                                        ${ (date.getDate() < 10 ? '0' : '') + date.getDate() }.${ (date.getMonth() + 1 < 10 ? '0' : '') + (date.getMonth() + 1) }.${ date.getFullYear().toString().substring(2) }
+                                    </div>
+                                ` }
+                        </td>`;
+                    date.setDate(date.getDate() + 1);
+                }
+
+                $('#pp-head').html(`
+                    <tr style="height: 4em;" class="border-bottom-thick">
+                        <td class="border-right-thin">
+                            <div style="width: 12em; padding: 1em;">
+                                <div class="ui two basic buttons">
+                                    <div class="ui button" id="p-remove">- 7</div>
+                                    <div class="ui button" id="p-add">+ 7</div>
+                                </div>
                             </div>
-                            <h3 class="ui margin-none-top centered header">${ name }</h3>
-                        </div>
-                    </div>
-                `;
+                        </td>
+                        ${ content }
+                    </tr>
+                `);
+
+                $('#p-add').click(() => {
+                    offset += 7;
+                    refresh();
+                });
+
+                $('#p-remove').click(() => {
+                    offset -= 7;
+                    refresh();
+                });
+
+                content = '';
+
+                for (var i = 0; i < 100; i++) {
+                    var name = NAME_MONSTER[i + 800];
+                    var image = `res/pets/monster${ 800 + i }.png`;
+                    var description = PetDescriptions[i];
+
+                    content += `
+                        <tr>
+                            <td style="background: ${ PET_COLORS[Math.trunc(i / 20)] }">
+                                <div class="css-img-container" style="width: 4em;">
+                                    <img class="ui centered image" src="${ image }">
+                                </div>
+                            </td>
+                            <td class="border-right-thin" data-tooltip="${ description }" data-position="right center">
+                                <div style="width: 8em;">
+                                    <b>${ name }</b>
+                                </div>
+                            </td>
+                    `;
+
+                    date = new Date(timestamp);
+                    for (var j = 0; j < TOTAL_DAYS; j++) {
+                        var color = '';
+                        var possible = Pets[i].Date(date);
+                        if (possible) {
+                            if (Pets[i].Time == PetTime.Any) {
+                                color = '#32c700';
+                            } else if (Pets[i].Time == PetTime.Day) {
+                                color = '#FFA500';
+                            } else if (Pets[i].Time == PetTime.Night) {
+                                color = '#2f2b90';
+                            } else if (Pets[i].Time == PetTime.FirstHour) {
+                                color = '#4B0082';
+                            }
+                        }
+
+                        content += `<td class="text-center ${ date.getDay() == 0 ? 'border-right-thin' : '' }" style="background: ${ color }; width: 1.5em;"></td>`;
+                        date.setDate(date.getDate() + 1);
+                    }
+
+                    content += '</tr>';
+                }
+
+                $('#pp-body').html(content);
             }
 
-            $('#p-grid').html(content);
-            $('#p-grid .css-img-container').popup({
-               on: 'hover'
-            });
+            refresh();
         </script>
     </body>
 </html>

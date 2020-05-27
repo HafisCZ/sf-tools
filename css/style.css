@@ -25,12 +25,6 @@ body.dimmed .menu {
     margin-right: 17px !important;
 }
 
-.css-img-container {
-    width: 90px;
-    height: 90px;
-    margin-bottom: 1em;
-}
-
 .text-purple {
     color: magenta;
     font-weight: bold;
