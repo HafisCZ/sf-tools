@@ -531,6 +531,29 @@ const Storage = new (class {
         }));
     }
 
+    exportGroupData (identifier, timestamps) {
+        var content = [];
+        var group = Database.Groups[identifier];
+
+        for (var file of this.current) {
+            if (timestamps.includes(file.timestamp)) {
+                var rfile = {
+                    timestamp: file.timestamp,
+                    version: file.version,
+                    offset: file.offset,
+                    players: group[file.timestamp] ? file.players.filter(player => group[file.timestamp].Members.includes(player.id)) : [],
+                    groups: group[file.timestamp] ? [group[file.timestamp].Data] : []
+                };
+
+                if (rfile.players.length) {
+                    content.push(rfile);
+                }
+            }
+        }
+
+        download(`archive_${ identifier }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
+    }
+
     add (content, timestamp) {
         var json = JSON.parse(content);
         if (Array.isArray(json)) {
@@ -577,8 +600,6 @@ const Storage = new (class {
                         group.name = val;
                     } else if (key.includes('grouprank')) {
                         group.rank = Number(val);
-                    } else if (key.includes('groupmember')) {
-                        group.members = val.split(',');
                     } else if (key.includes('groupknights')) {
                         group.knights = val.split(',').map(a => Number(a));
                     } else if (key.includes('owngroupsave') && group.own == undefined) {

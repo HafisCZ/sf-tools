@@ -175,6 +175,21 @@ class GroupDetailView extends View {
             });
         });
 
+        this.$parent.find('[data-op="export-dropdown"]').dropdown({
+            on: 'hover',
+            action: 'hide',
+            delay : {
+                hide   : 100,
+                show   : 0
+            }
+        });
+
+        this.$parent.find('[data-op="export"]').click(() => Storage.exportGroupData(this.identifier, this.group.List.map(entry => entry[0])));
+        this.$parent.find('[data-op="export-l"]').click(() => Storage.exportGroupData(this.identifier, [ this.group.List[0][0] ]));
+        this.$parent.find('[data-op="export-l5"]').click(() => Storage.exportGroupData(this.identifier, this.group.List.slice(0, 5).map(entry => entry[0])));
+        this.$parent.find('[data-op="export-s"]').click(() => Storage.exportGroupData(this.identifier, [ this.timestamp ]));
+        this.$parent.find('[data-op="export-sr"]').click(() => Storage.exportGroupData(this.identifier, [ this.timestamp, Number(this.reference) ]));
+
         // Context menu
         this.$context = $('<div class="ui custom popup right center"></div>');
         this.$parent.prepend(this.$context);
@@ -968,8 +983,6 @@ class BrowseView extends View {
             this.reference = value;
             this.$filter.trigger('change');
         });
-
-        this.$filter.val('');
 
         this.timestamp = Database.Latest;
         this.reference = Database.Latest;

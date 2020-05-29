@@ -543,6 +543,8 @@ class SFFighter {
 
 class SFGroup {
     constructor (data) {
+        this.Data = data;
+
         this.Prefix = data.prefix.replace('_', ' ');
         this.ID = data.save[0];
         this.Identifier = data.prefix + '_g' + this.ID;
@@ -552,7 +554,6 @@ class SFGroup {
         this.Own = data.own;
         this.Timestamp = data.timestamp;
 
-        this.MemberNames = data.members;
         this.MemberCount = data.save[3];
         this.Honor = data.save[13];
         this.Pet = data.save[378];
@@ -587,7 +588,6 @@ class SFGroup {
                 this.Treasures.splice(i, 1);
                 this.Instructors.splice(i, 1);
                 this.Pets.splice(i, 1);
-                this.MemberNames.splice(i, 1);
                 this.Members.splice(i--, 1);
                 this.MemberCount--;
             }
