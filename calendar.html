@@ -45,6 +45,10 @@
                 transform: rotate(-90deg);
             }
 
+            .ghosted {
+                opacity: 25%;
+            }
+
             .table-group td:not(.border-bottom-thick) {
                 padding: 0 !important;
             }
@@ -114,6 +118,16 @@
                 '#60CDEF'
             ];
 
+            var ghosted = new Array(100).fill(false);
+            function toggleGhost (index) {
+                ghosted[index] = !ghosted[index];
+                if (ghosted[index]) {
+                    $(`[data-id="${ index }"]`).parent('td').parent('tr').addClass('ghosted');
+                } else {
+                    $(`[data-id="${ index }"]`).parent('td').parent('tr').removeClass('ghosted');
+                }
+            }
+
             function refresh() {
                 var timestamp = offset ? new Date().setDate(new Date().getDate() + offset) : Date.now();
 
@@ -176,9 +190,9 @@
                     var description = PetDescriptions[i];
 
                     content += `
-                        <tr>
+                        <tr ${ ghosted[i] ? 'class="ghosted"' : ''} >
                             <td style="background: ${ PET_COLORS[Math.trunc(i / 20)] }">
-                                <div class="css-img-container" style="width: 4em;">
+                                <div class="css-img-container clickable" style="width: 4em;" data-id="${ i }">
                                     <img class="ui centered image" src="${ image }">
                                 </div>
                             </td>
@@ -215,6 +229,9 @@
                 }
 
                 $('#pp-body').html(content);
+                $('[data-id]').click(function() {
+                    toggleGhost(Number($(this).attr('data-id')));
+                });
             }
 
             refresh();
