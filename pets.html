@@ -221,7 +221,7 @@
                                 </div>
                                 <div class="field">
                                     <label>Critical</label>
-                                    <input class="text-center" data-dpath="Critical" disabled>
+                                    <input class="text-center" data-dpath="Critical" disabled data-opt>
                                 </div>
                             </div>
                         </div>
@@ -362,7 +362,7 @@
                                 </div>
                                 <div class="field">
                                     <label>Critical</label>
-                                    <input class="text-center" data-dpath="Critical" disabled>
+                                    <input class="text-center" data-dpath="Critical" disabled data-opt>
                                 </div>
                             </div>
                         </div>
@@ -478,7 +478,7 @@
                     if (val == undefined) {
                         $(this).val('?');
                     } else if ($(this).attr('data-dpath') == 'Critical') {
-                        $(this).val(`${ 100 * val }%`);
+                        $(this).val(`${ Math.round(100 * val) }%`);
                     } else if (type == 'class') {
                         $(this).val(PLAYER_CLASS[val]);
                     } else if (type == 'percentage') {
