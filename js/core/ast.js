@@ -984,6 +984,12 @@ const SP_KEYWORD_MAPPING_0 = {
     'Shadow Dungeon': {
         expr: p => p.Dungeons.Shadow.Total
     },
+    'Dungeon Unlocked': {
+        expr: p => p.Dungeons.Normal.Unlocked
+    },
+    'Shadow Unlocked': {
+        expr: p => p.Dungeons.Shadow.Unlocked
+    },
     'Fortress': {
         expr: p => p.Fortress.Fortress
     },
@@ -1183,88 +1189,88 @@ const SP_KEYWORD_MAPPING_0 = {
         format: (p, e, x) => (x == 0 ? '' : (x == 1 ? '1+' : (x == 5 ? '5+' : (x == 10 ? '10+' : 15))))
     },
     '1 Catacombs': {
-        expr: p => p.Dungeons.Normal[0]
+        expr: p => Math.max(0, p.Dungeons.Normal[0] - 2)
     },
     '2 Mines': {
-        expr: p => p.Dungeons.Normal[1]
+        expr: p => Math.max(0, p.Dungeons.Normal[1] - 2)
     },
     '3 Ruins': {
-        expr: p => p.Dungeons.Normal[2]
+        expr: p => Math.max(0, p.Dungeons.Normal[2] - 2)
     },
     '4 Grotto': {
-        expr: p => p.Dungeons.Normal[3]
+        expr: p => Math.max(0, p.Dungeons.Normal[3] - 2)
     },
     '5 Altar': {
-        expr: p => p.Dungeons.Normal[4]
+        expr: p => Math.max(0, p.Dungeons.Normal[4] - 2)
     },
     '6 Tree': {
-        expr: p => p.Dungeons.Normal[5]
+        expr: p => Math.max(0, p.Dungeons.Normal[5] - 2)
     },
     '7 Magma': {
-        expr: p => p.Dungeons.Normal[6]
+        expr: p => Math.max(0, p.Dungeons.Normal[6] - 2)
     },
     '8 Temple': {
-        expr: p => p.Dungeons.Normal[7]
+        expr: p => Math.max(0, p.Dungeons.Normal[7] - 2)
     },
     '9 Pyramid': {
-        expr: p => p.Dungeons.Normal[8]
+        expr: p => Math.max(0, p.Dungeons.Normal[8] - 2)
     },
     '10 Circus': {
-        expr: p => p.Dungeons.Normal[9]
+        expr: p => Math.max(0, p.Dungeons.Normal[9] - 2)
     },
     '11 Fortress': {
-        expr: p => p.Dungeons.Normal[10]
+        expr: p => Math.max(0, p.Dungeons.Normal[10] - 2)
     },
     '12 Hell': {
-        expr: p => p.Dungeons.Normal[11]
+        expr: p => Math.max(0, p.Dungeons.Normal[11] - 2)
     },
     '13 Floor': {
-        expr: p => p.Dungeons.Normal[12]
+        expr: p => Math.max(0, p.Dungeons.Normal[12] - 2)
     },
     '14 Easteros': {
-        expr: p => p.Dungeons.Normal[13]
+        expr: p => Math.max(0, p.Dungeons.Normal[13] - 2)
     },
     'S1 Catacombs': {
-        expr: p => p.Dungeons.Shadow[0]
+        expr: p => Math.max(0, p.Dungeons.Shadow[0] - 2)
     },
     'S2 Mines': {
-        expr: p => p.Dungeons.Shadow[1]
+        expr: p => Math.max(0, p.Dungeons.Shadow[1] - 2)
     },
     'S3 Ruins': {
-        expr: p => p.Dungeons.Shadow[2]
+        expr: p => Math.max(0, p.Dungeons.Shadow[2] - 2)
     },
     'S4 Grotto': {
-        expr: p => p.Dungeons.Shadow[3]
+        expr: p => Math.max(0, p.Dungeons.Shadow[3] - 2)
     },
     'S5 Altar': {
-        expr: p => p.Dungeons.Shadow[4]
+        expr: p => Math.max(0, p.Dungeons.Shadow[4] - 2)
     },
     'S6 Tree': {
-        expr: p => p.Dungeons.Shadow[5]
+        expr: p => Math.max(0, p.Dungeons.Shadow[5] - 2)
     },
     'S7 Magma': {
-        expr: p => p.Dungeons.Shadow[6]
+        expr: p => Math.max(0, p.Dungeons.Shadow[6] - 2)
     },
     'S8 Temple': {
-        expr: p => p.Dungeons.Shadow[7]
+        expr: p => Math.max(0, p.Dungeons.Shadow[7] - 2)
     },
     'S9 Pyramid': {
-        expr: p => p.Dungeons.Shadow[8]
+        expr: p => Math.max(0, p.Dungeons.Shadow[8] - 2)
     },
     'S10 Circus': {
-        expr: p => p.Dungeons.Shadow[9]
+        expr: p => Math.max(0, p.Dungeons.Shadow[9] - 2)
     },
     'S11 Fortress': {
-        expr: p => p.Dungeons.Shadow[10]
+        expr: p => Math.max(0, p.Dungeons.Shadow[10] - 2)
     },
     'S12 Hell': {
-        expr: p => p.Dungeons.Shadow[11]
+        expr: p => Math.max(0, p.Dungeons.Shadow[11] - 2)
     },
     'S13 Floor': {
-        expr: p => p.Dungeons.Shadow[12]
+        expr: p => Math.max(0, p.Dungeons.Shadow[12] - 2)
     },
     'S14 Easteros': {
-        expr: p => p.Dungeons.Shadow[13]
+        expr: p => Math.max(0, p.Dungeons.Shadow[13] - 2)
     },
     'Achievements': {
         expr: p => p.Achievements.Owned
@@ -1379,7 +1385,7 @@ const SP_KEYWORD_MAPPING_2 = {
         statistics: false
     },
     'Twister': {
-        expr: p => p.Dungeons.Twister,
+        expr: p => p.Dungeons.Twister ? Math.max(0, p.Dungeons.Twister - 2) : undefined,
         statistics: false
     },
     'Shrooms': {
@@ -1408,12 +1414,22 @@ const SP_KEYWORD_MAPPING_2 = {
         width: 120
     },
     'Youtube': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Youtube : undefined,
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Youtube - 2) : undefined,
         statistics: false,
         width: 120
     },
     'Own Shadow': {
         expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow.Total : undefined,
+        statistics: false,
+        width: 120
+    },
+    'Own Dungeon Unlocked': {
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Normal.Unlocked : undefined,
+        statistics: false,
+        width: 120
+    },
+    'Own Shadow Unlocked': {
+        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow.Unlocked : undefined,
         statistics: false,
         width: 120
     },
@@ -1433,28 +1449,28 @@ const SP_KEYWORD_MAPPING_2 = {
         statistics: false
     },
     '15 Academy': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Normal[0] : undefined
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[0] - 2) : undefined
     },
     '16 Hemorridor': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Normal[1] : undefined
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[1] - 2) : undefined
     },
     '17 Nordic': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Normal[2] : undefined
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[2] - 2) : undefined
     },
     '18 Greek': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Normal[3] : undefined
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[3] - 2) : undefined
     },
     'S15 Academy': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow[0] : undefined
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[0] - 2) : undefined
     },
     'S16 Hemorridor': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow[1] : undefined
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[1] - 2) : undefined
     },
     'S17 Nordic': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow[2] : undefined
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[2] - 2) : undefined
     },
     'S18 Greek': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow[3] : undefined
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[3] - 2) : undefined
     },
     'Scrolls': {
         expr: p => p.Witch.Stage
