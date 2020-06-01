@@ -914,7 +914,7 @@ class TableInstance {
             var classes = this.array.reduce((c, p) => {
                 c[p.player.Class - 1]++;
                 return c;
-            }, [0, 0, 0, 0, 0, 0]);
+            }, [0, 0, 0, 0, 0, 0, 0]);
 
             var widskip = 1;
             for (var i = 0, wid = 60; wid > 0 && i < this.flat.length; i++) {
@@ -949,8 +949,8 @@ class TableInstance {
                     <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Assassin</td>
                     <td colspan="${ widskip }">${ classes[3] }</td>
                     ${ this.array.kicked.length > 0 ? `
-                        <td class="border-right-thin" rowspan="3" colspan="1">Left</td>
-                        <td colspan="${ Math.max(1, colcount - 1 - widskip) }" rowspan="3">${ this.array.kicked.join(', ') }</td>
+                        <td class="border-right-thin" rowspan="4" colspan="1">Left</td>
+                        <td colspan="${ Math.max(1, colcount - 1 - widskip) }" rowspan="4">${ this.array.kicked.join(', ') }</td>
                     ` : '' }
                 </tr>
                 <tr>
@@ -960,6 +960,10 @@ class TableInstance {
                 <tr>
                     <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Berserker</td>
                     <td colspan="${ widskip }">${ classes[5] }</td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Demon Hunter</td>
+                    <td colspan="${ widskip }">${ classes[6] }</td>
                 </tr>
             `;
         }
