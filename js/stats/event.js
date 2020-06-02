@@ -166,7 +166,14 @@ class GroupDetailView extends View {
             html2canvas(this.$table.get(0), {
                 logging: false,
                 onclone: (doc) => {
-                    $(doc).find('[data-op="table"]').find('thead').prepend($(`<tr><td colspan="4" class="text-left">${ formatDate(Number(this.timestamp)) } - ${ formatDate(Number(this.reference)) }</td></tr>`));
+                    var ta = Number(this.timestamp);
+                    var tb = Number(this.reference);
+
+                    if (ta != tb) {
+                        $(doc).find('[data-op="table"]').find('thead').prepend($(`<tr><td colspan="4" class="text-left">${ formatDate(ta) } - ${ formatDate(tb) }</td></tr>`));
+                    } else {
+                        $(doc).find('[data-op="table"]').find('thead').prepend($(`<tr><td colspan="4" class="text-left">${ formatDate(ta) }</td></tr>`));
+                    }
                 }
             }).then((canvas) => {
                 canvas.toBlob((blob) => {
