@@ -911,19 +911,19 @@ const PET_HABITAT_MAP = [
 ];
 
 class PetModel {
-    constructor (index, habitat, pet, level, bonus, gladiator) {
+    constructor (index, type, pet, level, bonus, gladiator) {
         this.Index = index;
 
         // Sets
-        this.Habitat = habitat;
+        this.Type = type;
         this.Pet = pet;
         this.Level = level;
         this.Bonus = bonus;
         this.Gladiator = gladiator;
 
         // Vars
-        this.Class = PET_CLASS_MAP[this.Habitat][this.Pet - 1] + 1;
-        this.Attribute = Math.trunc(PET_FACTOR_MAP[this.Pet - 1] * (this.Level + 1) * (1 + this.Bonus / 100));
+        this.Class = PET_CLASS_MAP[this.Type][this.Pet] + 1;
+        this.Attribute = Math.trunc(PET_FACTOR_MAP[this.Pet] * (this.Level + 1) * (1 + this.Bonus / 100));
         this.DefenseAttribute = Math.trunc(this.Attribute / 2);
         this.TotalHealth = (this.Level + 1) * this.Attribute * (this.Class == WARRIOR ? 5 : (this.Class == MAGE ? 2 : 4));
     }
@@ -946,19 +946,19 @@ class PetModel {
         return 5 * Math.trunc(pack + at200 + at100 / 2);
     }
 
-    static fromPet (index, habitat, pet, level, pack, at100, at200, gladiator) {
-        return new PetModel(index, habitat, pet, level, 5 * Math.trunc(pack + at100 / 2 + at200), gladiator);
+    static fromPet (index, type, pet, level, pack, at100, at200, gladiator) {
+        return new PetModel(index, type, pet, level, 5 * Math.trunc(pack + at100 / 2 + at200), gladiator);
     }
 
-    static fromHabitat (index, habitat, pet) {
-        return new PetModel(index, habitat, pet, PET_HABITAT_MAP[pet - 1], 5 * pet, 0);
+    static fromHabitat (index, type, pet) {
+        return new PetModel(index, type, pet, PET_HABITAT_MAP[pet], 5 + 5 * pet, 0);
     }
 
     static fromObject (obj) {
         if (obj.Boss) {
-            return PetModel.fromHabitat(obj.Index, obj.Habitat, obj.Pet);
+            return PetModel.fromHabitat(obj.Index, obj.Type, obj.Pet);
         } else {
-            return PetModel.fromPet(obj.Index, obj.Habitat, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At200, obj.Gladiator);
+            return PetModel.fromPet(obj.Index, obj.Type, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At200, obj.Gladiator);
         }
     }
 }
