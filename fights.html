@@ -251,7 +251,7 @@
                                 rageoffset++;
                             }
 
-                            var id = round.attacker.ID;
+                            var id = '' + round.attacker.ID + '/' + round.attacker.Name + '_' + round.target.ID + '/' + round.target.Name;
                             var rage = 1 + (i + rageoffset) / 6;
                             var crit = round.attackCrit ? critmult : 1;
 
