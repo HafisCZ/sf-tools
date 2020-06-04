@@ -45,8 +45,8 @@
                 transform: rotate(-90deg);
             }
 
-            .ghosted {
-                opacity: 25%;
+            .ghosted .text-center {
+                opacity: 40%;
             }
 
             .table-group td:not(.border-bottom-thick) {
@@ -56,7 +56,6 @@
             .fixed-header thead tr {
                 display: block;
                 margin-right: 17px;
-
             }
 
             .fixed-header tbody {
@@ -91,9 +90,20 @@
                     <i class="circle icon" style="color: #2f2b90"></i> Can be caught during the night (00:00 - 05:59 and 18:00 - 23:59)<br/>
                     <i class="circle icon" style="color: #4B0082"></i> Can be caught during the witching hour (00:00 - 00:59)<br/><br/>
                 </div>
-                <div class="twelve wide column">
+                <div class="four wide column">
                     <i class="warning icon"></i> You cannot catch event specific pets during special events<br/>
                     <i class="warning icon"></i> Some events may be inaccurate because there is no set date
+                </div>
+                <div class="eight wide column">
+                    <div class="ui tiny form">
+                        <div class="four wide field">
+                            <label>Sort by</label>
+                            <div class="ui selection compact dropdown" id="sort">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <table class="table-group fixed-header" style="margin: auto;">
@@ -108,6 +118,9 @@
 
         <script type="text/javascript">
             var offset = 0;
+            var option = 0;
+            var ghosted = new Array(100).fill(false);
+
             var now = new Date();
 
             const PET_COLORS = [
@@ -118,14 +131,19 @@
                 '#60CDEF'
             ];
 
-            var ghosted = new Array(100).fill(false);
+            $('#sort').dropdown({
+                values: [
+                    { name: 'Default', value: 0 },
+                    { name: 'Can be found', value: 1 }
+                ]
+            }).dropdown('set selected', '0').dropdown('setting', 'onChange', (value, text) => {
+                option = Number(value);
+                refresh();
+            });
+
             function toggleGhost (index) {
                 ghosted[index] = !ghosted[index];
-                if (ghosted[index]) {
-                    $(`[data-id="${ index }"]`).parent('td').parent('tr').addClass('ghosted');
-                } else {
-                    $(`[data-id="${ index }"]`).parent('td').parent('tr').removeClass('ghosted');
-                }
+                refresh();
             }
 
             function refresh() {
@@ -182,14 +200,14 @@
                     refresh();
                 });
 
-                content = '';
+                var entries = [];
 
                 for (var i = 0; i < 100; i++) {
                     var name = NAME_MONSTER[i + 800];
                     var image = `res/pets/monster${ 800 + i }.png`;
                     var description = PetDescriptions[i];
 
-                    content += `
+                    var entry = `
                         <tr ${ ghosted[i] ? 'class="ghosted"' : ''} >
                             <td style="background: ${ PET_COLORS[Math.trunc(i / 20)] }">
                                 <div class="css-img-container clickable" style="width: 4em;" data-id="${ i }">
@@ -204,6 +222,8 @@
                     `;
 
                     date = new Date(timestamp);
+                    var possibleToday = Pets[i].Date(date);
+
                     for (var j = 0; j < TOTAL_DAYS; j++) {
                         var color = '';
                         var possible = Pets[i].Date(date);
@@ -221,14 +241,26 @@
                             }
                         }
 
-                        content += `<td class="text-center ${ date.getDate() == now.getDate() && date.getMonth() == now.getMonth() && date.getFullYear() == now.getFullYear() ? 'today' : '' } ${ date.getDay() == 0 ? 'border-right-thin' : '' }" style="background: ${ color }; width: 1.5em;"></td>`;
+                        entry += `<td class="text-center ${ date.getDate() == now.getDate() && date.getMonth() == now.getMonth() && date.getFullYear() == now.getFullYear() ? 'today' : '' } ${ date.getDay() == 0 ? 'border-right-thin' : '' }" style="background: ${ color }; width: 1.5em;"></td>`;
                         date.setDate(date.getDate() + 1);
                     }
 
-                    content += '</tr>';
+                    entry += '</tr>';
+
+                    entries.push({
+                        index: i,
+                        content: entry,
+                        ql: i + (Pets[i].Time == PetTime.Any ? 100 : 0) + (!possibleToday ? 1000 : 0) + (ghosted[i] ? 10000 : 0)
+                    });
                 }
 
-                $('#pp-body').html(content);
+                if (option == 0) {
+                    entries.sort((a, b) => a.index - b.index);
+                } else {
+                    entries.sort((a, b) => a.ql - b.ql);
+                }
+
+                $('#pp-body').html(entries.reduce((str, entry) => str + entry.content, ''));
                 $('[data-id]').click(function() {
                     toggleGhost(Number($(this).attr('data-id')));
                 });
