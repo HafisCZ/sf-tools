@@ -346,7 +346,7 @@
                     var reward = num;
                     var dice = num / 3;
 
-                    var scroll = reward * 12.5 * (1 / 3);
+                    var scroll = Math.min(10E6, reward * 12.5 * (1 / 3));
 
                     var hourly = Math.min(10E6, guard * pit / 100);
                     var guard = Math.min(10E6, guard);
