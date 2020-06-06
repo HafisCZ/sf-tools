@@ -17,6 +17,24 @@
 
         <script src="js/util.js"></script>
 
+        <style>
+            .orange {
+                color: orange;
+            }
+
+            .green {
+                color: darkgreen;
+            }
+
+            .blue {
+                color: blue;
+            }
+
+            .purple {
+                color: purple;
+            }
+        </style>
+
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
     <body>
@@ -67,80 +85,116 @@
                     <div class="ui segment">
                         <h3 class="ui header">Calculate gold rewards</h3>
                         <div class="ui small form">
-                            <div class="five fields">
+                            <div class="six fields">
                                 <div class="field">
                                     <label>Level</label>
                                     <input type="text" id="gold-level">
                                 </div>
                                 <div class="field">
-                                    <label>Guild bonus %</label>
+                                    <label><span class="blue">&bull;</span> Guild bonus %</label>
                                     <input type="text" id="gold-guild">
                                 </div>
                                 <div class="field">
-                                    <label>Tower bonus %</label>
+                                    <label><span class="blue">&bull;</span> Tower bonus %</label>
                                     <input type="text" id="gold-tower">
                                 </div>
                                 <div class="field">
-                                    <label>Gem Mine</label>
+                                    <label><span class="purple">&bull;</span> Gem Mine</label>
                                     <input type="text" id="gold-mine">
                                 </div>
                                 <div class="field">
-                                    <label>Gold Pit</label>
+                                    <label><span class="orange">&bull;</span> Gold Pit</label>
                                     <input type="text" id="gold-pit">
                                 </div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> Item Quality</label>
+                                    <input type="text" id="gold-runes">
+                                </div>
                             </div>
-                            <div class="five fields">
+                            <div class="six fields">
                                 <div class="field">
                                     <label>Environmental reward</label>
                                     <input type="text" disabled id="gold-reward">
                                 </div>
                                 <div class="field">
-                                    <label>Hourly guard duty</label>
+                                    <label><span class="blue">&bull;</span> Hourly guard duty</label>
                                     <input type="text" disabled id="gold-guard">
                                 </div>
                                 <div class="field">
-                                    <label>Dice game (3 of kind)</label>
+                                    <label>Dice game (3 of a kind)</label>
                                     <input type="text" disabled id="gold-dice">
                                 </div>
                                 <div class="field">
-                                    <label>Small gem</label>
+                                    <label><span class="purple">&bull;</span> Small gem</label>
                                     <input type="text" disabled id="gold-gem">
                                 </div>
                                 <div class="field">
-                                    <label>Hourly gold pit</label>
+                                    <label><span class="orange">&bull;</span> Hourly gold pit</label>
                                     <input type="text" disabled id="gold-hourly">
                                 </div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> 10% Potion</label>
+                                    <input type="text" disabled id="gold-pot10">
+                                </div>
                             </div>
-                            <div class="five fields">
+                            <div class="six fields">
                                 <div class="field"></div>
                                 <div class="field"></div>
                                 <div class="field">
-                                    <label>Dice game (4 of kind)</label>
+                                    <label>Dice game (4 of a kind)</label>
                                     <input type="text" disabled id="gold-dice2">
                                 </div>
                                 <div class="field">
-                                    <label>Medium gem</label>
+                                    <label><span class="purple">&bull;</span> Medium gem</label>
                                     <input type="text" disabled id="gold-gem2">
                                 </div>
                                 <div class="field">
-                                    <label>Gold pit time</label>
+                                    <label><span class="blue">&bull;</span><span class="orange">&bull;</span> Gold pit time</label>
                                     <input type="text" disabled id="gold-time">
                                 </div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> 15% Potion</label>
+                                    <input type="text" disabled id="gold-pot15">
+                                </div>
                             </div>
-                            <div class="five fields">
-                                <div class="field"></div>
+                            <div class="six fields">
+                                <div class="field">
+                                    <label>Witch Scroll</label>
+                                    <input type="text" disabled id="gold-scroll">
+                                </div>
                                 <div class="field"></div>
                                 <div class="field">
-                                    <label>Dice game (5 of kind)</label>
+                                    <label>Dice game (5 of a kind)</label>
                                     <input type="text" disabled id="gold-dice3">
                                 </div>
                                 <div class="field">
-                                    <label>large gem</label>
+                                    <label><span class="purple">&bull;</span> Large gem</label>
                                     <input type="text" disabled id="gold-gem3">
                                 </div>
                                 <div class="field">
-                                    <label>Gold pit capacity</label>
+                                    <label><span class="blue">&bull;</span><span class="orange">&bull;</span> Gold pit capacity</label>
                                     <input type="text" disabled id="gold-capacity">
+                                </div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> 25% Potion / Gold PoEL</label>
+                                    <input type="text" disabled id="gold-pot25">
+                                </div>
+                            </div>
+                            <div class="six fields">
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> Quicksand Hourglass</label>
+                                    <input type="text" disabled id="gold-hourglass1">
+                                </div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> 10 Quicksand Hourglasses</label>
+                                    <input type="text" disabled id="gold-hourglass10">
+                                </div>
+                                <div class="field"></div>
+                                <div class="field"></div>
+                                <div class="field"></div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> Potion of Eternal Life</label>
+                                    <input type="text" disabled id="gold-pothp">
                                 </div>
                             </div>
                         </div>
@@ -262,8 +316,8 @@
                 }
             });
 
-            $('#gold-level, #gold-guild, #gold-tower, #gold-mine, #gold-pit').on('change input', function () {
-                if (validate($('#gold-level'), $('#gold-guild'), $('#gold-tower'), $('#gold-mine'))) {
+            $('#gold-level, #gold-guild, #gold-tower, #gold-mine, #gold-pit, #gold-runes').on('change input', function () {
+                if (validate($('#gold-level'), $('#gold-guild'), $('#gold-tower'), $('#gold-mine'), $('#gold-runes'))) {
                     var level = Number($('#gold-level').val());
                     if (level < 1) level = 1;
                     else if (level > 632) level = 632;
@@ -278,20 +332,21 @@
                     if (mine < 1) mine = 1;
                     else if (mine > 14) mine = 14;
 
+                    var runes = Number($('#gold-runes').val());
+                    if (runes < 0) runes = 0;
+                    else if (runes > 5) runes = 5;
+
                     var pit = Number($('#gold-pit').val());
                     if (pit < 1) pit = 1;
                     else if (pit > 100) pit = 100;
 
-                    var num = Math.trunc(getGoldCurve(level) / 10);
-                    if (num > 9999) {
-                        num = Math.trunc(num / 100) * 100;
-                    }
-
-                    num = num * 12 / 100;
+                    var num = getGoldCurve(level) * 12 / 1000;
 
                     var guard = (num / 3) * (1 + guild / 100 + tower / 100);
                     var reward = num;
                     var dice = num / 3;
+
+                    var scroll = reward * 12.5 * (1 / 3);
 
                     var hourly = Math.min(10E6, guard * pit / 100);
                     var guard = Math.min(10E6, guard);
@@ -303,13 +358,33 @@
                     var gem = num / 6;
                     gem = Math.min(10E6, gem * getMineMultiplier(mine));
 
-                    var gem2 = Math.trunc(getGoldCurve(level + 5) / 10);
-                    if (gem2 > 9999) gem2 = Math.trunc(gem2 / 100) * 100;
+                    var gem2 = getGoldCurve(level + 5) / 10;
                     gem2 = Math.min(10E6, gem2 * 2 * getMineMultiplier(mine) / 100);
 
-                    var gem3 = Math.trunc(getGoldCurve(level + 10) / 10);
-                    if (gem3 > 9999) gem3 = Math.trunc(gem3 / 100) * 100;
+                    var gem3 = getGoldCurve(level + 10) / 10;
                     gem3 = Math.min(10E6, gem3 * 2 * getMineMultiplier(mine) / 100);
+
+                    var potion = getGoldCurve(Math.max(1, level - runes)) / 10;
+
+                    potion = 1.25 * potion * 12 / 100;
+
+                    var pot10 = potion / 4;
+                    var pothp = potion / 3;
+                    var pot15 = potion / 2;
+                    var pot25 = potion / 1;
+
+                    var hourglass10 = Math.min(5000000, 10 * potion / 6);
+                    var hourglass1 = Math.min(375000, hourglass10 >= 375000 ? hourglass10 : potion / 6);
+
+                    $('#gold-pot10').val(pot10 >= 10 ? formatAsSpacedNumber(pot10, ' ') : roundShort(pot10));
+                    $('#gold-pot15').val(pot15 >= 10 ? formatAsSpacedNumber(pot15, ' ') : roundShort(pot15));
+                    $('#gold-pot25').val(pot25 >= 10 ? formatAsSpacedNumber(pot25, ' ') : roundShort(pot25));
+                    $('#gold-pothp').val(pothp >= 10 ? formatAsSpacedNumber(pothp, ' ') : roundShort(pothp));
+
+                    $('#gold-scroll').val(scroll >= 10 ? formatAsSpacedNumber(scroll, ' ') : roundShort(scroll));
+
+                    $('#gold-hourglass1').val(hourglass1 >= 10 ? formatAsSpacedNumber(hourglass1, ' ') : roundShort(hourglass1));
+                    $('#gold-hourglass10').val(hourglass10 >= 10 ? formatAsSpacedNumber(hourglass10, ' ') : roundShort(hourglass10));
 
                     $('#gold-guard').val(guard >= 10 ? formatAsSpacedNumber(guard, ' ') : roundShort(guard));
                     $('#gold-reward').val(reward >= 10 ? formatAsSpacedNumber(reward, ' ') : roundShort(reward));
