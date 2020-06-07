@@ -138,7 +138,10 @@
                                 </div>
                             </div>
                             <div class="six fields">
-                                <div class="field"></div>
+                                <div class="field">
+                                    <label>Witch Scroll</label>
+                                    <input type="text" disabled id="gold-scroll">
+                                </div>
                                 <div class="field"></div>
                                 <div class="field">
                                     <label>Dice game (4 of a kind)</label>
@@ -159,10 +162,13 @@
                             </div>
                             <div class="six fields">
                                 <div class="field">
-                                    <label>Witch Scroll</label>
-                                    <input type="text" disabled id="gold-scroll">
+                                    <label>Calendar 1 bar</label>
+                                    <input type="text" disabled id="gold-bar">
                                 </div>
-                                <div class="field"></div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> Quicksand Hourglass</label>
+                                    <input type="text" disabled id="gold-hourglass1">
+                                </div>
                                 <div class="field">
                                     <label>Dice game (5 of a kind)</label>
                                     <input type="text" disabled id="gold-dice3">
@@ -182,8 +188,8 @@
                             </div>
                             <div class="six fields">
                                 <div class="field">
-                                    <label><span class="green">&bull;</span> Quicksand Hourglass</label>
-                                    <input type="text" disabled id="gold-hourglass1">
+                                    <label>Calendar 3 bars / Locked</label>
+                                    <input type="text" disabled id="gold-bar3">
                                 </div>
                                 <div class="field">
                                     <label><span class="green">&bull;</span> 10 Quicksand Hourglasses</label>
@@ -373,6 +379,12 @@
 
                     var hourglass10 = Math.min(5000000, 10 * potion / 6);
                     var hourglass1 = Math.min(375000, hourglass10 >= 375000 ? hourglass10 : potion / 6);
+
+                    var goldbar3 = dice * 25;
+                    var goldbar1 = goldbar3 / (10 / 3);
+
+                    $('#gold-bar').val(goldbar1 >= 999 ? formatAsSpacedNumber(goldbar1, ' ') : roundShort(goldbar1));
+                    $('#gold-bar3').val(goldbar3 >= 999 ? formatAsSpacedNumber(goldbar3, ' ') : roundShort(goldbar3));
 
                     $('#gold-pot10').val(pot10 >= 999 ? formatAsSpacedNumber(pot10, ' ') : roundShort(pot10));
                     $('#gold-pot15').val(pot15 >= 999 ? formatAsSpacedNumber(pot15, ' ') : roundShort(pot15));
