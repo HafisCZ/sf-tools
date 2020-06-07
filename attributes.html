@@ -238,7 +238,7 @@
             }
 
             function roundShort(value) {
-                return Math.trunc(value * 100) / 100;
+                return Math.ceil(value * 100) / 100;
             }
 
             function getMineMultiplier(m) {
@@ -364,9 +364,7 @@
                     var gem3 = getGoldCurve(level + 10) / 10;
                     gem3 = Math.min(10E6, gem3 * 2 * getMineMultiplier(mine) / 100);
 
-                    var potion = getGoldCurve(Math.max(1, level - runes)) / 10;
-
-                    potion = 1.25 * potion * 12 / 100;
+                    var potion = (1 + Math.min(1, Math.max(0, (90 - level) / 10))) * getGoldCurve(Math.max(1, level - runes)) * 15 / 1000;
 
                     var pot10 = potion / 4;
                     var pothp = potion / 3;
@@ -376,28 +374,28 @@
                     var hourglass10 = Math.min(5000000, 10 * potion / 6);
                     var hourglass1 = Math.min(375000, hourglass10 >= 375000 ? hourglass10 : potion / 6);
 
-                    $('#gold-pot10').val(pot10 >= 10 ? formatAsSpacedNumber(pot10, ' ') : roundShort(pot10));
-                    $('#gold-pot15').val(pot15 >= 10 ? formatAsSpacedNumber(pot15, ' ') : roundShort(pot15));
-                    $('#gold-pot25').val(pot25 >= 10 ? formatAsSpacedNumber(pot25, ' ') : roundShort(pot25));
-                    $('#gold-pothp').val(pothp >= 10 ? formatAsSpacedNumber(pothp, ' ') : roundShort(pothp));
+                    $('#gold-pot10').val(pot10 >= 999 ? formatAsSpacedNumber(pot10, ' ') : roundShort(pot10));
+                    $('#gold-pot15').val(pot15 >= 999 ? formatAsSpacedNumber(pot15, ' ') : roundShort(pot15));
+                    $('#gold-pot25').val(pot25 >= 999 ? formatAsSpacedNumber(pot25, ' ') : roundShort(pot25));
+                    $('#gold-pothp').val(pothp >= 999 ? formatAsSpacedNumber(pothp, ' ') : roundShort(pothp));
 
-                    $('#gold-scroll').val(scroll >= 10 ? formatAsSpacedNumber(scroll, ' ') : roundShort(scroll));
+                    $('#gold-scroll').val(scroll >= 999 ? formatAsSpacedNumber(scroll, ' ') : roundShort(scroll));
 
-                    $('#gold-hourglass1').val(hourglass1 >= 10 ? formatAsSpacedNumber(hourglass1, ' ') : roundShort(hourglass1));
-                    $('#gold-hourglass10').val(hourglass10 >= 10 ? formatAsSpacedNumber(hourglass10, ' ') : roundShort(hourglass10));
+                    $('#gold-hourglass1').val(hourglass1 >= 999 ? formatAsSpacedNumber(hourglass1, ' ') : roundShort(hourglass1));
+                    $('#gold-hourglass10').val(hourglass10 >= 999 ? formatAsSpacedNumber(hourglass10, ' ') : roundShort(hourglass10));
 
-                    $('#gold-guard').val(guard >= 10 ? formatAsSpacedNumber(guard, ' ') : roundShort(guard));
-                    $('#gold-reward').val(reward >= 10 ? formatAsSpacedNumber(reward, ' ') : roundShort(reward));
+                    $('#gold-guard').val(guard >= 999 ? formatAsSpacedNumber(guard, ' ') : roundShort(guard));
+                    $('#gold-reward').val(reward >= 999 ? formatAsSpacedNumber(reward, ' ') : roundShort(reward));
 
-                    $('#gold-dice').val(dice >= 10 ? formatAsSpacedNumber(dice, ' ') : roundShort(dice));
-                    $('#gold-dice2').val(dice * 5 >= 10 ? formatAsSpacedNumber(dice * 5, ' ') : roundShort(dice * 5));
-                    $('#gold-dice3').val(dice * 25 >= 10 ? formatAsSpacedNumber(dice * 25, ' ') : roundShort(dice * 25));
+                    $('#gold-dice').val(dice >= 999 ? formatAsSpacedNumber(dice, ' ') : roundShort(dice));
+                    $('#gold-dice2').val(dice * 5 >= 999 ? formatAsSpacedNumber(dice * 5, ' ') : roundShort(dice * 5));
+                    $('#gold-dice3').val(dice * 25 >= 999 ? formatAsSpacedNumber(dice * 25, ' ') : roundShort(dice * 25));
 
-                    $('#gold-gem').val(gem >= 10 ? formatAsSpacedNumber(gem, ' ') : roundShort(gem));
-                    $('#gold-gem2').val(gem2 >= 10 ? formatAsSpacedNumber(gem2, ' ') : roundShort(gem2));
-                    $('#gold-gem3').val(gem3 >= 10 ? formatAsSpacedNumber(gem3, ' ') : roundShort(gem3));
+                    $('#gold-gem').val(gem >= 999 ? formatAsSpacedNumber(gem, ' ') : roundShort(gem));
+                    $('#gold-gem2').val(gem2 >= 999 ? formatAsSpacedNumber(gem2, ' ') : roundShort(gem2));
+                    $('#gold-gem3').val(gem3 >= 999 ? formatAsSpacedNumber(gem3, ' ') : roundShort(gem3));
 
-                    $('#gold-hourly').val(hourly >= 10 ? formatAsSpacedNumber(hourly, ' ') : roundShort(hourly));
+                    $('#gold-hourly').val(hourly >= 999 ? formatAsSpacedNumber(hourly, ' ') : roundShort(hourly));
                     $('#gold-capacity').val(formatAsSpacedNumber(capacity, ' '));
                     $('#gold-time').val(Math.trunc(time) + ' hours ' + Math.trunc(60 * (time % 1)) + ' minutes');
                 }
