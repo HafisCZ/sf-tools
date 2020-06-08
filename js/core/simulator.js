@@ -466,7 +466,7 @@ self.addEventListener('message', function (message) {
         var r = [];
         var obj = players[0];
 
-        for (var level = 0; level < 100; level++) {
+        for (var level = Math.min(99, Math.max(0, obj.Level - 1)); level < 100; level++) {
             for (var glad = 0; glad < 16; glad++) {
                 obj.Level = level + 1;
                 obj.Gladiator = glad;
