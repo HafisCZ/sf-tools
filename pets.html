@@ -47,6 +47,46 @@
             .bfour {
                 border: 1px solid red;
             }
+
+            .pet-25 {
+                background-color: #99ffb4;
+            }
+
+            .pet-10 {
+                background-color: #daff99;
+            }
+
+            .pet-5 {
+                background-color: #fdff99;
+            }
+
+            .pet-1 {
+                background-color: #ffdd99;
+            }
+
+            .pet-0 {
+                background-color: #ffad99;
+            }
+
+            table.table-map-pet {
+                font-size: 90% !important;
+            }
+
+            .fixed-header thead tr {
+                display: block;
+                margin-right: 17px;
+            }
+
+            .fixed-header tbody {
+                overflow: auto;
+                display: block;
+                height: 69vh;
+                width: 100%;
+            }
+
+            #sim-map td {
+                width: 5.2em;
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
@@ -75,8 +115,8 @@
                 <div class="four wide column">
                     <h1 class="ui centered header">Pet Simulator</h1>
                 </div>
-                <div class="two wide column">
-
+                <div class="two wide column" data-tooltip="Generate a level / gladiator success map. Only possible with own pet against a dungeon boss." data-position="bottom center">
+                    <button class="ui fluid small button disabled" type="submit" id="sim-generate">Generate</button>
                 </div>
                 <div class="two wide column">
                     <button class="ui fluid small button" type="submit" id="sim-run">Run</button>
@@ -293,6 +333,8 @@
                     </div>
                 </div>
             </div>
+
+            <table id="sim-map" class="ui celled structured table table-group table-map-pet fixed-header"></table>
         </div>
 
         <script type="text/javascript">
@@ -523,10 +565,13 @@
 
             function refreshModels () {
                 var [a, b] = models;
+                var ab = false;
 
                 if (a && b) {
                     a.initialize(b);
                     b.initialize(a);
+
+                    ab = true;
 
                     petA.fillDebugInformation(a, true);
                     petB.fillDebugInformation(b, true);
@@ -534,6 +579,12 @@
                     petA.fillDebugInformation(a, false);
                 } else if (b) {
                     petB.fillDebugInformation(b, false);
+                }
+
+                if (petA && petB && petA.Boss == 0 && petB.Boss == 1) {
+                    $('#sim-generate').removeClass('disabled');
+                } else {
+                    $('#sim-generate').addClass('disabled');
                 }
             }
 
@@ -582,6 +633,60 @@
 
                         worker.postMessage({
                             mode: 999,
+                            players: [a, b]
+                        });
+                    }
+                }
+            });
+
+            function getPetColor (num) {
+                if (num == 0) {
+                    return 'pet-0';
+                } else if (num >= 25) {
+                    return 'pet-25'
+                } else if (num >= 10) {
+                    return 'pet-10';
+                } else if (num >= 5) {
+                    return 'pet-5';
+                } else {
+                    return 'pet-1';
+                }
+            }
+
+            $('#sim-generate').click(function () {
+                if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
+                    $('#sim-map').html('');
+                    $('#sim-result').html('');
+
+                    var a = petA.getData();
+                    var b = petB.getData();
+
+                    if (a && b && !a.Boss && b.Boss) {
+                        freeze();
+
+                        var worker = new Worker('js/core/simulator.js');
+
+                        worker.addEventListener('message', function (message) {
+                            if (message.data.command == 'finished') {
+                                var map = message.data.results;
+
+                                $('#sim-map').html(`
+                                    <thead>
+                                        <tr>
+                                            ${ new Array(16).fill(0).reduce((col, a, i) => col + `<td>Glad ${ i }</td>`, '<td>Level</td>') }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${ map.reduce((col, a, i) => col + `<tr><td>${ i + 1 }</td>${ a.reduce((c, w) => c + `<td class="${ getPetColor(w) }">${ w.toFixed(2) }%</td>`, '') }</tr>`, '') }
+                                    </tbody>
+                                `);
+
+                                freeze();
+                            }
+                        }, false);
+
+                        worker.postMessage({
+                            mode: 1000,
                             players: [a, b]
                         });
                     }

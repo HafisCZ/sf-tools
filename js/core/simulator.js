@@ -462,6 +462,28 @@ self.addEventListener('message', function (message) {
             results: r,
             time: Date.now() - ts
         });
+    } else if (mode == 1000) {
+        var r = [];
+        var obj = players[0];
+
+        for (var level = 0; level < 100; level++) {
+            for (var glad = 0; glad < 16; glad++) {
+                obj.Level = level + 1;
+                obj.Gladiator = glad;
+
+                if (!r[level]) {
+                    r[level] = [];
+                }
+
+                r[level][glad] = new PetSimulator().simulate(obj, players[1], 5E4);
+            }
+        }
+
+        self.postMessage({
+            command: 'finished',
+            results: r,
+            time: Date.now() - ts
+        });
     }
 
     self.close();
@@ -964,7 +986,7 @@ class PetModel {
 }
 
 class PetSimulator {
-    simulate (source, target) {
+    simulate (source, target, iterations = 1E7) {
         this.ca = PetModel.fromObject(source);
         this.cb = PetModel.fromObject(target);
 
@@ -972,11 +994,11 @@ class PetSimulator {
         this.cb.initialize(this.ca);
 
         var score = 0;
-        for (var i = 0; i < 1E7; i++) {
+        for (var i = 0; i < iterations; i++) {
             score += this.fight();
         }
 
-        return score / 1E5;
+        return score / (iterations / 100);
     }
 
     fight () {
