@@ -11,6 +11,7 @@
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/html2canvas.js"></script>
 
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
@@ -101,7 +102,7 @@
             <!-- Header -->
             <div class="ui five columns middle aligned grid">
                 <div class="two wide column">
-
+                    <button class="ui small basic icon button" data-position="bottom center" data-tooltip="Save generated table as image" id="sim-screenshot"><i class="download icon"></i></button>
                 </div>
                 <div class="three wide column">
                     <div class="ui two small buttons">
@@ -448,7 +449,6 @@
                         })
                     }).dropdown('set selected', '0').dropdown('setting', 'onChange', (value, text) => {
                         this.Pet = Number(value) % 20;
-
                         this.refresh();
                     });
 
@@ -588,6 +588,7 @@
                 }
             }
 
+            var curr = '';
             var models = [ undefined, undefined ];
 
             var petA = new PetController($('#sim-a'), 0);
@@ -681,6 +682,8 @@
                                     </tbody>
                                 `);
 
+                                curr = `${ NAME_MONSTER[800 + petA.Type * 20 + petA.Pet] } (${ petA.Pack }, ${ petA.At100 }, ${ petA.At200 }) vs ${ NAME_MONSTER[800 + petB.Type * 20 + petB.Pet] }`;
+
                                 freeze();
                             }
                         }, false);
@@ -690,6 +693,21 @@
                             players: [a, b]
                         });
                     }
+                }
+            });
+
+            $('#sim-screenshot').click(() => {
+                if (curr) {
+                    html2canvas($('#sim-map').get(0), {
+                        logging: false,
+                        onclone: (doc) => {
+                            $(doc).find('#sim-map').removeClass('fixed-header').find('thead').prepend($(`<tr><td colspan="17" class="text-center"><b>${ curr }</b></td></tr>`));
+                        }
+                    }).then((canvas) => {
+                        canvas.toBlob((blob) => {
+                            window.download(`${ curr || 'unknown' }.png`, blob);
+                        });
+                    });
                 }
             });
         </script>
