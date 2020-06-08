@@ -277,22 +277,21 @@
                     var curve = getGoldCurve(i + 1);
 
                     var num = Math.trunc(curve / 10);
-                    if (num > 9999) num = Math.trunc(num / 100) * 100;
                     num = num * 12 / 100;
 
                     text += `<tr>
                         <td>${ i + 1 }</td>
-                        <td>${ cost >= 10 ? formatAsSpacedNumber(cost) : roundShort(cost) }</td>
-                        <td>${ curve / 100 >= 10 ? formatAsSpacedNumber(curve / 100) : roundShort(curve / 100) }</td>
-                        <td>${ num >= 10 ? formatAsSpacedNumber(num) : roundShort(num) }</td>
-                        <td>${ num / 3 >= 10 ? formatAsSpacedNumber(num / 3) :roundShort(num / 3) }</td>
+                        <td>${ cost >= 999 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost) }</td>
+                        <td>${ curve / 100 >= 999 ? formatAsSpacedNumber(curve / 100, ' ') : roundShort(curve / 100) }</td>
+                        <td>${ num >= 999 ? formatAsSpacedNumber(num, ' ') : roundShort(num) }</td>
+                        <td>${ num / 3 >= 999 ? formatAsSpacedNumber(num / 3, ' ') :roundShort(num / 3) }</td>
                     </tr>`;
                 } else {
-                    text += `<tr><td>${ i + 1 }</td><td>${ cost >= 10 ? formatAsSpacedNumber(cost) : roundShort(cost) }</td></tr>`;
+                    text += `<tr><td>${ i + 1 }</td><td>${ cost >= 999 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost) }</td></tr>`;
                 }
             }
 
-            text += `<tr><td>3156 and above</td><td>${ formatAsSpacedNumber(10e6) }</td></tr>`;
+            text += `<tr><td>3156 and above</td><td>${ formatAsSpacedNumber(10e6, ' ') }</td></tr>`;
 
             $('#attribute-prices').html(text);
 
