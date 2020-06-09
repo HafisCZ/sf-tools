@@ -114,7 +114,7 @@
                 Headers that are available for all players.
             </p>
             <br/>
-            <div class="ui five columns grid css-compact-grid ta-reserved" id="manual-headers-0">
+            <div class="ui four columns grid css-compact-grid" id="manual-headers-0">
 
             </div>
             <br/>
@@ -123,7 +123,7 @@
                 Headers that are avaiable only to you and your guild members. Using them for other players will result in unknown <code>?</code> value to be displayed.
             </p>
             <br/>
-            <div class="ui five columns grid css-compact-grid ta-reserved-protected" id="manual-headers-1">
+            <div class="ui four columns grid css-compact-grid" id="manual-headers-1">
 
             </div>
             <br/>
@@ -132,7 +132,7 @@
                 Headers that are avaiable only to your own characters. Using them for other players will result in unknown <code>?</code> value to be displayed.
             </p>
             <br/>
-            <div class="ui five columns grid css-compact-grid ta-reserved-private" id="manual-headers-2">
+            <div class="ui four columns grid css-compact-grid" id="manual-headers-2">
 
             </div>
             <br/>
@@ -141,7 +141,7 @@
                 Special headers for the Fight Simulator.
             </p>
             <br/>
-            <div class="ui five columns grid css-compact-grid ta-reserved-special" id="manual-headers-3">
+            <div class="ui four columns grid css-compact-grid" id="manual-headers-3">
 
             </div>
             <br/>
@@ -150,7 +150,7 @@
                 Itemizable headers
             </p>
             <br/>
-            <div class="ui five columns grid css-compact-grid ta-reserved-itemizable" id="manual-headers-5">
+            <div class="ui four columns grid css-compact-grid" id="manual-headers-5">
 
             </div>
             <br/>
@@ -159,7 +159,7 @@
                 Headers useable only within itemized headers
             </p>
             <br/>
-            <div class="ui five columns grid css-compact-grid ta-reserved-itemized" id="manual-headers-4">
+            <div class="ui four columns grid css-compact-grid" id="manual-headers-4">
 
             </div>
             <br/>
@@ -925,15 +925,211 @@
         </div>
 
         <script type="text/javascript">
+            const descriptions = {
+                'ID': 'Player ID',
+                'Guild ID': 'Guild ID',
+                'Guild Rank': 'Rank of the guild',
+                'Strength': 'Total strength',
+                'Intelligence': 'Total intelligence',
+                'Luck': 'Total luck',
+                'Dexterity': 'Total dexterity',
+                'Constitution': 'Total constitution',
+                'Role': 'Role within the guild (Leader, Memeber, Officer)',
+                'Guild': 'Name of the guild',
+                'Guild Identifier': 'SFTools identifier for the guild',
+                'Identifier': 'SFTools identifier for the player',
+                'Attribute': 'Total main attribute',
+                'Strength Size': 'Size of used strength potion',
+                'Dexterity Size': 'Size of used dexterity potion',
+                'Intelligence Size': 'Size of used intelligence potion',
+                'Luck Size': 'Size of used luck potion',
+                'Constitution Size': 'Size of used constitution potion',
+                'Attribute Size': 'Size of used main potion',
+                'Strength Pet': 'Strength pet bonus',
+                'Dexterity Pet': 'Dexterity pet bonus',
+                'Intelligence Pet': 'Intelligence pet bonus',
+                'Luck Pet': 'Luck pet bonus',
+                'Constitution Pet': 'Constitution pet bonus',
+                'Attribute Pet': 'Main pet bonus',
+                'Base Cost': 'Main attribute upgrade price',
+                'Strength Cost': 'Strength upgrade price',
+                'Dexterity Cost': 'Dexterity upgrade price',
+                'Constitution Cost': 'Constitution upgrade price',
+                'Luck Cost': 'Luck upgrade price',
+                'Intelligence Cost': 'Intelligence upgrade price',
+                'Base Total Cost': 'Gold spent on main base',
+                'Strength Total Cost': 'Gold spent on strength base',
+                'Dexterity Total Cost': 'Gold spent on dexterity base',
+                'Luck Total Cost': 'Gold spent on luck base',
+                'Intelligence Total Cost': 'Gold spent on intelligence base',
+                'Constitution Total Cost': 'Gold spent on constitution base',
+                'Strength Equipment': 'Strength equipment bonus',
+                'Dexterity Equipment': 'Dexterity equipment bonus',
+                'Intelligence Equipment': 'Intelligence equipment bonus',
+                'Luck Equipment': 'Luck equipment bonus',
+                'Constitution Equipment': 'Constitution equipment bonus',
+                'Attribute Equipment': 'Main equipment bonus',
+                'Strength Items': 'Strength bonus from items',
+                'Dexterity Items': 'Dexterity bonus from items',
+                'Intelligence Items': 'Intelligence bonus from items',
+                'Luck Items': 'Luck bonus from items',
+                'Constitution Items': 'Constitution bonus from items',
+                'Attribute Items': 'Main bonus from items',
+                'Strength Gems': 'Strength bonus from gems',
+                'Dexterity Gems': 'Dexterity bonus from gems',
+                'Intelligence Gems': 'Intelligence bonus from gems',
+                'Luck Gems': 'Luck bonus from gems',
+                'Constitution Gems': 'Constitution bonus from gems',
+                'Attribute Gems': 'Main bonus from gems',
+                'Strength Upgrades': 'Strength bonus from item upgrades',
+                'Dexterity Upgrades': 'Dexterity bonus from item upgrades',
+                'Intelligence Upgrades': 'Intelligence bonus from item upgrades',
+                'Luck Upgrades': 'Luck bonus from item upgrades',
+                'Constitution Upgrades': 'Constitution bonus from item upgrades',
+                'Attribute Upgrades': 'Main bonus from item upgrades',
+                'Strength Potion': 'Strength potion bonus',
+                'Dexterity Potion': 'Dexterity potion bonus',
+                'Intelligence Potion': 'Intelligence potion bonus',
+                'Luck Potion': 'Luck potion bonus',
+                'Constitution Potion': 'Constitution potion bonus',
+                'Attribute Potion': 'Main potion bonus',
+                'Strength Class': 'Strength class bonus',
+                'Dexterity Class': 'Dexterity class bonus',
+                'Intelligence Class': 'Intelligence class bonus',
+                'Luck Class': 'Luck class bonus',
+                'Constitution Class': 'Constitution class bonus',
+                'Attribute Class': 'Main class bonus',
+                'Strength Bonus': 'Strength bonus',
+                'Dexterity Bonus': 'Dexterity bonus',
+                'Intelligence Bonus': 'Intelligence bonus',
+                'Luck Bonus': 'Luck bonus',
+                'Constitution Bonus': 'Constitution bonus',
+                'Bonus': 'Main bonus',
+                'Base Strength': 'Strength basis',
+                'Base Dexterity': 'Dexterity basis',
+                'Base Intelligence': 'Intelligence basis',
+                'Base Luck': 'Luck basis',
+                'Base Constitution': 'Constitution basis',
+                'Base': 'Main basis',
+                'Life Potion': 'Whether player has PoEL',
+                'Runes': 'Approximate amount of runes from gear',
+                'Action Index': 'I wrote this but I have no idea what it is',
+                'Status': 'What player is doing right now',
+                'Action Finish': 'When player finishes current quest or guard duty',
+                'Space': 'Size of inventory',
+                'Mirror': 'Count of collected mirror shards (0 - 13)',
+                'Equipment': 'Item Level of current equipment',
+                'Tower': 'Defeated floors within the Tower',
+                'Raids': 'Defeated raids (any guild)',
+                'Portal': 'Defeated floors within player portal',
+                'Guild Portal': 'Defeated floors within guild portal',
+                'Dungeon': 'Defeated floors within first 14 dungeons',
+                'Shadow Dungeon': 'Defeated floors within first 14 shadow dungeons',
+                'Dungeon Unlocked': 'Number of unlocked dungeons (0 - 14)',
+                'Shadow Unlocked': 'Number of unlocked shadow dungeons (0 - 14)',
+                'Fortress': 'Level of fortress',
+                'Archers': 'Level of archers',
+                'Warriors': 'Level of warriors',
+                'Mages': 'Level of mages',
+                'Warrior Count': 'Amount of warriors',
+                'Archer Count': 'Amount of archers',
+                'Mage Count': 'Amount of mages',
+                'Upgrades': 'Amount of fortress upgrades',
+                'Gem Mine': 'Level of Gem Mine',
+                'Fortress Honor': 'Fortress honor',
+                'Wall': 'Level of fortifications (not building level)',
+                'Quarry': 'Level of stone quarry',
+                'Quarters': 'Level of laborers\' quarters',
+                'Woodcutter': 'Level of woodcutter\'s hut',
+                'Academy': 'Level of academy',
+                'Barracks': 'Level of barracks',
+                'Smithy': 'Level of smithy',
+                'Treasury': 'Level of treasury',
+                'Raid Wood': 'Amount of raidable wood',
+                'Raid Stone': 'Amount of raidable stone',
+                'Mage Tower': 'Level of mage tower',
+                'Archery Guild': 'Level of archery guild',
+                'Shadow': 'Bonus from shadow pets (%)',
+                'Light': 'Bonus from light pets (%)',
+                'Earth': 'Bonus from earth pets (%)',
+                'Fire': 'Bonus from fire pets (%)',
+                'Water': 'Bonus from water pets (%)',
+                'Rune Gold': 'Gold bonus from runes',
+                'Rune XP': 'XP bonus from runes',
+                'Rune Chance': 'Epic find chance from runes',
+                'Rune Quality': 'Item quality from runes',
+                'Rune Health': 'Health from runes',
+                'Rune Damage': 'Damage from runes',
+                'Rune Resist': 'Resistance from runes',
+                'Awards': 'Amount of owned achievements',
+                'Album': 'Amount of collected items within scrapbook',
+                'Fortress Rank': 'Fortress rank',
+                'Building Finish': 'Finish time of currently upgraded building',
+                'Last Active': 'When was player last active',
+                'Building': 'Currently upgraded building',
+                'Timestamp': 'Timestamp of capture',
+                'Guild Joined': 'When player joined his guild',
+                'Gladiator': 'Approximate gladiator (0, 1+, 5+, 10+, 15)',
+                'Pets Unlocked': 'Whether player has unlocked pets',
+                'Grail Unlocked': 'Whether player has found the holy grail',
+                'Hydra Dead': 'Whether player has slain the hydra',
+                'XP': 'Current experience',
+                'XP Required': 'Experience needed for next level',
+                'XP Total': 'Total amount of experience',
+                'Enchantments': 'Amount of enchantments',
+                'Guild Portal Percent': 'Guild portal boss health left (%)',
+                'Guild Portal Life': 'Guild portal boss total health',
+                'Wood': 'Stored wood',
+                'Stone': 'Stored stone',
+                'Shrooms': 'Current amount of shrooms',
+                'Shrooms Total': 'Total amount of shrooms',
+                'Shrooms Free': 'Shrooms collected for free',
+                'Shrooms Paid': 'Bought shrooms',
+                'Own Dungeon': 'Amount of defeated bosses in all dungeons',
+                'Own Shadow': 'Amount of defeated bosses in all dungeons',
+                'Own Dungeon Unlocked': 'Number of unlocked dungeons',
+                'Own Shadow Unlocked': 'Number of unlocked shadow dungeons',
+                'Potion Expire': 'Soonest expire time of potions',
+                'Scrolls': 'Unlocked witch scrolls',
+                'Witch Items': 'Current amount of collected cauldron items',
+                'Witch Items Required': 'Amount of cauldron items required to make a scroll',
+                'Registered': 'When was account created',
+                'Souls': 'Stored souls',
+                'Extractor Max': 'Extractor capacity',
+                'Max Souls': 'Soul storage',
+                'Extractor Hourly': 'Hourly extractor rate',
+                'Time Machine Max': 'Thirst capacity',
+                'Money': 'Current money',
+                'Runes Ready': 'Amount of runes ready to be sacrificed',
+                'Speed Upgrades': 'Amount of speed upgrades',
+                'Money Upgrades': 'Amount of money upgrades',
+                'Idle Upgrades': 'Total amount of upgrades',
+                'Sacrifices': 'Amount of sacrifices',
+                'Runes Collected': 'Amount of runes',
+                'Academy Max': 'Academy capacity',
+                'Woodcutter Max': 'Woodcutter capacity',
+                'Quarry Max': 'Quarry capacity',
+                'Time Machine Daily': 'Daily free thirst from Time Machine',
+                'Time Machine Thirst': 'Currently stored thirst',
+                'Underworld Building': 'Currently upgraded underworld building',
+                'Underworld Building Finish': 'Finish date of upgraded underworld building',
+                'Gold Pit Hourly': 'Hourly gold pit rate',
+                'Gold Pit Max': 'Gold pit capacity',
+                'Simulator Avg': 'Average win rate',
+                'Simulator Max': 'Largest win rate',
+                'Simulator Min': 'Smallest win rate (viability)'
+            };
+
+
             $('#manual-constants').html(Object.keys(Constants.Values).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
             $('#manual-functions').html(Object.keys(AST_FUNCTIONS).map(func => `<div class="text-center column">${ func }</div>`).join('') + `<div class="text-center column">format</div>`);
 
-            $('#manual-headers-0').html(Object.keys(SP_KEYWORD_MAPPING_0).map(header => `<div class="text-center column">${ header }</div>`).join(''));
-            $('#manual-headers-1').html(Object.keys(SP_KEYWORD_MAPPING_1).map(header => `<div class="text-center column">${ header }</div>`).join(''));
-            $('#manual-headers-2').html(Object.keys(SP_KEYWORD_MAPPING_2).map(header => `<div class="text-center column">${ header }</div>`).join(''));
-            $('#manual-headers-3').html(Object.keys(SP_KEYWORD_MAPPING_3).map(header => `<div class="text-center column">${ header }</div>`).join(''));
-            $('#manual-headers-4').html(Object.keys(SP_KEYWORD_MAPPING_4).map(header => `<div class="text-center column">${ header }</div>`).join(''));
-            $('#manual-headers-5').html(Object.keys(SP_KEYWORD_MAPPING_5).map(header => `<div class="text-center column">${ header }</div>`).join(''));
+            $('#manual-headers-0').html(Object.keys(SP_KEYWORD_MAPPING_0).map(header => `<div class="text-center three wide column ta-reserved">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
+            $('#manual-headers-1').html(Object.keys(SP_KEYWORD_MAPPING_1).map(header => `<div class="text-center three wide column ta-reserved-protected">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
+            $('#manual-headers-2').html(Object.keys(SP_KEYWORD_MAPPING_2).map(header => `<div class="text-center three wide column ta-reserved-private">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
+            $('#manual-headers-3').html(Object.keys(SP_KEYWORD_MAPPING_3).map(header => `<div class="text-center three wide column ta-reserved-special">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
+            $('#manual-headers-4').html(Object.keys(SP_KEYWORD_MAPPING_4).map(header => `<div class="text-center three wide column ta-reserved-itemized">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
+            $('#manual-headers-5').html(Object.keys(SP_KEYWORD_MAPPING_5).map(header => `<div class="text-center three wide column ta-reserved-itemizable">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
         </script>
     </body>
 </html>

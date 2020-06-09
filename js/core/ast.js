@@ -1054,12 +1054,6 @@ const SP_KEYWORD_MAPPING_0 = {
     'Smithy': {
         expr: p => p.Fortress.Smithy
     },
-    'Wood': {
-        expr: p => p.Fortress.Wood
-    },
-    'Stone': {
-        expr: p => p.Fortress.Stone
-    },
     'Raid Wood': {
         expr: p => p.Fortress.RaidWood
     },
@@ -1380,6 +1374,12 @@ const SP_KEYWORD_MAPPING_1 = {
 
 // Private
 const SP_KEYWORD_MAPPING_2 = {
+    'Wood': {
+        expr: p => p.Fortress.Wood
+    },
+    'Stone': {
+        expr: p => p.Fortress.Stone
+    },
     'Aura': {
         expr: p => p.Toilet.Aura,
         statistics: false
@@ -1434,8 +1434,8 @@ const SP_KEYWORD_MAPPING_2 = {
         width: 120
     },
     'Potion Expire': {
-        expr: p => p.Potions[0].Size == 0 ? 0 : Math.min(... (p.Potions.filter(pot => pot.Size > 0).map(pot => pot.Expire))),
-        format: (p, e, x) => x == 0 ? '' : formatDate(x),
+        expr: p => p.Own ? (p.Potions[0].Size == 0 ? 0 : Math.min(... (p.Potions.filter(pot => pot.Size > 0).map(pot => pot.Expire)))) : undefined,
+        format: (p, e, x) => x == undefined ? '?' : formatDate(x),
         width: 160,
         difference: false,
         statistics: false
