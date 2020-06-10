@@ -1025,6 +1025,9 @@ const SP_KEYWORD_MAPPING_0 = {
         width: 150
     },
     'Wall': {
+        expr: p => p.Fortress.Wall
+    },
+    'Fortifications': {
         expr: p => p.Fortress.Fortifications
     },
     'Quarters': {
