@@ -467,15 +467,32 @@ self.addEventListener('message', function (message) {
         var obj = players[0];
 
         for (var level = Math.min(99, Math.max(0, obj.Level - 1)); level < 100; level++) {
-            for (var glad = 0; glad < 16; glad++) {
-                obj.Level = level + 1;
-                obj.Gladiator = glad;
+            obj.Level = level + 1;
 
-                if (!r[level]) {
-                    r[level] = [];
+            if (!r[level]) {
+                r[level] = [];
+            }
+
+            obj.Gladiator = 15;
+            r[level][15] = new PetSimulator().simulate(obj, players[1], 1E5);
+
+            if (r[level][15] == 0) {
+                for (var i = 0; i < 15; i++) {
+                    r[level][i] = 0;
                 }
+            } else {
+                for (var glad = 14; glad >= 0; glad--) {
+                    obj.Gladiator = glad;
 
-                r[level][glad] = new PetSimulator().simulate(obj, players[1], 5E4);
+                    r[level][glad] = new PetSimulator().simulate(obj, players[1], 1E5);
+                    if (r[level][glad] > r[level][glad + 1]) {
+                        r[level][glad] = r[level][glad + 1];
+                    }
+                }
+            }
+
+            if (r[level][0] >= 50) {
+                break;
             }
         }
 

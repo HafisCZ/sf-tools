@@ -641,7 +641,7 @@
             });
 
             function getPetColor (num) {
-                if (num == 0) {
+                if (num < 0.01) {
                     return 'pet-0';
                 } else if (num >= 25) {
                     return 'pet-25'
