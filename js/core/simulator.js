@@ -962,8 +962,9 @@ class PetModel {
 
         // Vars
         this.Class = PET_CLASS_MAP[this.Type][this.Pet] + 1;
-        this.Attribute = Math.trunc(PET_FACTOR_MAP[this.Pet] * (this.Level + 1) * (1 + this.Bonus / 100));
-        this.DefenseAttribute = Math.trunc(this.Attribute / 2);
+        this.Attribute = PET_FACTOR_MAP[this.Pet] * (this.Level + 1) * (1 + this.Bonus / 100);
+        this.DefenseAttribute = Math.trunc(Math.trunc(this.Attribute) / 2);
+        this.Attribute = Math.ceil(this.Attribute);
         this.TotalHealth = (this.Level + 1) * this.Attribute * (this.Class == WARRIOR ? 5 : (this.Class == MAGE ? 2 : 4));
     }
 
