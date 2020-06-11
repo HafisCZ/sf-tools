@@ -336,11 +336,11 @@ class BattlemageModel extends FighterModel {
     onFightStart (target) {
         if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE || target.Player.Class == NECROMANCER) {
             return 0;
-        } else if (target.Player.Level < this.Player.Level + 10 || target.Player.Class == BERSERKER) {
+        } else if (target.Player.Level < this.Player.Level + 10 || target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER) {
             return Math.ceil(target.TotalHealth / 3);
         } else if (target.Player.Class == WARRIOR) {
             return Math.ceil(this.TotalHealth / 4);
-        } else if (target.Player.Class == SCOUT || target.Player.Class == ASSASSIN || target.Player.Class == DEMONHUNTER) {
+        } else if (target.Player.Class == SCOUT || target.Player.Class == ASSASSIN) {
             return Math.ceil(this.TotalHealth / 5);
         } else {
             return 0;
