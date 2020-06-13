@@ -547,6 +547,8 @@ class TableInstance {
                 });
             }
         } else if (this.type == TableType.Players) {
+            var exact = this.array.reference == this.array.timestamp;
+
             for (var i = 0; i < this.array.length; i++) {
                 var item = this.array[i];
 
@@ -606,12 +608,27 @@ class TableInstance {
                 };
 
                 for (var column of this.flat) {
-                    entry.sorting[column.sortkey] = column.sort(item.player);
+                    if (column.order) {
+                        var diff = undefined;
+
+                        if (column.difference && !exact) {
+                            var v = column.expr(item.player, this.settings);
+                            var c = column.expr(item.compare, this.settings);
+
+                            diff = column.flip ? (c - v) : (v - c);
+                        }
+
+                        entry.sorting[column.sortkey] = column.order(item.player, this.settings, { difference: diff });
+                    } else {
+                        entry.sorting[column.sortkey] = column.sort(item.player);
+                    }
                 }
 
                 this.entries.push(entry);
             }
         } else if (this.type == TableType.Group) {
+            var exact = this.array.reference == this.array.timestamp;
+
             for (var i = 0; i < this.array.length; i++) {
                 var item = this.array[i];
 
@@ -663,7 +680,20 @@ class TableInstance {
                 };
 
                 for (var column of this.flat) {
-                    entry.sorting[column.sortkey] = column.sort(item.player);
+                    if (column.order) {
+                        var diff = undefined;
+
+                        if (column.difference && !exact) {
+                            var v = column.expr(item.player, this.settings);
+                            var c = column.expr(item.compare, this.settings);
+
+                            diff = column.flip ? (c - v) : (v - c);
+                        }
+
+                        entry.sorting[column.sortkey] = column.order(item.player, this.settings, { difference: diff });
+                    } else {
+                        entry.sorting[column.sortkey] = column.sort(item.player);
+                    }
                 }
 
                 this.entries.push(entry);
@@ -1476,6 +1506,20 @@ const SettingsCommands = [
         } else {
             return `${ SFormat.Keyword(key) } ${ AST.format(arg) }`;
         }
+    }),
+    // Local
+    // order by
+    new SettingsCommand(/^(order by) (.*)$/, function (root, string) {
+        var [ , key, arg ] = this.match(string);
+        var ast = new AST(arg);
+        if (ast.isValid()) {
+            root.setLocalVariable('order', (player, env, val) => {
+                return ast.eval(player, env, val);
+            });
+        }
+    }, function (string) {
+        var [ , key, arg ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ AST.format(arg) }`;
     }),
     // Local
     // alias - Override name of the column
