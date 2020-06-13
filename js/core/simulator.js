@@ -430,6 +430,8 @@ self.addEventListener('message', function (message) {
     var iterations = message.data.iterations || 100000;
     var logs = message.data.dev ? [] : null;
 
+    var tracking = message.data.tracking || 0;
+
     // Sim type decision
     if (mode == 0) {
         new FightSimulator().simulateMultiple(player, players, iterations, logs);
@@ -499,7 +501,8 @@ self.addEventListener('message', function (message) {
         self.postMessage({
             command: 'finished',
             results: r,
-            time: Date.now() - ts
+            time: Date.now() - ts,
+            tracking: tracking
         });
     }
 

@@ -69,10 +69,6 @@
                 background-color: #ffad99;
             }
 
-            table.table-map-pet {
-                font-size: 90% !important;
-            }
-
             .fixed-header thead tr {
                 display: block;
                 margin-right: 17px;
@@ -85,8 +81,30 @@
                 width: 100%;
             }
 
-            #sim-map td {
+            table.map-map {
+                font-size: 90% !important;
+            }
+
+            .map-parent {
+                position: relative;
+            }
+
+            .map-save {
+                position: absolute;
+                right: -4em;
+                top: 4.4em;
+            }
+
+            .map-map td:not(.spanned) {
                 width: 5.2em;
+            }
+
+            .map-map td.spanned {
+                width: 88.4em;
+            }
+
+            body {
+                padding-bottom: 2em;
             }
         </style>
     </head>
@@ -102,7 +120,7 @@
             <!-- Header -->
             <div class="ui five columns middle aligned grid">
                 <div class="two wide column">
-                    <button class="ui small basic icon button" data-position="bottom center" data-tooltip="Save generated table as image" id="sim-screenshot"><i class="download icon"></i></button>
+
                 </div>
                 <div class="three wide column">
                     <div class="ui two small buttons">
@@ -116,8 +134,16 @@
                 <div class="four wide column">
                     <h1 class="ui centered header">Pet Simulator</h1>
                 </div>
-                <div class="two wide column" data-tooltip="Generate a level / gladiator success map. Only possible with own pet against a dungeon boss." data-position="bottom center">
-                    <button class="ui fluid small button disabled" type="submit" id="sim-generate">Generate</button>
+                <div class="two wide column" data-tooltip="Generate a level / gladiator success map. Only possible with own pet against a dungeon boss." data-position="left center">
+                    <div class="ui simple dropdown" id="sim-generate">
+                        Generate
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item" id="sim-generate1">Generate</div>
+                            <div class="item" id="sim-generate5">Generate next 5</div>
+                            <div class="item" id="sim-generate10">Generate next 10</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="two wide column">
                     <button class="ui fluid small button" type="submit" id="sim-run">Run</button>
@@ -335,10 +361,55 @@
                 </div>
             </div>
 
-            <table id="sim-map" class="ui celled structured table table-group table-map-pet fixed-header"></table>
+            <div id="sim-maps">
+
+            </div>
         </div>
 
         <script type="text/javascript">
+            function clearMaps () {
+                $('#sim-maps').html('');
+            }
+
+            function addMap (map, key) {
+                var ml = map.reduce((col, a) => col + (a ? 1 : 0), 0);
+
+                $('#sim-maps').append(`
+                    <div class="map-parent">
+                        <button data-key="${ key }" class="map-save ui small basic icon button" data-position="bottom center" data-tooltip="Save as image"><i class="download icon"></i></button>
+                        <table data-key="${ key }" class="map-map ui celled structured table table-group table-map-pet fixed-header">
+                            <thead>
+                                <tr>
+                                    <td colspan="17" class="text-center spanned">${ key }</td>
+                                </tr>
+                                <tr>
+                                    ${ new Array(16).fill(0).reduce((col, a, i) => col + `<td>Glad ${ i }</td>`, '<td>Level</td>') }
+                                </tr>
+                            </thead>
+                            <tbody style="height: ${ (Math.min(2.3 * ml, 46)).toFixed(1) }em;" data-proper="${ (2.3 * ml).toFixed(1) }em">
+                                ${ map.reduce((col, a, i) => col + `<tr><td>${ i + 1 }</td>${ a.reduce((c, w) => c + `<td class="${ getPetColor(w) }">${ w.toFixed(2) }%</td>`, '') }</tr>`, '') }
+                            </tbody>
+                        </table>
+                    </div>
+                `);
+
+                $('#sim-maps').find(`button[data-key="${ key }"]`).click(() => {
+                    html2canvas($(`table[data-key="${ key }"]`).get(0), {
+                        logging: false,
+                        onclone: (doc) => {
+                            var $table = $(doc).find(`table[data-key="${ key }"]`);
+                            var $body = $table.find('tbody');
+
+                            $body.css('height', $body.attr('data-proper'));
+                        }
+                    }).then((canvas) => {
+                        canvas.toBlob((blob) => {
+                            window.download(`${ key }.png`, blob);
+                        });
+                    });
+                });
+            }
+
             function validateBulk ($parent) {
                 return $parent.find('[data-path]').toArray().reduce((errors, element) => {
                     if (isNaN($(element).val())) {
@@ -581,14 +652,13 @@
                     petB.fillDebugInformation(b, false);
                 }
 
-                if (petA && petB && petA.Boss == 0 && petB.Boss == 1) {
+                if (petA && petB && petA.Pet < 19 && petA.Boss == 0 && petB.Boss == 1) {
                     $('#sim-generate').removeClass('disabled');
                 } else {
                     $('#sim-generate').addClass('disabled');
                 }
             }
 
-            var curr = '';
             var models = [ undefined, undefined ];
 
             var petA = new PetController($('#sim-a'), 0);
@@ -654,36 +724,23 @@
                 }
             }
 
-            $('#sim-generate').click(function () {
+            $('#sim-generate1').click(function () {
                 if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
-                    $('#sim-map').html('');
                     $('#sim-result').html('');
+
+                    clearMaps();
 
                     var a = petA.getData();
                     var b = petB.getData();
 
-                    if (a && b && !a.Boss && b.Boss) {
+                    if (a && b && a.Pet < 19 && !a.Boss && b.Boss) {
                         freeze();
 
                         var worker = new Worker('js/core/simulator.js');
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
-                                var map = message.data.results;
-
-                                $('#sim-map').html(`
-                                    <thead>
-                                        <tr>
-                                            ${ new Array(16).fill(0).reduce((col, a, i) => col + `<td>Glad ${ i }</td>`, '<td>Level</td>') }
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${ map.reduce((col, a, i) => col + `<tr><td>${ i + 1 }</td>${ a.reduce((c, w) => c + `<td class="${ getPetColor(w) }">${ w.toFixed(2) }%</td>`, '') }</tr>`, '') }
-                                    </tbody>
-                                `);
-
-                                curr = `${ NAME_MONSTER[800 + petA.Type * 20 + petA.Pet] } (${ petA.Pack }, ${ petA.At100 }, ${ petA.At200 }) vs ${ NAME_MONSTER[800 + petB.Type * 20 + petB.Pet] }`;
-
+                                addMap(message.data.results, `${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ NAME_MONSTER[800 + b.Type * 20 + b.Pet] }`);
                                 freeze();
                             }
                         }, false);
@@ -696,18 +753,109 @@
                 }
             });
 
-            $('#sim-screenshot').click(() => {
-                if (curr) {
-                    html2canvas($('#sim-map').get(0), {
-                        logging: false,
-                        onclone: (doc) => {
-                            $(doc).find('#sim-map').removeClass('fixed-header').find('thead').prepend($(`<tr><td colspan="17" class="text-center"><b>${ curr }</b></td></tr>`));
+            $('#sim-generate5').click(function () {
+                if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
+                    $('#sim-result').html('');
+                    clearMaps();
+
+                    var a = petA.getData();
+                    var b = [];
+
+                    var temp = petB.getData();
+
+                    if (a && a.Pet < 19 && temp && !a.Boss && temp.Boss) {
+                        freeze();
+
+                        var count = 0;
+                        for (var i = temp.Pet; i < Math.min(19, temp.Pet + 5); i++) {
+                            var bs = petB.getData();
+                            bs.Pet = i;
+                            b.push(bs);
+
+                            count++;
                         }
-                    }).then((canvas) => {
-                        canvas.toBlob((blob) => {
-                            window.download(`${ curr || 'unknown' }.png`, blob);
-                        });
-                    });
+
+                        var maps = [];
+                        var maps_finished = 0;
+
+                        for (var i = 0; i < count; i++) {
+                            var worker = new Worker('js/core/simulator.js');
+
+                            worker.addEventListener('message', function (message) {
+                                if (message.data.command == 'finished') {
+                                    maps[message.data.tracking] = message.data.results;
+                                    maps_finished++;
+
+                                    if (maps_finished == count) {
+                                        freeze();
+
+                                        for (var j = 0; j < maps.length; j++) {
+                                            addMap(maps[j], `${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
+                                        }
+                                    }
+                                }
+                            }, false);
+
+                            worker.postMessage({
+                                mode: 1000,
+                                players: [a, b[i]],
+                                tracking: i
+                            });
+                        }
+                    }
+                }
+            });
+
+            $('#sim-generate10').click(function () {
+                if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
+                    $('#sim-result').html('');
+                    clearMaps();
+
+                    var a = petA.getData();
+                    var b = [];
+
+                    var temp = petB.getData();
+
+                    if (a && a.Pet < 19 && temp && !a.Boss && temp.Boss) {
+                        freeze();
+
+                        var count = 0;
+                        for (var i = temp.Pet; i < Math.min(19, temp.Pet + 10); i++) {
+                            var bs = petB.getData();
+                            bs.Pet = i;
+                            b.push(bs);
+
+                            count++;
+                        }
+
+                        var maps = [];
+                        var maps_finished = 0;
+
+                        for (var i = 0; i < count; i++) {
+                            var worker = new Worker('js/core/simulator.js');
+
+                            worker.addEventListener('message', function (message) {
+                                if (message.data.command == 'finished') {
+                                    maps[message.data.tracking] = message.data.results;
+                                    maps_finished++;
+
+                                    if (maps_finished == count) {
+                                        freeze();
+
+                                        for (var j = 0; j < maps.length; j++) {
+                                            addMap(maps[j], `${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
+                                        }
+                                    }
+                                }
+                            }, false);
+
+                            worker.postMessage({
+                                mode: 1000,
+                                players: [a, b[i]],
+                                tracking: i
+                            });
+                        }
+                    }
                 }
             });
         </script>
