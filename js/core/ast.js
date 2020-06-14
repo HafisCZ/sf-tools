@@ -74,6 +74,8 @@ class AST {
                     value = SFormat.Constant(token);
                 } else if (token.startsWith('reference') && (token.length == 9 || token[9] == '.')) {
                     value = SFormat.Constant('reference') + SFormat.Normal(token.slice(9));
+                } else if (token.startsWith('player') && (token.length == 6 || token[6] == '.')) {
+                    value = SFormat.Constant('player') + SFormat.Normal(token.slice(6));
                 } else {
                     value = SFormat.Normal(token);
                 }
@@ -523,8 +525,12 @@ class AST {
                     return object;
                 } else if (node.op == '[a') {
                     var object = this.eval(player, reference, environment, scope, node.args[0]);
-                    var key = this.eval(player, reference, environment, scope, node.args[1]);
-                    return object[key];
+                    if (object) {
+                        var key = this.eval(player, reference, environment, scope, node.args[1]);
+                        return object[key];
+                    } else {
+                        return undefined;
+                    }
                 } else {
                     return undefined;
                 }
@@ -547,6 +553,14 @@ class AST {
                 return true;
             } else if (node == 'false') {
                 return false;
+            } else if (node.startsWith('player')) {
+                if (node == 'player') {
+                    return player;
+                } else if (typeof(player) == 'object' && node.split('.').length > 1) {
+                    return getObjectAt(player, node.split(/\.(.*)/, 2)[1]);
+                } else {
+                    return undefined;
+                }
             } else if (node.startsWith('reference')) {
                 if (node == 'reference') {
                     return reference;
@@ -587,7 +601,7 @@ class AST {
             } else if (SP_KEYWORD_MAPPING_5[node] && player) {
                 return SP_KEYWORD_MAPPING_5[node].expr(player, environment);
             } else {
-                return getObjectAt(player, node);
+                return undefined;
             }
         } else {
             return node;
