@@ -1814,6 +1814,36 @@ class SetupView extends View {
     }
 }
 
+// Changelog View
+class ChangeLogView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$parent.find('[data-op="version"]').text(MODULE_VERSION);
+
+        var changes = '';
+
+        if (CHANGELOG[MODULE_VERSION]) {
+            for (var entry of CHANGELOG[MODULE_VERSION]) {
+                changes += `
+                    <li style="margin-bottom: 1em;">
+                        ${ entry }
+                    </li>
+                `;
+            }
+        }
+
+        this.$parent.find('[data-op="changes"]').html(changes);
+
+        this.$parent.find('[data-op="accept"]').click(function () {
+            localStorage.changeLogOk = MODULE_VERSION;
+
+            UI.show(UI.Groups);
+        });
+
+    }
+}
+
 // Exception View
 class ExceptionView extends View {
     constructor (parent) {
@@ -1854,5 +1884,6 @@ const UI = {
         UI.Loader = new LoaderView('modal-loader');
         UI.Exception = new ExceptionView('modal-exception');
         UI.Setup = new SetupView('modal-setup');
+        UI.ChangeLog = new ChangeLogView('modal-changelog');
     }
 }

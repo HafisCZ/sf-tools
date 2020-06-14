@@ -72,6 +72,8 @@ class AST {
                     value = SFormat.ReservedItemizable(token);
                 } else if (token[0] == '@' && Constants.Values[token.slice(1)] != undefined) {
                     value = SFormat.Constant(token);
+                } else if (token.startsWith('reference') && (token.length == 9 || token[9] == '.')) {
+                    value = SFormat.Constant('reference') + SFormat.Normal(token.slice(9));
                 } else {
                     value = SFormat.Normal(token);
                 }
@@ -375,14 +377,14 @@ class AST {
         }
     }
 
-    eval (player, environment = { func: { }, vars: { }, svars: { } }, scope = undefined, node = this.root) {
+    eval (player, reference = undefined, environment = { func: { }, vars: { }, svars: { } }, scope = undefined, node = this.root) {
         if (typeof(node) == 'object') {
             if (node.noeval) {
                 return node.args[0];
             } else if (typeof(node.op) == 'string') {
                 if (node.op == 'format' && node.args.length > 0) {
-                    var str = this.eval(player, environment, scope, node.args[0]);
-                    var arg = node.args.slice(1).map(a => this.eval(player, environment, scope, a));
+                    var str = this.eval(player, reference, environment, scope, node.args[0]);
+                    var arg = node.args.slice(1).map(a => this.eval(player, reference, environment, scope, a));
 
                     for (key in arg) {
                         str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
@@ -390,7 +392,7 @@ class AST {
 
                     return str;
                 } else if (node.op == 'each' && node.args.length >= 2) {
-                    var generated = this.eval(player, environment, scope, node.args[0]) || {};
+                    var generated = this.eval(player, reference, environment, scope, node.args[0]) || {};
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
                         return undefined;
@@ -404,7 +406,7 @@ class AST {
                             for (var j = 0; j < mapper.arg.length; j++) {
                                 scope2[mapper.arg[j]] = object[i];
                             }
-                            sum += mapper.ast.eval(player, environment, scope2);
+                            sum += mapper.ast.eval(player, reference, environment, scope2);
                         }
                     } else if (SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]]) {
                         var expr = SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]];
@@ -418,7 +420,7 @@ class AST {
                         }
                     } else if (node.args[1].op) {
                         for (var i = 0; i < object.length; i++) {
-                            if (this.eval(player, environment, object[i], node.args[1])) {
+                            if (this.eval(player, reference, environment, object[i], node.args[1])) {
                                 sum.push(object[i]);
                             }
                         }
@@ -426,12 +428,12 @@ class AST {
                         for (var i = 0; i < object.length; i++) {
                             var scope2 = {};
                             scope2[node.args[1].split('.', 1)[0]] = object[i];
-                            sum += this.eval(player, environment, scope2, node.args[1]);
+                            sum += this.eval(player, reference, environment, scope2, node.args[1]);
                         }
                     }
                     return sum;
                 } else if (node.op == 'filter' && node.args.length >= 2) {
-                    var generated = this.eval(player, environment, scope, node.args[0]) || {};
+                    var generated = this.eval(player, reference, environment, scope, node.args[0]) || {};
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
                         return undefined;
@@ -445,20 +447,20 @@ class AST {
                                 scope2[mapper.arg[j]] = object[i];
                             }
 
-                            if (mapper.ast.eval(player, environment, scope2)) {
+                            if (mapper.ast.eval(player, reference, environment, scope2)) {
                                 sum.push(object[i]);
                             }
                         }
                     } else if (node.args[1].op) {
                         for (var i = 0; i < object.length; i++) {
-                            if (this.eval(player, environment, object[i], node.args[1])) {
+                            if (this.eval(player, reference, environment, object[i], node.args[1])) {
                                 sum.push(object[i]);
                             }
                         }
                     }
                     return sum;
                 } else if (node.op == 'map' && node.args.length >= 2) {
-                    var generated = this.eval(player, environment, scope, node.args[0]) || {};
+                    var generated = this.eval(player, reference, environment, scope, node.args[0]) || {};
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
                         return undefined;
@@ -472,7 +474,7 @@ class AST {
                             for (var j = 0; j < mapper.arg.length; j++) {
                                 scope2[mapper.arg[j]] = object[i];
                             }
-                            sum.push(mapper.ast.eval(player, environment, scope2));
+                            sum.push(mapper.ast.eval(player, reference, environment, scope2));
                         }
                     } else if (SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]]) {
                         var expr = SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]];
@@ -486,7 +488,7 @@ class AST {
                         }
                     } else if (node.args[1].op) {
                         for (var i = 0; i < object.length; i++) {
-                            if (this.eval(player, environment, object[i], node.args[1])) {
+                            if (this.eval(player, reference, environment, object[i], node.args[1])) {
                                 sum.push(object[i]);
                             }
                         }
@@ -494,12 +496,12 @@ class AST {
                         for (var i = 0; i < object.length; i++) {
                             var scope2 = {};
                             scope2[node.args[1].split('.', 1)[0]] = object[i];
-                            sum.push(this.eval(player, environment, scope2, node.args[1]));
+                            sum.push(this.eval(player, reference, environment, scope2, node.args[1]));
                         }
                     }
                     return sum;
                 } else if (node.op == 'slice' && node.args.length >= 3) {
-                    var generated = this.eval(player, environment, scope, node.args[0]) || {};
+                    var generated = this.eval(player, reference, environment, scope, node.args[0]) || {};
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
                         return undefined;
@@ -510,24 +512,24 @@ class AST {
                     var mapper = environment.func[node.op];
                     var scope2 = {};
                     for (var i = 0; i < mapper.arg.length; i++) {
-                        scope2[mapper.arg[i]] = this.eval(player, environment, scope, node.args[i]);
+                        scope2[mapper.arg[i]] = this.eval(player, reference, environment, scope, node.args[i]);
                     }
-                    return mapper.ast.eval(player, environment, scope2);
+                    return mapper.ast.eval(player, reference, environment, scope2);
                 } else if (node.op == '{') {
                     var object = { };
                     for (var { key, val } of node.args) {
-                        object[this.eval(player, environment, scope, key)] = this.eval(player, environment, scope, val);
+                        object[this.eval(player, reference, environment, scope, key)] = this.eval(player, reference, environment, scope, val);
                     }
                     return object;
                 } else if (node.op == '[a') {
-                    var object = this.eval(player, environment, scope, node.args[0]);
-                    var key = this.eval(player, environment, scope, node.args[1]);
+                    var object = this.eval(player, reference, environment, scope, node.args[0]);
+                    var key = this.eval(player, reference, environment, scope, node.args[1]);
                     return object[key];
                 } else {
                     return undefined;
                 }
             } else if (node.op) {
-                return node.op(node.args.map(arg => this.eval(player, environment, scope, arg)));
+                return node.op(node.args.map(arg => this.eval(player, reference, environment, scope, arg)));
             } else {
                 return node;
             }
@@ -545,6 +547,14 @@ class AST {
                 return true;
             } else if (node == 'false') {
                 return false;
+            } else if (node.startsWith('reference')) {
+                if (node == 'reference') {
+                    return reference;
+                } else if (typeof(reference) == 'object' && node.split('.').length > 1) {
+                    return getObjectAt(reference, node.split(/\.(.*)/, 2)[1]);
+                } else {
+                    return undefined;
+                }
             } else if (typeof(scope) == 'object' && (scope[node] != undefined || scope[node.split('.', 1)[0]] != undefined)) {
                 // Return scope variable
                 if (scope[node] != undefined) {
@@ -558,7 +568,7 @@ class AST {
                 if (environment.vars[node].value != undefined) {
                     return environment.vars[node].value;
                 } else if (environment.vars[node].ast) {
-                    return environment.vars[node].ast.eval(player, environment);
+                    return environment.vars[node].ast.eval(player, reference, environment);
                 } else {
                     return undefined;
                 }
@@ -614,7 +624,7 @@ const SP_KEYWORD_MAPPING_0 = {
     'Role': {
         expr: p => p.Group.Role,
         flip: true,
-        format: (p, e, x) => p.hasGuild() ? GROUP_ROLES[p.Group.Role] : '',
+        format: (p, c, e, x) => p.hasGuild() ? GROUP_ROLES[p.Group.Role] : '',
         difference: false,
         statistics: false
     },
@@ -684,51 +694,51 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Base Cost': {
         expr: p => p.Primary.NextCost,
-        format: (p, e, x) => formatAsSpacedNumber(x)
+        format: (p, c, e, x) => formatAsSpacedNumber(x)
     },
     'Strength Cost': {
         expr: p => p.Strength.NextCost,
-        format: (p, e, x) => formatAsSpacedNumber(x)
+        format: (p, c, e, x) => formatAsSpacedNumber(x)
     },
     'Dexterity Cost': {
         expr: p => p.Dexterity.NextCost,
-        format: (p, e, x) => formatAsSpacedNumber(x)
+        format: (p, c, e, x) => formatAsSpacedNumber(x)
     },
     'Intelligence Cost': {
         expr: p => p.Intelligence.NextCost,
-        format: (p, e, x) => formatAsSpacedNumber(x)
+        format: (p, c, e, x) => formatAsSpacedNumber(x)
     },
     'Constitution Cost': {
         expr: p => p.Constitution.NextCost,
-        format: (p, e, x) => formatAsSpacedNumber(x)
+        format: (p, c, e, x) => formatAsSpacedNumber(x)
     },
     'Luck Cost': {
         expr: p => p.Luck.NextCost,
-        format: (p, e, x) => formatAsSpacedNumber(x)
+        format: (p, c, e, x) => formatAsSpacedNumber(x)
     },
     'Base Total Cost': {
         expr: p => p.Primary.TotalCost,
-        format: (p, e, x) => formatAsSpacedNumber(x)
+        format: (p, c, e, x) => formatAsSpacedNumber(x)
     },
     'Strength Total Cost': {
         expr: p => p.Strength.TotalCost,
-        format: (p, e, x) => formatAsSpacedNumber(x)
+        format: (p, c, e, x) => formatAsSpacedNumber(x)
     },
     'Dexterity Total Cost': {
         expr: p => p.Dexterity.TotalCost,
-        format: (p, e, x) => formatAsSpacedNumber(x)
+        format: (p, c, e, x) => formatAsSpacedNumber(x)
     },
     'Intelligence Total Cost': {
         expr: p => p.Intelligence.TotalCost,
-        format: (p, e, x) => formatAsSpacedNumber(x)
+        format: (p, c, e, x) => formatAsSpacedNumber(x)
     },
     'Constitution Total Cost': {
         expr: p => p.Constitution.TotalCost,
-        format: (p, e, x) => formatAsSpacedNumber(x)
+        format: (p, c, e, x) => formatAsSpacedNumber(x)
     },
     'Luck Total Cost': {
         expr: p => p.Luck.TotalCost,
-        format: (p, e, x) => formatAsSpacedNumber(x)
+        format: (p, c, e, x) => formatAsSpacedNumber(x)
     },
     'Attribute Pet': {
         expr: p => p.Primary.Pet,
@@ -924,11 +934,11 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Life Potion': {
         expr: p => p.Potions.Life == 25,
-        format: (p, e, x) => x ? 'Yes' : 'No'
+        format: (p, c, e, x) => x ? 'Yes' : 'No'
     },
     'Runes': {
         expr: p => p.Runes.Runes,
-        format: (p, e, x) => `e${ x }`,
+        format: (p, c, e, x) => `e${ x }`,
         width: 100
     },
     'Action Index': {
@@ -938,13 +948,13 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Status': {
         expr: p => p.Action.Status,
-        format: (p, e, x) => PLAYER_ACTIONS[Math.max(0, x)],
+        format: (p, c, e, x) => PLAYER_ACTIONS[Math.max(0, x)],
         difference: false,
         statistics: false
     },
     'Action Finish': {
         expr: p => p.Action.Finish,
-        format: (p, e, x) => x < 0 ? '' : formatDate(x),
+        format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
         difference: false,
         statistics: false
     },
@@ -1130,7 +1140,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Class': {
         expr: p => p.Class,
-        format: (p, e, x) => PLAYER_CLASS[x],
+        format: (p, c, e, x) => PLAYER_CLASS[x],
         difference: false,
         statistics: false
     },
@@ -1154,13 +1164,13 @@ const SP_KEYWORD_MAPPING_0 = {
     'Building': {
         expr: p => p.Fortress.Upgrade.Building,
         width: 180,
-        format: (p, e, x) => FORTRESS_BUILDINGS[x] || '',
+        format: (p, c, e, x) => FORTRESS_BUILDINGS[x] || '',
         difference: false,
         statistics: false
     },
     'Building Finish': {
         expr: p => p.Fortress.Upgrade.Finish,
-        format: (p, e, x) => x < 0 ? '' : formatDate(x),
+        format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
         difference: false,
         statistics: false
     },
@@ -1171,19 +1181,19 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Timestamp': {
         expr: p => p.Timestamp,
-        format: (p, e, x) => formatDate(x),
+        format: (p, c, e, x) => formatDate(x),
         difference: false,
         statistics: false
     },
     'Guild Joined': {
         expr: p => p.Group.Joined,
-        format: (p, e, x) => p.hasGuild() ? formatDate(x) : '',
+        format: (p, c, e, x) => p.hasGuild() ? formatDate(x) : '',
         difference: false,
         statistics: false
     },
     'Gladiator': {
         expr: p => p.Fortress.Gladiator,
-        format: (p, e, x) => (x == 0 ? '' : (x == 1 ? '1+' : (x == 5 ? '5+' : (x == 10 ? '10+' : 15))))
+        format: (p, c, e, x) => (x == 0 ? '' : (x == 1 ? '1+' : (x == 5 ? '5+' : (x == 10 ? '10+' : 15))))
     },
     '1 Catacombs': {
         expr: p => Math.max(0, p.Dungeons.Normal[0] - 2)
@@ -1283,19 +1293,19 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'XP': {
         expr: p => p.XP,
-        format: (p, e, x) => formatAsSpacedNumber(x),
+        format: (p, c, e, x) => formatAsSpacedNumber(x),
         format_diff: true,
         statistics: false
     },
     'XP Required': {
         expr: p => p.XPNext,
-        format: (p, e, x) => formatAsSpacedNumber(x),
+        format: (p, c, e, x) => formatAsSpacedNumber(x),
         format_diff: true,
         statistics: false
     },
     'XP Total': {
         expr: p => p.XPTotal,
-        format: (p, e, x) => formatAsSpacedNumber(x),
+        format: (p, c, e, x) => formatAsSpacedNumber(x),
         format_diff: true,
         statistics: false
     },
@@ -1438,7 +1448,7 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Potion Expire': {
         expr: p => p.Own ? (p.Potions[0].Size == 0 ? 0 : Math.min(... (p.Potions.filter(pot => pot.Size > 0).map(pot => pot.Expire)))) : undefined,
-        format: (p, e, x) => x == undefined ? '?' : formatDate(x),
+        format: (p, c, e, x) => x == undefined ? '?' : formatDate(x),
         width: 160,
         difference: false,
         statistics: false
@@ -1486,7 +1496,7 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Registered': {
         expr: p => p.Registered,
-        format: (p, e, x) => x ? formatDate(x) : '',
+        format: (p, c, e, x) => x ? formatDate(x) : '',
         width: 160,
         difference: false,
         statistics: false
@@ -1563,13 +1573,13 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Gold Pit Max': {
         expr: p => p.Underworld ? p.Underworld.GoldPitMax : undefined,
-        format: (p, e, x) => x ? formatAsSpacedNumber(x) : undefined,
+        format: (p, c, e, x) => x ? formatAsSpacedNumber(x) : undefined,
         difference: false,
         statistics: false
     },
     'Gold Pit Hourly': {
         expr: p => p.Underworld ? p.Underworld.GoldPitHourly : undefined,
-        format: (p, e, x) => x ? formatAsSpacedNumber(x) : undefined,
+        format: (p, c, e, x) => x ? formatAsSpacedNumber(x) : undefined,
         difference: false,
         statistics: false
     },
@@ -1591,13 +1601,13 @@ const SP_KEYWORD_MAPPING_2 = {
     'Underworld Building': {
         expr: p => p.Underworld ? p.Underworld.Upgrade.Building : 0,
         width: 180,
-        format: (p, e, x) => UNDERWORLD_BUILDINGS[x] || '',
+        format: (p, c, e, x) => UNDERWORLD_BUILDINGS[x] || '',
         difference: false,
         statistics: false
     },
     'Underworld Building Finish': {
         expr: p => p.Underworld ? p.Underworld.Upgrade.Finish : -1,
-        format: (p, e, x) => x < 0 ? '' : formatDate(x),
+        format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
         difference: false,
         statistics: false
     },
@@ -1666,7 +1676,7 @@ const SP_KEYWORD_MAPPING_2 = {
 // Special
 const SP_KEYWORD_MAPPING_3 = {
     'Simulator Avg': {
-        expr: (p, e) => {
+        expr: (p, c, e) => {
             if (e.vars.Simulator && e.vars.Simulator.value[p.Identifier]) {
                 return e.vars.Simulator.value[p.Identifier].avg;
             } else {
@@ -1675,10 +1685,10 @@ const SP_KEYWORD_MAPPING_3 = {
         },
         alias: 'Win Avg %',
         width: 120,
-        format: (p, e, x) => `${ (x).toFixed(2) }%`
+        format: (p, c, e, x) => `${ (x).toFixed(2) }%`
     },
     'Simulator Min': {
-        expr: (p, e) => {
+        expr: (p, c, e) => {
             if (e.vars.Simulator && e.vars.Simulator.value[p.Identifier]) {
                 return e.vars.Simulator.value[p.Identifier].min;
             } else {
@@ -1687,10 +1697,10 @@ const SP_KEYWORD_MAPPING_3 = {
         },
         alias: 'Win Min %',
         width: 120,
-        format: (p, e, x) => `${ (x).toFixed(2) }%`
+        format: (p, c, e, x) => `${ (x).toFixed(2) }%`
     },
     'Simulator Max': {
-        expr: (p, e) => {
+        expr: (p, c, e) => {
             if (e.vars.Simulator && e.vars.Simulator.value[p.Identifier]) {
                 return e.vars.Simulator.value[p.Identifier].max;
             } else {
@@ -1699,34 +1709,34 @@ const SP_KEYWORD_MAPPING_3 = {
         },
         alias: 'Win Max %',
         width: 120,
-        format: (p, e, x) => `${ (x).toFixed(2) }%`
+        format: (p, c, e, x) => `${ (x).toFixed(2) }%`
     }
 }
 
 // Itemized
 const SP_KEYWORD_MAPPING_4 = {
     'Item Strength': {
-        expr: (p, e, i) => i.Strength.Value,
-        format: (p, e, x) => x == 0 ? '' : x
+        expr: (p, c, e, i) => i.Strength.Value,
+        format: (p, c, e, x) => x == 0 ? '' : x
     },
     'Item Dexterity': {
-        expr: (p, e, i) => i.Dexterity.Value,
-        format: (p, e, x) => x == 0 ? '' : x
+        expr: (p, c, e, i) => i.Dexterity.Value,
+        format: (p, c, e, x) => x == 0 ? '' : x
     },
     'Item Intelligence': {
-        expr: (p, e, i) => i.Intelligence.Value,
-        format: (p, e, x) => x == 0 ? '' : x
+        expr: (p, c, e, i) => i.Intelligence.Value,
+        format: (p, c, e, x) => x == 0 ? '' : x
     },
     'Item Constitution': {
-        expr: (p, e, i) => i.Constitution.Value,
-        format: (p, e, x) => x == 0 ? '' : x
+        expr: (p, c, e, i) => i.Constitution.Value,
+        format: (p, c, e, x) => x == 0 ? '' : x
     },
     'Item Luck': {
-        expr: (p, e, i) => i.Luck.Value,
-        format: (p, e, x) => x == 0 ? '' : x
+        expr: (p, c, e, i) => i.Luck.Value,
+        format: (p, c, e, x) => x == 0 ? '' : x
     },
     'Item Attribute': {
-        expr: (p, e, i) => {
+        expr: (p, c, e, i) => {
             switch (p.Primary.Type) {
                 case 1: return i.Strength.Value;
                 case 2: return i.Dexterity.Value;
@@ -1734,71 +1744,71 @@ const SP_KEYWORD_MAPPING_4 = {
                 default: return 0;
             }
         },
-        format: (p, e, x) => x == 0 ? '' : x
+        format: (p, c, e, x) => x == 0 ? '' : x
     },
     'Item Upgrades': {
-        expr: (p, e, i) => i.Upgrades,
-        format: (p, e, x) => x == 0 ? '' : x
+        expr: (p, c, e, i) => i.Upgrades,
+        format: (p, c, e, x) => x == 0 ? '' : x
     },
     'Item Rune': {
-        expr: (p, e, i) => i.RuneType,
+        expr: (p, c, e, i) => i.RuneType,
         width: 180,
-        format: (p, e, x) => RUNETYPES[x],
+        format: (p, c, e, x) => RUNETYPES[x],
         difference: false
     },
     'Item Rune Value': {
-        expr: (p, e, i) => i.RuneValue,
-        format: (p, e, x) => x == 0 ? '' : x,
+        expr: (p, c, e, i) => i.RuneValue,
+        format: (p, c, e, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Gem': {
-        expr: (p, e, i) => i.GemType,
-        format: (p, e, x) => GEMTYPES[x],
+        expr: (p, c, e, i) => i.GemType,
+        format: (p, c, e, x) => GEMTYPES[x],
         difference: false
     },
     'Item Gem Value': {
-        expr: (p, e, i) => i.GemValue,
-        format: (p, e, x) => x == 0 ? '' : x,
+        expr: (p, c, e, i) => i.GemValue,
+        format: (p, c, e, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Gold': {
-        expr: (p, e, i) => i.SellPrice.Gold,
-        format: (p, e, x) => x == 0 ? '' : x,
+        expr: (p, c, e, i) => i.SellPrice.Gold,
+        format: (p, c, e, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Sell Crystal': {
-        expr: (p, e, i) => i.SellPrice.Crystal,
-        format: (p, e, x) => x == 0 ? '' : x,
+        expr: (p, c, e, i) => i.SellPrice.Crystal,
+        format: (p, c, e, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Sell Metal': {
-        expr: (p, e, i) => i.SellPrice.Metal,
-        format: (p, e, x) => x == 0 ? '' : x,
+        expr: (p, c, e, i) => i.SellPrice.Metal,
+        format: (p, c, e, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Dismantle Crystal': {
-        expr: (p, e, i) => i.DismantlePrice.Crystal,
-        format: (p, e, x) => x == 0 ? '' : x,
+        expr: (p, c, e, i) => i.DismantlePrice.Crystal,
+        format: (p, c, e, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Dismantle Metal': {
-        expr: (p, e, i) => i.DismantlePrice.Metal,
-        format: (p, e, x) => x == 0 ? '' : x,
+        expr: (p, c, e, i) => i.DismantlePrice.Metal,
+        format: (p, c, e, x) => x == 0 ? '' : x,
         difference: false
     },
     'Item Name': {
-        expr: (p, e, i) => i.Slot,
-        format: (p, e, x) => x == 2 && p.Class == 4 ? ITEM_TYPES[1] : ITEM_TYPES[x],
+        expr: (p, c, e, i) => i.Slot,
+        format: (p, c, e, x) => x == 2 && p.Class == 4 ? ITEM_TYPES[1] : ITEM_TYPES[x],
         difference: false
     },
     'Potion Type': {
-        expr: (p, e, i) => i.Type,
-        format: (p, e, x) => POTIONS[x],
+        expr: (p, c, e, i) => i.Type,
+        format: (p, c, e, x) => POTIONS[x],
         difference: false
     },
     'Potion Size': {
-        expr: (p, e, i) => i.Size,
-        format: (p, e, x) => x == 0 ? '' : x,
+        expr: (p, c, e, i) => i.Size,
+        format: (p, c, e, x) => x == 0 ? '' : x,
         difference: false
     }
 };
@@ -1806,9 +1816,9 @@ const SP_KEYWORD_MAPPING_4 = {
 // itemizable
 const SP_KEYWORD_MAPPING_5 = {
     'Items': {
-        expr: (p, e, i) => p.Items
+        expr: (p, c, e, i) => p.Items
     },
     'Potions': {
-        expr: (p, e, i) => p.Potions
+        expr: (p, c, e, i) => p.Potions
     }
 };

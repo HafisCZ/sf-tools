@@ -19,6 +19,11 @@
         <script src="vendor/js/components/state.min.js"></script>
 
         <script>
+            // Current version
+            const MODULE_VERSION = 'v3.549';
+        </script>
+
+        <script>
             if (localStorage['settings']) {
                 localStorage['settings/me'] = localStorage['settings'];
                 delete localStorage['settings'];
@@ -28,6 +33,7 @@
         <script src="js/plugins.js"></script>
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
+        <script src="js/changelog.js"></script>
 
         <script src="js/core/playa.js"></script>
         <script src="js/core/core.js"></script>
@@ -90,6 +96,17 @@
                     </ul>
                 </div>
                 <button class="ui green button" style="width: 20%; margin-top: 2em;" data-op="accept">I understand & accept these terms</button>
+            </div>
+        </div>
+
+        <!-- ChangeLogView -->
+        <div id="modal-changelog" class="ui main container hidden">
+            <div class="ui active dimmer" style="color: white;">
+                <h2 class="ui header white" data-op="version"></h2>
+                <div style="text-align: left; width: 25%; line-height: 1.5em;">
+                    <ul data-op="changes"></ul>
+                </div>
+                <button class="ui inverted button" style="width: 10%; margin-top: 2em;" data-op="accept">Ok</button>
             </div>
         </div>
 
@@ -486,6 +503,8 @@
 
                 if (!localStorage.termsOK) {
                     UI.show(UI.Setup);
+                } else if (localStorage.changeLogOk != MODULE_VERSION) {
+                    UI.show(UI.ChangeLog);
                 }
             }, function () {
                 // Firefox private mode

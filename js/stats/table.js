@@ -35,31 +35,31 @@ const ReservedCategories = {
     'Potions': function (root, group, category, last) {
         group.add(category.alias != undefined ? category.alias : 'Potions', category, {
             width: 109
-        }, (player) => {
+        }, (player, compare) => {
             var potion0 = player.Potions[0].Size;
             var potion1 = player.Potions[1].Size;
             var potion2 = player.Potions[2].Size;
 
             var color0 = CompareEval.evaluate(potion0, category.color);
-            color0 = (color0 != undefined ? color0 : (category.expc ? category.expc(player, root, player.Potions[0]) : '')) || '';
+            color0 = (color0 != undefined ? color0 : (category.expc ? category.expc(player, compare, root, player.Potions[0]) : '')) || '';
 
             var color1 = CompareEval.evaluate(potion1, category.color);
-            color1 = (color1 != undefined ? color1 : (category.expc ? category.expc(player, root, player.Potions[1]) : '')) || '';
+            color1 = (color1 != undefined ? color1 : (category.expc ? category.expc(player, compare, root, player.Potions[1]) : '')) || '';
 
             var color2 = CompareEval.evaluate(potion2, category.color);
-            color2 = (color2 != undefined ? color2 : (category.expc ? category.expc(player, root, player.Potions[2]) : '')) || '';
+            color2 = (color2 != undefined ? color2 : (category.expc ? category.expc(player, compare, root, player.Potions[2]) : '')) || '';
 
             var displayValue0 = CompareEval.evaluate(potion0, category.value);
-            displayValue0 = displayValue0 != undefined ? displayValue0 : (category.format ? category.format(player, root, player.Potions[0]) : undefined);
+            displayValue0 = displayValue0 != undefined ? displayValue0 : (category.format ? category.format(player, compare, root, player.Potions[0]) : undefined);
 
             var displayValue1 = CompareEval.evaluate(potion1, category.value);
-            displayValue1 = displayValue1 != undefined ? displayValue1 : (category.format ? category.format(player, root, player.Potions[1]) : undefined);
+            displayValue1 = displayValue1 != undefined ? displayValue1 : (category.format ? category.format(player, compare, root, player.Potions[1]) : undefined);
 
             var displayValue2 = CompareEval.evaluate(potion2, category.value);
-            displayValue2 = displayValue2 != undefined ? displayValue2 : (category.format ? category.format(player, root, player.Potions[2]) : undefined);
+            displayValue2 = displayValue2 != undefined ? displayValue2 : (category.format ? category.format(player, compare, root, player.Potions[2]) : undefined);
 
             return CellGenerator.Cell(displayValue0 == undefined ? potion0 : displayValue0, color0, category.visible ? '' : color0, false, category.align) + CellGenerator.Cell(displayValue1 == undefined ? potion1 : displayValue1, color1, category.visible ? '' : color1, false, category.align) + CellGenerator.Cell(displayValue2 == undefined ? potion2 : displayValue2, color2, category.visible ? '' : color2, last, category.align);
-        }, null, player => player.Potions.reduce((c, p) => c + p.Size, 0), last, 3);
+        }, null, (player, compare) => player.Potions.reduce((c, p) => c + p.Size, 0), last, 3);
     }
 };
 
@@ -69,10 +69,10 @@ const ReservedHeaders = {
             width: 80
         }, (player, compare) => {
             var color = CompareEval.evaluate(player.Mount, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, root, player.Mount) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(player, compare, root, player.Mount) : '')) || '';
 
             var displayValue = CompareEval.evaluate(player.Mount, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, player.Mount) : undefined);
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, root, player.Mount) : undefined);
 
             if (displayValue != undefined) {
                 return CellGenerator.Cell(displayValue, color, header.visible ? '' : color, last, header.align);
@@ -83,17 +83,17 @@ const ReservedHeaders = {
             var a = operation(players.map(p => p.player.Mount));
 
             var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(null, root, a) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(null, undefined, root, a) : '')) || '';
 
             var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, root, a) : undefined);
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, undefined, root, a) : undefined);
 
             if (displayValue != undefined) {
                 return CellGenerator.Cell(displayValue, '', color);
             } else {
                 return CellGenerator.Cell(PLAYER_MOUNT[a] + ((header.percentage || header.extra) && a ? (header.extra || '%') : ''), '', CompareEval.evaluate(a, header.color) || '');
             }
-        }, player => player.Mount, last);
+        }, (player, compare) => player.Mount, last);
     },
     'Awards': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Awards', header, {
@@ -107,10 +107,10 @@ const ReservedHeaders = {
             }
 
             var color = CompareEval.evaluate(player.Achievements.Owned, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, root, player.Achievements.Owned) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(player, compare, root, player.Achievements.Owned) : '')) || '';
 
             var displayValue = CompareEval.evaluate(player.Achievements.Owned, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, player.Achievements.Owned) : (player.Achievements.Owned + (header.extra || '')));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, root, player.Achievements.Owned) : (player.Achievements.Owned + (header.extra || '')));
 
             return CellGenerator.Cell(displayValue + (header.hydra && player.Achievements.Dehydration ? CellGenerator.Small(' H') : '') + reference, color, header.visible ? '' : color, last, header.align);
         }, (players, operation) => {
@@ -125,13 +125,13 @@ const ReservedHeaders = {
             }
 
             var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(null, root, a) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(null, null, root, a) : '')) || '';
 
             var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, root, a) : (a + (header.extra || '')));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, undefined, root, a) : (a + (header.extra || '')));
 
             return CellGenerator.Cell(displayValue + reference, '', color);
-        }, player => player.Achievements.Owned, last);
+        }, (player, compare) => player.Achievements.Owned, last);
     },
     'Album': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Album', header, {
@@ -140,7 +140,7 @@ const ReservedHeaders = {
             var value = header.percentage ? 100 * player.Book / SCRAPBOOK_COUNT : player.Book;
 
             var color = CompareEval.evaluate(value, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, root, value) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(player, compare, root, value) : '')) || '';
 
             var reference = (header.difference && compare) ? (header.percentage ? (100 * compare.Book / SCRAPBOOK_COUNT) : compare.Book) : '';
             if (reference) {
@@ -150,7 +150,7 @@ const ReservedHeaders = {
             }
 
             var displayValue = CompareEval.evaluate(value, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, value) : (header.percentage ? value.toFixed(2) : value));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, root, value) : (header.percentage ? value.toFixed(2) : value));
 
             return CellGenerator.Cell(displayValue + ((header.percentage || header.extra) ? (header.extra || '%') : '') + (header.grail && player.Achievements.Grail ? CellGenerator.Small(' G') : '') + reference, color, header.visible ? '' : color, last, header.align);
         }, (players, operation) => {
@@ -158,7 +158,7 @@ const ReservedHeaders = {
             var b = operation(players.map(p => header.percentage ? 100 * p.compare.Book / SCRAPBOOK_COUNT : p.compare.Book));
 
             var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(null, root, a) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(null, null, root, a) : '')) || '';
 
             var reference = header.difference ? b : '';
             if (reference) {
@@ -168,10 +168,10 @@ const ReservedHeaders = {
             }
 
             var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, root, a) : (header.percentage ? a.toFixed(2) : a));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, undefined, root, a) : (header.percentage ? a.toFixed(2) : a));
 
             return CellGenerator.Cell(displayValue + ((header.percentage || header.extra) ? (header.extra || '%') : '') + reference, '', color);
-        }, player => player.Book, last);
+        }, (player, compare) => player.Book, last);
     },
     'Knights': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Knights', header, {
@@ -189,10 +189,10 @@ const ReservedHeaders = {
             }
 
             var color = CompareEval.evaluate(player.Fortress.Knights, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, root, player.Fortress.Knights) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(player, compare, root, player.Fortress.Knights) : '')) || '';
 
             var displayValue = CompareEval.evaluate(player.Fortress.Knights, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, player.Fortress.Knights) : undefined);
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, root, player.Fortress.Knights) : undefined);
 
             if (displayValue != undefined) {
                 return CellGenerator.Cell(displayValue + reference, color, header.visible ? '' : color, last, header.align);
@@ -214,13 +214,13 @@ const ReservedHeaders = {
             }
 
             var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(null, root, a) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(null, null, root, a) : '')) || '';
 
             var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, root, a) : (a + (header.extra || '')));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, undefined, root, a) : (a + (header.extra || '')));
 
             return CellGenerator.Cell(displayValue + reference, '', color);
-        }, player => player.Fortress.Knights == undefined ? -1 : player.Fortress.Knights, last);
+        }, (player, compare) => player.Fortress.Knights == undefined ? -1 : player.Fortress.Knights, last);
     },
     'Last Active': function (root, group, header, last) {
         group.add(header.alias != undefined ? header.alias : 'Last Active', header, {
@@ -229,13 +229,13 @@ const ReservedHeaders = {
             var a = Math.max(0, player.Timestamp - player.LastOnline);
 
             var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, root, a) : '')) || '';
+            color = (color != undefined ? color : (header.expc ? header.expc(player, compare, root, a) : '')) || '';
 
             var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, root, a) : formatDate(player.LastOnline));
+            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, root, a) : formatDate(player.LastOnline));
 
             return CellGenerator.Cell(displayValue, color, header.visible ? '' : color, last, header.align);
-        }, null, player => player.LastOnline, last);
+        }, null, (player, compare) => player.LastOnline, last);
     }
 };
 
@@ -326,7 +326,7 @@ class TableInstance {
                         }, (player, compare) => {
                             var cells = [];
 
-                            var items = header.itemized.expr(player, this.settings);
+                            var items = header.itemized.expr(player, compare, this.settings);
                             if (Array.isArray(items)) {
                                 items = Object.entries([ ...items ]);
                             } else {
@@ -335,11 +335,11 @@ class TableInstance {
 
                             var cmp = undefined;
                             if (compare && header.difference) {
-                                cmp = header.itemized.expr(compare, this.settings);
+                                cmp = header.itemized.expr(compare, compare, this.settings);
                             }
 
                             for (var [ key, item ] of items) {
-                                var value = header.expr(player, this.settings, item);
+                                var value = header.expr(player, compare, this.settings, item);
                                 if (value == undefined) {
                                     return CellGenerator.Plain('?', hlast);
                                 }
@@ -347,27 +347,27 @@ class TableInstance {
                                 var reference = cmp ? header.expr(compare, this.settings.getCompareEnvironment(), cmp[key]) : undefined;
                                 if (reference != undefined) {
                                     reference = header.flip ? (reference - value) : (value - reference);
-                                    reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(player, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
+                                    reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(player, compare, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
                                 } else {
                                     reference = '';
                                 }
 
                                 var color = CompareEval.evaluate(value, header.color);
-                                color = (color != undefined ? color : (header.expc ? header.expc(player, this.settings, value) : '')) || '';
+                                color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value) : '')) || '';
 
                                 var displayValue = CompareEval.evaluate(value, header.value);
-                                var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, this.settings, value) : (value + (header.extra || '')));
+                                var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, this.settings, value) : (value + (header.extra || '')));
 
                                 cells.push(CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align));
                             }
 
                             return cells;
-                        }, null, player => {
+                        }, null, (player, compare) => {
                             var items = header.itemized.expr(player, this.settings);
                             if (Array.isArray(items)) {
-                                items = items.reduce((col, item) => col + header.expr(player, this.settings, item), 0);
+                                items = items.reduce((col, item) => col + header.expr(player, compare, this.settings, item), 0);
                             } else {
-                                items = Object.values(items).reduce((col, item) => col + header.expr(player, this.settings, item), 0);
+                                items = Object.values(items).reduce((col, item) => col + header.expr(player, compare, this.settings, item), 0);
                             }
 
                             return items == undefined ? -1 : items;
@@ -376,40 +376,40 @@ class TableInstance {
                         group.add((header.alias != undefined ? header.alias : header.name), header, {
                             width: Math.max(100, (header.alias || header.name).length * 12)
                         }, (player, compare) => {
-                            var value = header.expr(player, this.settings);
+                            var value = header.expr(player, compare, this.settings);
                             if (value == undefined) {
                                 return CellGenerator.Plain('?', hlast);
                             }
 
-                            var reference = (header.difference && compare) ? header.expr(compare, this.settings.getCompareEnvironment()) : undefined;
+                            var reference = (header.difference && compare) ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
                             if (!isNaN(reference)) {
                                 reference = header.flip ? (reference - value) : (value - reference);
-                                reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(player, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
+                                reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(player, compare, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
                             } else {
                                 reference = '';
                             }
 
                             var color = CompareEval.evaluate(value, header.color);
-                            color = (color != undefined ? color : (header.expc ? header.expc(player, this.settings, value) : '')) || '';
+                            color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value) : '')) || '';
 
                             var displayValue = CompareEval.evaluate(value, header.value);
-                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, this.settings, value) : (value + (header.extra || '')));
+                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, this.settings, value) : (value + (header.extra || '')));
 
                             return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align);
                         }, (players, operation) => {
-                            var value = players.map(p => header.expr(p.player, this.settings)).filter(x => x != undefined);
+                            var value = players.map(p => header.expr(p.player, p.compare, this.settings)).filter(x => x != undefined);
                             if (value.length == 0) {
                                 return CellGenerator.Plain('?');
                             }
 
                             value = operation(value);
 
-                            var reference = header.difference ? players.map(p => header.expr(p.compare, this.settings.getCompareEnvironment())).filter(x => x != undefined) : undefined;
+                            var reference = header.difference ? players.map(p => header.expr(p.compare, p.compare, this.settings.getCompareEnvironment())).filter(x => x != undefined) : undefined;
                             if (reference && reference.length) {
                                 reference = operation(reference);
                                 if (!isNaN(reference)) {
                                     reference = header.flip ? (reference - value) : (value - reference);
-                                    reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(null, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
+                                    reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(null, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
                                 } else {
                                     reference = '';
                                 }
@@ -418,14 +418,14 @@ class TableInstance {
                             }
 
                             var color = CompareEval.evaluate(value, header.color);
-                            color = (color != undefined ? color : (header.expc ? header.expc(null, this.settings, value) : '')) || '';
+                            color = (color != undefined ? color : (header.expc ? header.expc(null, null, this.settings, value) : '')) || '';
 
                             var displayValue = CompareEval.evaluate(value, header.value);
-                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(null, this.settings, value) : (value + (header.extra || '')));
+                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(null, undefined, this.settings, value) : (value + (header.extra || '')));
 
                             return CellGenerator.Cell(value + reference, '', color);
-                        }, player => {
-                            var value = header.expr(player, this.settings);
+                        }, (player, compare) => {
+                            var value = header.expr(player, compare, this.settings);
                             if (value == undefined) {
                                 return -1;
                             } else {
@@ -612,15 +612,15 @@ class TableInstance {
                         var diff = undefined;
 
                         if (column.difference && !exact) {
-                            var v = column.expr(item.player, this.settings);
-                            var c = column.expr(item.compare, this.settings);
+                            var v = column.expr(item.player, item.compare, this.settings);
+                            var c = column.expr(item.compare, item.compare, this.settings);
 
                             diff = column.flip ? (c - v) : (v - c);
                         }
 
-                        entry.sorting[column.sortkey] = column.order(item.player, this.settings, { difference: diff });
+                        entry.sorting[column.sortkey] = column.order(item.player, item.compare, this.settings, { difference: diff });
                     } else {
-                        entry.sorting[column.sortkey] = column.sort(item.player);
+                        entry.sorting[column.sortkey] = column.sort(item.player, item.compare);
                     }
                 }
 
@@ -684,15 +684,15 @@ class TableInstance {
                         var diff = undefined;
 
                         if (column.difference && !exact) {
-                            var v = column.expr(item.player, this.settings);
-                            var c = column.expr(item.compare, this.settings);
+                            var v = column.expr(item.player, item.compare, this.settings);
+                            var c = column.expr(item.compare, item.compare, this.settings);
 
                             diff = column.flip ? (c - v) : (v - c);
                         }
 
-                        entry.sorting[column.sortkey] = column.order(item.player, this.settings, { difference: diff });
+                        entry.sorting[column.sortkey] = column.order(item.player, item.compare, this.settings, { difference: diff });
                     } else {
-                        entry.sorting[column.sortkey] = column.sort(item.player);
+                        entry.sorting[column.sortkey] = column.sort(item.player, item.compare);
                     }
                 }
 
@@ -917,16 +917,16 @@ class TableInstance {
 
                 if (reference && !isNaN(reference)) {
                     reference = extra.flip ? (reference - value) : (value - reference);
-                    reference = CellGenerator.Difference(reference, extra.brackets, extra.format_diff ? extra.format(null, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
+                    reference = CellGenerator.Difference(reference, extra.brackets, extra.format_diff ? extra.format(null, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
                 } else {
                     reference = '';
                 }
 
                 var color = CompareEval.evaluate(value, extra.color);
-                color = (color != undefined ? color : (extra.expc ? extra.expc(undefined, this.settings, value) : '')) || '';
+                color = (color != undefined ? color : (extra.expc ? extra.expc(undefined, null, this.settings, value) : '')) || '';
 
                 var displayValue = CompareEval.evaluate(value, extra.value);
-                var value = displayValue != undefined ? displayValue : (extra.format ? extra.format(undefined, this.settings, value) : (value + (extra.extra || '')));
+                var value = displayValue != undefined ? displayValue : (extra.format ? extra.format(undefined, undefined, this.settings, value) : (value + (extra.extra || '')));
 
                 var cell = CellGenerator.WideCell(SFormat.Normal(value) + reference, color, lw, extra.align);
                 details += `
@@ -1494,8 +1494,8 @@ const SettingsCommands = [
         } else {
             var ast = new AST(arg);
             if (ast.isValid()) {
-                root.setLocalVariable(key, (player, env, val) => {
-                    return ast.eval(player, env, val);
+                root.setLocalVariable(key, (player, reference, env, val) => {
+                    return ast.eval(player, reference, env, val);
                 });
             }
         }
@@ -1513,8 +1513,8 @@ const SettingsCommands = [
         var [ , key, arg ] = this.match(string);
         var ast = new AST(arg);
         if (ast.isValid()) {
-            root.setLocalVariable('order', (player, env, val) => {
-                return ast.eval(player, env, val);
+            root.setLocalVariable('order', (player, reference, env, val) => {
+                return ast.eval(player, reference, env, val);
             });
         }
     }, function (string) {
@@ -1547,8 +1547,8 @@ const SettingsCommands = [
         var [ , key, a ] = this.match(string);
         var ast = new AST(a);
         if (ast.isValid()) {
-            root.setLocalVariable(key, (player, env, scope) => {
-                return ast.eval(player, env, scope);
+            root.setLocalVariable(key, (player, reference, env, scope) => {
+                return ast.eval(player, reference, env, scope);
             });
         }
     }, function (string) {
@@ -1561,8 +1561,8 @@ const SettingsCommands = [
         var [ , key, a ] = this.match(string);
         var ast = new AST(a);
         if (ast.isValid()) {
-            root.setLocalVariable(key, (player, env, val) => {
-                return getCSSColor(ast.eval(player, env, val));
+            root.setLocalVariable(key, (player, reference, env, val) => {
+                return getCSSColor(ast.eval(player, reference, env, val));
             });
         }
     }, function (string) {
@@ -1905,12 +1905,12 @@ class Settings {
                 }
 
                 if (tabletype == TableType.Group) {
-                    data.value = data.ast.eval(players[0].player, this, scope);
+                    data.value = data.ast.eval(players[0].player, undefined, this, scope);
                     if (isNaN(data.value)) {
                         data.value = undefined;
                     }
 
-                    var val = data.ast.eval(players[0].compare, this, scope2);
+                    var val = data.ast.eval(players[0].compare, undefined, this, scope2);
                     if (isNaN(val)) {
                         val = undefined;
                     }
@@ -1921,12 +1921,12 @@ class Settings {
                         arg: data.arg
                     };
                 } else {
-                    data.value = data.ast.eval(null, this, scope);
+                    data.value = data.ast.eval(null, undefined, this, scope);
                     if (isNaN(data.value)) {
                         data.value = undefined;
                     }
 
-                    var val = data.ast.eval(null, this, scope2);
+                    var val = data.ast.eval(null, undefined, this, scope2);
                     if (isNaN(val)) {
                         val = undefined;
                     }
@@ -1946,8 +1946,8 @@ class Settings {
             for (var data of this.extras) {
                 if (data.ast) {
                     data.eval = {
-                        value: data.ast.eval(param.player, this, players.map(p => p.player)),
-                        compare: data.ast.eval(param.compare, this.getCompareEnvironment(), players.map(p => p.compare))
+                        value: data.ast.eval(param.player, undefined, this, players.map(p => p.player)),
+                        compare: data.ast.eval(param.compare, undefined, this.getCompareEnvironment(), players.map(p => p.compare))
                     };
                 }
             }
