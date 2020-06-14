@@ -1583,6 +1583,7 @@ class SettingsView extends View {
 
         for (var i = history.length - 1; i >= 0; i--) {
             var name = history[i].name;
+            var cont = history[i].content;
 
             if (name == 'players') {
                 name = 'Players';
@@ -1599,11 +1600,11 @@ class SettingsView extends View {
             content += `
                 <div class="row css-template-item">
                     <div class="ten wide column">
-                        <b>${ name } (${ history[i].content.length })</b>
+                        ${ cont ? `<b>${ name } (${ cont.length })</b>` : `<b class="foreground-red">${ name }</b>` }
                     </div>
                     <div class="six wide column css-template-buttons">
                         <div class="ui icon right floated small buttons">
-                            <button class="ui button" data-history-load="${ i }"><i class="play icon"></i></button>
+                            <button class="ui button ${ cont ? '' : 'disabled' }" data-history-load="${ i }"><i class="play icon"></i></button>
                         </div>
                     </div>
                 </div>
