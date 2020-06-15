@@ -468,8 +468,15 @@ self.addEventListener('message', function (message) {
         var r = [];
         var obj = players[0];
 
+        var orig = obj.Level;
+        var p101 = obj.At100 + 1;
+
         for (var level = Math.min(99, Math.max(0, obj.Level - 1)); level < 100; level++) {
             obj.Level = level + 1;
+
+            if (obj.Level == 100 && orig != 100) {
+                obj.At100 = p100;
+            }
 
             if (!r[level]) {
                 r[level] = [];
