@@ -20,7 +20,7 @@
 
         <script>
             // Current version
-            const MODULE_VERSION = 'v3.551';
+            const MODULE_VERSION = 'v3.559';
         </script>
 
         <script>
@@ -58,6 +58,7 @@
             <a class="item hidden" id="show-developer"><i class="small bug icon"></i>Developer</a>
             <div class="right menu" id="show-right-menu">
                 <a class="item" href="stats.html?temp" target="_blank"><i class="small user secret icon"></i><span class="css-small">Temporary session<span></a>
+                <a class="item" id="show-changelog"><i class="small sticky note icon"></i><span class="css-small">Changelog<span></a>
                 <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
             </div>
         </div>
@@ -107,6 +108,13 @@
                     <ul data-op="changes"></ul>
                 </div>
                 <button class="ui inverted button" style="width: 10%; margin-top: 2em;" data-op="accept">Ok</button>
+            </div>
+        </div>
+
+        <!-- ChangeLogView -->
+        <div id="view-changelog" class="ui main container hidden">
+            <div class="ui grid margin-large-top" data-op="list">
+
             </div>
         </div>
 
@@ -500,6 +508,7 @@
                 $('#show-files').click(() => UI.show(UI.Files));
                 $('#show-settings').click(() => UI.show(UI.Settings));
                 $('#show-developer').click(() => UI.show(UI.Developer));
+                $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
 
                 if (!localStorage.termsOK) {
                     UI.show(UI.Setup);

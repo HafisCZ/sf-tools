@@ -1401,6 +1401,13 @@ const SettingsCommands = [
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
     }),
+    new SettingsCommand(/^(clean)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setLocalVariable(key, true);
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) }`;
+    }),
     // Local Shared
     // width - Width of a column
     new SettingsCommand(/^(width) ((@?)(\S+))$/, function (root, string) {
@@ -2095,8 +2102,10 @@ class Settings {
             }
 
             if (this.currentHeader.expr || reserved) {
-                merge(this.currentHeader, this.categoryShared);
-                merge(this.currentHeader, this.shared);
+                if (!this.currentHeader.clean) {
+                    merge(this.currentHeader, this.categoryShared);
+                    merge(this.currentHeader, this.shared);
+                }
 
                 this.currentCategory.h.push(this.currentHeader);
             }

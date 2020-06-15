@@ -1841,7 +1841,38 @@ class ChangeLogView extends View {
 
             UI.show(UI.Groups);
         });
+    }
+}
 
+class ChangeLogsView extends View {
+    constructor (parent) {
+        super(parent);
+
+        var changes = '';
+
+        for (var [ version, content ] of Object.entries(CHANGELOG)) {
+            changes += `
+                <div class="row css-row-ver">
+                    <div class="four wide column"></div>
+                    <div class="one wide column">
+                        <h3 class="ui header css-h3-ver">${ version }</h3>
+                    </div>
+                    <div class="eleven wide column">
+                        <ul class="css-ul-ver">
+                            ${
+                                content.reduce((ac, entry) => `
+                                    <li style="margin-bottom: 1em;">
+                                        ${ entry }
+                                    </li>
+                                `, '')
+                            }
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        this.$parent.find('[data-op="list"]').html(changes);
     }
 }
 
@@ -1880,6 +1911,7 @@ const UI = {
         UI.GroupDetail = new GroupDetailView('view-groupdetail');
         UI.Developer = new DeveloperView('view-developer');
         UI.DeveloperFloat = new DeveloperFloatView('modal-dev');
+        UI.ChangeLogs = new ChangeLogsView('view-changelog');
     },
     preinitialize: function () {
         UI.Loader = new LoaderView('modal-loader');

@@ -21,6 +21,19 @@ body.dimmed {
     margin-right: 17px !important;
 }
 
+.css-ul-ver {
+    margin: 0;
+}
+
+.css-h3-ver {
+    margin-top: 0em !important;
+}
+
+.css-row-ver {
+    padding: 0 !important;
+    margin-top: 1em;
+}
+
 body.dimmed .menu {
     margin-right: 17px !important;
 }
