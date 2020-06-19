@@ -118,6 +118,21 @@
                 display: inline-block;
                 width: 5em;
             }
+
+            .dropdown [data-pet-id] {
+                font-size: 100%;
+            }
+
+            [data-pet-id] {
+                font-size: 95%;
+            }
+
+            .menu [data-pet-id]::after {
+                content: attr(data-pet-id);
+                position: absolute;
+                right: 0px;
+                transform: scale(0.8);
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
@@ -527,7 +542,7 @@
                         preserveHTML: true,
                         values: new Array(100).fill(0).map((_ , i) => {
                             return {
-                                name: `<img class="ui centered image pet-picture" src="res/pets/monster${ 800 + i }.png"><span class="pet-name">${ NAME_MONSTER[800 + i] }</span>`,
+                                name: `<img class="ui centered image pet-picture" src="res/pets/monster${ 800 + i }.png"><span class="pet-name" data-pet-id="${ (i % 20) + 1 }">${ NAME_MONSTER[800 + i] }</span>`,
                                 value: i
                             };
                         })
