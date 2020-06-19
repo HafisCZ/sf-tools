@@ -835,15 +835,18 @@ class BrowseView extends View {
                 {
                    test: function (arg, player, timestamp) {
                        var matches = arg.reduce((total, term) => {
-                           if (player.Name.toLowerCase().includes(term) || player.Prefix.includes(term) || PLAYER_CLASS_SEARCH[player.Class].includes(term) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(term))) {
-                               return total + 1;
-                           } else {
-                               return total;
+                           var subterms = term.split('|').map(rarg => rarg.trim());
+                           for (var subterm of subterms) {
+                               if (player.Name.toLowerCase().includes(subterm) || player.Prefix.includes(subterm) || PLAYER_CLASS_SEARCH[player.Class].includes(subterm) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(subterm))) {
+                                   return total + 1;
+                               }
                            }
+
+                           return total;
                        }, 0);
                        return (matches == arg.length);
                    },
-                   arg: filter[0].toLowerCase().split(' ')
+                   arg: filter[0].toLowerCase().split('&').map(rarg => rarg.trim())
                 }
             ];
 
@@ -858,23 +861,55 @@ class BrowseView extends View {
 
                 if (key == 'c') {
                     terms.push({
-                        test: (arg, player, timestamp) => PLAYER_CLASS_SEARCH[player.Class] == arg,
-                        arg: arg.toLowerCase()
+                        test: (arg, player) => {
+                            for (var term of arg) {
+                                if (PLAYER_CLASS_SEARCH[player.Class] == term) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        },
+                        arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
                     });
                 } else if (key == 'p') {
                     terms.push({
-                        test: (arg, player, timestamp) => player.Name.toLowerCase().includes(arg),
-                        arg: arg.toLowerCase()
+                        test: (arg, player) => {
+                            for (var term of arg) {
+                                if (player.Name.toLowerCase().includes(term)) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        },
+                        arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
                     });
                 } else if (key == 'g') {
                     terms.push({
-                        test: (arg, player, timestamp) => player.hasGuild() && player.Group.Name.toLowerCase().includes(arg),
-                        arg: arg.toLowerCase()
+                        test: (arg, player) => {
+                            for (var term of arg) {
+                                if (player.hasGuild() && player.Group.Name.toLowerCase().includes(term)) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        },
+                        arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
                     });
                 } else if (key == 's') {
                     terms.push({
-                        test: (arg, player, timestamp) => player.Prefix.includes(arg),
-                        arg: arg.toLowerCase()
+                        test: (arg, player) => {
+                            for (var term of arg) {
+                                if (player.Prefix.includes(term)) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        },
+                        arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
                     });
                 } else if (key == 'l') {
                     terms.push({
@@ -1219,15 +1254,18 @@ class PlayersView extends View {
                 {
                    test: function (arg, player) {
                        var matches = arg.reduce((total, term) => {
-                           if (player.Name.toLowerCase().includes(term) || player.Prefix.includes(term) || PLAYER_CLASS_SEARCH[player.Class].includes(term) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(term))) {
-                               return total + 1;
-                           } else {
-                               return total;
+                           var subterms = term.split('|').map(rarg => rarg.trim());
+                           for (var subterm of subterms) {
+                               if (player.Name.toLowerCase().includes(subterm) || player.Prefix.includes(subterm) || PLAYER_CLASS_SEARCH[player.Class].includes(subterm) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(subterm))) {
+                                   return total + 1;
+                               }
                            }
+
+                           return total;
                        }, 0);
                        return (matches == arg.length);
                    },
-                   arg: filter[0].toLowerCase().split(' ')
+                   arg: filter[0].toLowerCase().split('&').map(rarg => rarg.trim())
                 }
             ];
 
@@ -1241,23 +1279,55 @@ class PlayersView extends View {
 
                 if (key == 'c') {
                     terms.push({
-                        test: (arg, player) => PLAYER_CLASS_SEARCH[player.Class] == arg,
-                        arg: arg.toLowerCase()
+                        test: (arg, player) => {
+                            for (var term of arg) {
+                                if (PLAYER_CLASS_SEARCH[player.Class] == term) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        },
+                        arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
                     });
                 } else if (key == 'p') {
                     terms.push({
-                        test: (arg, player) => player.Name.toLowerCase().includes(arg),
-                        arg: arg.toLowerCase()
+                        test: (arg, player) => {
+                            for (var term of arg) {
+                                if (player.Name.toLowerCase().includes(term)) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        },
+                        arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
                     });
                 } else if (key == 'g') {
                     terms.push({
-                        test: (arg, player) => player.hasGuild() && player.Group.Name.toLowerCase().includes(arg),
-                        arg: arg.toLowerCase()
+                        test: (arg, player) => {
+                            for (var term of arg) {
+                                if (player.hasGuild() && player.Group.Name.toLowerCase().includes(term)) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        },
+                        arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
                     });
                 } else if (key == 's') {
                     terms.push({
-                        test: (arg, player) => player.Prefix.includes(arg),
-                        arg: arg.toLowerCase()
+                        test: (arg, player) => {
+                            for (var term of arg) {
+                                if (player.Prefix.includes(term)) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        },
+                        arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
                     });
                 } else if (key == 'l') {
                     terms.push({
