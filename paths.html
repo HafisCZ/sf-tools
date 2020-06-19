@@ -769,9 +769,9 @@
                                             <button class="ui fluid small basic button" data-op="run">Run</button>
                                         </div>
                                     </div>
-                                    <div class="field disabled">
+                                    <div class="field">
                                         <label>Approx. food</label>
-                                        <input type="text" data-op="food">
+                                        <input type="text" class="text-center" disabled data-op="food">
                                     </div>
                                 </div>
                             </div>
@@ -782,6 +782,10 @@
         </div>
 
         <script type="text/javascript">
+            function freeze () {
+                $('.ui.main.container').toggleClass('frozen');
+            }
+
             class ControllerItem {
                 constructor (index, $root, controller) {
                     this.index = index;
@@ -847,17 +851,47 @@
                 constructor () {
                     // Variables
                     this.type = 0;
-                    this.pets = new Array(19).fill({ Glad: 0, Role: 0 });
+
+                    this.pets = [];
+                    for (var i = 0; i < 19; i++) {
+                        this.pets[i] = {
+                            Role: 0,
+                            Glad: 0
+                        };
+                    }
 
                     this.items = $('[data-op="items"] .pet-item').toArray().map((el, i) => new ControllerItem(i, $(el), this));
 
                     this.$run = $('[data-op="run"]').click(() => {
-                        var min = this.getThreshold();
+                        $('[data-op="food"]').val('');
 
+                        this.pets.Threshold = this.getThreshold();
+                        this.pets.Type = this.type;
+
+                        freeze();
+
+                        var worker = new Worker('js/core/simulator.js');
+
+                        worker.addEventListener('message', function (message)  {
+                            if (message.data.command == 'finished') {
+                                var food = message.data.results;
+                                if (food == 0) {
+                                    $('[data-op="food"]').val('Not possible');
+                                } else {
+                                    $('[data-op="food"]').val(formatAsSpacedNumber(food, ' '));
+                                }
+
+                                freeze();
+                            }
+                        }, false);
+
+                        worker.postMessage({
+                            mode: 3333,
+                            players: this.pets
+                        });
                     });
 
                     this.$threshold = $('[data-op="threshold"]');
-                    this.$food = $('[data-op="food"]');
 
                     // Events
                     this.$type = $('[data-op="type"]').dropdown({

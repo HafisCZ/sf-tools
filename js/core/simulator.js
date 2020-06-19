@@ -511,6 +511,110 @@ self.addEventListener('message', function (message) {
             time: Date.now() - ts,
             tracking: tracking
         });
+    } else if (mode === 3333) {
+        var pets = [];
+
+        for (var i = 0; i < 19; i++) {
+            if (players[i].Role != 2) {
+                continue;
+            }
+
+            var pet = {
+                Pet: i,
+                Gladiator: players[i].Glad,
+                Fights: []
+            };
+
+            if (pets.length == 0 && i != 0) {
+                for (var j = 0; j <= i; j++) {
+                    pet.Fights.push({
+                        Target: j,
+                        Gladiator: 0,
+                        Pack: players.reduce((total, p, k) => total + (k < j && k < i && p.Role ? 1 : 0), 1)
+                    });
+                }
+            }
+
+            for (var j = i + 1; j < 19; j++) {
+                pet.Fights.push({
+                    Target: j,
+                    Gladiator: pet.Gladiator,
+                    Pack: players.reduce((total, p, k) => total + (k < j && p.Role ? 1 : 0), 0)
+                });
+
+                if (j == 18) {
+                    pet.Fights.push({
+                        Target: 19,
+                        Gladiator: pet.Gladiator,
+                        Pack: players.reduce((total, p) => total + (p.Role ? 1 : 0), 0)
+                    });
+                }
+
+                if (players[j].Role == 2) {
+                    break;
+                }
+            }
+
+            pets.push(pet);
+        }
+
+        var type = players.Type;
+        var win = players.Threshold;
+        var food = 0;
+        var at100 = 0;
+
+        for (var pet of pets) {
+            var level = 1;
+
+            for (var fight of pet.Fights) {
+                for (; level <= 100; level++) {
+                    var r = new PetSimulator().simulate({
+                        Boss: false,
+                        Index: 0,
+                        Type: type,
+                        Pet: pet.Pet,
+                        Level: level,
+                        At100: at100,
+                        At200: 0,
+                        Pack: fight.Pack,
+                        Gladiator: fight.Gladiator
+                    }, {
+                        Boss: true,
+                        Index: 1,
+                        Type: type,
+                        Pet: fight.Target
+                    }, 1E5);
+
+                    if (r < win) {
+                        if (level == 100) {
+                            level = 0;
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+
+                if (level == 100) {
+                    at100++;
+                } else if (level == 0) {
+                    break;
+                }
+            }
+
+            if (level > 0) {
+                food += level;
+            } else {
+                food = 0;
+                break;
+            }
+        }
+
+        self.postMessage({
+            command: 'finished',
+            results: food,
+            time: Date.now() - ts
+        });
     }
 
     self.close();
