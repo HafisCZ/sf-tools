@@ -699,7 +699,7 @@ class FightSimulator {
             };
         }
 
-        if (player.length == 2) {
+        if (player.length == 2 && players.length == 2) {
             player[0].score.min = player[0].score.avg;
             player[0].score.max = player[0].score.avg;
 
