@@ -197,7 +197,10 @@
                                 </div>
                                 <div class="field"></div>
                                 <div class="field"></div>
-                                <div class="field"></div>
+                                <div class="field">
+                                    <label>Witch Potion</label>
+                                    <input type="text" disabled id="gold-witchpot">
+                                </div>
                                 <div class="field">
                                     <label><span class="green">&bull;</span> Potion of Eternal Life</label>
                                     <input type="text" disabled id="gold-pothp">
@@ -376,6 +379,8 @@
                     var pot15 = potion / 2;
                     var pot25 = potion / 1;
 
+                    var potwitch = reward / 3 * 2.5;
+
                     var hourglass10 = Math.min(5000000, 10 * potion / 6);
                     var hourglass1 = Math.min(375000, hourglass10 >= 375000 ? hourglass10 : potion / 6);
 
@@ -391,6 +396,7 @@
                     $('#gold-pothp').val(pothp >= 999 ? formatAsSpacedNumber(pothp, ' ') : roundShort(pothp));
 
                     $('#gold-scroll').val(scroll >= 999 ? formatAsSpacedNumber(scroll, ' ') : roundShort(scroll));
+                    $('#gold-witchpot').val(potwitch >= 999 ? formatAsSpacedNumber(potwitch, ' ') : roundShort(potwitch));
 
                     $('#gold-hourglass1').val(hourglass1 >= 999 ? formatAsSpacedNumber(hourglass1, ' ') : roundShort(hourglass1));
                     $('#gold-hourglass10').val(hourglass10 >= 999 ? formatAsSpacedNumber(hourglass10, ' ') : roundShort(hourglass10));
