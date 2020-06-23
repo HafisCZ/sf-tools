@@ -115,7 +115,11 @@ class Building {
     }
 
     getProduction (level, duration) {
-        return this.getCycleProduction(level) * Math.floor(duration / this.getCycleDuration(level));
+        return this.getCycleProduction(level) * Math.trunc(duration / this.getCycleDuration(level));
+    }
+
+    getProductionReduced (level, duration, reduced) {
+        return this.getCycleProduction(level) * Math.trunc(duration / (this.getCycleDuration(level) * reduced));
     }
 
     matchProductionRate (level, matched) {

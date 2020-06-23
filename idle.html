@@ -400,7 +400,7 @@
                     productionApproximate += runeMultiplier * boost.rate * building.getProductionRate(level);
                     productionHourlyApproximate += runeMultiplier * boost.rate * building.getProductionRate(level) * 3600;
                     for (let i = 0; i < 86401; i++) {
-                        productionCurve[i] += runeMultiplier * boost.rate * building.getProduction(level, i);
+                        productionCurve[i] += runeMultiplier * boost.money * building.getProductionReduced(level, i, boost.speed);
                     }
 
                     // Find best amortization value
