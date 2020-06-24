@@ -195,7 +195,10 @@
                                     <label><span class="green">&bull;</span> 10 Quicksand Hourglasses</label>
                                     <input type="text" disabled id="gold-hourglass10">
                                 </div>
-                                <div class="field"></div>
+                                <div class="field">
+                                    <label>Fortress Reroll</label>
+                                    <input type="text" disabled id="gold-reroll">
+                                </div>
                                 <div class="field"></div>
                                 <div class="field">
                                     <label>Witch Potion</label>
@@ -379,7 +382,8 @@
                     var pot15 = potion / 2;
                     var pot25 = potion / 1;
 
-                    var potwitch = reward / 3 * 2.5;
+                    var reroll = reward * 5 / 8;
+                    var potwitch = reward * 5 / 6;
 
                     var hourglass10 = Math.min(5000000, 10 * potion / 6);
                     var hourglass1 = Math.min(375000, hourglass10 >= 375000 ? hourglass10 : potion / 6);
@@ -403,6 +407,7 @@
 
                     $('#gold-guard').val(guard >= 999 ? formatAsSpacedNumber(guard, ' ') : roundShort(guard));
                     $('#gold-reward').val(reward >= 999 ? formatAsSpacedNumber(reward, ' ') : roundShort(reward));
+                    $('#gold-reroll').val(reroll >= 999 ? formatAsSpacedNumber(reroll, ' ') : roundShort(reroll));
 
                     $('#gold-dice').val(dice >= 999 ? formatAsSpacedNumber(dice, ' ') : roundShort(dice));
                     $('#gold-dice2').val(dice * 5 >= 999 ? formatAsSpacedNumber(dice * 5, ' ') : roundShort(dice * 5));
