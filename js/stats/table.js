@@ -1619,7 +1619,7 @@ const SettingsCommands = [
     }),
     // Local
     // value - Add value based on condition
-    new SettingsCommand(/^(value) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(\w+[\w ]*)) ((@?)(\S+[\S ]*))$/, function (root, string) {
+    new SettingsCommand(/^(value) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\S+[\S ]*))$/, function (root, string) {
         var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
         var reference = Constants.GetValue(rprefix, rvalue);
         var val = Constants.GetValue(prefix, value);
@@ -1650,7 +1650,7 @@ const SettingsCommands = [
     }),
     // local
     // color - Add color based on condition
-    new SettingsCommand(/^(color) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(\w+[\w ]*)) ((@?)(\w+))$/, function (root, string) {
+    new SettingsCommand(/^(color) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\w+))$/, function (root, string) {
         var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
         var reference = Constants.GetValue(rprefix, rvalue);
         var val = getCSSColor(Constants.GetValue(prefix, value));
