@@ -1,4 +1,8 @@
 const CHANGELOG = {
+    'v3.575': [
+        'Weapon damage and elemental damage runes are now shown properly for Assassins within the detail screen.',
+        'Added headers for weapon damage and separated elemental damage headers.'
+    ],
     'v3.559': [
         'Added <code>clean</code> keyword that forces header to ignore all shared options.<br/>You can look at an example <a href="https://pastebin.com/raw/WaFSAsRc">here</a>.'
     ],
