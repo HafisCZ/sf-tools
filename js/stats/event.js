@@ -1945,11 +1945,11 @@ class ChangeLogsView extends View {
                     <div class="eleven wide column">
                         <ul class="css-ul-ver">
                             ${
-                                content.reduce((ac, entry) => `
+                                content.map(entry => `
                                     <li style="margin-bottom: 1em;">
                                         ${ entry }
                                     </li>
-                                `, '')
+                                `).join('')
                             }
                         </ul>
                     </div>
