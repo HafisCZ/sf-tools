@@ -793,6 +793,10 @@ class SFPlayer {
             DamageFire: 0,
             DamageCold: 0,
             DamageLightning: 0,
+            Damage2: 0,
+            Damage2Fire: 0,
+            Damage2Cold: 0,
+            Damage2Lightning: 0,
             Resistance: 0,
             Runes: 0,
             Achievements: 0
@@ -816,7 +820,7 @@ class SFPlayer {
         }
 
         for (var item of Object.values(this.Items)) {
-            if (item.HasRune) {
+            if (item.HasRune && item.Type != 1) {
                 var rune = item.AttributeTypes[2];
                 var value = item.Attributes[2];
 
@@ -868,33 +872,51 @@ class SFPlayer {
                     this.Runes.ResistanceCold += value;
                     this.Runes.ResistanceLightning += value;
                     this.Runes.Resistance += value;
-                    // Ignored due to old total resistance
-                    /*
-                        if (RUNE_VALUE.TOTAL_RESISTANCE(value) > this.Runes.Runes) {
-                            this.Runes.Runes = RUNE_VALUE.TOTAL_RESISTANCE(value);
-                        }
-                    */
-                } else if (rune == 40) {
-                    this.Runes.DamageFire += value;
-                    this.Runes.Damage += value;
-                    if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
-                        this.Runes.Runes = RUNE_VALUE.ELEMENTAL_DAMAGE(value);
-                    }
-                } else if (rune == 41) {
-                    this.Runes.DamageCold += value;
-                    this.Runes.Damage += value;
-                    if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
-                        this.Runes.Runes = RUNE_VALUE.ELEMENTAL_DAMAGE(value);
-                    }
-                } else if (rune == 42) {
-                    this.Runes.DamageLightning += value;
-                    this.Runes.Damage += value;
-                    if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
-                        this.Runes.Runes = RUNE_VALUE.ELEMENTAL_DAMAGE(value);
-                    }
                 }
             }
         }
+
+        if (this.Items.Wpn1.AttributeTypes[2] >= 40) {
+            var rune = this.Items.Wpn1.AttributeTypes[2];
+            var value = this.Items.Wpn1.Attributes[2];
+
+            this.Runes.Damage += value;
+            if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
+                this.Runes.Runes = RUNE_VALUE.ELEMENTAL_DAMAGE(value);
+            }
+
+            if (rune == 40) {
+                this.Runes.DamageFire = value;
+            } else if (rune == 41) {
+                this.Runes.DamageCold = value;
+            } else if (rune == 42) {
+                this.Runes.DamageLightning = value;
+            }
+        }
+
+        if (this.Class == 4 && this.Items.Wpn2.AttributeTypes[2] >= 40) {
+            var rune = this.Items.Wpn2.AttributeTypes[2];
+            var value = this.Items.Wpn2.Attributes[2];
+
+            this.Runes.Damage2 += value;
+            if (RUNE_VALUE.ELEMENTAL_DAMAGE(value) > this.Runes.Runes) {
+                this.Runes.Runes = RUNE_VALUE.ELEMENTAL_DAMAGE(value);
+            }
+
+            if (rune == 40) {
+                this.Runes.Damage2Fire = value;
+            } else if (rune == 41) {
+                this.Runes.Damage2Cold = value;
+            } else if (rune == 42) {
+                this.Runes.Damage2Lightning = value;
+            }
+        }
+
+        this.Damage2 = {
+            Min: this.Items.Wpn2.DamageMin,
+            Max: this.Items.Wpn2.DamageMax
+        };
+        this.Damage2.Avg = (this.Damage2.Min + this.Damage2.Max) / 2;
 
         this.Runes.Gold = Math.min(50, this.Runes.Gold);
         this.Runes.Chance = Math.min(50, this.Runes.Chance);
@@ -905,14 +927,16 @@ class SFPlayer {
         this.Runes.ResistanceFire = Math.min(75, this.Runes.ResistanceFire);
         this.Runes.ResistanceCold = Math.min(75, this.Runes.ResistanceCold);
         this.Runes.ResistanceLightning = Math.min(75, this.Runes.ResistanceLightning);
+
         this.Runes.Damage = Math.min(60, this.Runes.Damage);
         this.Runes.DamageFire = Math.min(60, this.Runes.DamageFire);
         this.Runes.DamageCold = Math.min(60, this.Runes.DamageCold);
         this.Runes.DamageLightning = Math.min(60, this.Runes.DamageLightning);
 
-        if (this.Class == 4) {
-            this.Runes.Damage = Math.trunc(this.Runes.Damage / 2);
-        }
+        this.Runes.Damage2 = Math.min(60, this.Runes.Damage2);
+        this.Runes.Damage2Fire = Math.min(60, this.Runes.Damage2Fire);
+        this.Runes.Damage2Cold = Math.min(60, this.Runes.Damage2Cold);
+        this.Runes.Damage2Lightning = Math.min(60, this.Runes.Damage2Lightning);
 
         this.Health = this.getHealth();
 

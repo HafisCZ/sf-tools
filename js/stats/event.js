@@ -447,6 +447,11 @@ class PlayerDetailFloatView extends View {
                             <div class="left aligned column font-big">Damage</div>
                             <div class="column"></div>
                             <div class="column">${ player.Damage.Min } - ${ player.Damage.Max }</div>
+                            ${ player.Class == 4 ? `
+                                <div class="left aligned column font-big"></div>
+                                <div class="column"></div>
+                                <div class="column">${ player.Damage2.Min } - ${ player.Damage2.Max }</div>
+                            ` : '' }
                             <div class="column"><br></div>
                             <div class="column"></div>
                             <div class="column"></div>
@@ -542,10 +547,20 @@ class PlayerDetailFloatView extends View {
                                 <div class="column"></div>
                                 <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Health, config.getEntrySafe('Rune Health').color) }">${ player.Runes.Health }%</div>
                             ` : '' }
-                            ${ player.Runes.Damage ? `
-                                <div class="left aligned column font-big">Elemental Dmg</div>
+                            ${ player.Runes.DamageFire || player.Runes.Damage2Fire ? `
+                                <div class="left aligned column font-big">Fire Dmg</div>
                                 <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Damage, config.getEntrySafe('Rune Damage').color) }">${ player.Runes.Damage }%</div>
+                                <div class="column"><span style="color: ${ CompareEval.evaluate(player.Runes.DamageFire, config.getEntrySafe('Fire Damage').color) }">${ player.Runes.DamageFire }%</span>${ player.Class == 4 ? ` / <span style="color: ${ CompareEval.evaluate(player.Runes.Damage2Fire, config.getEntrySafe('Fire Damage').color) }">${ player.Runes.Damage2Fire }%</span>` : '' }</div>
+                            ` : '' }
+                            ${ player.Runes.DamageCold || player.Runes.Damage2Cold ? `
+                                <div class="left aligned column font-big">Cold Dmg</div>
+                                <div class="column"></div>
+                                <div class="column"><span style="color: ${ CompareEval.evaluate(player.Runes.DamageCold, config.getEntrySafe('Cold Damage').color) }">${ player.Runes.DamageCold }%</span>${ player.Class == 4 ? ` / <span style="color: ${ CompareEval.evaluate(player.Runes.Damage2Cold, config.getEntrySafe('Fire Damage').color) }">${ player.Runes.Damage2Cold }%</span>` : '' }</div>
+                            ` : '' }
+                            ${ player.Runes.DamageLightning || player.Runes.Damage2Lightning ? `
+                                <div class="left aligned column font-big">Lightning Dmg</div>
+                                <div class="column"></div>
+                                <div class="column"><span style="color: ${ CompareEval.evaluate(player.Runes.DamageLightning, config.getEntrySafe('Lightning Damage').color) }">${ player.Runes.DamageLightning }%</span>${ player.Class == 4 ? ` / <span style="color: ${ CompareEval.evaluate(player.Runes.Damage2Lightning, config.getEntrySafe('Fire Damage').color) }">${ player.Runes.Damage2Lightning }%</span>` : '' }</div>
                             ` : '' }
                             ${ player.Runes.ResistanceFire ? `
                                 <div class="left aligned column font-big">Fire Resist</div>

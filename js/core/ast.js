@@ -979,6 +979,24 @@ const SP_KEYWORD_MAPPING_0 = {
     'Armor': {
         expr: p => p.Armor
     },
+    'Damage Min': {
+        expr: p => p.Damage.Min
+    },
+    'Damage Max': {
+        expr: p => p.Damage.Max
+    },
+    'Damage Avg': {
+        expr: p => p.Damage.Avg
+    },
+    'Damage Min 2': {
+        expr: p => p.Damage2.Min
+    },
+    'Damage Max 2': {
+        expr: p => p.Damage2.Max
+    },
+    'Damage Avg 2': {
+        expr: p => p.Damage2.Avg
+    },
     'Space': {
         expr: p => 5 + p.Fortress.Treasury
     },
@@ -1124,6 +1142,10 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Runes.Damage,
         width: 130
     },
+    'Rune Damage 2': {
+        expr: p => p.Runes.Damage2,
+        width: 130
+    },
     'Rune Resist': {
         expr: p => p.Runes.Resistance,
         width: 130
@@ -1150,6 +1172,18 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Lightning Damage': {
         expr: p => p.Runes.DamageLightning,
+        width: 160
+    },
+    'Fire Damage 2': {
+        expr: p => p.Runes.Damage2Fire,
+        width: 130
+    },
+    'Cold Damage 2': {
+        expr: p => p.Runes.Damage2Cold,
+        width: 130
+    },
+    'Lightning Damage 2': {
+        expr: p => p.Runes.Damage2Lightning,
         width: 160
     },
     'Class': {
