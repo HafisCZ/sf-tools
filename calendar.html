@@ -252,7 +252,7 @@
                     entries.push({
                         index: i,
                         content: entry,
-                        ql: i + (Pets[i].Time == PetTime.Any ? 100 : 0) + (!possibleToday ? 1000 : 0) + (ghosted[i] ? 10000 : 0)
+                        ql: i + (Pets[i].Special ? 100 : 0) + (!possibleToday ? 1000 : 0) + (ghosted[i] ? 10000 : 0)
                     });
                 }
 
