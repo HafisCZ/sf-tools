@@ -562,6 +562,7 @@ self.addEventListener('message', function (message) {
         var win = players.Threshold;
         var food = 0;
         var at100 = 0;
+        var defeats = [];
 
         for (var pet of pets) {
             var level = 1;
@@ -599,6 +600,8 @@ self.addEventListener('message', function (message) {
                     at100++;
                 } else if (level == 0) {
                     break;
+                } else {
+                    defeats[fight.Target] = level;
                 }
             }
 
@@ -613,7 +616,8 @@ self.addEventListener('message', function (message) {
         self.postMessage({
             command: 'finished',
             results: food,
-            time: Date.now() - ts
+            time: Date.now() - ts,
+            tracking: defeats
         });
     }
 
