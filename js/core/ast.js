@@ -22,6 +22,7 @@ const AST_FUNCTIONS = {
     'trunc': (a) => Math.trunc(a[0]),
     'ceil': (a) => Math.ceil(a[0]),
     'floor': (a) => Math.floor(a[0]),
+    'round': (a) => isNaN(a[1]) ? Math.round(a[0]) : (Math.round(a[0] * Math.pow(10, a[1])) / Math.pow(10, a[1])),
     'abs': (a) => Math.abs(a[0]),
     'datetime': (a) => formatDate(a[0]),
     'number': (a) => Number.isInteger(a[0]) ? a[0] : a[0].toFixed(2),
