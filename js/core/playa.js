@@ -755,7 +755,8 @@ class SFPlayer {
         attribute.Items = this.getEquipmentItemBonus(attribute);
         attribute.Gems = this.getEquipmentGemBonus(attribute);
         attribute.Upgrades = this.getEquipmentUpgradeBonus(attribute);
-        attribute.Equipment = attribute.Items + attribute.Gems + attribute.Upgrades;
+        attribute.Equipment = attribute.Items + attribute.Gems;
+        attribute.ItemsBase = attribute.Items - attribute.Upgrades;
         attribute.Class = this.getClassBonus(attribute);
         attribute.Potion = this.getPotionBonus(attribute);
         attribute.Pet =  this.getPetBonus(attribute, pet);

@@ -808,6 +808,30 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Primary.Items,
         width: 110
     },
+    'Strength Base Items': {
+        expr: p => p.Strength.ItemsBase,
+        width: 110
+    },
+    'Dexterity Base Items': {
+        expr: p => p.Dexterity.ItemsBase,
+        width: 110
+    },
+    'Intelligence Base Items': {
+        expr: p => p.Intelligence.ItemsBase,
+        width: 110
+    },
+    'Constitution Base Items': {
+        expr: p => p.Constitution.ItemsBase,
+        width: 110
+    },
+    'Luck Base Items': {
+        expr: p => p.Luck.ItemsBase,
+        width: 110
+    },
+    'Attribute Base Items': {
+        expr: p => p.Primary.ItemsBase,
+        width: 110
+    },
     'Strength Upgrades': {
         expr: p => p.Strength.Upgrades,
         width: 110
