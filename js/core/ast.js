@@ -904,6 +904,24 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Primary.Potion,
         width: 110
     },
+    'Strength Pet Bonus': {
+        expr: p => p.Strength.PetBonus
+    },
+    'Dexterity Pet Bonus': {
+        expr: p => p.Dexterity.PetBonus
+    },
+    'Intelligence Pet Bonus': {
+        expr: p => p.Intelligence.PetBonus
+    },
+    'Constitution Pet Bonus': {
+        expr: p => p.Constitution.PetBonus
+    },
+    'Luck Pet Bonus': {
+        expr: p => p.Luck.PetBonus
+    },
+    'Attribute Pet Bonus': {
+        expr: p => p.Primary.PetBonus
+    },
     'Strength Class': {
         expr: p => p.Strength.Class,
         width: 110

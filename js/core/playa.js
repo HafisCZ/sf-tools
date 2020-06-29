@@ -760,6 +760,7 @@ class SFPlayer {
         attribute.Class = this.getClassBonus(attribute);
         attribute.Potion = this.getPotionBonus(attribute);
         attribute.Pet =  this.getPetBonus(attribute, pet);
+        attribute.PetBonus = pet;
         attribute.NextCost = calculateAttributePrice(attribute.Purchased ? attribute.Purchased : (attribute.Base - this.Achievements.Owned * 5));
         attribute.TotalCost = calculateTotalAttributePrice(attribute.Purchased ? attribute.Purchased : (attribute.Base - this.Achievements.Owned * 5));
         attribute.PotionSize = this.getPotionSize(attribute);
