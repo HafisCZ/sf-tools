@@ -1435,12 +1435,12 @@ class SFOwnPlayer extends SFPlayer {
         this.Fortress.Upgrades = dataType.skip(8).long();
         this.Fortress.Honor = dataType.long();
         this.Fortress.Rank = dataType.long();
-        dataType.skip(7); // skip
+        dataType.skip(8); // skip
         if (dataType.long() * 1000 + data.offset < data.timestamp) {
             this.Fortress.RaidWood += Math.trunc(this.Fortress.Wood / 10);
             this.Fortress.RaidStone += Math.trunc(this.Fortress.Stone / 10);
         }
-        dataType.skip(6); // skip
+        dataType.skip(5); // skip
         this.Fortress.Knights = dataType.long();
         dataType.skip(5); // skip
         this.Dungeons.Shadow = [
