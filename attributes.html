@@ -187,6 +187,10 @@
                                     <input type="text" id="xp-level">
                                 </div>
                                 <div class="field">
+                                    <label><span class="green">&bull;</span> Hydra heads</label>
+                                    <input type="text" id="xp-hydra">
+                                </div>
+                                <div class="field">
                                     <label><span class="blue">&bull;</span> Guild bonus %</label>
                                     <input type="text" id="xp-guild">
                                 </div>
@@ -195,8 +199,8 @@
                                     <input type="text" id="xp-book">
                                 </div>
                                 <div class="field">
-                                    <label><span class="green">&bull;</span> Hydra heads</label>
-                                    <input type="text" id="xp-hydra">
+                                    <label><span class="blue">&bull;</span> Experience Rune</label>
+                                    <input type="text" id="xp-runes">
                                 </div>
                                 <div class="field">
                                     <label><span class="orange">&bull;</span> Academy</label>
@@ -209,6 +213,10 @@
                                     <input type="text" disabled id="xp-next">
                                 </div>
                                 <div class="field">
+                                    <label><span class="green">&bull;</span> Daily mission</label>
+                                    <input type="text" disabled id="xp-daily">
+                                </div>
+                                <div class="field">
                                     <label><span class="blue">&bull;</span> Quest 1 Min</label>
                                     <input type="text" disabled id="xp-min1">
                                 </div>
@@ -216,16 +224,17 @@
                                     <label><span class="blue">&bull;</span> Quest 1 Max</label>
                                     <input type="text" disabled id="xp-max1">
                                 </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> Daily mission</label>
-                                    <input type="text" disabled id="xp-daily">
-                                </div>
+                                <div class="field"></div>
                                 <div class="field">
                                     <label><span class="orange">&bull;</span> Hourly Academy</label>
                                     <input type="text" disabled id="xp-hourly">
                                 </div>
                             </div>
                             <div class="six fields">
+                                <div class="field">
+                                    <label>Calendar 1 book</label>
+                                    <input type="text" disabled id="xp-calendar1">
+                                </div>
                                 <div class="field">
                                     <label>Arena</label>
                                     <input type="text" disabled id="xp-arena">
@@ -245,7 +254,14 @@
                                 </div>
                             </div>
                             <div class="six fields">
-                                <div class="field"></div>
+                                <div class="field">
+                                    <label>Calendar 2 books</label>
+                                    <input type="text" disabled id="xp-calendar2">
+                                </div>
+                                <div class="field">
+                                    <label>Wheel book</label>
+                                    <input type="text" disabled id="xp-wheel1">
+                                </div>
                                 <div class="field">
                                     <label><span class="blue">&bull;</span> Quest 3 Min</label>
                                     <input type="text" disabled id="xp-min3">
@@ -261,7 +277,14 @@
                                 </div>
                             </div>
                             <div class="six fields">
-                                <div class="field"></div>
+                                <div class="field">
+                                    <label>Calendar 3 books</label>
+                                    <input type="text" disabled id="xp-calendar3">
+                                </div>
+                                <div class="field">
+                                    <label>Wheel books</label>
+                                    <input type="text" disabled id="xp-wheel2">
+                                </div>
                                 <div class="field">
                                     <label><span class="blue">&bull;</span> Quest 4 Min</label>
                                     <input type="text" disabled id="xp-min4">
@@ -459,8 +482,8 @@
                 }
             });
 
-            $('#xp-level, #xp-guild, #xp-book, #xp-hydra, #xp-academy').on('change input', function () {
-                if (validate($('#xp-level'), $('#xp-guild'), $('#xp-book'), $('#xp-hydra'), $('#xp-academy'))) {
+            $('#xp-level, #xp-guild, #xp-book, #xp-hydra, #xp-academy, #xp-runes').on('change input', function () {
+                if (validate($('#xp-level'), $('#xp-guild'), $('#xp-book'), $('#xp-hydra'), $('#xp-runes'), $('#xp-academy'))) {
                     var level = Number($('#xp-level').val());
                     if (level < 1) level = 1;
                     else if (level > 599) level = 599;
@@ -481,6 +504,10 @@
                     if (academy > 20) academy = 20;
                     else if (academy < 1) academy = 1;
 
+                    var runes = Number($('#xp-runes').val());
+                    if (runes > 10) runes = 10;
+                    else if (runes < 0) runes = 0;
+
                     var xp = getExperienceRequired(level);
                     var base = xp / (1.5 + 0.75 * (level - 1));
                     var daily = (1 + 0.25 * hydra) * base;
@@ -489,6 +516,11 @@
                     var hourly = academy * hbase;
                     var capacity = academy * getAcademyMultiplier(academy) * hbase;
                     var time = capacity / hourly;
+                    var wheel1 = Math.ceil(base / 2);
+                    var wheel2 = Math.ceil(base);
+                    var calendar1 = Math.ceil(xp / 15);
+                    var calendar2 = Math.ceil(xp / 10);
+                    var calendar3 = Math.ceil(xp / 5);
 
                     var quest = (1 + guild / 100 + book / 100) * base / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
                     var min1 = quest;
@@ -506,6 +538,13 @@
                     $('#xp-daily').val(formatAsSpacedNumber(daily, ' '));
                     $('#xp-hourly').val(formatAsSpacedNumber(hourly, ' '));
                     $('#xp-capacity').val(formatAsSpacedNumber(capacity, ' '));
+
+                    $('#xp-wheel1').val(formatAsSpacedNumber(wheel1, ' '));
+                    $('#xp-wheel2').val(formatAsSpacedNumber(wheel2, ' '));
+
+                    $('#xp-calendar1').val(formatAsSpacedNumber(calendar1, ' '));
+                    $('#xp-calendar2').val(formatAsSpacedNumber(calendar2, ' '));
+                    $('#xp-calendar3').val(formatAsSpacedNumber(calendar3, ' '));
 
                     $('#xp-min1').val(formatAsSpacedNumber(min1, ' '));
                     $('#xp-min2').val(formatAsSpacedNumber(min2, ' '));
