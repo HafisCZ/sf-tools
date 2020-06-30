@@ -217,11 +217,11 @@
                                     <input type="text" disabled id="xp-daily">
                                 </div>
                                 <div class="field">
-                                    <label><span class="blue">&bull;</span> Quest 1 Min</label>
+                                    <label><span class="blue">&bull;</span> Quest Segment Min</label>
                                     <input type="text" disabled id="xp-min1">
                                 </div>
                                 <div class="field">
-                                    <label><span class="blue">&bull;</span> Quest 1 Max</label>
+                                    <label><span class="blue">&bull;</span> Quest Segment Max</label>
                                     <input type="text" disabled id="xp-max1">
                                 </div>
                                 <div class="field"></div>
@@ -239,14 +239,8 @@
                                     <label>Arena</label>
                                     <input type="text" disabled id="xp-arena">
                                 </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> Quest 2 Min</label>
-                                    <input type="text" disabled id="xp-min2">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> Quest 2 Max</label>
-                                    <input type="text" disabled id="xp-max2">
-                                </div>
+                                <div class="field"></div>
+                                <div class="field"></div>
                                 <div class="field"></div>
                                 <div class="field">
                                     <label><span class="orange">&bull;</span> Academy time</label>
@@ -262,14 +256,8 @@
                                     <label>Wheel book</label>
                                     <input type="text" disabled id="xp-wheel1">
                                 </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> Quest 3 Min</label>
-                                    <input type="text" disabled id="xp-min3">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> Quest 3 Max</label>
-                                    <input type="text" disabled id="xp-max3">
-                                </div>
+                                <div class="field"></div>
+                                <div class="field"></div>
                                 <div class="field"></div>
                                 <div class="field">
                                     <label><span class="orange">&bull;</span> Academy capacity</label>
@@ -285,14 +273,8 @@
                                     <label>Wheel books</label>
                                     <input type="text" disabled id="xp-wheel2">
                                 </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> Quest 4 Min</label>
-                                    <input type="text" disabled id="xp-min4">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> Quest 4 Max</label>
-                                    <input type="text" disabled id="xp-max4">
-                                </div>
+                                <div class="field"></div>
+                                <div class="field"></div>
                             </div>
                         </div>
                     </div>
@@ -522,15 +504,9 @@
                     var calendar2 = Math.ceil(xp / 10);
                     var calendar3 = Math.ceil(xp / 5);
 
-                    var quest = (1 + guild / 100 + book / 100) * base / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
+                    var quest = (1 + guild / 100 + book / 100 + runes / 100) * base / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
                     var min1 = quest;
-                    var min2 = quest * 2;
-                    var min3 = quest * 3;
-                    var min4 = quest * 4;
                     var max1 = min1 * 5;
-                    var max2 = min2 * 5;
-                    var max3 = min3 * 5;
-                    var max4 = min4 * 5;
 
                     $('#xp-time').val(Math.trunc(time) + ' hours ' + Math.trunc(60 * (time % 1)) + ' minutes');
                     $('#xp-next').val(formatAsSpacedNumber(xp, ' '));
@@ -547,14 +523,7 @@
                     $('#xp-calendar3').val(formatAsSpacedNumber(calendar3, ' '));
 
                     $('#xp-min1').val(formatAsSpacedNumber(min1, ' '));
-                    $('#xp-min2').val(formatAsSpacedNumber(min2, ' '));
-                    $('#xp-min3').val(formatAsSpacedNumber(min3, ' '));
-                    $('#xp-min4').val(formatAsSpacedNumber(min4, ' '));
-
                     $('#xp-max1').val(formatAsSpacedNumber(max1, ' '));
-                    $('#xp-max2').val(formatAsSpacedNumber(max2, ' '));
-                    $('#xp-max3').val(formatAsSpacedNumber(max3, ' '));
-                    $('#xp-max4').val(formatAsSpacedNumber(max4, ' '));
                 }
             });
 
