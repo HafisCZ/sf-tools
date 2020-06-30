@@ -32,6 +32,34 @@ const Preferences = new (class {
 
 })(window);
 
+const SharedPreferences = new (class {
+
+    constructor (window) {
+        this.storage = window.localStorage || window.sessionStorage || { };
+    }
+
+    set (key, object) {
+        this.storage[key] = JSON.stringify(object);
+    }
+
+    get (key, def) {
+        return this.storage[key] ? JSON.parse(this.storage[key]) : def;
+    }
+
+    exists (key) {
+        return this.storage[key] != null;
+    }
+
+    remove (key) {
+        delete this.storage[key];
+    }
+
+    keys () {
+        return Object.keys(this.storage);
+    }
+
+})(window);
+
 // IndexedDB Setup
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction  || window.msIDBTransaction;

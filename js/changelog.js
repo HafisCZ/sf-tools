@@ -1,4 +1,10 @@
 const CHANGELOG = {
+    'v3.589': [
+        'Templates are now available also in temporary sessions.',
+        'Added headers for item base attributes and pet bonus percentages.',
+        'Added <code>round</code> and <code>fixed</code> functions for custom expressions.',
+        'Fixed own raidable wood and stone.'
+    ],
     'v3.575': [
         'Weapon damage and elemental damage runes are now shown properly for Assassins within the detail screen.',
         'Added headers for weapon damage and separated elemental damage headers.'

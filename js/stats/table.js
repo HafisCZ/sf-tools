@@ -1728,19 +1728,19 @@ const Constants = {
 
 class Templates {
     static save (settings, label) {
-        Preferences.set(`templates/${ label }`, settings);
+        SharedPreferences.set(`templates/${ label }`, settings);
     }
 
     static remove (label) {
-        Preferences.remove(`templates/${ label }`);
+        SharedPreferences.remove(`templates/${ label }`);
     }
 
     static get () {
-        return Preferences.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
+        return SharedPreferences.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
     }
 
     static load (label) {
-        return new Settings(Preferences.get(`templates/${ label }`, ''));
+        return new Settings(SharedPreferences.get(`templates/${ label }`, ''));
     }
 }
 
