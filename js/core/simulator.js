@@ -1090,7 +1090,7 @@ class PetModel {
         var multb = (1 + Math.max(this.Attribute / 2, this.Attribute - target.getDefenseAtribute(this)) / 10);
         this.Damage = Math.trunc(multa * multb);
 
-        this.Critical = 2 * (1 + 0.05 * Math.max(0, this.Gladiator - target.Gladiator));
+        this.Critical = 2 * (1 + 0.05 * this.Gladiator);
         this.SkipChance = target.Class == MAGE ? 0 : (this.Class == WARRIOR ? 25 : (this.Class == MAGE ? 0 : 50));
         this.CriticalChance = Math.min(50, this.Attribute * 20 / 6 / target.Level);
     }
