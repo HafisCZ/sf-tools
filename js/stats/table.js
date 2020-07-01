@@ -2105,6 +2105,10 @@ class Settings {
                 if (!this.currentHeader.clean) {
                     merge(this.currentHeader, this.categoryShared);
                     merge(this.currentHeader, this.shared);
+                } else {
+                    merge(this.currentHeader, {
+                        visible: true
+                    });
                 }
 
                 this.currentCategory.h.push(this.currentHeader);
