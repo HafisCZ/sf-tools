@@ -540,7 +540,7 @@ class PlayerDetailFloatView extends View {
                             ${ player.Runes.Quality ? `
                                 <div class="left aligned column font-big">Item Quality</div>
                                 <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Quality, config.getEntrySafe('Rune Quality').color) }">${ player.Runes.Quality }%</div>
+                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Quality, config.getEntrySafe('Rune Quality').color) }">${ player.Runes.Quality }</div>
                             ` : '' }
                             ${ player.Runes.Health ? `
                                 <div class="left aligned column font-big">Bonus Health</div>
