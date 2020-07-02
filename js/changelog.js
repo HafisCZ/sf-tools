@@ -1,4 +1,9 @@
 const CHANGELOG = {
+    'v3.594': [
+        'You can now use header names with <code>player</code> and <code>reference</code> objects as arguments.<br/>You can look at an example <a href="https://pastebin.com/raw/5MVYXF2n">here</a>.',
+        'Option <code>clean</code> no longer requires you to disable invisibility.',
+        'Fixed incorrect sorting on several headers.'
+    ],
     'v3.589': [
         'Templates are now available also in temporary sessions.',
         'Added headers for item base attributes and pet bonus percentages.',

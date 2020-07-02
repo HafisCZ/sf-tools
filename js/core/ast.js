@@ -43,7 +43,7 @@ const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|
 class AST {
     constructor (string) {
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(AST_REGEXP).map(token => token.trim()).filter(token => token.length);
-        this.root = this.evalExpression();
+        this.root = this.evalExpression();console.log(this.root);
     }
 
     static format (string) {
@@ -533,6 +533,9 @@ class AST {
                     } else {
                         return undefined;
                     }
+                } else if (SP_KEYWORD_MAPPING_0[node.op] || SP_KEYWORD_MAPPING_1[node.op] || SP_KEYWORD_MAPPING_2[node.op]) {
+                    var expr = SP_KEYWORD_MAPPING_0[node.op] || SP_KEYWORD_MAPPING_1[node.op] || SP_KEYWORD_MAPPING_2[node.op];
+                    return expr.expr(... node.args.map(arg => this.eval(player, reference, environment, scope, arg)));
                 } else {
                     return undefined;
                 }
@@ -1234,6 +1237,7 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Class,
         format: (p, c, e, x) => PLAYER_CLASS[x],
         difference: false,
+        flip: true,
         statistics: false
     },
     'Rank': {
@@ -1251,6 +1255,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Fortress Rank': {
         expr: p => p.Fortress.Rank,
+        flip: true,
         width: 130
     },
     'Building': {
