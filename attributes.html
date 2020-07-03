@@ -273,7 +273,10 @@
                                     <label>Wheel books</label>
                                     <input type="text" disabled id="xp-wheel2">
                                 </div>
-                                <div class="field"></div>
+                                <div class="field">
+                                    <label>Habitat Boss</label>
+                                    <input type="text" disabled id="xp-habitat">
+                                </div>
                                 <div class="field"></div>
                             </div>
                         </div>
@@ -491,7 +494,8 @@
                     else if (runes < 0) runes = 0;
 
                     var xp = getExperienceRequired(level);
-                    var base = xp / (1.5 + 0.75 * (level - 1));
+                    var multiplier = 1.5 + 0.75 * (level - 1);
+                    var base = xp / multiplier;
                     var daily = (1 + 0.25 * hydra) * base;
                     var arena = base / 10;
                     var hbase = (base / 30) / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
@@ -503,6 +507,7 @@
                     var calendar1 = Math.ceil(xp / 15);
                     var calendar2 = Math.ceil(xp / 10);
                     var calendar3 = Math.ceil(xp / 5);
+                    var habitat = 6 * hbase * multiplier;
 
                     var quest = (1 + guild / 100 + book / 100 + runes / 100) * base / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
                     var min1 = quest;
@@ -524,6 +529,8 @@
 
                     $('#xp-min1').val(formatAsSpacedNumber(min1, ' '));
                     $('#xp-max1').val(formatAsSpacedNumber(max1, ' '));
+
+                    $('#xp-habitat').val(formatAsSpacedNumber(habitat, ' '));
                 }
             });
 
