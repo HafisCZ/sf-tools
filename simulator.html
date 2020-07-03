@@ -23,6 +23,12 @@
             const Database = {
                 Partial: true
             };
+
+            var threadArg = window.location.href.match(/^.*\?t=(\d+)$/);
+            var THREADS_OVERRIDE = 0;
+            if (threadArg && !isNaN(threadArg[1]) && Number(threadArg[1]) > 0) {
+                THREADS_OVERRIDE = Number(threadArg[1]);
+            }
         </script>
         <script src="js/core/playa.js"></script>
 
@@ -681,15 +687,23 @@
                     toggleAll(true);
 
                     var iterations = Number($('#sim-iterations').val()) || 10000;
-
                     var blockSize = 5;
-                    if (iterations < 500) {
-                        blockSize = 25;
-                    } else if (iterations < 5000) {
-                        blockSize = 10;
+                    var blocks = Math.ceil(players.length / blockSize);
+
+                    if (THREADS_OVERRIDE > 0) {
+                        blockSize = Math.ceil(players.length / THREADS_OVERRIDE);
+                        blocks = Math.ceil(players.length / blockSize);
+                    } else {
+                        blockSize = 5;
+                        if (iterations < 500) {
+                            blockSize = 25;
+                        } else if (iterations < 5000) {
+                            blockSize = 10;
+                        }
+
+                        blocks = Math.ceil(players.length / blockSize);
                     }
 
-                    var blocks = Math.ceil(players.length / blockSize);
                     var results = [];
                     var ladder = [];
                     var logs = [];
