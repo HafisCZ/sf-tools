@@ -257,7 +257,10 @@
                                     <input type="text" disabled id="xp-wheel1">
                                 </div>
                                 <div class="field"></div>
-                                <div class="field"></div>
+                                <div class="field">
+                                    <label>Twister (Level is enemy level)</label>
+                                    <input type="text" disabled id="xp-twister">
+                                </div>
                                 <div class="field"></div>
                                 <div class="field">
                                     <label><span class="orange">&bull;</span> Academy capacity</label>
@@ -266,7 +269,7 @@
                             </div>
                             <div class="six fields">
                                 <div class="field">
-                                    <label>Calendar 3 books / Dungeon</label>
+                                    <label>Calendar 3 books</label>
                                     <input type="text" disabled id="xp-calendar3">
                                 </div>
                                 <div class="field">
@@ -277,7 +280,10 @@
                                     <label>Habitat Boss</label>
                                     <input type="text" disabled id="xp-habitat">
                                 </div>
-                                <div class="field"></div>
+                                <div class="field">
+                                    <label>Dungeon (Level is enemy level)</label>
+                                    <input type="text" disabled id="xp-dungeon">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -508,6 +514,7 @@
                     var calendar2 = Math.ceil(xp / 10);
                     var calendar3 = Math.ceil(xp / 5);
                     var habitat = 6 * hbase * multiplier;
+                    var twister = Math.min(xp / 50, 30E6);
 
                     var quest = (1 + guild / 100 + book / 100 + runes / 100) * base / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
                     var min1 = quest;
@@ -531,6 +538,8 @@
                     $('#xp-max1').val(formatAsSpacedNumber(max1, ' '));
 
                     $('#xp-habitat').val(formatAsSpacedNumber(habitat, ' '));
+                    $('#xp-twister').val(formatAsSpacedNumber(twister, ' '));
+                    $('#xp-dungeon').val(formatAsSpacedNumber(calendar3, ' '));
                 }
             });
 
