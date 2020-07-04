@@ -619,10 +619,190 @@ self.addEventListener('message', function (message) {
             time: Date.now() - ts,
             tracking: defeats
         });
+    } else if (mode == 12345) {
+        var result = new GuildSimulator().simulate(player, players);
+
+        self.postMessage({
+            command: 'finished',
+            results: result,
+            time: Date.now() - ts
+        });
     }
 
     self.close();
 });
+
+class GuildSimulator {
+    simulate (guildA, guildB, iterations = 10000) {
+        var score = 0;
+
+        this.cache(guildA, guildB);
+
+        for (var i = 0; i < iterations; i++) {
+            score += this.battle();
+        }
+
+        return 100 * score / iterations;
+    }
+
+    cache (ga, gb) {
+        this.ga = ga.map(a => FighterModel.create(0, a));
+        this.gb = gb.map(b => FighterModel.create(1, b));
+
+        this.ga.sort((a, b) => a.Player.Level - b.Player.Level);
+        this.gb.sort((a, b) => a.Player.Level - b.Player.Level);
+
+        for (var player of this.ga) {
+            player.MaximumHealth = player.getHealth();
+        }
+
+        for (var player of this.gb) {
+            player.MaximumHealth = player.getHealth();
+        }
+    }
+
+    // Guild battle
+    battle () {
+        this.la = [ ... this.ga ];
+        this.lb = [ ... this.gb ];
+
+        // Reset health
+        for (var player of this.la) {
+            player.Health = player.MaximumHealth;
+        }
+
+        for (var player of this.lb) {
+            player.Health = player.MaximumHealth;
+        }
+
+        // Go through all players
+        while (this.la.length > 0 && this.lb.length > 0) {
+            this.a = this.la[0];
+            this.b = this.lb[0];
+
+            this.a.initialize(this.b);
+            this.b.initialize(this.a);
+
+            this.as = this.a.onFightStart(this.b);
+            this.bs = this.b.onFightStart(this.a);
+
+            if (this.fight() == 0) {
+                this.la.shift();
+            } else {
+                this.lb.shift();
+            }
+        }
+
+        // Return fight result
+        return (this.la.length > 0 ? this.la[0].Index : this.lb[0].Index) == 0;
+    }
+
+    // Fighter battle
+    fight () {
+        // Turn counter
+        this.turn = 0;
+
+        // Apply special damage
+        if (this.as !== false || this.bs !== false) {
+            this.turn++;
+
+            if (this.as > 0) {
+                this.b.Health -= this.as;
+            } else if (this.bs > 0) {
+                this.a.Health -= this.bs;
+            }
+        }
+
+        // Decide who starts first
+        if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
+            [this.a, this.b] = [this.b, this.a];
+        }
+
+        // Simulation
+        while (this.a.Health > 0 && this.b.Health > 0) {
+            var damage = this.attack(this.a, this.b);
+            if (this.a.DamageDealt) {
+                this.a.onDamageDealt(this.b, damage);
+            }
+
+            if (this.b.DamageTaken) {
+                if (this.b.onDamageTaken(this.a, damage) == 0) {
+                    break;
+                }
+            } else {
+                this.b.Health -= damage;
+                if (this.b.Health <= 0) {
+                    break;
+                }
+            }
+
+            if (this.a.Weapon2) {
+                var damage2 = this.attack(this.a, this.b, this.a.Weapon2);
+                if (this.a.DamageDealt) {
+                    this.a.onDamageDealt(this.b, damage2);
+                }
+
+                if (this.b.DamageTaken) {
+                    if (this.b.onDamageTaken(this.a, damage2) == 0) {
+                        break;
+                    }
+                } else {
+                    this.b.Health -= damage2;
+                    if (this.b.Health <= 0) {
+                        break;
+                    }
+                }
+            }
+
+            if (this.a.RoundEnded) {
+                this.a.onRoundEnded(() => {
+                    this.turn++;
+
+                    var damage3 = this.attack(this.a, this.b);
+                    if (this.a.DamageDealt) {
+                        this.a.onDamageDealt(this.b, damage3);
+                    }
+
+                    if (this.b.DamageTaken) {
+                        return this.b.onDamageTaken(this.a, damage3) > 0;
+                    } else {
+                        this.b.Health -= damage3;
+                        return this.b.Health >= 0
+                    }
+                });
+            }
+
+            [this.a, this.b] = [this.b, this.a];
+
+            if (this.turn > 100) break;
+        }
+
+        // Winner
+        return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
+    }
+
+    attack (source, target, weapon = source.Weapon1) {
+        var turn = this.turn++;
+        var rage = 1 + turn / 6;
+
+        var damage = 0;
+        var skipped = getRandom(target.SkipChance);
+        var critical = false;
+
+        if (!skipped) {
+            damage = rage * (Math.random() * (1 + weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
+
+            critical = getRandom(source.CriticalChance);
+            if (critical) {
+                damage *= weapon.Critical;
+            }
+
+            damage = Math.ceil(damage);
+        }
+
+        return damage;
+    }
+}
 
 class FightSimulator {
     // Fight group
@@ -668,7 +848,7 @@ class FightSimulator {
     }
 
     // Fight 1vAl only
-    simulateMultiple (player, players, iterations = 100000, logs) {
+    simulateMultiple (player, players, iterations, logs) {
         this.logs = logs;
         var scores = [];
         for (var i = 0; i < player.length; i++) {
@@ -739,7 +919,7 @@ class FightSimulator {
     }
 
     // Fight 1v1s only
-    simulateSingle (player, players, iterations = 100000, logs) {
+    simulateSingle (player, players, iterations, logs) {
         this.logs = logs;
         var scores = [];
         for (var i = 0; i < players.length; i++) {

@@ -682,15 +682,14 @@ class TableInstance {
                 for (var column of this.flat) {
                     if (column.order) {
                         var diff = undefined;
+                        var v = column.expr(item.player, item.compare, this.settings);
 
-                        if (column.difference && !exact) {
-                            var v = column.expr(item.player, item.compare, this.settings);
+                        if (!exact) {
                             var c = column.expr(item.compare, item.compare, this.settings);
-
                             diff = column.flip ? (c - v) : (v - c);
                         }
 
-                        entry.sorting[column.sortkey] = column.order(item.player, item.compare, this.settings, { difference: diff });
+                        entry.sorting[column.sortkey] = column.order(item.player, item.compare, this.settings, v, { difference: diff });
                     } else {
                         entry.sorting[column.sortkey] = column.sort(item.player, item.compare);
                     }
@@ -1520,8 +1519,8 @@ const SettingsCommands = [
         var [ , key, arg ] = this.match(string);
         var ast = new AST(arg);
         if (ast.isValid()) {
-            root.setLocalVariable('order', (player, reference, env, val) => {
-                return ast.eval(player, reference, env, val);
+            root.setLocalVariable('order', (player, reference, env, val, extra) => {
+                return ast.eval(player, reference, env, val, extra);
             });
         }
     }, function (string) {
