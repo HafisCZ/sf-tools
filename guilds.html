@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Guild Simulator</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/html2canvas.js"></script>
+
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/components/state.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+
+        <script>
+            // To bypass including core
+            const Database = {
+                Partial: true
+            };
+        </script>
+
+        <script src="js/core/playa.js"></script>
+        <script src="js/core/simulator.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+
+        <style>
+            .bordered .fields:last-of-type {
+                margin-bottom: 0;
+            }
+
+            .bordered {
+                padding: 0.5em;
+                margin-bottom: 0.5em;
+            }
+
+            .bordered-simple {
+                margin-bottom: 0.35em;
+                padding-top: 0.5em !important;
+                padding-bottom: 0.5em !important;
+                margin-right: 1em;
+                margin-left: 1em;
+            }
+
+            .bnone {
+                border: 1px solid transparent;
+            }
+
+            .bone {
+                border: 1px solid orange;
+            }
+
+            .btwo {
+                border: 1px solid purple;
+            }
+
+            .bthree {
+                border: 1px solid blue;
+            }
+
+            .bfour {
+                border: 1px solid red;
+            }
+
+            .bfive {
+                border: 1px solid green;
+            }
+
+            .bsix {
+                border: 1px solid pink;
+            }
+
+            .spaced {
+                margin-top: 2em !important;
+            }
+
+            .selectable {
+                -moz-user-select: -moz-none;
+                -khtml-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                padding-bottom: 0.25em !important;
+                padding-top: 0.25em !important;
+                height: 4em;
+            }
+
+            .selectable div {
+                padding: 0 !important;
+            }
+
+            .selectable-header div {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
+            .selected {
+                background-color: rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+            }
+
+            .nselected {
+                cursor: pointer;
+            }
+
+            #sim-players1, #sim-players2 {
+                min-height: 30em;
+                align-content: flex-start;
+            }
+        </style>
+    </head>
+    <body class="margin-none-bottom">
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item">SFTools</div>
+            <div class="right menu">
+                <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
+            </div>
+        </div>
+
+        <div class="ui main container">
+            <!-- Header -->
+            <div class="ui five columns middle aligned grid">
+                <div class="five wide column"></div>
+                <div class="six wide column">
+                    <h1 class="ui centered header">Guild Battle Simulator</h1>
+                </div>
+                <div class="five wide column"></div>
+            </div>
+            <div class="ui two columns grid">
+                <!-- Player edit field -->
+                <div class="column">
+                    <div class="ui form" id="sim-editor">
+                        <div class="bordered bone">
+                            <div class="field">
+                                <label>Name</label>
+                                <input class="text-center" type="text" data-path="Name" data-type="string">
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Class</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" value="1" data-type="number1" data-path="Class">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu" id="sim-classlist"></div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Level</label>
+                                    <input class="text-center" type="text" data-path="Level">
+                                </div>
+                            </div>
+                            <div class="five fields">
+                                <div class="field">
+                                    <label>Str</label>
+                                    <input class="text-center" type="text" data-path="Strength.Total">
+                                </div>
+                                <div class="field">
+                                    <label>Dex</label>
+                                    <input class="text-center" type="text" data-path="Dexterity.Total">
+                                </div>
+                                <div class="field">
+                                    <label>Int</label>
+                                    <input class="text-center" type="text" data-path="Intelligence.Total">
+                                </div>
+                                <div class="field">
+                                    <label>Con</label>
+                                    <input class="text-center" type="text" data-path="Constitution.Total">
+                                </div>
+                                <div class="field">
+                                    <label>Lck</label>
+                                    <input class="text-center" type="text" data-path="Luck.Total">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered btwo">
+                            <div class="five fields">
+                                <div class="field">
+                                    <label>Min</label>
+                                    <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin">
+                                </div>
+                                <div class="field">
+                                    <label>Max</label>
+                                    <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax">
+                                </div>
+                                <div class="field">
+                                    <label>Crit</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" value="false" data-path="Items.Wpn1.HasEnchantment" data-type="bool">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="false">No</div>
+                                            <div class="item" data-value="true">Yes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Rune</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" value="0" data-type="number" data-path="Items.Wpn1.AttributeTypes.2">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">None</div>
+                                            <div class="item" data-value="40">Fire</div>
+                                            <div class="item" data-value="41">Cold</div>
+                                            <div class="item" data-value="42">Lightning</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label></br></label>
+                                    <input class="text-center" type="text" data-path="Items.Wpn1.Attributes.2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bthree" data-optional="Weapon2">
+                            <div class="five fields">
+                                <div class="field">
+                                    <label>Min</label>
+                                    <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin">
+                                </div>
+                                <div class="field">
+                                    <label>Max</label>
+                                    <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax">
+                                </div>
+                                <div class="field">
+                                    <label>Crit</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" value="false" data-path="Items.Wpn2.HasEnchantment" data-type="bool">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="false">No</div>
+                                            <div class="item" data-value="true">Yes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Rune</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" data-type="number" value="0" data-path="Items.Wpn2.AttributeTypes.2">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">None</div>
+                                            <div class="item" data-value="40">Fire</div>
+                                            <div class="item" data-value="41">Cold</div>
+                                            <div class="item" data-value="42">Lightning</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label></br></label>
+                                    <input class="text-center" type="text" data-path="Items.Wpn2.Attributes.2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bfour">
+                            <div class="four fields">
+                                <div class="field">
+                                    <label>Armor</label>
+                                    <input class="text-center" type="text" data-path="Armor">
+                                </div>
+                                <div class="field">
+                                    <label>Fire</label>
+                                    <input class="text-center" type="text" data-path="Runes.ResistanceFire">
+                                </div>
+                                <div class="field">
+                                    <label>Cold</label>
+                                    <input class="text-center" type="text" data-path="Runes.ResistanceCold">
+                                </div>
+                                <div class="field">
+                                    <label>Lightning</label>
+                                    <input class="text-center" type="text" data-path="Runes.ResistanceLightning">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bfive">
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Portal Health</label>
+                                    <input class="text-center" type="text" data-path="Dungeons.Player">
+                                </div>
+                                <div class="field">
+                                    <label>Rune Health</label>
+                                    <input class="text-center" type="text" data-path="Runes.Health">
+                                </div>
+                                <div class="field">
+                                    <label>Life Potion</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" value="0" data-type="number" data-path="Potions.Life">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="0">No</div>
+                                            <div class="item" data-value="25">Yes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bsix">
+                            <div class="three fields">
+                                <div class="field">
+                                    <label>Portal Damage</label>
+                                    <input class="text-center" type="text" data-path="Dungeons.Group">
+                                </div>
+                                <div class="field">
+                                    <label>Gladiator (0 - 15)</label>
+                                    <input class="text-center" type="text" data-path="Fortress.Gladiator">
+                                </div>
+                                <div class="field">
+                                    <label>Shadow of the Cowboy</label>
+                                    <div class="ui selection compact dropdown">
+                                        <input class="text-center" type="hidden" value="false" data-path="Items.Hand.HasEnchantment" data-type="bool">
+                                        <i class="dropdown icon"></i>
+                                        <div class="default text"></div>
+                                        <div class="menu">
+                                            <div class="item" data-value="false">No</div>
+                                            <div class="item" data-value="true">Yes</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Player list -->
+                <div class="column">
+                    <div class="ui grid">
+                        <div class="css-small-row row">
+                            <div class="four wide column">
+                                <button class="ui fluid basic icon button" data-position="bottom center" data-tooltip="Copy current" id="sim-copy"><i class="outline copy icon"></i> 1</button>
+                            </div>
+                        </div>
+                        <div class="css-small-row row">
+                            <div class="four wide column">
+                                <button class="ui fluid button" type="submit" id="sim-save">Save</button>
+                            </div>
+                            <div class="four wide column">
+                                <div class="ui small form">
+                                    <div class="field" data-tooltip="Amount of threads. Using more threads will improve the accuracy. Each thread equals to 5000 iterations.">
+                                        <input class="text-center fluid" type="text" id="sim-iterations" value="4">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="four wide column">
+                                <button class="ui fluid button" type="submit" id="sim-run">Simulate</button>
+                            </div>
+                            <div class="four wide column">
+                                <div class="ui small form">
+                                    <input class="text-center fluid" disabled type="text" id="sim-results" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row middle aligned">
+                            <div class="two wide column">
+                                <button class="ui tiny basic icon button" type="submit" id="sim-add1" data-position="bottom center" data-tooltip="Add to guild A"><i class="arrow right icon"></i></button>
+                            </div>
+                            <div class="four wide column">
+                                <h3 class="ui text-center header">Guild A</h3>
+                            </div>
+                            <div class="two wide column">
+                                <button class="ui tiny basic icon button" data-position="bottom center" data-tooltip="Copy" id="sim-copyall1"><i class="copy icon"></i></button>
+                            </div>
+                            <div class="two wide column">
+                                <button class="ui tiny basic icon button" type="submit" id="sim-add2" data-position="bottom center" data-tooltip="Add to guild B"><i class="arrow right icon"></i></button>
+                            </div>
+                            <div class="four wide column">
+                                <h3 class="ui text-center header">Guild B</h3>
+                            </div>
+                            <div class="two wide column">
+                                <button class="ui tiny basic icon button" data-position="bottom center" data-tooltip="Copy" id="sim-copyall2"><i class="copy icon"></i></button>
+                            </div>
+                        </div>
+                        <div class="row padding-none">
+                            <div class="two wide text-center column">
+                                Class
+                            </div>
+                            <div class="two wide column">
+                                Level
+                            </div>
+                            <div class="three wide column">
+                                Name
+                            </div>
+                            <div class="one wide column">
+
+                            </div>
+                            <div class="two wide text-center column">
+                                Class
+                            </div>
+                            <div class="two wide column">
+                                Level
+                            </div>
+                            <div class="three wide column">
+                                Name
+                            </div>
+                            <div class="one wide column">
+
+                            </div>
+                        </div>
+                        <div class="row padding-none">
+                            <div class="sixteen wide column">
+                                <hr/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="eight wide column">
+                                <div class="ui middle aligned grid" id="sim-players1">
+
+                                </div>
+                            </div>
+                            <div class="eight wide column">
+                                <div class="ui middle aligned grid" id="sim-players2">
+
+                                </div>
+                            </div>
+                        <div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            // Init
+            $('#sim-classlist').html('');
+            for (var [ id, name ] of Object.entries(ClassMap)) {
+                $('#sim-classlist').append(`<div class="item ${ hasImplementation(id) ? '' : 'disabled' }" data-value="${ id }">${ name }</div>`);
+            }
+            if (Object.getOwnPropertyNames(ClassMapExt).length > 0) {
+                $('#sim-classlist').append('<div class="ui divider"></div>');
+            }
+            for (var [ id, name ] of Object.entries(ClassMapExt)) {
+                $('#sim-classlist').append(`<div class="item ${ hasImplementation(id) ? '' : 'disabled' }" data-value="${ id }">${ name }</div>`);
+            }
+
+            $('[data-path="Class"]').change(function () {
+                $('.dropdown').dropdown();
+                $('[data-optional="Weapon2"]').toggle($(this).val() == 4);
+            }).trigger('change');
+            $('[data-path]').on('input', () => valid());
+
+            // Fill and read forms
+            function fill (object) {
+                $('[data-path]').each(function () {
+                    $(this).val(getObjectAt(object, $(this).attr('data-path')));
+                });
+
+                $('[data-path="Class"]').trigger('change');
+            }
+
+            function clear () {
+                $('[data-path]').each(function () {
+                    var type = $(this).attr('data-type');
+                    if (type == 'bool') {
+                        $(this).val('false');
+                    } else if (type == 'number') {
+                        $(this).val('0');
+                    } else if (type == 'number1') {
+                        $(this).val('1');
+                    } else {
+                        $(this).val('');
+                    }
+                });
+
+                $('[data-path="Class"]').trigger('change');
+            }
+
+            function toggleAll (dis) {
+                if (dis) {
+                    $('.ui.main.container').addClass('frozen');
+                } else {
+                    $('.ui.main.container').removeClass('frozen');
+                }
+            }
+
+            function read () {
+                var object = new SFPlayer();
+                $('#sim-editor').find('[data-path]').each(function () {
+                    var key = $(this).attr('data-path');
+                    var type = $(this).attr('data-type');
+                    var val = $(this).val();
+
+                    if (type == 'bool') {
+                        setObjectAt(object, key, val == 'true');
+                    } else if (type == 'string') {
+                        setObjectAt(object, key, val);
+                    } else {
+                        setObjectAt(object, key, Number(val));
+                    }
+                });
+                return object;
+            }
+
+            function valid () {
+                return $('[data-path]').toArray().reduce((errors, element) => {
+                    var key = $(element).attr('data-path');
+                    var type = $(element).attr('data-type');
+                    var val = $(element).val();
+
+                    if (type == 'bool' || type == 'string' || !isNaN(val)) {
+                        $(element).parent('.field').removeClass('error');
+                        return errors;
+                    } else {
+                        $(element).parent('.field').addClass('error');
+                        return errors + 1;
+                    }
+                }, 0) == 0;
+            }
+
+            // On paste event handler
+            $('#sim-editor input').on('paste', function (event) {
+                event.stopPropagation();
+            });
+
+            // Helper function
+            function merge (a, b) {
+                for (var [k, v] of Object.entries(b)) {
+                    if (!a.hasOwnProperty(k)) a[k] = b[k];
+                }
+
+                return a;
+            }
+
+            var players1 = [];
+            var players2 = [];
+
+            var selected = -1;
+            var iterator = 0;
+
+            var pasteTarget = 0;
+
+            $(document.body).on('paste', event => handlePasteEvent(event, pasteTarget));
+
+            $('#sim-players1').on('click', () => {
+                pasteTarget = 0;
+            });
+
+            $('#sim-players2').on('click', () => {
+                pasteTarget = 1;
+            });
+
+            function handlePasteEvent (event, id) {
+                try {
+                    var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
+                    if (Array.isArray(data)) {
+                        if (id == 0) {
+                            players1 = [];
+                        } else {
+                            players2 = [];
+                        }
+
+                        var players = id == 0 ? players1 : players2;
+
+                        for (var d of data) {
+                            if (d.Class) {
+                                players.push({
+                                    player: merge(new SFPlayer(), d),
+                                    index: iterator++
+                                });
+                            } else {
+                                var player = d.own ? new SFOwnPlayer(d) : new SFOtherPlayer(d);
+                                player.Fortress.Gladiator = 0;
+
+                                players.push({
+                                    player: merge(new SFPlayer(), player),
+                                    index: iterator++
+                                });
+                            }
+                        }
+
+                        show();
+                    } else {
+                        if (data.Class) {
+                            fill(data);
+                        } else {
+                            var player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
+                            player.Fortress.Gladiator = 0;
+
+                            fill(player);
+                        }
+                    }
+                } catch (e) {
+                    console.info(e);
+                }
+            }
+
+            $('#sim-save').click(function () {
+                if (valid()) {
+                    if (selected != -1) {
+                        var index = players1.findIndex(p => p.index == selected);
+                        if (index != -1) {
+                            players1[index].player = read();
+                        } else {
+                            index = players2.findIndex(p => p.index == selected);
+                            if (index != -1) {
+                                players2[index].player = read();
+                            }
+                        }
+
+                        show();
+                    }
+                }
+            });
+
+            $('#sim-copy').click(function () {
+                copy(read());
+            });
+
+            $('#sim-copyall1').click(function () {
+                copy(players1.map(p => p.player));
+            });
+
+            $('#sim-copyall2').click(function () {
+                copy(players2.map(p => p.player));
+            });
+
+            function copy (content) {
+                const element = document.createElement('textarea');
+                element.value = JSON.stringify(content);
+                document.body.appendChild(element);
+                element.select();
+                document.execCommand('copy');
+                document.body.removeChild(element);
+            }
+
+            $('#sim-add1').click(function () {
+                if (valid()) {
+                    var player = read();
+
+                    if (player.Name == '') {
+                        player.Name = `Player ${ players1.length + 1 }`;
+                    }
+
+                    selected = iterator++;
+
+                    players1.push({
+                        player: player,
+                        index: selected
+                    });
+
+                    clear();
+                    show();
+                }
+            });
+
+            $('#sim-add2').click(function () {
+                if (valid()) {
+                    var player = read();
+
+                    if (player.Name == '') {
+                        player.Name = `Player ${ players2.length + 1 }`;
+                    }
+
+                    selected = iterator++;
+
+                    players2.push({
+                        player: player,
+                        index: selected
+                    });
+
+                    clear();
+                    show();
+                }
+            });
+
+            function show () {
+                players1.sort((a, b) => b.player.Level - a.player.Level);
+                players2.sort((a, b) => b.player.Level - a.player.Level);
+
+                var content1 = '';
+                var content2 = '';
+
+                for (var i = 0; i < players1.length; i++) {
+                    var player = players1[i].player;
+                    var index = players1[i].index;
+
+                    content1 += `
+                        <div class="row selectable ${ index == selected ? 'selected' : 'nselected' }" data-index="${ index }">
+                            <div class="four wide text-center column">
+                                <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
+                            </div>
+                            <div class="three wide text-center column">
+                                <b>${ player.Level }</b>
+                            </div>
+                            <div class="one wide column"></div>
+                            <div class="six wide column">
+                                <b>${ player.Name }</b>
+                            </div>
+                            <div class="two wide text-center column">
+                                <i class="trash right aligned alternate glow outline icon" data-index-trash="${ index }"></i>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                for (var i = 0; i < players2.length; i++) {
+                    var player = players2[i].player;
+                    var index = players2[i].index;
+
+                    content2 += `
+                        <div class="row selectable ${ index == selected ? 'selected' : 'nselected' }" data-index="${ index }">
+                            <div class="four wide text-center column">
+                                <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
+                            </div>
+                            <div class="three wide text-center column">
+                                <b>${ player.Level }</b>
+                            </div>
+                            <div class="one wide column"></div>
+                            <div class="six wide column">
+                                <b>${ player.Name }</b>
+                            </div>
+                            <div class="two wide text-center column">
+                                <i class="trash right aligned alternate glow outline icon" data-index-trash="${ index }"></i>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                $('#sim-players1').html(content1);
+                $('#sim-players2').html(content2);
+
+                $('[data-index]').click(function () {
+                    selected = Number($(this).attr('data-index'));
+
+                    var obj = players1.find(p => p.index == selected);
+                    if (obj) {
+                        fill(obj.player);
+                        show();
+                    } else {
+                        obj = players2.find(p => p.index == selected);
+                        if (obj) {
+                            fill(obj.player);
+                            show();
+                        }
+                    }
+                });
+
+                $('[data-index-trash]').click(function () {
+                    var sel = Number($(this).attr('data-index-trash'));
+
+                    if (sel == selected) {
+                        selected = -1;
+                        clear();
+                    }
+
+                    var obj = players1.findIndex(p => p.index == sel);
+                    if (obj >= 0) {
+                        players1.splice(obj, 1);
+                    } else {
+                        obj = players2.findIndex(p => p.index == sel);
+                        if (obj >= 0) {
+                            players2.splice(obj, 1);
+                        }
+                    }
+
+                    show();
+                });
+            }
+
+            // Run simulation
+            $('#sim-run').click(function () {
+                if (players1.length > 0 && players2.length > 0) {
+                    $('#sim-results').val('');
+
+                    toggleAll(true);
+
+                    var threads = Number($('#sim-iterations').val()) || 4;
+
+                    var finished = 0;
+                    var chance = 0;
+
+                    for (var i = 0; i < threads; i++) {
+                        var worker = new Worker('js/core/simulator.js');
+
+                        worker.addEventListener('message', function (message) {
+                            if (message.data.command == 'finished') {
+                                finished += 1;
+                                chance += message.data.results;
+
+                                if (finished == threads) {
+                                    toggleAll();
+                                    $('#sim-results').val((chance / threads).toFixed(2) + '%');
+                                }
+                            }
+                        }, false);
+
+                        worker.postMessage({
+                            mode: 12345,
+                            player: players1,
+                            players: players2,
+                            iterations: 5000
+                        });
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

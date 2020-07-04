@@ -336,12 +336,12 @@ class BattlemageModel extends FighterModel {
     onFightStart (target) {
         if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE || target.Player.Class == NECROMANCER) {
             return 0;
-        } else if (target.Player.Level < this.Player.Level + 10 || target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER) {
+        } else if (target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER) {
             return Math.ceil(target.TotalHealth / 3);
         } else if (target.Player.Class == WARRIOR) {
-            return Math.ceil(this.TotalHealth / 4);
+            return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 4));
         } else if (target.Player.Class == SCOUT || target.Player.Class == ASSASSIN) {
-            return Math.ceil(this.TotalHealth / 5);
+            return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 5));
         } else {
             return 0;
         }
@@ -620,7 +620,7 @@ self.addEventListener('message', function (message) {
             tracking: defeats
         });
     } else if (mode == 12345) {
-        var result = new GuildSimulator().simulate(player, players);
+        var result = new GuildSimulator().simulate(player, players, iterations);
 
         self.postMessage({
             command: 'finished',
@@ -646,8 +646,8 @@ class GuildSimulator {
     }
 
     cache (ga, gb) {
-        this.ga = ga.map(a => FighterModel.create(0, a));
-        this.gb = gb.map(b => FighterModel.create(1, b));
+        this.ga = ga.map(a => FighterModel.create(0, a.player));
+        this.gb = gb.map(b => FighterModel.create(1, b.player));
 
         this.ga.sort((a, b) => a.Player.Level - b.Player.Level);
         this.gb.sort((a, b) => a.Player.Level - b.Player.Level);
