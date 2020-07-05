@@ -166,7 +166,10 @@
                                     <label>Fortress Reroll</label>
                                     <input type="text" disabled id="gold-reroll">
                                 </div>
-                                <div class="field"></div>
+                                <div class="field">
+                                    <label>Tower (Level is enemy level)</label>
+                                    <input type="text" disabled id="gold-towerboss">
+                                </div>
                                 <div class="field">
                                     <label>Witch Potion</label>
                                     <input type="text" disabled id="gold-witchpot">
@@ -607,10 +610,13 @@
                     var hourglass1 = Math.min(375000, hourglass10 >= 375000 ? hourglass10 : potion / 6);
 
                     var goldbar3 = dice * 25;
-                    var goldbar1 = goldbar3 / (10 / 3);
+                    var goldbar1 = 3 * goldbar3 / 10;
+
+                    var towerboss = (9 * getGoldCurve(level + 2 ) / 100);
 
                     $('#gold-bar').val(goldbar1 >= 999 ? formatAsSpacedNumber(goldbar1, ' ') : roundShort(goldbar1));
                     $('#gold-bar3').val(goldbar3 >= 999 ? formatAsSpacedNumber(goldbar3, ' ') : roundShort(goldbar3));
+                    $('#gold-towerboss').val(towerboss >= 999 ? formatAsSpacedNumber(towerboss, ' ') : roundShort(towerboss));
 
                     $('#gold-pot10').val(pot10 >= 999 ? formatAsSpacedNumber(pot10, ' ') : roundShort(pot10));
                     $('#gold-pot15').val(pot15 >= 999 ? formatAsSpacedNumber(pot15, ' ') : roundShort(pot15));
