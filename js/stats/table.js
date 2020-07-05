@@ -840,28 +840,50 @@ class TableInstance {
         // Statistics block
         var statistics = '';
         if (showSummary) {
-            statistics += `
-                <tr>
-                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                    ${ join(this.flat, (h, i) => `<td colspan="${ h.span }">${ h.statistics && h.generators.statistics ? h.name : '' }</td>`) }
-                </tr>
-                <tr>
-                    <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                    <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
-                </tr>
-                <tr>
-                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Minimum</td>
-                    ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => Math.min(... ar)) : `<td colspan=${ h.span }></td>`) }
-                </tr>
-                <tr>
-                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Average</td>
-                    ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => Math.trunc(ar.reduce((a, b) => a + b, 0) / ar.length)) : `<td colspan=${ h.span }></td>`) }
-                </tr>
-                <tr>
-                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Maximum</td>
-                    ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => Math.max(... ar)) : `<td colspan=${ h.span }></td>`) }
-                </tr>
-            `;
+            if (this.settings.stats.length > 0) {
+                statistics += `
+                    <tr>
+                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                        ${ join(this.flat, (h, i) => `<td colspan="${ h.span }">${ h.statistics && h.generators.statistics ? h.name : '' }</td>`) }
+                    </tr>
+                    <tr>
+                        <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                        <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
+                    </tr>
+                `;
+
+                for (var stat of this.settings.stats) {
+                    statistics += `
+                        <tr>
+                            <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ stat.name }</td>
+                            ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => stat.ast.eval(null, null, this.settings, ar)) : `<td colspan=${ h.span }></td>`) }
+                        </tr>
+                    `;
+                }
+            } else {
+                statistics += `
+                    <tr>
+                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                        ${ join(this.flat, (h, i) => `<td colspan="${ h.span }">${ h.statistics && h.generators.statistics ? h.name : '' }</td>`) }
+                    </tr>
+                    <tr>
+                        <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                        <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
+                    </tr>
+                    <tr>
+                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Minimum</td>
+                        ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => Math.min(... ar)) : `<td colspan=${ h.span }></td>`) }
+                    </tr>
+                    <tr>
+                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Average</td>
+                        ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => Math.trunc(ar.reduce((a, b) => a + b, 0) / ar.length)) : `<td colspan=${ h.span }></td>`) }
+                    </tr>
+                    <tr>
+                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Maximum</td>
+                        ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => Math.max(... ar)) : `<td colspan=${ h.span }></td>`) }
+                    </tr>
+                `;
+            }
         }
 
         // Content spacers
@@ -1407,6 +1429,17 @@ const SettingsCommands = [
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) }`;
     }),
+    // Create new statistics row
+    new SettingsCommand(/^(statistics) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
+        var [ , key, name, a ] = this.match(string);
+        var ast = new AST(a);
+        if (ast.isValid()) {
+            root.addExtraStatistics(name, ast);
+        }
+    }, function (string) {
+        var [ , key, name, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a) }`;
+    }),
     // Local Shared
     // width - Width of a column
     new SettingsCommand(/^(width) ((@?)(\S+))$/, function (root, string) {
@@ -1864,6 +1897,7 @@ class Settings {
         this.cvars = {};
         this.func = {};
         this.extras = [];
+        this.stats = [];
 
         this.globals = {
             outdated: true,
@@ -2048,6 +2082,13 @@ class Settings {
             name: name,
             ast: ast
         };
+    }
+
+    addExtraStatistics (name, ast) {
+        this.stats.push({
+            name: name,
+            ast: ast
+        });
     }
 
     pushExtraRow () {
