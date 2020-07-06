@@ -98,7 +98,7 @@
             }
 
             .footer-repo {
-                height: 2.5em;
+                height: 4.1em;
                 width: 100%;
                 position: fixed;
                 bottom: 0;
@@ -305,35 +305,53 @@
             </div>
         </div>
         <script>
+            const VERSION_MAJOR = 3;
+
             const months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
             function formatDate (date) {
                 return `${ date.getDate() }. ${ months[date.getMonth()] } ${ date.getFullYear() } ${ date.getHours() }:${ date.getMinutes() < 10 ? '0' : '' }${ date.getMinutes() }`;
             }
 
             var item = localStorage['version'] ? JSON.parse(localStorage['version']) : { expire: 0 };
-            if (item.expire < Date.now()) {
+            if (item.expire < Date.now()) {console.log('yes');
                 $.ajax(
                     "https://api.github.com/repos/hafiscz/sf-tools/commits",
                     {
                         data: {
                             per_page: 1
                         },
-                        dataType: "jsonp",
-                        type: "get"
+                        dataType: 'jsonp',
+                        type: 'get'
                     }
                 ).then(function (response) {
                     var date = new Date(response.data[0].commit.author.date);
                     var message = response.data[0].commit.message;
-                    localStorage['version'] = JSON.stringify({
-                        timestamp: date.getTime(),
-                        message: message,
-                        expire: Date.now() + 1800000
-                    });
-                    $(".footer-repo").html(`Last updated on ${ formatDate(date) } - ${ message }`);
+                    var sha = response.data[0].sha;
+
+                    $.ajax(
+                        `https://api.github.com/repos/hafiscz/sf-tools/compare/88b32f42210cb848c77b7891f6e47a0000876ed4...${ sha }`,
+                        {
+                            data: {
+                                per_page: 1
+                            },
+                            dataType: 'jsonp',
+                            type: 'get'
+                        }
+                    ).then(function (response2) {
+                        var version = response2.data.total_commits;
+
+                        localStorage['version'] = JSON.stringify({
+                            timestamp: date.getTime(),
+                            message: message,
+                            version: version,
+                            expire: Date.now() + 1800000
+                        });
+                        $(".footer-repo").html(`v${ VERSION_MAJOR }.${ version }<br/>Last updated on ${ formatDate(date) } - ${ message }`);
+                    })
                 });
             } else {
                 var obj = JSON.parse(localStorage['version']);
-                $(".footer-repo").html(`Last updated on ${ formatDate(new Date(obj.timestamp)) } - ${ obj.message }`);
+                $(".footer-repo").html(`v${ VERSION_MAJOR }.${ obj.version }<br/>Last updated on ${ formatDate(new Date(obj.timestamp)) } - ${ obj.message }`);
             }
         </script>
     </body>
