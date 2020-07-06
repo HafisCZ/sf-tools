@@ -38,7 +38,7 @@ const AST_FUNCTIONS = {
     'len': (a) => a[0] != undefined ? (Array.isArray(a[0]) ? a[0].length : Object.values(a[0]).length) : undefined
 };
 
-const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|\[|\]|\,)/;
+const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
 class AST {
     constructor (string) {
@@ -74,10 +74,10 @@ class AST {
                     value = SFormat.ReservedItemizable(token);
                 } else if (token[0] == '@' && Constants.Values[token.slice(1)] != undefined) {
                     value = SFormat.Constant(token);
-                } else if (token.startsWith('reference') && (token.length == 9 || token[9] == '.')) {
-                    value = SFormat.Constant('reference') + SFormat.Normal(token.slice(9));
-                } else if (token.startsWith('player') && (token.length == 6 || token[6] == '.')) {
-                    value = SFormat.Constant('player') + SFormat.Normal(token.slice(6));
+                } else if (token == 'reference') {
+                    value = SFormat.Constant('reference');
+                } else if (token == 'player') {
+                    value = SFormat.Constant('player');
                 } else {
                     value = SFormat.Normal(token);
                 }
@@ -97,7 +97,11 @@ class AST {
 
     get () {
         var v = this.tokens.shift();
-        return isNaN(v) ? v : Number(v);
+        if (isNaN(v)) {
+            return v;
+        } else {
+            return Number(v);
+        }
     }
 
     getRoot () {
@@ -126,31 +130,13 @@ class AST {
                 noeval: true
             }
         } else if (val == '-') {
-            var v;
-            if (this.peek() == '(') {
-                v = this.evalBracketExpression();
-            } else if (AST_FUNCTIONS[this.peek()] || (/\w+/.test(this.peek()) && this.peek(1) == '(')) {
-                v = this.getVal();
-            } else {
-                v = this.get();
-            }
-
             val = {
-                args: [ v ],
+                args: [ this.peek() == '(' ? this.evalBracketExpression() : this.getVal() ],
                 op: AST_OPERATORS['u-']
-            };
-        } else if (val == '!') {
-            var v;
-            if (this.peek() == '(') {
-                v = this.evalBracketExpression();
-            } else if (AST_FUNCTIONS[this.peek()] || (/\w+/.test(this.peek()) && this.peek(1) == '(')) {
-                v = this.getVal();
-            } else {
-                v = this.get();
             }
-
+        } else if (val == '!') {
             val = {
-                args: [ v ],
+                args: [ this.peek() == '(' ? this.evalBracketExpression() : this.getVal() ],
                 op: AST_OPERATORS['!']
             };
         } else if (AST_FUNCTIONS[val] || (/\w+/.test(val) && this.peek() == '(')) {
@@ -167,7 +153,6 @@ class AST {
                 a.push(this.evalExpression());
                 while (this.peek() == ',') {
                     this.get();
-
                     a.push(this.evalExpression());
                 }
 
@@ -218,6 +203,19 @@ class AST {
                 args: a,
                 op: '{'
             };
+        }
+
+        while (this.peek() == '.') {
+            this.get();
+
+            val = {
+                args: [ val, {
+                    args: [ this.get() ],
+                    op: AST_OPERATORS['s'],
+                    noeval: true
+                }],
+                op: '[a'
+            }
         }
 
         while (this.peek() == '[') {
@@ -397,19 +395,23 @@ class AST {
                     return str;
                 } else if (node.op == 'each' && node.args.length >= 2) {
                     var generated = this.eval(player, reference, environment, scope, extra, node.args[0]) || {};
+
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
                         return undefined;
                     }
 
-                    var mapper = environment.func[node.args[1]];
                     var sum = 0;
-                    if (mapper) {
+
+                    if (environment.func[node.args[1]]) {
+                        var mapper = environment.func[node.args[1]];
+
                         for (var i = 0; i < object.length; i++) {
                             var scope2 = {};
                             for (var j = 0; j < mapper.arg.length; j++) {
                                 scope2[mapper.arg[j]] = object[i];
                             }
+
                             sum += mapper.ast.eval(player, reference, environment, scope2, extra);
                         }
                     } else if (SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]]) {
@@ -422,28 +424,24 @@ class AST {
                         for (var i = 0; i < object.length; i++) {
                             sum += expr.expr(player, environment, object[i]);
                         }
-                    } else if (node.args[1].op) {
-                        for (var i = 0; i < object.length; i++) {
-                            if (this.eval(player, reference, environment, object[i], extra, node.args[1])) {
-                                sum.push(object[i]);
-                            }
-                        }
                     } else {
                         for (var i = 0; i < object.length; i++) {
-                            var scope2 = {};
-                            scope2[node.args[1].split('.', 1)[0]] = object[i];
-                            sum += this.eval(player, reference, environment, scope2, extra, node.args[1]);
+                            sum += this.eval(player, reference, environment, object[i], extra, node.args[1]);
                         }
                     }
+
                     return sum;
                 } else if (node.op == 'filter' && node.args.length >= 2) {
                     var generated = this.eval(player, reference, environment, scope, extra, node.args[0]) || {};
+
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
                         return undefined;
                     }
+
                     var mapper = environment.func[node.args[1]];
                     var sum = [];
+
                     if (mapper) {
                         for (var i = 0; i < object.length; i++) {
                             var scope2 = {};
@@ -455,16 +453,18 @@ class AST {
                                 sum.push(object[i]);
                             }
                         }
-                    } else if (node.args[1].op) {
+                    } else {
                         for (var i = 0; i < object.length; i++) {
                             if (this.eval(player, reference, environment, object[i], extra, node.args[1])) {
                                 sum.push(object[i]);
                             }
                         }
                     }
+
                     return sum;
                 } else if (node.op == 'map' && node.args.length >= 2) {
                     var generated = this.eval(player, reference, environment, scope, extra, node.args[0]) || {};
+
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
                         return undefined;
@@ -472,12 +472,14 @@ class AST {
 
                     var mapper = environment.func[node.args[1]];
                     var sum = [];
+
                     if (mapper) {
                         for (var i = 0; i < object.length; i++) {
                             var scope2 = {};
                             for (var j = 0; j < mapper.arg.length; j++) {
                                 scope2[mapper.arg[j]] = object[i];
                             }
+
                             sum.push(mapper.ast.eval(player, reference, environment, scope2, extra));
                         }
                     } else if (SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]]) {
@@ -490,22 +492,18 @@ class AST {
                         for (var i = 0; i < object.length; i++) {
                             sum.push(expr.expr(player, environment, object[i]));
                         }
-                    } else if (node.args[1].op) {
+                    } else {
                         for (var i = 0; i < object.length; i++) {
                             if (this.eval(player, reference, environment, object[i], extra, node.args[1])) {
                                 sum.push(object[i]);
                             }
                         }
-                    } else {
-                        for (var i = 0; i < object.length; i++) {
-                            var scope2 = {};
-                            scope2[node.args[1].split('.', 1)[0]] = object[i];
-                            sum.push(this.eval(player, reference, environment, scope2, extra, node.args[1]));
-                        }
                     }
+
                     return sum;
                 } else if (node.op == 'slice' && node.args.length >= 3) {
                     var generated = this.eval(player, reference, environment, scope, extra, node.args[0]) || {};
+
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
                         return undefined;
@@ -518,18 +516,19 @@ class AST {
                     for (var i = 0; i < mapper.arg.length; i++) {
                         scope2[mapper.arg[i]] = this.eval(player, reference, environment, scope, extra, node.args[i]);
                     }
+
                     return mapper.ast.eval(player, reference, environment, scope2, extra);
                 } else if (node.op == '{') {
                     var object = { };
                     for (var { key, val } of node.args) {
                         object[this.eval(player, reference, environment, scope, extra, key)] = this.eval(player, reference, environment, scope, extra, val);
                     }
+
                     return object;
                 } else if (node.op == '[a') {
                     var object = this.eval(player, reference, environment, scope, extra, node.args[0]);
                     if (object) {
-                        var key = this.eval(player, reference, environment, scope, extra, node.args[1]);
-                        return object[key];
+                        return object[this.eval(player, reference, environment, scope, extra, node.args[1])];
                     } else {
                         return undefined;
                     }
@@ -537,11 +536,14 @@ class AST {
                     var expr = SP_KEYWORD_MAPPING_0[node.op] || SP_KEYWORD_MAPPING_1[node.op] || SP_KEYWORD_MAPPING_2[node.op];
                     return expr.expr(... node.args.map(arg => this.eval(player, reference, environment, scope, extra, arg)));
                 } else {
+                    // Return undefined
                     return undefined;
                 }
             } else if (node.op) {
+                // Return processed node
                 return node.op(node.args.map(arg => this.eval(player, reference, environment, scope, extra, arg)));
             } else {
+                // Return node in case something does not work :(
                 return node;
             }
         } else if (typeof(node) == 'string') {
@@ -552,46 +554,28 @@ class AST {
                 // Return undefined
                 return undefined;
             } else if (node == 'null') {
-                // Return nulll
+                // Return null
                 return null;
             } else if (node == 'true') {
+                // Return logical true
                 return true;
             } else if (node == 'false') {
+                // Return logical false
                 return false;
-            } else if (node.startsWith('player')) {
-                if (node == 'player') {
-                    return player;
-                } else if (typeof(player) == 'object' && node.split('.').length > 1) {
-                    return getObjectAt(player, node.split(/\.(.*)/, 2)[1]);
-                } else {
-                    return undefined;
-                }
-            } else if (node.startsWith('reference')) {
-                if (node == 'reference') {
-                    return reference;
-                } else if (typeof(reference) == 'object' && node.split('.').length > 1) {
-                    return getObjectAt(reference, node.split(/\.(.*)/, 2)[1]);
-                } else {
-                    return undefined;
-                }
-            } else if (typeof(extra) == 'object' && (extra[node] != undefined || extra[node.split('.', 1)[0]] != undefined)) {
-                // Return scope variable
-                if (extra[node] != undefined) {
-                    return extra[node];
-                } else {
-                    var [key, path] = node.split(/\.(.*)/, 2);
-                    return getObjectAt(extra[key], path);
-                }
-            } else if (typeof(scope) == 'object' && (scope[node] != undefined || scope[node.split('.', 1)[0]] != undefined)) {
-                // Return scope variable
-                if (scope[node] != undefined) {
-                    return scope[node];
-                } else {
-                    var [key, path] = node.split(/\.(.*)/, 2);
-                    return getObjectAt(scope[key], path);
-                }
+            } else if (node == 'player') {
+                // Return current player
+                return player;
+            } else if (node == 'reference') {
+                // Return reference player
+                return reference;
+            } else if (typeof(extra) == 'object' && extra[node] != undefined) {
+                // Return extra variable (only if it exists)
+                return extra[node];
+            } else if (typeof(scope) == 'object' && scope[node] != undefined) {
+                // Return scope variable (only if it exists)
+                return scope[node];
             } else if (environment.vars[node] != undefined) {
-                // Return variable
+                // Return environment variable
                 if (environment.vars[node].value != undefined) {
                     return environment.vars[node].value;
                 } else if (environment.vars[node].ast) {
@@ -600,20 +584,28 @@ class AST {
                     return undefined;
                 }
             } else if (node[0] == '@') {
+                // Return constant
                 return Constants.Values[node.slice(1)];
             } else if (SP_KEYWORD_MAPPING_0[node] && player) {
+                // Return mapper
                 return SP_KEYWORD_MAPPING_0[node].expr(player);
             } else if (SP_KEYWORD_MAPPING_1[node] && player) {
+                // Return mapper
                 return SP_KEYWORD_MAPPING_1[node].expr(player);
             } else if (SP_KEYWORD_MAPPING_2[node] && player) {
+                // Return mapper
                 return SP_KEYWORD_MAPPING_2[node].expr(player);
             } else if (SP_KEYWORD_MAPPING_3[node] && player) {
+                // Return mapper
                 return SP_KEYWORD_MAPPING_3[node].expr(player, environment);
             } else if (SP_KEYWORD_MAPPING_4[node] && player) {
+                // Return mapper
                 return SP_KEYWORD_MAPPING_4[node].expr(player, environment, scope);
             } else if (SP_KEYWORD_MAPPING_5[node] && player) {
+                // Return mapper
                 return SP_KEYWORD_MAPPING_5[node].expr(player, environment);
             } else {
+                // Return undefined if everything fails
                 return undefined;
             }
         } else {

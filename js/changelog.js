@@ -1,4 +1,8 @@
 const CHANGELOG = {
+    'v3.606': [
+        'Reworked dot object access.',
+        'Some unary operators can now be stacked infinitely.'
+    ],
     'v3.594': [
         'You can now use header names with <code>player</code> and <code>reference</code> objects as arguments.<br/>You can look at an example <a href="https://pastebin.com/raw/5MVYXF2n">here</a>.',
         'Option <code>clean</code> no longer requires you to disable invisibility.',
