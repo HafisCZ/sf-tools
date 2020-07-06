@@ -205,28 +205,24 @@ class AST {
             };
         }
 
-        while (this.peek() == '.') {
-            this.get();
+        while (this.peek() == '.' || this.peek() == '[') {
+            if (this.get() == '.') {
+                val = {
+                    args: [ val, {
+                        args: [ this.get() ],
+                        op: AST_OPERATORS['s'],
+                        noeval: true
+                    }],
+                    op: '[a'
+                }
+            } else {
+                val = {
+                    args: [ val, this.evalExpression() ],
+                    op: '[a'
+                };
 
-            val = {
-                args: [ val, {
-                    args: [ this.get() ],
-                    op: AST_OPERATORS['s'],
-                    noeval: true
-                }],
-                op: '[a'
+                this.get();
             }
-        }
-
-        while (this.peek() == '[') {
-            this.get();
-
-            val = {
-                args: [ val, this.evalExpression() ],
-                op: '[a'
-            };
-
-            this.get();
         }
 
         return val;
