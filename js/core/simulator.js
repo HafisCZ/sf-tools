@@ -1308,12 +1308,42 @@ class PetSimulator {
         this.ca.initialize(this.cb);
         this.cb.initialize(this.ca);
 
-        var score = 0;
-        for (var i = 0; i < iterations; i++) {
-            score += this.fight();
-        }
+        if ((this.ca.Class == MAGE || this.cb.Class == MAGE) && !this.fightPossible()) {
+            return 0;
+        } else {
+            var score = 0;
+            for (var i = 0; i < iterations; i++) {
+                score += this.fight();
+            }
 
-        return score / (iterations / 100);
+            return score / (iterations / 100);
+        }
+    }
+
+    // Checks whether the fight is even possible or not for mage vs x class. Thanks to burningcherry for the idea & code example.
+    fightPossible () {
+        this.a = this.ca;
+        this.b = this.cb;
+
+        this.a.Health = this.a.TotalHealth;
+        this.b.Health = this.b.TotalHealth;
+
+        this.turn = 0;
+
+        while (this.a.Health > 0 && this.b.Health > 0) {
+            var rage = 1 + this.turn++ / 6;
+
+            this.b.Health -= rage * this.a.Damage * this.a.Critical;
+            if (this.b.Health <= 0) {
+                return true;
+            }
+
+            rage = 1 + this.turn++ / 6;
+            this.a.Health -= rage * this.b.Damage;
+            if (this.a.Health <= 0) {
+                return false;
+            }
+        }
     }
 
     fight () {
