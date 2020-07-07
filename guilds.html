@@ -109,6 +109,10 @@
                 cursor: pointer;
             }
 
+            .inactive {
+                opacity: 50%;
+            }
+
             #sim-players1, #sim-players2 {
                 min-height: 30em;
                 align-content: flex-start;
@@ -339,6 +343,9 @@
                         <div class="css-small-row row">
                             <div class="four wide column">
                                 <button class="ui fluid basic icon button" data-position="bottom center" data-tooltip="Copy current" id="sim-copy"><i class="outline copy icon"></i> 1</button>
+                            </div>
+                            <div class="twelve wide column">
+                                Right click on a player to mark him as inactive<br/>(Reduces health to 50%)
                             </div>
                         </div>
                         <div class="css-small-row row">
@@ -686,7 +693,7 @@
                     content1 += `
                         <div class="row selectable ${ index == selected ? 'selected' : 'nselected' }" data-index="${ index }">
                             <div class="four wide text-center column">
-                                <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
+                                <img class="ui medium centered image ${ players1[i].Inactive ? 'inactive' : '' }" style="width: 50px;" src="res/class${ player.Class }.png">
                             </div>
                             <div class="three wide text-center column">
                                 <b>${ player.Level }</b>
@@ -709,7 +716,7 @@
                     content2 += `
                         <div class="row selectable ${ index == selected ? 'selected' : 'nselected' }" data-index="${ index }">
                             <div class="four wide text-center column">
-                                <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
+                                <img class="ui medium centered image ${ players2[i].Inactive ? 'inactive' : '' }" style="width: 50px;" src="res/class${ player.Class }.png">
                             </div>
                             <div class="three wide text-center column">
                                 <b>${ player.Level }</b>
@@ -741,6 +748,22 @@
                             fill(obj.player);
                             show();
                         }
+                    }
+                });
+
+                $('[data-index]').contextmenu(function () {
+                    event.preventDefault();
+
+                    var sel = Number($(this).attr('data-index'));
+
+                    var obj = players1.find(p => p.index == sel);
+                    if (!obj) {
+                        obj = players2.find(p => p.index == sel);
+                    }
+
+                    if (obj) {
+                        obj.Inactive = !obj.Inactive;
+                        show();
                     }
                 });
 

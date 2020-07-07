@@ -646,18 +646,35 @@ class GuildSimulator {
     }
 
     cache (ga, gb) {
-        this.ga = ga.map(a => FighterModel.create(0, a.player));
-        this.gb = gb.map(b => FighterModel.create(1, b.player));
+        this.ga = ga.map(a => {
+            var p = FighterModel.create(0, a.player);
+            p.Inactive = a.Inactive;
+
+            return p;
+        });
+
+        this.gb = gb.map(b => {
+            var p = FighterModel.create(1, b.player);
+            p.Inactive = b.Inactive;
+
+            return p;
+        });
 
         this.ga.sort((a, b) => a.Player.Level - b.Player.Level);
         this.gb.sort((a, b) => a.Player.Level - b.Player.Level);
 
         for (var player of this.ga) {
             player.MaximumHealth = player.getHealth();
+            if (player.Inactive) {
+                player.MaximumHealth /= 2;
+            }
         }
 
         for (var player of this.gb) {
             player.MaximumHealth = player.getHealth();
+            if (player.Inactive) {
+                player.MaximumHealth /= 2;
+            }
         }
     }
 
