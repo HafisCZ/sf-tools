@@ -1605,13 +1605,16 @@ class SettingsView extends View {
 
         this.$parent.find('[data-op="copy"]').click(() => {
             // Copy text area content
-            var range = document.createRange();
-            range.selectNode(this.$wrapper.get(0));
+            const element = document.createElement('textarea');
+            element.value = this.$area.val();
 
-            window.getSelection().removeAllRanges();
-            window.getSelection().addRange(range);
+            document.body.appendChild(element);
+
+            element.select();
 
             document.execCommand('copy');
+
+            document.body.removeChild(element);
 
             window.getSelection().removeAllRanges();
         });
