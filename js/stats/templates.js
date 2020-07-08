@@ -174,7 +174,9 @@ color equal 2  darkorange
 color equal 1  darkorange
 color default @red
 
-header Last Active # This column indicated how long ago was the player active (referenced against capture date)
+header Inactive Time # This column indicated how long ago was the player active (referenced against capture date)
+alias Last Active
+format datetime(Last Active)
 color above @21days darkred
 color above @7days red
 color above @3days darkorange
@@ -333,7 +335,9 @@ color equal 2  orange
 color equal 1  darkorange
 color default @red
 
-header Last Active
+header Inactive Time
+alias Last Active
+format datetime(Last Active)
 color above @21days darkred
 color above @7days red
 color above @3days darkorange

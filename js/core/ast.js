@@ -592,7 +592,13 @@ class AST {
                     }
                 } else if (SP_KEYWORD_MAPPING_0[node.op] || SP_KEYWORD_MAPPING_1[node.op] || SP_KEYWORD_MAPPING_2[node.op]) {
                     var expr = SP_KEYWORD_MAPPING_0[node.op] || SP_KEYWORD_MAPPING_1[node.op] || SP_KEYWORD_MAPPING_2[node.op];
-                    return expr.expr(... node.args.map(arg => this.eval(player, reference, environment, scope, extra, arg)));
+                    var params = node.args.map(arg => this.eval(player, reference, environment, scope, extra, arg));
+
+                    if (params.length > 0 && params[0] != undefined) {
+                        return expr.expr(params[0]);
+                    } else {
+                        return undefined;
+                    }
                 } else {
                     // Return undefined
                     return undefined;
