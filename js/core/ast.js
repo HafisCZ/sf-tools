@@ -438,8 +438,15 @@ class AST {
 
                         for (var i = 0; i < object.length; i++) {
                             var scope2 = {};
-                            for (var j = 0; j < mapper.arg.length; j++) {
-                                scope2[mapper.arg[j]] = object[i];
+
+                            if (object[i].segmented) {
+                                for (var j = 0; j < mapper.arg.length; j++) {
+                                    scope2[mapper.arg[j]] = object[i][j];
+                                }
+                            } else {
+                                for (var j = 0; j < mapper.arg.length; j++) {
+                                    scope2[mapper.arg[j]] = object[i];
+                                }
                             }
 
                             sum += mapper.ast.eval(player, reference, environment, scope2, extra);
@@ -447,16 +454,16 @@ class AST {
                     } else if (SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]]) {
                         var expr = SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]];
                         for (var i = 0; i < object.length; i++) {
-                            sum += expr.expr(object[i]);
+                            sum += expr.expr(object[i] && object[i].segmented ? object[i][0] : object[i]);
                         }
                     } else if (SP_KEYWORD_MAPPING_4[node.args[1]]) {
                         var expr = SP_KEYWORD_MAPPING_4[node.args[1]];
                         for (var i = 0; i < object.length; i++) {
-                            sum += expr.expr(player, environment, object[i]);
+                            sum += expr.expr(player, environment, object[i] && object[i].segmented ? object[i][0] : object[i]);
                         }
                     } else {
                         for (var i = 0; i < object.length; i++) {
-                            sum += this.eval(player, reference, environment, object[i], extra, node.args[1]);
+                            sum += this.eval(player, reference, environment, object[i] && object[i].segmented ? object[i][0] : object[i], extra, node.args[1]);
                         }
                     }
 
@@ -475,8 +482,15 @@ class AST {
                     if (mapper) {
                         for (var i = 0; i < object.length; i++) {
                             var scope2 = {};
-                            for (var j = 0; j < mapper.arg.length; j++) {
-                                scope2[mapper.arg[j]] = object[i];
+
+                            if (object[i].segmented) {
+                                for (var j = 0; j < mapper.arg.length; j++) {
+                                    scope2[mapper.arg[j]] = object[i][j];
+                                }
+                            } else {
+                                for (var j = 0; j < mapper.arg.length; j++) {
+                                    scope2[mapper.arg[j]] = object[i];
+                                }
                             }
 
                             if (mapper.ast.eval(player, reference, environment, scope2, extra)) {
@@ -506,8 +520,15 @@ class AST {
                     if (mapper) {
                         for (var i = 0; i < object.length; i++) {
                             var scope2 = {};
-                            for (var j = 0; j < mapper.arg.length; j++) {
-                                scope2[mapper.arg[j]] = object[i];
+
+                            if (object[i].segmented) {
+                                for (var j = 0; j < mapper.arg.length; j++) {
+                                    scope2[mapper.arg[j]] = object[i][j];
+                                }
+                            } else {
+                                for (var j = 0; j < mapper.arg.length; j++) {
+                                    scope2[mapper.arg[j]] = object[i];
+                                }
                             }
 
                             sum.push(mapper.ast.eval(player, reference, environment, scope2, extra));
@@ -515,18 +536,16 @@ class AST {
                     } else if (SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]]) {
                         var expr = SP_KEYWORD_MAPPING_0[node.args[1]] || SP_KEYWORD_MAPPING_1[node.args[1]] || SP_KEYWORD_MAPPING_2[node.args[1]];
                         for (var i = 0; i < object.length; i++) {
-                            sum.push(expr.expr(object[i]));
+                            sum.push(expr.expr(object[i] && object[i].segmented ? object[i][0] : object[i]));
                         }
                     } else if (SP_KEYWORD_MAPPING_4[node.args[1]]) {
                         var expr = SP_KEYWORD_MAPPING_4[node.args[1]];
                         for (var i = 0; i < object.length; i++) {
-                            sum.push(expr.expr(player, environment, object[i]));
+                            sum.push(expr.expr(player, environment, object[i] && object[i].segmented ? object[i][0] : object[i]));
                         }
                     } else {
                         for (var i = 0; i < object.length; i++) {
-                            if (this.eval(player, reference, environment, object[i], extra, node.args[1])) {
-                                sum.push(object[i]);
-                            }
+                            sum.push(this.eval(player, reference, environment, object[i] && object[i].segmented ? object[i][0] : object[i], extra, node.args[1]));
                         }
                     }
 

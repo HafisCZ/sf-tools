@@ -465,15 +465,14 @@ class TableInstance {
                 for (var column of this.flat) {
                     if (column.order) {
                         var diff = undefined;
+                        var v = column.expr(item.player, item.compare, this.settings);
 
-                        if (column.difference && !exact) {
-                            var v = column.expr(item.player, item.compare, this.settings);
+                        if (!exact) {
                             var c = column.expr(item.compare, item.compare, this.settings);
-
                             diff = column.flip ? (c - v) : (v - c);
                         }
 
-                        entry.sorting[column.sortkey] = column.order(item.player, item.compare, this.settings, { difference: diff });
+                        entry.sorting[column.sortkey] = column.order(item.player, item.compare, this.settings, v, { difference: diff });
                     } else {
                         entry.sorting[column.sortkey] = column.sort(item.player, item.compare);
                     }
@@ -1818,8 +1817,19 @@ class Settings {
                 var scope2 = {};
 
                 if (data.arg) {
-                    scope[data.arg] = players.map(p => p.player);
-                    scope2[data.arg] = players.map(p => p.compare);
+                    scope[data.arg] = players.map(p => {
+                        var ar = [ p.player, p.compare ];
+                        ar.segmented = true;
+
+                        return ar;
+                    });
+
+                    scope2[data.arg] = players.map(p => {
+                        var ar = [ p.compare, p.compare ];
+                        ar.segmented = true;
+
+                        return ar;
+                    });
                 }
 
                 if (tabletype == TableType.Group) {

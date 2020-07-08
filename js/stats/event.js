@@ -1038,6 +1038,7 @@ class BrowseView extends View {
             values: references
         }).dropdown('setting', 'onChange', (value, text) => {
             this.reference = value;
+            this.recalculate = true;
             this.$filter.trigger('change');
         });
 
