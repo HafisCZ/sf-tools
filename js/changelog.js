@@ -1,6 +1,6 @@
 const CHANGELOG = {
     'v3.616': [
-        '<code>Last Active</code> header no longer works as before.<br/>To use colors like before, you\'ll need to use default template or modify the header in this way:<br/><br/><img src="res/update0.png" style="margin-left: -2em;"></img>'
+        '<code>Last Active</code> header no longer works as before.<br/>To use colors like before, you\'ll need to modify the header in this way:<br/><br/><img src="res/update0.png" style="margin-left: -2em;"></img>'
     ],
     'v3.610': [
         'Migrated <code>Album</code>, <code>Mount</code> and few other headers over to the new header system.',
