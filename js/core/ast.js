@@ -1353,6 +1353,7 @@ const SP_KEYWORD_MAPPING_0 = {
     'Inactive Time': {
         expr: p => p.Timestamp - p.LastOnline,
         format: (p, c, e, x) => formatDuration(x),
+        flip: true,
         difference: false,
         statistics: false
     },
