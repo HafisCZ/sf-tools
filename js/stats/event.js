@@ -1939,11 +1939,11 @@ class ChangeLogsView extends View {
         for (var [ version, content ] of Object.entries(CHANGELOG)) {
             changes += `
                 <div class="row css-row-ver">
-                    <div class="four wide column"></div>
+                    <div class="two wide column"></div>
                     <div class="one wide column">
                         <h3 class="ui header css-h3-ver">${ version }</h3>
                     </div>
-                    <div class="eleven wide column">
+                    <div class="thirteen wide column">
                         <ul class="css-ul-ver">
                             ${
                                 content.map(entry => `
