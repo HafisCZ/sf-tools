@@ -212,13 +212,42 @@ class AST {
 
         while (this.peek() == '.' || this.peek() == '[') {
             if (this.get() == '.') {
-                val = {
-                    args: [ val, {
-                        args: [ this.get() ],
-                        op: AST_OPERATORS['s'],
-                        noeval: true
-                    }],
-                    op: '[a'
+                var name = this.get();
+
+                if (this.peek() == '(') {
+                    this.get();
+
+                    var a = [];
+
+                    if (this.peek() == ')') {
+                        this.get();
+                        val = {
+                            args: [ val, name ],
+                            op: '(a'
+                        };
+                    } else {
+                        a.push(this.evalExpression());
+
+                        while (this.peek() == ',') {
+                            this.get();
+                            a.push(this.evalExpression());
+                        }
+
+                        this.get();
+                        val = {
+                            args: [ val, name, a ],
+                            op: '(a'
+                        };
+                    }
+                } else {
+                    val = {
+                        args: [ val, {
+                            args: [ name ],
+                            op: AST_OPERATORS['s'],
+                            noeval: true
+                        }],
+                        op: '[a'
+                    }
                 }
             } else {
                 val = {
@@ -530,6 +559,15 @@ class AST {
                     var object = this.eval(player, reference, environment, scope, extra, node.args[0]);
                     if (object) {
                         return object[this.eval(player, reference, environment, scope, extra, node.args[1])];
+                    } else {
+                        return undefined;
+                    }
+                } else if (node.op == '(a') {
+                    var object = this.eval(player, reference, environment, scope, extra, node.args[0]);
+                    var func = node.args[1];
+
+                    if (object != undefined && object[func]) {
+                        return object[func](... node.args.slice(2).map(param => this.eval(player, reference, environment, scope, extra, param)));
                     } else {
                         return undefined;
                     }
