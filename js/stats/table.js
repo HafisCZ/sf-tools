@@ -178,7 +178,15 @@ class TableInstance {
                                 color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value) : '')) || '';
 
                                 var displayValue = CompareEval.evaluate(value, header.value);
-                                var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, this.settings, value) : (value + (header.extra ? header.extra(player) : '')));
+                                if (displayValue == undefined && header.format) {
+                                    value = header.format(player, compare, this.settings, value);
+                                } else if (displayValue != undefined) {
+                                    value = displayValue;
+                                }
+
+                                if (value != undefined && header.extra) {
+                                    value = `${ value }${ header.extra(player) }`;
+                                }
 
                                 cells.push(CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align));
                             }
@@ -215,7 +223,15 @@ class TableInstance {
                             color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value) : '')) || '';
 
                             var displayValue = CompareEval.evaluate(value, header.value);
-                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, this.settings, value) : (value + (header.extra ? header.extra(player) : '')));
+                            if (displayValue == undefined && header.format) {
+                                value = header.format(player, compare, this.settings, value);
+                            } else if (displayValue != undefined) {
+                                value = displayValue;
+                            }
+
+                            if (value != undefined && header.extra) {
+                                value = `${ value }${ header.extra(player) }`;
+                            }
 
                             return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align);
                         }, (players, operation) => {
@@ -252,7 +268,15 @@ class TableInstance {
                             color = (color != undefined ? color : (header.expc ? header.expc(null, null, this.settings, value) : '')) || '';
 
                             var displayValue = CompareEval.evaluate(value, header.value);
-                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(null, undefined, this.settings, value) : (value + (header.extra ? header.extra(undefined) : '')));
+                            if (displayValue == undefined && header.format) {
+                                value = header.format(undefined, undefined, this.settings, value);
+                            } else if (displayValue != undefined) {
+                                value = displayValue;
+                            }
+
+                            if (value != undefined && header.extra) {
+                                value = `${ value }${ header.extra(undefined) }`;
+                            }
 
                             return CellGenerator.Cell(value + reference, '', color);
                         }, (player, compare) => {
@@ -778,7 +802,15 @@ class TableInstance {
                 color = (color != undefined ? color : (extra.expc ? extra.expc(undefined, null, this.settings, value) : '')) || '';
 
                 var displayValue = CompareEval.evaluate(value, extra.value);
-                var value = displayValue != undefined ? displayValue : (extra.format ? extra.format(undefined, undefined, this.settings, value) : (value + (extra.extra ? extra.extra(undefined) : '')));
+                if (displayValue == undefined && extra.format) {
+                    value = extra.format(undefined, undefined, this.settings, value);
+                } else if (displayValue != undefined) {
+                    value = displayValue;
+                }
+
+                if (value != undefined && extra.extra) {
+                    value = `${ value }${ extra.extra(undefined) }`;
+                }
 
                 var cell = CellGenerator.WideCell(SFormat.Normal(value) + reference, color, lw, extra.align);
                 details += `
@@ -1006,7 +1038,7 @@ const ARG_FORMATTERS = {
 }
 
 function escapeHTML(string) {
-    return string.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/ /g, "&nbsp;");
+    return string.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/ /g, "&nbsp;");
 }
 
 const SFormat = {
@@ -1983,7 +2015,7 @@ class Settings {
             var mapping = SP_KEYWORD_MAPPING_0[this.currentHeader.name] || SP_KEYWORD_MAPPING_1[this.currentHeader.name] || SP_KEYWORD_MAPPING_2[this.currentHeader.name] || SP_KEYWORD_MAPPING_3[this.currentHeader.name] || SP_KEYWORD_MAPPING_4[this.currentHeader.name];
 
             var custom = SP_SPECIAL_CONDITIONS[this.currentHeader.name];
-            if (custom && !this.currentHeader.clean) {
+            if (custom && this.currentHeader.clean != 2) {
                 for (var entry of custom) {
                     if (entry.condition(this.currentHeader)) {
                         merge(this.currentHeader, entry.content);
