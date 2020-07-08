@@ -1,4 +1,13 @@
 const CHANGELOG = {
+    'v3.610': [
+        'Migrated <code>Album</code>, <code>Mount</code> and few other headers over to the new header system.',
+        'Removed <code>percentage</code> option. <code>Mount</code> and <code>Album</code> are now always in percent. Use <code>Album Items</code> to get amount of items in the album.',
+        'Added <code>decimal</code> option that decides whether statistics should be rounded or not.',
+        'Added <code>clean hard</code> option that strips everything except expression from the header.',
+        'Added <code>rgb</code>, <code>rgba</code> and <code>range</code> functions.',
+        '<code>Last Active</code> now only shows last active time. For inactive duration use <code>Inactive Time</code>.',
+        'Added several predefined enums.'
+    ],
     'v3.606': [
         'Reworked dot object access.',
         'Some unary operators can now be stacked infinitely.'

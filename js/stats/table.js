@@ -63,182 +63,6 @@ const ReservedCategories = {
     }
 };
 
-const ReservedHeaders = {
-    'Mount': function (root, group, header, last) {
-        group.add(header.alias != undefined ? header.alias : 'Mount', header, {
-            width: 80
-        }, (player, compare) => {
-            var color = CompareEval.evaluate(player.Mount, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, compare, root, player.Mount) : '')) || '';
-
-            var displayValue = CompareEval.evaluate(player.Mount, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, root, player.Mount) : undefined);
-
-            if (displayValue != undefined) {
-                return CellGenerator.Cell(displayValue, color, header.visible ? '' : color, last, header.align);
-            } else {
-                return CellGenerator.Cell(PLAYER_MOUNT[player.Mount] + ((header.percentage || header.extra) && player.Mount ? (header.extra || '%') : ''), color, header.visible ? '' : color, last, header.align);
-            }
-        }, (players, operation) => {
-            var a = operation(players.map(p => p.player.Mount));
-
-            var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(null, undefined, root, a) : '')) || '';
-
-            var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, undefined, root, a) : undefined);
-
-            if (displayValue != undefined) {
-                return CellGenerator.Cell(displayValue, '', color);
-            } else {
-                return CellGenerator.Cell(PLAYER_MOUNT[a] + ((header.percentage || header.extra) && a ? (header.extra || '%') : ''), '', CompareEval.evaluate(a, header.color) || '');
-            }
-        }, (player, compare) => player.Mount, last);
-    },
-    'Awards': function (root, group, header, last) {
-        group.add(header.alias != undefined ? header.alias : 'Awards', header, {
-            width: 100
-        }, (player, compare) => {
-            var reference = (header.difference && compare) ? compare.Achievements.Owned : '';
-            if (reference) {
-                reference = CellGenerator.Difference(player.Achievements.Owned - reference, header.brackets);
-            } else {
-                reference = '';
-            }
-
-            var color = CompareEval.evaluate(player.Achievements.Owned, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, compare, root, player.Achievements.Owned) : '')) || '';
-
-            var displayValue = CompareEval.evaluate(player.Achievements.Owned, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, root, player.Achievements.Owned) : (player.Achievements.Owned + (header.extra || '')));
-
-            return CellGenerator.Cell(displayValue + (header.hydra && player.Achievements.Dehydration ? CellGenerator.Small(' H') : '') + reference, color, header.visible ? '' : color, last, header.align);
-        }, (players, operation) => {
-            var a = operation(players.map(p => p.player.Achievements.Owned));
-            var b = operation(players.map(p => p.compare.Achievements.Owned));
-
-            var reference = header.difference ? b : '';
-            if (reference) {
-                reference = CellGenerator.Difference(a - b, header.brackets);
-            } else {
-                reference = '';
-            }
-
-            var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(null, null, root, a) : '')) || '';
-
-            var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, undefined, root, a) : (a + (header.extra || '')));
-
-            return CellGenerator.Cell(displayValue + reference, '', color);
-        }, (player, compare) => player.Achievements.Owned, last);
-    },
-    'Album': function (root, group, header, last) {
-        group.add(header.alias != undefined ? header.alias : 'Album', header, {
-            width: 100 + (header.difference ? 30 : 0) + (header.grail ? 15 : 0)
-        }, (player, compare) => {
-            var value = header.percentage ? 100 * player.Book / SCRAPBOOK_COUNT : player.Book;
-
-            var color = CompareEval.evaluate(value, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, compare, root, value) : '')) || '';
-
-            var reference = (header.difference && compare) ? (header.percentage ? (100 * compare.Book / SCRAPBOOK_COUNT) : compare.Book) : '';
-            if (reference) {
-                reference = CellGenerator.Difference(value - reference, header.brackets, header.percentage ? (value - reference).toFixed(2) : (value - reference));
-            } else {
-                reference = '';
-            }
-
-            var displayValue = CompareEval.evaluate(value, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, root, value) : (header.percentage ? value.toFixed(2) : value));
-
-            return CellGenerator.Cell(displayValue + ((header.percentage || header.extra) ? (header.extra || '%') : '') + (header.grail && player.Achievements.Grail ? CellGenerator.Small(' G') : '') + reference, color, header.visible ? '' : color, last, header.align);
-        }, (players, operation) => {
-            var a = operation(players.map(p => header.percentage ? 100 * p.player.Book / SCRAPBOOK_COUNT : p.player.Book));
-            var b = operation(players.map(p => header.percentage ? 100 * p.compare.Book / SCRAPBOOK_COUNT : p.compare.Book));
-
-            var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(null, null, root, a) : '')) || '';
-
-            var reference = header.difference ? b : '';
-            if (reference) {
-                reference = CellGenerator.Difference(a - reference, header.brackets, header.percentage ? (a - reference).toFixed(2) : (a - reference));
-            } else {
-                reference = '';
-            }
-
-            var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, undefined, root, a) : (header.percentage ? a.toFixed(2) : a));
-
-            return CellGenerator.Cell(displayValue + ((header.percentage || header.extra) ? (header.extra || '%') : '') + reference, '', color);
-        }, (player, compare) => player.Book, last);
-    },
-    'Knights': function (root, group, header, last) {
-        group.add(header.alias != undefined ? header.alias : 'Knights', header, {
-            width: 100
-        }, (player, compare) => {
-            if (player.Fortress.Knights == undefined) {
-                return CellGenerator.Plain('?', last);
-            }
-
-            var reference = (header.difference && compare) ? compare.Fortress.Knights : '';
-            if (reference) {
-                reference = CellGenerator.Difference(player.Fortress.Knights - reference, header.brackets);
-            } else {
-                reference = '';
-            }
-
-            var color = CompareEval.evaluate(player.Fortress.Knights, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, compare, root, player.Fortress.Knights) : '')) || '';
-
-            var displayValue = CompareEval.evaluate(player.Fortress.Knights, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, root, player.Fortress.Knights) : undefined);
-
-            if (displayValue != undefined) {
-                return CellGenerator.Cell(displayValue + reference, color, header.visible ? '' : color, last, header.align);
-            } else {
-                return CellGenerator.Cell(player.Fortress.Knights + (header.maximum ? `/${ player.Fortress.Fortress }` : '') + reference, color, header.visible ? '' : color, last, header.align);
-            }
-        }, (players, operation) => {
-            var aa = players.map(p => p.player.Fortress.Knights).filter(x => x != undefined);
-            var bb = players.map(p => p.compare.Fortress.Knights).filter(x => x != undefined);
-            if (!aa.length || !bb.length) return CellGenerator.Plain('?');
-            var a = operation(aa);
-            var b = operation(bb);
-
-            var reference = header.difference ? b : '';
-            if (reference) {
-                reference = CellGenerator.Difference(a - b, header.brackets);
-            } else {
-                reference = '';
-            }
-
-            var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(null, null, root, a) : '')) || '';
-
-            var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(null, undefined, root, a) : (a + (header.extra || '')));
-
-            return CellGenerator.Cell(displayValue + reference, '', color);
-        }, (player, compare) => player.Fortress.Knights == undefined ? -1 : player.Fortress.Knights, last);
-    },
-    'Last Active': function (root, group, header, last) {
-        group.add(header.alias != undefined ? header.alias : 'Last Active', header, {
-            width: 160,
-        }, (player, compare) => {
-            var a = Math.max(0, player.Timestamp - player.LastOnline);
-
-            var color = CompareEval.evaluate(a, header.color);
-            color = (color != undefined ? color : (header.expc ? header.expc(player, compare, root, a) : '')) || '';
-
-            var displayValue = CompareEval.evaluate(a, header.value);
-            displayValue = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, root, a) : formatDate(player.LastOnline));
-
-            return CellGenerator.Cell(displayValue, color, header.visible ? '' : color, last, header.align);
-        }, null, (player, compare) => player.LastOnline, last);
-    }
-};
-
 // Helper function
 function merge (a, b) {
     for (var [k, v] of Object.entries(b)) {
@@ -318,9 +142,7 @@ class TableInstance {
                 category.h.forEach((header, hi, ha) => {
                     var hlast = (!glast && hi == ha.length - 1) || header.border >= 2 || (hi != ha.length - 1 && (ha[hi + 1].border == 1 || ha[hi + 1].border == 3));
 
-                    if (!header.expr && ReservedHeaders[header.name]) {
-                        ReservedHeaders[header.name](this.settings, group, header, hlast);
-                    } else if (header.itemized) {
+                    if (header.itemized) {
                         group.add((header.alias != undefined ? header.alias : header.name), header, {
                             width: Math.max(100, (header.alias || header.name).length * 12)
                         }, (player, compare) => {
@@ -356,7 +178,7 @@ class TableInstance {
                                 color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value) : '')) || '';
 
                                 var displayValue = CompareEval.evaluate(value, header.value);
-                                var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, this.settings, value) : (value + (header.extra || '')));
+                                var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, this.settings, value) : (value + (header.extra ? header.extra(player) : '')));
 
                                 cells.push(CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align));
                             }
@@ -393,7 +215,7 @@ class TableInstance {
                             color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value) : '')) || '';
 
                             var displayValue = CompareEval.evaluate(value, header.value);
-                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, this.settings, value) : (value + (header.extra || '')));
+                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(player, compare, this.settings, value) : (value + (header.extra ? header.extra(player) : '')));
 
                             return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align);
                         }, (players, operation) => {
@@ -403,11 +225,20 @@ class TableInstance {
                             }
 
                             value = operation(value);
+                            if (!header.decimal) {
+                                value = Math.trunc(value);
+                            }
 
                             var reference = header.difference ? players.map(p => header.expr(p.compare, p.compare, this.settings.getCompareEnvironment())).filter(x => x != undefined) : undefined;
+
                             if (reference && reference.length) {
                                 reference = operation(reference);
+
                                 if (!isNaN(reference)) {
+                                    if (!header.decimal) {
+                                        reference = Math.trunc(reference);
+                                    }
+
                                     reference = header.flip ? (reference - value) : (value - reference);
                                     reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(null, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
                                 } else {
@@ -421,7 +252,7 @@ class TableInstance {
                             color = (color != undefined ? color : (header.expc ? header.expc(null, null, this.settings, value) : '')) || '';
 
                             var displayValue = CompareEval.evaluate(value, header.value);
-                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(null, undefined, this.settings, value) : (value + (header.extra || '')));
+                            var value = displayValue != undefined ? displayValue : (header.format ? header.format(null, undefined, this.settings, value) : (value + (header.extra ? header.extra(undefined) : '')));
 
                             return CellGenerator.Cell(value + reference, '', color);
                         }, (player, compare) => {
@@ -876,7 +707,7 @@ class TableInstance {
                     </tr>
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Average</td>
-                        ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => Math.trunc(ar.reduce((a, b) => a + b, 0) / ar.length)) : `<td colspan=${ h.span }></td>`) }
+                        ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => ar.reduce((a, b) => a + b, 0) / ar.length) : `<td colspan=${ h.span }></td>`) }
                     </tr>
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Maximum</td>
@@ -947,7 +778,7 @@ class TableInstance {
                 color = (color != undefined ? color : (extra.expc ? extra.expc(undefined, null, this.settings, value) : '')) || '';
 
                 var displayValue = CompareEval.evaluate(value, extra.value);
-                var value = displayValue != undefined ? displayValue : (extra.format ? extra.format(undefined, undefined, this.settings, value) : (value + (extra.extra || '')));
+                var value = displayValue != undefined ? displayValue : (extra.format ? extra.format(undefined, undefined, this.settings, value) : (value + (extra.extra ? extra.extra(undefined) : '')));
 
                 var cell = CellGenerator.WideCell(SFormat.Normal(value) + reference, color, lw, extra.align);
                 details += `
@@ -1184,6 +1015,7 @@ const SFormat = {
     Color: (string, color = string) => `<span class="ta-color" style="color: ${ color };">${ escapeHTML(string) }</span>`,
     Comment: string => `<span class="ta-comment">${ escapeHTML(string) }</span>`,
     Constant: string => `<span class="ta-constant">${ escapeHTML(string) }</span>`,
+    Enum: string => `<span class="ta-enum">${ escapeHTML(string) }</span>`,
     Reserved: string => `<span class="ta-reserved">${ escapeHTML(string) }</span>`,
     ReservedProtected: string => `<span class="ta-reserved-protected">${ escapeHTML(string) }</span>`,
     ReservedPrivate: string => `<span class="ta-reserved-private">${ escapeHTML(string) }</span>`,
@@ -1408,14 +1240,13 @@ const SettingsCommands = [
     }),
     // Local Shared
     // difference - Show difference between two points in time
-    // percentage - Show field as a percentage
     // hydra - Show hydra achievement
     // flip - Treat lower value as better
     // brackets - Show difference within brackets
     // statistics - Show statistics of a column
     // maximum - Show maximum knights based on fortress level
     // grail - Show grail achievement
-    new SettingsCommand(/^(difference|percentage|hydra|flip|brackets|statistics|maximum|grail) (on|off)$/, function (root, string) {
+    new SettingsCommand(/^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setLocalSharedVariable(key, ARG_MAP[a]);
     }, function (string) {
@@ -1423,11 +1254,18 @@ const SettingsCommands = [
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
     }),
     new SettingsCommand(/^(clean)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
+        var [ , key ] = this.match(string);
         root.setLocalVariable(key, true);
     }, function (string) {
-        var [ , key, a ] = this.match(string);
+        var [ , key ] = this.match(string);
         return `${ SFormat.Keyword(key) }`;
+    }),
+    new SettingsCommand(/^(clean) (hard)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setLocalVariable(key, 2);
+    }, function (string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
     }),
     // Create new statistics row
     new SettingsCommand(/^(statistics) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
@@ -1483,7 +1321,7 @@ const SettingsCommands = [
     // extra - Ending characters for each cell (example %)
     new SettingsCommand(/^(extra) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setLocalVariable(key, a);
+        root.setLocalVariable(key, p => a);
     }, function (string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
@@ -1714,6 +1552,13 @@ const SettingsCommands = [
     })
 ];
 
+const SP_ENUMS = {
+    'GoldCurve': GOLD_CURVE,
+    'MountSizes': PLAYER_MOUNT,
+    'AchievementNames': ACHIEVEMENTS,
+    'ItemTypes': ITEM_TYPES
+};
+
 const Constants = {
     // Get value of a constant or pass the key though
     GetValue: function (tag, key) {
@@ -1754,7 +1599,8 @@ const Constants = {
         'small': '60',
         'normal': '100',
         'large': '160',
-        'huge': '200'
+        'huge': '200',
+        'scrapbook': '2180'
     }
 }
 
@@ -2134,14 +1980,26 @@ class Settings {
     pushHeader () {
         this.pushExtraRow();
         if (this.currentCategory && this.currentHeader) {
-            var reserved = ReservedHeaders[this.currentHeader.name];
             var mapping = SP_KEYWORD_MAPPING_0[this.currentHeader.name] || SP_KEYWORD_MAPPING_1[this.currentHeader.name] || SP_KEYWORD_MAPPING_2[this.currentHeader.name] || SP_KEYWORD_MAPPING_3[this.currentHeader.name] || SP_KEYWORD_MAPPING_4[this.currentHeader.name];
 
-            if (!this.currentHeader.expr && mapping && !reserved) {
-                merge(this.currentHeader, mapping);
+            var custom = SP_SPECIAL_CONDITIONS[this.currentHeader.name];
+            if (custom && !this.currentHeader.clean) {
+                for (var entry of custom) {
+                    if (entry.condition(this.currentHeader)) {
+                        merge(this.currentHeader, entry.content);
+                    }
+                }
             }
 
-            if (this.currentHeader.expr || reserved) {
+            if (mapping) {
+                if (this.currentHeader.clean == 2) {
+                    this.currentHeader.expr = mapping.expr;
+                } else {
+                    merge(this.currentHeader, mapping);
+                }
+            }
+
+            if (this.currentHeader.expr) {
                 if (!this.currentHeader.clean) {
                     merge(this.currentHeader, this.categoryShared);
                     merge(this.currentHeader, this.shared);

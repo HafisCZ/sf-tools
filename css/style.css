@@ -422,6 +422,11 @@ h3.file-selected {
     color: #3269a8;
 }
 
+.ta-enum {
+    text-shadow: -0.06ex 0 #a80032, 0.06ex 0 #a80032;
+    color: #a80032;
+}
+
 .ta-reserved-special {
     text-shadow: -0.06ex 0 #a37500, 0.06ex 0 #a37500;
     color: #a37500;

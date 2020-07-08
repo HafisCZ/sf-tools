@@ -35,7 +35,10 @@ const AST_FUNCTIONS = {
     'max': (a) => Array.isArray(a[0]) ? Math.max(... a[0]) : Math.max(... a),
     'sum': (a) => Array.isArray(a[0]) ? a[0].reduce((t, a) => t + a, 0) : a.reduce((t, a) => t + a, 0),
     'now': (a) => Date.now(),
-    'len': (a) => a[0] != undefined ? (Array.isArray(a[0]) ? a[0].length : Object.values(a[0]).length) : undefined
+    'len': (a) => a[0] != undefined ? (Array.isArray(a[0]) ? a[0].length : Object.values(a[0]).length) : undefined,
+    'rgb': (a) => `rgb(${ a[0] }, ${ a[1] }, ${ a[2] })`,
+    'rgba': (a) => `rgba(${ a[0] }, ${ a[1] }, ${ a[2] }, ${ a[3] })`,
+    'range': (a) => (a[1] - a[0]) * a[2] + a[0]
 };
 
 const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
@@ -74,6 +77,8 @@ class AST {
                     value = SFormat.ReservedItemizable(token);
                 } else if (token[0] == '@' && Constants.Values[token.slice(1)] != undefined) {
                     value = SFormat.Constant(token);
+                } else if (SP_ENUMS[token]) {
+                    value = SFormat.Enum(token);
                 } else if (token == 'reference') {
                     value = SFormat.Constant('reference');
                 } else if (token == 'player') {
@@ -601,8 +606,8 @@ class AST {
                 // Return mapper
                 return SP_KEYWORD_MAPPING_5[node].expr(player, environment);
             } else {
-                // Return undefined if everything fails
-                return undefined;
+                // Return object or undefined if everything fails
+                return SP_ENUMS[node];
             }
         } else {
             return node;
@@ -1241,13 +1246,22 @@ const SP_KEYWORD_MAPPING_0 = {
         flip: true
     },
     'Mount': {
-        expr: p => p.Mount
+        expr: p => p.Mount,
+        format: (p, c, e, x) => x ? (PLAYER_MOUNT[x] + '%') : '',
+        difference: false
     },
     'Awards': {
         expr: p => p.Achievements.Owned
     },
     'Album': {
-        expr: p => p.Book
+        expr: p => Math.trunc(10000 * p.Book / SCRAPBOOK_COUNT) / 100,
+        format: (p, c, e, x) => x.toFixed(2) + '%',
+        width: 130,
+        decimal: true
+    },
+    'Album Items': {
+        expr: p => p.Book,
+        width: 130
     },
     'Fortress Rank': {
         expr: p => p.Fortress.Rank,
@@ -1269,6 +1283,13 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Last Active': {
         expr: p => p.LastOnline,
+        format: (p, c, e, x) => formatDate(x),
+        difference: false,
+        statistics: false
+    },
+    'Inactive Time': {
+        expr: p => p.Timestamp - p.LastOnline,
+        format: (p, c, e, x) => formatDuration(x),
         difference: false,
         statistics: false
     },
@@ -1450,6 +1471,33 @@ const SP_KEYWORD_MAPPING_0 = {
         difference: false,
         statistics: false
     }
+};
+
+const SP_SPECIAL_CONDITIONS = {
+    'Knights': [
+        {
+            condition: h => h.maximum,
+            content: {
+                format: (p, c, e, x) => p ? `${ p.Fortress.Knights }/${ p.Fortress.Fortress }` : x
+            }
+        }
+    ],
+    'Awards': [
+        {
+            condition: h => h.hydra,
+            content: {
+                extra: p => p && p.Achievements.Dehydration ? CellGenerator.Small(' H') : ''
+            }
+        }
+    ],
+    'Album': [
+        {
+            condition: h => h.grail,
+            content: {
+                extra: p => p && p.Achievements.Grail ? CellGenerator.Small(' G') : ''
+            }
+        }
+    ]
 };
 
 // Protected

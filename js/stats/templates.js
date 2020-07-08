@@ -14,13 +14,11 @@ header Level
 difference off # Don't show difference for Level
 
 header Album
-percentage on # Show album as percentage
 color above or equal 90 @green # Color all values above 90 with green
 color above or equal 75 @orange
 color default @red # Color values in red by default
 
 header Mount
-percentage on
 color equal 4 @green
 color above 0 @orange
 color default @red
@@ -170,7 +168,6 @@ value equal 1 W
 value equal 2 Q
 
 header Mount
-percentage on
 color equal 4 @green
 color equal 3 @orange
 color equal 2  darkorange
@@ -243,7 +240,6 @@ width @small
 hydra on # Show hydra
 
 header Album
-percentage on
 color above 90 green
 color above 80 yellow
 color above 70 orange
@@ -331,7 +327,6 @@ value equal 1 W
 value equal 2 Q
 
 header Mount
-percentage on
 color equal 4 @green
 color equal 3 @orange
 color equal 2  orange

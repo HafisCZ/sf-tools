@@ -14,6 +14,9 @@
         <script src="vendor/js/semantic.min.js"></script>
         <script src="vendor/js/components/state.min.js"></script>
 
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+        
         <script src="js/core/ast.js"></script>
         <script src="js/stats/table.js"></script>
 
@@ -290,7 +293,8 @@
             <div class="ui two column grid">
                 <div class="column">
                     <p>
-                        Use this option to ignore any global or shared settings for the specified header. In the example, the Level header will not have a difference shown even when the rest of the category does.
+                        Use this option to ignore any global or shared settings for the specified header. In the example, the Level header will not have a difference shown even when the rest of the category does.<br/>
+                        You can also use <code>clean hard</code> to also remove predefined header options.
                     </p>
                 </div>
                 <div class="column">
@@ -313,6 +317,20 @@
                 <div class="column">
                     <div><code>header Level</code></div>
                     <div><code>difference on</code></div>
+                </div>
+            </div>
+            <h3 class="ui header">decimal <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a> <a class="ui small orange label">Guilds</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to show statistics as decimal instead of whole numbers
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>header Half Level</code></div>
+                    <div><code>expr Level / 2</code></div>
+                    <div><code>decimal on</code></div>
                 </div>
             </div>
             <h3 class="ui header">expr <a class="ui small green label">Local</a> <a class="ui small black label">Overrides reserved column name</a></h3>
@@ -575,20 +593,6 @@
                 <div class="column">
                     <div><code>header Level</code></div>
                     <div><code>order by difference == undefined ? Level : difference</code></div>
-                </div>
-            </div>
-            <h3 class="ui header">percentage <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a></h3>
-            <hr/>
-            <div class="ui two column grid">
-                <div class="column">
-                    <p>
-                        Use this option to show the value as a percentage instead. Does work only for <code>Album</code> and <code>Mount</code> header.<br/>
-                        In case of <code>Album</code> header, the percentage of collected items instead of the amount of collected items is displayed.
-                    </p>
-                </div>
-                <div class="column">
-                    <div><code>header Album</code></div>
-                    <div><code>percentage on</code></div>
                 </div>
             </div>
             <h3 class="ui header">performance <a class="ui small red label">Global</a> <a class="ui small purple label">Players</a></h3>
@@ -863,6 +867,12 @@
             <h2 class="ui header">Functions</h2>
             <br/>
             <div class="ui five columns grid css-compact-grid" id="manual-functions">
+
+            </div>
+            <br/>
+            <h2 class="ui header">Enums</h2>
+            <br/>
+            <div class="ui five columns grid css-compact-grid" id="manual-enums">
 
             </div>
             <br/>
@@ -1178,6 +1188,7 @@
 
 
             $('#manual-constants').html(Object.keys(Constants.Values).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
+            $('#manual-enums').html(Object.keys(SP_ENUMS).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
             $('#manual-functions').html(Object.keys(AST_FUNCTIONS).map(func => `<div class="text-center column">${ func }</div>`).join('') + `<div class="text-center column">format</div>`);
 
             $('#manual-headers-0').html(Object.keys(SP_KEYWORD_MAPPING_0).map(header => `<div class="text-center three wide column ta-reserved">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
