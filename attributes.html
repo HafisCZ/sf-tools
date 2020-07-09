@@ -519,7 +519,7 @@
                     var habitat = 6 * hbase * multiplier;
                     var twister = Math.min(xp / 50, 30E6);
 
-                    var quest = (1 + guild / 100 + book / 100 + runes / 100) * base / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
+                    var quest = (1 + runes / 100) * (1 + guild / 100 + book / 100) * base / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
                     var min1 = quest;
                     var max1 = min1 * 5;
 
