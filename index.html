@@ -313,7 +313,7 @@
             }
 
             var item = localStorage['version'] ? JSON.parse(localStorage['version']) : { expire: 0 };
-            if (item.expire < Date.now()) {console.log('yes');
+            if (item.expire < Date.now()) {
                 $.ajax(
                     "https://api.github.com/repos/hafiscz/sf-tools/commits",
                     {

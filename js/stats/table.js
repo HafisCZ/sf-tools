@@ -1063,7 +1063,7 @@ const SettingsCommands = [
     new SettingsCommand(/^(layout) ((table|statistics|members|details)\s*(\,\s*(table|statistics|members|details))*)$/, function (root, string) {
         var [ , key, order ] = this.match(string);
         root.setGlobalVariable(key, order.split(',').map(o => ARG_LAYOUT[o.trim()]));
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, order ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ order.split(',').map(o => SFormat.Constant(o)).join(',') }`;
     }),
@@ -1075,9 +1075,9 @@ const SettingsCommands = [
         if (ast.isValid()) {
             root.setVariable(name, arg, ast);
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, name, arg, asts ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with all') } ${ SFormat.Constant(arg) } ${ SFormat.Keyword('as') } ${ AST.format(asts) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with all') } ${ SFormat.Constant(arg) } ${ SFormat.Keyword('as') } ${ AST.format(asts, root.constants) }`;
     }),
     // Global
     // set with - Create a function
@@ -1087,9 +1087,9 @@ const SettingsCommands = [
         if (ast.isValid()) {
             root.setFunction(name, args.split(',').map(arg => arg.trim()), ast);
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, name, args, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with') } ${ args.split(',').map(arg => SFormat.Constant(arg)).join(',') } ${ SFormat.Keyword('as') } ${ AST.format(a) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with') } ${ args.split(',').map(arg => SFormat.Constant(arg)).join(',') } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants) }`;
     }),
     // Global
     // set - Create a variable
@@ -1099,15 +1099,15 @@ const SettingsCommands = [
         if (ast.isValid()) {
             root.setVariable(name, undefined, ast);
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants) }`;
     }),
     // Global
     // server - show, hide or set width
     new SettingsCommand(/^(server) ((@?)(\S+))$/, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
-        var val = Constants.GetValue(prefix, value);
+        var val = root.constants.getValue(prefix, value);
         if (val != undefined) {
             if (isNaN(val)) {
                 val = ARG_MAP_SERVER[value];
@@ -1116,9 +1116,9 @@ const SettingsCommands = [
                 root.setGlobalVariable(key, Number(val));
             }
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
-        var val = Constants.GetValue(prefix, value);
+        var val = root.constants.getValue(prefix, value);
         if (val != undefined && !isNaN(value)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
         } else if (ARG_MAP_SERVER[val] != undefined) {
@@ -1133,16 +1133,16 @@ const SettingsCommands = [
     // name - set width of the name column
     new SettingsCommand(/^(name) ((@?)(\S+))$/, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
-        var val = Constants.GetValue(prefix, value);
+        var val = root.constants.getValue(prefix, value);
 
         if (val != undefined && !isNaN(val)) {
             root.setGlobalVariable(key, Number(val));
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
-        var val = Constants.GetValue(prefix, value);
+        var val = root.constants.getValue(prefix, value);
 
-        if (Constants.IsValid(prefix, value) && !isNaN(val)) {
+        if (root.constants.isValid(prefix, value) && !isNaN(val)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
         } else if (prefix == '@' || isNaN(val)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
@@ -1154,7 +1154,7 @@ const SettingsCommands = [
     new SettingsCommand(/^(category)(?: (.+))?$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.createCategory(a || '', a == undefined);
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         if (a != undefined) {
             return `${ SFormat.Keyword(key) } ${ ReservedCategories[a] ? SFormat.Reserved(a) : SFormat.Normal(a) }`;
@@ -1166,7 +1166,7 @@ const SettingsCommands = [
     new SettingsCommand(/^(header)(?: (.+))?$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.createHeader(a || '');
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         if (a != undefined) {
             if (SP_KEYWORD_MAPPING_0[a]) {
@@ -1191,9 +1191,9 @@ const SettingsCommands = [
         if (ast.isValid()) {
             root.addExtraRow(name, ast);
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants) }`;
     }),
     // Create new itemized header
     new SettingsCommand(/^(itemized) (\S+[\S ]*) by (\S+[\S ]*)$/, function (root, string) {
@@ -1201,7 +1201,7 @@ const SettingsCommands = [
         if (SP_KEYWORD_MAPPING_5[a]) {
             root.createItemizedHeader(SP_KEYWORD_MAPPING_5[a], s);
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a, s ] = this.match(string);
         if (SP_KEYWORD_MAPPING_5[a]) {
             return `${ SFormat.Keyword(key) } ${ SFormat.ReservedItemizable(a) } ${ SFormat.Keyword('by') } ${ SP_KEYWORD_MAPPING_4[s] ? SFormat.ReservedItemized(s) : SFormat.Normal(s) }`;
@@ -1214,7 +1214,7 @@ const SettingsCommands = [
     new SettingsCommand(/^(indexed) (on|off|static)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setGlobalVariable(key, ARG_MAP[a]);
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a, a == 'static' ? 'on' : a) }`;
     }),
@@ -1223,7 +1223,7 @@ const SettingsCommands = [
     new SettingsCommand(/^(lined) (on|off|thin|thick)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setGlobalVariable(key, ARG_MAP[a]);
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a, a == 'thick' || a == 'thin' ? 'on' : a) }`;
     }),
@@ -1232,7 +1232,7 @@ const SettingsCommands = [
     new SettingsCommand(/^(performance) (\d+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setGlobalVariable(key, Number(a));
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
     }),
@@ -1243,7 +1243,7 @@ const SettingsCommands = [
         if (!isNaN(a) && Number(a) > 0) {
             root.setGlobalVariable(key, Number(a));
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ !isNaN(a) && Number(a) > 0 ? SFormat.Normal(a) : SFormat.Error(a) }`;
     }),
@@ -1255,7 +1255,7 @@ const SettingsCommands = [
         if (f) {
             root.setGlobalVariable(key, f);
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ getCSSFont(a) ? SFormat.Normal(a) : SFormat.Error(a) }`;
     }),
@@ -1265,7 +1265,7 @@ const SettingsCommands = [
     new SettingsCommand(/^(members|outdated|opaque|large rows) (on|off)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setGlobalVariable(key, ARG_MAP[a]);
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
     }),
@@ -1280,21 +1280,21 @@ const SettingsCommands = [
     new SettingsCommand(/^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setLocalSharedVariable(key, ARG_MAP[a]);
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
     }),
     new SettingsCommand(/^(clean)$/, function (root, string) {
         var [ , key ] = this.match(string);
         root.setLocalVariable(key, true);
-    }, function (string) {
+    }, function (root, string) {
         var [ , key ] = this.match(string);
         return `${ SFormat.Keyword(key) }`;
     }),
     new SettingsCommand(/^(clean) (hard)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setLocalVariable(key, 2);
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
     }),
@@ -1305,24 +1305,24 @@ const SettingsCommands = [
         if (ast.isValid()) {
             root.addExtraStatistics(name, ast);
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants) }`;
     }),
     // Local Shared
     // width - Width of a column
     new SettingsCommand(/^(width) ((@?)(\S+))$/, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
-        var val = Constants.GetValue(prefix, value);
+        var val = root.constants.getValue(prefix, value);
 
         if (val != undefined && !isNaN(val)) {
             root.setLocalSharedVariable(key, Number(val));
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
-        var val = Constants.GetValue(prefix, value);
+        var val = root.constants.getValue(prefix, value);
 
-        if (Constants.IsValid(prefix, value) && !isNaN(val)) {
+        if (root.constants.isValid(prefix, value) && !isNaN(val)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
         } else if (prefix == '@' || isNaN(val)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
@@ -1338,9 +1338,9 @@ const SettingsCommands = [
         if (!isNaN(arg) && arg > 0) {
             root.setGlobalVariable(key, Number(arg));
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
-        var val = Constants.GetValue(prefix, value);
+        var val = root.constants.getValue(prefix, value);
 
         if (!isNaN(arg) && arg > 0) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
@@ -1353,16 +1353,23 @@ const SettingsCommands = [
     new SettingsCommand(/^(extra) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setLocalVariable(key, p => a);
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+    }),
+    new SettingsCommand(/^(const) (\w+) (.+)$/, function (root, string) {
+        var [ , key, name, value ] = this.match(string);
+        root.setConstant(name, value);
+    }, function (root, string) {
+        var [ , key, name, value ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Normal(value) }`;
     }),
     // Local
     // visible - Show text on the background
     new SettingsCommand(/^(visible) (on|off)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setLocalSharedVariable(key, ARG_MAP[a]);
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
     }),
@@ -1371,7 +1378,7 @@ const SettingsCommands = [
     new SettingsCommand(/^(border) (none|left|right|both)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setLocalSharedVariable(key, ARG_MAP[a]);
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
     }),
@@ -1380,7 +1387,7 @@ const SettingsCommands = [
     new SettingsCommand(/^(align) (left|right|center)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         root.setLocalSharedVariable(key, a);
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
     }),
@@ -1389,7 +1396,7 @@ const SettingsCommands = [
     new SettingsCommand(/^(format difference) (on|off)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
         root.setLocalSharedVariable('format_diff', ARG_MAP[arg]);
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, arg ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
     }),
@@ -1407,12 +1414,12 @@ const SettingsCommands = [
                 });
             }
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, arg ] = this.match(string);
         if (ARG_FORMATTERS[arg]) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
         } else {
-            return `${ SFormat.Keyword(key) } ${ AST.format(arg) }`;
+            return `${ SFormat.Keyword(key) } ${ AST.format(arg, root.constants) }`;
         }
     }),
     // Local
@@ -1425,23 +1432,23 @@ const SettingsCommands = [
                 return ast.eval(player, reference, env, val, extra);
             });
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, arg ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ AST.format(arg) }`;
+        return `${ SFormat.Keyword(key) } ${ AST.format(arg, root.constants) }`;
     }),
     // Local
     // alias - Override name of the column
     new SettingsCommand(/^(alias) ((@?)(.*))$/, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
-        var val = Constants.GetValue(prefix, value);
+        var val = root.constants.getValue(prefix, value);
 
         if (val != undefined) {
             root.setLocalVariable(key, val);
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
 
-        if (Constants.IsValid(prefix, value)) {
+        if (root.constants.isValid(prefix, value)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
         } else if (prefix == '@') {
             return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
@@ -1459,9 +1466,9 @@ const SettingsCommands = [
                 return ast.eval(player, reference, env, scope);
             });
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ AST.format(a) }`;
+        return `${ SFormat.Keyword(key) } ${ AST.format(a, root.constants) }`;
     }),
     // Local
     // expc - Set color expression to the column
@@ -1473,23 +1480,23 @@ const SettingsCommands = [
                 return getCSSColor(ast.eval(player, reference, env, val));
             });
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ AST.format(a) }`;
+        return `${ SFormat.Keyword(key) } ${ AST.format(a, root.constants) }`;
     }),
     // Local
     // value - Add default value
     new SettingsCommand(/^(value) (default) ((@?)(\S+[\S ]*))$/, function (root, string) {
         var [ , key, condition, arg, prefix, value ] = this.match(string);
-        var val = Constants.GetValue(prefix, value);
+        var val = root.constants.getValue(prefix, value);
 
         if (val != undefined) {
             root.setLocalArrayVariable(key, ARG_MAP[condition], 0, val);
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, condition, arg, prefix, value ] = this.match(string);
 
-        if (Constants.IsValid(prefix, value)) {
+        if (root.constants.isValid(prefix, value)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Constant(arg) }`;
         } else if (prefix == '@') {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Error(arg) }`;
@@ -1501,16 +1508,16 @@ const SettingsCommands = [
     // color - Add default color
     new SettingsCommand(/^(color) (default) ((@?)(\w+))$/, function (root, string) {
         var [ , key, condition, arg, prefix, value ] = this.match(string);
-        var val = getCSSColor(Constants.GetValue(prefix, value));
+        var val = getCSSColor(root.constants.getValue(prefix, value));
 
         if (val != undefined && val) {
             root.setLocalArrayVariable(key, ARG_MAP[condition], 0, val);
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, condition, arg, prefix, value ] = this.match(string);
-        var val = getCSSColor(Constants.GetValue(prefix, value));
+        var val = getCSSColor(root.constants.getValue(prefix, value));
 
-        if (Constants.IsValid(prefix, value) && val) {
+        if (root.constants.isValid(prefix, value) && val) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Constant(arg) }`;
         } else if (prefix == '@' || !val) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Error(arg) }`;
@@ -1522,16 +1529,16 @@ const SettingsCommands = [
     // value - Add value based on condition
     new SettingsCommand(/^(value) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\S+[\S ]*))$/, function (root, string) {
         var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
-        var reference = Constants.GetValue(rprefix, rvalue);
-        var val = Constants.GetValue(prefix, value);
+        var reference = root.constants.getValue(rprefix, rvalue);
+        var val = root.constants.getValue(prefix, value);
 
         if (reference != undefined && val != undefined) {
             root.setLocalArrayVariable(key, ARG_MAP[condition], reference, val);
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
 
-        if (Constants.IsValid(rprefix, rvalue)) {
+        if (root.constants.isValid(rprefix, rvalue)) {
             rarg = SFormat.Constant(rarg);
         } else if (rprefix == '@') {
             rarg = SFormat.Error(rarg);
@@ -1539,7 +1546,7 @@ const SettingsCommands = [
             rarg = SFormat.Normal(rarg);
         }
 
-        if (Constants.IsValid(prefix, value)) {
+        if (root.constants.isValid(prefix, value)) {
             arg = SFormat.Constant(arg);
         } else if (prefix == '@') {
             arg = SFormat.Error(arg);
@@ -1553,17 +1560,17 @@ const SettingsCommands = [
     // color - Add color based on condition
     new SettingsCommand(/^(color) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\w+))$/, function (root, string) {
         var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
-        var reference = Constants.GetValue(rprefix, rvalue);
-        var val = getCSSColor(Constants.GetValue(prefix, value));
+        var reference = root.constants.getValue(rprefix, rvalue);
+        var val = getCSSColor(root.constants.getValue(prefix, value));
 
         if (reference != undefined && val != undefined) {
             root.setLocalArrayVariable(key, ARG_MAP[condition], reference, val);
         }
-    }, function (string) {
+    }, function (root, string) {
         var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
-        var val = getCSSColor(Constants.GetValue(prefix, value));
+        var val = getCSSColor(root.constants.getValue(prefix, value));
 
-        if (Constants.IsValid(rprefix, rvalue)) {
+        if (root.constants.isValid(rprefix, rvalue)) {
             rarg = SFormat.Constant(rarg);
         } else if (rprefix == '@') {
             rarg = SFormat.Error(rarg);
@@ -1571,7 +1578,7 @@ const SettingsCommands = [
             rarg = SFormat.Normal(rarg);
         }
 
-        if (Constants.IsValid(prefix, value) && val) {
+        if (root.constants.isValid(prefix, value) && val) {
             arg = SFormat.Constant(arg);
         } else if (prefix == '@' || !val) {
             arg = SFormat.Error(arg);
@@ -1590,48 +1597,53 @@ const SP_ENUMS = {
     'ItemTypes': ITEM_TYPES
 };
 
-const Constants = {
-    // Get value of a constant or pass the key though
-    GetValue: function (tag, key) {
+class Constants {
+    constructor () {
+        this.Values = {
+            'green': '#00c851',
+            'orange': '#ffbb33',
+            'red': '#ff3547',
+            'blue': '#0064b4',
+            '15min': '900000',
+            '1hour': '3600000',
+            '12hours': '43200000',
+            '1day': '86400000',
+            '3days': '259200000',
+            '7days': '604800000',
+            '21days': '1814400000',
+            'mount10': '1',
+            'mount20': '2',
+            'mount30': '3',
+            'mount50': '4',
+            'none': '0',
+            'warrior': '1',
+            'mage': '2',
+            'scout': '3',
+            'assassin': '4',
+            'battlemage': '5',
+            'berserker': '6',
+            'demonhunter': '7',
+            'druid': '8',
+            'empty': '',
+            'tiny': '15',
+            'small': '60',
+            'normal': '100',
+            'large': '160',
+            'huge': '200',
+            'scrapbook': '2180'
+        }
+    }
+
+    getValue (tag, key) {
         return tag == '@' ? this.Values[key] : key;
-    },
-    // Check if the constant is valid
-    IsValid: function (tag, key) {
+    }
+
+    isValid (tag, key) {
         return tag == '@' && this.Values[key] != undefined;
-    },
-    // Individual constants
-    Values: {
-        'green': '#00c851',
-        'orange': '#ffbb33',
-        'red': '#ff3547',
-        'blue': '#0064b4',
-        '15min': '900000',
-        '1hour': '3600000',
-        '12hours': '43200000',
-        '1day': '86400000',
-        '3days': '259200000',
-        '7days': '604800000',
-        '21days': '1814400000',
-        'mount10': '1',
-        'mount20': '2',
-        'mount30': '3',
-        'mount50': '4',
-        'none': '0',
-        'warrior': '1',
-        'mage': '2',
-        'scout': '3',
-        'assassin': '4',
-        'battlemage': '5',
-        'berserker': '6',
-        'demonhunter': '7',
-        'druid': '8',
-        'empty': '',
-        'tiny': '15',
-        'small': '60',
-        'normal': '100',
-        'large': '160',
-        'huge': '200',
-        'scrapbook': '2180'
+    }
+
+    addConstant (key, value) {
+        this.Values[key] = value;
     }
 }
 
@@ -1721,7 +1733,7 @@ class Settings {
     }
 
     // Format code
-    static format (string) {
+    static format (settings, string) {
         var content = '';
         for (var line of string.split('\n')) {
             var comment;
@@ -1736,7 +1748,7 @@ class Settings {
             var spacing = line.match(/\s+$/);
 
             var command = SettingsCommands.find(command => command.isValid(trimmed));
-            content += command ? command.format(trimmed) : SFormat.Error(trimmed);
+            content += command ? command.format(settings, trimmed) : SFormat.Error(trimmed);
 
             if (spacing) {
                 content += spacing[0].replace(/ /g, '&nbsp;');
@@ -1760,7 +1772,9 @@ class Settings {
         return {
             func: this.func,
             vars: this.cvars,
-            svars: this.svars
+            svars: this.svars,
+            // Constants have to be propagated through the environment
+            constants: this.constants
         }
     }
 
@@ -1775,6 +1789,8 @@ class Settings {
         this.func = {};
         this.extras = [];
         this.stats = [];
+
+        this.constants = new Constants();
 
         this.globals = {
             outdated: true,
@@ -1949,6 +1965,10 @@ class Settings {
             delete this.vars['Simulator'];
             delete this.cvars['Simulator'];
         }
+    }
+
+    setConstant (name, value) {
+        this.constants.addConstant(name, value);
     }
 
     evaluateArrayConstants (array) {

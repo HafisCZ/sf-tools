@@ -49,7 +49,7 @@ class AST {
         this.root = this.evalExpression();
     }
 
-    static format (string) {
+    static format (string, constants = new Constants()) {
         var content = '';
         var tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(AST_REGEXP);
 
@@ -75,7 +75,7 @@ class AST {
                     value = SFormat.ReservedItemized(token);
                 } else if (SP_KEYWORD_MAPPING_5[token] != undefined) {
                     value = SFormat.ReservedItemizable(token);
-                } else if (token[0] == '@' && Constants.Values[token.slice(1)] != undefined) {
+                } else if (token[0] == '@' && constants.Values[token.slice(1)] != undefined) {
                     value = SFormat.Constant(token);
                 } else if (SP_ENUMS[token]) {
                     value = SFormat.Enum(token);
@@ -409,7 +409,7 @@ class AST {
         }
     }
 
-    eval (player, reference = undefined, environment = { func: { }, vars: { }, svars: { } }, scope = undefined, extra = undefined, node = this.root) {
+    eval (player, reference = undefined, environment = { func: { }, vars: { }, svars: { }, constants: new Constants() }, scope = undefined, extra = undefined, node = this.root) {
         if (typeof(node) == 'object') {
             if (node.noeval) {
                 return node.args[0];
@@ -649,7 +649,7 @@ class AST {
                 }
             } else if (node[0] == '@') {
                 // Return constant
-                return Constants.Values[node.slice(1)];
+                return environment.constants.Values[node.slice(1)];
             } else if (SP_KEYWORD_MAPPING_0[node] && player) {
                 // Return mapper
                 return SP_KEYWORD_MAPPING_0[node].expr(player);

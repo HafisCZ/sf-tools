@@ -1587,7 +1587,7 @@ class SettingsView extends View {
         // Input
         this.$area.on('input', function () {
             var val = $(this).val();
-            $b.html(Settings.format(val));
+            $b.html(Settings.format(new Settings(val), val));
         }).trigger('input');
 
         // Scroll

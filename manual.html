@@ -305,6 +305,21 @@
                     <div><code>clean</code></div>
                 </div>
             </div>
+            <h3 class="ui header">const <a class="ui small green label">Local</a></h3>
+            <hr/>
+            <div class="ui two column grid">
+                <div class="column">
+                    <p>
+                        Use this option to set value of a constant. You can use your own names or override the default ones.
+                    </p>
+                </div>
+                <div class="column">
+                    <div><code>const green ff00ff</code></div>
+                    <div><code><br/></code></div>
+                    <div><code>header Level</code></div>
+                    <div><code>color default @green</code></div>
+                </div>
+            </div>
             <h3 class="ui header">difference <a class="ui small green label">Local</a> <a class="ui small blue label">Shared</a> <a class="ui small red label">Global</a> <a class="ui small orange label">Guilds</a> <a class="ui small teal label">Me</a></h3>
             <hr/>
             <div class="ui two column grid">
@@ -1187,7 +1202,7 @@
             };
 
 
-            $('#manual-constants').html(Object.keys(Constants.Values).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
+            $('#manual-constants').html(Object.keys(new Constants().Values).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
             $('#manual-enums').html(Object.keys(SP_ENUMS).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
             $('#manual-functions').html(Object.keys(AST_FUNCTIONS).map(func => `<div class="text-center column">${ func }</div>`).join('') + `<div class="text-center column">format</div>`);
 
