@@ -53,6 +53,18 @@
                 border-bottom: 1px solid transparent;
             }
 
+            h2 {
+                text-align: left;
+                color: white;
+                margin-top: 0;
+            }
+
+            h3 {
+                text-align: left;
+                color: white;
+                margin-top: 0;
+            }
+
             .dvheader {
                 text-align: center;
                 font-size: 2.5em;
@@ -115,6 +127,16 @@
                 padding-right: 1em;
             }
 
+            .footer-about {
+                height: 2.6em;
+                margin: auto;
+                width: 100%;
+                bottom: 0;
+                position: fixed;
+                text-align: center;
+                cursor: default;
+            }
+
             .dvholder {
                 position: relative;
             }
@@ -127,12 +149,119 @@
                 color: orange;
                 font-size: 50%;
             }
+
+            .role-adventurer {
+                filter: brightness(130%);
+                color: #13acec;
+            }
+
+            .role-veteran {
+                filter: brightness(130%);
+                color: #8256c7;
+            }
+
+            .role-promoter {
+                filter: brightness(130%);
+                color: #e180de;
+            }
+
+            .role-playa {
+                filter: brightness(130%);
+                color: #eb0064;
+            }
+
+            .role-admin {
+                filter: brightness(130%);
+                color: #cb504b;
+            }
+
+            .role-mentor {
+                filter: brightness(130%);
+                color: #0dcf75;
+            }
+
+            .role-moderator {
+                filter: brightness(130%);
+                color: #f0c22f;
+            }
+
+            .about-block {
+                height: 2.5em;
+                position: relative;
+            }
+
+            .about-block h2 {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
+            .about-block h3 {
+                position: absolute;
+                left: 12em;
+                top: 0.25em;
+            }
         </style>
     </head>
     <body>
         <div class="ui main container">
             <h1> SFTools </h1>
-            <div class="ui four column stackable grid">
+            <div class="ui stackable grid" style="display: none; margin-top: 2.5em;" id="sf-about">
+                <div class="five wide column">
+
+                </div>
+                <div class="eleven wide column">
+                    <div class="about-block">
+                        <h2 class="role-admin">mar21</h2><h3>- Development, Research</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-admin">Zorago</h2><h3>- Pet Simulator Research & Testing</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-admin">Acclamator</h2><h3>- Statistics Help & Testing</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-mentor">Strider</h2><h3>- Fight Simulator Testing</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-mentor">Zeraffim</h2><h3>- Feedback, Testing</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-adventurer">BoeseMelone</h2><h3>- Feedback, Testing</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-adventurer">burningcherry</h2><h3>- Pet Simulator Optimizations</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-mentor">aszu</h2><h3>- Research</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-mentor">psychoazubi</h2><h3>- Research</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-mentor">Kraggori</h2><h3>- Research</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-adventurer">Minidave</h2><h3>- Research</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-adventurer">Papa Schlumpf</h2><h3>- Feedback</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-moderator">Pahx</h2><h3>- Doing stuff</h3>
+                    </div>
+                    <div class="about-block">
+                        <h2 class="role-playa">Leander</h2><h3>- Support</h3>
+                    </div>
+                    <div class="about-block">
+                        <a href="https://www.youtube.com/user/MrDORZER"><h2 class="role-promoter">DORZER</h2></a><h3>- Meme Material</h3>
+                    </div>
+                    <div class="about-block">
+                        <a href="https://www.youtube.com/channel/UCD52HJdjjh7Nb-sbtSgt_Jw"><h2 class="role-promoter">N3utr4L</h2></a><h3>- Meme Material</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="ui four column stackable grid" id="sf-menu">
                 <div class="column">
                     <a href="stats.html">
                         <div class="dvselection">
@@ -300,9 +429,12 @@
             </div>
             <div class="footer-legal">
                 Copyright <i class="copyright outline icon"></i>2020 mar21 | support@mar21.eu<br>
-                Special thanks to <b>Zeraffim</b>, <b>BoeseMelone</b>, <b>Strider</b> and <b>Acclamator</b><br>
+                Special thanks to <b class="role-mentor">Zeraffim</b>, <b class="role-adventurer">BoeseMelone</b>, <b class="role-mentor">Strider</b>, <b class="role-admin">Zorago</b> and <b class="role-admin">Acclamator</b><br>
                 Resources used are property of <b>Playa Games</b>, but this site is not affiliated with <b>Playa Games</b> in any way
             </div>
+        </div>
+        <div class="footer-about">
+            <a id="about">Toggle credits</a>
         </div>
         <script>
             const VERSION_MAJOR = 3;
@@ -353,6 +485,19 @@
                 var obj = JSON.parse(localStorage['version']);
                 $(".footer-repo").html(`v${ VERSION_MAJOR }.${ obj.version }<br/>Last updated on ${ formatDate(new Date(obj.timestamp)) } - ${ obj.message }`);
             }
+
+            var showAbout = false;
+            $('#about').click(function () {
+                showAbout = !showAbout;
+
+                if (showAbout) {
+                    $('#sf-menu').hide();
+                    $('#sf-about').show();
+                } else {
+                    $('#sf-menu').show();
+                    $('#sf-about').hide();
+                }
+            });
         </script>
     </body>
 </html>
