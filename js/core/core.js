@@ -72,12 +72,20 @@ const FileDatabase = new (class {
         this.anonymous = true;
     }
 
+    slot (id) {
+        this.dbname = 'database_' + id;
+    }
+
     ready (callback, error) {
+        if (!this.dbname) {
+            this.dbname = 'database';
+        }
+
         if (this.anonymous) {
             this.db = { };
             callback();
         } else {
-            var request = window.indexedDB.open('database', 1);
+            var request = window.indexedDB.open(this.dbname, 1);
 
             request.onsuccess = (e) => {
                 this.db = request.result;
@@ -493,6 +501,10 @@ const Storage = new (class {
             FileDatabase.temporary();
 
             Database.Temporary = true;
+        }
+
+        if (!args.temporary && args.slot) {
+            FileDatabase.slot(args.slot);
         }
 
         if (args.developer) {

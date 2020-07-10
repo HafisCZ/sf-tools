@@ -485,12 +485,26 @@
 
         <!-- UI Handler -->
         <script type="text/javascript">
-            var temp = /^.*\?(dev\&)?temp(\&dev)?$/.test(window.location.href);
+            var rawKeys = window.location.href.split(/[\?\&]/);
+            var keys = {};
+
+            for (var key of rawKeys.slice(1)) {
+                if (key.includes('=')) {
+                    var [k, v] = key.split('=', 2);
+                    keys[k] = v;
+                } else {
+                    keys[key] = -1;
+                }
+            }
+
+            var dev = keys['dev'] == -1;
+            var temp = keys['temp'] == -1;
+            var slot = isNaN(keys['slot']) ? 0 : Math.max(0, Number(keys['slot']));
+
             if (temp) {
                 $('.css-temporary').removeClass('hidden');
             }
 
-            var dev = /^.*\?(temp\&)?dev(\&temp)?$/.test(window.location.href);
             if (dev) {
                 $('.css-devmode').removeClass('hidden');
                 $('#show-developer').removeClass('hidden');
@@ -521,7 +535,8 @@
             }, {
                 temporary: temp,
                 developer: dev,
-                partial: true
+                partial: true,
+                slot: slot
             });
         </script>
     </body>
