@@ -593,8 +593,8 @@
                     var xpmin = (1 + rxp / 100) * (1 + gxp / 100 + book / 100) * basexp / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
                     var xpmax = xpmin * 5;
 
-                    var goldmin = Math.min(15E6, (1 + rgold / 100) * (1 + ggold / 100 + tower / 100) * basegold / 11);
-                    var goldmax = Math.min(15E6, goldmin * 5);
+                    var goldmin = Math.min(10000000, 1 * (1 + ggold / 100 + tower / 100) * basegold / 11) * (1 + rgold / 100);
+                    var goldmax = Math.min(10000000, 5 * (1 + ggold / 100 + tower / 100) * basegold / 11) * (1 + rgold / 100);
 
                     $('#quest-goldmin').val(goldmin >= 999 ? formatAsSpacedNumber(goldmin, ' ') : roundShort(goldmin));
                     $('#quest-goldmax').val(goldmax >= 999 ? formatAsSpacedNumber(goldmax, ' ') : roundShort(goldmax));
