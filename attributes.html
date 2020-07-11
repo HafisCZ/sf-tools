@@ -182,7 +182,7 @@
                         </div>
                     </div>
                     <div class="ui segment">
-                        <h3 class="ui header">Experience (Experimental)</h3>
+                        <h3 class="ui header">Experience</h3>
                         <div class="ui small form">
                             <div class="six fields">
                                 <div class="field">
@@ -192,18 +192,6 @@
                                 <div class="field">
                                     <label><span class="green">&bull;</span> Hydra heads</label>
                                     <input type="text" id="xp-hydra">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> Guild bonus %</label>
-                                    <input type="text" id="xp-guild">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> Scrapbook bonus %</label>
-                                    <input type="text" id="xp-book">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> Experience Rune</label>
-                                    <input type="text" id="xp-runes">
                                 </div>
                                 <div class="field">
                                     <label><span class="orange">&bull;</span> Academy</label>
@@ -220,20 +208,9 @@
                                     <input type="text" disabled id="xp-daily">
                                 </div>
                                 <div class="field">
-                                    <label><span class="blue">&bull;</span> Quest Segment Min</label>
-                                    <input type="text" disabled id="xp-min1">
-                                </div>
-                                <div class="field">
-                                    <label><span class="blue">&bull;</span> Quest Segment Max</label>
-                                    <input type="text" disabled id="xp-max1">
-                                </div>
-                                <div class="field"></div>
-                                <div class="field">
                                     <label><span class="orange">&bull;</span> Hourly Academy</label>
                                     <input type="text" disabled id="xp-hourly">
                                 </div>
-                            </div>
-                            <div class="six fields">
                                 <div class="field">
                                     <label>Calendar 1 book</label>
                                     <input type="text" disabled id="xp-calendar1">
@@ -242,15 +219,18 @@
                                     <label>Arena</label>
                                     <input type="text" disabled id="xp-arena">
                                 </div>
-                                <div class="field"></div>
+                                <div class="field">
+                                    <label>Dungeon (Level is enemy level)</label>
+                                    <input type="text" disabled id="xp-dungeon">
+                                </div>
+                            </div>
+                            <div class="six fields">
                                 <div class="field"></div>
                                 <div class="field"></div>
                                 <div class="field">
                                     <label><span class="orange">&bull;</span> Academy time</label>
                                     <input type="text" disabled id="xp-time">
                                 </div>
-                            </div>
-                            <div class="six fields">
                                 <div class="field">
                                     <label>Calendar 2 books</label>
                                     <input type="text" disabled id="xp-calendar2">
@@ -259,18 +239,18 @@
                                     <label>Wheel book</label>
                                     <input type="text" disabled id="xp-wheel1">
                                 </div>
-                                <div class="field"></div>
                                 <div class="field">
                                     <label>Twister (Level is enemy level)</label>
                                     <input type="text" disabled id="xp-twister">
                                 </div>
+                            </div>
+                            <div class="six fields">
+                                <div class="field"></div>
                                 <div class="field"></div>
                                 <div class="field">
                                     <label><span class="orange">&bull;</span> Academy capacity</label>
                                     <input type="text" disabled id="xp-capacity">
                                 </div>
-                            </div>
-                            <div class="six fields">
                                 <div class="field">
                                     <label>Calendar 3 books</label>
                                     <input type="text" disabled id="xp-calendar3">
@@ -283,9 +263,59 @@
                                     <label>Habitat Boss</label>
                                     <input type="text" disabled id="xp-habitat">
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui segment">
+                        <h3 class="ui header">Quests (Experimental)</h3>
+                        <div class="ui small form">
+                            <div class="six fields">
                                 <div class="field">
-                                    <label>Dungeon (Level is enemy level)</label>
-                                    <input type="text" disabled id="xp-dungeon">
+                                    <label>Level</label>
+                                    <input type="text" id="quest-level">
+                                </div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> Scrapbook %</label>
+                                    <input type="text" id="quest-book">
+                                </div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> Guild XP %</label>
+                                    <input type="text" id="quest-xp">
+                                </div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> Experience Rune</label>
+                                    <input type="text" id="quest-rxp">
+                                </div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> Minimum XP</label>
+                                    <input type="text" disabled id="quest-xpmin">
+                                </div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> Maximum XP</label>
+                                    <input type="text" disabled id="quest-xpmax">
+                                </div>
+                            </div>
+                            <div class="six fields">
+                                <div class="field"></div>
+                                <div class="field">
+                                    <label><span class="blue">&bull;</span> Tower</label>
+                                    <input type="text" id="quest-tower">
+                                </div>
+                                <div class="field">
+                                    <label><span class="blue">&bull;</span> Guild Gold %</label>
+                                    <input type="text" id="quest-gold">
+                                </div>
+                                <div class="field">
+                                    <label><span class="blue">&bull;</span> Gold Rune</label>
+                                    <input type="text" id="quest-rgold">
+                                </div>
+                                <div class="field">
+                                    <label><span class="blue">&bull;</span> Minimum Gold</label>
+                                    <input type="text" disabled id="quest-goldmin">
+                                </div>
+                                <div class="field">
+                                    <label><span class="blue">&bull;</span> Maximum Gold</label>
+                                    <input type="text" disabled id="quest-goldmax">
                                 </div>
                             </div>
                         </div>
@@ -476,19 +506,11 @@
                 }
             });
 
-            $('#xp-level, #xp-guild, #xp-book, #xp-hydra, #xp-academy, #xp-runes').on('change input', function () {
-                if (validate($('#xp-level'), $('#xp-guild'), $('#xp-book'), $('#xp-hydra'), $('#xp-runes'), $('#xp-academy'))) {
+            $('#xp-level, #xp-hydra, #xp-academy').on('change input', function () {
+                if (validate($('#xp-level'), $('#xp-hydra'), $('#xp-academy'))) {
                     var level = Number($('#xp-level').val());
                     if (level < 1) level = 1;
                     else if (level > 599) level = 599;
-
-                    var guild = Number($('#xp-guild').val());
-                    if (guild > 200) guild = 200;
-                    else if (guild < 0) guild = 0;
-
-                    var book = Number($('#xp-book').val());
-                    if (book > 100) book = 100;
-                    else if (book < 0) book = 0;
 
                     var hydra = Number($('#xp-hydra').val());
                     if (hydra > 20) hydra = 20;
@@ -497,10 +519,6 @@
                     var academy = Number($('#xp-academy').val());
                     if (academy > 20) academy = 20;
                     else if (academy < 1) academy = 1;
-
-                    var runes = Number($('#xp-runes').val());
-                    if (runes > 10) runes = 10;
-                    else if (runes < 0) runes = 0;
 
                     var xp = getExperienceRequired(level);
                     var multiplier = 1.5 + 0.75 * (level - 1);
@@ -519,10 +537,6 @@
                     var habitat = 6 * hbase * multiplier;
                     var twister = Math.min(xp / 50, 30E6);
 
-                    var quest = (1 + runes / 100) * (1 + guild / 100 + book / 100) * base / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
-                    var min1 = quest;
-                    var max1 = min1 * 5;
-
                     $('#xp-time').val(Math.trunc(time) + ' hours ' + Math.trunc(60 * (time % 1)) + ' minutes');
                     $('#xp-next').val(formatAsSpacedNumber(xp, ' '));
                     $('#xp-arena').val(formatAsSpacedNumber(arena, ' '));
@@ -537,12 +551,56 @@
                     $('#xp-calendar2').val(formatAsSpacedNumber(calendar2, ' '));
                     $('#xp-calendar3').val(formatAsSpacedNumber(calendar3, ' '));
 
-                    $('#xp-min1').val(formatAsSpacedNumber(min1, ' '));
-                    $('#xp-max1').val(formatAsSpacedNumber(max1, ' '));
-
                     $('#xp-habitat').val(formatAsSpacedNumber(habitat, ' '));
                     $('#xp-twister').val(formatAsSpacedNumber(twister, ' '));
                     $('#xp-dungeon').val(formatAsSpacedNumber(calendar3, ' '));
+                }
+            });
+
+            $('#quest-level, #quest-xp, #quest-gold, #quest-tower, #quest-book, #quest-rxp, #quest-rgold').on('change input', function () {
+                if (validate($('#quest-level'), $('#quest-xp'), $('#quest-gold'), $('#quest-tower'), $('#quest-book'), $('#quest-rxp'), $('#quest-rgold'))) {
+                    var level = Number($('#quest-level').val());
+                    if (level < 1) level = 1;
+                    else if (level > 632) level = 632;
+
+                    var gxp = Number($('#quest-xp').val());
+                    if (gxp > 200) gxp = 200;
+                    else if (gxp < 0) gxp = 0;
+
+                    var ggold = Number($('#quest-gold').val());
+                    if (ggold > 100) ggold = 100;
+                    else if (ggold < 0) ggold = 0;
+
+                    var book = Number($('#quest-book').val());
+                    if (book > 100) book = 100;
+                    else if (book < 0) book = 0;
+
+                    var tower = Number($('#quest-tower').val());
+                    if (tower > 100) tower = 100;
+                    else if (tower < 0) tower = 0;
+
+                    var rxp = Number($('#quest-rxp').val());
+                    if (rxp > 10) rxp = 10;
+                    else if (rxp < 0) rxp = 0;
+
+                    var rgold = Number($('#quest-rgold').val());
+                    if (rgold > 50) rgold = 50;
+                    else if (rgold < 0) rgold = 0;
+
+                    var basexp = getExperienceRequired(level) / (1.5 + 0.75 * (level - 1));
+                    var basegold = getGoldCurve(level) * 12 / 1000;
+
+                    var xpmin = (1 + rxp / 100) * (1 + gxp / 100 + book / 100) * basexp / 11 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
+                    var xpmax = xpmin * 5;
+
+                    var goldmin = Math.min(15E6, (1 + rgold / 100) * (1 + ggold / 100 + tower / 100) * basegold / 11);
+                    var goldmax = Math.min(15E6, goldmin * 5);
+
+                    $('#quest-goldmin').val(goldmin >= 999 ? formatAsSpacedNumber(goldmin, ' ') : roundShort(goldmin));
+                    $('#quest-goldmax').val(goldmax >= 999 ? formatAsSpacedNumber(goldmax, ' ') : roundShort(goldmax));
+
+                    $('#quest-xpmin').val(formatAsSpacedNumber(xpmin, ' '));
+                    $('#quest-xpmax').val(formatAsSpacedNumber(xpmax, ' '));
                 }
             });
 
