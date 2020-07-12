@@ -75,7 +75,7 @@ class AST {
                     value = SFormat.ReservedItemized(token);
                 } else if (SP_KEYWORD_MAPPING_5[token] != undefined) {
                     value = SFormat.ReservedItemizable(token);
-                } else if (token[0] == '@' && constants.Values[token.slice(1)] != undefined) {
+                } else if (constants.isValid(token[0], token.slice(1))) {
                     value = SFormat.Constant(token);
                 } else if (SP_ENUMS[token]) {
                     value = SFormat.Enum(token);

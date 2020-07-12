@@ -1,4 +1,10 @@
 const CHANGELOG = {
+    'v3.630': [
+        'Fixed a bug that caused settings to be invisible / froze the tool.',
+        'Added <code>const</code> keyword that allows you to set your own constants.',
+        'Keyword <code>show as</code> can now also be used in Me tab.',
+        'You can now separate stored data into different slots via url <code>https://sftools.mar21.eu/stats?slot=1</code>.<br/>The default slot number is 0 and it can be any positive number.<br/>Please note that they share settings and any changes will affect all other slots.'
+    ],
     'v3.616': [
         '<code>Last Active</code> header no longer works as before.<br/>To use colors like before, you\'ll need to modify the header in this way:<br/><br/><img src="res/update0.png" style="margin-left: -2em;"></img>'
     ],

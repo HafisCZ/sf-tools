@@ -605,26 +605,102 @@ class TableInstance {
 
     // Create history table
     createHistoryTable () {
-        var size = 200 + (this.settings.globals.indexed ? 50 : 0) + this.flat.reduce((a, b) => a + b.width, 0);
+        var sizeDynamic = this.config.reduce((a, b) => a + b.width, 0);
+        var size = 200 + (this.settings.globals.indexed ? 50 : 0) + Math.max(400, sizeDynamic);
+
+        var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
+
+        var details = '';
+        if (this.settings.extras.length) {
+            var widskip = 1;
+            for (var i = 0, wid = 100; wid > 0 && i < this.flat.length; i++) {
+                wid -= this.flat[i].width;
+                if (wid > 0) {
+                    widskip += this.flat[i].span;
+                } else {
+                    break;
+                }
+            }
+
+            for (var extra of this.settings.extras) {
+                var lw = widskip;
+                if (extra.width) {
+                    var lw = 1;
+                    for (var i = 0, wid = extra.width; wid > 0 && i < this.flat.length; i++) {
+                        wid -= this.flat[i].width;
+                        if (wid > 0) {
+                            lw += this.flat[i].span;;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                var player = this.array[0][1];
+                var value = extra.ast.eval(player, player, this.settings, player);
+
+                var color = CompareEval.evaluate(value, extra.color);
+                color = (color != undefined ? color : (extra.expc ? extra.expc(player, player, this.settings, value) : '')) || '';
+
+                var displayValue = CompareEval.evaluate(value, extra.value);
+                if (displayValue == undefined && extra.format) {
+                    value = extra.format(player, player, this.settings, value);
+                } else if (displayValue != undefined) {
+                    value = displayValue;
+                }
+
+                if (value != undefined && extra.extra) {
+                    value = `${ value }${ extra.extra(player) }`;
+                }
+
+                var cell = CellGenerator.WideCell(SFormat.Normal(value), color, lw, extra.align);
+                details += `
+                    <tr>
+                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
+                        ${ cell }
+                    </tr>
+                `;
+            }
+
+            details += `
+                <tr>
+                    <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
+                    <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
+                </tr>
+                <tr>
+                    <td colspan="${ dividerSpan + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td>
+                </tr>
+            `;
+        }
+
         return [
             `
-                <thead style="${ this.settings.globals.font ? `font: ${ this.settings.globals.font };` : '' }">
-                    <tr>
-                        ${ this.settings.globals.indexed ? `<td width="50" colspan="1" rowspan="2">#</td>` : '' }
-                        <td width="200" colspan="1" rowspan="2" class="border-right-thin">Date</td>
-                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
-                    </tr>
-                    <tr>
-                        ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
-                    </tr>
-                    <tr>
-                        ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
-                        <td class="border-bottom-thick border-right-thin"></td>
-                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
-                    </tr>
+                ${ details }
+                <tr>
+                    ${ this.settings.globals.indexed ? `<td width="50" colspan="1" rowspan="2">#</td>` : '' }
+                    <td width="200" colspan="1" rowspan="2" class="border-right-thin">Date</td>
+                    ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
+                </tr>
+                <tr>
+                    ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
+                </tr>
+                <tr>
+                    ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
+                    <td class="border-bottom-thick border-right-thin"></td>
+                    ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
+                </tr>
+                ${ join(this.entries, e => e.content) }
+            `,
+            size
+        ];
+
+        return [
+            `
+                <thead>
+
                 </thead>
                 <tbody style="${ this.settings.globals.font ? `font: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
-                    ${ join(this.entries, e => e.content) }
+                    ${ content }
                 </tbody>
             `,
             size
@@ -1639,11 +1715,15 @@ class Constants {
     }
 
     isValid (tag, key) {
-        return tag == '@' && this.Values[key] != undefined;
+        return tag == '@' && this.Values.hasOwnProperty(key);
     }
 
     addConstant (key, value) {
         this.Values[key] = value;
+    }
+
+    hasConstant (key) {
+        return this.Values.hasOwnProperty(key);
     }
 }
 
@@ -1732,9 +1812,29 @@ class Settings {
         return this.getEntry(name) || {};
     }
 
+    static parseConstants(string) {
+        var settings = new Settings('');
+
+        for (var line of string.split('\n')) {
+            var commentIndex = line.indexOf('#');
+            if (commentIndex != -1) {
+                line = line.slice(0, commentIndex);
+            }
+
+            var trimmed = line.trim();
+            if (SettingsCommands[23].isValid(trimmed)) {
+                SettingsCommands[23].parse(settings, trimmed);
+            }
+        }
+
+        return settings;
+    }
+
     // Format code
-    static format (settings, string) {
+    static format (string) {
+        var settings = Settings.parseConstants(string);
         var content = '';
+
         for (var line of string.split('\n')) {
             var comment;
             var commentIndex = line.indexOf('#');
