@@ -61,23 +61,23 @@ class AST {
 
                 if (token != undefined && token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
                     value = token[0] + SFormat.Comment(token.slice(1, token.length - 1)) + token[token.length - 1];
-                } else if (AST_FUNCTIONS[token] != undefined || ['each', 'map', 'slice', 'this', 'undefined', 'null', 'filter', 'format'].includes(token)) {
+                } else if (AST_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'this', 'undefined', 'null', 'filter', 'format'].includes(token)) {
                     value = SFormat.Constant(token);
-                } else if (SP_KEYWORD_MAPPING_0[token] != undefined) {
+                } else if (SP_KEYWORD_MAPPING_0.hasOwnProperty(token)) {
                     value = SFormat.Reserved(token);
-                } else if (SP_KEYWORD_MAPPING_1[token] != undefined) {
+                } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(token)) {
                     value = SFormat.ReservedProtected(token);
-                } else if (SP_KEYWORD_MAPPING_2[token] != undefined) {
+                } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(token)) {
                     value = SFormat.ReservedPrivate(token);
-                } else if (SP_KEYWORD_MAPPING_3[token] != undefined) {
+                } else if (SP_KEYWORD_MAPPING_3.hasOwnProperty(token)) {
                     value = SFormat.ReservedSpecial(token);
-                } else if (SP_KEYWORD_MAPPING_4[token] != undefined) {
+                } else if (SP_KEYWORD_MAPPING_4.hasOwnProperty(token)) {
                     value = SFormat.ReservedItemized(token);
-                } else if (SP_KEYWORD_MAPPING_5[token] != undefined) {
+                } else if (SP_KEYWORD_MAPPING_5.hasOwnProperty(token)) {
                     value = SFormat.ReservedItemizable(token);
                 } else if (constants.isValid(token[0], token.slice(1))) {
                     value = SFormat.Constant(token);
-                } else if (SP_ENUMS[token]) {
+                } else if (SP_ENUMS.hasOwnProperty(token)) {
                     value = SFormat.Enum(token);
                 } else if (token == 'reference') {
                     value = SFormat.Constant('reference');

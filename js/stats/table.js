@@ -1238,13 +1238,13 @@ const SettingsCommands = [
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         if (a != undefined) {
-            if (SP_KEYWORD_MAPPING_0[a]) {
+            if (SP_KEYWORD_MAPPING_0.hasOwnProperty(a)) {
                 return `${ SFormat.Keyword(key) } ${ SFormat.Reserved(a) }`;
-            } else if (SP_KEYWORD_MAPPING_1[a]) {
+            } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(a)) {
                 return `${ SFormat.Keyword(key) } ${ SFormat.ReservedProtected(a) }`;
-            } else if (SP_KEYWORD_MAPPING_2[a]) {
+            } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(a)) {
                 return `${ SFormat.Keyword(key) } ${ SFormat.ReservedPrivate(a) }`;
-            } else if (SP_KEYWORD_MAPPING_3[a]) {
+            } else if (SP_KEYWORD_MAPPING_3.hasOwnProperty(a)) {
                 return `${ SFormat.Keyword(key) } ${ SFormat.ReservedSpecial(a) }`;
             } else {
                 return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
@@ -1267,12 +1267,12 @@ const SettingsCommands = [
     // Create new itemized header
     new SettingsCommand(/^(itemized) (\S+[\S ]*) by (\S+[\S ]*)$/, function (root, string) {
         var [ , key, a, s ] = this.match(string);
-        if (SP_KEYWORD_MAPPING_5[a]) {
+        if (SP_KEYWORD_MAPPING_5.hasOwnProperty(a)) {
             root.createItemizedHeader(SP_KEYWORD_MAPPING_5[a], s);
         }
     }, function (root, string) {
         var [ , key, a, s ] = this.match(string);
-        if (SP_KEYWORD_MAPPING_5[a]) {
+        if (SP_KEYWORD_MAPPING_5.hasOwnProperty(a)) {
             return `${ SFormat.Keyword(key) } ${ SFormat.ReservedItemizable(a) } ${ SFormat.Keyword('by') } ${ SP_KEYWORD_MAPPING_4[s] ? SFormat.ReservedItemized(s) : SFormat.Normal(s) }`;
         } else {
             return `${ SFormat.Keyword(key) } ${ SFormat.Error(a) } ${ SFormat.Keyword('by') } ${ SP_KEYWORD_MAPPING_4[s] ? SFormat.ReservedItemized(s) : SFormat.Normal(s) }`;
