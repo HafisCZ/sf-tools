@@ -109,7 +109,10 @@
                                     <label>Witch Scroll</label>
                                     <input type="text" disabled id="gold-scroll">
                                 </div>
-                                <div class="field"></div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> Quicksand Hourglass</label>
+                                    <input type="text" disabled id="gold-hourglass1">
+                                </div>
                                 <div class="field">
                                     <label>Dice game (4 of a kind)</label>
                                     <input type="text" disabled id="gold-dice2">
@@ -133,8 +136,8 @@
                                     <input type="text" disabled id="gold-bar">
                                 </div>
                                 <div class="field">
-                                    <label><span class="green">&bull;</span> Quicksand Hourglass</label>
-                                    <input type="text" disabled id="gold-hourglass1">
+                                    <label><span class="green">&bull;</span> 10 Quicksand Hourglasses</label>
+                                    <input type="text" disabled id="gold-hourglass10">
                                 </div>
                                 <div class="field">
                                     <label>Dice game (5 of a kind)</label>
@@ -159,16 +162,16 @@
                                     <input type="text" disabled id="gold-bar3">
                                 </div>
                                 <div class="field">
-                                    <label><span class="green">&bull;</span> 10 Quicksand Hourglasses</label>
-                                    <input type="text" disabled id="gold-hourglass10">
-                                </div>
-                                <div class="field">
                                     <label>Fortress Reroll</label>
                                     <input type="text" disabled id="gold-reroll">
                                 </div>
                                 <div class="field">
                                     <label>Tower (Level is enemy level)</label>
                                     <input type="text" disabled id="gold-towerboss">
+                                </div>
+                                <div class="field">
+                                    <label>Twister (Level is enemy level)</label>
+                                    <input type="text" disabled id="gold-twisterboss">
                                 </div>
                                 <div class="field">
                                     <label>Witch Potion</label>
@@ -671,10 +674,12 @@
                     var goldbar1 = 3 * goldbar3 / 10;
 
                     var towerboss = (9 * getGoldCurve(level + 2 ) / 100);
+                    var twisterboss = (2 * getGoldCurve(level) / 100);
 
                     $('#gold-bar').val(goldbar1 >= 999 ? formatAsSpacedNumber(goldbar1, ' ') : roundShort(goldbar1));
                     $('#gold-bar3').val(goldbar3 >= 999 ? formatAsSpacedNumber(goldbar3, ' ') : roundShort(goldbar3));
                     $('#gold-towerboss').val(towerboss >= 999 ? formatAsSpacedNumber(towerboss, ' ') : roundShort(towerboss));
+                    $('#gold-twisterboss').val(twisterboss >= 999 ? formatAsSpacedNumber(twisterboss, ' ') : roundShort(twisterboss));
 
                     $('#gold-pot10').val(pot10 >= 999 ? formatAsSpacedNumber(pot10, ' ') : roundShort(pot10));
                     $('#gold-pot15').val(pot15 >= 999 ? formatAsSpacedNumber(pot15, ' ') : roundShort(pot15));
