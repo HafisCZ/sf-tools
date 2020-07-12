@@ -15,12 +15,12 @@ const StrategySimulator = new (class {
             randomgold *= 2;
         }
 
-        var xpmin = 4 * this.getExperienceRequired(level) / (1.5 + 0.75 * (level - 1)) / 10 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
+        var xpmin = duration * 4 * this.getExperienceRequired(level) / (1.5 + 0.75 * (level - 1)) / 10 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
         var xpmax = xpmin * 5;
 
-        var basegold = getGoldCurve(level) * 12 / 11 / 1000;
-        var goldmin = 1.5 * Math.min(10000000, 4 * basegold);
-        var goldmax = 1.5 * Math.min(10000000, 20 * basegold);
+        var basegold = duration * 4 * getGoldCurve(level) * 12 / 11 / 1000;
+        var goldmin = 1.5 * Math.min(10000000, 1 * basegold);
+        var goldmax = 1.5 * Math.min(10000000, 5 * basegold);
 
         return {
             duration: duration > segmentsleft ? segmentsleft : duration,
@@ -56,8 +56,7 @@ const StrategySimulator = new (class {
         level = Math.min(599, Math.max(1, level));
         target = Math.min(600, Math.max(level + 1, target));
 
-        while (level < target) {
-            thirstLeft = 128;
+        var runThirst = () => {
             while (thirstLeft) {
                 var quests = [
                     this.generateQuest(level, thirstLeft),
@@ -90,6 +89,13 @@ const StrategySimulator = new (class {
                     currentXP -= neededXP;
                 }
             }
+        };
+
+        while (level < target) {
+            thirstLeft = 120;
+            runThirst();
+            thirstLeft = 8;
+            runThirst();
         }
 
         return {
@@ -132,7 +138,7 @@ const StrategySimulator = new (class {
 
             var xpneeded = this.getExperienceRequired(level);
             if (levelxp > xpneeded) {
-                level++;
+                level = Math.min(600, level + 1);
                 levelxp -= xpneeded;
             }
         }
