@@ -533,8 +533,8 @@
                     var capacity = academy * getAcademyMultiplier(academy) * hbase;
                     var time = capacity / hourly;
 
-                    var wheel1 = Math.trunc(base / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99))));
-                    var wheel2 = wheel1 * 2;
+                    var wheel2 = Math.trunc(base / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99))));
+                    var wheel1 = Math.trunc(wheel2 / 2);
 
                     var calendar1 = Math.ceil(xp / 15);
                     var calendar2 = Math.ceil(xp / 10);
