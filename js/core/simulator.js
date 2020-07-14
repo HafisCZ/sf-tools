@@ -42,11 +42,11 @@ const ClassMap = {
     4: 'Assassin',
     5: 'Battle Mage',
     6: 'Berserker',
-    7: 'Demon Hunter',
-    8: 'Druid'
+    7: 'Demon Hunter'
 };
 
 const ClassMapExt = {
+    8: 'Druid',
     20: 'Necromancer'
 };
 
