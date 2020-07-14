@@ -149,6 +149,10 @@
                                     <label>Level</label>
                                     <input class="text-center" type="text" data-path="Level">
                                 </div>
+                                <div class="field">
+                                    <label>Health</label>
+                                    <input class="text-center" type="text" data-path="HealthOverride" placeholder="Set HP if abnormal">
+                                </div>
                             </div>
                             <div class="five fields">
                                 <div class="field">
@@ -237,7 +241,7 @@
                             <div class="four fields">
                                 <div class="field">
                                     <label>Armor</label>
-                                    <input class="text-center" type="text" data-path="Armor">
+                                    <input class="text-center" type="text" data-path="Armor" placeholder="Armor points">
                                 </div>
                                 <div class="field">
                                     <label>Fire</label>
@@ -424,6 +428,14 @@
                     }
                 }
 
+                show (val) {
+                    if (val) {
+                        this.$object.parent('.field').show();
+                    } else {
+                        this.$object.parent('.field').hide();
+                    }
+                }
+
                 clear () {
                     if (this.isDropdown) {
                         this.$object.dropdown('set selected', this.defaultValue);
@@ -434,7 +446,19 @@
             }
 
             function isNumber (val) {
-                return !isNaN(val);
+                return !isNaN(val) && val >= 0;
+            }
+
+            function isGladiator (val) {
+                return !isNaN(val) && val >= 0 && val <= 15;
+            }
+
+            function isDamageRune (val) {
+                return !isNaN(val) && val >= 0 && val <= 60;
+            }
+
+            function isResistanceRune (val) {
+                return !isNaN(val) && val >= 0 && val <= 75;
             }
 
             const EditorController = new (class {
@@ -444,16 +468,17 @@
                         class: new Field('[data-path="Class"]', '1'),
                         level: new Field('[data-path="Level"]', '', isNumber),
                         armor: new Field('[data-path="Armor"]', '', isNumber),
+                        health_override: new Field('[data-path="HealthOverride"]', '', isNumber),
 
-                        resistance_fire: new Field('[data-path="Runes.ResistanceFire"]', '', isNumber),
-                        resistance_cold: new Field('[data-path="Runes.ResistanceCold"]', '', isNumber),
-                        resistance_lightning: new Field('[data-path="Runes.ResistanceLightning"]', '', isNumber),
+                        resistance_fire: new Field('[data-path="Runes.ResistanceFire"]', '', isResistanceRune),
+                        resistance_cold: new Field('[data-path="Runes.ResistanceCold"]', '', isResistanceRune),
+                        resistance_lightning: new Field('[data-path="Runes.ResistanceLightning"]', '', isResistanceRune),
 
                         portal_hp: new Field('[data-path="Dungeons.Player"]', '', isNumber),
                         portal_damage: new Field('[data-path="Dungeons.Group"]', '', isNumber),
 
                         runes_health: new Field('[data-path="Runes.Health"]', '', isNumber),
-                        gladiator: new Field('[data-path="Fortress.Gladiator"]', '', isNumber),
+                        gladiator: new Field('[data-path="Fortress.Gladiator"]', '', isGladiator),
                         potion_life: new Field('[data-path="Potions.Life"]', '0'),
                         enchantment: new Field('[data-path="Items.Hand.HasEnchantment"]', 'false'),
 
@@ -467,13 +492,13 @@
                         weapon1_max: new Field('[data-path="Items.Wpn1.DamageMax"]', '', isNumber),
                         weapon1_enchantment: new Field('[data-path="Items.Wpn1.HasEnchantment"]', 'false'),
                         weapon1_rune: new Field('[data-path="Items.Wpn1.AttributeTypes.2"]', '0'),
-                        weapon1_value: new Field('[data-path="Items.Wpn1.Attributes.2"]', '', isNumber),
+                        weapon1_value: new Field('[data-path="Items.Wpn1.Attributes.2"]', '', isDamageRune),
 
                         weapon2_min: new Field('[data-path="Items.Wpn2.DamageMin"]', '', isNumber),
                         weapon2_max: new Field('[data-path="Items.Wpn2.DamageMax"]', '', isNumber),
                         weapon2_enchantment: new Field('[data-path="Items.Wpn2.HasEnchantment"]', 'false'),
                         weapon2_rune: new Field('[data-path="Items.Wpn2.AttributeTypes.2"]', '0'),
-                        weapon2_value: new Field('[data-path="Items.Wpn2.Attributes.2"]', '', isNumber)
+                        weapon2_value: new Field('[data-path="Items.Wpn2.Attributes.2"]', '', isDamageRune)
                     };
 
                     this.fields['class'].$object.dropdown({
@@ -611,6 +636,7 @@
                     this.fields['weapon1_enchantment'].toggle(index < 4);
                     this.fields['weapon2_enchantment'].toggle(index < 4);
                     this.fields['level'].toggle(index == 0 || index == 4);
+                    this.fields['health_override'].show(index == 4);
 
                     this.fields['name'].set([
                         'Player',
