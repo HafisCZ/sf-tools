@@ -851,7 +851,12 @@
 
                         showPlayers();
                     } else if (data.Class || data.save) {
-                        EditorController.fill(data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data)));
+                        var obj = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
+                        if (obj.Fortress) {
+                            obj.Fortress.Gladiator = 0;
+                        }
+
+                        EditorController.fill(obj);
                     }
                 } catch (e) {
                     console.info(e);
