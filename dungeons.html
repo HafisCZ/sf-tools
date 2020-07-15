@@ -397,10 +397,11 @@
                 }
 
                 get () {
-                    if (this.isDropdown) {
-                        return this.$object.dropdown('get value');
+                    var value = this.isDropdown ? this.$object.dropdown('get value') : this.$object.val();
+                    if (isNaN(value)) {
+                        return value;
                     } else {
-                        return this.$object.val();
+                        return Number(value);
                     }
                 }
 
@@ -683,34 +684,28 @@
                 event.stopPropagation();
             });
 
-            // Helper function
-            function merge (a, b) {
-                for (var [k, v] of Object.entries(b)) {
-                    if (!a.hasOwnProperty(k)) a[k] = b[k];
-                }
-
-                return a;
-            }
-
             var players = [ EditorController.genEmpty(), EditorController.genEmpty(1), EditorController.genEmpty(2), EditorController.genEmpty(3) ];
             var boss = EditorController.genEmpty();
-
             var selected = 0;
-            var pasteTarget = 0;
 
-            $(document.body).on('paste', event => handlePasteEvent(event, pasteTarget));
+            $(document.body).on('paste', function (event) {
+                try {
+                    var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
+                    if (data.Class || data.save) {
+                        var obj = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
+                        if (selected > 0 && selected < 4) {
+                            for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
+                                var path = EditorController.fields[key].path();
+                                setObjectAt(obj, path, getObjectAt(players[0], path));
+                            }
+                        }
 
-            $('#sim-players1').on('click', () => {
-                pasteTarget = 0;
+                        EditorController.fill(obj, selected);
+                    }
+                } catch (e) {
+                    console.info(e);
+                }
             });
-
-            $('#sim-players2').on('click', () => {
-                pasteTarget = 1;
-            });
-
-            function handlePasteEvent (event, id) {
-
-            }
 
             // Save button
             $('#sim-save').click(function () {

@@ -26,6 +26,14 @@ function formatDuration (duration) {
     return trail(days, Math.max(2, days.toString().length)) + ':' + trail(hours, 2) + ':' + trail(minutes, 2);
 }
 
+function mergeSoft (a, b) {
+    for (var [k, v] of Object.entries(b)) {
+        if (!a.hasOwnProperty(k)) a[k] = b[k];
+    }
+
+    return a;
+}
+
 const GOLD_CURVE = [ 0, 25, 50, 75 ];
 function getGoldCurve (value) {
     for (var i = GOLD_CURVE.length; i < 800; i++) {
