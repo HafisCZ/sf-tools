@@ -154,6 +154,15 @@
             .debug-title {
                 font-size: 110%;
             }
+
+            .class-picture {
+                 margin-left: -0.75em !important;
+                 margin-right: 0.5em !important;
+            }
+
+            .class-none {
+                margin-left: 1.75em;
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
@@ -204,7 +213,7 @@
                             <div class="two fields">
                                 <div class="field">
                                     <label>Class</label>
-                                    <div class="ui search selection compact dropdown" data-path="Class">
+                                    <div class="ui selection compact dropdown" data-path="Class">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
@@ -594,12 +603,23 @@
                     };
 
                     this.fields['class'].$object.dropdown({
-                        values: Object.entries(ClassMap).map((e) => {
-                            return {
-                                name: e[1],
-                                value: e[0]
-                            };
-                        })
+                        preserveHTML: true,
+                        values: [
+                            ... Object.entries(ClassMap).map((e) => {
+                                return {
+                                    name: (hasImplementation(e[0]) ? `<img class="ui centered image class-picture" src="res/class${ e[0] }.png">` : '') + `<span class="${ hasImplementation(e[0]) ? '' : 'class-none' }">${ e[1] }</span>`,
+                                    value: e[0],
+                                    disabled: !hasImplementation(e[0])
+                                };
+                            }),
+                            ... Object.entries(ClassMapExt).map((e) => {
+                                return {
+                                    name: (hasImplementation(e[0]) ? `<img class="ui centered image class-picture" src="res/class${ e[0] }.png">` : '') + `<span class="${ hasImplementation(e[0]) ? '' : 'class-none' }">${ e[1] }</span>`,
+                                    value: e[0],
+                                    disabled: !hasImplementation(e[0])
+                                };
+                            }),
+                        ]
                     }).dropdown('setting', 'onChange', (value, text) => {
                         if (value == 4) {
                             $('[data-optional="Weapon2"]').show();
