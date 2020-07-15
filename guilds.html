@@ -117,6 +117,15 @@
                 min-height: 30em;
                 align-content: flex-start;
             }
+
+            .class-picture {
+                 margin-left: -0.75em !important;
+                 margin-right: 0.5em !important;
+            }
+
+            .class-none {
+                margin-left: 1.75em;
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
@@ -143,16 +152,14 @@
                         <div class="bordered bone">
                             <div class="field">
                                 <label>Name</label>
-                                <input class="text-center" type="text" data-path="Name" data-type="string">
+                                <input class="text-center" disabled type="text" data-path="Name">
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label>Class</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="1" data-type="number1" data-path="Class">
+                                    <div class="ui selection compact dropdown" data-path="Class">
+                                        <div class="text"></div>
                                         <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu" id="sim-classlist"></div>
                                     </div>
                                 </div>
                                 <div class="field">
@@ -195,32 +202,20 @@
                                 </div>
                                 <div class="field">
                                     <label>Crit</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="false" data-path="Items.Wpn1.HasEnchantment" data-type="bool">
+                                    <div class="ui selection compact dropdown" data-path="Items.Wpn1.HasEnchantment">
+                                        <div class="text"></div>
                                         <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="false">No</div>
-                                            <div class="item" data-value="true">Yes</div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label>Rune</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-type="number" data-path="Items.Wpn1.AttributeTypes.2">
+                                    <div class="ui selection compact dropdown" data-path="Items.Wpn1.AttributeTypes.2">
+                                        <div class="text"></div>
                                         <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="0">None</div>
-                                            <div class="item" data-value="40">Fire</div>
-                                            <div class="item" data-value="41">Cold</div>
-                                            <div class="item" data-value="42">Lightning</div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="field">
-                                    <label></br></label>
+                                    <label><br/></label>
                                     <input class="text-center" type="text" data-path="Items.Wpn1.Attributes.2">
                                 </div>
                             </div>
@@ -237,32 +232,20 @@
                                 </div>
                                 <div class="field">
                                     <label>Crit</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="false" data-path="Items.Wpn2.HasEnchantment" data-type="bool">
+                                    <div class="ui selection compact dropdown" data-path="Items.Wpn2.HasEnchantment">
+                                        <div class="text"></div>
                                         <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="false">No</div>
-                                            <div class="item" data-value="true">Yes</div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="field">
                                     <label>Rune</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" data-type="number" value="0" data-path="Items.Wpn2.AttributeTypes.2">
+                                    <div class="ui selection compact dropdown" data-path="Items.Wpn2.AttributeTypes.2">
+                                        <div class="text"></div>
                                         <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="0">None</div>
-                                            <div class="item" data-value="40">Fire</div>
-                                            <div class="item" data-value="41">Cold</div>
-                                            <div class="item" data-value="42">Lightning</div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="field">
-                                    <label></br></label>
+                                    <label><br/></label>
                                     <input class="text-center" type="text" data-path="Items.Wpn2.Attributes.2">
                                 </div>
                             </div>
@@ -271,7 +254,7 @@
                             <div class="four fields">
                                 <div class="field">
                                     <label>Armor</label>
-                                    <input class="text-center" type="text" data-path="Armor">
+                                    <input class="text-center" type="text" data-path="Armor" placeholder="Armor points">
                                 </div>
                                 <div class="field">
                                     <label>Fire</label>
@@ -299,14 +282,9 @@
                                 </div>
                                 <div class="field">
                                     <label>Life Potion</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="0" data-type="number" data-path="Potions.Life">
+                                    <div class="ui selection compact dropdown" data-path="Potions.Life">
+                                        <div class="text"></div>
                                         <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="0">No</div>
-                                            <div class="item" data-value="25">Yes</div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -323,14 +301,9 @@
                                 </div>
                                 <div class="field">
                                     <label>Shadow of the Cowboy</label>
-                                    <div class="ui selection compact dropdown">
-                                        <input class="text-center" type="hidden" value="false" data-path="Items.Hand.HasEnchantment" data-type="bool">
+                                    <div class="ui selection compact dropdown" data-path="Items.Hand.HasEnchantment">
+                                        <div class="text"></div>
                                         <i class="dropdown icon"></i>
-                                        <div class="default text"></div>
-                                        <div class="menu">
-                                            <div class="item" data-value="false">No</div>
-                                            <div class="item" data-value="true">Yes</div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -437,50 +410,6 @@
         </div>
 
         <script type="text/javascript">
-            // Init
-            $('#sim-classlist').html('');
-            for (var [ id, name ] of Object.entries(ClassMap)) {
-                $('#sim-classlist').append(`<div class="item ${ hasImplementation(id) ? '' : 'disabled' }" data-value="${ id }">${ name }</div>`);
-            }
-            if (Object.getOwnPropertyNames(ClassMapExt).length > 0) {
-                $('#sim-classlist').append('<div class="ui divider"></div>');
-            }
-            for (var [ id, name ] of Object.entries(ClassMapExt)) {
-                $('#sim-classlist').append(`<div class="item ${ hasImplementation(id) ? '' : 'disabled' }" data-value="${ id }">${ name }</div>`);
-            }
-
-            $('[data-path="Class"]').change(function () {
-                $('.dropdown').dropdown();
-                $('[data-optional="Weapon2"]').toggle($(this).val() == 4);
-            }).trigger('change');
-            $('[data-path]').on('input', () => valid());
-
-            // Fill and read forms
-            function fill (object) {
-                $('[data-path]').each(function () {
-                    $(this).val(getObjectAt(object, $(this).attr('data-path')));
-                });
-
-                $('[data-path="Class"]').trigger('change');
-            }
-
-            function clear () {
-                $('[data-path]').each(function () {
-                    var type = $(this).attr('data-type');
-                    if (type == 'bool') {
-                        $(this).val('false');
-                    } else if (type == 'number') {
-                        $(this).val('0');
-                    } else if (type == 'number1') {
-                        $(this).val('1');
-                    } else {
-                        $(this).val('');
-                    }
-                });
-
-                $('[data-path="Class"]').trigger('change');
-            }
-
             function toggleAll (dis) {
                 if (dis) {
                     $('.ui.main.container').addClass('frozen');
@@ -489,53 +418,306 @@
                 }
             }
 
-            function read () {
-                var object = new SFPlayer();
-                $('#sim-editor').find('[data-path]').each(function () {
-                    var key = $(this).attr('data-path');
-                    var type = $(this).attr('data-type');
-                    var val = $(this).val();
+            class Field {
+                constructor (querryString, defaultValue, validator = undefined) {
+                    this.$object = $(querryString);
+                    this.defaultValue = defaultValue.toString();
+                    this.validator = validator;
+                    this.isDropdown = this.$object.hasClass('dropdown');
+                    this.$object.on('change input', () => {
+                        this.valid();
+                    })
+                }
 
-                    if (type == 'bool') {
-                        setObjectAt(object, key, val == 'true');
-                    } else if (type == 'string') {
-                        setObjectAt(object, key, val);
+                valid () {
+                    var isValid = this.validator ? this.validator(this.get()) : true;
+                    if (isValid) {
+                        this.$object.parent('.field').removeClass('error');
+                        return true;
                     } else {
-                        setObjectAt(object, key, Number(val));
+                        this.$object.parent('.field').addClass('error');
+                        return false;
                     }
-                });
-                return object;
+                }
+
+                get () {
+                    var value = this.isDropdown ? this.$object.dropdown('get value') : this.$object.val();
+                    if (isNaN(value)) {
+                        return value;
+                    } else {
+                        return Number(value);
+                    }
+                }
+
+                path () {
+                    return this.$object.attr('data-path');
+                }
+
+                set (value) {
+                    if (value == undefined) {
+                        value = this.defaultValue;
+                    }
+
+                    if (this.isDropdown) {
+                        this.$object.dropdown('set selected', value.toString());
+                    } else {
+                        this.$object.val(value);
+                    }
+                }
+
+                toggle (val) {
+                    if (val) {
+                        this.$object.parent('.field').removeClass('disabled');
+                    } else {
+                        this.$object.parent('.field').addClass('disabled');
+                    }
+                }
+
+                show (val) {
+                    if (val) {
+                        this.$object.parent('.field').show();
+                    } else {
+                        this.$object.parent('.field').hide();
+                    }
+                }
+
+                clear () {
+                    if (this.isDropdown) {
+                        this.$object.dropdown('set selected', this.defaultValue);
+                    } else {
+                        this.$object.val(this.defaultValue);
+                    }
+                }
             }
 
-            function valid () {
-                return $('[data-path]').toArray().reduce((errors, element) => {
-                    var key = $(element).attr('data-path');
-                    var type = $(element).attr('data-type');
-                    var val = $(element).val();
-
-                    if (type == 'bool' || type == 'string' || !isNaN(val)) {
-                        $(element).parent('.field').removeClass('error');
-                        return errors;
-                    } else {
-                        $(element).parent('.field').addClass('error');
-                        return errors + 1;
-                    }
-                }, 0) == 0;
+            function isNumber (val) {
+                return !isNaN(val) && val >= 0;
             }
 
-            // On paste event handler
+            function isGladiator (val) {
+                return !isNaN(val) && val >= 0 && val <= 15;
+            }
+
+            function isDamageRune (val) {
+                return !isNaN(val) && val >= 0 && val <= 60;
+            }
+
+            function isResistanceRune (val) {
+                return !isNaN(val) && val >= 0 && val <= 75;
+            }
+
+            const EditorController = new (class {
+                constructor () {
+                    this.fields = {
+                        name: new Field('[data-path="Name"]', ''),
+                        class: new Field('[data-path="Class"]', '1'),
+                        level: new Field('[data-path="Level"]', '', isNumber),
+                        armor: new Field('[data-path="Armor"]', '', isNumber),
+
+                        resistance_fire: new Field('[data-path="Runes.ResistanceFire"]', '', isResistanceRune),
+                        resistance_cold: new Field('[data-path="Runes.ResistanceCold"]', '', isResistanceRune),
+                        resistance_lightning: new Field('[data-path="Runes.ResistanceLightning"]', '', isResistanceRune),
+
+                        portal_hp: new Field('[data-path="Dungeons.Player"]', '', isNumber),
+                        portal_damage: new Field('[data-path="Dungeons.Group"]', '', isNumber),
+
+                        runes_health: new Field('[data-path="Runes.Health"]', '', isNumber),
+                        gladiator: new Field('[data-path="Fortress.Gladiator"]', '', isGladiator),
+                        potion_life: new Field('[data-path="Potions.Life"]', '0'),
+                        enchantment: new Field('[data-path="Items.Hand.HasEnchantment"]', 'false'),
+
+                        str: new Field('[data-path="Strength.Total"]', '', isNumber),
+                        dex: new Field('[data-path="Dexterity.Total"]', '', isNumber),
+                        int: new Field('[data-path="Intelligence.Total"]', '', isNumber),
+                        con: new Field('[data-path="Constitution.Total"]', '', isNumber),
+                        lck: new Field('[data-path="Luck.Total"]', '', isNumber),
+
+                        weapon1_min: new Field('[data-path="Items.Wpn1.DamageMin"]', '', isNumber),
+                        weapon1_max: new Field('[data-path="Items.Wpn1.DamageMax"]', '', isNumber),
+                        weapon1_enchantment: new Field('[data-path="Items.Wpn1.HasEnchantment"]', 'false'),
+                        weapon1_rune: new Field('[data-path="Items.Wpn1.AttributeTypes.2"]', '0'),
+                        weapon1_value: new Field('[data-path="Items.Wpn1.Attributes.2"]', '', isDamageRune),
+
+                        weapon2_min: new Field('[data-path="Items.Wpn2.DamageMin"]', '', isNumber),
+                        weapon2_max: new Field('[data-path="Items.Wpn2.DamageMax"]', '', isNumber),
+                        weapon2_enchantment: new Field('[data-path="Items.Wpn2.HasEnchantment"]', 'false'),
+                        weapon2_rune: new Field('[data-path="Items.Wpn2.AttributeTypes.2"]', '0'),
+                        weapon2_value: new Field('[data-path="Items.Wpn2.Attributes.2"]', '', isDamageRune)
+                    };
+
+                    this.fields['class'].$object.dropdown({
+                        preserveHTML: true,
+                        values: [
+                            ... Object.entries(ClassMap).map((e) => {
+                                return {
+                                    name: (hasImplementation(e[0]) ? `<img class="ui centered image class-picture" src="res/class${ e[0] }.png">` : '') + `<span class="${ hasImplementation(e[0]) ? '' : 'class-none' }">${ e[1] }</span>`,
+                                    value: e[0],
+                                    disabled: !hasImplementation(e[0])
+                                };
+                            }),
+                            ... Object.entries(ClassMapExt).map((e) => {
+                                return {
+                                    name: (hasImplementation(e[0]) ? `<img class="ui centered image class-picture" src="res/class${ e[0] }.png">` : '') + `<span class="${ hasImplementation(e[0]) ? '' : 'class-none' }">${ e[1] }</span>`,
+                                    value: e[0],
+                                    disabled: !hasImplementation(e[0])
+                                };
+                            }),
+                        ]
+                    }).dropdown('setting', 'onChange', (value, text) => {
+                        if (value == 4) {
+                            $('[data-optional="Weapon2"]').show();
+                        } else {
+                            $('[data-optional="Weapon2"]').hide();
+                        }
+                    }).dropdown('set selected', '1');
+
+                    this.fields['potion_life'].$object.dropdown({
+                        values: [
+                            {
+                                name: 'No',
+                                value: 0
+                            },
+                            {
+                                name: 'Yes',
+                                value: 25
+                            }
+                        ]
+                    }).dropdown('set selected', '0');
+
+                    this.fields['weapon1_rune'].$object.dropdown({
+                        values: [
+                            {
+                                name: 'None',
+                                value: 0
+                            },
+                            {
+                                name: 'Fire',
+                                value: 40
+                            },
+                            {
+                                name: 'Cold',
+                                value: 41
+                            },
+                            {
+                                name: 'Lightning',
+                                value: 42
+                            }
+                        ]
+                    }).dropdown('set selected', '0');
+
+                    this.fields['weapon2_rune'].$object.dropdown({
+                        values: [
+                            {
+                                name: 'None',
+                                value: 0
+                            },
+                            {
+                                name: 'Fire',
+                                value: 40
+                            },
+                            {
+                                name: 'Cold',
+                                value: 41
+                            },
+                            {
+                                name: 'Lightning',
+                                value: 42
+                            }
+                        ]
+                    }).dropdown('set selected', '0');
+
+                    this.fields['enchantment'].$object.dropdown({
+                        values: [
+                            {
+                                name: 'No',
+                                value: false
+                            },
+                            {
+                                name: 'Yes',
+                                value: true
+                            }
+                        ]
+                    }).dropdown('set selected', 'false');
+
+                    this.fields['weapon1_enchantment'].$object.dropdown({
+                        values: [
+                            {
+                                name: 'No',
+                                value: false
+                            },
+                            {
+                                name: 'Yes',
+                                value: true
+                            }
+                        ]
+                    }).dropdown('set selected', 'false');
+
+                    this.fields['weapon2_enchantment'].$object.dropdown({
+                        values: [
+                            {
+                                name: 'No',
+                                value: false
+                            },
+                            {
+                                name: 'Yes',
+                                value: true
+                            }
+                        ]
+                    }).dropdown('set selected', 'false');
+                }
+
+                fill (object) {
+                    if (object) {
+                        for (var [key, field] of Object.entries(this.fields)) {
+                            field.set(getObjectAt(object, field.path()));
+                        }
+                    } else {
+                        for (var [key, field] of Object.entries(this.fields)) {
+                            field.clear();
+                        }
+                    }
+                }
+
+                clear () {
+                    for (var [key, field] of Object.entries(this.fields)) {
+                        field.clear();
+                    }
+                }
+
+                read () {
+                    var object = new SFPlayer();
+                    for (var [key, field] of Object.entries(this.fields)) {
+                        setObjectAt(object, field.path(), field.get());
+                    }
+
+                    return object;
+                }
+
+                valid () {
+                    for (var [key, field] of Object.entries(this.fields)) {
+                        if (!field.valid()) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+
+                empty () {
+                    var object = new SFPlayer();
+                    for (var [key, field] of Object.entries(this.fields)) {
+                        setObjectAt(object, field.path(), field.defaultValue);
+                    }
+
+                    return object;
+                }
+            })();
+
+            EditorController.clear();
+
             $('#sim-editor input').on('paste', function (event) {
                 event.stopPropagation();
             });
-
-            // Helper function
-            function merge (a, b) {
-                for (var [k, v] of Object.entries(b)) {
-                    if (!a.hasOwnProperty(k)) a[k] = b[k];
-                }
-
-                return a;
-            }
 
             var players1 = [];
             var players2 = [];
@@ -570,7 +752,7 @@
                         for (var d of data) {
                             if (d.Class) {
                                 players.push({
-                                    player: merge(new SFPlayer(), d),
+                                    player: mergeSoft(new SFPlayer(), d),
                                     index: iterator++
                                 });
                             } else {
@@ -578,22 +760,20 @@
                                 player.Fortress.Gladiator = 0;
 
                                 players.push({
-                                    player: merge(new SFPlayer(), player),
+                                    player: mergeSoft(new SFPlayer(), player),
                                     index: iterator++
                                 });
                             }
                         }
 
                         show();
-                    } else {
-                        if (data.Class) {
-                            fill(data);
-                        } else {
-                            var player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
-                            player.Fortress.Gladiator = 0;
-
-                            fill(player);
+                    } else if (data.Class || data.save) {
+                        var obj = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
+                        if (obj.Fortress) {
+                            obj.Fortress.Gladiator = 0;
                         }
+
+                        EditorController.fill(obj);
                     }
                 } catch (e) {
                     console.info(e);
@@ -601,15 +781,15 @@
             }
 
             $('#sim-save').click(function () {
-                if (valid()) {
+                if (EditorController.valid()) {
                     if (selected != -1) {
                         var index = players1.findIndex(p => p.index == selected);
                         if (index != -1) {
-                            players1[index].player = read();
+                            players1[index].player = EditorController.read();
                         } else {
                             index = players2.findIndex(p => p.index == selected);
                             if (index != -1) {
-                                players2[index].player = read();
+                                players2[index].player = EditorController.read();
                             }
                         }
 
@@ -619,7 +799,7 @@
             });
 
             $('#sim-copy').click(function () {
-                copy(read());
+                copy(EditorController.read());
             });
 
             $('#sim-copyall1').click(function () {
@@ -640,8 +820,8 @@
             }
 
             $('#sim-add1').click(function () {
-                if (valid()) {
-                    var player = read();
+                if (EditorController.valid()) {
+                    var player = EditorController.read();
 
                     if (player.Name == '') {
                         player.Name = `Player ${ players1.length + 1 }`;
@@ -654,14 +834,14 @@
                         index: selected
                     });
 
-                    clear();
+                    EditorController.clear();
                     show();
                 }
             });
 
             $('#sim-add2').click(function () {
-                if (valid()) {
-                    var player = read();
+                if (EditorController.valid()) {
+                    var player = EditorController.read();
 
                     if (player.Name == '') {
                         player.Name = `Player ${ players2.length + 1 }`;
@@ -674,7 +854,7 @@
                         index: selected
                     });
 
-                    clear();
+                    EditorController.clear();
                     show();
                 }
             });
@@ -740,12 +920,12 @@
 
                     var obj = players1.find(p => p.index == selected);
                     if (obj) {
-                        fill(obj.player);
+                        EditorController.fill(obj.player);
                         show();
                     } else {
                         obj = players2.find(p => p.index == selected);
                         if (obj) {
-                            fill(obj.player);
+                            EditorController.fill(obj.player);
                             show();
                         }
                     }
@@ -772,7 +952,7 @@
 
                     if (sel == selected) {
                         selected = -1;
-                        clear();
+                        EditorController.clear();
                     }
 
                     var obj = players1.findIndex(p => p.index == sel);
