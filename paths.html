@@ -14,8 +14,8 @@
 
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
+        
         <script src="js/pets/pets.js"></script>
-        <script src="js/core/simulator.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
 
@@ -915,7 +915,7 @@
 
                         freeze();
 
-                        var worker = new Worker('js/core/simulator.js');
+                        var worker = new Worker('js/sim/pets.js');
 
                         worker.addEventListener('message', (message) => {
                             if (message.data.command == 'finished') {
@@ -937,7 +937,7 @@
                         }, false);
 
                         worker.postMessage({
-                            mode: 3333,
+                            mode: SimulatorType.PetPath,
                             players: this.pets
                         });
                     });

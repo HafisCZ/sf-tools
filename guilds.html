@@ -26,7 +26,7 @@
         </script>
 
         <script src="js/core/playa.js"></script>
-        <script src="js/core/simulator.js"></script>
+        <script src="js/sim/players.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
 
@@ -990,7 +990,7 @@
                     var chance = 0;
 
                     for (var i = 0; i < threads; i++) {
-                        var worker = new Worker('js/core/simulator.js');
+                        var worker = new Worker('js/sim/players.js');
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
@@ -1005,7 +1005,7 @@
                         }, false);
 
                         worker.postMessage({
-                            mode: 12345,
+                            mode: SimulatorType.Guild,
                             player: players1,
                             players: players2,
                             iterations: 5000

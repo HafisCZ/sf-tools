@@ -15,7 +15,8 @@
 
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
-        <script src="js/core/simulator.js"></script>
+
+        <script src="js/sim/pets.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
 
@@ -715,7 +716,7 @@
                     if (a && b && (a.Level > 0 || a.Boss) && (b.Level > 0 || b.Boss)) {
                         freeze();
 
-                        var worker = new Worker('js/core/simulator.js');
+                        var worker = new Worker('js/sim/pets.js');
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
@@ -731,7 +732,7 @@
                         }, false);
 
                         worker.postMessage({
-                            mode: 999,
+                            mode: SimulatorType.Pet,
                             players: [a, b]
                         });
                     }
@@ -764,7 +765,7 @@
                     if (a && b && a.Pet < 19 && !a.Boss && b.Boss) {
                         freeze();
 
-                        var worker = new Worker('js/core/simulator.js');
+                        var worker = new Worker('js/sim/pets.js');
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
@@ -774,7 +775,7 @@
                         }, false);
 
                         worker.postMessage({
-                            mode: 1000,
+                            mode: SimulatorType.PetMap,
                             players: [a, b]
                         });
                     }
@@ -807,7 +808,7 @@
                         var maps_finished = 0;
 
                         for (var i = 0; i < count; i++) {
-                            var worker = new Worker('js/core/simulator.js');
+                            var worker = new Worker('js/sim/pets.js');
 
                             worker.addEventListener('message', function (message) {
                                 if (message.data.command == 'finished') {
@@ -825,7 +826,7 @@
                             }, false);
 
                             worker.postMessage({
-                                mode: 1000,
+                                mode: SimulatorType.PetMap,
                                 players: [a, b[i]],
                                 tracking: i
                             });
@@ -860,7 +861,7 @@
                         var maps_finished = 0;
 
                         for (var i = 0; i < count; i++) {
-                            var worker = new Worker('js/core/simulator.js');
+                            var worker = new Worker('js/sim/pets.js');
 
                             worker.addEventListener('message', function (message) {
                                 if (message.data.command == 'finished') {
@@ -878,7 +879,7 @@
                             }, false);
 
                             worker.postMessage({
-                                mode: 1000,
+                                mode: SimulatorType.PetMap,
                                 players: [a, b[i]],
                                 tracking: i
                             });
