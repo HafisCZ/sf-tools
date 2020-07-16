@@ -264,8 +264,11 @@ class TableInstance {
                                 reference = '';
                             }
 
-                            var color = CompareEval.evaluate(value, header.color);
-                            color = (color != undefined ? color : (header.expc ? header.expc(null, null, this.settings, value) : '')) || '';
+                            var color = undefined;
+                            if (header.statistics_color) {
+                                color = CompareEval.evaluate(value, header.color);
+                                color = (color != undefined ? color : (header.expc ? header.expc(null, null, this.settings, value) : '')) || '';
+                            }
 
                             var displayValue = CompareEval.evaluate(value, header.value);
                             if (displayValue == undefined && header.format) {
@@ -1469,6 +1472,13 @@ const SettingsCommands = [
         var [ , key, arg ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
     }),
+    new SettingsCommand(/^(statistics color) (on|off)$/, function (root, string) {
+        var [ , key, arg ] = this.match(string);
+        root.setLocalSharedVariable('statistics_color', ARG_MAP[arg]);
+    }, function (root, string) {
+        var [ , key, arg ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
+    }),
     // Local
     // format - Specifies formatter for the field
     new SettingsCommand(/^(format) (.*)$/, function (root, string) {
@@ -1895,9 +1905,13 @@ class Settings {
         this.currentHeader = null;
         this.currentExtra = null;
 
-        this.shared = {};
+        this.shared = {
+            statistics_color: true
+        };
+
         this.categoryShared = {
-            visible: true
+            visible: true,
+            statistics_color: true
         };
 
         // Parsing
@@ -2160,7 +2174,8 @@ class Settings {
                     merge(this.currentHeader, this.shared);
                 } else {
                     merge(this.currentHeader, {
-                        visible: true
+                        visible: true,
+                        statistics_color: true
                     });
                 }
 
