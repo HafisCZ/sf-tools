@@ -246,7 +246,7 @@ const PET_HABITAT_MAP = [
 ];
 
 class PetModel {
-    constructor (index, type, pet, level, bonus, gladiator) {
+    constructor (boss, index, type, pet, level, bonus, gladiator) {
         this.Index = index;
 
         // Sets
@@ -255,6 +255,7 @@ class PetModel {
         this.Level = level;
         this.Bonus = bonus;
         this.Gladiator = gladiator;
+        this.Boss = boss;
 
         // Vars
         this.Class = PET_CLASS_MAP[this.Type][this.Pet] + 1;
@@ -266,11 +267,23 @@ class PetModel {
     initialize (target) {
         var multa = Math.trunc((this.Class == WARRIOR ? 2 : (this.Class == MAGE ? 4.5 : 2.5)) * (this.Level + 1));
         var multb = (1 + Math.max(this.Attribute / 2, this.Attribute - target.getDefenseAtribute(this)) / 10);
-        this.Damage = Math.trunc(multa * multb);
+        var multc = (this.Boss == false && target.Boss == false && this.hasAdvantage(target)) ? 1.25 : 1;
+        this.Damage = Math.trunc(multa * multb * multc);
 
         this.Critical = 2 * (1 + 0.05 * this.Gladiator);
         this.SkipChance = target.Class == MAGE ? 0 : (this.Class == WARRIOR ? 25 : (this.Class == MAGE ? 0 : 50));
         this.CriticalChance = Math.min(50, this.Attribute * 20 / 6 / target.Level);
+    }
+
+    hasAdvantage (target) {
+        switch (this.Type) {
+            case Habitat.Shadow: return target.Type == Habitat.Water;
+            case Habitat.Light: return target.Type == Habitat.Shadow;
+            case Habitat.Earth: return target.Type == Habitat.Light;
+            case Habitat.Fire: return target.Type == Habitat.Earth;
+            case Habitat.Water: return target.Type == Habitat.Fire;
+            default: return false;
+        }
     }
 
     getDefenseAtribute (source) {
@@ -281,19 +294,19 @@ class PetModel {
         return 5 * Math.trunc(pack + at200 + at100 / 2);
     }
 
-    static fromPet (index, type, pet, level, pack, at100, at200, gladiator) {
-        return new PetModel(index, type, pet, level, 5 * Math.trunc(pack + at100 / 2 + at200), gladiator);
+    static fromPet (boss, index, type, pet, level, pack, at100, at200, gladiator) {
+        return new PetModel(boss, index, type, pet, level, 5 * Math.trunc(pack + at100 / 2 + at200), gladiator);
     }
 
-    static fromHabitat (index, type, pet) {
-        return new PetModel(index, type, pet, PET_HABITAT_MAP[pet], 5 + 5 * pet, 0);
+    static fromHabitat (boss, index, type, pet) {
+        return new PetModel(boss, index, type, pet, PET_HABITAT_MAP[pet], 5 + 5 * pet, 0);
     }
 
     static fromObject (obj) {
         if (obj.Boss) {
-            return PetModel.fromHabitat(obj.Index, obj.Type, obj.Pet);
+            return PetModel.fromHabitat(obj.Boss, obj.Index, obj.Type, obj.Pet);
         } else {
-            return PetModel.fromPet(obj.Index, obj.Type, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At200, obj.Gladiator);
+            return PetModel.fromPet(obj.Boss, obj.Index, obj.Type, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At200, obj.Gladiator);
         }
     }
 }
