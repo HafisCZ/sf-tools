@@ -162,6 +162,29 @@
                                     <input type="text" disabled id="gold-bar3">
                                 </div>
                                 <div class="field">
+
+                                </div>
+                                <div class="field">
+
+                                </div>
+                                <div class="field">
+
+                                </div>
+                                <div class="field">
+                                    <label>Witch Potion</label>
+                                    <input type="text" disabled id="gold-witchpot">
+                                </div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> Potion of Eternal Life</label>
+                                    <input type="text" disabled id="gold-pothp">
+                                </div>
+                            </div>
+                            <div class="six fields">
+                                <div class="field">
+                                    <label>Arena Max</label>
+                                    <input type="text" disabled id="gold-arena">
+                                </div>
+                                <div class="field">
                                     <label>Fortress Reroll</label>
                                     <input type="text" disabled id="gold-reroll">
                                 </div>
@@ -172,14 +195,6 @@
                                 <div class="field">
                                     <label>Twister (Level is enemy level)</label>
                                     <input type="text" disabled id="gold-twisterboss">
-                                </div>
-                                <div class="field">
-                                    <label>Witch Potion</label>
-                                    <input type="text" disabled id="gold-witchpot">
-                                </div>
-                                <div class="field">
-                                    <label><span class="green">&bull;</span> Potion of Eternal Life</label>
-                                    <input type="text" disabled id="gold-pothp">
                                 </div>
                             </div>
                         </div>
@@ -426,6 +441,20 @@
                     case 11: return 18;
                     case 12: return 20;
                     case 13: return 22;
+                }
+            }
+
+            function getArenaMultiplier (level) {
+                if (level >= 300) {
+                    return 10;
+                } else if (level >= 250) {
+                    return 15;
+                } else if (level >= 200) {
+                    return 20;
+                } else if (level >= 150) {
+                    return 24;
+                } else {
+                    return 28;
                 }
             }
 
@@ -678,6 +707,8 @@
                     var towerboss = (9 * getGoldCurve(level + 2 ) / 100);
                     var twisterboss = (2 * getGoldCurve(level) / 100);
 
+                    var arenagold = level > 95 ? Math.trunc(twisterboss / getArenaMultiplier(level)) : level;
+
                     $('#gold-bar').val(goldbar1 >= 999 ? formatAsSpacedNumber(goldbar1, ' ') : roundShort(goldbar1));
                     $('#gold-bar3').val(goldbar3 >= 999 ? formatAsSpacedNumber(goldbar3, ' ') : roundShort(goldbar3));
                     $('#gold-towerboss').val(towerboss >= 999 ? formatAsSpacedNumber(towerboss, ' ') : roundShort(towerboss));
@@ -687,6 +718,8 @@
                     $('#gold-pot15').val(pot15 >= 999 ? formatAsSpacedNumber(pot15, ' ') : roundShort(pot15));
                     $('#gold-pot25').val(pot25 >= 999 ? formatAsSpacedNumber(pot25, ' ') : roundShort(pot25));
                     $('#gold-pothp').val(pothp >= 999 ? formatAsSpacedNumber(pothp, ' ') : roundShort(pothp));
+
+                    $('#gold-arena').val(arenagold >= 999 ? formatAsSpacedNumber(arenagold, ' ') : roundShort(arenagold));
 
                     $('#gold-scroll').val(scroll >= 999 ? formatAsSpacedNumber(scroll, ' ') : roundShort(scroll));
                     $('#gold-witchpot').val(potwitch >= 999 ? formatAsSpacedNumber(potwitch, ' ') : roundShort(potwitch));
