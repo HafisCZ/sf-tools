@@ -140,6 +140,10 @@ const DEFAULT_OFFSET = -60 * 60 * 1000;
 // Database
 const Database = new (class {
 
+    get (id, timestamp) {
+        // lazy load stub
+    }
+
     remove (... timestamps) {
         for (var timestamp of timestamps) {
             Object.values(this.Players).forEach(function (p) {
@@ -496,6 +500,8 @@ const UpdateService = {
 
 const Storage = new (class {
     load (callback, error, args) {
+        var loadStart = Date.now();
+
         if (args.temporary) {
             Preferences.temporary();
             FileDatabase.temporary();
@@ -515,6 +521,7 @@ const Storage = new (class {
 
         FileDatabase.ready(() => {
             FileDatabase.get((current) => {
+                var loadDatabaseEnd = Date.now();
                 this.current = current;
 
                 // Correction
@@ -528,8 +535,13 @@ const Storage = new (class {
                 if (corrected) {
                     this.save(... this.current);
                 }
+                var loadUpdateEnd = Date.now();
 
                 Database.from(this.current, args.pfilter, args.gfilter);
+                var loadEnd = Date.now();
+
+                console.log(`[STORAGE] Database: ${ loadDatabaseEnd - loadStart } ms,  Update: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing: ${ loadEnd - loadUpdateEnd } ms`);
+
                 callback();
             });
         }, error);
