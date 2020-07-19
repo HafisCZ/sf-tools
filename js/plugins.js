@@ -202,3 +202,103 @@
     };
 
 }(jQuery));
+
+class Field {
+    constructor (querryString, defaultValue, validator = undefined) {
+        this.$object = $(querryString);
+        this.defaultValue = defaultValue.toString();
+        this.validator = validator;
+        this.isDropdown = this.$object.hasClass('dropdown');
+        this.$object.on('change input', () => {
+            this.valid();
+        })
+    }
+
+    valid () {
+        var isValid = this.validator ? this.validator(this.get()) : true;
+        if (isValid) {
+            this.$object.parent('.field').removeClass('error');
+            return true;
+        } else {
+            this.$object.parent('.field').addClass('error');
+            return false;
+        }
+    }
+
+    get () {
+        var value = this.isDropdown ? this.$object.dropdown('get value') : this.$object.val();
+        if (isNaN(value)) {
+            return value;
+        } else {
+            return Number(value);
+        }
+    }
+
+    path () {
+        return this.$object.attr('data-path');
+    }
+
+    set (value) {
+        if (value == undefined) {
+            value = this.defaultValue;
+        }
+
+        if (this.isDropdown) {
+            this.$object.dropdown('set selected', value.toString());
+        } else {
+            this.$object.val(value);
+        }
+    }
+
+    toggle (val) {
+        if (val) {
+            this.$object.parent('.field').removeClass('disabled');
+        } else {
+            this.$object.parent('.field').addClass('disabled');
+        }
+    }
+
+    show (val) {
+        if (val) {
+            this.$object.parent('.field').show();
+        } else {
+            this.$object.parent('.field').hide();
+        }
+    }
+
+    clear () {
+        if (this.isDropdown) {
+            this.$object.dropdown('set selected', this.defaultValue);
+        } else {
+            this.$object.val(this.defaultValue);
+        }
+    }
+
+    static isNumber (val) {
+        return !isNaN(val) && val >= 0;
+    }
+
+    static isGladiator (val) {
+        return !isNaN(val) && val >= 0 && val <= 15;
+    }
+
+    static isDamageRune (val) {
+        return !isNaN(val) && val >= 0 && val <= 60;
+    }
+
+    static isResistanceRune (val) {
+        return !isNaN(val) && val >= 0 && val <= 75;
+    }
+
+    static isDungeon (val) {
+        return !isNaN(val) && val >= 0 && val <= 50;
+    }
+
+    static isHealthRune (val) {
+        return !isNaN(val) && val >= 0 && val <= 15;
+    }
+
+    static isNonZero (val) {
+        return !isNaN(val) && val > 0;
+    }
+}

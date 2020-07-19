@@ -18,6 +18,8 @@
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
 
+        <script src="js/plugins.js"></script>
+
         <script>
             // To bypass including core
             const Database = {
@@ -383,140 +385,44 @@
                 }
             }
 
-            class Field {
-                constructor (querryString, defaultValue, validator = undefined) {
-                    this.$object = $(querryString);
-                    this.defaultValue = defaultValue.toString();
-                    this.validator = validator;
-                    this.isDropdown = this.$object.hasClass('dropdown');
-                    this.$object.on('change input', () => {
-                        this.valid();
-                    })
-                }
-
-                valid () {
-                    var isValid = this.validator ? this.validator(this.get()) : true;
-                    if (isValid) {
-                        this.$object.parent('.field').removeClass('error');
-                        return true;
-                    } else {
-                        this.$object.parent('.field').addClass('error');
-                        return false;
-                    }
-                }
-
-                get () {
-                    var value = this.isDropdown ? this.$object.dropdown('get value') : this.$object.val();
-                    if (isNaN(value)) {
-                        return value;
-                    } else {
-                        return Number(value);
-                    }
-                }
-
-                path () {
-                    return this.$object.attr('data-path');
-                }
-
-                set (value) {
-                    if (value == undefined) {
-                        value = this.defaultValue;
-                    }
-
-                    if (this.isDropdown) {
-                        this.$object.dropdown('set selected', value.toString());
-                    } else {
-                        this.$object.val(value);
-                    }
-                }
-
-                toggle (val) {
-                    if (val) {
-                        this.$object.parent('.field').removeClass('disabled');
-                    } else {
-                        this.$object.parent('.field').addClass('disabled');
-                    }
-                }
-
-                show (val) {
-                    if (val) {
-                        this.$object.parent('.field').show();
-                    } else {
-                        this.$object.parent('.field').hide();
-                    }
-                }
-
-                clear () {
-                    if (this.isDropdown) {
-                        this.$object.dropdown('set selected', this.defaultValue);
-                    } else {
-                        this.$object.val(this.defaultValue);
-                    }
-                }
-            }
-
-            function isNumber (val) {
-                return !isNaN(val) && val >= 0;
-            }
-
-            function isGladiator (val) {
-                return !isNaN(val) && val >= 0 && val <= 15;
-            }
-
-            function isDamageRune (val) {
-                return !isNaN(val) && val >= 0 && val <= 60;
-            }
-
-            function isResistanceRune (val) {
-                return !isNaN(val) && val >= 0 && val <= 75;
-            }
-
-            function isDungeon (val) {
-                return !isNaN(val) && val >= 0 && val <= 50;
-            }
-
-            function isHealthRune (val) {
-                return !isNaN(val) && val >= 0 && val <= 15;
-            }
-
             const EditorController = new (class {
                 constructor () {
                     this.fields = {
                         name: new Field('[data-path="Name"]', ''),
                         class: new Field('[data-path="Class"]', '1'),
-                        level: new Field('[data-path="Level"]', '', isNumber),
-                        armor: new Field('[data-path="Armor"]', '', isNumber),
-                        health_override: new Field('[data-path="HealthOverride"]', '', isNumber),
+                        level: new Field('[data-path="Level"]', '', Field.isNumber),
+                        armor: new Field('[data-path="Armor"]', '', Field.isNumber),
+                        health_override: new Field('[data-path="HealthOverride"]', '', Field.isNumber),
 
-                        resistance_fire: new Field('[data-path="Runes.ResistanceFire"]', '', isResistanceRune),
-                        resistance_cold: new Field('[data-path="Runes.ResistanceCold"]', '', isResistanceRune),
-                        resistance_lightning: new Field('[data-path="Runes.ResistanceLightning"]', '', isResistanceRune),
+                        resistance_fire: new Field('[data-path="Runes.ResistanceFire"]', '', Field.isResistanceRune),
+                        resistance_cold: new Field('[data-path="Runes.ResistanceCold"]', '', Field.isResistanceRune),
+                        resistance_lightning: new Field('[data-path="Runes.ResistanceLightning"]', '', Field.isResistanceRune),
 
-                        portal_hp: new Field('[data-path="Dungeons.Player"]', '', isDungeon),
-                        portal_damage: new Field('[data-path="Dungeons.Group"]', '', isDungeon),
+                        portal_hp: new Field('[data-path="Dungeons.Player"]', '', Field.isDungeon),
+                        portal_damage: new Field('[data-path="Dungeons.Group"]', '', Field.isDungeon),
 
-                        runes_health: new Field('[data-path="Runes.Health"]', '', isHealthRune),
-                        gladiator: new Field('[data-path="Fortress.Gladiator"]', '', isGladiator),
+                        runes_health: new Field('[data-path="Runes.Health"]', '', Field.isHealthRune),
+                        gladiator: new Field('[data-path="Fortress.Gladiator"]', '', Field.isGladiator),
                         potion_life: new Field('[data-path="Potions.Life"]', '0'),
                         enchantment: new Field('[data-path="Items.Hand.HasEnchantment"]', 'false'),
 
-                        str: new Field('[data-path="Strength.Total"]', '', isNumber),
-                        dex: new Field('[data-path="Dexterity.Total"]', '', isNumber),
-                        int: new Field('[data-path="Intelligence.Total"]', '', isNumber),
-                        con: new Field('[data-path="Constitution.Total"]', '', isNumber),
-                        lck: new Field('[data-path="Luck.Total"]', '', isNumber),
+                        str: new Field('[data-path="Strength.Total"]', '', Field.isNumber),
+                        dex: new Field('[data-path="Dexterity.Total"]', '', Field.isNumber),
+                        int: new Field('[data-path="Intelligence.Total"]', '', Field.isNumber),
+                        con: new Field('[data-path="Constitution.Total"]', '', Field.isNumber),
+                        lck: new Field('[data-path="Luck.Total"]', '', Field.isNumber),
 
-                        weapon1_min: new Field('[data-path="Items.Wpn1.DamageMin"]', '', isNumber),
-                        weapon1_max: new Field('[data-path="Items.Wpn1.DamageMax"]', '', isNumber),
+                        weapon1_min: new Field('[data-path="Items.Wpn1.DamageMin"]', '', Field.isNumber),
+                        weapon1_max: new Field('[data-path="Items.Wpn1.DamageMax"]', '', Field.isNumber),
                         weapon1_enchantment: new Field('[data-path="Items.Wpn1.HasEnchantment"]', 'false'),
                         weapon1_rune: new Field('[data-path="Items.Wpn1.AttributeTypes.2"]', '0'),
-                        weapon1_value: new Field('[data-path="Items.Wpn1.Attributes.2"]', '', isDamageRune),
+                        weapon1_value: new Field('[data-path="Items.Wpn1.Attributes.2"]', '', Field.isDamageRune),
 
-                        weapon2_min: new Field('[data-path="Items.Wpn2.DamageMin"]', '', isNumber),
-                        weapon2_max: new Field('[data-path="Items.Wpn2.DamageMax"]', '', isNumber),
+                        weapon2_min: new Field('[data-path="Items.Wpn2.DamageMin"]', '', Field.isNumber),
+                        weapon2_max: new Field('[data-path="Items.Wpn2.DamageMax"]', '', Field.isNumber),
                         weapon2_enchantment: new Field('[data-path="Items.Wpn2.HasEnchantment"]', 'false'),
                         weapon2_rune: new Field('[data-path="Items.Wpn2.AttributeTypes.2"]', '0'),
-                        weapon2_value: new Field('[data-path="Items.Wpn2.Attributes.2"]', '', isDamageRune)
+                        weapon2_value: new Field('[data-path="Items.Wpn2.Attributes.2"]', '', Field.isDamageRune)
                     };
 
                     this.fields['class'].$object.dropdown({
@@ -686,7 +592,12 @@
                 }
 
                 valid () {
+                    var ass = this.fields['class'].get() != 4;
                     for (var [key, field] of Object.entries(this.fields)) {
+                        if (ass && ['weapon2_min', 'weapon2_max', 'weapon2_value'].includes(key)) {
+                            continue;
+                        }
+
                         if (!field.valid()) {
                             return false;
                         }
@@ -722,6 +633,15 @@
                     var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
                     if (data.Class || data.save) {
                         var obj = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
+
+                        if (obj.Underworld) {
+                            obj.Fortress.Gladiator = obj.Underworld.Gladiator;
+                        }
+
+                        if (obj.Class != 4) {
+                            obj.Items.Wpn2 = SFItem.empty();
+                        }
+
                         if (selected > 0 && selected < 4) {
                             for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
                                 var path = EditorController.fields[key].path();
