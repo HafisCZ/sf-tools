@@ -136,13 +136,10 @@ const FileDatabase = new (class {
 })();
 
 const DEFAULT_OFFSET = -60 * 60 * 1000;
+const HAS_PROXY = typeof(Proxy) != 'undefined';
 
 // Database
 const Database = new (class {
-
-    get (id, timestamp) {
-        // lazy load stub
-    }
 
     remove (... timestamps) {
         for (var timestamp of timestamps) {
@@ -185,6 +182,48 @@ const Database = new (class {
         this.update();
     }
 
+    load (id, timestamp) {
+        if (this.Players[id][timestamp].IsProxy) {
+            var data = this.Players[id][timestamp].Data;
+            var player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
+
+            let groupID = null;
+            if (player.Group.Identifier && this.Groups[player.Group.Identifier] && this.Groups[player.Group.Identifier][timestamp]) {
+                groupID = player.Group.Identifier;
+            }
+
+            if (groupID) {
+                let group = Database.Groups[groupID][timestamp];
+                let index = group.Members.findIndex(identifier => identifier == player.Identifier);
+
+                player.Group.Group = group;
+                player.Group.Role = group.Roles[index];
+                player.Group.Index = index;
+                player.Group.Rank = group.Rank;
+
+                if (group.Own) {
+                    player.Group.Own = true;
+                    player.Group.Pet = group.Pets[index];
+                    player.Group.Treasure = group.Treasures[index];
+                    player.Group.Instructor = group.Instructors[index];
+
+                    if (!player.Fortress.Knights && group.Knights) {
+                        player.Fortress.Knights = group.Knights[index];
+                    }
+                } else {
+                    player.Group.Pet = group.Pets[index];
+                }
+            }
+
+            this.Players[id][timestamp] = player;
+            this.update();
+
+            return player;
+        } else {
+            return this.Players[id][timestamp];
+        }
+    }
+
     add (... files) {
         var tempGroups = {};
         var tempPlayers = {};
@@ -213,35 +252,66 @@ const Database = new (class {
 
                 data.timestamp = file.timestamp;
                 data.offset = file.offset || DEFAULT_OFFSET;
-                let player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
 
-                let groupID = player.hasGuild() ? Object.keys(tempGroups).find(id => {
-                    var obj = getAtSafe(tempGroups, id, file.timestamp);
-                    return obj.Identifier == player.Group.Identifier && obj.Members.includes(player.Identifier);
-                }) : null;
+                let player = null;
+                let groupID = null;
 
-                if (groupID) {
-                    let group = tempGroups[groupID][file.timestamp];
-                    group.MembersPresent++;
-
-                    let index = group.Members.findIndex(identifier => identifier == player.Identifier);
-
-                    player.Group.Group = group;
-                    player.Group.Role = group.Roles[index];
-                    player.Group.Index = index;
-                    player.Group.Rank = group.Rank;
-
-                    if (group.Own) {
-                        player.Group.Own = true;
-                        player.Group.Pet = group.Pets[index];
-                        player.Group.Treasure = group.Treasures[index];
-                        player.Group.Instructor = group.Instructors[index];
-
-                        if (!player.Fortress.Knights && group.Knights) {
-                            player.Fortress.Knights = group.Knights[index];
+                if (HAS_PROXY && LAZY_ENABLED) {
+                    player = new Proxy({
+                        Data: data,
+                        Identifier: data.id,
+                        Timestamp: file.timestamp
+                    }, {
+                        get: function (target, prop) {
+                            if (prop == 'Data' || prop == 'Identifier' || prop == 'Timestamp') {
+                                return target[prop];
+                            } else if (prop == 'IsProxy') {
+                                return true;
+                            } else {
+                                return Database.load(target.Identifier, target.Timestamp)[prop];
+                            }
                         }
-                    } else {
-                        player.Group.Pet = group.Pets[index];
+                    });
+
+                    groupID = Object.keys(tempGroups).find(id => {
+                        var obj = getAtSafe(tempGroups, id, file.timestamp);
+                        return obj.Members && obj.Members.includes(player.Identifier);
+                    });
+
+                    if (groupID) {
+                        let group = tempGroups[groupID][file.timestamp];
+                        group.MembersPresent++;
+                    }
+                } else {
+                    player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
+                    groupID = player.Group.Identifier ? Object.keys(tempGroups).find(id => {
+                        var obj = getAtSafe(tempGroups, id, file.timestamp);
+                        return obj.Identifier == player.Group.Identifier && obj.Members.includes(player.Identifier);
+                    }) : null;
+
+                    if (groupID) {
+                        let group = tempGroups[groupID][file.timestamp];
+                        group.MembersPresent++;
+
+                        let index = group.Members.findIndex(identifier => identifier == player.Identifier);
+
+                        player.Group.Group = group;
+                        player.Group.Role = group.Roles[index];
+                        player.Group.Index = index;
+                        player.Group.Rank = group.Rank;
+
+                        if (group.Own) {
+                            player.Group.Own = true;
+                            player.Group.Pet = group.Pets[index];
+                            player.Group.Treasure = group.Treasures[index];
+                            player.Group.Instructor = group.Instructors[index];
+
+                            if (!player.Fortress.Knights && group.Knights) {
+                                player.Fortress.Knights = group.Knights[index];
+                            }
+                        } else {
+                            player.Group.Pet = group.Pets[index];
+                        }
                     }
                 }
 
@@ -540,7 +610,7 @@ const Storage = new (class {
                 Database.from(this.current, args.pfilter, args.gfilter);
                 var loadEnd = Date.now();
 
-                console.log(`[STORAGE] Database: ${ loadDatabaseEnd - loadStart } ms,  Update: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing: ${ loadEnd - loadUpdateEnd } ms`);
+                console.log(`[STORAGE] Database: ${ loadDatabaseEnd - loadStart } ms,  Update: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && LAZY_ENABLED ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
 
                 callback();
             });

@@ -20,7 +20,7 @@
 
         <script>
             // Current version
-            const MODULE_VERSION = 'v3.630';
+            const MODULE_VERSION = 'v3.649';
         </script>
 
         <script>
@@ -500,6 +500,8 @@
             var dev = keys['dev'] == -1;
             var temp = keys['temp'] == -1;
             var slot = isNaN(keys['slot']) ? 0 : Math.max(0, Number(keys['slot']));
+
+            const LAZY_ENABLED = keys['lazy'] == -1;
 
             if (temp) {
                 $('.css-temporary').removeClass('hidden');
