@@ -775,6 +775,9 @@
                                 if (d.Fortress) {
                                     d.Fortress.Gladiator = 0;
                                 }
+                                
+                                SFItem.forceCorrectRune(d.Items.Wpn1);
+                                SFItem.forceCorrectRune(d.Items.Wpn2);
 
                                 if (d.Class != 4) {
                                     d.Items.Wpn2 = SFItem.empty();
@@ -791,6 +794,9 @@
                                 if (obj.Fortress) {
                                     obj.Fortress.Gladiator = 0;
                                 }
+
+                                SFItem.forceCorrectRune(obj.Items.Wpn1);
+                                SFItem.forceCorrectRune(obj.Items.Wpn2);
 
                                 if (obj.Class != 4) {
                                     obj.Items.Wpn2 = SFItem.empty();
@@ -811,6 +817,9 @@
                         if (obj.Fortress) {
                             obj.Fortress.Gladiator = 0;
                         }
+
+                        SFItem.forceCorrectRune(obj.Items.Wpn1);
+                        SFItem.forceCorrectRune(obj.Items.Wpn2);
 
                         if (obj.Class != 4) {
                             obj.Items.Wpn2 = SFItem.empty();

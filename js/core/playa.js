@@ -91,6 +91,12 @@ class SFItem {
         this.PicIndex = (this.Class - 1) * 1000 + pic;
     }
 
+    static forceCorrectRune (item) {
+        if (item.AttributeTypes[2] < 31) {
+            item.Attributes[2] = 0;
+        }
+    }
+
     clone () {
         return new SFItem(this.Data);
     }
