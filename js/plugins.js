@@ -228,7 +228,13 @@ class Field {
     get () {
         var value = this.isDropdown ? this.$object.dropdown('get value') : this.$object.val();
         if (isNaN(value)) {
-            return value;
+            if (value == 'true') {
+                return true;
+            } else if (value == 'false') {
+                return false;
+            } else {
+                return value;
+            }
         } else {
             return Number(value);
         }
