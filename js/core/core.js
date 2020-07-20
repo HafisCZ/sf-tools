@@ -138,6 +138,8 @@ const FileDatabase = new (class {
 const DEFAULT_OFFSET = -60 * 60 * 1000;
 const HAS_PROXY = typeof(Proxy) != 'undefined';
 
+var LAZY_ENABLED = false;
+
 // Database
 const Database = new (class {
 
