@@ -485,9 +485,7 @@
                     $('#itemtype').trigger('change');
                     $('.ui.dropdown').dropdown();
                 });
-
-                Math.clamp = (a, b, c) => a < b ? b : (a > c ? c : a);
-
+                
                 function get (id) {
                     return Number($(id).val()) || 0;
                 }

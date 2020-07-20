@@ -187,7 +187,7 @@ const Database = new (class {
     load (id, timestamp) {
         if (this.Players[id][timestamp].IsProxy) {
             var data = this.Players[id][timestamp].Data;
-            var player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
+            var player = data.own ? new SFOwnPlayer(data, Database.LoadInventory) : new SFOtherPlayer(data);
 
             let groupID = null;
             if (player.Group.Identifier && this.Groups[player.Group.Identifier] && this.Groups[player.Group.Identifier][timestamp]) {
@@ -285,7 +285,7 @@ const Database = new (class {
                         group.MembersPresent++;
                     }
                 } else {
-                    player = data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
+                    player = data.own ? new SFOwnPlayer(data, Database.LoadInventory) : new SFOtherPlayer(data);
                     groupID = player.Group.Identifier ? Object.keys(tempGroups).find(id => {
                         var obj = getAtSafe(tempGroups, id, file.timestamp);
                         return obj.Identifier == player.Group.Identifier && obj.Members.includes(player.Identifier);
@@ -589,7 +589,7 @@ const Storage = new (class {
             Database.Developer = true;
         }
 
-        Database.Partial = args.partial ? true : false;
+        Database.LoadInventory = args.inventory || false;
 
         FileDatabase.ready(() => {
             FileDatabase.get((current) => {

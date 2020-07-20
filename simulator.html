@@ -21,11 +21,6 @@
         <script src="js/plugins.js"></script>
 
         <script>
-            // To bypass including core
-            const Database = {
-                Partial: true
-            };
-
             var threadArg = window.location.href.match(/^.*\?t=(\d+)$/);
             var THREADS_OVERRIDE = 0;
             if (threadArg && !isNaN(threadArg[1]) && Number(threadArg[1]) > 0) {
@@ -775,7 +770,7 @@
                                 if (d.Fortress) {
                                     d.Fortress.Gladiator = 0;
                                 }
-                                
+
                                 SFItem.forceCorrectRune(d.Items.Wpn1);
                                 SFItem.forceCorrectRune(d.Items.Wpn2);
 

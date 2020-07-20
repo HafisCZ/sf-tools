@@ -1191,7 +1191,7 @@ class SFOtherPlayer extends SFPlayer {
 }
 
 class SFOwnPlayer extends SFPlayer {
-    constructor (data) {
+    constructor (data, loadInventory = false) {
         super();
 
         this.init(data);
@@ -1533,7 +1533,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Extra.Normal.Unlocked = this.Dungeons.Normal.Unlocked + this.Dungeons.Extra.Normal.reduce((a, b) => a + (b > 0 ? 1 : 0), 0);
         this.Dungeons.Extra.Shadow.Unlocked = this.Dungeons.Shadow.Unlocked + this.Dungeons.Extra.Shadow.reduce((a, b) => a + (b > 0 ? 1 : 0), 0);
 
-        if (!Database.Partial) {
+        if (loadInventory) {
             dataType = new ComplexDataType(data.chest);
 
             for (var i = 0; i < 40 && !dataType.empty(); i++) {
@@ -1581,7 +1581,7 @@ class SFOwnPlayer extends SFPlayer {
             };
         }
 
-        if (data.tower.length && !Database.Partial) {
+        if (data.tower.length && loadInventory) {
             this.Companions = {
                 Bert: {},
                 Mark: {},

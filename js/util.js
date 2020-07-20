@@ -93,36 +93,11 @@ function getCSSFont(string) {
     return style.font;
 }
 
-// Set toggle button to disabled state
-function setDisabled (element) {
-    element.text('Disabled').removeClass('active');
-}
-
-// Math clamp number between
-function clamp (a, b, c) {
-    return Math.min(c, Math.max(b, a));
-}
-
 function formatAsSpacedNumber(n, delim = '&nbsp') {
     n = Math.trunc(n);
     return n.toString().split('').map((char, i, array) => ((array.length - 1 - i) % 3 == 2) && i != 0 ? (delim + char) : char).join('');
 }
 
-// Iterator
-function * getIterator (array) {
-    for (var i = 0, a; a = array[i]; i++) {
-        yield [i, a];
-    }
-}
-
-// Reverse iterator
-function * getReverseIterator (array) {
-    for (var i = array.length - 1, a; a = array[i]; i--) {
-        yield [i, a];
-    }
-}
-
-// Parse playa response text
 function * parsePlayaResponse (response) {
     var o = response.split('&');
     for (var i = 0, a; a = o[i]; i++) {
@@ -130,7 +105,6 @@ function * parsePlayaResponse (response) {
     }
 }
 
-// Filter HAR file content for strings
 function * filterPlayaJSON (o, tt = [], a = []) {
     for (var i in o) {
         if (i == 'url') {
@@ -147,7 +121,6 @@ function * filterPlayaJSON (o, tt = [], a = []) {
     }
 }
 
-// Complex datatype
 class ComplexDataType {
     constructor (values) {
         this.values = values || [];
@@ -233,19 +206,6 @@ function compareItems (a, b) {
 
 function getPotionType (type) {
     return type == 16 ? 6 : (type == 0 ? 0 : 1 + (type - 1) % 5);
-}
-
-// Potion size
-function getPotionSize (potion) {
-    if (potion >= POTION_STRENGTH_SMALL && potion <= POTION_LUCK_SMALL) {
-        return POTION_SMALL;
-    } else if (potion >= POTION_STRENGTH_MEDIUM && potion <= POTION_LUCK_MEDIUM) {
-        return POTION_MEDIUM;
-    } else if (potion >= POTION_STRENGTH_LARGE && potion <= POTION_LIFE) {
-        return POTION_LARGE;
-    } else {
-        return POTION_NONE;
-    }
 }
 
 function getAtSafe(obj, ... path) {
