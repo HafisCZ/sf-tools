@@ -1,0 +1,16 @@
+{
+"companyName": "mar21",
+"productName": "Endpoint",
+"productVersion": "0.1",
+"dataUrl": "latest.data.unityweb",
+"wasmCodeUrl": "latest.wasm.code.unityweb",
+"wasmFrameworkUrl": "latest.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0","WebGL 1.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.4.4f1"
+}
