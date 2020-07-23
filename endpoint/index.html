@@ -13,43 +13,36 @@
         <script src="build/uloader.js"></script>
     </head>
     <body>
-        <div id="unityPixel" style="display: none; width: 1px; height: 1px;"></div>
+        <div id="upixel" style="display: none; width: 1px; height: 1px;"></div>
         <script type="text/javascript">
-            window.UnityPixel = {
-                login: function (server, username, password, callback) {
-                    if (!window.UnityPixel.unityReady) {
-                        window.UnityPixel.onReady = () => {
-                            window.UnityPixel.unity.SendMessage('Controller', 'Login', JSON.stringify({
-                                server: server,
-                                username: username,
-                                password: password
-                            }));
-                        };
-                    } else {
-                        window.UnityPixel.unity.SendMessage('Controller', 'Login', JSON.stringify({
-                            server: server,
-                            username: username,
-                            password: password
-                        }));
-                    }
+            var callback = { };
+            var unity = undefined;
 
-                    window.CallbackHandler = (text) => {
-                        window.UnityPixel.unity.Quit();
-                        callback(text);
-                    }
-                },
-                unity: UnityLoader.instantiate('unityPixel', 'build/latest.json', {
-                    onProgress: function (instance, progress) {
-                        if (!instance.Module) {
-                            return;
-                        } else if (progress == 1) {
-                            window.UnityPixel.unityReady = true;
-                            window.UnityPixel.onReady();
+            function load (callback) {
+                unity = UnityLoader.instantiate('upixel', 'build/latest.json', {
+                    onProgress: function (ins, progress) {
+                        if (!ins.Module) return;
+                        else if (progress == 1) {
+                            callback();
                         }
                     }
-                }),
-                unityReady: false,
-                onReady: () => { }
+                });
+            }
+
+            function destroy (callback) {
+                unity.Quit(callback);
+            }
+
+            function login (server, username, password) {
+                unity.SendMessage('Controller', 'Login', JSON.stringify({
+                    server: server,
+                    username: username,
+                    password: password
+                }));
+            }
+
+            function querry (ids) {
+                unity.SendMessage('Controller', 'Queue', JSON.stringify(ids));
             }
         </script>
     </body>

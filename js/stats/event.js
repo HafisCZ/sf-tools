@@ -1991,6 +1991,7 @@ class EndpointView extends View {
         this.$server = this.$parent.find('[data-op="textServer"]');
         this.$username = this.$parent.find('[data-op="textUsername"]');
         this.$password = this.$parent.find('[data-op="textPassword"]');
+
         this.$iframe = this.$parent.find('[data-op="iframe"]');
 
         this.$server.dropdown({
@@ -2002,9 +2003,6 @@ class EndpointView extends View {
                 }
             })
         }).dropdown('set selected', 'w1.sfgame.net');
-
-        this.$step1.show();
-        this.$step2.hide();
 
         this.$parent.find('[data-op="back"]').click(() => {
             this.hide();
@@ -2021,16 +2019,15 @@ class EndpointView extends View {
                 this.$step1.hide();
                 this.$step2.show();
 
-                this.$iframe.attr('src', '/endpoint/index.html');
-                this.$iframe.on('load', () => {
-                    this.$iframe.off('load');
-                    this.$iframe.get(0).contentWindow.UnityPixel.login(server, username, password, (text) => {
+                new EndpointController(this.$iframe, (ec) => {
+                    ec.login(server, username, password, (text) => {
                         Storage.add(JSON.stringify({
                             'url': `https://${ server }/`,
                             'text': text
                         }), Date.now());
 
-                        this.$iframe.attr('src', '');
+                        ec.destroy();
+
                         UI.current.show();
                         this.hide();
                     });
@@ -2044,6 +2041,9 @@ class EndpointView extends View {
     }
 
     show () {
+        this.$step1.show();
+        this.$step2.hide();
+
         this.$parent.modal({
             centered: true,
             closable: false,
