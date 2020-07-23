@@ -148,6 +148,9 @@
                             </label>
                             <input type="file" multiple data-op="upload" class="hidden" id="button-upload">
                         </div>
+                        <label class="fluid ui secondary button sf-margin top-05" data-op="endpoint">
+                            <i class="small download icon icon"></i> Import from Game
+                        </label>
                         <label class="fluid ui button sf-margin top-20" data-op="merge">
                             <i class="small clone outline icon"></i> Merge selected
                         </label>
@@ -395,6 +398,41 @@
             </div>
         </div>
 
+        <div id="modal-endpoint" class="ui basic modal">
+            <div class="ui grid" data-op="step1">
+                <div class="five wide column"></div>
+                <div class="six wide column">
+                    <div class="ui form">
+                        <div class="field">
+                            <label style="color: white;">Server URL</label>
+                            <div class="ui search selection compact dropdown" data-op="textServer">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label style="color: white;">Username</label>
+                            <input type="text" data-op="textUsername">
+                        </div>
+                        <div class="field">
+                            <label style="color: white;">Password</label>
+                            <input type="password" data-op="textPassword">
+                        </div>
+                        <br/>
+                        <div class="ui two buttons">
+                            <button class="ui secondary button fluid" data-op="back">Cancel</button>
+                            <button class="ui primary button fluid" data-op="login">Continue</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="five wide column"></div>
+            </div>
+            <div class="ui grid" data-op="step2" style="display: none">
+                <div class="ui large text loader">Loading</div>
+                <iframe style="display: none;" data-op="iframe"></iframe>
+            </div>
+        </div>
+
         <!-- GroupDetailView -->
         <div id="view-groupdetail" class="ui main container hidden sf-container">
             <div class="ui segment center aligned basic">
@@ -525,6 +563,10 @@
                 $('#show-settings').click(() => UI.show(UI.Settings));
                 $('#show-developer').click(() => UI.show(UI.Developer));
                 $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
+
+                if (!dev) {
+                    UI.Files.$endpoint.hide();
+                }
 
                 if (!localStorage.termsOK) {
                     UI.show(UI.Setup);

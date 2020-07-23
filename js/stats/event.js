@@ -1509,6 +1509,10 @@ class FilesView extends View {
             });
         });
 
+        this.$endpoint = this.$parent.find('[data-op="endpoint"]').click(() => {
+            UI.Endpoint.show();
+        });
+
         // Statistics
         this.$gcount = this.$parent.find('[data-op="gcount"]');
         this.$pcount = this.$parent.find('[data-op="pcount"]');
@@ -1977,6 +1981,77 @@ class ExceptionView extends View {
     }
 }
 
+class EndpointView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$step1 = this.$parent.find('[data-op="step1"]');
+        this.$step2 = this.$parent.find('[data-op="step2"]');
+
+        this.$server = this.$parent.find('[data-op="textServer"]');
+        this.$username = this.$parent.find('[data-op="textUsername"]');
+        this.$password = this.$parent.find('[data-op="textPassword"]');
+        this.$iframe = this.$parent.find('[data-op="iframe"]');
+
+        this.$server.dropdown({
+            showOnFocus: false,
+            values: SERVERS.map((s, i) => {
+                return {
+                    name: s,
+                    value: s
+                }
+            })
+        }).dropdown('set selected', 'w1.sfgame.net');
+
+        this.$step1.show();
+        this.$step2.hide();
+
+        this.$parent.find('[data-op="back"]').click(() => {
+            this.hide();
+        });
+
+        this.$login = this.$parent.find('[data-op="login"]').click(() => {
+            var username = this.$username.val();
+            var password = this.$password.val();
+            var server = this.$server.dropdown('get value');
+
+            if (username.length < 4 || password.length < 4 || !/\.sfgame\./.test(server)) {
+                return;
+            } else {
+                this.$step1.hide();
+                this.$step2.show();
+
+                this.$iframe.attr('src', '/endpoint/index.html');
+                this.$iframe.on('load', () => {
+                    this.$iframe.off('load');
+                    this.$iframe.get(0).contentWindow.UnityPixel.login(server, username, password, (text) => {
+                        Storage.add(JSON.stringify({
+                            'url': `https://${ server }/`,
+                            'text': text
+                        }), Date.now());
+
+                        this.$iframe.attr('src', '');
+                        UI.current.show();
+                        this.hide();
+                    });
+                });
+            }
+        });
+    }
+
+    hide () {
+        this.$parent.modal('hide');
+    }
+
+    show () {
+        this.$parent.modal({
+            centered: true,
+            closable: false,
+            transition: 'fade'
+        }).modal('show');
+    }
+}
+
 // UI object collection
 const UI = {
     current: null,
@@ -2001,6 +2076,7 @@ const UI = {
         UI.Developer = new DeveloperView('view-developer');
         UI.DeveloperFloat = new DeveloperFloatView('modal-dev');
         UI.ChangeLogs = new ChangeLogsView('view-changelog');
+        UI.Endpoint = new EndpointView('modal-endpoint');
     },
     preinitialize: function () {
         UI.Loader = new LoaderView('modal-loader');

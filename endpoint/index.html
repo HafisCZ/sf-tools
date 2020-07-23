@@ -1,22 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>SFTools - Endpoint</title>
-
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="../vendor/css/semantic.min.css"/>
-        <link rel="stylesheet" href="../css/style.css"/>
-        <link rel="stylesheet" href="../css/plugins.css"/>
-
-        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
-
-        <script src="../vendor/js/jquery.3.4.1.min.js"></script>
-        <script src="../vendor/js/semantic.min.js"></script>
-        <script src="../vendor/js/components/state.min.js"></script>
-
-        <script src="../js/plugins.js"></script>
         <script src="../js/enum.js"></script>
         <script src="../js/util.js"></script>
 
@@ -24,116 +11,46 @@
         <script src="../js/core/core.js"></script>
 
         <script src="build/uloader.js"></script>
-
-        <style>
-            #unityPixel {
-                display: none;
-                width: 10px;
-                height: 10px;
-            }
-        </style>
     </head>
     <body>
-        <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item">SFTools</div>
-            <div class="right menu">
-                <a class="item" href="../index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
-            </div>
-        </div>
-
-        <div id="loader" class="ui main container">
-            <div class="ui active dimmer" data-op="text">
-                <div class="ui large text loader">Loading</div>
-            </div>
-        </div>
-
-        <div id="main" class="ui main container">
-            <div class="ui grid">
-                <div class="five wide column"></div>
-                <div class="six wide column">
-                    <div class="ui form">
-                        <div class="field">
-                            <label>Server URL</label>
-                            <input type="text" id="textServer">
-                        </div>
-                        <div class="field">
-                            <label>Username</label>
-                            <input type="text" id="textUsername">
-                        </div>
-                        <div class="field">
-                            <label>Password</label>
-                            <input type="password" id="textPassword">
-                        </div>
-                        <br/>
-                        <button class="ui secondary button fluid" id="accept">Download character data</button>
-                    </div>
-                </div>
-                <div class="five wide column"></div>
-            </div>
-        </div>
-
-        <div id="unityPixel"></div>
+        <div id="unityPixel" style="display: none; width: 1px; height: 1px;"></div>
         <script type="text/javascript">
-            $('#main').hide();
-
-            $('#accept').click(() => {
-                var server = $('#textServer').val();
-                var username = $('#textUsername').val();
-                var password = $('#textPassword').val();
-
-                login(server, username, password);
-            });
-
-            $('#textServer, #textUsername, #textPassword').on('input change', function () {
-                var server = $('#textServer').val();
-                var username = $('#textUsername').val();
-                var password = $('#textPassword').val();
-
-                if (server.length < 4 || username.length < 4 || password.length < 4) {
-                    $('#accept').removeClass('disabled');
-                }
-            });
-
-            var actionsFinished = 0;
-            function finishAction() {
-                if (++actionsFinished == 2) {
-                    $('#loader').hide();
-                    $('#main').show();
-                }
-            }
-
-            const unity = UnityLoader.instantiate("unityPixel", "build/latest.json", {
-                doNotCaptureKeyboard: true,
-                onProgress: function (instance, progress) {
-                    if (!instance.Module) {
-                        return;
-                    } else if (progress == 1) {
-                        finishAction();
+            window.UnityPixel = {
+                login: function (server, username, password, callback) {
+                    if (!window.UnityPixel.unityReady) {
+                        window.UnityPixel.onReady = () => {
+                            window.UnityPixel.unity.SendMessage('Controller', 'Login', JSON.stringify({
+                                server: server,
+                                username: username,
+                                password: password
+                            }));
+                        };
+                    } else {
+                        window.UnityPixel.unity.SendMessage('Controller', 'Login', JSON.stringify({
+                            server: server,
+                            username: username,
+                            password: password
+                        }));
                     }
-                }
-            });
 
-            var lastUrl = '';
-            function login (url, username, password) {
-                lastUrl = url;
-                unity.SendMessage('Controller', 'Login', JSON.stringify({
-                    server: url,
-                    username: username,
-                    password: password
-                }));
+                    window.CallbackHandler = (text) => {
+                        window.UnityPixel.unity.Quit();
+                        callback(text);
+                    }
+                },
+                unity: UnityLoader.instantiate('unityPixel', 'build/latest.json', {
+                    onProgress: function (instance, progress) {
+                        if (!instance.Module) {
+                            return;
+                        } else if (progress == 1) {
+                            window.UnityPixel.unityReady = true;
+                            window.UnityPixel.onReady();
+                        }
+                    }
+                }),
+                unityReady: false,
+                onReady: () => { }
             }
-
-            LAZY_ENABLED = true;
-            Storage.load(function () {
-                window.CallbackHandler = function (text) {
-                    Storage.add(JSON.stringify({
-                        'url': `https://${ lastUrl }/`,
-                        'text': text
-                    }), Date.now());
-                };
-
-                finishAction();
-            }, function () {}, {});
         </script>
     </body>
 </html>
