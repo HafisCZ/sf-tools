@@ -1988,6 +1988,7 @@ class EndpointView extends View {
         this.$step1 = this.$parent.find('[data-op="step1"]');
         this.$step2 = this.$parent.find('[data-op="step2"]');
         this.$step3 = this.$parent.find('[data-op="step3"]');
+        this.$step4 = this.$parent.find('[data-op="step4"]');
 
         this.$server = this.$parent.find('[data-op="textServer"]');
         this.$username = this.$parent.find('[data-op="textUsername"]');
@@ -2019,7 +2020,7 @@ class EndpointView extends View {
 
         this.$import.click(() => {
             if (endpoint) {
-                this.$step2.show();
+                this.$step4.show();
                 this.$step3.hide();
 
                 var ids = this.$parent.find('.checkbox').toArray().reduce((col, el) => {
@@ -2090,6 +2091,7 @@ class EndpointView extends View {
         this.$step1.show();
         this.$step2.hide();
         this.$step3.hide();
+        this.$step4.hide();
 
         this.$parent.modal({
             centered: true,

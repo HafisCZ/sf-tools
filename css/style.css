@@ -928,6 +928,13 @@ h3.file-selected {
     animation: opacity-pulse 2s infinite;
 }
 
+.unity-loading {
+    animation: opacity-pulse-full 2s infinite;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 @keyframes opacity-pulse {
     0% {
         opacity: 80%;
@@ -937,6 +944,18 @@ h3.file-selected {
     }
     100% {
         opacity: 80%
+    }
+}
+
+@keyframes opacity-pulse-full {
+    0% {
+        opacity: 100%;
+    }
+    50% {
+        opacity: 0%;
+    }
+    100% {
+        opacity: 100%
     }
 }
 
