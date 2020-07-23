@@ -42,7 +42,7 @@
             }
 
             function querry (ids) {
-                unity.SendMessage('Controller', 'Queue', JSON.stringify(ids));
+                unity.SendMessage('Controller', 'Querry', ids.join(','));
             }
         </script>
     </body>

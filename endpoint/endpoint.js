@@ -23,6 +23,6 @@ class EndpointController {
 
     querry (ids, callback) {
         this.window.callback['querry'] = callback;
-        this.window.querry(JSON.stringify(ids));
+        this.window.querry(ids);
     }
 }

@@ -402,6 +402,7 @@
         </div>
 
         <div id="modal-endpoint" class="ui basic modal">
+            <iframe style="display: none;" data-op="iframe"></iframe>
             <div class="ui grid" data-op="step1">
                 <div class="five wide column"></div>
                 <div class="six wide column">
@@ -432,7 +433,21 @@
             </div>
             <div class="ui grid" data-op="step2" style="display: none">
                 <div class="ui large text loader">Loading</div>
-                <iframe style="display: none;" data-op="iframe"></iframe>
+            </div>
+            <div class="ui grid" data-op="step3" style="display: none">
+                <div class="five wide column"></div>
+                <div class="six wide column">
+                    <h2 class="ui header centered white">Select players to be imported</h2>
+                    <hr/>
+                    <div class="ui celled relaxed list" data-op="list" style="height: 30em; overflow-y: auto;">
+
+                    </div>
+                    <div class="ui two buttons">
+                        <button class="ui secondary button fluid" data-op="back">Cancel</button>
+                        <button class="ui primary button fluid" data-op="import">Import selected</button>
+                    </div>
+                </div>
+                <div class="five wide column"></div>
             </div>
         </div>
 

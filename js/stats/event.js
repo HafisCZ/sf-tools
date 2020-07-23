@@ -1987,12 +1987,17 @@ class EndpointView extends View {
 
         this.$step1 = this.$parent.find('[data-op="step1"]');
         this.$step2 = this.$parent.find('[data-op="step2"]');
+        this.$step3 = this.$parent.find('[data-op="step3"]');
 
         this.$server = this.$parent.find('[data-op="textServer"]');
         this.$username = this.$parent.find('[data-op="textUsername"]');
         this.$password = this.$parent.find('[data-op="textPassword"]');
 
         this.$iframe = this.$parent.find('[data-op="iframe"]');
+        this.$list = this.$parent.find('[data-op="list"]');
+        this.$import = this.$parent.find('[data-op="import"]');
+
+        var endpoint = undefined;
 
         this.$server.dropdown({
             showOnFocus: false,
@@ -2005,7 +2010,35 @@ class EndpointView extends View {
         }).dropdown('set selected', 'w1.sfgame.net');
 
         this.$parent.find('[data-op="back"]').click(() => {
+            if (endpoint) {
+                endpoint.destroy();
+            }
+
             this.hide();
+        });
+
+        this.$import.click(() => {
+            if (endpoint) {
+                this.$step2.show();
+                this.$step3.hide();
+
+                var ids = this.$parent.find('.checkbox').toArray().reduce((col, el) => {
+                    var $el = $(el);
+                    if ($el.checkbox('is checked')) {
+                        col.push($el.find('input').attr('name'));
+                    }
+
+                    return col;
+                }, []);
+
+                endpoint.querry(ids, (text) => {
+                    Storage.add(text, Date.now());
+                    endpoint.destroy();
+
+                    UI.current.show();
+                    this.hide();
+                });
+            }
         });
 
         this.$login = this.$parent.find('[data-op="login"]').click(() => {
@@ -2019,17 +2052,30 @@ class EndpointView extends View {
                 this.$step1.hide();
                 this.$step2.show();
 
-                new EndpointController(this.$iframe, (ec) => {
+                endpoint = new EndpointController(this.$iframe, (ec) => {
                     ec.login(server, username, password, (text) => {
-                        Storage.add(JSON.stringify({
-                            'url': `https://${ server }/`,
-                            'text': text
-                        }), Date.now());
+                        if (text.length == 0) {
+                            ec.destroy();
+                            this.hide();
+                        }
 
-                        ec.destroy();
+                        this.$step2.hide();
+                        this.$step3.show();
 
-                        UI.current.show();
-                        this.hide();
+                        var content = '';
+                        for (var name of JSON.parse(text)) {
+                            content += `
+                                <div class="item">
+                                    <div class="ui checkbox">
+                                        <input type="checkbox" name="${ name }">
+                                        <label for="${ name }" style="color: white; font-size: 110%;">${ name }</label>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        this.$list.html(content);
+                        $('.list .checkbox').checkbox().first().checkbox('set checked', 'true').checkbox('set disabled');
                     });
                 });
             }
@@ -2043,6 +2089,7 @@ class EndpointView extends View {
     show () {
         this.$step1.show();
         this.$step2.hide();
+        this.$step3.hide();
 
         this.$parent.modal({
             centered: true,
