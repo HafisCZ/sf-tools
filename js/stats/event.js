@@ -2013,6 +2013,7 @@ class EndpointView extends View {
         this.$parent.find('[data-op="back"]').click(() => {
             if (endpoint) {
                 endpoint.destroy();
+                endpoint = undefined;
             }
 
             this.hide();
@@ -2034,7 +2035,15 @@ class EndpointView extends View {
 
                 endpoint.querry(ids, (text) => {
                     Storage.add(text, Date.now());
+
                     endpoint.destroy();
+                    endpoint = undefined;
+
+                    UI.current.show();
+                    this.hide();
+                }, () => {
+                    endpoint.destroy();
+                    endpoint = undefined;
 
                     UI.current.show();
                     this.hide();
@@ -2050,17 +2059,19 @@ class EndpointView extends View {
             if (username.length < 4 || password.length < 4 || !/\.sfgame\./.test(server)) {
                 return;
             } else {
-                this.$step1.hide();
-                this.$step2.show();
+                if (endpoint) {
+                    this.$step1.hide();
+                    this.$step4.show();
 
-                endpoint = new EndpointController(this.$iframe, (ec) => {
-                    ec.login(server, username, password, (text) => {
+                    endpoint.login(server, username, password, (text) => {
                         if (text.length <= 2) {
-                            ec.destroy();
+                            endpoint.destroy();
+                            endpoint = undefined;
+
                             this.hide();
                         }
 
-                        this.$step2.hide();
+                        this.$step4.hide();
                         this.$step3.show();
 
                         var content = '';
@@ -2077,8 +2088,49 @@ class EndpointView extends View {
 
                         this.$list.html(content);
                         $('.list .checkbox').checkbox().first().checkbox('set checked', 'true').checkbox('set disabled');
+                    }, () => {
+                        this.$step1.show();
+                        this.$step4.hide();
                     });
-                });
+                } else {
+                    this.$step1.hide();
+                    this.$step2.show();
+
+                    endpoint = new EndpointController(this.$iframe, (ec) => {
+                        this.$step2.hide();
+                        this.$step4.show();
+
+                        ec.login(server, username, password, (text) => {
+                            if (text.length <= 2) {
+                                ec.destroy();
+                                endpoint = undefined;
+
+                                this.hide();
+                            }
+
+                            this.$step4.hide();
+                            this.$step3.show();
+
+                            var content = '';
+                            for (var name of JSON.parse(text)) {
+                                content += `
+                                    <div class="item">
+                                        <div class="ui checkbox">
+                                            <input type="checkbox" name="${ name }">
+                                            <label for="${ name }" style="color: white; font-size: 110%;">${ name }</label>
+                                        </div>
+                                    </div>
+                                `;
+                            }
+
+                            this.$list.html(content);
+                            $('.list .checkbox').checkbox().first().checkbox('set checked', 'true').checkbox('set disabled');
+                        }, () => {
+                            this.$step1.show();
+                            this.$step4.hide();
+                        });
+                    });
+                }
             }
         });
     }
