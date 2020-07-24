@@ -989,7 +989,7 @@ class FightSimulator {
                 this.a.onRoundEnded(() => {
                     this.turn++;
 
-                    var damage3 = this.attack(this.a, this.b);
+                    var damage3 = this.attack(this.a, this.b, this.a.Weapon1, true);
                     if (this.a.DamageDealt) {
                         this.a.onDamageDealt(this.b, damage3);
                     }
@@ -1027,7 +1027,7 @@ class FightSimulator {
     }
 
     // Attack
-    attack (source, target, weapon = source.Weapon1) {
+    attack (source, target, weapon = source.Weapon1, extra = false) {
         // Rage
         var turn = this.turn++;
         var rage = 1 + turn / 6;
@@ -1051,7 +1051,7 @@ class FightSimulator {
         if (this.log) {
             this.log.rounds.push({
                 attackCrit: critical,
-                attackType: critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0),
+                attackType: (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + (extra ? 20 : 0),
                 attackMissed: skipped,
                 attackDamage: damage,
                 attackSecondary: weapon != source.Weapon1,

@@ -246,11 +246,11 @@
                             rageoffset -= 1;
                         }
 
-                        if (round.attackType != 100 && (round.attackType % 10 == 0 || round.attackType % 10 == 1)) {
-                            if (round.attackType >= 20) {
-                                rageoffset++;
-                            }
+                        if (round.attackType >= 20 && round.attackType != 100) {
+                            rageoffset++;
+                        }
 
+                        if (round.attackType != 100 && (round.attackType % 10 == 0 || round.attackType % 10 == 1)) {
                             var id = '' + round.attacker.ID + '/' + round.attacker.Name + '_' + round.target.ID + '/' + round.target.Name;
                             var rage = 1 + (i + rageoffset) / 6;
                             var crit = round.attackCrit ? critmult : 1;

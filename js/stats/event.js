@@ -2055,7 +2055,7 @@ class EndpointView extends View {
 
                 endpoint = new EndpointController(this.$iframe, (ec) => {
                     ec.login(server, username, password, (text) => {
-                        if (text.length == 0) {
+                        if (text.length <= 2) {
                             ec.destroy();
                             this.hide();
                         }
