@@ -935,7 +935,7 @@ class BrowseView extends View {
                     var ast = new AST(arg);
                     if (ast.isValid()) {
                         terms.push({
-                            test: (arg, player, timestamp) => arg.eval(player, this.table.settings),
+                            test: (arg, player, timestamp) => arg.eval(player, player, this.table.settings, player),
                             arg: ast
                         });
                     }
@@ -1354,7 +1354,7 @@ class PlayersView extends View {
                     var ast = new AST(arg);
                     if (ast.isValid()) {
                         terms.push({
-                            test: (arg, player) => arg.eval(player, this.settings),
+                            test: (arg, player) => arg.eval(player, player, this.table.settings, player),
                             arg: ast
                         });
                     }
