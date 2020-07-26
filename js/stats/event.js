@@ -1375,7 +1375,7 @@ class PlayersView extends View {
                     var ast = new AST(arg);
                     if (ast.isValid()) {
                         terms.push({
-                            test: (arg, player) => arg.eval(player, player),
+                            test: (arg, player) => arg.eval(player, player, this.settings, player),
                             arg: ast
                         });
                     }
@@ -1411,8 +1411,7 @@ class PlayersView extends View {
     }
 
     show () {
-        this.settings = Settings.load('me', 'me', PredefinedTemplates['Me Default']);
-        this.$filter.trigger('change');
+        this.load();
     }
 
     refresh () {
@@ -1470,11 +1469,12 @@ class PlayersView extends View {
         });
 
         this.$context.context('bind', this.$parent.find('[data-id]'));
-
-        this.load();
     }
 
     load () {
+        this.settings = Settings.load('me', 'me', PredefinedTemplates['Me Default']);
+        this.$filter.trigger('change');
+
         if (Settings.exists('me')) {
             this.$configure.get(0).style.setProperty('background', '#21ba45', 'important');
             this.$configure.get(0).style.setProperty('color', 'white', 'important');
