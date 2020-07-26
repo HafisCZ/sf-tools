@@ -46,7 +46,12 @@ const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|
 class AST {
     constructor (string) {
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(AST_REGEXP).map(token => token.trim()).filter(token => token.length);
-        this.root = this.evalExpression();
+        if (this.tokens.length == 0) {
+            this.root = false;
+            this.empty = true;
+        } else {
+            this.root = this.evalExpression();
+        }
     }
 
     static format (string, constants = new Constants()) {
@@ -128,7 +133,7 @@ class AST {
 
     getVal () {
         var val = this.get();
-        if (val[0] == '\"' || val[0] == '\'') {
+        if ((val[0] == '\"' && val[val.length - 1] == '\"') || (val[0] == '\'' && val[val.length - 1] == '\'')) {
             val = {
                 args: [ val.slice(1, val.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\'') ],
                 op: AST_OPERATORS['s'],
@@ -398,7 +403,7 @@ class AST {
     }
 
     isValid () {
-        return this.tokens.length == 0;
+        return this.tokens.length == 0 && !this.empty;
     }
 
     toString (node = this.root) {
@@ -586,7 +591,7 @@ class AST {
                     var func = node.args[1];
 
                     if (object != undefined && object[func]) {
-                        return object[func](... node.args.slice(2).map(param => this.eval(player, reference, environment, scope, extra, param)));
+                        return object[func](... node.args[2].map(param => this.eval(player, reference, environment, scope, extra, param)));
                     } else {
                         return undefined;
                     }

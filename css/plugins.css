@@ -22,6 +22,14 @@
     cursor: pointer;
 }
 
+.css-search-entryinfo {
+	padding-top: .78571429em;
+	padding-bottom: .78571429em;
+    line-height: 0.5em;
+    padding-left: 1em;
+	margin: 0;
+}
+
 .css-search-popup {
     position: absolute !important;
     padding: 0 !important;
@@ -33,6 +41,10 @@
 
 .css-search-dropdown {
     margin-right: 2em !important;
+    cursor: pointer !important;
+}
+
+.css-search-info {
     cursor: pointer !important;
 }
 

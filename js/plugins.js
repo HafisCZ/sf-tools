@@ -1,6 +1,6 @@
 (function ($) {
 
-    $.fn.searchfield = function (command, arg) {
+    $.fn.searchfield = function (command, arg, arg2) {
         return this.each(function () {
             var $this = $(this);
 
@@ -8,13 +8,19 @@
                 var $parent = $this.parent('div');
 
                 this.$popup = $('<div class="ui fluid basic popup css-search-popup"></div>');
-                this.popup = this.$popup.get(0);
+                this.$info = $('<div class="ui fluid basic popup css-search-popup"></div>');
 
                 this.array = [];
                 this.starred = Preferences.get('starred', []);
 
                 this.limit = arg;
+
                 this.shown = false;
+                this.showninfo = false;
+
+                for (var [ key, value ] of Object.entries(arg2 || { })) {
+                    this.$info.append(`<div class="css-search-entryinfo"><code>${ key }: &nbsp;&nbsp;</code>${ value }</div>`);
+                }
 
                 this.$popup.on('redraw', () => {
                     this.$popup.html('');
@@ -42,9 +48,24 @@
                     }
                 });
 
+                $parent.prepend(this.$info);
+                $parent.append($('<i class="info circle link icon css-search-info"></i>').mouseenter(event => {
+                    if (!this.showninfo) {
+                        if (this.shown) {
+                            $this.searchfield('hide');
+                        }
+
+                        $this.searchfield('showinfo');
+                    }
+                }));
+
                 $parent.prepend(this.$popup);
                 $parent.append($('<i class="angle double down link icon css-search-dropdown"></i>').mouseenter(event => {
                     if (!this.shown) {
+                        if (this.showninfo) {
+                            $this.searchfield('hideinfo');
+                        }
+
                         $this.searchfield('show');
                     }
                 }));
@@ -66,6 +87,10 @@
                 $parent.mouseleave(() => {
                     if (this.shown) {
                         $this.searchfield('hide');
+                    }
+
+                    if (this.showninfo) {
+                        $this.searchfield('hideinfo');
                     }
                 });
 
@@ -114,6 +139,16 @@
                 if (this.shown) {
                     this.shown = false;
                     this.$popup.hide();
+                }
+            } else if (command == 'hideinfo') {
+                if (this.showninfo) {
+                    this.showninfo = false;
+                    this.$info.hide();
+                }
+            } else if (command == 'showinfo') {
+                if (!this.showninfo) {
+                    this.showninfo = true;
+                    this.$info.show();
                 }
             } else if (command == 'show') {
                 if (!this.shown && (this.array.length || this.starred.length)) {

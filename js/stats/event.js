@@ -843,7 +843,18 @@ class BrowseView extends View {
         });
 
         // Filter
-        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield('create', 5).change((event) => {
+        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield('create', 5, {
+            'c': 'Player class, use full class name in lower case (eg.: berserker, battle mage)',
+            'p': 'Player name',
+            'g': 'Guild name',
+            's': 'Server',
+            'e': 'Custom expression',
+            'l': 'Show only latest',
+            'f': 'Show only first or first n entries',
+            'r': 'Force recalculation of global variables',
+            'x': 'Enable simulator (argument is number of iterations)',
+            'h': 'Show hidden'
+        }).change((event) => {
             var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h):/);
 
             var terms = [
@@ -1263,7 +1274,17 @@ class PlayersView extends View {
             ]
         });
 
-        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield('create', 5).change((event) => {
+        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield('create', 5, {
+            'c': 'Player class, use full class name in lower case (eg.: berserker, battle mage)',
+            'p': 'Player name',
+            'g': 'Guild name',
+            's': 'Server',
+            'e': 'Custom expression',
+            'l': 'Show only latest',
+            'a': 'Show all',
+            'h': 'Show hidden',
+            'o': 'Show other'
+        }).change((event) => {
             var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|a|h|o):/);
 
             var terms = [
@@ -1354,7 +1375,7 @@ class PlayersView extends View {
                     var ast = new AST(arg);
                     if (ast.isValid()) {
                         terms.push({
-                            test: (arg, player) => arg.eval(player, player, this.table.settings, player),
+                            test: (arg, player) => arg.eval(player, player),
                             arg: ast
                         });
                     }
