@@ -2218,8 +2218,10 @@ const UI = {
     beta: function (isbeta) {
         if (isbeta) {
             UI.Files.$endpoint.show();
+            UI.Files.$beta.show();
         } else {
             UI.Files.$endpoint.hide();
+            UI.Files.$beta.hide();
         }
     },
     initialize: function () {
