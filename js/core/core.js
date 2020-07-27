@@ -138,8 +138,6 @@ const FileDatabase = new (class {
 const DEFAULT_OFFSET = -60 * 60 * 1000;
 const HAS_PROXY = typeof(Proxy) != 'undefined';
 
-var LAZY_ENABLED = false;
-
 // Database
 const Database = new (class {
 
@@ -258,7 +256,7 @@ const Database = new (class {
                 let player = null;
                 let groupID = null;
 
-                if (HAS_PROXY && LAZY_ENABLED) {
+                if (HAS_PROXY && Database.Lazy) {
                     player = new Proxy({
                         Data: data,
                         Identifier: data.id,
@@ -577,18 +575,13 @@ const Storage = new (class {
         if (args.temporary) {
             Preferences.temporary();
             FileDatabase.temporary();
-
-            Database.Temporary = true;
         }
 
         if (!args.temporary && args.slot) {
             FileDatabase.slot(args.slot);
         }
 
-        if (args.developer) {
-            Database.Developer = true;
-        }
-
+        Database.Lazy = args.lazy || false;
         Database.LoadInventory = args.inventory || false;
 
         FileDatabase.ready(() => {
@@ -612,7 +605,7 @@ const Storage = new (class {
                 Database.from(this.current, args.pfilter, args.gfilter);
                 var loadEnd = Date.now();
 
-                console.log(`[STORAGE] Database: ${ loadDatabaseEnd - loadStart } ms,  Update: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && LAZY_ENABLED ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
+                console.log(`[STORAGE] Database: ${ loadDatabaseEnd - loadStart } ms,  Update: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && Database.Lazy ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
 
                 callback();
             });

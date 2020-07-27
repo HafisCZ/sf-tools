@@ -1538,6 +1538,36 @@ class FilesView extends View {
         this.$gcount = this.$parent.find('[data-op="gcount"]');
         this.$pcount = this.$parent.find('[data-op="pcount"]');
         this.$fcount = this.$parent.find('[data-op="fcount"]');
+
+        this.$lazy = this.$parent.find('[data-op="checkbox-lazy"]').checkbox({
+            onChecked: function () {
+                SharedPreferences.set('lazy', true);
+            },
+            onUnchecked: function () {
+                SharedPreferences.set('lazy', false);
+            }
+        });
+
+        if (SharedPreferences.get('lazy', false)) {
+            this.$lazy.checkbox('set checked');
+        } else {
+            this.$lazy.checkbox('set unchecked');
+        }
+
+        this.$beta = this.$parent.find('[data-op="checkbox-beta"]').checkbox({
+            onChecked: function () {
+                SharedPreferences.set('beta', true);
+            },
+            onUnchecked: function () {
+                SharedPreferences.set('beta', false);
+            }
+        });
+
+        if (SharedPreferences.get('beta', false)) {
+            this.$beta.checkbox('set checked');
+        } else {
+            this.$beta.checkbox('set unchecked');
+        }
     }
 
     show () {
@@ -2184,6 +2214,13 @@ const UI = {
 
         screen.$parent.removeClass('hidden');
         screen.show(... arguments);
+    },
+    beta: function (isbeta) {
+        if (isbeta) {
+            UI.Files.$endpoint.show();
+        } else {
+            UI.Files.$endpoint.hide();
+        }
     },
     initialize: function () {
         UI.Settings = new SettingsView('view-settings');

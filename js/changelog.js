@@ -1,4 +1,10 @@
 const CHANGELOG = {
+    'v3.669': [
+        'You can now enable/disable lazy loading permanently in Files tab.',
+        'Fixed filter not working with custom expressions.',
+        'Fixed filter not working with custom sessions within Me tab.',
+        'Added info pupup to filter with all available options.'
+    ],
     'v3.649': [
         'Added experimental lazy loading that can be enabled by using the following url: <a href="https://sftools.mar21.eu/stats?lazy">https://sftools.mar21.eu/stats?lazy</a>'
     ],

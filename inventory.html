@@ -31,7 +31,7 @@
     </head>
     <body class="css-dark">
         <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item">SFTools <span class="css-devmode hidden">Developer Mode</span></div>
+            <div class="header item">SFTools</div>
             <a class="item" id="show-compare"><i class="small compress icon"></i>Inventory</a>
             <a class="item" id="show-crystal"><i class="small exchange icon"></i>Resources</a>
             <div class="right menu" id="show-right-menu">
@@ -219,11 +219,6 @@
 
         <!-- UI Handler -->
         <script type="text/javascript">
-            var dev = /^.*\?dev$/.test(window.location.href);
-            if (dev) {
-                $('.css-devmode').removeClass('hidden');
-            }
-
             $('#show-compare, #show-crystal').hide();
 
             UI.preinitialize();
@@ -241,8 +236,6 @@
                 // Firefox private mode
                 UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
             }, {
-                temporary: false,
-                developer: dev,
                 inventory: true,
                 pfilter: p => p.own,
                 gfilter: g => false

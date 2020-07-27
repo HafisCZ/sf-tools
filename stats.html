@@ -20,7 +20,7 @@
 
         <script>
             // Current version
-            const MODULE_VERSION = 'v3.649';
+            const MODULE_VERSION = 'v3.669';
         </script>
 
         <script>
@@ -47,12 +47,11 @@
 
         <script src="js/stats/event.js"></script>
 
-
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
     <body>
         <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item">SFTools <span class="css-temporary hidden">Temporary</span><span class="css-devmode hidden">Developer Mode</span></div>
+            <div class="header item">SFTools <span class="css-temporary hidden">Temporary</span></div>
             <a class="item" id="show-players"><i class="small user icon"></i>Me</a>
             <a class="item" id="show-groups"><i class="small archive icon"></i>Guilds</a>
             <a class="item" id="show-browse"><i class="small database icon"></i>Players</a>
@@ -163,6 +162,16 @@
                         <label class="fluid ui button sf-margin top-05" data-op="export-partial">
                             <i class="small download icon icon"></i> Export selected
                         </label>
+                        <br/>
+                        <h3 class="ui centered header">Configuration</h3>
+                        <div class="ui checkbox sf-margin left-20" data-op="checkbox-lazy">
+                            <input type="checkbox" name="checkbox-lazy">
+                            <label for="checkbox-lazy">Use lazy loading</label>
+                        </div>
+                        <div class="ui checkbox sf-margin left-20 top-05" data-op="checkbox-beta">
+                            <input type="checkbox" name="checkbox-beta">
+                            <label for="checkbox-beta">Enable experimental features</label>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -563,14 +572,14 @@
             var temp = keys['temp'] == -1;
             var slot = isNaN(keys['slot']) ? 0 : Math.max(0, Number(keys['slot']));
 
-            LAZY_ENABLED = keys['lazy'] == -1;
+            var lazy = keys['lazy'] == -1 || SharedPreferences.get('lazy', false);
+            var beta = keys['beta'] == -1 || SharedPreferences.get('beta', false);
 
             if (temp) {
                 $('.css-temporary').removeClass('hidden');
             }
 
             if (dev) {
-                $('.css-devmode').removeClass('hidden');
                 $('#show-developer').removeClass('hidden');
             }
 
@@ -588,9 +597,7 @@
                 $('#show-developer').click(() => UI.show(UI.Developer));
                 $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
 
-                if (!dev) {
-                    UI.Files.$endpoint.hide();
-                }
+                UI.beta(beta || dev);
 
                 if (!localStorage.termsOK) {
                     UI.show(UI.Setup);
@@ -602,7 +609,7 @@
                 UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
             }, {
                 temporary: temp,
-                developer: dev,
+                lazy: lazy,
                 slot: slot
             });
         </script>
