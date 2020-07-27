@@ -572,8 +572,8 @@
             var temp = keys['temp'] == -1;
             var slot = isNaN(keys['slot']) ? 0 : Math.max(0, Number(keys['slot']));
 
-            var lazy = keys['lazy'] == -1 || SharedPreferences.get('lazy', false);
-            var beta = keys['beta'] == -1 || SharedPreferences.get('beta', false);
+            var lazy = keys['lazy'] == -1 || SiteOptions.lazy;
+            var beta = keys['beta'] == -1 || SiteOptions.beta;
 
             if (temp) {
                 $('.css-temporary').removeClass('hidden');

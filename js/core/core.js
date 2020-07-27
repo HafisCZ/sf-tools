@@ -60,6 +60,33 @@ const SharedPreferences = new (class {
 
 })(window);
 
+const SiteOptions = new (class {
+    constructor () {
+        this.options = SharedPreferences.get('options', {
+            lazy: false,
+            beta: false
+        });
+    }
+
+    get lazy () {
+        return this.options.lazy;
+    }
+
+    set lazy (value) {
+        this.options.lazy = value;
+        SharedPreferences.set('options', this.options);
+    }
+
+    get beta () {
+        return this.options.beta;
+    }
+
+    set beta (value) {
+        this.options.beta = value;
+        SharedPreferences.set('options', this.options);
+    }
+})();
+
 // IndexedDB Setup
 window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
 window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction  || window.msIDBTransaction;

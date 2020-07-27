@@ -1541,14 +1541,14 @@ class FilesView extends View {
 
         this.$lazy = this.$parent.find('[data-op="checkbox-lazy"]').checkbox({
             onChecked: function () {
-                SharedPreferences.set('lazy', true);
+                SiteOptions.lazy = true;
             },
             onUnchecked: function () {
-                SharedPreferences.set('lazy', false);
+                SiteOptions.lazy = false;
             }
         });
 
-        if (SharedPreferences.get('lazy', false)) {
+        if (SiteOptions.lazy) {
             this.$lazy.checkbox('set checked');
         } else {
             this.$lazy.checkbox('set unchecked');
@@ -1556,14 +1556,14 @@ class FilesView extends View {
 
         this.$beta = this.$parent.find('[data-op="checkbox-beta"]').checkbox({
             onChecked: function () {
-                SharedPreferences.set('beta', true);
+                SiteOptions.beta = true;
             },
             onUnchecked: function () {
-                SharedPreferences.set('beta', false);
+                SiteOptions.beta = false;
             }
         });
 
-        if (SharedPreferences.get('beta', false)) {
+        if (SiteOptions.beta) {
             this.$beta.checkbox('set checked');
         } else {
             this.$beta.checkbox('set unchecked');
