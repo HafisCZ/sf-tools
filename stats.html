@@ -102,6 +102,21 @@
             </div>
         </div>
 
+        <div id="modal-setup-beta" class="ui main container hidden">
+            <div class="ui active dimmer" style="color: white;">
+                <h2 class="ui header white">Disclaimer</h2>
+                <div style="text-align: left; width: 25%;">
+                    Features that are available in this mode might not be fully finished and also might not be <b>ToS</b> safe, so keep that in mind.
+                </div>
+                <div style="width: 20%; margin-top: 4em;">
+                    <div class="ui two buttons">
+                        <button class="ui red button" data-op="decline">Go back</button>
+                        <button class="ui green button" data-op="accept">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- ChangeLogView -->
         <div id="modal-changelog" class="ui main container hidden">
             <div class="ui active dimmer" style="color: white;">
@@ -583,6 +598,9 @@
                 $('#show-developer').removeClass('hidden');
             }
 
+            SiteOptions.params.temp = temp;
+            SiteOptions.params.beta = beta || dev;
+
             UI.preinitialize();
 
             Storage.load(function () {
@@ -597,10 +615,12 @@
                 $('#show-developer').click(() => UI.show(UI.Developer));
                 $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
 
-                UI.beta(beta || dev);
+                UI.beta((beta || dev) && localStorage.termsBetaOK);
 
-                if (!localStorage.termsOK) {
+                if (localStorage.termsOK != 'true') {
                     UI.show(UI.Setup);
+                } else if (localStorage.termsBetaOK != 'true' && (beta || dev)) {
+                    UI.show(UI.SetupBeta);
                 } else if (localStorage.changeLogOk != MODULE_VERSION) {
                     UI.show(UI.ChangeLog);
                 }

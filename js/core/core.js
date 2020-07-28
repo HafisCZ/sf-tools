@@ -66,6 +66,11 @@ const SiteOptions = new (class {
             lazy: false,
             beta: false
         });
+
+        this.params = {
+            beta: false,
+            temp: false
+        };
     }
 
     get lazy () {
