@@ -286,3 +286,141 @@ const Weekends = {
         return [this.Type[week], formatDate(beg), formatDate(end)];
     }
 }
+
+function SHA1 (text) {
+    function rotate_left (n, s) {
+        return (n << s) | (n >>> (32 - s));
+    }
+
+    function lsb_hex (val) {
+        var str = '';
+        for (var i = 0; i <= 6; i += 2) {
+            str += ((val >>> (i * 4 + 4)) & 0x0f).toString(16) + ((val >>> (i * 4)) & 0x0f).toString(16);
+        }
+
+        return str;
+    }
+
+    function cvt_hex (val) {
+        var str = '';
+        for (var i = 7; i >= 0; i--) {
+            str += ((val >>> (i * 4)) & 0x0f).toString(16);
+        }
+
+        return str;
+    }
+
+    function encodeUTF8 (text) {
+        text = text.replace(/\r\n/g, '\n');
+        var utf = '';
+
+        for (var n = 0; n < text.length; n++) {
+            var c = text.charCodeAt(n);
+            if (c < 128) {
+                utf += String.fromCharCode(c);
+            } else if ((c > 127) && (c < 2048)) {
+                utf += String.fromCharCode((c >> 6) | 192);
+                utf += String.fromCharCode((c & 63) | 128);
+            } else {
+                utf += String.fromCharCode((c >> 12) | 224);
+                utf += String.fromCharCode(((c >> 6) & 63) | 128);
+                utf += String.fromCharCode((c & 63) | 128);
+            }
+        }
+
+        return utf;
+    }
+
+    var words = new Array();
+    text = encodeUTF8(text);
+
+    for (var i = 0; i < text.length - 3; i += 4) {
+        words.push(text.charCodeAt(i) << 24 | text.charCodeAt(i + 1) << 16 | text.charCodeAt(i + 2) << 8 | text.charCodeAt(i + 3));
+    }
+
+    var padding = text.length % 4;
+    if (padding == 0) {
+        words.push(0x080000000);
+    } else if (padding == 1) {
+        words.push(text.charCodeAt(text.length - 1) << 24 | 0x0800000);
+    } else if (padding == 2) {
+        words.push(text.charCodeAt(text.length - 2) << 24 | text.charCodeAt(text.length - 1) << 16 | 0x08000);
+    } else if (passing == 3) {
+        words.push(text.charCodeAt(text.length - 3) << 24 | text.charCodeAt(text.length - 2) << 16 | text.charCodeAt(text.length - 1) << 8 | 0x080);
+    }
+
+    while ((words.length % 16) != 14) {
+        words.push(0);
+    }
+
+    words.push(text.length >>> 29);
+    words.push((text.length << 3) & 0x0ffffffff);
+
+    var H0 = 0x67452301;
+    var H1 = 0xEFCDAB89;
+    var H2 = 0x98BADCFE;
+    var H3 = 0x10325476;
+    var H4 = 0xC3D2E1F0;
+
+    var W = new Array(80);
+
+    for (var block = 0; block < words.length; block += 16) {
+        for (var i = 0; i < 16; i++) {
+            W[i] = words[block + i];
+        }
+
+        for (var i = 16; i <= 79; i++) {
+            W[i] = rotate_left(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
+        }
+
+        var A = H0;
+        var B = H1;
+        var C = H2;
+        var D = H3;
+        var E = H4;
+
+        for (var i = 0; i <= 19; i++) {
+            var temp = (rotate_left(A, 5) + ((B & C) | (~B & D)) + E + W[i] + 0x5A827999) & 0x0ffffffff;
+            E = D;
+            D = C;
+            C = rotate_left(B, 30);
+            B = A;
+            A = temp;
+        }
+
+        for (var i = 20; i <= 39; i++) {
+            var temp = (rotate_left(A, 5) + (B ^ C ^ D) + E + W[i] + 0x6ED9EBA1) & 0x0ffffffff;
+            E = D;
+            D = C;
+            C = rotate_left(B, 30);
+            B = A;
+            A = temp;
+        }
+
+        for (var i = 40; i <= 59; i++) {
+            var temp = (rotate_left(A, 5) + ((B & C) | (B & D) | (C & D)) + E + W[i] + 0x8F1BBCDC) & 0x0ffffffff;
+            E = D;
+            D = C;
+            C = rotate_left(B, 30);
+            B = A;
+            A = temp;
+        }
+
+        for (var i = 60; i <= 79; i++) {
+            var temp = (rotate_left(A, 5) + (B ^ C ^ D) + E + W[i] + 0xCA62C1D6) & 0x0ffffffff;
+            E = D;
+            D = C;
+            C = rotate_left(B, 30);
+            B = A;
+            A = temp;
+        }
+
+        H0 = (H0 + A) & 0x0ffffffff;
+        H1 = (H1 + B) & 0x0ffffffff;
+        H2 = (H2 + C) & 0x0ffffffff;
+        H3 = (H3 + D) & 0x0ffffffff;
+        H4 = (H4 + E) & 0x0ffffffff;
+    }
+
+    return (cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4)).toLowerCase();
+}
