@@ -1488,7 +1488,7 @@ const SettingsCommands = [
         } else {
             var ast = new AST(arg);
             if (ast.isValid()) {
-                root.setLocalVariable(key, (player, reference, env, val) => {
+                root.setLocalVariable('format', (player, reference, env, val) => {
                     return ast.eval(player, reference, env, val);
                 });
             }
