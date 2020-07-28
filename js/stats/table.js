@@ -1388,7 +1388,7 @@ const SettingsCommands = [
         var val = root.constants.getValue(prefix, value);
 
         if (val != undefined && !isNaN(val)) {
-            root.setLocalSharedVariable(key, Number(val));
+            root.setLocalSharedVariable('width', Number(val));
         }
     }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -1481,10 +1481,10 @@ const SettingsCommands = [
     }),
     // Local
     // format - Specifies formatter for the field
-    new SettingsCommand(/^(format) (.*)$/, function (root, string) {
+    new SettingsCommand(/^(format|f\:) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
         if (ARG_FORMATTERS[arg]) {
-            root.setLocalVariable(key, ARG_FORMATTERS[arg]);
+            root.setLocalVariable('format', ARG_FORMATTERS[arg]);
         } else {
             var ast = new AST(arg);
             if (ast.isValid()) {
@@ -1517,12 +1517,12 @@ const SettingsCommands = [
     }),
     // Local
     // alias - Override name of the column
-    new SettingsCommand(/^(alias) ((@?)(.*))$/, function (root, string) {
+    new SettingsCommand(/^(alias|a\:) ((@?)(.*))$/, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
         var val = root.constants.getValue(prefix, value);
 
         if (val != undefined) {
-            root.setLocalVariable(key, val);
+            root.setLocalVariable('alias', val);
         }
     }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -1537,11 +1537,11 @@ const SettingsCommands = [
     }),
     // Local
     // expr - Set expression to the column
-    new SettingsCommand(/^(expr) (.+)$/, function (root, string) {
+    new SettingsCommand(/^(expr|e\:) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         var ast = new AST(a);
         if (ast.isValid()) {
-            root.setLocalVariable(key, (player, reference, env, scope) => {
+            root.setLocalVariable('expr', (player, reference, env, scope) => {
                 return ast.eval(player, reference, env, scope);
             });
         }
@@ -1551,11 +1551,11 @@ const SettingsCommands = [
     }),
     // Local
     // expc - Set color expression to the column
-    new SettingsCommand(/^(expc) (.+)$/, function (root, string) {
+    new SettingsCommand(/^(expc|c\:) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         var ast = new AST(a);
         if (ast.isValid()) {
-            root.setLocalVariable(key, (player, reference, env, val) => {
+            root.setLocalVariable('expc', (player, reference, env, val) => {
                 return getCSSColor(ast.eval(player, reference, env, val));
             });
         }
