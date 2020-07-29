@@ -942,6 +942,7 @@ class BrowseView extends View {
                         test: (arg, player, timestamp) => player.Timestamp == timestamp,
                         arg: arg.toLowerCase()
                     });
+                    this.recalculate = true;
                 } else if (key == 'e') {
                     var ast = new AST(arg);
                     if (ast.isValid()) {
