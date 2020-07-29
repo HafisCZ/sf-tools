@@ -853,9 +853,10 @@ class BrowseView extends View {
             'f': 'Show only first or first n entries',
             'r': 'Force recalculation of global variables',
             'x': 'Enable simulator (argument is number of iterations)',
-            'h': 'Show hidden'
+            'h': 'Show hidden',
+            'o': 'Show own'
         }).change((event) => {
-            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h):/);
+            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h|o):/);
 
             var terms = [
                 {
@@ -959,6 +960,12 @@ class BrowseView extends View {
                     this.recalculate = true;
                     sim = isNaN(arg) ? 1 : Math.max(1, Number(arg));
                 } else if (key == 'h') {
+                    this.shidden = true;
+                } else if (key == 'o') {
+                    terms.push({
+                        test: (arg, player, timestamp) => player.Own
+                    });
+                    this.recalculate = true;
                     this.shidden = true;
                 }
             }
