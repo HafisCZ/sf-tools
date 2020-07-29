@@ -767,7 +767,7 @@ class TableInstance {
                 var cell = CellGenerator.WideCell(SFormat.Normal(value) + reference, color, lw, extra.align);
                 details += `
                     <tr>
-                        <td class="border-right-thin" colspan="${ 1 + (this.settings.globals.indexed ? 1 : 0) + sizeServer }">${ extra.name }</td>
+                        <td class="border-right-thin" colspan="${ 1 + (this.settings.globals.indexed ? 1 : 0) + (sizeServer ? 1 : 0) }">${ extra.name }</td>
                         ${ cell }
                     </tr>
                 `;
