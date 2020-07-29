@@ -36,7 +36,7 @@ function getColorFromGradientObj (obj, sample) {
         }
     }
 
-    return '#000000';
+    return '';
 }
 
 function getColorFromGradient(a, b, sample) {
