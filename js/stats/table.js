@@ -772,6 +772,16 @@ class TableInstance {
                     </tr>
                 `;
             }
+
+            details += `
+                <tr>
+                    <td class="border-right-thin border-bottom-thick" colspan="${ 1 + (this.settings.globals.indexed ? 1 : 0) + (sizeServer ? 1 : 0) }"></td>
+                    <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
+                </tr>
+                <tr>
+                    <td colspan="${ 1 + (this.settings.globals.indexed ? 1 : 0) + (sizeServer ? 1 : 0) }"></td>
+                </tr>
+            `;
         }
 
         return [
