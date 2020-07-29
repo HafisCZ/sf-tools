@@ -2030,6 +2030,80 @@ class Settings {
 
     // Evaluate constants
     evaluateConstants (players, sim, perf, tabletype) {
+        // Add simulator output
+        if (sim) {
+            var array = players.slice(0, perf);
+            var array1 = [];
+            var array2 = [];
+
+            if (players.reference != players.timestamp) {
+                for (var player of array) {
+                    array1.push({
+                        player: player.player
+                    });
+
+                    array2.push({
+                        player: player.compare
+                    });
+                }
+
+                var target1 = this.globals.simulator_target ? array1.find(p => p.player.Identifier == this.globals.simulator_target) : null;
+                var target2 = this.globals.simulator_target ? array2.find(p => p.player.Identifier == this.globals.simulator_target) : null;
+                if (target1 == null || target2 == null || array.length == 2) {
+                    target1 = target2 = null;
+                } else {
+                    target1 = target1.player;
+                    target2 = target2.player;
+                }
+
+                new FightSimulator().simulate(array1, sim, target1, this.globals.simulator_target_source);
+                new FightSimulator().simulate(array2, sim, target2, this.globals.simulator_target_source);
+            } else {
+                for (var player of array) {
+                    array1.push({
+                        player: player.player
+                    });
+                }
+
+                var target1 = this.globals.simulator_target ? array1.find(p => p.player.Identifier == this.globals.simulator_target) : null;
+                if (target1 && array.length != 2) {
+                    target1 = target1.player;
+                } else {
+                    target1 = null;
+                }
+
+                new FightSimulator().simulate(array1, sim, target1, this.globals.simulator_target_source);
+            }
+
+            var results = {};
+            for (var result of array1) {
+                results[result.player.Identifier] = result.score;
+            }
+
+            this.vars['Simulator'] = {
+                value: results
+            }
+
+            if (players.reference != players.timestamp) {
+                var cresults = { };
+
+                for (var result of array2) {
+                    cresults[result.player.Identifier] = result.score;
+                }
+
+                this.cvars['Simulator'] = {
+                    value: cresults
+                }
+            } else {
+                this.cvars['Simulator'] = {
+                    value: results
+                }
+            }
+        } else {
+            delete this.vars['Simulator'];
+            delete this.cvars['Simulator'];
+        }
+
         // Evaluate constants
         for (var [name, data] of Object.entries(this.vars)) {
             if (data.ast) {
@@ -2119,80 +2193,6 @@ class Settings {
                 this.evaluateArrayConstants(header.value);
                 this.evaluateArrayConstants(header.color);
             }
-        }
-
-        // Add simulator output
-        if (sim) {
-            var array = players.slice(0, perf);
-            var array1 = [];
-            var array2 = [];
-
-            if (players.reference != players.timestamp) {
-                for (var player of array) {
-                    array1.push({
-                        player: player.player
-                    });
-
-                    array2.push({
-                        player: player.compare
-                    });
-                }
-
-                var target1 = this.globals.simulator_target ? array1.find(p => p.player.Identifier == this.globals.simulator_target) : null;
-                var target2 = this.globals.simulator_target ? array2.find(p => p.player.Identifier == this.globals.simulator_target) : null;
-                if (target1 == null || target2 == null || array.length == 2) {
-                    target1 = target2 = null;
-                } else {
-                    target1 = target1.player;
-                    target2 = target2.player;
-                }
-
-                new FightSimulator().simulate(array1, sim, target1, this.globals.simulator_target_source);
-                new FightSimulator().simulate(array2, sim, target2, this.globals.simulator_target_source);
-            } else {
-                for (var player of array) {
-                    array1.push({
-                        player: player.player
-                    });
-                }
-
-                var target1 = this.globals.simulator_target ? array1.find(p => p.player.Identifier == this.globals.simulator_target) : null;
-                if (target1 && array.length != 2) {
-                    target1 = target1.player;
-                } else {
-                    target1 = null;
-                }
-
-                new FightSimulator().simulate(array1, sim, target1, this.globals.simulator_target_source);
-            }
-
-            var results = {};
-            for (var result of array1) {
-                results[result.player.Identifier] = result.score;
-            }
-
-            this.vars['Simulator'] = {
-                value: results
-            }
-
-            if (players.reference != players.timestamp) {
-                var cresults = { };
-
-                for (var result of array2) {
-                    cresults[result.player.Identifier] = result.score;
-                }
-
-                this.cvars['Simulator'] = {
-                    value: cresults
-                }
-            } else {
-                this.cvars['Simulator'] = {
-                    value: results
-                }
-            }
-        } else {
-            delete this.vars['Simulator'];
-            delete this.cvars['Simulator'];
         }
     }
 

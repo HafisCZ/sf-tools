@@ -469,10 +469,15 @@ class AST {
                         for (var i = 0; i < object.length; i++) {
                             sum += expr.expr(object[i] && object[i].segmented ? object[i][0] : object[i]);
                         }
+                    } else if (SP_KEYWORD_MAPPING_3[node.args[1]]) {
+                        var expr = SP_KEYWORD_MAPPING_3[node.args[1]];
+                        for (var i = 0; i < object.length; i++) {
+                            sum += expr.expr(object[i] && object[i].segmented ? object[i][0] : object[i], null, environment);
+                        }
                     } else if (SP_KEYWORD_MAPPING_4[node.args[1]]) {
                         var expr = SP_KEYWORD_MAPPING_4[node.args[1]];
                         for (var i = 0; i < object.length; i++) {
-                            sum += expr.expr(player, environment, object[i] && object[i].segmented ? object[i][0] : object[i]);
+                            sum += expr.expr(player, reference, environment, object[i] && object[i].segmented ? object[i][0] : object[i]);
                         }
                     } else {
                         for (var i = 0; i < object.length; i++) {
@@ -551,10 +556,15 @@ class AST {
                         for (var i = 0; i < object.length; i++) {
                             sum.push(expr.expr(object[i] && object[i].segmented ? object[i][0] : object[i]));
                         }
+                    } else if (SP_KEYWORD_MAPPING_3[node.args[1]]) {
+                        var expr = SP_KEYWORD_MAPPING_3[node.args[1]];
+                        for (var i = 0; i < object.length; i++) {
+                            sum.push(expr.expr(object[i] && object[i].segmented ? object[i][0] : object[i], null, environment));
+                        }
                     } else if (SP_KEYWORD_MAPPING_4[node.args[1]]) {
                         var expr = SP_KEYWORD_MAPPING_4[node.args[1]];
                         for (var i = 0; i < object.length; i++) {
-                            sum.push(expr.expr(player, environment, object[i] && object[i].segmented ? object[i][0] : object[i]));
+                            sum.push(expr.expr(player, reference, environment, object[i] && object[i].segmented ? object[i][0] : object[i]));
                         }
                     } else {
                         for (var i = 0; i < object.length; i++) {
@@ -609,6 +619,33 @@ class AST {
 
                     if (params.length > 0 && params[0] != undefined) {
                         return expr.expr(params[0]);
+                    } else {
+                        return undefined;
+                    }
+                } else if (SP_KEYWORD_MAPPING_3[node.op]) {
+                    var expr = SP_KEYWORD_MAPPING_3[node.op];
+                    var params = node.args.map(arg => this.eval(player, reference, environment, scope, extra, arg));
+
+                    if (params.length > 0 && params[0] != undefined) {
+                        return expr.expr(params[0], null, environment);
+                    } else {
+                        return undefined;
+                    }
+                } else if (SP_KEYWORD_MAPPING_4[node.op]) {
+                    var expr = SP_KEYWORD_MAPPING_4[node.op];
+                    var params = node.args.map(arg => this.eval(player, reference, environment, scope, extra, arg));
+
+                    if (params.length > 0 && params[0] != undefined) {
+                        return expr.expr(player, null, environment, params[0]);
+                    } else {
+                        return undefined;
+                    }
+                } else if (SP_KEYWORD_MAPPING_5[node.op]) {
+                    var expr = SP_KEYWORD_MAPPING_5[node.op];
+                    var params = node.args.map(arg => this.eval(player, reference, environment, scope, extra, arg));
+
+                    if (params.length > 0 && params[0] != undefined) {
+                        return expr.expr(params[0], null, environment);
                     } else {
                         return undefined;
                     }
@@ -674,13 +711,13 @@ class AST {
                 return SP_KEYWORD_MAPPING_2[node].expr(player);
             } else if (SP_KEYWORD_MAPPING_3[node] && player) {
                 // Return mapper
-                return SP_KEYWORD_MAPPING_3[node].expr(player, environment);
+                return SP_KEYWORD_MAPPING_3[node].expr(player, reference, environment);
             } else if (SP_KEYWORD_MAPPING_4[node] && player) {
                 // Return mapper
-                return SP_KEYWORD_MAPPING_4[node].expr(player, environment, scope);
+                return SP_KEYWORD_MAPPING_4[node].expr(player, reference, environment, scope);
             } else if (SP_KEYWORD_MAPPING_5[node] && player) {
                 // Return mapper
-                return SP_KEYWORD_MAPPING_5[node].expr(player, environment);
+                return SP_KEYWORD_MAPPING_5[node].expr(player, reference, environment);
             } else {
                 // Return object or undefined if everything fails
                 return SP_ENUMS[node];
