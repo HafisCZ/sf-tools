@@ -705,29 +705,95 @@ class TableInstance {
 
     // Create players table
     createPlayersTable () {
-        var server = this.settings.globals.server == undefined ? 100 : this.settings.globals.server;
-        var name = this.settings.globals.name == undefined ? 250 : this.settings.globals.name;
+        var sizeServer = this.settings.globals.server == undefined ? 100 : this.settings.globals.server;
+        var sizeName = this.settings.globals.name == undefined ? 250 : this.settings.globals.name;
+        var sizeDynamic = this.config.reduce((a, b) => a + b.width, 0);
 
-        var size = name + server + (this.settings.globals.indexed ? 50 : 0) + this.flat.reduce((a, b) => a + b.width, 0);
+        var size = sizeName + sizeServer + (this.settings.globals.indexed ? 50 : 0) + Math.max(400, sizeDynamic);
+
+        var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
+
+        var details = '';
+        if (this.settings.extras.length) {
+            var widskip = 1;
+            for (var i = 0, wid = 100; wid > 0 && i < this.flat.length; i++) {
+                wid -= this.flat[i].width;
+                if (wid > 0) {
+                    widskip += this.flat[i].span;
+                } else {
+                    break;
+                }
+            }
+
+            for (var extra of this.settings.extras) {
+                var lw = widskip;
+
+                if (extra.width) {
+                    var lw = 1;
+                    for (var i = 0, wid = (extra.width == -1 ? sizeDynamic : extra.width); wid > 0 && i < this.flat.length; i++) {
+                        wid -= this.flat[i].width;
+                        if (wid > 0) {
+                            lw += this.flat[i].span;;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                var value = extra.eval.value;
+                var reference = extra.difference && !isNaN(extra.eval.compare) ? extra.eval.compare : '';
+
+                if (reference && !isNaN(reference)) {
+                    reference = extra.flip ? (reference - value) : (value - reference);
+                    reference = CellGenerator.Difference(reference, extra.brackets, extra.format_diff ? extra.format(null, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
+                } else {
+                    reference = '';
+                }
+
+                var color = CompareEval.evaluate(value, extra.color);
+                color = (color != undefined ? color : (extra.expc ? extra.expc(undefined, null, this.settings, value) : '')) || '';
+
+                var displayValue = CompareEval.evaluate(value, extra.value);
+                if (displayValue == undefined && extra.format) {
+                    value = extra.format(undefined, undefined, this.settings, value);
+                } else if (displayValue != undefined) {
+                    value = displayValue;
+                }
+
+                if (value != undefined && extra.extra) {
+                    value = `${ value }${ extra.extra(undefined) }`;
+                }
+
+                var cell = CellGenerator.WideCell(SFormat.Normal(value) + reference, color, lw, extra.align);
+                details += `
+                    <tr>
+                        <td class="border-right-thin" colspan="${ 1 + (this.settings.globals.indexed ? 1 : 0) + sizeServer }">${ extra.name }</td>
+                        ${ cell }
+                    </tr>
+                `;
+            }
+        }
 
         return [
             `
-                <thead style="${ this.settings.globals.font ? `font: ${ this.settings.globals.font };` : '' }">
+                <thead>
+
+                </thead>
+                <tbody style="${ this.settings.globals.font ? `font: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
+                    ${ details }
                     <tr>
                         ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                        ${ server ? `<td width="${ server }" rowspan="2" class="clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
-                        <td width="${ name }" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                        ${ sizeServer ? `<td width="${ sizeServer }" rowspan="2" class="clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
+                        <td width="${ sizeName }" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
                     <tr>
                         ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`)) }
                     </tr>
                     <tr>
                         ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
-                        <td class="border-bottom-thick border-right-thin" colspan="${ server ? 2 : 1 }"></td>
+                        <td class="border-bottom-thick border-right-thin" colspan="${ sizeServer ? 2 : 1 }"></td>
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
                     </tr>
-                </thead>
-                <tbody style="${ this.settings.globals.font ? `font: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ join(this.entries, (e, ei) => e.content.replace(/\<ispan data\-indexed\=\"2\"\>\d*\<\/ispan\>/, `<ispan data-indexed="2">${ ei + 1 }</ispan>`), 0, this.array.perf || this.settings.globals.performance) }
                 </tbody>
             `,
@@ -1709,7 +1775,8 @@ class Constants {
             'normal': '100',
             'large': '160',
             'huge': '200',
-            'scrapbook': '2180'
+            'scrapbook': '2180',
+            'max': '-1'
         }
     }
 
@@ -2000,6 +2067,15 @@ class Settings {
                         value: data.ast.eval(param.player, undefined, this, players.map(p => p.player)),
                         compare: data.ast.eval(param.compare, undefined, this.getCompareEnvironment(), players.map(p => p.compare))
                     };
+                }
+            }
+        } else if (tabletype == TableType.Players) {
+            for (var data of this.extras) {
+                if (data.ast) {
+                    data.eval = {
+                        value: data.ast.eval(null, null, this, players.map(p => p.player)),
+                        compare: data.ast.eval(null, null, this.getCompareEnvironment(), players.map(p => p.compare))
+                    }
                 }
             }
         }
