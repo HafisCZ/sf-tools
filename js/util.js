@@ -26,6 +26,19 @@ function formatDuration (duration) {
     return trail(days, Math.max(2, days.toString().length)) + ':' + trail(hours, 2) + ':' + trail(minutes, 2);
 }
 
+function getColorFromGradientObj (obj, sample) {
+    var stops = Object.entries(obj).map(e => [ Number(e[0]), e[1] ]);
+    stops.sort((a, b) => a[0] - b[0]);
+
+    for (var i = 0; i < stops.length - 1; i++) {
+        if (sample <= stops[i + 1][0]) {
+            return getColorFromGradient(stops[i][1], stops[i + 1][1], (sample - stops[i][0]) / (stops[i + 1][0] - stops[i][0]));
+        }
+    }
+
+    return '#000000';
+}
+
 function getColorFromGradient(a, b, sample) {
     var color = '#';
     var ao = a.startsWith('#') ? 1 : 0;

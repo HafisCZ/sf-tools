@@ -40,7 +40,7 @@ const AST_FUNCTIONS = {
     'rgba': (a) => getColorFromRGBA(a[0], a[1], a[2], a[3]),
     'range': (a) => (a[1] - a[0]) * a[2] + a[0],
     'stringify': (a) => String(a[0]),
-    'gradient': (a) => getColorFromGradient(a[0], a[1], a[2]),
+    'gradient': (a) => (a[2] == undefined && typeof(a[0]) == 'object') ? getColorFromGradientObj(a[0], a[1]) : getColorFromGradient(a[0], a[1], a[2]),
     'log': (a) => {
         console.log(a[0]);
         return a[0];
