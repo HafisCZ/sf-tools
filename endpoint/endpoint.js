@@ -29,4 +29,17 @@ class EndpointController {
 
         this.window.querry(ids);
     }
+
+    querry_single (id, callback, error) {
+        this.window.callback['querry_single'] = callback;
+        this.window.error['querry'] = callback;
+
+        this.window.querry_single(id);
+    }
+
+    querry_collect (callback) {
+        this.window.callback['querry'] = callback;
+
+        this.window.querry_collect();
+    }
 }
