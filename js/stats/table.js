@@ -1482,6 +1482,20 @@ const SettingsCommands = [
     }),
     // Global
     // simulator - Amount of simulator fights per duo
+    new SettingsCommand(/^(simulator target|simulator source) (\S+)$/, function (root, string) {
+        var [ , key, arg ] = this.match(string);
+
+        root.setGlobalVariable('simulator_target', arg);
+        if (key == 'simulator source') {
+            root.setGlobalVariable('simulator_target_source', true);
+        }
+    }, function (root, string) {
+        var [ , key, arg ] = this.match(string);
+
+        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
+    }),
+    // Global
+    // simulator - Amount of simulator fights per duo
     new SettingsCommand(/^(simulator) (\d+)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
 
@@ -1489,8 +1503,7 @@ const SettingsCommands = [
             root.setGlobalVariable(key, Number(arg));
         }
     }, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = root.constants.getValue(prefix, value);
+        var [ , key, arg ] = this.match(string);
 
         if (!isNaN(arg) && arg > 0) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
@@ -1827,7 +1840,7 @@ class Templates {
     }
 }
 
-const FORMAT_ONLY_SETTINGS = [ 1, 2, 3, 23 ];
+const FORMAT_ONLY_SETTINGS = [ 1, 2, 3, 24 ];
 
 class Settings {
     // Save
@@ -2125,8 +2138,17 @@ class Settings {
                     });
                 }
 
-                new FightSimulator().simulate(array1, sim);
-                new FightSimulator().simulate(array2, sim);
+                var target1 = this.globals.simulator_target ? array1.find(p => p.player.Identifier == this.globals.simulator_target) : null;
+                var target2 = this.globals.simulator_target ? array2.find(p => p.player.Identifier == this.globals.simulator_target) : null;
+                if (target1 == null || target2 == null || array.length == 2) {
+                    target1 = target2 = null;
+                } else {
+                    target1 = target1.player;
+                    target2 = target2.player;
+                }
+
+                new FightSimulator().simulate(array1, sim, target1, this.globals.simulator_target_source);
+                new FightSimulator().simulate(array2, sim, target2, this.globals.simulator_target_source);
             } else {
                 for (var player of array) {
                     array1.push({
@@ -2134,7 +2156,14 @@ class Settings {
                     });
                 }
 
-                new FightSimulator().simulate(array1, sim);
+                var target1 = this.globals.simulator_target ? array1.find(p => p.player.Identifier == this.globals.simulator_target) : null;
+                if (target1 && array.length != 2) {
+                    target1 = target1.player;
+                } else {
+                    target1 = null;
+                }
+
+                new FightSimulator().simulate(array1, sim, target1, this.globals.simulator_target_source);
             }
 
             var results = {};

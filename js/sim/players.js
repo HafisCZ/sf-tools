@@ -672,38 +672,65 @@ class GuildSimulator {
 
 class FightSimulator {
     // Fight group
-    simulate (players, iterations = 100000) {
+    simulate (players, iterations = 100000, target = null, assource = false) {
         var scores = [];
         for (var i = 0; i < players.length; i++) {
             var score = 0;
             var min = iterations;
             var max = 0;
 
-            for (var j = 0; j < players.length; j++) {
-                if (i != j) {
-                    var s = 0;
-                    this.cache(players[i].player, players[j].player);
+            if (target) {
+                if (assource) {
+                    this.cache(target, players[i].player);
                     for (var k = 0; k < iterations; k++) {
-                        s += this.fight();
+                        score += this.fight();
                     }
 
-                    score += s;
-
-                    if (s > max) {
-                        max = s;
+                    players[i].score = {
+                        avg: 100 * score / iterations,
+                        min: 100 * score / iterations,
+                        max: 100 * score / iterations
+                    };
+                } else {
+                    this.cache(players[i].player, target);
+                    for (var k = 0; k < iterations; k++) {
+                        score += this.fight();
                     }
 
-                    if (s < min) {
-                        min = s;
+                    players[i].score = {
+                        avg: 100 * score / iterations,
+                        min: 100 * score / iterations,
+                        max: 100 * score / iterations
+                    };
+                }
+            } else {
+                for (var j = 0; j < players.length; j++) {
+                    if (i != j) {
+                        var s = 0;
+
+                        this.cache(players[i].player, players[j].player);
+                        for (var k = 0; k < iterations; k++) {
+                            s += this.fight();
+                        }
+
+                        score += s;
+
+                        if (s > max) {
+                            max = s;
+                        }
+
+                        if (s < min) {
+                            min = s;
+                        }
                     }
                 }
-            }
 
-            players[i].score = {
-                avg: 100 * score / (players.length - 1) / iterations,
-                min: 100 * min / iterations,
-                max: 100 * max / iterations
-            };
+                players[i].score = {
+                    avg: 100 * score / (players.length - 1) / iterations,
+                    min: 100 * min / iterations,
+                    max: 100 * max / iterations
+                };
+            }
         }
 
         if (players.length == 2) {
