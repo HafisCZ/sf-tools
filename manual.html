@@ -681,7 +681,7 @@
                     </p>
                 </div>
                 <div class="column">
-                    <div><code>set Pet Average with all Players as each(slice(Players, 0, 25),P.Group.Pet) / Players.length</code></div>
+                    <div><code>set Pet Average with all as each(slice(this, 0, 25),P.Group.Pet) / this.length</code></div>
                     <div><br/></div>
                     <div><code>header Pet Difference</code></div>
                     <div><code>expr trunc(Pet - Pet Average)</code></div>

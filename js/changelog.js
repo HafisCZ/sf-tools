@@ -1,4 +1,14 @@
 const CHANGELOG = {
+    'v3.682': [
+        'You can now use <code>show as</code> everywhere. In Players tab it will be always shown on top of the table.',
+        '<code>set with all</code> no longer requires a parameter and uses <code>this</code> keyword instead. You can look at an example <a href="https://pastebin.com/raw/Bb6w6pTp">here</a>.',
+        'Functions <code>rgb</code> and <code>rgba</code> now return hex color values instead of css color string.',
+        'Added <code>gradient</code> function that returns color at a specific point between two colors.',
+        'Added <code>stringify</code> function that converts anything to a string.',
+        'Added <code>log</code> function that prints value into console and returns it. <br/>It should be used only for debugging purposes.',
+        'Added highlighting to custom variables and functions.',
+        'Added short keywords for expressions (<code>e:</code>, <code>f:</code> and <code>c:</code>).'
+    ],
     'v3.669': [
         'You can now enable/disable lazy loading permanently in Files tab.',
         'Fixed filter not working with custom expressions.',

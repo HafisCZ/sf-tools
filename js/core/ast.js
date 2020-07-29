@@ -36,9 +36,15 @@ const AST_FUNCTIONS = {
     'sum': (a) => Array.isArray(a[0]) ? a[0].reduce((t, a) => t + a, 0) : a.reduce((t, a) => t + a, 0),
     'now': (a) => Date.now(),
     'len': (a) => a[0] != undefined ? (Array.isArray(a[0]) ? a[0].length : Object.values(a[0]).length) : undefined,
-    'rgb': (a) => `rgb(${ a[0] }, ${ a[1] }, ${ a[2] })`,
-    'rgba': (a) => `rgba(${ a[0] }, ${ a[1] }, ${ a[2] }, ${ a[3] })`,
-    'range': (a) => (a[1] - a[0]) * a[2] + a[0]
+    'rgb': (a) => getColorFromRGBA(a[0], a[1], a[2]),
+    'rgba': (a) => getColorFromRGBA(a[0], a[1], a[2], a[3]),
+    'range': (a) => (a[1] - a[0]) * a[2] + a[0],
+    'stringify': (a) => String(a[0]),
+    'gradient': (a) => getColorFromGradient(a[0], a[1], a[2]),
+    'log': (a) => {
+        console.log(a[0]);
+        return a[0];
+    }
 };
 
 const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
@@ -54,7 +60,7 @@ class AST {
         }
     }
 
-    static format (string, constants = new Constants()) {
+    static format (string, constants = new Constants(), vars = []) {
         var content = '';
         var tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(AST_REGEXP);
 
@@ -66,7 +72,7 @@ class AST {
 
                 if (token != undefined && token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
                     value = token[0] + SFormat.Comment(token.slice(1, token.length - 1)) + token[token.length - 1];
-                } else if (AST_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'this', 'undefined', 'null', 'filter', 'format'].includes(token)) {
+                } else if (AST_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'this', 'undefined', 'null', 'filter', 'format', 'difference'].includes(token)) {
                     value = SFormat.Constant(token);
                 } else if (SP_KEYWORD_MAPPING_0.hasOwnProperty(token)) {
                     value = SFormat.Reserved(token);
@@ -88,6 +94,8 @@ class AST {
                     value = SFormat.Constant('reference');
                 } else if (token == 'player') {
                     value = SFormat.Constant('player');
+                } else if (vars.includes(token)) {
+                    value = SFormat.Constant(token);
                 } else {
                     value = SFormat.Normal(token);
                 }
@@ -414,7 +422,7 @@ class AST {
         }
     }
 
-    eval (player, reference = undefined, environment = { func: { }, vars: { }, svars: { }, constants: new Constants() }, scope = undefined, extra = undefined, node = this.root) {
+    eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants() }, scope = undefined, extra = undefined, node = this.root) {
         if (typeof(node) == 'object') {
             if (node.noeval) {
                 return node.args[0];

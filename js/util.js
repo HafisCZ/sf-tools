@@ -26,6 +26,32 @@ function formatDuration (duration) {
     return trail(days, Math.max(2, days.toString().length)) + ':' + trail(hours, 2) + ':' + trail(minutes, 2);
 }
 
+function getColorFromGradient(a, b, sample) {
+    var color = '#';
+    var ao = a.startsWith('#') ? 1 : 0;
+    var bo = b.startsWith('#') ? 1 : 0;
+    if (isNaN(sample)) sample = 1.0;
+    if (a.length < 8) a += 'ff';
+    if (b.length < 8) b += 'ff';
+    for (var i = 0; i < 7; i += 2) {
+        var sa = parseInt(a.substring(i + ao, i + ao + 2), 16);
+        var sb = parseInt(b.substring(i + bo, i + bo + 2), 16);
+        var s = Math.floor(sa * (1 - sample) + sb * (sample)).toString(16);
+        color += '0'.repeat(2 - s.length) + s;
+    }
+
+    return color;
+}
+
+function getColorFromRGBA (r, g, b, a) {
+    var hr = Number(r).toString(16);
+    var hg = Number(g).toString(16);
+    var hb = Number(b).toString(16);
+    var ha = isNaN(a) ? 'ff' : Number(Math.trunc(a * 255)).toString(16);
+
+    return '#' + '0'.repeat(2 - hr.length) + hr + '0'.repeat(2 - hg.length) + hg + '0'.repeat(2 - hb.length) + hb + '0'.repeat(2 - ha.length) + ha;
+}
+
 function mergeSoft (a, b) {
     for (var [k, v] of Object.entries(b)) {
         if (!a.hasOwnProperty(k)) a[k] = b[k];

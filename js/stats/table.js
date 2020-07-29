@@ -342,6 +342,8 @@ class TableInstance {
             var players = [ ... array ];
             players.timestamp = array.timestamp;
             players.reference = array.reference;
+            players.map_player = players.map(p => p.player);
+            players.map_compare = players.map(p => p.compare);
 
             if (this.type == TableType.Players) {
                 this.settings.evaluateConstants(players, sim, array.perf || this.settings.globals.performance, this.type);
@@ -1185,7 +1187,7 @@ const ARG_FORMATTERS = {
 }
 
 function escapeHTML(string) {
-    return string.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/ /g, "&nbsp;");
+    return String(string).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/ /g, "&nbsp;");
 }
 
 const SFormat = {
@@ -1217,15 +1219,15 @@ const SettingsCommands = [
     }),
     // Global
     // set static
-    new SettingsCommand(/^(set) (\w+[\w ]*) with all (\w+[\w ]*) as (.+)$/, function (root, string) {
-        var [ , key, name, arg, asts ] = this.match(string);
+    new SettingsCommand(/^(set) (\w+[\w ]*) with all as (.+)$/, function (root, string) {
+        var [ , key, name, asts ] = this.match(string);
         var ast = new AST(asts);
         if (ast.isValid()) {
-            root.setVariable(name, arg, ast);
+            root.setVariable(name, true, ast);
         }
     }, function (root, string) {
-        var [ , key, name, arg, asts ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with all') } ${ SFormat.Constant(arg) } ${ SFormat.Keyword('as') } ${ AST.format(asts, root.constants) }`;
+        var [ , key, name, asts ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with all as') } ${ AST.format(asts, root.constants, root.vars) }`;
     }),
     // Global
     // set with - Create a function
@@ -1237,7 +1239,7 @@ const SettingsCommands = [
         }
     }, function (root, string) {
         var [ , key, name, args, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with') } ${ args.split(',').map(arg => SFormat.Constant(arg)).join(',') } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with') } ${ args.split(',').map(arg => SFormat.Constant(arg)).join(',') } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants, root.vars) }`;
     }),
     // Global
     // set - Create a variable
@@ -1245,11 +1247,11 @@ const SettingsCommands = [
         var [ , key, name, a ] = this.match(string);
         var ast = new AST(a);
         if (ast.isValid()) {
-            root.setVariable(name, undefined, ast);
+            root.setVariable(name, false, ast);
         }
     }, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants, root.vars) }`;
     }),
     // Global
     // server - show, hide or set width
@@ -1341,7 +1343,7 @@ const SettingsCommands = [
         }
     }, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants, root.vars) }`;
     }),
     // Create new itemized header
     new SettingsCommand(/^(itemized) (\S+[\S ]*) by (\S+[\S ]*)$/, function (root, string) {
@@ -1455,7 +1457,7 @@ const SettingsCommands = [
         }
     }, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants, root.vars) }`;
     }),
     // Local Shared
     // width - Width of a column
@@ -1574,7 +1576,7 @@ const SettingsCommands = [
         if (ARG_FORMATTERS[arg]) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
         } else {
-            return `${ SFormat.Keyword(key) } ${ AST.format(arg, root.constants) }`;
+            return `${ SFormat.Keyword(key) } ${ AST.format(arg, root.constants, root.vars) }`;
         }
     }),
     // Local
@@ -1589,7 +1591,7 @@ const SettingsCommands = [
         }
     }, function (root, string) {
         var [ , key, arg ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ AST.format(arg, root.constants) }`;
+        return `${ SFormat.Keyword(key) } ${ AST.format(arg, root.constants, root.vars) }`;
     }),
     // Local
     // alias - Override name of the column
@@ -1623,7 +1625,7 @@ const SettingsCommands = [
         }
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ AST.format(a, root.constants) }`;
+        return `${ SFormat.Keyword(key) } ${ AST.format(a, root.constants, root.vars) }`;
     }),
     // Local
     // expc - Set color expression to the column
@@ -1637,7 +1639,7 @@ const SettingsCommands = [
         }
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ AST.format(a, root.constants) }`;
+        return `${ SFormat.Keyword(key) } ${ AST.format(a, root.constants, root.vars) }`;
     }),
     // Local
     // value - Add default value
@@ -1825,6 +1827,8 @@ class Templates {
     }
 }
 
+const FORMAT_ONLY_SETTINGS = [ 1, 2, 3, 23 ];
+
 class Settings {
     // Save
     static save (settings, identifier) {
@@ -1902,10 +1906,15 @@ class Settings {
             }
 
             var trimmed = line.trim();
-            if (SettingsCommands[23].isValid(trimmed)) {
-                SettingsCommands[23].parse(settings, trimmed);
+
+            for (var index of FORMAT_ONLY_SETTINGS) {
+                if (SettingsCommands[index].isValid(trimmed)) {
+                    SettingsCommands[index].parse(settings, trimmed);
+                }
             }
         }
+
+        settings.vars = [ ...Object.keys(settings.vars), ...Object.keys(settings.func) ];
 
         return settings;
     }
@@ -1952,7 +1961,6 @@ class Settings {
         return {
             func: this.func,
             vars: this.cvars,
-            svars: this.svars,
             // Constants have to be propagated through the environment
             constants: this.constants
         }
@@ -1964,7 +1972,6 @@ class Settings {
         // Root variables
         this.c = [];
         this.vars = {};
-        this.svars = {};
         this.cvars = {};
         this.func = {};
         this.extras = [];
@@ -2017,14 +2024,14 @@ class Settings {
                 var scope2 = {};
 
                 if (data.arg) {
-                    scope[data.arg] = players.map(p => {
+                    scope = players.map(p => {
                         var ar = [ p.player, p.compare ];
                         ar.segmented = true;
 
                         return ar;
                     });
 
-                    scope2[data.arg] = players.map(p => {
+                    scope2 = players.map(p => {
                         var ar = [ p.compare, p.compare ];
                         ar.segmented = true;
 
@@ -2074,8 +2081,8 @@ class Settings {
             for (var data of this.extras) {
                 if (data.ast) {
                     data.eval = {
-                        value: data.ast.eval(param.player, undefined, this, players.map(p => p.player)),
-                        compare: data.ast.eval(param.compare, undefined, this.getCompareEnvironment(), players.map(p => p.compare))
+                        value: data.ast.eval(param.player, undefined, this, players.map_player),
+                        compare: data.ast.eval(param.compare, undefined, this.getCompareEnvironment(), players.map_compare)
                     };
                 }
             }
@@ -2083,8 +2090,8 @@ class Settings {
             for (var data of this.extras) {
                 if (data.ast) {
                     data.eval = {
-                        value: data.ast.eval(null, null, this, players.map(p => p.player)),
-                        compare: data.ast.eval(null, null, this.getCompareEnvironment(), players.map(p => p.compare))
+                        value: data.ast.eval(null, null, this, players.map_player),
+                        compare: data.ast.eval(null, null, this.getCompareEnvironment(), players.map_compare)
                     }
                 }
             }
