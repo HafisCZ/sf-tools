@@ -635,7 +635,7 @@ class TableInstance {
                 var lw = widskip;
                 if (extra.width) {
                     var lw = 1;
-                    for (var i = 0, wid = extra.width; wid > 0 && i < this.flat.length; i++) {
+                    for (var i = 0, wid = (extra.width == -1 ? sizeDynamic : extra.width); wid > 0 && i < this.flat.length; i++) {
                         wid -= this.flat[i].width;
                         if (wid > 0) {
                             lw += this.flat[i].span;;
@@ -931,7 +931,7 @@ class TableInstance {
                 var lw = widskip;
                 if (extra.width) {
                     var lw = 1;
-                    for (var i = 0, wid = extra.width; wid > 0 && i < this.flat.length; i++) {
+                    for (var i = 0, wid = (extra.width == -1 ? sizeDynamic : extra.width); wid > 0 && i < this.flat.length; i++) {
                         wid -= this.flat[i].width;
                         if (wid > 0) {
                             lw += this.flat[i].span;;
