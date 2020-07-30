@@ -1,4 +1,11 @@
 const CHANGELOG = {
+    'v3.693': [
+        'Added <code>background</code> keyword that allows you to specify default color for header, category or the whole table.',
+        'Added simulator target & source that allows you to run 1v1 simulations instead of 1vAll directly in the table.',
+        'Added <code>gradient</code> multi-color variant that accepts objects with any amount of colors.',
+        'Added <code>o:</code> filtering option that shows you only your own characters.',
+        'Added <code>random</code> function.'
+    ],
     'v3.682': [
         'You can now use <code>show as</code> everywhere. In Players tab it will be always shown on top of the table.',
         '<code>set with all</code> no longer requires a parameter and uses <code>this</code> keyword instead. You can look at an example <a href="https://pastebin.com/raw/Bb6w6pTp">here</a>.',

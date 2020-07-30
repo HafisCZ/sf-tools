@@ -352,6 +352,8 @@ class TableInstance {
             } else {
                 this.settings.evaluateConstants(players, this.settings.globals.simulator, array.length, this.type);
             }
+        } else if (this.type == TableType.History) {
+            this.settings.evaluateConstantsHistory(array.map(p => p[1]));
         }
 
         // Generate table entries
@@ -1126,7 +1128,7 @@ const CompareEval = {
         var def = undefined;
         for (var [ eq, ref, out ] of rules || []) {
             if (eq == 'd') {
-                def = out;
+                return out;
             } else if (CompareEval[eq](val, ref)) {
                 return out;
             }
@@ -1697,6 +1699,25 @@ const SettingsCommands = [
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Color(arg, val) }`;
         }
     }),
+    new SettingsCommand(/^(background) ((@?)(\w+))$/, function (root, string) {
+        var [ , key, arg, prefix, value ] = this.match(string);
+        var val = getCSSColor(root.constants.getValue(prefix, value));
+
+        if (val != undefined && val) {
+            root.setLocalSharedVariable(key, val);
+        }
+    }, function (root, string) {
+        var [ , key, arg, prefix, value ] = this.match(string);
+        var val = getCSSColor(root.constants.getValue(prefix, value));
+
+        if (root.constants.isValid(prefix, value) && val) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
+        } else if (prefix == '@' || !val) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
+        } else {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Color(arg, val) }`;
+        }
+    }),
     // Local
     // value - Add value based on condition
     new SettingsCommand(/^(value) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\S+[\S ]*))$/, function (root, string) {
@@ -2198,6 +2219,40 @@ class Settings {
         }
     }
 
+    evaluateConstantsHistory (players) {
+        // Evaluate constants
+        for (var [name, data] of Object.entries(this.vars)) {
+            if (data.ast) {
+                var scope = {};
+
+                if (data.arg) {
+                    scope = players.map((p, i) => {
+                        var ar = [ p, players[i + 1] || p ];
+                        ar.segmented = true;
+
+                        return ar;
+                    });
+                }
+
+                data.value = data.ast.eval(null, null, this, scope);
+                if (isNaN(data.value)) {
+                    data.value = undefined;
+                }
+            }
+        }
+
+        // Push constants into color / value options
+        for (var category of this.c) {
+            this.evaluateArrayConstants(category.value);
+            this.evaluateArrayConstants(category.color);
+
+            for (var header of category.h) {
+                this.evaluateArrayConstants(header.value);
+                this.evaluateArrayConstants(header.color);
+            }
+        }
+    }
+
     setConstant (name, value) {
         this.constants.addConstant(name, value);
     }
@@ -2301,6 +2356,10 @@ class Settings {
                         visible: true,
                         statistics_color: true
                     });
+                }
+
+                if (this.currentHeader.background && this.currentHeader.expc == undefined) {
+                    this.setLocalArrayVariable('color', 'd', 0, this.currentHeader.background);
                 }
 
                 this.currentCategory.h.push(this.currentHeader);
