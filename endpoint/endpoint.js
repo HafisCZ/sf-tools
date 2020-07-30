@@ -23,13 +23,6 @@ class EndpointController {
         this.window.login(server, username, password);
     }
 
-    querry (ids, callback, error) {
-        this.window.callback['querry'] = callback;
-        this.window.error['querry'] = error;
-
-        this.window.querry(ids);
-    }
-
     querry_single (id, callback, error) {
         this.window.callback['querry_single'] = callback;
         this.window.error['querry'] = callback;

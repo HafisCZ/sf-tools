@@ -384,7 +384,7 @@ function SHA1 (text) {
         words.push(text.charCodeAt(text.length - 1) << 24 | 0x0800000);
     } else if (padding == 2) {
         words.push(text.charCodeAt(text.length - 2) << 24 | text.charCodeAt(text.length - 1) << 16 | 0x08000);
-    } else if (passing == 3) {
+    } else if (padding == 3) {
         words.push(text.charCodeAt(text.length - 3) << 24 | text.charCodeAt(text.length - 2) << 16 | text.charCodeAt(text.length - 1) << 8 | 0x080);
     }
 

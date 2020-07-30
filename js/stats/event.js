@@ -2094,30 +2094,16 @@ class EndpointView extends View {
             })
         }).dropdown('set selected', 'w1.sfgame.net');
 
-        this.$parent.find('[data-op="back"]').click(() => {
-            if (this.endpoint) {
-                this.endpoint.destroy();
-                this.endpoint = undefined;
-            }
-
-            this.hide();
-        });
+        this.$parent.find('[data-op="back"]').click(() => this.funcShutdown());
 
         this.$import.click(() => {
-            if (this.endpoint) {
-                this.$step4.show();
-                this.$step3.hide();
-
-                this.endpoint.querry_collect((text) => {
-                    Storage.add(text, Date.now());
-
-                    this.endpoint.destroy();
-                    this.endpoint = undefined;
-
-                    UI.current.show();
-                    this.hide();
-                });
-            }
+            this.$step4.show();
+            this.$step3.hide();
+            this.endpoint.querry_collect((text) => {
+                Storage.add(text, Date.now());
+                this.funcShutdown();
+                UI.current.show();
+            });
         });
 
         this.$login = this.$parent.find('[data-op="login"]').click(() => {
@@ -2131,106 +2117,65 @@ class EndpointView extends View {
                 if (this.endpoint) {
                     this.$step1.hide();
                     this.$step4.show();
-
-                    this.endpoint.login(server, username, password, (text) => {
-                        if (text.length <= 2) {
-                            this.endpoint.destroy();
-                            this.endpoint = undefined;
-
-                            this.hide();
-                        }
-
-                        this.$step4.hide();
-                        this.$step3.show();
-
-                        var content = '';
-                        for (var name of JSON.parse(text)) {
-                            content += `
-                                <div class="item">
-                                    <div class="ui checkbox">
-                                        <input type="checkbox" name="${ name }">
-                                        <label for="${ name }" style="color: white; font-size: 110%;">${ name }</label>
-                                    </div>
-                                </div>
-                            `;
-                        }
-
-                        this.$list.html(content);
-                        $('.list .checkbox').checkbox({
-                            uncheckable: false
-                        }).first().checkbox('set checked', 'true').checkbox('set disabled');
-
-                        $('.list .checkbox').slice(1).checkbox('setting', 'onChecked', function () {
-                            var name = $(this).attr('name');
-                            UI.Endpoint.setDownloading(name);
-                            UI.Endpoint.endpoint.querry_single(name, (value) => {
-                                UI.Endpoint.removeDownloading(name);
-                            }, () => {
-                                UI.Endpoint.endpoint.destroy();
-                                UI.Endpoint.endpoint = undefined;
-                                UI.Endpoint.hide();
-                            });
-                        });
-                    }, () => {
-                        this.$step1.show();
-                        this.$step4.hide();
-                    });
+                    this.funcLogin(server, username, password);
                 } else {
                     this.$step1.hide();
                     this.$step2.show();
-
-                    this.endpoint = new EndpointController(this.$iframe, (ec) => {
+                    this.endpoint = new EndpointController(this.$iframe, () => {
                         this.$step2.hide();
                         this.$step4.show();
-
-                        ec.login(server, username, password, (text) => {
-                            if (text.length <= 2) {
-                                ec.destroy();
-                                this.endpoint = undefined;
-
-                                this.hide();
-                            }
-
-                            this.$step4.hide();
-                            this.$step3.show();
-
-                            var content = '';
-                            for (var name of JSON.parse(text)) {
-                                content += `
-                                    <div class="item">
-                                        <div class="ui checkbox">
-                                            <input type="checkbox" name="${ name }">
-                                            <label for="${ name }" style="color: white; font-size: 110%;">${ name }</label>
-                                        </div>
-                                    </div>
-                                `;
-                            }
-
-                            this.$list.html(content);
-
-                            $('.list .checkbox').checkbox({
-                                uncheckable: false
-                            }).first().checkbox('set checked', 'true').checkbox('set disabled');
-
-                            $('.list .checkbox').slice(1).checkbox('setting', 'onChecked', function () {
-                                var name = $(this).attr('name');
-                                UI.Endpoint.setDownloading(name);
-                                UI.Endpoint.endpoint.querry_single(name, (value) => {
-                                    UI.Endpoint.removeDownloading(name);
-                                }, () => {
-                                    UI.Endpoint.endpoint.destroy();
-                                    UI.Endpoint.endpoint = undefined;
-                                    UI.Endpoint.hide();
-                                });
-                            });
-                        }, () => {
-                            this.$step1.show();
-                            this.$step4.hide();
-                        });
+                        this.funcLogin(server, username, password);
                     });
                 }
             }
         });
+
+        this.funcLogin = (server, username, password) => {
+            this.endpoint.login(server, username, password, (text) => {
+                this.$step4.hide();
+                this.$step3.show();
+
+                var content = '';
+                for (var name of text.split(',')) {
+                    content += `
+                        <div class="item">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="${ name }">
+                                <label for="${ name }" style="color: white; font-size: 110%;">${ name }</label>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                this.$list.html(content);
+                $('.list .checkbox').checkbox({
+                    uncheckable: false
+                }).first().checkbox('set checked', 'true').checkbox('set disabled');
+
+                $('.list .checkbox').slice(1).checkbox('setting', 'onChecked', () => {
+                    var name = $(event.target).attr('for');
+
+                    this.setDownloading(name);
+                    this.endpoint.querry_single(name, (value) => {
+                        this.removeDownloading(name);
+                    }, () => {
+                        this.funcShutdown();
+                    });
+                });
+            }, () => {
+                this.$step1.show();
+                this.$step4.hide();
+            });
+        };
+
+        this.funcShutdown = () => {
+            if (this.endpoint) {
+                this.endpoint.destroy();
+                this.endpoint = undefined;
+            }
+
+            this.hide();
+        }
     }
 
     setDownloading (name) {
