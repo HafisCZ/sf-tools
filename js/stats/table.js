@@ -1788,7 +1788,8 @@ const SP_ENUMS = {
     'GoldCurve': GOLD_CURVE,
     'MountSizes': PLAYER_MOUNT,
     'AchievementNames': ACHIEVEMENTS,
-    'ItemTypes': ITEM_TYPES
+    'ItemTypes': ITEM_TYPES,
+    'GroupRoles': GROUP_ROLES
 };
 
 class Constants {
