@@ -553,8 +553,8 @@ class AST {
 
                     var sum = 0;
 
-                    if (environment.func[node.args[1]] || this.lambdas[node.args[i]]) {
-                        var mapper = environment.func[node.args[1]] || this.lambdas[node.args[i]];
+                    if (environment.func[node.args[1]] || this.lambdas[node.args[1]]) {
+                        var mapper = environment.func[node.args[1]] || this.lambdas[node.args[1]];
 
                         for (var i = 0; i < object.length; i++) {
                             var scope2 = {};

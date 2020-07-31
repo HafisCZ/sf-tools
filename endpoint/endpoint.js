@@ -1,5 +1,5 @@
 class EndpointController {
-    constructor ($iframe, callback, error) {
+    constructor ($iframe, callback) {
         this.$iframe = $iframe;
         this.$iframe.attr('src', '/endpoint/index.html');
         this.$iframe.one('load', () => {
