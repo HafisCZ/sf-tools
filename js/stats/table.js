@@ -1789,7 +1789,17 @@ const SP_ENUMS = {
     'MountSizes': PLAYER_MOUNT,
     'AchievementNames': ACHIEVEMENTS,
     'ItemTypes': ITEM_TYPES,
-    'GroupRoles': GROUP_ROLES
+    'GroupRoles': GROUP_ROLES,
+    'Classes': PLAYER_CLASS,
+    'FortressBuildings': FORTRESS_BUILDINGS,
+    'PlayerActions': PLAYER_ACTIONS,
+    'PotionTypes': POTIONS,
+    'GemTypes': GEMTYPES,
+    'AttributeTypes': GEMATTRIBUTES,
+    'RuneTypes': RUNETYPES,
+    'UnderworldBuildings': UNDERWORLD_BUILDINGS,
+    'ExperienceCurve': ExperienceRequired,
+    'ExperienceTotal': ExperienceTotal
 };
 
 class Constants {
