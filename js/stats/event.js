@@ -2073,9 +2073,14 @@ class EndpointView extends View {
         this.$step3 = this.$parent.find('[data-op="step3"]');
         this.$step4 = this.$parent.find('[data-op="step4"]');
 
+        this.$error = this.$parent.find('[data-op="error"]');
+        this.$errorText = this.$parent.find('[data-op="error-text"]');
+        this.$errorButton = this.$parent.find('[data-op="error-button"]');
+
         this.$server = this.$parent.find('[data-op="textServer"]');
         this.$username = this.$parent.find('[data-op="textUsername"]');
         this.$password = this.$parent.find('[data-op="textPassword"]');
+        this.$password2 = this.$parent.find('[data-op="textPassword2"]');
 
         this.$iframe = this.$parent.find('[data-op="iframe"]');
         this.$list = this.$parent.find('[data-op="list"]');
@@ -2109,6 +2114,7 @@ class EndpointView extends View {
         this.$login = this.$parent.find('[data-op="login"]').click(() => {
             var username = this.$username.val();
             var password = this.$password.val();
+            var password2 = this.$password2.val();
             var server = this.$server.dropdown('get value');
 
             if (username.length < 4 || password.length < 4 || !/\.sfgame\./.test(server)) {
@@ -2117,21 +2123,21 @@ class EndpointView extends View {
                 if (this.endpoint) {
                     this.$step1.hide();
                     this.$step4.show();
-                    this.funcLogin(server, username, password);
+                    this.funcLogin(server, username, password, password2);
                 } else {
                     this.$step1.hide();
                     this.$step2.show();
                     this.endpoint = new EndpointController(this.$iframe, () => {
                         this.$step2.hide();
                         this.$step4.show();
-                        this.funcLogin(server, username, password);
+                        this.funcLogin(server, username, password, password2);
                     });
                 }
             }
         });
 
-        this.funcLogin = (server, username, password) => {
-            this.endpoint.login(server, username, password, (text) => {
+        this.funcLogin = (server, username, password, password2) => {
+            this.endpoint.login(server, username, password, password2, (text) => {
                 this.$step4.hide();
                 this.$step3.show();
 
@@ -2159,12 +2165,16 @@ class EndpointView extends View {
                     this.endpoint.querry_single(name, (value) => {
                         this.removeDownloading(name);
                     }, () => {
-                        this.funcShutdown();
+                        this.$step3.hide();
+                        this.showError('Download failed', true);
                     });
                 });
             }, () => {
-                this.$step1.show();
                 this.$step4.hide();
+                this.showError('Wrong username or password');
+            }, () => {
+                this.$step4.hide();
+                this.showError('Invalid Endpoint key');
             });
         };
 
@@ -2176,6 +2186,19 @@ class EndpointView extends View {
 
             this.hide();
         }
+    }
+
+    showError (text, hard = false) {
+        this.$error.show();
+        this.$errorText.text(text);
+        this.$errorButton.one('click', () => {
+            this.$error.hide();
+            if (hard) {
+                this.funcShutdown();
+            } else {
+                this.$step1.show();
+            }
+        });
     }
 
     setDownloading (name) {
@@ -2203,6 +2226,8 @@ class EndpointView extends View {
         this.$step2.hide();
         this.$step3.hide();
         this.$step4.hide();
+
+        this.$error.hide();
 
         this.$parent.modal({
             centered: true,

@@ -1,5 +1,5 @@
 class EndpointController {
-    constructor ($iframe, callback) {
+    constructor ($iframe, callback, error) {
         this.$iframe = $iframe;
         this.$iframe.attr('src', '/endpoint/index.html');
         this.$iframe.one('load', () => {
@@ -16,11 +16,12 @@ class EndpointController {
         });
     }
 
-    login (server, username, password, callback, error) {
+    login (server, username, password, password2, callback, error, error2) {
         this.window.callback['login'] = callback;
         this.window.error['login'] = error;
+        this.window.error['key'] = error2 || error;
 
-        this.window.login(server, username, password);
+        this.window.login(server, username, password, password2);
     }
 
     querry_single (id, callback, error) {

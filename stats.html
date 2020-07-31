@@ -444,6 +444,10 @@
                             <label style="color: white;">Password</label>
                             <input type="password" data-op="textPassword">
                         </div>
+                        <div class="field">
+                            <label style="color: white;">Endpoint Key</label>
+                            <input type="password" data-op="textPassword2">
+                        </div>
                         <br/>
                         <div class="ui two buttons">
                             <button class="ui secondary button fluid" data-op="back">Cancel</button>
@@ -478,6 +482,16 @@
             </div>
             <div class="ui grid" data-op="step4" style="display: none;">
                 <div class="ui large text loader">Contacting the server for information</div>
+            </div>
+            <div class="ui grid" data-op="error" style="display: none; margin-top: -14em;">
+                <div class="five wide column"></div>
+                <div class="six wide column">
+                    <h2 class="ui header centered white" data-op="error-text"></h2>
+                    <br/>
+                    <br/>
+                    <button class="ui secondary button fluid" data-op="error-button">Continue</button>
+                </div>
+                <div class="five wide column"></div>
             </div>
         </div>
 
