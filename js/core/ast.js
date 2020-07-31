@@ -48,7 +48,7 @@ const AST_FUNCTIONS = {
     }
 };
 
-const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\(\s*(?:\s*[a-zA-Z]\w*\s*\,?\s*)*\)\s*\-\>\s*\{.*\}|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
+const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
 class AST {
     constructor (string) {
@@ -79,6 +79,40 @@ class AST {
     static format (string, constants = new Constants(), vars = []) {
         var content = '';
         var tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(AST_REGEXP);
+
+        var lambdaContent = [];
+        var index = -1;
+        var stokens = tokens.map(t => t.trim());
+        for (var index = 0; index < stokens.length; index++) {
+            if (stokens[index] != '->') {
+                continue;
+            }
+            var argStart = -1, exprEnd = -1;
+            for (var i = index; i >= 0; i--) {
+                if (stokens[i] == '(') {
+                    argStart = i;
+                    break;
+                }
+            }
+            var bp = -1;
+            for (var i = index; i < stokens.length; i++) {
+                if (stokens[i] == '}') {
+                    if (bp == 0) {
+                        exprEnd = i;
+                        break;
+                    } else {
+                        bp--;
+                    }
+                } else if (stokens[i] == '{') {
+                    bp++;
+                }
+            }
+            if (argStart >= 0 && exprEnd >= 0) {
+                for (var i = argStart; i <= exprEnd; i++) {
+                    lambdaContent[i] = true;
+                }
+            }
+        }
 
         for (var i = 0, token, value; i < tokens.length; i++) {
             token = tokens[i];
@@ -112,16 +146,21 @@ class AST {
                     value = SFormat.Constant('player');
                 } else if (vars.includes(token)) {
                     value = SFormat.Constant(token);
-                } else if (token.includes('->')) {
-                    var parts = token.split(/(.*)\((.*)\)(.*)\{(.*)\}(.*)/);
-                    value = SFormat.Lambda(SFormat.Normal(parts[1]) + '(' + parts[2].split(',').map(x => SFormat.Normal(x)).join(',') + ')' + SFormat.Normal(parts[3]) + '{' + AST.format(parts[4], constants, vars) + '}' + SFormat.Normal(parts[5]));
                 } else {
                     value = SFormat.Normal(token);
                 }
 
-                content += SFormat.Normal(prefix) + value + SFormat.Normal(suffix);
+                if (lambdaContent[i]) {
+                    content += SFormat.Lambda(SFormat.Normal(prefix) + value + SFormat.Normal(suffix));
+                } else {
+                    content += SFormat.Normal(prefix) + value + SFormat.Normal(suffix);
+                }
             } else {
-                content += SFormat.Normal(token);
+                if (lambdaContent[i]) {
+                    content += SFormat.Lambda(SFormat.Normal(token));
+                } else {
+                    content += SFormat.Normal(token);
+                }
             }
         }
 
@@ -130,29 +169,47 @@ class AST {
 
     evalLambdas () {
         var lambdas = {};
+        var index = -1;
 
-        for (var token of this.tokens) {
-            if (token.includes('->')) {
-                var parts = token.split(/\(\s*((?:\s*[a-zA-Z]\w*\s*\,?\s*)*)\)\s*\-\>\s*\{(.*)\}/);
-                if (parts.length > 3) {
-                    var args = parts[1].split(',').map(k => k.trim()).filter(token => token.length);;
-                    var expr = parts[2];
+        while ((index = this.tokens.indexOf('->')) != -1) {
+            var argStart = -1, argEnd = index - 1, exprStart = index + 1, exprEnd = -1;
+            for (var i = argEnd - 1; i >= 0; i--) {
+                if (this.tokens[i] == '(') {
+                    argStart = i;
+                    break;
+                }
+            }
+            var bp = 0;
+            for (var i = exprStart + 1; i < this.tokens.length; i++) {
+                if (this.tokens[i] == '}') {
+                    if (bp == 0) {
+                        exprEnd = i;
+                        break;
+                    } else {
+                        bp--;
+                    }
+                } else if (this.tokens[i] == '{') {
+                    bp++;
+                }
+            }
+            if (argStart == -1 || exprEnd == -1) {
+                this.tokens.splice(index, 1);
+            } else {
+                var name = `_${ Object.keys(lambdas).length + 1 }`;
 
-                    var ast = new AST(expr);
-                    if (ast.isValid()) {
-                        var astName = `_${ Object.keys(lambdas).length + 1 }`;
-                        for (var i = 0; i < this.tokens.length; i++) {
-                            if (this.tokens[i] == token) {
-                                this.tokens[i] = astName;
-                            }
-                        }
+                var args = this.tokens.slice(argStart + 1, argEnd);
+                var expr = this.tokens.slice(exprStart + 1, exprEnd);
 
-                        lambdas[astName] = {
-                            arg: args,
-                            ast: ast
-                        }
+                var ast = new AST(expr.join(''));
+                if (ast.isValid()) {
+                    lambdas[name] = {
+                        arg: args.filter(x => x != ','),
+                        ast: ast
                     }
                 }
+
+                this.tokens.splice(argStart + 1, exprEnd - argStart);
+                this.tokens[argStart] = name;
             }
         }
 
