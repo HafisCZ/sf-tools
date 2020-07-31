@@ -247,8 +247,10 @@ class AST {
     }
 
     getVal () {
-        var val = this.get() || '';
-        if ((val[0] == '\"' && val[val.length - 1] == '\"') || (val[0] == '\'' && val[val.length - 1] == '\'')) {
+        var val = this.get();
+        if (val == undefined) {
+            // do nothing
+        } else if ((val[0] == '\"' && val[val.length - 1] == '\"') || (val[0] == '\'' && val[val.length - 1] == '\'')) {
             val = {
                 args: [ val.slice(1, val.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\'') ],
                 op: AST_OPERATORS['s'],
