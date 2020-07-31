@@ -1199,6 +1199,7 @@ const SFormat = {
     Keyword: string => `<span class="ta-keyword">${ escapeHTML(string) }</span>`,
     Color: (string, color = string) => `<span class="ta-color" style="color: ${ color };">${ escapeHTML(string) }</span>`,
     Comment: string => `<span class="ta-comment">${ escapeHTML(string) }</span>`,
+    Lambda: string => `<span class="ta-lambda">${ string }</span>`,
     Constant: string => `<span class="ta-constant">${ escapeHTML(string) }</span>`,
     Enum: string => `<span class="ta-enum">${ escapeHTML(string) }</span>`,
     Reserved: string => `<span class="ta-reserved">${ escapeHTML(string) }</span>`,

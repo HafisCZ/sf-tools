@@ -48,16 +48,31 @@ const AST_FUNCTIONS = {
     }
 };
 
-const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
+const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\(\s*(?:\s*[a-zA-Z]\w*\s*\,?\s*)*\)\s*\-\>\s*\{.*\}|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
 class AST {
     constructor (string) {
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(AST_REGEXP).map(token => token.trim()).filter(token => token.length);
+        this.root = false;
+
         if (this.tokens.length == 0) {
-            this.root = false;
             this.empty = true;
         } else {
-            this.root = this.evalExpression();
+            var count = 0;
+            for (var token of this.tokens) {
+                if (token == '(') {
+                    count++;
+                } else if (token == ')') {
+                    count--;
+                }
+            }
+
+            if (count == 0) {
+                this.lambdas = this.evalLambdas();
+                this.root = this.evalExpression();
+            } else {
+                this.empty = true;
+            }
         }
     }
 
@@ -97,6 +112,9 @@ class AST {
                     value = SFormat.Constant('player');
                 } else if (vars.includes(token)) {
                     value = SFormat.Constant(token);
+                } else if (token.includes('->')) {
+                    var parts = token.split(/(.*)\((.*)\)(.*)\{(.*)\}(.*)/);
+                    value = SFormat.Lambda(SFormat.Normal(parts[1]) + '(' + parts[2].split(',').map(x => SFormat.Normal(x)).join(',') + ')' + SFormat.Normal(parts[3]) + '{' + AST.format(parts[4], constants, vars) + '}' + SFormat.Normal(parts[5]));
                 } else {
                     value = SFormat.Normal(token);
                 }
@@ -108,6 +126,37 @@ class AST {
         }
 
         return content;
+    }
+
+    evalLambdas () {
+        var lambdas = {};
+
+        for (var token of this.tokens) {
+            if (token.includes('->')) {
+                var parts = token.split(/\(\s*((?:\s*[a-zA-Z]\w*\s*\,?\s*)*)\)\s*\-\>\s*\{(.*)\}/);
+                if (parts.length > 3) {
+                    var args = parts[1].split(',').map(k => k.trim()).filter(token => token.length);;
+                    var expr = parts[2];
+
+                    var ast = new AST(expr);
+                    if (ast.isValid()) {
+                        var astName = `_${ Object.keys(lambdas).length + 1 }`;
+                        for (var i = 0; i < this.tokens.length; i++) {
+                            if (this.tokens[i] == token) {
+                                this.tokens[i] = astName;
+                            }
+                        }
+
+                        lambdas[astName] = {
+                            arg: args,
+                            ast: ast
+                        }
+                    }
+                }
+            }
+        }
+
+        return lambdas;
     }
 
     peek (i) {
@@ -141,7 +190,7 @@ class AST {
     }
 
     getVal () {
-        var val = this.get();
+        var val = this.get() || '';
         if ((val[0] == '\"' && val[val.length - 1] == '\"') || (val[0] == '\'' && val[val.length - 1] == '\'')) {
             val = {
                 args: [ val.slice(1, val.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\'') ],
@@ -158,7 +207,7 @@ class AST {
                 args: [ this.peek() == '(' ? this.evalBracketExpression() : this.getVal() ],
                 op: AST_OPERATORS['!']
             };
-        } else if (AST_FUNCTIONS[val] || (/\w+/.test(val) && this.peek() == '(')) {
+        } else if ((AST_FUNCTIONS[val] || /\w+/.test(val)) && this.peek() == '(') {
             var a = [];
             this.get();
 
@@ -447,8 +496,8 @@ class AST {
 
                     var sum = 0;
 
-                    if (environment.func[node.args[1]]) {
-                        var mapper = environment.func[node.args[1]];
+                    if (environment.func[node.args[1]] || this.lambdas[node.args[i]]) {
+                        var mapper = environment.func[node.args[1]] || this.lambdas[node.args[i]];
 
                         for (var i = 0; i < object.length; i++) {
                             var scope2 = {};
@@ -495,7 +544,7 @@ class AST {
                         return undefined;
                     }
 
-                    var mapper = environment.func[node.args[1]];
+                    var mapper = environment.func[node.args[1]] || this.lambdas[node.args[1]];
                     var sum = [];
 
                     if (mapper) {
@@ -533,7 +582,7 @@ class AST {
                         return undefined;
                     }
 
-                    var mapper = environment.func[node.args[1]];
+                    var mapper = environment.func[node.args[1]] || this.lambdas[node.args[1]];
                     var sum = [];
 
                     if (mapper) {
@@ -583,8 +632,8 @@ class AST {
                     }
 
                     return object.slice(Number(node.args[1]), Number(node.args[2]));
-                } else if (environment.func[node.op]) {
-                    var mapper = environment.func[node.op];
+                } else if (environment.func[node.op] || this.lambdas[node.op]) {
+                    var mapper = environment.func[node.op] || this.lambdas[node.op];
                     var scope2 = {};
                     for (var i = 0; i < mapper.arg.length; i++) {
                         scope2[mapper.arg[i]] = this.eval(player, reference, environment, scope, extra, node.args[i]);
@@ -650,6 +699,15 @@ class AST {
                     } else {
                         return undefined;
                     }
+                } else if (environment.vars[node.op] && environment.vars[node.op].ast.lambdas['_1']) {
+                    var mapper = environment.vars[node.op].ast.lambdas['_1'];
+
+                    var scope2 = {};
+                    for (var i = 0; i < mapper.arg.length; i++) {
+                        scope2[mapper.arg[i]] = this.eval(player, reference, environment, scope, extra, node.args[i]);
+                    }
+
+                    return mapper.ast.eval(player, reference, environment, scope2, extra);
                 } else {
                     // Return undefined
                     return undefined;

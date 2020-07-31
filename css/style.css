@@ -470,6 +470,10 @@ h3.file-selected {
     color: #696969;
 }
 
+.ta-lambda {
+    background-color: #f5a44230;
+}
+
 .css-gl-show-other {
     position: fixed;
     bottom: 1em;
