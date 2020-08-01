@@ -1693,6 +1693,11 @@ class SettingsView extends View {
             window.open('manual.html', '_blank');
         });
 
+        this.$parent.find('[data-op="wiki"]').click(() => {
+            // Open wiki
+            window.open('https://github.com/HafisCZ/sf-tools/wiki/Predefined-headers', '_blank');
+        });
+
         this.$items = this.$parent.find('[data-op="items"]');
 
         this.$templateName = this.$parent.find('[data-op="template-name"]');

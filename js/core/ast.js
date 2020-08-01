@@ -70,6 +70,7 @@ class AST {
             if (count == 0) {
                 this.lambdas = this.evalLambdas();
                 this.root = this.evalExpression();
+                this.root = this.postProcess();
             } else {
                 this.empty = true;
             }
@@ -529,6 +530,22 @@ class AST {
         } else {
             return node;
         }
+    }
+
+    postProcess (node = this.root) {
+        if (typeof(node) == 'object') {
+            if (node.args) {
+                for (var i = 0; i < node.args.length; i++) {
+                    node.args[i] = this.postProcess(node.args[i]);
+                }
+            }
+
+            if (node.op && AST_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a)).length == node.args.length) {
+                return node.op(node.args);
+            }
+        }
+
+        return node;
     }
 
     eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants() }, scope = undefined, extra = undefined, node = this.root) {
