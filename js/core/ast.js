@@ -1,6 +1,6 @@
 const AST_OPERATORS = {
     '*': a => a[0] * a[1],
-    '/': a => a[0] / a[1],
+    '/': a => a[1] == 0 ? undefined : (a[0] / a[1]),
     '+': a => a[0] + a[1],
     '-': a => a[0] - a[1],
     '>': a => a[0] > a[1],
@@ -70,7 +70,7 @@ class AST {
             if (count == 0) {
                 this.lambdas = this.evalLambdas();
                 this.root = this.evalExpression();
-                // this.root = this.postProcess();
+                this.root = this.postProcess();
             } else {
                 this.empty = true;
             }
@@ -533,7 +533,7 @@ class AST {
     }
 
     postProcess (node = this.root) {
-        if (typeof(node) == 'object') {
+        if (typeof(node) == 'object' && !node.noeval) {
             if (node.args) {
                 for (var i = 0; i < node.args.length; i++) {
                     node.args[i] = this.postProcess(node.args[i]);
@@ -871,6 +871,11 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Identifier': {
         expr: p => p.Identifier,
+        difference: false,
+        statistics: false
+    },
+    'Own': {
+        expr: p => p.Own,
         difference: false,
         statistics: false
     },

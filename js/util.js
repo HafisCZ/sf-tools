@@ -43,7 +43,8 @@ function getColorFromGradient(a, b, sample) {
     var color = '#';
     var ao = a.startsWith('#') ? 1 : 0;
     var bo = b.startsWith('#') ? 1 : 0;
-    if (isNaN(sample)) sample = 1.0;
+    if (isNaN(sample) || sample > 1) sample = 1.0;
+    else if (sample < 0) sample = 0.0;
     if (a.length < 8) a += 'ff';
     if (b.length < 8) b += 'ff';
     for (var i = 0; i < 7; i += 2) {
