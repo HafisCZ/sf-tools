@@ -340,7 +340,7 @@ class GroupDetailView extends View {
                 } else {
                     var xx = player.List.concat();
                     xx.reverse();
-                    var ts = xx.find(p => p[0] >= this.reference && p[1].Group.Identifier == this.identifier);
+                    var ts = xx.find(p => p[0] >= this.reference && p[0] <= member.Timestamp && p[1].Group.Identifier == this.identifier);
                     if (ts) {
                         membersReferences.push(ts[1]);
                     }
@@ -989,7 +989,7 @@ class BrowseView extends View {
                         if (matches) {
                             var xx = player.List.concat();
                             xx.reverse();
-                            var ts = xx.find(p => p[0] >= this.reference);
+                            var ts = xx.find(p => p[0] >= this.reference && p[0] <= currentPlayer[0]);
 
                             entries.add(currentPlayer[1], (ts || currentPlayer)[1], currentPlayer[1].Timestamp == this.timestamp, hidden);
                         }
