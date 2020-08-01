@@ -70,7 +70,7 @@ class AST {
             if (count == 0) {
                 this.lambdas = this.evalLambdas();
                 this.root = this.evalExpression();
-                this.root = this.postProcess();
+                this.root = this.postProcess(this.root);
             } else {
                 this.empty = true;
             }
@@ -532,7 +532,7 @@ class AST {
         }
     }
 
-    postProcess (node = this.root) {
+    postProcess (node) {
         if (typeof(node) == 'object' && !node.noeval) {
             if (node.args) {
                 for (var i = 0; i < node.args.length; i++) {
@@ -548,14 +548,18 @@ class AST {
         return node;
     }
 
-    eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants() }, scope = undefined, extra = undefined, node = this.root) {
+    eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants() }, scope = undefined, extra = undefined) {
+        return this.evalInternal(player, reference, environment, scope, extra, this.root);
+    }
+
+    evalInternal (player, reference, environment, scope, extra, node) {
         if (typeof(node) == 'object') {
             if (node.noeval) {
                 return node.args[0];
             } else if (typeof(node.op) == 'string') {
                 if (node.op == 'format' && node.args.length > 0) {
-                    var str = this.eval(player, reference, environment, scope, extra, node.args[0]);
-                    var arg = node.args.slice(1).map(a => this.eval(player, reference, environment, scope, extra, a));
+                    var str = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
+                    var arg = node.args.slice(1).map(a => this.evalInternal(player, reference, environment, scope, extra, a));
 
                     for (key in arg) {
                         str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
@@ -563,7 +567,7 @@ class AST {
 
                     return str;
                 } else if (node.op == 'each' && node.args.length >= 2) {
-                    var generated = this.eval(player, reference, environment, scope, extra, node.args[0]) || {};
+                    var generated = this.evalInternal(player, reference, environment, scope, extra, node.args[0]) || {};
 
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
@@ -607,13 +611,13 @@ class AST {
                         }
                     } else {
                         for (var i = 0; i < object.length; i++) {
-                            sum += this.eval(player, reference, environment, object[i] && object[i].segmented ? object[i][0] : object[i], extra, node.args[1]);
+                            sum += this.evalInternal(player, reference, environment, object[i] && object[i].segmented ? object[i][0] : object[i], extra, node.args[1]);
                         }
                     }
 
                     return sum;
                 } else if (node.op == 'filter' && node.args.length >= 2) {
-                    var generated = this.eval(player, reference, environment, scope, extra, node.args[0]) || {};
+                    var generated = this.evalInternal(player, reference, environment, scope, extra, node.args[0]) || {};
 
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
@@ -643,7 +647,7 @@ class AST {
                         }
                     } else {
                         for (var i = 0; i < object.length; i++) {
-                            if (this.eval(player, reference, environment, object[i], extra, node.args[1])) {
+                            if (this.evalInternal(player, reference, environment, object[i], extra, node.args[1])) {
                                 sum.push(object[i]);
                             }
                         }
@@ -651,7 +655,7 @@ class AST {
 
                     return sum;
                 } else if (node.op == 'map' && node.args.length >= 2) {
-                    var generated = this.eval(player, reference, environment, scope, extra, node.args[0]) || {};
+                    var generated = this.evalInternal(player, reference, environment, scope, extra, node.args[0]) || {};
 
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
@@ -694,13 +698,13 @@ class AST {
                         }
                     } else {
                         for (var i = 0; i < object.length; i++) {
-                            sum.push(this.eval(player, reference, environment, object[i] && object[i].segmented ? object[i][0] : object[i], extra, node.args[1]));
+                            sum.push(this.evalInternal(player, reference, environment, object[i] && object[i].segmented ? object[i][0] : object[i], extra, node.args[1]));
                         }
                     }
 
                     return sum;
                 } else if (node.op == 'slice' && node.args.length >= 3) {
-                    var generated = this.eval(player, reference, environment, scope, extra, node.args[0]) || {};
+                    var generated = this.evalInternal(player, reference, environment, scope, extra, node.args[0]) || {};
 
                     var object = Array.isArray(generated) ? generated : Object.values(generated);
                     if (!object.length) {
@@ -712,36 +716,36 @@ class AST {
                     var mapper = environment.func[node.op] || this.lambdas[node.op];
                     var scope2 = {};
                     for (var i = 0; i < mapper.arg.length; i++) {
-                        scope2[mapper.arg[i]] = this.eval(player, reference, environment, scope, extra, node.args[i]);
+                        scope2[mapper.arg[i]] = this.evalInternal(player, reference, environment, scope, extra, node.args[i]);
                     }
 
                     return mapper.ast.eval(player, reference, environment, scope2, extra);
                 } else if (node.op == '{') {
                     var object = { };
                     for (var { key, val } of node.args) {
-                        object[this.eval(player, reference, environment, scope, extra, key)] = this.eval(player, reference, environment, scope, extra, val);
+                        object[this.evalInternal(player, reference, environment, scope, extra, key)] = this.evalInternal(player, reference, environment, scope, extra, val);
                     }
 
                     return object;
                 } else if (node.op == '[a') {
-                    var object = this.eval(player, reference, environment, scope, extra, node.args[0]);
+                    var object = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
                     if (object) {
-                        return object[this.eval(player, reference, environment, scope, extra, node.args[1])];
+                        return object[this.evalInternal(player, reference, environment, scope, extra, node.args[1])];
                     } else {
                         return undefined;
                     }
                 } else if (node.op == '(a') {
-                    var object = this.eval(player, reference, environment, scope, extra, node.args[0]);
+                    var object = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
                     var func = node.args[1];
 
                     if (object != undefined && object[func]) {
-                        return object[func](... node.args[2].map(param => this.eval(player, reference, environment, scope, extra, param)));
+                        return object[func](... node.args[2].map(param => this.evalInternal(player, reference, environment, scope, extra, param)));
                     } else {
                         return undefined;
                     }
                 } else if (SP_KEYWORD_MAPPING_0[node.op] || SP_KEYWORD_MAPPING_1[node.op] || SP_KEYWORD_MAPPING_2[node.op]) {
                     var expr = SP_KEYWORD_MAPPING_0[node.op] || SP_KEYWORD_MAPPING_1[node.op] || SP_KEYWORD_MAPPING_2[node.op];
-                    var params = node.args.map(arg => this.eval(player, reference, environment, scope, extra, arg));
+                    var params = node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg));
 
                     if (params.length > 0 && params[0] != undefined) {
                         return expr.expr(params[0]);
@@ -750,7 +754,7 @@ class AST {
                     }
                 } else if (SP_KEYWORD_MAPPING_3[node.op]) {
                     var expr = SP_KEYWORD_MAPPING_3[node.op];
-                    var params = node.args.map(arg => this.eval(player, reference, environment, scope, extra, arg));
+                    var params = node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg));
 
                     if (params.length > 0 && params[0] != undefined) {
                         return expr.expr(params[0], null, environment);
@@ -759,7 +763,7 @@ class AST {
                     }
                 } else if (SP_KEYWORD_MAPPING_4[node.op]) {
                     var expr = SP_KEYWORD_MAPPING_4[node.op];
-                    var params = node.args.map(arg => this.eval(player, reference, environment, scope, extra, arg));
+                    var params = node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg));
 
                     if (params.length > 0 && params[0] != undefined) {
                         return expr.expr(player, null, environment, params[0]);
@@ -768,7 +772,7 @@ class AST {
                     }
                 } else if (SP_KEYWORD_MAPPING_5[node.op]) {
                     var expr = SP_KEYWORD_MAPPING_5[node.op];
-                    var params = node.args.map(arg => this.eval(player, reference, environment, scope, extra, arg));
+                    var params = node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg));
 
                     if (params.length > 0 && params[0] != undefined) {
                         return expr.expr(params[0], null, environment);
@@ -780,7 +784,7 @@ class AST {
 
                     var scope2 = {};
                     for (var i = 0; i < mapper.arg.length; i++) {
-                        scope2[mapper.arg[i]] = this.eval(player, reference, environment, scope, extra, node.args[i]);
+                        scope2[mapper.arg[i]] = this.evalInternal(player, reference, environment, scope, extra, node.args[i]);
                     }
 
                     return mapper.ast.eval(player, reference, environment, scope2, extra);
@@ -790,7 +794,7 @@ class AST {
                 }
             } else if (node.op) {
                 // Return processed node
-                return node.op(node.args.map(arg => this.eval(player, reference, environment, scope, extra, arg)));
+                return node.op(node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg)));
             } else {
                 // Return node in case something does not work :(
                 return node;
