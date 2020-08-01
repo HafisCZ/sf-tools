@@ -70,7 +70,7 @@ class AST {
             if (count == 0) {
                 this.lambdas = this.evalLambdas();
                 this.root = this.evalExpression();
-                this.root = this.postProcess();
+                // this.root = this.postProcess();
             } else {
                 this.empty = true;
             }
