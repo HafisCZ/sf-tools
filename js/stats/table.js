@@ -325,13 +325,22 @@ class TableInstance {
 
     // Get current table content
     getTableContent () {
+        var content, size;
+
         if (this.type == TableType.History) {
-            return this.createHistoryTable();
+            [content, size] = this.createHistoryTable();
         } else if (this.type == TableType.Players) {
-            return this.createPlayersTable();
+            [content, size] =  this.createPlayersTable();
         } else if (this.type == TableType.Group) {
-            return this.createGroupTable();
+            [content, size] =  this.createGroupTable();
         }
+
+        var node = $(content);
+        if (node.find('script, iframe, img[onerror]').toArray().length) {
+            return [ $('<div><b style="font-weight: 1000;">Error in the system:</b><br/><br/>This table was not displayed because it contains HTML tags that are prohibited.<br/>Please remove them from your settings and try again.</div>'), size];
+        }
+
+        return [node, size];
     }
 
     // Set players

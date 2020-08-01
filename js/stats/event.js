@@ -370,7 +370,9 @@ class GroupDetailView extends View {
     refresh () {
         var [content, size ] = this.table.getTableContent();
 
-        this.$table.html(content).css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
+        this.$table.empty();
+        this.$table.append(content);
+        this.$table.css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
         if (this.$table.css('left').slice(0, -2) < 0) {
             this.$table.css('left', '0px');
         }
@@ -734,7 +736,9 @@ class PlayerHistoryView extends View {
 
         var [ content, size ] = this.table.getTableContent();
 
-        this.$table.html(content).css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
+        this.$table.empty();
+        this.$table.append(content);
+        this.$table.css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
         if (this.$table.css('left').slice(0, -2) < 0) {
             this.$table.css('left', '0px');
         }
@@ -1089,7 +1093,9 @@ class BrowseView extends View {
     refresh () {
         var [ content, size ] = this.table.getTableContent();
 
-        this.$table.html(content).css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
+        this.$table.empty();
+        this.$table.append(content);
+        this.$table.css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
         if (this.$table.css('left').slice(0, -2) < 0) {
             this.$table.css('left', '0px');
         }
