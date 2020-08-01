@@ -1208,6 +1208,7 @@ const SFormat = {
     Keyword: string => `<span class="ta-keyword">${ escapeHTML(string) }</span>`,
     Color: (string, color = string) => `<span class="ta-color" style="color: ${ color };">${ escapeHTML(string) }</span>`,
     Comment: string => `<span class="ta-comment">${ escapeHTML(string) }</span>`,
+    Macro: string => `<span class="ta-macro">${ escapeHTML(string) }</span>`,
     Lambda: string => `<span class="ta-lambda">${ string }</span>`,
     Constant: string => `<span class="ta-constant">${ escapeHTML(string) }</span>`,
     Enum: string => `<span class="ta-enum">${ escapeHTML(string) }</span>`,
@@ -1931,8 +1932,8 @@ class Settings {
     }
 
     // Load settings
-    static load (identifier, def, template = '') {
-        return new Settings(Preferences.get(`settings/${ identifier }`, Preferences.get(`settings/${ def }`, template)));
+    static load (identifier, def, template = '', type = undefined) {
+        return new Settings(Preferences.get(`settings/${ identifier }`, Preferences.get(`settings/${ def }`, template)), type);
     }
 
     // Get code
@@ -2001,7 +2002,11 @@ class Settings {
             }
 
             if (commentIndex != -1) {
-                content += SFormat.Comment(comment);
+                if (commentIndex == 0 && ['#IF GROUP', '#IF PLAYER', '#IF PLAYERS', '#IF NOT GROUP', '#IF NOT PLAYER', '#IF NOT PLAYERS', '#ENDIF'].includes(comment)) {
+                    content += SFormat.Macro(comment);
+                } else {
+                    content += SFormat.Comment(comment);
+                }
             }
 
             content += '</br>';
@@ -2023,7 +2028,7 @@ class Settings {
         }
     }
 
-    constructor (string) {
+    constructor (string, type) {
         this.code = string;
 
         // Root variables
@@ -2056,10 +2061,33 @@ class Settings {
         };
 
         // Parsing
+        var ignore = false;
         for (var line of string.split('\n')) {
             var commentIndex = line.indexOf('#');
             if (commentIndex != -1) {
+                if (commentIndex == 0) {
+                    if (line == '#IF GROUP') {
+                        ignore = type != TableType.Group;
+                    } else if (line == '#IF PLAYER') {
+                        ignore = type != TableType.History;
+                    } else if (line == '#IF PLAYERS') {
+                        ignore = type != TableType.Players;
+                    } else if (line == '#IF NOT GROUP') {
+                        ignore = type == TableType.Group;
+                    } else if (line == '#IF NOT PLAYER') {
+                        ignore = type == TableType.History;
+                    } else if (line == '#IF NOT PLAYERS') {
+                        ignore = type == TableType.Players;
+                    } else if (ignore && line == '#ENDIF') {
+                        ignore = false;
+                    }
+                }
+
                 line = line.slice(0, commentIndex);
+            }
+
+            if (ignore) {
+                continue;
             }
 
             var trimmed = line.trim();

@@ -307,7 +307,7 @@ class GroupDetailView extends View {
         }
 
         this.sorting = undefined;
-        this.table = new TableInstance(Settings.load(this.identifier, 'guilds', PredefinedTemplates['Guilds Default']), TableType.Group);
+        this.table = new TableInstance(Settings.load(this.identifier, 'guilds', PredefinedTemplates['Guilds Default'], TableType.Group), TableType.Group);
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -722,7 +722,7 @@ class PlayerHistoryView extends View {
 
     load () {
         // Table instance
-        this.table = new TableInstance(Settings.load(this.identifier, 'me', PredefinedTemplates['Me Default']), TableType.History);
+        this.table = new TableInstance(Settings.load(this.identifier, 'me', PredefinedTemplates['Me Default'], TableType.History), TableType.History);
         this.table.setEntries(this.list);
 
         // Configuration indicator
@@ -1075,7 +1075,7 @@ class BrowseView extends View {
     load () {
         // Table instance
         this.sorting = undefined;
-        this.table = new TableInstance(Settings.load('players', 'players', PredefinedTemplates['Players Default']), TableType.Players);
+        this.table = new TableInstance(Settings.load('players', 'players', PredefinedTemplates['Players Default'], TableType.Players), TableType.Players);
 
         // Configuration indicator
         if (Settings.exists('players')) {

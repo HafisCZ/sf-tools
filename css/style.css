@@ -470,6 +470,11 @@ h3.file-selected {
     color: #696969;
 }
 
+.ta-macro {
+    background-color: #a8323270;
+    text-shadow: -0.06ex 0 black, 0.06ex 0 black;
+}
+
 .ta-lambda {
     background-color: #f5a44230;
 }
