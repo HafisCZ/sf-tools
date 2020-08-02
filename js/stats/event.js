@@ -1582,6 +1582,21 @@ class FilesView extends View {
         } else {
             this.$beta.checkbox('set unchecked');
         }
+
+        this.$insecure = this.$parent.find('[data-op="checkbox-insecure"]').checkbox({
+            onChecked: function () {
+                SiteOptions.insecure = true;
+            },
+            onUnchecked: function () {
+                SiteOptions.insecure = false;
+            }
+        });
+
+        if (SiteOptions.insecure) {
+            this.$insecure.checkbox('set checked');
+        } else {
+            this.$insecure.checkbox('set unchecked');
+        }
     }
 
     show () {
@@ -2262,9 +2277,11 @@ const UI = {
     beta: function (isbeta) {
         if (isbeta) {
             UI.Files.$endpoint.show();
+            UI.Files.$insecure.show();
             UI.Files.$beta.show();
         } else {
             UI.Files.$endpoint.hide();
+            UI.Files.$insecure.hide();
             UI.Files.$beta.hide();
         }
     },

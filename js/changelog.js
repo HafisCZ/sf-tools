@@ -1,4 +1,13 @@
 const CHANGELOG = {
+    'v3.711': [
+        'Tables are now blocked from displaying if they contain <code>script</code> or <code>iframe</code> HTML tags.',
+        'Fixed future players selected when using timestamp where they do not exist.',
+        'Fixed several bugs caused by <code>undefined</code> value in expressions.',
+        'Added <code>if</code>, <code>else</code>, <code>endif</code> keywords that will ignore parts of settings depending on the type of the table',
+        'Added wiki link to settings with all headers and their default options',
+        'Added multiple enums.',
+        'Added lambda functions.'
+    ],
     'v3.693': [
         'Added <code>background</code> keyword that allows you to specify default color for header, category or the whole table.',
         'Added simulator target & source that allows you to run 1v1 simulations instead of 1vAll directly in the table.',

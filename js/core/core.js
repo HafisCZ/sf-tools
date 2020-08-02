@@ -64,12 +64,14 @@ const SiteOptions = new (class {
     constructor () {
         this.options = SharedPreferences.get('options', {
             lazy: false,
-            beta: false
+            beta: false,
+            insecure: false
         });
 
         this.params = {
             beta: false,
-            temp: false
+            temp: false,
+            insecure: false
         };
     }
 
@@ -88,6 +90,15 @@ const SiteOptions = new (class {
 
     set beta (value) {
         this.options.beta = value;
+        SharedPreferences.set('options', this.options);
+    }
+
+    get insecure () {
+        return this.options.insecure;
+    }
+
+    set insecure (value) {
+        this.options.insecure = value;
         SharedPreferences.set('options', this.options);
     }
 })();
