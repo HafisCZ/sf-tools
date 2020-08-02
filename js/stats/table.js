@@ -1222,7 +1222,33 @@ const SFormat = {
     Bool: (string, bool = string) => `<span class="ta-boolean-${ bool }">${ escapeHTML(string) }</span>`
 };
 
+const MacroArgToTableType = {
+    'Group': TableType.Group,
+    'Player': TableType.History,
+    'Players': TableType.Players
+}
+
 const SettingsCommands = [
+    // if / endif
+    new SettingsCommand(/^(?:(if|if not) (Group|Player|Players)|(endif|else))$/, function (root, string) {
+        var [ , key1, arg, key2 ] = this.match(string);
+        if (key2) {
+            if (key2 == 'endif') {
+                root.setFilter(null);
+            } else {
+                root.flipFilter();
+            }
+        } else {
+            root.setFilter(MacroArgToTableType[arg], key1 != 'if');
+        }
+    }, function (root, string) {
+        var [ , key1, arg, key2 ] = this.match(string);
+        if (key2) {
+            return SFormat.Macro(key2);
+        } else {
+            return SFormat.Macro(`${ key1 } ${ arg }`);
+        }
+    }),
     // Global
     // set static
     new SettingsCommand(/^(layout) ((table|statistics|members|details)\s*(\,\s*(table|statistics|members|details))*)$/, function (root, string) {
@@ -1885,7 +1911,7 @@ class Templates {
     }
 }
 
-const FORMAT_ONLY_SETTINGS = [ 1, 2, 3, 24 ];
+const FORMAT_ONLY_SETTINGS = [ 2, 3, 4, 25 ];
 
 class Settings {
     // Save
@@ -2002,11 +2028,7 @@ class Settings {
             }
 
             if (commentIndex != -1) {
-                if (commentIndex == 0 && ['#IF GROUP', '#IF PLAYER', '#IF PLAYERS', '#IF NOT GROUP', '#IF NOT PLAYER', '#IF NOT PLAYERS', '#ENDIF'].includes(comment)) {
-                    content += SFormat.Macro(comment);
-                } else {
-                    content += SFormat.Comment(comment);
-                }
+                content += SFormat.Comment(comment);
             }
 
             content += '</br>';
@@ -2060,44 +2082,46 @@ class Settings {
             statistics_color: true
         };
 
+        this.setFilter(null);
+
         // Parsing
         var ignore = false;
         for (var line of string.split('\n')) {
             var commentIndex = line.indexOf('#');
             if (commentIndex != -1) {
-                if (commentIndex == 0) {
-                    if (line == '#IF GROUP') {
-                        ignore = type != TableType.Group;
-                    } else if (line == '#IF PLAYER') {
-                        ignore = type != TableType.History;
-                    } else if (line == '#IF PLAYERS') {
-                        ignore = type != TableType.Players;
-                    } else if (line == '#IF NOT GROUP') {
-                        ignore = type == TableType.Group;
-                    } else if (line == '#IF NOT PLAYER') {
-                        ignore = type == TableType.History;
-                    } else if (line == '#IF NOT PLAYERS') {
-                        ignore = type == TableType.Players;
-                    } else if (ignore && line == '#ENDIF') {
-                        ignore = false;
-                    }
-                }
-
                 line = line.slice(0, commentIndex);
-            }
-
-            if (ignore) {
-                continue;
             }
 
             var trimmed = line.trim();
             var command = SettingsCommands.find(command => command.isValid(trimmed));
+
             if (command) {
-                command.parse(this, trimmed);
+                if (command == SettingsCommands[0]) {
+                    command.parse(this, trimmed);
+
+                    if (this.filter.type != null) {
+                        ignore = this.filter.invert ? (this.filter.type == type) : (this.filter.type != type);
+                    } else {
+                        ignore = false;
+                    }
+                } else if (!ignore) {
+                    command.parse(this, trimmed);
+                }
             }
         }
 
         this.pushCategory();
+    }
+
+    setFilter (type, invert = false) {
+        this.filter = {
+            type: type,
+            invert: invert
+        }
+    }
+
+    flipFilter () {
+        this.filter.invert = !this.filter.invert;
     }
 
     // Evaluate constants
