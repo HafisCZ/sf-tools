@@ -300,7 +300,7 @@ class AST {
                 this.get();
                 o.val = this.evalExpression();
                 a.push(o);
-            } else {
+            } else if (this.peek() != '}') {
                 a.push({
                     key: a.length,
                     val: this.evalExpression()
