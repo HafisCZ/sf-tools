@@ -250,7 +250,7 @@ class AST {
     getVal () {
         var val = this.get();
         if (val == undefined) {
-            // do nothing
+            // ignore
         } else if ((val[0] == '\"' && val[val.length - 1] == '\"') || (val[0] == '\'' && val[val.length - 1] == '\'')) {
             val = {
                 args: [ val.slice(1, val.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\'') ],
@@ -331,6 +331,27 @@ class AST {
                 args: a,
                 op: '{'
             };
+        } else if (val == '[') {
+            var a = [];
+
+            if (this.peek() != ']') {
+                a.push({
+                    key: a.length,
+                    val: this.evalExpression()
+                });
+            }
+
+            while (this.get() == ',') {
+                a.push({
+                    key: a.length,
+                    val: this.evalExpression()
+                });
+            }
+
+            val = {
+                args: a,
+                op: '{'
+            }
         }
 
         while (this.peek() == '.' || this.peek() == '[') {
