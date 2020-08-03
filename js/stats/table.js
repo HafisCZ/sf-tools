@@ -2,6 +2,7 @@ class HeaderGroup {
     constructor (name, empty) {
         this.name = name;
         this.empty = empty;
+        this.sortkey = SHA1(name);
 
         this.width = 0;
         this.length = 0;
@@ -17,7 +18,7 @@ class HeaderGroup {
                 statistics: statgen
             },
             sort: sort,
-            sortkey: `${ this.name }.${ name }.${ this.length }`,
+            sortkey: `${ this.sortkey }.${ name }.${ this.length }`,
             span: span,
             bordered: last
         };
