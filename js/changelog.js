@@ -1,4 +1,7 @@
 const CHANGELOG = {
+    'v3.715': [
+        'Added new expression evaluator.<br/><br/>You can use <code>ast beta</code> on top of your settings or select \'Force use of new expression evaluator\' in Files tab to apply it to everything.<br/><br/>It is recommended that you try to run all your settings using this evaluator since it will later replace the main one.<br/>Please note that some expressions might stop working or behave differently.'
+    ],
     'v3.711': [
         'Tables are now blocked from displaying if they contain <code>script</code> or <code>iframe</code> HTML tags.',
         'Fixed future players selected when using timestamp where they do not exist.',

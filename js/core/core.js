@@ -65,13 +65,15 @@ const SiteOptions = new (class {
         this.options = SharedPreferences.get('options', {
             lazy: false,
             beta: false,
-            insecure: false
+            insecure: false,
+            ast: false
         });
 
         this.params = {
             beta: false,
             temp: false,
-            insecure: false
+            insecure: false,
+            ast: false
         };
     }
 
@@ -90,6 +92,15 @@ const SiteOptions = new (class {
 
     set beta (value) {
         this.options.beta = value;
+        SharedPreferences.set('options', this.options);
+    }
+
+    get ast () {
+        return this.options.ast;
+    }
+
+    set ast (value) {
+        this.options.ast = value;
         SharedPreferences.set('options', this.options);
     }
 

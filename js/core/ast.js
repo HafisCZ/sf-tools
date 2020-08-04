@@ -51,9 +51,10 @@ const AST_FUNCTIONS = {
 const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
 class AST {
-    constructor (string) {
+    constructor (string, beta = false) {
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(AST_REGEXP).map(token => token.trim()).filter(token => token.length);
         this.root = false;
+        this.beta = beta;
 
         if (this.tokens.length == 0) {
             this.empty = true;
@@ -201,7 +202,7 @@ class AST {
                 var args = this.tokens.slice(argStart + 1, argEnd);
                 var expr = this.tokens.slice(exprStart + 1, exprEnd);
 
-                var ast = new AST(expr.join(''));
+                var ast = new AST(expr.join(''), this.beta);
                 if (ast.isValid()) {
                     lambdas[name] = {
                         arg: args.filter(x => x != ','),
@@ -350,7 +351,8 @@ class AST {
 
             val = {
                 args: a,
-                op: '{'
+                op: '{',
+                raw: true
             }
         }
 
@@ -570,7 +572,11 @@ class AST {
     }
 
     eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants() }, scope = undefined, extra = undefined) {
-        return this.evalInternal(player, reference, environment, scope, extra, this.root);
+        if (this.beta) {
+            return this.evalInternalBeta(player, reference, environment, scope, extra, this.root);
+        } else {
+            return this.evalInternal(player, reference, environment, scope, extra, this.root);
+        }
     }
 
     evalInternal (player, reference, environment, scope, extra, node) {
@@ -668,7 +674,7 @@ class AST {
                         }
                     } else {
                         for (var i = 0; i < object.length; i++) {
-                            if (this.evalInternal(player, reference, environment, object[i], extra, node.args[1])) {
+                            if (this.evalInternal(player, reference, environment, object[i] && object[i].segmented ? object[i][0] : object[i], extra, node.args[1])) {
                                 sum.push(object[i]);
                             }
                         }
@@ -880,6 +886,175 @@ class AST {
                 return SP_KEYWORD_MAPPING_5[node].expr(player, reference, environment);
             } else {
                 // Return object or undefined if everything fails
+                return SP_ENUMS[node];
+            }
+        } else {
+            return node;
+        }
+    }
+
+    // Evaluate a node into array, used for array functions
+    evalToArray (player, reference, environment, scope, extra, node) {
+        var generated = this.evalInternalBeta(player, reference, environment, scope, extra, node);
+        if (!generated || typeof(generated) != 'object') {
+            return [];
+        } else {
+            return Array.isArray(generated) ? generated : Object.values(generated);
+        }
+    };
+
+    // Evaluate a node (beta)
+    evalInternalBeta (player, reference, environment, scope, extra, node) {
+        if (typeof(node) == 'object') {
+            if (node.noeval) {
+                return node.args[0];
+            } else if (typeof(node.op) == 'string') {
+                if (node.op == 'format' && node.args.length > 0) {
+                    var str = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[0]);
+                    var arg = node.args.slice(1).map(a => this.evalInternalBeta(player, reference, environment, scope, extra, a));
+
+                    for (key in arg) {
+                        str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
+                    }
+
+                    return str;
+                } else if (['each', 'filter', 'map'].includes(node.op) && node.args.length == 2) {
+                    // Multiple array functions condensed
+                    var array = this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
+                    var mapper = environment.func[node.args[1]] || this.lambdas[node.args[1]];
+                    var values = [];
+
+                    // Does not allow 'this' in any scenario
+                    if (mapper) {
+                        if (array.segmented) {
+                            values = array.map(obj => mapper.ast.eval(obj[0], obj[1], environment, undefined, mapper.arg.reduce((c, a, i) => {
+                                c[a] = obj[i];
+                                return c;
+                            }, {})));
+                        } else {
+                            values = array.map(obj => mapper.ast.eval(player, reference, environment, undefined, mapper.arg.reduce((c, a) => {
+                                c[a] = obj;
+                                return c;
+                            }, {})));
+                        }
+                    } else {
+                        if (array.segmented) {
+                            values = array.map(obj => this.evalInternalBeta(obj[0], obj[1], environment, undefined, undefined, node.args[1]));
+                        } else {
+                            values = array.map(obj => this.evalInternalBeta(player, reference, environment, undefined, obj, node.args[1]));
+                        }
+                    }
+
+                    // Return correct result
+                    switch (node.op) {
+                        case 'each': return values.reduce((a, b) => a + b, 0);
+                        case 'filter': return array.filter((a, i) => values[i]);
+                        case 'map': return values;
+                    }
+                } else if (node.op == 'slice' && (node.args.length == 2 || node.args.length == 3)) {
+                    // Simple slice
+                    return this.evalToArray(player, reference, environment, scope, extra, node.args[0]).slice(node.args[1], node.args[2]);
+                } else if (node.op == 'array') {
+                    // Simple toArray function
+                    return this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
+                } else if (node.op == '{') {
+                    // Simple object or array constructor
+                    var obj = node.raw ? [] : {};
+
+                    for (var { key, val } of node.args) {
+                        obj[this.evalInternalBeta(player, reference, environment, scope, extra, key)] = this.evalInternalBeta(player, reference, environment, scope, extra, val);
+                    }
+
+                    return obj;
+                } else if (environment.func[node.op] || this.lambdas[node.op]) {
+                    var mapper = environment.func[node.op] || this.lambdas[node.op];
+                    var scope2 = {};
+                    for (var i = 0; i < mapper.arg.length; i++) {
+                        scope2[mapper.arg[i]] = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[i]);
+                    }
+
+                    return mapper.ast.eval(player, reference, environment, scope2, extra);
+                } else if (node.op == '[a') {
+                    var object = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[0]);
+                    if (object) {
+                        return object[this.evalInternalBeta(player, reference, environment, scope, extra, node.args[1])];
+                    } else {
+                        return undefined;
+                    }
+                } else if (node.op == '(a') {
+                    var object = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[0]);
+                    var func = node.args[1];
+
+                    if (object != undefined && object[func]) {
+                        return object[func](... node.args[2].map(param => this.evalInternalBeta(player, reference, environment, scope, extra, param)));
+                    } else {
+                        return undefined;
+                    }
+                } else if (SP_KEYWORDS.hasOwnProperty(node.op) && node.args.length == 1) {
+                    // Simple call
+                    var obj = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[0]);
+                    return obj ? SP_KEYWORDS[node.op].expr(obj, null, environment) : undefined;
+                } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node.op) && node.args.length == 1) {
+                    // Simple indirect call
+                    var obj = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[0]);
+                    return obj ? SP_KEYWORDS_INDIRECT[node.op].expr(player, null, environment, obj) : undefined;
+                } else if (environment.vars[node.op] && environment.vars[node.op].ast.lambdas['_1']) {
+                    var mapper = environment.vars[node.op].ast.lambdas['_1'];
+
+                    var scope2 = {};
+                    for (var i = 0; i < mapper.arg.length; i++) {
+                        scope2[mapper.arg[i]] = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[i]);
+                    }
+
+                    return mapper.ast.eval(player, reference, environment, scope2, extra);
+                } else {
+                    // Return undefined
+                    return undefined;
+                }
+            } else if (node.op) {
+                // Return processed node
+                return node.op(node.args.map(arg => this.evalInternalBeta(player, reference, environment, scope, extra, arg)));
+            } else {
+                // Return node in case something does not work :(
+                return node;
+            }
+        } else if (typeof(node) == 'string') {
+            if (node == 'this') {
+                // Return current scope
+                return scope;
+            } else if (node == 'player') {
+                // Return current player
+                return player;
+            } else if (node == 'reference') {
+                // Return reference player
+                return reference;
+            } else if (SP_KEYWORDS_DEFAULT.hasOwnProperty(node)) {
+                // Return default values
+                return SP_KEYWORDS_DEFAULT[node];
+            } else if (typeof(extra) == 'object' && extra[node] != undefined) {
+                // Return extra variable (only if it exists)
+                return extra[node];
+            } else if (typeof(scope) == 'object' && scope[node] != undefined) {
+                // Return scope variable (only if it exists)
+                return scope[node];
+            } else if (environment.vars[node] != undefined) {
+                // Return environment variable
+                if (environment.vars[node].value != undefined) {
+                    return environment.vars[node].value;
+                } else if (environment.vars[node].ast) {
+                    return environment.vars[node].ast.eval(player, reference, environment);
+                } else {
+                    return undefined;
+                }
+            } else if (node[0] == '@') {
+                // Return constant
+                return environment.constants.Values[node.slice(1)];
+            } else if (player && SP_KEYWORDS.hasOwnProperty(node)) {
+                return SP_KEYWORDS[node].expr(player, reference, environment);
+            } else if (player && SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
+                return SP_KEYWORDS_INDIRECT[node].expr(player, reference, environment, extra);
+            } else {
+                // Return enum or undefined if everything fails
                 return SP_ENUMS[node];
             }
         } else {
@@ -2236,9 +2411,26 @@ const SP_KEYWORD_MAPPING_4 = {
 // itemizable
 const SP_KEYWORD_MAPPING_5 = {
     'Items': {
-        expr: (p, c, e, i) => p.Items
+        expr: p => p.Items
     },
     'Potions': {
-        expr: (p, c, e, i) => p.Potions
+        expr: p => p.Potions
     }
+};
+
+const SP_KEYWORDS = {};
+mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_0);
+mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_1);
+mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_2);
+mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_3);
+mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_5);
+
+const SP_KEYWORDS_INDIRECT = {};
+mergeSoft(SP_KEYWORDS_INDIRECT, SP_KEYWORD_MAPPING_4);
+
+const SP_KEYWORDS_DEFAULT = {
+    'undefined': undefined,
+    'null': null,
+    'true': true,
+    'false': false
 };

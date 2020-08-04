@@ -1568,6 +1568,21 @@ class FilesView extends View {
             this.$lazy.checkbox('set unchecked');
         }
 
+        this.$ast = this.$parent.find('[data-op="checkbox-ast"]').checkbox({
+            onChecked: function () {
+                SiteOptions.ast = true;
+            },
+            onUnchecked: function () {
+                SiteOptions.ast = false;
+            }
+        });
+
+        if (SiteOptions.ast) {
+            this.$ast.checkbox('set checked');
+        } else {
+            this.$ast.checkbox('set unchecked');
+        }
+
         this.$beta = this.$parent.find('[data-op="checkbox-beta"]').checkbox({
             onChecked: function () {
                 SiteOptions.beta = true;

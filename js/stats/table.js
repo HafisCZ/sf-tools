@@ -1250,6 +1250,13 @@ const SettingsCommands = [
             return SFormat.Macro(`${ key1 } ${ arg }`);
         }
     }),
+    new SettingsCommand(/^(ast beta)$/, function (root, string) {
+        var [ , key ] = this.match(string);
+        root.beta = true;
+    }, function (root, string) {
+        var [ , key ] = this.match(string);
+        return `${ SFormat.Macro(key) }`;
+    }),
     // Global
     // set static
     new SettingsCommand(/^(layout) ((table|statistics|members|details)\s*(\,\s*(table|statistics|members|details))*)$/, function (root, string) {
@@ -1263,7 +1270,7 @@ const SettingsCommands = [
     // set static
     new SettingsCommand(/^(set) (\w+[\w ]*) with all as (.+)$/, function (root, string) {
         var [ , key, name, asts ] = this.match(string);
-        var ast = new AST(asts);
+        var ast = new AST(asts, root.beta);
         if (ast.isValid()) {
             root.setVariable(name, true, ast);
         }
@@ -1275,7 +1282,7 @@ const SettingsCommands = [
     // set with - Create a function
     new SettingsCommand(/^(set) (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/, function (root, string) {
         var [ , key, name, args, a ] = this.match(string);
-        var ast = new AST(a);
+        var ast = new AST(a, root.beta);
         if (ast.isValid()) {
             root.setFunction(name, args.split(',').map(arg => arg.trim()), ast);
         }
@@ -1287,7 +1294,7 @@ const SettingsCommands = [
     // set - Create a variable
     new SettingsCommand(/^(set) (\w+[\w ]*) as (.+)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        var ast = new AST(a);
+        var ast = new AST(a, root.beta);
         if (ast.isValid()) {
             root.setVariable(name, false, ast);
         }
@@ -1379,7 +1386,7 @@ const SettingsCommands = [
     // Create new statistics row
     new SettingsCommand(/^(show) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        var ast = new AST(a);
+        var ast = new AST(a, root.beta);
         if (ast.isValid()) {
             root.addExtraRow(name, ast);
         }
@@ -1493,7 +1500,7 @@ const SettingsCommands = [
     // Create new statistics row
     new SettingsCommand(/^(statistics) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        var ast = new AST(a);
+        var ast = new AST(a, root.beta);
         if (ast.isValid()) {
             root.addExtraStatistics(name, ast);
         }
@@ -1619,7 +1626,7 @@ const SettingsCommands = [
         if (ARG_FORMATTERS[arg]) {
             root.setLocalVariable('format', ARG_FORMATTERS[arg]);
         } else {
-            var ast = new AST(arg);
+            var ast = new AST(arg, root.beta);
             if (ast.isValid()) {
                 root.setLocalVariable('format', (player, reference, env, val) => {
                     return ast.eval(player, reference, env, val);
@@ -1638,7 +1645,7 @@ const SettingsCommands = [
     // order by
     new SettingsCommand(/^(order by) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
-        var ast = new AST(arg);
+        var ast = new AST(arg, root.beta);
         if (ast.isValid()) {
             root.setLocalVariable('order', (player, reference, env, val, extra) => {
                 return ast.eval(player, reference, env, val, extra);
@@ -1672,7 +1679,7 @@ const SettingsCommands = [
     // expr - Set expression to the column
     new SettingsCommand(/^(expr|e\:) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        var ast = new AST(a);
+        var ast = new AST(a, root.beta);
         if (ast.isValid()) {
             root.setLocalVariable('expr', (player, reference, env, scope) => {
                 return ast.eval(player, reference, env, scope);
@@ -1686,7 +1693,7 @@ const SettingsCommands = [
     // expc - Set color expression to the column
     new SettingsCommand(/^(expc|c\:) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        var ast = new AST(a);
+        var ast = new AST(a, root.beta);
         if (ast.isValid()) {
             root.setLocalVariable('expc', (player, reference, env, val) => {
                 return getCSSColor(ast.eval(player, reference, env, val));
@@ -2073,6 +2080,7 @@ class Settings {
         this.currentCategory = null;
         this.currentHeader = null;
         this.currentExtra = null;
+        this.beta = SiteOptions.ast;
 
         this.shared = {
             statistics_color: true
@@ -2201,6 +2209,24 @@ class Settings {
             delete this.cvars['Simulator'];
         }
 
+        var segmentedPlayers = players.map(p => {
+            var ar = [ p.player, p.compare ];
+            ar.segmented = true;
+
+            return ar;
+        });
+
+        segmentedPlayers.segmented = true;
+
+        var segmentedCompare = players.map(p => {
+            var ar = [ p.compare, p.compare ];
+            ar.segmented = true;
+
+            return ar;
+        });
+
+        segmentedCompare.segmented = true;
+
         // Evaluate constants
         for (var [name, data] of Object.entries(this.vars)) {
             if (data.ast) {
@@ -2208,19 +2234,8 @@ class Settings {
                 var scope2 = {};
 
                 if (data.arg) {
-                    scope = players.map(p => {
-                        var ar = [ p.player, p.compare ];
-                        ar.segmented = true;
-
-                        return ar;
-                    });
-
-                    scope2 = players.map(p => {
-                        var ar = [ p.compare, p.compare ];
-                        ar.segmented = true;
-
-                        return ar;
-                    });
+                    scope = segmentedPlayers;
+                    scope2 = segmentedCompare;
                 }
 
                 if (tabletype == TableType.Group) {
@@ -2265,8 +2280,8 @@ class Settings {
             for (var data of this.extras) {
                 if (data.ast) {
                     data.eval = {
-                        value: data.ast.eval(param.player, undefined, this, players.map_player),
-                        compare: data.ast.eval(param.compare, undefined, this.getCompareEnvironment(), players.map_compare)
+                        value: data.ast.eval(param.player, undefined, this, segmentedPlayers),
+                        compare: data.ast.eval(param.compare, undefined, this.getCompareEnvironment(), segmentedCompare)
                     };
                 }
             }
@@ -2274,8 +2289,8 @@ class Settings {
             for (var data of this.extras) {
                 if (data.ast) {
                     data.eval = {
-                        value: data.ast.eval(null, null, this, players.map_player),
-                        compare: data.ast.eval(null, null, this.getCompareEnvironment(), players.map_compare)
+                        value: data.ast.eval(null, null, this, segmentedPlayers),
+                        compare: data.ast.eval(null, null, this.getCompareEnvironment(), segmentedCompare)
                     }
                 }
             }
