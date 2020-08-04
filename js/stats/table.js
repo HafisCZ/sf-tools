@@ -1919,7 +1919,7 @@ class Templates {
     }
 }
 
-const FORMAT_ONLY_SETTINGS = [ 2, 3, 4, 25 ];
+const FORMAT_ONLY_SETTINGS = [ 3, 4, 5, 26 ];
 
 class Settings {
     // Save
@@ -2321,6 +2321,8 @@ class Settings {
 
                         return ar;
                     });
+
+                    scope.segmented = true;
                 }
 
                 data.value = data.ast.eval(null, null, this, scope);
