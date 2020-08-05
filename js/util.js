@@ -29,7 +29,8 @@ function formatDuration (duration) {
 function getColorFromGradientObj (obj, sample) {
     var stops = Object.entries(obj).map(e => [ Number(e[0]), e[1] ]);
     stops.sort((a, b) => a[0] - b[0]);
-
+    if (sample < stops[0][0]) sample = stops[0][0];
+    else if (sample > stops[stops.length - 1][0]) sample = stops[stops.length - 1][0];
     for (var i = 0; i < stops.length - 1; i++) {
         if (sample <= stops[i + 1][0]) {
             return getColorFromGradient(stops[i][1], stops[i + 1][1], (sample - stops[i][0]) / (stops[i + 1][0] - stops[i][0]));

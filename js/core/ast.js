@@ -1303,7 +1303,7 @@ class AST2 {
         return node;
     }
 
-    eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants() }, scope = undefined, extra = undefined) {
+    eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined) {
         return this.evalInternal(player, reference, environment, scope, extra, this.root);
     }
 
@@ -1453,6 +1453,8 @@ class AST2 {
                 } else {
                     return undefined;
                 }
+            } else if (environment.lists.hasOwnProperty(node)) {
+                return environment.lists[node];
             } else if (node[0] == '@') {
                 // Return constant
                 return environment.constants.Values[node.slice(1)];

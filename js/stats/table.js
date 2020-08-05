@@ -59,7 +59,7 @@ const ReservedCategories = {
             var displayValue2 = CompareEval.evaluate(potion2, category.value);
             displayValue2 = displayValue2 != undefined ? displayValue2 : (category.format ? category.format(player, compare, root, player.Potions[2]) : undefined);
 
-            return CellGenerator.Cell(displayValue0 == undefined ? potion0 : displayValue0, color0, category.visible ? '' : color0, false, category.align) + CellGenerator.Cell(displayValue1 == undefined ? potion1 : displayValue1, color1, category.visible ? '' : color1, false, category.align) + CellGenerator.Cell(displayValue2 == undefined ? potion2 : displayValue2, color2, category.visible ? '' : color2, last, category.align);
+            return CellGenerator.Cell(displayValue0 == undefined ? potion0 : displayValue0, color0, category.visible ? '' : color0, false, category.align, category.padding) + CellGenerator.Cell(displayValue1 == undefined ? potion1 : displayValue1, color1, category.visible ? '' : color1, false, category.align, category.padding) + CellGenerator.Cell(displayValue2 == undefined ? potion2 : displayValue2, color2, category.visible ? '' : color2, last, category.align, category.padding);
         }, null, (player, compare) => player.Potions.reduce((c, p) => c + p.Size, 0), last, 3);
     }
 };
@@ -136,7 +136,7 @@ class TableInstance {
         // Column configuration
         this.config = [];
         this.settings.c.forEach((category, ci, ca) => {
-            var group = new HeaderGroup(category.name, ReservedCategories[category.name] != undefined || category.empty);
+            var group = new HeaderGroup(category.alias || category.name, ReservedCategories[category.name] != undefined || (category.alias == undefined && category.empty));
             var glast = ci == ca.length - 1;
 
             if (ReservedCategories[category.name]) {
@@ -191,7 +191,7 @@ class TableInstance {
                                     value = `${ value }${ header.extra(player) }`;
                                 }
 
-                                cells.push(CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align));
+                                cells.push(CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align, header.padding));
                             }
 
                             return cells;
@@ -236,7 +236,7 @@ class TableInstance {
                                 value = `${ value }${ header.extra(player) }`;
                             }
 
-                            return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align);
+                            return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align, header.padding);
                         }, (players, operation) => {
                             var value = players.map(p => header.expr(p.player, p.compare, this.settings)).filter(x => x != undefined);
                             if (value.length == 0) {
@@ -269,7 +269,7 @@ class TableInstance {
 
                             var color = undefined;
                             if (header.statistics_color) {
-                                color = CompareEval.evaluate(value, header.color);
+                                color = CompareEval.evaluate(value, header.color, true);
                                 color = (color != undefined ? color : (header.expc ? header.expc(null, null, this.settings, value) : '')) || '';
                             }
 
@@ -360,6 +360,8 @@ class TableInstance {
             if (this.type == TableType.Players) {
                 this.settings.evaluateConstants(players, sim, array.perf || this.settings.globals.performance, this.type);
             } else {
+                players.joined = array.joined;
+                players.kicked = array.kicked;
                 this.settings.evaluateConstants(players, this.settings.globals.simulator, array.length, this.type);
             }
         } else if (this.type == TableType.History) {
@@ -672,7 +674,7 @@ class TableInstance {
                     value = `${ value }${ extra.extra(player) }`;
                 }
 
-                var cell = CellGenerator.WideCell(SFormat.Normal(value), color, lw, extra.align);
+                var cell = CellGenerator.WideCell(value, color, lw, extra.align, extra.padding);
                 details += `
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
@@ -780,7 +782,7 @@ class TableInstance {
                     value = `${ value }${ extra.extra(undefined) }`;
                 }
 
-                var cell = CellGenerator.WideCell(SFormat.Normal(value) + reference, color, lw, extra.align);
+                var cell = CellGenerator.WideCell(value + reference, color, lw, extra.align, extra.padding);
                 details += `
                     <tr>
                         <td class="border-right-thin" colspan="${ 1 + (this.settings.globals.indexed ? 1 : 0) + (sizeServer ? 1 : 0) }">${ extra.name }</td>
@@ -975,7 +977,7 @@ class TableInstance {
                     value = `${ value }${ extra.extra(undefined) }`;
                 }
 
-                var cell = CellGenerator.WideCell(SFormat.Normal(value) + reference, color, lw, extra.align);
+                var cell = CellGenerator.WideCell(value + reference, color, lw, extra.align, extra.padding);
                 details += `
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
@@ -1100,12 +1102,12 @@ class TableInstance {
 // Cell generators
 const CellGenerator = {
     // Simple cell
-    Cell: function (c, b, f, bo, al) {
-        return `<td class="${ bo ? 'border-right-thin' : '' }" style="color: ${ f }; background-color: ${ b }; ${ al ? `text-align: ${ al };` : '' }">${ c }</td>`;
+    Cell: function (c, b, f, bo, al, pad) {
+        return `<td class="${ bo ? 'border-right-thin' : '' }" style="color: ${ f }; background-color: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' }">${ c }</td>`;
     },
     // Wide cell
-    WideCell: function (c, b, w, al) {
-        return `<td colspan="${ w }" style="background-color: ${ b }; ${ al ? `text-align: ${ al };` : '' }">${ c }</td>`;
+    WideCell: function (c, b, w, al, pad) {
+        return `<td colspan="${ w }" style="background-color: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' }">${ c }</td>`;
     },
     // Plain cell
     Plain: function (c, bo, al) {
@@ -1134,10 +1136,16 @@ const CompareEval = {
     be: (val, ref) => val <= ref,
 
     // Evaluation
-    evaluate (val, rules) {
+    evaluate (val, rules, ibg = false) {
         var def = undefined;
         for (var [ eq, ref, out ] of rules || []) {
-            if (eq == 'd') {
+            if (eq == 'db') {
+                if (ibg) {
+                    continue;
+                } else {
+                    return out;
+                }
+            } else if (eq == 'd') {
                 return out;
             } else if (CompareEval[eq](val, ref)) {
                 return out;
@@ -1350,62 +1358,74 @@ const SettingsCommands = [
         }
     }),
     // Create new category
-    new SettingsCommand(/^(category)(?: (.+))?$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
+    new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(category)(?: (.+))?$/, function (root, string) {
+        var [ , extend, key, a ] = this.match(string);
         root.createCategory(a || '', a == undefined);
+        if (extend) {
+            root.setLocalSharedVariable('extend', extend.slice(0, -1).split(','));
+        }
     }, function (root, string) {
-        var [ , key, a ] = this.match(string);
+        var [ , extend, key, a ] = this.match(string);
         if (a != undefined) {
-            return `${ SFormat.Keyword(key) } ${ ReservedCategories[a] ? SFormat.Reserved(a) : SFormat.Normal(a) }`;
+            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ ReservedCategories[a] ? SFormat.Reserved(a) : SFormat.Normal(a) }`;
         } else {
-            return `${ SFormat.Keyword(key) }`;
+            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) }`;
         }
     }),
     // Create new header
-    new SettingsCommand(/^(header)(?: (.+))?$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
+    new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(header)(?: (.+))?$/, function (root, string) {
+        var [ , extend, key, a ] = this.match(string);
         root.createHeader(a || '');
+        if (extend) {
+            root.setLocalSharedVariable('extend', extend.slice(0, -1).split(','));
+        }
     }, function (root, string) {
-        var [ , key, a ] = this.match(string);
+        var [ , extend, key, a ] = this.match(string);
         if (a != undefined) {
             if (SP_KEYWORD_MAPPING_0.hasOwnProperty(a)) {
-                return `${ SFormat.Keyword(key) } ${ SFormat.Reserved(a) }`;
+                return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Reserved(a) }`;
             } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(a)) {
-                return `${ SFormat.Keyword(key) } ${ SFormat.ReservedProtected(a) }`;
+                return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.ReservedProtected(a) }`;
             } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(a)) {
-                return `${ SFormat.Keyword(key) } ${ SFormat.ReservedPrivate(a) }`;
+                return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.ReservedPrivate(a) }`;
             } else if (SP_KEYWORD_MAPPING_3.hasOwnProperty(a)) {
-                return `${ SFormat.Keyword(key) } ${ SFormat.ReservedSpecial(a) }`;
+                return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.ReservedSpecial(a) }`;
             } else {
-                return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+                return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
             }
         } else {
-            return `${ SFormat.Keyword(key) }`;
+            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) }`;
         }
     }),
     // Create new statistics row
-    new SettingsCommand(/^(show) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
-        var [ , key, name, a ] = this.match(string);
+    new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(show) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
+        var [ , extend, key, name, a ] = this.match(string);
         var ast = AST.create(a, root.beta);
         if (ast.isValid()) {
             root.addExtraRow(name, ast);
+            if (extend) {
+                root.setLocalSharedVariable('extend', extend.slice(0, -1).split(','));
+            }
         }
     }, function (root, string) {
-        var [ , key, name, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants, root.vars) }`;
+        var [ , extend, key, name, a ] = this.match(string);
+        return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants, root.vars) }`;
     }),
     // Create new itemized header
-    new SettingsCommand(/^(itemized) (\S+[\S ]*) by (\S+[\S ]*)$/, function (root, string) {
-        var [ , key, a, s ] = this.match(string);
+    new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(itemized) (\S+[\S ]*) by (\S+[\S ]*)$/, function (root, string) {
+        var [ , extend, key, a, s ] = this.match(string);
         if (SP_KEYWORD_MAPPING_5.hasOwnProperty(a)) {
             root.createItemizedHeader(SP_KEYWORD_MAPPING_5[a], s);
+            if (extend) {
+                root.setLocalSharedVariable('extend', extend.slice(0, -1).split(','));
+            }
         }
     }, function (root, string) {
-        var [ , key, a, s ] = this.match(string);
+        var [ , extend, key, a, s ] = this.match(string);
         if (SP_KEYWORD_MAPPING_5.hasOwnProperty(a)) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.ReservedItemizable(a) } ${ SFormat.Keyword('by') } ${ SP_KEYWORD_MAPPING_4[s] ? SFormat.ReservedItemized(s) : SFormat.Normal(s) }`;
+            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.ReservedItemizable(a) } ${ SFormat.Keyword('by') } ${ SP_KEYWORD_MAPPING_4[s] ? SFormat.ReservedItemized(s) : SFormat.Normal(s) }`;
         } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Error(a) } ${ SFormat.Keyword('by') } ${ SP_KEYWORD_MAPPING_4[s] ? SFormat.ReservedItemized(s) : SFormat.Normal(s) }`;
+            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Error(a) } ${ SFormat.Keyword('by') } ${ SP_KEYWORD_MAPPING_4[s] ? SFormat.ReservedItemized(s) : SFormat.Normal(s) }`;
         }
     }),
     // Global
@@ -1662,7 +1682,7 @@ const SettingsCommands = [
         var val = root.constants.getValue(prefix, value);
 
         if (val != undefined) {
-            root.setLocalVariable('alias', val);
+            root.setAlias(val);
         }
     }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -1825,6 +1845,30 @@ const SettingsCommands = [
         }
 
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ rarg } ${ arg }`;
+    }),
+    // padding
+    new SettingsCommand(/^(padding) (.+)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setLocalVariable(key, a);
+    }, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+    }),
+    // Create new type
+    new SettingsCommand(/^(define) (\w+)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.createDummy(a);
+    }, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+    }),
+    // Extend
+    new SettingsCommand(/^(extend) (\w+)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.setExtend(a);
+    }, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
     })
 ];
 
@@ -2053,6 +2097,7 @@ class Settings {
         return {
             func: this.func,
             vars: this.cvars,
+            lists: {},
             // Constants have to be propagated through the environment
             constants: this.constants
         }
@@ -2065,6 +2110,8 @@ class Settings {
         this.c = [];
         this.vars = {};
         this.cvars = {};
+        this.lists = {};
+        this.dummies = {};
         this.func = {};
         this.extras = [];
         this.stats = [];
@@ -2079,6 +2126,7 @@ class Settings {
         // Temporary
         this.currentCategory = null;
         this.currentHeader = null;
+        this.dummy = null;
         this.currentExtra = null;
         this.beta = SiteOptions.ast;
 
@@ -2135,6 +2183,11 @@ class Settings {
 
     // Evaluate constants
     evaluateConstants (players, sim, perf, tabletype) {
+        if (tabletype == TableType.Group) {
+            this.lists.joined = players.joined;
+            this.lists.kicked = players.kicked;
+        }
+
         // Add simulator output
         if (sim) {
             var array = players.slice(0, perf);
@@ -2377,7 +2430,14 @@ class Settings {
     }
 
     pushExtraRow () {
+        this.pushDummy();
         if (this.currentExtra) {
+            for (var ex of this.currentExtra.extend || []) {
+                if (this.dummies[ex]) {
+                    merge(this.currentExtra, this.dummies[ex].content);
+                }
+            }
+
             merge(this.currentExtra, this.shared);
 
             this.extras.push(this.currentExtra);
@@ -2440,6 +2500,12 @@ class Settings {
 
             if (this.currentHeader.expr) {
                 if (!this.currentHeader.clean) {
+                    for (var ex of this.currentHeader.extend || []) {
+                        if (this.dummies[ex]) {
+                            merge(this.currentHeader, this.dummies[ex].content);
+                        }
+                    }
+
                     merge(this.currentHeader, this.categoryShared);
                     merge(this.currentHeader, this.shared);
                 } else {
@@ -2450,7 +2516,7 @@ class Settings {
                 }
 
                 if (this.currentHeader.background && this.currentHeader.expc == undefined) {
-                    this.setLocalArrayVariable('color', 'd', 0, this.currentHeader.background);
+                    this.setLocalArrayVariable('color', 'db', 0, this.currentHeader.background);
                 }
 
                 this.currentCategory.h.push(this.currentHeader);
@@ -2474,10 +2540,34 @@ class Settings {
         };
     }
 
+    createDummy (name) {
+        this.pushHeader();
+        this.dummy = {
+            name: name,
+            content: {
+
+            }
+        }
+    }
+
+    pushDummy () {
+        if (this.dummy) {
+            this.dummies[this.dummy.name] = this.dummy;
+        }
+
+        this.dummy = null;
+    }
+
     pushCategory () {
         this.pushHeader();
         if (this.currentCategory) {
             if (ReservedCategories[this.currentCategory.name]) {
+                for (var ex of this.currentCategory.extend || []) {
+                    if (this.dummies[ex]) {
+                        merge(this.currentCategory, this.dummies[ex].content);
+                    }
+                }
+
                 merge(this.currentCategory, this.shared);
             }
 
@@ -2494,6 +2584,8 @@ class Settings {
     setLocalSharedVariable (key, value) {
         if (this.currentExtra) {
             this.currentExtra[key] = value
+        } else if (this.dummy) {
+            this.dummy.content[key] = value;
         } else if (this.currentHeader) {
             this.setLocalVariable(key, value);
         } else if (this.currentCategory && ReservedCategories[this.currentCategory.name]) {
@@ -2508,11 +2600,65 @@ class Settings {
     setLocalVariable (key, value) {
         if (this.currentExtra) {
             this.currentExtra[key] = value;
+        } else if (this.dummy) {
+            this.dummy.content[key] = value;
         } else {
             var object = this.currentCategory && ReservedCategories[this.currentCategory.name] ? this.currentCategory : this.currentHeader;
             if (object) {
                 object[key] = value;
             }
+        }
+    }
+
+    setAlias (value) {
+        if (this.currentExtra) {
+            this.currentExtra.alias = value;
+        } else if (this.dummy) {
+            this.dummy.content[key] = value;
+        } else if (this.currentHeader) {
+            this.currentHeader.alias = value;
+        } else if (this.currentCategory) {
+            this.currentCategory.alias = value;
+        }
+    }
+
+    setExtend (value) {
+        if (this.currentExtra) {
+            if (!this.currentExtra.extend) {
+                this.currentExtra.extend = [];
+            }
+
+            this.currentExtra.extend.push(value);
+        } else if (this.dummy) {
+            if (!this.dummy.content.extend) {
+                this.dummy.content.extend = [];
+            }
+
+            this.dummy.content.extend.push(value);
+        } else if (this.currentHeader) {
+            if (!this.currentHeader.extend) {
+                this.currentHeader.extend = [];
+            }
+
+            this.currentHeader.extend.push(value);
+        } else if (this.currentCategory && ReservedCategories[this.currentCategory.name]) {
+            if (!this.currentCategory.extend) {
+                this.currentCategory.extend = [];
+            }
+
+            this.currentCategory.extend.push(value);
+        } else if (this.currentCategory) {
+            if (!this.categoryShared.extend) {
+                this.categoryShared.extend = [];
+            }
+
+            this.categoryShared.extend.push(value);
+        } else {
+            if (!this.shared.extend) {
+                this.shared.extend = [];
+            }
+
+            this.shared.extend.push(value);
         }
     }
 
@@ -2523,6 +2669,12 @@ class Settings {
             }
 
             this.currentExtra[key].push([ condition, reference, value, reference ]);
+        } else if (this.dummy) {
+            if (!this.dummy.content[key]) {
+                this.dummy.content[key] = [];
+            }
+
+            this.dummy.content[key].push([ condition, reference, value, reference ]);
         } else {
             var object = this.currentCategory && ReservedCategories[this.currentCategory.name] ? this.currentCategory : this.currentHeader;
             if (object) {
