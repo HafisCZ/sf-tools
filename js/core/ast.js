@@ -51,10 +51,17 @@ const AST_FUNCTIONS = {
 const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
 class AST {
-    constructor (string, beta = false) {
+    static create (str, beta = false) {
+        if (beta) {
+            return new AST2(str);
+        } else {
+            return new AST(str);
+        }
+    }
+
+    constructor (string) {
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(AST_REGEXP).map(token => token.trim()).filter(token => token.length);
         this.root = false;
-        this.beta = beta;
 
         if (this.tokens.length == 0) {
             this.empty = true;
@@ -202,7 +209,7 @@ class AST {
                 var args = this.tokens.slice(argStart + 1, argEnd);
                 var expr = this.tokens.slice(exprStart + 1, exprEnd);
 
-                var ast = new AST(expr.join(''), this.beta);
+                var ast = AST.create(expr.join(''));
                 if (ast.isValid()) {
                     lambdas[name] = {
                         arg: args.filter(x => x != ','),
@@ -572,11 +579,7 @@ class AST {
     }
 
     eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants() }, scope = undefined, extra = undefined) {
-        if (this.beta) {
-            return this.evalInternalBeta(player, reference, environment, scope, extra, this.root);
-        } else {
-            return this.evalInternal(player, reference, environment, scope, extra, this.root);
-        }
+        return this.evalInternal(player, reference, environment, scope, extra, this.root);
     }
 
     evalInternal (player, reference, environment, scope, extra, node) {
@@ -892,10 +895,421 @@ class AST {
             return node;
         }
     }
+}
+
+const OPERATORS_U = {
+    '-': a => -a,
+    '!': a => a ? true : false
+};
+
+class AST2 {
+    constructor (string) {
+        this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(AST_REGEXP).map(token => token.trim()).filter(token => token.length);
+        this.root = false;
+
+        if (this.tokens.length == 0) {
+            this.empty = true;
+        } else {
+            var count = 0;
+            for (var token of this.tokens) {
+                if (token == '(') {
+                    count++;
+                } else if (token == ')') {
+                    count--;
+                }
+            }
+
+            if (count == 0) {
+                this.root = this.evalExpression();
+                this.root = this.postProcess(this.root);
+            } else {
+                this.empty = true;
+            }
+        }
+    }
+
+    // Peek at next token
+    peek (i = 0) {
+        return this.tokens[i];
+    }
+
+    // Get next token
+    get () {
+        var v = this.tokens.shift();
+        return isNaN(v) ? v : Number(v);
+    }
+
+    // Is token a string
+    isString (token) {
+        return (token[0] == '\'' && token[token.length - 1] == '\'') || (token[0] == '\"' && token[token.length - 1] == '\"');
+    }
+
+    // Get next token as string
+    getString (cast = false) {
+        var token = this.get();
+        if (this.isString(token)) {
+            return {
+                raw: true,
+                args: token.slice(1, token.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\'')
+            };
+        } else {
+            if (cast) {
+                return {
+                    raw: true,
+                    args: token
+                };
+            } else {
+                return token;
+            }
+        }
+    }
+
+    // Is token a unary operation
+    isUnaryOperator (token) {
+        return token == '-' || token == '!';
+    }
+
+    // Get next token as unary operator
+    getUnaryOperator () {
+        return {
+            op: AST_OPERATORS[this.get() == '-' ? 'u-' : '!'],
+            args: [ this.getBlock() ]
+        }
+    }
+
+    // Get token block
+    getBlock () {
+        return this.peek() == '(' ? this.evalBracketExpression() : this.getVal();
+    }
+
+    // Is global function
+    isFunction (token, follow) {
+        return /[_a-zA-Z]\w*/.test(token) && follow == '(';
+    }
+
+    // Get global function
+    getFunction () {
+        var name = this.get();
+        this.get();
+
+        var args = [];
+
+        if (this.peek() == ')') {
+            this.get();
+            return {
+                op: name,
+                args: args
+            };
+        } else {
+            do {
+                args.push(this.evalExpression());
+            } while (this.get() == ',');
+
+            return {
+                op: name,
+                args: args
+            }
+        }
+    }
+
+    // Is array
+    isArray (token) {
+        return token == '[';
+    }
+
+    // Get array
+    getArray () {
+        this.get();
+
+        var args = [];
+
+        if (this.peek() == ']') {
+            this.get();
+            return {
+                op: '[',
+                args: args
+            }
+        }
+
+        do {
+            args.push({
+                key: args.length,
+                val: this.evalExpression()
+            });
+        } while (this.get() == ',');
+
+        return {
+            op: '[',
+            args: args
+        }
+    }
+
+    // Is object
+    isObject (token) {
+        return token == '{';
+    }
+
+    // Get array
+    getObject () {
+        this.get();
+
+        var args = [];
+
+        if (this.peek() == '}') {
+            this.get();
+            return {
+                op: '{',
+                args: args
+            }
+        }
+
+        do {
+            if (this.peek(1) == ':') {
+                var key = this.getString();
+                this.get();
+
+                args.push({
+                    key: key,
+                    val: this.evalExpression()
+                });
+            } else {
+                args.push({
+                    key: args.length,
+                    val: this.evalExpression()
+                });
+            }
+        } while (this.get() == ',');
+
+        return {
+            op: '{',
+            args: args
+        }
+    }
+
+    // Is object access
+    isObjectAccess () {
+        var token = this.peek();
+        return token == '.' || token == '[';
+    }
+
+    // Get object access
+    getObjectAccess (node) {
+        var type = this.get();
+
+        var name = undefined;
+        if (type == '.') {
+            name = this.getString(true);
+        } else {
+            name = this.evalExpression();
+            this.get();
+        }
+
+        if (this.peek() == '(') {
+            this.get();
+
+            var args = [];
+
+            if (this.peek() == ')') {
+                this.get();
+            } else {
+                do {
+                    args.push(this.evalExpression());
+                } while (this.get() == ',');
+            }
+
+            return {
+                op: '(a',
+                args: [ node, name, args ]
+            }
+        } else {
+            return {
+                op: '[a',
+                args: [ node, name ]
+            }
+        }
+    }
+
+    getVal () {
+        var node = undefined;
+
+        var token = this.peek();
+        var follow = this.peek(1);
+
+        if (token == undefined) {
+            // Ignore undefined value
+        } else if (this.isString(token)) {
+            // Get string
+            node = this.getString();
+        } else if (this.isUnaryOperator(token)) {
+            // Get unary operator
+            node = this.getUnaryOperator();
+        } else if (this.isFunction(token, follow)) {
+            // Get function
+            node = this.getFunction();
+        } else if (this.isArray(token)) {
+            // Get array
+            node = this.getArray();
+        } else if (this.isObject(token)) {
+            // Get object
+            node = this.getObject();
+        } else {
+            // Get node
+            node = this.get();
+        }
+
+        while (this.isObjectAccess()) {
+            // Get object access
+            node = this.getObjectAccess(node);
+        }
+
+        return node;
+    }
+
+    evalBracketExpression () {
+        this.get();
+        var v = this.evalExpression();
+        this.get();
+        return v;
+    }
+
+    evalRankedExpression () {
+        var left = this.getBlock(), right, op;
+        while (['*', '/'].includes(this.peek())) {
+            op = this.get();
+            left = {
+                args: [ left, this.getBlock() ],
+                op: AST_OPERATORS[op]
+            }
+        }
+
+        return left;
+    }
+
+    evalSimpleExpression () {
+        var left = this.evalRankedExpression(), right, op;
+        while (['+', '-', '%'].includes(this.peek())) {
+            op = this.get();
+
+            if (this.peek() == '(') {
+                right = this.evalBracketExpression();
+            } else {
+                right = this.evalRankedExpression();
+            }
+
+            left = {
+                args: [ left, right ],
+                op: AST_OPERATORS[op]
+            }
+        }
+
+        return left;
+    }
+
+    evalBoolExpression () {
+        var left = this.evalSimpleExpression(), right, op;
+        while (['>', '<', '<=', '>=', '==', '!='].includes(this.peek())) {
+            op = this.get();
+
+            if (this.peek() == '(') {
+                right = this.evalBracketExpression();
+            } else {
+                right = this.evalSimpleExpression();
+            }
+
+            left = {
+                args: [ left, right ],
+                op: AST_OPERATORS[op]
+            }
+        }
+
+        return left;
+    }
+
+    evalBoolMergeExpression () {
+        var left = this.evalBoolExpression(), right, op;
+        while (['||', '&&'].includes(this.peek())) {
+            op = this.get();
+
+            if (this.peek() == '(') {
+                right = this.evalBracketExpression();
+            } else {
+                right = this.evalBoolExpression();
+            }
+
+            left = {
+                args: [ left, right ],
+                op: AST_OPERATORS[op]
+            }
+        }
+
+        return left;
+    }
+
+    evalExpression () {
+        var left = this.evalBoolMergeExpression(), tr, fl;
+        if (this.peek() == '?') {
+            this.get();
+
+            if (this.peek() == '(') {
+                tr = this.evalBracketExpression();
+            } else {
+                tr = this.evalBoolMergeExpression();
+            }
+
+            if (this.peek() == ':') {
+                this.get();
+
+                if (this.peek() == '(') {
+                    fl = this.evalBracketExpression();
+                } else {
+                    fl = this.evalBoolMergeExpression();
+                }
+
+                left = {
+                    args: [ left, tr, fl ],
+                    op: AST_OPERATORS['?']
+                }
+            }
+        }
+
+        return left;
+    }
+
+    isValid () {
+        return this.tokens.length == 0 && !this.empty;
+    }
+
+    toString (node = this.root) {
+        if (typeof(node) == 'object') {
+            return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.args.map(arg => this.toString(arg)).join(', ') })`;
+        } else {
+            return node;
+        }
+    }
+
+    postProcess (node) {
+        if (typeof(node) == 'object' && !node.raw) {
+            if (node.args) {
+                for (var i = 0; i < node.args.length; i++) {
+                    node.args[i] = this.postProcess(node.args[i]);
+                }
+            }
+
+            if (node.op && AST_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a)).length == node.args.length) {
+                return node.op(node.args);
+            }
+        }
+
+        return node;
+    }
+
+    eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants() }, scope = undefined, extra = undefined) {
+        return this.evalInternal(player, reference, environment, scope, extra, this.root);
+    }
 
     // Evaluate a node into array, used for array functions
     evalToArray (player, reference, environment, scope, extra, node) {
-        var generated = this.evalInternalBeta(player, reference, environment, scope, extra, node);
+        var generated = this.evalInternal(player, reference, environment, scope, extra, node);
         if (!generated || typeof(generated) != 'object') {
             return [];
         } else {
@@ -904,14 +1318,14 @@ class AST {
     };
 
     // Evaluate a node (beta)
-    evalInternalBeta (player, reference, environment, scope, extra, node) {
+    evalInternal (player, reference, environment, scope, extra, node) {
         if (typeof(node) == 'object') {
-            if (node.noeval) {
-                return node.args[0];
+            if (node.raw) {
+                return node.args;
             } else if (typeof(node.op) == 'string') {
                 if (node.op == 'format' && node.args.length > 0) {
-                    var str = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[0]);
-                    var arg = node.args.slice(1).map(a => this.evalInternalBeta(player, reference, environment, scope, extra, a));
+                    var str = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
+                    var arg = node.args.slice(1).map(a => this.evalInternal(player, reference, environment, scope, extra, a));
 
                     for (key in arg) {
                         str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
@@ -921,7 +1335,7 @@ class AST {
                 } else if (['each', 'filter', 'map'].includes(node.op) && node.args.length == 2) {
                     // Multiple array functions condensed
                     var array = this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
-                    var mapper = environment.func[node.args[1]] || this.lambdas[node.args[1]];
+                    var mapper = environment.func[node.args[1]];
                     var values = [];
 
                     // Does not allow 'this' in any scenario
@@ -939,9 +1353,9 @@ class AST {
                         }
                     } else {
                         if (array.segmented) {
-                            values = array.map(obj => this.evalInternalBeta(obj[0], obj[1], environment, undefined, undefined, node.args[1]));
+                            values = array.map(obj => this.evalInternal(obj[0], obj[1], environment, undefined, undefined, node.args[1]));
                         } else {
-                            values = array.map(obj => this.evalInternalBeta(player, reference, environment, undefined, obj, node.args[1]));
+                            values = array.map(obj => this.evalInternal(player, reference, environment, undefined, obj, node.args[1]));
                         }
                     }
 
@@ -957,63 +1371,56 @@ class AST {
                 } else if (node.op == 'array') {
                     // Simple toArray function
                     return this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
-                } else if (node.op == '{') {
+                } else if (node.op == '{' || node.op == '[') {
                     // Simple object or array constructor
-                    var obj = node.raw ? [] : {};
+                    var obj = node.op == '{' ? {} : [];
 
                     for (var { key, val } of node.args) {
-                        obj[this.evalInternalBeta(player, reference, environment, scope, extra, key)] = this.evalInternalBeta(player, reference, environment, scope, extra, val);
+                        obj[this.evalInternal(player, reference, environment, scope, extra, key)] = this.evalInternal(player, reference, environment, scope, extra, val);
                     }
 
                     return obj;
-                } else if (environment.func[node.op] || this.lambdas[node.op]) {
-                    var mapper = environment.func[node.op] || this.lambdas[node.op];
+                } else if (environment.func[node.op]) {
+                    var mapper = environment.func[node.op];
                     var scope2 = {};
                     for (var i = 0; i < mapper.arg.length; i++) {
-                        scope2[mapper.arg[i]] = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[i]);
+                        scope2[mapper.arg[i]] = this.evalInternal(player, reference, environment, scope, extra, node.args[i]);
                     }
 
                     return mapper.ast.eval(player, reference, environment, scope2, extra);
                 } else if (node.op == '[a') {
-                    var object = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[0]);
+                    var object = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
                     if (object) {
-                        return object[this.evalInternalBeta(player, reference, environment, scope, extra, node.args[1])];
+                        return object[this.evalInternal(player, reference, environment, scope, extra, node.args[1])];
                     } else {
                         return undefined;
                     }
                 } else if (node.op == '(a') {
-                    var object = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[0]);
-                    var func = node.args[1];
+                    var object = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
+                    var func = this.evalInternal(player, reference, environment, scope, extra, node.args[1]);
 
                     if (object != undefined && object[func]) {
-                        return object[func](... node.args[2].map(param => this.evalInternalBeta(player, reference, environment, scope, extra, param)));
+                        return object[func](... node.args[2].map(param => this.evalInternal(player, reference, environment, scope, extra, param)));
                     } else {
                         return undefined;
                     }
                 } else if (SP_KEYWORDS.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple call
-                    var obj = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[0]);
+                    var obj = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
                     return obj ? SP_KEYWORDS[node.op].expr(obj, null, environment) : undefined;
                 } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple indirect call
-                    var obj = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[0]);
+                    var obj = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
                     return obj ? SP_KEYWORDS_INDIRECT[node.op].expr(player, null, environment, obj) : undefined;
-                } else if (environment.vars[node.op] && environment.vars[node.op].ast.lambdas['_1']) {
-                    var mapper = environment.vars[node.op].ast.lambdas['_1'];
-
-                    var scope2 = {};
-                    for (var i = 0; i < mapper.arg.length; i++) {
-                        scope2[mapper.arg[i]] = this.evalInternalBeta(player, reference, environment, scope, extra, node.args[i]);
-                    }
-
-                    return mapper.ast.eval(player, reference, environment, scope2, extra);
+                } else if (AST_FUNCTIONS.hasOwnProperty(node.op)) {
+                    return AST_FUNCTIONS[node.op](node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg)));
                 } else {
                     // Return undefined
                     return undefined;
                 }
             } else if (node.op) {
                 // Return processed node
-                return node.op(node.args.map(arg => this.evalInternalBeta(player, reference, environment, scope, extra, arg)));
+                return node.op(node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg)));
             } else {
                 // Return node in case something does not work :(
                 return node;

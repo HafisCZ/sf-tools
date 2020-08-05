@@ -1270,7 +1270,7 @@ const SettingsCommands = [
     // set static
     new SettingsCommand(/^(set) (\w+[\w ]*) with all as (.+)$/, function (root, string) {
         var [ , key, name, asts ] = this.match(string);
-        var ast = new AST(asts, root.beta);
+        var ast = AST.create(asts, root.beta);
         if (ast.isValid()) {
             root.setVariable(name, true, ast);
         }
@@ -1282,7 +1282,7 @@ const SettingsCommands = [
     // set with - Create a function
     new SettingsCommand(/^(set) (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/, function (root, string) {
         var [ , key, name, args, a ] = this.match(string);
-        var ast = new AST(a, root.beta);
+        var ast = AST.create(a, root.beta);
         if (ast.isValid()) {
             root.setFunction(name, args.split(',').map(arg => arg.trim()), ast);
         }
@@ -1294,7 +1294,7 @@ const SettingsCommands = [
     // set - Create a variable
     new SettingsCommand(/^(set) (\w+[\w ]*) as (.+)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        var ast = new AST(a, root.beta);
+        var ast = AST.create(a, root.beta);
         if (ast.isValid()) {
             root.setVariable(name, false, ast);
         }
@@ -1386,7 +1386,7 @@ const SettingsCommands = [
     // Create new statistics row
     new SettingsCommand(/^(show) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        var ast = new AST(a, root.beta);
+        var ast = AST.create(a, root.beta);
         if (ast.isValid()) {
             root.addExtraRow(name, ast);
         }
@@ -1500,7 +1500,7 @@ const SettingsCommands = [
     // Create new statistics row
     new SettingsCommand(/^(statistics) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        var ast = new AST(a, root.beta);
+        var ast = AST.create(a, root.beta);
         if (ast.isValid()) {
             root.addExtraStatistics(name, ast);
         }
@@ -1626,7 +1626,7 @@ const SettingsCommands = [
         if (ARG_FORMATTERS[arg]) {
             root.setLocalVariable('format', ARG_FORMATTERS[arg]);
         } else {
-            var ast = new AST(arg, root.beta);
+            var ast = AST.create(arg, root.beta);
             if (ast.isValid()) {
                 root.setLocalVariable('format', (player, reference, env, val) => {
                     return ast.eval(player, reference, env, val);
@@ -1645,7 +1645,7 @@ const SettingsCommands = [
     // order by
     new SettingsCommand(/^(order by) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
-        var ast = new AST(arg, root.beta);
+        var ast = AST.create(arg, root.beta);
         if (ast.isValid()) {
             root.setLocalVariable('order', (player, reference, env, val, extra) => {
                 return ast.eval(player, reference, env, val, extra);
@@ -1679,7 +1679,7 @@ const SettingsCommands = [
     // expr - Set expression to the column
     new SettingsCommand(/^(expr|e\:) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        var ast = new AST(a, root.beta);
+        var ast = AST.create(a, root.beta);
         if (ast.isValid()) {
             root.setLocalVariable('expr', (player, reference, env, scope) => {
                 return ast.eval(player, reference, env, scope);
@@ -1693,7 +1693,7 @@ const SettingsCommands = [
     // expc - Set color expression to the column
     new SettingsCommand(/^(expc|c\:) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        var ast = new AST(a, root.beta);
+        var ast = AST.create(a, root.beta);
         if (ast.isValid()) {
             root.setLocalVariable('expc', (player, reference, env, val) => {
                 return getCSSColor(ast.eval(player, reference, env, val));

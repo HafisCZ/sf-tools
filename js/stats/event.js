@@ -949,7 +949,7 @@ class BrowseView extends View {
                     });
                     this.recalculate = true;
                 } else if (key == 'e') {
-                    var ast = new AST(arg);
+                    var ast = AST.create(arg);
                     if (ast.isValid()) {
                         terms.push({
                             test: (arg, player, timestamp) => arg.eval(player, player, this.table.settings, player),
@@ -1051,6 +1051,7 @@ class BrowseView extends View {
                 values: subref
             }).dropdown('setting', 'onChange', (value, text) => {
                 this.reference = value;
+                this.recalculate = true;
                 this.$filter.trigger('change');
             });
 
@@ -1386,7 +1387,7 @@ class PlayersView extends View {
                         arg: arg.toLowerCase()
                     });
                 } else if (key == 'e') {
-                    var ast = new AST(arg);
+                    var ast = AST.create(arg);
                     if (ast.isValid()) {
                         terms.push({
                             test: (arg, player) => arg.eval(player, player, this.settings, player),
