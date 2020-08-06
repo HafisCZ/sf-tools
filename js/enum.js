@@ -863,7 +863,17 @@ const NAME_MONSTER = {
     896: 'Cannoturtle',
     897: 'Unhere',
     898: 'Tritosting',
-    899: 'Hydrospir'
+    899: 'Hydrospir',
+    1330: 'KeysJore',
+    1331: 'Aypierre',
+    1332: 'Mandzio',
+    1333: 'Boruciak',
+    1334: 'Fifqo',
+    1335: 'Zsoze',
+    1336: 'ZeboPL',
+    1337: 'Dhalucard',
+    1338: 'Earliboy',
+    1339: 'Skate702'
 }
 
 const ATTACK_TYPES = {
