@@ -1341,21 +1341,21 @@ class AST2 {
                     // Does not allow 'this' in any scenario
                     if (mapper) {
                         if (array.segmented) {
-                            values = array.map(obj => mapper.ast.eval(obj[0], obj[1], environment, undefined, mapper.arg.reduce((c, a, i) => {
+                            values = array.map(obj => mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.arg.reduce((c, a, i) => {
                                 c[a] = obj[i];
                                 return c;
                             }, {})));
                         } else {
-                            values = array.map(obj => mapper.ast.eval(player, reference, environment, undefined, mapper.arg.reduce((c, a) => {
+                            values = array.map(obj => mapper.ast.eval(player, reference, environment, obj, mapper.arg.reduce((c, a) => {
                                 c[a] = obj;
                                 return c;
                             }, {})));
                         }
                     } else {
                         if (array.segmented) {
-                            values = array.map(obj => this.evalInternal(obj[0], obj[1], environment, undefined, undefined, node.args[1]));
+                            values = array.map(obj => this.evalInternal(obj[0], obj[1], environment, obj[0], undefined, node.args[1]));
                         } else {
-                            values = array.map(obj => this.evalInternal(player, reference, environment, undefined, obj, node.args[1]));
+                            values = array.map(obj => this.evalInternal(player, reference, environment, obj, obj, node.args[1]));
                         }
                     }
 
