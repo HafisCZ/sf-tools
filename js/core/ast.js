@@ -1367,7 +1367,10 @@ class AST2 {
                     }
                 } else if (node.op == 'slice' && (node.args.length == 2 || node.args.length == 3)) {
                     // Simple slice
-                    return this.evalToArray(player, reference, environment, scope, extra, node.args[0]).slice(node.args[1], node.args[2]);
+                    var array = this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
+                    var sliced = array.slice(node.args[1], node.args[2]);
+                    sliced.segmented = array.segmented;
+                    return sliced;
                 } else if (node.op == 'array') {
                     // Simple toArray function
                     return this.evalToArray(player, reference, environment, scope, extra, node.args[0]);

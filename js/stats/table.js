@@ -2293,12 +2293,12 @@ class Settings {
 
                 if (tabletype == TableType.Group) {
                     data.value = data.ast.eval(players[0].player, undefined, this, scope);
-                    if (isNaN(data.value)) {
+                    if (isNaN(data.value) && typeof(data.value) != 'object') {
                         data.value = undefined;
                     }
 
                     var val = data.ast.eval(players[0].compare, undefined, this, scope2);
-                    if (isNaN(val)) {
+                    if (isNaN(val) && typeof(val) != 'object') {
                         val = undefined;
                     }
 
@@ -2308,13 +2308,13 @@ class Settings {
                         arg: data.arg
                     };
                 } else {
-                    data.value = data.ast.eval(null, undefined, this, scope);
-                    if (isNaN(data.value)) {
+                    data.value = data.ast.eval(undefined, undefined, this, scope);
+                    if (isNaN(data.value) && typeof(data.value) != 'object') {
                         data.value = undefined;
                     }
 
-                    var val = data.ast.eval(null, undefined, this, scope2);
-                    if (isNaN(val)) {
+                    var val = data.ast.eval(undefined, undefined, this, scope2);
+                    if (isNaN(val) && typeof(val) != 'object') {
                         val = undefined;
                     }
 
