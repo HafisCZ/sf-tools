@@ -1065,7 +1065,7 @@ class FightSimulator {
         var critical = false;
 
         if (!skipped) {
-            damage = rage * (Math.random() * (1 + weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
+            damage = rage * (Math.random() * (weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
 
             critical = getRandom(source.CriticalChance);
             if (critical) {
