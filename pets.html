@@ -147,8 +147,11 @@
         <div class="ui main container">
             <!-- Header -->
             <div class="ui five columns middle aligned grid">
-                <div class="two wide column">
-
+                <div class="two wide column" data-position="right center" data-tooltip="Keep unchecked!">
+                    <div class="ui checkbox" id="useArmor">
+                        <input type="checkbox" name="useArmorCheckbox">
+                        <label for="useArmorCheckbox">Use Armor</label>
+                    </div>
                 </div>
                 <div class="three wide column">
                     <div class="ui two small buttons">
@@ -693,6 +696,12 @@
             var petA = new PetController($('#sim-a'), 0);
             var petB = new PetController($('#sim-b'), 1);
 
+            var useArmorCheckbox = $('#useArmor').checkbox('uncheck').change((event) => {
+                useArmor = $(event.currentTarget).checkbox('is checked');
+            });
+
+            var useArmor = false;
+
             $('#sim-save').click(() => {
                 localStorage['pets/0'] = JSON.stringify([
                     petA.getData(),
@@ -733,7 +742,8 @@
 
                         worker.postMessage({
                             mode: SimulatorType.Pet,
-                            players: [a, b]
+                            players: [a, b],
+                            useArmor: useArmor
                         });
                     }
                 }
@@ -776,7 +786,8 @@
 
                         worker.postMessage({
                             mode: SimulatorType.PetMap,
-                            players: [a, b]
+                            players: [a, b],
+                            useArmor: useArmor
                         });
                     }
                 }
@@ -828,7 +839,8 @@
                             worker.postMessage({
                                 mode: SimulatorType.PetMap,
                                 players: [a, b[i]],
-                                tracking: i
+                                tracking: i,
+                                useArmor: useArmor
                             });
                         }
                     }
@@ -881,7 +893,8 @@
                             worker.postMessage({
                                 mode: SimulatorType.PetMap,
                                 players: [a, b[i]],
-                                tracking: i
+                                tracking: i,
+                                useArmor: useArmor
                             });
                         }
                     }
