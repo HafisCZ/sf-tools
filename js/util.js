@@ -26,6 +26,64 @@ function formatDuration (duration) {
     return trail(days, Math.max(2, days.toString().length)) + ':' + trail(hours, 2) + ':' + trail(minutes, 2);
 }
 
+const NumberLabels = [
+    [1E123, 'Quadrag'],
+    [1E120, 'Noventrig'],
+    [1E117, 'Octotrig'],
+    [1E114, 'Septentrig'],
+    [1E111, 'Sestrig'],
+    [1E108, 'Quinquatrig'],
+    [1E105, 'Quattuortrig'],
+    [1E102, 'Trestrig'],
+    [1E99, 'Duotrig'],
+    [1E96, 'Untrig'],
+    [1E93, 'Trig'],
+    [1E90, 'Novemvig'],
+    [1E87, 'Octovig'],
+    [1E84, 'Septemvig'],
+    [1E81, 'Sesvig'],
+    [1E78, 'Quinquavig'],
+    [1E75, 'Quattuorvig'],
+    [1E72, 'Tresvig'],
+    [1E69, 'Duovig'],
+    [1E66, 'Unvig'],
+    [1E63, 'Vig'],
+    [1E60, 'Novendec'],
+    [1E57, 'Octodec'],
+    [1E54, 'Septendec'],
+    [1E51, 'Sedec'],
+    [1E48, 'Quinquadec'],
+    [1E45, 'Quattuordec'],
+    [1E42, 'Tredec'],
+    [1E39, 'Duodec'],
+    [1E36, 'Undec'],
+    [1E33, 'Dec'],
+    [1E30, 'Non'],
+    [1E27, 'Oct'],
+    [1E24, 'Sept'],
+    [1E21, 'Sex'],
+    [1E18, 'Quint'],
+    [1E15, 'Quad'],
+    [1E12, 'T'],
+    [1E9, 'B'],
+    [1E6, 'M']
+];
+
+function formatAsNamedNumber(n) {
+    if (n < NumberLabels[NumberLabels.length - 1][0]) {
+        return n.toString().split('').map((char, i, array) => ((array.length - 1 - i) % 3 == 2) && i != 0 ? (' ' + char) : char).join('');
+    } else if (n > NumberLabels[0][0]) {
+        return n.toExponential(3).replace('+', '');
+    } else {
+        for (let i = 0, unit; unit = NumberLabels[i]; i++) {
+            if (n >= unit[0]) {
+                var num = n / unit[0];
+                return (num.toString().includes('.') && num.toString().split('.')[1].length > 3 ? num.toFixed(3) : num).toString().split('e')[0] + ' ' + unit[1];
+            }
+        }
+    }
+}
+
 function getColorFromGradientObj (obj, sample) {
     var stops = Object.entries(obj).map(e => [ Number(e[0]), e[1] ]);
     stops.sort((a, b) => a[0] - b[0]);

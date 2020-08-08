@@ -48,7 +48,7 @@ const AST_FUNCTIONS = {
     }
 };
 
-const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
+const AST_REGEXP = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
 class AST {
     static create (str, beta = false) {
@@ -972,7 +972,7 @@ class AST2 {
     // Get next token as unary operator
     getUnaryOperator () {
         return {
-            op: AST_OPERATORS[this.get() == '-' ? 'u-' : '!'],
+            op: SP_OPERATORS[this.get() == '-' ? 'u-' : '!'],
             args: [ this.getBlock() ]
         }
     }
@@ -1178,7 +1178,7 @@ class AST2 {
             op = this.get();
             left = {
                 args: [ left, this.getBlock() ],
-                op: AST_OPERATORS[op]
+                op: SP_OPERATORS[op]
             }
         }
 
@@ -1198,7 +1198,7 @@ class AST2 {
 
             left = {
                 args: [ left, right ],
-                op: AST_OPERATORS[op]
+                op: SP_OPERATORS[op]
             }
         }
 
@@ -1218,7 +1218,7 @@ class AST2 {
 
             left = {
                 args: [ left, right ],
-                op: AST_OPERATORS[op]
+                op: SP_OPERATORS[op]
             }
         }
 
@@ -1238,7 +1238,7 @@ class AST2 {
 
             left = {
                 args: [ left, right ],
-                op: AST_OPERATORS[op]
+                op: SP_OPERATORS[op]
             }
         }
 
@@ -1267,7 +1267,7 @@ class AST2 {
 
                 left = {
                     args: [ left, tr, fl ],
-                    op: AST_OPERATORS['?']
+                    op: SP_OPERATORS['?']
                 }
             }
         }
@@ -1295,8 +1295,8 @@ class AST2 {
                 }
             }
 
-            if (node.op && AST_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a)).length == node.args.length) {
-                return node.op(node.args);
+            if (node.op && SP_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a)).length == node.args.length) {
+                return node.op(... node.args);
             }
         }
 
@@ -1415,15 +1415,21 @@ class AST2 {
                     // Simple indirect call
                     var obj = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
                     return obj ? SP_KEYWORDS_INDIRECT[node.op].expr(player, null, environment, obj) : undefined;
-                } else if (AST_FUNCTIONS.hasOwnProperty(node.op)) {
-                    return AST_FUNCTIONS[node.op](node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg)));
+                } else if (SP_FUNCTIONS.hasOwnProperty(node.op)) {
+                    // Predefined function
+                    return SP_FUNCTIONS[node.op](... node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg)));
                 } else {
                     // Return undefined
                     return undefined;
                 }
             } else if (node.op) {
                 // Return processed node
-                return node.op(node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg)));
+                var value = node.op(... node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg)));
+                if (value == NaN) {
+                    return undefined;
+                } else {
+                    return value;
+                }
             } else {
                 // Return node in case something does not work :(
                 return node;
@@ -1474,6 +1480,246 @@ class AST2 {
         }
     }
 }
+
+const SP_FUNCTIONS = {
+    // Truncate number
+    'trunc': (value) => {
+        if (isNaN(value)) {
+            return undefined;
+        } else {
+            return Math.trunc(value);
+        }
+    },
+    // Ceiling
+    'ceil': (value) => {
+        if (isNaN(value)) {
+            return undefined;
+        } else {
+            return Math.ceil(value);
+        }
+    },
+    // Floor
+    'floor': (value) => {
+        if (isNaN(value)) {
+            return undefined;
+        } else {
+            return Math.floor(value);
+        }
+    },
+    // Round default or round to a number
+    'round': (value, div) => {
+        if (isNaN(value)) {
+            return undefined;
+        } else {
+            if (isNaN(div)) {
+                return Math.round(value);
+            } else {
+                return Math.round(value / div) * div;
+            }
+        }
+    },
+    // Abs
+    'abs': (value) => {
+        if (isNaN(value)) {
+            return undefined;
+        } else {
+            return Math.abs(value);
+        }
+    },
+    // Fixed format
+    'fixed': (value, decimals) => {
+        if (isNaN(value)) {
+            return undefined;
+        } else {
+            if (isNaN(decimals)) {
+                decimal = 0;
+            }
+
+            return value.toFixed(decimals);
+        }
+    },
+    // DateTime string
+    'datetime': (value) => {
+        if (isNaN(value) || value < 0) {
+            return undefined;
+        } else {
+            return formatDate(value);
+        }
+    },
+    // Duration string
+    'duration': (value) => {
+        if (isNaN(value)) {
+            return undefined;
+        } else {
+            return formatDuration(value);
+        }
+    },
+    // Date string
+    'date': (value) => {
+        if (isNaN(value) || value < 0) {
+            return undefined;
+        } else {
+            return formatDateOnly(value);
+        }
+    },
+    // Spaced number
+    'fnumber': (value, delim) => {
+        if (isNaN(value)) {
+            return undefined;
+        } else {
+            if (delim == undefined) {
+                delim = '&nbsp';
+            }
+
+            return formatAsSpacedNumber(value, delim);
+        }
+    },
+    // Exponential number
+    'enumber': (value, decimals) => {
+        if (isNaN(value)) {
+            return undefined;
+        } else {
+            if (isNaN(decimals)) {
+                decimals = 0;
+            }
+
+            return value.toExponential(decimals);
+        }
+    },
+    // Named number
+    'nnumber': (value) => {
+        if (isNaN(value)) {
+            return undefined;
+        } else {
+            return formatAsNamedNumber(value);
+        }
+    },
+    // Small
+    'small': (value) => {
+        return CellGenerator.Small(value);
+    },
+    // Minimum
+    'min': (... values) => {
+        return Math.min(... values.reduce((collector, value) => {
+            if (Array.isArray(value)) {
+                collector.push(... value);
+            } else {
+                collector.push(value);
+            }
+
+            return collector;
+        }, []));
+    },
+    // Maximum
+    'max': (... values) => {
+        return Math.max(... values.reduce((collector, value) => {
+            if (Array.isArray(value)) {
+                collector.push(... value);
+            } else {
+                collector.push(value);
+            }
+
+            return collector;
+        }, []));
+    },
+    // Sum
+    'sum': (... values) => {
+        return values.reduce((collector, value) => {
+            if (Array.isArray(value)) {
+                collector += value.reduce((a, b) => a + b, 0);
+            } else {
+                collector += value;
+            }
+
+            return collector;
+        }, 0);
+    },
+    // Current timestamp
+    'now': () => {
+        return Date.now();
+    },
+    // Random
+    'random': () => {
+        return Math.random();
+    },
+    // Debug Log
+    'log': (value) => {
+        console.log(value);
+
+        return value;
+    },
+    // Strigify
+    'stringify': (value) => {
+        return String(value);
+    },
+    // Range
+    'range': (min, max, value) => {
+        if (isNaN(min) || isNaN(max) || isNaN(value)) {
+            return undefined;
+        } else {
+            return (max - min) * value + min;
+        }
+    },
+    // Len or Size of array/object
+    'len': (value) => {
+        if (typeof(value) != 'object') {
+            return undefined;
+        } else {
+            if (Array.isArray(value)) {
+                return value.length;
+            } else {
+                return Object.keys(value).length;
+            }
+        }
+    },
+    // RGB
+    'rgb': (r, g, b) => {
+        if (isNaN(r) || isNaN(g) || isNaN(b)) {
+            return undefined;
+        } else {
+            return getColorFromRGBA(r, g, b);
+        }
+    },
+    // RGB
+    'rgba': (r, g, b, a) => {
+        if (isNaN(r) || isNaN(g) || isNaN(b) || isNaN(a)) {
+            return undefined;
+        } else {
+            return getColorFromRGBA(r, g, b, a);
+        }
+    },
+    // Gradient
+    'gradient': (from, to, value) => {
+        if (typeof(from) == 'object' && !isNaN(to)) {
+            return getColorFromGradientObj(from, to);
+        } else if (from == undefined || to == undefined || isNaN(value)) {
+            return undefined;
+        } else {
+            return getColorFromGradient(from, to, value);
+        }
+    }
+}
+
+const SP_OPERATORS = {
+    '*': (a, b) => a * b,
+    '/': (a, b) => a / b,
+    '+': (a, b) => a + b,
+    '-': (a, b) => a - b,
+    '>': (a, b) => a > b,
+    '<': (a, b) => a < b,
+    '==': (a, b) => a == b,
+    '===': (a, b) => a === b,
+    '!=': (a, b) => a != b,
+    '>=': (a, b) => a >= b,
+    '<=': (a, b) => a <= b,
+    '||': (a, b) => a || b,
+    '&&': (a, b) => a && b,
+    '%': (a, b) => a % b,
+    '?': (a, b, c) => a ? b : c,
+    'u-': (a) => -a,
+    's': (a) => a,
+    '!': (a) => a ? false : true
+};
 
 const SP_KEYWORD_MAPPING_0 = {
     'ID': {
@@ -2650,16 +2896,19 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Money': {
         expr: p => p.Idle ? p.Idle.Money : undefined,
+        format: (p, c, e, x) => x.toExponential(3),
         difference: false,
         statistics: false
     },
     'Runes Collected': {
         expr: p => p.Idle ? p.Idle.Runes : undefined,
+        format: (p, c, e, x) => x.toExponential(3),
         difference: false,
         statistics: false
     },
     'Runes Ready': {
         expr: p => p.Idle ? p.Idle.ReadyRunes : undefined,
+        format: (p, c, e, x) => x.toExponential(3),
         difference: false,
         statistics: false
     },
