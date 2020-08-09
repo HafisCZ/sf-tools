@@ -1,4 +1,9 @@
 const CHANGELOG = {
+    'v3.726': [
+        'Reworked player detail screen.',
+        'Added category and header definitions. You can now create a group of options and extend any category or header with it.<br/>You can look at an example <a href="https://pastebin.com/raw/Zes71ez0">here</a>.',
+        'Many fixes and improvements for new expression evaluator.'
+    ],
     'v3.715': [
         'Added new expression evaluator.<br/><br/>You can use <code>ast beta</code> on top of your settings or select \'Force use of new expression evaluator\' in Files tab to apply it to everything.<br/><br/>It is recommended that you try to run all your settings using this evaluator since it will later replace the main one.<br/>Please note that some expressions might stop working or behave differently.'
     ],

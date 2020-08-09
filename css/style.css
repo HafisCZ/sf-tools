@@ -101,6 +101,70 @@ body.dimmed .menu {
     margin-bottom: 5em;
 }
 
+.detail-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 5em;
+}
+
+.detail-top h1.header {
+    color: white;
+    margin-top: 0;
+    padding-left: 0.25em;
+}
+
+.detail-timestamp {
+    color: white;
+    position: absolute;
+    top: 1.25em;
+    right: 2em;
+}
+
+.detail-identifier {
+    color: white;
+    position: absolute;
+    top: 2.75em;
+    right: 2em;
+    opacity: 40%;
+}
+
+.detail-top img {
+    height: 5em;
+    padding-left: 1em;
+}
+
+.detail-content {
+    margin-top: 4em;
+    font-size: 1.25em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.detail-entry {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 0.35em;
+}
+
+.detail-item {
+    flex: 0 49%;
+}
+
+.detail-panel {
+    flex: 0 33%;
+    padding: 1em;
+}
+
 input:disabled {
     opacity: 1 !important;
 }

@@ -415,250 +415,303 @@ class PlayerDetailFloatView extends View {
         var config = Settings.load(UI.current.identifier, player.Identifier);
 
         this.$parent.html(`
-            <div class="ui text-center extreme header margin-none-bottom padding-none-bottom">${ player.Name }</div>
-            <div class="ui text-center huge header padding-none-top margin-remove-top">${ PLAYER_CLASS[player.Class] } <span style="color: ${ CompareEval.evaluate(player.Level, config.getEntrySafe('Level').color) }">${ player.Level }</span></div>
-            <div class="ui text-center big header padding-none-top padding-none-bottom">${ formatDate(player.Timestamp) }</div>
-            <div class="content text-center">
-                <div class="ui two columns grid">
-                    <div class="column">
-                        <div class="ui three columns grid player-small">
-                            <div class="left aligned column font-big">Strength</div>
-                            <div class="column"></div>
-                            <div class="column">${ player.Strength.Total }</div>
-                            <div class="left aligned column font-big">Dexterity</div>
-                            <div class="column"></div>
-                            <div class="column">${ player.Dexterity.Total }</div>
-                            <div class="left aligned column font-big">Intelligence</div>
-                            <div class="column"></div>
-                            <div class="column">${ player.Intelligence.Total }</div>
-                            <div class="left aligned column font-big">Constitution</div>
-                            <div class="column"></div>
-                            <div class="column">${ player.Constitution.Total }</div>
-                            <div class="left aligned column font-big">Luck</div>
-                            <div class="column"></div>
-                            <div class="column">${ player.Luck.Total }</div>
-                            <div class="column"><br></div>
-                            <div class="column"></div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Health</div>
-                            <div class="column"></div>
-                            <div class="column">${ formatAsSpacedNumber(player.Health) }</div>
-                            <div class="left aligned column font-big">Armor</div>
-                            <div class="column"></div>
-                            <div class="column">${ player.Armor }</div>
-                            <div class="left aligned column font-big">Damage</div>
-                            <div class="column"></div>
-                            <div class="column">${ player.Damage.Min } - ${ player.Damage.Max }</div>
-                            ${ player.Class == 4 ? `
-                                <div class="left aligned column font-big"></div>
-                                <div class="column"></div>
-                                <div class="column">${ player.Damage2.Min } - ${ player.Damage2.Max }</div>
-                            ` : '' }
-                            <div class="column"><br></div>
-                            <div class="column"></div>
-                            <div class="column"></div>
-                            ${ player.hasGuild() ? `
-                                ${ player.Group.Own ? `
-                                    <div class="left aligned column font-big">Treasure</div>
-                                    <div class="column"></div>
-                                    <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Treasure, config.getEntrySafe('Treasure').color) };">${ player.Group.Treasure }</div>
-                                    <div class="left aligned column font-big">Instructor</div>
-                                    <div class="column"></div>
-                                    <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Instructor, config.getEntrySafe('Instructor').color) }">${ player.Group.Instructor }</div>
-                                    <div class="left aligned column font-big">Pet</div>
-                                    <div class="column"></div>
-                                    <div class="column" style="color: ${ CompareEval.evaluate(player.Group.Pet, config.getEntrySafe('Pet').color) }">${ player.Group.Pet }</div>
-                                    <div class="left aligned column font-big">Knights</div>
-                                    <div class="column"></div>
-                                    <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Knights, config.getEntrySafe('Knights').color) }">${ player.Fortress.Knights }</div>
-                                    <div class="column"><br></div>
-                                    <div class="column"></div>
-                                    <div class="column"></div>
-                                ` : '' }
-                                <div class="left aligned column font-big">Guild</div>
-                                <div class="column"></div>
-                                <div class="column">${ player.Group.Name }</div>
-                                <div class="left aligned column font-big">Guild join date</div>
-                                <div class="column"></div>
-                                <div class="column">${ formatDate(player.Group.Joined) }</div>
-                                ${ player.Group.Role != undefined ? `
-                                    <div class="left aligned column font-big">Role</div>
-                                    <div class="column"></div>
-                                    <div class="column">${ GROUP_ROLES[player.Group.Role] }</div>
-                                ` : '' }
-                            ` : '' }
-                            ${ player.Fortress.Upgrade.Building >= 0 ? `
-                                <div class="column"><br></div>
-                                <div class="column"></div>
-                                <div class="column"></div>
-                                <div class="seven wide left aligned column font-big">Currently building</div>
-                                <div class="four wide column"></div>
-                                <div class="five wide column">${ FORTRESS_BUILDINGS[player.Fortress.Upgrade.Building] }</div>
-                                <div class="left aligned column font-big"></div>
-                                <div class="column"></div>
-                                <div class="column">${ formatDate(player.Fortress.Upgrade.Finish) }</div>
-                            ` : '' }
-                            <div class="column"><br></div>
-                            <div class="column"></div>
-                            <div class="column"></div>
-                            ${ player.Fortress.Fortifications ? `
-                                <div class="left aligned column font-big">Wall</div>
-                                <div class="column">${ player.Fortress.Fortifications }</div>
-                                <div class="column">${ player.Fortress.Wall }</div>
-                            ` : '' }
-                            ${ player.Fortress.Barracks ? `
-                                <div class="left aligned column font-big">Warriors</div>
-                                <div class="column">${ player.Fortress.Barracks * 3 }x</div>
-                                <div class="column">${ player.Fortress.Warriors }</div>
-                            ` : '' }
-                            ${ player.Fortress.ArcheryGuild ? `
-                                <div class="left aligned column font-big">Archers</div>
-                                <div class="column">${ player.Fortress.ArcheryGuild * 2 }x</div>
-                                <div class="column">${ player.Fortress.Archers }</div>
-                            ` : '' }
-                            ${ player.Fortress.MageTower ? `
-                                <div class="left aligned column font-big">Mages</div>
-                                <div class="column">${ player.Fortress.MageTower }x</div>
-                                <div class="column">${ player.Fortress.Mages }</div>
-                            ` : '' }
-                            <div class="column"><br></div>
-                            <div class="column"></div>
-                            <div class="column"></div>
-                            ${ player.Runes.Gold ? `
-                                <div class="left aligned column font-big">Bonus Gold</div>
-                                <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Gold, config.getEntrySafe('Rune Gold').color) }">${ player.Runes.Gold }%</div>
-                            ` : '' }
-                            ${ player.Runes.XP ? `
-                                <div class="left aligned column font-big">Bonus XP</div>
-                                <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.XP, config.getEntrySafe('Rune XP').color) }">${ player.Runes.XP }%</div>
-                            ` : '' }
-                            ${ player.Runes.Chance ? `
-                                <div class="left aligned column font-big">Epic Chance</div>
-                                <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Chance, config.getEntrySafe('Rune Chance').color) }">${ player.Runes.Chance }%</div>
-                            ` : '' }
-                            ${ player.Runes.Quality ? `
-                                <div class="left aligned column font-big">Item Quality</div>
-                                <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Quality, config.getEntrySafe('Rune Quality').color) }">${ player.Runes.Quality }</div>
-                            ` : '' }
-                            ${ player.Runes.Health ? `
-                                <div class="left aligned column font-big">Bonus Health</div>
-                                <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.Health, config.getEntrySafe('Rune Health').color) }">${ player.Runes.Health }%</div>
-                            ` : '' }
-                            ${ player.Runes.DamageFire || player.Runes.Damage2Fire ? `
-                                <div class="left aligned column font-big">Fire Dmg</div>
-                                <div class="column"></div>
-                                <div class="column"><span style="color: ${ CompareEval.evaluate(player.Runes.DamageFire, config.getEntrySafe('Fire Damage').color) }">${ player.Runes.DamageFire }%</span>${ player.Class == 4 ? ` / <span style="color: ${ CompareEval.evaluate(player.Runes.Damage2Fire, config.getEntrySafe('Fire Damage').color) }">${ player.Runes.Damage2Fire }%</span>` : '' }</div>
-                            ` : '' }
-                            ${ player.Runes.DamageCold || player.Runes.Damage2Cold ? `
-                                <div class="left aligned column font-big">Cold Dmg</div>
-                                <div class="column"></div>
-                                <div class="column"><span style="color: ${ CompareEval.evaluate(player.Runes.DamageCold, config.getEntrySafe('Cold Damage').color) }">${ player.Runes.DamageCold }%</span>${ player.Class == 4 ? ` / <span style="color: ${ CompareEval.evaluate(player.Runes.Damage2Cold, config.getEntrySafe('Fire Damage').color) }">${ player.Runes.Damage2Cold }%</span>` : '' }</div>
-                            ` : '' }
-                            ${ player.Runes.DamageLightning || player.Runes.Damage2Lightning ? `
-                                <div class="left aligned column font-big">Lightning Dmg</div>
-                                <div class="column"></div>
-                                <div class="column"><span style="color: ${ CompareEval.evaluate(player.Runes.DamageLightning, config.getEntrySafe('Lightning Damage').color) }">${ player.Runes.DamageLightning }%</span>${ player.Class == 4 ? ` / <span style="color: ${ CompareEval.evaluate(player.Runes.Damage2Lightning, config.getEntrySafe('Fire Damage').color) }">${ player.Runes.Damage2Lightning }%</span>` : '' }</div>
-                            ` : '' }
-                            ${ player.Runes.ResistanceFire ? `
-                                <div class="left aligned column font-big">Fire Resist</div>
-                                <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.ResistanceFire, config.getEntrySafe('Fire Resist').color) }">${ player.Runes.ResistanceFire }%</div>
-                            ` : '' }
-                            ${ player.Runes.ResistanceCold ? `
-                                <div class="left aligned column font-big">Cold Resist</div>
-                                <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.ResistanceCold, config.getEntrySafe('Cold Resist').color) }">${ player.Runes.ResistanceCold }%</div>
-                            ` : '' }
-                            ${ player.Runes.ResistanceLightning ? `
-                                <div class="left aligned column font-big">Lightning Resist</div>
-                                <div class="column"></div>
-                                <div class="column" style="color: ${ CompareEval.evaluate(player.Runes.ResistanceLightning, config.getEntrySafe('Lightning Resist').color) }">${ player.Runes.ResistanceLightning }%</div>
-                            ` : '' }
+            <div class="content" style="padding: 0;">
+                <div class="detail-top">
+                    <img class="ui image" src="res/class${ player.Class }.png">
+                    <h1 class="ui header">${ player.Level } - ${ player.Name }</h1>
+                </div>
+                <div class="detail-timestamp">
+                    ${ formatDate(player.Timestamp) }
+                </div>
+                <div class="detail-identifier">
+                    ${ player.Identifier }
+                </div>
+                <div class="detail-content">
+                    <div class="detail-panel">
+                        <!-- Player -->
+                        <div class="detail-entry" style="border-bottom: white solid 1px;">
+                            <div class="detail-item">Attributes</div>
                         </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Strength</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Strength.Total) }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Dexterity</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Dexterity.Total) }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Intelligence</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Intelligence.Total) }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Constitution</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Constitution.Total) }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Luck</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Total) }</div>
+                        </div>
+                        <br/>
+                        <div class="detail-entry">
+                            <div class="detail-item">Armor</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Armor) }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Damage</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Damage.Min) } - ${ formatAsSpacedNumber(player.Damage.Max) }</div>
+                        </div>
+                        ${ player.Class == 4 ? `
+                            <div class="detail-entry">
+                                <div class="detail-item"></div>
+                                <div class="detail-item text-center">${ formatAsSpacedNumber(player.Damage2.Min) } - ${ formatAsSpacedNumber(player.Damage2.Max) }</div>
+                            </div>
+                        ` : '' }
+                        <br/>
+                        <div class="detail-entry">
+                            <div class="detail-item">Health</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Health) }</div>
+                        </div>
+                        ${ player.Potions[0].Size ? `
+                            <br/>
+                            <div class="detail-entry" style="border-bottom: white solid 1px;">
+                                <div class="detail-item">Potions</div>
+                            </div>
+                            <div class="detail-entry">
+                                <div class="detail-item">${ POTIONS[player.Potions[0].Type] }</div>
+                                <div class="detail-item text-center">+ ${ player.Potions[0].Size }%</div>
+                            </div>
+                            ${ player.Potions[1].Size ? `
+                                <div class="detail-entry">
+                                    <div class="detail-item">${ POTIONS[player.Potions[1].Type] }</div>
+                                    <div class="detail-item text-center">+ ${ player.Potions[1].Size }%</div>
+                                </div>
+                            ` : '' }
+                            ${ player.Potions[2].Size ? `
+                                <div class="detail-entry">
+                                    <div class="detail-item">${ POTIONS[player.Potions[2].Type] }</div>
+                                    <div class="detail-item text-center">+ ${ player.Potions[2].Size }%</div>
+                                </div>
+                            ` : '' }
+                        ` : '' }
+                        ${ player.hasGuild() ? `
+                            <br/>
+                            <div class="detail-entry" style="border-bottom: white solid 1px;">
+                                <div class="detail-item">Guild</div>
+                            </div>
+                            <div class="detail-entry">
+                                <div class="detail-item">Name</div>
+                                <div class="detail-item text-center">${ player.Group.Name }</div>
+                            </div>
+                            ${ player.Group.Role ? `
+                                <div class="detail-entry">
+                                    <div class="detail-item">Role</div>
+                                    <div class="detail-item text-center">${ GROUP_ROLES[player.Group.Role] }</div>
+                                </div>
+                            ` : '' }
+                            <div class="detail-entry">
+                                <div class="detail-item">Joined on</div>
+                                <div class="detail-item text-center">${ formatDate(player.Group.Joined) }</div>
+                            </div>
+                            <br/>
+                        ` : '' }
                     </div>
-                    <div class="column">
-                        <div class="ui three columns grid player-small">
-                            <div class="left aligned column font-big">Scrapbook</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(100 * player.Book / SCRAPBOOK_COUNT, config.getEntrySafe('Album').color) }">${ Number(100 * player.Book / SCRAPBOOK_COUNT).toFixed(2) }%</div>
-                            <div class="column">${ player.Book } out of ${ SCRAPBOOK_COUNT }</div>
-                            <div class="left aligned column font-big">Mount</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Mount, config.getEntrySafe('Mount').color) }">${ player.Mount ? (PLAYER_MOUNT[player.Mount] + '%') : 'None' }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Achievements</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Achievements.Owned, config.getEntrySafe('Awards').color) }">${ Math.trunc(100 * player.Achievements.Owned / ACHIEVEMENT_COUNT) }%${ config.getEntrySafe('Awards').hydra && player.Achievements.Dehydration ? '<span> H</span>' : '' }</div>
-                            <div class="column">${ player.Achievements.Owned } out of ${ ACHIEVEMENT_COUNT }</div>
-                            <div class="left aligned column font-big">Health Bonus</div>
-                            <div class="column">${ player.Dungeons.Player }%</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Damage Bonus</div>
-                            <div class="column">${ player.Dungeons.Group }%</div>
-                            <div class="column"></div>
-                            <div class="column"><br></div>
-                            <div class="column"></div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Potions</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Potions[0].Size, config.getEntrySafe('Potions').color) }">${ player.Potions[0].Size ? `${ player.Potions[0].Size }%` : '' }</div>
-                            <div class="left aligned column">${ player.Potions[0].Size ? POTIONS[player.Potions[0].Type] : '' }</div>
-                            <div class="left aligned column font-big"><br></div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Potions[1].Size, config.getEntrySafe('Potions').color) }">${ player.Potions[1].Size ? `${ player.Potions[1].Size }%` : '' }</div>
-                            <div class="left aligned column">${ player.Potions[1].Size ? POTIONS[player.Potions[1].Type] : '' }</div>
-                            <div class="left aligned column font-big"><br></div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Potions[2].Size, config.getEntrySafe('Potions').color) }">${ player.Potions[2].Size ? `${ player.Potions[2].Size }%` : '' }</div>
-                            <div class="left aligned column">${ player.Potions[2].Size ? POTIONS[player.Potions[2].Type] : '' }</div>
-                            <div class="column"><br></div>
-                            <div class="column"></div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Upgrades</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Upgrades, config.getEntrySafe('Upgrades').color) }">${ player.Fortress.Upgrades }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Rank</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Rank, config.getEntrySafe('Fortress Rank').color) }">${ player.Fortress.Rank }</div>
-                            <div class="left aligned column" style="color: ${ CompareEval.evaluate(player.Fortress.Honor, config.getEntrySafe('Fortress Honor').color) }">(${ player.Fortress.Honor })</div>
-                            <div class="column"><br></div>
-                            <div class="column"></div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Fortress</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Fortress, config.getEntrySafe('Fortress').color) }">${ player.Fortress.Fortress }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Quarters</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.LaborerQuarters, config.getEntrySafe('Quarters').color) }">${ player.Fortress.LaborerQuarters }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Woodcutter</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.WoodcutterGuild, config.getEntrySafe('Woodcutter').color) }">${ player.Fortress.WoodcutterGuild }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Quarry</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Quarry, config.getEntrySafe('Quarry').color) }">${ player.Fortress.Quarry }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Gem Mine</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.GemMine, config.getEntrySafe('Gem Mine').color) }">${ player.Fortress.GemMine }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Academy</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Academy, config.getEntrySafe('Academy').color) }">${ player.Fortress.Academy }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Archery Guild</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.ArcheryGuild, config.getEntrySafe('Archery Guild').color) }">${ player.Fortress.ArcheryGuild }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Barracks</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Barracks, config.getEntrySafe('Barracks').color) }">${ player.Fortress.Barracks }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Mage Tower</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.MageTower, config.getEntrySafe('Mage Tower').color) }">${ player.Fortress.MageTower }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Treasury</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Treasury, config.getEntrySafe('Treasury').color) }">${ player.Fortress.Treasury }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Smithy</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Smithy, config.getEntrySafe('Smithy').color) }">${ player.Fortress.Smithy }</div>
-                            <div class="column"></div>
-                            <div class="left aligned column font-big">Fortifications</div>
-                            <div class="column" style="color: ${ CompareEval.evaluate(player.Fortress.Fortifications, config.getEntrySafe('Wall').color) }">${ player.Fortress.Fortifications }</div>
-                            <div class="column"></div>
+                    <div class="detail-panel">
+                        <!-- Group -->
+                        <div class="detail-entry" style="border-bottom: white solid 1px;">
+                            <div class="detail-item">Bonuses</div>
                         </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Scrapbook</div>
+                            <div class="detail-item text-center">${ player.Book } / ${ SCRAPBOOK_COUNT }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Achievements</div>
+                            <div class="detail-item text-center">${ player.Achievements.Owned } / 80</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Mount</div>
+                            <div class="detail-item text-center">${ PLAYER_MOUNT[player.Mount] }%</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Health Bonus</div>
+                            <div class="detail-item text-center">${ player.Dungeons.Player }%</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Damage Bonus</div>
+                            <div class="detail-item text-center">${ player.Dungeons.Group }%</div>
+                        </div>
+                        ${ player.Group && player.Group.Treasure ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Treasure</div>
+                                <div class="detail-item text-center">${ player.Group.Treasure }</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Group && player.Group.Instructor ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Instructor</div>
+                                <div class="detail-item text-center">${ player.Group.Instructor }</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Group && player.Group.Pet ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Pet</div>
+                                <div class="detail-item text-center">${ player.Group.Pet }</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Fortress && player.Fortress.Knights ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Hall of Knights</div>
+                                <div class="detail-item text-center">${ player.Fortress.Knights }</div>
+                            </div>
+                        ` : '' }
+                        <br/>
+                        <div class="detail-entry" style="border-bottom: white solid 1px;">
+                            <div class="detail-item">Runes</div>
+                        </div>
+                        ${ player.Runes.Gold ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Gold</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.Gold }%</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Runes.XP ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Experience</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.XP }%</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Runes.Chance ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Epic Chance</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.Chance }%</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Runes.Quality ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Item Quality</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.Quality }</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Runes.Health ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Health</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.Health }%</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Runes.DamageFire || player.Runes.DamageFire2 ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Fire Damage</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.DamageFire }%${ player.Class == 4 ? ` / ${ player.Runes.DamageFire2 }%` : '' }</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Runes.DamageCold || player.Runes.DamageCold2 ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Cold Damage</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.DamageCold }%${ player.Class == 4 ? ` / ${ player.Runes.DamageCold2 }%` : '' }</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Runes.DamageLightning || player.Runes.Damage2Lightning ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Lightning Damage</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.DamageLightning }%${ player.Class == 4 ? ` / ${ player.Runes.Damage2Lightning }%` : '' }</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Runes.ResistanceFire ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Fire Resistance</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.ResistanceFire }%</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Runes.ResistanceCold ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Cold Resistance</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.ResistanceCold }%</div>
+                            </div>
+                        ` : '' }
+                        ${ player.Runes.ResistanceLightning ? `
+                            <div class="detail-entry">
+                                <div class="detail-item">Lightning Resistance</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.ResistanceLightning }%</div>
+                            </div>
+                        ` : '' }
+                    </div>
+                    <div class="detail-panel">
+                        <!-- Fortress -->
+                        <div class="detail-entry" style="border-bottom: white solid 1px;">
+                            <div class="detail-item">Fortress</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Upgrades</div>
+                            <div class="detail-item text-center">${ player.Fortress.Upgrades }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Rank</div>
+                            <div class="detail-item text-center">${ player.Fortress.Rank }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Honor</div>
+                            <div class="detail-item text-center">${ player.Fortress.Honor }</div>
+                        </div>
+                        <br/>
+                        <div class="detail-entry">
+                            <div class="detail-item">Fortress</div>
+                            <div class="detail-item text-center">${ player.Fortress.Fortress }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Quarters</div>
+                            <div class="detail-item text-center">${ player.Fortress.LaborerQuarters }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Woodcutter</div>
+                            <div class="detail-item text-center">${ player.Fortress.WoodcutterGuild }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Quarry</div>
+                            <div class="detail-item text-center">${ player.Fortress.Quarry }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Gem Mine</div>
+                            <div class="detail-item text-center">${ player.Fortress.GemMine }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Academy</div>
+                            <div class="detail-item text-center">${ player.Fortress.Academy }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Archery Guild</div>
+                            <div class="detail-item text-center">${ player.Fortress.ArcheryGuild } (${ player.Fortress.ArcheryGuild * 2 }x ${ player.Fortress.Archers })</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Barracks</div>
+                            <div class="detail-item text-center">${ player.Fortress.Barracks } (${ player.Fortress.Barracks * 3 }x ${ player.Fortress.Warriors })</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Mage Tower</div>
+                            <div class="detail-item text-center">${ player.Fortress.MageTower } (${ player.Fortress.MageTower }x ${ player.Fortress.Mages })</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Treasury</div>
+                            <div class="detail-item text-center">${ player.Fortress.Treasury }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Smithy</div>
+                            <div class="detail-item text-center">${ player.Fortress.Smithy }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Fortifications</div>
+                            <div class="detail-item text-center">${ player.Fortress.Fortifications } (${ player.Fortress.Wall })</div>
+                        </div>
+                        ${ player.Fortress.Upgrade.Building >= 0 ? `
+                            <br/>
+                            <div class="detail-entry" style="border-bottom: white solid 1px;">
+                                <div class="detail-item">Building</div>
+                            </div>
+                            <div class="detail-entry">
+                                <div class="detail-item">${ FORTRESS_BUILDINGS[player.Fortress.Upgrade.Building] }</div>
+                                <div class="detail-item text-center">${ formatDate(player.Fortress.Upgrade.Finish) }</div>
+                            </div>
+                        ` : '' }
                     </div>
                 </div>
             </div>

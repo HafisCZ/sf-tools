@@ -72,6 +72,13 @@ function merge (a, b) {
     return a;
 }
 
+function mergeAll (a, b) {
+    for (var [k, v] of Object.entries(b)) {
+        if (!a.hasOwnProperty(k)) a[k] = b[k];
+    }
+    return a;
+}
+
 // Special array for players only
 class PlayersTableArray extends Array {
     constructor (perf, ts, rs) {
@@ -2434,7 +2441,7 @@ class Settings {
         if (this.currentExtra) {
             for (var ex of this.currentExtra.extend || []) {
                 if (this.dummies[ex]) {
-                    merge(this.currentExtra, this.dummies[ex].content);
+                    mergeAll(this.currentExtra, this.dummies[ex].content);
                 }
             }
 
@@ -2481,6 +2488,12 @@ class Settings {
         if (this.currentCategory && this.currentHeader) {
             var mapping = SP_KEYWORD_MAPPING_0[this.currentHeader.name] || SP_KEYWORD_MAPPING_1[this.currentHeader.name] || SP_KEYWORD_MAPPING_2[this.currentHeader.name] || SP_KEYWORD_MAPPING_3[this.currentHeader.name] || SP_KEYWORD_MAPPING_4[this.currentHeader.name];
 
+            for (var ex of this.currentHeader.extend || []) {
+                if (this.dummies[ex]) {
+                    mergeAll(this.currentHeader, this.dummies[ex].content);
+                }
+            }
+
             var custom = SP_SPECIAL_CONDITIONS[this.currentHeader.name];
             if (custom && this.currentHeader.clean != 2) {
                 for (var entry of custom) {
@@ -2500,12 +2513,6 @@ class Settings {
 
             if (this.currentHeader.expr) {
                 if (!this.currentHeader.clean) {
-                    for (var ex of this.currentHeader.extend || []) {
-                        if (this.dummies[ex]) {
-                            merge(this.currentHeader, this.dummies[ex].content);
-                        }
-                    }
-
                     merge(this.currentHeader, this.categoryShared);
                     merge(this.currentHeader, this.shared);
                 } else {
@@ -2564,7 +2571,7 @@ class Settings {
             if (ReservedCategories[this.currentCategory.name]) {
                 for (var ex of this.currentCategory.extend || []) {
                     if (this.dummies[ex]) {
-                        merge(this.currentCategory, this.dummies[ex].content);
+                        mergeAll(this.currentCategory, this.dummies[ex].content);
                     }
                 }
 
@@ -2614,7 +2621,7 @@ class Settings {
         if (this.currentExtra) {
             this.currentExtra.alias = value;
         } else if (this.dummy) {
-            this.dummy.content[key] = value;
+            this.dummy.content.alias = value;
         } else if (this.currentHeader) {
             this.currentHeader.alias = value;
         } else if (this.currentCategory) {
