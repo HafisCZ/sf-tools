@@ -1722,6 +1722,11 @@ const SP_OPERATORS = {
 };
 
 const SP_KEYWORD_MAPPING_0 = {
+    'Name': {
+        expr: p => p.Name,
+        difference: false,
+        statistics: false
+    },
     'ID': {
         expr: p => p.ID,
         difference: false,
