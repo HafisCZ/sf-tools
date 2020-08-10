@@ -352,7 +352,7 @@ class TableInstance {
     }
 
     // Set players
-    setEntries (array, skipeval, sim) {
+    setEntries (array, skipeval, sim, sort = undefined) {
         // Entry array
         this.array = array;
 
@@ -373,6 +373,13 @@ class TableInstance {
             }
         } else if (this.type == TableType.History) {
             this.settings.evaluateConstantsHistory(array.map(p => p[1]));
+        }
+
+        if (sort && (this.type == TableType.Players || this.type == TableType.Group)) {
+            this.array.sort((a, b) => sort(b.player, b.compare) - sort(a.player, a.compare));
+            for (var i = 0; i < this.array.length; i++) {
+                this.array[i].index = i;
+            }
         }
 
         // Generate table entries

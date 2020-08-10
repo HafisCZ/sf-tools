@@ -19,7 +19,7 @@
                 this.showninfo = false;
 
                 for (var [ key, value ] of Object.entries(arg2 || { })) {
-                    this.$info.append(`<div class="css-search-entryinfo"><code>${ key }: &nbsp;&nbsp;</code>${ value }</div>`);
+                    this.$info.append(`<div class="css-search-entryinfo"><code>${ key.length == 2 ? '' : '&nbsp;' }${ key }: &nbsp;&nbsp;</code>${ value }</div>`);
                 }
 
                 this.$popup.on('redraw', () => {

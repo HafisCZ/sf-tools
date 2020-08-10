@@ -911,9 +911,10 @@ class BrowseView extends View {
             'r': 'Force recalculation of global variables',
             'x': 'Enable simulator (argument is number of iterations)',
             'h': 'Show hidden',
-            'o': 'Show own'
+            'o': 'Show own',
+            'sr': 'Sort by custom expression'
         }).change((event) => {
-            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h|o):/);
+            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h|o|sr):/);
 
             var terms = [
                 {
@@ -938,6 +939,7 @@ class BrowseView extends View {
             var perf = undefined;
 
             this.shidden = false;
+            this.autosort = undefined;
 
             for (var i = 1; i < filter.length; i += 2) {
                 var key = filter[i];
@@ -1009,6 +1011,11 @@ class BrowseView extends View {
                             arg: ast
                         });
                     }
+                } else if (key == 'sr') {
+                    var ast = AST.create(arg);
+                    if (ast.isValid()) {
+                        this.autosort = (player, compare) => ast.eval(player, compare, this.table.settings);
+                    }
                 } else if (key == 'f') {
                     perf = isNaN(arg) ? 1 : Math.max(1, Number(arg));
                 } else if (key == 'r') {
@@ -1050,7 +1057,7 @@ class BrowseView extends View {
                 }
             }
 
-            this.table.setEntries(entries, !this.recalculate, sim);
+            this.table.setEntries(entries, !this.recalculate, sim, this.autosort);
 
             if (this.sorting != undefined) {
                 this.table.sorting = this.sorting;
