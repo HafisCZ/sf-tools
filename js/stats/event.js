@@ -599,16 +599,16 @@ class PlayerDetailFloatView extends View {
                                 <div class="detail-item text-center">+ ${ player.Runes.Health }%</div>
                             </div>
                         ` : '' }
-                        ${ player.Runes.DamageFire || player.Runes.DamageFire2 ? `
+                        ${ player.Runes.DamageFire || player.Runes.Damage2Fire ? `
                             <div class="detail-entry">
                                 <div class="detail-item">Fire Damage</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.DamageFire }%${ player.Class == 4 ? ` / ${ player.Runes.DamageFire2 }%` : '' }</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.DamageFire }%${ player.Class == 4 ? ` / ${ player.Runes.Damage2Fire }%` : '' }</div>
                             </div>
                         ` : '' }
-                        ${ player.Runes.DamageCold || player.Runes.DamageCold2 ? `
+                        ${ player.Runes.DamageCold || player.Runes.Damage2Cold ? `
                             <div class="detail-entry">
                                 <div class="detail-item">Cold Damage</div>
-                                <div class="detail-item text-center">+ ${ player.Runes.DamageCold }%${ player.Class == 4 ? ` / ${ player.Runes.DamageCold2 }%` : '' }</div>
+                                <div class="detail-item text-center">+ ${ player.Runes.DamageCold }%${ player.Class == 4 ? ` / ${ player.Runes.Damage2Cold }%` : '' }</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.DamageLightning || player.Runes.Damage2Lightning ? `
