@@ -1220,6 +1220,28 @@ class GroupsView extends View {
                     }
                 },
                 {
+                    label: 'Copy',
+                    action: (source) => {
+                        const element = document.createElement('textarea');
+
+                        var group = Database.Groups[source.attr('data-id')].Latest;
+                        element.value = JSON.stringify(group.Members.map(id => {
+                            if (Database.Players[id] && Database.Players[id][group.Timestamp]) {
+                                return Database.Players[id][group.Timestamp].Data;
+                            } else {
+                                return null;
+                            }
+                        }).filter(x => x));
+
+                        document.body.appendChild(element);
+
+                        element.select();
+
+                        document.execCommand('copy');
+                        document.body.removeChild(element);
+                    }
+                },
+                {
                     label: 'Remove permanently',
                     action: (source) => {
                         Storage.removeByID(source.attr('data-id'));
