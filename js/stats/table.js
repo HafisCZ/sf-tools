@@ -401,8 +401,8 @@ class TableInstance {
 
                 var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
 
-                var indexedCol = this.settings.globals.indexed ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }"><ispan data-indexed="${ this.settings.globals.indexed }">${ i + 1 }</ispan></td>` : undefined;
-                var nameCol = `<td class="border-right-thin" ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }">${ formatDate(timestamp) }</td>`;
+                var indexedCol = this.settings.globals.indexed ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' }><ispan data-indexed="${ this.settings.globals.indexed }">${ i + 1 }</ispan></td>` : undefined;
+                var nameCol = `<td class="border-right-thin" ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' }>${ formatDate(timestamp) }</td>`;
 
                 var content = '';
 
@@ -449,9 +449,9 @@ class TableInstance {
 
                 var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
 
-                var indexedCol = this.settings.globals.indexed ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }"><ispan data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</ispan></td>` : undefined;
-                var serverCol = this.settings.globals.server == undefined || this.settings.globals.server > 0 ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }">${ item.player.Prefix }</td>` : undefined;
-                var nameCol = `<td class="border-right-thin clickable ${ item.latest || !this.settings.globals.outdated ? '' : 'foreground-red' }" ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" data-id="${ item.player.Identifier }">${ getEasterEgg(item.player.Identifier) }${ item.player.Name }</td>`;
+                var indexedCol = this.settings.globals.indexed ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' }><ispan data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</ispan></td>` : undefined;
+                var serverCol = this.settings.globals.server == undefined || this.settings.globals.server > 0 ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' }>${ item.player.Prefix }</td>` : undefined;
+                var nameCol = `<td class="border-right-thin clickable ${ item.latest || !this.settings.globals.outdated ? '' : 'foreground-red' }" ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' } data-id="${ item.player.Identifier }">${ getEasterEgg(item.player.Identifier) }${ item.player.Name }</td>`;
 
                 var content = '';
 
@@ -528,8 +528,8 @@ class TableInstance {
 
                 var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
 
-                var indexedCol = this.settings.globals.indexed ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }"><ispan data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</ispan></td>` : undefined;
-                var nameCol = `<td class="border-right-thin clickable" ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" data-id="${ item.player.Identifier }">${ getEasterEgg(item.player.Identifier) }${ item.player.Name }</td>`;
+                var indexedCol = this.settings.globals.indexed ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' }><ispan data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</ispan></td>` : undefined;
+                var nameCol = `<td class="border-right-thin clickable" ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' } data-id="${ item.player.Identifier }">${ getEasterEgg(item.player.Identifier) }${ item.player.Name }</td>`;
 
                 var content = '';
 
