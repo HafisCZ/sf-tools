@@ -2582,13 +2582,22 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Achievements.Owned
     },
     'Pets Unlocked': {
-        expr: p => p.Achievements[36].Owned
+        expr: p => p.Achievements[36].Owned,
+        format: (p, c, e, x) => x ? 'Yes' : 'No',
+        difference: false,
+        statistics: false
     },
     'Grail Unlocked': {
-        expr: p => p.Achievements[76].Owned
+        expr: p => p.Achievements[76].Owned,
+        format: (p, c, e, x) => x ? 'Yes' : 'No',
+        difference: false,
+        statistics: false
     },
     'Hydra Dead': {
-        expr: p => p.Achievements[63].Owned
+        expr: p => p.Achievements[63].Owned,
+        format: (p, c, e, x) => x ? 'Yes' : 'No',
+        difference: false,
+        statistics: false
     },
     'XP': {
         expr: p => p.XP,
