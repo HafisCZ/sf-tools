@@ -2076,7 +2076,20 @@ class Settings {
 
         for (var line of string.split('\n')) {
             var comment;
-            var commentIndex = line.indexOf('#');
+            var commentIndex = -1;
+            var ignored = false;
+
+            for (var i = 0; i < line.length; i++) {
+                if (line[i] == '\'' || line[i] == '\"') {
+                    if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
+                    else {
+                        ignored = ignored ? false : line[i];
+                    }
+                } else if (line[i] == '#' && !ignored) {
+                    commentIndex = i;
+                    break;
+                }
+            }
 
             if (commentIndex != -1) {
                 comment = line.slice(commentIndex);
@@ -2158,7 +2171,21 @@ class Settings {
         // Parsing
         var ignore = false;
         for (var line of string.split('\n')) {
-            var commentIndex = line.indexOf('#');
+            var commentIndex = -1;
+            var ignored = false;
+
+            for (var i = 0; i < line.length; i++) {
+                if (line[i] == '\'' || line[i] == '\"') {
+                    if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
+                    else {
+                        ignored = ignored ? false : line[i];
+                    }
+                } else if (line[i] == '#' && !ignored) {
+                    commentIndex = i;
+                    break;
+                }
+            }
+
             if (commentIndex != -1) {
                 line = line.slice(0, commentIndex);
             }
