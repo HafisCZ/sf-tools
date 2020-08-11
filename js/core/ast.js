@@ -941,7 +941,11 @@ class AST2 {
 
     // Is token a string
     isString (token) {
-        return (token[0] == '\'' && token[token.length - 1] == '\'') || (token[0] == '\"' && token[token.length - 1] == '\"');
+        if (token == undefined) {
+            return false;
+        } else {
+            return (token[0] == '\'' && token[token.length - 1] == '\'') || (token[0] == '\"' && token[token.length - 1] == '\"');
+        }
     }
 
     // Get next token as string
@@ -1332,6 +1336,70 @@ class AST2 {
                     }
 
                     return str;
+                } else if (node.op == 'at' && node.args.length == 2) {
+                    var array = this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
+                    var arg = this.evalInternal(player, reference, environment, scope, extra, node.args[1]);
+
+                    if (isNaN(arg)) {
+                        return undefined;
+                    } else {
+                        if (arg < 0) arg = 0;
+                        else if (arg > array.length - 1) {
+                            arg = array.length - 1;
+                        }
+
+                        return array[arg];
+                    }
+                } else if (node.op == 'sort' && node.args.length == 2) {
+                    // Multiple array functions condensed
+                    var array = this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
+                    var mapper = environment.func[node.args[1]];
+                    var values = [];
+
+                    if (mapper) {
+                        if (array.segmented) {
+                            values = array.map(obj => {
+                                return {
+                                    key: mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.arg.reduce((c, a, i) => {
+                                        c[a] = obj[i];
+                                        return c;
+                                    }, {})),
+                                    val: obj
+                                };
+                            });
+                        } else {
+                            values = array.map(obj => {
+                                return {
+                                    key: mapper.ast.eval(player, reference, environment, obj, mapper.arg.reduce((c, a) => {
+                                        c[a] = obj;
+                                        return c;
+                                    }, {})),
+                                    val: obj
+                                };
+                            });
+                        }
+                    } else {
+                        if (array.segmented) {
+                            values = array.map(obj => {
+                                return {
+                                    key: this.evalInternal(obj[0], obj[1], environment, obj[0], undefined, node.args[1]),
+                                    val: obj
+                                };
+                            });
+                        } else {
+                            values = array.map(obj => {
+                                return {
+                                    key: this.evalInternal(player, reference, environment, obj, obj, node.args[1]),
+                                    val: obj
+                                };
+                            });
+                        }
+                    }
+
+                    values = values.sort((a, b) => b.key - a.key).map((a) => a.val);
+                    values.segmented = array.segmented;
+
+                    return values;
                 } else if (['each', 'filter', 'map'].includes(node.op) && node.args.length == 2) {
                     // Multiple array functions condensed
                     var array = this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
