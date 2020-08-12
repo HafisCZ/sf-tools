@@ -12,15 +12,14 @@ const InitialCosts = [
 ];
 
 const Multipliers = [
-    1, 10, 25, 100, 1000
+    1, 10, 25, 100
 ];
 
 const MultiplierBinding = {
     1: 1,
     10: 2,
     25: 3,
-    100: 4,
-    1000: 5
+    100: 4
 };
 
 const PriceTable = (function (max, costs, multipliers) {
@@ -45,7 +44,7 @@ const PriceTable = (function (max, costs, multipliers) {
         }
     }
     return table;
-})(10001, InitialCosts, Multipliers);
+})(20001, InitialCosts, Multipliers);
 
 function getRunesFromMoney (money) {
     return Math.trunc((Math.PI * 11592991 / 10748438389408) * Math.pow(money, 0.83));
@@ -123,7 +122,7 @@ class Building {
     }
 
     matchProductionRate (level, matched) {
-        return this.matchProductionRateBetween(matched, this.getProductionRate(Math.max(1, level)), 0, 10000);
+        return this.matchProductionRateBetween(matched, this.getProductionRate(Math.max(1, level)), 0, 20000);
     }
 
     matchProductionRateBetween (building, minimalRate, min, max) {
@@ -162,8 +161,10 @@ class Building {
             return 6;
         } else if (level < 5000) {
             return 7;
-        } else {
+        } else if (level < 10000) {
             return 8;
+        } else {
+            return 9;
         }
     }
 
@@ -192,64 +193,6 @@ Building.VIPSeat = new Building(6, 2880, 2560, 500000000, 0);
 Building.Snacks = new Building(7, 4320, 7680, 10000000000, 0);
 Building.StrayingMonsters = new Building(8, 8640, 30720, 250000000000, 0);
 Building.Toilet = new Building(9, 21600, 153600, 5000000000000, 0);
-
-const NumberLabels = [
-    [1E123, 'Quadrag'],
-    [1E120, 'Noventrig'],
-    [1E117, 'Octotrig'],
-    [1E114, 'Septentrig'],
-    [1E111, 'Sestrig'],
-    [1E108, 'Quinquatrig'],
-    [1E105, 'Quattuortrig'],
-    [1E102, 'Trestrig'],
-    [1E99, 'Duotrig'],
-    [1E96, 'Untrig'],
-    [1E93, 'Trig'],
-    [1E90, 'Novemvig'],
-    [1E87, 'Octovig'],
-    [1E84, 'Septemvig'],
-    [1E81, 'Sesvig'],
-    [1E78, 'Quinquavig'],
-    [1E75, 'Quattuorvig'],
-    [1E72, 'Tresvig'],
-    [1E69, 'Duovig'],
-    [1E66, 'Unvig'],
-    [1E63, 'Vig'],
-    [1E60, 'Novendec'],
-    [1E57, 'Octodec'],
-    [1E54, 'Septendec'],
-    [1E51, 'Sedec'],
-    [1E48, 'Quinquadec'],
-    [1E45, 'Quattuordec'],
-    [1E42, 'Tredec'],
-    [1E39, 'Duodec'],
-    [1E36, 'Undec'],
-    [1E33, 'Dec'],
-    [1E30, 'Non'],
-    [1E27, 'Oct'],
-    [1E24, 'Sept'],
-    [1E21, 'Sex'],
-    [1E18, 'Quint'],
-    [1E15, 'Quad'],
-    [1E12, 'T'],
-    [1E9, 'B'],
-    [1E6, 'M']
-];
-
-Math.format = function (n) {
-    if (n < NumberLabels[NumberLabels.length - 1][0]) {
-        return n.toString().split('').map((char, i, array) => ((array.length - 1 - i) % 3 == 2) && i != 0 ? (' ' + char) : char).join('');
-    } else if (n > NumberLabels[0][0]) {
-        return n.toExponential(3).replace('+', '');
-    } else {
-        for (let i = 0, unit; unit = NumberLabels[i]; i++) {
-            if (n >= unit[0]) {
-                var num = n / unit[0];
-                return (num.toString().includes('.') && num.toString().split('.')[1].length > 3 ? num.toFixed(3) : num).toString().split('e')[0] + ' ' + unit[1];
-            }
-        }
-    }
-}
 
 function getFormattedDuration (seconds) {
     let s = (seconds % 60);
