@@ -1634,6 +1634,8 @@ class FilesView extends View {
         // Statistics
         this.$gcount = this.$parent.find('[data-op="gcount"]');
         this.$pcount = this.$parent.find('[data-op="pcount"]');
+        this.$rgcount = this.$parent.find('[data-op="rgcount"]');
+        this.$rpcount = this.$parent.find('[data-op="rpcount"]');
         this.$fcount = this.$parent.find('[data-op="fcount"]');
 
         this.$lazy = this.$parent.find('[data-op="checkbox-lazy"]').checkbox({
@@ -1700,6 +1702,10 @@ class FilesView extends View {
     show () {
         this.$gcount.text(Object.keys(Database.Groups).length);
         this.$pcount.text(Object.keys(Database.Players).length);
+
+        this.$rgcount.text(Storage.files().map(f => f.groups ? f.groups.length : 0).reduce((a, b) => a + b, 0));
+        this.$rpcount.text(Storage.files().map(f => f.players ? f.players.length : 0).reduce((a, b) => a + b, 0));
+
         this.$fcount.text(Storage.files().length);
 
         // Page content

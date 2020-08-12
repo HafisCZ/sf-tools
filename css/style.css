@@ -21,6 +21,14 @@ body.dimmed {
     margin-right: 17px !important;
 }
 
+#view-settings > .ui.basic.segment {
+    padding: 0;
+}
+
+#modal-settings > .ui.basic.segment {
+    padding: 0;
+}
+
 .css-ul-ver {
     margin: 0;
 }
