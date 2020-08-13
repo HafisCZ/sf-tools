@@ -973,7 +973,7 @@ class SFPlayer {
 
         this.XPTotal = this.XP + ExperienceTotal[Math.min(393, this.Level)] + Math.max(0, this.Level - 393) * 1500000000;
 
-        this.Fortress.RaidHonor = this.Fortress.Honor - 1 - 10 * (
+        this.Fortress.RaidHonor = this.Fortress.Honor - 10 * (
             this.Fortress.Fortress +
             this.Fortress.LaborerQuarters +
             this.Fortress.WoodcutterGuild +
