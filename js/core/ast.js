@@ -2298,6 +2298,10 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Fortress.Honor,
         width: 150
     },
+    'Raid Honor': {
+        expr: p => p.Fortress.RaidHonor,
+        width: 120
+    },
     'Wall': {
         expr: p => p.Fortress.Wall
     },
