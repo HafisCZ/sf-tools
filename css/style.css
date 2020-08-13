@@ -16,6 +16,14 @@ body {
     font-size: 85%;
 }
 
+.lowglow:hover {
+    color: orange;
+}
+
+.lowglow-green:hover {
+    color: green;
+}
+
 body.dimmed {
     overflow: hidden !important;
     margin-right: 17px !important;
@@ -994,6 +1002,10 @@ h3.file-selected {
 
 .sf-margin.top-20 {
     margin-top: 2.0em;
+}
+
+.mleft-10 {
+    margin-left: 1em !important;
 }
 
 .sf-margin.left-20 {

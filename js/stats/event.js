@@ -1729,7 +1729,7 @@ class FilesView extends View {
                             </div>
                         </div>
                         <div class="four wide right aligned column">
-                            <div><span class="text-muted margin-medium-right">${ file.version || 'Unknown version' }</span> <i class="trash alternate glow outline icon" data-remove-id="${ index }"></i></div>
+                            <div><i class="pencil alternate clickable lowglow-green icon" data-edit-id="${ index }"></i><span class="text-muted mleft-10 margin-medium-right">${ file.version || 'Unknown version' }</span> <i class="trash alternate clickable lowglow outline icon" data-remove-id="${ index }"></i></div>
                         </div>
                     </div>
                 </div>
@@ -1744,8 +1744,36 @@ class FilesView extends View {
 
         // Remove file
         this.$parent.find('[data-remove-id]').click((event) => {
-            Storage.remove($(event.target).attr('data-remove-id'));
-            this.show();
+            var $el = $(event.target);
+            var id = $el.attr('data-remove-id');
+
+            if (this.toRemove == id) {
+                this.toRemove = undefined;
+                this.$parent.find('[data-remove-id]').removeClass('red');
+
+                Storage.remove(id);
+                clearTimeout(this.toRemoveTimeout);
+
+                this.show();
+            } else {
+                this.toRemove = id;
+                this.$parent.find('[data-remove-id]').removeClass('red');
+                this.$parent.find(`[data-remove-id="${ id }"]`).addClass('red');
+
+                clearTimeout(this.toRemoveTimeout);
+                this.toRemoveTimeout = setTimeout(() => {
+                    this.toRemove = undefined;
+                    this.$parent.find('[data-remove-id]').removeClass('red');
+                }, 1000);
+            }
+        });
+
+        // Edit file
+        this.$parent.find('[data-edit-id]').click((event) => {
+            var $el = $(event.target);
+            var id = $el.attr('data-edit-id');
+
+            // :(
         });
 
         // Bind stuff
