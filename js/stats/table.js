@@ -2537,7 +2537,7 @@ class Settings {
                 }
             }
 
-            if (mapping) {
+            if (mapping && !this.currentHeader.expr) {
                 if (this.currentHeader.clean == 2) {
                     this.currentHeader.expr = mapping.expr;
                 } else {
