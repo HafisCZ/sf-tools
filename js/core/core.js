@@ -673,6 +673,11 @@ const Storage = new (class {
         }
     }
 
+    update (index, file) {
+        this.current[index] = file;
+        this.save(file);
+    }
+
     import (json) {
         var files = [];
 

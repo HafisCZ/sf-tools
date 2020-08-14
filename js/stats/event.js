@@ -1582,6 +1582,51 @@ class PlayersView extends View {
     }
 }
 
+// Files Modal
+class FileUpdate extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$textLabel = this.$parent.find('[data-op="textLabel"]');
+        this.$textVersion = this.$parent.find('[data-op="textVersion"]');
+
+        this.$parent.find('[data-op="back"]').click(() => {
+            this.hide();
+        });
+
+        this.$parent.find('[data-op="save"]').click(() => {
+            this.currentFile.label = this.$textLabel.val().trim();
+
+            var version = this.$textVersion.val();
+            if (!isNaN(version) && Number.isInteger(Number(version))) {
+                this.currentFile.version = parseInt(version);
+            }
+
+            Storage.update(this.currentIndex, this.currentFile);
+            UI.show(UI.Files);
+
+            this.hide();
+        });
+    }
+
+    show (id) {
+        this.currentIndex = id;
+        this.currentFile = Storage.files()[id];
+
+        this.$textLabel.val(this.currentFile.label);
+        this.$textVersion.val(this.currentFile.version);
+
+        this.$parent.modal({
+            centered: true,
+            transition: 'fade'
+        }).modal('show');
+    }
+
+    hide () {
+        this.$parent.modal('hide');
+    }
+}
+
 // Files View
 class FilesView extends View {
     constructor (parent) {
@@ -1596,7 +1641,7 @@ class FilesView extends View {
 
         // Export archive file from selected files
         this.$parent.find('[data-op="export-partial"]').click(() => {
-            var array = this.$parent.find('.file-selected').toArray().map(object => Number($(object).attr('data-id')));
+            var array = this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')));
             if (array.length > 0) {
                 Storage.export(array);
             }
@@ -1604,7 +1649,7 @@ class FilesView extends View {
 
         // Merge selected files
         this.$parent.find('[data-op="merge"]').click(() => {
-            var array = this.$parent.find('.file-selected').toArray().map(object => Number($(object).attr('data-id')));
+            var array = this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')));
             if (array.length > 1) {
                 Storage.merge(array);
                 this.show();
@@ -1711,25 +1756,26 @@ class FilesView extends View {
         // Page content
         var content = Storage.files().map(function (file, index) {
             return `
-                <div class="ui segment">
+                <div class="ui segment" data-id="${ index }">
                     <div class="ui middle aligned grid">
-                        <div class="four wide text-center column">
-                            <h3 class="ui margin-tiny-top header clickable" data-id="${ index }">${ formatDate(file.timestamp) }</h3>
-                        </div>
-                        <div class="three wide column">
-                            <div class="ui label">
-                                Groups
-                                <div class="detail">${ file.groups.length }</div>
+                        <div class="nine wide column">
+                            <div class="file-detail-labels clickable">
+                                <div class="ui checkbox not-clickable file-detail-checkbox" data-op="select">
+                                    <input type="checkbox">
+                                </div>
+                                <h3 class="ui margin-tiny-top not-clickable header mleft-20">${ formatDate(file.timestamp) }${ file.label ? `<span class="mleft-10 text-muted" style="font-weight: normal; font-size: 1rem;">${ SFormat.Normal(file.label) }</span>` : '' }</h3>
                             </div>
                         </div>
-                        <div class="five wide column">
-                            <div class="ui label">
-                                Players
-                                <div class="detail">${ file.players.length }</div>
+                        <div class="two wide column">
+                            <div class="file-detail-counts">
+                                <span class="text-muted mleft-15 file-detail-count-1">G: ${ file.groups.length }</span>
+                                <span class="text-muted mleft-15 file-detail-count-2">P: ${ file.players.length }</span>
                             </div>
                         </div>
-                        <div class="four wide right aligned column">
-                            <div><i class="pencil alternate clickable lowglow-green icon" data-edit-id="${ index }"></i><span class="text-muted mleft-10 margin-medium-right">${ file.version || 'Unknown version' }</span> <i class="trash alternate clickable lowglow outline icon" data-remove-id="${ index }"></i></div>
+                        <div class="five wide right aligned column">
+                            <span class="text-muted margin-medium-right">${ file.version || 'Unknown version' }</span>
+                            <i class="pencil alternate clickable lowglow-green icon" data-op="edit"></i>
+                            <i class="trash alternate clickable mleft-10 lowglow outline icon" data-op="remove"></i>
                         </div>
                     </div>
                 </div>
@@ -1738,18 +1784,21 @@ class FilesView extends View {
 
         content.reverse();
 
-        this.$list.html(content.join('')).find('[data-id]').click(function () {
-            $(this).toggleClass('file-selected');
+        this.$list.html(content.join('')).find('.file-detail-labels').click(function () {
+            $(this).find('[data-op="select"]').checkbox('toggle');
+            $(this).closest('[data-id]').toggleClass('selected');
         });
 
+        this.$parent.find('[data-op="select"]').checkbox();
+
         // Remove file
-        this.$parent.find('[data-remove-id]').click((event) => {
+        this.$parent.find('[data-op="remove"]').click((event) => {
             var $el = $(event.target);
-            var id = $el.attr('data-remove-id');
+            var id = $el.closest('[data-id]').attr('data-id');
 
             if (this.toRemove == id) {
                 this.toRemove = undefined;
-                this.$parent.find('[data-remove-id]').removeClass('red');
+                this.$parent.find('[data-op="remove"]').removeClass('red');
 
                 Storage.remove(id);
                 clearTimeout(this.toRemoveTimeout);
@@ -1757,23 +1806,23 @@ class FilesView extends View {
                 this.show();
             } else {
                 this.toRemove = id;
-                this.$parent.find('[data-remove-id]').removeClass('red');
-                this.$parent.find(`[data-remove-id="${ id }"]`).addClass('red');
+                this.$parent.find('[data-op="remove"]').removeClass('red');
+                this.$parent.find(`[data-id="${ id }"]`).find('[data-op="remove"]').addClass('red');
 
                 clearTimeout(this.toRemoveTimeout);
                 this.toRemoveTimeout = setTimeout(() => {
                     this.toRemove = undefined;
-                    this.$parent.find('[data-remove-id]').removeClass('red');
+                    this.$parent.find('[data-op="remove"]').removeClass('red');
                 }, 1000);
             }
         });
 
         // Edit file
-        this.$parent.find('[data-edit-id]').click((event) => {
+        this.$parent.find('[data-op="edit"]').click((event) => {
             var $el = $(event.target);
-            var id = $el.attr('data-edit-id');
+            var id = $el.closest('[data-id]').attr('data-id');
 
-            // :(
+            UI.FileUpdate.show(id);
         });
 
         // Bind stuff
@@ -2421,6 +2470,7 @@ const UI = {
         UI.Settings = new SettingsView('view-settings');
         UI.SettingsFloat = new SettingsFloatView('modal-settings');
         UI.Files = new FilesView('view-files');
+        UI.FileUpdate = new FileUpdate('modal-fileupdate');
         UI.Players = new PlayersView('view-players');
         UI.Groups = new GroupsView('view-groups');
         UI.Browse = new BrowseView('view-browse');

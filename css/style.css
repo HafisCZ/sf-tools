@@ -1004,8 +1004,45 @@ h3.file-selected {
     margin-top: 2.0em;
 }
 
+.file-detail-counts, .file-detail-labels {
+    position: relative;
+}
+
+.file-detail-count-1 {
+    position: absolute;
+    left: -1em;
+    top: -0.625em;
+    width: 5em;
+}
+
+.file-detail-labels .file-detail-checkbox {
+    position: absolute;
+    left: 0.25em;
+    top: 0.125em;
+}
+
+.not-clickable {
+    pointer-events: none;
+    user-select: none;
+}
+
+.file-detail-count-2 {
+    position: absolute;
+    left: 4em;
+    top: -0.625em;
+    width: 5em;
+}
+
 .mleft-10 {
     margin-left: 1em !important;
+}
+
+.mleft-15 {
+    margin-left: 1.5em !important;
+}
+
+.mleft-20 {
+    margin-left: 2em !important;
 }
 
 .sf-margin.left-20 {
