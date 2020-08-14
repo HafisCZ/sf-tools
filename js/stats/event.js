@@ -1763,7 +1763,7 @@ class FilesView extends View {
                                 <div class="ui checkbox not-clickable file-detail-checkbox" data-op="select">
                                     <input type="checkbox">
                                 </div>
-                                <h3 class="ui margin-tiny-top not-clickable header mleft-20">${ formatDate(file.timestamp) }${ file.label ? `<span class="mleft-10 text-muted" style="font-weight: normal; font-size: 1rem;">${ SFormat.Normal(file.label) }</span>` : '' }</h3>
+                                <h3 class="ui margin-tiny-top not-clickable header mleft-20">${ formatDate(file.timestamp) }<span class="mleft-10 text-muted" style="font-weight: normal; font-size: 1rem;">${ file.label ? SFormat.Normal(file.label) : '' }</span></h3>
                             </div>
                         </div>
                         <div class="two wide column">
