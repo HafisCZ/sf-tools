@@ -89,10 +89,13 @@
                     <div class="one wide text-center column">
                         Bonus
                     </div>
-                    <div class="three wide text-center column">
+                    <div class="two wide text-center column">
                         Needed
                     </div>
-                    <div class="three wide text-center column">
+                    <div class="two wide text-center column">
+                        Total Needed
+                    </div>
+                    <div class="two wide text-center column">
                         Reclaimable
                     </div>
                     <div class="four wide text-center column">
@@ -237,7 +240,7 @@
                             <div class="one wide text-center column">
                                 ${ formatAsSpacedNumber(price.AttributeDelta, ' ') }
                             </div>
-                            <div class="three wide column">
+                            <div class="two wide column">
                                 <div class="right">
                                     ${ formatAsSpacedNumber(price.Upgrade.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
                                 </div>
@@ -245,7 +248,15 @@
                                     ${ formatAsSpacedNumber(price.Upgrade.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
                                 </div>
                             </div>
-                            <div class="three wide column">
+                            <div class="two wide column">
+                                <div class="right">
+                                    ${ formatAsSpacedNumber(price.TotalUpgrade.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
+                                </div>
+                                <div class="right">
+                                    ${ formatAsSpacedNumber(price.TotalUpgrade.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
+                                </div>
+                            </div>
+                            <div class="two wide column">
                                 <div class="right">
                                     ${ formatAsSpacedNumber(price.Return.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
                                 </div>
