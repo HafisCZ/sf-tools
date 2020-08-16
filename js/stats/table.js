@@ -1170,11 +1170,12 @@ const CompareEval = {
 };
 
 class SettingsCommand {
-    constructor (regexp, parse, format) {
+    constructor (regexp, parse, format, parseAlways = false) {
         this.regexp = regexp;
         this.match = string => string.match(this.regexp);
         this.parse = parse;
         this.format = format;
+        this.parseAlways = parseAlways;
     }
 
     isValid (string) {
@@ -1215,10 +1216,12 @@ const ARG_MAP_SERVER = {
 }
 
 const ARG_FORMATTERS = {
-    'number': (p, c, e, x) => Number.isInteger(x) ? x : x.toFixed(2),
-    'fnumber': (p, c, e, x) => formatAsSpacedNumber(x),
-    'date': (p, c, e, x) => formatDate(x),
-    'duration': (p, c, e, x) => formatDuration(x),
+    'number': (p, c, e, x) => isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)),
+    'fnumber': (p, c, e, x) => isNaN(x) ? undefined : formatAsSpacedNumber(x),
+    'nnumber': (p, c, e, x) => isNaN(x) ? undefined : formatAsNamedNumber(x),
+    'date': (p, c, e, x) => isNaN(x) ? undefined : formatDateOnly(x),
+    'datetime': (p, c, e, x) => isNaN(x) ? undefined : formatDate(x),
+    'duration': (p, c, e, x) => isNaN(x) ? undefined : formatDuration(x),
     'default': (p, c, e, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
 }
 
@@ -1234,6 +1237,7 @@ const SFormat = {
     Macro: string => `<span class="ta-macro">${ escapeHTML(string) }</span>`,
     Lambda: string => `<span class="ta-lambda">${ string }</span>`,
     Constant: string => `<span class="ta-constant">${ escapeHTML(string) }</span>`,
+    Function: string => `<span class="ta-function">${ escapeHTML(string) }</span>`,
     Enum: string => `<span class="ta-enum">${ escapeHTML(string) }</span>`,
     Reserved: string => `<span class="ta-reserved">${ escapeHTML(string) }</span>`,
     ReservedProtected: string => `<span class="ta-reserved-protected">${ escapeHTML(string) }</span>`,
@@ -1272,13 +1276,6 @@ const SettingsCommands = [
             return SFormat.Macro(`${ key1 } ${ arg }`);
         }
     }),
-    new SettingsCommand(/^(ast beta)$/, function (root, string) {
-        var [ , key ] = this.match(string);
-        root.beta = true;
-    }, function (root, string) {
-        var [ , key ] = this.match(string);
-        return `${ SFormat.Macro(key) }`;
-    }),
     // Global
     // set static
     new SettingsCommand(/^(layout) ((table|statistics|members|details)\s*(\,\s*(table|statistics|members|details))*)$/, function (root, string) {
@@ -1292,38 +1289,38 @@ const SettingsCommands = [
     // set static
     new SettingsCommand(/^(set) (\w+[\w ]*) with all as (.+)$/, function (root, string) {
         var [ , key, name, asts ] = this.match(string);
-        var ast = AST.create(asts, root.beta);
+        var ast = new Expression(asts);
         if (ast.isValid()) {
             root.setVariable(name, true, ast);
         }
     }, function (root, string) {
         var [ , key, name, asts ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with all as') } ${ AST.format(asts, root.constants, root.vars) }`;
-    }),
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with all as') } ${ Expression.format(asts, root) }`;
+    }, true),
     // Global
     // set with - Create a function
     new SettingsCommand(/^(set) (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/, function (root, string) {
         var [ , key, name, args, a ] = this.match(string);
-        var ast = AST.create(a, root.beta);
+        var ast = new Expression(a);
         if (ast.isValid()) {
             root.setFunction(name, args.split(',').map(arg => arg.trim()), ast);
         }
     }, function (root, string) {
         var [ , key, name, args, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with') } ${ args.split(',').map(arg => SFormat.Constant(arg)).join(',') } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants, root.vars) }`;
-    }),
+        return `${ SFormat.Keyword(key) } ${ SFormat.Function(name) } ${ SFormat.Keyword('with') } ${ args.split(',').map(arg => SFormat.Constant(arg)).join(',') } ${ SFormat.Keyword('as') } ${ Expression.format(a, root) }`;
+    }, true),
     // Global
     // set - Create a variable
     new SettingsCommand(/^(set) (\w+[\w ]*) as (.+)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        var ast = AST.create(a, root.beta);
+        var ast = new Expression(a);
         if (ast.isValid()) {
             root.setVariable(name, false, ast);
         }
     }, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants, root.vars) }`;
-    }),
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ Expression.format(a, root) }`;
+    }, true),
     // Global
     // server - show, hide or set width
     new SettingsCommand(/^(server) ((@?)(\S+))$/, function (root, string) {
@@ -1414,7 +1411,7 @@ const SettingsCommands = [
     // Create new statistics row
     new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(show) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
         var [ , extend, key, name, a ] = this.match(string);
-        var ast = AST.create(a, root.beta);
+        var ast = new Expression(a);
         if (ast.isValid()) {
             root.addExtraRow(name, ast);
             if (extend) {
@@ -1423,7 +1420,7 @@ const SettingsCommands = [
         }
     }, function (root, string) {
         var [ , extend, key, name, a ] = this.match(string);
-        return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants, root.vars) }`;
+        return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ Expression.format(a, root) }`;
     }),
     // Create new itemized header
     new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(itemized) (\S+[\S ]*) by (\S+[\S ]*)$/, function (root, string) {
@@ -1534,13 +1531,13 @@ const SettingsCommands = [
     // Create new statistics row
     new SettingsCommand(/^(statistics) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        var ast = AST.create(a, root.beta);
+        var ast = new Expression(a);
         if (ast.isValid()) {
             root.addExtraStatistics(name, ast);
         }
     }, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ AST.format(a, root.constants, root.vars) }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ Expression.format(a, root) }`;
     }),
     // Local Shared
     // width - Width of a column
@@ -1609,7 +1606,7 @@ const SettingsCommands = [
     }, function (root, string) {
         var [ , key, name, value ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Normal(value) }`;
-    }),
+    }, true),
     // Local
     // visible - Show text on the background
     new SettingsCommand(/^(visible) (on|off)$/, function (root, string) {
@@ -1660,7 +1657,7 @@ const SettingsCommands = [
         if (ARG_FORMATTERS[arg]) {
             root.setLocalVariable('format', ARG_FORMATTERS[arg]);
         } else {
-            var ast = AST.create(arg, root.beta);
+            var ast = new Expression(arg);
             if (ast.isValid()) {
                 root.setLocalVariable('format', (player, reference, env, val) => {
                     return ast.eval(player, reference, env, val);
@@ -1672,14 +1669,14 @@ const SettingsCommands = [
         if (ARG_FORMATTERS[arg]) {
             return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
         } else {
-            return `${ SFormat.Keyword(key) } ${ AST.format(arg, root.constants, root.vars) }`;
+            return `${ SFormat.Keyword(key) } ${ Expression.format(arg, root) }`;
         }
     }),
     // Local
     // order by
     new SettingsCommand(/^(order by) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
-        var ast = AST.create(arg, root.beta);
+        var ast = new Expression(arg);
         if (ast.isValid()) {
             root.setLocalVariable('order', (player, reference, env, val, extra) => {
                 return ast.eval(player, reference, env, val, extra);
@@ -1687,7 +1684,7 @@ const SettingsCommands = [
         }
     }, function (root, string) {
         var [ , key, arg ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ AST.format(arg, root.constants, root.vars) }`;
+        return `${ SFormat.Keyword(key) } ${ Expression.format(arg, root) }`;
     }),
     // Local
     // alias - Override name of the column
@@ -1713,7 +1710,7 @@ const SettingsCommands = [
     // expr - Set expression to the column
     new SettingsCommand(/^(expr|e\:) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        var ast = AST.create(a, root.beta);
+        var ast = new Expression(a);
         if (ast.isValid()) {
             root.setLocalVariable('expr', (player, reference, env, scope) => {
                 return ast.eval(player, reference, env, scope);
@@ -1721,13 +1718,13 @@ const SettingsCommands = [
         }
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ AST.format(a, root.constants, root.vars) }`;
+        return `${ SFormat.Keyword(key) } ${ Expression.format(a, root) }`;
     }),
     // Local
     // expc - Set color expression to the column
     new SettingsCommand(/^(expc|c\:) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        var ast = AST.create(a, root.beta);
+        var ast = new Expression(a);
         if (ast.isValid()) {
             root.setLocalVariable('expc', (player, reference, env, val) => {
                 return getCSSColor(ast.eval(player, reference, env, val));
@@ -1735,7 +1732,7 @@ const SettingsCommands = [
         }
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ AST.format(a, root.constants, root.vars) }`;
+        return `${ SFormat.Keyword(key) } ${ Expression.format(a, root) }`;
     }),
     // Local
     // value - Add default value
@@ -1977,8 +1974,6 @@ class Templates {
     }
 }
 
-const FORMAT_ONLY_SETTINGS = [ 3, 4, 5, 26 ];
-
 class Settings {
     // Save
     static save (settings, identifier) {
@@ -2057,14 +2052,13 @@ class Settings {
 
             var trimmed = line.trim();
 
-            for (var index of FORMAT_ONLY_SETTINGS) {
-                if (SettingsCommands[index].isValid(trimmed)) {
-                    SettingsCommands[index].parse(settings, trimmed);
+            for (var command of SettingsCommands) {
+                if (command.parseAlways && command.isValid(trimmed)) {
+                    command.parse(settings, trimmed);
+                    break;
                 }
             }
         }
-
-        settings.vars = [ ...Object.keys(settings.vars), ...Object.keys(settings.func) ];
 
         return settings;
     }
@@ -2155,7 +2149,6 @@ class Settings {
         this.currentHeader = null;
         this.dummy = null;
         this.currentExtra = null;
-        this.beta = SiteOptions.ast;
 
         this.shared = {
             statistics_color: true

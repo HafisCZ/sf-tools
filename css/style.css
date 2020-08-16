@@ -530,6 +530,11 @@ h3.file-selected {
     color: #175e5a;
 }
 
+.ta-function {
+    text-shadow: -0.06ex 0 #175e5a, 0.06ex 0 #175e5a;
+    color: #175e5a;
+}
+
 .ta-error {
     text-decoration: underline;
     text-decoration-color: red;

@@ -1,4 +1,18 @@
 const CHANGELOG = {
+    'v3.748': [
+        'Updated expression evaluator & removed all beta related content. The old evaluator is from now on not present in the tool.<br/><br/>Some of your expressions might not work if you did not use beta mode before. You\'ll need to correct them if that\'s the case.',
+        'Updated Files screen. You can now add description and set the version of the file if needed.',
+        'Added <code>difference</code> function that returns difference between current and reference values. You can look at example <a href="https://github.com/HafisCZ/sf-tools/wiki/2.-Basic-Expressions">here</a>',
+        'Added <code>Raid Honor</code> header that shows fortress honor gained only from raids.',
+        'Added <code>Name</code> header with player name.',
+        'Added missing simple format options.',
+        'Added <code>sr</code> filter option to Players that sorts the table.',
+        'Added <code>sort</code> and <code>at</code> functions for arrays.',
+        'Added <code>background</code> to left columns when set globally.',
+        'Added copy option to guild context menu.',
+        'Fixed <code>expr</code> not ignoring predefined options.',
+        'Fixed filter expression in Players not data to compare.'
+    ],
     'v3.726': [
         'Reworked player detail screen.',
         'Added category and header definitions. You can now create a group of options and extend any category or header with it.<br/>You can look at an example <a href="https://pastebin.com/raw/Zes71ez0">here</a>.',

@@ -1004,15 +1004,15 @@ class BrowseView extends View {
                     });
                     this.recalculate = true;
                 } else if (key == 'e') {
-                    var ast = AST.create(arg);
+                    var ast = new Expression(arg);
                     if (ast.isValid()) {
                         terms.push({
-                            test: (arg, player, timestamp) => arg.eval(player, player, this.table.settings, player),
+                            test: (arg, player, timestamp, compare) => arg.eval(player, compare, this.table.settings, player),
                             arg: ast
                         });
                     }
                 } else if (key == 'sr') {
-                    var ast = AST.create(arg);
+                    var ast = new Expression(arg);
                     if (ast.isValid()) {
                         this.autosort = (player, compare) => ast.eval(player, compare, this.table.settings);
                     }
@@ -1041,16 +1041,16 @@ class BrowseView extends View {
                 if (this.hidden || !hidden || this.shidden) {
                     var currentPlayer = player.List.find(entry => entry[0] <= this.timestamp);
                     if (currentPlayer) {
+                        var xx = player.List.concat();
+                        xx.reverse();
+                        var ts = xx.find(p => p[0] >= this.reference && p[0] <= currentPlayer[0]);
+
                         var matches = true;
                         for (var term of terms) {
-                            matches &= term.test(term.arg, currentPlayer[1], this.timestamp);
+                            matches &= term.test(term.arg, currentPlayer[1], this.timestamp, (ts || currentPlayer)[1]);
                         }
 
                         if (matches) {
-                            var xx = player.List.concat();
-                            xx.reverse();
-                            var ts = xx.find(p => p[0] >= this.reference && p[0] <= currentPlayer[0]);
-
                             entries.add(currentPlayer[1], (ts || currentPlayer)[1], currentPlayer[1].Timestamp == this.timestamp, hidden);
                         }
                     }
@@ -1469,7 +1469,7 @@ class PlayersView extends View {
                         arg: arg.toLowerCase()
                     });
                 } else if (key == 'e') {
-                    var ast = AST.create(arg);
+                    var ast = new Expression(arg);
                     if (ast.isValid()) {
                         terms.push({
                             test: (arg, player) => arg.eval(player, player, this.settings, player),
@@ -1598,7 +1598,7 @@ class FileUpdate extends View {
             this.currentFile.label = this.$textLabel.val().trim();
 
             var version = this.$textVersion.val();
-            if (!isNaN(version) && Number.isInteger(Number(version))) {
+            if (!this.currentFile.version && !isNaN(version) && Number.isInteger(Number(version))) {
                 this.currentFile.version = parseInt(version);
             }
 
@@ -1615,6 +1615,12 @@ class FileUpdate extends View {
 
         this.$textLabel.val(this.currentFile.label);
         this.$textVersion.val(this.currentFile.version);
+
+        if (this.currentFile.version > 0) {
+            this.$textVersion.parent('div').addClass('disabled');
+        } else {
+            this.$textVersion.parent('div').removeClass('disabled');
+        }
 
         this.$parent.modal({
             centered: true,
@@ -1696,21 +1702,6 @@ class FilesView extends View {
             this.$lazy.checkbox('set checked');
         } else {
             this.$lazy.checkbox('set unchecked');
-        }
-
-        this.$ast = this.$parent.find('[data-op="checkbox-ast"]').checkbox({
-            onChecked: function () {
-                SiteOptions.ast = true;
-            },
-            onUnchecked: function () {
-                SiteOptions.ast = false;
-            }
-        });
-
-        if (SiteOptions.ast) {
-            this.$ast.checkbox('set checked');
-        } else {
-            this.$ast.checkbox('set unchecked');
         }
 
         this.$beta = this.$parent.find('[data-op="checkbox-beta"]').checkbox({

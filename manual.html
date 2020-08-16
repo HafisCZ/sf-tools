@@ -1242,10 +1242,9 @@
                 'Simulator Min': 'Smallest win rate (viability)'
             };
 
-
             $('#manual-constants').html(Object.keys(new Constants().Values).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
             $('#manual-enums').html(Object.keys(SP_ENUMS).map(constant => `<div class="text-center column">${ constant }</div>`).join(''));
-            $('#manual-functions').html(Object.keys(AST_FUNCTIONS).map(func => `<div class="text-center column">${ func }</div>`).join('') + `<div class="text-center column">format</div>`);
+            $('#manual-functions').html(Object.keys(SP_FUNCTIONS).map(func => `<div class="text-center column">${ func }</div>`).join('') + `<div class="text-center column">format</div>`);
 
             $('#manual-headers-0').html(Object.keys(SP_KEYWORD_MAPPING_0).map(header => `<div class="text-center three wide column ta-reserved">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
             $('#manual-headers-1').html(Object.keys(SP_KEYWORD_MAPPING_1).map(header => `<div class="text-center three wide column ta-reserved-protected">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
