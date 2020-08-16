@@ -1459,6 +1459,15 @@ class AST2 {
                     }
 
                     return mapper.ast.eval(player, reference, environment, scope2, extra);
+                } else if (node.op == 'difference' && node.args.length == 1) {
+                    var a = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
+                    var b = this.evalInternal(reference, reference, environment, scope, extra, node.args[0]);
+
+                    if (isNaN(a) || isNaN(b)) {
+                        return undefined;
+                    } else {
+                        return a - b;
+                    }
                 } else if (node.op == '[a') {
                     var object = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
                     if (object) {
