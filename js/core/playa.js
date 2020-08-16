@@ -575,7 +575,12 @@ class SFGroup {
         this.PortalFloor = dataType.short();
 
         this.Members = data.save.slice(14, 64).map(mid => (data.prefix + '_p' + mid));
+        this.States = data.save.slice(64, 114).map(level => Math.trunc(level / 1000));
         this.Roles = data.save.slice(314, 364);
+
+        this.IsUnderAttack = data.save[364] > 0;
+        this.IsAttacking = data.save[366] > 0;
+
         this.Treasures = data.save.slice(214, 264);
         this.Instructors = data.save.slice(264, 314);
         this.Pets = data.save.slice(390, 440);
@@ -594,6 +599,7 @@ class SFGroup {
                 this.Treasures.splice(i, 1);
                 this.Instructors.splice(i, 1);
                 this.Pets.splice(i, 1);
+                this.States.splice(i, 1);
                 this.Members.splice(i--, 1);
                 this.MemberCount--;
             }

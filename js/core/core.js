@@ -254,6 +254,8 @@ const Database = new (class {
                 player.Group.Role = group.Roles[index];
                 player.Group.Index = index;
                 player.Group.Rank = group.Rank;
+                player.Group.ReadyDefense = group.States[index] == 1 || group.States[index] == 3;
+                player.Group.ReadyAttack = group.States[index] > 1;
 
                 if (group.Own) {
                     player.Group.Own = true;
