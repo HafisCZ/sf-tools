@@ -1220,6 +1220,7 @@ const ARG_FORMATTERS = {
     'fnumber': (p, c, e, x) => isNaN(x) ? undefined : formatAsSpacedNumber(x),
     'nnumber': (p, c, e, x) => isNaN(x) ? undefined : formatAsNamedNumber(x),
     'date': (p, c, e, x) => isNaN(x) ? undefined : formatDateOnly(x),
+    'bool': (p, c, e, x) => x ? 'Yes' : 'No',
     'datetime': (p, c, e, x) => isNaN(x) ? undefined : formatDate(x),
     'duration': (p, c, e, x) => isNaN(x) ? undefined : formatDuration(x),
     'default': (p, c, e, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))

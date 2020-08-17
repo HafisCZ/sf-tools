@@ -673,6 +673,10 @@ class Expression {
             } else if (SP_KEYWORDS_DEFAULT.hasOwnProperty(node)) {
                 // Return default values
                 return SP_KEYWORDS_DEFAULT[node];
+            } else if (player && SP_KEYWORDS.hasOwnProperty(node)) {
+                return SP_KEYWORDS[node].expr(player, reference, environment);
+            } else if (player && SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
+                return SP_KEYWORDS_INDIRECT[node].expr(player, reference, environment, extra);
             } else if (typeof(extra) == 'object' && extra[node] != undefined) {
                 // Return extra variable (only if it exists)
                 return extra[node];
@@ -693,10 +697,6 @@ class Expression {
             } else if (node[0] == '@') {
                 // Return constant
                 return environment.constants.Values[node.slice(1)];
-            } else if (player && SP_KEYWORDS.hasOwnProperty(node)) {
-                return SP_KEYWORDS[node].expr(player, reference, environment);
-            } else if (player && SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
-                return SP_KEYWORDS_INDIRECT[node].expr(player, reference, environment, extra);
             } else {
                 // Return enum or undefined if everything fails
                 return SP_ENUMS[node];
