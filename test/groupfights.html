@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Guild Fight Viewer</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/semantic.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+
+        <script src="js/core/playa.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item">SFTools</div>
+            <div class="right menu">
+                <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
+            </div>
+        </div>
+        <div class="ui main container">
+            <div class="ui middle aligned margin-medium-bottom grid">
+                <div class="two wide column">
+                    <label class="ui fluid button" for="fi-open">
+                        <i class="upload icon"></i> Open
+                    </label>
+                    <input type="file" id="fi-open" hidden>
+                </div>
+                <div class="four wide column">
+
+                </div>
+                <div class="four wide column">
+                    <h1 class="ui centered header">Guild Fight Viewer</h1>
+                </div>
+                <div class="six wide column">
+
+                </div>
+            </div>
+            <div id="fi-content">
+                <div class="ui grid">
+                    <div class="eight wide column" id="fi-guilda"></div>
+                    <div class="eight wide column" id="fi-guildb"></div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            function show (ga, gb) {
+                var ca = '', cb = '';
+
+                for (var p of ga || []) {
+                    ca += `<div style="color: ${ p.MaximumLife != p.Life ? 'red' : 'black' };">${ p.Name }</div>`;
+                }
+
+                for (var p of gb || []) {
+                    cb += `<div style="color: ${ p.MaximumLife != p.Life ? 'red' : 'black' };">${ p.Name }</div>`;
+                }
+
+                $('#fi-guilda').html(ca);
+                $('#fi-guildb').html(cb);
+            }
+
+            function parse (json) {
+                var a = [], b = [], raws = [];
+                for (var [k, v] of filterPlayaJSON(json)) {
+                    if (k == 'text' && v.includes('fightheader')) {
+                        var cr = [];
+                        for (var [kb, vb] of parsePlayaResponse(v)) {
+                            if (kb.includes('.fighters')) {
+                                cr.push(['fighters', vb].join(':'));
+                            } else if (kb.includes('.r')) {
+                                cr.push(['r', vb].join(':'));
+                            } else if (kb.includes('winnerid')) {
+                                cr.push(['winnerid', vb].join(':'));
+                                raws.push(cr.join('&'));
+                                cr = [];
+                            }
+                        }
+                    }
+                }
+
+                for (var raw of raws) {
+                    var msg = {};
+                    for (var [k, v] of parsePlayaResponse(raw)) {
+                        msg[k] = v.split(/[/,]/g).map(d => isNaN(d) ? d : Number(d));
+                    }
+
+                    if (msg['fighters'] && msg['winnerid'] && msg['r'] && Object.values(FIGHT_TYPES).includes(msg['fighters'][0])) {
+                        var fightType = msg['fighters'][0];
+
+                        // Fighter A (always a player)
+                        var fighterA = new SFFighter(msg['fighters'].slice(5, 52));
+                        if (fighterA.isMonster()) {
+                            fighterA.Name = getFightTargetName(fightType, fighterA.Name, fighterA.getMonsterID());
+                        }
+
+                        // Fighter B (player or monster)
+                        var fighterB = new SFFighter(msg['fighters'].slice(52, 99));
+                        if (fighterB.isMonster() || !isNaN(fighterB.Name)) {
+                            fighterB.Name = getFightTargetName(fightType, fighterB.Name, fighterB.getMonsterID())
+                        }
+
+                        if (!a.find(x => x.Name == fighterA.Name)) {
+                            a.push(fighterA);
+                        }
+
+                        if (!b.find(x => x.Name == fighterB.Name)) {
+                            b.push(fighterB);
+                        }
+                    }
+                }
+
+                show(a, b);
+            }
+
+            $('#fi-open').on('change', function () {
+                Array.from(this.files).forEach(file => {
+                    var r = new FileReader();
+                    r.readAsText(file, 'UTF-8');
+                    r.onload = event => {
+                        try {
+                            var data = JSON.parse(event.target.result);
+                            parse(data);
+                        } catch (exception) {
+                            console.warn(exception);
+                        }
+                    };
+                });
+            });
+        </script>
+    </body>
+</html>
