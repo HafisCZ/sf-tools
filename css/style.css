@@ -441,22 +441,6 @@ h3.file-selected {
     top: 33%;
 }
 
-.fi-wrap {
-    position: relative;
-    height: 2em;
-}
-
-.fi-right {
-    left: 2em;
-    position: absolute;
-    width: 17em;
-}
-
-.fi-left {
-    left: -0.5em;
-    position: absolute;
-}
-
 .ta-wrapper {
     position: relative;
     overflow: hidden;
