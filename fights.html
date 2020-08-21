@@ -77,7 +77,9 @@
             <input type="file" id="fi-open" multiple hidden>
             <a class="item" id="fi-clear"><i class="small trash alternate outline icon"></i>Clear</a>
             <a class="item" id="fi-saveall"><i class="small download icon"></i>Export All</a>
+            <a class="item" id="fi-copyall"><i class="small copy outline icon"></i>Copy All</a>
             <a class="item" id="fi-save"><i class="small download icon"></i>Export Current</a>
+            <a class="item" id="fi-copy"><i class="small copy outline icon"></i>Copy Current</a>
             <div class="right menu">
                 <div class="ui selection compact dropdown" id="fi-select">
                     <div class="text"></div>
@@ -441,6 +443,82 @@
                 }));
             }
 
+            function copyFightData (fights) {
+                var content = [];
+
+               for (var tab of fights) {
+                   var rows = [];
+
+                   Object.entries(tab.fighterA).forEach(([key, val]) => {
+                       if (val instanceof SFItem || val.DamageMin != undefined) {
+                           rows.push([ key ]);
+                           rows.push([ '', 'MinDmg', val.DamageMin ]);
+                           rows.push([ '', 'MaxDmg', val.DamageMax ]);
+                       } else if (key == 'Face') {
+                           rows.push([ key, val.Mouth ]);
+                       } else {
+                           rows.push([ key, val ]);
+                       }
+                   });
+
+                   Object.entries(tab.fighterB).forEach(([key, val]) => {
+                       if (val instanceof SFItem || val.DamageMin != undefined) {
+                           rows.push([ key ]);
+                           rows.push([ '', 'MinDmg', val.DamageMin ]);
+                           rows.push([ '', 'MaxDmg', val.DamageMax ]);
+                       } else if (key == 'Face') {
+                           rows.push([ key, val.Mouth ]);
+                       } else {
+                           rows.push([ key, val ]);
+                       }
+                   });
+
+                   rows.push([ 'index', 'attacker', 'target', 'type', 'damage' ]);
+                   tab.rounds.forEach((round, i) => {
+                       rows.push([ i, round.attacker.ID, round.target.ID, ATTACK_TYPES[round.attackType], round.attackDamage ]);
+                   });
+
+                   content.push(rows);
+               }
+
+               var maxColumns = Math.max(... content[0].map(r => r.length));
+               var maxRows = Math.max(... content.map(r => r.length));
+
+               var rows = [];
+               for (var c of content) {
+                   for (var i = 0; i < maxRows; i++) {
+                       var x = [];
+                       if (c[i]) {
+                           x.push(... c[i].map(y => `<td>${ y }</td>`));
+                       }
+                       while (x.length < maxColumns) {
+                           x.push(`<td></td>`);
+                       }
+                       if (rows[i]) {
+                           rows[i].push(...x);
+                       } else {
+                           rows[i] = x;
+                       }
+                   }
+               }
+
+               // Create element
+               var el = document.createElement('table');
+               el.innerHTML = `<tbody>${ rows.map(r => `<tr>${ r.join('') }</tr>`).join('') }</tbody>`;
+               document.body.appendChild(el);
+
+               // Create range, select element and copy
+               var range = document.createRange();
+               range.selectNode(el);
+               window.getSelection().removeAllRanges();
+               window.getSelection().addRange(range);
+               document.execCommand('copy');
+               window.getSelection().removeAllRanges();
+
+               // Destroy element
+               document.body.removeChild(el);
+            }
+
             // File export
             var $fileSave = $('#fi-save').on('click', function () {
                 if (fightData.length && fightIndex >= 0) {
@@ -451,6 +529,18 @@
             var $fileSaveBulk = $('#fi-saveall').on('click', function () {
                 if (fightData.length) {
                     exportFightData(fightData);
+                }
+            });
+
+            var $fileCopy = $('#fi-copy').on('click', function () {
+                if (fightData.length && fightIndex >= 0) {
+                    copyFightData([ fightData[fightIndex] ]);
+                }
+            });
+
+            var $fileCopyBulk = $('#fi-copyall').on('click', function () {
+                if (fightData.length) {
+                    copyFightData(fightData);
                 }
             });
 
