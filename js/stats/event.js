@@ -1704,6 +1704,21 @@ class FilesView extends View {
             this.$lazy.checkbox('set unchecked');
         }
 
+        this.$obfuscated = this.$parent.find('[data-op="checkbox-obfuscated"]').checkbox({
+            onChecked: function () {
+                SiteOptions.obfuscated = true;
+            },
+            onUnchecked: function () {
+                SiteOptions.obfuscated = false;
+            }
+        });
+
+        if (SiteOptions.obfuscated) {
+            this.$obfuscated.checkbox('set checked');
+        } else {
+            this.$obfuscated.checkbox('set unchecked');
+        }
+
         this.$beta = this.$parent.find('[data-op="checkbox-beta"]').checkbox({
             onChecked: function () {
                 SiteOptions.beta = true;

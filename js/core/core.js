@@ -65,13 +65,15 @@ const SiteOptions = new (class {
         this.options = SharedPreferences.get('options', {
             lazy: false,
             beta: false,
-            insecure: false
+            insecure: false,
+            obfuscated: false
         });
 
         this.params = {
             beta: false,
             temp: false,
-            insecure: false
+            insecure: false,
+            obfuscated: false
         };
     }
 
@@ -81,6 +83,15 @@ const SiteOptions = new (class {
 
     set lazy (value) {
         this.options.lazy = value;
+        SharedPreferences.set('options', this.options);
+    }
+
+    get obfuscated () {
+        return this.options.obfuscated;
+    }
+
+    set obfuscated (value) {
+        this.options.obfuscated = value;
         SharedPreferences.set('options', this.options);
     }
 
