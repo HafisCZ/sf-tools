@@ -165,7 +165,11 @@
                                         <input type="text" disabled class="text-center" data-op="Luck">
                                     </div>
                                 </div>
-                                <div class="two fields">
+                                <div class="three fields">
+                                    <div class="field">
+                                        <label>Armor</label>
+                                        <input type="text" class="text-center" data-op="Armor">
+                                    </div>
                                     <div class="field">
                                         <label>Health</label>
                                         <input type="text" disabled class="text-center" data-op="Health">
@@ -262,7 +266,11 @@
                                         <input type="text" disabled class="text-center" data-op="Luck">
                                     </div>
                                 </div>
-                                <div class="two fields">
+                                <div class="three fields">
+                                    <div class="field">
+                                        <label>Armor</label>
+                                        <input type="text" class="text-center" data-op="Armor">
+                                    </div>
                                     <div class="field">
                                         <label>Health</label>
                                         <input type="text" disabled class="text-center" data-op="Health">
@@ -679,7 +687,24 @@
                 }
             }
 
-            function fillFighter ($parent, f, winner) {
+            function getAttributeForClass (p, c) {
+                switch (c) {
+                    case 1:
+                    case 5:
+                    case 6:
+                        return p.Strength;
+                    case 2:
+                        return p.Intelligence;
+                    default:
+                        return p.Dexterity;
+                }
+            }
+
+            function getTargetResistance (p, t, tarmor) {
+                return p.Class == 2 ? 0 : Math.min([ 50, 10, 25, 25, 50, 25, 50 ][ t.Class - 1 ], tarmor / p.Level + (t.Class == 5 ? 40 : 0));
+            }
+
+            function fillFighter ($parent, f, winner, o, tarmor = 0) {
                 var $name = $parent.find('[data-op="Name"]').val(f.Name);
                 if (winner) {
                     $name.addClass('foreground-green').removeClass('foreground-red');
@@ -687,10 +712,30 @@
                     $name.addClass('foreground-red').removeClass('foreground-green');
                 }
 
+                var id = getID(f, o);
+                var id2 = id + '_2';
+
                 $parent.find('[data-op="Level"]').val(f.Level);
                 $parent.find('[data-op="Class"]').val(PLAYER_CLASS[f.Class]);
-                $parent.find('[data-op="Min1"]').val(f.Wpn1.DamageMin);
-                $parent.find('[data-op="Max1"]').val(f.Wpn1.DamageMax);
+
+                var skillMain = getAttributeForClass(f, f.Class);
+                var skillTarget = getAttributeForClass(o, f.Class);
+                var skillmult = 1 + Math.max(skillMain / 2, skillMain - skillTarget / 2) / 10;
+                var armormult = 1 - getTargetResistance(f, o, tarmor) / 100;
+
+                if (f.Wpn1.DamageMin) {
+                    $parent.find('[data-op="Min1"]').val(formatAsSpacedNumber(f.Wpn1.DamageMin, ' '));
+                    $parent.find('[data-op="Max1"]').val(formatAsSpacedNumber(f.Wpn1.DamageMax, ' '));
+                } else if (damageData[id] && damageData[id].normal) {
+                    var approxMin = damageData[id].normal.min / skillmult / armormult;
+                    var approxMax = damageData[id].normal.max / skillmult / armormult;
+
+                    $parent.find('[data-op="Min1"]').val(`~ ${ formatAsSpacedNumber(approxMin, ' ') }`);
+                    $parent.find('[data-op="Max1"]').val(`~ ${ formatAsSpacedNumber(approxMax, ' ') }`);
+                } else {
+                    $parent.find('[data-op="Min1"]').val('');
+                    $parent.find('[data-op="Max1"]').val('');
+                }
 
                 if (f.Wpn1.AttributeTypes[2] >= 30) {
                     $parent.find('[data-op="Type1"]').val(RUNETYPES[f.Wpn1.AttributeTypes[2] - 30].split(' ')[0]).parent('div').show();
@@ -702,8 +747,20 @@
 
                 if (f.Class == 4) {
                     $parent.find('[data-op="Weapon2"]').show();
-                    $parent.find('[data-op="Min2"]').val(f.Wpn2.DamageMin);
-                    $parent.find('[data-op="Max2"]').val(f.Wpn2.DamageMax);
+
+                    if (f.Wpn2.DamageMin) {
+                        $parent.find('[data-op="Min2"]').val(formatAsSpacedNumber(f.Wpn2.DamageMin, ' '));
+                        $parent.find('[data-op="Max2"]').val(formatAsSpacedNumber(f.Wpn2.DamageMax, ' '));
+                    } else if (damageData[id2] && damageData[id2].normal) {
+                        var approxMin = damageData[id2].normal.min / skillmult / armormult;
+                        var approxMax = damageData[id2].normal.max / skillmult / armormult;
+
+                        $parent.find('[data-op="Min2"]').val(`~ ${ formatAsSpacedNumber(approxMin, ' ') }`);
+                        $parent.find('[data-op="Max2"]').val(`~ ${ formatAsSpacedNumber(approxMax, ' ') }`);
+                    } else {
+                        $parent.find('[data-op="Min2"]').val('');
+                        $parent.find('[data-op="Max2"]').val('');
+                    }
 
                     if (f.Wpn2.AttributeTypes[2] >= 30) {
                         $parent.find('[data-op="Type2"]').val(RUNETYPES[f.Wpn2.AttributeTypes[2] - 30].split(' ')[0]).parent('div').show();
@@ -758,8 +815,8 @@
                         }
                     }
 
-                    fillFighter($fighterA, fight.fighterA, fight.winner.ID == fight.fighterA.ID);
-                    fillFighter($fighterB, fight.fighterB, fight.winner.ID == fight.fighterB.ID);
+                    fillFighter($fighterA, fight.fighterA, fight.winner.ID == fight.fighterA.ID, fight.fighterB);
+                    fillFighter($fighterB, fight.fighterB, fight.winner.ID == fight.fighterB.ID, fight.fighterA);
 
                     $rounds.html(fight.rounds.map((round, i) => `
                         <div class="sixteen wide column">
@@ -778,6 +835,32 @@
                             </div>
                         </div>
                     `).join(''));
+
+                    $fighterA.find('[data-op="Armor"]').val(0).off('input').on('input', () => {
+                        var n = $fighterA.find('[data-op="Armor"]').val();
+                        if (!isNaN(n)) {
+                            fillFighter($fighterB, fight.fighterB, fight.winner.ID == fight.fighterB.ID, fight.fighterA, Number(n));
+                        }
+                    });
+
+                    if (fight.fighterB.Wpn1.DamageMin == 0) {
+                        $fighterA.find('[data-op="Armor"]').parent('.field').removeClass('disabled');
+                    } else {
+                        $fighterA.find('[data-op="Armor"]').parent('.field').addClass('disabled');
+                    }
+
+                    $fighterB.find('[data-op="Armor"]').val(0).off('input').on('input', () => {
+                        var n = $fighterB.find('[data-op="Armor"]').val();
+                        if (!isNaN(n)) {
+                            fillFighter($fighterA, fight.fighterA, fight.winner.ID == fight.fighterA.ID, fight.fighterB, Number(n));
+                        }
+                    });
+
+                    if (fight.fighterA.Wpn1.DamageMin == 0) {
+                        $fighterB.find('[data-op="Armor"]').parent('.field').removeClass('disabled');
+                    } else {
+                        $fighterB.find('[data-op="Armor"]').parent('.field').addClass('disabled');
+                    }
 
                     $('#dmg-gladiator1').dropdown('set selected', '0');
                     $('#dmg-gladiator2').dropdown('set selected', '0');
