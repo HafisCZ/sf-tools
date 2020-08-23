@@ -759,6 +759,19 @@ class PlayerHistoryView extends View {
             UI.SettingsFloat.show(this.identifier, 'me', PredefinedTemplates['Me Default']);
         });
 
+        this.$parent.find('[data-op="export-dropdown"]').dropdown({
+            on: 'hover',
+            action: 'hide',
+            delay : {
+                hide   : 100,
+                show   : 0
+            }
+        });
+
+        this.$parent.find('[data-op="export"]').click(() => Storage.exportPlayerData(this.identifier, this.list.map(entry => entry[0])));
+        this.$parent.find('[data-op="export-l"]').click(() => Storage.exportPlayerData(this.identifier, [ this.list[0][0] ]));
+        this.$parent.find('[data-op="export-l5"]').click(() => Storage.exportPlayerData(this.identifier, this.list.slice(0, 5).map(entry => entry[0])));
+
         this.$name = this.$parent.find('[data-op="name"]');
     }
 

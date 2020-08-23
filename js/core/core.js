@@ -732,6 +732,31 @@ const Storage = new (class {
         download(`archive_${ identifier }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
     }
 
+    exportPlayerData (identifier, timestamps) {
+        var content = [];
+        var player = Database.Players[identifier];
+
+        for (var file of this.current) {
+            if (timestamps.includes(file.timestamp)) {
+                var tplayer = player[file.timestamp];
+
+                var rfile = {
+                    timestamp: file.timestamp,
+                    version: file.version,
+                    offset: file.offset,
+                    players: tplayer ? [ tplayer.Data ] : [],
+                    groups: tplayer && tplayer.Group && tplayer.Group.Group ? [ tplayer.Group.Group.Data ] : []
+                };
+
+                if (rfile.players.length) {
+                    content.push(rfile);
+                }
+            }
+        }
+
+        download(`archive_${ identifier }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
+    }
+
     add (content, timestamp) {
         var json = JSON.parse(content);
         if (Array.isArray(json)) {
