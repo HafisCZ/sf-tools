@@ -467,6 +467,14 @@
                 $('.ui.main.container').toggleClass('frozen');
             }
 
+            const PET_TYPE_NAMES = [
+                'Shadow',
+                'Light',
+                'Earth',
+                'Fire',
+                'Water'
+            ];
+
             class PetController {
                 constructor ($root, index) {
                     this.$root = $root;
@@ -779,7 +787,7 @@
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
-                                addMap(message.data.results, `${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ NAME_MONSTER[800 + b.Type * 20 + b.Pet] }`);
+                                addMap(message.data.results, `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b.Type] } ${ b.Pet + 1 } - ${ NAME_MONSTER[800 + b.Type * 20 + b.Pet] }`);
                                 freeze();
                             }
                         }, false);
@@ -830,7 +838,7 @@
                                         freeze();
 
                                         for (var j = 0; j < maps.length; j++) {
-                                            addMap(maps[j], `${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
+                                            addMap(maps[j], `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b.Type] } ${ b.Pet + 1 } - ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
                                         }
                                     }
                                 }
@@ -884,7 +892,7 @@
                                         freeze();
 
                                         for (var j = 0; j < maps.length; j++) {
-                                            addMap(maps[j], `${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
+                                            addMap(maps[j], `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b.Type] } ${ b.Pet + 1 } - ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
                                         }
                                     }
                                 }
