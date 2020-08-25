@@ -2418,7 +2418,7 @@ class Settings {
                     scope.segmented = true;
                 }
 
-                data.value = data.ast.eval(null, null, this, scope);
+                data.value = data.ast.eval(undefined, undefined, this, scope);
                 if (isNaN(data.value)) {
                     data.value = undefined;
                 }
