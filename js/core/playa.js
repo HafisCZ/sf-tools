@@ -577,6 +577,7 @@ class SFGroup {
         this.Members = data.save.slice(14, 64).map(mid => (data.prefix + '_p' + mid));
         this.States = data.save.slice(64, 114).map(level => Math.trunc(level / 1000));
         this.Roles = data.save.slice(314, 364);
+        this.Names = data.names;
 
         this.IsUnderAttack = data.save[364] > 0;
         this.IsAttacking = data.save[366] > 0;
@@ -600,6 +601,7 @@ class SFGroup {
                 this.Instructors.splice(i, 1);
                 this.Pets.splice(i, 1);
                 this.States.splice(i, 1);
+                this.Names.splice(i, 1);
                 this.Members.splice(i--, 1);
                 this.MemberCount--;
             }

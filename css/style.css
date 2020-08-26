@@ -16,6 +16,10 @@ body {
     font-size: 85%;
 }
 
+.css-b-bold b {
+    font-weight: bold;
+}
+
 .lowglow:hover {
     color: orange;
 }

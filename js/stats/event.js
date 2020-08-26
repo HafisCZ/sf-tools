@@ -323,9 +323,12 @@ class GroupDetailView extends View {
 
         // Members
         var members = [];
+        var missingMembers = [];
         for (var id of current.Members) {
             if (Database.Players[id] && Database.Players[id][this.timestamp]) {
                 members.push(Database.Players[id][this.timestamp]);
+            } else {
+                missingMembers.push(current.Names[current.Members.findIndex(x => x == id)]);
             }
         }
 
@@ -351,7 +354,7 @@ class GroupDetailView extends View {
         }
 
         // Add entries
-        var entries = new GroupTableArray(joined, kicked, this.timestamp, this.reference);
+        var entries = new GroupTableArray(joined, kicked, this.timestamp, this.reference, missingMembers);
         members.forEach(function (player) {
             entries.add(player, membersReferences.find(c => c.Identifier == player.Identifier));
         });

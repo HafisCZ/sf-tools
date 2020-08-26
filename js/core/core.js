@@ -575,6 +575,14 @@ const GroupUpdaters = [
         } else {
             return false;
         }
+    },
+    g => {
+        if (!g.names) {
+            g.names = new Array(50).fill('').map((x, i) => `member_${ i }`);
+            return true;
+        } else {
+            return false;
+        }
     }
 ];
 
@@ -813,6 +821,8 @@ const Storage = new (class {
                         group.save = val.split('/').map(a => Number(a));
                         group.own = false;
                         group.id = group.prefix + '_g' + group.save[0];
+                    } else if (key.includes('groupmember')) {
+                        group.names = val.split(',');
                     }
                 }
 
