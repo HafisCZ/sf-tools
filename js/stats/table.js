@@ -872,7 +872,7 @@ class TableInstance {
                 ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
             </tr>
                 ${ join(this.entries, (e, ei) => e.content.replace(/\<ispan data\-indexed\=\"2\"\>\d*\<\/ispan\>/, `<ispan data-indexed="2">${ ei + 1 }</ispan>`)) }
-                ${ this.entries.missing.length ? `<tr class="css-b-bold">${ CellGenerator.WideCell(CellGenerator.Small(`Player data is missing for following players:<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.flat.length + (this.settings.globals.indexed ? 1 : 0) + 1, 'center') }</tr>` : '' }
+                ${ this.entries.missing.length ? `<tr class="css-b-bold">${ CellGenerator.WideCell(CellGenerator.Small(`Player data is missing for following members:<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.flat.length + (this.settings.globals.indexed ? 1 : 0) + 1, 'center') }</tr>` : '' }
         `;
 
         // Statistics block
