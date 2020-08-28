@@ -58,6 +58,12 @@ self.addEventListener('message', function (message) {
             obj.Gladiator = 15;
             r[level][15] = new PetSimulator().simulate(obj, players[1], 1E5, useArmor);
 
+            if (r[level - 1] != undefined) {
+                if (r[level - 1][15] > r[level][15]) {
+                    r[level][15] = r[level - 1][15];
+                }
+            }
+
             if (r[level][15] == 0) {
                 for (var i = 0; i < 15; i++) {
                     r[level][i] = 0;
@@ -69,6 +75,12 @@ self.addEventListener('message', function (message) {
                     r[level][glad] = new PetSimulator().simulate(obj, players[1], 1E5, useArmor);
                     if (r[level][glad] > r[level][glad + 1]) {
                         r[level][glad] = r[level][glad + 1];
+                    }
+
+                    if (r[level - 1] != undefined) {
+                        if (r[level - 1][glad] > r[level][glad]) {
+                            r[level][glad] = r[level - 1][glad];
+                        }
                     }
                 }
             }
