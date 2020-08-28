@@ -421,7 +421,7 @@ const Database = new (class {
             Group: gfilter
         };
 
-        this.add(... files);
+        this.add(... files.filter(file => !file.hidden));
 
         this.Hidden = Preferences.get('hidden', []);
     }
@@ -895,6 +895,20 @@ const Storage = new (class {
         Database.remove(this.current[index].timestamp);
 
         this.current.splice(index, 1);
+    }
+
+    hide (index) {
+        var file = this.current[index];
+
+        if (file.hidden) {
+            file.hidden = false;
+            Database.add(file);
+        } else {
+            file.hidden = true;
+            Database.remove(file.timestamp);
+        }
+
+        this.save(file);
     }
 
     removeByIDSingle (identifier, timestamp) {

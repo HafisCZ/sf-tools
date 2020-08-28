@@ -1,4 +1,8 @@
 const CHANGELOG = {
+    'v3.768': [
+        'Added error text to guild tables when data is missing for any members.',
+        'Added option to hide files.'
+    ],
     'v3.748': [
         'Updated expression evaluator & removed all beta related content. The old evaluator is from now on not present in the tool.<br/><br/>Some of your expressions might not work if you did not use beta mode before. You\'ll need to correct them if that\'s the case.',
         'Updated Files screen. You can now add description and set the version of the file if needed.',

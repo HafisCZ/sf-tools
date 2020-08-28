@@ -1092,7 +1092,7 @@ class BrowseView extends View {
         var timestamps = [];
         var references = [];
 
-        for (var file of Object.values(Storage.files())) {
+        for (var file of Object.values(Storage.files().filter(file => !file.hidden))) {
             timestamps.push({
                 name: formatDate(file.timestamp),
                 value: file.timestamp,
@@ -1778,7 +1778,7 @@ class FilesView extends View {
         // Page content
         var content = Storage.files().map(function (file, index) {
             return `
-                <div class="ui segment" data-id="${ index }">
+                <div class="ui segment ${ file.hidden ? 'css-file-hidden' : '' }" data-id="${ index }">
                     <div class="ui middle aligned grid">
                         <div class="nine wide column">
                             <div class="file-detail-labels clickable">
@@ -1797,6 +1797,7 @@ class FilesView extends View {
                         <div class="five wide right aligned column">
                             <span class="text-muted margin-medium-right">${ file.version || 'Unknown version' }</span>
                             <i class="pencil alternate clickable lowglow-green icon" data-op="edit"></i>
+                            <i class="eye slash outline clickable mleft-10 lowglow icon" data-op="hide"></i>
                             <i class="trash alternate clickable mleft-10 lowglow outline icon" data-op="remove"></i>
                         </div>
                     </div>
@@ -1837,6 +1838,16 @@ class FilesView extends View {
                     this.$parent.find('[data-op="remove"]').removeClass('red');
                 }, 1000);
             }
+        });
+
+        // Hide file
+        this.$parent.find('[data-op="hide"]').click((event) => {
+            var $el = $(event.target);
+            var id = $el.closest('[data-id]').attr('data-id');
+
+            Storage.hide(id);
+
+            this.show();
         });
 
         // Edit file

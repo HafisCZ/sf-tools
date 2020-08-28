@@ -16,6 +16,10 @@ body {
     font-size: 85%;
 }
 
+.css-file-hidden {
+    opacity: 50%;
+}
+
 .css-b-bold b {
     font-weight: bold;
 }
