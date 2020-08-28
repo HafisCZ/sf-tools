@@ -1797,7 +1797,7 @@ class FilesView extends View {
                         <div class="five wide right aligned column">
                             <span class="text-muted margin-medium-right">${ file.version || 'Unknown version' }</span>
                             <i class="pencil alternate clickable lowglow-green icon" data-op="edit"></i>
-                            <i class="eye slash outline clickable mleft-10 lowglow icon" data-op="hide"></i>
+                            <i class="eye ${ file.hidden ? '' : 'slash outline' } clickable mleft-10 lowglow icon" data-op="hide"></i>
                             <i class="trash alternate clickable mleft-10 lowglow outline icon" data-op="remove"></i>
                         </div>
                     </div>
