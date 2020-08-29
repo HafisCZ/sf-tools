@@ -26,6 +26,20 @@ function formatDuration (duration) {
     return trail(days, Math.max(2, days.toString().length)) + ':' + trail(hours, 2) + ':' + trail(minutes, 2);
 }
 
+function showNotification (text, options) {
+    if (!('Notification' in window)) {
+        console.error('Notifications are not supported!');
+    } else if (Notification.permission === 'granted') {
+        var notification = new Notification(text);
+    } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(function (perm) {
+            if (perm === 'granted') {
+                showNotification(text, options);
+            }
+        });
+    }
+}
+
 const NumberLabels = [
     [1E123, 'Quadrag'],
     [1E120, 'Noventrig'],
