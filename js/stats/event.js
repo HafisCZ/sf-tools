@@ -398,7 +398,7 @@ class GroupDetailView extends View {
         });
 
         this.$parent.find('[data-id]').click((event) => {
-            UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp);
+            UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp, this.reference);
         });
 
         this.$context.context('bind', this.$parent.find('[data-id]'));
@@ -411,11 +411,30 @@ class PlayerDetailFloatView extends View {
         super(player);
     }
 
-    show (identifier, timestamp) {
+    show (identifier, timestamp, reference = timestamp) {
         var player = Database.Players[identifier];
+
+        var xx = player.List.concat();
+        xx.reverse();
+        var compare = xx.find(p => p[0] >= reference && p[0] <= timestamp);
+
         player = player[Math.min(timestamp, player.LatestTimestamp)];
 
-        var config = Settings.load(UI.current.identifier, player.Identifier);
+        if (compare) {
+            compare = compare[1];
+        } else {
+            compare = player;
+        }
+
+        var diff = player.Timestamp != compare.Timestamp;
+        var asDiff = (a, b, formatter) => {
+            if (a != b && b != undefined && a != undefined) {
+                var fnum = formatter ? formatter(a - b) : (a - b);
+                return ` <span>${ a - b > 0 ? `+${ fnum }` : fnum }</span>`;
+            } else {
+                return '';
+            }
+        }
 
         this.$parent.html(`
             <div class="content" style="padding: 0;">
@@ -424,7 +443,7 @@ class PlayerDetailFloatView extends View {
                     <h1 class="ui header">${ player.Level } - ${ player.Name }</h1>
                 </div>
                 <div class="detail-timestamp">
-                    ${ formatDate(player.Timestamp) }
+                    ${ formatDate(player.Timestamp) }${ diff ? ` - ${ formatDate(compare.Timestamp) }` : '' }
                 </div>
                 <div class="detail-identifier">
                     ${ player.Identifier }
@@ -437,28 +456,28 @@ class PlayerDetailFloatView extends View {
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Strength</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Strength.Total) }</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Strength.Total) }${ asDiff(player.Strength.Total, compare.Strength.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Dexterity</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Dexterity.Total) }</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Dexterity.Total) }${ asDiff(player.Dexterity.Total, compare.Dexterity.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Intelligence</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Intelligence.Total) }</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Intelligence.Total) }${ asDiff(player.Intelligence.Total, compare.Intelligence.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Constitution</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Constitution.Total) }</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Constitution.Total) }${ asDiff(player.Constitution.Total, compare.Constitution.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Luck</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Total) }</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Total) }${ asDiff(player.Luck.Total, compare.Luck.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <br/>
                         <div class="detail-entry">
                             <div class="detail-item">Armor</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Armor) }</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Armor) }${ asDiff(player.Armor, compare.Armor, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Damage</div>
@@ -473,7 +492,7 @@ class PlayerDetailFloatView extends View {
                         <br/>
                         <div class="detail-entry">
                             <div class="detail-item">Health</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Health) }</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Health) }${ asDiff(player.Health, compare.Health, formatAsSpacedNumber) }</div>
                         </div>
                         ${ player.Potions[0].Size ? `
                             <br/>
@@ -526,11 +545,11 @@ class PlayerDetailFloatView extends View {
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Scrapbook</div>
-                            <div class="detail-item text-center">${ player.Book } / ${ SCRAPBOOK_COUNT }</div>
+                            <div class="detail-item text-center">${ player.Book } / ${ SCRAPBOOK_COUNT }${ asDiff(player.Book, compare.Book, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Achievements</div>
-                            <div class="detail-item text-center">${ player.Achievements.Owned } / 80</div>
+                            <div class="detail-item text-center">${ player.Achievements.Owned } / 80${ asDiff(player.Achievements.Owned, compare.Achievements.Owned, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Mount</div>
@@ -538,34 +557,34 @@ class PlayerDetailFloatView extends View {
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Health Bonus</div>
-                            <div class="detail-item text-center">${ player.Dungeons.Player }%</div>
+                            <div class="detail-item text-center">${ player.Dungeons.Player }%${ asDiff(player.Dungeons.Player, compare.Dungeons.Player) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Damage Bonus</div>
-                            <div class="detail-item text-center">${ player.Dungeons.Group }%</div>
+                            <div class="detail-item text-center">${ player.Dungeons.Group }%${ asDiff(player.Dungeons.Group, compare.Dungeons.Group) }</div>
                         </div>
                         ${ player.Group && player.Group.Treasure ? `
                             <div class="detail-entry">
                                 <div class="detail-item">Treasure</div>
-                                <div class="detail-item text-center">${ player.Group.Treasure }</div>
+                                <div class="detail-item text-center">${ player.Group.Treasure }${ asDiff(player.Group.Treasure, compare.Group.Treasure) }</div>
                             </div>
                         ` : '' }
                         ${ player.Group && player.Group.Instructor ? `
                             <div class="detail-entry">
                                 <div class="detail-item">Instructor</div>
-                                <div class="detail-item text-center">${ player.Group.Instructor }</div>
+                                <div class="detail-item text-center">${ player.Group.Instructor }${ asDiff(player.Group.Instructor, compare.Group.Instructor) }</div>
                             </div>
                         ` : '' }
                         ${ player.Group && player.Group.Pet ? `
                             <div class="detail-entry">
                                 <div class="detail-item">Pet</div>
-                                <div class="detail-item text-center">${ player.Group.Pet }</div>
+                                <div class="detail-item text-center">${ player.Group.Pet }${ asDiff(player.Group.Pet, compare.Group.Pet) }</div>
                             </div>
                         ` : '' }
                         ${ player.Fortress && player.Fortress.Knights ? `
                             <div class="detail-entry">
                                 <div class="detail-item">Hall of Knights</div>
-                                <div class="detail-item text-center">${ player.Fortress.Knights }</div>
+                                <div class="detail-item text-center">${ player.Fortress.Knights }${ asDiff(player.Fortress.Knights, compare.Fortress.Knights) }</div>
                             </div>
                         ` : '' }
                         <br/>
@@ -646,64 +665,64 @@ class PlayerDetailFloatView extends View {
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Upgrades</div>
-                            <div class="detail-item text-center">${ player.Fortress.Upgrades }</div>
+                            <div class="detail-item text-center">${ player.Fortress.Upgrades }${ asDiff(player.Fortress.Upgrades, compare.Fortress.Upgrades) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Rank</div>
-                            <div class="detail-item text-center">${ player.Fortress.Rank }</div>
+                            <div class="detail-item text-center">${ player.Fortress.Rank }${ asDiff(player.Fortress.Rank, compare.Fortress.Rank) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Honor</div>
-                            <div class="detail-item text-center">${ player.Fortress.Honor }</div>
+                            <div class="detail-item text-center">${ player.Fortress.Honor }${ asDiff(player.Fortress.Honor, compare.Fortress.Honor) }</div>
                         </div>
                         <br/>
                         <div class="detail-entry">
                             <div class="detail-item">Fortress</div>
-                            <div class="detail-item text-center">${ player.Fortress.Fortress }</div>
+                            <div class="detail-item text-center">${ player.Fortress.Fortress }${ asDiff(player.Fortress.Fortress, compare.Fortress.Fortress) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Quarters</div>
-                            <div class="detail-item text-center">${ player.Fortress.LaborerQuarters }</div>
+                            <div class="detail-item text-center">${ player.Fortress.LaborerQuarters }${ asDiff(player.Fortress.LaborerQuarters, compare.Fortress.LaborerQuarters) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Woodcutter</div>
-                            <div class="detail-item text-center">${ player.Fortress.WoodcutterGuild }</div>
+                            <div class="detail-item text-center">${ player.Fortress.WoodcutterGuild }${ asDiff(player.Fortress.WoodcutterGuild, compare.Fortress.WoodcutterGuild) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Quarry</div>
-                            <div class="detail-item text-center">${ player.Fortress.Quarry }</div>
+                            <div class="detail-item text-center">${ player.Fortress.Quarry }${ asDiff(player.Fortress.Quarry, compare.Fortress.Quarry) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Gem Mine</div>
-                            <div class="detail-item text-center">${ player.Fortress.GemMine }</div>
+                            <div class="detail-item text-center">${ player.Fortress.GemMine }${ asDiff(player.Fortress.GemMine, compare.Fortress.GemMine) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Academy</div>
-                            <div class="detail-item text-center">${ player.Fortress.Academy }</div>
+                            <div class="detail-item text-center">${ player.Fortress.Academy }${ asDiff(player.Fortress.Academy, compare.Fortress.Academy) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Archery Guild</div>
-                            <div class="detail-item text-center">${ player.Fortress.ArcheryGuild } (${ player.Fortress.ArcheryGuild * 2 }x ${ player.Fortress.Archers })</div>
+                            <div class="detail-item text-center">${ player.Fortress.ArcheryGuild }${ asDiff(player.Fortress.ArcheryGuild, compare.Fortress.ArcheryGuild) } (${ player.Fortress.ArcheryGuild * 2 }x ${ player.Fortress.Archers }${ asDiff(player.Fortress.Archers, compare.Fortress.Archers) })</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Barracks</div>
-                            <div class="detail-item text-center">${ player.Fortress.Barracks } (${ player.Fortress.Barracks * 3 }x ${ player.Fortress.Warriors })</div>
+                            <div class="detail-item text-center">${ player.Fortress.Barracks }${ asDiff(player.Fortress.Barracks, compare.Fortress.Barracks) } (${ player.Fortress.Barracks * 3 }x ${ player.Fortress.Warriors }${ asDiff(player.Fortress.Warriors, compare.Fortress.Warriors) })</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Mage Tower</div>
-                            <div class="detail-item text-center">${ player.Fortress.MageTower } (${ player.Fortress.MageTower }x ${ player.Fortress.Mages })</div>
+                            <div class="detail-item text-center">${ player.Fortress.MageTower }${ asDiff(player.Fortress.MageTower, compare.Fortress.MageTower) } (${ player.Fortress.MageTower }x ${ player.Fortress.Mages }${ asDiff(player.Fortress.Mages, compare.Fortress.Mages) })</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Treasury</div>
-                            <div class="detail-item text-center">${ player.Fortress.Treasury }</div>
+                            <div class="detail-item text-center">${ player.Fortress.Treasury }${ asDiff(player.Fortress.Treasury, compare.Fortress.Treasury) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Smithy</div>
-                            <div class="detail-item text-center">${ player.Fortress.Smithy }</div>
+                            <div class="detail-item text-center">${ player.Fortress.Smithy }${ asDiff(player.Fortress.Smithy, compare.Fortress.Smithy) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Fortifications</div>
-                            <div class="detail-item text-center">${ player.Fortress.Fortifications } (${ player.Fortress.Wall })</div>
+                            <div class="detail-item text-center">${ player.Fortress.Fortifications }${ asDiff(player.Fortress.Fortifications, compare.Fortress.Fortifications) } (${ player.Fortress.Wall }${ asDiff(player.Fortress.Wall, compare.Fortress.Wall) })</div>
                         </div>
                         ${ player.Fortress.Upgrade.Building >= 0 ? `
                             <br/>
@@ -1195,7 +1214,7 @@ class BrowseView extends View {
         });
 
         this.$parent.find('[data-id]').click((event) => {
-            UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp);
+            UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp, this.reference);
         });
 
         this.$context.context('bind', this.$parent.find('[data-id]'));

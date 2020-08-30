@@ -20,6 +20,10 @@ body {
     opacity: 50%;
 }
 
+.detail-content span {
+    font-size: 70%;
+}
+
 .css-b-bold b {
     font-weight: bold;
 }
