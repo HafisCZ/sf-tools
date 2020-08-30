@@ -1901,10 +1901,18 @@ class SettingsView extends View {
         $b.css('font-family', this.$area.css('font-family'));
         $b.css('line-height', this.$area.css('line-height'));
 
+        this.$saveButton = this.$parent.find('[data-op="save"]').click(() => this.save());
+
         // Input
-        this.$area.on('input', function () {
-            var val = $(this).val();
+        this.$area.on('input', (event) => {
+            var val = $(event.target).val();
             $b.html(Settings.format(val));
+
+            if (val !== this.code) {
+                this.$saveButton.removeClass('disabled');
+            } else {
+                this.$saveButton.addClass('disabled');
+            }
         }).trigger('input');
 
         // Scroll
@@ -1916,7 +1924,6 @@ class SettingsView extends View {
         });
 
         // Button events
-        this.$parent.find('[data-op="save"]').click(() => this.save());
         this.$parent.find('[data-op="load"]').click(() => this.refresh());
         this.$parent.find('[data-op="remove"]').click(() => this.remove());
 
@@ -2084,6 +2091,7 @@ class SettingsView extends View {
             Settings.addHistory(this.code, this.identifier);
             this.code = code;
             Settings.save(this.code, this.identifier);
+            this.$saveButton.addClass('disabled');
         }
 
         this.hide();
@@ -2106,6 +2114,8 @@ class SettingsView extends View {
     }
 
     show (identifier = 'players') {
+        this.$saveButton.addClass('disabled');
+
         this.identifier = identifier;
         this.code = Settings.load(identifier, this.getDefault(identifier), this.getDefaultTemplate(identifier)).getCode();
         this.torem = '';
