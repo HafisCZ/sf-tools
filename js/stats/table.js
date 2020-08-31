@@ -225,7 +225,19 @@ class TableInstance {
                             var reference = (header.difference && compare) ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
                             if (!isNaN(reference)) {
                                 reference = header.flip ? (reference - value) : (value - reference);
-                                reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(player, compare, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
+
+                                var freference = reference;
+                                if (header.format_diff === undefined) {
+                                    if (header.format) {
+                                        freference = header.format(player, compare, this.settings, reference);
+                                    } else {
+                                        freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
+                                    }
+                                } else if (header.format_diff !== null) {
+                                    freference = header.format_diff(this.settings, reference);
+                                }
+
+                                reference = CellGenerator.Difference(reference, header.brackets, freference);
                             } else {
                                 reference = '';
                             }
@@ -267,7 +279,19 @@ class TableInstance {
                                     }
 
                                     reference = header.flip ? (reference - value) : (value - reference);
-                                    reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(null, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
+
+                                    var freference = reference;
+                                    if (header.format_diff === undefined) {
+                                        if (header.format) {
+                                            freference = header.format(null, undefined, this.settings, reference);
+                                        } else {
+                                            freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
+                                        }
+                                    } else if (header.format_diff !== null) {
+                                        freference = header.format_diff(this.settings, reference);
+                                    }
+
+                                    reference = CellGenerator.Difference(reference, header.brackets, freference);
                                 } else {
                                     reference = '';
                                 }
@@ -281,15 +305,19 @@ class TableInstance {
                                 color = (color != undefined ? color : (header.expc ? header.expc(null, null, this.settings, value) : '')) || '';
                             }
 
-                            var displayValue = CompareEval.evaluate(value, header.value);
-                            if (displayValue == undefined && header.format) {
-                                value = header.format(undefined, undefined, this.settings, value);
-                            } else if (displayValue != undefined) {
-                                value = displayValue;
-                            }
+                            if (header.format_stat === undefined) {
+                                var displayValue = CompareEval.evaluate(value, header.value);
+                                if (displayValue == undefined && header.format) {
+                                    value = header.format(undefined, undefined, this.settings, value);
+                                } else if (displayValue != undefined) {
+                                    value = displayValue;
+                                }
 
-                            if (value != undefined && header.extra) {
-                                value = `${ value }${ header.extra(undefined) }`;
+                                if (value != undefined && header.extra) {
+                                    value = `${ value }${ header.extra(undefined) }`;
+                                }
+                            } else if (header.format_stat !== null) {
+                                value = header.format_stat(this.settings, value);
                             }
 
                             return CellGenerator.Cell(value + reference, '', color);
@@ -1641,12 +1669,49 @@ const SettingsCommands = [
     }),
     // Local
     // format - Specifies formatter for the field
-    new SettingsCommand(/^(format difference) (on|off)$/, function (root, string) {
+    new SettingsCommand(/^(format difference) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
-        root.setLocalSharedVariable('format_diff', ARG_MAP[arg]);
+        if (arg == 'on') {
+            root.setLocalVariable('format_diff', undefined);
+        } else if (arg == 'off') {
+            root.setLocalVariable('format_diff', null);
+        } else {
+            var ast = new Expression(arg);
+            if (ast.isValid()) {
+                root.setLocalVariable('format_diff', (env, val) => {
+                    return ast.eval(undefined, undefined, env, val);
+                });
+            }
+        }
     }, function (root, string) {
         var [ , key, arg ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
+        if (arg == 'on' || arg == 'off') {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
+        } else {
+            return `${ SFormat.Keyword(key) } ${ Expression.format(arg, root) }`;
+        }
+    }),
+    new SettingsCommand(/^(format statistics) (.*)$/, function (root, string) {
+        var [ , key, arg ] = this.match(string);
+        if (arg == 'on') {
+            root.setLocalVariable('format_stat', undefined);
+        } else if (arg == 'off') {
+            root.setLocalVariable('format_stat', null);
+        } else {
+            var ast = new Expression(arg);
+            if (ast.isValid()) {
+                root.setLocalVariable('format_stat', (env, val) => {
+                    return ast.eval(undefined, undefined, env, val);
+                });
+            }
+        }
+    }, function (root, string) {
+        var [ , key, arg ] = this.match(string);
+        if (arg == 'on' || arg == 'off') {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
+        } else {
+            return `${ SFormat.Keyword(key) } ${ Expression.format(arg, root) }`;
+        }
     }),
     new SettingsCommand(/^(statistics color) (on|off)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);

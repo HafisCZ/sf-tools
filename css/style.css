@@ -20,6 +20,12 @@ body {
     opacity: 50%;
 }
 
+.css-a-blank {
+    color: white;
+    text-decoration: none;
+    line-height: 1 !important;
+}
+
 .detail-content span {
     font-size: 70%;
 }
