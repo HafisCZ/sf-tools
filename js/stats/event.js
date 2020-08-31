@@ -475,6 +475,33 @@ class PlayerDetailFloatView extends View {
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Total) }${ asDiff(player.Luck.Total, compare.Luck.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <br/>
+                        <div class="detail-entry" style="border-bottom: white solid 1px;">
+                            <div class="detail-item">Basis</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Strength</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Strength.Base) }${ asDiff(player.Strength.Base, compare.Strength.Base, formatAsSpacedNumber) }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Dexterity</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Dexterity.Base) }${ asDiff(player.Dexterity.Base, compare.Dexterity.Base, formatAsSpacedNumber) }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Intelligence</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Intelligence.Base) }${ asDiff(player.Intelligence.Base, compare.Intelligence.Base, formatAsSpacedNumber) }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Constitution</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Constitution.Base) }${ asDiff(player.Constitution.Base, compare.Constitution.Base, formatAsSpacedNumber) }</div>
+                        </div>
+                        <div class="detail-entry">
+                            <div class="detail-item">Luck</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Base) }${ asDiff(player.Luck.Base, compare.Luck.Base, formatAsSpacedNumber) }</div>
+                        </div>
+                        <br/>
+                        <div class="detail-entry" style="border-bottom: white solid 1px;">
+                            <div class="detail-item">Misc</div>
+                        </div>
                         <div class="detail-entry">
                             <div class="detail-item">Armor</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Armor) }${ asDiff(player.Armor, compare.Armor, formatAsSpacedNumber) }</div>
@@ -492,7 +519,7 @@ class PlayerDetailFloatView extends View {
                         <br/>
                         <div class="detail-entry">
                             <div class="detail-item">Health</div>
-                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Health) }${ asDiff(player.Health, compare.Health, formatAsSpacedNumber) }</div>
+                            <div class="detail-item text-center">${ formatAsSpacedNumber(player.Health) }</div>
                         </div>
                         ${ player.Potions[0].Size ? `
                             <br/>
@@ -516,8 +543,9 @@ class PlayerDetailFloatView extends View {
                                 </div>
                             ` : '' }
                         ` : '' }
+                    </div>
+                    <div class="detail-panel">
                         ${ player.hasGuild() ? `
-                            <br/>
                             <div class="detail-entry" style="border-bottom: white solid 1px;">
                                 <div class="detail-item">Guild</div>
                             </div>
@@ -537,8 +565,6 @@ class PlayerDetailFloatView extends View {
                             </div>
                             <br/>
                         ` : '' }
-                    </div>
-                    <div class="detail-panel">
                         <!-- Group -->
                         <div class="detail-entry" style="border-bottom: white solid 1px;">
                             <div class="detail-item">Bonuses</div>
