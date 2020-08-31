@@ -228,12 +228,12 @@ class TableInstance {
 
                                 var freference = reference;
                                 if (header.format_diff === undefined) {
+                                    freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
+                                } else if (header.format_diff === true) {
                                     if (header.format) {
                                         freference = header.format(player, compare, this.settings, reference);
-                                    } else {
-                                        freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
                                     }
-                                } else if (header.format_diff !== null) {
+                                } else if (header.format_diff !== false) {
                                     freference = header.format_diff(this.settings, reference);
                                 }
 
@@ -282,12 +282,12 @@ class TableInstance {
 
                                     var freference = reference;
                                     if (header.format_diff === undefined) {
+                                        freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
+                                    } else if (header.format_diff === true) {
                                         if (header.format) {
-                                            freference = header.format(null, undefined, this.settings, reference);
-                                        } else {
-                                            freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
+                                            freference = header.format(undefined, undefined, this.settings, reference);
                                         }
-                                    } else if (header.format_diff !== null) {
+                                    } else if (header.format_diff !== false) {
                                         freference = header.format_diff(this.settings, reference);
                                     }
 
@@ -305,7 +305,7 @@ class TableInstance {
                                 color = (color != undefined ? color : (header.expc ? header.expc(null, null, this.settings, value) : '')) || '';
                             }
 
-                            if (header.format_stat === undefined) {
+                            if (header.format_stat === undefined || header.format_stat === true) {
                                 var displayValue = CompareEval.evaluate(value, header.value);
                                 if (displayValue == undefined && header.format) {
                                     value = header.format(undefined, undefined, this.settings, value);
@@ -316,7 +316,7 @@ class TableInstance {
                                 if (value != undefined && header.extra) {
                                     value = `${ value }${ header.extra(undefined) }`;
                                 }
-                            } else if (header.format_stat !== null) {
+                            } else if (header.format_stat !== false) {
                                 value = header.format_stat(this.settings, value);
                             }
 
@@ -1672,9 +1672,9 @@ const SettingsCommands = [
     new SettingsCommand(/^(format difference) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
         if (arg == 'on') {
-            root.setLocalVariable('format_diff', undefined);
+            root.setLocalVariable('format_diff', true);
         } else if (arg == 'off') {
-            root.setLocalVariable('format_diff', null);
+            root.setLocalVariable('format_diff', false);
         } else {
             var ast = new Expression(arg);
             if (ast.isValid()) {
@@ -1694,9 +1694,9 @@ const SettingsCommands = [
     new SettingsCommand(/^(format statistics) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
         if (arg == 'on') {
-            root.setLocalVariable('format_stat', undefined);
+            root.setLocalVariable('format_stat', true);
         } else if (arg == 'off') {
-            root.setLocalVariable('format_stat', null);
+            root.setLocalVariable('format_stat', false);
         } else {
             var ast = new Expression(arg);
             if (ast.isValid()) {
