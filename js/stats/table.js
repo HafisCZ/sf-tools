@@ -1669,7 +1669,7 @@ const SettingsCommands = [
     }),
     // Local
     // format - Specifies formatter for the field
-    new SettingsCommand(/^(format difference) (.*)$/, function (root, string) {
+    new SettingsCommand(/^(format difference|fd) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
         if (arg == 'on') {
             root.setLocalVariable('format_diff', true);
@@ -1691,7 +1691,7 @@ const SettingsCommands = [
             return `${ SFormat.Keyword(key) } ${ Expression.format(arg, root) }`;
         }
     }),
-    new SettingsCommand(/^(format statistics) (.*)$/, function (root, string) {
+    new SettingsCommand(/^(format statistics|fs) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
         if (arg == 'on') {
             root.setLocalVariable('format_stat', true);
@@ -1722,7 +1722,7 @@ const SettingsCommands = [
     }),
     // Local
     // format - Specifies formatter for the field
-    new SettingsCommand(/^(format|f\:) (.*)$/, function (root, string) {
+    new SettingsCommand(/^(format|f) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
         if (ARG_FORMATTERS[arg]) {
             root.setLocalVariable('format', ARG_FORMATTERS[arg]);
@@ -1758,7 +1758,7 @@ const SettingsCommands = [
     }),
     // Local
     // alias - Override name of the column
-    new SettingsCommand(/^(alias|a\:) ((@?)(.*))$/, function (root, string) {
+    new SettingsCommand(/^(alias) ((@?)(.*))$/, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
         var val = root.constants.getValue(prefix, value);
 
@@ -1778,7 +1778,7 @@ const SettingsCommands = [
     }),
     // Local
     // expr - Set expression to the column
-    new SettingsCommand(/^(expr|e\:) (.+)$/, function (root, string) {
+    new SettingsCommand(/^(expr|e) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         var ast = new Expression(a);
         if (ast.isValid()) {
@@ -1792,7 +1792,7 @@ const SettingsCommands = [
     }),
     // Local
     // expc - Set color expression to the column
-    new SettingsCommand(/^(expc|c\:) (.+)$/, function (root, string) {
+    new SettingsCommand(/^(expc|c) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         var ast = new Expression(a);
         if (ast.isValid()) {
