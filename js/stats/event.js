@@ -1976,7 +1976,12 @@ class SettingsView extends View {
 
         this.$parent.find('[data-op="wiki"]').click(() => {
             // Open wiki
-            window.open('https://github.com/HafisCZ/sf-tools/wiki/Predefined-headers', '_blank');
+            window.open('https://github.com/HafisCZ/sf-tools/wiki/2a. Predefined-headers', '_blank');
+        });
+
+        this.$parent.find('[data-op="wiki-home"]').click(() => {
+            // Open wiki
+            window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank');
         });
 
         this.$items = this.$parent.find('[data-op="items"]');
