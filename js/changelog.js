@@ -1,4 +1,11 @@
 const CHANGELOG = {
+    'v3.781': [
+        'Added link to a wiki that will slowly replace the current manual page.',
+        'Added base attributes to player detail.',
+        'Added difference for several values to player detail.',
+        'Added <code>format statistics</code> keyword that changes the formatting of the statistics.',
+        'Usage terms are now available in Changelog tab and can be denied.'
+    ],
     'v3.768': [
         'Added error text to guild tables when data is missing for any members.',
         'Added option to hide files.'

@@ -2349,6 +2349,11 @@ class ChangeLogsView extends View {
         }
 
         this.$parent.find('[data-op="list"]').html(changes);
+
+        this.$parent.find('[data-op="deny-terms"]').click(() => {
+            localStorage.termsOK = false;
+            UI.show(UI.Setup);
+        });
     }
 }
 

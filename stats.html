@@ -20,7 +20,7 @@
 
         <script>
             // Current version
-            const MODULE_VERSION = 'v3.768';
+            const MODULE_VERSION = 'v3.781';
         </script>
 
         <script src="js/plugins.js"></script>
@@ -129,8 +129,39 @@
 
         <!-- ChangeLogView -->
         <div id="view-changelog" class="ui main container hidden">
-            <div class="ui grid margin-large-top" data-op="list">
+            <div class="ui basic segment" style="padding: 0; padding-top: 1em;">
+                <div class="ui close left rail">
+                    <div class="ui basic segment">
+                        <h2 class="ui centered header">Usage terms</h2>
+                        <div style="text-align: left; margin-left: -3em; margin-right: -2em;">
+                            <ul>
+                                <li>
+                                    It is advised to never share HAR files, as they <b>might</b> contain private data.
+                                    If needed, you can import & export the file to create safe to share version.
+                                </li>
+                                <li style="margin-top: 1em;">
+                                    This site is distributed <b>AS IS</b>, without any warranties. It is recommended to keep a complete archive file or the original files used in case something happens.
+                                </li>
+                                <li style="margin-top: 1em;">
+                                    You are free to use, share and download this site, but you're not allowed to redistribute it or any of its parts.
+                                </li>
+                                <li style="margin-top: 1em;">
+                                    You agree to limit the data collection to reasonable amounts, such as capturing single guild or at most 100 players at once.
+                                </li>
+                                <li style="margin-top: 1em;">
+                                    By using this tool you agree to and follow the Shakes & Fidget <a href="https://s1.sfgame.de/legal.php?l=en&t=terms">Terms and Conditions</a>.
+                                </li>
+                                <li style="margin-top: 1em;">
+                                    Automating the collection process in any way is strictly forbidden!
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="ui tiny red basic fluid button" data-op="deny-terms">I no longer accept these terms</div>
+                    </div>
+                </div>
+                <div class="ui grid" data-op="list">
 
+                </div>
             </div>
         </div>
 
