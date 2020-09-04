@@ -495,12 +495,13 @@
 
                     var num = Math.trunc(curve / 10);
                     num = num * 12 / 100;
+                    var griff = Math.min(10E6, num);
 
                     text += `<tr>
                         <td>${ i + 1 }</td>
                         <td>${ cost >= 999 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost) }</td>
                         <td>${ curve / 100 >= 999 ? formatAsSpacedNumber(curve / 100, ' ') : roundShort(curve / 100) }</td>
-                        <td>${ num >= 999 ? formatAsSpacedNumber(num, ' ') : roundShort(num) }</td>
+                        <td>${ griff >= 999 ? formatAsSpacedNumber(griff, ' ') : roundShort(griff) }</td>
                         <td>${ num / 3 >= 999 ? formatAsSpacedNumber(num / 3, ' ') :roundShort(num / 3) }</td>
                     </tr>`;
                 } else {
@@ -542,7 +543,7 @@
                 if (validate($('#xp-level'), $('#xp-hydra'), $('#xp-academy'))) {
                     var level = Number($('#xp-level').val());
                     if (level < 1) level = 1;
-                    else if (level > 599) level = 599;
+                    else if (level > 699) level = 699;
 
                     var hydra = Number($('#xp-hydra').val());
                     if (hydra > 20) hydra = 20;
@@ -595,7 +596,7 @@
                 if (validate($('#quest-level'), $('#quest-xp'), $('#quest-gold'), $('#quest-tower'), $('#quest-book'), $('#quest-rxp'), $('#quest-rgold'))) {
                     var level = Number($('#quest-level').val());
                     if (level < 1) level = 1;
-                    else if (level > 632) level = 632;
+                    else if (level > 700) level = 700;
 
                     var gxp = Number($('#quest-xp').val());
                     if (gxp > 200) gxp = 200;
@@ -642,7 +643,7 @@
                 if (validate($('#gold-level'), $('#gold-guild'), $('#gold-tower'), $('#gold-mine'), $('#gold-runes'), $('#gold-pit'))) {
                     var level = Number($('#gold-level').val());
                     if (level < 1) level = 1;
-                    else if (level > 632) level = 632;
+                    else if (level > 700) level = 700;
 
                     var guild = Number($('#gold-guild').val());
                     if (guild > 200) guild = 200;
@@ -708,6 +709,8 @@
                     var twisterboss = (2 * getGoldCurve(level) / 100);
 
                     var arenagold = level > 95 ? Math.trunc(twisterboss / getArenaMultiplier(level)) : level;
+
+                    reward = Math.min(10E6, reward);
 
                     $('#gold-bar').val(goldbar1 >= 999 ? formatAsSpacedNumber(goldbar1, ' ') : roundShort(goldbar1));
                     $('#gold-bar3').val(goldbar3 >= 999 ? formatAsSpacedNumber(goldbar3, ' ') : roundShort(goldbar3));

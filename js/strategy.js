@@ -53,8 +53,8 @@ const StrategySimulator = new (class {
         var questCount = 0;
         var thirstTotal = 0;
 
-        level = Math.min(599, Math.max(1, level));
-        target = Math.min(600, Math.max(level + 1, target));
+        level = Math.min(699, Math.max(1, level));
+        target = Math.min(700, Math.max(level + 1, target));
 
         var runThirst = () => {
             while (thirstLeft) {
@@ -138,7 +138,7 @@ const StrategySimulator = new (class {
 
             var xpneeded = this.getExperienceRequired(level);
             if (levelxp > xpneeded) {
-                level = Math.min(600, level + 1);
+                level = Math.min(700, level + 1);
                 levelxp -= xpneeded;
             }
         }

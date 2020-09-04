@@ -149,11 +149,11 @@ function mergeSoft (a, b) {
 
 const GOLD_CURVE = [ 0, 25, 50, 75 ];
 function getGoldCurve (value) {
-    for (var i = GOLD_CURVE.length; i < 800; i++) {
+    for (var i = GOLD_CURVE.length; i < 650; i++) {
         GOLD_CURVE[i] = Math.min(Math.floor((GOLD_CURVE[i - 1] + Math.floor(GOLD_CURVE[Math.floor(i / 2)] / 3) + Math.floor(GOLD_CURVE[Math.floor(i / 3)] / 4)) / 5) * 5, 1E9);
     }
 
-    return GOLD_CURVE[value];
+    return GOLD_CURVE[value] == undefined ? 1E9 : GOLD_CURVE[value];
 }
 
 function calculateAttributePrice (attribute) {
