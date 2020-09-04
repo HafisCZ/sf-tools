@@ -42,7 +42,7 @@ const StrategySimulator = new (class {
     }
 
     createTransitionCoeff (switchLevel) {
-        return (level, quest) => level >= switchLevel ? this.getGoldCoeff : this.getExperienceCoeff;
+        return (level, quest) => level >= switchLevel ? this.getGoldCoeff(level, quest) : this.getExperienceCoeff(level, quest);
     }
 
     runUntil (level, target, strategy) {
