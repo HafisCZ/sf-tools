@@ -137,9 +137,18 @@
                 <div class="column">
                     <div class="ui form" id="sim-editor">
                         <div class="bordered bone">
-                            <div class="field">
-                                <label>Name</label>
-                                <input class="text-center" disabled type="text" data-path="Name">
+                            <div id="boss-only">
+                                <div class="field">
+                                    <label>Shadow</label>
+                                    <div class="ui selection compact dropdown" data-path="Shadow">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Name</label>
+                                    <input class="text-center" disabled type="text" data-path="Name">
+                                </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
@@ -383,6 +392,7 @@
                     this.fields = {
                         name: new Field('[data-path="Name"]', ''),
                         class: new Field('[data-path="Class"]', '1'),
+                        shadow: new Field('[data-path="Shadow"]', 'false'),
                         level: new Field('[data-path="Level"]', '', Field.isNumber),
                         armor: new Field('[data-path="Armor"]', '', Field.isNumber),
                         health_override: new Field('[data-path="HealthOverride"]', '', Field.isNumber),
@@ -443,6 +453,19 @@
                             $('[data-optional="Weapon2"]').hide();
                         }
                     }).dropdown('set selected', '1');
+
+                    this.fields['shadow'].$object.dropdown({
+                        values: [
+                            {
+                                name: 'No',
+                                value: false
+                            },
+                            {
+                                name: 'Yes',
+                                value: true
+                            }
+                        ]
+                    }).dropdown('set selected', 'false');
 
                     this.fields['potion_life'].$object.dropdown({
                         values: [
@@ -561,10 +584,18 @@
                     this.fields['potion_life'].toggle(index == 0);
                     this.fields['runes_health'].toggle(index < 4);
                     this.fields['enchantment'].toggle(index < 4);
+                    this.fields['armor'].toggle(index < 4);
                     this.fields['weapon1_enchantment'].toggle(index < 4);
                     this.fields['weapon2_enchantment'].toggle(index < 4);
                     this.fields['level'].toggle(index == 0 || index == 4);
                     this.fields['health_override'].show(index == 4);
+                    this.fields['shadow'].show(index == 4);
+
+                    if (index == 4) {
+                        $('#boss-only').removeClass('field').addClass('two fields');
+                    } else {
+                        $('#boss-only').addClass('field').removeClass('two fields');
+                    }
 
                     this.fields['name'].set([
                         'Player',
@@ -619,7 +650,6 @@
             var players = [ EditorController.genEmpty(), EditorController.genEmpty(1), EditorController.genEmpty(2), EditorController.genEmpty(3) ];
             var boss = EditorController.genEmpty();
             var selected = 0;
-            var shadow = false;
 
             $(document.body).on('paste', function (event) {
                 try {
@@ -749,21 +779,20 @@
             $('#sim-run').click(function () {
                 toggleAll(true);
 
-                Simulator.run({
-                    type: SimulatorType.Dungeon,
-                    cycles: Number($('#sim-iterations').val()),
-                    fighters: {
-                        player: players[0],
-                        companions: players.slice(1, 4),
-                        boss: players[4]
-                    },
-                    extras: {
-                        shadow: shadow
-                    },
-                    onFinished: function (defeatChance) {
-                        $('#sim-results').val(defeatChance.toFixed(2) + '%');
+                var worker = new Worker('js/sim/players.js');
+
+                worker.addEventListener('message', function (message) {
+                    if (message.data.command == 'finished') {
                         toggleAll();
+                        $('#sim-results').val(message.data.results.toFixed(2) + '%');
                     }
+                }, false);
+
+                worker.postMessage({
+                    mode: SimulatorType.Dungeon,
+                    player: boss.Shadow ? [ ... players.slice(1, 4), players[0] ] : [ players[0] ],
+                    players: players[4],
+                    iterations: Number($('#sim-iterations').val())
                 });
             });
         </script>
