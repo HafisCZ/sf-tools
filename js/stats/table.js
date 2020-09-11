@@ -126,7 +126,7 @@ function getEasterEgg (id) {
         // #1 THE QUEEN
         return '<i class="chess queen icon"></i>';
     } else if (id == 'w27_net_p287170' || id == 'w39_net_p329544' || id == 'w42_net_p2' || id == 'w40_net_p1230') {
-        return '<img src="res/icon_sft.png" width="24" style="margin-bottom: 1px;"/> ';
+        return '<img src="res/icon_sft.png" style="margin-bottom: 1px; width: 24px;"/> ';
     } else {
         return '';
     }
@@ -747,12 +747,12 @@ class TableInstance {
                 <tbody style="${ this.settings.globals.font ? `font: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ details }
                     <tr>
-                        ${ this.settings.globals.indexed ? `<td width="50" colspan="1" rowspan="2">#</td>` : '' }
-                        <td width="200" colspan="1" rowspan="2" class="border-right-thin">Date</td>
-                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
+                        ${ this.settings.globals.indexed ? `<td style="width: 50px;" colspan="1" rowspan="2">#</td>` : '' }
+                        <td style="width: 200px;" colspan="1" rowspan="2" class="border-right-thin">Date</td>
+                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" style="width: ${ h.width }px;" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
                     </tr>
                     <tr>
-                        ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
+                        ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" style="width: ${ h.width }px;" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
                     </tr>
                     <tr>
                         ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
@@ -855,12 +855,12 @@ class TableInstance {
                 <tbody style="${ this.settings.globals.font ? `font: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
                     ${ details }
                     <tr>
-                        ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                        ${ sizeServer ? `<td width="${ sizeServer }" rowspan="2" class="clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
-                        <td width="${ sizeName }" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
-                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
+                        ${ this.settings.globals.indexed ? `<td style="width: 50px;" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                        ${ sizeServer ? `<td style="width: ${ sizeServer }px;" rowspan="2" class="clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
+                        <td style="width: ${ sizeName }px;" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" style="width: ${ h.width }px;" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
                     <tr>
-                        ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`)) }
+                        ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" style="width: ${ h.width }px;" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`)) }
                     </tr>
                     <tr>
                         ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
@@ -888,11 +888,11 @@ class TableInstance {
         // Table block
         var table = `
             <tr>
-                ${ this.settings.globals.indexed ? `<td width="50" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                <td width="${ name }" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
-                ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
+                ${ this.settings.globals.indexed ? `<td style="width: 50px;" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                <td style="width: ${ name }px;" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" style="width: ${ h.width }px;" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
             <tr>
-                ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" width="${ h.width }" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`)) }
+                ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" style="width: ${ h.width }px;" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`)) }
             </tr>
             <tr>
                 ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
