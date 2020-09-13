@@ -1088,7 +1088,7 @@ class BrowseView extends View {
                     this.shidden = true;
                 } else if (key == 'o') {
                     terms.push({
-                        test: (arg, player, timestamp) => player.Own
+                        test: (arg, player, timestamp) => Database.Players[player.Identifier].Own
                     });
                     this.recalculate = true;
                     this.shidden = true;
@@ -1326,7 +1326,7 @@ class GroupsView extends View {
         for (var i = 0, group; group = groups[i]; i++) {
             var hidden = Database.Hidden.includes(group.Latest.Identifier);
             if (this.hidden || !hidden) {
-                if (group.Latest.Own) {
+                if (group.Own) {
                     content += `
                         ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
                         <div class="column">
@@ -1585,7 +1585,7 @@ class PlayersView extends View {
         for (var i = 0, player; player = players[i]; i++) {
             var hidden = Database.Hidden.includes(player.Latest.Identifier);
             if (this.hidden || !hidden || this.shidden) {
-                if (player.Latest.Own || this.nosep) {
+                if (player.Own || this.nosep) {
                     content += `
                         ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
                         <div class="column">
@@ -1704,7 +1704,17 @@ class FilesView extends View {
         // Export archive file
         this.$parent.find('[data-op="export"]').click(() => {
             Storage.export();
-        })
+        });
+
+        this.$wipeall = this.$parent.find('[data-op="wipeall"]').click(() => {
+            UI.ConfirmDialog.show('Database wipe', 'Are you sure you want to delete all stored player data?', () => {
+                while (Storage.files().length) {
+                    Storage.remove(0);
+                }
+
+                this.show();
+            }, true);
+        });
 
         // Export archive file from selected files
         this.$parent.find('[data-op="export-partial"]').click(() => {
@@ -2291,6 +2301,71 @@ class SetupBetaView extends View {
     }
 }
 
+class ConfirmDialogView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$no = this.$parent.find('[data-op="no"]').click(() => {
+            this.hide();
+        });
+
+        this.$yes = this.$parent.find('[data-op="yes"]');
+        this.$title = this.$parent.find('[data-op="title"]');
+        this.$content = this.$parent.find('[data-op="content"]');
+    }
+
+    show (title, content, action, delayedYes = false) {
+        this.$title.text(title);
+        this.$content.text(content);
+
+        this.$yes.one('click', () => {
+            if (action) {
+                action();
+            }
+
+            this.hide();
+        });
+
+        if (delayedYes) {
+            this.$yes.addClass('disabled').text('Wait 2 seconds ...');
+
+            if (this.timeoutOn) {
+                clearTimeout(this.timeout);
+                clearTimeout(this.timeout2);
+                this.timeoutOn = false;
+            }
+
+            this.timeout = setTimeout(() => {
+                this.$yes.removeClass('disabled').text('OK');
+                this.timeoutOn = false;
+            }, 2000);
+
+            this.timeout2 = setTimeout(() => {
+                this.$yes.text('Wait 1 second ...');
+            }, 1000);
+
+            this.timeoutOn = true;
+        } else {
+            if (this.timeoutOn) {
+                clearTimeout(this.timeout);
+                clearTimeout(this.timeout2);
+                this.timeoutOn = false;
+            }
+
+            this.$yes.removeClass('disabled').text('OK');
+        }
+
+        this.$parent.modal({
+            centered: true,
+            transition: 'fade'
+        }).modal('show');
+    }
+
+    hide () {
+        this.$parent.modal('hide');
+    }
+}
+
 // Changelog View
 class ChangeLogView extends View {
     constructor (parent) {
@@ -2579,6 +2654,7 @@ const UI = {
         UI.DeveloperFloat = new DeveloperFloatView('modal-dev');
         UI.ChangeLogs = new ChangeLogsView('view-changelog');
         UI.Endpoint = new EndpointView('modal-endpoint');
+        UI.ConfirmDialog = new ConfirmDialogView('modal-confirm');
     },
     preinitialize: function () {
         UI.Loader = new LoaderView('modal-loader');

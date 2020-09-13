@@ -116,6 +116,21 @@
             </div>
         </div>
 
+        <div id="modal-confirm" class="ui basic modal">
+            <div class="ui grid">
+                <div class="five wide column"></div>
+                <div class="six wide column">
+                    <h2 class="ui centered header white" data-op="title"></h2>
+                    <div style="text-align: center; margin-bottom: 4em;" data-op="content"></div>
+                    <div class="ui two buttons">
+                        <button class="ui red button" data-op="no">Cancel</button>
+                        <button class="ui green button" data-op="yes">OK</button>
+                    </div>
+                </div>
+                <div class="five wide column"></div>
+            </div>
+        </div>
+
         <!-- ChangeLogView -->
         <div id="modal-changelog" class="ui main container hidden">
             <div class="ui active dimmer" style="color: white;">
@@ -217,6 +232,9 @@
                         </label>
                         <label class="fluid ui button sf-margin top-05" data-op="export-partial">
                             <i class="small download icon icon"></i> Export selected
+                        </label>
+                        <label class="fluid ui red basic button sf-margin top-20" data-op="wipeall">
+                            <i class="small trash alternate outline icon"></i> Delete all
                         </label>
                         <br/>
                         <h3 class="ui centered header">Configuration</h3>

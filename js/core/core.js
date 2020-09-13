@@ -316,10 +316,14 @@ const Database = new (class {
                     player = new Proxy({
                         Data: data,
                         Identifier: data.id,
-                        Timestamp: file.timestamp
+                        Timestamp: file.timestamp,
+                        Own: data.own,
+                        Name: data.name,
+                        Prefix: data.prefix,
+                        Class: data.class
                     }, {
                         get: function (target, prop) {
-                            if (prop == 'Data' || prop == 'Identifier' || prop == 'Timestamp') {
+                            if (prop == 'Data' || prop == 'Identifier' || prop == 'Timestamp' || prop == 'Own' || prop == 'Name' || prop == 'Prefix' || prop == 'Class') {
                                 return target[prop];
                             } else if (prop == 'IsProxy') {
                                 return true;
@@ -428,7 +432,6 @@ const Database = new (class {
 
     update () {
         this.Changed = Date.now();
-
         this.Latest = 0;
 
         for (const [identifier, player] of Object.entries(this.Players)) {
@@ -450,6 +453,7 @@ const Database = new (class {
 
             player.List.sort((a, b) => b[0] - a[0]);
             player.Latest = player[player.LatestTimestamp];
+            player.Own = player.List.find(x => x[1].Own) != undefined;
 
             if (this.Latest < player.LatestTimestamp) {
                 this.Latest = player.LatestTimestamp;
@@ -475,6 +479,7 @@ const Database = new (class {
 
             group.List.sort((a, b) => b[0] - a[0]);
             group.Latest = group[group.LatestTimestamp];
+            group.Own = group.List.find(x => x[1].Own) != undefined;
 
             if (this.Latest < group.LatestTimestamp) {
                 this.Latest = group.LatestTimestamp;
@@ -552,6 +557,14 @@ const PlayerUpdaters = [
     p => {
         if (!p.id) {
             p.id = p.prefix + '_p' + (p.own ? p.save[1] : p.save[0]);
+            return true;
+        } else {
+            return false;
+        }
+    },
+    p => {
+        if (!p.class) {
+            p.class = (p.own ? p.save[29] : p.save[20]) % 256;
             return true;
         } else {
             return false;
