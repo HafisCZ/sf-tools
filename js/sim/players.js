@@ -816,14 +816,20 @@ class FightSimulator {
         this.logs = logs;
         var scores = [];
         for (var i = 0; i < players.length; i++) {
-            var score = 0;
-            this.cache(player.player, players[i].player);
-            for (var j = 0; j < iterations; j++) {
-                score += this.fight();
-            }
+            if (player.player == players[i].player) {
+                players[i].score = {
+                    avg: 50
+                };
+            } else {
+                var score = 0;
+                this.cache(player.player, players[i].player);
+                for (var j = 0; j < iterations; j++) {
+                    score += this.fight();
+                }
 
-            players[i].score = {
-                avg: 100 * score / iterations
+                players[i].score = {
+                    avg: 100 * score / iterations
+                };
             }
         }
     }

@@ -1099,7 +1099,7 @@
                                 <b>${ player.Name }</b>
                             </div>
                             <div class="two wide text-center column">
-                                ${ score ? (mode == 2 ? `${ score.avg } pt` : `${ score.avg.toFixed(2) }%`) : '' }
+                                ${ score ? (mode == 2 ? `${ score.avg } pt` : (mode == 1 && index == yourself ? '' : `${ score.avg.toFixed(2) }%`)) : '' }
                             </div>
                             <div class="two wide text-center column">
                                 ${ score && score.min != undefined ? `${ score.min.toFixed(2) }%` : '' }
