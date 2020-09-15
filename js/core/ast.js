@@ -939,6 +939,29 @@ const SP_FUNCTIONS = {
         } else {
             return undefined;
         }
+    },
+    // Linear css gradient
+    'lingradient': (degrees, ... segments) => {
+        if (!isNaN(degrees) && segments.length % 2 == 0 && segments.length >= 4) {
+            var str = '';
+            var colors = [];
+
+            for (var i = 0; i < segments.length; i += 2) {
+                var color = getCSSColor(segments[i]);
+                var width = parseInt(segments[i + 1]);
+
+                if (color && !isNaN(width)) {
+                    width = width > 100 ? 100 : (width < 0 ? 0 : width);
+                    colors.push(`${ color } ${ width }%`);
+                } else {
+                    return undefined;
+                }
+            }
+
+            return `linear-gradient(${ degrees }deg, ${ colors.join(', ') })`;
+        } else {
+            return undefined;
+        }
     }
 }
 
