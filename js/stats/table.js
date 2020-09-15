@@ -174,7 +174,7 @@ class TableInstance {
                             for (var [ key, item ] of items) {
                                 var value = header.expr(player, compare, this.settings, item);
                                 if (value == undefined) {
-                                    return CellGenerator.Plain('?', hlast);
+                                    return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast);
                                 }
 
                                 var reference = cmp ? header.expr(compare, this.settings.getCompareEnvironment(), cmp[key]) : undefined;
@@ -219,7 +219,7 @@ class TableInstance {
                         }, (player, compare) => {
                             var value = header.expr(player, compare, this.settings);
                             if (value == undefined) {
-                                return CellGenerator.Plain('?', hlast);
+                                return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast);
                             }
 
                             var reference = (header.difference && compare) ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
@@ -260,7 +260,7 @@ class TableInstance {
                         }, (players, operation) => {
                             var value = players.map(p => header.expr(p.player, p.compare, this.settings)).filter(x => x != undefined);
                             if (value.length == 0) {
-                                return CellGenerator.Plain('?');
+                                return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef);
                             }
 
                             value = operation(value);
@@ -1648,6 +1648,24 @@ const SettingsCommands = [
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
+    }),
+    new SettingsCommand(/^(not defined) ((@?)(.*))$/, function (root, string) {
+        var [ , key, arg, prefix, value ] = this.match(string);
+        var val = root.constants.getValue(prefix, value);
+
+        if (val != undefined) {
+            root.setLocalSharedVariable('ndef', val);
+        }
+    }, function (root, string) {
+        var [ , key, arg, prefix, value ] = this.match(string);
+
+        if (root.constants.isValid(prefix, value)) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
+        } else if (prefix == '@') {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
+        } else {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
+        }
     }),
     // Local Shared
     // border - Show border around columns
