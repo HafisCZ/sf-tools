@@ -363,6 +363,16 @@ function getCSSColor(string) {
     return style.color;
 }
 
+function getCSSBackground(string) {
+    var style = new Option().style;
+    style.background = string;
+    if (style.background == '') {
+        style.background = `#${ string }`;
+    }
+
+    return style.background;
+}
+
 function getCSSFont(string) {
     var style = new Option().style;
     style.font = string;

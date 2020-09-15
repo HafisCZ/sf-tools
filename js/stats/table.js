@@ -1149,7 +1149,7 @@ class TableInstance {
 const CellGenerator = {
     // Simple cell
     Cell: function (c, b, f, bo, al, pad) {
-        return `<td class="${ bo ? 'border-right-thin' : '' }" style="color: ${ f }; background-color: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' }">${ c }</td>`;
+        return `<td class="${ bo ? 'border-right-thin' : '' }" style="color: ${ f }; background: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' }">${ c }</td>`;
     },
     // Wide cell
     WideCell: function (c, b, w, al, pad) {
@@ -1797,7 +1797,7 @@ const SettingsCommands = [
         var ast = new Expression(a);
         if (ast.isValid()) {
             root.setLocalVariable('expc', (player, reference, env, val) => {
-                return getCSSColor(ast.eval(player, reference, env, val));
+                return getCSSBackground(ast.eval(player, reference, env, val));
             });
         }
     }, function (root, string) {
