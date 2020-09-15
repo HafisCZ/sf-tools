@@ -174,7 +174,7 @@ class TableInstance {
                             for (var [ key, item ] of items) {
                                 var value = header.expr(player, compare, this.settings, item);
                                 if (value == undefined) {
-                                    return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast);
+                                    return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc);
                                 }
 
                                 var reference = cmp ? header.expr(compare, this.settings.getCompareEnvironment(), cmp[key]) : undefined;
@@ -219,7 +219,7 @@ class TableInstance {
                         }, (player, compare) => {
                             var value = header.expr(player, compare, this.settings);
                             if (value == undefined) {
-                                return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast);
+                                return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc);
                             }
 
                             var reference = (header.difference && compare) ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
@@ -260,7 +260,7 @@ class TableInstance {
                         }, (players, operation) => {
                             var value = players.map(p => header.expr(p.player, p.compare, this.settings)).filter(x => x != undefined);
                             if (value.length == 0) {
-                                return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef);
+                                return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, undefined, undefined, header.ndefc);
                             }
 
                             value = operation(value);
@@ -1156,8 +1156,8 @@ const CellGenerator = {
         return `<td colspan="${ w }" style="background-color: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' }">${ c }</td>`;
     },
     // Plain cell
-    Plain: function (c, bo, al) {
-        return `<td class="${ bo ? 'border-right-thin' : '' }" ${ al ? `style="text-align: ${ al };"` : '' }>${ c }</td>`;
+    Plain: function (c, bo, al, bg) {
+        return `<td class="${ bo ? 'border-right-thin' : '' }" style="${ al ? `text-align: ${ al };` : '' } ${ bg ? `background: ${ bg };` : '' }">${ c }</td>`;
     },
     // Difference
     Difference: function (d, b, c) {
@@ -1649,7 +1649,7 @@ const SettingsCommands = [
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
     }),
-    new SettingsCommand(/^(not defined) ((@?)(.*))$/, function (root, string) {
+    new SettingsCommand(/^(not defined value) ((@?)(.*))$/, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
         var val = root.constants.getValue(prefix, value);
 
@@ -1665,6 +1665,25 @@ const SettingsCommands = [
             return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
         } else {
             return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
+        }
+    }),
+    new SettingsCommand(/^(not defined color) ((@?)(.*))$/, function (root, string) {
+        var [ , key, arg, prefix, value ] = this.match(string);
+        var val = getCSSColor(root.constants.getValue(prefix, value));
+
+        if (val != undefined && val) {
+            root.setLocalSharedVariable('ndefc', getCSSBackground(val));
+        }
+    }, function (root, string) {
+        var [ , key, arg, prefix, value ] = this.match(string);
+        var val = getCSSColor(root.constants.getValue(prefix, value));
+
+        if (root.constants.isValid(prefix, value) && val) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
+        } else if (prefix == '@' || !val) {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
+        } else {
+            return `${ SFormat.Keyword(key) } ${ SFormat.Color(arg, val) }`;
         }
     }),
     // Local Shared
