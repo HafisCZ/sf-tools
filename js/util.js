@@ -373,6 +373,12 @@ function getCSSBackground(string) {
     return style.background;
 }
 
+function getCSSColorFromBackground (string) {
+    var style = new Option().style;
+    style.background = string;
+    return style['background-color'];
+}
+
 function getCSSFont(string) {
     var style = new Option().style;
     style.font = string;

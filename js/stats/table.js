@@ -1149,7 +1149,7 @@ class TableInstance {
 const CellGenerator = {
     // Simple cell
     Cell: function (c, b, f, bo, al, pad) {
-        return `<td class="${ bo ? 'border-right-thin' : '' }" style="color: ${ f }; background: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' }">${ c }</td>`;
+        return `<td class="${ bo ? 'border-right-thin' : '' }" style="color: ${ getCSSColorFromBackground(f) }; background: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' }">${ c }</td>`;
     },
     // Wide cell
     WideCell: function (c, b, w, al, pad) {
