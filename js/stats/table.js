@@ -59,7 +59,7 @@ const ReservedCategories = {
             var displayValue2 = CompareEval.evaluate(potion2, category.value);
             displayValue2 = displayValue2 != undefined ? displayValue2 : (category.format ? category.format(player, compare, root, player.Potions[2]) : undefined);
 
-            return CellGenerator.Cell(displayValue0 == undefined ? potion0 : displayValue0, color0, category.visible ? '' : color0, false, category.align, category.padding) + CellGenerator.Cell(displayValue1 == undefined ? potion1 : displayValue1, color1, category.visible ? '' : color1, false, category.align, category.padding) + CellGenerator.Cell(displayValue2 == undefined ? potion2 : displayValue2, color2, category.visible ? '' : color2, last, category.align, category.padding);
+            return CellGenerator.Cell(displayValue0 == undefined ? potion0 : displayValue0, color0, category.visible ? '' : color0, false, category.align, category.padding, category.style ? category.style.cssText : undefined) + CellGenerator.Cell(displayValue1 == undefined ? potion1 : displayValue1, color1, category.visible ? '' : color1, false, category.align, category.padding, category.style ? category.style.cssText : undefined) + CellGenerator.Cell(displayValue2 == undefined ? potion2 : displayValue2, color2, category.visible ? '' : color2, last, category.align, category.padding, category.style ? category.style.cssText : undefined);
         }, null, (player, compare) => player.Potions.reduce((c, p) => c + p.Size, 0), last, 3);
     }
 };
@@ -174,7 +174,7 @@ class TableInstance {
                             for (var [ key, item ] of items) {
                                 var value = header.expr(player, compare, this.settings, item);
                                 if (value == undefined) {
-                                    return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc);
+                                    return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
                                 }
 
                                 var reference = cmp ? header.expr(compare, this.settings.getCompareEnvironment(), cmp[key]) : undefined;
@@ -199,7 +199,7 @@ class TableInstance {
                                     value = `${ value }${ header.extra(player) }`;
                                 }
 
-                                cells.push(CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align, header.padding));
+                                cells.push(CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align, header.padding, header.style ? header.style.cssText : undefined));
                             }
 
                             return cells;
@@ -219,7 +219,7 @@ class TableInstance {
                         }, (player, compare) => {
                             var value = header.expr(player, compare, this.settings);
                             if (value == undefined) {
-                                return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc);
+                                return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
                             }
 
                             var reference = (header.difference && compare) ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
@@ -256,11 +256,11 @@ class TableInstance {
                                 value = `${ value }${ header.extra(player) }`;
                             }
 
-                            return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align, header.padding);
+                            return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align, header.padding, header.style ? header.style.cssText : undefined);
                         }, (players, operation) => {
                             var value = players.map(p => header.expr(p.player, p.compare, this.settings)).filter(x => x != undefined);
                             if (value.length == 0) {
-                                return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, undefined, undefined, header.ndefc);
+                                return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, undefined, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
                             }
 
                             value = operation(value);
@@ -719,7 +719,7 @@ class TableInstance {
                     value = `${ value }${ extra.extra(player) }`;
                 }
 
-                var cell = CellGenerator.WideCell(value, color, lw, extra.align, extra.padding);
+                var cell = CellGenerator.WideCell(value, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
                 details += `
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
@@ -827,7 +827,7 @@ class TableInstance {
                     value = `${ value }${ extra.extra(undefined) }`;
                 }
 
-                var cell = CellGenerator.WideCell(value + reference, color, lw, extra.align, extra.padding);
+                var cell = CellGenerator.WideCell(value + reference, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
                 details += `
                     <tr>
                         <td class="border-right-thin" colspan="${ 1 + (this.settings.globals.indexed ? 1 : 0) + (sizeServer ? 1 : 0) }">${ extra.name }</td>
@@ -1023,7 +1023,7 @@ class TableInstance {
                     value = `${ value }${ extra.extra(undefined) }`;
                 }
 
-                var cell = CellGenerator.WideCell(value + reference, color, lw, extra.align, extra.padding);
+                var cell = CellGenerator.WideCell(value + reference, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
                 details += `
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
@@ -1148,16 +1148,16 @@ class TableInstance {
 // Cell generators
 const CellGenerator = {
     // Simple cell
-    Cell: function (c, b, f, bo, al, pad) {
-        return `<td class="${ bo ? 'border-right-thin' : '' }" style="color: ${ getCSSColorFromBackground(f) }; background: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' }">${ c }</td>`;
+    Cell: function (c, b, f, bo, al, pad, style) {
+        return `<td class="${ bo ? 'border-right-thin' : '' }" style="color: ${ getCSSColorFromBackground(f) }; background: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' } ${ style || '' }">${ c }</td>`;
     },
     // Wide cell
-    WideCell: function (c, b, w, al, pad) {
-        return `<td colspan="${ w }" style="background-color: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' }">${ c }</td>`;
+    WideCell: function (c, b, w, al, pad, style) {
+        return `<td colspan="${ w }" style="background-color: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' } ${ style || '' }">${ c }</td>`;
     },
     // Plain cell
-    Plain: function (c, bo, al, bg) {
-        return `<td class="${ bo ? 'border-right-thin' : '' }" style="${ al ? `text-align: ${ al };` : '' } ${ bg ? `background: ${ bg };` : '' }">${ c }</td>`;
+    Plain: function (c, bo, al, bg, style) {
+        return `<td class="${ bo ? 'border-right-thin' : '' }" style="${ al ? `text-align: ${ al };` : '' } ${ bg ? `background: ${ bg };` : '' } ${ style || '' }">${ c }</td>`;
     },
     // Difference
     Difference: function (d, b, c) {
@@ -1648,6 +1648,13 @@ const SettingsCommands = [
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
+    }),
+    new SettingsCommand(/^(style) ([a-zA-Z\-]+) (.*)$/, function (root, string) {
+        var [ , key, a, b ] = this.match(string);
+        root.setStyle(a, b);
+    }, function (root, string) {
+        var [ , key, a, b ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) } ${ SFormat.Normal(b) }`;
     }),
     new SettingsCommand(/^(not defined value) ((@?)(.*))$/, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -2741,6 +2748,15 @@ class Settings {
         } else {
             this.shared[key] = value;
         }
+    }
+
+    setStyle (key, val) {
+        var obj = this.currentExtra || (this.dummy ? this.dummy.content : undefined) || this.currentHeader || (this.currentCategory && ReservedCategories[this.currentCategory.name] ? this.currentCategory : undefined) || this.shared;
+        if (!obj.style) {
+            obj.style = new Option().style;
+        }
+
+        obj.style[key] = val;
     }
 
     setLocalVariable (key, value) {
