@@ -468,7 +468,7 @@ class Expression {
         } else {
             return Array.isArray(generated) ? generated : Object.values(generated);
         }
-    };
+    }
 
     // Evaluate a node (beta)
     evalInternal (player, reference, environment, scope, extra, node) {
@@ -1073,6 +1073,36 @@ const SP_KEYWORD_MAPPING_0 = {
     'Attribute Size': {
         expr: p => p.Primary.PotionSize
     },
+    'Strength Potion Index': {
+        expr: p => p.Strength.PotionIndex,
+        difference: false,
+        statistics: false
+    },
+    'Dexterity Potion Index': {
+        expr: p => p.Dexterity.PotionIndex,
+        difference: false,
+        statistics: false
+    },
+    'Intelligence Potion Index': {
+        expr: p => p.Intelligence.PotionIndex,
+        difference: false,
+        statistics: false
+    },
+    'Constitution Potion Index': {
+        expr: p => p.Constitution.PotionIndex,
+        difference: false,
+        statistics: false
+    },
+    'Luck Potion Index': {
+        expr: p => p.Luck.PotionIndex,
+        difference: false,
+        statistics: false
+    },
+    'Attribute Potion Index': {
+        expr: p => p.Primary.PotionIndex,
+        difference: false,
+        statistics: false
+    },
     'Strength Pet': {
         expr: p => p.Strength.Pet,
         width: 110
@@ -1378,6 +1408,11 @@ const SP_KEYWORD_MAPPING_0 = {
     'Life Potion': {
         expr: p => p.Potions.Life == 25,
         format: (p, c, e, x) => x ? 'Yes' : 'No'
+    },
+    'Life Potion Index': {
+        expr: p => p.Potions.LifeIndex,
+        difference: false,
+        statistics: false
     },
     'Runes': {
         expr: p => p.Runes.Runes,

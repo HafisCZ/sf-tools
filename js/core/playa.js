@@ -751,6 +751,16 @@ class SFPlayer {
         return 0;
     }
 
+    getPotionIndex (attribute) {
+        for (var i = 0; i < this.Potions.length; i++) {
+            if (this.Potions[i].Type == attribute.Type) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
     getPotionBonus (attribute) {
         for (var potion of this.Potions) {
             if (potion.Type == attribute.Type) {
@@ -774,6 +784,7 @@ class SFPlayer {
         attribute.Class = this.getClassBonus(attribute);
         attribute.Potion = this.getPotionBonus(attribute);
         attribute.Pet =  this.getPetBonus(attribute, pet);
+        attribute.PotionIndex = this.getPotionIndex(attribute);
         attribute.PetBonus = pet;
         attribute.NextCost = calculateAttributePrice(attribute.Purchased ? attribute.Purchased : (attribute.Base - this.Achievements.Owned * 5));
         attribute.TotalCost = calculateTotalAttributePrice(attribute.Purchased ? attribute.Purchased : (attribute.Base - this.Achievements.Owned * 5));
@@ -966,6 +977,8 @@ class SFPlayer {
             this.Action.Status = 0;
             this.Action.Index = 0;
         }
+
+        this.Potions.LifeIndex = this.Potions.findIndex(x => x.Type == 6);
 
         if (this.Achievements[50].Owned) {
             this.Fortress.Gladiator = 15;
