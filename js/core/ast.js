@@ -1865,6 +1865,39 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => (p.Items.Wpn1.HasEnchantment ? 1 : 0) + (p.Items.Wpn2.HasEnchantment ? 1 : 0),
         difference: false,
         statistics: false
+    },
+    'Potion 1 Size': {
+        expr: p => p.Potions[0].Size,
+        difference: false,
+        statistics: false
+    },
+    'Potion 2 Size': {
+        expr: p => p.Potions[1].Size,
+        difference: false,
+        statistics: false
+    },
+    'Potion 3 Size': {
+        expr: p => p.Potions[2].Size,
+        difference: false,
+        statistics: false
+    },
+    'Potion 1 Type': {
+        expr: p => p.Potions[0].Type,
+        format: (p, c, e, x) => POTIONS[x],
+        difference: false,
+        statistics: false
+    },
+    'Potion 2 Type': {
+        expr: p => p.Potions[1].Type,
+        format: (p, c, e, x) => POTIONS[x],
+        difference: false,
+        statistics: false
+    },
+    'Potion 3 Type': {
+        expr: p => p.Potions[2].Type,
+        format: (p, c, e, x) => POTIONS[x],
+        difference: false,
+        statistics: false
     }
 };
 
@@ -2361,6 +2394,16 @@ const SP_KEYWORD_MAPPING_5 = {
         expr: p => p.Potions
     }
 };
+
+const SP_KEYWORD_MAPPING_5_HO = {
+    'Potions': {
+        expr: p => p.Potions.map(x => x.Size),
+        visible: false,
+        difference: false,
+        width: 33,
+        grouped: 3
+    }
+}
 
 const SP_KEYWORDS = {};
 mergeSoft(SP_KEYWORDS, SP_KEYWORD_MAPPING_0);

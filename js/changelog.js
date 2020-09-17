@@ -1,4 +1,15 @@
 const CHANGELOG = {
+    'v3.797': [
+        'Removed predefined categories. Category <code>Potions</code> was replaced by grouped header <code>Potions</code> with similar effect.<br/>You can look at an example <a href="https://pastebin.com/raw/xGdqzgBa">here</a>.',
+        'Added grouped headers. These act like single header but accept array as an expression. Colors and formats apply to individual columns while other settings apply only to the whole header.',
+        'Added <code>style</code> keyword that sets any css value of a cell.',
+        'Added <code>lingradient</code> function that returns css linear gradient.',
+        'Added options for color & value when cell value is not defined.',
+        'Added <code>dualcolor</code> function that returns background with two colors.',
+        'Added wipe button that clears all stored player data.',
+        'Added color name support to gradient functions.',
+        'Changed all cell widths into css style.'
+    ],
     'v3.781': [
         'Added link to a wiki that will slowly replace the current manual page.',
         'Added base attributes to player detail.',

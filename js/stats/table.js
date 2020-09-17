@@ -32,38 +32,6 @@ class HeaderGroup {
     }
 }
 
-const ReservedCategories = {
-    'Potions': function (root, group, category, last) {
-        group.add(category.alias != undefined ? category.alias : 'Potions', category, {
-            width: 109
-        }, (player, compare) => {
-            var potion0 = player.Potions[0].Size;
-            var potion1 = player.Potions[1].Size;
-            var potion2 = player.Potions[2].Size;
-
-            var color0 = CompareEval.evaluate(potion0, category.color);
-            color0 = (color0 != undefined ? color0 : (category.expc ? category.expc(player, compare, root, player.Potions[0]) : '')) || '';
-
-            var color1 = CompareEval.evaluate(potion1, category.color);
-            color1 = (color1 != undefined ? color1 : (category.expc ? category.expc(player, compare, root, player.Potions[1]) : '')) || '';
-
-            var color2 = CompareEval.evaluate(potion2, category.color);
-            color2 = (color2 != undefined ? color2 : (category.expc ? category.expc(player, compare, root, player.Potions[2]) : '')) || '';
-
-            var displayValue0 = CompareEval.evaluate(potion0, category.value);
-            displayValue0 = displayValue0 != undefined ? displayValue0 : (category.format ? category.format(player, compare, root, player.Potions[0]) : undefined);
-
-            var displayValue1 = CompareEval.evaluate(potion1, category.value);
-            displayValue1 = displayValue1 != undefined ? displayValue1 : (category.format ? category.format(player, compare, root, player.Potions[1]) : undefined);
-
-            var displayValue2 = CompareEval.evaluate(potion2, category.value);
-            displayValue2 = displayValue2 != undefined ? displayValue2 : (category.format ? category.format(player, compare, root, player.Potions[2]) : undefined);
-
-            return CellGenerator.Cell(displayValue0 == undefined ? potion0 : displayValue0, color0, category.visible ? '' : color0, false, category.align, category.padding, category.style ? category.style.cssText : undefined) + CellGenerator.Cell(displayValue1 == undefined ? potion1 : displayValue1, color1, category.visible ? '' : color1, false, category.align, category.padding, category.style ? category.style.cssText : undefined) + CellGenerator.Cell(displayValue2 == undefined ? potion2 : displayValue2, color2, category.visible ? '' : color2, last, category.align, category.padding, category.style ? category.style.cssText : undefined);
-        }, null, (player, compare) => player.Potions.reduce((c, p) => c + p.Size, 0), last, 3);
-    }
-};
-
 // Helper function
 function merge (a, b) {
     for (var [k, v] of Object.entries(b)) {
@@ -144,100 +112,40 @@ class TableInstance {
         // Column configuration
         this.config = [];
         this.settings.c.forEach((category, ci, ca) => {
-            var group = new HeaderGroup(category.alias || category.name, ReservedCategories[category.name] != undefined || (category.alias == undefined && category.empty));
+            var group = new HeaderGroup(category.alias || category.name, category.alias == undefined && category.empty);
             var glast = ci == ca.length - 1;
 
-            if (ReservedCategories[category.name]) {
-                ReservedCategories[category.name](this.settings, group, category, !glast);
-            } else {
-                category.h.forEach((header, hi, ha) => {
-                    var hlast = (!glast && hi == ha.length - 1) || header.border >= 2 || (hi != ha.length - 1 && (ha[hi + 1].border == 1 || ha[hi + 1].border == 3));
+            category.h.forEach((header, hi, ha) => {
+                var hlast = (!glast && hi == ha.length - 1) || header.border >= 2 || (hi != ha.length - 1 && (ha[hi + 1].border == 1 || ha[hi + 1].border == 3));
 
-                    if (header.itemized) {
-                        group.add((header.alias != undefined ? header.alias : header.name), header, {
-                            width: Math.max(100, (header.alias || header.name).length * 12)
-                        }, (player, compare) => {
-                            var cells = [];
+                if (header.itemized) {
+                    group.add((header.alias != undefined ? header.alias : header.name), header, {
+                        width: Math.max(100, (header.alias || header.name).length * 12)
+                    }, (player, compare) => {
+                        var cells = [];
 
-                            var items = header.itemized.expr(player, compare, this.settings);
-                            if (Array.isArray(items)) {
-                                items = Object.entries([ ...items ]);
-                            } else {
-                                items = Object.entries(items);
-                            }
+                        var items = header.itemized.expr(player, compare, this.settings);
+                        if (Array.isArray(items)) {
+                            items = Object.entries([ ...items ]);
+                        } else {
+                            items = Object.entries(items);
+                        }
 
-                            var cmp = undefined;
-                            if (compare && header.difference) {
-                                cmp = header.itemized.expr(compare, compare, this.settings);
-                            }
+                        var cmp = undefined;
+                        if (compare && header.difference) {
+                            cmp = header.itemized.expr(compare, compare, this.settings);
+                        }
 
-                            for (var [ key, item ] of items) {
-                                var value = header.expr(player, compare, this.settings, item);
-                                if (value == undefined) {
-                                    return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
-                                }
-
-                                var reference = cmp ? header.expr(compare, this.settings.getCompareEnvironment(), cmp[key]) : undefined;
-                                if (reference != undefined) {
-                                    reference = header.flip ? (reference - value) : (value - reference);
-                                    reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(player, compare, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
-                                } else {
-                                    reference = '';
-                                }
-
-                                var color = CompareEval.evaluate(value, header.color);
-                                color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value) : '')) || '';
-
-                                var displayValue = CompareEval.evaluate(value, header.value);
-                                if (displayValue == undefined && header.format) {
-                                    value = header.format(player, compare, this.settings, value);
-                                } else if (displayValue != undefined) {
-                                    value = displayValue;
-                                }
-
-                                if (value != undefined && header.extra) {
-                                    value = `${ value }${ header.extra(player) }`;
-                                }
-
-                                cells.push(CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align, header.padding, header.style ? header.style.cssText : undefined));
-                            }
-
-                            return cells;
-                        }, null, (player, compare) => {
-                            var items = header.itemized.expr(player, this.settings);
-                            if (Array.isArray(items)) {
-                                items = items.reduce((col, item) => col + header.expr(player, compare, this.settings, item), 0);
-                            } else {
-                                items = Object.values(items).reduce((col, item) => col + header.expr(player, compare, this.settings, item), 0);
-                            }
-
-                            return items == undefined ? -1 : items;
-                        }, hlast);
-                    } else {
-                        group.add((header.alias != undefined ? header.alias : header.name), header, {
-                            width: Math.max(100, (header.alias || header.name).length * 12)
-                        }, (player, compare) => {
-                            var value = header.expr(player, compare, this.settings);
+                        for (var [ key, item ] of items) {
+                            var value = header.expr(player, compare, this.settings, item);
                             if (value == undefined) {
                                 return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
                             }
 
-                            var reference = (header.difference && compare) ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
-                            if (!isNaN(reference)) {
+                            var reference = cmp ? header.expr(compare, this.settings.getCompareEnvironment(), cmp[key]) : undefined;
+                            if (reference != undefined) {
                                 reference = header.flip ? (reference - value) : (value - reference);
-
-                                var freference = reference;
-                                if (header.format_diff === undefined) {
-                                    freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
-                                } else if (header.format_diff === true) {
-                                    if (header.format) {
-                                        freference = header.format(player, compare, this.settings, reference);
-                                    }
-                                } else if (header.format_diff !== false) {
-                                    freference = header.format_diff(this.settings, reference);
-                                }
-
-                                reference = CellGenerator.Difference(reference, header.brackets, freference);
+                                reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(player, compare, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
                             } else {
                                 reference = '';
                             }
@@ -256,82 +164,211 @@ class TableInstance {
                                 value = `${ value }${ header.extra(player) }`;
                             }
 
-                            return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align, header.padding, header.style ? header.style.cssText : undefined);
-                        }, (players, operation) => {
-                            var value = players.map(p => header.expr(p.player, p.compare, this.settings)).filter(x => x != undefined);
-                            if (value.length == 0) {
-                                return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, undefined, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
-                            }
+                            cells.push(CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align, header.padding, header.style ? header.style.cssText : undefined));
+                        }
 
-                            value = operation(value);
-                            if (!header.decimal) {
-                                value = Math.trunc(value);
-                            }
+                        return cells;
+                    }, null, (player, compare) => {
+                        var items = header.itemized.expr(player, this.settings);
+                        if (Array.isArray(items)) {
+                            items = items.reduce((col, item) => col + header.expr(player, compare, this.settings, item), 0);
+                        } else {
+                            items = Object.values(items).reduce((col, item) => col + header.expr(player, compare, this.settings, item), 0);
+                        }
 
-                            var reference = header.difference ? players.map(p => header.expr(p.compare, p.compare, this.settings.getCompareEnvironment())).filter(x => x != undefined) : undefined;
+                        return items == undefined ? -1 : items;
+                    }, hlast);
+                } else if (header.grouped) {
+                    if (header.width) {
+                        header.width = header.grouped * (header.width + 3);
+                    }
 
-                            if (reference && reference.length) {
-                                reference = operation(reference);
+                    group.add((header.alias != undefined ? header.alias : header.name), header, {
+                        width: Math.max(100, (header.alias || header.name).length * 12)
+                    }, (player, compare) => {
+                        var values = header.expr(player, compare, this.settings);
+                        var references = header.expr(compare, compare, this.settings.getCompareEnvironment());
 
-                                if (!isNaN(reference)) {
-                                    if (!header.decimal) {
-                                        reference = Math.trunc(reference);
-                                    }
+                        if (values == undefined || !Array.isArray(values)) {
+                            return CellGenerator.PlainSpan(header.grouped, header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
+                        } else {
+                            var content = '';
 
-                                    reference = header.flip ? (reference - value) : (value - reference);
+                            for (var i = 0; i < header.grouped; i++) {
+                                var value = values[i];
+                                var reference = references[i] == undefined ? value : references[i];
 
-                                    var freference = reference;
-                                    if (header.format_diff === undefined) {
-                                        freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
-                                    } else if (header.format_diff === true) {
-                                        if (header.format) {
-                                            freference = header.format(undefined, undefined, this.settings, reference);
-                                        }
-                                    } else if (header.format_diff !== false) {
-                                        freference = header.format_diff(this.settings, reference);
-                                    }
-
-                                    reference = CellGenerator.Difference(reference, header.brackets, freference);
+                                if (value == undefined) {
+                                    content += CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, i == header.grouped - 1 && hlast, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
                                 } else {
-                                    reference = '';
+                                    reference = (header.difference && compare) ? reference : undefined;
+                                    if (!isNaN(reference)) {
+                                        reference = header.flip ? (reference - value) : (value - reference);
+
+                                        var freference = reference;
+                                        if (header.format_diff === undefined) {
+                                            freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
+                                        } else if (header.format_diff === true) {
+                                            if (header.format) {
+                                                freference = header.format(player, compare, this.settings, reference);
+                                            }
+                                        } else if (header.format_diff !== false) {
+                                            freference = header.format_diff(this.settings, reference);
+                                        }
+
+                                        reference = CellGenerator.Difference(reference, header.brackets, freference);
+                                    } else {
+                                        reference = '';
+                                    }
+
+                                    var color = CompareEval.evaluate(value, header.color);
+                                    color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value) : '')) || '';
+
+                                    var displayValue = CompareEval.evaluate(value, header.value);
+                                    if (displayValue == undefined && header.format) {
+                                        value = header.format(player, compare, this.settings, value);
+                                    } else if (displayValue != undefined) {
+                                        value = displayValue;
+                                    }
+
+                                    if (value != undefined && header.extra) {
+                                        value = `${ value }${ header.extra(player) }`;
+                                    }
+
+                                    content += CellGenerator.Cell(value + reference, color, header.visible ? '' : color, i == header.grouped - 1 && hlast, header.align, header.padding, header.style ? header.style.cssText : undefined);
                                 }
+                            }
+
+                            return content;
+                        }
+                    }, null, (player, compare) => {
+                        var value = header.expr(player, compare, this.settings);
+                        if (value == undefined) {
+                            return -1;
+                        } else if (Array.isArray(value)) {
+                            return value.reduce((a, b) => a + b, 0);
+                        } else {
+                            return value;
+                        }
+                    }, hlast, header.grouped);
+                } else {
+                    group.add((header.alias != undefined ? header.alias : header.name), header, {
+                        width: Math.max(100, (header.alias || header.name).length * 12)
+                    }, (player, compare) => {
+                        var value = header.expr(player, compare, this.settings);
+                        if (value == undefined) {
+                            return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
+                        }
+
+                        var reference = (header.difference && compare) ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
+                        if (!isNaN(reference)) {
+                            reference = header.flip ? (reference - value) : (value - reference);
+
+                            var freference = reference;
+                            if (header.format_diff === undefined) {
+                                freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
+                            } else if (header.format_diff === true) {
+                                if (header.format) {
+                                    freference = header.format(player, compare, this.settings, reference);
+                                }
+                            } else if (header.format_diff !== false) {
+                                freference = header.format_diff(this.settings, reference);
+                            }
+
+                            reference = CellGenerator.Difference(reference, header.brackets, freference);
+                        } else {
+                            reference = '';
+                        }
+
+                        var color = CompareEval.evaluate(value, header.color);
+                        color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value) : '')) || '';
+
+                        var displayValue = CompareEval.evaluate(value, header.value);
+                        if (displayValue == undefined && header.format) {
+                            value = header.format(player, compare, this.settings, value);
+                        } else if (displayValue != undefined) {
+                            value = displayValue;
+                        }
+
+                        if (value != undefined && header.extra) {
+                            value = `${ value }${ header.extra(player) }`;
+                        }
+
+                        return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align, header.padding, header.style ? header.style.cssText : undefined);
+                    }, (players, operation) => {
+                        var value = players.map(p => header.expr(p.player, p.compare, this.settings)).filter(x => x != undefined);
+                        if (value.length == 0) {
+                            return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, undefined, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
+                        }
+
+                        value = operation(value);
+                        if (!header.decimal) {
+                            value = Math.trunc(value);
+                        }
+
+                        var reference = header.difference ? players.map(p => header.expr(p.compare, p.compare, this.settings.getCompareEnvironment())).filter(x => x != undefined) : undefined;
+
+                        if (reference && reference.length) {
+                            reference = operation(reference);
+
+                            if (!isNaN(reference)) {
+                                if (!header.decimal) {
+                                    reference = Math.trunc(reference);
+                                }
+
+                                reference = header.flip ? (reference - value) : (value - reference);
+
+                                var freference = reference;
+                                if (header.format_diff === undefined) {
+                                    freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
+                                } else if (header.format_diff === true) {
+                                    if (header.format) {
+                                        freference = header.format(undefined, undefined, this.settings, reference);
+                                    }
+                                } else if (header.format_diff !== false) {
+                                    freference = header.format_diff(this.settings, reference);
+                                }
+
+                                reference = CellGenerator.Difference(reference, header.brackets, freference);
                             } else {
                                 reference = '';
                             }
+                        } else {
+                            reference = '';
+                        }
 
-                            var color = undefined;
-                            if (header.statistics_color) {
-                                color = CompareEval.evaluate(value, header.color, true);
-                                color = (color != undefined ? color : (header.expc ? header.expc(null, null, this.settings, value) : '')) || '';
+                        var color = undefined;
+                        if (header.statistics_color) {
+                            color = CompareEval.evaluate(value, header.color, true);
+                            color = (color != undefined ? color : (header.expc ? header.expc(null, null, this.settings, value) : '')) || '';
+                        }
+
+                        if (header.format_stat === undefined || header.format_stat === true) {
+                            var displayValue = CompareEval.evaluate(value, header.value);
+                            if (displayValue == undefined && header.format) {
+                                value = header.format(undefined, undefined, this.settings, value);
+                            } else if (displayValue != undefined) {
+                                value = displayValue;
                             }
 
-                            if (header.format_stat === undefined || header.format_stat === true) {
-                                var displayValue = CompareEval.evaluate(value, header.value);
-                                if (displayValue == undefined && header.format) {
-                                    value = header.format(undefined, undefined, this.settings, value);
-                                } else if (displayValue != undefined) {
-                                    value = displayValue;
-                                }
-
-                                if (value != undefined && header.extra) {
-                                    value = `${ value }${ header.extra(undefined) }`;
-                                }
-                            } else if (header.format_stat !== false) {
-                                value = header.format_stat(this.settings, value);
+                            if (value != undefined && header.extra) {
+                                value = `${ value }${ header.extra(undefined) }`;
                             }
+                        } else if (header.format_stat !== false) {
+                            value = header.format_stat(this.settings, value);
+                        }
 
-                            return CellGenerator.Cell(value + reference, '', color);
-                        }, (player, compare) => {
-                            var value = header.expr(player, compare, this.settings);
-                            if (value == undefined) {
-                                return -1;
-                            } else {
-                                return value;
-                            }
-                        }, hlast);
-                    }
-                });
-            }
+                        return CellGenerator.Cell(value + reference, '', color);
+                    }, (player, compare) => {
+                        var value = header.expr(player, compare, this.settings);
+                        if (value == undefined) {
+                            return -1;
+                        } else {
+                            return value;
+                        }
+                    }, hlast);
+                }
+            });
 
             this.addHeader(group);
         });
@@ -992,7 +1029,7 @@ class TableInstance {
                     for (var i = 0, wid = (extra.width == -1 ? sizeDynamic : extra.width); wid > 0 && i < this.flat.length; i++) {
                         wid -= this.flat[i].width;
                         if (wid > 0) {
-                            lw += this.flat[i].span;;
+                            lw += this.flat[i].span;
                         } else {
                             break;
                         }
@@ -1158,6 +1195,10 @@ const CellGenerator = {
     // Plain cell
     Plain: function (c, bo, al, bg, style) {
         return `<td class="${ bo ? 'border-right-thin' : '' }" style="${ al ? `text-align: ${ al };` : '' } ${ bg ? `background: ${ bg };` : '' } ${ style || '' }">${ c }</td>`;
+    },
+    // Plain cell
+    PlainSpan: function (s, c, bo, al, bg, style) {
+        return `<td colspan="${ s }" class="${ bo ? 'border-right-thin' : '' }" style="${ al ? `text-align: ${ al };` : '' } ${ bg ? `background: ${ bg };` : '' } ${ style || '' }">${ c }</td>`;
     },
     // Difference
     Difference: function (d, b, c) {
@@ -1411,9 +1452,27 @@ const SettingsCommands = [
     }, function (root, string) {
         var [ , extend, key, a ] = this.match(string);
         if (a != undefined) {
-            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ ReservedCategories[a] ? SFormat.Reserved(a) : SFormat.Normal(a) }`;
+            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
         } else {
             return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) }`;
+        }
+    }),
+    new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(header)(?: (.+))? (as group of) (\d+)$/, function (root, string) {
+        var [ , extend, key, a, gr, w ] = this.match(string);
+
+        if (!isNaN(w) && Number(w) > 0) {
+            root.createHeader(a || '');
+            root.setGrouped(Number(w));
+            if (extend) {
+                root.setLocalSharedVariable('extend', extend.slice(0, -1).split(','));
+            }
+        }
+    }, function (root, string) {
+        var [ , extend, key, a, gr, w ] = this.match(string);
+        if (a != undefined) {
+            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Normal(a) } ${ SFormat.Keyword(gr) } ${ SFormat.Constant(w) }`;
+        } else {
+            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Keyword(gr) } ${ SFormat.Constant(w) }`;
         }
     }),
     // Create new header
@@ -1434,6 +1493,8 @@ const SettingsCommands = [
                 return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.ReservedPrivate(a) }`;
             } else if (SP_KEYWORD_MAPPING_3.hasOwnProperty(a)) {
                 return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.ReservedSpecial(a) }`;
+            } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(a)) {
+                return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.ReservedItemizable(a) }`;
             } else {
                 return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
             }
@@ -2142,19 +2203,6 @@ class Settings {
         return this.code;
     }
 
-    // Get entry
-    getEntry (name) {
-        for (var i = 0, c; c = this.c[i]; i++) {
-            if (c.name == name && ReservedCategories[c.name]) return c;
-            else for (var j = 0, h; h = c.h[j]; j++) if (h.name == name) return h;
-        }
-        return null;
-    }
-
-    getEntrySafe (name) {
-        return this.getEntry(name) || {};
-    }
-
     static parseConstants(string) {
         var settings = new Settings('');
 
@@ -2614,6 +2662,10 @@ class Settings {
         }
     }
 
+    setGrouped (w) {
+        this.currentHeader.grouped = w;
+    }
+
     createHeader (name) {
         this.pushHeader();
         this.currentHeader = {
@@ -2632,7 +2684,7 @@ class Settings {
     pushHeader () {
         this.pushExtraRow();
         if (this.currentCategory && this.currentHeader) {
-            var mapping = SP_KEYWORD_MAPPING_0[this.currentHeader.name] || SP_KEYWORD_MAPPING_1[this.currentHeader.name] || SP_KEYWORD_MAPPING_2[this.currentHeader.name] || SP_KEYWORD_MAPPING_3[this.currentHeader.name] || SP_KEYWORD_MAPPING_4[this.currentHeader.name];
+            var mapping = SP_KEYWORD_MAPPING_0[this.currentHeader.name] || SP_KEYWORD_MAPPING_1[this.currentHeader.name] || SP_KEYWORD_MAPPING_2[this.currentHeader.name] || SP_KEYWORD_MAPPING_3[this.currentHeader.name] || SP_KEYWORD_MAPPING_4[this.currentHeader.name] || SP_KEYWORD_MAPPING_5_HO[this.currentHeader.name];
 
             for (var ex of this.currentHeader.extend || []) {
                 if (this.dummies[ex]) {
@@ -2714,16 +2766,6 @@ class Settings {
     pushCategory () {
         this.pushHeader();
         if (this.currentCategory) {
-            if (ReservedCategories[this.currentCategory.name]) {
-                for (var ex of this.currentCategory.extend || []) {
-                    if (this.dummies[ex]) {
-                        mergeAll(this.currentCategory, this.dummies[ex].content);
-                    }
-                }
-
-                merge(this.currentCategory, this.shared);
-            }
-
             this.c.push(this.currentCategory);
         }
 
@@ -2741,8 +2783,6 @@ class Settings {
             this.dummy.content[key] = value;
         } else if (this.currentHeader) {
             this.setLocalVariable(key, value);
-        } else if (this.currentCategory && ReservedCategories[this.currentCategory.name]) {
-            this.currentCategory[key] = value;
         } else if (this.currentCategory) {
             this.categoryShared[key] = value;
         } else {
@@ -2751,7 +2791,7 @@ class Settings {
     }
 
     setStyle (key, val) {
-        var obj = this.currentExtra || (this.dummy ? this.dummy.content : undefined) || this.currentHeader || (this.currentCategory && ReservedCategories[this.currentCategory.name] ? this.currentCategory : undefined) || this.shared;
+        var obj = this.currentExtra || (this.dummy ? this.dummy.content : undefined) || this.currentHeader || this.shared;
         if (!obj.style) {
             obj.style = new Option().style;
         }
@@ -2764,11 +2804,8 @@ class Settings {
             this.currentExtra[key] = value;
         } else if (this.dummy) {
             this.dummy.content[key] = value;
-        } else {
-            var object = this.currentCategory && ReservedCategories[this.currentCategory.name] ? this.currentCategory : this.currentHeader;
-            if (object) {
-                object[key] = value;
-            }
+        } else if (this.currentHeader) {
+            this.currentHeader[key] = value;
         }
     }
 
@@ -2803,12 +2840,6 @@ class Settings {
             }
 
             this.currentHeader.extend.push(value);
-        } else if (this.currentCategory && ReservedCategories[this.currentCategory.name]) {
-            if (!this.currentCategory.extend) {
-                this.currentCategory.extend = [];
-            }
-
-            this.currentCategory.extend.push(value);
         } else if (this.currentCategory) {
             if (!this.categoryShared.extend) {
                 this.categoryShared.extend = [];
@@ -2837,15 +2868,12 @@ class Settings {
             }
 
             this.dummy.content[key].push([ condition, reference, value, reference ]);
-        } else {
-            var object = this.currentCategory && ReservedCategories[this.currentCategory.name] ? this.currentCategory : this.currentHeader;
-            if (object) {
-                if (!object[key]) {
-                    object[key] = [];
-                }
-
-                object[key].push([ condition, reference, value, reference ]);
+        } else if (this.currentHeader) {
+            if (!this.currentHeader[key]) {
+                this.currentHeader[key] = [];
             }
+
+            this.currentHeader[key].push([ condition, reference, value, reference ]);
         }
     }
 };

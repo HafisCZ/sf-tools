@@ -27,11 +27,12 @@ header Awards
 hydra on # Show hydra
 statistics off # Do not show statistics
 
-category Potions
+category
+
+header Potions
 color equal 25 @green
 color above 0 @orange
 color default @red
-visible off # Don't show numbers
 
 category Guild
 
