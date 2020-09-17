@@ -28,7 +28,7 @@ class HeaderGroup {
 
         this.headers.push(header);
         this.width += header.width;
-        this.length++;
+        this.length += span;
     }
 }
 
