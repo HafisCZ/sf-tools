@@ -319,7 +319,7 @@ const Database = new (class {
                         Timestamp: file.timestamp,
                         Own: data.own,
                         Name: data.name,
-                        Prefix: data.prefix,
+                        Prefix: data.prefix.replace(/\_/g, ' '),
                         Class: data.class
                     }, {
                         get: function (target, prop) {
