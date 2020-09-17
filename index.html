@@ -492,7 +492,7 @@
                             type: 'get'
                         }
                     ).then(function (response2) {
-                        var version = response2.data.total_commits;
+                        var version = parseInt(response2.data.total_commits) + 1;
 
                         localStorage['version'] = JSON.stringify({
                             timestamp: date.getTime(),
