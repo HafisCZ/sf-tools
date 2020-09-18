@@ -44,7 +44,7 @@ class Expression {
                     continue;
                 } else if (token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
                     value = token[0] + SFormat.Comment(token.slice(1, token.length - 1)) + token[token.length - 1];
-                } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join'].includes(token) || root.func.hasOwnProperty(token)) {
+                } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort'].includes(token) || root.func.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
                 } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked' ].includes(token) || root.vars.hasOwnProperty(token)) {
                     value = SFormat.Constant(token);
