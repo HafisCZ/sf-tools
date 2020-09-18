@@ -448,7 +448,7 @@ class Expression {
                 }
             }
 
-            if (node.op && SP_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || a.raw).length == node.args.length) {
+            if (node.op && SP_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.raw)).length == node.args.length) {
                 return node.op(... node.args.map(a => a.raw ? a.args : a));
             }
         }
