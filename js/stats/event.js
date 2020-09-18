@@ -1942,6 +1942,25 @@ class SettingsView extends View {
         // Input
         this.$area.on('input', (event) => {
             var val = $(event.target).val();
+
+            if (this.pasted) {
+                val = val.replace(/\t/g, ' ');
+
+                var ob = this.$area.get(0);
+
+                var ob1 = ob.selectionStart;
+                var ob2 = ob.selectionEnd;
+                var ob3 = ob.selectionDirection;
+
+                ob.value = val;
+
+                ob.selectionStart = ob1;
+                ob.selectionEnd = ob2;
+                ob.selectionDirection = ob3;
+
+                this.pasted = false;
+            }
+
             $b.html(Settings.format(val));
 
             if (val !== this.code) {
@@ -1957,6 +1976,10 @@ class SettingsView extends View {
             var sx = $(this).scrollLeft();
             $b.css('transform', `translate(${ -sx }px, ${ -sy }px)`);
             $b.css('clip-path', `inset(${ sy }px ${ sx }px 0px 0px)`);
+        });
+
+        this.$area.on('paste', () => {
+            this.pasted = true;
         });
 
         // Button events

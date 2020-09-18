@@ -2254,6 +2254,11 @@ class Settings {
 
             var trimmed = line.trim();
             var spacing = line.match(/\s+$/);
+            var prespace = line.match(/^\s+/);
+
+            if (prespace) {
+                content += prespace[0].replace(/ /g, '&nbsp;');
+            }
 
             var command = SettingsCommands.find(command => command.isValid(trimmed));
             content += command ? command.format(settings, trimmed) : SFormat.Error(trimmed);
