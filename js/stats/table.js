@@ -1190,7 +1190,7 @@ const CellGenerator = {
     },
     // Wide cell
     WideCell: function (c, b, w, al, pad, style) {
-        return `<td colspan="${ w }" style="background-color: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' } ${ style || '' }">${ c }</td>`;
+        return `<td colspan="${ w }" style="background: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' } ${ style || '' }">${ c }</td>`;
     },
     // Plain cell
     Plain: function (c, bo, al, bg, style) {
