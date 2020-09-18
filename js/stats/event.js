@@ -289,6 +289,9 @@ class GroupDetailView extends View {
         });
 
         this.sorting = undefined;
+        if (this.table) {
+            this.table.sorting = undefined;
+        }
 
         this.load();
     }
@@ -306,7 +309,6 @@ class GroupDetailView extends View {
             this.sorting = this.table.sorting;
         }
 
-        this.sorting = undefined;
         this.table = new TableInstance(Settings.load(this.identifier, 'guilds', PredefinedTemplates['Guilds Default'], TableType.Group), TableType.Group);
 
         var current = this.group[this.timestamp];
@@ -364,6 +366,8 @@ class GroupDetailView extends View {
         if (this.sorting != undefined) {
             this.table.sorting = this.sorting;
         }
+
+        this.sorting = undefined;
 
         this.table.sort();
 
