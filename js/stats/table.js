@@ -2492,7 +2492,12 @@ class Settings {
                     scope2 = segmentedCompare;
                 }
 
-                if (tabletype == TableType.Group) {
+                if (!data.arg) {
+                    this.cvars[name] = {
+                        ast: data.ast,
+                        arg: data.arg
+                    };
+                } else if (tabletype == TableType.Group) {
                     data.value = data.ast.eval(players[0].player, undefined, this, scope);
                     if (isNaN(data.value) && typeof(data.value) != 'object') {
                         data.value = undefined;
