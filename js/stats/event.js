@@ -385,19 +385,27 @@ class GroupDetailView extends View {
         }
 
         this.$parent.find('[data-sortable]').click((event) => {
-            this.table.setSorting($(event.target).attr('data-sortable-key'));
-            if (this.table) {
-                this.sorting = this.table.sorting;
+            var skey = $(event.target).attr('data-sortable-key');
+
+            if (event.originalEvent.ctrlKey) {
+                this.table.sorting = this.table.sorting.filter(s => s.key == skey);
             }
+
+            this.table.setSorting(skey);
+            this.sorting = this.table.sorting;
 
             this.refresh();
         }).contextmenu((event) => {
             event.preventDefault();
-            this.table.removeSorting($(event.target).attr('data-sortable-key'));
-            if (this.table) {
-                this.sorting = this.table.sorting;
+
+            if (event.originalEvent.ctrlKey) {
+                this.table.sorting = [];
+                this.table.sort();
+            } else {
+                this.table.removeSorting($(event.target).attr('data-sortable-key'));
             }
 
+            this.sorting = this.table.sorting;
             this.refresh();
         });
 
@@ -1227,19 +1235,27 @@ class BrowseView extends View {
         }
 
         this.$parent.find('[data-sortable]').click((event) => {
-            this.table.setSorting($(event.target).attr('data-sortable-key'));
-            if (this.table) {
-                this.sorting = this.table.sorting;
+            var skey = $(event.target).attr('data-sortable-key');
+
+            if (event.originalEvent.ctrlKey) {
+                this.table.sorting = this.table.sorting.filter(s => s.key == skey);
             }
+
+            this.table.setSorting(skey);
+            this.sorting = this.table.sorting;
 
             this.refresh();
         }).contextmenu((event) => {
             event.preventDefault();
-            this.table.removeSorting($(event.target).attr('data-sortable-key'));
-            if (this.table) {
-                this.sorting = this.table.sorting;
+
+            if (event.originalEvent.ctrlKey) {
+                this.table.sorting = [];
+                this.table.sort();
+            } else {
+                this.table.removeSorting($(event.target).attr('data-sortable-key'));
             }
 
+            this.sorting = this.table.sorting;
             this.refresh();
         });
 

@@ -423,6 +423,7 @@ h3.file-selected {
 
 [data-sortable] {
     position: relative;
+    user-select: none;
 }
 
 [data-sortable="1"]::before {
