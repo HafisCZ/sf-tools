@@ -186,8 +186,8 @@ class GroupDetailView extends View {
             on: 'hover',
             action: 'hide',
             delay : {
-                hide   : 100,
-                show   : 0
+                hide: 100,
+                show: 0
             }
         });
 
@@ -2487,6 +2487,18 @@ class ExceptionView extends View {
     }
 }
 
+class InfoView extends View {
+    constructor (parent) {
+        super(parent);
+    }
+
+    show (name, text) {
+        this.$parent.find('[data-op="name"]').html(name);
+        this.$parent.find('[data-op="content"]').html(text);
+        this.$parent.modal('show');
+    }
+}
+
 class EndpointView extends View {
     constructor (parent) {
         super(parent);
@@ -2702,6 +2714,7 @@ const UI = {
     preinitialize: function () {
         UI.Loader = new LoaderView('modal-loader');
         UI.Exception = new ExceptionView('modal-exception');
+        UI.Info = new InfoView('modal-info');
         UI.Setup = new SetupView('modal-setup');
         UI.SetupBeta = new SetupBetaView('modal-setup-beta');
         UI.ChangeLog = new ChangeLogView('modal-changelog');
