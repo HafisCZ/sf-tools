@@ -271,6 +271,18 @@ input:disabled {
     margin-top: 1em !important;
 }
 
+.css-template-list-lim {
+    overflow-y: auto;
+    max-height: 58vh;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.css-template-list-lim::-webkit-scrollbar {
+  display: none;
+}
+
 .margin-none-bottom {
     margin-bottom: 0 !important;
 }
