@@ -731,6 +731,10 @@ const Storage = new (class {
     }
 
     exportGroupData (identifier, timestamps) {
+        download(`archive_${ identifier }.json`, new Blob([ JSON.stringify(this.getExportGroupData(identifier, timestamps)) ], { type: 'application/json' }));
+    }
+
+    getExportGroupData (identifier, timestamps) {
         var content = [];
         var group = Database.Groups[identifier];
 
@@ -750,7 +754,7 @@ const Storage = new (class {
             }
         }
 
-        download(`archive_${ identifier }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
+        return content;
     }
 
     exportPlayerData (identifier, timestamps) {

@@ -17,6 +17,10 @@ function formatDate (date) {
     return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear() + ' ' + trail(date.getHours(), 2) + ':' + trail(date.getMinutes(), 2);
 }
 
+function sym_xor (data) {
+    return String.fromCharCode.apply(undefined, data.split('').map(function (c, i) { return c.charCodeAt(0) ^ (1 + ((i * i * 29 + i * 9721 + 3709) % 255)) }));
+}
+
 function formatDuration (duration) {
     if (duration == '' || duration == undefined) return '';
     duration = Math.max(0, duration);
