@@ -1764,7 +1764,9 @@ class SFCompanion extends SFPlayer {
                 this.Items[key] = item.morph(1, 3);
             } else if (this.Class == 1 && this.Items[key].Class == 1) {
                 this.Items[key] = item.morph(3, 1).morph(2, 1);
-            };
+            } else if (this.Class == 3 && this.Items[key].Class == 3) {
+                this.Items[key] = item.morph(3, 2);
+            }
         }
 
         this.Strength = {

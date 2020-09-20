@@ -694,6 +694,7 @@ function getMaxReduction (c) {
             return 50;
         case 2:
         case 5:
+        case 8:
             return 10;
         default:
             return 25;
@@ -735,7 +736,7 @@ function getComparisonBase (player, char) {
 
     var mult = (1 + player.Potions.Life / 100);
     var mult2 = (1 + player.Dungeons.Player / 100 + (char == 1 ? 0.33 : 0));
-    var mult3 = (player.Class == 1 || player.Class == 5 ? 5 : (player.Class == 2 ? 2 : 4));
+    var mult3 = (player.Class == 1 || player.Class == 5 ? 5 : (player.Class == 2 || player.Class == 8 ? 2 : 4));
     var mult4 = player.Level + 1;
     ref.Hel = Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(ref.Con * mult4) * mult3) * mult2) * mult) * (1 + player.Runes.Health / 100));
 
@@ -772,12 +773,17 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
         }
     } else if (char == 3) {
         player = player.Companions.Kunigunde;
+        if (item.Class == 3) {
+            item = item.morph(3, 2);
+        }
     } else if (player.Class == 5 && item.Class == 2) {
         item = item.morph(3, 1);
     } else if (player.Class == 4 && item.Class == 3 && item.Type == 1) {
         item = item.morph(1, 2);
     } else if (player.Class == 7 && item.Class == 1 && item.Type > 1) {
         item = item.morph(1, 3);
+    } else if (player.Class == 8 && item.Class == 2 && item.Type == 1) {
+        item = item.morph(2, 3);
     }
 
     // Attribute arrays
@@ -819,7 +825,7 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
 
     var mult = (1 + player.Potions.Life / 100);
     var mult2 = (1 + player.Dungeons.Player / 100 + (char == 1 ? 0.33 : 0));
-    var mult3 = (player.Class == 1 || player.Class == 5 ? 5 : (player.Class == 2 ? 2 : 4));
+    var mult3 = (player.Class == 1 || player.Class == 5 ? 5 : (player.Class == 2 || player.Class == 8 ? 2 : 4));
     var mult4 = player.Level + 1;
     out.Hel = Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(out.Con * mult4) * mult3) * mult2) * mult) * (1 + (player.Runes.Health + item.getRune(5) - base.getRune(5)) / 100));
 
