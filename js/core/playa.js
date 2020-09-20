@@ -1516,7 +1516,8 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Extra.Normal[2] = dataType.byte();
         this.Dungeons.Extra.Shadow[2] = dataType.byte();
         dataType.short();
-        dataType.skip(5);
+        dataType.skip(4);
+        this.Mask = dataType.long();
         this.Dungeons.Extra.Normal[3] = dataType.short();
         this.Dungeons.Extra.Shadow[3] = dataType.short();
 

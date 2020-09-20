@@ -773,7 +773,7 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
         }
     } else if (char == 3) {
         player = player.Companions.Kunigunde;
-        if (item.Class == 3) {
+        if (item.Class == 3 && item.Type > 1) {
             item = item.morph(3, 2);
         }
     } else if (player.Class == 5 && item.Class == 2) {
@@ -782,7 +782,7 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
         item = item.morph(1, 2);
     } else if (player.Class == 7 && item.Class == 1 && item.Type > 1) {
         item = item.morph(1, 3);
-    } else if (player.Class == 8 && item.Class == 2 && item.Type == 1) {
+    } else if (player.Class == 8 && item.Class == 2 && item.Type > 1) {
         item = item.morph(2, 3);
     }
 
