@@ -191,6 +191,21 @@ class GroupDetailView extends View {
             }
         });
 
+        this.$share = this.$parent.find('[data-op="share"]').click(() => {
+            $.ajax({
+                url: 'https://file.io/?expires=1',
+                type: 'POST',
+                data: `text=${ JSON.stringify(Storage.getExportGroupData(this.identifier, [ this.timestamp, Number(this.reference) ])) }`
+            }).done(function (message) {
+                if (message.success) {
+                    UI.Info.show('File sharing', 'Your code: ' + message.key + '<br/>Keep in mind that the code can be used only once!');
+                } else {
+                    UI.Exception.alert('Try again in couple of minutes.');
+                    Logger.log('WARNING', 'Error occured while trying to share a file!');
+                }
+            });
+        });
+
         this.$parent.find('[data-op="export"]').click(() => Storage.exportGroupData(this.identifier, this.group.List.map(entry => entry[0])));
         this.$parent.find('[data-op="export-l"]').click(() => Storage.exportGroupData(this.identifier, [ this.group.List[0][0] ]));
         this.$parent.find('[data-op="export-l5"]').click(() => Storage.exportGroupData(this.identifier, this.group.List.slice(0, 5).map(entry => entry[0])));
@@ -1774,6 +1789,22 @@ class FilesView extends View {
             UI.Endpoint.show();
         });
 
+        this.$shared = this.$parent.find('[data-op="shared"]').click(() => {
+            UI.InfoInput.show('File sharing', 'Enter you code:', (code) => {
+                if (code) {
+                    $.ajax({
+                        url: `https://file.io/${ code }`,
+                        type: 'GET'
+                    }).done(function (message) {
+                        Storage.import(JSON.parse(message));
+                        UI.show(UI.Files);
+                    }).fail(function () {
+                        Logger.log('WARNING', 'Error occured while trying to import shared file!');
+                    });
+                }
+            });
+        });
+
         // Statistics
         this.$gcount = this.$parent.find('[data-op="gcount"]');
         this.$pcount = this.$parent.find('[data-op="pcount"]');
@@ -2715,10 +2746,14 @@ const UI = {
             UI.Files.$endpoint.show();
             UI.Files.$insecure.show();
             UI.Files.$beta.show();
+            UI.Files.$shared.show();
+            UI.GroupDetail.$share.show();
         } else {
             UI.Files.$endpoint.hide();
             UI.Files.$insecure.hide();
             UI.Files.$beta.hide();
+            UI.Files.$shared.hide();
+            UI.GroupDetail.$share.hide();
         }
     },
     initialize: function () {
