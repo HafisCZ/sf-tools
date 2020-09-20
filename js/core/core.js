@@ -485,6 +485,8 @@ const Database = new (class {
                 this.Latest = group.LatestTimestamp;
             }
         }
+
+        Logger.log('STORAGE', 'Database changed! Timestamp: ' + this.Changed);
     }
 
     hide (identifier) {
@@ -645,6 +647,23 @@ const UpdateService = {
     }
 }
 
+const Logger = new (class {
+    constructor () {
+        this.colors = {
+            'STORAGE': 'fcba03',
+            'WARNING': 'fc6203'
+        };
+    }
+
+    log (type, text) {
+        console.log(
+            `%c${ type }%c${ text }`,
+            `background-color: #${ this.colors[type] || 'ffffff' }; padding: 0.5em; font-size: 15px; font-weight: bold; color: black;`,
+            'padding: 0.5em; font-size: 15px;'
+        );
+    }
+})();
+
 const Storage = new (class {
     load (callback, error, args) {
         var loadStart = Date.now();
@@ -682,7 +701,10 @@ const Storage = new (class {
                 Database.from(this.current, args.pfilter, args.gfilter);
                 var loadEnd = Date.now();
 
-                console.log(`[STORAGE] Database: ${ loadDatabaseEnd - loadStart } ms,  Update: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && Database.Lazy ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
+                Logger.log('STORAGE', `Database: ${ loadDatabaseEnd - loadStart } ms,  Update: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && Database.Lazy ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
+                if (loadEnd - loadUpdateEnd > 1000) {
+                    Logger.log('WARNING', 'Processing step is taking too long!');
+                }
 
                 callback();
             });
