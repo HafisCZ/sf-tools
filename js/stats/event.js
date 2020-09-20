@@ -2490,12 +2490,40 @@ class ExceptionView extends View {
 class InfoView extends View {
     constructor (parent) {
         super(parent);
+
+        this.$name = this.$parent.find('[data-op="name"]');
+        this.$content = this.$parent.find('[data-op="content"]');
     }
 
     show (name, text) {
-        this.$parent.find('[data-op="name"]').html(name);
-        this.$parent.find('[data-op="content"]').html(text);
+        this.$name.html(name);
+        this.$content.html(text);
+
         this.$parent.modal('show');
+    }
+}
+
+class InfoInputView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$name = this.$parent.find('[data-op="name"]');
+        this.$content = this.$parent.find('[data-op="content"]');
+        this.$input = this.$parent.find('[data-op="input"]');
+    }
+
+    show (name, text, onApprove) {
+        this.$name.html(name);
+        this.$content.html(text);
+        this.$input.val('');
+
+        this.$parent.modal({
+            onApprove: () => {
+                if (onApprove) {
+                    onApprove(this.$input.val());
+                }
+            }
+        }).modal('show');
     }
 }
 
@@ -2715,6 +2743,7 @@ const UI = {
         UI.Loader = new LoaderView('modal-loader');
         UI.Exception = new ExceptionView('modal-exception');
         UI.Info = new InfoView('modal-info');
+        UI.InfoInput = new InfoInputView('modal-info-input');
         UI.Setup = new SetupView('modal-setup');
         UI.SetupBeta = new SetupBetaView('modal-setup-beta');
         UI.ChangeLog = new ChangeLogView('modal-changelog');
