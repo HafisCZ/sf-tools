@@ -496,19 +496,30 @@ class SFFighter {
     }
 
     getMaximumDamageReduction () {
-        switch (this.Class) {
-            case 1:
-            case 5:
-            case 6:
-            case 7:
-                return 0.50
-            case 3:
-            case 4:
-                return 0.25;
-            case 2:
-                return 0.10;
-            default:
-                return 0;
+        if (this.Class == 8) {
+            switch (this.Mask) {
+                case 1:
+                    return 0.50;
+                case 2:
+                    return 0.25;
+                default:
+                    return 0.10;
+            }
+        } else {
+            switch (this.Class) {
+                case 1:
+                case 5:
+                case 6:
+                case 7:
+                    return 0.50
+                case 3:
+                case 4:
+                    return 0.25;
+                case 2:
+                    return 0.10;
+                default:
+                    return 0;
+            }
         }
     }
 
@@ -523,6 +534,7 @@ class SFFighter {
             case 7:
                 return this.Dexterity;
             case 2:
+            case 8:
                 return this.Intelligence;
             default:
                 return 0;
@@ -540,6 +552,7 @@ class SFFighter {
             case 7:
                 return this.Dexterity;
             case 2:
+            case 8:
                 return this.Intelligence;
             default:
                 return 0;
@@ -650,6 +663,7 @@ class SFPlayer {
             case 7:
                 return this.Dexterity;
             case 2:
+            case 8:
                 return this.Intelligence;
             default:
                 return { };
@@ -657,24 +671,35 @@ class SFPlayer {
     }
 
     getMaximumDamageReduction () {
-        switch (this.Class) {
-            case 1:
-            case 5:
-            case 6:
-            case 7:
-                return 50;
-            case 3:
-            case 4:
-                return 25;
-            case 2:
-                return 10;
-            default:
-                return 0;
+        if (this.Class == 8) {
+            switch (this.Mask) {
+                case 1:
+                    return 50;
+                case 2:
+                    return 25;
+                default:
+                    return 10;
+            }
+        } else {
+            switch (this.Class) {
+                case 1:
+                case 5:
+                case 6:
+                case 7:
+                    return 50
+                case 3:
+                case 4:
+                    return 25;
+                case 2:
+                    return 10;
+                default:
+                    return 0;
+            }
         }
     }
 
     getHealth () {
-        return Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5) ? 5 : (this.Class == 2 ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
+        return Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5 || (this.Class == 8 && this.Mask == 1)) ? 5 : (this.Class == 2 || (this.Class == 8 && this.Mask == 0) ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
     }
 
     getEquipmentBonus (attribute) {

@@ -76,8 +76,8 @@ class FighterModel {
                 return new AssassinModel(index, player);
             case MAGE:
                 return new MageModel(index, player);
-            case NECROMANCER:
-                return new NecromancerModel(index, player);
+            case DRUID:
+                return new DruidModel(index, player);
             default:
                 return null;
         }
@@ -101,7 +101,7 @@ class FighterModel {
             case ASSASSIN:
                 return this.Player.Dexterity.Total / 2;
             case MAGE:
-            case NECROMANCER:
+            case DRUID:
                 return this.Player.Intelligence.Total / 2;
             default:
                 return 0;
@@ -120,7 +120,7 @@ class FighterModel {
             case ASSASSIN:
                 return this.Player.Dexterity.Total;
             case MAGE:
-            case NECROMANCER:
+            case DRUID:
                 return this.Player.Intelligence.Total;
             default:
                 return 0;
@@ -129,7 +129,7 @@ class FighterModel {
 
     // Damage Reduction
     getDamageReduction (source) {
-        if (source.Player.Class == MAGE || source.Player.Class == NECROMANCER) {
+        if (source.Player.Class == MAGE) {
             return 0;
         } else if (this.Player.Class == BATTLEMAGE) {
             return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level + 40);
@@ -150,8 +150,9 @@ class FighterModel {
             case BERSERKER:
                 return 25;
             case MAGE:
-            case NECROMANCER:
                 return 10;
+            case DRUID:
+                return this.Player.Mask == 1 ? 50 : (this.Player.Mask == 2 : 25 : 0);
             default:
                 return 0;
         }
@@ -159,7 +160,7 @@ class FighterModel {
 
     // Block Chance
     getBlockChance (source) {
-        if (source.Player.Class == MAGE || source.Player.Class == NECROMANCER) {
+        if (source.Player.Class == MAGE) {
             return 0;
         } else {
             switch (this.Player.Class) {
@@ -168,6 +169,8 @@ class FighterModel {
                     return 50;
                 case WARRIOR:
                     return 25;
+                case DRUID:
+                    return this.Player.Mask == 1 ? 25 : (this.Player.Mask == 2 : 50 : 0);
                 default:
                     return 0;
             }
@@ -186,8 +189,9 @@ class FighterModel {
             case BERSERKER:
                 return 4;
             case MAGE:
-            case NECROMANCER:
                 return 2;
+            case DRUID:
+                return this.Player.Mask == 1 ? 5 : (this.Player.Mask == 2 : 4 : 2);
             default:
                 return 0;
         }
@@ -301,6 +305,12 @@ class MageModel extends FighterModel {
     }
 }
 
+class DruidModel extends FighterModel {
+    constructor (i, p) {
+        super(i, p);
+    }
+}
+
 class ScoutModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
@@ -339,9 +349,9 @@ class BattlemageModel extends FighterModel {
     }
 
     onFightStart (target) {
-        if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE || target.Player.Class == NECROMANCER) {
+        if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE) {
             return 0;
-        } else if (target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER) {
+        } else if (target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER || target.Player.Class == DRUID) {
             return Math.ceil(target.TotalHealth / 3);
         } else if (target.Player.Class == WARRIOR) {
             return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 4));
@@ -381,19 +391,13 @@ class DemonHunterModel extends FighterModel {
     }
 
     onDeath (source) {
-        if (source.Player.Class != MAGE && source.Player.Class != NECROMANCER && getRandom(25)) {
+        if (source.Player.Class != MAGE && source.Player.Class != DRUID && getRandom(25)) {
             this.Health = this.getHealth();
 
             return true;
         }
 
         return false;
-    }
-}
-
-class DruidModel extends FighterModel {
-    constructor (i, p) {
-        super(i, p);
     }
 }
 

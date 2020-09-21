@@ -694,6 +694,7 @@
                     case 6:
                         return p.Strength;
                     case 2:
+                    case 8:
                         return p.Intelligence;
                     default:
                         return p.Dexterity;
@@ -701,7 +702,13 @@
             }
 
             function getTargetResistance (p, t, tarmor) {
-                return p.Class == 2 ? 0 : Math.min([ 50, 10, 25, 25, 50, 25, 50 ][ t.Class - 1 ], tarmor / p.Level + (t.Class == 5 ? 40 : 0));
+                if (p.Class == 2) {
+                    return 0;
+                } else if (t.Class == 8) {
+                    return Math.min([ 10, 50, 25 ][ t.Mask ], tarmor / p.Level);
+                } else {
+                    return Math.min([ 50, 10, 25, 25, 50, 25, 50 ][ t.Class - 1 ], tarmor / p.Level + (t.Class == 5 ? 40 : 0));
+                }
             }
 
             function fillFighter ($parent, f, winner, o, tarmor = 0) {
