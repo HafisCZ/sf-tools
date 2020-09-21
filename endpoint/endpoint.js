@@ -16,12 +16,11 @@ class EndpointController {
         });
     }
 
-    login (server, username, password, password2, callback, error, error2) {
+    login (server, username, password, callback, error, error2) {
         this.window.callback['login'] = callback;
         this.window.error['login'] = error;
-        this.window.error['key'] = error2 || error;
 
-        this.window.login(server, username, password, password2);
+        this.window.login(server, username, password);
     }
 
     querry_single (id, callback, error) {

@@ -35,12 +35,11 @@
                 unity.Quit(callback);
             }
 
-            function login (server, username, password, password2) {
+            function login (server, username, password) {
                 unity.SendMessage('Controller', 'Login', JSON.stringify({
                     server: server,
                     username: username,
-                    password: password,
-                    key: password2
+                    password: password
                 }));
             }
 
