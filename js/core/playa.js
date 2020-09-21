@@ -1205,6 +1205,8 @@ class SFOtherPlayer extends SFPlayer {
         ];
         dataType.clear(); // skip
 
+        this.Mask = 0; // TODO
+
         dataType = new ComplexDataType(data.pets);
         dataType.assert(6, true);
 

@@ -41,13 +41,11 @@ const ASSASSIN = 4;
 const BATTLEMAGE = 5;
 const BERSERKER = 6;
 const DEMONHUNTER = 7;
-
-// New testing classes
 const DRUID = 8;
-const NECROMANCER = 20;
 
+// Obsolete now
 function hasImplementation (c) {
-    return c != 8;
+    return c != DRUID;
 }
 
 const ClassMap = {
@@ -57,12 +55,8 @@ const ClassMap = {
     4: 'Assassin',
     5: 'Battle Mage',
     6: 'Berserker',
-    7: 'Demon Hunter'
-};
-
-const ClassMapExt = {
-    8: 'Druid',
-    20: 'Necromancer'
+    7: 'Demon Hunter',
+    8: 'Druid'
 };
 
 class FighterModel {
@@ -400,33 +394,6 @@ class DemonHunterModel extends FighterModel {
 class DruidModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
-    }
-}
-
-class NecromancerModel extends MageModel {
-    constructor (i, p) {
-        super(i, p);
-        this.DamageDealt = true;
-        this.DamageTaken = true;
-    }
-
-    onDamageDealt (target, damage) {
-        if (getRandom(25)) {
-            this.Health += damage / 2;
-        } else {
-            this.Health += damage / 4;
-        }
-    }
-
-    onDamageTaken (target, damage) {
-        var alive = super.onDamageTaken(target, damage);
-        if (alive) {
-            if (getRandom(25)) {
-                this.Health += damage / 4;
-            }
-        }
-
-        return alive;
     }
 }
 
