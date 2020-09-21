@@ -349,6 +349,15 @@ class GroupDetailView extends View {
             }
         }
 
+        var updated = false;
+        for (var entry of members) {
+            updated |= Database.preload(entry.Identifier, entry.Timestamp);
+        }
+
+        if (updated) {
+            Database.update();
+        }
+
         // Reference members
         var membersReferences = [];
         for (var member of members) {
@@ -864,6 +873,16 @@ class PlayerHistoryView extends View {
     load () {
         // Table instance
         this.table = new TableInstance(Settings.load(this.identifier, 'me', PredefinedTemplates['Me Default'], TableType.History), TableType.History);
+
+        var updated = false;
+        for (var [ timestamp, proxy ] of this.list) {
+            updated |= Database.preload(this.identifier, timestamp);
+        }
+
+        if (updated) {
+            Database.update();
+        }
+
         this.table.setEntries(this.list);
 
         // Configuration indicator
@@ -1143,6 +1162,16 @@ class BrowseView extends View {
                         }
                     }
                 }
+            }
+
+            var updated = false;
+            for (var entry of entries) {
+                updated |= Database.preload(entry.player.Identifier, entry.player.Timestamp);
+                updated |= Database.preload(entry.compare.Identifier, entry.compare.Timestamp);
+            }
+
+            if (updated) {
+                Database.update();
             }
 
             this.table.setEntries(entries, !this.recalculate, sim, this.autosort);

@@ -236,6 +236,49 @@ const Database = new (class {
         this.update();
     }
 
+    preload (id, timestamp) {
+        if (this.Players[id][timestamp].IsProxy) {
+            var data = this.Players[id][timestamp].Data;
+            var player = data.own ? new SFOwnPlayer(data, Database.LoadInventory) : new SFOtherPlayer(data);
+
+            let groupID = null;
+            if (player.Group.Identifier && this.Groups[player.Group.Identifier] && this.Groups[player.Group.Identifier][timestamp]) {
+                groupID = player.Group.Identifier;
+            }
+
+            if (groupID) {
+                let group = Database.Groups[groupID][timestamp];
+                let index = group.Members.findIndex(identifier => identifier == player.Identifier);
+
+                player.Group.Group = group;
+                player.Group.Role = group.Roles[index];
+                player.Group.Index = index;
+                player.Group.Rank = group.Rank;
+                player.Group.ReadyDefense = group.States[index] == 1 || group.States[index] == 3;
+                player.Group.ReadyAttack = group.States[index] > 1;
+
+                if (group.Own) {
+                    player.Group.Own = true;
+                    player.Group.Pet = group.Pets[index];
+                    player.Group.Treasure = group.Treasures[index];
+                    player.Group.Instructor = group.Instructors[index];
+
+                    if (!player.Fortress.Knights && group.Knights) {
+                        player.Fortress.Knights = group.Knights[index];
+                    }
+                } else {
+                    player.Group.Pet = group.Pets[index];
+                }
+            }
+
+            this.Players[id][timestamp] = player;
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     load (id, timestamp) {
         if (this.Players[id][timestamp].IsProxy) {
             var data = this.Players[id][timestamp].Data;
