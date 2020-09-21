@@ -152,7 +152,7 @@ class FighterModel {
             case MAGE:
                 return 10;
             case DRUID:
-                return this.Player.Mask == 1 ? 50 : (this.Player.Mask == 2 : 25 : 0);
+                return this.Player.Mask == 1 ? 50 : (this.Player.Mask == 2 ? 25 : 0);
             default:
                 return 0;
         }
@@ -170,7 +170,7 @@ class FighterModel {
                 case WARRIOR:
                     return 25;
                 case DRUID:
-                    return this.Player.Mask == 1 ? 25 : (this.Player.Mask == 2 : 50 : 0);
+                    return this.Player.Mask == 1 ? 25 : (this.Player.Mask == 2 ? 50 : 0);
                 default:
                     return 0;
             }
@@ -191,7 +191,7 @@ class FighterModel {
             case MAGE:
                 return 2;
             case DRUID:
-                return this.Player.Mask == 1 ? 5 : (this.Player.Mask == 2 : 4 : 2);
+                return this.Player.Mask == 1 ? 5 : (this.Player.Mask == 2 ? 4 : 2);
             default:
                 return 0;
         }
