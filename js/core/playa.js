@@ -1761,11 +1761,17 @@ class SFCompanion extends SFPlayer {
 
         this.Items = items;
         for (var [ key, item ] of Object.entries(this.Items)) {
-            if (this.Class == 2 && this.Items[key].Class == 2) {
+            if (player.Class == 5 && this.Class == 2 && item.Class == 2 && item.Type > 1) {
+                // When player is BattleMage and it's Mage equipment -> Strength into Intelligence
                 this.Items[key] = item.morph(1, 3);
-            } else if (this.Class == 1 && this.Items[key].Class == 1) {
-                this.Items[key] = item.morph(3, 1).morph(2, 1);
-            } else if (this.Class == 3 && this.Items[key].Class == 3) {
+            } else if (player.Class == 4 && this.Class == 1 && item.Class == 1 && item.Type == 1) {
+                // When player is Assassin and it's Warrior weapon -> Dexterity into Strength
+                this.Items[key] = item.morph(2, 1);
+            } else if (player.Class == 7 && this.Class == 1 && item.Class == 1 && item.Type > 1) {
+                // When player is DemonHunter and it's Warrior equipment -> Dexterity into Strength
+                this.Items[key] = item.morph(2, 1);
+            } else if (player.Class == 8 && this.Class == 3 && item.Class == 3 && item.Type > 1) {
+                // When player is Druid and it's Scout equipment -> Intelligence into Dexterity
                 this.Items[key] = item.morph(3, 2);
             }
         }

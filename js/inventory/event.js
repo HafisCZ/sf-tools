@@ -762,27 +762,40 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
     };
 
     if (char == 1) {
-        player = player.Companions.Bert;
-        if (item.Class == 1) {
+        if (player.Class == 4 && item.Class == 1 && item.Type == 1) {
+            // Assassin weapons -> Dexterity into Strength
+            item = item.morph(2, 1);
+        } else if (player.Class == 7 && item.Class == 1 && item.Type > 1) {
+            // DemonHunter equipment -> Dexterity into Strenght
             item = item.morph(2, 1);
         }
+
+        player = player.Companions.Bert;
     } else if (char == 2) {
-        player = player.Companions.Mark;
-        if (item.Class == 2) {
+        if (player.Class == 5 && item.Class == 2 && item.Type > 1) {
+            // BattleMage equipment -> Strength into Intelligence
             item = item.morph(1, 3);
         }
+
+        player = player.Companions.Mark;
     } else if (char == 3) {
-        player = player.Companions.Kunigunde;
-        if (item.Class == 3 && item.Type > 1) {
+        if (player.Class == 8 && item.Class == 3 && item.Type > 1) {
+            // Druid equipment -> Intelligence into Dexterity
             item = item.morph(3, 2);
         }
-    } else if (player.Class == 5 && item.Class == 2) {
+
+        player = player.Companions.Kunigunde;
+    } else if (player.Class == 5 && item.Class == 2 && item.Type > 1) {
+        // BattleMage equipment -> Intelligence to Strength
         item = item.morph(3, 1);
-    } else if (player.Class == 4 && item.Class == 3 && item.Type == 1) {
+    } else if (player.Class == 4 && item.Class == 1 && item.Type == 1) {
+        // Assassin weapons -> Strength to Dexterity
         item = item.morph(1, 2);
     } else if (player.Class == 7 && item.Class == 1 && item.Type > 1) {
-        item = item.morph(1, 3);
-    } else if (player.Class == 8 && item.Class == 2 && item.Type > 1) {
+        // DemonHunter equipment -> Strength to Dexterity
+        item = item.morph(1, 2);
+    } else if (player.Class == 8 && item.Class == 3 && item.Type > 1) {
+        // Druid equipment -> Dexterity to Intelligence
         item = item.morph(2, 3);
     }
 
