@@ -158,6 +158,13 @@
                                     </div>
                                 </div>
                                 <div class="field">
+                                    <label>Mask</label>
+                                    <div class="ui selection compact dropdown" data-path="Mask">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
+                                    </div>
+                                </div>
+                                <div class="field">
                                     <label>Level</label>
                                     <input class="text-center" type="text" data-path="Level">
                                 </div>
@@ -418,6 +425,7 @@
                     this.fields = {
                         name: new Field('[data-path="Name"]', ''),
                         class: new Field('[data-path="Class"]', '1'),
+                        mask: new Field('[data-path="Mask"]', '0'),
                         level: new Field('[data-path="Level"]', '', Field.isNumber),
                         armor: new Field('[data-path="Armor"]', '', Field.isNumber),
 
@@ -456,7 +464,7 @@
                         preserveHTML: true,
                         values: Object.entries(ClassMap).map((e) => {
                             return {
-                                name: (hasImplementation(e[0]) ? `<img class="ui centered image class-picture" src="res/class${ e[0] }.png">` : '') + `<span class="${ hasImplementation(e[0]) ? '' : 'class-none' }">${ e[1] }</span>`,
+                                name: `<img class="ui centered image class-picture" src="res/class${ e[0] }.png"><span>${ e[1] }</span>`,
                                 value: e[0],
                                 disabled: !hasImplementation(e[0])
                             };
@@ -467,7 +475,27 @@
                         } else {
                             $('[data-optional="Weapon2"]').hide();
                         }
+
+                        this.fields['mask'].show(value == 8);
                     }).dropdown('set selected', '1');
+
+                    this.fields['mask'].$object.dropdown({
+                        preserveHTML: true,
+                        values: [
+                            {
+                                name: 'None',
+                                value: 0
+                            },
+                            {
+                                name: '<img class="ui centered image class-picture" src="res/mask1.png"><span>Bear</span>',
+                                value: 1
+                            },
+                            {
+                                name: '<img class="ui centered image class-picture" src="res/mask2.png"><span>Cat</span>',
+                                value: 2
+                            }
+                        ]
+                    }).dropdown('set selected', '0');
 
                     this.fields['potion_life'].$object.dropdown({
                         values: [

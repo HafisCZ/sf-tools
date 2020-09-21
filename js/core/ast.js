@@ -1933,6 +1933,12 @@ const SP_KEYWORD_MAPPING_0 = {
         format: (p, c, e, x) => POTIONS[x],
         difference: false,
         statistics: false
+    },
+    'Mask': {
+        expr: p => p.Mask,
+        format: (p, c, e, x) => MASK_TYPES[x || 0],
+        difference: false,
+        statistics: false
     }
 };
 

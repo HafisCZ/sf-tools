@@ -6,13 +6,20 @@ const PLAYER_CLASS = [
     'Assassin',
     'Battle Mage',
     'Berserker',
-    'Demon Hunter'
+    'Demon Hunter',
+    'Druid'
 ];
 
 const PLAYER_ACTIONS = [
     'Idle',
     'Working',
     'Questing'
+];
+
+const MASK_TYPES = [
+    'None',
+    'Bear',
+    'Cat'
 ];
 
 const PLAYER_CLASS_SEARCH = [
@@ -23,7 +30,8 @@ const PLAYER_CLASS_SEARCH = [
     'assassin',
     'battle mage',
     'berserker',
-    'demon hunter'
+    'demon hunter',
+    'druid'
 ];
 
 const PLAYER_MOUNT = [
