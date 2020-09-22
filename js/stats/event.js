@@ -431,6 +431,8 @@ class GroupDetailView extends View {
 
             this.sorting = this.table.sorting;
             this.refresh();
+        }).mousedown((event) => {
+            event.preventDefault();
         });
 
         this.$parent.find('[data-id]').click((event) => {
@@ -1301,7 +1303,9 @@ class BrowseView extends View {
 
             this.sorting = this.table.sorting;
             this.refresh();
-        });
+        }).mousedown((event) => {
+            event.preventDefault();
+        });;
 
         this.$parent.find('[data-id]').click((event) => {
             UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp, this.reference);
