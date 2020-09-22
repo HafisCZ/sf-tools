@@ -479,6 +479,8 @@ class SFFighter {
             Portrait: dataType.long()
         };
 
+        this.Mask = 0; // TODO
+
         this.Race = dataType.long();
         this.Gender = dataType.long();
         this.Class = dataType.long();
