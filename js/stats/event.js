@@ -937,7 +937,7 @@ class BrowseView extends View {
             });
         });
 
-        this.hidden = false;
+        this.hidden = SiteOptions.browse_hidden;
 
         // Context menu
         this.$context = $('<div class="ui custom popup right center"></div>');
@@ -1002,8 +1002,10 @@ class BrowseView extends View {
         });
 
         // Hidden toggle
-        this.$parent.find('[data-op="hidden"]').checkbox('uncheck').change((event) => {
-            this.hidden = $(event.currentTarget).checkbox('is checked');
+        this.$parent.find('[data-op="hidden"]').checkbox(SiteOptions.browse_hidden ? 'check' : 'uncheck').change((event) => {
+            SiteOptions.browse_hidden = !SiteOptions.browse_hidden;
+
+            this.hidden = SiteOptions.browse_hidden;
             this.recalculate = true;
             this.$filter.trigger('change');
         });
@@ -1323,18 +1325,22 @@ class GroupsView extends View {
         this.$list = this.$parent.find('[data-op="list"]');
         this.$list2 = this.$parent.find('[data-op="list-secondary"]');
 
-        this.$parent.find('[data-op="hidden"]').checkbox('uncheck').change((event) => {
-            this.hidden = $(event.currentTarget).checkbox('is checked');
+        this.$parent.find('[data-op="hidden"]').checkbox(SiteOptions.groups_hidden ? 'check' : 'uncheck').change((event) => {
+            SiteOptions.groups_hidden = !SiteOptions.groups_hidden;
+
+            this.hidden = SiteOptions.groups_hidden;
             this.show();
         });
 
-        this.$parent.find('[data-op="others"]').checkbox('uncheck').change((event) => {
-            this.others = $(event.currentTarget).checkbox('is checked');
+        this.$parent.find('[data-op="others"]').checkbox(SiteOptions.groups_other ? 'check' : 'uncheck').change((event) => {
+            SiteOptions.groups_other = !SiteOptions.groups_other;
+
+            this.others = SiteOptions.groups_other;
             this.show();
         });
 
-        this.hidden = false;
-        this.others = false;
+        this.hidden = SiteOptions.groups_hidden;
+        this.others = SiteOptions.groups_other;
 
         this.$context = $('<div class="ui custom popup right center"></div>');
         this.$parent.prepend(this.$context);
@@ -1447,18 +1453,22 @@ class PlayersView extends View {
         this.$list = this.$parent.find('[data-op="list"]');
         this.$list2 = this.$parent.find('[data-op="list-secondary"]');
 
-        this.$parent.find('[data-op="hidden"]').checkbox('uncheck').change((event) => {
-            this.hidden = $(event.currentTarget).checkbox('is checked');
+        this.$parent.find('[data-op="hidden"]').checkbox(SiteOptions.players_hidden ? 'check' : 'uncheck').change((event) => {
+            SiteOptions.players_hidden = !SiteOptions.players_hidden;
+
+            this.hidden = SiteOptions.players_hidden;
             this.show();
         });
 
-        this.$parent.find('[data-op="others"]').checkbox('uncheck').change((event) => {
-            this.others = $(event.currentTarget).checkbox('is checked');
+        this.$parent.find('[data-op="others"]').checkbox(SiteOptions.players_other ? 'check' : 'uncheck').change((event) => {
+            SiteOptions.players_other = !SiteOptions.players_other;
+
+            this.others = SiteOptions.players_other;
             this.show();
         });
 
-        this.hidden = false;
-        this.others = false;
+        this.hidden = SiteOptions.players_hidden;
+        this.others = SiteOptions.players_other;
 
         this.$context = $('<div class="ui custom popup right center"></div>');
         this.$parent.prepend(this.$context);

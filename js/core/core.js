@@ -66,14 +66,24 @@ const SiteOptions = new (class {
             lazy: false,
             beta: false,
             insecure: false,
-            obfuscated: false
+            obfuscated: false,
+            groups_hidden: false,
+            players_hidden: false,
+            browse_hidden: false,
+            groups_other: false,
+            players_other: false
         });
 
         this.params = {
             beta: false,
             temp: false,
             insecure: false,
-            obfuscated: false
+            obfuscated: false,
+            groups_hidden: false,
+            players_hidden: false,
+            browse_hidden: false,
+            groups_other: false,
+            players_other: false
         };
     }
 
@@ -110,6 +120,51 @@ const SiteOptions = new (class {
 
     set insecure (value) {
         this.options.insecure = value;
+        SharedPreferences.set('options', this.options);
+    }
+
+    get groups_hidden () {
+        return this.options.groups_hidden;
+    }
+
+    set groups_hidden (value) {
+        this.options.groups_hidden = value;
+        SharedPreferences.set('options', this.options);
+    }
+
+    get players_hidden () {
+        return this.options.players_hidden;
+    }
+
+    set players_hidden (value) {
+        this.options.players_hidden = value;
+        SharedPreferences.set('options', this.options);
+    }
+
+    get browse_hidden () {
+        return this.options.browse_hidden;
+    }
+
+    set browse_hidden (value) {
+        this.options.browse_hidden = value;
+        SharedPreferences.set('options', this.options);
+    }
+
+    get groups_other () {
+        return this.options.groups_other;
+    }
+
+    set groups_other (value) {
+        this.options.groups_other = value;
+        SharedPreferences.set('options', this.options);
+    }
+
+    get players_other () {
+        return this.options.players_other;
+    }
+
+    set players_other (value) {
+        this.options.players_other = value;
         SharedPreferences.set('options', this.options);
     }
 })();

@@ -45,7 +45,7 @@ const DRUID = 8;
 
 // Obsolete now
 function hasImplementation (c) {
-    return c != DRUID;
+    return true;
 }
 
 const ClassMap = {
