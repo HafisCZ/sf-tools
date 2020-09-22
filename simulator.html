@@ -1109,6 +1109,7 @@
                         <div class="row selectable ${ index == selected ? 'selected' : 'nselected' } ${ mode == 1 && index == yourself ? 'btwo' : 'bnone' }" data-index="${ index }">
                             <div class="two wide text-center column">
                                 <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
+                                ${ player.Class == 8 && player.Mask > 0 ? `<img class="ui image" src="res/mask${ player.Mask }.png" style="position: absolute; left: 1em; top: 0em; scale: 0.3;">` : '' }
                             </div>
                             <div class="one wide text-center column">
                                 <b>${ player.Level }</b>
