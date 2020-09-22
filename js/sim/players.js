@@ -133,6 +133,8 @@ class FighterModel {
             return 0;
         } else if (this.Player.Class == BATTLEMAGE) {
             return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level + 40);
+        } else if (this.Player.Class == DRUID && this.Player.Mask == 1) {
+            return Math.min(this.getMaximumDamageReduction(), 2 * this.Player.Armor / source.Player.Level);
         } else {
             return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level);
         }
@@ -308,6 +310,27 @@ class MageModel extends FighterModel {
 class DruidModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
+    }
+
+    getDamageRange (weapon, target) {
+        var range = super.getDamageRange(weapon, target);
+
+        if (this.Player.Mask == 1) {
+            return {
+                Max: Math.ceil((1 + 1 / 3) * range.Max / 3),
+                Min: Math.ceil((1 + 1 / 3) * range.Min / 3)
+            }
+        } else if (this.Player.Mask == 2) {
+            return {
+                Max: Math.ceil((1 + 2 / 3) * range.Max / 3),
+                Min: Math.ceil((1 + 2 / 3) * range.Min / 3)
+            }
+        } else {
+            return {
+                Max: Math.ceil(range.Max / 3),
+                Min: Math.ceil(range.Min / 3)
+            }
+        }
     }
 }
 
