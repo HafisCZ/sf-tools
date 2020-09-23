@@ -1076,7 +1076,7 @@ class TableInstance {
             var classes = this.array.reduce((c, p) => {
                 c[p.player.Class - 1]++;
                 return c;
-            }, [0, 0, 0, 0, 0, 0, 0]);
+            }, [0, 0, 0, 0, 0, 0, 0, 0]);
 
             var widskip = 1;
             for (var i = 0, wid = 60; wid > 0 && i < this.flat.length; i++) {
@@ -1095,7 +1095,7 @@ class TableInstance {
                     <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Warrior</td>
                     <td colspan="${ widskip }">${ classes[0] }</td>
                     ${ this.array.joined.length > 0 ? `
-                        <td class="border-right-thin" rowspan="3" colspan="1">Joined</td>
+                        <td class="border-right-thin" rowspan="4" colspan="1">Joined</td>
                         <td colspan="${ Math.max(1, colcount - 1 - widskip) }" rowspan="3">${ this.array.joined.join(', ') }</td>
                     ` : '' }
                 </tr>
@@ -1110,14 +1110,14 @@ class TableInstance {
                 <tr>
                     <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Assassin</td>
                     <td colspan="${ widskip }">${ classes[3] }</td>
-                    ${ this.array.kicked.length > 0 ? `
-                        <td class="border-right-thin" rowspan="4" colspan="1">Left</td>
-                        <td colspan="${ Math.max(1, colcount - 1 - widskip) }" rowspan="4">${ this.array.kicked.join(', ') }</td>
-                    ` : '' }
                 </tr>
                 <tr>
                     <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Battle Mage</td>
                     <td colspan="${ widskip }">${ classes[4] }</td>
+                    ${ this.array.kicked.length > 0 ? `
+                        <td class="border-right-thin" rowspan="4" colspan="1">Left</td>
+                        <td colspan="${ Math.max(1, colcount - 1 - widskip) }" rowspan="4">${ this.array.kicked.join(', ') }</td>
+                    ` : '' }
                 </tr>
                 <tr>
                     <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Berserker</td>
@@ -1126,6 +1126,10 @@ class TableInstance {
                 <tr>
                     <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Demon Hunter</td>
                     <td colspan="${ widskip }">${ classes[6] }</td>
+                </tr>
+                <tr>
+                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Druid</td>
+                    <td colspan="${ widskip }">${ classes[7] }</td>
                 </tr>
             `;
         }
