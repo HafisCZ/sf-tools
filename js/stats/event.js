@@ -2711,9 +2711,6 @@ class EndpointView extends View {
             }, () => {
                 this.$step4.hide();
                 this.showError('Wrong username or password');
-            }, () => {
-                this.$step4.hide();
-                this.showError('Invalid Endpoint key');
             });
         };
 

@@ -16,7 +16,7 @@ class EndpointController {
         });
     }
 
-    login (server, username, password, callback, error, error2) {
+    login (server, username, password, callback, error) {
         this.window.callback['login'] = callback;
         this.window.error['login'] = error;
 
