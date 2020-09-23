@@ -680,6 +680,10 @@
                             obj.Fortress.Gladiator = obj.Underworld.Gladiator;
                         }
 
+                        if (!obj.Mask) {
+                            obj.Mask = 0;
+                        }
+
                         SFItem.forceCorrectRune(obj.Items.Wpn1);
                         SFItem.forceCorrectRune(obj.Items.Wpn2);
 
