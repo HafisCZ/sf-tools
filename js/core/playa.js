@@ -366,7 +366,7 @@ class SFItem {
             var num3 = this.Attributes[0];
 
             while (this.Upgrades-- > 0) {
-                this.Attributes[0] = Math.trunc( this.Attributes[0] / 1.04);
+                this.Attributes[0] = Math.ceil( this.Attributes[0] / 1.04);
                 var price = this.getBlacksmithUpgradePrice();
 
                 num += price.Metal;
