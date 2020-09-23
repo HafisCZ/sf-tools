@@ -2652,6 +2652,10 @@ class EndpointView extends View {
             var password = this.$password.val();
             var server = this.$server.dropdown('get value');
 
+            if (/^(.{4,})@(.+\.sfgame\..+)$/.test(username)) {
+                [, username, server, ] = username.split(/^(.{4,})@(.+\.sfgame\..+)$/);
+            }
+
             if (username.length < 4 || password.length < 4 || !/\.sfgame\./.test(server)) {
                 return;
             } else {
