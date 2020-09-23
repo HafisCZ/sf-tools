@@ -927,6 +927,14 @@ class BrowseView extends View {
             window.getSelection().removeAllRanges();
         });
 
+        document.addEventListener('keyup', (event) => {
+            if (event.keyCode == 17) {
+                if (UI.current == UI.Browse) {
+                    this.$parent.find('.css-op-select').removeClass('css-op-select');
+                }
+            }
+        });
+
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
             html2canvas(this.$table.get(0), {
@@ -949,7 +957,15 @@ class BrowseView extends View {
                 {
                     label: 'Show / Hide',
                     action: (source) => {
-                        Database.hide(source.attr('data-id'));
+                        var sel = this.$parent.find('[data-id].css-op-select');
+                        if (sel.length) {
+                            for (var el of sel) {
+                                Database.hide($(el).attr('data-id'));
+                            }
+                        } else {
+                            Database.hide(source.attr('data-id'));
+                        }
+
                         this.$filter.trigger('change');
                     }
                 },
@@ -957,7 +973,13 @@ class BrowseView extends View {
                     label: 'Copy',
                     action: (source) => {
                         const element = document.createElement('textarea');
-                        element.value = JSON.stringify(Database.Players[source.attr('data-id')].Latest.Data);
+
+                        var sel = this.$parent.find('[data-id].css-op-select');
+                        if (sel.length) {
+                            element.value = JSON.stringify(sel.toArray().map(x => Database.Players[$(x).attr('data-id')].Latest.Data));
+                        } else {
+                            element.value = JSON.stringify(Database.Players[source.attr('data-id')].Latest.Data);
+                        }
 
                         document.body.appendChild(element);
 
@@ -970,7 +992,15 @@ class BrowseView extends View {
                 {
                     label: 'Remove permanently',
                     action: (source) => {
-                        Storage.removeByID(source.attr('data-id'));
+                        var sel = this.$parent.find('[data-id].css-op-select');
+                        if (sel.length) {
+                            for (var el of sel) {
+                                Storage.removeByID($(el).attr('data-id'));
+                            }
+                        } else {
+                            Storage.removeByID(source.attr('data-id'));
+                        }
+
                         this.$filter.trigger('change');
                     }
                 }
@@ -1308,10 +1338,16 @@ class BrowseView extends View {
             this.refresh();
         }).mousedown((event) => {
             event.preventDefault();
-        });;
+        });
 
         this.$parent.find('[data-id]').click((event) => {
-            UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp, this.reference);
+            if (event.ctrlKey) {
+                $(event.target).toggleClass('css-op-select');
+            } else {
+                UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp, this.reference);
+            }
+        }).mousedown((event) => {
+            event.preventDefault();
         });
 
         this.$context.context('bind', this.$parent.find('[data-id]'));

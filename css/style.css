@@ -20,6 +20,18 @@ body {
     opacity: 50%;
 }
 
+.css-op-select-el {
+    position: relative;
+}
+
+.css-op-select > .css-op-select-el::before {
+    content: "\f00c";
+    font-family: Icons;
+    position: absolute;
+    left: -1.5em;
+    top: 0px;
+}
+
 .css-a-blank {
     color: white;
     text-decoration: none;
