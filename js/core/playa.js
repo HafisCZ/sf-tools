@@ -591,9 +591,9 @@ class SFPlayer {
     }
 
     getPrimaryAttribute () {
-        if (this.Class == 1 && this.Class == 5 && this.Class == 6) {
+        if (this.Class == 1 || this.Class == 5 || this.Class == 6) {
             return this.Strength;
-        } else if (this.Class == 3 && this.Class == 4 && this.Class == 7) {
+        } else if (this.Class == 3 || this.Class == 4 || this.Class == 7) {
             return this.Dexterity;
         } else {
             return this.Intelligence;
@@ -603,7 +603,7 @@ class SFPlayer {
     getMaximumDamageReduction () {
         if (this.Class == 1 || this.Class == 5 || this.Class == 7 || (this.Class == 8 && this.Mask == 1)) {
             return 50;
-        } else if (this.Class == 3 && this.Class == 4 && this.Class == 6 && (this.Class == 8 && this.Mask == 2)) {
+        } else if (this.Class == 3 || this.Class == 4 || this.Class == 6 || (this.Class == 8 && this.Mask == 2)) {
             return 25;
         } else {
             return 10;
