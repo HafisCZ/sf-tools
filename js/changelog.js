@@ -1,4 +1,14 @@
 const CHANGELOG = {
+    'v3.840': [
+        'Added full support for Druid class.',
+        'Added multiple selection for Players tab. You can hold CTRL and click to select several players at once. Use right click apply action to them.<br/>Letting go of CTRL will clear the selection!',
+        'You can now hold CTRL during sorting to clear all column sorting via a right click or select only single column with left click.',
+        'Tab options (show other, show hidden) are now sticky and do not disappear when reloading the page.',
+        '<code>Gladiator</code> header now works only for own characters.',
+        'You no longer need a special key to use the Endpoint feature',
+        'Added experimental share function to guild tables.',
+        'Performance improvements when using lazy loading.'
+    ],
     'v3.797': [
         'Removed predefined categories. Category <code>Potions</code> was replaced by grouped header <code>Potions</code> with similar effect.<br/>You can look at an example <a href="https://pastebin.com/raw/xGdqzgBa">here</a>.',
         'Added grouped headers. These act like single header but accept array as an expression. Colors and formats apply to individual columns while other settings apply only to the whole header.',
