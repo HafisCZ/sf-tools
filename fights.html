@@ -723,7 +723,7 @@
                 var id2 = id + '_2';
 
                 $parent.find('[data-op="Level"]').val(f.Level);
-                $parent.find('[data-op="Class"]').val(PLAYER_CLASS[f.Class]);
+                $parent.find('[data-op="Class"]').val(PLAYER_CLASS[f.Class] + (f.Class == 8 ? [ '', ' - Bear', ' - Cat' ][ f.Mask ] : ''));
 
                 var skillMain = getAttributeForClass(f, f.Class);
                 var skillTarget = getAttributeForClass(o, f.Class);

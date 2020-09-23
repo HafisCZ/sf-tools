@@ -21,6 +21,10 @@ class SFItem {
         var upgradeLevel = dataType.byte();
         var socketPower = dataType.short();
 
+        if (type > 100) {
+            type = type - Math.pow(2, 16);
+        }
+
         this.Data = data;
         this.Slot = slot;
         this.GemType = socket >= 10 ? (1 + (socket % 10)) : 0;
@@ -479,14 +483,14 @@ class SFFighter {
             Portrait: dataType.long()
         };
 
-        this.Mask = 0; // TODO
-
         this.Race = dataType.long();
         this.Gender = dataType.long();
         this.Class = dataType.long();
 
         this.Wpn1 = new SFItem(dataType.sub(12));
         this.Wpn2 = new SFItem(dataType.sub(12));
+
+        this.Mask = this.Wpn1.Type == -11 ? 1 : (this.Wpn2.Type == -12 ? 2 : 0);
     }
 
     getMonsterID () {
@@ -600,18 +604,8 @@ class SFPlayer {
         }
     }
 
-    getMaximumDamageReduction () {
-        if (this.Class == 1 || this.Class == 5 || this.Class == 7 || (this.Class == 8 && this.Mask == 1)) {
-            return 50;
-        } else if (this.Class == 3 || this.Class == 4 || this.Class == 6 || (this.Class == 8 && this.Mask == 2)) {
-            return 25;
-        } else {
-            return 10;
-        }
-    }
-
     getHealth () {
-        return Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5 || (this.Class == 8 && this.Mask == 1)) ? 5 : (this.Class == 2 || (this.Class == 8 && this.Mask == 0) ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
+        return Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5) ? 5 : ((this.Class == 2 || this.Class == 8) ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
     }
 
     getEquipmentBonus (attribute) {
@@ -1129,8 +1123,6 @@ class SFOtherPlayer extends SFPlayer {
             dataType.byte()
         ];
         dataType.clear(); // skip
-
-        this.Mask = 0; // TODO
 
         dataType = new ComplexDataType(data.pets);
         dataType.assert(6, true);
