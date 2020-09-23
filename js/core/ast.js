@@ -1726,10 +1726,6 @@ const SP_KEYWORD_MAPPING_0 = {
         difference: false,
         statistics: false
     },
-    'Gladiator': {
-        expr: p => p.Fortress.Gladiator,
-        format: (p, c, e, x) => (x == 0 ? '' : (x == 1 ? '1+' : (x == 5 ? '5+' : (x == 10 ? '10+' : 15))))
-    },
     '1 Catacombs': {
         expr: p => Math.max(0, p.Dungeons.Normal[0] - 2)
     },
@@ -2143,6 +2139,11 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Gladiator Trainer': {
         expr: p => p.Underworld ? p.Underworld.Gladiator : undefined,
+        difference: false,
+        statistics: false
+    },
+    'Gladiator': {
+        expr: p => p.Fortress.Gladiator,
         difference: false,
         statistics: false
     },

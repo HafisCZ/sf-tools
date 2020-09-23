@@ -496,70 +496,6 @@ class SFFighter {
     isMonster () {
         return this.Face.Mouth < 0;
     }
-
-    getMaximumDamageReduction () {
-        if (this.Class == 8) {
-            switch (this.Mask) {
-                case 1:
-                    return 0.50;
-                case 2:
-                    return 0.25;
-                default:
-                    return 0.10;
-            }
-        } else {
-            switch (this.Class) {
-                case 1:
-                case 5:
-                case 6:
-                case 7:
-                    return 0.50
-                case 3:
-                case 4:
-                    return 0.25;
-                case 2:
-                    return 0.10;
-                default:
-                    return 0;
-            }
-        }
-    }
-
-    getPrimaryAttribute () {
-        switch (this.Class) {
-            case 1:
-            case 5:
-            case 6:
-                return this.Strength;
-            case 3:
-            case 4:
-            case 7:
-                return this.Dexterity;
-            case 2:
-            case 8:
-                return this.Intelligence;
-            default:
-                return 0;
-        }
-    }
-
-    getDefenseAtribute (player) {
-        switch (player.Class) {
-            case 1:
-            case 5:
-            case 6:
-                return this.Strength;
-            case 3:
-            case 4:
-            case 7:
-                return this.Dexterity;
-            case 2:
-            case 8:
-                return this.Intelligence;
-            default:
-                return 0;
-        }
-    }
 }
 
 class SFGroup {
@@ -655,48 +591,22 @@ class SFPlayer {
     }
 
     getPrimaryAttribute () {
-        switch (this.Class) {
-            case 1:
-            case 5:
-            case 6:
-                return this.Strength;
-            case 3:
-            case 4:
-            case 7:
-                return this.Dexterity;
-            case 2:
-            case 8:
-                return this.Intelligence;
-            default:
-                return { };
+        if (this.Class == 1 && this.Class == 5 && this.Class == 6) {
+            return this.Strength;
+        } else if (this.Class == 3 && this.Class == 4 && this.Class == 7) {
+            return this.Dexterity;
+        } else {
+            return this.Intelligence;
         }
     }
 
     getMaximumDamageReduction () {
-        if (this.Class == 8) {
-            switch (this.Mask) {
-                case 1:
-                    return 50;
-                case 2:
-                    return 25;
-                default:
-                    return 10;
-            }
+        if (this.Class == 1 || this.Class == 5 || this.Class == 7 || (this.Class == 8 && this.Mask == 1)) {
+            return 50;
+        } else if (this.Class == 3 && this.Class == 4 && this.Class == 6 && (this.Class == 8 && this.Mask == 2)) {
+            return 25;
         } else {
-            switch (this.Class) {
-                case 1:
-                case 5:
-                case 6:
-                case 7:
-                    return 50
-                case 3:
-                case 4:
-                    return 25;
-                case 2:
-                    return 10;
-                default:
-                    return 0;
-            }
+            return 10;
         }
     }
 
@@ -1006,18 +916,6 @@ class SFPlayer {
         }
 
         this.Potions.LifeIndex = this.Potions.findIndex(x => x.Type == 6);
-
-        if (this.Achievements[50].Owned) {
-            this.Fortress.Gladiator = 15;
-        } else if (this.Achievements[51].Owned) {
-            this.Fortress.Gladiator = 10;
-        } else if (this.Achievements[52].Owned) {
-            this.Fortress.Gladiator = 5;
-        } else if (this.Level < 110) {
-            this.Fortress.Gladiator = 0;
-        } else {
-            this.Fortress.Gladiator = 1;
-        }
 
         this.XPTotal = this.XP + ExperienceTotal[Math.min(393, this.Level)] + Math.max(0, this.Level - 393) * 1500000000;
 
@@ -1768,6 +1666,8 @@ class SFOwnPlayer extends SFPlayer {
             this.Underworld.TimeMachineThirst = dataType.long();
             this.Underworld.TimeMachineMax = dataType.long();
             this.Underworld.TimeMachineDaily = dataType.long();
+
+            this.Fortress.Gladiator = this.Underworld.Gladiator;
         } else {
             this.Dungeons.Extra.Normal[0] = 0;
             this.Dungeons.Extra.Shadow[0] = 0;

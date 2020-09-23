@@ -352,11 +352,6 @@ function calculateTotalAttributePrice (attribute) {
     return price;
 }
 
-// Set toggle button to enabled state
-function setEnabled (element) {
-    element.text('Enabled').addClass('active');
-}
-
 function getCSSColor(string) {
     var style = new Option().style;
     style.color = string;
