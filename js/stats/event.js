@@ -195,7 +195,8 @@ class GroupDetailView extends View {
             $.ajax({
                 url: 'https://file.io/?expires=1',
                 type: 'POST',
-                data: `text=${ JSON.stringify(Storage.getExportGroupData(this.identifier, [ this.timestamp, Number(this.reference) ])) }`
+                processData: false,
+                data: `text=${ JSON.stringify(Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ])) }`
             }).done(function (message) {
                 if (message.success) {
                     UI.Info.show('File sharing', 'Your code: ' + message.key + '<br/>Keep in mind that the code can be used only once!');
