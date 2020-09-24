@@ -809,8 +809,6 @@
                                     obj.Fortress.Gladiator = 0;
                                 }
 
-                                obj.Mask = 0;
-
                                 SFItem.forceCorrectRune(obj.Items.Wpn1);
                                 SFItem.forceCorrectRune(obj.Items.Wpn2);
 
@@ -832,10 +830,6 @@
 
                         if (obj.Fortress) {
                             obj.Fortress.Gladiator = 0;
-                        }
-
-                        if (data.save) {
-                            obj.Mask = 0;
                         }
 
                         SFItem.forceCorrectRune(obj.Items.Wpn1);

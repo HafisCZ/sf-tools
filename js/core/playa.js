@@ -605,7 +605,7 @@ class SFPlayer {
     }
 
     getHealth () {
-        return Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5) ? 5 : ((this.Class == 2 || this.Class == 8) ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
+        return Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5 || (this.Class == 8 && this.Mask == 1)) ? 5 : ((this.Class == 2 || (this.Class == 8 && this.Mask == 0)) ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
     }
 
     getEquipmentBonus (attribute) {
@@ -1122,6 +1122,8 @@ class SFOtherPlayer extends SFPlayer {
             dataType.byte(),
             dataType.byte()
         ];
+        dataType.skip(1);
+        this.Mask = dataType.long();
         dataType.clear(); // skip
 
         dataType = new ComplexDataType(data.pets);
