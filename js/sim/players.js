@@ -414,7 +414,7 @@ class DemonHunterModel extends FighterModel {
     }
 
     onDeath (source) {
-        if (source.Player.Class != MAGE && source.Player.Class != DRUID && getRandom(25)) {
+        if (source.Player.Class != MAGE && getRandom(25)) {
             this.Health = this.getHealth();
 
             return true;
