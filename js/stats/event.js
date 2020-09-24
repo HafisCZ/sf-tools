@@ -1870,7 +1870,7 @@ class FilesView extends View {
         });
 
         this.$shared = this.$parent.find('[data-op="shared"]').click(() => {
-            UI.InfoInput.show('File sharing', 'Enter you code:', (code) => {
+            UI.InfoInput.show('File sharing', 'Enter your code:', (code) => {
                 if (code) {
                     $.ajax({
                         url: `https://file.io/${ code }`,
