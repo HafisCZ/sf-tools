@@ -198,10 +198,10 @@ class GroupDetailView extends View {
 
         this.shareCurrentTable = (embedSettings) => {
             var shareBlob = new Blob([
-                btoa(sym_xor(JSON.stringify({
+                JSON.stringify({
                     data: Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]),
-                    settings: embedSettings ? btoa(this.table.settings.code) : ''
-                })))
+                    settings: embedSettings ? this.table.settings.code : ''
+                })
             ], {
                 type: 'application/json'
             });
@@ -1904,9 +1904,9 @@ class FilesView extends View {
                         url: `https://file.io/${ code }`,
                         type: 'GET'
                     }).done(function (message) {
-                        var obj = JSON.parse(sym_xor(atob(message)));
+                        var obj = JSON.parse(message);
                         if (obj.settings) {
-                            Templates.save(atob(obj.settings), `SHARED_${ code }`);
+                            Templates.save(obj.settings, `SHARED_${ code }`);
                         }
 
                         Storage.import(obj.data);
