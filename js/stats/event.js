@@ -165,15 +165,11 @@ class GroupDetailView extends View {
         this.$parent.find('[data-op="save"]').click(() => {
             html2canvas(this.$table.get(0), {
                 logging: false,
-                onclone: (doc) => {
+                onclone: doc => {
                     var ta = Number(this.timestamp);
                     var tb = Number(this.reference);
 
-                    if (ta != tb) {
-                        $(doc).find('[data-op="table"]').find('thead').prepend($(`<tr><td colspan="4" class="text-left">${ formatDate(ta) } - ${ formatDate(tb) }</td></tr>`));
-                    } else {
-                        $(doc).find('[data-op="table"]').find('thead').prepend($(`<tr><td colspan="4" class="text-left">${ formatDate(ta) }</td></tr>`));
-                    }
+                    $(doc).find('thead').prepend($(`<tr style="height: 2em;"><td colspan="4" class="text-left">${ formatDate(ta) }${ ta != tb ? ` - ${ formatDate(tb) }` : '' }</td></tr>`));
                 }
             }).then((canvas) => {
                 canvas.toBlob((blob) => {
@@ -404,6 +400,7 @@ class GroupDetailView extends View {
 
         this.$table.empty();
         this.$table.append(content);
+        this.$table.find('tbody').append($('<tr data-cloneext style="height: 2em;"></tr>'));
         this.$table.css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
         if (this.$table.css('left').slice(0, -2) < 0) {
             this.$table.css('left', '0px');
