@@ -187,12 +187,34 @@ class GroupDetailView extends View {
             }
         });
 
-        this.$share = this.$parent.find('[data-op="share"]').click(() => {
+        this.$share = this.$parent.find('[data-op="share-dropdown"]').dropdown({
+            on: 'hover',
+            action: 'hide',
+            delay : {
+                hide: 100,
+                show: 0
+            }
+        });
+
+        this.shareCurrentTable = (embedSettings) => {
+            var shareBlob = new Blob([
+                btoa(sym_xor(JSON.stringify({
+                    data: Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]),
+                    settings: embedSettings ? this.table.settings.code : ''
+                })))
+            ], {
+                type: 'application/json'
+            });
+
+            var formData = new FormData();
+            formData.append('file', shareBlob);
+
             $.ajax({
                 url: 'https://file.io/?expires=1',
                 type: 'POST',
                 processData: false,
-                data: `text=${ JSON.stringify(Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ])) }`
+                contentType: false,
+                data: formData
             }).done(function (message) {
                 if (message.success) {
                     UI.Info.show('File sharing', 'Your code: ' + message.key + '<br/>Keep in mind that the code can be used only once!');
@@ -201,6 +223,14 @@ class GroupDetailView extends View {
                     Logger.log('WARNING', 'Error occured while trying to share a file!');
                 }
             });
+        }
+
+        this.$parent.find('[data-op="share"]').click(() => {
+            this.shareCurrentTable();
+        });
+
+        this.$parent.find('[data-op="share-embed"]').click(() => {
+            this.shareCurrentTable(true);
         });
 
         this.$parent.find('[data-op="export"]').click(() => Storage.exportGroupData(this.identifier, this.group.List.map(entry => entry[0])));
@@ -1874,7 +1904,13 @@ class FilesView extends View {
                         url: `https://file.io/${ code }`,
                         type: 'GET'
                     }).done(function (message) {
-                        Storage.import(JSON.parse(message));
+                        var obj = JSON.parse(sym_xor(atob(message)));
+                        if (obj.settings) {
+                            Templates.save(obj.settings, `SHARED_${ code }`);
+                        }
+
+                        Storage.import(obj.data);
+
                         UI.show(UI.Files);
                     }).fail(function () {
                         Logger.log('WARNING', 'Error occured while trying to import shared file!');
