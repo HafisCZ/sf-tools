@@ -862,6 +862,7 @@ const Storage = new (class {
             if (timestamps.includes(file.timestamp)) {
                 var rfile = {
                     timestamp: file.timestamp,
+                    label: identifier,
                     version: file.version,
                     offset: file.offset,
                     players: group[file.timestamp] ? file.players.filter(player => group[file.timestamp].Members.includes(player.id)) : [],
@@ -888,6 +889,7 @@ const Storage = new (class {
                 var rfile = {
                     timestamp: file.timestamp,
                     version: file.version,
+                    label: identifier,
                     offset: file.offset,
                     players: tplayer ? [ tplayer.Data ] : [],
                     groups: tplayer && tplayer.Group && tplayer.Group.Group ? [ tplayer.Group.Group.Data ] : []
