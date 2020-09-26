@@ -211,7 +211,7 @@ class GroupDetailView extends View {
                 data: formData
             }).done(function (message) {
                 if (message.success) {
-                    UI.Info.show('File sharing', 'Your code: ' + message.key + '<br/>Keep in mind that the code can be used only once!');
+                    UI.Info.show('File sharing', 'Your code: <code>' + message.key + '</code><br/><br/>Keep in mind that this code can be used only once and will automatically expire after 48 hours.<br/>All data will be lost if not claimed before that happens.');
                 } else {
                     UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
                     Logger.log('WARNING', 'Error occured while trying to share a file!');
@@ -1895,7 +1895,7 @@ class FilesView extends View {
         });
 
         this.$shared = this.$parent.find('[data-op="shared"]').click(() => {
-            UI.InfoInput.show('File sharing', 'Enter your code:', (code) => {
+            UI.InfoInput.show('File sharing', 'Enter your code:', (code, modal, closeModal) => {
                 if (code) {
                     $.ajax({
                         url: `https://sftools-api.herokuapp.com/?id=${ code }`,
@@ -1910,16 +1910,20 @@ class FilesView extends View {
                             Storage.import(obj.data);
 
                             UI.show(UI.Files);
+
+                            closeModal();
                         } else {
-                            UI.Info.show('File sharing', '<b>Invalid code</b><br/>Please check that the file didn\'t expire or that you have used the correct code.');
+                            modal.$input.parent('.input').addClass('error').transition('shake');
+                            modal.$extra.html('<p style="color: red; margin-top: 1em;">Invalid or expired code!</p>');
                             Logger.log('WARNING', 'Error occured while trying to import shared file!');
                         }
                     }).fail(function () {
-                        UI.Info.show('File sharing', 'Error occured while trying to import a shared file.');
+                        modal.$input.parent('.input').addClass('error').transition('shake');
+                        modal.$extra.html('<p style="color: red; margin-top: 1em;">Unknown network error!</p>');
                         Logger.log('WARNING', 'Error occured while trying to import shared file!');
                     });
                 }
-            });
+            }, true);
         });
 
         // Statistics
@@ -2657,20 +2661,32 @@ class InfoInputView extends View {
         this.$name = this.$parent.find('[data-op="name"]');
         this.$content = this.$parent.find('[data-op="content"]');
         this.$input = this.$parent.find('[data-op="input"]');
+        this.$extra = this.$parent.find('[data-op="extra"]');
     }
 
-    show (name, text, onApprove) {
+    show (name, text, onApprove, freeze) {
         this.$name.html(name);
         this.$content.html(text);
-        this.$input.val('');
+        this.$input.val('').parent('.input').removeClass('error');
+        this.$extra.html('');
 
         this.$parent.modal({
             onApprove: () => {
                 if (onApprove) {
-                    onApprove(this.$input.val());
+                    onApprove(this.$input.val(), this, () => {
+                        this.hide();
+                    });
+
+                    if (freeze) {
+                        return false;
+                    }
                 }
             }
         }).modal('show');
+    }
+
+    hide () {
+        this.$parent.modal('hide');
     }
 }
 
@@ -2862,13 +2878,11 @@ const UI = {
             UI.Files.$endpoint.show();
             UI.Files.$insecure.show();
             UI.Files.$beta.show();
-            UI.Files.$shared.show();
             UI.GroupDetail.$share.show();
         } else {
             UI.Files.$endpoint.hide();
             UI.Files.$insecure.hide();
             UI.Files.$beta.hide();
-            UI.Files.$shared.hide();
             UI.GroupDetail.$share.hide();
         }
     },

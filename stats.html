@@ -212,11 +212,11 @@
                             </label>
                             <input type="file" multiple data-op="upload" class="hidden" id="button-upload">
                         </div>
+                        <label class="fluid ui secondary button sf-margin top-05" data-op="shared">
+                            <i class="small share alternate icon"></i> Import Shared
+                        </label>
                         <label class="fluid ui secondary button sf-margin top-05" data-op="endpoint">
                             <i class="small download icon icon"></i> Import from Game
-                        </label>
-                        <label class="fluid ui secondary button sf-margin top-20" data-op="shared">
-                            <i class="small share alternate icon"></i> Import Shared
                         </label>
                         <label class="fluid ui button sf-margin top-20" data-op="merge">
                             <i class="small clone outline icon"></i> Merge selected
@@ -504,9 +504,10 @@
             </div>
             <div class="content text-center">
                 <p data-op="content"></p>
-                <div class="ui input">
+                <div class="ui fluid input">
                     <input type="text" placeholder="" data-op="input">
                 </div>
+                <div data-op="extra"></div>
             </div>
             <div class="actions">
                 <div class="ui cancel button">Cancel</div>
