@@ -2712,7 +2712,11 @@ class EndpointView extends View {
         this.$import = this.$parent.find('[data-op="import"]');
 
         this.$next = this.$parent.find('[data-op="getnext"]').click(() => {
-            $('.list .checkbox:not(.checked)').first().checkbox('check');
+            var $el = $('.list .checkbox:not(.checked)').first()
+            if ($el.length) {
+                this.customTarget = $el.find('label').attr('for');
+                $el.checkbox('check');
+            }
         });
 
         this.endpoint = undefined;
@@ -2791,7 +2795,8 @@ class EndpointView extends View {
                 }).first().checkbox('set checked', 'true').checkbox('set disabled');
 
                 $('.list .checkbox').slice(1).checkbox('setting', 'onChecked', () => {
-                    var name = $(event.target).attr('for');
+                    var name = $(event.target).attr('for') || this.customTarget;
+                    this.customTarget = null;
 
                     this.setDownloading(name);
                     this.endpoint.querry_single(name, (value) => {
@@ -2835,6 +2840,7 @@ class EndpointView extends View {
         if (this.downloading.length > 0) {
             this.$import.attr('disabled', 'true');
             this.$import.addClass('loading');
+            this.$next.attr('disabled', 'true');
         }
     }
 
@@ -2843,6 +2849,7 @@ class EndpointView extends View {
         if (this.downloading.length == 0) {
             this.$import.removeAttr('disabled');
             this.$import.removeClass('loading');
+            this.$next.removeAttr('disabled');
         }
     }
 
