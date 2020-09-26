@@ -1914,6 +1914,7 @@ class FilesView extends View {
                         UI.show(UI.Files);
                     }).fail(function () {
                         Logger.log('WARNING', 'Error occured while trying to import shared file!');
+                        UI.Exception.alert('Invalid link! It might be possible that it expired or was already used once.');
                     });
                 }
             });
