@@ -2711,6 +2711,10 @@ class EndpointView extends View {
         this.$list = this.$parent.find('[data-op="list"]');
         this.$import = this.$parent.find('[data-op="import"]');
 
+        this.$next = this.$parent.find('[data-op="getnext"]').click(() => {
+            $('.list .checkbox:not(.checked)').first().checkbox('check');
+        });
+
         this.endpoint = undefined;
         this.downloading = [];
 
