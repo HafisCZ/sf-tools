@@ -197,20 +197,14 @@ class GroupDetailView extends View {
         });
 
         this.shareCurrentTable = (embedSettings) => {
-            var shareBlob = new Blob([
-                JSON.stringify({
-                    data: Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]),
-                    settings: embedSettings ? this.table.settings.code : ''
-                })
-            ], {
-                type: 'application/json'
-            });
-
             var formData = new FormData();
-            formData.append('file', shareBlob);
+            formData.append('file', JSON.stringify({
+                data: Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]),
+                settings: embedSettings ? this.table.settings.code : ''
+            }));
 
             $.ajax({
-                url: 'https://file.io/?expires=1',
+                url: 'https://sftools-api.herokuapp.com/share',
                 type: 'POST',
                 processData: false,
                 contentType: false,
@@ -219,9 +213,12 @@ class GroupDetailView extends View {
                 if (message.success) {
                     UI.Info.show('File sharing', 'Your code: ' + message.key + '<br/>Keep in mind that the code can be used only once!');
                 } else {
-                    UI.Exception.alert('Try again in couple of minutes.');
+                    UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
                     Logger.log('WARNING', 'Error occured while trying to share a file!');
                 }
+            }).fail(function () {
+                UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
+                Logger.log('WARNING', 'Error occured while trying to share a file!');
             });
         }
 
@@ -1901,20 +1898,25 @@ class FilesView extends View {
             UI.InfoInput.show('File sharing', 'Enter your code:', (code) => {
                 if (code) {
                     $.ajax({
-                        url: `https://file.io/${ code }`,
+                        url: `https://sftools-api.herokuapp.com/?id=${ code }`,
                         type: 'GET'
                     }).done(function (message) {
-                        var obj = JSON.parse(message);
-                        if (obj.settings) {
-                            Templates.save(obj.settings, `SHARED_${ code }`);
+                        if (message) {
+                            var obj = JSON.parse(message);
+                            if (obj.settings) {
+                                Templates.save(obj.settings, `SHARED_${ code }`);
+                            }
+
+                            Storage.import(obj.data);
+
+                            UI.show(UI.Files);
+                        } else {
+                            UI.Info.show('File sharing', '<b>Invalid code</b><br/>Please check that the file didn\'t expire or that you have used the correct code.');
+                            Logger.log('WARNING', 'Error occured while trying to import shared file!');
                         }
-
-                        Storage.import(obj.data);
-
-                        UI.show(UI.Files);
                     }).fail(function () {
+                        UI.Info.show('File sharing', 'Error occured while trying to import a shared file.');
                         Logger.log('WARNING', 'Error occured while trying to import shared file!');
-                        UI.Exception.alert('Invalid link! It might be possible that it expired or was already used once.');
                     });
                 }
             });
