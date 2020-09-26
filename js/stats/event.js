@@ -196,12 +196,15 @@ class GroupDetailView extends View {
             }
         });
 
-        this.shareCurrentTable = (embedSettings) => {
+        this.shareCurrentTable = (embedSettings, multipleUses) => {
             var formData = new FormData();
+
             formData.append('file', JSON.stringify({
                 data: Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]),
                 settings: embedSettings ? this.table.settings.code : ''
             }));
+
+            formData.append('multiple', multipleUses);
 
             $.ajax({
                 url: 'https://sftools-api.herokuapp.com/share',
@@ -209,9 +212,9 @@ class GroupDetailView extends View {
                 processData: false,
                 contentType: false,
                 data: formData
-            }).done(function (message) {
+            }).done((message) => {
                 if (message.success) {
-                    UI.Info.show('File sharing', 'Your code: <code>' + message.key + '</code><br/><br/>Keep in mind that this code can be used only once and will automatically expire after 48 hours.<br/>All data will be lost if not claimed before that happens.');
+                    UI.Info.show('File sharing', `Your code: <code>${ message.key }</code><br/><br/>Keep in mind that this code ${ multipleUses ? '' : 'can be used only once and ' }will automatically expire after 48 hours.<br/>All data will be lost if not claimed before that happens.`);
                 } else {
                     UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
                     Logger.log('WARNING', 'Error occured while trying to share a file!');
@@ -223,11 +226,19 @@ class GroupDetailView extends View {
         }
 
         this.$parent.find('[data-op="share"]').click(() => {
-            this.shareCurrentTable();
+            this.shareCurrentTable(false, false);
         });
 
         this.$parent.find('[data-op="share-embed"]').click(() => {
-            this.shareCurrentTable(true);
+            this.shareCurrentTable(true, false);
+        });
+
+        this.$parent.find('[data-op="share-multiple"]').click(() => {
+            this.shareCurrentTable(false, true);
+        });
+
+        this.$parent.find('[data-op="share-multiple-embed"]').click(() => {
+            this.shareCurrentTable(true, true);
         });
 
         this.$parent.find('[data-op="export"]').click(() => Storage.exportGroupData(this.identifier, this.group.List.map(entry => entry[0])));
