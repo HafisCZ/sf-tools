@@ -197,6 +197,8 @@ class GroupDetailView extends View {
         });
 
         this.shareCurrentTable = (embedSettings, multipleUses) => {
+            UI.Share.show(!multipleUses);
+
             var formData = new FormData();
 
             formData.append('file', JSON.stringify({
@@ -214,12 +216,14 @@ class GroupDetailView extends View {
                 data: formData
             }).done((message) => {
                 if (message.success) {
-                    UI.Info.show('File sharing', `Your code: <code>${ message.key }</code><br/><br/>Keep in mind that this code ${ multipleUses ? '' : 'can be used only once and ' }will automatically expire after 48 hours.<br/>All data will be lost if not claimed before that happens.`);
+                    UI.Share.showKey(message.key);
                 } else {
+                    UI.Share.hide();
                     UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
                     Logger.log('WARNING', 'Error occured while trying to share a file!');
                 }
             }).fail(function () {
+                UI.Share.hide();
                 UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
                 Logger.log('WARNING', 'Error occured while trying to share a file!');
             });
@@ -1854,7 +1858,15 @@ class FilesView extends View {
 
         // Export archive file
         this.$parent.find('[data-op="export"]').click(() => {
-            Storage.export();
+            if (Storage.files().length) {
+                Storage.export();
+            }
+        });
+
+        this.$cloudexport = this.$parent.find('[data-op="cloud-export"]').click(() => {
+            if (Storage.files().length) {
+                this.shareCurrentFiles();
+            }
         });
 
         this.$wipeall = this.$parent.find('[data-op="wipeall"]').click(() => {
@@ -1872,6 +1884,13 @@ class FilesView extends View {
             var array = this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')));
             if (array.length > 0) {
                 Storage.export(array);
+            }
+        });
+
+        this.$cloudexport2 = this.$parent.find('[data-op="cloud-export-partial"]').click(() => {
+            var array = this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')));
+            if (array.length > 0) {
+                this.shareCurrentFiles(array);
             }
         });
 
@@ -1900,6 +1919,40 @@ class FilesView extends View {
                 }
             });
         });
+
+        this.shareCurrentFiles = (array) => {
+            UI.Share.show(true);
+
+            var files = Storage.getExportData(array);
+            var formData = new FormData();
+
+            formData.append('file', JSON.stringify({
+                data: files,
+                settings: ''
+            }));
+
+            formData.append('multiple', false);
+
+            $.ajax({
+                url: 'https://sftools-api.herokuapp.com/share',
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData
+            }).done((message) => {
+                if (message.success) {
+                    UI.Share.showKey(message.key);
+                } else {
+                    UI.Share.hide();
+                    UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
+                    Logger.log('WARNING', 'Error occured while trying to share a file!');
+                }
+            }).fail(function () {
+                UI.Share.hide();
+                UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
+                Logger.log('WARNING', 'Error occured while trying to share a file!');
+            });
+        }
 
         this.$endpoint = this.$parent.find('[data-op="endpoint"]').click(() => {
             UI.Endpoint.show();
@@ -2666,6 +2719,35 @@ class InfoView extends View {
     }
 }
 
+class ShareDialogView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$multiple = this.$parent.find('[data-op="multiple"]');
+        this.$code = this.$parent.find('[data-op="code"]');
+        this.$dimmer = this.$parent.find('[data-op="dimmer"]');
+    }
+
+    show (singleUse) {
+        this.$multiple.html(singleUse ? 'can be used only once and ' : '');
+        this.$code.html('                        ');
+        this.$dimmer.addClass('active');
+
+        this.$parent.modal({
+            closable: false
+        }).modal('show');
+    }
+
+    showKey (code) {
+        this.$code.html(code);
+        this.$dimmer.removeClass('active');
+    }
+
+    hide () {
+        this.$parent.transition('stop all').transition('clear queue');
+    }
+}
+
 class InfoInputView extends View {
     constructor (parent) {
         super(parent);
@@ -2901,11 +2983,17 @@ const UI = {
             UI.Files.$endpoint.show();
             UI.Files.$insecure.show();
             UI.Files.$beta.show();
+            UI.Files.$cloudexport.show();
+            UI.Files.$cloudexport2.show();
+
             UI.GroupDetail.$share.show();
         } else {
             UI.Files.$endpoint.hide();
             UI.Files.$insecure.hide();
             UI.Files.$beta.hide();
+            UI.Files.$cloudexport.hide();
+            UI.Files.$cloudexport2.hide();
+
             UI.GroupDetail.$share.hide();
         }
     },
@@ -2925,6 +3013,7 @@ const UI = {
         UI.ChangeLogs = new ChangeLogsView('view-changelog');
         UI.Endpoint = new EndpointView('modal-endpoint');
         UI.ConfirmDialog = new ConfirmDialogView('modal-confirm');
+        UI.Share = new ShareDialogView('modal-share');
     },
     preinitialize: function () {
         UI.Loader = new LoaderView('modal-loader');

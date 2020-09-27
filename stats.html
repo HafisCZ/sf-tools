@@ -184,7 +184,7 @@
                 <div class="twelve wide column" data-op="list"></div>
                 <div class="four wide column">
                     <div class="ui segment sticky">
-                        <div class="ui small two vertical statistics">
+                        <div class="ui tiny two vertical statistics">
                             <div class="statistic">
                                 <div class="value" data-op="pcount"></div>
                                 <div class="label">Players</div>
@@ -195,7 +195,7 @@
                             </div>
                         </div>
                         <br>
-                        <div class="ui small two vertical statistics">
+                        <div class="ui tiny two vertical statistics" style="margin-bottom: 0.5em;">
                             <div class="statistic">
                                 <div class="value" data-op="gcount"></div>
                                 <div class="label">Groups</div>
@@ -205,7 +205,8 @@
                                 <div class="label">Files</div>
                             </div>
                         </div>
-                        <br>
+                        <hr/>
+                        <!-- IMPORT -->
                         <div>
                             <label class="fluid ui secondary button" for="button-upload">
                                 <i class="small upload icon"></i> Import from File
@@ -216,18 +217,38 @@
                             <i class="small share alternate icon"></i> Import Shared
                         </label>
                         <label class="fluid ui secondary button sf-margin top-05" data-op="endpoint">
-                            <i class="small download icon icon"></i> Import from Game
+                            <i class="small gamepad icon"></i> Import from Game
                         </label>
-                        <label class="fluid ui button sf-margin top-20" data-op="merge">
+                        <hr class="sf-margin top-20"/>
+                        <!-- EXPORT -->
+                        <div>
+                            <div class="ui fluid buttons">
+                                <button class="ui secondary basic button" data-op="export">
+                                    <i class="small download icon icon"></i> Export all
+                                </button>
+                                <button class="ui compact secondary icon button" style="flex: 0 0 3.5em;" data-op="cloud-export">
+                                    <i class="share alternate icon"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="sf-margin top-05">
+                            <div class="ui fluid buttons">
+                                <button class="ui button secondary basic" data-op="export-partial">
+                                    <i class="small download icon icon"></i> Export selected
+                                </button>
+                                <button class="ui compact secondary icon button" style="flex: 0 0 3.5em;" data-op="cloud-export-partial">
+                                    <i class="share alternate icon"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <hr class="sf-margin top-20"/>
+                        <!-- MERGE -->
+                        <label class="fluid ui secondary basic button" data-op="merge">
                             <i class="small clone outline icon"></i> Merge selected
                         </label>
-                        <label class="fluid ui secondary basic button sf-margin top-20" data-op="export">
-                            <i class="small download icon icon"></i> Export all
-                        </label>
-                        <label class="fluid ui button sf-margin top-05" data-op="export-partial">
-                            <i class="small download icon icon"></i> Export selected
-                        </label>
-                        <label class="fluid ui red basic button sf-margin top-20" data-op="wipeall">
+                        <hr class="sf-margin top-20"/>
+                        <!-- WIPE -->
+                        <label class="fluid ui red basic button" data-op="wipeall">
                             <i class="small trash alternate outline icon"></i> Delete all
                         </label>
                         <br/>
@@ -483,6 +504,26 @@
             </div>
             <div class="content text-center">
                 <p data-op="content"></p>
+            </div>
+        </div>
+
+        <div id="modal-share" class="ui mini modal">
+            <div class="header">File sharing</div>
+            <div class="content text-center">
+                <div class="ui active inverted dimmer" data-op="dimmer">
+                    <div class="ui text loader">Loading</div>
+                </div>
+                <p>
+                    Your code: <code data-op="code" style="white-space: pre;"></code>
+                    <br/>
+                    <br/>
+                    Keep in mind that this code <span data-op="multiple"></span>will automatically expire after 48 hours.
+                    <br/>
+                    All data will be lost if not claimed before that happens.
+                </p>
+            </div>
+            <div class="actions">
+                <div class="ui approve button">OK</div>
             </div>
         </div>
 

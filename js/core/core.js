@@ -850,6 +850,10 @@ const Storage = new (class {
         }));
     }
 
+    getExportData (indexes) {
+        return indexes ? this.current.filter((file, index) => indexes.includes(index)) : this.current
+    }
+
     exportGroupData (identifier, timestamps) {
         download(`archive_${ identifier }.json`, new Blob([ JSON.stringify(this.getExportGroupData(identifier, timestamps)) ], { type: 'application/json' }));
     }
