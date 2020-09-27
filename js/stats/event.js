@@ -1915,7 +1915,7 @@ class FilesView extends View {
                         if (message) {
                             var obj = JSON.parse(message);
                             if (obj.settings) {
-                                Templates.save(obj.settings, `SHARED_${ code }`);
+                                Templates.save(obj.settings, `S${ code }`);
                             }
 
                             Storage.import(obj.data);
@@ -2361,6 +2361,7 @@ class SettingsView extends View {
 
     show (identifier = 'players') {
         this.$saveButton.addClass('disabled');
+        this.$templateName.val('');
 
         this.identifier = identifier;
         this.code = Settings.load(identifier, this.getDefault(identifier), this.getDefaultTemplate(identifier)).getCode();
