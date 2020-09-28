@@ -488,6 +488,15 @@ h3.file-selected {
     overflow: hidden;
 }
 
+.css-nomargin-grid > .row {
+    padding: 0 !important;
+    padding-bottom: 0.5em !important;
+}
+
+.css-nomargin-grid:first-child {
+    padding-bottom: 0.75em !important;
+}
+
 .ta-content {
     position: absolute;
     border: 1px solid transparent;

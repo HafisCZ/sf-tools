@@ -2134,7 +2134,7 @@ class FilesView extends View {
             UI.InfoInput.show('File sharing', 'Enter your code:', (code, modal, closeModal) => {
                 if (code) {
                     $.ajax({
-                        url: `https://sftools-api.herokuapp.com/?id=${ code }`,
+                        url: `https://sftools-api.herokuapp.com/?key=${ code }`,
                         type: 'GET'
                     }).done(function (message) {
                         if (message) {
@@ -2446,19 +2446,14 @@ class SettingsView extends View {
             window.getSelection().removeAllRanges();
         });
 
-        this.$parent.find('[data-op="manual"]').click(() => {
-            // Open manual
-            window.open('manual.html', '_blank');
-        });
-
-        this.$parent.find('[data-op="wiki"]').click(() => {
-            // Open wiki
-            window.open('https://github.com/HafisCZ/sf-tools/wiki/2a. Predefined-headers', '_blank');
-        });
-
         this.$parent.find('[data-op="wiki-home"]').click(() => {
             // Open wiki
             window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank');
+        });
+
+        this.$parent.find('[data-op="browse"]').click(() => {
+            // Open browse page
+            UI.OnlineTemplates.show();
         });
 
         this.$items = this.$parent.find('[data-op="items"]');
@@ -2957,6 +2952,95 @@ class ShareDialogView extends View {
     }
 }
 
+class OnlineTemplatesView extends View {
+    constructor (parent) {
+        super(parent);
+        this.$dimmer = this.$parent.find('[data-op="dimmer"]');
+        this.$content = this.$parent.find('[data-op="content"]');
+    }
+
+    show () {
+        this.$content.html('');
+        this.$dimmer.addClass('active');
+
+        this.$parent.modal({
+            allowMultiple: true
+        }).modal('show');
+
+        $.ajax({
+            url: `https://sftools-api.herokuapp.com/scripts`,
+            type: 'GET'
+        }).done((message) => {
+            if (message) {
+                this.showScripts(message);
+            } else {
+                this.showScripts([]);
+            }
+        }).fail(function () {
+            this.showScripts([]);
+        });
+    }
+
+    showScripts (scripts) {
+        if (scripts.length) {
+            this.$content.html(`
+                <div class="ui middle aligned grid css-nomargin-grid">
+                    <div class="row">
+                        <div class="text-left seven wide column"><b>Description</b></div>
+                        <div class="text-left four wide column"><b>Author</b></div>
+                        <div class="text-left three wide column"><b>Created on</b></div>
+                    </div>
+                    ${ scripts.reduce((s, script) => {
+                        return s + `
+                            <div class="row" style="font-size: 105%;">
+                                <div class="seven wide column text-left">${ script.description }</div>
+                                <div class="four wide column text-left">${ script.author }</div>
+                                <div class="three wide column text-left">${ formatDateOnly(Date.parse(script.date)) }</div>
+                                <div class="two wide column css-template-buttons">
+                                    <div class="ui icon right floated small buttons">
+                                        <button class="ui button" data-script="${ script.key }"><i class="play icon"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }, '') }
+                </div>
+            `);
+
+            this.$content.find('[data-script]').click((event) => {
+                let $btn = $(event.currentTarget);
+
+                $.ajax({
+                    url: `https://sftools-api.herokuapp.com/scripts?key=${ $btn.attr('data-script') }`,
+                    type: 'GET'
+                }).done((message) => {
+                    if (message.success) {
+                        if (UI.current == UI.Settings) {
+                            UI.Settings.$area.val(message.content).trigger('input');
+                        } else {
+                            UI.SettingsFloat.$area.val(message.content).trigger('input');
+                        }
+
+                        this.hide();
+                    } else {
+                        $btn.addClass('red');
+                    }
+                }).fail(() => {
+                    $btn.addClass('red');
+                });
+            });
+        } else {
+            this.$content.html('<b>No scripts available</b>');
+        }
+
+        this.$dimmer.removeClass('active');
+    }
+
+    hide () {
+        this.$parent.modal('hide');
+    }
+}
+
 class InfoInputView extends View {
     constructor (parent) {
         super(parent);
@@ -3219,6 +3303,7 @@ const UI = {
         UI.Endpoint = new EndpointView('modal-endpoint');
         UI.ConfirmDialog = new ConfirmDialogView('modal-confirm');
         UI.Share = new ShareDialogView('modal-share');
+        UI.OnlineTemplates = new OnlineTemplatesView('modal-templates');
     },
     preinitialize: function () {
         UI.Loader = new LoaderView('modal-loader');

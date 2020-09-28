@@ -279,9 +279,8 @@
             <div class="ui middle aligned grid">
                 <div class="six wide column">
                     <button class="ui left floated button margin-medium-right small" data-op="copy">Copy</button>
-                    <button class="ui left floated button margin-medium-right small" data-op="manual">Settings manual</button>
                     <button class="ui left floated button margin-medium-right small" data-op="wiki-home">Wiki</button>
-                    <button class="ui left floated button small" data-op="wiki">Headers</button>
+                    <button class="ui left floated button margin-medium-right small" data-op="browse">Browse</button>
                 </div>
                 <div class="three wide column">
                     <h1 class="ui header text-white centered">Settings</h1>
@@ -332,9 +331,8 @@
             <div class="ui three columns middle aligned grid">
                 <div class="seven wide column">
                     <button class="ui left floated button margin-medium-right small" data-op="copy">Copy</button>
-                    <button class="ui left floated button margin-medium-right small" data-op="manual">Settings manual</button>
                     <button class="ui left floated button margin-medium-right small" data-op="wiki-home">Wiki</button>
-                    <button class="ui left floated button small" data-op="wiki">Headers</button>
+                    <button class="ui left floated button margin-medium-right small" data-op="browse">Browse</button>
                 </div>
                 <div class="two wide column">
                     <h1 class="ui header text-white centered">Settings</h1>
@@ -535,6 +533,18 @@
             </div>
             <div class="actions">
                 <div class="ui approve button">OK</div>
+            </div>
+        </div>
+
+        <div id="modal-templates" class="ui small modal" style="height: 60vh;">
+            <div class="header">Public scripts</div>
+            <div class="content text-center">
+                <div class="ui active dimmer" data-op="dimmer">
+                    <div class="ui text loader">Loading</div>
+                </div>
+                <div data-op="content">
+
+                </div>
             </div>
         </div>
 
