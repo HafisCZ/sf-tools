@@ -843,7 +843,7 @@ const Storage = new (class {
     }
 
     export (indexes) {
-        download('archive.json', new Blob([
+        download(`archive_${ Date.now() }`, new Blob([
             JSON.stringify(indexes ? this.current.filter((file, index) => indexes.includes(index)) : this.current)
         ], {
             type: 'application/json'
@@ -855,7 +855,7 @@ const Storage = new (class {
     }
 
     exportGroupData (identifier, timestamps) {
-        download(`archive_${ identifier }.json`, new Blob([ JSON.stringify(this.getExportGroupData(identifier, timestamps)) ], { type: 'application/json' }));
+        download(`archive_${ Date.now() }_${ identifier }.json`, new Blob([ JSON.stringify(this.getExportGroupData(identifier, timestamps)) ], { type: 'application/json' }));
     }
 
     getExportGroupData (identifier, timestamps) {
@@ -905,7 +905,7 @@ const Storage = new (class {
             }
         }
 
-        download(`archive_${ identifier }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
+        download(`archive_${ Date.now() }_${ identifier }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
     }
 
     add (content, timestamp) {

@@ -2985,16 +2985,12 @@ const UI = {
             UI.Files.$beta.show();
             UI.Files.$cloudexport.show();
             UI.Files.$cloudexport2.show();
-
-            UI.GroupDetail.$share.show();
         } else {
             UI.Files.$endpoint.hide();
             UI.Files.$insecure.hide();
             UI.Files.$beta.hide();
             UI.Files.$cloudexport.hide();
             UI.Files.$cloudexport2.hide();
-
-            UI.GroupDetail.$share.hide();
         }
     },
     initialize: function () {
