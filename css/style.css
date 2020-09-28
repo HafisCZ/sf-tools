@@ -483,6 +483,13 @@ h3.file-selected {
     top: 33%;
 }
 
+.modal i.close.icon {
+    color: black;
+    right: 0.5em;
+    top: 0.5em;
+    padding-top: 10px;
+}
+
 .ta-wrapper {
     position: relative;
     overflow: hidden;
