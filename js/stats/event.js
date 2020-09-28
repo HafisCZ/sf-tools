@@ -2070,7 +2070,7 @@ class FilesView extends View {
             return `
                 <div class="ui segment ${ file.hidden ? 'css-file-hidden' : '' }" data-id="${ index }">
                     <div class="ui middle aligned grid">
-                        <div class="nine wide column">
+                        <div class="eight wide column">
                             <div class="file-detail-labels clickable">
                                 <div class="ui checkbox not-clickable file-detail-checkbox" data-op="select">
                                     <input type="checkbox">
@@ -2084,11 +2084,31 @@ class FilesView extends View {
                                 <span class="text-muted mleft-15 file-detail-count-2">P: ${ file.players.length }</span>
                             </div>
                         </div>
-                        <div class="five wide right aligned column">
-                            <span class="text-muted margin-medium-right">${ file.version || 'Unknown version' }</span>
-                            <i class="pencil alternate clickable lowglow-green icon" data-op="edit"></i>
+                        <div class="six wide right aligned column">
+                            <span class="text-muted margin-medium-right">${ file.version || '?' }</span>
+                            <i class="info circle icon clickable lowglow-green left-10" data-op="infobutton"></i>
+                            <i class="pencil alternate clickable lowglow-green icon mleft-10" data-op="edit"></i>
                             <i class="eye ${ file.hidden ? '' : 'slash outline' } clickable mleft-10 lowglow icon" data-op="hide"></i>
                             <i class="trash alternate clickable mleft-10 lowglow outline icon" data-op="remove"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui tiny modal" data-for="${ index }">
+                    <div class="header">File Information</div>
+                    <div class="content">
+                        <div class="ui grid">
+                            <div class="eight wide column">
+                                <h5 class="ui centered header">Guilds (${ file.groups.length })</h5>
+                                <div style="overflow-y: scroll; height: 60vh;">
+                                    ${ file.groups.reduce((c, g) => c + `<p>${ g.prefix.replace('_', ' ') } / ${ g.name }</p>`, '') }
+                                </div>
+                            </div>
+                            <div class="eight wide column">
+                                <h5 class="ui centered header">Players (${ file.players.length })</h5>
+                                <div style="overflow-y: scroll; height: 60vh;"">
+                                    ${ file.players.reduce((c, p) => c + `<p>${ p.prefix.replace('_', ' ') } / ${ p.name }</p>`, '') }
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2100,6 +2120,23 @@ class FilesView extends View {
         this.$list.html(content.join('')).find('.file-detail-labels').click(function () {
             $(this).find('[data-op="select"]').checkbox('toggle');
             $(this).closest('[data-id]').toggleClass('selected');
+        });
+
+        this.$parent.find('[data-op="infobutton"]').each(function (index, element) {
+            // Elements
+            let $el = $(element);
+            let $parent = $el.closest('[data-id]');
+
+            // File id
+            let id = Number($parent.attr('data-id'));
+
+            // Popup element
+            let $modal = $(`[data-for="${ id }"]`);
+
+            // Popup configuration
+            $el.click(() => {
+                $modal.modal('show');
+            });
         });
 
         this.$parent.find('[data-op="select"]').checkbox();
