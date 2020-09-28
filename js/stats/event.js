@@ -900,6 +900,64 @@ class PlayerHistoryView extends View {
         this.$parent.find('[data-op="export-l5"]').click(() => Storage.exportPlayerData(this.identifier, this.list.slice(0, 5).map(entry => entry[0])));
 
         this.$name = this.$parent.find('[data-op="name"]');
+
+        this.$share = this.$parent.find('[data-op="share-dropdown"]').dropdown({
+            on: 'hover',
+            action: 'hide',
+            delay : {
+                hide: 100,
+                show: 0
+            }
+        });
+
+        this.shareCurrentTable = (embedSettings, multipleUses) => {
+            UI.Share.show(!multipleUses);
+
+            var formData = new FormData();
+
+            formData.append('file', JSON.stringify({
+                data: Storage.getExportPlayerData(this.identifier, Database.Players[this.identifier].List.map(x => x[0])),
+                settings: embedSettings ? this.table.settings.code : ''
+            }));
+
+            formData.append('multiple', multipleUses);
+
+            $.ajax({
+                url: 'https://sftools-api.herokuapp.com/share',
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData
+            }).done((message) => {
+                if (message.success) {
+                    UI.Share.showKey(message.key);
+                } else {
+                    UI.Share.hide();
+                    UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
+                    Logger.log('WARNING', 'Error occured while trying to share a file!');
+                }
+            }).fail(function () {
+                UI.Share.hide();
+                UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
+                Logger.log('WARNING', 'Error occured while trying to share a file!');
+            });
+        }
+
+        this.$parent.find('[data-op="share"]').click(() => {
+            this.shareCurrentTable(false, false);
+        });
+
+        this.$parent.find('[data-op="share-embed"]').click(() => {
+            this.shareCurrentTable(true, false);
+        });
+
+        this.$parent.find('[data-op="share-multiple"]').click(() => {
+            this.shareCurrentTable(false, true);
+        });
+
+        this.$parent.find('[data-op="share-multiple-embed"]').click(() => {
+            this.shareCurrentTable(true, true);
+        });
     }
 
     show (identifier) {
@@ -1027,6 +1085,46 @@ class BrowseView extends View {
 
                         document.execCommand('copy');
                         document.body.removeChild(element);
+                    }
+                },
+                {
+                    label: 'Share',
+                    action: (source) => {
+                        let ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => $(el).attr('data-id'));
+                        if (ids.length > 0) {
+                            ids.push(source.attr('data-id'));
+                        }
+
+                        UI.Share.show();
+
+                        var formData = new FormData();
+
+                        formData.append('file', JSON.stringify({
+                            data: Storage.getExportManyPlayerData(ids),
+                            settings: ''
+                        }));
+
+                        formData.append('multiple', false);
+
+                        $.ajax({
+                            url: 'https://sftools-api.herokuapp.com/share',
+                            type: 'POST',
+                            processData: false,
+                            contentType: false,
+                            data: formData
+                        }).done((message) => {
+                            if (message.success) {
+                                UI.Share.showKey(message.key);
+                            } else {
+                                UI.Share.hide();
+                                UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
+                                Logger.log('WARNING', 'Error occured while trying to share a file!');
+                            }
+                        }).fail(function () {
+                            UI.Share.hide();
+                            UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
+                            Logger.log('WARNING', 'Error occured while trying to share a file!');
+                        });
                     }
                 },
                 {
@@ -1454,6 +1552,43 @@ class GroupsView extends View {
                     }
                 },
                 {
+                    label: 'Share',
+                    action: (source) => {
+                        let group = source.attr('data-id');
+
+                        UI.Share.show();
+
+                        var formData = new FormData();
+
+                        formData.append('file', JSON.stringify({
+                            data: Storage.getExportGroupData(group, Database.Groups[group].List.map(x => x[0])),
+                            settings: ''
+                        }));
+
+                        formData.append('multiple', false);
+
+                        $.ajax({
+                            url: 'https://sftools-api.herokuapp.com/share',
+                            type: 'POST',
+                            processData: false,
+                            contentType: false,
+                            data: formData
+                        }).done((message) => {
+                            if (message.success) {
+                                UI.Share.showKey(message.key);
+                            } else {
+                                UI.Share.hide();
+                                UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
+                                Logger.log('WARNING', 'Error occured while trying to share a file!');
+                            }
+                        }).fail(function () {
+                            UI.Share.hide();
+                            UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
+                            Logger.log('WARNING', 'Error occured while trying to share a file!');
+                        });
+                    }
+                },
+                {
                     label: 'Remove permanently',
                     action: (source) => {
                         Storage.removeByID(source.attr('data-id'));
@@ -1575,6 +1710,43 @@ class PlayersView extends View {
 
                         document.execCommand('copy');
                         document.body.removeChild(element);
+                    }
+                },
+                {
+                    label: 'Share',
+                    action: (source) => {
+                        var id = source.attr('data-id');
+
+                        UI.Share.show();
+
+                        var formData = new FormData();
+
+                        formData.append('file', JSON.stringify({
+                            data: Storage.getExportManyPlayerData([ id ]),
+                            settings: ''
+                        }));
+
+                        formData.append('multiple', false);
+
+                        $.ajax({
+                            url: 'https://sftools-api.herokuapp.com/share',
+                            type: 'POST',
+                            processData: false,
+                            contentType: false,
+                            data: formData
+                        }).done((message) => {
+                            if (message.success) {
+                                UI.Share.showKey(message.key);
+                            } else {
+                                UI.Share.hide();
+                                UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
+                                Logger.log('WARNING', 'Error occured while trying to share a file!');
+                            }
+                        }).fail(function () {
+                            UI.Share.hide();
+                            UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
+                            Logger.log('WARNING', 'Error occured while trying to share a file!');
+                        });
                     }
                 },
                 {

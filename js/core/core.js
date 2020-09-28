@@ -882,7 +882,41 @@ const Storage = new (class {
         return content;
     }
 
-    exportPlayerData (identifier, timestamps) {
+    getExportManyPlayerData (identifiers) {
+        var content = [];
+
+        for (var file of this.current) {
+            var players = file.players.filter(player => identifiers.includes(player.id));
+            var pids = players.map(p => p.id);
+
+            var groups = [];
+
+            for (var group of file.groups) {
+                let g = Database.Groups[group.id] ? Database.Groups[group.id][file.timestamp] : null;
+                if (g) {
+                    if (g.Members.some(x => pids.includes(x))) {
+                        groups.push(g.Data);
+                    }
+                }
+            }
+
+            var rfile = {
+                timestamp: file.timestamp,
+                version: file.version,
+                offset: file.offset,
+                players: players,
+                groups: groups
+            };
+
+            if (rfile.players.length) {
+                content.push(rfile);
+            }
+        }
+
+        return content;
+    }
+
+    getExportPlayerData (identifier, timestamps) {
         var content = [];
         var player = Database.Players[identifier];
 
@@ -905,7 +939,11 @@ const Storage = new (class {
             }
         }
 
-        download(`archive_${ Date.now() }_${ identifier }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
+        return content;
+    }
+
+    exportPlayerData (identifier, timestamps) {
+        download(`archive_${ Date.now() }_${ identifier }.json`, new Blob([ JSON.stringify(this.getExportPlayerData(identifier, timestamps)) ], { type: 'application/json' }));
     }
 
     add (content, timestamp) {
