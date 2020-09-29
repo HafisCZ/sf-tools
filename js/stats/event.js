@@ -2735,31 +2735,7 @@ class SetupView extends View {
         this.$parent.find('[data-op="accept"]').click(function () {
             localStorage.termsOK = true;
 
-            if (!localStorage.termsBetaOK && SiteOptions.params.beta) {
-                UI.show(UI.SetupBeta);
-            } else {
-                UI.show(UI.Groups);
-            }
-        });
-    }
-}
-
-class SetupBetaView extends View {
-    constructor (parent) {
-        super(parent);
-
-        this.$parent.find('[data-op="accept"]').click(function () {
-            localStorage.termsBetaOK = true;
-
-            UI.beta(true);
             UI.show(UI.Groups);
-        });
-
-        this.$parent.find('[data-op="decline"]').click(function () {
-            localStorage.termsBetaOK = false;
-            SiteOptions.beta = false;
-
-            location.href = location.href.split('?')[0];
         });
     }
 }
@@ -3343,7 +3319,6 @@ const UI = {
         UI.Info = new InfoView('modal-info');
         UI.InfoInput = new InfoInputView('modal-info-input');
         UI.Setup = new SetupView('modal-setup');
-        UI.SetupBeta = new SetupBetaView('modal-setup-beta');
         UI.ChangeLog = new ChangeLogView('modal-changelog');
     }
 }
