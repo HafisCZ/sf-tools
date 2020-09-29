@@ -43,10 +43,11 @@ const PLAYER_MOUNT = [
 ];
 
 function getMirrorPieces (value) {
+    let p = 0;
     for (var i = 0; i < 15; i++) {
-        if ((value >> i) & 1) return i + 1;
+        if ((value >> i) & 1) p++;
     }
-    return 0;
+    return p;
 }
 
 const POTIONS = [
