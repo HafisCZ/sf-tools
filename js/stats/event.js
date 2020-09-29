@@ -151,7 +151,7 @@ class GroupDetailView extends View {
         this.$parent.find('[data-op="copy-sim"]').click(() => {
             const element = document.createElement('textarea');
 
-            element.value = JSON.stringify(this.table.array.map(p => p.player.Data));
+            element.value = JSON.stringify(this.table.array.map(p => p.player.toSimulatorModel()));
 
             document.body.appendChild(element);
 
@@ -1155,7 +1155,7 @@ class BrowseView extends View {
                 array = array.slice(0, slice);
             }
 
-            element.value = JSON.stringify(array.map(p => p.player.Data));
+            element.value = JSON.stringify(array.map(p => p.player.toSimulatorModel()));
 
             document.body.appendChild(element);
 

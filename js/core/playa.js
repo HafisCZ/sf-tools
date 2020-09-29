@@ -1855,6 +1855,7 @@ function toSimulatorModel (p) {
         Mask: p.Mask,
         Name: p.Name,
         Level: p.Level,
+        Identifier: p.Identifier,
         Constitution: {
             Total: p.Constitution.Total
         },

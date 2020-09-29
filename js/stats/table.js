@@ -2404,20 +2404,30 @@ class Settings {
             var array1 = [];
             var array2 = [];
 
+            var updated = false;
+            for (var entry of array) {
+                updated |= Database.preload(entry.player.Identifier, entry.player.Timestamp);
+                updated |= Database.preload(entry.compare.Identifier, entry.compare.Timestamp);
+            }
+
+            if (updated) {
+                Database.update();
+            }
+
             if (players.reference != players.timestamp) {
                 for (var player of array) {
                     array1.push({
-                        player: player.player
+                        player: Database.Players[player.player.Identifier][player.player.Timestamp].toSimulatorModel()
                     });
 
                     array2.push({
-                        player: player.compare
+                        player: Database.Players[player.compare.Identifier][player.compare.Timestamp].toSimulatorModel()
                     });
                 }
 
                 var target1 = this.globals.simulator_target ? array1.find(p => p.player.Identifier == this.globals.simulator_target) : null;
                 var target2 = this.globals.simulator_target ? array2.find(p => p.player.Identifier == this.globals.simulator_target) : null;
-                if (target1 == null || target2 == null || array.length == 2) {
+                if (target1 == null || target2 == null) {
                     target1 = target2 = null;
                 } else {
                     target1 = target1.player;
@@ -2429,12 +2439,12 @@ class Settings {
             } else {
                 for (var player of array) {
                     array1.push({
-                        player: player.player
+                        player: Database.Players[player.player.Identifier][player.player.Timestamp].toSimulatorModel()
                     });
                 }
 
                 var target1 = this.globals.simulator_target ? array1.find(p => p.player.Identifier == this.globals.simulator_target) : null;
-                if (target1 && array.length != 2) {
+                if (target1) {
                     target1 = target1.player;
                 } else {
                     target1 = null;
