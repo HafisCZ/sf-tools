@@ -760,11 +760,147 @@
             });
 
             $('#sim-copyall1').click(function () {
-                copy(players1.map(p => p.player));
+                copy(players1.map(y => {
+                    let p = y.player;
+
+                    return {
+                        Armor: p.Armor,
+                        Class: p.Class,
+                        Mask: p.Mask,
+                        Name: p.Name,
+                        Level: p.Level,
+                        Constitution: {
+                            Total: p.Constitution.Total
+                        },
+                        Dexterity: {
+                            Total: p.Dexterity.Total
+                        },
+                        Dungeons: {
+                            Player: p.Dungeons.Player,
+                            Group: p.Dungeons.Group
+                        },
+                        Fortress: {
+                            Gladiator: p.Fortress.Gladiator
+                        },
+                        Intelligence: {
+                            Total: p.Intelligence.Total
+                        },
+                        Strength: {
+                            Total: p.Strength.Total
+                        },
+                        Potions: {
+                            Life: p.Potions.Life
+                        },
+                        Luck: {
+                            Total: p.Luck.Total
+                        },
+                        Runes: {
+                            Health: p.Runes.Health,
+                            ResistanceCold: p.Runes.ResistanceCold,
+                            ResistanceFire: p.Runes.ResistanceFire,
+                            ResistanceLightning: p.Runes.ResistanceLightning
+                        },
+                        Items: {
+                            Hand: {
+                                HasEnchantment: p.Items.Hand.HasEnchantment
+                            },
+                            Wpn1: {
+                                AttributeTypes: {
+                                    2: p.Items.Wpn1.AttributeTypes[2]
+                                },
+                                Attributes: {
+                                    2: p.Items.Wpn1.Attributes[2]
+                                },
+                                DamageMax: p.Items.Wpn1.DamageMax,
+                                DamageMin: p.Items.Wpn1.DamageMin,
+                                HasEnchantment: p.Items.Wpn1.HasEnchantment
+                            },
+                            Wpn2: {
+                                AttributeTypes: {
+                                    2: p.Items.Wpn2.AttributeTypes[2]
+                                },
+                                Attributes: {
+                                    2: p.Items.Wpn2.Attributes[2]
+                                },
+                                DamageMax: p.Items.Wpn2.DamageMax,
+                                DamageMin: p.Items.Wpn2.DamageMin,
+                                HasEnchantment: p.Items.Wpn2.HasEnchantment
+                            }
+                        }
+                    };
+                }));
             });
 
             $('#sim-copyall2').click(function () {
-                copy(players2.map(p => p.player));
+                copy(players2.map(y => {
+                    let p = y.player;
+
+                    return {
+                        Armor: p.Armor,
+                        Class: p.Class,
+                        Mask: p.Mask,
+                        Name: p.Name,
+                        Level: p.Level,
+                        Constitution: {
+                            Total: p.Constitution.Total
+                        },
+                        Dexterity: {
+                            Total: p.Dexterity.Total
+                        },
+                        Dungeons: {
+                            Player: p.Dungeons.Player,
+                            Group: p.Dungeons.Group
+                        },
+                        Fortress: {
+                            Gladiator: p.Fortress.Gladiator
+                        },
+                        Intelligence: {
+                            Total: p.Intelligence.Total
+                        },
+                        Strength: {
+                            Total: p.Strength.Total
+                        },
+                        Potions: {
+                            Life: p.Potions.Life
+                        },
+                        Luck: {
+                            Total: p.Luck.Total
+                        },
+                        Runes: {
+                            Health: p.Runes.Health,
+                            ResistanceCold: p.Runes.ResistanceCold,
+                            ResistanceFire: p.Runes.ResistanceFire,
+                            ResistanceLightning: p.Runes.ResistanceLightning
+                        },
+                        Items: {
+                            Hand: {
+                                HasEnchantment: p.Items.Hand.HasEnchantment
+                            },
+                            Wpn1: {
+                                AttributeTypes: {
+                                    2: p.Items.Wpn1.AttributeTypes[2]
+                                },
+                                Attributes: {
+                                    2: p.Items.Wpn1.Attributes[2]
+                                },
+                                DamageMax: p.Items.Wpn1.DamageMax,
+                                DamageMin: p.Items.Wpn1.DamageMin,
+                                HasEnchantment: p.Items.Wpn1.HasEnchantment
+                            },
+                            Wpn2: {
+                                AttributeTypes: {
+                                    2: p.Items.Wpn2.AttributeTypes[2]
+                                },
+                                Attributes: {
+                                    2: p.Items.Wpn2.Attributes[2]
+                                },
+                                DamageMax: p.Items.Wpn2.DamageMax,
+                                DamageMin: p.Items.Wpn2.DamageMin,
+                                HasEnchantment: p.Items.Wpn2.HasEnchantment
+                            }
+                        }
+                    };
+                }));
             });
 
             function copy (content) {

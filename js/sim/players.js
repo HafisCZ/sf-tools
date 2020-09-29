@@ -727,7 +727,7 @@ class FightSimulator {
             }
         }
 
-        if (players.length == 2) {
+        if (!target && players.length == 2) {
             players[1].score.avg = 100 - players[0].score.avg,
             players[1].score.min = players[1].score.avg;
             players[1].score.max = players[1].score.avg;
