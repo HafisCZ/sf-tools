@@ -280,7 +280,7 @@
                 <div class="six wide column">
                     <button class="ui left floated button margin-medium-right small" data-op="copy">Copy</button>
                     <button class="ui left floated button margin-medium-right small" data-op="wiki-home">Wiki</button>
-                    <button class="ui left floated button margin-medium-right small" data-op="browse">Browse</button>
+                    <button class="ui left floated button margin-medium-right small" data-op="browse">Scripts</button>
                 </div>
                 <div class="three wide column">
                     <h1 class="ui header text-white centered">Settings</h1>
@@ -332,7 +332,7 @@
                 <div class="seven wide column">
                     <button class="ui left floated button margin-medium-right small" data-op="copy">Copy</button>
                     <button class="ui left floated button margin-medium-right small" data-op="wiki-home">Wiki</button>
-                    <button class="ui left floated button margin-medium-right small" data-op="browse">Browse</button>
+                    <button class="ui left floated button margin-medium-right small" data-op="browse">Scripts</button>
                 </div>
                 <div class="two wide column">
                     <h1 class="ui header text-white centered">Settings</h1>
@@ -540,11 +540,22 @@
             <i class="close icon"></i>
             <div class="header">Public scripts</div>
             <div class="content text-center">
-                <div class="ui active dimmer" data-op="dimmer">
-                    <div class="ui text loader">Loading</div>
-                </div>
-                <div data-op="content">
+                <div class="dimmable">
+                    <div class="ui middle aligned grid css-nomargin-grid" style="margin-top: -0.5em; margin-right: -3px;">
+                        <div class="row">
+                            <div class="text-left seven wide column"><b>Description</b></div>
+                            <div class="text-left four wide column"><b>Author</b></div>
+                            <div class="text-left three wide column"><b>Created on</b></div>
+                        </div>
+                    </div>
+                    <div style="overflow-y: scroll; height: 45vh; padding-top: 2.5em; margin-right: -1.5em; padding-bottom: 0;">
+                        <div class="ui active inverted dimmer" data-op="dimmer">
+                            <div class="ui indeterminate text loader">Fetching scripts</div>
+                        </div>
+                        <div class="ui middle aligned grid css-nomargin-grid" style="margin-right: 0em;" data-op="content">
 
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="content" style="border-top: 1px solid rgba(34,36,38,.15); margin-top: -1.5em;">
