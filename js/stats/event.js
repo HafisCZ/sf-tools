@@ -187,69 +187,14 @@ class GroupDetailView extends View {
             }
         });
 
-        this.$share = this.$parent.find('[data-op="share-dropdown"]').dropdown({
-            on: 'hover',
-            action: 'hide',
-            delay : {
-                hide: 100,
-                show: 0
-            }
-        });
-
-        this.shareCurrentTable = (embedSettings, multipleUses) => {
-            UI.Share.show(!multipleUses);
-
-            var formData = new FormData();
-
-            formData.append('file', JSON.stringify({
-                data: Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]),
-                settings: embedSettings ? this.table.settings.code : ''
-            }));
-
-            formData.append('multiple', multipleUses);
-
-            $.ajax({
-                url: 'https://sftools-api.herokuapp.com/share',
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                data: formData
-            }).done((message) => {
-                if (message.success) {
-                    UI.Share.showKey(message.key);
-                } else {
-                    UI.Share.hide();
-                    UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
-                    Logger.log('WARNING', 'Error occured while trying to share a file!');
-                }
-            }).fail(function () {
-                UI.Share.hide();
-                UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
-                Logger.log('WARNING', 'Error occured while trying to share a file!');
-            });
-        }
-
-        this.$parent.find('[data-op="share"]').click(() => {
-            this.shareCurrentTable(false, false);
-        });
-
-        this.$parent.find('[data-op="share-embed"]').click(() => {
-            this.shareCurrentTable(true, false);
-        });
-
-        this.$parent.find('[data-op="share-multiple"]').click(() => {
-            this.shareCurrentTable(false, true);
-        });
-
-        this.$parent.find('[data-op="share-multiple-embed"]').click(() => {
-            this.shareCurrentTable(true, true);
-        });
-
         this.$parent.find('[data-op="export"]').click(() => Storage.exportGroupData(this.identifier, this.group.List.map(entry => entry[0])));
         this.$parent.find('[data-op="export-l"]').click(() => Storage.exportGroupData(this.identifier, [ this.group.List[0][0] ]));
         this.$parent.find('[data-op="export-l5"]').click(() => Storage.exportGroupData(this.identifier, this.group.List.slice(0, 5).map(entry => entry[0])));
         this.$parent.find('[data-op="export-s"]').click(() => Storage.exportGroupData(this.identifier, [ this.timestamp ]));
         this.$parent.find('[data-op="export-sr"]').click(() => Storage.exportGroupData(this.identifier, [ this.timestamp, Number(this.reference) ]));
+        this.$parent.find('[data-op="share"]').click(() => {
+            UI.OnlineShareFile.show(Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]), this.table.settings.code, false);
+        });
 
         // Context menu
         this.$context = $('<div class="ui custom popup right center"></div>');
@@ -898,66 +843,11 @@ class PlayerHistoryView extends View {
         this.$parent.find('[data-op="export"]').click(() => Storage.exportPlayerData(this.identifier, this.list.map(entry => entry[0])));
         this.$parent.find('[data-op="export-l"]').click(() => Storage.exportPlayerData(this.identifier, [ this.list[0][0] ]));
         this.$parent.find('[data-op="export-l5"]').click(() => Storage.exportPlayerData(this.identifier, this.list.slice(0, 5).map(entry => entry[0])));
+        this.$parent.find('[data-op="share"]').click(() => {
+            UI.OnlineShareFile.show(Storage.getExportPlayerData(this.identifier, Database.Players[this.identifier].List.map(x => x[0])), this.table.settings.code, false);
+        });
 
         this.$name = this.$parent.find('[data-op="name"]');
-
-        this.$share = this.$parent.find('[data-op="share-dropdown"]').dropdown({
-            on: 'hover',
-            action: 'hide',
-            delay : {
-                hide: 100,
-                show: 0
-            }
-        });
-
-        this.shareCurrentTable = (embedSettings, multipleUses) => {
-            UI.Share.show(!multipleUses);
-
-            var formData = new FormData();
-
-            formData.append('file', JSON.stringify({
-                data: Storage.getExportPlayerData(this.identifier, Database.Players[this.identifier].List.map(x => x[0])),
-                settings: embedSettings ? this.table.settings.code : ''
-            }));
-
-            formData.append('multiple', multipleUses);
-
-            $.ajax({
-                url: 'https://sftools-api.herokuapp.com/share',
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                data: formData
-            }).done((message) => {
-                if (message.success) {
-                    UI.Share.showKey(message.key);
-                } else {
-                    UI.Share.hide();
-                    UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
-                    Logger.log('WARNING', 'Error occured while trying to share a file!');
-                }
-            }).fail(function () {
-                UI.Share.hide();
-                UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
-                Logger.log('WARNING', 'Error occured while trying to share a file!');
-            });
-        }
-
-        this.$parent.find('[data-op="share"]').click(() => {
-            this.shareCurrentTable(false, false);
-        });
-
-        this.$parent.find('[data-op="share-embed"]').click(() => {
-            this.shareCurrentTable(true, false);
-        });
-
-        this.$parent.find('[data-op="share-multiple"]').click(() => {
-            this.shareCurrentTable(false, true);
-        });
-
-        this.$parent.find('[data-op="share-multiple-embed"]').click(() => {
-            this.shareCurrentTable(true, true);
-        });
     }
 
     show (identifier) {
@@ -1095,36 +985,7 @@ class BrowseView extends View {
                             ids.push(source.attr('data-id'));
                         }
 
-                        UI.Share.show();
-
-                        var formData = new FormData();
-
-                        formData.append('file', JSON.stringify({
-                            data: Storage.getExportManyPlayerData(ids),
-                            settings: ''
-                        }));
-
-                        formData.append('multiple', false);
-
-                        $.ajax({
-                            url: 'https://sftools-api.herokuapp.com/share',
-                            type: 'POST',
-                            processData: false,
-                            contentType: false,
-                            data: formData
-                        }).done((message) => {
-                            if (message.success) {
-                                UI.Share.showKey(message.key);
-                            } else {
-                                UI.Share.hide();
-                                UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
-                                Logger.log('WARNING', 'Error occured while trying to share a file!');
-                            }
-                        }).fail(function () {
-                            UI.Share.hide();
-                            UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
-                            Logger.log('WARNING', 'Error occured while trying to share a file!');
-                        });
+                        UI.OnlineShareFile.show(Storage.getExportManyPlayerData(ids), '', false);
                     }
                 },
                 {
@@ -1555,37 +1416,7 @@ class GroupsView extends View {
                     label: 'Share',
                     action: (source) => {
                         let group = source.attr('data-id');
-
-                        UI.Share.show();
-
-                        var formData = new FormData();
-
-                        formData.append('file', JSON.stringify({
-                            data: Storage.getExportGroupData(group, Database.Groups[group].List.map(x => x[0])),
-                            settings: ''
-                        }));
-
-                        formData.append('multiple', false);
-
-                        $.ajax({
-                            url: 'https://sftools-api.herokuapp.com/share',
-                            type: 'POST',
-                            processData: false,
-                            contentType: false,
-                            data: formData
-                        }).done((message) => {
-                            if (message.success) {
-                                UI.Share.showKey(message.key);
-                            } else {
-                                UI.Share.hide();
-                                UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
-                                Logger.log('WARNING', 'Error occured while trying to share a file!');
-                            }
-                        }).fail(function () {
-                            UI.Share.hide();
-                            UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
-                            Logger.log('WARNING', 'Error occured while trying to share a file!');
-                        });
+                        UI.OnlineShareFile.show(Storage.getExportGroupData(group, Database.Groups[group].List.map(x => x[0])), '', false);
                     }
                 },
                 {
@@ -1715,38 +1546,7 @@ class PlayersView extends View {
                 {
                     label: 'Share',
                     action: (source) => {
-                        var id = source.attr('data-id');
-
-                        UI.Share.show();
-
-                        var formData = new FormData();
-
-                        formData.append('file', JSON.stringify({
-                            data: Storage.getExportManyPlayerData([ id ]),
-                            settings: ''
-                        }));
-
-                        formData.append('multiple', false);
-
-                        $.ajax({
-                            url: 'https://sftools-api.herokuapp.com/share',
-                            type: 'POST',
-                            processData: false,
-                            contentType: false,
-                            data: formData
-                        }).done((message) => {
-                            if (message.success) {
-                                UI.Share.showKey(message.key);
-                            } else {
-                                UI.Share.hide();
-                                UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
-                                Logger.log('WARNING', 'Error occured while trying to share a file!');
-                            }
-                        }).fail(function () {
-                            UI.Share.hide();
-                            UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
-                            Logger.log('WARNING', 'Error occured while trying to share a file!');
-                        });
+                        UI.OnlineShareFile.show(Storage.getExportManyPlayerData([ source.attr('data-id') ]), '', false);
                     }
                 },
                 {
@@ -2037,7 +1837,7 @@ class FilesView extends View {
 
         this.$cloudexport = this.$parent.find('[data-op="cloud-export"]').click(() => {
             if (Storage.files().length) {
-                this.shareCurrentFiles();
+                UI.OnlineShareFile.show(Storage.getExportData(), '', true);
             }
         });
 
@@ -2062,7 +1862,7 @@ class FilesView extends View {
         this.$cloudexport2 = this.$parent.find('[data-op="cloud-export-partial"]').click(() => {
             var array = this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')));
             if (array.length > 0) {
-                this.shareCurrentFiles(array);
+                UI.OnlineShareFile.show(Storage.getExportData(array), '', true);
             }
         });
 
@@ -2092,46 +1892,12 @@ class FilesView extends View {
             });
         });
 
-        this.shareCurrentFiles = (array) => {
-            UI.Share.show(true);
-
-            var files = Storage.getExportData(array);
-            var formData = new FormData();
-
-            formData.append('file', JSON.stringify({
-                data: files,
-                settings: ''
-            }));
-
-            formData.append('multiple', false);
-
-            $.ajax({
-                url: 'https://sftools-api.herokuapp.com/share',
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                data: formData
-            }).done((message) => {
-                if (message.success) {
-                    UI.Share.showKey(message.key);
-                } else {
-                    UI.Share.hide();
-                    UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
-                    Logger.log('WARNING', 'Error occured while trying to share a file!');
-                }
-            }).fail(function () {
-                UI.Share.hide();
-                UI.Info.show('File sharing', '<b>Upload failed.</b><br/>Try it again in couple of minutes or contact support.');
-                Logger.log('WARNING', 'Error occured while trying to share a file!');
-            });
-        }
-
         this.$endpoint = this.$parent.find('[data-op="endpoint"]').click(() => {
             UI.Endpoint.show();
         });
 
         this.$shared = this.$parent.find('[data-op="shared"]').click(() => {
-            UI.InfoInput.show('File sharing', 'Enter your code:', (code, modal, closeModal) => {
+            UI.OnlineFiles.show('File sharing', 'Enter your code:', (code, modal, closeModal) => {
                 if (code) {
                     $.ajax({
                         url: `https://sftools-api.herokuapp.com/?key=${ code }`,
@@ -2140,7 +1906,7 @@ class FilesView extends View {
                         if (message) {
                             var obj = JSON.parse(message);
                             if (obj.settings) {
-                                Templates.save(obj.settings, `S${ code }`);
+                                Templates.save(obj.settings, `Shared ${ code }`);
                             }
 
                             Storage.import(obj.data);
@@ -2899,32 +2665,104 @@ class InfoView extends View {
     }
 }
 
-class ShareDialogView extends View {
+class OnlineShareFileView extends View {
     constructor (parent) {
         super(parent);
 
-        this.$multiple = this.$parent.find('[data-op="multiple"]');
+        // Setup checkboxes
+        this.$once = this.$parent.find('[data-op="once"]');
+        this.$bundle = this.$parent.find('[data-op="bundle"]');
+
+        // Other elements
         this.$code = this.$parent.find('[data-op="code"]');
-        this.$dimmer = this.$parent.find('[data-op="dimmer"]');
+        this.$button = this.$parent.find('[data-op="send"]');
+
+        // Containers
+        this.$codeContainer = this.$parent.find('[data-op="content-code"]');
+        this.$buttonContainer = this.$parent.find('[data-op="content-button"]');
+
+        // Handlers
+        this.$button.click(() => {
+            let once = this.$once.checkbox('is checked');
+            let bundle = this.$bundle.checkbox('is checked');
+
+            // Set button to loading state
+            this.$button.addClass('loading disabled');
+
+            // Send request
+            this.send(!once, bundle);
+        });
     }
 
-    show (singleUse) {
-        this.$multiple.html(singleUse ? 'can be used only once and ' : '');
-        this.$code.html('                        ');
-        this.$dimmer.addClass('active');
+    show (data, bundledSettings = '', forceOnce = false) {
+        // Shared object
+        this.sharedObj = {
+            data: data,
+            settings: bundledSettings,
+            once: forceOnce
+        };
 
+        // Setup checkboxes
+        this.$once.checkbox('set checked');
+        this.$bundle.checkbox('set unchecked');
+
+        if (!bundledSettings) {
+            this.$bundle.checkbox('set disabled');
+        } else {
+            this.$bundle.checkbox('set enabled');
+        }
+
+        if (forceOnce) {
+            this.$once.checkbox('set disabled');
+        } else {
+            this.$once.checkbox('set enabled');
+        }
+
+        // Toggle buttons
+        this.$buttonContainer.show();
+        this.$codeContainer.hide();
+
+        this.$button.removeClass('loading disabled');
+
+        // Open modal
         this.$parent.modal({
             closable: false
         }).modal('show');
     }
 
-    showKey (code) {
-        this.$code.html(code);
-        this.$dimmer.removeClass('active');
+    showKey (success, key) {
+        if (success) {
+            this.$buttonContainer.hide();
+            this.$codeContainer.show();
+
+            // Show key
+            this.$code.text(key);
+        } else {
+            this.$button.removeClass('loading disabled').transition('shake');
+        }
     }
 
-    hide () {
-        this.$parent.transition('stop all').transition('clear queue');
+    send (multipleUses = false, bundleSettings = false) {
+        // Setup form data
+        let data = new FormData();
+        data.append('multiple', !this.sharedObj.once && multipleUses);
+        data.append('file', JSON.stringify({
+            data: this.sharedObj.data,
+            settings: bundleSettings ? this.sharedObj.settings : ''
+        }));
+
+        // Create request
+        $.ajax({
+            url: 'https://sftools-api.herokuapp.com/share',
+            type: 'POST',
+            processData: false,
+            contentType: false,
+            data: data
+        }).done(obj => {
+            this.showKey(obj.success, obj.key);
+        }).fail(() => {
+            this.showKey(false, null);
+        });
     }
 }
 
@@ -3049,7 +2887,7 @@ class OnlineTemplatesView extends View {
     }
 }
 
-class InfoInputView extends View {
+class OnlineFilesView extends View {
     constructor (parent) {
         super(parent);
 
@@ -3310,14 +3148,15 @@ const UI = {
         UI.ChangeLogs = new ChangeLogsView('view-changelog');
         UI.Endpoint = new EndpointView('modal-endpoint');
         UI.ConfirmDialog = new ConfirmDialogView('modal-confirm');
-        UI.Share = new ShareDialogView('modal-share');
+
+        // Online
         UI.OnlineTemplates = new OnlineTemplatesView('modal-templates');
+        UI.OnlineFiles = new OnlineFilesView('modal-info-input');
+        UI.OnlineShareFile = new OnlineShareFileView('modal-share');
     },
     preinitialize: function () {
         UI.Loader = new LoaderView('modal-loader');
         UI.Exception = new ExceptionView('modal-exception');
-        UI.Info = new InfoView('modal-info');
-        UI.InfoInput = new InfoInputView('modal-info-input');
         UI.Setup = new SetupView('modal-setup');
         UI.ChangeLog = new ChangeLogView('modal-changelog');
     }

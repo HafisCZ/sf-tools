@@ -473,17 +473,7 @@
                     <div class="three wide column">
                         <div class="ui small basic icon right floated buttons">
                             <button class="ui button" data-position="bottom center" data-tooltip="Save as image" data-op="save"><i class="download icon"></i></button>
-                            <div class="ui icon top left pointing dropdown button" data-op="share-dropdown">
-                                <i class="file archive icon"></i>
-                                <div class="menu">
-                                    <div class="header">Share - Single use</div>
-                                    <div class="item" data-op="share">Data</div>
-                                    <div class="item" data-op="share-embed">Data & Settings</div>
-                                    <div class="header">Share - Expires after 48 hours</div>
-                                    <div class="item" data-op="share-multiple">Data</div>
-                                    <div class="item" data-op="share-multiple-embed">Data & Settings</div>
-                                </div>
-                            </div>
+                            <button class="ui button" data-position="bottom center" data-tooltip="Share" data-op="share"><i class="cloud upload icon"></i></button>
                             <div class="ui icon top left pointing dropdown button" data-op="export-dropdown">
                                 <i class="file archive icon"></i>
                                 <div class="menu">
@@ -515,18 +505,29 @@
 
         <div id="modal-share" class="ui mini modal">
             <div class="header">File sharing</div>
-            <div class="content text-center">
-                <div class="ui active inverted dimmer" data-op="dimmer">
-                    <div class="ui text loader">Loading</div>
+            <div class="content text-left" style="height: 15em;">
+                <h4 class="ui header">Options</h4>
+                <div style="margin-top: 0.5em;">
+                    <div class="ui checkbox" data-op="once">
+                        <input type="checkbox" name="checkbox1">
+                        <label for="checkbox1">Single use only</label>
+                    </div>
                 </div>
-                <p>
-                    Your code: <code data-op="code" style="white-space: pre;"></code>
-                    <br/>
-                    <br/>
-                    Keep in mind that this code <span data-op="multiple"></span>will automatically expire after 48 hours.
-                    <br/>
-                    All data will be lost if not claimed before that happens.
-                </p>
+                <div style="margin-top: 0.5em;">
+                    <div class="ui checkbox" data-op="bundle">
+                        <input type="checkbox" name="checkbox2">
+                        <label for="checkbox2">Include current settings</label>
+                    </div>
+                </div>
+                <div style="margin-top: 1.5em">
+                    <h4 class="ui header">Your code:</h4>
+                    <div data-op="content-button">
+                        <button class="ui fluid button" data-op="send">Get code</button>
+                    </div>
+                    <div data-op="content-code" class="text-center" style="padding-top: 0.25em;">
+                        <code style="white-space: pre; font-size: 1.3em;" data-op="code">ABCDEFGHIJKLMNOPQRSTUVWX</code>
+                    </div>
+                </div>
             </div>
             <div class="actions">
                 <div class="ui approve button">OK</div>
@@ -568,18 +569,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div id="modal-info" class="ui mini modal">
-            <div class="header" data-op="name">
-
-            </div>
-            <div class="content text-center">
-                <p data-op="content"></p>
-            </div>
-            <div class="actions">
-                <div class="ui approve button">OK</div>
             </div>
         </div>
 
@@ -730,17 +719,7 @@
                     <div class="eight wide column">
                         <div class="ui small basic icon right floated buttons">
                             <button class="ui button" data-tooltip="Save as image" data-op="save"><i class="download icon"></i></button>
-                            <div class="ui icon top left pointing dropdown button" data-op="share-dropdown">
-                                <i class="file archive icon"></i>
-                                <div class="menu">
-                                    <div class="header">Share - Single use</div>
-                                    <div class="item" data-op="share">Data</div>
-                                    <div class="item" data-op="share-embed">Data & Settings</div>
-                                    <div class="header">Share - Expires after 48 hours</div>
-                                    <div class="item" data-op="share-multiple">Data</div>
-                                    <div class="item" data-op="share-multiple-embed">Data & Settings</div>
-                                </div>
-                            </div>
+                            <button class="ui button" data-tooltip="Share" data-op="share"><i class="cloud upload icon"></i></button>
                             <div class="ui icon top left pointing dropdown button" data-op="export-dropdown">
                                 <i class="file archive icon"></i>
                                 <div class="menu">
