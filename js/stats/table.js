@@ -2514,7 +2514,7 @@ class Settings {
                 if (!data.arg) {
                     this.cvars[name] = {
                         ast: data.ast,
-                        arg: data.arg
+                        arg: false
                     };
                 } else if (tabletype == TableType.Group) {
                     data.value = data.ast.eval(players[0].player, undefined, this, scope);
@@ -2589,22 +2589,18 @@ class Settings {
     evaluateConstantsHistory (players) {
         // Evaluate constants
         for (var [name, data] of Object.entries(this.vars)) {
-            if (data.ast) {
-                var scope = {};
+            if (data.ast && data.arg) {
+                var scope = players.map((p, i) => {
+                    var ar = [ p, players[i + 1] || p ];
+                    ar.segmented = true;
 
-                if (data.arg) {
-                    scope = players.map((p, i) => {
-                        var ar = [ p, players[i + 1] || p ];
-                        ar.segmented = true;
+                    return ar;
+                });
 
-                        return ar;
-                    });
-
-                    scope.segmented = true;
-                }
+                scope.segmented = true;
 
                 data.value = data.ast.eval(undefined, undefined, this, scope);
-                if (isNaN(data.value)) {
+                if (isNaN(data.value) && typeof(data.value) != 'object') {
                     data.value = undefined;
                 }
             }
