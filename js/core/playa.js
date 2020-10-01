@@ -1470,8 +1470,62 @@ class SFOwnPlayer extends SFPlayer {
         dataType = new ComplexDataType(data.pets);
         dataType.assert(288, true);
 
-        dataType.skip(104); // skip
+        dataType.skip(2);
+
+        let petLevels = dataType.sub(100);
+
+        let shadowCount = 0;
+        let lightCount = 0;
+        let earthCount = 0;
+        let fireCount = 0;
+        let waterCount = 0;
+
+        let shadowLevel = 0;
+        let lightLevel = 0;
+        let earthLevel = 0;
+        let fireLevel = 0;
+        let waterLevel = 0;
+
+        if (petLevels.length) {
+            for (var i = 0; i < 20; i++) {
+                shadowCount += petLevels[i] > 0 ? 1 : 0;
+                shadowLevel += petLevels[i];
+            }
+
+            for (var i = 0; i < 20; i++) {
+                lightCount += petLevels[i + 20] > 0 ? 1 : 0;
+                lightLevel += petLevels[i + 20];
+            }
+
+            for (var i = 0; i < 20; i++) {
+                earthCount += petLevels[i + 40] > 0 ? 1 : 0;
+                earthLevel += petLevels[i + 40];
+            }
+
+            for (var i = 0; i < 20; i++) {
+                fireCount += petLevels[i + 60] > 0 ? 1 : 0;
+                fireLevel += petLevels[i + 60];
+            }
+
+            for (var i = 0; i < 20; i++) {
+                waterCount += petLevels[i + 80] > 0 ? 1 : 0;
+                waterLevel += petLevels[i + 80];
+            }
+        }
+
+        dataType.skip(1);
         this.Pets = {
+            ShadowCount: shadowCount,
+            LightCount: lightCount,
+            EarthCount: earthCount,
+            FireCount: fireCount,
+            WaterCount: waterCount,
+            ShadowLevel: shadowLevel,
+            LightLevel: lightLevel,
+            EarthLevel: earthLevel,
+            FireLevel: fireLevel,
+            WaterLevel: waterLevel,
+            TotalLevel: dataType.long(),
             Shadow: dataType.long(),
             Light: dataType.long(),
             Earth: dataType.long(),
@@ -1481,6 +1535,13 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(146);
         this.Metal = dataType.long();
         this.Crystals = dataType.long();
+        dataType.skip(2);
+        this.Pets.ShadowFood = dataType.long();
+        this.Pets.LightFood = dataType.long();
+        this.Pets.EarthFood = dataType.long();
+        this.Pets.FireFood = dataType.long();
+        this.Pets.WaterFood = dataType.long();
+        this.Pets.TotalLevel = dataType.long();
 
         this.Name = data.name;
         this.Prefix = data.prefix.replace('_', ' ');

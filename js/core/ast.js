@@ -2284,6 +2284,70 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Idle ? p.Idle.Upgrades.Money : undefined,
         difference: false,
         statistics: false
+    },
+    'Shadow Count': {
+        expr: p => p.Pets.ShadowCount,
+        statistics: false
+    },
+    'Light Count': {
+        expr: p => p.Pets.LightCount,
+        statistics: false
+    },
+    'Earth Count': {
+        expr: p => p.Pets.EarthCount,
+        statistics: false
+    },
+    'Fire Count': {
+        expr: p => p.Pets.FireCount,
+        statistics: false
+    },
+    'Water Count': {
+        expr: p => p.Pets.WaterCount,
+        statistics: false
+    },
+    'Shadow Level': {
+        expr: p => p.Pets.ShadowLevel,
+        statistics: false
+    },
+    'Light Level': {
+        expr: p => p.Pets.LightLevel,
+        statistics: false
+    },
+    'Earth Level': {
+        expr: p => p.Pets.EarthLevel,
+        statistics: false
+    },
+    'Fire Level': {
+        expr: p => p.Pets.FireLevel,
+        statistics: false
+    },
+    'Water Level': {
+        expr: p => p.Pets.WaterLevel,
+        statistics: false
+    },
+    'Total Pet Level': {
+        expr: p => p.Pets.TotalLevel,
+        statistics: false
+    },
+    'Shadow Food': {
+        expr: p => p.Pets.ShadowFood,
+        statistics: false
+    },
+    'Light Food': {
+        expr: p => p.Pets.LightFood,
+        statistics: false
+    },
+    'Earth Food': {
+        expr: p => p.Pets.EarthFood,
+        statistics: false
+    },
+    'Fire Food': {
+        expr: p => p.Pets.FireFood,
+        statistics: false
+    },
+    'Water Food': {
+        expr: p => p.Pets.WaterFood,
+        statistics: false
     }
 };
 
