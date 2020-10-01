@@ -1036,17 +1036,17 @@ const Storage = new (class {
                     } else if (own && key.includes('playerSave')) {
                         player.save = val.split('/').map(a => Number(a));
                         player.id = player.prefix + '_p' + player.save[1];
-                    } else if (key.includes('petbonus') || key.includes('petsSave')) {
+                    } else if ((!own && key.includes('petbonus')) || (own && key.includes('petsSave'))) {
                         player.pets = val.split('/').map(a => Number(a));
                     } else if (key.includes('serverversion')) {
                         file.version = Number(val);
-                    } else if (key.includes('towerSave')) {
+                    } else if (own && key.includes('towerSave')) {
                         player.tower = val.split('/').map(a => Number(a));
-                    } else if (key.includes('fortresschest')) {
+                    } else if (own && key.includes('fortresschest')) {
                         player.chest = val.split('/').map(a => Number(a));
-                    } else if (key.includes('witchData')) {
+                    } else if (own && key.includes('witchData')) {
                         player.witch = val.split('/').map(a => Number(a));
-                    } else if (key.includes('idlegame')) {
+                    } else if (own && key.includes('idlegame')) {
                         player.idle = val.split('/').map(a => Number(a));
                     }
                 }
