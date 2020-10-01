@@ -132,7 +132,7 @@ class Expression {
 
     // Get token block
     getBlock () {
-        return this.peek() == '(' ? this.evalBracketExpression() : this.getVal();
+        return this.peek() == '(' ? this.getSubExpression() : this.getVal();
     }
 
     // Is global function
@@ -318,114 +318,82 @@ class Expression {
         return node;
     }
 
-    evalBracketExpression () {
-        this.get();
-        var v = this.evalExpression();
-        this.get();
-        return v;
-    }
-
-    evalRankedExpression () {
-        var left = this.getBlock(), right, op;
+    getHighPriority () {
+        let node = this.getBlock();
         while (['*', '/'].includes(this.peek())) {
-            op = this.get();
-            left = {
-                args: [ left, this.getBlock() ],
-                op: SP_OPERATORS[op]
+            node = {
+                op: SP_OPERATORS[this.get()],
+                args: [node, this.peek() == '(' ? this.getSubExpression() : this.getBlock()]
             }
         }
 
-        return left;
+        return node;
     }
 
-    evalSimpleExpression () {
-        var left = this.evalRankedExpression(), right, op;
+    getLowPriority () {
+        let node = this.getHighPriority();
         while (['+', '-', '%'].includes(this.peek())) {
-            op = this.get();
-
-            if (this.peek() == '(') {
-                right = this.evalBracketExpression();
-            } else {
-                right = this.evalRankedExpression();
-            }
-
-            left = {
-                args: [ left, right ],
-                op: SP_OPERATORS[op]
-            }
+            node = {
+                op: SP_OPERATORS[this.get()],
+                args: [node, this.peek() == '(' ? this.getSubExpression() : this.getHighPriority()]
+            };
         }
 
-        return left;
+        return node;
     }
 
-    evalBoolExpression () {
-        var left = this.evalSimpleExpression(), right, op;
+    getBool () {
+        let node = this.getLowPriority();
         while (['>', '<', '<=', '>=', '==', '!='].includes(this.peek())) {
-            op = this.get();
-
-            if (this.peek() == '(') {
-                right = this.evalBracketExpression();
-            } else {
-                right = this.evalSimpleExpression();
-            }
-
-            left = {
-                args: [ left, right ],
-                op: SP_OPERATORS[op]
+            node = {
+                op: SP_OPERATORS[this.get()],
+                args: [node, this.peek() == '(' ? this.getSubExpression() : this.getLowPriority()]
             }
         }
 
-        return left;
+        return node;
     }
 
-    evalBoolMergeExpression () {
-        var left = this.evalBoolExpression(), right, op;
+    getBoolMerge () {
+        let node = this.getBool();
         while (['||', '&&'].includes(this.peek())) {
-            op = this.get();
-
-            if (this.peek() == '(') {
-                right = this.evalBracketExpression();
-            } else {
-                right = this.evalBoolExpression();
-            }
-
-            left = {
-                args: [ left, right ],
-                op: SP_OPERATORS[op]
-            }
+            node = {
+                op: SP_OPERATORS[this.get()],
+                args: [node, this.peek() == '(' ? this.getSubExpression() : this.getBool()]
+            };
         }
 
-        return left;
+        return node;
+    }
+
+    getSubExpression () {
+        this.get();
+        let node = this.evalExpression();
+        this.get();
+
+        return node;
     }
 
     evalExpression () {
-        var left = this.evalBoolMergeExpression(), tr, fl;
+        let node = this.getBoolMerge();
         if (this.peek() == '?') {
             this.get();
 
-            if (this.peek() == '(') {
-                tr = this.evalBracketExpression();
-            } else {
-                tr = this.evalBoolMergeExpression();
-            }
+            // First argument
+            let arg1 = this.evalExpression();
+            this.get();
 
-            if (this.peek() == ':') {
-                this.get();
+            // Second argument
+            let arg2 = this.evalExpression();
 
-                if (this.peek() == '(') {
-                    fl = this.evalBracketExpression();
-                } else {
-                    fl = this.evalBoolMergeExpression();
-                }
-
-                left = {
-                    args: [ left, tr, fl ],
-                    op: SP_OPERATORS['?']
-                }
-            }
+            // Create node
+            node = {
+                args: [node, arg1, arg2],
+                op: SP_OPERATORS['?']
+            };
         }
 
-        return left;
+        return node;
     }
 
     isValid () {
