@@ -821,7 +821,7 @@ class PlayerHistoryView extends View {
                 logging: false
             }).then((canvas) => {
                 canvas.toBlob((blob) => {
-                    window.download(`${ this.player.Name }.png`, blob);
+                    window.download(`${ this.player.Name }_${ Date.now() }.png`, blob);
                 });
             });
         });

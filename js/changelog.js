@@ -1,4 +1,15 @@
 const CHANGELOG = {
+    'v3.881': [
+        'Added headers for pet food, found pets and pet levels.',
+        'Added sharing function for players, guilds and files.',
+        'Added public scripts & way to import private scripts via simple code.',
+        'Added file information with the guilds and players stored within.',
+        'Added timestamps to exported files.',
+        'Copying table for fight simulator now uses simulator model instead of copying all the data.',
+        'Fixed bottom row being cut off for guild table images.',
+        'Fixed rare bug that overwrote pet data under specific circumstances.',
+        'Fixed mirror shard counter.'
+    ],
     'v3.840': [
         'Added full support for Druid class.',
         'Added multiple selection for Players tab. You can hold CTRL and click to select several players at once. Use right click apply action to them.<br/>Letting go of CTRL will clear the selection!',
