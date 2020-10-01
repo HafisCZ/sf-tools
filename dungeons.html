@@ -733,7 +733,7 @@
                     content1 += `
                         <div class="row selectable ${ selected == i ? 'selected' : 'nselected' }" data-index="${ i }">
                             <div class="four wide text-center column">
-                                <img class="ui medium centered image" style="width: 50px;" src="res/portrait${ i ? i : '' }.png">
+                                <img class="ui medium centered image" style="width: 50px; opacity: ${ i == 0 || boss.Shadow == true ? '100' : '25' }%;" src="res/portrait${ i ? i : '' }.png">
                             </div>
                             <div class="three wide text-center column">
                                 <b>${ i == 0 ? (players[i].Level || '?') : '' }</b>
@@ -795,6 +795,9 @@
             $('#sim-run').click(function () {
                 toggleAll(true);
 
+                // Update dungeon boss data
+                boss.ArmorAuto = true;
+
                 var worker = new Worker('js/sim/players.js');
 
                 worker.addEventListener('message', function (message) {
@@ -807,7 +810,7 @@
                 worker.postMessage({
                     mode: SimulatorType.Dungeon,
                     player: boss.Shadow ? [ ... players.slice(1, 4), players[0] ] : [ players[0] ],
-                    players: players[4],
+                    players: [ boss ],
                     iterations: Number($('#sim-iterations').val())
                 });
             });

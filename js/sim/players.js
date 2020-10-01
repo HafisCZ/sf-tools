@@ -129,14 +129,18 @@ class FighterModel {
 
     // Damage Reduction
     getDamageReduction (source) {
-        if (source.Player.Class == MAGE) {
-            return 0;
-        } else if (this.Player.Class == BATTLEMAGE) {
-            return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level + 40);
-        } else if (this.Player.Class == DRUID && this.Player.Mask == 1) {
-            return Math.min(this.getMaximumDamageReduction(), 2 * this.Player.Armor / source.Player.Level);
+        if (this.Player.ArmorAuto) {
+            return source.Player.Class == MAGE ? 0 : ((this.getMaximumDamageReduction() * this.Player.Level) / source.Player.Level);
         } else {
-            return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level);
+            if (source.Player.Class == MAGE) {
+                return 0;
+            } else if (this.Player.Class == BATTLEMAGE) {
+                return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level + 40);
+            } else if (this.Player.Class == DRUID && this.Player.Mask == 1) {
+                return Math.min(this.getMaximumDamageReduction(), 2 * this.Player.Armor / source.Player.Level);
+            } else {
+                return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level);
+            }
         }
     }
 
@@ -211,13 +215,17 @@ class FighterModel {
 
     // Health
     getHealth () {
-        var a = 1 + this.Player.Potions.Life / 100;
-        var b = 1 + this.Player.Dungeons.Player / 100;
-        var c = 1 + this.Player.Runes.Health / 100;
-        var d = this.Player.Level + 1;
-        var e = this.getHealthMultiplier();
+        if (this.Player.HealthOverride) {
+            return this.Player.HealthOverride;
+        } else {
+            var a = 1 + this.Player.Potions.Life / 100;
+            var b = 1 + this.Player.Dungeons.Player / 100;
+            var c = 1 + this.Player.Runes.Health / 100;
+            var d = this.Player.Level + 1;
+            var e = this.getHealthMultiplier();
 
-        return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(this.Player.Constitution.Total * a) * b) * c) * d) * e);
+            return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(this.Player.Constitution.Total * a) * b) * c) * d) * e);
+        }
     }
 
     // Get damage range
@@ -464,6 +472,14 @@ self.addEventListener('message', function (message) {
         });
     } else if (mode == SimulatorType.Guild) {
         var result = new GuildSimulator().simulate(player, players, iterations);
+
+        self.postMessage({
+            command: 'finished',
+            results: result,
+            time: Date.now() - ts
+        });
+    } else if (mode == SimulatorType.Dungeon) {
+        var result = new DungeonSimulator().simulate(player, players, iterations);
 
         self.postMessage({
             command: 'finished',
@@ -1085,6 +1101,174 @@ class FightSimulator {
                 attacker: source.Player.ID || source.Index,
                 target: target.Player.ID || target.Index
             });
+        }
+
+        return damage;
+    }
+}
+
+class DungeonSimulator {
+    simulate (players, bosses, iterations = 10000) {
+        let score = 0;
+        this.cache(players, bosses);
+
+        for (let i = 0; i < iterations; i++) {
+            score += this.battle();
+        }
+
+        return 100 * score / iterations;
+    }
+
+    cache (players, bosses) {
+        this.ga = players.map(a => {
+            let aa = FighterModel.create(0, a);
+            aa.MaximumHealth = aa.getHealth();
+            return aa;
+        });
+
+        this.gb = bosses.map(b => {
+            let bb = FighterModel.create(1, b);
+            bb.MaximumHealth = bb.getHealth();
+            return bb;
+        });
+    }
+
+    battle () {
+        this.la = [ ... this.ga ];
+        this.lb = [ ... this.gb ];
+
+        // Reset health
+        for (let p of this.la) {
+            p.Health = p.MaximumHealth;
+        }
+
+        for (let p of this.lb) {
+            p.Health = p.MaximumHealth;
+        }
+
+        // Go through all players
+        while (this.la.length > 0 && this.lb.length > 0) {
+            this.a = this.la[0];
+            this.b = this.lb[0];
+
+            this.a.initialize(this.b);
+            this.b.initialize(this.a);
+
+            this.as = this.a.onFightStart(this.b);
+            this.bs = this.b.onFightStart(this.a);
+
+            if (this.fight() == 0) {
+                this.la.shift();
+            } else {
+                this.lb.shift();
+            }
+        }
+
+        // Return fight result
+        return (this.la.length > 0 ? this.la[0].Index : this.lb[0].Index) == 0;
+    }
+
+    // Fighter battle
+    fight () {
+        // Turn counter
+        this.turn = 0;
+
+        // Apply special damage
+        if (this.as !== false || this.bs !== false) {
+            this.turn++;
+
+            if (this.as > 0) {
+                this.b.Health -= this.as;
+            } else if (this.bs > 0) {
+                this.a.Health -= this.bs;
+            }
+        }
+
+        // Decide who starts first
+        if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
+            [this.a, this.b] = [this.b, this.a];
+        }
+
+        // Simulation
+        while (this.a.Health > 0 && this.b.Health > 0) {
+            var damage = this.attack(this.a, this.b);
+            if (this.a.DamageDealt) {
+                this.a.onDamageDealt(this.b, damage);
+            }
+
+            if (this.b.DamageTaken) {
+                if (this.b.onDamageTaken(this.a, damage) == 0) {
+                    break;
+                }
+            } else {
+                this.b.Health -= damage;
+                if (this.b.Health <= 0) {
+                    break;
+                }
+            }
+
+            if (this.a.Weapon2) {
+                var damage2 = this.attack(this.a, this.b, this.a.Weapon2);
+                if (this.a.DamageDealt) {
+                    this.a.onDamageDealt(this.b, damage2);
+                }
+
+                if (this.b.DamageTaken) {
+                    if (this.b.onDamageTaken(this.a, damage2) == 0) {
+                        break;
+                    }
+                } else {
+                    this.b.Health -= damage2;
+                    if (this.b.Health <= 0) {
+                        break;
+                    }
+                }
+            }
+
+            if (this.a.RoundEnded) {
+                this.a.onRoundEnded(() => {
+                    this.turn++;
+
+                    var damage3 = this.attack(this.a, this.b);
+                    if (this.a.DamageDealt) {
+                        this.a.onDamageDealt(this.b, damage3);
+                    }
+
+                    if (this.b.DamageTaken) {
+                        return this.b.onDamageTaken(this.a, damage3) > 0;
+                    } else {
+                        this.b.Health -= damage3;
+                        return this.b.Health >= 0
+                    }
+                });
+            }
+
+            [this.a, this.b] = [this.b, this.a];
+
+            if (this.turn > 100) break;
+        }
+
+        // Winner
+        return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
+    }
+
+    attack (source, target, weapon = source.Weapon1) {
+        var turn = this.turn++;
+        var rage = 1 + turn / 6;
+
+        var damage = 0;
+        var skipped = getRandom(target.SkipChance);
+        var critical = false;
+
+        if (!skipped) {
+            damage = rage * (Math.random() * (1 + weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
+
+            critical = getRandom(source.CriticalChance);
+            if (critical) {
+                damage *= weapon.Critical;
+            }
+
+            damage = Math.ceil(damage);
         }
 
         return damage;
