@@ -1725,8 +1725,6 @@ class SFOwnPlayer extends SFPlayer {
             this.Underworld.TimeMachineThirst = dataType.long();
             this.Underworld.TimeMachineMax = dataType.long();
             this.Underworld.TimeMachineDaily = dataType.long();
-
-            this.Fortress.Gladiator = this.Underworld.Gladiator;
         } else {
             this.Dungeons.Extra.Normal[0] = 0;
             this.Dungeons.Extra.Shadow[0] = 0;
@@ -1929,6 +1927,9 @@ function toSimulatorModel (p) {
         },
         Fortress: {
             Gladiator: p.Fortress.Gladiator || 0
+        },
+        Underworld: {
+            Gladiator: p.Underworld ? p.Underworld.Gladiator : 0
         },
         Intelligence: {
             Total: p.Intelligence.Total

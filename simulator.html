@@ -783,10 +783,6 @@
 
                         for (var d of data) {
                             if (d.Class) {
-                                if (d.Fortress) {
-                                    d.Fortress.Gladiator = 0;
-                                }
-
                                 SFItem.forceCorrectRune(d.Items.Wpn1);
                                 SFItem.forceCorrectRune(d.Items.Wpn2);
 
@@ -801,10 +797,6 @@
                                 });
                             } else {
                                 var obj = d.own ? new SFOwnPlayer(d) : new SFOtherPlayer(d);
-
-                                if (obj.Fortress) {
-                                    obj.Fortress.Gladiator = 0;
-                                }
 
                                 SFItem.forceCorrectRune(obj.Items.Wpn1);
                                 SFItem.forceCorrectRune(obj.Items.Wpn2);
@@ -824,10 +816,6 @@
                         showPlayers();
                     } else if (data.Class || data.save) {
                         var obj = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
-
-                        if (obj.Fortress) {
-                            obj.Fortress.Gladiator = 0;
-                        }
 
                         SFItem.forceCorrectRune(obj.Items.Wpn1);
                         SFItem.forceCorrectRune(obj.Items.Wpn2);
