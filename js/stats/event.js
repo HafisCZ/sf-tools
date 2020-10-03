@@ -1897,35 +1897,7 @@ class FilesView extends View {
         });
 
         this.$shared = this.$parent.find('[data-op="shared"]').click(() => {
-            UI.OnlineFiles.show('File sharing', 'Enter your code:', (code, modal, closeModal) => {
-                if (code) {
-                    $.ajax({
-                        url: `https://sftools-api.herokuapp.com/?key=${ code }`,
-                        type: 'GET'
-                    }).done(function (message) {
-                        if (message) {
-                            var obj = JSON.parse(message);
-                            if (obj.settings) {
-                                Templates.save(obj.settings, `Shared ${ code }`);
-                            }
-
-                            Storage.import(obj.data);
-
-                            UI.show(UI.Files);
-
-                            closeModal();
-                        } else {
-                            modal.$input.parent('.input').addClass('error').transition('shake');
-                            modal.$extra.html('<p style="color: red; margin-top: 1em;">Invalid or expired code!</p>');
-                            Logger.log('WARNING', 'Error occured while trying to import shared file!');
-                        }
-                    }).fail(function () {
-                        modal.$input.parent('.input').addClass('error').transition('shake');
-                        modal.$extra.html('<p style="color: red; margin-top: 1em;">Unknown network error!</p>');
-                        Logger.log('WARNING', 'Error occured while trying to import shared file!');
-                    });
-                }
-            }, true);
+            UI.OnlineFiles.show(() => UI.show(UI.Files));
         });
 
         // Statistics
@@ -2891,35 +2863,53 @@ class OnlineFilesView extends View {
     constructor (parent) {
         super(parent);
 
-        this.$name = this.$parent.find('[data-op="name"]');
-        this.$content = this.$parent.find('[data-op="content"]');
-        this.$input = this.$parent.find('[data-op="input"]');
-        this.$extra = this.$parent.find('[data-op="extra"]');
+        this.$inputField = this.$parent.find('[data-op="input"]');
+        this.$input = this.$inputField.parent('.input');
+
+        this.$error = this.$parent.find('[data-op="extra"]');
+        this.$ok = this.$parent.find('.ui.approve.button');
     }
 
-    show (name, text, onApprove, freeze) {
-        this.$name.html(name);
-        this.$content.html(text);
-        this.$input.val('').parent('.input').removeClass('error');
-        this.$extra.html('');
+    show (callback) {
+        this.$input.removeClass('error');
+        this.$ok.removeClass('loading');
+        this.$inputField.val('');
+        this.$error.hide();
+
+        this.onReceive = obj => {
+            this.$ok.removeClass('loading');
+            if (obj) {
+                let data = JSON.parse(obj);
+                if (data.settings) {
+                    Templates.save(data.settings, `Shared ${ code }`);
+                }
+
+                Storage.import(data.data);
+                this.$parent.modal('hide');
+
+                callback();
+            } else {
+                this.$input.addClass('error').transition('shake');
+                this.$error.show();
+            }
+        };
 
         this.$parent.modal({
             onApprove: () => {
-                if (onApprove) {
-                    onApprove(this.$input.val(), this, () => {
-                        this.hide();
-                    });
-
-                    if (freeze) {
-                        return false;
-                    }
+                let code = this.$inputField.val();
+                if (code) {
+                    this.$ok.addClass('loading');
+                    $.ajax({
+                        url: `https://sftools-api.herokuapp.com/?key=${ code }`,
+                        type: 'GET'
+                    }).done(obj => this.onReceive(obj)).fail(() => this.onReceive());
+                } else {
+                    this.$input.transition('shake');
                 }
+
+                return false;
             }
         }).modal('show');
-    }
-
-    hide () {
-        this.$parent.modal('hide');
     }
 }
 
@@ -3151,7 +3141,7 @@ const UI = {
 
         // Online
         UI.OnlineTemplates = new OnlineTemplatesView('modal-templates');
-        UI.OnlineFiles = new OnlineFilesView('modal-info-input');
+        UI.OnlineFiles = new OnlineFilesView('modal-onlinefile');
         UI.OnlineShareFile = new OnlineShareFileView('modal-share');
     },
     preinitialize: function () {
