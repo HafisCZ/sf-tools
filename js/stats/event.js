@@ -1027,9 +1027,16 @@ class BrowseView extends View {
         });
 
         // Configuration
-        this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
-            UI.SettingsFloat.show('players', 'players', PredefinedTemplates['Players Default']);
+        this.$configure = this.$parent.find('[data-op="configure"]').contextmenu(event => {
+            event.preventDefault();
+        }).click(event => {
+            let caller = $(event.target);
+            if (caller.hasClass('icon') || caller.hasClass('button')) {
+                UI.SettingsFloat.show('players', 'players', PredefinedTemplates['Players Default']);
+            }
         });
+
+        this.refreshTemplateDropdown();
 
         // Hidden toggle
         this.$parent.find('[data-op="hidden"]').checkbox(SiteOptions.browse_hidden ? 'check' : 'uncheck').change((event) => {
@@ -1298,8 +1305,50 @@ class BrowseView extends View {
             this.$configure.get(0).style.setProperty('color', '');
         }
 
+        this.templateOverride = '';
         this.recalculate = true;
         this.$filter.trigger('change');
+    }
+
+    refreshTemplateDropdown () {
+        this.$configure.dropdown({
+            on: 'contextmenu',
+            showOnFocus: false,
+            preserveHTML: true,
+            action: (value, text, element) => {
+                this.$configure.find('.item').removeClass('active');
+
+                let settings = '';
+                if (this.templateOverride == value) {
+                    this.templateOverride = '';
+
+                    settings = Settings.load('players', 'players', PredefinedTemplates['Players Default'], TableType.Players);
+                } else {
+                    this.templateOverride = value;
+
+                    $(element).addClass('active');
+                    settings = Settings.load('', '', Templates.load(value).code, TableType.Players);
+                }
+
+                this.sorting = undefined;
+                this.table = new TableInstance(settings, TableType.Players);
+                this.recalculate = true;
+                this.$filter.trigger('change');
+                this.$configure.dropdown('hide');
+            },
+            values: [
+                {
+                    name: '<b>Quick swap custom templates</b>',
+                    disabled: true
+                },
+                ... Templates.get().map(t => {
+                    return {
+                        name: t,
+                        value: t
+                    };
+                })
+            ]
+        });
     }
 
     refresh () {
@@ -2207,6 +2256,10 @@ class SettingsView extends View {
             }
 
             this.refreshTemplates();
+
+            if (UI.current.refreshTemplateDropdown) {
+                UI.current.refreshTemplateDropdown();
+            }
         });
 
         this.refreshTemplates();
@@ -2303,6 +2356,10 @@ class SettingsView extends View {
             var $el = $(event.currentTarget);
             if ($el.find('i').hasClass('red')) {
                 Templates.remove(this.torem);
+
+                if (UI.current.refreshTemplateDropdown) {
+                    UI.current.refreshTemplateDropdown();
+                }
 
                 this.torem = '';
             } else {
