@@ -220,13 +220,56 @@ class GroupDetailView extends View {
         });
 
         // Configuration
-        this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
-            UI.SettingsFloat.show(this.identifier, 'guilds', PredefinedTemplates['Guilds Default']);
+        this.$configure = this.$parent.find('[data-op="configure"]').contextmenu(event => {
+            event.preventDefault();
+        }).click(event => {
+            let caller = $(event.target);
+            if (caller.hasClass('icon') || caller.hasClass('button')) {
+                UI.SettingsFloat.show(this.identifier, 'guilds', PredefinedTemplates['Guilds Default']);
+            }
         });
+
+        this.refreshTemplateDropdown();
 
         this.$name = this.$parent.find('[data-op="name"]');
         this.$timestamp = this.$parent.find('[data-op="timestamp"]');
         this.$reference = this.$parent.find('[data-op="reference"]');
+    }
+
+    refreshTemplateDropdown () {
+        this.$configure.dropdown({
+            on: 'contextmenu',
+            showOnFocus: false,
+            preserveHTML: true,
+            action: (value, text, element) => {
+                this.$configure.find('.item').removeClass('active');
+
+                let settings = '';
+                if (this.templateOverride == value) {
+                    this.templateOverride = '';
+                } else {
+                    this.templateOverride = value;
+
+                    $(element).addClass('active');
+                }
+
+                this.load();
+
+                this.$configure.dropdown('hide');
+            },
+            values: [
+                {
+                    name: '<b>Quick swap custom templates</b>',
+                    disabled: true
+                },
+                ... Templates.get().map(t => {
+                    return {
+                        name: t,
+                        value: t
+                    };
+                })
+            ]
+        });
     }
 
     show (identitifier) {
@@ -292,7 +335,13 @@ class GroupDetailView extends View {
             this.table.sorting = undefined;
         }
 
+        this.clearOverride();
         this.load();
+    }
+
+    clearOverride () {
+        this.templateOverride = '';
+        this.$configure.find('.item').removeClass('active');
     }
 
     load () {
@@ -308,7 +357,16 @@ class GroupDetailView extends View {
             this.sorting = this.table.sorting;
         }
 
-        this.table = new TableInstance(Settings.load(this.identifier, 'guilds', PredefinedTemplates['Guilds Default'], TableType.Group), TableType.Group);
+        let settings = undefined;
+        if (this.templateOverride) {
+            this.sorting = undefined;
+
+            settings = Settings.load('', '', Templates.load(this.templateOverride).code, TableType.Group);
+        } else {
+            settings = Settings.load(this.identifier, 'guilds', PredefinedTemplates['Guilds Default'], TableType.Group);
+        }
+
+        this.table = new TableInstance(settings, TableType.Group);
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -369,6 +427,7 @@ class GroupDetailView extends View {
             entries.add(player, membersReferences.find(c => c.Identifier == player.Identifier));
         });
 
+        this.entries = entries;
         this.table.setEntries(entries);
 
         if (this.sorting != undefined) {
@@ -827,9 +886,16 @@ class PlayerHistoryView extends View {
         });
 
         // Configuration
-        this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
-            UI.SettingsFloat.show(this.identifier, 'me', PredefinedTemplates['Me Default']);
+        this.$configure = this.$parent.find('[data-op="configure"]').contextmenu(event => {
+            event.preventDefault();
+        }).click(event => {
+            let caller = $(event.target);
+            if (caller.hasClass('icon') || caller.hasClass('button')) {
+                UI.SettingsFloat.show(this.identifier, 'me', PredefinedTemplates['Me Default']);
+            }
         });
+
+        this.refreshTemplateDropdown();
 
         this.$parent.find('[data-op="export-dropdown"]').dropdown({
             on: 'hover',
@@ -850,6 +916,45 @@ class PlayerHistoryView extends View {
         this.$name = this.$parent.find('[data-op="name"]');
     }
 
+    refreshTemplateDropdown () {
+        this.$configure.dropdown({
+            on: 'contextmenu',
+            showOnFocus: false,
+            preserveHTML: true,
+            action: (value, text, element) => {
+                this.$configure.find('.item').removeClass('active');
+
+                let settings = '';
+                if (this.templateOverride == value) {
+                    this.templateOverride = '';
+
+                    settings = Settings.load(this.identifier, 'me', PredefinedTemplates['Me Default'], TableType.History);
+                } else {
+                    this.templateOverride = value;
+
+                    $(element).addClass('active');
+                    settings = Settings.load('', '', Templates.load(value).code, TableType.History);
+                }
+
+                this.table = new TableInstance(settings, TableType.History);
+                this.refresh();
+                this.$configure.dropdown('hide');
+            },
+            values: [
+                {
+                    name: '<b>Quick swap custom templates</b>',
+                    disabled: true
+                },
+                ... Templates.get().map(t => {
+                    return {
+                        name: t,
+                        value: t
+                    };
+                })
+            ]
+        });
+    }
+
     show (identifier) {
         this.identifier = identifier;
 
@@ -862,6 +967,9 @@ class PlayerHistoryView extends View {
     }
 
     load () {
+        this.templateOverride = '';
+        this.$configure.find('.item').removeClass('active');
+
         // Table instance
         this.table = new TableInstance(Settings.load(this.identifier, 'me', PredefinedTemplates['Me Default'], TableType.History), TableType.History);
 
@@ -874,6 +982,10 @@ class PlayerHistoryView extends View {
             Database.update();
         }
 
+        this.refresh();
+    }
+
+    refresh () {
         this.table.setEntries(this.list);
 
         // Configuration indicator
@@ -1292,6 +1404,8 @@ class BrowseView extends View {
     }
 
     load () {
+        this.$configure.find('.item').removeClass('active');
+
         // Table instance
         this.sorting = undefined;
         this.table = new TableInstance(Settings.load('players', 'players', PredefinedTemplates['Players Default'], TableType.Players), TableType.Players);
@@ -2390,6 +2504,10 @@ class SettingsView extends View {
             this.code = code;
             Settings.save(this.code, this.identifier);
             this.$saveButton.addClass('disabled');
+
+            if (UI.current.clearOverride) {
+                UI.current.clearOverride();
+            }
         }
 
         this.hide();
