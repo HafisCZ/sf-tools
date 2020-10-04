@@ -2445,9 +2445,7 @@ class SettingsView extends View {
 
     refreshTemplates () {
         var content = '';
-
         var templates = Templates.get();
-        templates.sort((a, b) => b.localeCompare(a));
 
         for (var key of templates) {
             content += `

@@ -2145,7 +2145,10 @@ class Templates {
     }
 
     static get () {
-        return SharedPreferences.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
+        let keys = SharedPreferences.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
+        keys.sort((a, b) => a.localeCompare(b));
+
+        return keys;
     }
 
     static load (label) {
