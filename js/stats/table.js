@@ -197,6 +197,9 @@ class TableInstance {
                             for (var i = 0; i < header.grouped; i++) {
                                 var value = values[i];
                                 var reference = references[i] == undefined ? value : references[i];
+                                let extra = {
+                                    index: i
+                                };
 
                                 if (value == undefined) {
                                     content += CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, i == header.grouped - 1 && hlast, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
@@ -210,7 +213,7 @@ class TableInstance {
                                             freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
                                         } else if (header.format_diff === true) {
                                             if (header.format) {
-                                                freference = header.format(player, compare, this.settings, reference);
+                                                freference = header.format(player, compare, this.settings, reference, extra);
                                             }
                                         } else if (header.format_diff !== false) {
                                             freference = header.format_diff(this.settings, reference);
@@ -222,11 +225,11 @@ class TableInstance {
                                     }
 
                                     var color = CompareEval.evaluate(value, header.color);
-                                    color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value) : '')) || '';
+                                    color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value, extra) : '')) || '';
 
                                     var displayValue = CompareEval.evaluate(value, header.value);
                                     if (displayValue == undefined && header.format) {
-                                        value = header.format(player, compare, this.settings, value);
+                                        value = header.format(player, compare, this.settings, value, extra);
                                     } else if (displayValue != undefined) {
                                         value = displayValue;
                                     }
@@ -1838,8 +1841,8 @@ const SettingsCommands = [
         } else {
             var ast = new Expression(arg);
             if (ast.isValid()) {
-                root.setLocalVariable('format', (player, reference, env, val) => {
-                    return ast.eval(player, reference, env, val);
+                root.setLocalVariable('format', (player, reference, env, val, extra) => {
+                    return ast.eval(player, reference, env, val, extra);
                 });
             }
         }
@@ -1891,8 +1894,8 @@ const SettingsCommands = [
         var [ , key, a ] = this.match(string);
         var ast = new Expression(a);
         if (ast.isValid()) {
-            root.setLocalVariable('expr', (player, reference, env, scope) => {
-                return ast.eval(player, reference, env, scope);
+            root.setLocalVariable('expr', (player, reference, env, scope, extra) => {
+                return ast.eval(player, reference, env, scope, extra);
             });
         }
     }, function (root, string) {
@@ -1905,8 +1908,8 @@ const SettingsCommands = [
         var [ , key, a ] = this.match(string);
         var ast = new Expression(a);
         if (ast.isValid()) {
-            root.setLocalVariable('expc', (player, reference, env, val) => {
-                return getCSSBackground(ast.eval(player, reference, env, val));
+            root.setLocalVariable('expc', (player, reference, env, val, extra) => {
+                return getCSSBackground(ast.eval(player, reference, env, val, extra));
             });
         }
     }, function (root, string) {
