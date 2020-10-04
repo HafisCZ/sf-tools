@@ -229,8 +229,6 @@ class GroupDetailView extends View {
             }
         });
 
-        this.refreshTemplateDropdown();
-
         this.$name = this.$parent.find('[data-op="name"]');
         this.$timestamp = this.$parent.find('[data-op="timestamp"]');
         this.$reference = this.$parent.find('[data-op="reference"]');
@@ -273,6 +271,8 @@ class GroupDetailView extends View {
     }
 
     show (identitifier) {
+        this.refreshTemplateDropdown();
+
         this.identifier = identitifier;
         this.group = Database.Groups[identitifier];
 
@@ -895,8 +895,6 @@ class PlayerHistoryView extends View {
             }
         });
 
-        this.refreshTemplateDropdown();
-
         this.$parent.find('[data-op="export-dropdown"]').dropdown({
             on: 'hover',
             action: 'hide',
@@ -956,6 +954,7 @@ class PlayerHistoryView extends View {
     }
 
     show (identifier) {
+        this.refreshTemplateDropdown();
         this.identifier = identifier;
 
         this.list = Database.Players[identifier].List;
@@ -1147,8 +1146,6 @@ class BrowseView extends View {
                 UI.SettingsFloat.show('players', 'players', PredefinedTemplates['Players Default']);
             }
         });
-
-        this.refreshTemplateDropdown();
 
         // Hidden toggle
         this.$parent.find('[data-op="hidden"]').checkbox(SiteOptions.browse_hidden ? 'check' : 'uncheck').change((event) => {
@@ -1342,6 +1339,8 @@ class BrowseView extends View {
     }
 
     show () {
+        this.refreshTemplateDropdown();
+
         // Timestamp selector
         var timestamps = [];
         var references = [];
