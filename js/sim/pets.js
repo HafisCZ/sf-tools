@@ -87,7 +87,7 @@ self.addEventListener('message', function (message) {
                 }
             }
 
-            if (r[level][0] >= 50) {
+            if (r[level][origGladiator] >= 50) {
                 break;
             }
         }
