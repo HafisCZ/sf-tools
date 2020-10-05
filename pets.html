@@ -414,7 +414,7 @@
                                     <td colspan="17" class="text-center spanned">${ key }</td>
                                 </tr>
                                 <tr>
-                                    ${ new Array(16).fill(0).reduce((col, a, i) => col + `<td>Glad ${ i }</td>`, '<td>Level</td>') }
+                                    ${ map.find(x => x && x.length).reduce((col, a, i) => col + `<td>Glad ${ i }</td>`, '<td>Level</td>') }
                                 </tr>
                             </thead>
                             <tbody style="height: ${ (Math.min(2.3 * ml, 46)).toFixed(1) }em;" data-proper="${ (2.3 * ml).toFixed(1) }em">

@@ -1939,6 +1939,8 @@ class FileUpdate extends View {
 
         this.$textLabel = this.$parent.find('[data-op="textLabel"]');
         this.$textVersion = this.$parent.find('[data-op="textVersion"]');
+        this.$textTimestamp = this.$parent.find('[data-op="textTimestamp"]');
+        this.$textOffset = this.$parent.find('[data-op="textOffset"]');
 
         this.$parent.find('[data-op="back"]').click(() => {
             this.hide();
@@ -1947,12 +1949,57 @@ class FileUpdate extends View {
         this.$parent.find('[data-op="save"]').click(() => {
             this.currentFile.label = this.$textLabel.val().trim();
 
-            var version = this.$textVersion.val();
-            if (!this.currentFile.version && !isNaN(version) && Number.isInteger(Number(version))) {
+            let version = this.$textVersion.val();
+            if (Number.isInteger(Number(version))) {
                 this.currentFile.version = parseInt(version);
             }
 
-            Storage.update(this.currentIndex, this.currentFile);
+            let mustReload = false;
+
+            let offset = this.$textOffset.val();
+            if (Number.isInteger(Number(offset))) {
+                offset = parseInt(offset) * 3600000;
+
+                if (this.currentFile.offset != offset) {console.log(this.currentFile.offset , offset);
+                    this.currentFile.offset = offset;
+
+                    for (let g of this.currentFile.groups) {
+                        g.offset = offset;
+                    }
+
+                    for (let p of this.currentFile.players) {
+                        p.offset = offset;
+                    }
+
+                    mustReload |= true;
+                }
+            }
+
+            let timestamp = parseOwnDate(this.$textTimestamp.val());
+            if (timestamp) {console.log(this.currentFile.timestamp , timestamp);
+                if (this.currentFile.timestamp != timestamp) {
+                    this.currentFile.timestamp = timestamp;
+
+                    for (let g of this.currentFile.groups) {
+                        g.timestamp = timestamp;
+                    }
+
+                    for (let p of this.currentFile.players) {
+                        p.timestamp = timestamp;
+                    }
+
+                    mustReload |= true;
+                }
+            }
+
+            if (mustReload) {
+                console.log('hard reload');
+                Storage.remove(this.currentIndex);
+                Storage.import([ this.currentFile ]);
+            } else {
+                Storage.update(this.currentIndex, this.currentFile);
+            }
+
             UI.show(UI.Files);
 
             this.hide();
@@ -1965,12 +2012,8 @@ class FileUpdate extends View {
 
         this.$textLabel.val(this.currentFile.label);
         this.$textVersion.val(this.currentFile.version);
-
-        if (this.currentFile.version > 0) {
-            this.$textVersion.parent('div').addClass('disabled');
-        } else {
-            this.$textVersion.parent('div').removeClass('disabled');
-        }
+        this.$textTimestamp.val(formatDate(this.currentFile.timestamp));
+        this.$textOffset.val(this.currentFile.offset / 3600000);
 
         this.$parent.modal({
             centered: true,

@@ -44,6 +44,8 @@ self.addEventListener('message', function (message) {
         var orig = obj.Level;
         var p100 = obj.At100 + 1;
 
+        let origGladiator = obj.Gladiator;
+
         for (var level = Math.min(99, Math.max(0, obj.Level - 1)); level < 100; level++) {
             obj.Level = level + 1;
 
@@ -65,11 +67,11 @@ self.addEventListener('message', function (message) {
             }
 
             if (r[level][15] == 0) {
-                for (var i = 0; i < 15; i++) {
+                for (var i = origGladiator; i < 15; i++) {
                     r[level][i] = 0;
                 }
             } else {
-                for (var glad = 14; glad >= 0; glad--) {
+                for (var glad = 14; glad >= origGladiator; glad--) {
                     obj.Gladiator = glad;
 
                     r[level][glad] = new PetSimulator().simulate(obj, players[1], 1E5, useArmor);

@@ -17,6 +17,33 @@ function formatDate (date) {
     return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear() + ' ' + trail(date.getHours(), 2) + ':' + trail(date.getMinutes(), 2);
 }
 
+function parseOwnDate (text) {
+    if (typeof(text) == 'string') {
+        let objs = text.trim().split(/^(\d{2}).(\d{2}).(\d{4}) (\d{2}):(\d{2})$/);
+        if (objs.length == 7) {
+            objs = objs.map(x => parseInt(x));
+
+            let date = new Date();
+
+            date.setDate(objs[1])
+            date.setMonth(objs[2] - 1);
+            date.setFullYear(objs[3]);
+
+            date.setHours(objs[4]);
+            date.setMinutes(objs[5]);
+
+            date.setSeconds(0);
+            date.setMilliseconds(0);
+
+            return date.getTime();
+        } else {
+            return undefined;
+        }
+    } else {
+        return undefined;
+    }
+}
+
 function sym_xor (data) {
     return String.fromCharCode.apply(undefined, data.split('').map(function (c, i) { return c.charCodeAt(0) ^ (1 + ((i * i * 29 + i * 9721 + 3709) % 255)) }));
 }
