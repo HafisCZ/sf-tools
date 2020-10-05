@@ -843,6 +843,16 @@ class PlayerDetailFloatView extends View {
                                 <div class="detail-item text-center">${ formatDate(player.Fortress.Upgrade.Finish) }</div>
                             </div>
                         ` : '' }
+                        ${ player.Own ? `
+                            <br/>
+                            <div class="detail-entry" style="border-bottom: white solid 1px;">
+                                <div class="detail-item">Extras</div>
+                            </div>
+                            <div class="detail-entry">
+                                <div class="detail-item">Registered</div>
+                                <div class="detail-item text-center">${ formatDate(player.Registered) }</div>
+                            </div>
+                        ` : '' }
                     </div>
                 </div>
             </div>
