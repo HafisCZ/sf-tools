@@ -306,11 +306,13 @@ class GroupDetailView extends View {
             values: listTimestamp
         }).dropdown('setting', 'onChange', (value, text) => {
             this.timestamp = value;
-            this.reference = value;
+            if (this.reference > this.timestamp) {
+                this.reference = value;
+            }
 
-            var subref = listReference.slice(listReference.findIndex(entry => entry.value == this.reference));
+            var subref = listReference.slice(listReference.findIndex(entry => entry.value == this.timestamp));
             for (var i = 0; i < subref.length; i++) {
-                subref[i].selected = i == 0;
+                subref[i].selected = subref[i].value == this.reference;
             }
 
             this.$reference.dropdown({
@@ -1378,12 +1380,15 @@ class BrowseView extends View {
             values: timestamps
         }).dropdown('setting', 'onChange', (value, text) => {
             this.timestamp = value;
-            this.reference = value;
             this.recalculate = true;
 
-            var subref = references.slice(references.findIndex(entry => entry.value == this.reference));
+            if (this.reference > this.timestamp) {
+                this.reference = value;
+            }
+
+            var subref = references.slice(references.findIndex(entry => entry.value == this.timestamp));
             for (var i = 0; i < subref.length; i++) {
-                subref[i].selected = i == 0;
+                subref[i].selected = subref[i].value == this.reference;
             }
 
             this.$reference.dropdown({
