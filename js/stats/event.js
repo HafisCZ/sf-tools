@@ -1181,9 +1181,10 @@ class BrowseView extends View {
             'x': 'Enable simulator (argument is number of iterations)',
             'h': 'Show hidden',
             'o': 'Show own',
-            'sr': 'Sort by custom expression'
+            'sr': 'Sort by custom expression',
+            'q': 'Custom settings (separate header names with comma)'
         }).change((event) => {
-            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h|o|sr):/);
+            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h|o|sr|q):/);
 
             var terms = [
                 {
@@ -1300,8 +1301,26 @@ class BrowseView extends View {
                     });
                     this.recalculate = true;
                     this.shidden = true;
+                } else if (key == 'q' && typeof(arg) == 'string' && arg.length) {
+                    this.btable = this.table;
+                    this.benabled = true;
+
+                    this.table = new TableInstance(new Settings(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a }`, '') }`, TableType.Players), TableType.Players);
+                    this.sorting = undefined;
+                    this.recalculate = true;
                 }
             }
+
+            if (this.btable && !this.benabled) {
+                // Recover previous table
+                this.table = this.btable;
+                this.recalculate = true;
+                this.sorting = undefined;
+
+                this.btable = null;
+            }
+
+            this.benabled = false;
 
             var entries = new PlayersTableArray(perf, this.timestamp, this.reference);
 
