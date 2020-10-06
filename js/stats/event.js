@@ -1211,6 +1211,9 @@ class BrowseView extends View {
             this.shidden = false;
             this.autosort = undefined;
 
+            this.wbenabled = this.benabled;
+            this.benabled = false;
+
             for (var i = 1; i < filter.length; i += 2) {
                 var key = filter[i];
                 var arg = (filter[i + 1] || '').trim();
@@ -1302,10 +1305,13 @@ class BrowseView extends View {
                     this.recalculate = true;
                     this.shidden = true;
                 } else if (key == 'q' && typeof(arg) == 'string' && arg.length) {
-                    this.btable = this.table;
+                    if (!this.wbenabled) {
+                        this.btable = this.table;
+                    }
+
                     this.benabled = true;
 
-                    this.table = new TableInstance(new Settings(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a }`, '') }`, TableType.Players), TableType.Players);
+                    this.table = new TableInstance(new Settings(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a.trim() }`, '') }`, TableType.Players), TableType.Players);
                     this.sorting = undefined;
                     this.recalculate = true;
                 }
@@ -1319,8 +1325,6 @@ class BrowseView extends View {
 
                 this.btable = null;
             }
-
-            this.benabled = false;
 
             var entries = new PlayersTableArray(perf, this.timestamp, this.reference);
 
