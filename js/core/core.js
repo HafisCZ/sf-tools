@@ -732,8 +732,14 @@ const UpdateService = {
         }
 
         for (var p of b.players) {
-            if (!a.players.find(bp => bp.prefix == p.prefix && (p.own ? (p.save[1] == bp.save[1]) : (p.save[0] == bp.save[0])))) {
+            let player = a.players.find(bp => bp.prefix == p.prefix && (p.own ? (p.save[1] == bp.save[1]) : (p.save[0] == bp.save[0])));
+            if (!player) {
                 a.players.push(p);
+            } else {
+                // Merge idle game if missing (idlegame -> idlesave change)
+                if (!player.idle && p.idle) {
+                    player.idle = p.idle;
+                }
             }
         }
 
