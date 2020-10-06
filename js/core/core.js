@@ -1046,7 +1046,7 @@ const Storage = new (class {
                         player.chest = val.split('/').map(a => Number(a));
                     } else if (own && key.includes('witchData')) {
                         player.witch = val.split('/').map(a => Number(a));
-                    } else if (own && key.includes('idlegame')) {
+                    } else if (own && (key.includes('idlegame') || key.includes('idlesave'))) {
                         player.idle = val.split('/').map(a => Number(a));
                     }
                 }
