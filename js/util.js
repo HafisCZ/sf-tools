@@ -365,6 +365,7 @@ function calculateAttributePrice (attribute) {
     return price < 10 ? price : Math.min(1E7, Math.floor(price));
 }
 
+const TOTAL_GOLD_CURVE = [];
 function calculateTotalAttributePrice (attribute) {
     var price = 0;
     if (attribute > 3200) {
@@ -372,11 +373,13 @@ function calculateTotalAttributePrice (attribute) {
         attribute = 3200;
     }
 
-    for (var i = 0; i < attribute; i++) {
-        price += calculateAttributePrice(i);
+    if (!TOTAL_GOLD_CURVE.length) {
+        for (var i = 0; i < 3200; i++) {
+            TOTAL_GOLD_CURVE[i] = (TOTAL_GOLD_CURVE[i - 1] || 0) + calculateAttributePrice(i);
+        }
     }
 
-    return price;
+    return price + (TOTAL_GOLD_CURVE[attribute - 1] || 0);
 }
 
 function getCSSColor(string) {

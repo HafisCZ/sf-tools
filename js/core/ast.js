@@ -930,6 +930,22 @@ const SP_FUNCTIONS = {
         } else {
             return undefined;
         }
+    },
+    // Total attribute price
+    'statsum': (attribute) => {
+        if (!isNaN(attribute)) {
+            return calculateTotalAttributePrice(parseInt(attribute));
+        } else {
+            return undefined;
+        }
+    },
+    // Attribute price
+    'statcost': (attribute) => {
+        if (!isNaN(attribute)) {
+            return calculateAttributePrice(parseInt(attribute));
+        } else {
+            return undefined;
+        }
     }
 }
 
