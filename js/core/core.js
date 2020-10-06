@@ -737,7 +737,7 @@ const UpdateService = {
                 a.players.push(p);
             } else {
                 // Merge idle game if missing (idlegame -> idlesave change)
-                if (!player.idle && p.idle) {
+                if ((!player.idle || player.idle.length == 0) && p.idle) {
                     player.idle = p.idle;
                 }
             }
