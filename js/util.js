@@ -17,6 +17,16 @@ function formatDate (date) {
     return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear() + ' ' + trail(date.getHours(), 2) + ':' + trail(date.getMinutes(), 2);
 }
 
+function copyText (text) {
+    const element = document.createElement('textarea');
+    element.value = text;
+    document.body.appendChild(element);
+    element.select();
+    document.execCommand('copy');
+    document.body.removeChild(element);
+    window.getSelection().removeAllRanges();
+}
+
 function parseOwnDate (text) {
     if (typeof(text) == 'string') {
         let objs = text.trim().split(/^(\d{2}).(\d{2}).(\d{4}) (\d{2}):(\d{2})$/);

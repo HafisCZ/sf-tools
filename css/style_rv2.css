@@ -1,0 +1,112 @@
+.ui.selection.list.css-selection-list {
+    height: calc((100vh - 7em) / 2 - 3em);
+    max-height: calc((100vh - 7em) / 2 - 3em);
+
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.ui.selection.list.css-template-list {
+    height: calc((100vh - 7em) / 2 - 5.5em);
+    max-height: calc((100vh - 7em) / 2 - 5.5em);
+}
+
+.ui.selection.list.css-template-fullheight {
+    height: calc(100vh - 7em - 5.5em);
+    max-height: calc(100vh - 7em - 5.5em);
+}
+
+.ui.selection.list.css-selection-list::-webkit-scrollbar {
+  display: none;
+}
+
+.css-top-line {
+    border-top: 2px solid #212121;
+}
+
+.css-inverted .css-top-line {
+    border-top: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.css-inverted .item .content {
+    color: white;
+}
+
+.ui.button.css-template-save {
+    padding-left: 1.25em;
+    padding-right: 1.25em;
+    border-top-right-radius: 0 !important;
+}
+
+.css-template-name {
+    border-top-left-radius: 0 !important;
+}
+
+.css-template-list {
+    margin-top: 0 !important;
+}
+
+.css-settings-buttons > .button {
+    margin-bottom: 0.5em;
+}
+
+.css-settings-buttons > .button > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    height: 3em;
+    font-size: 110%;
+}
+
+.ui.selection.list.css-selection-list > .item.active {
+    border-radius: 0;
+    background-color: rgba(149, 227, 127, .50);
+}
+
+.ui.selection.list.css-selection-list > .item:hover {
+    border-radius: 0;
+    background-color: rgba(149, 227, 127, .25);
+}
+
+.css-entry-label {
+    color: black;
+    font-size: 90%;
+}
+
+.ui.header.css-template-header {
+    margin-top: 0em;
+}
+
+.ui.selection.list.css-selection-list > .item.unsaved {
+    border-radius: 0;
+    background-color: rgba(227, 155, 127, .50);
+}
+
+.ui.selection.list.css-selection-list > .item.unsaved:hover {
+    border-radius: 0;
+    background-color: rgba(227, 155, 127, .25);
+}
+
+.ui.selection.list.css-selection-list > .item {
+    height: 2.25em;
+    font-size: 110%;
+    padding-top: 0.66em;
+}
+
+.ui.selection.list.css-selection-list > .item .right.floated.content {
+    margin-top: -0.1em;
+}
+
+.ui.selection.list.css-selection-list > .item .icon {
+    opacity: .33;
+    margin-left: 0.5em !important;
+    padding: .75em;
+    margin-top: -0.75em !important;
+    padding-bottom: 1.75em;
+}
+
+.ui.selection.list.css-selection-list > .item .icon:hover {
+    opacity: 1;
+}

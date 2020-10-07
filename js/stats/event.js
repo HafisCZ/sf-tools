@@ -2305,6 +2305,13 @@ class SettingsView extends View {
     constructor (parent) {
         super(parent);
 
+        // Lists
+        this.$settingsList = this.$parent.find('[data-op="settings-list"]');
+        this.$templateList = this.$parent.find('[data-op="template-list"]');
+        this.$templateName = this.$parent.find('[data-op="template-name"]');
+        this.$templateSave = this.$parent.find('[data-op="template-save"]');
+
+        // Area
         this.$area = this.$parent.find('textarea');
         this.$wrapper = this.$parent.find('.ta-wrapper');
         var $b = this.$parent.find('.ta-content');
@@ -2316,12 +2323,9 @@ class SettingsView extends View {
         $b.css('font-family', this.$area.css('font-family'));
         $b.css('line-height', this.$area.css('line-height'));
 
-        this.$saveButton = this.$parent.find('[data-op="save"]').click(() => this.save());
-
-        // Input
+        // Input handling
         this.$area.on('input', (event) => {
             var val = $(event.target).val();
-
             if (this.pasted) {
                 val = val.replace(/\t/g, ' ');
 
@@ -2340,16 +2344,12 @@ class SettingsView extends View {
                 this.pasted = false;
             }
 
+            // Set content and update list
             $b.html(Settings.format(val));
-
-            if (val !== this.code) {
-                this.$saveButton.removeClass('disabled');
-            } else {
-                this.$saveButton.addClass('disabled');
-            }
+            this.$settingsList.settings_selectionlist('set unsaved', val !== this.code);
         }).trigger('input');
 
-        // Scroll
+        // Scroll handling
         this.$area.on('scroll', function () {
             var sy = $(this).scrollTop();
             var sx = $(this).scrollLeft();
@@ -2357,264 +2357,38 @@ class SettingsView extends View {
             $b.css('clip-path', `inset(${ sy }px ${ sx }px 0px 0px)`);
         });
 
+        // Paste handling
         this.$area.on('paste', () => {
             this.pasted = true;
         });
 
-        // Button events
-        this.$parent.find('[data-op="load"]').click(() => this.refresh());
-        this.$parent.find('[data-op="remove"]').click(() => this.remove());
-
-        this.$parent.find('[data-op="copy"]').click(() => {
-            // Copy text area content
-            const element = document.createElement('textarea');
-            element.value = this.$area.val();
-
-            document.body.appendChild(element);
-
-            element.select();
-
-            document.execCommand('copy');
-
-            document.body.removeChild(element);
-
-            window.getSelection().removeAllRanges();
-        });
-
-        this.$parent.find('[data-op="wiki-home"]').click(() => {
-            // Open wiki
-            window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank');
-        });
-
-        this.$parent.find('[data-op="browse"]').click(() => {
-            // Open browse page
-            UI.OnlineTemplates.show();
-        });
-
-        this.$items = this.$parent.find('[data-op="items"]');
-
-        this.$templateName = this.$parent.find('[data-op="template-name"]');
-        this.$templateList = this.$parent.find('[data-op="template-list"]');
-        this.$historyList = this.$parent.find('[data-op="history-list"]');
-
-        this.$parent.find('[data-op="template-save"]').click(() => {
-            var name = this.$templateName.val();
-            if (name.length > 0) {
+        // Template save handling
+        this.$templateSave.click(() => {
+            let name = this.$templateName.val();
+            if (name.length) {
                 Templates.save(this.$area.val(), name);
-            }
-
-            this.refreshTemplates();
-
-            if (UI.current.refreshTemplateDropdown) {
-                UI.current.refreshTemplateDropdown();
+                this.updateTemplates();
             }
         });
 
-        this.refreshTemplates();
-        this.refreshHistory();
+        // Button handling
+        this.$parent.find('[data-op="wiki-home"]').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
+        this.$parent.find('[data-op="browse"]').click(() => UI.OnlineTemplates.show());
+        this.$parent.find('[data-op="addtemplate"]').click(() => UI.CreateTemplate.show());
 
-        var pretemps = '';
-        for (var [ key, value ] of Object.entries(PredefinedTemplates)) {
-            pretemps += `
-                <div class="row css-template-item">
-                    <div class="ten wide column">
-                        <b>${ key }</b>
-                    </div>
-                    <div class="six wide column css-template-buttons">
-                        <div class="ui icon right floated small buttons">
-                            <button class="ui button" data-template-predef="${ key }"><i class="play icon"></i></button>
-                        </div>
-                    </div>
-                </div>`;
-        }
+        this.$parent.find('[data-op="copy"]').click(() => copyText(this.$area.val()));
+        this.$parent.find('[data-op="prev"]').click(() => this.history(1));
+        this.$parent.find('[data-op="next"]').click(() => this.history(-1));
 
-        this.$parent.find('[data-op="template-predef"]').html(pretemps);
-        this.$parent.find('[data-template-predef]').click(event => {
-            this.$area.val(PredefinedTemplates[$(event.currentTarget).attr('data-template-predef')]).trigger('input');
-        });
+        this.$parent.find('[data-op="close"]').click(() => this.hide());
+        this.$parent.find('[data-op="save"]').click(() => this.save());
 
-        this.torem = '';
-    }
-
-    refreshHistory () {
-        var content = '';
-
-        var history = Settings.getHistory();
-
-        for (var i = history.length - 1; i >= 0; i--) {
-            var name = history[i].name;
-            var cont = history[i].content;
-
-            if (name == 'players') {
-                name = 'Players';
-            } else if (name == 'me') {
-                name = 'Me';
-            } else if (name == 'guilds') {
-                name = 'Guilds';
-            } else if (Database.Players[name]) {
-                name = 'P: ' + Database.Players[name].Latest.Name;
-            } else if (Database.Groups[name]) {
-                name = 'G: ' + Database.Groups[name].Latest.Name;
-            }
-
-            content += `
-                <div class="row css-template-item">
-                    <div class="ten wide column">
-                        ${ cont ? `<b>${ name } (${ cont.length })</b>` : `<b class="foreground-red">${ name }</b>` }
-                    </div>
-                    <div class="six wide column css-template-buttons">
-                        <div class="ui icon right floated small buttons">
-                            <button class="ui button ${ cont ? '' : 'disabled' }" data-history-load="${ i }"><i class="play icon"></i></button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        this.$historyList.html(content);
-        this.$historyList.find('[data-history-load]').click((event) => {
-            this.$area.val(Settings.getHistory()[$(event.currentTarget).attr('data-history-load')].content).trigger('input');
-        });
-    }
-
-    refreshTemplates () {
-        var content = '';
-        var templates = Templates.get();
-
-        for (var key of templates) {
-            content += `
-                <div class="row css-template-item">
-                    <div class="ten wide column">
-                        <b>${ key }</b>
-                    </div>
-                    <div class="six wide column css-template-buttons">
-                        <div class="ui icon right floated small buttons">
-                            <button class="ui button" data-template-remove="${ key }"><i class="trash ${ this.torem == key ? 'red' : '' } alternate outline icon"></i></button>
-                            <button class="ui button" data-template-load="${ key }"><i class="play icon"></i></button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        this.$templateList.html(content);
-        this.$templateList.find('[data-template-remove]').click((event) => {
-            var $el = $(event.currentTarget);
-            if ($el.find('i').hasClass('red')) {
-                Templates.remove(this.torem);
-
-                if (UI.current.refreshTemplateDropdown) {
-                    UI.current.refreshTemplateDropdown();
-                }
-
-                this.torem = '';
-            } else {
-                this.torem = $el.attr('data-template-remove');
-
-                if (this.tout) {
-                    clearTimeout(this.tout);
-                }
-
-                this.tout = setTimeout(() => {
-                    this.torem = '';
-                    this.refreshTemplates();
-                }, 1000);
-            }
-
-            this.refreshTemplates();
-        });
-
-        this.$templateList.find('[data-template-load]').click((event) => {
-            this.$area.val(Templates.load($(event.currentTarget).attr('data-template-load')).getCode()).trigger('input');
-        });
-    }
-
-    save () {
-        var code = this.$area.val();
-        if (code !== this.code) {
-            Settings.addHistory(this.code, this.identifier);
-            this.code = code;
-            Settings.save(this.code, this.identifier);
-            this.$saveButton.addClass('disabled');
-
-            if (UI.current.clearOverride) {
-                UI.current.clearOverride();
-            }
-        }
-
-        this.hide();
-    }
-
-    refresh () {
-        this.refreshHistory();
-        this.refreshTemplates();
-        this.$area.val(this.code).trigger('input');
-    }
-
-    remove () {
-        Settings.remove(this.identifier);
-        this.show();
-    }
-
-    hide () {
-        this.refreshHistory();
-        this.refreshTemplates();
-    }
-
-    show (identifier = 'players') {
-        this.$saveButton.addClass('disabled');
-        this.$templateName.val('');
-
-        this.identifier = identifier;
-        this.code = Settings.load(identifier, this.getDefault(identifier), this.getDefaultTemplate(identifier)).getCode();
-        this.torem = '';
-
-        if (this.$items.length) {
-            var items = [{
-                name: 'Players',
-                value: 'players',
-                selected: identifier == undefined || identifier == 'players'
-            }, {
-                name: 'Me',
-                value: 'me',
-                selected: identifier == 'me'
-            }, {
-                name: 'Guilds',
-                value: 'guilds',
-                selected: identifier == 'guilds'
-            }];
-
-            for (var key of Settings.get()) {
-                var name = key;
-
-                if (key == 'me' || key == 'players' || key == 'guilds') {
-                    continue;
-                }
-
-                if (Database.Players[key]) {
-                    name = 'P: ' + Database.Players[key].Latest.Name;
-                } else if (Database.Groups[key]) {
-                    name = 'G: ' + Database.Groups[key].Latest.Name;
-                }
-
-                items.push({
-                    name: name,
-                    value: key,
-                    selected: identifier == key
-                });
-            }
-
-            this.$items.dropdown({
-                values: items
-            }).dropdown('setting', 'onChange', (value, text, c) => {
-                this.show(value);
-            });
-        }
-
-        this.refresh();
+        // History position
+        this.index = 0;
     }
 
     getDefault (v) {
+        // Get default key
         if (v == 'players') {
             return 'players';
         } else if (v == 'me' || v.includes('_p')) {
@@ -2625,6 +2399,7 @@ class SettingsView extends View {
     }
 
     getDefaultTemplate (v) {
+        // Get default template
         if (v == 'players') {
             return PredefinedTemplates['Players Default'];
         } else if (v == 'me' || v.includes('_p')) {
@@ -2632,6 +2407,147 @@ class SettingsView extends View {
         } else {
             return PredefinedTemplates['Guilds Default'];
         }
+    }
+
+    hide () {
+        // Do nothing
+    }
+
+    show (identifier = 'players') {
+        // Set code
+        this.identifier = identifier;
+        this.code = Settings.load(identifier, this.getDefault(identifier), this.getDefaultTemplate(identifier)).getCode();
+
+        // Update settings
+        if (this.$settingsList.length) {
+            this.updateSettings();
+        }
+
+        // Update templates
+        this.updateTemplates();
+
+        // Reset history
+        this.history();
+    }
+
+    updateSettings () {
+        // Settings
+        let settings = [
+            {
+                name: 'Players',
+                value: 'players',
+                selected: this.identifier == 'players'
+            },
+            {
+                name: 'Me',
+                value: 'me',
+                selected: this.identifier == 'me'
+            },
+            {
+                name: 'Guilds',
+                value: 'guilds',
+                selected: this.identifier == 'guilds'
+            },
+            ... Settings.get().map(key => {
+                if ([ 'me', 'players', 'guilds' ].includes(key)) {
+                    return null;
+                } else {
+                    return {
+                        name: Database.Players[key] ? `P: ${ Database.Players[key].Latest.Name }` : (Database.Groups[key] ? `G: ${ Database.Groups[key].Latest.Name }` : key),
+                        value: key,
+                        selected: this.identifier == key
+                    };
+                }
+            }).filter(obj => obj != null)
+        ];
+
+        // Setup list
+        this.$settingsList.settings_selectionlist({
+            items: settings,
+            onClick: value => this.show(value),
+            onSave: value => this.save(),
+            onRemove: value => {
+                Settings.remove(value);
+                this.show();
+            }
+        });
+    }
+
+    save () {
+        let code = this.$area.val();
+        if (code !== this.code) {
+            // Add into history
+            Settings.addHistory(this.code, this.identifier);
+
+            // Save current code
+            this.code = code;
+            Settings.save(this.code, this.identifier);
+        }
+    }
+
+    updateTemplates () {
+        // Clear template name
+        this.$templateName.val('');
+
+        // Templates
+        let templates = [
+            {
+                name: 'Players (Default)',
+                value: 'Players Default'
+            },
+            {
+                name: 'Me (Default)',
+                value: 'Me Default'
+            },
+            {
+                name: 'Guilds (Default)',
+                value: 'Guilds Default'
+            },
+            ... Templates.get().map(key => {
+                return {
+                    name: key,
+                    value: key
+                }
+            })
+        ];
+
+        // Setup list
+        this.$templateList.templates_selectionlist({
+            items: templates,
+            onClick: value => {
+                if (PredefinedTemplates[value]) {
+                    this.$area.val(PredefinedTemplates[value]);
+                } else {
+                    this.$area.val(Templates.load(value).getCode());
+                }
+
+                this.$area.trigger('input');
+            },
+            onRemove: value => {
+                Templates.remove(value);
+                this.updateTemplates();
+            }
+        });
+    }
+
+    history (i = 0) {
+        let history = Settings.getHistory();
+        let historyCount = history.length;
+
+        if (i == 0) {
+            this.index = 0;
+        } else {
+            this.index += i;
+            this.index = this.index > historyCount ? historyCount : (this.index < 0 ? 0 : this.index);
+        }
+
+        if (this.index > 0) {
+            this.$area.val(history[this.index - 1].content);
+        } else {
+            this.$area.val(this.code);
+        }
+
+        this.$area.trigger('input');
     }
 }
 
@@ -2641,18 +2557,31 @@ class SettingsFloatView extends SettingsView {
         super(parent);
     }
 
-    show (identifier, def) {
+    show (identifier) {
         this.$parent.modal({
             centered: false,
             transition: 'fade'
         }).modal('show');
 
-        super.show(identifier, def);
+        super.show(identifier);
+    }
+
+    save () {
+        if (UI.current.clearOverride) {
+            UI.current.clearOverride();
+        }
+
+        if (UI.current.refreshTemplateDropdown) {
+            UI.current.refreshTemplateDropdown();
+        }
+
+        super.save();
+        this.hide();
+        UI.current.load();
     }
 
     hide () {
         this.$parent.modal('hide');
-        UI.current.load();
     }
 
     remove () {
