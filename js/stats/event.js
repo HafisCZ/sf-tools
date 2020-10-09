@@ -2881,6 +2881,10 @@ class CreateTemplateView extends View {
                         cp: cp
                     });
 
+                    if (UI.current.refreshTemplateDropdown) {
+                        UI.current.refreshTemplateDropdown();
+                    }
+
                     view.updateTemplates();
                     this.hide();
                 } else {
@@ -2931,7 +2935,18 @@ class TemplatesView extends View {
                 view.updateTemplates();
             }
 
+            this.clearOverride();
             this.refreshList();
+        }
+    }
+
+    clearOverride () {
+        if (UI.current.clearOverride) {
+            UI.current.clearOverride();
+        }
+
+        if (UI.current.refreshTemplateDropdown) {
+            UI.current.refreshTemplateDropdown();
         }
     }
 
@@ -2948,6 +2963,7 @@ class TemplatesView extends View {
         if (this.template) {
             Templates.save(this.template.name, (UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat).$area.val(), this.template.compat);
             this.showTemplate(this.template.name);
+            this.clearOverride();
         }
     }
 
