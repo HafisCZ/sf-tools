@@ -254,20 +254,24 @@
                         <br/>
                         <h3 class="ui centered header">Configuration</h3>
                         <div class="ui checkbox sf-margin left-20" data-op="checkbox-lazy">
-                            <input type="checkbox" name="checkbox-lazy">
-                            <label for="checkbox-lazy">Use lazy loading</label>
+                            <input type="checkbox">
+                            <label>Use lazy loading</label>
                         </div>
                         <div class="ui checkbox sf-margin left-20 top-05" data-op="checkbox-obfuscated">
-                            <input type="checkbox" name="checkbox-obfuscated">
-                            <label for="checkbox-insecure">Obfuscate player names</label>
+                            <input type="checkbox">
+                            <label>Obfuscate player names</label>
+                        </div>
+                        <div class="ui checkbox sf-margin left-20 top-05" data-op="checkbox-hidden">
+                            <input type="checkbox">
+                            <label>Show hidden files</label>
                         </div>
                         <div class="ui checkbox sf-margin left-20 top-05" data-op="checkbox-insecure">
-                            <input type="checkbox" name="checkbox-insecure">
-                            <label for="checkbox-insecure">Allow restricted tags</label>
+                            <input type="checkbox">
+                            <label>Allow restricted tags</label>
                         </div>
                         <div class="ui checkbox sf-margin left-20 top-05" data-op="checkbox-beta">
-                            <input type="checkbox" name="checkbox-beta">
-                            <label for="checkbox-beta">Enable experimental features</label>
+                            <input type="checkbox">
+                            <label>Enable experimental features</label>
                         </div>
                     </div>
                 </div>
@@ -667,6 +671,10 @@
                         <div class="field">
                             <label style="color: white;">Version</label>
                             <input type="text" data-op="textVersion" placeholder="Server version">
+                        </div>
+                        <div class="field">
+                            <label style="color: white;">Color</label>
+                            <input type="text" data-op="textColor" placeholder="Color name / HEX">
                         </div>
                         <div class="field disabled">
                             <label style="color: white;">Timestamp</label>

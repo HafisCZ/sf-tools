@@ -71,19 +71,13 @@ const SiteOptions = new (class {
             players_hidden: false,
             browse_hidden: false,
             groups_other: false,
-            players_other: false
+            players_other: false,
+            files_hide: false
         });
 
         this.params = {
             beta: false,
-            temp: false,
-            insecure: false,
-            obfuscated: false,
-            groups_hidden: false,
-            players_hidden: false,
-            browse_hidden: false,
-            groups_other: false,
-            players_other: false
+            temp: false
         };
     }
 
@@ -165,6 +159,15 @@ const SiteOptions = new (class {
 
     set players_other (value) {
         this.options.players_other = value;
+        SharedPreferences.set('options', this.options);
+    }
+
+    get files_hide () {
+        return this.options.files_hide;
+    }
+
+    set files_hide (value) {
+        this.options.files_hide = value;
         SharedPreferences.set('options', this.options);
     }
 })();

@@ -1978,6 +1978,7 @@ class FileUpdate extends View {
         this.$textLabel = this.$parent.find('[data-op="textLabel"]');
         this.$textVersion = this.$parent.find('[data-op="textVersion"]');
         this.$textTimestamp = this.$parent.find('[data-op="textTimestamp"]');
+        this.$textColor = this.$parent.find('[data-op="textColor"]');
 
         this.$parent.find('[data-op="back"]').click(() => {
             this.hide();
@@ -1989,6 +1990,13 @@ class FileUpdate extends View {
             let version = this.$textVersion.val();
             if (Number.isInteger(Number(version))) {
                 this.currentFile.version = parseInt(version);
+            }
+
+            let color = this.$textColor.val();
+            if (getCSSColor(color) && color in COLOR_MAP) {
+                this.currentFile.color = color;
+            } else if (color == '') {
+                delete this.currentFile.color;
             }
 
             Storage.update(this.currentIndex, this.currentFile);
@@ -2005,6 +2013,7 @@ class FileUpdate extends View {
 
         this.$textLabel.val(this.currentFile.label);
         this.$textVersion.val(this.currentFile.version);
+        this.$textColor.val(this.currentFile.color || '');
         this.$textTimestamp.val(new Date(this.currentFile.timestamp).toString());
 
         this.$parent.modal({
@@ -2103,79 +2112,81 @@ class FilesView extends View {
         this.$rpcount = this.$parent.find('[data-op="rpcount"]');
         this.$fcount = this.$parent.find('[data-op="fcount"]');
 
+        // Setup checkboxes
+        // Lazy loading
         this.$lazy = this.$parent.find('[data-op="checkbox-lazy"]').checkbox({
-            onChecked: function () {
-                SiteOptions.lazy = true;
+            onChecked: () => {
+                SiteOptions.lazy = true
             },
-            onUnchecked: function () {
-                SiteOptions.lazy = false;
+            onUnchecked: () => {
+                SiteOptions.lazy = false
             }
-        });
+        }).checkbox(SiteOptions.lazy ? 'set checked' : 'set unchecked');
 
-        if (SiteOptions.lazy) {
-            this.$lazy.checkbox('set checked');
-        } else {
-            this.$lazy.checkbox('set unchecked');
-        }
+        // Hide hidden files
+        this.$hidden = this.$parent.find('[data-op="checkbox-hidden"]').checkbox({
+            onChecked: () => {
+                SiteOptions.files_hide = true;
+                this.show();
+            },
+            onUnchecked: () => {
+                SiteOptions.files_hide = false;
+                this.show();
+            }
+        }).checkbox(SiteOptions.files_hide ? 'set checked' : 'set unchecked');
 
+        // Obfuscate player names
         this.$obfuscated = this.$parent.find('[data-op="checkbox-obfuscated"]').checkbox({
-            onChecked: function () {
+            onChecked: () => {
                 SiteOptions.obfuscated = true;
+                this.show();
             },
-            onUnchecked: function () {
+            onUnchecked: () => {
                 SiteOptions.obfuscated = false;
+                this.show();
             }
-        });
+        }).checkbox(SiteOptions.obfuscated ? 'set checked' : 'set unchecked');
 
-        if (SiteOptions.obfuscated) {
-            this.$obfuscated.checkbox('set checked');
-        } else {
-            this.$obfuscated.checkbox('set unchecked');
-        }
-
+        // Enable beta features
         this.$beta = this.$parent.find('[data-op="checkbox-beta"]').checkbox({
-            onChecked: function () {
+            onChecked: () => {
                 SiteOptions.beta = true;
+                this.show();
             },
-            onUnchecked: function () {
+            onUnchecked: () => {
                 SiteOptions.beta = false;
+                this.show();
             }
-        });
+        }).checkbox(SiteOptions.beta ? 'set checked' : 'set unchecked');
 
-        if (SiteOptions.beta) {
-            this.$beta.checkbox('set checked');
-        } else {
-            this.$beta.checkbox('set unchecked');
-        }
-
+        // Enable insecure tables
         this.$insecure = this.$parent.find('[data-op="checkbox-insecure"]').checkbox({
-            onChecked: function () {
+            onChecked: () => {
                 SiteOptions.insecure = true;
+                this.show();
             },
-            onUnchecked: function () {
+            onUnchecked: () => {
                 SiteOptions.insecure = false;
+                this.show();
             }
-        });
-
-        if (SiteOptions.insecure) {
-            this.$insecure.checkbox('set checked');
-        } else {
-            this.$insecure.checkbox('set unchecked');
-        }
+        }).checkbox(SiteOptions.insecure ? 'set checked' : 'set unchecked');
     }
 
     show () {
+        // Set counters
         this.$gcount.text(Object.keys(Database.Groups).length);
         this.$pcount.text(Object.keys(Database.Players).length);
-
         this.$rpcount.text(Storage.files().map(f => f.players ? f.players.length : 0).reduce((a, b) => a + b, 0));
-
         this.$fcount.text(Storage.files().length);
 
         // Page content
+        let showHidden = !SiteOptions.files_hide;
         var content = Storage.files().map(function (file, index) {
-            return `
-                <div class="ui segment ${ file.hidden ? 'css-file-hidden' : '' }" data-id="${ index }">
+            if (file.hidden && showHidden) {
+                // Return null if not displayed
+                return null;
+            } else return `
+                <div class="ui segment ${ file.hidden ? 'css-file-hidden' : '' }" data-id="${ index }" ${ file.color ? `style="background-color: ${ getColorFromName(file.color) }10;"` : '' }>
                     <div class="ui middle aligned grid">
                         <div class="eight wide column">
                             <div class="file-detail-labels clickable">
@@ -2220,10 +2231,12 @@ class FilesView extends View {
                     </div>
                 </div>
             `;
-        });
+        }).filter(c => c);
 
+        // Flip content
         content.reverse();
 
+        // Fill content & add select handler
         this.$list.html(content.join('')).find('.file-detail-labels').click(function () {
             $(this).find('[data-op="select"]').checkbox('toggle');
             $(this).closest('[data-id]').toggleClass('selected');
@@ -2246,6 +2259,7 @@ class FilesView extends View {
             });
         });
 
+        // Initialize checkboxes for individual files
         this.$parent.find('[data-op="select"]').checkbox();
 
         // Remove file
