@@ -2376,15 +2376,6 @@ class SettingsView extends View {
             this.pasted = true;
         });
 
-        // Template save handling
-        this.$templateSave.click(() => {
-            let name = this.$templateName.val();
-            if (name.length) {
-                Templates.save(this.$area.val(), name);
-                this.updateTemplates();
-            }
-        });
-
         // Button handling
         this.$parent.find('[data-op="wiki-home"]').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
         this.$parent.find('[data-op="browse"]').click(() => UI.OnlineTemplates.show());
@@ -2442,6 +2433,9 @@ class SettingsView extends View {
 
         // Reset history
         this.history();
+
+        // Reset scrolling
+        this.$area.scrollTop(0);
     }
 
     updateSettings () {
@@ -2500,9 +2494,6 @@ class SettingsView extends View {
     }
 
     updateTemplates () {
-        // Clear template name
-        this.$templateName.val('');
-
         // Templates
         let templates = [
             {
@@ -2573,8 +2564,9 @@ class SettingsFloatView extends SettingsView {
 
     show (identifier) {
         this.$parent.modal({
-            centered: false,
-            transition: 'fade'
+            centered: true,
+            transition: 'fade',
+            autofocus: false
         }).modal('show');
 
         super.show(identifier);
@@ -2888,9 +2880,73 @@ class OnlineShareFileView extends View {
     }
 }
 
+class CreateTemplateView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$name = this.$parent.find('[data-op="name"]')
+        this.$cme = this.$parent.find('[data-op="compatibility-me"]')
+        this.$cguilds = this.$parent.find('[data-op="compatibility-guilds"]')
+        this.$cplayers = this.$parent.find('[data-op="compatibility-players"]')
+    }
+
+    show () {
+        // Init
+        this.$name.val('');
+        this.$cme.checkbox('set unchecked');
+        this.$cguilds.checkbox('set unchecked');
+        this.$cplayers.checkbox('set unchecked');
+
+        // Show modal
+        this.$parent.modal({
+            allowMultiple: true,
+            onApprove: () => {
+                // Name
+                let name = this.$name.val();
+
+                // Compatibility
+                let cme = this.$cme.checkbox('is checked');
+                let cguilds = this.$cguilds.checkbox('is checked');
+                let cplayers = this.$cplayers.checkbox('is checked');
+
+                // Settings view
+                let view = UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat;
+
+                // Code
+                let code = view.$area.val();
+
+                // Add template
+                if (name) {
+                    Templates.save({
+                        content: code,
+                        name: name,
+                        compat: {
+                            me: cme,
+                            guilds: cguilds,
+                            players: cplayers
+                        }
+                    });
+
+                    view.updateTemplates();
+                    this.hide();
+                } else {
+                    this.$name.transition('shake');
+                }
+
+                return false;
+            }
+        }).modal('show');
+    }
+
+    hide () {
+        this.$parent.modal('hide');
+    }
+}
+
 class OnlineTemplatesView extends View {
     constructor (parent) {
         super(parent);
+
         this.$dimmer = this.$parent.find('[data-op="dimmer"]');
         this.$content = this.$parent.find('[data-op="content"]');
         this.$input = this.$parent.find('[data-op="private-value"]');
@@ -3031,7 +3087,15 @@ class OnlineFilesView extends View {
             if (obj) {
                 let data = JSON.parse(obj);
                 if (data.settings) {
-                    Templates.save(data.settings, `Shared ${ code }`);
+                    Templates.save({
+                        content: data.settings,
+                        name: `Shared ${ code }`,
+                        compat: {
+                            me: false,
+                            guilds: false,
+                            players: false
+                        }
+                    });
                 }
 
                 Storage.import(data.data);
@@ -3300,6 +3364,7 @@ const UI = {
         UI.ChangeLogs = new ChangeLogsView('view-changelog');
         UI.Endpoint = new EndpointView('modal-endpoint');
         UI.ConfirmDialog = new ConfirmDialogView('modal-confirm');
+        UI.CreateTemplate = new CreateTemplateView('modal-addtemplate');
 
         // Online
         UI.OnlineTemplates = new OnlineTemplatesView('modal-templates');

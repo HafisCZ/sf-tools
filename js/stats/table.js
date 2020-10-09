@@ -2139,8 +2139,8 @@ class Constants {
 }
 
 class Templates {
-    static save (settings, label) {
-        SharedPreferences.set(`templates/${ label }`, settings);
+    static save (obj) {
+        SharedPreferences.set(`templates/${ obj.name }`, obj);
     }
 
     static remove (label) {
@@ -2155,7 +2155,10 @@ class Templates {
     }
 
     static load (label) {
-        return new Settings(SharedPreferences.get(`templates/${ label }`, ''));
+        let obj = SharedPreferences.get(`templates/${ label }`, { content: '' });
+        let code = typeof(obj) == 'string' ? obj : obj.content;
+        
+        return new Settings(code);
     }
 }
 

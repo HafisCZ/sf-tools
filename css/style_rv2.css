@@ -7,11 +7,6 @@
     scrollbar-width: none;
 }
 
-.ui.selection.list.css-template-list {
-    height: calc((100vh - 7em) / 2 - 5.5em);
-    max-height: calc((100vh - 7em) / 2 - 5.5em);
-}
-
 .ui.selection.list.css-template-fullheight {
     height: calc(100vh - 7em - 5.5em);
     max-height: calc(100vh - 7em - 5.5em);
@@ -19,6 +14,27 @@
 
 .ui.selection.list.css-selection-list::-webkit-scrollbar {
   display: none;
+}
+
+.css-template-heading {
+    position: relative;
+}
+
+.css-template-add .icons {
+    font-size: 1.25em;
+}
+
+.css-template-add {
+    position: absolute;
+    right: 0.4em;
+    top: -0.45em;
+    cursor: pointer;
+    padding: 0.75em;
+    opacity: 0.5;
+}
+
+.css-template-heading .css-template-add:hover {
+    opacity: 1;
 }
 
 .css-top-line {

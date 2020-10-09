@@ -286,12 +286,16 @@
                     <div class="ui middle aligned selection list css-selection-list css-top-line" data-op="settings-list">
 
                     </div>
-                    <h3 class="ui centered header css-template-header">Templates</h3>
-                    <div class="ui action fluid small input css-top-line">
-                        <input class="css-template-name" type="text" placeholder="Template name ..." data-op="template-name">
-                        <button class="ui icon secondary basic button css-template-save" data-op="template-save"><i class="angle double down icon"></i></button>
+                    <div class="css-template-heading">
+                        <h3 class="ui centered header css-template-header">Templates</h3>
+                        <div class="css-template-add" data-op="addtemplate">
+                            <i class="icons">
+                                <i class="file outline icon"></i>
+                                <i class="corner add icon"></i>
+                            </i>
+                        </div>
                     </div>
-                    <div class="ui middle aligned selection list css-selection-list css-template-list" data-op="template-list">
+                    <div class="ui middle aligned selection list css-selection-list css-template-list css-top-line" data-op="template-list">
 
                     </div>
                 </div>
@@ -317,15 +321,19 @@
         </div>
 
         <!-- SettingsFloatView -->
-        <div id="modal-settings" class="ui basic large modal text-white css-inverted" style="width: 95vw;">
+        <div id="modal-settings" class="ui basic modal text-white css-inverted" style="width: 95vw;">
             <div class="ui grid">
                 <div class="three wide column">
-                    <h3 class="ui centered header css-template-header">Templates</h3>
-                    <div class="ui action fluid small input css-top-line">
-                        <input class="css-template-name" type="text" placeholder="Template name ..." data-op="template-name">
-                        <button class="ui icon inverted basic button css-template-save" data-op="template-save"><i class="angle double down icon"></i></button>
+                    <div class="css-template-heading">
+                        <h3 class="ui centered header css-template-header">Templates</h3>
+                        <div class="css-template-add" data-op="addtemplate">
+                            <i class="icons">
+                                <i class="file outline icon"></i>
+                                <i class="inverted corner add icon"></i>
+                            </i>
+                        </div>
                     </div>
-                    <div class="ui middle aligned selection list css-selection-list css-template-list css-template-fullheight" data-op="template-list">
+                    <div class="ui middle aligned selection list css-selection-list css-template-list css-template-fullheight css-top-line" data-op="template-list">
 
                     </div>
                 </div>
@@ -563,6 +571,47 @@
             </div>
         </div>
 
+        <div id="modal-addtemplate" class="ui mini modal">
+            <div class="header">Add template</div>
+            <div class="content">
+                <div class="ui form">
+                    <div class="field">
+                        <label>Template name</label>
+                        <div class="ui fluid small input">
+                            <input type="text" placeholder="Teplate name ..." data-op="name">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Tab compatibility</label>
+                        <div class="three fields">
+                            <div class="field">
+                                <div class="ui checkbox" data-op="compatibility-me">
+                                    <input type="checkbox">
+                                    <label>Me</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui checkbox" data-op="compatibility-guilds">
+                                    <input type="checkbox">
+                                    <label>Guilds</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui checkbox" data-op="compatibility-players">
+                                    <input type="checkbox">
+                                    <label>Players</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="ui cancel button">Cancel</div>
+                <div class="ui green approve button">Add template</div>
+            </div>
+        </div>
+
         <div id="modal-onlinefile" class="ui mini modal">
             <div class="header">File Sharing</div>
             <div class="content text-center">
@@ -674,7 +723,7 @@
                         </div>
                         <div class="field">
                             <label style="color: white;">Color</label>
-                            <input type="text" data-op="textColor" placeholder="Color name / HEX">
+                            <input type="text" data-op="textColor" placeholder="Color name">
                         </div>
                         <div class="field disabled">
                             <label style="color: white;">Timestamp</label>
@@ -804,7 +853,15 @@
                             arg.description += ` (${ formatDate(Date.now()) })`;
                         }
 
-                        Templates.save(arg.content, arg.description);
+                        Templates.save({
+                            content: arg.content,
+                            name: arg.description,
+                            compat: {
+                                me: arg.compat ? arg.compat.me : false,
+                                guilds:  arg.compat ? arg.compat.guilds : false,
+                                players:  arg.compat ? arg.compat.players : false
+                            }
+                        });
                     }
 
                     window.location.href = window.location.href.split('?')[0];

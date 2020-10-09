@@ -511,8 +511,8 @@ h3.file-selected {
 .ta-area {
     color: transparent !important;
     caret-color: black;
-    max-height: calc(100vh - 7em) !important;
-    height: calc(100vh - 7em) !important;
+    max-height: calc(100vh - 10em) !important;
+    height: calc(100vh - 10em) !important;
     resize: none !important;
     overflow: auto;
 }
