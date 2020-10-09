@@ -25,6 +25,7 @@
 
 .css-template-list .item {
     height: 2em;
+    direction: ltr;
     padding-left: 1em !important;
     color: black !important;
     border-radius: 0 !important;
