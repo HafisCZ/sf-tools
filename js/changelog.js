@@ -1,4 +1,20 @@
 const CHANGELOG = {
+    'v3.910': [
+        'Reworked settings screen.',
+        'Reworked modal for importing shared files.',
+        'Added colors to file entries.',
+        'Added toggle to show/hide hidden files.',
+        'Added template links.',
+        'Added template quick swap (Right click the cog icon above the table).',
+        'Added indexes to grouped headers.',
+        'Added register date to player detail.',
+        'Added <code>statsum</code> and <code>statcost</code> functions.',
+        'Added <code>q</code> search term to show specified headers only.',
+        'Fixed bracket handling in expressions.',
+        'Fixed templates not sorted property.',
+        'Fixed AM handling (You can just reimport the files without deleting them to fill missing AM info).',
+        'Fixed Next button not becoming disabled in Endpoint.'
+    ],
     'v3.881': [
         'Added headers for pet food, found pets and pet levels.',
         'Added sharing function for players, guilds and files.',
