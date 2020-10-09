@@ -3089,8 +3089,14 @@ class EndpointView extends View {
             if ($el.length) {
                 this.customTarget = $el.find('label').attr('for');
                 $el.checkbox('check');
+
+                if (!$('.list .checkbox:not(.checked)').first().length) {
+                    this.$next.addClass('disabled');
+                }
+            } else {
+                this.$next.addClass('disabled');
             }
-        });
+        }).addClass('disabled');
 
         this.endpoint = undefined;
         this.downloading = [];
@@ -3179,6 +3185,12 @@ class EndpointView extends View {
                         this.showError('Download failed', true);
                     });
                 });
+
+                if ($('.list .checkbox:not(.checked)').first().length) {
+                    this.$next.removeClass('disabled');
+                } else {
+                    this.$next.addClass('disabled');
+                }
             }, () => {
                 this.$step4.hide();
                 this.showError('Wrong username or password');
