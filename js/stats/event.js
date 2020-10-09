@@ -149,16 +149,7 @@ class GroupDetailView extends View {
 
         // Copy 2
         this.$parent.find('[data-op="copy-sim"]').click(() => {
-            const element = document.createElement('textarea');
-
-            element.value = JSON.stringify(this.table.array.map(p => p.player.toSimulatorModel()));
-
-            document.body.appendChild(element);
-
-            element.select();
-
-            document.execCommand('copy');
-            document.body.removeChild(element);
+            copyText(JSON.stringify(this.table.array.map(p => p.player.toSimulatorModel())));
         });
 
         // Save
@@ -205,15 +196,7 @@ class GroupDetailView extends View {
                 {
                     label: 'Copy',
                     action: (source) => {
-                        const element = document.createElement('textarea');
-                        element.value = JSON.stringify(Database.Players[source.attr('data-id')][this.timestamp].Data);
-
-                        document.body.appendChild(element);
-
-                        element.select();
-
-                        document.execCommand('copy');
-                        document.body.removeChild(element);
+                        copyText(JSON.stringify(Database.Players[source.attr('data-id')][this.timestamp].toSimulatorModel()));
                     }
                 }
             ]
@@ -1083,21 +1066,16 @@ class BrowseView extends View {
                 {
                     label: 'Copy',
                     action: (source) => {
-                        const element = document.createElement('textarea');
+                        let sel = this.$parent.find('[data-id].css-op-select');
+                        let cnt = null;
 
-                        var sel = this.$parent.find('[data-id].css-op-select');
                         if (sel.length) {
-                            element.value = JSON.stringify(sel.toArray().map(x => Database.Players[$(x).attr('data-id')].Latest.Data));
+                            cnt = sel.toArray().map(x => Database.Players[$(x).attr('data-id')].Latest.toSimulatorModel());
                         } else {
-                            element.value = JSON.stringify(Database.Players[source.attr('data-id')].Latest.Data);
+                            cnt = Database.Players[source.attr('data-id')].Latest.toSimulatorModel();
                         }
 
-                        document.body.appendChild(element);
-
-                        element.select();
-
-                        document.execCommand('copy');
-                        document.body.removeChild(element);
+                        copyText(JSON.stringify(cnt));
                     }
                 },
                 {
@@ -1593,23 +1571,14 @@ class GroupsView extends View {
                 {
                     label: 'Copy',
                     action: (source) => {
-                        const element = document.createElement('textarea');
-
-                        var group = Database.Groups[source.attr('data-id')].Latest;
-                        element.value = JSON.stringify(group.Members.map(id => {
+                        let group = Database.Groups[source.attr('data-id')].Latest;
+                        copyText(JSON.stringify(group.Members.map(id => {
                             if (Database.Players[id] && Database.Players[id][group.Timestamp]) {
-                                return Database.Players[id][group.Timestamp].Data;
+                                return Database.Players[id][group.Timestamp].toSimulatorModel();
                             } else {
                                 return null;
                             }
-                        }).filter(x => x));
-
-                        document.body.appendChild(element);
-
-                        element.select();
-
-                        document.execCommand('copy');
-                        document.body.removeChild(element);
+                        }).filter(x => x)));
                     }
                 },
                 {
@@ -1732,15 +1701,7 @@ class PlayersView extends View {
                 {
                     label: 'Copy',
                     action: (source) => {
-                        const element = document.createElement('textarea');
-                        element.value = JSON.stringify(Database.Players[source.attr('data-id')].Latest.Data);
-
-                        document.body.appendChild(element);
-
-                        element.select();
-
-                        document.execCommand('copy');
-                        document.body.removeChild(element);
+                        copyText(JSON.stringify(Database.Players[source.attr('data-id')].Latest.toSimulatorModel()));
                     }
                 },
                 {
