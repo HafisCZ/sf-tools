@@ -2133,7 +2133,7 @@ class FilesView extends View {
         }).checkbox(SiteOptions.insecure ? 'set checked' : 'set unchecked');
 
         // Enable inventory
-        this.$insecure = this.$parent.find('[data-op="checkbox-inventory"]').checkbox({
+        this.$inventory = this.$parent.find('[data-op="checkbox-inventory"]').checkbox({
             onChecked: () => {
                 SiteOptions.inventory = true;
                 this.show();
