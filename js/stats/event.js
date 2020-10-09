@@ -2131,6 +2131,18 @@ class FilesView extends View {
                 this.show();
             }
         }).checkbox(SiteOptions.insecure ? 'set checked' : 'set unchecked');
+
+        // Enable inventory
+        this.$insecure = this.$parent.find('[data-op="checkbox-inventory"]').checkbox({
+            onChecked: () => {
+                SiteOptions.inventory = true;
+                this.show();
+            },
+            onUnchecked: () => {
+                SiteOptions.inventory = false;
+                this.show();
+            }
+        }).checkbox(SiteOptions.inventory ? 'set checked' : 'set unchecked');
     }
 
     show () {

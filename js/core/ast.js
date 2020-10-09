@@ -2453,6 +2453,21 @@ const SP_KEYWORD_MAPPING_5 = {
     },
     'Potions': {
         expr: p => p.Potions
+    },
+    'Backpack': {
+        expr: p => p.Inventory ? p.Inventory.Backpack : undefined
+    },
+    'Chest': {
+        expr: p => p.Inventory ? p.Inventory.Chest : undefined
+    },
+    'Bert Items': {
+        expr: p => p.Inventory ? p.Inventory.Bert : undefined
+    },
+    'Kunigunde Items': {
+        expr: p => p.Inventory ? p.Inventory.Kunigunde : undefined
+    },
+    'Mark Items': {
+        expr: p => p.Inventory ? p.Inventory.Mark : undefined
     }
 };
 

@@ -72,7 +72,8 @@ const SiteOptions = new (class {
             browse_hidden: false,
             groups_other: false,
             players_other: false,
-            files_hide: false
+            files_hide: false,
+            inventory: false
         });
 
         this.params = {
@@ -87,6 +88,15 @@ const SiteOptions = new (class {
 
     set lazy (value) {
         this.options.lazy = value;
+        SharedPreferences.set('options', this.options);
+    }
+
+    get inventory () {
+        return this.options.inventory;
+    }
+
+    set inventory (value) {
+        this.options.inventory = value;
         SharedPreferences.set('options', this.options);
     }
 
