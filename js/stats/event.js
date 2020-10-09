@@ -2436,7 +2436,7 @@ class SettingsView extends View {
         this.history();
 
         // Reset scrolling
-        this.$area.scrollTop(0);
+        this.$area.scrollTop(0).trigger('scroll');
     }
 
     updateSettings () {
