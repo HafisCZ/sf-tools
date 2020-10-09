@@ -1,6 +1,6 @@
 .ui.selection.list.css-selection-list {
-    height: calc((100vh - 7em) / 2 - 3em);
-    max-height: calc((100vh - 7em) / 2 - 3em);
+    height: calc((100vh - 7em) / 2 - 4.5em);
+    max-height: calc((100vh - 7em) / 2 - 4.5em);
 
     overflow-y: auto;
     -ms-overflow-style: none;
@@ -14,6 +14,39 @@
 
 .ui.selection.list.css-selection-list::-webkit-scrollbar {
   display: none;
+}
+
+.css-template-list {
+    overflow-y: scroll;
+    direction: rtl;
+    height: 100%;
+    padding-top: 0.5em !important;
+}
+
+.css-template-list .item {
+    height: 2em;
+    padding-left: 1em !important;
+    color: black !important;
+    border-radius: 0 !important;
+}
+
+.css-template-list .item.selected {
+    font-weight: bold;
+}
+
+.css-nomp-grid.ui.grid {
+    padding: 0;
+    margin: 0;
+}
+
+.css-nomp-grid.ui.grid div.row {
+    padding: 0;
+    margin: 0;
+}
+
+.css-nomp-grid.ui.grid div.column {
+    padding: 0;
+    margin: 0;
 }
 
 .css-template-heading {
@@ -59,7 +92,7 @@
     border-top-left-radius: 0 !important;
 }
 
-.css-template-list {
+.css-templates-list {
     margin-top: 0 !important;
 }
 
@@ -74,6 +107,10 @@
     justify-content: space-around;
     height: 3em;
     font-size: 110%;
+}
+
+.css-settings-buttons i.icon {
+    margin-right: 0em;
 }
 
 .ui.selection.list.css-selection-list > .item.active {

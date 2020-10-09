@@ -295,7 +295,7 @@
                             </i>
                         </div>
                     </div>
-                    <div class="ui middle aligned selection list css-selection-list css-template-list css-top-line" data-op="template-list">
+                    <div class="ui middle aligned selection list css-selection-list css-templates-list css-top-line" data-op="template-list">
 
                     </div>
                 </div>
@@ -312,6 +312,7 @@
                 <div class="one wide column css-settings-buttons">
                     <button class="ui fluid secondary basic button" data-op="wiki-home"><div><i class="book icon"></i>Wiki</div></button>
                     <button class="ui fluid secondary basic button" data-op="browse"><div><i class="globe icon"></i>Scripts</div></button>
+                    <button class="ui fluid secondary basic button" data-op="templates"><div><i class="edit outline icon"></i>Templates</div></button>
                     <br/>
                     <button class="ui fluid secondary basic button" data-op="copy"><div><i class="copy outline icon"></i>Copy</div></button>
                     <button class="ui fluid secondary basic button" data-op="prev"><div><i class="undo icon"></i>Undo</div></button>
@@ -333,7 +334,7 @@
                             </i>
                         </div>
                     </div>
-                    <div class="ui middle aligned selection list css-selection-list css-template-list css-template-fullheight css-top-line" data-op="template-list">
+                    <div class="ui middle aligned selection list css-selection-list css-templates-list css-template-fullheight css-top-line" data-op="template-list">
 
                     </div>
                 </div>
@@ -354,6 +355,7 @@
                     <br/>
                     <button class="ui fluid inverted basic button" data-op="wiki-home"><div><i class="book icon"></i>Wiki</div></button>
                     <button class="ui fluid inverted basic button" data-op="browse"><div><i class="globe icon"></i>Scripts</div></button>
+                    <button class="ui fluid inverted basic button" data-op="templates"><div><i class="edit outline icon"></i>Templates</div></button>
                     <br/>
                     <button class="ui fluid inverted basic button" data-op="copy"><div><i class="copy outline icon"></i>Copy</div></button>
                     <button class="ui fluid inverted basic button" data-op="prev"><div><i class="undo icon"></i>Undo</div></button>
@@ -533,7 +535,7 @@
             </div>
         </div>
 
-        <div id="modal-templates" class="ui small modal">
+        <div id="modal-onlinetemplates" class="ui small modal">
             <i class="cctemplate close icon"></i>
             <div class="header">Public scripts</div>
             <div class="content text-center">
@@ -565,6 +567,80 @@
                     <div class="one wide column css-template-buttons">
                         <div class="ui icon right floated small buttons">
                             <button class="ui button" data-op="private"><i class="play icon"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-templates" class="ui small modal">
+            <i class="cctemplate close icon"></i>
+            <div class="header">Templates</div>
+            <div class="content" style="padding: 0;">
+                <div class="ui two column grid css-nomp-grid" style="height:35em;">
+                    <div class="column">
+                        <div class="ui middle aligned selection list css-template-list css-templates-list" data-op="templates">
+
+                        </div>
+                    </div>
+                    <div class="column" style="border-left: 1px solid rgba(34,36,38,.15);">
+                        <div class="ui form" style="padding-top: 1em; padding-left: 1em; padding-right: 1em; height: 100%;">
+                            <div class="field">
+                                <div class="ui icon fluid input">
+                                    <input class="text-center" type="text" data-op="name">
+                                    <i class="link external alternate icon" data-op="open"></i>
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Changed on</label>
+                                    <div class="ui small fluid input">
+                                        <input disabled type="text" data-op="timestamp" style="border: none;">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Tool Version</label>
+                                    <div class="ui small fluid input">
+                                        <input disabled type="text" data-op="version" style="border: none;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Compatibility</label>
+                                <div class="ui small fluid input">
+                                    <input disabled type="text" data-op="compat" style="border: none;">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <label>Published on</label>
+                                <div class="ui small fluid input">
+                                    <input disabled type="text" data-op="timestamp2" style="border: none;">
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="ten wide field">
+                                    <label>Code</label>
+                                    <div class="ui small fluid input">
+                                        <input readonly type="text" data-op="key" style="border: none; font-family: monospace,monospace;">
+                                    </div>
+                                </div>
+                                <div class="six wide field">
+                                    <label><br/></label>
+                                    <button class="ui fluid basic secondary button" data-op="publish"><i class="globe icon"></i>Publish</button>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="fields" style="margin-top: 5em;">
+                                <div class="six wide field">
+                                    <button class="ui fluid basic secondary button" data-op="update"><i class="recycle icon"></i>Update</button>
+                                </div>
+                                <div class="four wide field">
+
+                                </div>
+                                <div class="six wide field">
+                                    <button class="ui fluid red basic button" data-op="delete"><i class="trash icon"></i> Delete</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -849,19 +925,11 @@
             if (keys['template'] && keys['template'].length == 12) {
                 let addTemplate = arg => {
                     if (arg && arg.success) {
-                        if (Templates.get().includes(arg.description)) {
+                        if (Templates.getKeys().includes(arg.description)) {
                             arg.description += ` (${ formatDate(Date.now()) })`;
                         }
 
-                        Templates.save({
-                            content: arg.content,
-                            name: arg.description,
-                            compat: {
-                                me: arg.compat ? arg.compat.me : false,
-                                guilds:  arg.compat ? arg.compat.guilds : false,
-                                players:  arg.compat ? arg.compat.players : false
-                            }
-                        });
+                        Templates.save(arg.description, arg.content, arg.compat);
                     }
 
                     window.location.href = window.location.href.split('?')[0];

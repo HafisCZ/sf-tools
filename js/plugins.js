@@ -297,16 +297,11 @@
 
             // Variables
             this.onClick = args.onClick || (() => { /* Do nothing */ });
-            this.onRemove = args.onRemove || (() => { /* Do nothing */ });
-
             this.items = args.items || [];
 
             // Setup
             $this.html(this.items.reduce((c, item) => c + `
                 <div class="item" data-value="${ item.value }">
-                    <div class="right floated content">
-                        <i class="fitted alternate outline trash icon"></i>
-                    </div>
                     <div class="content css-entry-label">
                         ${ item.name }
                     </div>
@@ -317,11 +312,40 @@
             this.$items = $this.find('[data-value]').click(event => {
                 this.onClick($(event.delegateTarget).attr('data-value'));
             });
+        });
+    };
 
-            this.$items.find('.trash.icon').click(event => {
-                this.onRemove($(event.delegateTarget).closest('[data-value]').attr('data-value'));
-                event.preventDefault();
+    $.fn.templateList = function (args) {
+        return this.each(function () {
+            let $this = $(this);
+
+            // Arguments
+            args = args || { };
+
+            // Variables
+            this.onClick = args.onClick || (() => { /* Do nothing */ });
+            this.items = args.items || [];
+
+            // Setup
+            $this.html(this.items.reduce((c, item) => c + `
+                <div class="item" data-value="${ item }">
+                    <div class="content">
+                        ${ item }
+                    </div>
+                </div>
+            `, ''));
+
+            // Handler
+            this.$items = $this.find('[data-value]').click(event => {
+                this.$items.removeClass('selected');
+
+                let $target = $(event.delegateTarget).addClass('selected');
+
+                this.onClick($target.attr('data-value'));
             });
+
+            this.$items.first().addClass('selected');
+            this.onClick(this.items[0]);
         });
     };
 }(jQuery));

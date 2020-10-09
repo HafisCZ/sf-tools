@@ -260,7 +260,7 @@ class GroupDetailView extends View {
                     name: '<b>Quick swap custom templates</b>',
                     disabled: true
                 },
-                ... Templates.get().map(t => {
+                ... Templates.getKeys().map(t => {
                     return {
                         name: t,
                         value: t
@@ -955,7 +955,7 @@ class PlayerHistoryView extends View {
                     name: '<b>Quick swap custom templates</b>',
                     disabled: true
                 },
-                ... Templates.get().map(t => {
+                ... Templates.getKeys().map(t => {
                     return {
                         name: t,
                         value: t
@@ -1492,7 +1492,7 @@ class BrowseView extends View {
                     name: '<b>Quick swap custom templates</b>',
                     disabled: true
                 },
-                ... Templates.get().map(t => {
+                ... Templates.getKeys().map(t => {
                     return {
                         name: t,
                         value: t
@@ -2379,6 +2379,7 @@ class SettingsView extends View {
         // Button handling
         this.$parent.find('[data-op="wiki-home"]').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
         this.$parent.find('[data-op="browse"]').click(() => UI.OnlineTemplates.show());
+        this.$parent.find('[data-op="templates"]').click(() => UI.Templates.show());
         this.$parent.find('[data-op="addtemplate"]').click(() => UI.CreateTemplate.show());
 
         this.$parent.find('[data-op="copy"]').click(() => copyText(this.$area.val()));
@@ -2508,7 +2509,7 @@ class SettingsView extends View {
                 name: 'Guilds (Default)',
                 value: 'Guilds Default'
             },
-            ... Templates.get().map(key => {
+            ... Templates.getKeys().map(key => {
                 return {
                     name: key,
                     value: key
@@ -2527,10 +2528,6 @@ class SettingsView extends View {
                 }
 
                 this.$area.trigger('input');
-            },
-            onRemove: value => {
-                Templates.remove(value);
-                this.updateTemplates();
             }
         });
     }
@@ -2905,9 +2902,9 @@ class CreateTemplateView extends View {
                 let name = this.$name.val();
 
                 // Compatibility
-                let cme = this.$cme.checkbox('is checked');
-                let cguilds = this.$cguilds.checkbox('is checked');
-                let cplayers = this.$cplayers.checkbox('is checked');
+                let cm = this.$cme.checkbox('is checked');
+                let cg = this.$cguilds.checkbox('is checked');
+                let cp = this.$cplayers.checkbox('is checked');
 
                 // Settings view
                 let view = UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat;
@@ -2917,14 +2914,10 @@ class CreateTemplateView extends View {
 
                 // Add template
                 if (name) {
-                    Templates.save({
-                        content: code,
-                        name: name,
-                        compat: {
-                            me: cme,
-                            guilds: cguilds,
-                            players: cplayers
-                        }
+                    Templates.save(name, code, {
+                        cm: cm,
+                        cg: cg,
+                        cp: cp
                     });
 
                     view.updateTemplates();
@@ -2936,6 +2929,131 @@ class CreateTemplateView extends View {
                 return false;
             }
         }).modal('show');
+    }
+
+    hide () {
+        this.$parent.modal('hide');
+    }
+}
+
+class TemplatesView extends View {
+    constructor (parent) {
+        super(parent);
+
+        // Template list
+        this.$templates = this.$parent.find('[data-op="templates"]');
+
+        // Template details
+        this.$name = this.$parent.find('[data-op="name"]');
+        this.$timestamp = this.$parent.find('[data-op="timestamp"]');
+        this.$timestamp2 = this.$parent.find('[data-op="timestamp2"]');
+        this.$key = this.$parent.find('[data-op="key"]');
+        this.$compat = this.$parent.find('[data-op="compat"]');
+        this.$version = this.$parent.find('[data-op="version"]');
+
+        // Buttons
+        this.$publish = this.$parent.find('[data-op="publish"]').addClass('disabled');
+        this.$update = this.$parent.find('[data-op="update"]').click(() => this.updateTemplate());
+        this.$delete = this.$parent.find('[data-op="delete"]').click(() => this.deleteTemplate());
+        this.$open = this.$parent.find('[data-op="open"]').click(() => this.openTemplate());
+
+        // TODO
+        this.$name.val('').attr('disabled', 'disabled');
+    }
+
+    deleteTemplate () {
+        if (this.template) {
+            Templates.remove(this.template.name);
+
+            let view = UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat;
+            if (view.updateTemplates) {
+                view.updateTemplates();
+            }
+
+            this.refreshList();
+        }
+    }
+
+    openTemplate () {
+        if (this.template) {
+            let view = UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat;
+            view.$area.val(this.template.content).trigger('input');
+
+            this.hide();
+        }
+    }
+
+    updateTemplate () {
+        if (this.template) {
+            Templates.save(this.template.name, (UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat).$area.val(), this.template.compat);
+            this.showTemplate(this.template.name);
+        }
+    }
+
+    show () {
+        // Refresh stuff
+        this.refreshList();
+
+        // Open modal
+        this.$parent.modal({
+            centered: true,
+            allowMultiple: true
+        }).modal('show');
+    }
+
+    refreshList () {
+        this.$templates.templateList({
+            items: Templates.getKeys(),
+            onClick: name => this.showTemplate(name)
+        });
+
+        if (!this.template) {
+            this.showTemplate();
+        }
+    }
+
+    showTemplate (name) {
+        if (name) {
+            let obj = Templates.get()[name];
+
+            this.template = obj;
+
+            this.$name.val(name);
+            this.$version.val(obj.version || 'Unknown');
+            this.$timestamp.val(formatDate(obj.timestamp));
+            this.$compat.val((obj.compat ? [ obj.compat.cm ? 'Me' : '', obj.compat.cg ? 'Guilds' : '', obj.compat.cp ? 'Players' : '' ].filter(x => x).join(', ') : '') || 'Not set');
+
+            // Online
+            if (obj.online) {
+                this.$timestamp2.val(formatDate(obj.online.timestamp));
+                this.$key.val(obj.online.key);
+
+                if (this.timestamp != this.timestamp2) {
+                    //this.$publish.removeClass('disabled');
+                } else {
+                    this.$publish.addClass('disabled');
+                }
+            } else {
+                this.$timestamp2.val('');
+                this.$key.val('');
+                //this.$publish.removeClass('disabled');
+            }
+
+            this.$delete.removeClass('disabled');
+            this.$update.removeClass('disabled');
+        } else {
+            this.template = null;
+
+            this.$name.val('');
+            this.$timestamp.val('');
+            this.$timestamp2.val('');
+            this.$key.val('');
+            this.$compat.val('');
+            this.$version.val('');
+            this.$publish.addClass('disabled');
+            this.$delete.addClass('disabled');
+            this.$update.addClass('disabled');
+        }
     }
 
     hide () {
@@ -3087,15 +3205,7 @@ class OnlineFilesView extends View {
             if (obj) {
                 let data = JSON.parse(obj);
                 if (data.settings) {
-                    Templates.save({
-                        content: data.settings,
-                        name: `Shared ${ code }`,
-                        compat: {
-                            me: false,
-                            guilds: false,
-                            players: false
-                        }
-                    });
+                    Templates.save(`Shared ${ code }`, data.settings);
                 }
 
                 Storage.import(data.data);
@@ -3366,8 +3476,10 @@ const UI = {
         UI.ConfirmDialog = new ConfirmDialogView('modal-confirm');
         UI.CreateTemplate = new CreateTemplateView('modal-addtemplate');
 
+        UI.Templates = new TemplatesView('modal-templates');
+
         // Online
-        UI.OnlineTemplates = new OnlineTemplatesView('modal-templates');
+        UI.OnlineTemplates = new OnlineTemplatesView('modal-onlinetemplates');
         UI.OnlineFiles = new OnlineFilesView('modal-onlinefile');
         UI.OnlineShareFile = new OnlineShareFileView('modal-share');
     },

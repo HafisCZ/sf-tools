@@ -2138,30 +2138,6 @@ class Constants {
     }
 }
 
-class Templates {
-    static save (obj) {
-        SharedPreferences.set(`templates/${ obj.name }`, obj);
-    }
-
-    static remove (label) {
-        SharedPreferences.remove(`templates/${ label }`);
-    }
-
-    static get () {
-        let keys = SharedPreferences.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
-        keys.sort((a, b) => a.localeCompare(b));
-
-        return keys;
-    }
-
-    static load (label) {
-        let obj = SharedPreferences.get(`templates/${ label }`, { content: '' });
-        let code = typeof(obj) == 'string' ? obj : obj.content;
-        
-        return new Settings(code);
-    }
-}
-
 class Settings {
     // Save
     static save (settings, identifier) {
@@ -2906,3 +2882,117 @@ class Settings {
         }
     }
 };
+
+// Templates
+const Templates = new (class {
+    constructor () {
+        this.templates = SharedPreferences.get('templates', { });
+
+        this.keys = Object.keys(this.templates);
+        this.keys.sort((a, b) => a.localeCompare(b));
+
+        /*
+            Convert existing templates in old form into new style
+        */
+        let keys = SharedPreferences.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
+        let backup = {};
+
+        if (keys.length) {
+            for (let key of keys) {
+                let content = SharedPreferences.get(`templates/${ key }`, '');
+                backup[key] = content;
+
+                // Convert existing template to text
+                if (typeof(content) == 'string') {
+                    // Do nothing
+                } else if (typeof(content) == 'object') {
+                    content = content.content;
+                } else {
+                    content = '';
+                }
+
+                // Save if valid
+                if (content.length) {
+                    this.saveInternal(key, content);
+                }
+
+                SharedPreferences.remove(`templates/${ key }`);
+            }
+
+            this.commit();
+            SharedPreferences.set('templatesBackup', backup);
+        }
+    }
+
+    commit () {
+        SharedPreferences.set('templates', this.templates);
+
+        this.keys = Object.keys(this.templates);
+        this.keys.sort((a, b) => a.localeCompare(b));
+    }
+
+    saveInternal (name, content, compat = { cm: false, cg: false, cp: false }) {
+        // Check if a template already exists
+        let exists = name in this.templates;
+        let template = exists ? this.templates[name] : null;
+
+        if (exists) {
+            // Overwrite needed parts
+            template.content = content;
+            template.compat = compat;
+            template.version = MODULE_VERSION;
+            template.timestamp = Date.now();
+        } else {
+            // Create new object
+            template = {
+                name: name,
+                content: content,
+                compat: compat,
+                version: MODULE_VERSION,
+                timestamp: Date.now(),
+                online: false
+            };
+        }
+
+        // Save template
+        this.templates[name] = template;
+    }
+
+    maskAsOnline (name, key, secret) {
+        // Mark template as online if exists
+        if (name in this.templates) {
+            // Set timestamp & keys
+            this.templates[name].online = {
+                timestamp: this.templates[name].timestamp,
+                key: key,
+                secret: secret
+            };
+
+            this.commit();
+        }
+    }
+
+    save (name, content, compat) {
+        this.saveInternal(name, content, compat);
+        this.commit();
+    }
+
+    remove (name) {
+        if (name in this.templates) {
+            delete this.templates[name];
+            this.commit();
+        }
+    }
+
+    get () {
+        return this.templates;
+    }
+
+    getKeys () {
+        return this.keys;
+    }
+
+    load (name) {
+        return new Settings(name in this.templates ? this.templates[name].content : '');
+    }
+})();
