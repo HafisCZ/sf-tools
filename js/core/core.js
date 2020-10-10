@@ -869,15 +869,26 @@ const Storage = new (class {
     }
 
     export (indexes) {
-        download(`archive_${ Date.now() }`, new Blob([
-            JSON.stringify(indexes ? this.current.filter((file, index) => indexes.includes(index)) : this.current)
-        ], {
-            type: 'application/json'
-        }));
+        download(`archive_${ Date.now() }`, new Blob([ JSON.stringify(this.getExportData(indexes)) ], { type: 'application/json' }));
     }
 
     getExportData (indexes) {
-        return indexes ? this.current.filter((file, index) => indexes.includes(index)) : this.current
+        let files = indexes ? this.current.filter((file, index) => indexes.includes(index)) : this.current;
+        let content = [];
+
+        // Create new files from stored files
+        for (let file of files) {
+            content.push({
+                timestamp: file.timestamp,
+                label: file.label,
+                version: file.version,
+                offset: file.offset,
+                players: file.players,
+                groups: file.groups
+            });
+        }
+
+        return content;
     }
 
     exportGroupData (identifier, timestamps) {
