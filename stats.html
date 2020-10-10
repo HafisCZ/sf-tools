@@ -952,6 +952,7 @@
 
                 var lazy = keys['lazy'] == -1 || SiteOptions.lazy;
                 var beta = keys['beta'] == -1 || SiteOptions.beta;
+                let inventory = keys['inv'] == -1 || SiteOptions.inventory;
 
                 if (temp) {
                     $('.css-temporary').removeClass('hidden');
@@ -992,7 +993,7 @@
                     temporary: temp,
                     lazy: lazy,
                     slot: slot,
-                    inventory: SiteOptions.inventory
+                    inventory: inventory
                 });
             }
         </script>
