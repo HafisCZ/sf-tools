@@ -2298,6 +2298,19 @@ class SettingsView extends View {
         this.$templateName = this.$parent.find('[data-op="template-name"]');
         this.$templateSave = this.$parent.find('[data-op="template-save"]');
 
+        // Button handling
+        this.$parent.find('[data-op="wiki-home"]').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
+        this.$parent.find('[data-op="browse"]').click(() => UI.OnlineTemplates.show());
+        this.$parent.find('[data-op="templates"]').click(() => UI.Templates.show());
+        this.$parent.find('[data-op="addtemplate"]').click(() => UI.CreateTemplate.show());
+
+        this.$parent.find('[data-op="copy"]').click(() => copyText(this.$area.val()));
+        this.$parent.find('[data-op="prev"]').click(() => this.history(1));
+        this.$parent.find('[data-op="next"]').click(() => this.history(-1));
+
+        this.$parent.find('[data-op="close"]').click(() => this.hide());
+        this.$save = this.$parent.find('[data-op="save"]').click(() => this.save());
+
         // Area
         this.$area = this.$parent.find('textarea');
         this.$wrapper = this.$parent.find('.ta-wrapper');
@@ -2331,9 +2344,16 @@ class SettingsView extends View {
                 this.pasted = false;
             }
 
-            // Set content and update list
+            // Set content
             $b.html(Settings.format(val));
+
+            // Update
             this.$settingsList.settings_selectionlist('set unsaved', val !== this.code);
+            if (val == this.code) {
+                this.$save.addClass('disabled');
+            } else {
+                this.$save.removeClass('disabled');
+            }
         }).trigger('input');
 
         // Scroll handling
@@ -2348,19 +2368,6 @@ class SettingsView extends View {
         this.$area.on('paste', () => {
             this.pasted = true;
         });
-
-        // Button handling
-        this.$parent.find('[data-op="wiki-home"]').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
-        this.$parent.find('[data-op="browse"]').click(() => UI.OnlineTemplates.show());
-        this.$parent.find('[data-op="templates"]').click(() => UI.Templates.show());
-        this.$parent.find('[data-op="addtemplate"]').click(() => UI.CreateTemplate.show());
-
-        this.$parent.find('[data-op="copy"]').click(() => copyText(this.$area.val()));
-        this.$parent.find('[data-op="prev"]').click(() => this.history(1));
-        this.$parent.find('[data-op="next"]').click(() => this.history(-1));
-
-        this.$parent.find('[data-op="close"]').click(() => this.hide());
-        this.$parent.find('[data-op="save"]').click(() => this.save());
 
         // History position
         this.index = 0;
