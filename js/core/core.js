@@ -768,7 +768,8 @@ const Logger = new (class {
     constructor () {
         this.colors = {
             'STORAGE': 'fcba03',
-            'WARNING': 'fc6203'
+            'WARNING': 'fc6203',
+            'R_FLAGS': '42adf5'
         };
     }
 
@@ -796,6 +797,12 @@ const Storage = new (class {
 
         Database.Lazy = args.lazy || false;
         Database.LoadInventory = args.inventory || false;
+
+        Logger.log('R_FLAGS', `Temporary: ${ args.temporary || false }`);
+        Logger.log('R_FLAGS', `Slot: ${ args.slot || 0 }`);
+        Logger.log('R_FLAGS', `Lazy: ${ args.lazy || false }`);
+        Logger.log('R_FLAGS', `LoadInventory: ${ args.inventory || false }`);
+        Logger.log('R_FLAGS', `Filters: ${ args.pfilter || null }, ${ args.gfilter || null }`);
 
         FileDatabase.ready(() => {
             FileDatabase.get((current) => {
