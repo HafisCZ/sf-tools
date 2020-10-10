@@ -344,8 +344,10 @@
                 this.onClick($target.attr('data-value'));
             });
 
-            this.$items.first().addClass('selected');
-            this.onClick(this.items[0]);
+            if (this.items.length) {
+                this.$items.first().addClass('selected');
+                this.onClick(this.items[0]);
+            }
         });
     };
 }(jQuery));

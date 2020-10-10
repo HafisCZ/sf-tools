@@ -2958,7 +2958,7 @@ const Templates = new (class {
         this.templates[name] = template;
     }
 
-    maskAsOnline (name, key, secret) {
+    markAsOnline (name, key, secret) {
         // Mark template as online if exists
         if (name in this.templates) {
             // Set timestamp & keys
@@ -2967,6 +2967,16 @@ const Templates = new (class {
                 key: key,
                 secret: secret
             };
+
+            this.commit();
+        }
+    }
+
+    markAsOffline (name) {
+        // Mark template as offline if exists
+        if (name in this.templates) {
+            // Set online to false
+            this.templates[name].online = false;
 
             this.commit();
         }

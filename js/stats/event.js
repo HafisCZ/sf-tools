@@ -2935,31 +2935,20 @@ class TemplatesView extends View {
         this.$compat = this.$parent.find('[data-op="compat"]');
         this.$version = this.$parent.find('[data-op="version"]');
 
-        // Buttons
-        this.$publish = this.$parent.find('[data-op="publish"]').addClass('disabled');
+        // Online buttons
+        this.$publish = this.$parent.find('[data-op="publish"]').click(() => this.publishTemplate());
         this.$update = this.$parent.find('[data-op="update"]').click(() => this.updateTemplate());
         this.$delete = this.$parent.find('[data-op="delete"]').click(() => this.deleteTemplate());
         this.$open = this.$parent.find('[data-op="open"]').click(() => this.openTemplate());
-
-        // TODO
-        this.$name.val('').attr('disabled', 'disabled');
     }
 
-    deleteTemplate () {
-        if (this.template) {
-            Templates.remove(this.template.name);
-
-            let view = UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat;
-            if (view.updateTemplates) {
-                view.updateTemplates();
-            }
-
-            this.clearOverride();
-            this.refreshList();
-        }
+    getCurrentView () {
+        // Return current settings window
+        return UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat;
     }
 
     clearOverride () {
+        // Try clear overrides
         if (UI.current.clearOverride) {
             UI.current.clearOverride();
         }
@@ -2970,24 +2959,123 @@ class TemplatesView extends View {
     }
 
     openTemplate () {
-        if (this.template) {
-            let view = UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat;
-            view.$area.val(this.template.content).trigger('input');
-
-            this.hide();
-        }
+        // Fill $area and hide
+        this.getCurrentView().$area.val(this.tmp.content).trigger('input');
+        this.hide();
     }
 
     updateTemplate () {
-        if (this.template) {
-            Templates.save(this.template.name, (UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat).$area.val(), this.template.compat);
-            this.showTemplate(this.template.name);
+        // Get values
+        let name = this.tmp.name;
+        let content = this.currentContent;
+        let compat = this.tmp.compat;
+
+        // Save template
+        Templates.save(name, content, compat);
+
+        // Refresh everything
+        this.clearOverride();
+        this.showTemplate(name);
+    }
+
+    publishTemplate () {
+        // Get values
+        let name = this.tmp.name;
+        let content = this.tmp.content;
+
+        if (this.tmp.online) {
+            // Update if already online
+            var formData = new FormData();
+            formData.append('description', name);
+            formData.append('content', content);
+            formData.append('key', this.tmp.online.key);
+            formData.append('secret', this.tmp.online.secret);
+
+            // Create request
+            $.ajax({
+                url: 'https://sftools-api.herokuapp.com/scripts/update',
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData
+            }).done(obj => {
+                if (obj.success) {
+                    // Mark as online
+                    Templates.markAsOnline(name, obj.key, obj.secret);
+
+                    // Refresh
+                    this.showTemplate(name);
+                }
+            });
+        } else {
+            // Publish
+            var formData = new FormData();
+            formData.append('description', name);
+            formData.append('content', content);
+            formData.append('author', 'unknown');
+            formData.append('token', '0');
+
+            // Create request
+            $.ajax({
+                url: 'https://sftools-api.herokuapp.com/scripts/share',
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData
+            }).done(obj => {
+                if (obj.success) {
+                    // Mark as online
+                    Templates.markAsOnline(name, obj.key, obj.secret);
+
+                    // Refresh
+                    this.showTemplate(name);
+                }
+            });
+        }
+    }
+
+    unpublishTemplate () {
+        // Get values
+        let key = this.tmp.online.key;
+        let secret = this.tmp.online.secret;
+        let name = this.tmp.name;
+
+        // Remove online template
+        $.ajax({
+            url: `https://sftools-api.herokuapp.com/scripts/delete?key=${ key }&secret=${ secret }`,
+            type: 'GET'
+        }).done(obj => {
+            if (obj.success) {
+                // Set as offline
+                Templates.markAsOffline(name);
+            }
+
+            // Refresh
+            this.showTemplate(name);
+        });
+    }
+
+    deleteTemplate () {
+        // Get values
+        let name = this.tmp.name;
+
+        if (this.tmp.online) {
+            // Unpublish if online
+            this.unpublishTemplate();
+        } else {
+            // Delete template
+            Templates.remove(name);
+
+            // Refresh everything
+            this.getCurrentView().updateTemplates();
             this.clearOverride();
+            this.refreshList();
         }
     }
 
     show () {
         // Refresh stuff
+        this.currentContent = this.getCurrentView().$area.val();
         this.refreshList();
 
         // Open modal
@@ -2998,58 +3086,75 @@ class TemplatesView extends View {
     }
 
     refreshList () {
+        // Reset cached template
+        this.tmp = null;
+
+        // Reset panel
+        this.$name.val('');
+        this.$timestamp.val('');
+        this.$version.val('');
+        this.$compat.val('');
+        this.$timestamp2.val('');
+        this.$key.val('');
+
+        // Reset online buttons
+        this.$publish.addClass('disabled');
+
+        // Reset buttons
+        this.$delete.addClass('disabled').find('span').text('Remove');
+        this.$update.addClass('disabled');
+        this.$open.removeClass('link');
+
+        // Refresh list
         this.$templates.templateList({
             items: Templates.getKeys(),
             onClick: name => this.showTemplate(name)
         });
-
-        if (!this.template) {
-            this.showTemplate();
-        }
     }
 
     showTemplate (name) {
-        if (name) {
-            let obj = Templates.get()[name];
+        let tmp = this.tmp = Templates.get()[name];
 
-            this.template = obj;
+        // Set fields
+        this.$name.val(tmp.name);
+        this.$timestamp.val(formatDate(tmp.timestamp));
+        this.$version.val(tmp.version || `< ${ MODULE_VERSION }`);
 
-            this.$name.val(name);
-            this.$version.val(obj.version || 'Unknown');
-            this.$timestamp.val(formatDate(obj.timestamp));
-            this.$compat.val((obj.compat ? [ obj.compat.cm ? 'Me' : '', obj.compat.cg ? 'Guilds' : '', obj.compat.cp ? 'Players' : '' ].filter(x => x).join(', ') : '') || 'Not set');
+        // Compat
+        let compatString = (tmp.compat ? [ tmp.compat.cm ? 'Me' : '', tmp.compat.cg ? 'Guilds' : '', tmp.compat.cp ? 'Players' : '' ].filter(x => x).join(', ') : '') || 'Not set';
+        this.$compat.val(compatString);
 
-            // Online
-            if (obj.online) {
-                this.$timestamp2.val(formatDate(obj.online.timestamp));
-                this.$key.val(obj.online.key);
+        // Online
+        if (tmp.online) {
+            this.$timestamp2.val(formatDate(tmp.online.timestamp));
+            this.$key.val(tmp.online.key);
 
-                if (this.timestamp != this.timestamp2) {
-                    //this.$publish.removeClass('disabled');
-                } else {
-                    this.$publish.addClass('disabled');
-                }
+            // Don't allow delete when published
+            this.$delete.removeClass('disabled').find('span').text('Unpublish');
+
+            // Allow publish when not equal
+            if (tmp.timestamp != tmp.online.timestamp) {
+                this.$publish.removeClass('disabled');
             } else {
-                this.$timestamp2.val('');
-                this.$key.val('');
-                //this.$publish.removeClass('disabled');
+                this.$publish.addClass('disabled');
             }
-
-            this.$delete.removeClass('disabled');
-            this.$update.removeClass('disabled');
         } else {
-            this.template = null;
-
-            this.$name.val('');
-            this.$timestamp.val('');
             this.$timestamp2.val('');
             this.$key.val('');
-            this.$compat.val('');
-            this.$version.val('');
-            this.$publish.addClass('disabled');
-            this.$delete.addClass('disabled');
+
+            // Allow delete only when unpublished
+            this.$delete.removeClass('disabled').find('span').text('Remove');
+            this.$publish.removeClass('disabled');
+        }
+
+        // Update button
+        if (tmp.content != this.currentContent) {
+            this.$update.removeClass('disabled');
+        } else {
             this.$update.addClass('disabled');
         }
+
+        this.$open.addClass('link');
     }
 
     hide () {

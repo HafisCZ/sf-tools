@@ -46,7 +46,7 @@ class Expression {
                     value = token[0] + SFormat.Comment(token.slice(1, token.length - 1)) + token[token.length - 1];
                 } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort'].includes(token) || root.func.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
-                } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index' ].includes(token) || root.vars.hasOwnProperty(token)) {
+                } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database' ].includes(token) || root.vars.hasOwnProperty(token)) {
                     value = SFormat.Constant(token);
                 } else if (SP_KEYWORD_MAPPING_0.hasOwnProperty(token)) {
                     value = SFormat.Reserved(token);
@@ -643,6 +643,9 @@ class Expression {
             } else if (node == 'reference') {
                 // Return reference player
                 return reference;
+            } else if (node == 'database') {
+                // Return database
+                return Database;
             } else if (SP_KEYWORDS_DEFAULT.hasOwnProperty(node)) {
                 // Return default values
                 return SP_KEYWORDS_DEFAULT[node];
