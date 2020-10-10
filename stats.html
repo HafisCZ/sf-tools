@@ -582,68 +582,73 @@
             <i class="cctemplate close icon"></i>
             <div class="header">Templates</div>
             <div class="content" style="padding: 0;">
-                <div class="ui two column grid css-nomp-grid" style="height:35em;">
-                    <div class="column">
-                        <div class="ui middle aligned selection list css-template-list css-templates-list" data-op="templates">
-
+                <div class="dimmable">
+                    <div class="ui two column grid css-nomp-grid" style="height:35em;">
+                        <div class="ui inverted dimmer" data-op="dimmer">
+                            <div class="ui indeterminate text loader">Commiting changes</div>
                         </div>
-                    </div>
-                    <div class="column" style="border-left: 1px solid rgba(34,36,38,.15);">
-                        <div class="ui form" style="padding-top: 1em; padding-left: 1em; padding-right: 1em; height: 100%;">
-                            <div class="field">
-                                <div class="ui icon fluid input">
-                                    <input class="text-center" type="text" disabled data-op="name">
-                                    <i class="link external alternate icon" data-op="open"></i>
-                                </div>
-                            </div>
-                            <div class="two fields">
-                                <div class="field">
-                                    <label>Changed on</label>
-                                    <div class="ui small fluid input">
-                                        <input disabled type="text" data-op="timestamp" style="border: none;">
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label>Tool Version</label>
-                                    <div class="ui small fluid input">
-                                        <input disabled type="text" data-op="version" style="border: none;">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <label>Compatibility</label>
-                                <div class="ui small fluid input">
-                                    <input disabled type="text" data-op="compat" style="border: none;">
-                                </div>
-                            </div>
-                            <div class="field">
-                                <label>Published on</label>
-                                <div class="ui small fluid input">
-                                    <input disabled type="text" data-op="timestamp2" style="border: none;">
-                                </div>
-                            </div>
-                            <div class="two fields">
-                                <div class="nine wide field">
-                                    <label>Code</label>
-                                    <div class="ui small fluid input">
-                                        <input readonly type="text" data-op="key" style="border: none; font-family: monospace,monospace;">
-                                    </div>
-                                </div>
-                                <div class="seven wide field">
-                                    <label><br/></label>
-                                    <button class="ui fluid basic secondary button" data-tooltip="Publish template" data-op="publish"><i class="globe icon"></i>Publish</button>
-                                </div>
-                            </div>
-                            <br/>
-                            <div class="fields" style="margin-top: 5em;">
-                                <div class="seven wide field">
-                                    <button class="ui fluid basic secondary button" data-tooltip="Update template with current script" data-op="update"><i class="recycle icon"></i>Update</button>
-                                </div>
-                                <div class="two wide field">
+                        <div class="column">
+                            <div class="ui middle aligned selection list css-template-list css-templates-list" data-op="templates">
 
+                            </div>
+                        </div>
+                        <div class="column" style="border-left: 1px solid rgba(34,36,38,.15);">
+                            <div class="ui form" style="padding-top: 1em; padding-left: 1em; padding-right: 1em; height: 100%;">
+                                <div class="field">
+                                    <div class="ui icon fluid input">
+                                        <input class="text-center" type="text" disabled data-op="name">
+                                        <i class="link external alternate icon" data-op="open"></i>
+                                    </div>
                                 </div>
-                                <div class="seven wide field">
-                                    <button class="ui fluid red basic button" data-tooltip="Remove / Unpublish template" data-op="delete"><i class="trash icon"></i><span>Remove</span></button>
+                                <div class="two fields">
+                                    <div class="field">
+                                        <label>Changed on</label>
+                                        <div class="ui small fluid input">
+                                            <input disabled type="text" data-op="timestamp" style="border: none;">
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <label>Tool Version</label>
+                                        <div class="ui small fluid input">
+                                            <input disabled type="text" data-op="version" style="border: none;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Compatibility</label>
+                                    <div class="ui small fluid input">
+                                        <input disabled type="text" data-op="compat" style="border: none;">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Published on</label>
+                                    <div class="ui small fluid input">
+                                        <input disabled type="text" data-op="timestamp2" style="border: none;">
+                                    </div>
+                                </div>
+                                <div class="two fields">
+                                    <div class="nine wide field">
+                                        <label>Code</label>
+                                        <div class="ui small fluid input">
+                                            <input readonly type="text" data-op="key" style="border: none; font-family: monospace,monospace;">
+                                        </div>
+                                    </div>
+                                    <div class="seven wide field">
+                                        <label><br/></label>
+                                        <button class="ui fluid basic secondary button" data-tooltip="Publish template" data-op="publish"><i class="globe icon"></i>Publish</button>
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="fields" style="margin-top: 5em;">
+                                    <div class="seven wide field">
+                                        <button class="ui fluid basic secondary button" data-tooltip="Update template with current script" data-op="update"><i class="recycle icon"></i>Update</button>
+                                    </div>
+                                    <div class="two wide field">
+
+                                    </div>
+                                    <div class="seven wide field">
+                                        <button class="ui fluid red basic button" data-tooltip="Remove / Unpublish template" data-op="delete"><i class="trash icon"></i><span>Remove</span></button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

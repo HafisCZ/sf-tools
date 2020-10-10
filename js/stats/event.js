@@ -2926,6 +2926,7 @@ class TemplatesView extends View {
 
         // Template list
         this.$templates = this.$parent.find('[data-op="templates"]');
+        this.$dimmer = this.$parent.find('[data-op="dimmer"]');
 
         // Template details
         this.$name = this.$parent.find('[data-op="name"]');
@@ -2964,6 +2965,16 @@ class TemplatesView extends View {
         this.hide();
     }
 
+    setLoading (loading) {
+        // Prevent modal from closing when in loading state
+        this.loading = loading;
+        if (loading) {
+            this.$dimmer.addClass('active');
+        } else {
+            this.$dimmer.removeClass('active');
+        }
+    }
+
     updateTemplate () {
         // Get values
         let name = this.tmp.name;
@@ -2982,6 +2993,9 @@ class TemplatesView extends View {
         // Get values
         let name = this.tmp.name;
         let content = this.tmp.content;
+
+        // Set loading
+        this.setLoading(true);
 
         if (this.tmp.online) {
             // Update if already online
@@ -3006,6 +3020,11 @@ class TemplatesView extends View {
                     // Refresh
                     this.showTemplate(name);
                 }
+
+                // Clear loading
+                this.setLoading(false);
+            }).fail(() => {
+                this.setLoading(false);
             });
         } else {
             // Publish
@@ -3030,6 +3049,11 @@ class TemplatesView extends View {
                     // Refresh
                     this.showTemplate(name);
                 }
+
+                // Clear loading
+                this.setLoading(false);
+            }).fail(() => {
+                this.setLoading(false);
             });
         }
     }
@@ -3052,6 +3076,9 @@ class TemplatesView extends View {
 
             // Refresh
             this.showTemplate(name);
+            this.setLoading(false);
+        }).fail(() => {
+            this.setLoading(false);
         });
     }
 
@@ -3081,7 +3108,10 @@ class TemplatesView extends View {
         // Open modal
         this.$parent.modal({
             centered: true,
-            allowMultiple: true
+            allowMultiple: true,
+            onHide: () => {
+                return !this.loading;
+            }
         }).modal('show');
     }
 
