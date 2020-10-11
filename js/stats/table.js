@@ -2165,13 +2165,13 @@ class Settings {
 
     static addHistory (settings, identifier = 'settings') {
         var history = Preferences.get('settings_history', []);
-        history.push({
+        history.unshift({
             name: identifier,
             content: settings
         });
 
         if (history.length > 10) {
-            history.shift();
+            history.pop();
         }
 
         Preferences.set('settings_history', history);
