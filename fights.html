@@ -96,7 +96,10 @@
                         <div class="two columns row">
                             <div class="column" id="fi-fighterA">
                                 <div class="field">
-                                    <input type="text" disabled class="text-center" data-op="Name">
+                                    <div class="ui icon input">
+                                        <input type="text" disabled class="text-center" data-op="Name">
+                                        <i class="copy outline link icon" data-op="copy"></i>
+                                    </div>
                                 </div>
                                 <div class="two fields">
                                     <div class="field">
@@ -197,7 +200,10 @@
                             </div>
                             <div class="column" id="fi-fighterB">
                                 <div class="field">
-                                    <input type="text" disabled class="text-center" data-op="Name">
+                                    <div class="ui icon input">
+                                        <input type="text" disabled class="text-center" data-op="Name">
+                                        <i class="copy outline link icon" data-op="copy"></i>
+                                    </div>
                                 </div>
                                 <div class="two fields">
                                     <div class="field">
@@ -740,6 +746,9 @@
 
                     $parent.find('[data-op="Min1"]').val(`~ ${ formatAsSpacedNumber(approxMin, ' ') }`);
                     $parent.find('[data-op="Max1"]').val(`~ ${ formatAsSpacedNumber(approxMax, ' ') }`);
+
+                    f.Wpn1ApproxMin = Math.trunc(approxMin);
+                    f.Wpn1ApproxMax = Math.trunc(approxMax);
                 } else {
                     $parent.find('[data-op="Min1"]').val('');
                     $parent.find('[data-op="Max1"]').val('');
@@ -765,6 +774,9 @@
 
                         $parent.find('[data-op="Min2"]').val(`~ ${ formatAsSpacedNumber(approxMin, ' ') }`);
                         $parent.find('[data-op="Max2"]').val(`~ ${ formatAsSpacedNumber(approxMax, ' ') }`);
+
+                        f.Wpn2ApproxMin = Math.trunc(approxMin);
+                        f.Wpn2ApproxMax = Math.trunc(approxMax);
                     } else {
                         $parent.find('[data-op="Min2"]').val('');
                         $parent.find('[data-op="Max2"]').val('');
@@ -797,6 +809,78 @@
                 $parent.find('[data-op="Hits"]').val(f.Stats.Hits);
                 $parent.find('[data-op="Crits"]').val(f.Stats.Crits);
                 $parent.find('[data-op="Skips"]').val(f.Stats.Skips);
+
+                $parent.find('[data-op="copy"]').off('click').on('click', () => {
+                    copyText(JSON.stringify({
+                        Armor: Number($parent.find('[data-op="Armor"]').val()),
+                        Class: f.Class,
+                        Mask: f.Mask,
+                        Name: f.Name,
+                        Level: f.Level,
+                        Identifier: f.Identifier,
+                        Constitution: {
+                            Total: f.Constitution
+                        },
+                        Dexterity: {
+                            Total: f.Dexterity
+                        },
+                        Dungeons: {
+                            Player: 0,
+                            Group: 0
+                        },
+                        Fortress: {
+                            Gladiator: 0
+                        },
+                        Underworld: {
+                            Gladiator: 0
+                        },
+                        Intelligence: {
+                            Total: f.Intelligence
+                        },
+                        Strength: {
+                            Total: f.Strength
+                        },
+                        Potions: {
+                            Life: 0
+                        },
+                        Luck: {
+                            Total: f.Luck
+                        },
+                        Runes: {
+                            Health: 0,
+                            ResistanceCold: 0,
+                            ResistanceFire: 0,
+                            ResistanceLightning: 0
+                        },
+                        Items: {
+                            Hand: {
+                                HasEnchantment: 0
+                            },
+                            Wpn1: {
+                                AttributeTypes: {
+                                    2: f.Wpn1.AttributeTypes[2]
+                                },
+                                Attributes: {
+                                    2: f.Wpn1.Attributes[2]
+                                },
+                                DamageMax: f.Wpn1.DamageMax || f.Wpn1ApproxMax,
+                                DamageMin: f.Wpn1.DamageMin || f.Wpn1ApproxMin,
+                                HasEnchantment: f.Wpn1.HasEnchantment
+                            },
+                            Wpn2: {
+                                AttributeTypes: {
+                                    2: f.Wpn2.AttributeTypes[2]
+                                },
+                                Attributes: {
+                                    2: f.Wpn2.Attributes[2]
+                                },
+                                DamageMax: f.Wpn2.DamageMax || f.Wpn2ApproxMax,
+                                DamageMin: f.Wpn2.DamageMin || f.Wpn2ApproxMin,
+                                HasEnchantment: f.Wpn2.HasEnchantment
+                            }
+                        }
+                    }));
+                });
             }
 
             function updateFight () {
