@@ -27,6 +27,30 @@ function copyText (text) {
     window.getSelection().removeAllRanges();
 }
 
+function reverseHealthMultipliers (level, healthMultiplier, constitution, totalHealth) {
+	let baseHealth = (level + 1) * healthMultiplier * constitution;
+	for (let potion = 0; potion <= 1; potion++) {
+		for (let runes = 0; runes <= 15; runes++) {
+			for (let portal = 0; portal <= 50; portal++) {
+				let calculatedHealth = Math.ceil(Math.ceil(Math.ceil(baseHealth * (1 + portal / 100)) * (1 + runes / 100)) * (potion == 0 ? 0 : 1.25));
+				if (Math.abs(calculatedHealth - totalHealth) <= healthMultiplier) {
+					return {
+						potion: potion == 0 ? 0 : 25,
+						runes: runes,
+						portal: portal
+					};
+				}
+			}
+		}
+	}
+
+    return {
+        potion: 0,
+        runes: 0,
+        portal: 0
+    };
+}
+
 function parseOwnDate (text) {
     if (typeof(text) == 'string') {
         let objs = text.trim().split(/^(\d{2}).(\d{2}).(\d{4}) (\d{2}):(\d{2})$/);

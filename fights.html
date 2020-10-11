@@ -718,6 +718,25 @@
                 }
             }
 
+            function getHPMultiplier (c, mask) {
+                switch (c) {
+                    case 1:
+                    case 5:
+                        return 5;
+                    case 7:
+                    case 3:
+                    case 4:
+                    case 6:
+                        return 4;
+                    case 2:
+                        return 2;
+                    case 8:
+                        return mask == 1 ? 5 : (mask == 2 ? 4 : 2);
+                    default:
+                        return 0;
+                }
+            }
+
             function fillFighter ($parent, f, winner, o, tarmor = 0) {
                 var $name = $parent.find('[data-op="Name"]').val(f.Name);
                 if (winner) {
@@ -811,6 +830,7 @@
                 $parent.find('[data-op="Skips"]').val(f.Stats.Skips);
 
                 $parent.find('[data-op="copy"]').off('click').on('click', () => {
+                    let multipliers = reverseHealthMultipliers(f.Level, getHPMultiplier(f.Class, f.Mask), f.Constitution, f.MaximumLife);
                     copyText(JSON.stringify({
                         Armor: Number($parent.find('[data-op="Armor"]').val()),
                         Class: f.Class,
@@ -825,7 +845,7 @@
                             Total: f.Dexterity
                         },
                         Dungeons: {
-                            Player: 0,
+                            Player: multipliers.portal,
                             Group: 0
                         },
                         Fortress: {
@@ -841,13 +861,13 @@
                             Total: f.Strength
                         },
                         Potions: {
-                            Life: 0
+                            Life: multipliers.potion
                         },
                         Luck: {
                             Total: f.Luck
                         },
                         Runes: {
-                            Health: 0,
+                            Health: multipliers.runes,
                             ResistanceCold: 0,
                             ResistanceFire: 0,
                             ResistanceLightning: 0
