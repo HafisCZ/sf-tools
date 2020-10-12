@@ -3331,9 +3331,9 @@ class OnlineFilesView extends View {
         this.$inputField.val('');
         this.$error.hide();
 
-        this.onReceive = obj => {
+        this.onReceive = (code, obj) => {
             this.$ok.removeClass('loading');
-            if (obj) {
+            if (code && obj) {
                 let data = JSON.parse(obj);
                 if (data.settings) {
                     Templates.save(`Shared ${ code }`, data.settings);
@@ -3357,7 +3357,7 @@ class OnlineFilesView extends View {
                     $.ajax({
                         url: `https://sftools-api.herokuapp.com/?key=${ code }`,
                         type: 'GET'
-                    }).done(obj => this.onReceive(obj)).fail(() => this.onReceive());
+                    }).done(obj => this.onReceive(code, obj)).fail(() => this.onReceive());
                 } else {
                     this.$input.transition('shake');
                 }
