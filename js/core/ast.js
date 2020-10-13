@@ -949,6 +949,14 @@ const SP_FUNCTIONS = {
         } else {
             return undefined;
         }
+    },
+    // Experience needed
+    'expneeded': (level) => {
+        if (!isNaN(level)) {
+            return ExperienceTotal[Math.min(393, level)] + Math.max(0, level - 393) * 1500000000;
+        } else {
+            return undefined;
+        }
     }
 }
 

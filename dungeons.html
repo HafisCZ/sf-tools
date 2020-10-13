@@ -724,7 +724,7 @@
             });
 
             // Copy buttons
-            $('#sim-copyCurrent').click(() => copy(EditorController.read()));
+            $('#sim-copyCurrent').click(() => copyText(JSON.stringify(EditorController.read())));
 
             // Show fighters
             function show () {
@@ -779,16 +779,6 @@
                     EditorController.fill(boss, 4);
                     show();
                 }
-            }
-
-            // Copy into clipboard function
-            function copy (content) {
-                const element = document.createElement('textarea');
-                element.value = JSON.stringify(content);
-                document.body.appendChild(element);
-                element.select();
-                document.execCommand('copy');
-                document.body.removeChild(element);
             }
 
             select(0);

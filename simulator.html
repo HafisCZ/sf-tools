@@ -959,21 +959,12 @@
             });
 
             $('#sim-copy').click(function () {
-                copy(EditorController.read());
+                copyText(JSON.stringify(EditorController.read()));
             });
 
             $('#sim-copyall').click(function () {
-                copy(players.map(p => toSimulatorModel(p.player)));
+                copyText(JSON.stringify(players.map(p => toSimulatorModel(p.player))));
             });
-
-            function copy (content) {
-                const element = document.createElement('textarea');
-                element.value = JSON.stringify(content);
-                document.body.appendChild(element);
-                element.select();
-                document.execCommand('copy');
-                document.body.removeChild(element);
-            }
 
             $('#sim-add').click(function () {
                 if (EditorController.valid()) {

@@ -745,25 +745,16 @@
             });
 
             $('#sim-copy').click(function () {
-                copy(EditorController.read());
+                copyText(JSON.stringify(EditorController.read()));
             });
 
             $('#sim-copyall1').click(function () {
-                copy(players1.map(p => toSimulatorModel(p.player)));
+                copyText(JSON.stringify(players1.map(p => toSimulatorModel(p.player))));
             });
 
             $('#sim-copyall2').click(function () {
-                copy(players2.map(p => toSimulatorModel(p.player)));
+                copyText(JSON.stringify(players2.map(p => toSimulatorModel(p.player))));
             });
-
-            function copy (content) {
-                const element = document.createElement('textarea');
-                element.value = JSON.stringify(content);
-                document.body.appendChild(element);
-                element.select();
-                document.execCommand('copy');
-                document.body.removeChild(element);
-            }
 
             $('#sim-add1').click(function () {
                 if (EditorController.valid()) {

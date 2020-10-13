@@ -1109,22 +1109,13 @@ class BrowseView extends View {
 
         // Copy 2
         this.$parent.find('[data-op="copy-sim"]').click(() => {
-            const element = document.createElement('textarea');
-
             var array = this.table.array;
             var slice = this.table.array.perf || this.table.settings.globals.performance;
             if (slice) {
                 array = array.slice(0, slice);
             }
 
-            element.value = JSON.stringify(array.map(p => p.player.toSimulatorModel()));
-
-            document.body.appendChild(element);
-
-            element.select();
-
-            document.execCommand('copy');
-            document.body.removeChild(element);
+            copyText(JSON.stringify(array.map(p => p.player.toSimulatorModel())));
         });
 
         // Configuration
