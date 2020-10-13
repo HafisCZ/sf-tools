@@ -2301,6 +2301,7 @@ class SettingsView extends View {
 
         this.$parent.find('[data-op="close"]').click(() => this.hide());
         this.$save = this.$parent.find('[data-op="save"]').click(() => this.save());
+        this.$delete = this.$parent.find('[data-op="delete"]').click(() => this.remove());
 
         // Area
         this.$area = this.$parent.find('textarea');
@@ -2387,6 +2388,10 @@ class SettingsView extends View {
     }
 
     hide () {
+        // Do nothing
+    }
+
+    remove () {
         // Do nothing
     }
 
@@ -2559,8 +2564,17 @@ class SettingsFloatView extends SettingsView {
     }
 
     remove () {
+        if (UI.current.clearOverride) {
+            UI.current.clearOverride();
+        }
+
+        if (UI.current.refreshTemplateDropdown) {
+            UI.current.refreshTemplateDropdown();
+        }
+
         Settings.remove(this.identifier);
         this.hide();
+        UI.current.load();
     }
 }
 

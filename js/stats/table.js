@@ -1357,6 +1357,20 @@ const SettingsCommands = [
             return SFormat.Macro(`${ key1 } ${ arg }`);
         }
     }),
+    // Include another template
+    new SettingsCommand(/^import (.+)$/, function (root, string) {
+        var [ , arg ] = this.match(string);
+        /*
+            Do nothing since this keyword is handled before the actual parsing process
+        */
+    }, function (root, string) {
+        var [ , arg ] = this.match(string);
+        if (Templates.exists(arg)) {
+            return `${ SFormat.Keyword('import') } ${ SFormat.Enum(arg) }`;
+        } else {
+            return `${ SFormat.Keyword('import') } ${ SFormat.Error(arg) }`;
+        }
+    }),
     // Global
     // set static
     new SettingsCommand(/^(layout) ((table|statistics|members|details)\s*(\,\s*(table|statistics|members|details))*)$/, function (root, string) {
@@ -2195,7 +2209,7 @@ class Settings {
     static parseConstants(string) {
         var settings = new Settings('');
 
-        for (var line of string.split('\n')) {
+        for (var line of Settings.handleImports(string)) {
             var commentIndex = line.indexOf('#');
             if (commentIndex != -1) {
                 line = line.slice(0, commentIndex);
@@ -2280,6 +2294,22 @@ class Settings {
         }
     }
 
+    static handleImports (originalString) {
+        let processedLines = [];
+        for (let line of originalString.split('\n')) {
+            if (/^import (.+)$/.test(line)) {
+                let [, key ] = line.match(/^import (.+)$/);
+                if (Templates.exists(key)) {
+                    processedLines.push(... Templates.get()[key].content.split('\n'));
+                }
+            } else {
+                processedLines.push(line);
+            }
+        }
+
+        return processedLines;
+    }
+
     constructor (string, type) {
         this.code = string;
 
@@ -2319,7 +2349,8 @@ class Settings {
 
         // Parsing
         var ignore = false;
-        for (var line of string.split('\n')) {
+
+        for (var line of Settings.handleImports(string)) {
             var commentIndex = -1;
             var ignored = false;
 
@@ -2992,6 +3023,10 @@ const Templates = new (class {
             delete this.templates[name];
             this.commit();
         }
+    }
+
+    exists (name) {
+        return name in this.templates;
     }
 
     get () {
