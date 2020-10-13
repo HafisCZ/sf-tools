@@ -593,6 +593,17 @@ h3.file-selected {
     color: #696969;
 }
 
+.ta-extras {
+    position: relative;
+}
+
+.ta-extras span {
+    color: #696969;
+    font-size: 70%;
+    position: absolute;
+    left: 5px;
+}
+
 .ta-macro {
     background-color: #a8323270;
     text-shadow: -0.03ex 0 black, 0.03ex 0 black;
