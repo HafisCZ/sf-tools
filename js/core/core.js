@@ -1115,6 +1115,13 @@ const Storage = new (class {
         this.current.splice(index, 1);
     }
 
+    updateTimestamp (index, newTimestamp) {
+        let file = this.current[index];
+        this.remove(index);
+        file.timestamp = newTimestamp;
+        this.import([ file ]);
+    }
+
     hide (index) {
         var file = this.current[index];
 

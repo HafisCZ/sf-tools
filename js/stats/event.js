@@ -1937,24 +1937,53 @@ class FileUpdate extends View {
         });
 
         this.$parent.find('[data-op="save"]').click(() => {
-            this.currentFile.label = this.$textLabel.val().trim();
+            let shouldSave = false;
 
-            let version = this.$textVersion.val();
-            if (Number.isInteger(Number(version))) {
-                this.currentFile.version = parseInt(version);
+            // Raw values
+            let label = this.$textLabel.val().trim();
+            let version = this.$textVersion.val().trim();
+            let color = this.$textColor.val().trim();
+            let timestamp = this.$textTimestamp.val().trim();
+
+            // Change stuff
+            if (label != this.currentLabel) {
+                shouldSave |= true;
+
+                this.currentFile.label = label;
             }
 
-            let color = this.$textColor.val();
-            if (getCSSColor(color) && color in COLOR_MAP) {
-                this.currentFile.color = color;
-            } else if (color == '') {
-                delete this.currentFile.color;
+            let numberVersion = Number(version);
+            if (version != this.currentVersion && Number.isInteger(numberVersion)) {
+                shouldSave |= true;
+
+                this.currentFile.version = numberVersion;
             }
 
-            Storage.update(this.currentIndex, this.currentFile);
+            if (color != this.currentColor) {
+                if (color in COLOR_MAP) {
+                    shouldSave |= true;
 
+                    this.currentFile.color = color;
+                } else if (color == '') {
+                    shouldSave |= true;
+
+                    delete this.currentFile.color;
+                }
+            }
+
+            // Update file if needed
+            if (shouldSave) {
+                Storage.update(this.currentIndex, this.currentFile);
+            }
+
+            // Change timestamp
+            let numberTimestamp = parseOwnDate(timestamp);
+            if (numberTimestamp != this.currentTimestamp) {
+                Storage.updateTimestamp(this.currentIndex, numberTimestamp);
+            }
+
+            // Refresh view and hide modal
             UI.show(UI.Files);
-
             this.hide();
         });
     }
@@ -1963,11 +1992,19 @@ class FileUpdate extends View {
         this.currentIndex = id;
         this.currentFile = Storage.files()[id];
 
-        this.$textLabel.val(this.currentFile.label);
-        this.$textVersion.val(this.currentFile.version);
-        this.$textColor.val(this.currentFile.color || '');
-        this.$textTimestamp.val(new Date(this.currentFile.timestamp).toString());
+        // Current values
+        this.currentLabel = this.currentFile.label || '';
+        this.currentVersion = this.currentFile.version || 0;
+        this.currentColor = this.currentFile.color || '';
+        this.currentTimestamp = parseOwnDate(formatDate(this.currentFile.timestamp));
 
+        // Set inputs
+        this.$textLabel.val(this.currentLabel);
+        this.$textVersion.val(this.currentVersion);
+        this.$textColor.val(this.currentColor);
+        this.$textTimestamp.val(formatDate(this.currentTimestamp));
+
+        // Show modal
         this.$parent.modal({
             centered: true,
             transition: 'fade'
@@ -3586,12 +3623,14 @@ const UI = {
             UI.Files.$beta.show();
             UI.Files.$cloudexport.show();
             UI.Files.$cloudexport2.show();
+            UI.FileUpdate.$textTimestamp.parent('div').removeClass('disabled');
         } else {
             UI.Files.$endpoint.hide();
             UI.Files.$insecure.hide();
             UI.Files.$beta.hide();
             UI.Files.$cloudexport.hide();
             UI.Files.$cloudexport2.hide();
+            UI.FileUpdate.$textTimestamp.parent('div').addClass('disabled');
         }
     },
     initialize: function () {
