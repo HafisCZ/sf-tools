@@ -769,7 +769,8 @@ const Logger = new (class {
         this.colors = {
             'STORAGE': 'fcba03',
             'WARNING': 'fc6203',
-            'R_FLAGS': '42adf5'
+            'R_FLAGS': '42adf5',
+            'TAB_GEN': '3bc922'
         };
     }
 
