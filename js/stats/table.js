@@ -373,9 +373,12 @@ class TableInstance {
                 }
             });
 
-            this.addHeader(group);
+            if (group.headers.length) {
+                this.config.push(group);
+            }
         });
 
+        // Scale everything
         if (this.settings.globals.scale) {
             var factor = this.settings.globals.scale / 100;
             for (var category of this.config) {
@@ -386,18 +389,11 @@ class TableInstance {
             }
         }
 
+        // Generate flat list
         this.flat = this.config.reduce((array, group) => {
             array.push(... group.headers);
             return array;
         }, []);
-    }
-
-    addHeader (... groups) {
-        groups.forEach(g => {
-            if (g.headers.length) {
-                this.config.push(g);
-            }
-        });
     }
 
     // Get current table content
@@ -660,6 +656,7 @@ class TableInstance {
         }
     }
 
+    // Remove key from sorting queue
     removeSorting (key) {
         var index = this.sorting.findIndex(sort => sort.key == key);
         if (index != -1) {
@@ -668,6 +665,7 @@ class TableInstance {
         }
     }
 
+    // Add key to sorting queue
     setSorting (key = undefined) {
         var index = this.sorting.findIndex(sort => sort.key == key);
         if (index == -1) {
@@ -684,7 +682,7 @@ class TableInstance {
         this.sort();
     }
 
-    // Set sorting
+    // Execute sort
     sort () {
         if (this.sorting.length) {
             this.entries.sort((a, b) => {
@@ -1186,6 +1184,40 @@ class TableInstance {
             `,
             size
         ];
+    }
+}
+
+class TableController {
+    constructor ($table, type) {
+        this.$table = $table;
+        this.type = type;
+    }
+
+    setSettings (settings) {
+        this.settings = settings;
+    }
+
+    setEntries (entries) {
+        this.entries = entries;
+    }
+
+    refresh () {
+        // Create table
+        let table = new TableInstance(this.settings, this.type);
+        table.setEntries(this.entries);
+
+        // Get table content
+        let [ content, width ] = table.getTableContent();
+
+        // Setup table element
+        this.$table.empty();
+        this.$table.append(content);
+        this.$table.css('position', 'absolute').css('width', `${ width }px`).css('left', `calc(50vw - 9px - ${ width / 2 }px)`);
+        if (this.$table.css('left').slice(0, -2) < 0) {
+            this.$table.css('left', '0px');
+        }
+
+        // TODO bind sorting
     }
 }
 

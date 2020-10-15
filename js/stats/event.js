@@ -856,6 +856,7 @@ class PlayerHistoryView extends View {
         super(parent);
 
         this.$table = this.$parent.find('[data-op="table"]');
+        this.table = new TableController(this.$table, TableType.History);
 
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
@@ -929,8 +930,9 @@ class PlayerHistoryView extends View {
                     settings = Settings.load('', '', Templates.load(value).code, TableType.History);
                 }
 
-                this.table = new TableInstance(settings, TableType.History);
-                this.refresh();
+                this.table.setSettings(settings);
+                this.table.refresh();
+
                 this.$configure.dropdown('hide');
             },
             values: [
@@ -965,7 +967,7 @@ class PlayerHistoryView extends View {
         this.$configure.find('.item').removeClass('active');
 
         // Table instance
-        this.table = new TableInstance(Settings.load(this.identifier, 'me', PredefinedTemplates['Me Default'], TableType.History), TableType.History);
+        this.table.setSettings(Settings.load(this.identifier, 'me', PredefinedTemplates['Me Default'], TableType.History));
 
         var updated = false;
         for (var [ timestamp, proxy ] of this.list) {
@@ -980,8 +982,6 @@ class PlayerHistoryView extends View {
     }
 
     refresh () {
-        this.table.setEntries(this.list);
-
         // Configuration indicator
         if (Settings.exists(this.identifier)) {
             this.$configure.get(0).style.setProperty('background', '#21ba45', 'important');
@@ -991,14 +991,9 @@ class PlayerHistoryView extends View {
             this.$configure.get(0).style.setProperty('color', '');
         }
 
-        var [ content, size ] = this.table.getTableContent();
-
-        this.$table.empty();
-        this.$table.append(content);
-        this.$table.css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
-        if (this.$table.css('left').slice(0, -2) < 0) {
-            this.$table.css('left', '0px');
-        }
+        // Table stuff
+        this.table.setEntries(this.list);
+        this.table.refresh();
     }
 }
 
