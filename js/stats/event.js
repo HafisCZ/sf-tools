@@ -2071,7 +2071,7 @@ class FilesView extends View {
         }).checkbox(SiteOptions.inventory ? 'set checked' : 'set unchecked');
 
         // Collapsed things
-        this.collapsed = {};
+        this.shown = {};
     }
 
     show () {
@@ -2114,9 +2114,10 @@ class FilesView extends View {
         nocategory.sort((a, b) => b.timestamp - a.timestamp);
 
         // Create segment
-        let createSegment = (file, hiddenByDefault) => {
+        let createSegment = (file) => {
+            let sha = file.label ? SHA1(file.label) : null;
             return `
-                <div class="ui segment ${ file.hidden ? 'css-file-hidden' : '' }" data-id="${ file.index }" ${ file.label ? `data-name="${ SHA1(file.label) }"` : '' } style="${ file.color ? `background-color: ${ getColorFromName(file.color) }10;` : '' } ${ (hiddenByDefault && !this.collapsed[SHA1(file.label)]) || (file.hidden && !showHidden) ? 'display: none;' : '' }">
+                <div class="ui segment ${ file.hidden ? 'css-file-hidden' : '' }" data-id="${ file.index }" ${ sha ? `data-name="${ sha }"` : '' } style="${ file.color ? `background-color: ${ getColorFromName(file.color) }10;` : '' } ${ (!file.hidden || showHidden) && (!sha || this.shown[sha]) ? '' : 'display: none;' }">
                     <div class="ui middle aligned grid">
                         <div class="eight wide column">
                             <div class="file-detail-labels clickable">
@@ -2164,22 +2165,21 @@ class FilesView extends View {
         }
 
         let createCategory = (name, list) => {
-            let hiddenCSS = list.every(x => x.hidden) ? 'opacity: 50%;' : '';
-            if (hiddenCSS) {
-                this.collapsed[SHA1(name)] = true;
-            }
+            let hidden = list.every(x => x.hidden);
+            let hiddenCSS = hidden ? 'opacity: 50%;' : '';
+            let sha = SHA1(name);
 
             return `
                 <div class="ui segment file-category" style="position: relative; padding-left: 0; padding-right: 0;">
-                    <i class="eye ${ !list.some(x => !x.hidden) ? '' : 'slash outline' } clickable lowglow icon" data-op="hide-category" style="position: absolute; top: 1.25em; right: 4.2em; ${ hiddenCSS }"></i>
+                    <i class="eye ${ hidden ? '' : 'slash outline' } clickable lowglow icon" data-op="hide-category" style="position: absolute; top: 1.25em; right: 4.2em; ${ hiddenCSS }"></i>
                     <i class="angle double down clickable lowglow-green icon" data-op="collapse-category" style="position: absolute; top: 1.25em; right: 9.625em; ${ hiddenCSS }"></i>
                     <div class="file-category-labels clickable" style="width: 75%; ${ hiddenCSS }; margin-left: 1.15em;">
-                        <div class="ui checkbox not-clickable file-detail-checkbox" data-op="select-category" data-category="${ SHA1(name) }">
+                        <div class="ui checkbox not-clickable file-detail-checkbox" data-op="select-category" data-category="${ sha }">
                             <input type="checkbox">
                         </div>
                         <h3 class="ui margin-tiny-top not-clickable header mleft-20">${ name }<span style="color: gray; font-size: 90%;"> - ${ list.length } files</span></h3>
                     </div>
-                    ${ list.reduce((c, f) => c + createSegment(f, true), '') }
+                    ${ list.reduce((c, f) => c + createSegment(f), '') }
                 </div>
             `;
         }
@@ -2198,7 +2198,6 @@ class FilesView extends View {
             let $files = $parent.find('[data-id]');
 
             let forceHide = $el.hasClass('slash');
-
             $files.each((i, element) => {
                 Storage.hide(Number($(element).attr('data-id')), forceHide);
             });
@@ -2212,13 +2211,13 @@ class FilesView extends View {
             let $files = $parent.find('[data-id]');
 
             let cat = $parent.find('[data-category]').attr('data-category');
-            if (cat in this.collapsed) {
-                delete this.collapsed[cat];
-                $files.show();
-            } else {
-                this.collapsed[cat] = true;
-                $files.hide();
+            if (cat in this.shown) {
+                delete this.shown[cat];
+            } else if ($parent.find('[data-id]:not(.css-file-hidden)').length || showHidden) {
+                this.shown[cat] = true;
             }
+
+            this.show();
         });
 
         this.$list.find('.file-detail-labels').click(function () {
