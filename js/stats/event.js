@@ -124,6 +124,7 @@ class GroupDetailView extends View {
         super(parent);
 
         this.$table = this.$parent.find('[data-op="table"]');
+        this.table = new TableController(this.$table, TableType.Group);
 
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
@@ -149,7 +150,7 @@ class GroupDetailView extends View {
 
         // Copy 2
         this.$parent.find('[data-op="copy-sim"]').click(() => {
-            copyText(JSON.stringify(this.table.array.map(p => p.player.toSimulatorModel())));
+            copyText(JSON.stringify(this.table.getArray().map(p => p.player.toSimulatorModel())));
         });
 
         // Save
@@ -184,7 +185,7 @@ class GroupDetailView extends View {
         this.$parent.find('[data-op="export-s"]').click(() => Storage.exportGroupData(this.identifier, [ this.timestamp ]));
         this.$parent.find('[data-op="export-sr"]').click(() => Storage.exportGroupData(this.identifier, [ this.timestamp, Number(this.reference) ]));
         this.$parent.find('[data-op="share"]').click(() => {
-            UI.OnlineShareFile.show(Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]), this.table.settings.code, false);
+            UI.OnlineShareFile.show(Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]), this.table.getSettingsCode(), false);
         });
 
         // Context menu
@@ -315,10 +316,7 @@ class GroupDetailView extends View {
             this.load();
         });
 
-        this.sorting = undefined;
-        if (this.table) {
-            this.table.sorting = undefined;
-        }
+        this.table.clearSorting();
 
         this.clearOverride();
         this.load();
@@ -338,20 +336,11 @@ class GroupDetailView extends View {
             this.$configure.get(0).style.setProperty('color', '');
         }
 
-        if (this.table) {
-            this.sorting = this.table.sorting;
-        }
-
-        let settings = undefined;
         if (this.templateOverride) {
-            this.sorting = undefined;
-
-            settings = Settings.load('', '', Templates.load(this.templateOverride).code, TableType.Group);
-        } else {
-            settings = Settings.load(this.identifier, 'guilds', PredefinedTemplates['Guilds Default'], TableType.Group);
+            this.table.clearSorting();
         }
 
-        this.table = new TableInstance(settings, TableType.Group);
+        this.table.setSettings(this.templateOverride ? Settings.load('', '', Templates.load(this.templateOverride).code, TableType.Group) : Settings.load(this.identifier, 'guilds', PredefinedTemplates['Guilds Default'], TableType.Group));
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -412,63 +401,20 @@ class GroupDetailView extends View {
             entries.add(player, membersReferences.find(c => c.Identifier == player.Identifier));
         });
 
-        this.entries = entries;
         this.table.setEntries(entries);
-
-        if (this.sorting != undefined) {
-            this.table.sorting = this.sorting;
-        }
-
-        this.sorting = undefined;
-
-        this.table.sort();
-
         this.refresh();
     }
 
     refresh () {
-        var [content, size ] = this.table.getTableContent();
+        this.table.refresh(() => {
+            this.$table.find('tbody').append($('<tr data-cloneext style="height: 2em;"></tr>'));
 
-        this.$table.empty();
-        this.$table.append(content);
-        this.$table.find('tbody').append($('<tr data-cloneext style="height: 2em;"></tr>'));
-        this.$table.css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
-        if (this.$table.css('left').slice(0, -2) < 0) {
-            this.$table.css('left', '0px');
-        }
+            this.$parent.find('[data-id]').click((event) => {
+                UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp, this.reference);
+            });
 
-        this.$parent.find('[data-sortable]').click((event) => {
-            var skey = $(event.target).attr('data-sortable-key');
-
-            if (event.originalEvent.ctrlKey) {
-                this.table.sorting = this.table.sorting.filter(s => s.key == skey);
-            }
-
-            this.table.setSorting(skey);
-            this.sorting = this.table.sorting;
-
-            this.refresh();
-        }).contextmenu((event) => {
-            event.preventDefault();
-
-            if (event.originalEvent.ctrlKey) {
-                this.table.sorting = [];
-                this.table.sort();
-            } else {
-                this.table.removeSorting($(event.target).attr('data-sortable-key'));
-            }
-
-            this.sorting = this.table.sorting;
-            this.refresh();
-        }).mousedown((event) => {
-            event.preventDefault();
+            this.$context.context('bind', this.$parent.find('[data-id]'));
         });
-
-        this.$parent.find('[data-id]').click((event) => {
-            UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp, this.reference);
-        });
-
-        this.$context.context('bind', this.$parent.find('[data-id]'));
     }
 }
 
@@ -1004,6 +950,14 @@ class BrowseView extends View {
 
         this.$table = this.$parent.find('[data-op="table"]');
 
+        // Tables
+        this.tableBase = new TableController(this.$table, TableType.Players);
+        this.tableQ = new TableController(this.$table, TableType.Players);
+
+        // Keep track of what table is displayed and swap if necessary later
+        this.table = this.tableBase;
+        this.tableQEnabled = false;
+
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
             var range = document.createRange();
@@ -1104,8 +1058,8 @@ class BrowseView extends View {
 
         // Copy 2
         this.$parent.find('[data-op="copy-sim"]').click(() => {
-            var array = this.table.array;
-            var slice = this.table.array.perf || this.table.settings.globals.performance;
+            var array = this.table.getArray();
+            var slice = array.perf || this.table.getSettings().globals.performance;
             if (slice) {
                 array = array.slice(0, slice);
             }
@@ -1174,9 +1128,7 @@ class BrowseView extends View {
 
             this.shidden = false;
             this.autosort = undefined;
-
-            this.wbenabled = this.benabled;
-            this.benabled = false;
+            this.tableQEnabled = false;
 
             for (var i = 1; i < filter.length; i += 2) {
                 var key = filter[i];
@@ -1269,25 +1221,19 @@ class BrowseView extends View {
                     this.recalculate = true;
                     this.shidden = true;
                 } else if (key == 'q' && typeof(arg) == 'string' && arg.length) {
-                    if (!this.wbenabled) {
-                        this.btable = this.table;
-                    }
-
-                    this.benabled = true;
-
-                    this.table = new TableInstance(new Settings(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a.trim() }`, '') }`, TableType.Players), TableType.Players);
-                    this.sorting = undefined;
+                    this.tableQEnabled = true;
                     this.recalculate = true;
+
+                    // Clear original sort
+                    this.table.clearSorting();
+
+                    this.table = this.tableQ;
+                    this.table.setSettings(new Settings(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a.trim() }`, '') }`, TableType.Players));
                 }
             }
 
-            if (this.btable && !this.benabled) {
-                // Recover previous table
-                this.table = this.btable;
-                this.recalculate = true;
-                this.sorting = undefined;
-
-                this.btable = null;
+            if (!this.tableQEnabled) {
+                this.table = this.tableBase;
             }
 
             var entries = new PlayersTableArray(perf, this.timestamp, this.reference);
@@ -1324,12 +1270,6 @@ class BrowseView extends View {
             }
 
             this.table.setEntries(entries, !this.recalculate, sim, this.autosort);
-
-            if (this.sorting != undefined) {
-                this.table.sorting = this.sorting;
-            }
-
-            this.table.sort();
 
             this.refresh();
 
@@ -1399,7 +1339,6 @@ class BrowseView extends View {
 
         this.timestamp = Database.Latest;
         this.reference = Database.Latest;
-        this.sorting = undefined;
 
         this.load();
     }
@@ -1407,9 +1346,7 @@ class BrowseView extends View {
     load () {
         this.$configure.find('.item').removeClass('active');
 
-        // Table instance
-        this.sorting = undefined;
-        this.table = new TableInstance(Settings.load('players', 'players', PredefinedTemplates['Players Default'], TableType.Players), TableType.Players);
+        this.table.setSettings(Settings.load('players', 'players', PredefinedTemplates['Players Default'], TableType.Players));
 
         // Configuration indicator
         if (Settings.exists('players')) {
@@ -1445,8 +1382,8 @@ class BrowseView extends View {
                     settings = Settings.load('', '', Templates.load(value).code, TableType.Players);
                 }
 
-                this.sorting = undefined;
-                this.table = new TableInstance(settings, TableType.Players);
+                this.table.setSettings(settings);
+
                 this.recalculate = true;
                 this.$filter.trigger('change');
                 this.$configure.dropdown('hide');
@@ -1467,53 +1404,19 @@ class BrowseView extends View {
     }
 
     refresh () {
-        var [ content, size ] = this.table.getTableContent();
+        this.table.refresh(() => {
+            this.$parent.find('[data-id]').click((event) => {
+                if (event.ctrlKey) {
+                    $(event.target).toggleClass('css-op-select');
+                } else {
+                    UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp, this.reference);
+                }
+            }).mousedown((event) => {
+                event.preventDefault();
+            });
 
-        this.$table.empty();
-        this.$table.append(content);
-        this.$table.css('position', 'absolute').css('width', `${ size }px`).css('left', `calc(50vw - 9px - ${ size / 2 }px)`);
-        if (this.$table.css('left').slice(0, -2) < 0) {
-            this.$table.css('left', '0px');
-        }
-
-        this.$parent.find('[data-sortable]').click((event) => {
-            var skey = $(event.target).attr('data-sortable-key');
-
-            if (event.originalEvent.ctrlKey) {
-                this.table.sorting = this.table.sorting.filter(s => s.key == skey);
-            }
-
-            this.table.setSorting(skey);
-            this.sorting = this.table.sorting;
-
-            this.refresh();
-        }).contextmenu((event) => {
-            event.preventDefault();
-
-            if (event.originalEvent.ctrlKey) {
-                this.table.sorting = [];
-                this.table.sort();
-            } else {
-                this.table.removeSorting($(event.target).attr('data-sortable-key'));
-            }
-
-            this.sorting = this.table.sorting;
-            this.refresh();
-        }).mousedown((event) => {
-            event.preventDefault();
+            this.$context.context('bind', this.$parent.find('[data-id]'));
         });
-
-        this.$parent.find('[data-id]').click((event) => {
-            if (event.ctrlKey) {
-                $(event.target).toggleClass('css-op-select');
-            } else {
-                UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp, this.reference);
-            }
-        }).mousedown((event) => {
-            event.preventDefault();
-        });
-
-        this.$context.context('bind', this.$parent.find('[data-id]'));
     }
 }
 

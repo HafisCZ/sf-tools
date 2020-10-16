@@ -682,6 +682,12 @@ class TableInstance {
         this.sort();
     }
 
+    // Clear sort
+    clearSorting () {
+        this.sorting = [];
+        this.sort();
+    }
+
     // Execute sort
     sort () {
         if (this.sorting.length) {
@@ -1191,23 +1197,79 @@ class TableController {
     constructor ($table, type) {
         this.$table = $table;
         this.type = type;
+
+        // Changed by default
+        this.schanged = true;
+        this.echanged = true;
     }
 
     setSettings (settings) {
         this.settings = settings;
+        this.schanged = true;
+
+        // Clear sorting when settings have changed
+        this.clearSorting();
     }
 
-    setEntries (entries) {
-        this.entries = entries;
+    getSettings () {
+        return this.settings ? this.settings : new Settings('', this.type);
     }
 
-    refresh () {
+    getSettingsCode () {
+        return this.settings ? this.settings.code : '';
+    }
+
+    setEntries (... args) {
+        this.entries = args;
+        this.echanged = true;
+    }
+
+    getArray () {
+        return this.table ? this.table.array : [];
+    }
+
+    clearSorting () {
+        this.ignore = true;
+    }
+
+    refresh (onChange = () => { /* Do nothing */ }) {
+        // Log some console stuff for fun
+        let schanged = this.schanged || false;
+        let echanged = this.echanged || false;
+        let ignore = this.ignore || false;
+        let timestamp = Date.now();
+
+        // Save sorting if needed
+        let sorting = !this.ignore && this.table ? this.table.sorting : null;
+
         // Create table
-        let table = new TableInstance(this.settings, this.type);
-        table.setEntries(this.entries);
+        if (this.schanged) {
+            this.table = new TableInstance(new Settings(this.settings.code, this.type), this.type);
+            this.ignore = false;
+        }
+
+        // Fill entries
+        if (this.echanged || this.echanged) {
+            this.table.setEntries(... this.entries);
+        }
+
+        // Reset sorting
+        if (sorting != null) {
+            this.table.sorting = sorting;
+            this.table.sort();
+        }
+
+        // Reset sorting if ignored
+        if (this.ignore) {
+            this.table.clearSorting();
+        }
+
+        // Clear flag
+        this.ignore = false;
+        this.echanged = this.schanged = false;
 
         // Get table content
-        let [ content, width ] = table.getTableContent();
+        let [ content, width ] = this.table.getTableContent();
 
         // Setup table element
         this.$table.empty();
@@ -1218,6 +1280,47 @@ class TableController {
         }
 
         // TODO bind sorting
+        this.$table.find('[data-sortable]').click(event => {
+            let sortKey = $(event.target).attr('data-sortable-key');
+            if (event.originalEvent.ctrlKey) {
+                // Remove all sorting except current key if CTRL is held down
+                this.table.sorting = this.table.sorting.filter(s => s.key == sortKey)
+            }
+
+            // Sort by key
+            this.table.setSorting(sortKey);
+
+            // Redraw table
+            this.refresh(onChange);
+        }).contextmenu(event => {
+            event.preventDefault();
+
+            if (this.table.sorting && this.table.sorting.length) {
+                // Do only if any sorting exists
+                if (event.originalEvent.ctrlKey) {
+                    // Clear sorting if CTRL is held down
+                    this.table.clearSorting();
+                } else {
+                    // Remove current key
+                    this.table.removeSorting($(event.target).attr('data-sortable-key'));
+                }
+
+                // Redraw table
+                this.refresh(onChange);
+            }
+        }).mousedown(event => {
+            event.preventDefault();
+        });
+
+        // Log stuff to console
+        if (schanged || echanged || ignore) {
+            Logger.log('TAB_GEN', `Table generated in ${ Date.now() - timestamp }ms! Instance: ${ schanged }, Entries: ${ echanged }, Unsorted: ${ ignore }`);
+        } else {
+            Logger.log('TAB_GEN', `Table generated in ${ Date.now() - timestamp }ms!`);
+        }
+
+        // Call callback when finished
+        onChange();
     }
 }
 
