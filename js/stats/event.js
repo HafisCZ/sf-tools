@@ -2069,6 +2069,9 @@ class FilesView extends View {
                 this.show();
             }
         }).checkbox(SiteOptions.inventory ? 'set checked' : 'set unchecked');
+
+        // Collapsed things
+        this.collapsed = {};
     }
 
     show () {
@@ -2078,14 +2081,42 @@ class FilesView extends View {
         this.$rpcount.text(Storage.files().map(f => f.players ? f.players.length : 0).reduce((a, b) => a + b, 0));
         this.$fcount.text(Storage.files().length);
 
-        // Page content
-        let showHidden = !SiteOptions.files_hide;
-        var content = Storage.files().map(function (file, index) {
-            if (file.hidden && showHidden) {
-                // Return null if not displayed
-                return null;
-            } else return `
-                <div class="ui segment ${ file.hidden ? 'css-file-hidden' : '' }" data-id="${ index }" ${ file.color ? `style="background-color: ${ getColorFromName(file.color) }10;"` : '' }>
+        // Files
+        let showHidden = SiteOptions.files_hide;
+        let files = [ ... Storage.files() ];
+        files.reverse();
+
+        // Categories
+        let categories = { };
+        let nocategory = [ ];
+
+        for (let file of files) {
+            if (file.label) {
+                if (!(file.label in categories)) {
+                    categories[file.label] = [ ];
+                }
+
+                categories[file.label].push(file);
+            } else {
+                nocategory.push(file);
+            }
+        }
+
+        for (let [key, list] of Object.entries(categories)) {
+            if (list.length < 2 /*|| (!showHidden && !list.some(x => !x.hidden))*/) {
+                nocategory.push(... list);
+                delete categories[key];
+            } else {
+                list.sort((a, b) => b.timestamp - a.timestamp);
+            }
+        }
+
+        nocategory.sort((a, b) => b.timestamp - a.timestamp);
+
+        // Create segment
+        let createSegment = (file, hiddenByDefault) => {
+            return `
+                <div class="ui segment ${ file.hidden ? 'css-file-hidden' : '' }" data-id="${ file.index }" ${ file.label ? `data-name="${ SHA1(file.label) }"` : '' } style="${ file.color ? `background-color: ${ getColorFromName(file.color) }10;` : '' } ${ (hiddenByDefault && !this.collapsed[SHA1(file.label)]) || (file.hidden && !showHidden) ? 'display: none;' : '' }">
                     <div class="ui middle aligned grid">
                         <div class="eight wide column">
                             <div class="file-detail-labels clickable">
@@ -2110,7 +2141,7 @@ class FilesView extends View {
                         </div>
                     </div>
                 </div>
-                <div class="ui tiny modal" data-for="${ index }">
+                <div class="ui tiny modal" data-for="${ file.index }">
                     <div class="header">File Information</div>
                     <div class="content">
                         <div class="ui grid">
@@ -2130,15 +2161,82 @@ class FilesView extends View {
                     </div>
                 </div>
             `;
-        }).filter(c => c);
+        }
 
-        // Flip content
-        content.reverse();
+        function createCategory (name, list) {
+            let hiddenCSS = list.every(x => x.hidden) ? 'opacity: 50%;' : '';
+            return `
+                <div class="ui segment file-category" style="position: relative; padding-left: 0; padding-right: 0;">
+                    <i class="eye ${ !list.some(x => !x.hidden) ? '' : 'slash outline' } clickable lowglow icon" data-op="hide-category" style="position: absolute; top: 1.25em; right: 4.2em; ${ hiddenCSS }"></i>
+                    <i class="angle double down clickable lowglow-green icon" data-op="collapse-category" style="position: absolute; top: 1.25em; right: 9.625em; ${ hiddenCSS }"></i>
+                    <div class="file-category-labels clickable" style="width: 75%; ${ hiddenCSS }; margin-left: 1.15em;">
+                        <div class="ui checkbox not-clickable file-detail-checkbox" data-op="select-category" data-category="${ SHA1(name) }">
+                            <input type="checkbox">
+                        </div>
+                        <h3 class="ui margin-tiny-top not-clickable header mleft-20">${ name }<span style="color: gray; font-size: 90%;"> - ${ list.length } files</span></h3>
+                    </div>
+                    ${ list.reduce((c, f) => c + createSegment(f, true), '') }
+                </div>
+            `;
+        }
+
+        // Create content
+        let content = '';
+        content += Object.entries(categories).reduce((c, [ name, list ]) => c + createCategory(name, list), '');
+        content += nocategory.reduce((c, f) => c + createSegment(f), '');
 
         // Fill content & add select handler
-        this.$list.html(content.join('')).find('.file-detail-labels').click(function () {
+        this.$list.html(content);
+
+        this.$parent.find('[data-op="hide-category"]').click((event) => {
+            let $el = $(event.target);
+            let $parent = $el.closest('div');
+            let $files = $parent.find('[data-id]');
+
+            let forceHide = $el.hasClass('slash');
+
+            $files.each((i, element) => {
+                Storage.hide(Number($(element).attr('data-id')), forceHide);
+            });
+
+            this.show();
+        });
+
+        this.$parent.find('[data-op="collapse-category"]').click((event) => {
+            let $el = $(event.target);
+            let $parent = $el.closest('div');
+            let $files = $parent.find('[data-id]');
+
+            let cat = $parent.find('[data-category]').attr('data-category');
+            if (cat in this.collapsed) {
+                delete this.collapsed[cat];
+            } else {
+                this.collapsed[cat] = true;
+            }
+
+            $files.toggle();
+        });
+
+        this.$list.find('.file-detail-labels').click(function () {
             $(this).find('[data-op="select"]').checkbox('toggle');
             $(this).closest('[data-id]').toggleClass('selected');
+            $(this).closest('.file-category').find('[data-op="select-category"]').checkbox('uncheck');
+        });
+
+        this.$list.find('.file-category-labels').click(function () {
+            let $checkbox = $(this).find('[data-op="select-category"]').checkbox('toggle');
+            let category = $checkbox.attr('data-category');
+            let checked = $checkbox.checkbox('is checked');
+
+            let $list = $(this).closest('[data-op="list"]').find(`[data-name="${ category }"]`);
+
+            if (checked) {
+                $list.find('[data-op="select"]').checkbox('check');
+                $list.closest('[data-id]').addClass('selected');
+            } else {
+                $list.find('[data-op="select"]').checkbox('uncheck');
+                $list.closest('[data-id]').removeClass('selected');
+            }
         });
 
         this.$parent.find('[data-op="infobutton"]').each(function (index, element) {
@@ -2160,6 +2258,7 @@ class FilesView extends View {
 
         // Initialize checkboxes for individual files
         this.$parent.find('[data-op="select"]').checkbox();
+        this.$parent.find('[data-op="select-category"]').checkbox();
 
         // Remove file
         this.$parent.find('[data-op="remove"]').click((event) => {

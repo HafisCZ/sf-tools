@@ -1123,10 +1123,10 @@ const Storage = new (class {
         this.import([ file ]);
     }
 
-    hide (index) {
+    hide (index, forceHide = false) {
         var file = this.current[index];
 
-        if (file.hidden) {
+        if (file.hidden && !forceHide) {
             file.hidden = false;
             Database.add(file);
         } else {
@@ -1220,6 +1220,10 @@ const Storage = new (class {
     }
 
     files () {
+        for (let i = 0; i < this.current.length; i++) {
+            this.current[i].index = i;
+        }
+
         return this.current;
     }
 })();

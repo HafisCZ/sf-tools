@@ -16,6 +16,23 @@ body {
     font-size: 85%;
 }
 
+.file-category .segment:nth-last-child(2) {
+    margin-bottom: 0;
+}
+
+.file-category {
+    margin-left: -0.5em !important;
+    padding-left: 0.5em !important;
+    margin-right: -0.5em !important;
+    padding-right: 0.5em !important;
+}
+
+.file-category > .ui.segment {
+    border-left: 2px solid black !important;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
 .css-file-hidden {
     opacity: 50%;
 }
@@ -1058,7 +1075,7 @@ h3.file-selected {
     margin-top: 2.0em;
 }
 
-.file-detail-counts, .file-detail-labels {
+.file-detail-counts, .file-detail-labels, .file-category-labels {
     position: relative;
 }
 
@@ -1070,6 +1087,12 @@ h3.file-selected {
 }
 
 .file-detail-labels .file-detail-checkbox {
+    position: absolute;
+    left: 0.25em;
+    top: 0.125em;
+}
+
+.file-category-labels .file-detail-checkbox {
     position: absolute;
     left: 0.25em;
     top: 0.125em;
