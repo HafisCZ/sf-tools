@@ -2163,8 +2163,12 @@ class FilesView extends View {
             `;
         }
 
-        function createCategory (name, list) {
+        let createCategory = (name, list) => {
             let hiddenCSS = list.every(x => x.hidden) ? 'opacity: 50%;' : '';
+            if (hiddenCSS) {
+                this.collapsed[SHA1(name)] = true;
+            }
+
             return `
                 <div class="ui segment file-category" style="position: relative; padding-left: 0; padding-right: 0;">
                     <i class="eye ${ !list.some(x => !x.hidden) ? '' : 'slash outline' } clickable lowglow icon" data-op="hide-category" style="position: absolute; top: 1.25em; right: 4.2em; ${ hiddenCSS }"></i>
@@ -2210,11 +2214,11 @@ class FilesView extends View {
             let cat = $parent.find('[data-category]').attr('data-category');
             if (cat in this.collapsed) {
                 delete this.collapsed[cat];
+                $files.show();
             } else {
                 this.collapsed[cat] = true;
+                $files.hide();
             }
-
-            $files.toggle();
         });
 
         this.$list.find('.file-detail-labels').click(function () {
