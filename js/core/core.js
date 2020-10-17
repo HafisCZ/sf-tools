@@ -281,8 +281,9 @@ const Database = new (class {
                 }
             });
 
-            this.update();
         }
+
+        this.update();
     }
 
     removeByIDSingle (identifier, timestamp) {
