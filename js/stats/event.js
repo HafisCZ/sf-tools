@@ -2103,7 +2103,7 @@ class FilesView extends View {
         }
 
         for (let [key, list] of Object.entries(categories)) {
-            if (list.length < 2 /*|| (!showHidden && !list.some(x => !x.hidden))*/) {
+            if (list.length < 2) {
                 nocategory.push(... list);
                 delete categories[key];
             } else {
@@ -2114,10 +2114,10 @@ class FilesView extends View {
         nocategory.sort((a, b) => b.timestamp - a.timestamp);
 
         // Create segment
-        let createSegment = (file) => {
+        let createSegment = (file, isInCategory = false) => {
             let sha = file.label ? SHA1(file.label) : null;
             return `
-                <div class="ui segment ${ file.hidden ? 'css-file-hidden' : '' }" data-id="${ file.index }" ${ sha ? `data-name="${ sha }"` : '' } style="${ file.color ? `background-color: ${ getColorFromName(file.color) }10;` : '' } ${ (!file.hidden || showHidden) && (!sha || this.shown[sha]) ? '' : 'display: none;' }">
+                <div class="ui segment ${ file.hidden ? 'css-file-hidden' : '' }" data-id="${ file.index }" ${ sha ? `data-name="${ sha }"` : '' } style="${ file.color ? `background-color: ${ getColorFromName(file.color) }10;` : '' } ${ (!file.hidden || showHidden) && (!isInCategory || !sha || this.shown[sha]) ? '' : 'display: none;' }">
                     <div class="ui middle aligned grid">
                         <div class="eight wide column">
                             <div class="file-detail-labels clickable">
@@ -2179,7 +2179,7 @@ class FilesView extends View {
                         </div>
                         <h3 class="ui margin-tiny-top not-clickable header mleft-20">${ name }<span style="color: gray; font-size: 90%;"> - ${ list.length } files</span></h3>
                     </div>
-                    ${ list.reduce((c, f) => c + createSegment(f), '') }
+                    ${ list.reduce((c, f) => c + createSegment(f, true), '') }
                 </div>
             `;
         }

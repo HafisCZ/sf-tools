@@ -268,21 +268,18 @@ const Database = new (class {
 
         for (var timestamp of timestamps) {
             Object.values(this.Players).forEach(function (p) {
-                if (p[timestamp] && p.List.length == 1) {
+                delete p[timestamp];
+                if (!Object.keys(p).filter(x => !isNaN(x)).length) {
                     delete Database.Players[p.Latest.Identifier];
-                } else {
-                    delete p[timestamp];
                 }
             });
 
             Object.values(this.Groups).forEach(function (g) {
-                if (g[timestamp] && g.List.length == 1) {
+                delete g[timestamp];
+                if (!Object.keys(g).filter(x => !isNaN(x)).length) {
                     delete Database.Groups[g.Latest.Identifier];
-                } else {
-                    delete g[timestamp];
                 }
             });
-
         }
 
         this.update();
