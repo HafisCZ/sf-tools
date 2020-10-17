@@ -1123,18 +1123,25 @@ const Storage = new (class {
         this.import([ file ]);
     }
 
-    hide (index, forceHide = false) {
-        var file = this.current[index];
-
-        if (file.hidden && !forceHide) {
-            file.hidden = false;
-            Database.add(file);
+    // Set hidden files
+    setHidden (state, ... indexes) {
+        if (state == null) {
+            // Toggle by first file (used only for single file)
+            this.setHidden(!this.current[indexes[0]].hidden, ... indexes);
         } else {
-            file.hidden = true;
-            Database.remove(file.timestamp);
-        }
+            let files = this.current.filter((file, index) => indexes.includes(index));
+            files.forEach(file => file.hidden = state);
 
-        this.save(file);
+            // Update the database (should cause just one update instead of several)
+            if (state) {
+                Database.remove(... files.map(file => file.timestamp));
+            } else {
+                Database.add(... files);
+            }
+
+            // Save files
+            this.save(... files);
+        }
     }
 
     removeByIDSingle (identifier, timestamp) {

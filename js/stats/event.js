@@ -2198,9 +2198,8 @@ class FilesView extends View {
             let $files = $parent.find('[data-id]');
 
             let forceHide = $el.hasClass('slash');
-            $files.each((i, element) => {
-                Storage.hide(Number($(element).attr('data-id')), forceHide);
-            });
+
+            Storage.setHidden(forceHide, ... $files.toArray().map(f => Number($(f).attr('data-id'))));
 
             this.show();
         });
@@ -2294,7 +2293,7 @@ class FilesView extends View {
             var $el = $(event.target);
             var id = $el.closest('[data-id]').attr('data-id');
 
-            Storage.hide(id);
+            Storage.setHidden(null, Number(id));
 
             this.show();
         });
