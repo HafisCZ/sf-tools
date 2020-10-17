@@ -264,6 +264,8 @@ const HAS_PROXY = typeof(Proxy) != 'undefined';
 const Database = new (class {
 
     remove (... timestamps) {
+        this.ChangeInitiated = Date.now();
+
         for (var timestamp of timestamps) {
             Object.values(this.Players).forEach(function (p) {
                 if (p[timestamp] && p.List.length == 1) {
@@ -287,6 +289,8 @@ const Database = new (class {
     }
 
     removeByIDSingle (identifier, timestamp) {
+        this.ChangeInitiated = Date.now();
+
         if (Database.Players[identifier]) {
             delete Database.Players[identifier][timestamp];
         } else if (Database.Groups[identifier]) {
@@ -297,6 +301,8 @@ const Database = new (class {
     }
 
     removeByID (... identifiers) {
+        this.ChangeInitiated = Date.now();
+
         for (var identifier of identifiers) {
             delete Database.Players[identifier];
             delete Database.Groups[identifier];
@@ -350,6 +356,8 @@ const Database = new (class {
 
     load (id, timestamp) {
         if (this.Players[id][timestamp].IsProxy) {
+            this.ChangeInitiated = Date.now();
+
             var data = this.Players[id][timestamp].Data;
             var player = data.own ? new SFOwnPlayer(data, Database.LoadInventory) : new SFOtherPlayer(data);
 
@@ -393,6 +401,8 @@ const Database = new (class {
     }
 
     add (... files) {
+        this.ChangeInitiated = Date.now();
+
         var tempGroups = {};
         var tempPlayers = {};
 
@@ -543,7 +553,6 @@ const Database = new (class {
     }
 
     update () {
-        this.Changed = Date.now();
         this.Latest = 0;
 
         for (const [identifier, player] of Object.entries(this.Players)) {
@@ -598,7 +607,10 @@ const Database = new (class {
             }
         }
 
-        Logger.log('STORAGE', 'Database changed! Timestamp: ' + this.Changed);
+        this.Changed = Date.now();
+        Logger.log('STORAGE', `Database changed! ${ this.ChangeInitiated ? `Took ${ this.Changed - this.ChangeInitiated }ms` : `Timestamp: ${ this.Changed }` }`);
+
+        this.ChangeInitiated = null;
     }
 
     hide (identifier) {
