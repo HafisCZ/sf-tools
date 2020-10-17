@@ -1,4 +1,18 @@
 const CHANGELOG = {
+    'v3.943': [
+        'Added template management (delete, update, share).',
+        'Added website icon.',
+        'Added file groups based on the file label.',
+        'Added option to hide/unhide whole file group.',
+        'Added <code>expneeded</code> function that returns xp needed for said level.',
+        'Added toggle that allows extra inventory headers to work (backpack, chest, companions).',
+        'Added new <code>import</code> keyword that can import another template into existing one.',
+        'Added more debug information in console.',
+        'Added option to change file timestamp in beta mode.',
+        'Added table controller.',
+        'Fixed copying players for fight simulator.',
+        'Fixed history order.'
+    ],
     'v3.910': [
         'Reworked settings screen.',
         'Reworked modal for importing shared files.',
