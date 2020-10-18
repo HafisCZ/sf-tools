@@ -418,6 +418,21 @@ class TableInstance {
 
     // Set players
     setEntries (array, skipeval, sim, sort = undefined) {
+        console.log(array);
+        if (this.type == TableType.History) {
+            array = array.map(([ timestamp, e ]) => {
+                // Preload character
+                Database.preload(e.Identifier, timestamp);
+                let obj = Database.Players[e.Identifier][timestamp];
+
+                // Find if falls under discard rule
+                let disc = this.settings.discard.some(rule => rule(obj, obj, this.settings));
+
+                // Return stuff
+                return disc ? null : [ timestamp, obj ];
+            }).filter(e => e);
+        }
+
         // Entry array
         this.array = array;
 
@@ -2052,6 +2067,18 @@ const SettingsCommands = [
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ Expression.format(a, root) }`;
     }),
+    new SettingsCommand(/^discard (.*)$/, function (root, string) {
+        let [ , a ] = this.match(string);
+        var ast = new Expression(a);
+        if (ast.isValid()) {
+            root.addDiscardRule((player, reference, env, scope, extra) => {
+                return ast.eval(player, reference, env, scope, extra);
+            });
+        }
+    }, function (root, string) {
+        let [ , a ] = this.match(string);
+        return `${ SFormat.Keyword('discard') } ${ Expression.format(a, root) }`;
+    }),
     // Local
     // expc - Set color expression to the column
     new SettingsCommand(/^(expc|c) (.+)$/, function (root, string) {
@@ -2458,6 +2485,7 @@ class Settings {
         this.func = {};
         this.extras = [];
         this.stats = [];
+        this.discard = [];
 
         this.constants = new Constants();
 
@@ -2532,6 +2560,10 @@ class Settings {
             type: type,
             invert: invert
         }
+    }
+
+    addDiscardRule (rule) {
+        this.discard.push(rule);
     }
 
     flipFilter () {
