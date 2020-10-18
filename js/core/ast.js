@@ -424,13 +424,13 @@ class Expression {
         return node;
     }
 
-    eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined) {
-        return this.evalInternal(player, reference, environment, scope, extra, this.root);
+    eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined, functionScope = undefined) {
+        return this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
     }
 
     // Evaluate a node into array, used for array functions
-    evalToArray (player, reference, environment, scope, extra, node) {
-        var generated = this.evalInternal(player, reference, environment, scope, extra, node);
+    evalToArray (player, reference, environment, scope, extra, functionScope, node) {
+        var generated = this.evalInternal(player, reference, environment, scope, extra, functionScope, node);
         if (!generated || typeof(generated) != 'object') {
             return [];
         } else {
@@ -439,14 +439,14 @@ class Expression {
     }
 
     // Evaluate a node (beta)
-    evalInternal (player, reference, environment, scope, extra, node) {
+    evalInternal (player, reference, environment, scope, extra, functionScope, node) {
         if (typeof(node) == 'object') {
             if (node.raw) {
                 return node.args;
             } else if (typeof(node.op) == 'string') {
                 if (node.op == 'format' && node.args.length > 0) {
-                    var str = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
-                    var arg = node.args.slice(1).map(a => this.evalInternal(player, reference, environment, scope, extra, a));
+                    var str = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[0]);
+                    var arg = node.args.slice(1).map(a => this.evalInternal(player, reference, environment, scope, extra, functionScope, a));
 
                     for (key in arg) {
                         str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
@@ -454,8 +454,8 @@ class Expression {
 
                     return str;
                 } else if (node.op == 'at' && node.args.length == 2) {
-                    var array = this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
-                    var arg = this.evalInternal(player, reference, environment, scope, extra, node.args[1]);
+                    var array = this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
+                    var arg = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[1]);
 
                     if (isNaN(arg)) {
                         return undefined;
@@ -468,19 +468,19 @@ class Expression {
                         return array[arg];
                     }
                 } else if (node.op == 'join' && node.args.length == 2) {
-                    var array = this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
-                    var arg = this.evalInternal(player, reference, environment, scope, extra, node.args[1]);
+                    var array = this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
+                    var arg = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[1]);
 
                     return array.join(arg);
                 } else if (node.op == 'distinct' && node.args.length == 1) {
-                    let array = this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
+                    let array = this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
                     let values = Array.from(new Set(array));
                     values.segmented = array.segmented;
 
                     return values;
                 } else if (node.op == 'sort' && node.args.length == 2) {
                     // Multiple array functions condensed
-                    var array = this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
+                    var array = this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
                     var mapper = environment.func[node.args[1]];
                     var values = [];
 
@@ -491,7 +491,7 @@ class Expression {
                                     key: mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.arg.reduce((c, a, i) => {
                                         c[a] = obj[i];
                                         return c;
-                                    }, {})),
+                                    }, {}), functionScope),
                                     val: obj
                                 };
                             });
@@ -501,7 +501,7 @@ class Expression {
                                     key: mapper.ast.eval(player, reference, environment, obj, mapper.arg.reduce((c, a) => {
                                         c[a] = obj;
                                         return c;
-                                    }, {})),
+                                    }, {}), functionScope),
                                     val: obj
                                 };
                             });
@@ -510,14 +510,14 @@ class Expression {
                         if (array.segmented) {
                             values = array.map(obj => {
                                 return {
-                                    key: this.evalInternal(obj[0], obj[1], environment, obj[0], undefined, node.args[1]),
+                                    key: this.evalInternal(obj[0], obj[1], environment, obj[0], undefined, functionScope, node.args[1]),
                                     val: obj
                                 };
                             });
                         } else {
                             values = array.map(obj => {
                                 return {
-                                    key: this.evalInternal(player, reference, environment, obj, obj, node.args[1]),
+                                    key: this.evalInternal(player, reference, environment, obj, obj, functionScope, node.args[1]),
                                     val: obj
                                 };
                             });
@@ -530,7 +530,7 @@ class Expression {
                     return values;
                 } else if (['each', 'filter', 'map'].includes(node.op) && node.args.length == 2) {
                     // Multiple array functions condensed
-                    var array = this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
+                    var array = this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
                     var mapper = environment.func[node.args[1]];
                     var values = [];
 
@@ -540,18 +540,18 @@ class Expression {
                             values = array.map(obj => mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.arg.reduce((c, a, i) => {
                                 c[a] = obj[i];
                                 return c;
-                            }, {})));
+                            }, {})), functionScope);
                         } else {
                             values = array.map(obj => mapper.ast.eval(player, reference, environment, obj, mapper.arg.reduce((c, a) => {
                                 c[a] = obj;
                                 return c;
-                            }, {})));
+                            }, {})), functionScope);
                         }
                     } else {
                         if (array.segmented) {
-                            values = array.map(obj => this.evalInternal(obj[0], obj[1], environment, obj[0], undefined, node.args[1]));
+                            values = array.map(obj => this.evalInternal(obj[0], obj[1], environment, obj[0], undefined, functionScope, node.args[1]));
                         } else {
-                            values = array.map(obj => this.evalInternal(player, reference, environment, obj, obj, node.args[1]));
+                            values = array.map(obj => this.evalInternal(player, reference, environment, obj, obj, functionScope, node.args[1]));
                         }
                     }
 
@@ -563,19 +563,19 @@ class Expression {
                     }
                 } else if (node.op == 'slice' && (node.args.length == 2 || node.args.length == 3)) {
                     // Simple slice
-                    var array = this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
+                    var array = this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
                     var sliced = array.slice(node.args[1], node.args[2]);
                     sliced.segmented = array.segmented;
                     return sliced;
                 } else if (node.op == 'array') {
                     // Simple toArray function
-                    return this.evalToArray(player, reference, environment, scope, extra, node.args[0]);
+                    return this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
                 } else if (node.op == '{' || node.op == '[') {
                     // Simple object or array constructor
                     var obj = node.op == '{' ? {} : [];
 
                     for (var { key, val } of node.args) {
-                        obj[this.evalInternal(player, reference, environment, scope, extra, key)] = this.evalInternal(player, reference, environment, scope, extra, val);
+                        obj[this.evalInternal(player, reference, environment, scope, extra, functionScope, key)] = this.evalInternal(player, reference, environment, scope, extra, functionScope, val);
                     }
 
                     return obj;
@@ -583,13 +583,13 @@ class Expression {
                     var mapper = environment.func[node.op];
                     var scope2 = {};
                     for (var i = 0; i < mapper.arg.length; i++) {
-                        scope2[mapper.arg[i]] = this.evalInternal(player, reference, environment, scope, extra, node.args[i]);
+                        scope2[mapper.arg[i]] = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[i]);
                     }
 
-                    return mapper.ast.eval(player, reference, environment, scope2, extra);
+                    return mapper.ast.eval(player, reference, environment, scope2, extra, scope2);
                 } else if (node.op == 'difference' && node.args.length == 1) {
-                    var a = this.evalInternal(player, reference, environment, player, extra, node.args[0]);
-                    var b = this.evalInternal(reference, reference, environment, reference, extra, node.args[0]);
+                    var a = this.evalInternal(player, reference, environment, player, extra, functionScope, node.args[0]);
+                    var b = this.evalInternal(reference, reference, environment, reference, extra, functionScope, node.args[0]);
 
                     if (isNaN(a) || isNaN(b)) {
                         return undefined;
@@ -597,39 +597,39 @@ class Expression {
                         return a - b;
                     }
                 } else if (node.op == '[a') {
-                    var object = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
+                    var object = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[0]);
                     if (object) {
-                        return object[this.evalInternal(player, reference, environment, scope, extra, node.args[1])];
+                        return object[this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[1])];
                     } else {
                         return undefined;
                     }
                 } else if (node.op == '(a') {
-                    var object = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
-                    var func = this.evalInternal(player, reference, environment, scope, extra, node.args[1]);
+                    var object = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[0]);
+                    var func = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[1]);
 
                     if (object != undefined && object[func]) {
-                        return object[func](... node.args[2].map(param => this.evalInternal(player, reference, environment, scope, extra, param)));
+                        return object[func](... node.args[2].map(param => this.evalInternal(player, reference, environment, scope, extra, functionScope, param)));
                     } else {
                         return undefined;
                     }
                 } else if (SP_KEYWORDS.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple call
-                    var obj = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
+                    var obj = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[0]);
                     return obj ? SP_KEYWORDS[node.op].expr(obj, null, environment) : undefined;
                 } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple indirect call
-                    var obj = this.evalInternal(player, reference, environment, scope, extra, node.args[0]);
+                    var obj = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[0]);
                     return obj ? SP_KEYWORDS_INDIRECT[node.op].expr(player, null, environment, obj) : undefined;
                 } else if (SP_FUNCTIONS.hasOwnProperty(node.op)) {
                     // Predefined function
-                    return SP_FUNCTIONS[node.op](... node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg)));
+                    return SP_FUNCTIONS[node.op](... node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, functionScope, arg)));
                 } else {
                     // Return undefined
                     return undefined;
                 }
             } else if (node.op) {
                 // Return processed node
-                var value = node.op(... node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, arg)));
+                var value = node.op(... node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, functionScope, arg)));
                 if (value == NaN) {
                     return undefined;
                 } else {
@@ -665,6 +665,9 @@ class Expression {
             } else if (typeof(scope) == 'object' && scope[node] != undefined) {
                 // Return scope variable (only if it exists)
                 return scope[node];
+            } else if (typeof(functionScope) == 'object' && functionScope[node] != undefined) {
+                // Return function scope variable (only if exists)
+                return functionScope[node];
             } else if (environment.vars[node] != undefined) {
                 // Return environment variable
                 if (environment.vars[node].value != undefined) {
