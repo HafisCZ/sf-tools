@@ -418,7 +418,6 @@ class TableInstance {
 
     // Set players
     setEntries (array, skipeval, sim, sort = undefined) {
-        console.log(array);
         if (this.type == TableType.History) {
             array = array.map(([ timestamp, e ]) => {
                 // Preload character
@@ -1219,11 +1218,15 @@ class TableController {
     }
 
     setSettings (settings) {
-        this.settings = settings;
-        this.schanged = true;
+        if (this.settings && settings && this.settings.code == settings.code) {
+            // Do nothing if settings did not change
+        } else {
+            this.settings = settings;
+            this.schanged = true;
 
-        // Clear sorting when settings have changed
-        this.clearSorting();
+            // Clear sorting when settings have changed
+            this.clearSorting();
+        }
     }
 
     getSettings () {
