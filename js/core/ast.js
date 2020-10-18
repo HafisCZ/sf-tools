@@ -910,7 +910,7 @@ const SP_FUNCTIONS = {
     'dualcolor': (width, color1, color2) => {
         if (!isNaN(width) && typeof(color1) == 'string' && typeof(color2) == 'string') {
             width = parseInt(width);
-            width = width > 99 ? 99 : (width < 1 ? 1 : width);
+            width = width > 100 ? 100 : (width < 1 ? 1 : width);
 
             return `linear-gradient(90deg, ${ getCSSColor(color1) } ${ width }%, ${ getCSSColor(color2) } ${ width }%)`;
         } else {
