@@ -1607,9 +1607,11 @@ class SFOwnPlayer extends SFPlayer {
             }[type]] = {
                 Date: date,
                 Type: type,
-                Owned: date > 0
+                Owned: date > 0 && date < this.Timestamp
             };
         }
+
+        this.Witch.Stage = this.Witch.Scrolls.filter(s => s.Owned).length;
 
         if (data.tower.length && loadInventory) {
             this.Companions = {
