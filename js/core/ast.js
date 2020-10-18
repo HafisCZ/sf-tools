@@ -2096,7 +2096,11 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Witch.Stage
     },
     'Scroll Finish' : {
-        expr: p => p.Witch.Finish
+        expr: p => p.Witch.Finish,
+        format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
+        difference: false,
+        statistics: false,
+        width: 160
     },
     'Witch Items': {
         expr: p => p.Witch.Items
