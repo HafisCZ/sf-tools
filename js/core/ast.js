@@ -2095,6 +2095,9 @@ const SP_KEYWORD_MAPPING_2 = {
     'Scrolls': {
         expr: p => p.Witch.Stage
     },
+    'Scroll Finish' : {
+        expr: p => p.Witch.Finish
+    },
     'Witch Items': {
         expr: p => p.Witch.Items
     },

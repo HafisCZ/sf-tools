@@ -1577,7 +1577,14 @@ class SFOwnPlayer extends SFPlayer {
         this.Witch.ItemsNext = Math.max(0, dataType.long());
         this.Witch.Items = Math.min(this.Witch.Items, this.Witch.ItemsNext);
 
-        dataType.skip(5);
+        dataType.skip(3);
+
+        this.Witch.Finish = dataType.long() * 1000 + data.offset;
+        if (this.Witch.Finish < this.Timestamp) {
+            this.Witch.Finish = 0;
+        }
+
+        dataType.skip(1);
 
         this.Witch.Scrolls = [];
         for (var i = 0; i < 9; i++) {
