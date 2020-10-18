@@ -1249,7 +1249,7 @@ class TableController {
         }
 
         // Fill entries
-        if (this.echanged || this.echanged) {
+        if (this.echanged || this.schanged) {
             this.table.setEntries(... this.entries);
         }
 
