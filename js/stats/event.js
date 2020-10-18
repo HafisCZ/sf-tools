@@ -3017,17 +3017,30 @@ class TemplatesView extends View {
     }
 
     updateTemplate () {
-        // Get values
-        let name = this.tmp.name;
-        let content = this.currentContent;
-        let compat = this.tmp.compat;
+        if (this.$update.hasClass('basic')) {
+            // Remove basic class from the button
+            this.$update.removeClass('basic');
 
-        // Save template
-        Templates.save(name, content, compat);
+            // Readd the class after 2 seconds without action
+            this.updateTimeout = setTimeout(() => {
+                this.$update.addClass('basic');
+            }, 2000);
+        } else {
+            // Clear timeout
+            clearTimeout(this.updateTimeout);
 
-        // Refresh everything
-        this.clearOverride();
-        this.showTemplate(name);
+            // Get values
+            let name = this.tmp.name;
+            let content = this.currentContent;
+            let compat = this.tmp.compat;
+
+            // Save template
+            Templates.save(name, content, compat);
+
+            // Refresh everything
+            this.clearOverride();
+            this.showTemplate(name);
+        }
     }
 
     publishTemplate () {
@@ -3099,45 +3112,52 @@ class TemplatesView extends View {
         }
     }
 
-    unpublishTemplate () {
-        // Get values
-        let key = this.tmp.online.key;
-        let secret = this.tmp.online.secret;
-        let name = this.tmp.name;
-
-        // Remove online template
-        $.ajax({
-            url: `https://sftools-api.herokuapp.com/scripts/delete?key=${ key }&secret=${ secret }`,
-            type: 'GET'
-        }).done(obj => {
-            if (obj.success) {
-                // Set as offline
-                Templates.markAsOffline(name);
-            }
-
-            // Refresh
-            this.showTemplate(name);
-            this.setLoading(false);
-        }).fail(() => {
-            this.setLoading(false);
-        });
-    }
-
     deleteTemplate () {
-        // Get values
-        let name = this.tmp.name;
+        if (this.$delete.hasClass('basic')) {
+            // Remove basic class from the button
+            this.$delete.removeClass('basic');
 
-        if (this.tmp.online) {
-            // Unpublish if online
-            this.unpublishTemplate();
+            // Readd the class after 2 seconds without action
+            this.deleteTimeout = setTimeout(() => {
+                this.$delete.addClass('basic');
+            }, 2000);
         } else {
-            // Delete template
-            Templates.remove(name);
+            // Clear timeout
+            clearTimeout(this.deleteTimeout);
 
-            // Refresh everything
-            this.getCurrentView().updateTemplates();
-            this.clearOverride();
-            this.refreshList();
+            // Get values
+            let name = this.tmp.name;
+
+            if (this.tmp.online) {
+                // Unpublish first if online
+                let key = this.tmp.online.key;
+                let secret = this.tmp.online.secret;
+
+                // Remove online template
+                $.ajax({
+                    url: `https://sftools-api.herokuapp.com/scripts/delete?key=${ key }&secret=${ secret }`,
+                    type: 'GET'
+                }).done(obj => {
+                    if (obj.success) {
+                        // Set as offline
+                        Templates.markAsOffline(name);
+                    }
+
+                    // Refresh
+                    this.showTemplate(name);
+                    this.setLoading(false);
+                }).fail(() => {
+                    this.setLoading(false);
+                });
+            } else {
+                // Delete template
+                Templates.remove(name);
+
+                // Refresh everything
+                this.getCurrentView().updateTemplates();
+                this.clearOverride();
+                this.refreshList();
+            }
         }
     }
 
@@ -3172,8 +3192,12 @@ class TemplatesView extends View {
         this.$publish.addClass('disabled');
 
         // Reset buttons
-        this.$delete.addClass('disabled').find('span').text('Remove');
-        this.$update.addClass('disabled');
+        this.$delete.addClass('disabled basic').find('span').text('Remove');
+        clearTimeout(this.deleteTimeout);
+
+        this.$update.addClass('disabled basic');
+        clearTimeout(this.updateTimeout);
+
         this.$open.removeClass('link');
 
         // Refresh list
@@ -3184,6 +3208,13 @@ class TemplatesView extends View {
     }
 
     showTemplate (name) {
+        // Clear some things again
+        clearTimeout(this.deleteTimeout);
+        clearTimeout(this.updateTimeout);
+
+        this.$delete.addClass('basic');
+        this.$update.addClass('basic');
+
         let tmp = this.tmp = Templates.get()[name];
 
         // Set fields
