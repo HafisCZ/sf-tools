@@ -1272,7 +1272,7 @@ class TableController {
         }
 
         // Reset sorting
-        if (sorting != null) {
+        if (sorting != null && this.type != TableType.History) {
             this.table.sorting = sorting;
             this.table.sort();
         }
