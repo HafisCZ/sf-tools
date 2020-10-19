@@ -1101,9 +1101,10 @@ class SFOtherPlayer extends SFPlayer {
         dataType.skip(14); // skip
         this.Fortress.Upgrade = {
             Building: dataType.long() - 1,
-            Finish: dataType.long() * 1000 + data.offset
+            Finish: dataType.long() * 1000 + data.offset,
+            Start: dataType.long() * 1000 + data.offset
         }
-        this.Fortress.Upgrades = dataType.skip(1).long();
+        this.Fortress.Upgrades = dataType.long();
         this.Fortress.Honor = dataType.long();
         dataType.skip(3); // skip
         dataType.short(); // skip
@@ -1397,9 +1398,10 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(1); // skip
         this.Fortress.Upgrade = {
             Building: dataType.long() - 1,
-            Finish: dataType.long() * 1000 + data.offset
+            Finish: dataType.long() * 1000 + data.offset,
+            Start: dataType.long() * 1000 + data.offset
         }
-        this.Fortress.Upgrades = dataType.skip(8).long();
+        this.Fortress.Upgrades = dataType.skip(7).long();
         this.Fortress.Honor = dataType.long();
         this.Fortress.Rank = dataType.long();
         dataType.skip(8); // skip
@@ -1728,9 +1730,10 @@ class SFOwnPlayer extends SFPlayer {
             dataType.skip(1);
             this.Underworld.Upgrade = {
                 Building: dataType.long() - 1,
-                Finish: dataType.long() * 1000 + data.offset
+                Finish: dataType.long() * 1000 + data.offset,
+                Start: dataType.long() * 1000 + data.offset
             };
-            dataType.skip(2);
+            dataType.skip(1);
             this.Underworld.TimeMachineThirst = dataType.long();
             this.Underworld.TimeMachineMax = dataType.long();
             this.Underworld.TimeMachineDaily = dataType.long();

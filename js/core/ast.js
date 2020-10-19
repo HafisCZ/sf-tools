@@ -1705,6 +1705,12 @@ const SP_KEYWORD_MAPPING_0 = {
         difference: false,
         statistics: false
     },
+    'Building Start': {
+        expr: p => p.Fortress.Upgrade.Start,
+        format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
+        difference: false,
+        statistics: false
+    },
     'Last Active': {
         expr: p => p.LastOnline,
         format: (p, c, e, x) => formatDate(x),
@@ -2209,6 +2215,12 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Underworld Building Finish': {
         expr: p => p.Underworld ? p.Underworld.Upgrade.Finish : -1,
+        format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
+        difference: false,
+        statistics: false
+    },
+    'Underworld Building Start': {
+        expr: p => p.Underworld ? p.Underworld.Upgrade.Start : -1,
         format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
         difference: false,
         statistics: false
