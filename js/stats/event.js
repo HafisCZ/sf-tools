@@ -3456,6 +3456,7 @@ class EndpointView extends View {
         this.$server = this.$parent.find('[data-op="textServer"]');
         this.$username = this.$parent.find('[data-op="textUsername"]');
         this.$password = this.$parent.find('[data-op="textPassword"]');
+        this.$own = this.$parent.find('[data-op="onlyOwn"]').checkbox();
 
         this.$iframe = this.$parent.find('[data-op="iframe"]');
         this.$list = this.$parent.find('[data-op="list"]');
@@ -3504,6 +3505,7 @@ class EndpointView extends View {
             var username = this.$username.val();
             var password = this.$password.val();
             var server = this.$server.dropdown('get value');
+            var own = this.$own.checkbox('is checked');
 
             if (/^(.{4,})@(.+\.sfgame\..+)$/.test(username)) {
                 [, username, server, ] = username.split(/^(.{4,})@(.+\.sfgame\..+)$/);
@@ -3515,18 +3517,39 @@ class EndpointView extends View {
                 if (this.endpoint) {
                     this.$step1.hide();
                     this.$step4.show();
-                    this.funcLogin(server, username, password);
+
+                    if (own) {
+                        this.funcLoginSingle(server, username, password);
+                    } else {
+                        this.funcLogin(server, username, password);
+                    }
                 } else {
                     this.$step1.hide();
                     this.$step2.show();
                     this.endpoint = new EndpointController(this.$iframe, () => {
                         this.$step2.hide();
                         this.$step4.show();
-                        this.funcLogin(server, username, password);
+
+                        if (own) {
+                            this.funcLoginSingle(server, username, password);
+                        } else {
+                            this.funcLogin(server, username, password);
+                        }
                     });
                 }
             }
         });
+
+        this.funcLoginSingle = (server, username, password) => {
+            this.endpoint.login_querry_only(server, username, password, (text) => {
+                Storage.add(text, Date.now());
+                this.funcShutdown();
+                UI.current.show();
+            }, () => {
+                this.$step4.hide();
+                this.showError('Wrong username or password');
+            });
+        };
 
         this.funcLogin = (server, username, password) => {
             this.endpoint.login(server, username, password, (text) => {
@@ -3620,6 +3643,8 @@ class EndpointView extends View {
     }
 
     show () {
+        this.$own.checkbox('uncheck');
+
         this.$step1.show();
         this.$step2.hide();
         this.$step3.hide();
