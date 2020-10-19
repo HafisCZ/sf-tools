@@ -2456,7 +2456,8 @@ class Settings {
             vars: this.cvars,
             lists: {},
             // Constants have to be propagated through the environment
-            constants: this.constants
+            constants: this.constants,
+            row_indexes: this.row_indexes
         }
     }
 
@@ -2491,6 +2492,9 @@ class Settings {
         this.discard = [];
 
         this.constants = new Constants();
+
+        // Row indexes of individual players
+        this.row_indexes = { };
 
         this.globals = {
             outdated: true,
@@ -2575,6 +2579,8 @@ class Settings {
 
     // Evaluate constants
     evaluateConstants (players, sim, perf, tabletype) {
+        this.evalRowIndexes(players, true);
+
         if (tabletype == TableType.Group) {
             if (SiteOptions.obfuscated) {
                 this.lists.joined = players.joined.map((player, i) => `joined_${ i + 1 }`);
@@ -2773,7 +2779,16 @@ class Settings {
         }
     }
 
+    evalRowIndexes (playerArray, embed = false) {
+        for (let i = 0, player; i < playerArray.length; i++) {
+            player = embed ? playerArray[i].player : playerArray[i];
+            this.row_indexes[`${ player.Identifier }_${ player.Timestamp }`] = i;
+        }
+    }
+
     evaluateConstantsHistory (players) {
+        this.evalRowIndexes(players);
+
         // Evaluate constants
         for (var [name, data] of Object.entries(this.vars)) {
             if (data.ast && data.arg) {
