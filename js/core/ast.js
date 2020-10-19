@@ -2421,6 +2421,11 @@ const SP_KEYWORD_MAPPING_4 = {
         },
         format: (p, c, e, x) => x == 0 ? '' : x
     },
+    'Item Type': {
+        expr: (p, c, e, i) => i.Type,
+        format: (p, c, e, x) => ITEM_TYPES[x],
+        difference: false
+    },
     'Item Upgrades': {
         expr: (p, c, e, i) => i.Upgrades,
         format: (p, c, e, x) => x == 0 ? '' : x

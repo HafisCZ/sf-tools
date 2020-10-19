@@ -2297,7 +2297,17 @@ class Constants {
             'large': '160',
             'huge': '200',
             'scrapbook': '2180',
-            'max': '-1'
+            'max': '-1',
+            'weapon': '1',
+            'shield': '2',
+            'breastplate': '3',
+            'shoes': '4',
+            'gloves': '5',
+            'helmet': '6',
+            'belt': '7',
+            'necklace': '8',
+            'ring': '9',
+            'talisman': '10'
         }
     }
 
