@@ -44,9 +44,9 @@ class Expression {
                     continue;
                 } else if (token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
                     value = token[0] + SFormat.Comment(token.slice(1, token.length - 1)) + token[token.length - 1];
-                } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort', 'distinct' ].includes(token) || root.func.hasOwnProperty(token)) {
+                } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort', 'distinct' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
-                } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index' ].includes(token) || root.vars.hasOwnProperty(token)) {
+                } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index' ].includes(token) || root.variables.hasOwnProperty(token)) {
                     value = SFormat.Constant(token);
                 } else if (SP_KEYWORD_MAPPING_0.hasOwnProperty(token)) {
                     value = SFormat.Reserved(token);
@@ -416,7 +416,7 @@ class Expression {
         return node;
     }
 
-    eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined, functionScope = undefined) {
+    eval (player, reference = undefined, environment = { functions: { }, variables: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined, functionScope = undefined) {
         return this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
     }
 
@@ -473,14 +473,14 @@ class Expression {
                 } else if (node.op == 'sort' && node.args.length == 2) {
                     // Multiple array functions condensed
                     var array = this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
-                    var mapper = environment.func[node.args[1]];
+                    var mapper = environment.functions[node.args[1]];
                     var values = [];
 
                     if (mapper) {
                         if (array.segmented) {
                             values = array.map(obj => {
                                 return {
-                                    key: mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.arg.reduce((c, a, i) => {
+                                    key: mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.args.reduce((c, a, i) => {
                                         c[a] = obj[i];
                                         return c;
                                     }, {}), functionScope),
@@ -490,7 +490,7 @@ class Expression {
                         } else {
                             values = array.map(obj => {
                                 return {
-                                    key: mapper.ast.eval(player, reference, environment, obj, mapper.arg.reduce((c, a) => {
+                                    key: mapper.ast.eval(player, reference, environment, obj, mapper.args.reduce((c, a) => {
                                         c[a] = obj;
                                         return c;
                                     }, {}), functionScope),
@@ -523,18 +523,18 @@ class Expression {
                 } else if (['each', 'filter', 'map'].includes(node.op) && node.args.length == 2) {
                     // Multiple array functions condensed
                     var array = this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
-                    var mapper = environment.func[node.args[1]];
+                    var mapper = environment.functions[node.args[1]];
                     var values = [];
 
                     // Does not allow 'this' in any scenario
                     if (mapper) {
                         if (array.segmented) {
-                            values = array.map(obj => mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.arg.reduce((c, a, i) => {
+                            values = array.map(obj => mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.args.reduce((c, a, i) => {
                                 c[a] = obj[i];
                                 return c;
                             }, {})), functionScope);
                         } else {
-                            values = array.map(obj => mapper.ast.eval(player, reference, environment, obj, mapper.arg.reduce((c, a) => {
+                            values = array.map(obj => mapper.ast.eval(player, reference, environment, obj, mapper.args.reduce((c, a) => {
                                 c[a] = obj;
                                 return c;
                             }, {})), functionScope);
@@ -571,11 +571,11 @@ class Expression {
                     }
 
                     return obj;
-                } else if (environment.func[node.op]) {
-                    var mapper = environment.func[node.op];
+                } else if (environment.functions[node.op]) {
+                    var mapper = environment.functions[node.op];
                     var scope2 = {};
-                    for (var i = 0; i < mapper.arg.length; i++) {
-                        scope2[mapper.arg[i]] = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[i]);
+                    for (var i = 0; i < mapper.args.length; i++) {
+                        scope2[mapper.args[i]] = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[i]);
                     }
 
                     return mapper.ast.eval(player, reference, environment, scope2, extra, scope2);
@@ -663,12 +663,12 @@ class Expression {
             } else if (typeof(functionScope) == 'object' && functionScope[node] != undefined) {
                 // Return function scope variable (only if exists)
                 return functionScope[node];
-            } else if (environment.vars[node] != undefined) {
+            } else if (environment.variables[node] != undefined) {
                 // Return environment variable
-                if (environment.vars[node].value != undefined) {
-                    return environment.vars[node].value;
-                } else if (environment.vars[node].ast) {
-                    return environment.vars[node].ast.eval(player, reference, environment);
+                if (environment.variables[node].value != undefined) {
+                    return environment.variables[node].value;
+                } else if (environment.variables[node].ast) {
+                    return environment.variables[node].ast.eval(player, reference, environment);
                 } else {
                     return undefined;
                 }
@@ -1947,24 +1947,24 @@ const SP_SPECIAL_CONDITIONS = {
     'Knights': [
         {
             condition: h => h.maximum,
-            content: {
-                format: (p, c, e, x) => p ? `${ p.Fortress.Knights }/${ p.Fortress.Fortress }` : x
+            apply: h => {
+                h.value.format = (p, c, e, x) => p ? `${ p.Fortress.Knights }/${ p.Fortress.Fortress }` : x
             }
         }
     ],
     'Awards': [
         {
             condition: h => h.hydra,
-            content: {
-                extra: p => p && p.Achievements.Dehydration ? CellGenerator.Small(' H') : ''
+            apply: h => {
+                h.value.extra = p => p && p.Achievements.Dehydration ? CellGenerator.Small(' H') : ''
             }
         }
     ],
     'Album': [
         {
             condition: h => h.grail,
-            content: {
-                extra: p => p && p.Achievements.Grail ? CellGenerator.Small(' G') : ''
+            apply: h => {
+                h.value.extra = p => p && p.Achievements.Grail ? CellGenerator.Small(' G') : ''
             }
         }
     ]
