@@ -636,6 +636,18 @@ function setObjectAt (obj, path, val) {
 // Download
 function download(e,d){let o=document.createElement("a");o.download=e,o.href=URL.createObjectURL(d),document.body.appendChild(o),o.click(),URL.revokeObjectURL(o.href),document.body.removeChild(o)}
 
+// Download node as image
+function downloadScreenshot ($node, filename, onClone) {
+    html2canvas($node.get(0), {
+        logging: false,
+        onclone: onClone
+    }).then((canvas) => {
+        canvas.toBlob((blob) => {
+            download(filename, blob);
+        });
+    });
+}
+
 // Fast join array to string
 function join (a, c, b, m) {
     var r = '';

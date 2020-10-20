@@ -155,18 +155,11 @@ class GroupDetailView extends View {
 
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
-            html2canvas(this.$table.get(0), {
-                logging: false,
-                onclone: doc => {
-                    var ta = Number(this.timestamp);
-                    var tb = Number(this.reference);
+            downloadScreenshot(this.$table, `${ this.group.Latest.Name }.${ this.timestamp }${ this.timestamp != this.reference ? `.${ this.reference }` : '' }.png`, doc => {
+                var ta = Number(this.timestamp);
+                var tb = Number(this.reference);
 
-                    $(doc).find('thead').prepend($(`<tr style="height: 2em;"><td colspan="4" class="text-left">${ formatDate(ta) }${ ta != tb ? ` - ${ formatDate(tb) }` : '' }</td></tr>`));
-                }
-            }).then((canvas) => {
-                canvas.toBlob((blob) => {
-                    window.download(`${ this.group.Latest.Name }.${ this.timestamp }${ this.timestamp != this.reference ? `.${ this.reference }` : '' }.png`, blob);
-                });
+                $(doc).find('thead').prepend($(`<tr style="height: 2em;"><td colspan="4" class="text-left">${ formatDate(ta) }${ ta != tb ? ` - ${ formatDate(tb) }` : '' }</td></tr>`));
             });
         });
 
@@ -818,13 +811,7 @@ class PlayerHistoryView extends View {
 
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
-            html2canvas(this.$table.get(0), {
-                logging: false
-            }).then((canvas) => {
-                canvas.toBlob((blob) => {
-                    window.download(`${ this.player.Name }_${ Date.now() }.png`, blob);
-                });
-            });
+            downloadScreenshot(this.$table, `${ this.player.Name }_${ Date.now() }.png`);
         });
 
         // Configuration
@@ -980,13 +967,7 @@ class BrowseView extends View {
 
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
-            html2canvas(this.$table.get(0), {
-                logging: false
-            }).then((canvas) => {
-                canvas.toBlob((blob) => {
-                    window.download(`players.${ this.timestamp }.png`, blob);
-                });
-            });
+            downloadScreenshot(this.$table, `players.${ this.timestamp }.png`);
         });
 
         this.hidden = SiteOptions.browse_hidden;
