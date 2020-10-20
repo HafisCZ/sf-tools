@@ -217,20 +217,12 @@ class Expression {
         }
 
         do {
-            if (this.peek(1) == ':') {
-                var key = this.getString();
-                this.get();
-
-                args.push({
-                    key: key,
-                    val: this.evalExpression()
-                });
-            } else {
-                args.push({
-                    key: args.length,
-                    val: this.evalExpression()
-                });
-            }
+            let key = this.peek(1) == ':' ? this.getString() : this.evalExpression();
+            this.get();
+            args.push({
+                key: key,
+                val: this.evalExpression()
+            });
         } while (this.get() == ',');
 
         return {
