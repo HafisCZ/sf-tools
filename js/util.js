@@ -51,6 +51,31 @@ function reverseHealthMultipliers (level, healthMultiplier, constitution, totalH
     };
 }
 
+function escapeHTML(string) {
+    return String(string).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/ /g, "&nbsp;");
+}
+
+const SFormat = {
+    Normal: string => escapeHTML(string),
+    Keyword: string => `<span class="ta-keyword">${ escapeHTML(string) }</span>`,
+    Color: (string, color = string) => `<span class="ta-color" style="color: ${ color };">${ escapeHTML(string) }</span>`,
+    Comment: string => `<span class="ta-comment">${ escapeHTML(string) }</span>`,
+    Extras: string => `<span class="ta-extras"><span>${ escapeHTML(string) }</span></span>`,
+    Macro: string => `<span class="ta-macro">${ escapeHTML(string) }</span>`,
+    Lambda: string => `<span class="ta-lambda">${ string }</span>`,
+    Constant: string => `<span class="ta-constant">${ escapeHTML(string) }</span>`,
+    Function: string => `<span class="ta-function">${ escapeHTML(string) }</span>`,
+    Enum: string => `<span class="ta-enum">${ escapeHTML(string) }</span>`,
+    Reserved: string => `<span class="ta-reserved">${ escapeHTML(string) }</span>`,
+    ReservedProtected: string => `<span class="ta-reserved-protected">${ escapeHTML(string) }</span>`,
+    ReservedPrivate: string => `<span class="ta-reserved-private">${ escapeHTML(string) }</span>`,
+    ReservedSpecial: string => `<span class="ta-reserved-special">${ escapeHTML(string) }</span>`,
+    ReservedItemized: string => `<span class="ta-reserved-itemized">${ escapeHTML(string) }</span>`,
+    ReservedItemizable: string => `<span class="ta-reserved-itemizable">${ escapeHTML(string) }</span>`,
+    Error: string => `<span class="ta-error">${ escapeHTML(string) }</span>`,
+    Bool: (string, bool = string) => `<span class="ta-boolean-${ bool }">${ escapeHTML(string) }</span>`
+};
+
 function parseOwnDate (text) {
     if (typeof(text) == 'string') {
         let objs = text.trim().split(/^(\d{2}).(\d{2}).(\d{4}) (\d{2}):(\d{2})$/);
@@ -609,7 +634,29 @@ function setObjectAt (obj, path, val) {
 }
 
 // Download
-function download(e,d){let o=document.createElement("a");o.download=e,o.href=URL.createObjectURL(d),document.body.appendChild(o),o.click(),URL.revokeObjectURL(o.href),document.body.removeChild(o)}
+function download (e, d) {
+    let o = document.createElement("a");
+    o.download = e;
+    o.href = URL.createObjectURL(d);
+    document.body.appendChild(o);
+
+    o.click();
+    URL.revokeObjectURL(o.href);
+
+    document.body.removeChild(o);
+}
+
+// Download node as image
+function downloadScreenshot ($node, filename, onClone) {
+    html2canvas($node.get(0), {
+        logging: false,
+        onclone: onClone
+    }).then((canvas) => {
+        canvas.toBlob((blob) => {
+            download(filename, blob);
+        });
+    });
+}
 
 // Fast join array to string
 function join (a, c, b, m) {

@@ -40,13 +40,6 @@ function merge (a, b) {
     return a;
 }
 
-function mergeAll (a, b) {
-    for (var [k, v] of Object.entries(b)) {
-        if (!a.hasOwnProperty(k)) a[k] = b[k];
-    }
-    return a;
-}
-
 // Special array for players only
 class PlayersTableArray extends Array {
     constructor (perf, ts, rs) {
@@ -111,74 +104,14 @@ class TableInstance {
 
         // Column configuration
         this.config = [];
-        this.settings.c.forEach((category, ci, ca) => {
-            var group = new HeaderGroup(category.alias || category.name, category.alias == undefined && category.empty);
+        this.settings.categories.forEach((category, ci, ca) => {
+            var group = new HeaderGroup(category.name, category.empty);
             var glast = ci == ca.length - 1;
 
-            category.h.forEach((header, hi, ha) => {
+            category.headers.forEach((header, hi, ha) => {
                 var hlast = (!glast && hi == ha.length - 1) || header.border >= 2 || (hi != ha.length - 1 && (ha[hi + 1].border == 1 || ha[hi + 1].border == 3));
 
-                if (header.itemized) {
-                    group.add((header.alias != undefined ? header.alias : header.name), header, {
-                        width: Math.max(100, (header.alias || header.name).length * 12)
-                    }, (player, compare) => {
-                        var cells = [];
-
-                        var items = header.itemized.expr(player, compare, this.settings);
-                        if (Array.isArray(items)) {
-                            items = Object.entries([ ...items ]);
-                        } else {
-                            items = Object.entries(items);
-                        }
-
-                        var cmp = undefined;
-                        if (compare && header.difference) {
-                            cmp = header.itemized.expr(compare, compare, this.settings);
-                        }
-
-                        for (var [ key, item ] of items) {
-                            var value = header.expr(player, compare, this.settings, item);
-                            if (value == undefined) {
-                                return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
-                            }
-
-                            var reference = cmp ? header.expr(compare, this.settings.getCompareEnvironment(), cmp[key]) : undefined;
-                            if (reference != undefined) {
-                                reference = header.flip ? (reference - value) : (value - reference);
-                                reference = CellGenerator.Difference(reference, header.brackets, header.format_diff ? header.format(player, compare, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
-                            } else {
-                                reference = '';
-                            }
-
-                            var color = CompareEval.evaluate(value, header.color);
-                            color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value) : '')) || '';
-
-                            var displayValue = CompareEval.evaluate(value, header.value);
-                            if (displayValue == undefined && header.format) {
-                                value = header.format(player, compare, this.settings, value);
-                            } else if (displayValue != undefined) {
-                                value = displayValue;
-                            }
-
-                            if (value != undefined && header.extra) {
-                                value = `${ value }${ header.extra(player) }`;
-                            }
-
-                            cells.push(CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align, header.padding, header.style ? header.style.cssText : undefined));
-                        }
-
-                        return cells;
-                    }, null, (player, compare) => {
-                        var items = header.itemized.expr(player, this.settings);
-                        if (Array.isArray(items)) {
-                            items = items.reduce((col, item) => col + header.expr(player, compare, this.settings, item), 0);
-                        } else {
-                            items = Object.values(items).reduce((col, item) => col + header.expr(player, compare, this.settings, item), 0);
-                        }
-
-                        return items == undefined ? -1 : items;
-                    }, hlast);
-                } else if (header.grouped) {
+                if (header.grouped) {
                     if (header.width) {
                         header.width = header.grouped * (header.width + 3);
                     }
@@ -224,21 +157,10 @@ class TableInstance {
                                         reference = '';
                                     }
 
-                                    var color = CompareEval.evaluate(value, header.color);
-                                    color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value, extra) : '')) || '';
+                                    let color = header.color.get(player, compare, this.settings, value, extra);
+                                    let shown = header.value.get(player, compare, this.settings, value, extra);
 
-                                    var displayValue = CompareEval.evaluate(value, header.value);
-                                    if (displayValue == undefined && header.format) {
-                                        value = header.format(player, compare, this.settings, value, extra);
-                                    } else if (displayValue != undefined) {
-                                        value = displayValue;
-                                    }
-
-                                    if (value != undefined && header.extra) {
-                                        value = `${ value }${ header.extra(player) }`;
-                                    }
-
-                                    content += CellGenerator.Cell(value + reference, color, header.visible ? '' : color, i == header.grouped - 1 && hlast, header.align, header.padding, header.style ? header.style.cssText : undefined);
+                                    content += CellGenerator.Cell(shown + reference, color, header.visible ? '' : color, i == header.grouped - 1 && hlast, header.align, header.padding, header.style ? header.style.cssText : undefined);
                                 }
                             }
 
@@ -283,21 +205,10 @@ class TableInstance {
                             reference = '';
                         }
 
-                        var color = CompareEval.evaluate(value, header.color);
-                        color = (color != undefined ? color : (header.expc ? header.expc(player, compare, this.settings, value) : '')) || '';
+                        let color = header.color.get(player, compare, this.settings, value);
+                        let shown = header.value.get(player, compare, this.settings, value);
 
-                        var displayValue = CompareEval.evaluate(value, header.value);
-                        if (displayValue == undefined && header.format) {
-                            value = header.format(player, compare, this.settings, value);
-                        } else if (displayValue != undefined) {
-                            value = displayValue;
-                        }
-
-                        if (value != undefined && header.extra) {
-                            value = `${ value }${ header.extra(player) }`;
-                        }
-
-                        return CellGenerator.Cell(value + reference, color, header.visible ? '' : color, hlast, header.align, header.padding, header.style ? header.style.cssText : undefined);
+                        return CellGenerator.Cell(shown + reference, color, header.visible ? '' : color, hlast, header.align, header.padding, header.style ? header.style.cssText : undefined);
                     }, (players, operation) => {
                         var value = players.map(p => header.expr(p.player, p.compare, this.settings)).filter(x => x != undefined);
                         if (value.length == 0) {
@@ -342,21 +253,11 @@ class TableInstance {
 
                         var color = undefined;
                         if (header.statistics_color) {
-                            color = CompareEval.evaluate(value, header.color, true);
-                            color = (color != undefined ? color : (header.expc ? header.expc(null, null, this.settings, value) : '')) || '';
+                            color = header.color.get(null, null, this.settings, value, undefined, true);
                         }
 
                         if (header.format_stat === undefined || header.format_stat === true) {
-                            var displayValue = CompareEval.evaluate(value, header.value);
-                            if (displayValue == undefined && header.format) {
-                                value = header.format(undefined, undefined, this.settings, value);
-                            } else if (displayValue != undefined) {
-                                value = displayValue;
-                            }
-
-                            if (value != undefined && header.extra) {
-                                value = `${ value }${ header.extra(undefined) }`;
-                            }
+                            value = header.value.get(null, null, this.settings, value);
                         } else if (header.format_stat !== false) {
                             value = header.format_stat(this.settings, value);
                         }
@@ -425,7 +326,7 @@ class TableInstance {
                 let obj = Database.Players[e.Identifier][timestamp];
 
                 // Find if falls under discard rule
-                let disc = this.settings.discard.some(rule => rule(obj, obj, this.settings));
+                let disc = this.settings.discardRules.some(rule => rule(obj, obj, this.settings));
 
                 // Return stuff
                 return disc ? null : [ timestamp, obj ];
@@ -735,7 +636,7 @@ class TableInstance {
         var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
 
         var details = '';
-        if (this.settings.extras.length) {
+        if (this.settings.customRows.length) {
             var widskip = 1;
             for (var i = 0, wid = 100; wid > 0 && i < this.flat.length; i++) {
                 wid -= this.flat[i].width;
@@ -746,7 +647,7 @@ class TableInstance {
                 }
             }
 
-            for (var extra of this.settings.extras) {
+            for (var extra of this.settings.customRows) {
                 var lw = widskip;
                 if (extra.width) {
                     var lw = 1;
@@ -763,21 +664,10 @@ class TableInstance {
                 var player = this.array[0][1];
                 var value = extra.ast.eval(player, player, this.settings, player);
 
-                var color = CompareEval.evaluate(value, extra.color);
-                color = (color != undefined ? color : (extra.expc ? extra.expc(player, player, this.settings, value) : '')) || '';
+                var color = extra.color.get(player, player, this.settings, value);
+                let shown = extra.value.get(player, player, this.settings, value);
 
-                var displayValue = CompareEval.evaluate(value, extra.value);
-                if (displayValue == undefined && extra.format) {
-                    value = extra.format(player, player, this.settings, value);
-                } else if (displayValue != undefined) {
-                    value = displayValue;
-                }
-
-                if (value != undefined && extra.extra) {
-                    value = `${ value }${ extra.extra(player) }`;
-                }
-
-                var cell = CellGenerator.WideCell(value, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
+                var cell = CellGenerator.WideCell(shown, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
                 details += `
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
@@ -835,7 +725,7 @@ class TableInstance {
         var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
 
         var details = '';
-        if (this.settings.extras.length) {
+        if (this.settings.customRows.length) {
             var widskip = 1;
             for (var i = 0, wid = 100; wid > 0 && i < this.flat.length; i++) {
                 wid -= this.flat[i].width;
@@ -846,7 +736,7 @@ class TableInstance {
                 }
             }
 
-            for (var extra of this.settings.extras) {
+            for (var extra of this.settings.customRows) {
                 var lw = widskip;
 
                 if (extra.width) {
@@ -871,21 +761,10 @@ class TableInstance {
                     reference = '';
                 }
 
-                var color = CompareEval.evaluate(value, extra.color);
-                color = (color != undefined ? color : (extra.expc ? extra.expc(undefined, null, this.settings, value) : '')) || '';
+                var color = extra.color.get(null, null, this.settings, value);
+                let shown = extra.value.get(null, null, this.settings, value);
 
-                var displayValue = CompareEval.evaluate(value, extra.value);
-                if (displayValue == undefined && extra.format) {
-                    value = extra.format(undefined, undefined, this.settings, value);
-                } else if (displayValue != undefined) {
-                    value = displayValue;
-                }
-
-                if (value != undefined && extra.extra) {
-                    value = `${ value }${ extra.extra(undefined) }`;
-                }
-
-                var cell = CellGenerator.WideCell(value + reference, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
+                var cell = CellGenerator.WideCell(shown + reference, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
                 details += `
                     <tr>
                         <td class="border-right-thin" colspan="${ 1 + (this.settings.globals.indexed ? 1 : 0) + (sizeServer ? 1 : 0) }">${ extra.name }</td>
@@ -964,7 +843,7 @@ class TableInstance {
         // Statistics block
         var statistics = '';
         if (showSummary) {
-            if (this.settings.stats.length > 0) {
+            if (this.settings.customStatistics.length > 0) {
                 statistics += `
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
@@ -976,7 +855,7 @@ class TableInstance {
                     </tr>
                 `;
 
-                for (var stat of this.settings.stats) {
+                for (var stat of this.settings.customStatistics) {
                     statistics += `
                         <tr>
                             <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ stat.name }</td>
@@ -1032,7 +911,7 @@ class TableInstance {
         `;
 
         var details = '';
-        if (this.settings.extras.length) {
+        if (this.settings.customRows.length) {
             var widskip = 1;
             for (var i = 0, wid = 100; wid > 0 && i < this.flat.length; i++) {
                 wid -= this.flat[i].width;
@@ -1043,7 +922,7 @@ class TableInstance {
                 }
             }
 
-            for (var extra of this.settings.extras) {
+            for (var extra of this.settings.customRows) {
                 var lw = widskip;
                 if (extra.width) {
                     var lw = 1;
@@ -1067,21 +946,10 @@ class TableInstance {
                     reference = '';
                 }
 
-                var color = CompareEval.evaluate(value, extra.color);
-                color = (color != undefined ? color : (extra.expc ? extra.expc(undefined, null, this.settings, value) : '')) || '';
+                var color = extra.color.get(null, null, this.settings, value);
+                let shown = extra.value.get(null, null, this.settings, value);
 
-                var displayValue = CompareEval.evaluate(value, extra.value);
-                if (displayValue == undefined && extra.format) {
-                    value = extra.format(undefined, undefined, this.settings, value);
-                } else if (displayValue != undefined) {
-                    value = displayValue;
-                }
-
-                if (value != undefined && extra.extra) {
-                    value = `${ value }${ extra.extra(undefined) }`;
-                }
-
-                var cell = CellGenerator.WideCell(value + reference, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
+                var cell = CellGenerator.WideCell(shown + reference, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
                 details += `
                     <tr>
                         <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
@@ -1161,7 +1029,7 @@ class TableInstance {
             } else if (block == 2) {
                 return showSummary;
             } else if (block == 3) {
-                return this.settings.extras.length;
+                return this.settings.customRows.length;
             } else if (block == 4) {
                 return showMembers;
             }
@@ -1374,34 +1242,6 @@ const CellGenerator = {
     }
 }
 
-const CompareEval = {
-    // Available rules
-    e: (val, ref) => val == ref,
-    a: (val, ref) => val > ref,
-    b: (val, ref) => val < ref,
-    ae: (val, ref) => val >= ref,
-    be: (val, ref) => val <= ref,
-
-    // Evaluation
-    evaluate (val, rules, ibg = false) {
-        var def = undefined;
-        for (var [ eq, ref, out ] of rules || []) {
-            if (eq == 'db') {
-                if (ibg) {
-                    continue;
-                } else {
-                    return out;
-                }
-            } else if (eq == 'd') {
-                return out;
-            } else if (CompareEval[eq](val, ref)) {
-                return out;
-            }
-        }
-        return def;
-    }
-};
-
 class SettingsCommand {
     constructor (regexp, parse, format, parseAlways = false) {
         this.regexp = regexp;
@@ -1459,35 +1299,50 @@ const ARG_FORMATTERS = {
     'default': (p, c, e, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
 }
 
-function escapeHTML(string) {
-    return String(string).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/ /g, "&nbsp;");
-}
+class RuleEvaluator {
+    constructor () {
+        this.rules = [];
+    }
 
-const SFormat = {
-    Normal: string => escapeHTML(string),
-    Keyword: string => `<span class="ta-keyword">${ escapeHTML(string) }</span>`,
-    Color: (string, color = string) => `<span class="ta-color" style="color: ${ color };">${ escapeHTML(string) }</span>`,
-    Comment: string => `<span class="ta-comment">${ escapeHTML(string) }</span>`,
-    Extras: string => `<span class="ta-extras"><span>${ escapeHTML(string) }</span></span>`,
-    Macro: string => `<span class="ta-macro">${ escapeHTML(string) }</span>`,
-    Lambda: string => `<span class="ta-lambda">${ string }</span>`,
-    Constant: string => `<span class="ta-constant">${ escapeHTML(string) }</span>`,
-    Function: string => `<span class="ta-function">${ escapeHTML(string) }</span>`,
-    Enum: string => `<span class="ta-enum">${ escapeHTML(string) }</span>`,
-    Reserved: string => `<span class="ta-reserved">${ escapeHTML(string) }</span>`,
-    ReservedProtected: string => `<span class="ta-reserved-protected">${ escapeHTML(string) }</span>`,
-    ReservedPrivate: string => `<span class="ta-reserved-private">${ escapeHTML(string) }</span>`,
-    ReservedSpecial: string => `<span class="ta-reserved-special">${ escapeHTML(string) }</span>`,
-    ReservedItemized: string => `<span class="ta-reserved-itemized">${ escapeHTML(string) }</span>`,
-    ReservedItemizable: string => `<span class="ta-reserved-itemizable">${ escapeHTML(string) }</span>`,
-    Error: string => `<span class="ta-error">${ escapeHTML(string) }</span>`,
-    Bool: (string, bool = string) => `<span class="ta-boolean-${ bool }">${ escapeHTML(string) }</span>`
-};
+    addRule (condition, referenceValue, value) {
+        this.rules.push([ condition, referenceValue, value ]);
+    }
 
-const MacroArgToTableType = {
-    'Group': TableType.Group,
-    'Player': TableType.History,
-    'Players': TableType.Players
+    get (value, ignoreBase = false) {
+        for (let [ condition, referenceValue, output] of this.rules) {
+            if (condition == 'db') {
+                if (ignoreBase) {
+                    continue;
+                } else {
+                    return output;
+                }
+            } else if (condition == 'd') {
+                return output;
+            } else if (condition == 'e') {
+                if (value == referenceValue) {
+                    return output;
+                }
+            } else if (condition == 'a') {
+                if (value > referenceValue) {
+                    return output;
+                }
+            } else if (condition == 'b') {
+                if (value < referenceValue) {
+                    return output;
+                }
+            } else if (condition == 'ae') {
+                if (value >= referenceValue) {
+                    return output;
+                }
+            } else if (condition == 'be') {
+                if (value <= referenceValue) {
+                    return output;
+                }
+            }
+        }
+
+        return undefined;
+    }
 }
 
 const SettingsCommands = [
@@ -1501,7 +1356,11 @@ const SettingsCommands = [
                 root.flipFilter();
             }
         } else {
-            root.setFilter(MacroArgToTableType[arg], key1 != 'if');
+            root.setFilter({
+                'Group': TableType.Group,
+                'Player': TableType.History,
+                'Players': TableType.Players
+            }[arg], key1 != 'if');
         }
     }, function (root, string) {
         var [ , key1, arg, key2 ] = this.match(string);
@@ -1529,7 +1388,7 @@ const SettingsCommands = [
     // set static
     new SettingsCommand(/^(layout) ((table|statistics|members|details)\s*(\,\s*(table|statistics|members|details))*)$/, function (root, string) {
         var [ , key, order ] = this.match(string);
-        root.setGlobalVariable(key, order.split(',').map(o => ARG_LAYOUT[o.trim()]));
+        root.addGlobal('layout', order.split(',').map(o => ARG_LAYOUT[o.trim()]));
     }, function (root, string) {
         var [ , key, order ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ order.split(',').map(o => SFormat.Constant(o)).join(',') }`;
@@ -1538,9 +1397,9 @@ const SettingsCommands = [
     // set static
     new SettingsCommand(/^(set) (\w+[\w ]*) with all as (.+)$/, function (root, string) {
         var [ , key, name, asts ] = this.match(string);
-        var ast = new Expression(asts);
+        var ast = new Expression(asts, root);
         if (ast.isValid()) {
-            root.setVariable(name, true, ast);
+            root.addVariable(name, ast, true);
         }
     }, function (root, string) {
         var [ , key, name, asts ] = this.match(string);
@@ -1550,9 +1409,9 @@ const SettingsCommands = [
     // set with - Create a function
     new SettingsCommand(/^(set) (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/, function (root, string) {
         var [ , key, name, args, a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
-            root.setFunction(name, args.split(',').map(arg => arg.trim()), ast);
+            root.addFunction(name, ast, args.split(',').map(arg => arg.trim()));
         }
     }, function (root, string) {
         var [ , key, name, args, a ] = this.match(string);
@@ -1562,9 +1421,9 @@ const SettingsCommands = [
     // set - Create a variable
     new SettingsCommand(/^(set) (\w+[\w ]*) as (.+)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
-            root.setVariable(name, false, ast);
+            root.addVariable(name, ast);
         }
     }, function (root, string) {
         var [ , key, name, a ] = this.match(string);
@@ -1580,7 +1439,7 @@ const SettingsCommands = [
                 val = ARG_MAP_SERVER[value];
             }
             if (!isNaN(val)) {
-                root.setGlobalVariable(key, Number(val));
+                root.addGlobal(key, Number(val));
             }
         }
     }, function (root, string) {
@@ -1603,7 +1462,7 @@ const SettingsCommands = [
         var val = root.constants.getValue(prefix, value);
 
         if (val != undefined && !isNaN(val)) {
-            root.setGlobalVariable(key, Number(val));
+            root.addGlobal(key, Number(val));
         }
     }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -1620,9 +1479,9 @@ const SettingsCommands = [
     // Create new category
     new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(category)(?: (.+))?$/, function (root, string) {
         var [ , extend, key, a ] = this.match(string);
-        root.createCategory(a || '', a == undefined);
+        root.addCategory(a || '', a == undefined);
         if (extend) {
-            root.setLocalSharedVariable('extend', extend.slice(0, -1).split(','));
+            root.addExtension(... extend.slice(0, -1).split(','));
         }
     }, function (root, string) {
         var [ , extend, key, a ] = this.match(string);
@@ -1636,10 +1495,9 @@ const SettingsCommands = [
         var [ , extend, key, a, gr, w ] = this.match(string);
 
         if (!isNaN(w) && Number(w) > 0) {
-            root.createHeader(a || '');
-            root.setGrouped(Number(w));
+            root.addHeader(a || '', Number(w));
             if (extend) {
-                root.setLocalSharedVariable('extend', extend.slice(0, -1).split(','));
+                root.addExtension(... extend.slice(0, -1).split(','));
             }
         }
     }, function (root, string) {
@@ -1653,9 +1511,9 @@ const SettingsCommands = [
     // Create new header
     new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(header)(?: (.+))?$/, function (root, string) {
         var [ , extend, key, a ] = this.match(string);
-        root.createHeader(a || '');
+        root.addHeader(a || '');
         if (extend) {
-            root.setLocalSharedVariable('extend', extend.slice(0, -1).split(','));
+            root.addExtension(... extend.slice(0, -1).split(','));
         }
     }, function (root, string) {
         var [ , extend, key, a ] = this.match(string);
@@ -1680,39 +1538,22 @@ const SettingsCommands = [
     // Create new statistics row
     new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(show) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
         var [ , extend, key, name, a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
-            root.addExtraRow(name, ast);
+            root.addRow(name, ast);
             if (extend) {
-                root.setLocalSharedVariable('extend', extend.slice(0, -1).split(','));
+                root.addExtension(... extend.slice(0, -1).split(','));
             }
         }
     }, function (root, string) {
         var [ , extend, key, name, a ] = this.match(string);
         return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ Expression.format(a, root) }`;
     }),
-    // Create new itemized header
-    new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(itemized) (\S+[\S ]*) by (\S+[\S ]*)$/, function (root, string) {
-        var [ , extend, key, a, s ] = this.match(string);
-        if (SP_KEYWORD_MAPPING_5.hasOwnProperty(a)) {
-            root.createItemizedHeader(SP_KEYWORD_MAPPING_5[a], s);
-            if (extend) {
-                root.setLocalSharedVariable('extend', extend.slice(0, -1).split(','));
-            }
-        }
-    }, function (root, string) {
-        var [ , extend, key, a, s ] = this.match(string);
-        if (SP_KEYWORD_MAPPING_5.hasOwnProperty(a)) {
-            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.ReservedItemizable(a) } ${ SFormat.Keyword('by') } ${ SP_KEYWORD_MAPPING_4[s] ? SFormat.ReservedItemized(s) : SFormat.Normal(s) }`;
-        } else {
-            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Error(a) } ${ SFormat.Keyword('by') } ${ SP_KEYWORD_MAPPING_4[s] ? SFormat.ReservedItemized(s) : SFormat.Normal(s) }`;
-        }
-    }),
     // Global
     // indexed - Show indexes in first column of the table
     new SettingsCommand(/^(indexed) (on|off|static)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setGlobalVariable(key, ARG_MAP[a]);
+        root.addGlobal(key, ARG_MAP[a]);
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a, a == 'static' ? 'on' : a) }`;
@@ -1721,7 +1562,7 @@ const SettingsCommands = [
     // lined - Show lines between players
     new SettingsCommand(/^(lined) (on|off|thin|thick)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setGlobalVariable(key, ARG_MAP[a]);
+        root.addGlobal(key, ARG_MAP[a]);
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a, a == 'thick' || a == 'thin' ? 'on' : a) }`;
@@ -1730,7 +1571,7 @@ const SettingsCommands = [
     // performance - Set the amount of entries displayed
     new SettingsCommand(/^(performance) (\d+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setGlobalVariable(key, Number(a));
+        root.addGlobal(key, Number(a));
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
@@ -1740,7 +1581,7 @@ const SettingsCommands = [
     new SettingsCommand(/^(scale) (\d+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
         if (!isNaN(a) && Number(a) > 0) {
-            root.setGlobalVariable(key, Number(a));
+            root.addGlobal(key, Number(a));
         }
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
@@ -1752,7 +1593,7 @@ const SettingsCommands = [
         var [ , key, a ] = this.match(string);
         var f = getCSSFont(a);
         if (f) {
-            root.setGlobalVariable(key, f);
+            root.addGlobal(key, f);
         }
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
@@ -1763,7 +1604,7 @@ const SettingsCommands = [
     // outdated - Mark outdated entries with red text
     new SettingsCommand(/^(members|outdated|opaque|large rows) (on|off)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setGlobalVariable(key, ARG_MAP[a]);
+        root.addGlobal(key, ARG_MAP[a]);
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
@@ -1778,21 +1619,21 @@ const SettingsCommands = [
     // grail - Show grail achievement
     new SettingsCommand(/^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setLocalSharedVariable(key, ARG_MAP[a]);
+        root.addShared(key, ARG_MAP[a]);
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
     }),
     new SettingsCommand(/^(clean)$/, function (root, string) {
         var [ , key ] = this.match(string);
-        root.setLocalVariable(key, true);
+        root.addLocal(key, true);
     }, function (root, string) {
         var [ , key ] = this.match(string);
         return `${ SFormat.Keyword(key) }`;
     }),
     new SettingsCommand(/^(clean) (hard)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setLocalVariable(key, 2);
+        root.addLocal(key, 2);
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
@@ -1800,9 +1641,9 @@ const SettingsCommands = [
     // Create new statistics row
     new SettingsCommand(/^(statistics) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
-            root.addExtraStatistics(name, ast);
+            root.addStatistics(name, ast);
         }
     }, function (root, string) {
         var [ , key, name, a ] = this.match(string);
@@ -1815,7 +1656,7 @@ const SettingsCommands = [
         var val = root.constants.getValue(prefix, value);
 
         if (val != undefined && !isNaN(val)) {
-            root.setLocalSharedVariable('width', Number(val));
+            root.addShared('width', Number(val));
         }
     }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -1834,9 +1675,9 @@ const SettingsCommands = [
     new SettingsCommand(/^(simulator target|simulator source) (\S+)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
 
-        root.setGlobalVariable('simulator_target', arg);
+        root.addGlobal('simulator_target', arg);
         if (key == 'simulator source') {
-            root.setGlobalVariable('simulator_target_source', true);
+            root.addGlobal('simulator_target_source', true);
         }
     }, function (root, string) {
         var [ , key, arg ] = this.match(string);
@@ -1849,7 +1690,7 @@ const SettingsCommands = [
         var [ , key, arg ] = this.match(string);
 
         if (!isNaN(arg) && arg > 0) {
-            root.setGlobalVariable(key, Number(arg));
+            root.addGlobal(key, Number(arg));
         }
     }, function (root, string) {
         var [ , key, arg ] = this.match(string);
@@ -1864,14 +1705,14 @@ const SettingsCommands = [
     // extra - Ending characters for each cell (example %)
     new SettingsCommand(/^(extra) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setLocalVariable(key, p => a);
+        root.addFormatExtraExpression(p => a);
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
     }),
     new SettingsCommand(/^(const) (\w+) (.+)$/, function (root, string) {
         var [ , key, name, value ] = this.match(string);
-        root.setConstant(name, value);
+        root.addConstant(name, value);
     }, function (root, string) {
         var [ , key, name, value ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Normal(value) }`;
@@ -1880,14 +1721,14 @@ const SettingsCommands = [
     // visible - Show text on the background
     new SettingsCommand(/^(visible) (on|off)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setLocalSharedVariable(key, ARG_MAP[a]);
+        root.addShared(key, ARG_MAP[a]);
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
     }),
     new SettingsCommand(/^(style) ([a-zA-Z\-]+) (.*)$/, function (root, string) {
         var [ , key, a, b ] = this.match(string);
-        root.setStyle(a, b);
+        root.addStyle(a, b);
     }, function (root, string) {
         var [ , key, a, b ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) } ${ SFormat.Normal(b) }`;
@@ -1897,7 +1738,7 @@ const SettingsCommands = [
         var val = root.constants.getValue(prefix, value);
 
         if (val != undefined) {
-            root.setLocalSharedVariable('ndef', val);
+            root.addShared('ndef', val);
         }
     }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -1915,7 +1756,7 @@ const SettingsCommands = [
         var val = getCSSColor(root.constants.getValue(prefix, value));
 
         if (val != undefined && val) {
-            root.setLocalSharedVariable('ndefc', getCSSBackground(val));
+            root.addShared('ndefc', getCSSBackground(val));
         }
     }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -1933,7 +1774,7 @@ const SettingsCommands = [
     // border - Show border around columns
     new SettingsCommand(/^(border) (none|left|right|both)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setLocalSharedVariable(key, ARG_MAP[a]);
+        root.addShared(key, ARG_MAP[a]);
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
@@ -1942,7 +1783,7 @@ const SettingsCommands = [
     // align - Align column content
     new SettingsCommand(/^(align) (left|right|center)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setLocalSharedVariable(key, a);
+        root.addShared(key, a);
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
@@ -1952,13 +1793,13 @@ const SettingsCommands = [
     new SettingsCommand(/^(format difference|fd) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
         if (arg == 'on') {
-            root.setLocalVariable('format_diff', true);
+            root.addLocal('format_diff', true);
         } else if (arg == 'off') {
-            root.setLocalVariable('format_diff', false);
+            root.addLocal('format_diff', false);
         } else {
-            var ast = new Expression(arg);
+            var ast = new Expression(arg, root);
             if (ast.isValid()) {
-                root.setLocalVariable('format_diff', (env, val) => {
+                root.addLocal('format_diff', (env, val) => {
                     return ast.eval(undefined, undefined, env, val);
                 });
             }
@@ -1974,13 +1815,13 @@ const SettingsCommands = [
     new SettingsCommand(/^(format statistics|fs) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
         if (arg == 'on') {
-            root.setLocalVariable('format_stat', true);
+            root.addLocal('format_stat', true);
         } else if (arg == 'off') {
-            root.setLocalVariable('format_stat', false);
+            root.addLocal('format_stat', false);
         } else {
-            var ast = new Expression(arg);
+            var ast = new Expression(arg, root);
             if (ast.isValid()) {
-                root.setLocalVariable('format_stat', (env, val) => {
+                root.addLocal('format_stat', (env, val) => {
                     return ast.eval(undefined, undefined, env, val);
                 });
             }
@@ -1995,7 +1836,7 @@ const SettingsCommands = [
     }),
     new SettingsCommand(/^(statistics color) (on|off)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
-        root.setLocalSharedVariable('statistics_color', ARG_MAP[arg]);
+        root.addShared('statistics_color', ARG_MAP[arg]);
     }, function (root, string) {
         var [ , key, arg ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
@@ -2005,11 +1846,11 @@ const SettingsCommands = [
     new SettingsCommand(/^(format|f) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
         if (ARG_FORMATTERS[arg]) {
-            root.setLocalVariable('format', ARG_FORMATTERS[arg]);
+            root.addFormatExpression(ARG_FORMATTERS[arg]);
         } else {
-            var ast = new Expression(arg);
+            var ast = new Expression(arg, root);
             if (ast.isValid()) {
-                root.setLocalVariable('format', (player, reference, env, val, extra) => {
+                root.addFormatExpression((player, reference, env, val, extra) => {
                     return ast.eval(player, reference, env, val, extra);
                 });
             }
@@ -2026,9 +1867,9 @@ const SettingsCommands = [
     // order by
     new SettingsCommand(/^(order by) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
-        var ast = new Expression(arg);
+        var ast = new Expression(arg, root);
         if (ast.isValid()) {
-            root.setLocalVariable('order', (player, reference, env, val, extra) => {
+            root.addLocal('order', (player, reference, env, val, extra) => {
                 return ast.eval(player, reference, env, val, extra);
             });
         }
@@ -2043,7 +1884,7 @@ const SettingsCommands = [
         var val = root.constants.getValue(prefix, value);
 
         if (val != undefined) {
-            root.setAlias(val);
+            root.addAlias(val);
         }
     }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -2060,9 +1901,9 @@ const SettingsCommands = [
     // expr - Set expression to the column
     new SettingsCommand(/^(expr|e) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
-            root.setLocalVariable('expr', (player, reference, env, scope, extra) => {
+            root.addLocal('expr', (player, reference, env, scope, extra) => {
                 return ast.eval(player, reference, env, scope, extra);
             });
         }
@@ -2072,7 +1913,7 @@ const SettingsCommands = [
     }),
     new SettingsCommand(/^discard (.*)$/, function (root, string) {
         let [ , a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
             root.addDiscardRule((player, reference, env, scope, extra) => {
                 return ast.eval(player, reference, env, scope, extra);
@@ -2086,9 +1927,9 @@ const SettingsCommands = [
     // expc - Set color expression to the column
     new SettingsCommand(/^(expc|c) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
-            root.setLocalVariable('expc', (player, reference, env, val, extra) => {
+            root.addColorExpression((player, reference, env, val, extra) => {
                 return getCSSBackground(ast.eval(player, reference, env, val, extra));
             });
         }
@@ -2103,7 +1944,7 @@ const SettingsCommands = [
         var val = root.constants.getValue(prefix, value);
 
         if (val != undefined) {
-            root.setLocalArrayVariable(key, ARG_MAP[condition], 0, val);
+            root.addValueRule(ARG_MAP[condition], 0, val);
         }
     }, function (root, string) {
         var [ , key, condition, arg, prefix, value ] = this.match(string);
@@ -2123,7 +1964,7 @@ const SettingsCommands = [
         var val = getCSSColor(root.constants.getValue(prefix, value));
 
         if (val != undefined && val) {
-            root.setLocalArrayVariable(key, ARG_MAP[condition], 0, val);
+            root.addColorRule(ARG_MAP[condition], 0, val);
         }
     }, function (root, string) {
         var [ , key, condition, arg, prefix, value ] = this.match(string);
@@ -2142,7 +1983,7 @@ const SettingsCommands = [
         var val = getCSSColor(root.constants.getValue(prefix, value));
 
         if (val != undefined && val) {
-            root.setLocalSharedVariable(key, val);
+            root.addShared(key, val);
         }
     }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -2164,7 +2005,7 @@ const SettingsCommands = [
         var val = root.constants.getValue(prefix, value);
 
         if (reference != undefined && val != undefined) {
-            root.setLocalArrayVariable(key, ARG_MAP[condition], reference, val);
+            root.addValueRule(ARG_MAP[condition], reference, val);
         }
     }, function (root, string) {
         var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
@@ -2195,7 +2036,7 @@ const SettingsCommands = [
         var val = getCSSColor(root.constants.getValue(prefix, value));
 
         if (reference != undefined && val != undefined) {
-            root.setLocalArrayVariable(key, ARG_MAP[condition], reference, val);
+            root.addColorRule(ARG_MAP[condition], reference, val);
         }
     }, function (root, string) {
         var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
@@ -2222,7 +2063,7 @@ const SettingsCommands = [
     // padding
     new SettingsCommand(/^(padding) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setLocalVariable(key, a);
+        root.addLocal(key, a);
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
@@ -2230,7 +2071,7 @@ const SettingsCommands = [
     // Create new type
     new SettingsCommand(/^(define) (\w+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.createDummy(a);
+        root.addDefinition(a);
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
@@ -2238,7 +2079,7 @@ const SettingsCommands = [
     // Extend
     new SettingsCommand(/^(extend) (\w+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        root.setExtend(a);
+        root.addExtension(a);
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
@@ -2329,58 +2170,526 @@ class Constants {
 }
 
 class Settings {
-    // Save
-    static save (settings, identifier) {
-        Preferences.set(identifier ? `settings/${ identifier }` : 'settings', settings);
-    }
+    // Contructor
+    constructor (string, type) {
+        this.code = string;
+        this.type = type;
 
-    // Remove
-    static remove (identifier) {
-        Preferences.remove(identifier ? `settings/${ identifier }` : 'settings');
-    }
+        // Constants
+        this.constants = new Constants();
 
-    // Exists
-    static exists (identifier) {
-        return Preferences.exists(identifier ? `settings/${ identifier }` : 'settings');
-    }
+        // Discard rules
+        this.discardRules = [];
 
-    // Keys
-    static get () {
-        return Preferences.keys().filter(key => key.includes('settings/')).map(key => key.substring(key.indexOf('/') + 1));
-    }
+        // Variables and functions
+        this.functions = [];
+        this.variables = [];
+        this.variablesReference = [];
 
-    static getHistory () {
-        return Preferences.get('settings_history', []);
-    }
+        // Lists
+        this.lists = [];
+        this.row_indexes = {};
 
-    static addHistory (settings, identifier = 'settings') {
-        var history = Preferences.get('settings_history', []);
-        history.unshift({
-            name: identifier,
-            content: settings
-        });
+        // Table
+        this.categories = [];
+        this.customStatistics = [];
+        this.customRows = [];
 
-        if (history.length > 10) {
-            history.pop();
+        // Other things
+        this.customDefinitions = {};
+
+        // Settings
+        this.globals = {
+            layout: [ 1, 2, 3, 4 ]
+        };
+
+        // Shared globals
+        this.shared = {
+            statistics_color: true,
+            visible: true
+        };
+
+        // Shared category
+        this.sharedCategory = null;
+
+        // Temporary objects
+        this.category = null;
+        this.header = null;
+        this.definition = null;
+        this.row = null;
+
+        // Reset filter
+        this.setFilter(null);
+
+        // Ignore flag
+        let ignore = false;
+
+        // Parse settings
+        for (let line of Settings.handleImports(string)) {
+            // Handle comments
+            let commentIndex = -1;
+            let ignored = false;
+
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] == '\'' || line[i] == '\"') {
+                    if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
+                    else {
+                        ignored = ignored ? false : line[i];
+                    }
+                } else if (line[i] == '#' && !ignored) {
+                    commentIndex = i;
+                    break;
+                }
+            }
+
+            if (commentIndex != -1) {
+                line = line.slice(0, commentIndex);
+            }
+
+            // Trim command
+            let trimmed = line.trim();
+
+            // Find valid command
+            let command = SettingsCommands.find(command => command.isValid(trimmed));
+
+            if (command) {
+                if (command == SettingsCommands[0]) {
+                    // Handle macros
+                    command.parse(this, trimmed);
+
+                    // Set up filtering
+                    if (this.filter.type != null) {
+                        ignore = this.filter.invert ? (this.filter.type == type) : (this.filter.type != type);
+                    } else {
+                        ignore = false;
+                    }
+                } else if (!ignore) {
+                    // Handle command
+                    command.parse(this, trimmed);
+                }
+            }
         }
 
-        Preferences.set('settings_history', history);
+        // Push last category
+        this.pushCategory();
     }
 
-    // Create empty settings
-    static empty () {
-        return new Settings('');
+    // Merge definition to object
+    mergeDefinition (obj, name) {
+        let definition = this.customDefinitions[name];
+        if (definition) {
+            // Merge commons
+            for (var [ key, value ] of Object.entries(definition)) {
+                if (!obj.hasOwnProperty(key)) obj[key] = definition[key];
+            }
+
+            // Merge color expression
+            if (!obj.color.expression) {
+                obj.color.expression = definition.color.expression;
+            }
+
+            // Merge color rules
+            if (!obj.color.rules.rules.length) {
+                obj.color.rules.rules = definition.color.rules.rules;
+            }
+
+            // Merge value expression
+            if (!obj.value.format) {
+                obj.value.format = definition.value.format;
+            }
+
+            // Merge value extra
+            if (!obj.value.extra) {
+                obj.value.extra = definition.value.extra;
+            }
+
+            // Merge value rules
+            if (!obj.value.rules.rules.length) {
+                obj.value.rules.rules = definition.value.rules.rules;
+            }
+        }
     }
 
-    // Load settings
-    static load (identifier, def, template = '', type = undefined) {
-        return new Settings(Preferences.get(`settings/${ identifier }`, Preferences.get(`settings/${ def }`, template)), type);
+    // Merge mapping to object
+    mergeMapping (obj, mapping) {
+        // Merge commons
+        for (var [ key, value ] of Object.entries(mapping)) {
+            if (!obj.hasOwnProperty(key)) obj[key] = mapping[key];
+        }
+
+        // Merge value expression
+        if (!obj.value.format) {
+            obj.value.format = mapping.format;
+        }
+
+        // Merge value extra
+        if (!obj.value.extra) {
+            obj.value.extra = mapping.extra;
+        }
+    }
+
+    // Push all settings
+    push () {
+        let obj = null;
+
+        // Push definition
+        obj = this.definition;
+        if (obj) {
+            this.customDefinitions[obj.name] = obj;
+            this.definition = null;
+        }
+
+        // Push row
+        obj = this.row;
+        if (obj) {
+            // Merge definitions
+            for (let definitionName of obj.extensions || []) {
+                this.mergeDefinition(obj, definitionName);
+            }
+
+            // Merge shared
+            merge(obj, this.shared);
+
+            // Push
+            this.customRows.push(obj);
+            this.row = null;
+        }
+
+        // Push header
+        obj = this.header;
+        if (obj && this.category) {
+            let name = obj.name;
+
+            // Get mapping if exists
+            let mapping = SP_KEYWORD_MAPPING_0[name] || SP_KEYWORD_MAPPING_1[name] || SP_KEYWORD_MAPPING_2[name] || SP_KEYWORD_MAPPING_3[name] || SP_KEYWORD_MAPPING_5_HO[name];
+
+            // Merge definitions
+            for (let definitionName of obj.extensions || []) {
+                this.mergeDefinition(obj, definitionName);
+            }
+
+            // Add specials
+            let custom = SP_SPECIAL_CONDITIONS[name];
+            if (custom && obj.clean != 2) {
+                for (let entry of custom) {
+                    if (entry.condition(obj)) {
+                        entry.apply(obj);
+                    }
+                }
+            }
+
+            // Add mapping or expression
+            if (mapping && !obj.expr) {
+                if (obj.clean == 2) {
+                    obj.expr = mapping.expr;
+                } else {
+                    this.mergeMapping(obj, mapping);
+                }
+            }
+
+            // Push header if possible
+            if (obj.expr) {
+                if (!obj.clean) {
+                    merge(obj, this.sharedCategory);
+                    merge(obj, this.shared);
+                } else {
+                    merge(obj, {
+                        visible: true,
+                        statistics_color: true
+                    });
+                }
+
+                if (obj.background) {
+                    obj.color.rules.addRule('db', 0, obj.background);
+                }
+
+                // Push
+                this.category.headers.push(obj);
+            }
+
+            this.header = null;
+        }
+    }
+
+    // Push category
+    pushCategory () {
+        this.push();
+
+        // Push category
+        let obj = this.category;
+        if (obj) {
+            this.categories.push(obj);
+            this.category = null;
+        }
+    }
+
+    // Create color block
+    getColorBlock () {
+        return {
+            expression: null,
+            rules: new RuleEvaluator(),
+            get: function (player, compare, settings, value, extra = undefined, ignoreBase = false) {
+                // Get color from expression
+                let expressionColor = this.expression ? this.expression(player, compare, settings, value, extra) : undefined;
+
+                // Get color from color block
+                let blockColor = this.rules.get(value, ignoreBase || (typeof expressionColor !== 'undefined'));
+
+                // Return color or empty string
+                return (typeof blockColor === 'undefined' ? expressionColor : blockColor) || '';
+            }
+        }
+    }
+
+    // Create value block
+    getValueBlock () {
+        return {
+            extra: null,
+            format: null,
+            rules: new RuleEvaluator(),
+            get: function (player, compare, settings, value, extra = undefined) {
+                // Get value from value block
+                let output = this.rules.get(value);
+
+                // Get value from format expression
+                if (typeof output == 'undefined' && this.format) {
+                    output = this.format(player, compare, settings, value, extra);
+                }
+
+                // Get value from value itself
+                if (typeof output == 'undefined') {
+                    output = value;
+                }
+
+                // Add extra
+                if (typeof output == 'undefined' && this.extra) {
+                    output = `${ output }${ this.extra(player) }`;
+                }
+
+                // Return value
+                return output;
+            }
+        }
+    }
+
+    // Create new header
+    addHeader (name, grouped = 0) {
+        this.push();
+
+        // Header
+        this.header = {
+            name: name,
+            grouped: grouped,
+            value: this.getValueBlock(),
+            color: this.getColorBlock()
+        };
+    }
+
+    // Create new category
+    addCategory (name) {
+        this.pushCategory();
+
+        // Category
+        this.category = {
+            name: name,
+            empty: name == '',
+            headers: []
+        };
+
+        // Category shared
+        this.sharedCategory = { }
+    }
+
+    // Create row
+    addRow (name, expression) {
+        this.push();
+
+        // Row
+        this.row = {
+            name: name,
+            ast: expression,
+            value: this.getValueBlock(),
+            color: this.getColorBlock()
+        }
+    }
+
+    // Create definition
+    addDefinition (name) {
+        this.push();
+
+        // Definition
+        this.definition = {
+            name: name,
+            value: this.getValueBlock(),
+            color: this.getColorBlock()
+        }
+    }
+
+    // Create statistic
+    addStatistics (name, expression) {
+        this.customStatistics.push({
+            name: name,
+            ast: expression
+        });
+    }
+
+    // Add alias
+    addAlias (name) {
+        let object = (this.definition || this.header);
+        if (object) {
+            object.alias = name;
+        }
+    }
+
+    // Add custom style
+    addStyle (name, value) {
+        let object = (this.row || this.definition || this.header || this.sharedCategory || this.shared);
+        if (object) {
+            if (!object.style) {
+                object.style = new Option().style;
+            }
+
+            object.style[name] = value;
+        }
+    }
+
+    // Add color expression to the header
+    addColorExpression (expression) {
+        let object = (this.row || this.definition || this.header);
+        if (object) {
+            object.color.expression = expression;
+        }
+    }
+
+    // Add format expression to the header
+    addFormatExpression (expression) {
+        let object = (this.row || this.definition || this.header);
+        if (object) {
+            object.value.format = expression;
+        }
+    }
+
+    // Add format extra expression to the header
+    addFormatExtraExpression (expression) {
+        let object = (this.row || this.definition || this.header);
+        if (object) {
+            object.value.extra = expression;
+        }
+    }
+
+    // Add color rule to the header
+    addColorRule (condition, referenceValue, value) {
+        let object = (this.row || this.definition || this.header);
+        if (object) {
+            object.color.rules.addRule(condition, referenceValue, value);
+        }
+    }
+
+    // Add value rule to the header
+    addValueRule (condition, referenceValue, value) {
+        let object = (this.row || this.definition || this.header);
+        if (object) {
+            object.value.rules.addRule(condition, referenceValue, value);
+        }
+    }
+
+    // Add new variable
+    addVariable (name, expression, isTableVariable = false) {
+        this.variables[name] = {
+            ast: expression,
+            tableVariable: isTableVariable
+        }
+    }
+
+    // Add new function
+    addFunction (name, expression, args) {
+        this.functions[name] = {
+            ast: expression,
+            args: args
+        }
+    }
+
+    // Add global
+    addGlobal (name, value) {
+        this.globals[name] = value;
+    }
+
+    // Add shared variable
+    addShared (name, value) {
+        let object = (this.row || this.definition || this.header || this.sharedCategory || this.shared);
+        if (object) {
+            object[name] = value;
+        }
+    }
+
+    // Add extension
+    addExtension (... names) {
+        let object = (this.row || this.definition || this.header || this.sharedCategory || this.shared);
+        if (object) {
+            if (!object.extensions) {
+                object.extensions = [];
+            }
+
+            object.extensions.push(... names);
+        }
+    }
+
+    // Add constant
+    addConstant (name, value) {
+        this.constants.addConstant(name, value);
+    }
+
+    // Add local variable
+    addLocal (name, value) {
+        let object = (this.row || this.definition || this.header);
+        if (object) {
+            object[name] = value;
+        }
+    }
+
+    // Add discard rule
+    addDiscardRule (rule) {
+        this.discardRules.push(rule);
     }
 
     // Get code
     getCode () {
         return this.code;
     }
+
+    // Get environment
+    getEnvironment () {
+        return this;
+    }
+
+    // Get compare environment
+    getCompareEnvironment () {
+        return {
+            functions: this.functions,
+            variables: this.variablesReference,
+            lists: {},
+            // Constants have to be propagated through the environment
+            constants: this.constants,
+            row_indexes: this.row_indexes
+        }
+    }
+
+    // Set line filter
+    setFilter (type, invert = false) {
+        this.filter = {
+            type: type,
+            invert: invert
+        }
+    }
+
+    // Flip filter
+    flipFilter () {
+        this.filter.invert = !this.filter.invert;
+    }
+
+    /*
+        Old shit
+    */
 
     static parseConstants(string) {
         var settings = new Settings('');
@@ -2456,21 +2765,6 @@ class Settings {
         return content;
     }
 
-    getEnvironment () {
-        return this;
-    }
-
-    getCompareEnvironment () {
-        return {
-            func: this.func,
-            vars: this.cvars,
-            lists: {},
-            // Constants have to be propagated through the environment
-            constants: this.constants,
-            row_indexes: this.row_indexes
-        }
-    }
-
     static handleImports (originalString) {
         let processedLines = [];
         for (let line of originalString.split('\n')) {
@@ -2485,106 +2779,6 @@ class Settings {
         }
 
         return processedLines;
-    }
-
-    constructor (string, type) {
-        this.code = string;
-
-        // Root variables
-        this.c = [];
-        this.vars = {};
-        this.cvars = {};
-        this.lists = {};
-        this.dummies = {};
-        this.func = {};
-        this.extras = [];
-        this.stats = [];
-        this.discard = [];
-
-        this.constants = new Constants();
-
-        // Row indexes of individual players
-        this.row_indexes = { };
-
-        this.globals = {
-            outdated: true,
-            layout: [ 1, 2, 3, 4 ]
-        };
-
-        // Temporary
-        this.currentCategory = null;
-        this.currentHeader = null;
-        this.dummy = null;
-        this.currentExtra = null;
-
-        this.shared = {
-            statistics_color: true
-        };
-
-        this.categoryShared = {
-            visible: true,
-            statistics_color: true
-        };
-
-        this.setFilter(null);
-
-        // Parsing
-        var ignore = false;
-
-        for (var line of Settings.handleImports(string)) {
-            var commentIndex = -1;
-            var ignored = false;
-
-            for (var i = 0; i < line.length; i++) {
-                if (line[i] == '\'' || line[i] == '\"') {
-                    if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
-                    else {
-                        ignored = ignored ? false : line[i];
-                    }
-                } else if (line[i] == '#' && !ignored) {
-                    commentIndex = i;
-                    break;
-                }
-            }
-
-            if (commentIndex != -1) {
-                line = line.slice(0, commentIndex);
-            }
-
-            var trimmed = line.trim();
-            var command = SettingsCommands.find(command => command.isValid(trimmed));
-
-            if (command) {
-                if (command == SettingsCommands[0]) {
-                    command.parse(this, trimmed);
-
-                    if (this.filter.type != null) {
-                        ignore = this.filter.invert ? (this.filter.type == type) : (this.filter.type != type);
-                    } else {
-                        ignore = false;
-                    }
-                } else if (!ignore) {
-                    command.parse(this, trimmed);
-                }
-            }
-        }
-
-        this.pushCategory();
-    }
-
-    setFilter (type, invert = false) {
-        this.filter = {
-            type: type,
-            invert: invert
-        }
-    }
-
-    addDiscardRule (rule) {
-        this.discard.push(rule);
-    }
-
-    flipFilter () {
-        this.filter.invert = !this.filter.invert;
     }
 
     // Evaluate constants
@@ -2661,7 +2855,7 @@ class Settings {
                 results[result.player.Identifier] = result.score;
             }
 
-            this.vars['Simulator'] = {
+            this.variables['Simulator'] = {
                 value: results
             }
 
@@ -2672,17 +2866,17 @@ class Settings {
                     cresults[result.player.Identifier] = result.score;
                 }
 
-                this.cvars['Simulator'] = {
+                this.variablesReference['Simulator'] = {
                     value: cresults
                 }
             } else {
-                this.cvars['Simulator'] = {
+                this.variablesReference['Simulator'] = {
                     value: results
                 }
             }
         } else {
-            delete this.vars['Simulator'];
-            delete this.cvars['Simulator'];
+            delete this.variables['Simulator'];
+            delete this.variablesReference['Simulator'];
         }
 
         var segmentedPlayers = players.map(p => {
@@ -2704,20 +2898,20 @@ class Settings {
         segmentedCompare.segmented = true;
 
         // Evaluate constants
-        for (var [name, data] of Object.entries(this.vars)) {
+        for (var [name, data] of Object.entries(this.variables)) {
             if (data.ast) {
                 var scope = {};
                 var scope2 = {};
 
-                if (data.arg) {
+                if (data.tableVariable) {
                     scope = segmentedPlayers;
                     scope2 = segmentedCompare;
                 }
 
-                if (!data.arg) {
-                    this.cvars[name] = {
+                if (!data.tableVariable) {
+                    this.variablesReference[name] = {
                         ast: data.ast,
-                        arg: false
+                        tableVariable: false
                     };
                 } else if (tabletype == TableType.Group) {
                     data.value = data.ast.eval(players[0].player, undefined, this, scope);
@@ -2730,10 +2924,10 @@ class Settings {
                         val = undefined;
                     }
 
-                    this.cvars[name] = {
+                    this.variablesReference[name] = {
                         value: val,
                         ast: data.ast,
-                        arg: data.arg
+                        tableVariable: data.tableVariable
                     };
                 } else {
                     data.value = data.ast.eval(undefined, undefined, this, scope);
@@ -2746,10 +2940,10 @@ class Settings {
                         val = undefined;
                     }
 
-                    this.cvars[name] = {
+                    this.variablesReference[name] = {
                         value: val,
                         ast: data.ast,
-                        arg: data.arg
+                        tableVariable: data.tableVariable
                     };
                 }
             }
@@ -2758,7 +2952,7 @@ class Settings {
         // Extra statistics rows
         if (tabletype == TableType.Group) {
             var param = players.find(p => p.player.Own) || players[0];
-            for (var data of this.extras) {
+            for (var data of this.customRows) {
                 if (data.ast) {
                     data.eval = {
                         value: data.ast.eval(param.player, undefined, this, segmentedPlayers),
@@ -2767,7 +2961,7 @@ class Settings {
                 }
             }
         } else if (tabletype == TableType.Players) {
-            for (var data of this.extras) {
+            for (var data of this.customRows) {
                 if (data.ast) {
                     data.eval = {
                         value: data.ast.eval(null, null, this, segmentedPlayers),
@@ -2778,13 +2972,10 @@ class Settings {
         }
 
         // Push constants into color / value options
-        for (var category of this.c) {
-            this.evaluateArrayConstants(category.value);
-            this.evaluateArrayConstants(category.color);
-
-            for (var header of category.h) {
-                this.evaluateArrayConstants(header.value);
-                this.evaluateArrayConstants(header.color);
+        for (var category of this.categories) {
+            for (var header of category.headers) {
+                this.evaluateArrayConstants(header.value.rules);
+                this.evaluateArrayConstants(header.color.rules);
             }
         }
     }
@@ -2800,8 +2991,8 @@ class Settings {
         this.evalRowIndexes(players);
 
         // Evaluate constants
-        for (var [name, data] of Object.entries(this.vars)) {
-            if (data.ast && data.arg) {
+        for (var [name, data] of Object.entries(this.variables)) {
+            if (data.ast && data.tableVariable) {
                 var scope = players.map((p, i) => {
                     var ar = [ p, players[i + 1] || p ];
                     ar.segmented = true;
@@ -2819,339 +3010,133 @@ class Settings {
         }
 
         // Push constants into color / value options
-        for (var category of this.c) {
-            this.evaluateArrayConstants(category.value);
-            this.evaluateArrayConstants(category.color);
-
-            for (var header of category.h) {
-                this.evaluateArrayConstants(header.value);
-                this.evaluateArrayConstants(header.color);
+        for (var category of this.categories) {
+            for (var header of category.headers) {
+                this.evaluateArrayConstants(header.value.rules);
+                this.evaluateArrayConstants(header.color.rules);
             }
         }
     }
 
-    setConstant (name, value) {
-        this.constants.addConstant(name, value);
-    }
-
-    evaluateArrayConstants (array) {
+    evaluateArrayConstants (rules) {
+        let array = rules.rules;
         for (var i = 0; array && i < array.length; i++) {
             var key = array[i][3];
-            if (isNaN(key) && this.vars[key]) {
-                if (this.vars[key].value != undefined) {
-                    array[i][1] = Number(this.vars[key].value);
+            if (isNaN(key) && this.variables[key]) {
+                if (this.variables[key].value != undefined) {
+                    array[i][1] = Number(this.variables[key].value);
                 } else {
                     array.splice(i--, 1);
                 }
             }
         }
     }
-
-    addExtraRow (name, ast) {
-        this.pushExtraRow();
-        this.currentExtra = {
-            name: name,
-            ast: ast
-        };
-    }
-
-    addExtraStatistics (name, ast) {
-        this.stats.push({
-            name: name,
-            ast: ast
-        });
-    }
-
-    pushExtraRow () {
-        this.pushDummy();
-        if (this.currentExtra) {
-            for (var ex of this.currentExtra.extend || []) {
-                if (this.dummies[ex]) {
-                    mergeAll(this.currentExtra, this.dummies[ex].content);
-                }
-            }
-
-            merge(this.currentExtra, this.shared);
-
-            this.extras.push(this.currentExtra);
-        }
-
-        this.currentExtra = null;
-    }
-
-    // Option handlers
-    setVariable (name, arg, ast) {
-        this.vars[name] = {
-            ast: ast,
-            arg: arg
-        }
-    }
-
-    setFunction (name, arg, ast) {
-        this.func[name] = {
-            ast: ast,
-            arg: arg
-        }
-    }
-
-    setGrouped (w) {
-        this.currentHeader.grouped = w;
-    }
-
-    createHeader (name) {
-        this.pushHeader();
-        this.currentHeader = {
-            name: name
-        }
-    }
-
-    createItemizedHeader (src, name) {
-        this.pushHeader();
-        this.currentHeader = {
-            name: name,
-            itemized: src
-        }
-    }
-
-    pushHeader () {
-        this.pushExtraRow();
-        if (this.currentCategory && this.currentHeader) {
-            var mapping = SP_KEYWORD_MAPPING_0[this.currentHeader.name] || SP_KEYWORD_MAPPING_1[this.currentHeader.name] || SP_KEYWORD_MAPPING_2[this.currentHeader.name] || SP_KEYWORD_MAPPING_3[this.currentHeader.name] || SP_KEYWORD_MAPPING_4[this.currentHeader.name] || SP_KEYWORD_MAPPING_5_HO[this.currentHeader.name];
-
-            for (var ex of this.currentHeader.extend || []) {
-                if (this.dummies[ex]) {
-                    mergeAll(this.currentHeader, this.dummies[ex].content);
-                }
-            }
-
-            var custom = SP_SPECIAL_CONDITIONS[this.currentHeader.name];
-            if (custom && this.currentHeader.clean != 2) {
-                for (var entry of custom) {
-                    if (entry.condition(this.currentHeader)) {
-                        merge(this.currentHeader, entry.content);
-                    }
-                }
-            }
-
-            if (mapping && !this.currentHeader.expr) {
-                if (this.currentHeader.clean == 2) {
-                    this.currentHeader.expr = mapping.expr;
-                } else {
-                    merge(this.currentHeader, mapping);
-                }
-            }
-
-            if (this.currentHeader.expr) {
-                if (!this.currentHeader.clean) {
-                    merge(this.currentHeader, this.categoryShared);
-                    merge(this.currentHeader, this.shared);
-                } else {
-                    merge(this.currentHeader, {
-                        visible: true,
-                        statistics_color: true
-                    });
-                }
-
-                if (this.currentHeader.background && this.currentHeader.expc == undefined) {
-                    this.setLocalArrayVariable('color', 'db', 0, this.currentHeader.background);
-                }
-
-                this.currentCategory.h.push(this.currentHeader);
-            }
-        }
-
-        this.currentHeader = null;
-    }
-
-    createCategory (name, empty) {
-        this.pushCategory();
-
-        this.categoryShared = {
-            visible: true
-        };
-
-        this.currentCategory = {
-            name: name,
-            empty: empty,
-            h: []
-        };
-    }
-
-    createDummy (name) {
-        this.pushHeader();
-        this.dummy = {
-            name: name,
-            content: {
-
-            }
-        }
-    }
-
-    pushDummy () {
-        if (this.dummy) {
-            this.dummies[this.dummy.name] = this.dummy;
-        }
-
-        this.dummy = null;
-    }
-
-    pushCategory () {
-        this.pushHeader();
-        if (this.currentCategory) {
-            this.c.push(this.currentCategory);
-        }
-
-        this.currentCategory = null;
-    }
-
-    setGlobalVariable (key, value) {
-        this.globals[key] = value;
-    }
-
-    setLocalSharedVariable (key, value) {
-        if (this.currentExtra) {
-            this.currentExtra[key] = value
-        } else if (this.dummy) {
-            this.dummy.content[key] = value;
-        } else if (this.currentHeader) {
-            this.setLocalVariable(key, value);
-        } else if (this.currentCategory) {
-            this.categoryShared[key] = value;
-        } else {
-            this.shared[key] = value;
-        }
-    }
-
-    setStyle (key, val) {
-        var obj = this.currentExtra || (this.dummy ? this.dummy.content : undefined) || this.currentHeader || this.shared;
-        if (!obj.style) {
-            obj.style = new Option().style;
-        }
-
-        obj.style[key] = val;
-    }
-
-    setLocalVariable (key, value) {
-        if (this.currentExtra) {
-            this.currentExtra[key] = value;
-        } else if (this.dummy) {
-            this.dummy.content[key] = value;
-        } else if (this.currentHeader) {
-            this.currentHeader[key] = value;
-        }
-    }
-
-    setAlias (value) {
-        if (this.currentExtra) {
-            this.currentExtra.alias = value;
-        } else if (this.dummy) {
-            this.dummy.content.alias = value;
-        } else if (this.currentHeader) {
-            this.currentHeader.alias = value;
-        } else if (this.currentCategory) {
-            this.currentCategory.alias = value;
-        }
-    }
-
-    setExtend (value) {
-        if (this.currentExtra) {
-            if (!this.currentExtra.extend) {
-                this.currentExtra.extend = [];
-            }
-
-            this.currentExtra.extend.push(value);
-        } else if (this.dummy) {
-            if (!this.dummy.content.extend) {
-                this.dummy.content.extend = [];
-            }
-
-            this.dummy.content.extend.push(value);
-        } else if (this.currentHeader) {
-            if (!this.currentHeader.extend) {
-                this.currentHeader.extend = [];
-            }
-
-            this.currentHeader.extend.push(value);
-        } else if (this.currentCategory) {
-            if (!this.categoryShared.extend) {
-                this.categoryShared.extend = [];
-            }
-
-            this.categoryShared.extend.push(value);
-        } else {
-            if (!this.shared.extend) {
-                this.shared.extend = [];
-            }
-
-            this.shared.extend.push(value);
-        }
-    }
-
-    setLocalArrayVariable (key, condition, reference, value) {
-        if (this.currentExtra) {
-            if (!this.currentExtra[key]) {
-                this.currentExtra[key] = [];
-            }
-
-            this.currentExtra[key].push([ condition, reference, value, reference ]);
-        } else if (this.dummy) {
-            if (!this.dummy.content[key]) {
-                this.dummy.content[key] = [];
-            }
-
-            this.dummy.content[key].push([ condition, reference, value, reference ]);
-        } else if (this.currentHeader) {
-            if (!this.currentHeader[key]) {
-                this.currentHeader[key] = [];
-            }
-
-            this.currentHeader[key].push([ condition, reference, value, reference ]);
-        }
-    }
 };
+
+// Settings manager
+const SettingsManager = new (class {
+    // Save settings
+    save (settings, identifier) {
+        Preferences.set(identifier ? `settings/${ identifier }` : 'settings', settings);
+    }
+
+    // Remove
+    remove (identifier) {
+        Preferences.remove(identifier ? `settings/${ identifier }` : 'settings');
+    }
+
+    // Exists
+    exists (identifier) {
+        return Preferences.exists(identifier ? `settings/${ identifier }` : 'settings');
+    }
+
+    // Keys
+    get () {
+        return Preferences.keys().filter(key => key.includes('settings/')).map(key => key.substring(key.indexOf('/') + 1));
+    }
+
+    // Get history
+    getHistory () {
+        return Preferences.get('settings_history', []);
+    }
+
+    // Add history
+    addHistory (settings, identifier = 'settings') {
+        // Get current history
+        var history = Preferences.get('settings_history', []);
+
+        // Add new history entry to the beginning
+        history.unshift({
+            name: identifier,
+            content: settings
+        });
+
+        // Pop last entry if over 10 entries exist
+        if (history.length > 10) {
+            history.pop();
+        }
+
+        // Save current history
+        Preferences.set('settings_history', history);
+    }
+
+    // Create empty settings
+    empty () {
+        return new Settings('');
+    }
+
+    // Load settings
+    load (identifier, def, template = '', type = undefined) {
+        return new Settings(Preferences.get(`settings/${ identifier }`, Preferences.get(`settings/${ def }`, template)), type);
+    }
+})()
 
 // Templates
 const Templates = new (class {
-    constructor () {
-        this.templates = SharedPreferences.get('templates', { });
+    initialize () {
+        if (!this.templates) {
+            // Initialize when needed
+            this.templates = SharedPreferences.get('templates', { });
 
-        this.keys = Object.keys(this.templates);
-        this.keys.sort((a, b) => a.localeCompare(b));
+            this.keys = Object.keys(this.templates);
+            this.keys.sort((a, b) => a.localeCompare(b));
 
-        /*
-            Convert existing templates in old form into new style
-        */
-        let keys = SharedPreferences.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
-        let backup = {};
+            /*
+                Convert existing templates in old form into new style
+            */
+            let keys = SharedPreferences.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
+            let backup = {};
 
-        if (keys.length) {
-            for (let key of keys) {
-                let content = SharedPreferences.get(`templates/${ key }`, '');
-                backup[key] = content;
+            if (keys.length) {
+                for (let key of keys) {
+                    let content = SharedPreferences.get(`templates/${ key }`, '');
+                    backup[key] = content;
 
-                // Convert existing template to text
-                if (typeof(content) == 'string') {
-                    // Do nothing
-                } else if (typeof(content) == 'object') {
-                    content = content.content;
-                } else {
-                    content = '';
+                    // Convert existing template to text
+                    if (typeof(content) == 'string') {
+                        // Do nothing
+                    } else if (typeof(content) == 'object') {
+                        content = content.content;
+                    } else {
+                        content = '';
+                    }
+
+                    // Save if valid
+                    if (content.length) {
+                        this.saveInternal(key, content);
+                    }
+
+                    SharedPreferences.remove(`templates/${ key }`);
                 }
 
-                // Save if valid
-                if (content.length) {
-                    this.saveInternal(key, content);
-                }
-
-                SharedPreferences.remove(`templates/${ key }`);
+                this.commit();
+                SharedPreferences.set('templatesBackup', backup);
             }
-
-            this.commit();
-            SharedPreferences.set('templatesBackup', backup);
         }
     }
 
     commit () {
+        // Save current templates
         SharedPreferences.set('templates', this.templates);
 
         this.keys = Object.keys(this.templates);
@@ -3186,6 +3171,8 @@ const Templates = new (class {
     }
 
     markAsOnline (name, key, secret) {
+        this.initialize();
+
         // Mark template as online if exists
         if (name in this.templates) {
             // Set timestamp & keys
@@ -3200,6 +3187,8 @@ const Templates = new (class {
     }
 
     markAsOffline (name) {
+        this.initialize();
+
         // Mark template as offline if exists
         if (name in this.templates) {
             // Set online to false
@@ -3210,11 +3199,19 @@ const Templates = new (class {
     }
 
     save (name, content, compat) {
+        this.initialize();
+
+        // Save template
         this.saveInternal(name, content, compat);
+
+        // Commit changes
         this.commit();
     }
 
     remove (name) {
+        this.initialize();
+
+        // Remove template
         if (name in this.templates) {
             delete this.templates[name];
             this.commit();
@@ -3222,18 +3219,30 @@ const Templates = new (class {
     }
 
     exists (name) {
+        this.initialize();
+
+        // Return true if template exists
         return name in this.templates;
     }
 
     get () {
+        this.initialize();
+
+        // Return templates
         return this.templates;
     }
 
     getKeys () {
+        this.initialize();
+
+        // Return keys
         return this.keys;
     }
 
     load (name) {
+        this.initialize();
+
+        // Return loaded settings
         return new Settings(name in this.templates ? this.templates[name].content : '');
     }
 })();

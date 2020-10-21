@@ -155,18 +155,11 @@ class GroupDetailView extends View {
 
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
-            html2canvas(this.$table.get(0), {
-                logging: false,
-                onclone: doc => {
-                    var ta = Number(this.timestamp);
-                    var tb = Number(this.reference);
+            downloadScreenshot(this.$table, `${ this.group.Latest.Name }.${ this.timestamp }${ this.timestamp != this.reference ? `.${ this.reference }` : '' }.png`, doc => {
+                var ta = Number(this.timestamp);
+                var tb = Number(this.reference);
 
-                    $(doc).find('thead').prepend($(`<tr style="height: 2em;"><td colspan="4" class="text-left">${ formatDate(ta) }${ ta != tb ? ` - ${ formatDate(tb) }` : '' }</td></tr>`));
-                }
-            }).then((canvas) => {
-                canvas.toBlob((blob) => {
-                    window.download(`${ this.group.Latest.Name }.${ this.timestamp }${ this.timestamp != this.reference ? `.${ this.reference }` : '' }.png`, blob);
-                });
+                $(doc).find('thead').prepend($(`<tr style="height: 2em;"><td colspan="4" class="text-left">${ formatDate(ta) }${ ta != tb ? ` - ${ formatDate(tb) }` : '' }</td></tr>`));
             });
         });
 
@@ -328,7 +321,7 @@ class GroupDetailView extends View {
     }
 
     load () {
-        if (Settings.exists(this.identifier)) {
+        if (SettingsManager.exists(this.identifier)) {
             this.$configure.get(0).style.setProperty('background', '#21ba45', 'important');
             this.$configure.get(0).style.setProperty('color', 'white', 'important');
         } else {
@@ -340,7 +333,7 @@ class GroupDetailView extends View {
             this.table.clearSorting();
         }
 
-        this.table.setSettings(this.templateOverride ? Settings.load('', '', Templates.load(this.templateOverride).code, TableType.Group) : Settings.load(this.identifier, 'guilds', PredefinedTemplates['Guilds Default'], TableType.Group));
+        this.table.setSettings(this.templateOverride ? SettingsManager.load('', '', Templates.load(this.templateOverride).code, TableType.Group) : SettingsManager.load(this.identifier, 'guilds', PredefinedTemplates['Guilds Default'], TableType.Group));
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -818,13 +811,7 @@ class PlayerHistoryView extends View {
 
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
-            html2canvas(this.$table.get(0), {
-                logging: false
-            }).then((canvas) => {
-                canvas.toBlob((blob) => {
-                    window.download(`${ this.player.Name }_${ Date.now() }.png`, blob);
-                });
-            });
+            downloadScreenshot(this.$table, `${ this.player.Name }_${ Date.now() }.png`);
         });
 
         // Configuration
@@ -868,12 +855,12 @@ class PlayerHistoryView extends View {
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
 
-                    settings = Settings.load(this.identifier, 'me', PredefinedTemplates['Me Default'], TableType.History);
+                    settings = SettingsManager.load(this.identifier, 'me', PredefinedTemplates['Me Default'], TableType.History);
                 } else {
                     this.templateOverride = value;
 
                     $(element).addClass('active');
-                    settings = Settings.load('', '', Templates.load(value).code, TableType.History);
+                    settings = SettingsManager.load('', '', Templates.load(value).code, TableType.History);
                 }
 
                 this.table.setSettings(settings);
@@ -913,7 +900,7 @@ class PlayerHistoryView extends View {
         this.$configure.find('.item').removeClass('active');
 
         // Table instance
-        this.table.setSettings(Settings.load(this.identifier, 'me', PredefinedTemplates['Me Default'], TableType.History));
+        this.table.setSettings(SettingsManager.load(this.identifier, 'me', PredefinedTemplates['Me Default'], TableType.History));
 
         var updated = false;
         for (var [ timestamp, proxy ] of this.list) {
@@ -929,7 +916,7 @@ class PlayerHistoryView extends View {
 
     refresh () {
         // Configuration indicator
-        if (Settings.exists(this.identifier)) {
+        if (SettingsManager.exists(this.identifier)) {
             this.$configure.get(0).style.setProperty('background', '#21ba45', 'important');
             this.$configure.get(0).style.setProperty('color', 'white', 'important');
         } else {
@@ -980,13 +967,7 @@ class BrowseView extends View {
 
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
-            html2canvas(this.$table.get(0), {
-                logging: false
-            }).then((canvas) => {
-                canvas.toBlob((blob) => {
-                    window.download(`players.${ this.timestamp }.png`, blob);
-                });
-            });
+            downloadScreenshot(this.$table, `players.${ this.timestamp }.png`);
         });
 
         this.hidden = SiteOptions.browse_hidden;
@@ -1228,7 +1209,7 @@ class BrowseView extends View {
                     this.table.clearSorting();
 
                     this.table = this.tableQ;
-                    this.table.setSettings(new Settings(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a.trim() }`, '') }`, TableType.Players));
+                    this.table.setSettings(new SettingsManager(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a.trim() }`, '') }`, TableType.Players));
                 }
             }
 
@@ -1346,10 +1327,10 @@ class BrowseView extends View {
     load () {
         this.$configure.find('.item').removeClass('active');
 
-        this.table.setSettings(Settings.load('players', 'players', PredefinedTemplates['Players Default'], TableType.Players));
+        this.table.setSettings(SettingsManager.load('players', 'players', PredefinedTemplates['Players Default'], TableType.Players));
 
         // Configuration indicator
-        if (Settings.exists('players')) {
+        if (SettingsManager.exists('players')) {
             this.$configure.get(0).style.setProperty('background', '#21ba45', 'important');
             this.$configure.get(0).style.setProperty('color', 'white', 'important');
         } else {
@@ -1374,12 +1355,12 @@ class BrowseView extends View {
                 if (this.templateOverride == value) {
                     this.templateOverride = '';
 
-                    settings = Settings.load('players', 'players', PredefinedTemplates['Players Default'], TableType.Players);
+                    settings = SettingsManager.load('players', 'players', PredefinedTemplates['Players Default'], TableType.Players);
                 } else {
                     this.templateOverride = value;
 
                     $(element).addClass('active');
-                    settings = Settings.load('', '', Templates.load(value).code, TableType.Players);
+                    settings = SettingsManager.load('', '', Templates.load(value).code, TableType.Players);
                 }
 
                 this.table.setSettings(settings);
@@ -1807,10 +1788,10 @@ class PlayersView extends View {
     }
 
     load () {
-        this.settings = Settings.load('me', 'me', PredefinedTemplates['Me Default']);
+        this.settings = SettingsManager.load('me', 'me', PredefinedTemplates['Me Default']);
         this.$filter.trigger('change');
 
-        if (Settings.exists('me')) {
+        if (SettingsManager.exists('me')) {
             this.$configure.get(0).style.setProperty('background', '#21ba45', 'important');
             this.$configure.get(0).style.setProperty('color', 'white', 'important');
         } else {
@@ -2434,7 +2415,7 @@ class SettingsView extends View {
     show (identifier = 'players') {
         // Set code
         this.identifier = identifier;
-        this.code = Settings.load(identifier, this.getDefault(identifier), this.getDefaultTemplate(identifier)).getCode();
+        this.code = SettingsManager.load(identifier, this.getDefault(identifier), this.getDefaultTemplate(identifier)).getCode();
 
         // Update settings
         if (this.$settingsList.length) {
@@ -2469,7 +2450,7 @@ class SettingsView extends View {
                 value: 'guilds',
                 selected: this.identifier == 'guilds'
             },
-            ... Settings.get().map(key => {
+            ... SettingsManager.get().map(key => {
                 if ([ 'me', 'players', 'guilds' ].includes(key)) {
                     return null;
                 } else {
@@ -2488,7 +2469,7 @@ class SettingsView extends View {
             onClick: value => this.show(value),
             onSave: value => this.save(),
             onRemove: value => {
-                Settings.remove(value);
+                SettingsManager.remove(value);
                 this.show();
             }
         });
@@ -2498,11 +2479,11 @@ class SettingsView extends View {
         let code = this.$area.val();
         if (code !== this.code) {
             // Add into history
-            Settings.addHistory(this.code, this.identifier);
+            SettingsManager.addHistory(this.code, this.identifier);
 
             // Save current code
             this.code = code;
-            Settings.save(this.code, this.identifier);
+            SettingsManager.save(this.code, this.identifier);
         }
     }
 
@@ -2545,7 +2526,7 @@ class SettingsView extends View {
     }
 
     history (i = 0) {
-        let history = Settings.getHistory();
+        let history = SettingsManager.getHistory();
         let historyCount = history.length;
 
         if (i == 0) {
@@ -2608,7 +2589,7 @@ class SettingsFloatView extends SettingsView {
             UI.current.refreshTemplateDropdown();
         }
 
-        Settings.remove(this.identifier);
+        SettingsManager.remove(this.identifier);
         this.hide();
         UI.current.load();
     }

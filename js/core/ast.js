@@ -1,7 +1,7 @@
-const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
+const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\$|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
 class Expression {
-    constructor (string) {
+    constructor (string, settings = null) {
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp).map(token => token.trim()).filter(token => token.length);
         this.root = false;
 
@@ -18,6 +18,8 @@ class Expression {
             }
 
             if (count == 0) {
+                this.evalEmbeddedVariables(settings);
+
                 this.root = this.evalExpression();
                 this.root = this.postProcess(this.root);
             } else {
@@ -30,6 +32,7 @@ class Expression {
     static format (string, root) {
         var content = '';
         var tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp);
+        let nextName = false;
 
         // Go through all tokens
         for (var i = 0, token, value; i < tokens.length; i++) {
@@ -44,9 +47,9 @@ class Expression {
                     continue;
                 } else if (token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
                     value = token[0] + SFormat.Comment(token.slice(1, token.length - 1)) + token[token.length - 1];
-                } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort', 'distinct' ].includes(token) || root.func.hasOwnProperty(token)) {
+                } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort', 'distinct' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
-                } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index' ].includes(token) || root.vars.hasOwnProperty(token)) {
+                } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index' ].includes(token) || root.variables.hasOwnProperty(token)) {
                     value = SFormat.Constant(token);
                 } else if (SP_KEYWORD_MAPPING_0.hasOwnProperty(token)) {
                     value = SFormat.Reserved(token);
@@ -64,6 +67,16 @@ class Expression {
                     value = SFormat.Constant(token);
                 } else if (SP_ENUMS.hasOwnProperty(token)) {
                     value = SFormat.Enum(token);
+                } else if (token == '$') {
+                    value = SFormat.Keyword(token);
+                    nextName = true;
+                } else if (nextName) {
+                    nextName = false;
+                    if (/[a-zA-Z0-9\-\_]+/.test(token)) {
+                        value = SFormat.Constant(token);
+                    } else {
+                        value = SFormat.Normal(token);
+                    }
                 } else {
                     value = SFormat.Normal(token);
                 }
@@ -75,6 +88,83 @@ class Expression {
         }
 
         return content;
+    }
+
+    // Eval embedded variables
+    evalEmbeddedVariables (settings) {
+        // Get settings variable array
+        let tableVariables = (settings ? settings.variables : undefined) || {};
+
+        // All variables in the token string
+        let variables = [];
+
+        // Current variable
+        let brackets = 0;
+        let index = null;
+        let manualName = null;
+
+        // Iterate over all tokens
+        for (let i = 0; i < this.tokens.length; i++) {
+            // Current token
+            let token = this.tokens[i];
+
+            // Start new variable if current token matches ${
+            if (token == '$') {
+                if (this.tokens[i + 1] == '{') {
+                    // Save current index and skip next bracket
+                    index = i++;
+                    brackets++;
+                } else if (this.tokens[i + 2] == '{') {
+                    // Save current index and skip next bracket
+                    index = i++;
+                    brackets++;
+                    manualName = this.tokens[i++];
+                }
+            } else if (index != null) {
+                // If there is a variable
+                if (token == '{') {
+                    // Increment bracket counter
+                    brackets++;
+                } else if (token == '}') {
+                    // Decrement bracket counter
+                    brackets--;
+                    if (brackets == 0) {
+                        // Push new variable if brackets are 0
+                        variables.push({
+                            start: index,
+                            length: i - index + 1,
+                            name: manualName
+                        });
+
+                        // Reset temporary vars
+                        index = null;
+                        manualName = null;
+                        brackets = 0;
+                    }
+                }
+            }
+        }
+
+        // Replace variables with placeholders and save expression
+        for (let i = variables.length - 1; i >= 0; i--) {
+            let variable = variables[i];
+
+            // Get tokens and strip first 2 and last 1 token (constrol characters)
+            let tokens = this.tokens.splice(variable.start, variable.length);
+            tokens = tokens.slice(2 + (variable.name ? 1 : 0), tokens.length - 1);
+
+            // Get placeholder name
+            let name = variable.name ? variable.name : `::${ Date.now() }`;
+
+            // Add placeholder to tokens
+            this.tokens.splice(variable.start, 0, name);
+
+            // Add variable to settings
+            tableVariables[name] = {
+                ast: new Expression(tokens.join('')),
+                tableVariable: true
+            };
+        }
     }
 
     // Peek at next token
@@ -416,7 +506,7 @@ class Expression {
         return node;
     }
 
-    eval (player, reference = undefined, environment = { func: { }, vars: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined, functionScope = undefined) {
+    eval (player, reference = undefined, environment = { functions: { }, variables: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined, functionScope = undefined) {
         return this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
     }
 
@@ -473,14 +563,14 @@ class Expression {
                 } else if (node.op == 'sort' && node.args.length == 2) {
                     // Multiple array functions condensed
                     var array = this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
-                    var mapper = environment.func[node.args[1]];
+                    var mapper = environment.functions[node.args[1]];
                     var values = [];
 
                     if (mapper) {
                         if (array.segmented) {
                             values = array.map(obj => {
                                 return {
-                                    key: mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.arg.reduce((c, a, i) => {
+                                    key: mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.args.reduce((c, a, i) => {
                                         c[a] = obj[i];
                                         return c;
                                     }, {}), functionScope),
@@ -490,7 +580,7 @@ class Expression {
                         } else {
                             values = array.map(obj => {
                                 return {
-                                    key: mapper.ast.eval(player, reference, environment, obj, mapper.arg.reduce((c, a) => {
+                                    key: mapper.ast.eval(player, reference, environment, obj, mapper.args.reduce((c, a) => {
                                         c[a] = obj;
                                         return c;
                                     }, {}), functionScope),
@@ -523,18 +613,18 @@ class Expression {
                 } else if (['each', 'filter', 'map'].includes(node.op) && node.args.length == 2) {
                     // Multiple array functions condensed
                     var array = this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
-                    var mapper = environment.func[node.args[1]];
+                    var mapper = environment.functions[node.args[1]];
                     var values = [];
 
                     // Does not allow 'this' in any scenario
                     if (mapper) {
                         if (array.segmented) {
-                            values = array.map(obj => mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.arg.reduce((c, a, i) => {
+                            values = array.map(obj => mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.args.reduce((c, a, i) => {
                                 c[a] = obj[i];
                                 return c;
                             }, {})), functionScope);
                         } else {
-                            values = array.map(obj => mapper.ast.eval(player, reference, environment, obj, mapper.arg.reduce((c, a) => {
+                            values = array.map(obj => mapper.ast.eval(player, reference, environment, obj, mapper.args.reduce((c, a) => {
                                 c[a] = obj;
                                 return c;
                             }, {})), functionScope);
@@ -571,11 +661,11 @@ class Expression {
                     }
 
                     return obj;
-                } else if (environment.func[node.op]) {
-                    var mapper = environment.func[node.op];
+                } else if (environment.functions[node.op]) {
+                    var mapper = environment.functions[node.op];
                     var scope2 = {};
-                    for (var i = 0; i < mapper.arg.length; i++) {
-                        scope2[mapper.arg[i]] = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[i]);
+                    for (var i = 0; i < mapper.args.length; i++) {
+                        scope2[mapper.args[i]] = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[i]);
                     }
 
                     return mapper.ast.eval(player, reference, environment, scope2, extra, scope2);
@@ -663,12 +753,12 @@ class Expression {
             } else if (typeof(functionScope) == 'object' && functionScope[node] != undefined) {
                 // Return function scope variable (only if exists)
                 return functionScope[node];
-            } else if (environment.vars[node] != undefined) {
+            } else if (environment.variables[node] != undefined) {
                 // Return environment variable
-                if (environment.vars[node].value != undefined) {
-                    return environment.vars[node].value;
-                } else if (environment.vars[node].ast) {
-                    return environment.vars[node].ast.eval(player, reference, environment);
+                if (environment.variables[node].value != undefined) {
+                    return environment.variables[node].value;
+                } else if (environment.variables[node].ast) {
+                    return environment.variables[node].ast.eval(player, reference, environment);
                 } else {
                     return undefined;
                 }
@@ -1673,7 +1763,7 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Achievements.Owned
     },
     'Album': {
-        expr: p => Math.trunc(10000 * p.Book / SCRAPBOOK_COUNT) / 100,
+        expr: p => Math.ceil(10000 * p.Book / SCRAPBOOK_COUNT) / 100,
         format: (p, c, e, x) => x.toFixed(2) + '%',
         width: 130,
         decimal: true
@@ -1947,24 +2037,24 @@ const SP_SPECIAL_CONDITIONS = {
     'Knights': [
         {
             condition: h => h.maximum,
-            content: {
-                format: (p, c, e, x) => p ? `${ p.Fortress.Knights }/${ p.Fortress.Fortress }` : x
+            apply: h => {
+                h.value.format = (p, c, e, x) => p ? `${ p.Fortress.Knights }/${ p.Fortress.Fortress }` : x
             }
         }
     ],
     'Awards': [
         {
             condition: h => h.hydra,
-            content: {
-                extra: p => p && p.Achievements.Dehydration ? CellGenerator.Small(' H') : ''
+            apply: h => {
+                h.value.extra = p => p && p.Achievements.Dehydration ? CellGenerator.Small(' H') : ''
             }
         }
     ],
     'Album': [
         {
             condition: h => h.grail,
-            content: {
-                extra: p => p && p.Achievements.Grail ? CellGenerator.Small(' G') : ''
+            apply: h => {
+                h.value.extra = p => p && p.Achievements.Grail ? CellGenerator.Small(' G') : ''
             }
         }
     ]
