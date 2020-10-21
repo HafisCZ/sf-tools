@@ -1930,7 +1930,7 @@ const SettingsCommands = [
         var ast = new Expression(a, root);
         if (ast.isValid()) {
             root.addColorExpression((player, reference, env, val, extra) => {
-                return getCSSBackground(ast.eval(player, reference, env, val, extra));
+                return ast.eval(player, reference, env, val, extra);
             });
         }
     }, function (root, string) {
@@ -2436,7 +2436,7 @@ class Settings {
                 let blockColor = this.rules.get(value, ignoreBase || (typeof expressionColor !== 'undefined'));
 
                 // Return color or empty string
-                return (typeof blockColor === 'undefined' ? expressionColor : blockColor) || '';
+                return (typeof blockColor === 'undefined' ? getCSSBackground(expressionColor) : blockColor) || '';
             }
         }
     }
