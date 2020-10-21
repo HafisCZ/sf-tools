@@ -1673,7 +1673,7 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Achievements.Owned
     },
     'Album': {
-        expr: p => Math.trunc(10000 * p.Book / SCRAPBOOK_COUNT) / 100,
+        expr: p => Math.ceil(10000 * p.Book / SCRAPBOOK_COUNT) / 100,
         format: (p, c, e, x) => x.toFixed(2) + '%',
         width: 130,
         decimal: true

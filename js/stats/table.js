@@ -3093,46 +3093,50 @@ const SettingsManager = new (class {
 
 // Templates
 const Templates = new (class {
-    constructor () {
-        this.templates = SharedPreferences.get('templates', { });
+    initialize () {
+        if (!this.templates) {
+            // Initialize when needed
+            this.templates = SharedPreferences.get('templates', { });
 
-        this.keys = Object.keys(this.templates);
-        this.keys.sort((a, b) => a.localeCompare(b));
+            this.keys = Object.keys(this.templates);
+            this.keys.sort((a, b) => a.localeCompare(b));
 
-        /*
-            Convert existing templates in old form into new style
-        */
-        let keys = SharedPreferences.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
-        let backup = {};
+            /*
+                Convert existing templates in old form into new style
+            */
+            let keys = SharedPreferences.keys().filter(key => key.includes('templates/')).map(key => key.substring(key.indexOf('/') + 1));
+            let backup = {};
 
-        if (keys.length) {
-            for (let key of keys) {
-                let content = SharedPreferences.get(`templates/${ key }`, '');
-                backup[key] = content;
+            if (keys.length) {
+                for (let key of keys) {
+                    let content = SharedPreferences.get(`templates/${ key }`, '');
+                    backup[key] = content;
 
-                // Convert existing template to text
-                if (typeof(content) == 'string') {
-                    // Do nothing
-                } else if (typeof(content) == 'object') {
-                    content = content.content;
-                } else {
-                    content = '';
+                    // Convert existing template to text
+                    if (typeof(content) == 'string') {
+                        // Do nothing
+                    } else if (typeof(content) == 'object') {
+                        content = content.content;
+                    } else {
+                        content = '';
+                    }
+
+                    // Save if valid
+                    if (content.length) {
+                        this.saveInternal(key, content);
+                    }
+
+                    SharedPreferences.remove(`templates/${ key }`);
                 }
 
-                // Save if valid
-                if (content.length) {
-                    this.saveInternal(key, content);
-                }
-
-                SharedPreferences.remove(`templates/${ key }`);
+                this.commit();
+                SharedPreferences.set('templatesBackup', backup);
             }
-
-            this.commit();
-            SharedPreferences.set('templatesBackup', backup);
         }
     }
 
     commit () {
+        // Save current templates
         SharedPreferences.set('templates', this.templates);
 
         this.keys = Object.keys(this.templates);
@@ -3167,6 +3171,8 @@ const Templates = new (class {
     }
 
     markAsOnline (name, key, secret) {
+        this.initialize();
+
         // Mark template as online if exists
         if (name in this.templates) {
             // Set timestamp & keys
@@ -3181,6 +3187,8 @@ const Templates = new (class {
     }
 
     markAsOffline (name) {
+        this.initialize();
+
         // Mark template as offline if exists
         if (name in this.templates) {
             // Set online to false
@@ -3191,11 +3199,19 @@ const Templates = new (class {
     }
 
     save (name, content, compat) {
+        this.initialize();
+
+        // Save template
         this.saveInternal(name, content, compat);
+
+        // Commit changes
         this.commit();
     }
 
     remove (name) {
+        this.initialize();
+
+        // Remove template
         if (name in this.templates) {
             delete this.templates[name];
             this.commit();
@@ -3203,18 +3219,30 @@ const Templates = new (class {
     }
 
     exists (name) {
+        this.initialize();
+
+        // Return true if template exists
         return name in this.templates;
     }
 
     get () {
+        this.initialize();
+
+        // Return templates
         return this.templates;
     }
 
     getKeys () {
+        this.initialize();
+
+        // Return keys
         return this.keys;
     }
 
     load (name) {
+        this.initialize();
+
+        // Return loaded settings
         return new Settings(name in this.templates ? this.templates[name].content : '');
     }
 })();
