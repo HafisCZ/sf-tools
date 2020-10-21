@@ -1397,7 +1397,7 @@ const SettingsCommands = [
     // set static
     new SettingsCommand(/^(set) (\w+[\w ]*) with all as (.+)$/, function (root, string) {
         var [ , key, name, asts ] = this.match(string);
-        var ast = new Expression(asts);
+        var ast = new Expression(asts, root);
         if (ast.isValid()) {
             root.addVariable(name, ast, true);
         }
@@ -1409,7 +1409,7 @@ const SettingsCommands = [
     // set with - Create a function
     new SettingsCommand(/^(set) (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/, function (root, string) {
         var [ , key, name, args, a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
             root.addFunction(name, ast, args.split(',').map(arg => arg.trim()));
         }
@@ -1421,7 +1421,7 @@ const SettingsCommands = [
     // set - Create a variable
     new SettingsCommand(/^(set) (\w+[\w ]*) as (.+)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
             root.addVariable(name, ast);
         }
@@ -1538,7 +1538,7 @@ const SettingsCommands = [
     // Create new statistics row
     new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(show) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
         var [ , extend, key, name, a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
             root.addRow(name, ast);
             if (extend) {
@@ -1641,7 +1641,7 @@ const SettingsCommands = [
     // Create new statistics row
     new SettingsCommand(/^(statistics) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
         var [ , key, name, a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
             root.addStatistics(name, ast);
         }
@@ -1797,7 +1797,7 @@ const SettingsCommands = [
         } else if (arg == 'off') {
             root.addLocal('format_diff', false);
         } else {
-            var ast = new Expression(arg);
+            var ast = new Expression(arg, root);
             if (ast.isValid()) {
                 root.addLocal('format_diff', (env, val) => {
                     return ast.eval(undefined, undefined, env, val);
@@ -1819,7 +1819,7 @@ const SettingsCommands = [
         } else if (arg == 'off') {
             root.addLocal('format_stat', false);
         } else {
-            var ast = new Expression(arg);
+            var ast = new Expression(arg, root);
             if (ast.isValid()) {
                 root.addLocal('format_stat', (env, val) => {
                     return ast.eval(undefined, undefined, env, val);
@@ -1848,7 +1848,7 @@ const SettingsCommands = [
         if (ARG_FORMATTERS[arg]) {
             root.addFormatExpression(ARG_FORMATTERS[arg]);
         } else {
-            var ast = new Expression(arg);
+            var ast = new Expression(arg, root);
             if (ast.isValid()) {
                 root.addFormatExpression((player, reference, env, val, extra) => {
                     return ast.eval(player, reference, env, val, extra);
@@ -1867,7 +1867,7 @@ const SettingsCommands = [
     // order by
     new SettingsCommand(/^(order by) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
-        var ast = new Expression(arg);
+        var ast = new Expression(arg, root);
         if (ast.isValid()) {
             root.addLocal('order', (player, reference, env, val, extra) => {
                 return ast.eval(player, reference, env, val, extra);
@@ -1901,7 +1901,7 @@ const SettingsCommands = [
     // expr - Set expression to the column
     new SettingsCommand(/^(expr|e) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
             root.addLocal('expr', (player, reference, env, scope, extra) => {
                 return ast.eval(player, reference, env, scope, extra);
@@ -1913,7 +1913,7 @@ const SettingsCommands = [
     }),
     new SettingsCommand(/^discard (.*)$/, function (root, string) {
         let [ , a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
             root.addDiscardRule((player, reference, env, scope, extra) => {
                 return ast.eval(player, reference, env, scope, extra);
@@ -1927,7 +1927,7 @@ const SettingsCommands = [
     // expc - Set color expression to the column
     new SettingsCommand(/^(expc|c) (.+)$/, function (root, string) {
         var [ , key, a ] = this.match(string);
-        var ast = new Expression(a);
+        var ast = new Expression(a, root);
         if (ast.isValid()) {
             root.addColorExpression((player, reference, env, val, extra) => {
                 return getCSSBackground(ast.eval(player, reference, env, val, extra));

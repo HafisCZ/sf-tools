@@ -1,7 +1,7 @@
-const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
+const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\$|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
 class Expression {
-    constructor (string) {
+    constructor (string, settings = null) {
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp).map(token => token.trim()).filter(token => token.length);
         this.root = false;
 
@@ -18,6 +18,8 @@ class Expression {
             }
 
             if (count == 0) {
+                this.evalEmbeddedVariables(settings);
+
                 this.root = this.evalExpression();
                 this.root = this.postProcess(this.root);
             } else {
@@ -75,6 +77,83 @@ class Expression {
         }
 
         return content;
+    }
+
+    // Eval embedded variables
+    evalEmbeddedVariables (settings) {
+        // Get settings variable array
+        let tableVariables = (settings ? settings.variables : undefined) || {};
+
+        // All variables in the token string
+        let variables = [];
+
+        // Current variable
+        let brackets = 0;
+        let index = null;
+        let manualName = null;
+
+        // Iterate over all tokens
+        for (let i = 0; i < this.tokens.length; i++) {
+            // Current token
+            let token = this.tokens[i];
+
+            // Start new variable if current token matches ${
+            if (token == '$') {
+                if (this.tokens[i + 1] == '{') {
+                    // Save current index and skip next bracket
+                    index = i++;
+                    brackets++;
+                } else if (this.tokens[i + 2] == '{') {
+                    // Save current index and skip next bracket
+                    index = i++;
+                    brackets++;
+                    manualName = this.tokens[i++];
+                }
+            } else if (index != null) {
+                // If there is a variable
+                if (token == '{') {
+                    // Increment bracket counter
+                    brackets++;
+                } else if (token == '}') {
+                    // Decrement bracket counter
+                    brackets--;
+                    if (brackets == 0) {
+                        // Push new variable if brackets are 0
+                        variables.push({
+                            start: index,
+                            length: i - index + 1,
+                            name: manualName
+                        });
+
+                        // Reset temporary vars
+                        index = null;
+                        manualName = null;
+                        brackets = 0;
+                    }
+                }
+            }
+        }
+
+        // Replace variables with placeholders and save expression
+        for (let i = variables.length - 1; i >= 0; i--) {
+            let variable = variables[i];
+
+            // Get tokens and strip first 2 and last 1 token (constrol characters)
+            let tokens = this.tokens.splice(variable.start, variable.length);
+            tokens = tokens.slice(2 + (variable.name ? 1 : 0), tokens.length - 1);
+
+            // Get placeholder name
+            let name = variable.name ? variable.name : `::${ Date.now() }`;
+
+            // Add placeholder to tokens
+            this.tokens.splice(variable.start, 0, name);
+
+            // Add variable to settings
+            tableVariables[name] = {
+                ast: new Expression(tokens.join('')),
+                tableVariable: true
+            };
+        }
     }
 
     // Peek at next token
