@@ -32,6 +32,7 @@ class Expression {
     static format (string, root) {
         var content = '';
         var tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp);
+        let nextName = false;
 
         // Go through all tokens
         for (var i = 0, token, value; i < tokens.length; i++) {
@@ -66,6 +67,16 @@ class Expression {
                     value = SFormat.Constant(token);
                 } else if (SP_ENUMS.hasOwnProperty(token)) {
                     value = SFormat.Enum(token);
+                } else if (token == '$') {
+                    value = SFormat.Keyword(token);
+                    nextName = true;
+                } else if (nextName) {
+                    nextName = false;
+                    if (/[a-zA-Z0-9\-\_]+/.test(token)) {
+                        value = SFormat.Constant(token);
+                    } else {
+                        value = SFormat.Normal(token);
+                    }
                 } else {
                     value = SFormat.Normal(token);
                 }
