@@ -47,7 +47,7 @@ class Expression {
                     continue;
                 } else if (token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
                     value = token[0] + SFormat.Comment(token.slice(1, token.length - 1)) + token[token.length - 1];
-                } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort', 'distinct' ].includes(token) || root.functions.hasOwnProperty(token)) {
+                } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort', 'distinct', 'indexof' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
                 } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index' ].includes(token) || root.variables.hasOwnProperty(token)) {
                     value = SFormat.Constant(token);
@@ -554,6 +554,17 @@ class Expression {
                     var arg = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[1]);
 
                     return array.join(arg);
+                } else if (node.op == 'indexof' && node.args.length == 2) {
+                    let array = this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
+                    let item = this.evalInternal(player, reference, environment, scope, extra, functionScope, node.args[1]);
+
+                    for (let i = 0; i < array.length; i++) {
+                        if (array[i] == item) {
+                            return i;
+                        }
+                    }
+
+                    return -1;
                 } else if (node.op == 'distinct' && node.args.length == 1) {
                     let array = this.evalToArray(player, reference, environment, scope, extra, functionScope, node.args[0]);
                     let values = Array.from(new Set(array));
