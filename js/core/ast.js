@@ -154,7 +154,15 @@ class Expression {
             tokens = tokens.slice(2 + (variable.name ? 1 : 0), tokens.length - 1);
 
             // Get placeholder name
-            let name = variable.name ? variable.name : `::${ Date.now() }`;
+            let name = variable.name;
+            while (!name) {
+                let randomName = `__${ Math.trunc(10000 * Math.random()) }`;
+                if (randomName in tableVariables) {
+                    // Ignore name if exists
+                } else {
+                    name = randomName;
+                }
+            }
 
             // Add placeholder to tokens
             this.tokens.splice(variable.start, 0, name);
@@ -478,10 +486,12 @@ class Expression {
         return node;
     }
 
+    // Check if the expression is valid (no tokens left)
     isValid () {
         return this.tokens.length == 0 && !this.empty;
     }
 
+    // Stringify the expression
     toString (node = this.root) {
         if (typeof(node) == 'object') {
             return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.args.map(arg => this.toString(arg)).join(', ') })`;
@@ -490,6 +500,7 @@ class Expression {
         }
     }
 
+    // Evaluate all simple nodes (simple string joining / math calculation with compile time results)
     postProcess (node) {
         if (typeof(node) == 'object' && !node.raw) {
             if (node.args) {
@@ -506,6 +517,7 @@ class Expression {
         return node;
     }
 
+    // Outside eval function (always call this from outside of the Expression class)
     eval (player, reference = undefined, environment = { functions: { }, variables: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined, functionScope = undefined) {
         return this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
     }
