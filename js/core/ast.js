@@ -2121,6 +2121,10 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Toilet.Aura,
         statistics: false
     },
+    'Toilet Fill': {
+        expr: p => p.Toilet.Fill,
+        statistics: false
+    },
     'Twister': {
         expr: p => p.Dungeons.Twister ? Math.max(0, p.Dungeons.Twister - 2) : undefined,
         statistics: false
