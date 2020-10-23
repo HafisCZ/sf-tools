@@ -1,3 +1,8 @@
+// Version stuff
+const MODULE_VERSION = 'v3.943';
+const TABLE_VERSION = 'v6';
+const CURRENT_VERSION = 'v974';
+
 // Preferences
 const Preferences = new (class {
 
@@ -780,8 +785,11 @@ const Logger = new (class {
             'STORAGE': 'fcba03',
             'WARNING': 'fc6203',
             'R_FLAGS': '42adf5',
-            'TAB_GEN': '3bc922'
+            'TAB_GEN': '3bc922',
+            'VERSION': '90f5da'
         };
+
+        this.log('VERSION', `Module: ${ MODULE_VERSION }, Tool: ${ CURRENT_VERSION }, Table: ${ TABLE_VERSION }`);
     }
 
     log (type, text) {
