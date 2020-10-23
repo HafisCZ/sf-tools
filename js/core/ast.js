@@ -767,13 +767,13 @@ class Expression {
                 return SP_KEYWORDS[node].expr(player, reference, environment);
             } else if (player && SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
                 return SP_KEYWORDS_INDIRECT[node].expr(player, reference, environment, extra);
-            } else if (typeof(extra) == 'object' && extra[node] != undefined) {
+            } else if (extra && typeof(extra) == 'object' && extra[node] != undefined) {
                 // Return extra variable (only if it exists)
                 return extra[node];
-            } else if (typeof(scope) == 'object' && scope[node] != undefined) {
+            } else if (scope && typeof(scope) == 'object' && scope[node] != undefined) {
                 // Return scope variable (only if it exists)
                 return scope[node];
-            } else if (typeof(functionScope) == 'object' && functionScope[node] != undefined) {
+            } else if (functionScope && typeof(functionScope) == 'object' && functionScope[node] != undefined) {
                 // Return function scope variable (only if exists)
                 return functionScope[node];
             } else if (environment.variables[node] != undefined) {

@@ -2776,6 +2776,7 @@ class Settings {
 
         // Variables
         let compareEnvironment = this.getCompareEnvironment();
+        let sameTimestamp = array.timestamp == array.reference;
 
         // Run simulator if needed
         this.evalSimulator(array, simulatorLimit, entryLimit);
@@ -2812,7 +2813,7 @@ class Settings {
             if (variable.tableVariable) {
                 // Calculate values of table variable
                 let currentValue = variable.ast.eval(undefined, undefined, this, arrayCurrent);
-                let compareValue = variable.ast.eval(undefined, undefined, this, arrayCompare);
+                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(undefined, undefined, this, arrayCompare);
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -2827,10 +2828,12 @@ class Settings {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            // Set values
+            let currentValue = row.ast.eval(undefined, undefined, this, arrayCurrent);
+            let compareValue = sameTimestamp ? currentValue : row.ast.eval(undefined, undefined, compareEnvironment, arrayCompare);
+
             row.eval = {
-                value: row.ast.eval(undefined, undefined, this, arrayCurrent),
-                compare: row.ast.eval(undefined, undefined, compareEnvironment, arrayCompare)
+                value: currentValue,
+                compare: compareValue
             }
         }
 
@@ -2846,6 +2849,7 @@ class Settings {
         let simulatorLimit = this.getSimulatorLimit();
         let entryLimit = array.length;
         let compareEnvironment = this.getCompareEnvironment();
+        let sameTimestamp = array.timestamp == array.reference;
 
         // Set lists
         this.lists = {
@@ -2891,7 +2895,7 @@ class Settings {
             if (variable.tableVariable) {
                 // Calculate values of table variable
                 let currentValue = variable.ast.eval(ownPlayer.player, ownPlayer.compare, this, arrayCurrent);
-                let compareValue = variable.ast.eval(ownPlayer.compare, ownPlayer.compare, this, arrayCompare);
+                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(ownPlayer.compare, ownPlayer.compare, this, arrayCompare);
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -2906,14 +2910,15 @@ class Settings {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            // Set values
+            let currentValue = row.ast.eval(ownPlayer.player, ownPlayer.compare, this, arrayCurrent);
+            let compareValue = sameTimestamp ? currentValue : row.ast.eval(ownPlayer.compare, ownPlayer.compare, compareEnvironment, arrayCompare);
+
             row.eval = {
-                value: row.ast.eval(ownPlayer.player, ownPlayer.compare, this, arrayCurrent),
-                compare: row.ast.eval(ownPlayer.compare, ownPlayer.compare, compareEnvironment, arrayCompare)
-            };
+                value: currentValue,
+                compare: compareValue
+            }
         }
 
-        // Evaluate array constants
         this.evalRules();
     }
 
