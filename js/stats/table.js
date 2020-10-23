@@ -261,11 +261,11 @@ class TableInstance {
 
                         var color = undefined;
                         if (header.statistics_color) {
-                            color = header.color.get(null, null, this.settings, value, undefined, true);
+                            color = header.color.get(undefined, undefined, this.settings, value, undefined, true);
                         }
 
                         if (header.format_stat === undefined || header.format_stat === true) {
-                            value = header.value.get(null, null, this.settings, value);
+                            value = header.value.get(undefined, undefined, this.settings, value);
                         } else if (header.format_stat !== false) {
                             value = header.format_stat(this.settings, value);
                         }
@@ -726,13 +726,13 @@ class TableInstance {
 
                 if (reference && !isNaN(reference)) {
                     reference = extra.flip ? (reference - value) : (value - reference);
-                    reference = CellGenerator.Difference(reference, extra.brackets, extra.format_diff ? extra.format(null, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
+                    reference = CellGenerator.Difference(reference, extra.brackets, extra.format_diff ? extra.format(undefined, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
                 } else {
                     reference = '';
                 }
 
-                var color = extra.color.get(null, null, this.settings, value);
-                let shown = extra.value.get(null, null, this.settings, value);
+                var color = extra.color.get(undefined, undefined, this.settings, value);
+                let shown = extra.value.get(undefined, undefined, this.settings, value);
 
                 var cell = CellGenerator.WideCell(shown + reference, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
                 details += `
@@ -829,7 +829,7 @@ class TableInstance {
                     statistics += `
                         <tr>
                             <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ stat.name }</td>
-                            ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => stat.ast.eval(null, null, this.settings, ar)) : `<td colspan=${ h.span }></td>`) }
+                            ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => stat.ast.eval(undefined, undefined, this.settings, ar)) : `<td colspan=${ h.span }></td>`) }
                         </tr>
                     `;
                 }
@@ -911,13 +911,13 @@ class TableInstance {
 
                 if (reference && !isNaN(reference)) {
                     reference = extra.flip ? (reference - value) : (value - reference);
-                    reference = CellGenerator.Difference(reference, extra.brackets, extra.format_diff ? extra.format(null, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
+                    reference = CellGenerator.Difference(reference, extra.brackets, extra.format_diff ? extra.format(undefined, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
                 } else {
                     reference = '';
                 }
 
-                var color = extra.color.get(null, null, this.settings, value);
-                let shown = extra.value.get(null, null, this.settings, value);
+                var color = extra.color.get(undefined, undefined, this.settings, value);
+                let shown = extra.value.get(undefined, undefined, this.settings, value);
 
                 var cell = CellGenerator.WideCell(shown + reference, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
                 details += `
@@ -2405,7 +2405,7 @@ class Settings {
     // Create color block
     getColorBlock () {
         return {
-            expression: null,
+            expression: undefined,
             rules: new RuleEvaluator(),
             get: function (player, compare, settings, value, extra = undefined, ignoreBase = false) {
                 // Get color from expression
@@ -2423,8 +2423,8 @@ class Settings {
     // Create value block
     getValueBlock () {
         return {
-            extra: null,
-            format: null,
+            extra: undefined,
+            format: undefined,
             rules: new RuleEvaluator(),
             get: function (player, compare, settings, value, extra = undefined) {
                 // Get value from value block
@@ -2754,7 +2754,7 @@ class Settings {
             // Run only if it is a table variable
             if (variable.tableVariable) {
                 // Get value
-                let value = variable.ast.eval(null, null, this, scope);
+                let value = variable.ast.eval(undefined, undefined, this, scope);
 
                 // Set value if valid
                 if (!isNaN(value) || typeof(value) == 'object' || typeof('value') == 'string') {
@@ -2808,8 +2808,8 @@ class Settings {
 
             if (variable.tableVariable) {
                 // Calculate values of table variable
-                let currentValue = variable.ast.eval(null, null, this, arrayCurrent);
-                let compareValue = variable.ast.eval(null, null, this, arrayCompare);
+                let currentValue = variable.ast.eval(undefined, undefined, this, arrayCurrent);
+                let compareValue = variable.ast.eval(undefined, undefined, this, arrayCompare);
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -2826,8 +2826,8 @@ class Settings {
         for (let row of this.customRows) {
             // Set values
             row.eval = {
-                value: row.ast.eval(null, null, this, arrayCurrent),
-                compare: row.ast.eval(null, null, compareEnvironment, arrayCompare)
+                value: row.ast.eval(undefined, undefined, this, arrayCurrent),
+                compare: row.ast.eval(undefined, undefined, compareEnvironment, arrayCompare)
             }
         }
 
