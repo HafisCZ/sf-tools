@@ -2461,8 +2461,8 @@ const SP_KEYWORD_MAPPING_2 = {
 const SP_KEYWORD_MAPPING_3 = {
     'Simulator Avg': {
         expr: (p, c, e) => {
-            if (e.vars.Simulator && e.vars.Simulator.value[p.Identifier]) {
-                return e.vars.Simulator.value[p.Identifier].avg;
+            if (e.variables.Simulator && e.variables.Simulator.value[p.Identifier]) {
+                return e.variables.Simulator.value[p.Identifier].avg;
             } else {
                 return undefined;
             }
@@ -2473,8 +2473,8 @@ const SP_KEYWORD_MAPPING_3 = {
     },
     'Simulator Min': {
         expr: (p, c, e) => {
-            if (e.vars.Simulator && e.vars.Simulator.value[p.Identifier]) {
-                return e.vars.Simulator.value[p.Identifier].min;
+            if (e.variables.Simulator && e.variables.Simulator.value[p.Identifier]) {
+                return e.variables.Simulator.value[p.Identifier].min;
             } else {
                 return undefined;
             }
@@ -2485,8 +2485,8 @@ const SP_KEYWORD_MAPPING_3 = {
     },
     'Simulator Max': {
         expr: (p, c, e) => {
-            if (e.vars.Simulator && e.vars.Simulator.value[p.Identifier]) {
-                return e.vars.Simulator.value[p.Identifier].max;
+            if (e.variables.Simulator && e.variables.Simulator.value[p.Identifier]) {
+                return e.variables.Simulator.value[p.Identifier].max;
             } else {
                 return undefined;
             }
