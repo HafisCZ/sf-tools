@@ -2733,6 +2733,9 @@ class Settings {
         // Evaluate row indexes
         this.evalRowIndexes(array);
 
+        // Purify array
+        array = [ ... array ];
+
         // Get shared scope
         let scope = array.map((player, index) => {
             // Create segmented entry
@@ -2773,6 +2776,9 @@ class Settings {
 
         // Run simulator if needed
         this.evalSimulator(array, simulatorLimit, entryLimit);
+
+        // Purify array
+        array = [ ... array ];
 
         // Get segmented lists
         let arrayCurrent = array.map(entry => {
@@ -2847,6 +2853,9 @@ class Settings {
         // Run simulator if needed
         this.evalSimulator(array, simulatorLimit, entryLimit);
 
+        // Purify array
+        array = [ ... array ];
+
         // Get segmented lists
         let arrayCurrent = array.map(entry => {
             let obj = [ entry.player, entry.compare ];
@@ -2898,7 +2907,7 @@ class Settings {
             row.eval = {
                 value: row.ast.eval(ownPlayer.player, ownPlayer.compare, this, arrayCurrent),
                 compare: row.ast.eval(ownPlayer.compare, ownPlayer.compare, compareEnvironment, arrayCompare)
-            }
+            };
         }
 
         // Evaluate array constants
