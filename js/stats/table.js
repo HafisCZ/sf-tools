@@ -100,6 +100,14 @@ class TableInstance {
         this.settings = new Settings(settings, type);
         this.type = type;
 
+        // Table generator
+        this.createTable = [
+            () => this.createHistoryTable(),
+            () => this.createPlayersTable(),
+            () => this.createGroupTable()
+        ][ this.type ];
+
+        // Sorting keys
         this.sorting = [];
 
         // Column configuration
@@ -295,26 +303,6 @@ class TableInstance {
             array.push(... group.headers);
             return array;
         }, []);
-    }
-
-    // Get current table content
-    getTableContent () {
-        var content, size;
-
-        if (this.type == TableType.History) {
-            [content, size] = this.createHistoryTable();
-        } else if (this.type == TableType.Players) {
-            [content, size] =  this.createPlayersTable();
-        } else if (this.type == TableType.Group) {
-            [content, size] =  this.createGroupTable();
-        }
-
-        var node = $(content);
-        if (!SiteOptions.insecure && node.find('script, iframe, img[onerror]').toArray().length) {
-            return [ $('<div><b style="font-weight: 1000;">Error in the system:</b><br/><br/>This table was not displayed because it contains HTML tags that are prohibited.<br/>Please remove them from your settings and try again.</div>'), size];
-        }
-
-        return [node, size];
     }
 
     // Set players
@@ -1140,12 +1128,25 @@ class TableController {
         this.echanged = this.schanged = false;
 
         // Get table content
-        let [ content, width ] = this.table.getTableContent();
+        let [ content, width ] = this.table.createTable();
+        let $tableContent = $(content);
 
-        // Setup table element
-        this.$table.empty();
-        this.$table.append(content);
-        this.$table.css('position', 'absolute').css('width', `${ width }px`).css('left', `max(0px, calc(50vw - 9px - ${ width / 2 }px))`);
+        // Check table content for unwanted tags
+        if (!SiteOptions.insecure && $tableContent.find('script, iframe, img[onerror]').toArray().length) {
+            // Show error
+            this.$table.html(`
+                <div>
+                    <b style="font-weight: 1000;">Error in the system:</b>
+                    <br/>
+                    <br/>
+                    This table was not displayed because it contains HTML tags that are prohibited.<br/>
+                    Please remove them from your settings and try again.
+                </div>
+            `).css('width', `50vw`).css('left', `25vw`);
+        } else {
+            // Setup table element if table is valid
+            this.$table.empty().append($tableContent).css('width', `${ width }px`).css('left', `max(0px, calc(50vw - 9px - ${ width / 2 }px))`);
+        }
 
         // Bind sorting
         this.$table.find('[data-sortable]').click(event => {
