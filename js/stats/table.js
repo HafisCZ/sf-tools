@@ -2932,7 +2932,7 @@ class Settings {
                 });
 
                 // Set target
-                let targetCurrent = this.globals.simulator_target ? arrayCurrent.find(player => player.Identifier == this.globals.simulator_target) : null;
+                let targetCurrent = this.globals.simulator_target ? arrayCurrent.find(({ player }) => player.Identifier == this.globals.simulator_target) : null;
 
                 // Null the targets if any is not found
                 if (targetCurrent == null) {
@@ -2958,8 +2958,8 @@ class Settings {
                 });
 
                 // Set targets
-                let targetCurrent = this.globals.simulator_target ? arrayCurrent.find(player => player.Identifier == this.globals.simulator_target) : null;
-                let targetCompare = this.globals.simulator_target ? arrayCurrent.find(player => player.Identifier == this.globals.simulator_target) : null;
+                let targetCurrent = this.globals.simulator_target ? arrayCurrent.find(({ player }) => player.Identifier == this.globals.simulator_target) : null;
+                let targetCompare = this.globals.simulator_target ? arrayCurrent.find(({ player }) => player.Identifier == this.globals.simulator_target) : null;
 
                 // Null the targets if any is not found
                 if (targetCurrent == null || targetCompare == null) {
