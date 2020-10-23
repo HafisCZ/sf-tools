@@ -306,52 +306,48 @@ class TableInstance {
     }
 
     // Set players
-    setEntries (array, skipeval, sim, sort = undefined) {
+    setEntries (array, skipEvaluation = false, simulatorLimit = 0, manualSort = null) {
+        let shouldUpdate = false;
+
+        // Filter incoming array if needed
+        this.array = this.type != TableType.History ? array : array.map(([ timestamp, e ]) => {
+            // Preload character
+            shouldUpdate |= Database.preload(e.Identifier, timestamp);
+            let obj = Database.Players[e.Identifier][timestamp];
+
+            // Find if falls under discard rule
+            let disc = this.settings.discardRules.some(rule => rule(obj, obj, this.settings));
+
+            // Return stuff
+            return disc ? null : [ timestamp, obj ];
+        }).filter(e => e);
+
+        // Force db update if necessary
+        if (shouldUpdate) {
+            Database.update();
+        }
+
+        // Evaluate variables
         if (this.type == TableType.History) {
-            array = array.map(([ timestamp, e ]) => {
-                // Preload character
-                Database.preload(e.Identifier, timestamp);
-                let obj = Database.Players[e.Identifier][timestamp];
-
-                // Find if falls under discard rule
-                let disc = this.settings.discardRules.some(rule => rule(obj, obj, this.settings));
-
-                // Return stuff
-                return disc ? null : [ timestamp, obj ];
-            }).filter(e => e);
-        }
-
-        // Entry array
-        this.array = array;
-
-        // Calculate constants
-        if (this.type != TableType.History && !skipeval) {
-            var players = [ ... array ];
-            players.timestamp = array.timestamp;
-            players.reference = array.reference;
-            players.map_player = players.map(p => p.player);
-            players.map_compare = players.map(p => p.compare);
-
+            // Evaluate history data
+            this.settings.evalHistory(this.array.map(p => p[1]));
+        } else if (!skipEvaluation) {
             if (this.type == TableType.Players) {
-                this.settings.evaluateConstants(players, sim, array.perf || this.settings.globals.performance, this.type);
+                // Evaluate players data
+                this.settings.evalPlayers(array, simulatorLimit, array.perf);
             } else {
-                players.joined = array.joined;
-                players.kicked = array.kicked;
-                this.settings.evaluateConstants(players, this.settings.globals.simulator, array.length, this.type);
-            }
-        } else if (this.type == TableType.History) {
-            this.settings.evaluateConstantsHistory(array.map(p => p[1]));
-        }
-
-        // Calculate player indexes
-        if (sort && (this.type == TableType.Players || this.type == TableType.Group)) {
-            this.array.sort((a, b) => sort(b.player, b.compare) - sort(a.player, a.compare));
-            for (var i = 0; i < this.array.length; i++) {
-                this.array[i].index = i;
+                // Evaluate guilds data
+                this.settings.evalGuilds(array);
             }
         }
 
-        // Generate table entries
+        // Sort table if set
+        if (manualSort && this.type != TableType.History) {
+            // Sort array
+            this.array.sort((a, b) => manualSort(b.player, b.compare) - manualSort(a.player, a.compare)).forEach((entry, i) => entry.index = i);
+        }
+
+        // Generate entries
         this.generateEntries();
     }
 
@@ -1288,11 +1284,11 @@ class RuleEvaluator {
     }
 
     addRule (condition, referenceValue, value) {
-        this.rules.push([ condition, referenceValue, value ]);
+        this.rules.push([ condition, referenceValue, value, isNaN(referenceValue) ? referenceValue : null ]);
     }
 
     get (value, ignoreBase = false) {
-        for (let [ condition, referenceValue, output] of this.rules) {
+        for (let [ condition, referenceValue, output ] of this.rules) {
             if (condition == 'db') {
                 if (ignoreBase) {
                     continue;
@@ -2691,6 +2687,326 @@ class Settings {
         return this.globals.performance;
     }
 
+    getSimulatorLimit () {
+        return this.globals.simulator;
+    }
+
+    evalRowIndexes (array, embedded = false) {
+        // For every entry
+        array.forEach((entry, index) => {
+            // Get player from object if embedded
+            let player = embedded ? entry.player : entry;
+
+            // Save player index
+            this.row_indexes[`${ player.Identifier }_${ player.Timestamp }`] = index;
+        });
+    }
+
+    evalRules () {
+        // For each category
+        for (let category of this.categories) {
+            // For each header
+            for (let header of category.headers) {
+                // For each rule block
+                for (let rules of [ header.color.rules.rules, header.value.rules.rules ]) {
+                    // For each entry
+                    for (let i = 0, rule; rule = rules[i]; i++) {
+                        let key = rule[3];
+                        // Check if key exists
+                        if (key) {
+                            // If variable with that name exists then set it
+                            if (key in this.variables && typeof this.variables[key].value != 'undefined') {
+                                // Set value
+                                rule[1] = Number(this.variables[key].value);
+                            } else {
+                                // Remove the rule
+                                rules.splice(i--, 1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    evalHistory (array) {
+        // Evaluate row indexes
+        this.evalRowIndexes(array);
+
+        // Get shared scope
+        let scope = array.map((player, index) => {
+            // Create segmented entry
+            let entry = [ player, array[index + 1] || player ];
+            entry.segmented = true;
+
+            // Return entry
+            return entry;
+        });
+
+        // Mark scope as segmented as well
+        scope.segmented = true;
+
+        // Iterate over all variables
+        for (let [ name, variable ] of Object.entries(this.variables)) {
+            // Run only if it is a table variable
+            if (variable.tableVariable) {
+                // Get value
+                let value = variable.ast.eval(null, null, this, scope);
+
+                // Set value if valid
+                if (!isNaN(value) || typeof(value) == 'object' || typeof('value') == 'string') {
+                    variable.value = value;
+                }
+            }
+        }
+
+        // Evaluate array constants
+        this.evalRules();
+    }
+
+    evalPlayers (array, simulatorLimit, entryLimit) {
+        // Evaluate row indexes
+        this.evalRowIndexes(array, true);
+
+        // Variables
+        let compareEnvironment = this.getCompareEnvironment();
+
+        // Run simulator if needed
+        this.evalSimulator(array, simulatorLimit, entryLimit);
+
+        // Get segmented lists
+        let arrayCurrent = array.map(entry => {
+            let obj = [ entry.player, entry.compare ];
+            obj.segmented = true;
+
+            return obj;
+        });
+
+        let arrayCompare = array.map(entry => {
+            let obj = [ entry.compare, entry.compare ];
+            obj.segmented = true;
+
+            return obj;
+        });
+
+        arrayCurrent.segmented = true;
+        arrayCompare.segmented = true;
+
+        // Evaluate variables
+        for (let [ name, variable ] of Object.entries(this.variables)) {
+            // Copy over to reference variables
+            this.variablesReference[name] = {
+                ast: variable.ast,
+                tableVariable: variable.tableVariable
+            }
+
+            if (variable.tableVariable) {
+                // Calculate values of table variable
+                let currentValue = variable.ast.eval(null, null, this, arrayCurrent);
+                let compareValue = variable.ast.eval(null, null, this, arrayCompare);
+
+                // Set values if valid
+                if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
+                    variable.value = currentValue;
+                }
+
+                if (!isNaN(compareValue) || typeof compareValue == 'object' || typeof compareValue == 'string') {
+                    this.variablesReference[name].value = compareValue;
+                }
+            }
+        }
+
+        // Evaluate custom rows
+        for (let row of this.customRows) {
+            // Set values
+            row.eval = {
+                value: row.ast.eval(null, null, this, arrayCurrent),
+                compare: row.ast.eval(null, null, compareEnvironment, arrayCompare)
+            }
+        }
+
+        // Evaluate array constants
+        this.evalRules();
+    }
+
+    evalGuilds (array) {
+        // Evaluate row indexes
+        this.evalRowIndexes(array, true);
+
+        // Variables
+        let simulatorLimit = this.getSimulatorLimit();
+        let entryLimit = array.length;
+        let compareEnvironment = this.getCompareEnvironment();
+
+        // Set lists
+        this.lists = {
+            joined: SiteOptions.obfuscated ? array.joined.map((p, i) => `joined_${ i + 1 }`) : array.joined,
+            kicked: SiteOptions.obfuscated ? array.kicked.map((p, i) => `kicked_${ i + 1 }`) : array.kicked
+        }
+
+        // Run simulator if needed
+        this.evalSimulator(array, simulatorLimit, entryLimit);
+
+        // Get segmented lists
+        let arrayCurrent = array.map(entry => {
+            let obj = [ entry.player, entry.compare ];
+            obj.segmented = true;
+
+            return obj;
+        });
+
+        let arrayCompare = array.map(entry => {
+            let obj = [ entry.compare, entry.compare ];
+            obj.segmented = true;
+
+            return obj;
+        });
+
+        arrayCurrent.segmented = true;
+        arrayCompare.segmented = true;
+
+        // Get own player
+        let ownPlayer = array.find(entry => entry.player.Own) || array[0];
+
+        // Evaluate variables
+        for (let [ name, variable ] of Object.entries(this.variables)) {
+            // Copy over to reference variables
+            this.variablesReference[name] = {
+                ast: variable.ast,
+                tableVariable: variable.tableVariable
+            }
+
+            if (variable.tableVariable) {
+                // Calculate values of table variable
+                let currentValue = variable.ast.eval(ownPlayer.player, ownPlayer.compare, this, arrayCurrent);
+                let compareValue = variable.ast.eval(ownPlayer.compare, ownPlayer.compare, this, arrayCompare);
+
+                // Set values if valid
+                if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
+                    variable.value = currentValue;
+                }
+
+                if (!isNaN(compareValue) || typeof compareValue == 'object' || typeof compareValue == 'string') {
+                    this.variablesReference[name].value = compareValue;
+                }
+            }
+        }
+
+        // Evaluate custom rows
+        for (let row of this.customRows) {
+            // Set values
+            row.eval = {
+                value: row.ast.eval(ownPlayer.player, ownPlayer.compare, this, arrayCurrent),
+                compare: row.ast.eval(ownPlayer.compare, ownPlayer.compare, compareEnvironment, arrayCompare)
+            }
+        }
+
+        // Evaluate array constants
+        this.evalRules();
+    }
+
+    evalSimulator (array, cycles = 0, limit = array.length) {
+        if (cycles) {
+            // Check whether timestamps match
+            let sameTimestamp = array.reference == array.timestamp;
+
+            // Slice the array depending on the entry limit
+            array = array.slice(0, limit);
+
+            // Preload all players if needed
+            if (array.reduce((collector, { player, compare }) => collector || Database.preload(player.Identifier, player.Timestamp) || Database.preload(compare.Identifier, compare.Timestamp), false)) {
+                Database.update();
+            }
+
+            // Arrays
+            let arrayCurrent = null;
+            let arrayCompare = null;
+
+            // Simulate
+            if (sameTimestamp) {
+                // Create arrays
+                arrayCurrent = array.map(({ player: { Identifier, Timestamp } }) => {
+                    return {
+                        player: Database.Players[Identifier][Timestamp].toSimulatorModel()
+                    };
+                });
+
+                // Set target
+                let targetCurrent = this.globals.simulator_target ? arrayCurrent.find(player => player.Identifier == this.globals.simulator_target) : null;
+
+                // Null the targets if any is not found
+                if (targetCurrent == null) {
+                    targetCurrent = null;
+                } else {
+                    targetCurrent = targetCurrent.player;
+                }
+
+                // Run fight simulator
+                new FightSimulator().simulate(arrayCurrent, cycles, targetCurrent, this.globals.simulator_target_source);
+            } else {
+                // Create arrays
+                arrayCurrent = array.map(({ player: { Identifier, Timestamp } }) => {
+                    return {
+                        player: Database.Players[Identifier][Timestamp].toSimulatorModel()
+                    };
+                });
+
+                arrayCompare = array.map(({ compare: { Identifier, Timestamp } }) => {
+                    return {
+                        player: Database.Players[Identifier][Timestamp].toSimulatorModel()
+                    };
+                });
+
+                // Set targets
+                let targetCurrent = this.globals.simulator_target ? arrayCurrent.find(player => player.Identifier == this.globals.simulator_target) : null;
+                let targetCompare = this.globals.simulator_target ? arrayCurrent.find(player => player.Identifier == this.globals.simulator_target) : null;
+
+                // Null the targets if any is not found
+                if (targetCurrent == null || targetCompare == null) {
+                    targetCompare = targetCompare = null;
+                } else {
+                    targetCurrent = targetCurrent.player;
+                    targetCompare = targetCompare.player;
+                }
+
+                // Run fight simulator
+                new FightSimulator().simulate(arrayCurrent, cycles, targetCurrent, this.globals.simulator_target_source);
+                new FightSimulator().simulate(arrayCompare, cycles, targetCompare, this.globals.simulator_target_source);
+            }
+
+            // Set second array to first if missing
+            if (sameTimestamp) {
+                arrayCompare = arrayCurrent;
+            }
+
+            // Process results
+            let resultsCurrent = {};
+            let resultsCompare = {};
+
+            for (let { player, score } of arrayCurrent) {
+                resultsCurrent[player.Identifier] = score;
+            }
+
+            for (let { player, score } of arrayCompare) {
+                resultsCompare[player.Identifier] = score;
+            }
+
+            // Save variables
+            this.variables['Simulator'] = {
+                value: resultsCurrent
+            };
+
+            this.variablesReference['Simulator'] = {
+                value: resultsCompare
+            }
+        } else {
+            // Delete variables
+            delete this.variables['Simulator'];
+            delete this.variablesReference['Simulator'];
+        }
+    }
+
+
     /*
         Old shit
     */
@@ -2783,257 +3099,6 @@ class Settings {
         }
 
         return processedLines;
-    }
-
-    // Evaluate constants
-    evaluateConstants (players, sim, perf, tabletype) {
-        this.evalRowIndexes(players, true);
-
-        if (tabletype == TableType.Group) {
-            if (SiteOptions.obfuscated) {
-                this.lists.joined = players.joined.map((player, i) => `joined_${ i + 1 }`);
-                this.lists.kicked = players.kicked.map((player, i) => `kicked_${ i + 1 }`);
-            } else {
-                this.lists.joined = players.joined;
-                this.lists.kicked = players.kicked;
-            }
-        }
-
-        // Add simulator output
-        if (sim) {
-            var array = players.slice(0, perf);
-            var array1 = [];
-            var array2 = [];
-
-            var updated = false;
-            for (var entry of array) {
-                updated |= Database.preload(entry.player.Identifier, entry.player.Timestamp);
-                updated |= Database.preload(entry.compare.Identifier, entry.compare.Timestamp);
-            }
-
-            if (updated) {
-                Database.update();
-            }
-
-            if (players.reference != players.timestamp) {
-                for (var player of array) {
-                    array1.push({
-                        player: Database.Players[player.player.Identifier][player.player.Timestamp].toSimulatorModel()
-                    });
-
-                    array2.push({
-                        player: Database.Players[player.compare.Identifier][player.compare.Timestamp].toSimulatorModel()
-                    });
-                }
-
-                var target1 = this.globals.simulator_target ? array1.find(p => p.player.Identifier == this.globals.simulator_target) : null;
-                var target2 = this.globals.simulator_target ? array2.find(p => p.player.Identifier == this.globals.simulator_target) : null;
-                if (target1 == null || target2 == null) {
-                    target1 = target2 = null;
-                } else {
-                    target1 = target1.player;
-                    target2 = target2.player;
-                }
-
-                new FightSimulator().simulate(array1, sim, target1, this.globals.simulator_target_source);
-                new FightSimulator().simulate(array2, sim, target2, this.globals.simulator_target_source);
-            } else {
-                for (var player of array) {
-                    array1.push({
-                        player: Database.Players[player.player.Identifier][player.player.Timestamp].toSimulatorModel()
-                    });
-                }
-
-                var target1 = this.globals.simulator_target ? array1.find(p => p.player.Identifier == this.globals.simulator_target) : null;
-                if (target1) {
-                    target1 = target1.player;
-                } else {
-                    target1 = null;
-                }
-
-                new FightSimulator().simulate(array1, sim, target1, this.globals.simulator_target_source);
-            }
-
-            var results = {};
-            for (var result of array1) {
-                results[result.player.Identifier] = result.score;
-            }
-
-            this.variables['Simulator'] = {
-                value: results
-            }
-
-            if (players.reference != players.timestamp) {
-                var cresults = { };
-
-                for (var result of array2) {
-                    cresults[result.player.Identifier] = result.score;
-                }
-
-                this.variablesReference['Simulator'] = {
-                    value: cresults
-                }
-            } else {
-                this.variablesReference['Simulator'] = {
-                    value: results
-                }
-            }
-        } else {
-            delete this.variables['Simulator'];
-            delete this.variablesReference['Simulator'];
-        }
-
-        var segmentedPlayers = players.map(p => {
-            var ar = [ p.player, p.compare ];
-            ar.segmented = true;
-
-            return ar;
-        });
-
-        segmentedPlayers.segmented = true;
-
-        var segmentedCompare = players.map(p => {
-            var ar = [ p.compare, p.compare ];
-            ar.segmented = true;
-
-            return ar;
-        });
-
-        segmentedCompare.segmented = true;
-
-        // Evaluate constants
-        for (var [name, data] of Object.entries(this.variables)) {
-            if (data.ast) {
-                var scope = {};
-                var scope2 = {};
-
-                if (data.tableVariable) {
-                    scope = segmentedPlayers;
-                    scope2 = segmentedCompare;
-                }
-
-                if (!data.tableVariable) {
-                    this.variablesReference[name] = {
-                        ast: data.ast,
-                        tableVariable: false
-                    };
-                } else if (tabletype == TableType.Group) {
-                    data.value = data.ast.eval(players[0].player, undefined, this, scope);
-                    if (isNaN(data.value) && typeof(data.value) != 'object') {
-                        data.value = undefined;
-                    }
-
-                    var val = data.ast.eval(players[0].compare, undefined, this, scope2);
-                    if (isNaN(val) && typeof(val) != 'object') {
-                        val = undefined;
-                    }
-
-                    this.variablesReference[name] = {
-                        value: val,
-                        ast: data.ast,
-                        tableVariable: data.tableVariable
-                    };
-                } else {
-                    data.value = data.ast.eval(undefined, undefined, this, scope);
-                    if (isNaN(data.value) && typeof(data.value) != 'object') {
-                        data.value = undefined;
-                    }
-
-                    var val = data.ast.eval(undefined, undefined, this, scope2);
-                    if (isNaN(val) && typeof(val) != 'object') {
-                        val = undefined;
-                    }
-
-                    this.variablesReference[name] = {
-                        value: val,
-                        ast: data.ast,
-                        tableVariable: data.tableVariable
-                    };
-                }
-            }
-        }
-
-        // Extra statistics rows
-        if (tabletype == TableType.Group) {
-            var param = players.find(p => p.player.Own) || players[0];
-            for (var data of this.customRows) {
-                if (data.ast) {
-                    data.eval = {
-                        value: data.ast.eval(param.player, undefined, this, segmentedPlayers),
-                        compare: data.ast.eval(param.compare, undefined, this.getCompareEnvironment(), segmentedCompare)
-                    };
-                }
-            }
-        } else if (tabletype == TableType.Players) {
-            for (var data of this.customRows) {
-                if (data.ast) {
-                    data.eval = {
-                        value: data.ast.eval(null, null, this, segmentedPlayers),
-                        compare: data.ast.eval(null, null, this.getCompareEnvironment(), segmentedCompare)
-                    }
-                }
-            }
-        }
-
-        // Push constants into color / value options
-        for (var category of this.categories) {
-            for (var header of category.headers) {
-                this.evaluateArrayConstants(header.value.rules);
-                this.evaluateArrayConstants(header.color.rules);
-            }
-        }
-    }
-
-    evalRowIndexes (playerArray, embed = false) {
-        for (let i = 0, player; i < playerArray.length; i++) {
-            player = embed ? playerArray[i].player : playerArray[i];
-            this.row_indexes[`${ player.Identifier }_${ player.Timestamp }`] = i;
-        }
-    }
-
-    evaluateConstantsHistory (players) {
-        this.evalRowIndexes(players);
-
-        // Evaluate constants
-        for (var [name, data] of Object.entries(this.variables)) {
-            if (data.ast && data.tableVariable) {
-                var scope = players.map((p, i) => {
-                    var ar = [ p, players[i + 1] || p ];
-                    ar.segmented = true;
-
-                    return ar;
-                });
-
-                scope.segmented = true;
-
-                data.value = data.ast.eval(undefined, undefined, this, scope);
-                if (isNaN(data.value) && typeof(data.value) != 'object') {
-                    data.value = undefined;
-                }
-            }
-        }
-
-        // Push constants into color / value options
-        for (var category of this.categories) {
-            for (var header of category.headers) {
-                this.evaluateArrayConstants(header.value.rules);
-                this.evaluateArrayConstants(header.color.rules);
-            }
-        }
-    }
-
-    evaluateArrayConstants (rules) {
-        let array = rules.rules;
-        for (var i = 0; array && i < array.length; i++) {
-            var key = array[i][3];
-            if (isNaN(key) && this.variables[key]) {
-                if (this.variables[key].value != undefined) {
-                    array[i][1] = Number(this.variables[key].value);
-                } else {
-                    array.splice(i--, 1);
-                }
-            }
-        }
     }
 };
 
