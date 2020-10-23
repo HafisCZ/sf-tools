@@ -1,8 +1,65 @@
 const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\$|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
+const PerformanceTracker = new (class {
+    constructor () {
+        this.calls = 0;
+        this.hits = 0;
+        this.expressions = 0;
+    }
+
+    start () {
+        this.calls = 0;
+        this.hits = 0;
+
+        this.time = Date.now();
+    }
+
+    tick () {
+        this.calls++;
+    }
+
+    hit () {
+        this.hits++;
+    }
+
+    stop () {
+        Logger.log('PERFLOG', `${ this.calls } (${ this.hits } hits) calls in ${ Date.now() - this.time } ms`);
+    }
+
+    getIndex () {
+        return this.expressions++;
+    }
+
+    cache_clear () {
+        this.cache = { };
+    }
+
+    cache_add (id, player, compare, value) {
+        if (player && compare) {
+            this.cache[player.Hash + compare.Hash + id] = value;
+        }
+    }
+
+    cache_querry (id, player, compare) {
+        if (!player || !compare) {
+            return undefined;
+        } else {
+            return this.cache[player.Hash + compare.Hash + id];
+        }
+    }
+})();
+
 class Expression {
+    static wrap (fnc) {
+        return {
+            eval: fnc,
+            index: PerformanceTracker.getIndex()
+        };
+    }
+
     constructor (string, settings = null) {
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp).map(token => token.trim()).filter(token => token.length);
+        this.index = PerformanceTracker.getIndex();
         this.root = false;
 
         if (this.tokens.length == 0) {
@@ -519,7 +576,22 @@ class Expression {
 
     // Outside eval function (always call this from outside of the Expression class)
     eval (player, reference = undefined, environment = { functions: { }, variables: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined, functionScope = undefined) {
-        return this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
+        if (functionScope) {
+            /* PERFORMANCE THINGY */ PerformanceTracker.tick();
+            return this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
+        } else {
+            let value = PerformanceTracker.cache_querry(this.index, player, reference);
+            if (typeof value == 'undefined') {
+                /* PERFORMANCE THINGY */ PerformanceTracker.tick();
+                value = this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
+
+                PerformanceTracker.cache_add(this.index, player, reference, value);
+            } else {
+                PerformanceTracker.hit();
+            }
+
+            return value;
+        }
     }
 
     // Evaluate a node into array, used for array functions

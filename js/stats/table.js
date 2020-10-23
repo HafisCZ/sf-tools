@@ -329,14 +329,15 @@ class TableInstance {
 
         // Evaluate variables
         if (this.type == TableType.History) {
-            // Evaluate history data
+            PerformanceTracker.cache_clear();
+
             this.settings.evalHistory(this.array.map(p => p[1]));
         } else if (!skipEvaluation) {
+            PerformanceTracker.cache_clear();
+
             if (this.type == TableType.Players) {
-                // Evaluate players data
                 this.settings.evalPlayers(array, simulatorLimit, array.perf);
             } else {
-                // Evaluate guilds data
                 this.settings.evalGuilds(array);
             }
         }
@@ -1105,7 +1106,11 @@ class TableController {
 
         // Fill entries
         if (this.echanged || this.schanged) {
+            PerformanceTracker.start();
+
             this.table.setEntries(... this.entries);
+
+            PerformanceTracker.stop();
         }
 
         // Reset sorting

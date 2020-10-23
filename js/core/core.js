@@ -786,7 +786,8 @@ const Logger = new (class {
             'WARNING': 'fc6203',
             'R_FLAGS': '42adf5',
             'TAB_GEN': '3bc922',
-            'VERSION': '90f5da'
+            'VERSION': '90f5da',
+            'PERFLOG': 'ffffff'
         };
 
         this.log('VERSION', `Module: ${ MODULE_VERSION }, Core: ${ CORE_VERSION }, Table: ${ TABLE_VERSION }`);
