@@ -97,7 +97,7 @@ function getEasterEgg (id) {
 class TableInstance {
     constructor (settings, type) {
         // Parameters
-        this.settings = settings;
+        this.settings = new Settings(settings, type);
         this.type = type;
 
         this.sorting = [];
@@ -1071,11 +1071,10 @@ class TableController {
         this.echanged = true;
     }
 
-    setSettings (settings) {
-        if (this.settings && settings && this.settings.code == settings.code) {
-            // Do nothing if settings did not change
-        } else {
-            this.settings = settings;
+    setSettings (code) {
+        // If settings have changed
+        if (this.settings != code) {
+            this.settings = code;
             this.schanged = true;
 
             // Clear sorting when settings have changed
@@ -1084,11 +1083,11 @@ class TableController {
     }
 
     getSettings () {
-        return this.settings ? this.settings : new Settings('', this.type);
+        return this.settings;
     }
 
-    getSettingsCode () {
-        return this.settings ? this.settings.code : '';
+    getEntryLimit () {
+        return this.table ? this.table.settings.getEntryLimit() : 0;
     }
 
     setEntries (... args) {
@@ -1116,7 +1115,7 @@ class TableController {
 
         // Create table
         if (this.schanged) {
-            this.table = new TableInstance(new Settings(this.settings.code, this.type), this.type);
+            this.table = new TableInstance(this.settings, this.type);
             this.ignore = false;
         }
 
@@ -2687,6 +2686,10 @@ class Settings {
         return this.globals.outdated;
     }
 
+    getEntryLimit () {
+        return this.globals.performance;
+    }
+
     /*
         Old shit
     */
@@ -3051,7 +3054,7 @@ const SettingsManager = new (class {
     }
 
     // Keys
-    get () {
+    list () {
         return Preferences.keys().filter(key => key.includes('settings/')).map(key => key.substring(key.indexOf('/') + 1));
     }
 
@@ -3080,14 +3083,9 @@ const SettingsManager = new (class {
         Preferences.set('settings_history', history);
     }
 
-    // Create empty settings
-    empty () {
-        return new Settings('');
-    }
-
     // Load settings
-    load (identifier, def, template = '', type = undefined) {
-        return new Settings(Preferences.get(`settings/${ identifier }`, Preferences.get(`settings/${ def }`, template)), type);
+    get (name, category, template = '') {
+        return Preferences.get(`settings/${ name }`, Preferences.get(`settings/${ category }`, template));
     }
 })()
 

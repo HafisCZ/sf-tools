@@ -165,6 +165,18 @@
         });
     };
 
+    $.fn.settingsButton = function (enabled) {
+        return this.each(function () {
+            if (enabled) {
+                this.style.setProperty('background', '#21ba45', 'important');
+                this.style.setProperty('color', 'white', 'important');
+            } else {
+                this.style.setProperty('background', '');
+                this.style.setProperty('color', '');
+            }
+        });
+    }
+
     $.fn.context = function (command, param) {
         return this.each(function () {
             var menu = $(this);

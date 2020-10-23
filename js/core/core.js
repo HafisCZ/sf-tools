@@ -1,7 +1,7 @@
 // Version stuff
 const MODULE_VERSION = 'v3.943';
 const TABLE_VERSION = 'v6';
-const CURRENT_VERSION = 'v974';
+const CURRENT_VERSION = 'v975';
 
 // Preferences
 const Preferences = new (class {
