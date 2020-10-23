@@ -23,7 +23,7 @@ const PerformanceTracker = new (class {
     }
 
     stop () {
-        Logger.log('PERFLOG', `${ this.calls } (${ this.hits } hits) calls in ${ Date.now() - this.time } ms`);
+        Logger.log('PERFLOG', `${ this.hits } hits (${ this.calls - this.hits } missed) in ${ Date.now() - this.time } ms`);
     }
 
     getIndex () {
@@ -576,15 +576,13 @@ class Expression {
 
     // Outside eval function (always call this from outside of the Expression class)
     eval (player, reference = undefined, environment = { functions: { }, variables: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined, functionScope = undefined) {
-        if (functionScope) {
-            /* PERFORMANCE THINGY */ PerformanceTracker.tick();
+        /* PERFORMANCE THINGY */ PerformanceTracker.tick();
+        if (functionScope || extra || scope) {
             return this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
         } else {
             let value = PerformanceTracker.cache_querry(this.index, player, reference);
             if (typeof value == 'undefined') {
-                /* PERFORMANCE THINGY */ PerformanceTracker.tick();
                 value = this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
-
                 PerformanceTracker.cache_add(this.index, player, reference, value);
             } else {
                 PerformanceTracker.hit();
