@@ -2458,10 +2458,13 @@ class Settings {
         // Header
         this.header = {
             name: name,
-            grouped: grouped,
             value: this.getValueBlock(),
             color: this.getColorBlock()
         };
+
+        if (grouped) {
+            this.header.grouped = grouped;
+        }
     }
 
     // Create new category
