@@ -551,7 +551,13 @@ class Expression {
     // Stringify the expression
     toString (node = this.root) {
         if (typeof(node) == 'object') {
-            return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.args.map(arg => this.toString(arg)).join(', ') })`;
+            if (node.raw) {
+                return `str(${ node.args })`;
+            } else if (node.op) {
+                return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.args.map(arg => this.toString(arg)).join(', ') })`;
+            } else {
+                return `item(${ node.key }, ${ node.val })`;
+            }
         } else {
             return node;
         }
