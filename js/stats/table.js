@@ -355,6 +355,7 @@ class TableInstance {
             this.settings.evaluateConstantsHistory(array.map(p => p[1]));
         }
 
+        // Calculate player indexes
         if (sort && (this.type == TableType.Players || this.type == TableType.Group)) {
             this.array.sort((a, b) => sort(b.player, b.compare) - sort(a.player, a.compare));
             for (var i = 0; i < this.array.length; i++) {
@@ -368,206 +369,191 @@ class TableInstance {
 
     // Generate entries
     generateEntries () {
+        // Clear current entries
         this.entries = [];
 
+        // Common settings
+        let backgroundColor = this.settings.getBackgroundStyle();
+        let indexStyle = this.settings.getIndexStyle();
+
         if (this.type == TableType.History) {
-            for (var i = 0; i < this.array.length; i++) {
-                var [ timestamp, player ] = this.array[i];
+            // Loop over all items of the array
+            for (let i = 0; i < this.array.length; i++) {
+                // Get variables
+                let [ timestamp, player ] = this.array[i];
+                let compare = i < this.array.length - 1 ? this.array[i + 1][1] : player;
 
-                var columns = [];
-                for (var j = 0; j < this.flat.length; j++) {
-                    columns[j] = this.flat[j].generators.cell(player, i != this.array.length - 1 ? this.array[i + 1][1] : player);
+                // Add table row start tag
+                let content = `<tr class="css-entry">`;
+
+                // Add row index if enabled
+                if (indexStyle) {
+                    content += `
+                        <td ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
+                            ${ i + 1 }
+                        </td>
+                    `;
                 }
 
-                var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
+                // Add date
+                content += `
+                    <td class="border-right-thin" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
+                        ${ formatDate(timestamp) }
+                    </td>
+                `;
 
-                var indexedCol = this.settings.globals.indexed ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' }><ispan data-indexed="${ this.settings.globals.indexed }">${ i + 1 }</ispan></td>` : undefined;
-                var nameCol = `<td class="border-right-thin" ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' }>${ formatDate(timestamp) }</td>`;
-
-                var content = '';
-
-                for (var j = 0; j < height; j++) {
-                    content += `<tr class="css-entry ${ j == height - 1 && height > 1 ? 'border-bottom-thin' : '' }">`;
-
-                    if (indexedCol) {
-                        if (j == 0) {
-                            content += indexedCol;
-                        }
-                    }
-
-                    if (j == 0) {
-                        content += nameCol;
-                    }
-
-                    for (var k = 0; k < columns.length; k++) {
-                        if (Array.isArray(columns[k])) {
-                            content += columns[k][j] || CellGenerator.Empty(this.flat[k].bordered);
-                        } else if (j == 0) {
-                            content += columns[k];
-                        } else {
-                            content += CellGenerator.Empty(this.flat[k].bordered);
-                        }
-                    }
-
-                    content += `</tr>`;
+                // Add columns
+                for (let header of this.flat) {
+                    content += header.generators.cell(player, compare);
                 }
 
+                // Create new entry and push it to the list
                 this.entries.push({
                     content: content
-                });
+                })
             }
         } else if (this.type == TableType.Players) {
-            var exact = this.array.reference == this.array.timestamp;
+            // Whether timestamps match
+            let noCompare = this.array.reference == this.array.timestamp;
 
-            for (var i = 0; i < this.array.length; i++) {
-                var item = this.array[i];
+            // Loop over all items of the array
+            for (let { player, compare, hidden, index, latest } of this.array) {
+                // Add table row start tag
+                let content = `<tr class="css-entry ${ hidden ? 'css-entry-hidden' :'' }">`;
 
-                var columns = [];
-                for (var j = 0; j < this.flat.length; j++) {
-                    columns[j] = this.flat[j].generators.cell(item.player, item.compare);
+                // Add row index if enabled
+                if (indexStyle) {
+                    content += `
+                        <td ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
+                            ${ indexStyle == 1 ? (index + 1) : '{__INDEX__}' }
+                        </td>
+                    `;
                 }
 
-                var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
-
-                var indexedCol = this.settings.globals.indexed ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' }><ispan data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</ispan></td>` : undefined;
-                var serverCol = this.settings.globals.server == undefined || this.settings.globals.server > 0 ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' }>${ SiteOptions.obfuscated ? 'server' : item.player.Prefix }</td>` : undefined;
-                var nameCol = `<td class="border-right-thin clickable ${ item.latest || !this.settings.globals.outdated ? '' : 'foreground-red' }" ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' } data-id="${ item.player.Identifier }"><span class="css-op-select-el"></span>${ SiteOptions.obfuscated ? '' : getEasterEgg(item.player.Identifier) }${ SiteOptions.obfuscated ? `player_${ item.index + 1 }` : item.player.Name }</td>`;
-
-                var content = '';
-
-                for (var j = 0; j < height; j++) {
-                    content += `<tr class="css-entry ${ item.hidden ? 'css-entry-hidden' : '' } ${ j == height - 1 && height > 1 ? 'border-bottom-thin' : '' }">`;
-
-                    if (indexedCol) {
-                        if (j == 0) {
-                            content += indexedCol;
-                        }
-                    }
-
-                    if (serverCol) {
-                        if (j == 0) {
-                            content += serverCol;
-                        }
-                    }
-
-                    if (j == 0) {
-                        content += nameCol;
-                    }
-
-                    for (var k = 0; k < columns.length; k++) {
-                        if (Array.isArray(columns[k])) {
-                            content += columns[k][j] || CellGenerator.Empty(this.flat[k].bordered);
-                        } else if (j == 0) {
-                            content += columns[k];
-                        } else {
-                            content += CellGenerator.Empty(this.flat[k].bordered);
-                        }
-                    }
-
-                    content += `</tr>`;
+                // Add server if enabled
+                let serverStyle = this.settings.getServerStyle();
+                if (serverStyle === undefined || serverStyle > 0) {
+                    content += `
+                        <td ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
+                            ${ SiteOptions.obfuscated ? 'server' : player.Prefix }
+                        </td>
+                    `;
                 }
 
-                var entry = {
-                    // Row
+                // Add name
+                let showOutdated = this.settings.getOutdatedStyle();
+                content += `
+                    <td class="border-right-thin clickable ${ !latest && showOutdated ? 'foreground-red' : '' }" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }">
+                        <span class="css-op-select-el"></span>
+                        ${ SiteOptions.obfuscated ? '' : getEasterEgg(player.Identifier) }
+                        ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
+                    </td>
+                `;
+
+                // Add columns
+                for (let header of this.flat) {
+                    content += header.generators.cell(player, compare);
+                }
+
+                // Add table row end tag
+                content += `</tr>`;
+
+                // Create new entry and push it to the list
+                this.entries.push({
                     content: content,
-                    sorting: {
-                        '_name': item.player.Name,
-                        '_index': item.index,
-                        '_server': item.player.Prefix
-                    }
-                };
+                    sorting: this.flat.reduce((obj, { order, sortkey, flip, expr, sort }) => {
+                        if (order) {
+                            // Use special order expression if supplied
+                            let difference = undefined;
+                            let value = expr(player, compare, this.settings);
 
-                for (var column of this.flat) {
-                    if (column.order) {
-                        var diff = undefined;
-                        var v = column.expr(item.player, item.compare, this.settings);
+                            if (!noCompare) {
+                                // Get difference
+                                difference = (flip ? -1 : 1) * (value - expr(compare, compare, this.settings));
+                            }
 
-                        if (!exact) {
-                            var c = column.expr(item.compare, item.compare, this.settings);
-                            diff = column.flip ? (c - v) : (v - c);
+                            obj[sortkey] = order(player, compare, this.settings, value, { difference: difference });
+                        } else {
+                            // Return native sorting function
+                            obj[sortkey] = sort(player, compare);
                         }
 
-                        entry.sorting[column.sortkey] = column.order(item.player, item.compare, this.settings, v, { difference: diff });
-                    } else {
-                        entry.sorting[column.sortkey] = column.sort(item.player, item.compare);
-                    }
-                }
-
-                this.entries.push(entry);
+                        // Return sorting object
+                        return obj;
+                    }, {
+                        // Default sorting keys
+                        '_name': player.Name,
+                        '_index': index,
+                        '_server': player.Prefix
+                    })
+                });
             }
         } else if (this.type == TableType.Group) {
-            var exact = this.array.reference == this.array.timestamp;
+            // Whether timestamps match
+            let noCompare = this.array.reference == this.array.timestamp;
 
-            for (var i = 0; i < this.array.length; i++) {
-                var item = this.array[i];
-
-                var columns = [];
-                for (var j = 0; j < this.flat.length; j++) {
-                    columns[j] = this.flat[j].generators.cell(item.player, item.compare);
-                }
-
-                var height = columns.reduce((highest, column) => Math.max(highest, Array.isArray(column) ? column.length : 1), 0);
-
-                var indexedCol = this.settings.globals.indexed ? `<td ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' }><ispan data-indexed="${ this.settings.globals.indexed }">${ item.index + 1 }</ispan></td>` : undefined;
-                var nameCol = `<td class="border-right-thin clickable" ${ height > 1 ? 'valign="top"' : '' } rowspan="${ height }" ${ this.settings.shared.background ? `style="background: ${ getCSSColor(this.settings.shared.background) };"` : '' } data-id="${ item.player.Identifier }">${ SiteOptions.obfuscated ? '' : getEasterEgg(item.player.Identifier) }${ SiteOptions.obfuscated ? `player_${ item.index + 1 }` : item.player.Name }</td>`;
-
-                var content = '';
-
-                for (var j = 0; j < height; j++) {
-                    content += `<tr class="css-entry ${ j == height - 1 && height > 1 ? 'border-bottom-thin' : '' }">`;
-
-                    if (indexedCol) {
-                        if (j == 0) {
-                            content += indexedCol;
-                        }
-                    }
-
-                    if (j == 0) {
-                        content += nameCol;
-                    }
-
-                    for (var k = 0; k < columns.length; k++) {
-                        if (Array.isArray(columns[k])) {
-                            content += columns[k][j] || CellGenerator.Empty(this.flat[k].bordered);
-                        } else if (j == 0) {
-                            content += columns[k];
-                        } else {
-                            content += CellGenerator.Empty(this.flat[k].bordered);
-                        }
-                    }
-
-                    content += `</tr>`;
-                }
-
-                var entry = {
-                    // Row
-                    content: content,
-                    sorting: {
-                        '_name': item.player.Name,
-                        '_index': item.index
-                    }
-                };
-
-                for (var column of this.flat) {
-                    if (column.order) {
-                        var diff = undefined;
-                        var v = column.expr(item.player, item.compare, this.settings);
-
-                        if (!exact) {
-                            var c = column.expr(item.compare, item.compare, this.settings);
-                            diff = column.flip ? (c - v) : (v - c);
-                        }
-
-                        entry.sorting[column.sortkey] = column.order(item.player, item.compare, this.settings, v, { difference: diff });
-                    } else {
-                        entry.sorting[column.sortkey] = column.sort(item.player, item.compare);
-                    }
-                }
-
-                this.entries.push(entry);
-            }
-
+            // Add missing entries to the entry list
             this.entries.missing = this.array.missing;
+
+            // Loop over all items of the array
+            for (let { player, compare, index } of this.array) {
+                // Add table row start tag
+                let content = `<tr class="css-entry">`;
+
+                // Add row index if enabled
+                if (indexStyle) {
+                    content += `
+                        <td ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
+                            ${ indexStyle == 1 ? (index + 1) : '{__INDEX__}' }
+                        </td>
+                    `;
+                }
+
+                // Add name
+                content += `
+                    <td class="border-right-thin clickable" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }">
+                        ${ SiteOptions.obfuscated ? '' : getEasterEgg(player.Identifier) }
+                        ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
+                    </td>
+                `;
+
+                // Add columns
+                for (let header of this.flat) {
+                    content += header.generators.cell(player, compare);
+                }
+
+                // Add table row end tag
+                content += `</tr>`;
+
+                // Create new entry and push it to the list
+                this.entries.push({
+                    content: content,
+                    sorting: this.flat.reduce((obj, { order, sortkey, flip, expr, sort }) => {
+                        if (order) {
+                            // Use special order expression if supplied
+                            let difference = undefined;
+                            let value = expr(player, compare, this.settings);
+
+                            if (!noCompare) {
+                                // Get difference
+                                difference = (flip ? -1 : 1) * (value - expr(compare, compare, this.settings));
+                            }
+
+                            obj[sortkey] = order(player, compare, this.settings, value, { difference: difference });
+                        } else {
+                            // Return native sorting function
+                            obj[sortkey] = sort(player, compare);
+                        }
+
+                        // Return sorting object
+                        return obj;
+                    }, {
+                        // Default sorting keys
+                        '_name': player.Name,
+                        '_index': index
+                    })
+                });
+            }
         }
     }
 
@@ -631,7 +617,7 @@ class TableInstance {
     // Create history table
     createHistoryTable () {
         var sizeDynamic = this.config.reduce((a, b) => a + b.width, 0);
-        var size = 200 + (this.settings.globals.indexed ? 50 : 0) + Math.max(400, sizeDynamic);
+        var size = 200 + (this.settings.globals.indexed ? 50 : 0) + sizeDynamic;
 
         var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
 
@@ -720,7 +706,7 @@ class TableInstance {
         var sizeName = this.settings.globals.name == undefined ? 250 : this.settings.globals.name;
         var sizeDynamic = this.config.reduce((a, b) => a + b.width, 0);
 
-        var size = sizeName + sizeServer + (this.settings.globals.indexed ? 50 : 0) + Math.max(400, sizeDynamic);
+        var size = sizeName + sizeServer + (this.settings.globals.indexed ? 50 : 0) + sizeDynamic;
 
         var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
 
@@ -804,7 +790,7 @@ class TableInstance {
                         <td class="border-bottom-thick border-right-thin" colspan="${ sizeServer ? 2 : 1 }"></td>
                         ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
                     </tr>
-                    ${ join(this.entries, (e, ei) => e.content.replace(/\<ispan data\-indexed\=\"2\"\>\d*\<\/ispan\>/, `<ispan data-indexed="2">${ ei + 1 }</ispan>`), 0, this.array.perf || this.settings.globals.performance) }
+                    ${ join(this.entries, (e, ei) => e.content.replace('{__INDEX__}', ei + 1), 0, this.array.perf || this.settings.globals.performance) }
                 </tbody>
             `,
             size
@@ -836,7 +822,7 @@ class TableInstance {
                 <td class="border-bottom-thick border-right-thin"></td>
                 ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
             </tr>
-                ${ join(this.entries, (e, ei) => e.content.replace(/\<ispan data\-indexed\=\"2\"\>\d*\<\/ispan\>/, `<ispan data-indexed="2">${ ei + 1 }</ispan>`)) }
+                ${ join(this.entries, (e, ei) => e.content.replace('{__INDEX__}', ei + 1)) }
                 ${ this.entries.missing.length ? `<tr class="css-b-bold">${ CellGenerator.WideCell(CellGenerator.Small(`Player data is missing for following members:<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.flat.length + (this.settings.globals.indexed ? 1 : 0) + 1, 'center') }</tr>` : '' }
         `;
 
@@ -1160,12 +1146,9 @@ class TableController {
         // Setup table element
         this.$table.empty();
         this.$table.append(content);
-        this.$table.css('position', 'absolute').css('width', `${ width }px`).css('left', `calc(50vw - 9px - ${ width / 2 }px)`);
-        if (this.$table.css('left').slice(0, -2) < 0) {
-            this.$table.css('left', '0px');
-        }
+        this.$table.css('position', 'absolute').css('width', `${ width }px`).css('left', `max(0px, calc(50vw - 9px - ${ width / 2 }px))`);
 
-        // TODO bind sorting
+        // Bind sorting
         this.$table.find('[data-sortable]').click(event => {
             let sortKey = $(event.target).attr('data-sortable-key');
             if (event.originalEvent.ctrlKey) {
@@ -2685,6 +2668,23 @@ class Settings {
     // Flip filter
     flipFilter () {
         this.filter.invert = !this.filter.invert;
+    }
+
+    // Random getters and stuff
+    getIndexStyle () {
+        return this.globals.indexed;
+    }
+
+    getServerStyle () {
+        return this.globals.server;
+    }
+
+    getBackgroundStyle () {
+        return getCSSColor(this.shared.background);
+    }
+
+    getOutdatedStyle () {
+        return this.globals.outdated;
     }
 
     /*
