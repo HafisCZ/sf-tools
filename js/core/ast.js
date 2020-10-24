@@ -1,5 +1,62 @@
 const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\$|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
+const PerformanceTracker = new (class {
+    constructor () {
+        this.calls = 0;
+        this.hits = 0;
+        this.cache = { };
+
+        this.expressions = 0;
+        this.expressionCache = { };
+    }
+
+    start () {
+        this.calls = 0;
+        this.hits = 0;
+
+        this.time = Date.now();
+    }
+
+    tick () {
+        this.calls++;
+    }
+
+    hit () {
+        this.hits++;
+    }
+
+    stop () {
+        Logger.log('PERFLOG', `${ this.hits } hits (${ this.calls - this.hits } missed) in ${ Date.now() - this.time } ms. ${ this.expressions } expression${ this.expressions > 1 ? 's' : '' } indexed.`);
+    }
+
+    getIndex (tokens) {
+        if (!(tokens in this.expressionCache)) {
+            this.expressionCache[tokens] = this.expressions++;;
+        }
+
+        return this.expressionCache[tokens];
+    }
+
+    cache_clear () {
+        this.cache = { };
+        this.expressionCache = { };
+    }
+
+    cache_add (id, player, compare, value) {
+        if (player && compare) {
+            this.cache[`${ player.Identifier }-${ player.Timestamp }-${ compare.Timestamp }-${ id }`] = value;
+        }
+    }
+
+    cache_querry (id, player, compare) {
+        if (!player || !compare) {
+            return undefined;
+        } else {
+            return this.cache[`${ player.Identifier }-${ player.Timestamp }-${ compare.Timestamp }-${ id }`];
+        }
+    }
+})();
+
 class Expression {
     constructor (string, settings = null) {
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp).map(token => token.trim()).filter(token => token.length);
@@ -19,6 +76,7 @@ class Expression {
 
             if (count == 0) {
                 this.evalEmbeddedVariables(settings);
+                this.rstr = SHA1(this.tokens.join(''));
 
                 this.root = this.evalExpression();
                 this.root = this.postProcess(this.root);
@@ -494,7 +552,13 @@ class Expression {
     // Stringify the expression
     toString (node = this.root) {
         if (typeof(node) == 'object') {
-            return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.args.map(arg => this.toString(arg)).join(', ') })`;
+            if (node.raw) {
+                return `str(${ node.args })`;
+            } else if (node.op) {
+                return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.args.map(arg => this.toString(arg)).join(', ') })`;
+            } else {
+                return `item(${ node.key }, ${ node.val })`;
+            }
         } else {
             return node;
         }
@@ -519,7 +583,24 @@ class Expression {
 
     // Outside eval function (always call this from outside of the Expression class)
     eval (player, reference = undefined, environment = { functions: { }, variables: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined, functionScope = undefined) {
-        return this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
+        /* PERFORMANCE THINGY */ PerformanceTracker.tick();
+        if (functionScope || extra || scope) {
+            return this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
+        } else {
+            if (typeof this.index == 'undefined') {
+                this.index = PerformanceTracker.getIndex(this.rstr);
+            }
+
+            let value = PerformanceTracker.cache_querry(this.index, player, reference);
+            if (typeof value == 'undefined') {
+                value = this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
+                PerformanceTracker.cache_add(this.index, player, reference, value);
+            } else {
+                PerformanceTracker.hit();
+            }
+
+            return value;
+        }
     }
 
     // Evaluate a node into array, used for array functions
@@ -1079,7 +1160,7 @@ const SP_FUNCTIONS = {
 
 const SP_OPERATORS = {
     '*': (a, b) => a * b,
-    '/': (a, b) => a / b,
+    '/': (a, b) => b == 0 ? 0 : (a / b),
     '+': (a, b) => a + b,
     '-': (a, b) => a - b,
     '>': (a, b) => a > b,

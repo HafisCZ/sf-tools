@@ -567,7 +567,6 @@ class SFGroup {
 class SFPlayer {
     init (data) {
         this.Data = data;
-
         this.Own = data.own;
         this.Timestamp = data.timestamp;
         this.Toilet = {};
