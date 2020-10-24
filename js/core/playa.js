@@ -567,8 +567,6 @@ class SFGroup {
 class SFPlayer {
     init (data) {
         this.Data = data;
-        this.Hash = SHA1(data.name + data.timestamp);
-
         this.Own = data.own;
         this.Timestamp = data.timestamp;
         this.Toilet = {};

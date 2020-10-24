@@ -44,7 +44,7 @@ const PerformanceTracker = new (class {
 
     cache_add (id, player, compare, value) {
         if (player && compare) {
-            this.cache[player.Hash + compare.Hash + id] = value;
+            this.cache[`${ player.Identifier }-${ player.Timestamp }-${ compare.Timestamp }-${ id }`] = value;
         }
     }
 
@@ -52,7 +52,7 @@ const PerformanceTracker = new (class {
         if (!player || !compare) {
             return undefined;
         } else {
-            return this.cache[player.Hash + compare.Hash + id];
+            return this.cache[`${ player.Identifier }-${ player.Timestamp }-${ compare.Timestamp }-${ id }`];
         }
     }
 })();
