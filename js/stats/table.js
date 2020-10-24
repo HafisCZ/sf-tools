@@ -2721,9 +2721,9 @@ class Settings {
                     for (let i = 0, rule; rule = rules[i]; i++) {
                         let key = rule[3];
                         // Check if key exists
-                        if (key) {
+                        if (key && key in this.variables) {
                             // If variable with that name exists then set it
-                            if (key in this.variables && typeof this.variables[key].value != 'undefined') {
+                            if (this.variables[key].value != 'undefined') {
                                 // Set value
                                 rule[1] = Number(this.variables[key].value);
                             } else {
