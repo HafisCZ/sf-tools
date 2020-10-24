@@ -738,7 +738,7 @@ class TableInstance {
 
             this.cache.rows += `
                 <tr>
-                    <td class="border-right-thin border-bottom-thick" ${ indexStyle ? 'colspan="2"' : '' }></td>
+                    <td class="border-right-thin border-bottom-thick" colspan="${ leftSpan }"></td>
                     <td class="border-bottom-thick" colspan=${ this.flatSpan }></td>
                 </tr>
                 <tr>
@@ -783,7 +783,7 @@ class TableInstance {
                         ${ headerTitle }
                         ${ this.getHeaderBlock(true) }
                     </tr>
-                    ${ join(this.entries, (e, ei) => e.content.replace('{__INDEX__}', ei + 1), 0, this.array.perf || this.settings.globals.performance) }
+                    ${ join(this.entries, (e, ei) => e.content.replace('{__INDEX__}', ei + 1), 0, this.array.perf || this.settings.getEntryLimit()) }
                 </tbody>
             `,
         };
