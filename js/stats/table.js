@@ -593,12 +593,6 @@ class TableInstance {
         }
     }
 
-    // Sorting attributes for HTML
-    getSortingTag (key) {
-        var index = this.sorting.findIndex(s => s.key == key);
-        return `data-sortable-key="${ key }" data-sortable="${ this.sorting[index] ? this.sorting[index].order : 0 }" data-sortable-index=${ this.sorting.length == 1 ? '' : (index + 1) }`;
-    }
-
     clearCache () {
         // Reset
         this.cache = {
@@ -635,7 +629,6 @@ class TableInstance {
         // Width of the whole table
         let tableWidth = this.flatWidth + 200 + (this.settings.getIndexStyle() ? 50 : 0);
         let indexStyle = this.settings.getIndexStyle();
-        let backgroundColor = this.settings.getBackgroundStyle();
 
         // Get rows
         if (this.cache.rows == '' && this.settings.customRows.length) {
@@ -661,32 +654,46 @@ class TableInstance {
                     <td class="border-bottom-thick" colspan=${ this.flatSpan }></td>
                 </tr>
                 <tr>
-                    <td colspan="${ this.flatSpan + 1 + (indexStyle ? 1 : 0) }" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }></td>
+                    <td colspan="${ this.flatSpan + 1 + (indexStyle ? 1 : 0) }"></td>
                 </tr>
             `;
+        }
+
+        // Create left headers
+        let aligned = this.settings.getTitleAlign();
+        let headerTitle, categoryTitle;
+        if (aligned) {
+            categoryTitle = `
+                <td colspan="${ indexStyle ? 2 : 1 }" class="border-right-thin"></td>
+            `;
+
+            headerTitle = `
+                ${ indexStyle ? `<td style="width: 50px;" colspan="1">#</td>` : '' }
+                <td style="width: 200px;" colspan="1" class="border-right-thin">Date</td>
+            `;
+        } else {
+            categoryTitle = `
+                ${ indexStyle ? `<td style="width: 50px;" colspan="1" rowspan="2">#</td>` : '' }
+                <td style="width: 200px;" colspan="1" rowspan="2" class="border-right-thin">Date</td>
+            `;
+
+            headerTitle = '';
         }
 
         // Create table Content
         return {
             width: tableWidth,
             content: `
-                <thead>
-
-                </thead>
+                <thead></thead>
                 <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getLinedStyle() } ${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
                     ${ this.cache.rows }
                     <tr>
-                        ${ indexStyle ? `<td style="width: 50px;" colspan="1" rowspan="2">#</td>` : '' }
-                        <td style="width: 200px;" colspan="1" rowspan="2" class="border-right-thin">Date</td>
-                        ${ join(this.config, ({ headers, empty, length, name: groupName }, gi, ga) => empty ? join(headers, ({ width, span, name }, hi, ha) => `<td rowspan="2" colspan="${ span }" style="width: ${ width }px;" class="${ gi != ga.length - 1 && hi == ha.length - 1 ? 'border-right-thin' : '' }">${ name }</td>`) : `<td colspan="${ length }" class="${ gi != ga.length - 1 ? 'border-right-thin' : '' }">${ groupName }</td>`) }
+                        ${ categoryTitle }
+                        ${ this.getCategoryBlock(false) }
                     </tr>
-                    <tr>
-                        ${ join(this.config, ({ headers, empty }, gi, ga) => empty ? '' : join(headers, ({ width, span, name }, hi, ha) => `<td colspan="${ span }" style="width: ${ width }px;" class="${ gi != ga.length - 1 && hi == ha.length - 1 ? 'border-right-thin' : ''}">${ name }</td>` )) }
-                    </tr>
-                    <tr>
-                        ${ indexStyle ? '<td class="border-bottom-thick"></td>' : '' }
-                        <td class="border-bottom-thick border-right-thin"></td>
-                        ${ join(this.config, ({ headers, empty, length }, gi, ga) => empty ? join(headers, ({ span }, hi, ha) => `<td colspan="${ span }" class="border-bottom-thick ${ gi != ga.length - 1 && hi == ha.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ length }" class="border-bottom-thick ${ gi != ga.length - 1 ? 'border-right-thin' : '' }"></td>`) }
+                    <tr class="border-bottom-thick">
+                        ${ headerTitle }
+                        ${ this.getHeaderBlock(false) }
                     </tr>
                     ${ join(this.entries, e => e.content) }
                 </tbody>
@@ -696,99 +703,129 @@ class TableInstance {
 
     // Create players table
     createPlayersTable () {
-        var sizeServer = this.settings.globals.server == undefined ? 100 : this.settings.globals.server;
-        var sizeName = this.settings.globals.name == undefined ? 250 : this.settings.globals.name;
-        var sizeDynamic = this.config.reduce((a, b) => a + b.width, 0);
+        // Width of the whole table
+        let nameWidth = this.settings.getNameStyle();
+        let serverWidth = this.settings.getServerStyle();
+        let indexStyle = this.settings.getIndexStyle();
 
-        var size = sizeName + sizeServer + (this.settings.globals.indexed ? 50 : 0) + sizeDynamic;
+        let tableWidth = this.flatWidth + nameWidth + serverWidth + (indexStyle ? 50 : 0);
 
-        var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
+        let leftSpan = 1 + (indexStyle ? 1 : 0) + (serverWidth ? 1 : 0);
 
-        var details = '';
-        if (this.settings.customRows.length) {
-            var widskip = 1;
-            for (var i = 0, wid = 100; wid > 0 && i < this.flat.length; i++) {
-                wid -= this.flat[i].width;
-                if (wid > 0) {
-                    widskip += this.flat[i].span;
-                } else {
-                    break;
-                }
-            }
-
-            for (var extra of this.settings.customRows) {
-                var lw = widskip;
-
-                if (extra.width) {
-                    var lw = 1;
-                    for (var i = 0, wid = (extra.width == -1 ? sizeDynamic : extra.width); wid > 0 && i < this.flat.length; i++) {
-                        wid -= this.flat[i].width;
-                        if (wid > 0) {
-                            lw += this.flat[i].span;;
-                        } else {
-                            break;
-                        }
-                    }
-                }
-
-                var value = extra.eval.value;
-                var reference = extra.difference && !isNaN(extra.eval.compare) ? extra.eval.compare : '';
+        // Get rows
+        if (this.cache.rows == '' && this.settings.customRows.length) {
+            for (let row of this.settings.customRows) {
+                let value = row.eval.value;
+                let reference = row.difference && !isNaN(row.eval.compare) ? row.eval.compare : '';
 
                 if (reference && !isNaN(reference)) {
-                    reference = extra.flip ? (reference - value) : (value - reference);
-                    reference = CellGenerator.Difference(reference, extra.brackets, extra.format_diff ? extra.format(undefined, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
+                    reference = row.flip ? (reference - value) : (value - reference);
+                    reference = CellGenerator.Difference(reference, row.brackets, row.format_diff ? extra.format(undefined, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
                 } else {
                     reference = '';
                 }
 
-                var color = extra.color.get(undefined, undefined, this.settings, value);
-                let shown = extra.value.get(undefined, undefined, this.settings, value);
+                let color = row.color.get(undefined, undefined, this.settings, value);
+                let shown = row.value.get(undefined, undefined, this.settings, value);
 
-                var cell = CellGenerator.WideCell(shown + reference, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
-                details += `
+                this.cache.rows += `
                     <tr>
-                        <td class="border-right-thin" colspan="${ 1 + (this.settings.globals.indexed ? 1 : 0) + (sizeServer ? 1 : 0) }">${ extra.name }</td>
-                        ${ cell }
+                        <td class="border-right-thin" colspan="${ leftSpan }">${ row.name }</td>
+                        ${ CellGenerator.WideCell(shown + reference, color, this.getRowSpan(row.width), row.align, row.padding, row.style ? row.style.cssText : undefined) }
                     </tr>
                 `;
             }
 
-            details += `
+            this.cache.rows += `
                 <tr>
-                    <td class="border-right-thin border-bottom-thick" colspan="${ 1 + (this.settings.globals.indexed ? 1 : 0) + (sizeServer ? 1 : 0) }"></td>
-                    <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
+                    <td class="border-right-thin border-bottom-thick" ${ indexStyle ? 'colspan="2"' : '' }></td>
+                    <td class="border-bottom-thick" colspan=${ this.flatSpan }></td>
                 </tr>
                 <tr>
-                    <td colspan="${ 1 + (this.settings.globals.indexed ? 1 : 0) + (sizeServer ? 1 : 0) }"></td>
+                    <td colspan="${ this.flatSpan + leftSpan }"></td>
                 </tr>
             `;
         }
 
-        return {
-            content: `
-                <thead>
+        // Create left headers
+        let aligned = this.settings.getTitleAlign();
+        let headerTitle, categoryTitle;
+        if (aligned) {
+            categoryTitle = `
+                <td colspan="${ leftSpan }" class="border-right-thin"></td>
+            `;
 
-                </thead>
-                <tbody style="${ this.settings.globals.font ? `font: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
-                    ${ details }
+            headerTitle = `
+                ${ indexStyle ? `<td style="width: 50px;" class="clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                ${ serverWidth ? `<td style="width: ${ serverWidth }px;" class="clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
+                <td style="width: ${ nameWidth }px;" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+            `;
+        } else {
+            categoryTitle = `
+                ${ indexStyle ? `<td style="width: 50px;" rowspan="2" class="clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                ${ serverWidth ? `<td style="width: ${ serverWidth }px;" rowspan="2" class="clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
+                <td style="width: ${ nameWidth }px;" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+            `;
+
+            headerTitle = '';
+        }
+
+        return {
+            width: tableWidth,
+            content: `
+                <thead></thead>
+                <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getLinedStyle() } ${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
+                    ${ this.cache.rows }
                     <tr>
-                        ${ this.settings.globals.indexed ? `<td style="width: 50px;" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                        ${ sizeServer ? `<td style="width: ${ sizeServer }px;" rowspan="2" class="clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
-                        <td style="width: ${ sizeName }px;" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
-                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" style="width: ${ h.width }px;" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
-                    <tr>
-                        ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" style="width: ${ h.width }px;" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`)) }
-                    </tr>
-                    <tr>
-                        ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
-                        <td class="border-bottom-thick border-right-thin" colspan="${ sizeServer ? 2 : 1 }"></td>
-                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
+                        ${ categoryTitle }
+                        ${ this.getCategoryBlock(true) }
+                    <tr class="border-bottom-thick">
+                        ${ headerTitle }
+                        ${ this.getHeaderBlock(true) }
                     </tr>
                     ${ join(this.entries, (e, ei) => e.content.replace('{__INDEX__}', ei + 1), 0, this.array.perf || this.settings.globals.performance) }
                 </tbody>
             `,
-            width: size
         };
+    }
+
+    getCategoryBlock (sortable) {
+        let aligned = this.settings.getTitleAlign();
+        return join(this.config, ({ headers, empty, length, name: categoryName }, categoryIndex, categoryArray) => {
+            let notLastCategory = categoryIndex != categoryArray.length - 1;
+
+            if (empty && !aligned) {
+                return join(headers, ({ width, span, sortkey, name: headerName }, headerIndex, headerArray) => {
+                    let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
+
+                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px;" class="${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'clickable' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ headerName }</td>`
+                });
+            } else {
+                return `<td colspan="${ length }" class="${ notLastCategory ? 'border-right-thin' : '' }">${ aligned && empty ? '' : categoryName }</td>`;
+            }
+        });
+    }
+
+    getHeaderBlock (sortable) {
+        let aligned = this.settings.getTitleAlign();
+        return join(this.config, ({ headers, empty }, categoryIndex, categoryArray) => {
+            let notLastCategory = categoryIndex != categoryArray.length - 1;
+
+            if (empty && !aligned) {
+                return '';
+            } else {
+                return join(headers, ({ width, span, name, sortkey }, headerIndex, headerArray) => {
+                    let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
+
+                    return `<td colspan="${ span }" style="width: ${ width }px;" class="${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'clickable' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ name }</td>`
+                });
+            }
+        });
+    }
+
+    getSortingTag (key) {
+        let index = this.sorting.findIndex(s => s.key == key);
+        return `data-sortable-key="${ key }" data-sortable="${ this.sorting[index] ? this.sorting[index].order : 0 }" data-sortable-index=${ this.sorting.length == 1 ? '' : (index + 1) }`;
     }
 
     // Create group table
@@ -1600,6 +1637,11 @@ const SettingsCommands = [
     }, function (root, string) {
         var [ , key, a ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ !isNaN(a) && Number(a) > 0 ? SFormat.Normal(a) : SFormat.Error(a) }`;
+    }),
+    new SettingsCommand(/^align title$/, function (root, string) {
+        root.addGlobal('align_title', true);
+    }, function (root, string) {
+        return SFormat.Keyword('align title');
     }),
     // Global
     // font - Set font size
@@ -2710,7 +2752,7 @@ class Settings {
     }
 
     getServerStyle () {
-        return this.globals.server;
+        return this.globals.server == undefined ? 100 : this.globals.server;
     }
 
     getBackgroundStyle () {
@@ -2743,6 +2785,14 @@ class Settings {
 
     getFontStyle () {
         return this.globals.font ? `font: ${ this.globals.font };` : '';
+    }
+
+    getTitleAlign () {
+        return this.globals.align_title;
+    }
+
+    getNameStyle () {
+        return Math.max(100, this.globals.name == undefined ? 250 : this.globals.name);
     }
 
     evalRowIndexes (array, embedded = false) {
