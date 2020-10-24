@@ -1283,6 +1283,28 @@ const ARG_FORMATTERS = {
     'default': (p, c, e, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
 }
 
+class CellStyle {
+    constructor () {
+        this.styles = {};
+        this.content = '';
+    }
+
+    add (name, value) {
+        let style = new Option().style;
+        style[name] = value;
+
+        if (style.cssText) {
+            this.styles[name] = style.cssText.slice(0, -1) + ' !important';
+        }
+
+        this.content = Object.values(this.styles).join(';');
+    }
+
+    get cssText () {
+        return this.content;
+    }
+}
+
 class RuleEvaluator {
     constructor () {
         this.rules = [];
@@ -1740,7 +1762,7 @@ const SettingsCommands = [
         var val = getCSSColor(root.constants.getValue(prefix, value));
 
         if (val != undefined && val) {
-            root.addShared('ndefc', getCSSBackground(val));
+            root.addShared('ndefc', val);
         }
     }, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -2533,10 +2555,10 @@ class Settings {
         let object = (this.row || this.definition || this.header || this.sharedCategory || this.shared);
         if (object) {
             if (!object.style) {
-                object.style = new Option().style;
+                object.style = new CellStyle();
             }
 
-            object.style[name] = value;
+            object.style.add(name, value);
         }
     }
 
