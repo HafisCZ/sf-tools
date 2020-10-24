@@ -4,8 +4,10 @@ const PerformanceTracker = new (class {
     constructor () {
         this.calls = 0;
         this.hits = 0;
-        this.expressions = 0;
         this.cache = { };
+
+        this.expressions = 0;
+        this.expressionCache = { };
     }
 
     start () {
@@ -24,15 +26,20 @@ const PerformanceTracker = new (class {
     }
 
     stop () {
-        Logger.log('PERFLOG', `${ this.hits } hits (${ this.calls - this.hits } missed) in ${ Date.now() - this.time } ms`);
+        Logger.log('PERFLOG', `${ this.hits } hits (${ this.calls - this.hits } missed) in ${ Date.now() - this.time } ms. ${ this.expressions } expression${ this.expressions > 1 ? 's' : '' } indexed.`);
     }
 
-    getIndex () {
-        return this.expressions++;
+    getIndex (tokens) {
+        if (!(tokens in this.expressionCache)) {
+            this.expressionCache[tokens] = this.expressions++;;
+        }
+
+        return this.expressionCache[tokens];
     }
 
     cache_clear () {
         this.cache = { };
+        this.expressionCache = { };
     }
 
     cache_add (id, player, compare, value) {
@@ -60,7 +67,6 @@ class Expression {
 
     constructor (string, settings = null) {
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp).map(token => token.trim()).filter(token => token.length);
-        this.index = PerformanceTracker.getIndex();
         this.root = false;
 
         if (this.tokens.length == 0) {
@@ -77,6 +83,7 @@ class Expression {
 
             if (count == 0) {
                 this.evalEmbeddedVariables(settings);
+                this.rstr = SHA1(this.tokens.join(''));
 
                 this.root = this.evalExpression();
                 this.root = this.postProcess(this.root);
@@ -587,6 +594,10 @@ class Expression {
         if (functionScope || extra || scope) {
             return this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);
         } else {
+            if (typeof this.index == 'undefined') {
+                this.index = PerformanceTracker.getIndex(this.rstr);
+            }
+
             let value = PerformanceTracker.cache_querry(this.index, player, reference);
             if (typeof value == 'undefined') {
                 value = this.evalInternal(player, reference, environment, scope, extra, functionScope, this.root);

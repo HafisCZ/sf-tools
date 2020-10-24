@@ -97,7 +97,7 @@ function getEasterEgg (id) {
 class TableInstance {
     constructor (settings, type) {
         // Parameters
-        this.settings = SettingsManager.fromCache(settings, type);
+        this.settings = new Settings(settings, type);
         this.type = type;
 
         // Table generator
@@ -3154,19 +3154,6 @@ class Settings {
 
 // Settings manager
 const SettingsManager = new (class {
-    constructor () {
-        this.cache = {};
-    }
-
-    fromCache (settings, type) {
-        let hash = SHA1(type + settings);
-        if (!this.cache[hash]) {
-            this.cache[hash] = new Settings(settings, type);
-        }
-
-        return this.cache[hash];
-    }
-
     // Save settings
     save (settings, identifier) {
         Preferences.set(identifier ? `settings/${ identifier }` : 'settings', settings);
