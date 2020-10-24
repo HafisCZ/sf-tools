@@ -97,7 +97,7 @@ function getEasterEgg (id) {
 class TableInstance {
     constructor (settings, type) {
         // Parameters
-        this.settings = new Settings(settings, type);
+        this.settings = SettingsManager.fromCache(settings, type);
         this.type = type;
 
         // Table generator
@@ -329,12 +329,8 @@ class TableInstance {
 
         // Evaluate variables
         if (this.type == TableType.History) {
-            PerformanceTracker.cache_clear();
-
             this.settings.evalHistory(this.array.map(p => p[1]));
         } else if (!skipEvaluation) {
-            PerformanceTracker.cache_clear();
-
             if (this.type == TableType.Players) {
                 this.settings.evalPlayers(array, simulatorLimit, array.perf);
             } else {
@@ -2789,6 +2785,8 @@ class Settings {
                 // Set value if valid
                 if (!isNaN(value) || typeof(value) == 'object' || typeof('value') == 'string') {
                     variable.value = value;
+                } else {
+                    delete variable.value;
                 }
             }
         }
@@ -2845,10 +2843,14 @@ class Settings {
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
                     variable.value = currentValue;
+                } else {
+                    delete variable.value;
                 }
 
                 if (!isNaN(compareValue) || typeof compareValue == 'object' || typeof compareValue == 'string') {
                     this.variablesReference[name].value = compareValue;
+                } else {
+                    delete this.variablesReference[name].value;
                 }
             }
         }
@@ -2927,10 +2929,14 @@ class Settings {
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
                     variable.value = currentValue;
+                } else {
+                    delete variable.value;
                 }
 
                 if (!isNaN(compareValue) || typeof compareValue == 'object' || typeof compareValue == 'string') {
                     this.variablesReference[name].value = compareValue;
+                } else {
+                    delete this.variablesReference[name].value;
                 }
             }
         }
@@ -3148,6 +3154,19 @@ class Settings {
 
 // Settings manager
 const SettingsManager = new (class {
+    constructor () {
+        this.cache = {};
+    }
+
+    fromCache (settings, type) {
+        let hash = SHA1(type + settings);
+        if (!this.cache[hash]) {
+            this.cache[hash] = new Settings(settings, type);
+        }
+
+        return this.cache[hash];
+    }
+
     // Save settings
     save (settings, identifier) {
         Preferences.set(identifier ? `settings/${ identifier }` : 'settings', settings);

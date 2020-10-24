@@ -5,6 +5,7 @@ const PerformanceTracker = new (class {
         this.calls = 0;
         this.hits = 0;
         this.expressions = 0;
+        this.cache = { };
     }
 
     start () {
