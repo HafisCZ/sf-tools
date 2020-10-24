@@ -1167,7 +1167,7 @@ const SP_FUNCTIONS = {
 
 const SP_OPERATORS = {
     '*': (a, b) => a * b,
-    '/': (a, b) => a / b,
+    '/': (a, b) => b == 0 ? 0 : (a / b),
     '+': (a, b) => a + b,
     '-': (a, b) => a - b,
     '>': (a, b) => a > b,
