@@ -1256,13 +1256,6 @@ const ARG_MAP = {
     'none': 0
 };
 
-const ARG_LAYOUT = {
-    'table': 1,
-    'statistics': 2,
-    'details': 3,
-    'members': 4
-}
-
 const ARG_MAP_SERVER = {
     'off': 0,
     'on': 100
@@ -1388,9 +1381,15 @@ const SettingsCommands = [
     }),
     // Global
     // set static
-    new SettingsCommand(/^(layout) ((table|statistics|members|details)\s*(\,\s*(table|statistics|members|details))*)$/, function (root, string) {
+    new SettingsCommand(/^(layout) ((table|statistics|members|details|rows)\s*(\,\s*(table|statistics|members|details|rows))*)$/, function (root, string) {
         var [ , key, order ] = this.match(string);
-        root.addGlobal('layout', order.split(',').map(o => ARG_LAYOUT[o.trim()]));
+        root.addGlobal('layout', order.split(',').map(o => ({
+            'table': 1,
+            'statistics': 2,
+            'details': 3,
+            'members': 4,
+            'rows': 3
+        }[o.trim()])));
     }, function (root, string) {
         var [ , key, order ] = this.match(string);
         return `${ SFormat.Keyword(key) } ${ order.split(',').map(o => SFormat.Constant(o)).join(',') }`;
