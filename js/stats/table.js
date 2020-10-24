@@ -303,6 +303,9 @@ class TableInstance {
             array.push(... group.headers);
             return array;
         }, []);
+
+        this.flatWidth = this.config.reduce((a, b) => a + b.width, 0);
+        this.flatSpan = this.flat.reduce((t, h) => t + h.span, 0);
     }
 
     // Set players
@@ -338,13 +341,14 @@ class TableInstance {
             }
         }
 
-        // Sort table if set
+        if (!skipEvaluation || this.type == TableType.History) {
+            this.clearCache();
+        }
+
         if (manualSort && this.type != TableType.History) {
-            // Sort array
             this.array.sort((a, b) => manualSort(b.player, b.compare) - manualSort(a.player, a.compare)).forEach((entry, i) => entry.index = i);
         }
 
-        // Generate entries
         this.generateEntries();
     }
 
@@ -595,90 +599,99 @@ class TableInstance {
         return `data-sortable-key="${ key }" data-sortable="${ this.sorting[index] ? this.sorting[index].order : 0 }" data-sortable-index=${ this.sorting.length == 1 ? '' : (index + 1) }`;
     }
 
-    // Create history table
-    createHistoryTable () {
-        var sizeDynamic = this.config.reduce((a, b) => a + b.width, 0);
-        var size = 200 + (this.settings.globals.indexed ? 50 : 0) + sizeDynamic;
+    clearCache () {
+        // Reset
+        this.cache = {
+            rows: '',
+            statistics: '',
+            members: ''
+        };
+    }
 
-        var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
+    getRowSpan (width) {
+        if (width == -1) {
+            // Return maximum span when set to -1
+            return this.flatSpan;
+        } else if (width) {
+            // Calculate span from requested width
+            let span = 0;
+            for (let { width: headerWidth, span: headerSpan } of this.flat) {
+                width -= headerWidth;
+                span += headerSpan;
 
-        var details = '';
-        if (this.settings.customRows.length) {
-            var widskip = 1;
-            for (var i = 0, wid = 100; wid > 0 && i < this.flat.length; i++) {
-                wid -= this.flat[i].width;
-                if (wid > 0) {
-                    widskip += this.flat[i].span;
-                } else {
+                if (width <= 0) {
                     break;
                 }
             }
 
-            for (var extra of this.settings.customRows) {
-                var lw = widskip;
-                if (extra.width) {
-                    var lw = 1;
-                    for (var i = 0, wid = (extra.width == -1 ? sizeDynamic : extra.width); wid > 0 && i < this.flat.length; i++) {
-                        wid -= this.flat[i].width;
-                        if (wid > 0) {
-                            lw += this.flat[i].span;;
-                        } else {
-                            break;
-                        }
-                    }
-                }
+            return Math.max(1, Math.min(span, this.flatSpan));
+        } else {
+            // Return 1 by default
+            return 1;
+        }
+    }
 
-                var player = this.array[0][1];
-                var value = extra.ast.eval(player, player, this.settings, player);
+    createHistoryTable () {
+        // Width of the whole table
+        let tableWidth = this.flatWidth + 200 + (this.settings.getIndexStyle() ? 50 : 0);
+        let indexStyle = this.settings.getIndexStyle();
+        let backgroundColor = this.settings.getBackgroundStyle();
 
-                var color = extra.color.get(player, player, this.settings, value);
-                let shown = extra.value.get(player, player, this.settings, value);
+        // Get rows
+        if (this.cache.rows == '' && this.settings.customRows.length) {
+            for (let row of this.settings.customRows) {
+                let player = this.array[0][1];
 
-                var cell = CellGenerator.WideCell(shown, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
-                details += `
+                let value = row.ast.eval(player, player, this.settings);
+
+                let color = row.color.get(player, player, this.settings, value);
+                let shown = row.value.get(player, player, this.settings, value);
+
+                this.cache.rows += `
                     <tr>
-                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
-                        ${ cell }
+                        <td class="border-right-thin" ${ indexStyle ? 'colspan="2"' : '' }>${ row.name }</td>
+                        ${ CellGenerator.WideCell(shown, color, this.getRowSpan(row.width), row.align, row.padding, row.style ? row.style.cssText : undefined) }
                     </tr>
                 `;
             }
 
-            details += `
+            this.cache.rows += `
                 <tr>
-                    <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                    <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
+                    <td class="border-right-thin border-bottom-thick" ${ indexStyle ? 'colspan="2"' : '' }></td>
+                    <td class="border-bottom-thick" colspan=${ this.flatSpan }></td>
                 </tr>
                 <tr>
-                    <td colspan="${ dividerSpan + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td>
+                    <td colspan="${ this.flatSpan + 1 + (indexStyle ? 1 : 0) }" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }></td>
                 </tr>
             `;
         }
 
-        return [
-            `
+        // Create table Content
+        return {
+            width: tableWidth,
+            content: `
                 <thead>
 
                 </thead>
-                <tbody style="${ this.settings.globals.font ? `font: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
-                    ${ details }
+                <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getLinedStyle() } ${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
+                    ${ this.cache.rows }
                     <tr>
-                        ${ this.settings.globals.indexed ? `<td style="width: 50px;" colspan="1" rowspan="2">#</td>` : '' }
+                        ${ indexStyle ? `<td style="width: 50px;" colspan="1" rowspan="2">#</td>` : '' }
                         <td style="width: 200px;" colspan="1" rowspan="2" class="border-right-thin">Date</td>
-                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" style="width: ${ h.width }px;" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
+                        ${ join(this.config, ({ headers, empty, length, name: groupName }, gi, ga) => empty ? join(headers, ({ width, span, name }, hi, ha) => `<td rowspan="2" colspan="${ span }" style="width: ${ width }px;" class="${ gi != ga.length - 1 && hi == ha.length - 1 ? 'border-right-thin' : '' }">${ name }</td>`) : `<td colspan="${ length }" class="${ gi != ga.length - 1 ? 'border-right-thin' : '' }">${ groupName }</td>`) }
                     </tr>
                     <tr>
-                        ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" style="width: ${ h.width }px;" class="${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }">${ h.name }</td>`)) }
+                        ${ join(this.config, ({ headers, empty }, gi, ga) => empty ? '' : join(headers, ({ width, span, name }, hi, ha) => `<td colspan="${ span }" style="width: ${ width }px;" class="${ gi != ga.length - 1 && hi == ha.length - 1 ? 'border-right-thin' : ''}">${ name }</td>` )) }
                     </tr>
                     <tr>
-                        ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
+                        ${ indexStyle ? '<td class="border-bottom-thick"></td>' : '' }
                         <td class="border-bottom-thick border-right-thin"></td>
-                        ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
+                        ${ join(this.config, ({ headers, empty, length }, gi, ga) => empty ? join(headers, ({ span }, hi, ha) => `<td colspan="${ span }" class="border-bottom-thick ${ gi != ga.length - 1 && hi == ha.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ length }" class="border-bottom-thick ${ gi != ga.length - 1 ? 'border-right-thin' : '' }"></td>`) }
                     </tr>
                     ${ join(this.entries, e => e.content) }
                 </tbody>
-            `,
-            size
-        ];
+            `
+        };
     }
 
     // Create players table
@@ -751,8 +764,8 @@ class TableInstance {
             `;
         }
 
-        return [
-            `
+        return {
+            content: `
                 <thead>
 
                 </thead>
@@ -774,8 +787,8 @@ class TableInstance {
                     ${ join(this.entries, (e, ei) => e.content.replace('{__INDEX__}', ei + 1), 0, this.array.perf || this.settings.globals.performance) }
                 </tbody>
             `,
-            size
-        ];
+            width: size
+        };
     }
 
     // Create group table
@@ -1028,8 +1041,8 @@ class TableInstance {
             }
         }
 
-        return [
-            `
+        return {
+            content: `
                 <thead>
 
                 </thead>
@@ -1037,8 +1050,8 @@ class TableInstance {
                     ${ content }
                 </tbody>
             `,
-            size
-        ];
+            width: size
+        };
     }
 }
 
@@ -1125,7 +1138,7 @@ class TableController {
         this.echanged = this.schanged = false;
 
         // Get table content
-        let [ content, width ] = this.table.createTable();
+        let { content, width } = this.table.createTable();
         let $tableContent = $(content);
 
         // Check table content for unwanted tags
@@ -1222,20 +1235,6 @@ const CellGenerator = {
     }
 }
 
-class SettingsCommand {
-    constructor (regexp, parse, format, parseAlways = false) {
-        this.regexp = regexp;
-        this.match = string => string.match(this.regexp);
-        this.parse = parse;
-        this.format = format;
-        this.parseAlways = parseAlways;
-    }
-
-    isValid (string) {
-        return this.regexp.test(string);
-    }
-};
-
 const ARG_MAP = {
     'off': 0,
     'on': 1,
@@ -1271,6 +1270,20 @@ const ARG_FORMATTERS = {
     'duration': (p, c, e, x) => isNaN(x) ? undefined : formatDuration(x),
     'default': (p, c, e, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
 }
+
+class SettingsCommand {
+    constructor (regexp, parse, format, parseAlways = false) {
+        this.regexp = regexp;
+        this.match = string => string.match(this.regexp);
+        this.parse = parse;
+        this.format = format;
+        this.parseAlways = parseAlways;
+    }
+
+    isValid (string) {
+        return this.regexp.test(string);
+    }
+};
 
 class CellStyle {
     constructor () {
@@ -2714,6 +2727,22 @@ class Settings {
 
     getSimulatorLimit () {
         return this.globals.simulator;
+    }
+
+    getOpaqueStyle () {
+        return this.globals.opaque ? 'css-entry-opaque' : '';
+    }
+
+    getLinedStyle () {
+        return [ '', 'css-entry-lined', 'css-entry-thicklined' ][ this.globals.lined || 0 ];
+    }
+
+    getRowStyle () {
+        return this.globals['large rows'] ? 'css-maxi-row' : '';
+    }
+
+    getFontStyle () {
+        return this.globals.font ? `font: ${ this.globals.font };` : '';
     }
 
     evalRowIndexes (array, embedded = false) {

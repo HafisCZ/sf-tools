@@ -58,13 +58,6 @@ const PerformanceTracker = new (class {
 })();
 
 class Expression {
-    static wrap (fnc) {
-        return {
-            eval: fnc,
-            index: PerformanceTracker.getIndex()
-        };
-    }
-
     constructor (string, settings = null) {
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp).map(token => token.trim()).filter(token => token.length);
         this.root = false;
