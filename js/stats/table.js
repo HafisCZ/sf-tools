@@ -595,11 +595,7 @@ class TableInstance {
 
     clearCache () {
         // Reset
-        this.cache = {
-            rows: '',
-            statistics: '',
-            members: ''
-        };
+        this.cache = { };
     }
 
     getRowSpan (width) {
@@ -658,6 +654,14 @@ class TableInstance {
         `;
     }
 
+    getSpacer (leftSpan) {
+        return `
+            <tr>
+                <td colspan="${ this.flatSpan + leftSpan }"></td>
+            </tr>
+        `;
+    }
+
     getRow (leftSpan, row, val, cmp = undefined, player = undefined, compare = undefined, extra = undefined, ignoreBase = false) {
         return `
             <tr>
@@ -682,17 +686,8 @@ class TableInstance {
         let leftSpan = 1 + (indexStyle ? 1 : 0);
 
         // Get rows
-        if (this.cache.rows == '' && this.settings.customRows.length) {
-            let player = this.array[0][1];
-
-            for (let row of this.settings.customRows) {
-
-                let val = row.ast.eval(player, undefined, this.settings);
-
-                this.cache.rows += this.getRow(leftSpan, row, val, undefined, player);
-            }
-
-            this.cache.rows += this.getDivider(leftSpan, true, false);
+        if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
+            this.cache.rows = join(this.settings.customRows, row => this.getRow(leftSpan, row, row.eval.value, undefined, this.array[0][1])) + this.getDivider(leftSpan, true, false);
         }
 
         // Create left headers
@@ -747,18 +742,12 @@ class TableInstance {
         let tableWidth = this.flatWidth + nameWidth + serverWidth + (indexStyle ? 50 : 0);
 
         let leftSpan = 1 + (indexStyle ? 1 : 0) + (serverWidth ? 1 : 0);
+        let spacer = this.getSpacer(leftSpan);
+        let divider = this.cache.divider = this.getDivider(leftSpan, false, false);
 
         // Get rows
-        if (this.cache.rows == '' && this.settings.customRows.length) {
-
-            for (let row of this.settings.customRows) {
-                let val = row.eval.value;
-                let cmp = row.eval.compare;
-
-                this.cache.rows += this.getRow(leftSpan, row, val, cmp);
-            }
-
-            this.cache.rows += this.getDivider(leftSpan, true, false);
+        if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
+            this.cache.rows = join(this.settings.customRows, row => this.getRow(leftSpan, row, row.eval.value, row.eval.compare));
         }
 
         // Create left headers
@@ -784,23 +773,247 @@ class TableInstance {
             headerTitle = '';
         }
 
+        // Get statistics
+        if (typeof this.cache.statistics == 'undefined') {
+            if (this.flat.reduce((a, { statistics }) => a || statistics, false)) {
+                if (this.settings.customStatistics.length) {
+                    this.cache.statistics = this.getStatistics(leftSpan, this.settings.customStatistics);
+                } else {
+                    this.cache.statistics = this.getStatistics(leftSpan, [
+                        {
+                            name: 'Minimum',
+                            expression: array => Math.min(... array)
+                        },
+                        {
+                            name: 'Average',
+                            expression: array => array.reduce((a, b) => a + b, 0) / array.length
+                        },
+                        {
+                            name: 'Maximum',
+                            expression: array => Math.max(... array)
+                        }
+                    ]);
+                }
+            } else {
+                this.cache.statistics = '';
+            }
+        }
+
+        this.cache.table = `
+            <tr>
+                ${ categoryTitle }
+                ${ this.getCategoryBlock(true) }
+            <tr class="border-bottom-thick">
+                ${ headerTitle }
+                ${ this.getHeaderBlock(true) }
+            </tr>
+            ${ join(this.entries, (e, ei) => e.content.replace('{__INDEX__}', ei + 1), 0, this.array.perf || this.settings.getEntryLimit()) }
+        `;
+
+        let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, false);
+
         return {
             width: tableWidth,
             content: `
                 <thead></thead>
                 <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getLinedStyle() } ${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
-                    ${ this.cache.rows }
-                    <tr>
-                        ${ categoryTitle }
-                        ${ this.getCategoryBlock(true) }
-                    <tr class="border-bottom-thick">
-                        ${ headerTitle }
-                        ${ this.getHeaderBlock(true) }
-                    </tr>
-                    ${ join(this.entries, (e, ei) => e.content.replace('{__INDEX__}', ei + 1), 0, this.array.perf || this.settings.getEntryLimit()) }
+                    ${ join(layout, (block, i, array) => {
+                        // Counters
+                        let first = i == 0;
+                        let last = i == array.length - 1;
+                        let prev = array[i - 1];
+                        let next = array[i + 1];
+
+                        if (block == '|') {
+                            return divider;
+                        } else if (block == '') {
+                            return spacer;
+                        } else {
+                            return this.cache[block];
+                        }
+                    }) }
                 </tbody>
             `,
         };
+    }
+
+    // Create guilds table
+    createGroupTable () {
+        // Width of the whole table
+        let nameWidth = this.settings.getNameStyle();
+        let indexStyle = this.settings.getIndexStyle();
+
+        let tableWidth = this.flatWidth + nameWidth + (indexStyle ? 50 : 0);
+
+        let leftSpan = 1 + (indexStyle ? 1 : 0);
+        let spacer = this.getSpacer(leftSpan);
+        let divider = this.cache.divider = this.getDivider(leftSpan, false, false);
+
+        // Get rows
+        if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
+            this.cache.rows = join(this.settings.customRows, row => this.getRow(leftSpan, row, row.eval.value, row.eval.compare));
+        }
+
+        // Get statistics
+        if (typeof this.cache.statistics == 'undefined') {
+            if (this.flat.reduce((a, { statistics }) => a || statistics, false)) {
+                if (this.settings.customStatistics.length) {
+                    this.cache.statistics = this.getStatistics(leftSpan, this.settings.customStatistics);
+                } else {
+                    this.cache.statistics = this.getStatistics(leftSpan, [
+                        {
+                            name: 'Minimum',
+                            expression: array => Math.min(... array)
+                        },
+                        {
+                            name: 'Average',
+                            expression: array => array.reduce((a, b) => a + b, 0) / array.length
+                        },
+                        {
+                            name: 'Maximum',
+                            expression: array => Math.max(... array)
+                        }
+                    ]);
+                }
+            } else {
+                this.cache.statistics = '';
+            }
+        }
+
+        // Get member list
+        if (typeof this.cache.members == 'undefined') {
+            if (this.settings.globals.members) {
+                this.cache.members = this.getMembers(leftSpan);
+            } else {
+                this.cache.members = '';
+            }
+        }
+
+        // Create left headers
+        let aligned = this.settings.getTitleAlign();
+        let headerTitle, categoryTitle;
+        if (aligned) {
+            categoryTitle = `
+                <td colspan="${ leftSpan }" class="border-right-thin"></td>
+            `;
+
+            headerTitle = `
+                ${ indexStyle ? `<td style="width: 50px;" class="clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                <td style="width: ${ nameWidth }px;" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+            `;
+        } else {
+            categoryTitle = `
+                ${ indexStyle ? `<td style="width: 50px;" rowspan="2" class="clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                <td style="width: ${ nameWidth }px;" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+            `;
+
+            headerTitle = '';
+        }
+
+        this.cache.table = `
+            <tr>
+                ${ categoryTitle }
+                ${ this.getCategoryBlock(true) }
+            <tr class="border-bottom-thick">
+                ${ headerTitle }
+                ${ this.getHeaderBlock(true) }
+            </tr>
+            ${ join(this.entries, (e, ei) => e.content.replace('{__INDEX__}', ei + 1)) }
+            ${ this.entries.missing.length ? `<tr class="css-b-bold">${ CellGenerator.WideCell(CellGenerator.Small(`Player data is missing for following members:<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.flatSpan + leftSpan, 'center') }</tr>` : '' }
+        `;
+
+        let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, this.cache.members);
+
+        return {
+            width: tableWidth,
+            content: `
+                <thead></thead>
+                <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getLinedStyle() } ${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
+                    ${ join(layout, (block, i, array) => {
+                        // Counters
+                        let first = i == 0;
+                        let last = i == array.length - 1;
+                        let prev = array[i - 1];
+                        let next = array[i + 1];
+
+                        if (block == '|') {
+                            return divider;
+                        } else if (block == '') {
+                            return spacer;
+                        } else {
+                            return this.cache[block];
+                        }
+                    }) }
+                </tbody>
+            `,
+        };
+    }
+
+    getStatistics (leftSpan, entries) {
+        return `
+            <tr>
+                <td class="border-right-thin" colspan="${ leftSpan }"></td>
+                ${ join(this.flat, ({ span, statistics, generators, name }) => `<td colspan="${ span }">${ statistics && generators.statistics ? name : '' }</td>`) }
+            </tr>
+            ${ this.cache.divider }
+            ${ join(entries, ({ name, ast, expression }) => `
+                <tr>
+                    <td class="border-right-thin" colspan="${ leftSpan }">${ name }</td>
+                    ${ join(this.flat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.array, expression ? expression : array => ast.eval(undefined, undefined, this.settings, array)) : `<td colspan="${ span }"></td>`) }
+                </tr>
+            `) }
+        `;
+    }
+
+    getMembers (leftSpan) {
+        let classWidth = this.getRowSpan(60);
+        let classList = this.array.reduce((c, p) => {
+            c[p.player.Class - 1]++;
+            return c;
+        }, [0, 0, 0, 0, 0, 0, 0, 0]);
+
+        return `
+            <tr>
+                <td class="border-right-thin" colspan="${ leftSpan }">Warrior</td>
+                <td colspan="${ classWidth }">${ classList[0] }</td>
+                ${ this.array.joined.length ? `
+                    <td class="border-right-thin" rowspan="4" colspan="1">Joined</td>
+                    <td colspan="${ Math.max(1, this.flatSpan - classList - 1) }" rowspan="4">${ this.array.joined.join(', ') }</td>
+                ` : '' }
+            </tr>
+            <tr>
+                <td class="border-right-thin" colspan="${ leftSpan }">Mage</td>
+                <td colspan="${ classWidth }">${ classList[1] }</td>
+            </tr>
+            <tr>
+                <td class="border-right-thin" colspan="${ leftSpan }">Scout</td>
+                <td colspan="${ classWidth }">${ classList[2] }</td>
+            </tr>
+            <tr>
+                <td class="border-right-thin" colspan="${ leftSpan }">Assassin</td>
+                <td colspan="${ classWidth }">${ classList[3] }</td>
+            </tr>
+            <tr>
+                <td class="border-right-thin" colspan="${ leftSpan }">Battle Mage</td>
+                <td colspan="${ classWidth }">${ classList[4] }</td>
+                ${ this.array.joined.length ? `
+                    <td class="border-right-thin" rowspan="4" colspan="1">Left</td>
+                    <td colspan="${ Math.max(1, this.flatSpan - classList - 1) }" rowspan="4">${ this.array.kicked.join(', ') }</td>
+                ` : '' }
+            </tr>
+            <tr>
+                <td class="border-right-thin" colspan="${ leftSpan }">Berseker</td>
+                <td colspan="${ classWidth }">${ classList[5] }</td>
+            </tr>
+            <tr>
+                <td class="border-right-thin" colspan="${ leftSpan }">Demon Hunter</td>
+                <td colspan="${ classWidth }">${ classList[6] }</td>
+            </tr>
+            <tr>
+                <td class="border-right-thin" colspan="${ leftSpan }">Druid</td>
+                <td colspan="${ classWidth }">${ classList[7] }</td>
+            </tr>
+        `;
     }
 
     getCategoryBlock (sortable) {
@@ -840,269 +1053,6 @@ class TableInstance {
     getSortingTag (key) {
         let index = this.sorting.findIndex(s => s.key == key);
         return `data-sortable-key="${ key }" data-sortable="${ this.sorting[index] ? this.sorting[index].order : 0 }" data-sortable-index=${ this.sorting.length == 1 ? '' : (index + 1) }`;
-    }
-
-    // Create group table
-    createGroupTable () {
-        var name = this.settings.globals.name == undefined ? 250 : this.settings.globals.name;
-
-        var sizeDynamic = this.config.reduce((a, b) => a + b.width, 0);
-        var size = name + (this.settings.globals.indexed ? 50 : 0) + Math.max(400, sizeDynamic);
-
-        var showMembers = this.settings.globals.members;
-        var showSummary = this.flat.reduce((a, b) => a || b.statistics, false);
-        var dividerSpan = this.flat.reduce((t, h) => t + h.span, 0);
-
-        // Table block
-        var table = `
-            <tr>
-                ${ this.settings.globals.indexed ? `<td style="width: 50px;" rowspan="2" class="clickable" ${ this.settings.globals.indexed == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                <td style="width: ${ name }px;" rowspan="2" class="border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
-                ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td rowspan="2" colspan="${ h.span }" style="width: ${ h.width }px;" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" data-sortable-key="${ h.sortkey }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`) : `<td colspan="${ g.length }" class="${ index != array.length - 1 ? 'border-right-thin' : '' }">${ g.name }</td>`)}
-            <tr>
-                ${ join(this.config, (g, index, array) => g.empty ? '' : join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" style="width: ${ h.width }px;" class="clickable ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }" ${ this.getSortingTag(h.sortkey) }>${ h.name }</td>`)) }
-            </tr>
-            <tr>
-                ${ this.settings.globals.indexed ? '<td class="border-bottom-thick"></td>' : '' }
-                <td class="border-bottom-thick border-right-thin"></td>
-                ${ join(this.config, (g, index, array) => g.empty ? join(g.headers, (h, hindex, harray) => `<td colspan="${ h.span }" class="border-bottom-thick ${ index != array.length - 1 && hindex == harray.length - 1 ? 'border-right-thin' : '' }"></td>`) : `<td colspan="${ g.length }" class="border-bottom-thick ${ index != array.length - 1 ? 'border-right-thin' : '' }"></td>`)}
-            </tr>
-                ${ join(this.entries, (e, ei) => e.content.replace('{__INDEX__}', ei + 1)) }
-                ${ this.entries.missing.length ? `<tr class="css-b-bold">${ CellGenerator.WideCell(CellGenerator.Small(`Player data is missing for following members:<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.flat.length + (this.settings.globals.indexed ? 1 : 0) + 1, 'center') }</tr>` : '' }
-        `;
-
-        // Statistics block
-        var statistics = '';
-        if (showSummary) {
-            if (this.settings.customStatistics.length > 0) {
-                statistics += `
-                    <tr>
-                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                        ${ join(this.flat, (h, i) => `<td colspan="${ h.span }">${ h.statistics && h.generators.statistics ? h.name : '' }</td>`) }
-                    </tr>
-                    <tr>
-                        <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                        <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
-                    </tr>
-                `;
-
-                for (var stat of this.settings.customStatistics) {
-                    statistics += `
-                        <tr>
-                            <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ stat.name }</td>
-                            ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => stat.ast.eval(undefined, undefined, this.settings, ar)) : `<td colspan=${ h.span }></td>`) }
-                        </tr>
-                    `;
-                }
-            } else {
-                statistics += `
-                    <tr>
-                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                        ${ join(this.flat, (h, i) => `<td colspan="${ h.span }">${ h.statistics && h.generators.statistics ? h.name : '' }</td>`) }
-                    </tr>
-                    <tr>
-                        <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                        <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
-                    </tr>
-                    <tr>
-                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Minimum</td>
-                        ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => Math.min(... ar)) : `<td colspan=${ h.span }></td>`) }
-                    </tr>
-                    <tr>
-                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Average</td>
-                        ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => ar.reduce((a, b) => a + b, 0) / ar.length) : `<td colspan=${ h.span }></td>`) }
-                    </tr>
-                    <tr>
-                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Maximum</td>
-                        ${ join(this.flat, (h, index, array) => (h.statistics && h.generators.statistics) ? h.generators.statistics(this.array, ar => Math.max(... ar)) : `<td colspan=${ h.span }></td>`) }
-                    </tr>
-                `;
-            }
-        }
-
-        // Content spacers
-        var linedSpacer = `
-            <tr>
-                <td class="border-right-thin border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
-            </tr>
-        `;
-
-        var linedSpacerTop = `
-            <tr>
-                <td class="border-bottom-thick" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }></td>
-                <td class="border-bottom-thick" colspan=${ dividerSpan }></td>
-            </tr>
-        `;
-
-        var spacer = `
-            <tr>
-                <td colspan="${ dividerSpan + 1 + (this.settings.globals.indexed ? 1 : 0) }"></td>
-            </tr>
-        `;
-
-        var details = '';
-        if (this.settings.customRows.length) {
-            var widskip = 1;
-            for (var i = 0, wid = 100; wid > 0 && i < this.flat.length; i++) {
-                wid -= this.flat[i].width;
-                if (wid > 0) {
-                    widskip += this.flat[i].span;
-                } else {
-                    break;
-                }
-            }
-
-            for (var extra of this.settings.customRows) {
-                var lw = widskip;
-                if (extra.width) {
-                    var lw = 1;
-                    for (var i = 0, wid = (extra.width == -1 ? sizeDynamic : extra.width); wid > 0 && i < this.flat.length; i++) {
-                        wid -= this.flat[i].width;
-                        if (wid > 0) {
-                            lw += this.flat[i].span;
-                        } else {
-                            break;
-                        }
-                    }
-                }
-
-                var value = extra.eval.value;
-                var reference = extra.difference && !isNaN(extra.eval.compare) ? extra.eval.compare : '';
-
-                if (reference && !isNaN(reference)) {
-                    reference = extra.flip ? (reference - value) : (value - reference);
-                    reference = CellGenerator.Difference(reference, extra.brackets, extra.format_diff ? extra.format(undefined, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
-                } else {
-                    reference = '';
-                }
-
-                var color = extra.color.get(undefined, undefined, this.settings, value);
-                let shown = extra.value.get(undefined, undefined, this.settings, value);
-
-                var cell = CellGenerator.WideCell(shown + reference, color, lw, extra.align, extra.padding, extra.style ? extra.style.cssText : undefined);
-                details += `
-                    <tr>
-                        <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>${ extra.name }</td>
-                        ${ cell }
-                    </tr>
-                `;
-            }
-        }
-
-        // Members block
-        var members = '';
-        if (showMembers) {
-            var classes = this.array.reduce((c, p) => {
-                c[p.player.Class - 1]++;
-                return c;
-            }, [0, 0, 0, 0, 0, 0, 0, 0]);
-
-            var widskip = 1;
-            for (var i = 0, wid = 60; wid > 0 && i < this.flat.length; i++) {
-                wid -= this.flat[i].width;
-                if (wid > 0) {
-                    widskip += this.flat[i].span;
-                } else {
-                    break;
-                }
-            }
-
-            var colcount = this.flat.reduce((c, x) => c + x.span, 0);
-
-            members += `
-                <tr>
-                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Warrior</td>
-                    <td colspan="${ widskip }">${ classes[0] }</td>
-                    ${ this.array.joined.length > 0 ? `
-                        <td class="border-right-thin" rowspan="4" colspan="1">Joined</td>
-                        <td colspan="${ Math.max(1, colcount - 1 - widskip) }" rowspan="3">${ this.array.joined.join(', ') }</td>
-                    ` : '' }
-                </tr>
-                <tr>
-                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Mage</td>
-                    <td colspan="${ widskip }">${ classes[1] }</td>
-                </tr>
-                <tr>
-                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Scout</td>
-                    <td colspan="${ widskip }">${ classes[2] }</td>
-                </tr>
-                <tr>
-                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Assassin</td>
-                    <td colspan="${ widskip }">${ classes[3] }</td>
-                </tr>
-                <tr>
-                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Battle Mage</td>
-                    <td colspan="${ widskip }">${ classes[4] }</td>
-                    ${ this.array.kicked.length > 0 ? `
-                        <td class="border-right-thin" rowspan="4" colspan="1">Left</td>
-                        <td colspan="${ Math.max(1, colcount - 1 - widskip) }" rowspan="4">${ this.array.kicked.join(', ') }</td>
-                    ` : '' }
-                </tr>
-                <tr>
-                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Berserker</td>
-                    <td colspan="${ widskip }">${ classes[5] }</td>
-                </tr>
-                <tr>
-                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Demon Hunter</td>
-                    <td colspan="${ widskip }">${ classes[6] }</td>
-                </tr>
-                <tr>
-                    <td class="border-right-thin" ${ this.settings.globals.indexed ? 'colspan="2"' : '' }>Druid</td>
-                    <td colspan="${ widskip }">${ classes[7] }</td>
-                </tr>
-            `;
-        }
-
-        var layout = this.settings.globals.layout.filter(block => {
-            if (block == 1) {
-                return true;
-            } else if (block == 2) {
-                return showSummary;
-            } else if (block == 3) {
-                return this.settings.customRows.length;
-            } else if (block == 4) {
-                return showMembers;
-            }
-        });
-
-        var content = '';
-        for (var i = 0; i < layout.length; i++) {
-            var block = layout[i];
-            var prev = i == 0 ? 0 : layout[i - 1];
-
-            if (i == 1 && block == 1 && prev >= 3) {
-                content += linedSpacer + spacer;
-            } else if (i > 0 && block != 1 && prev >= 2) {
-                content += linedSpacer;
-            } else if (prev == 1 && i == layout.length - 1 && block != 2) {
-                content += spacer + linedSpacerTop;
-            } else if (i != 0 && block != 1) {
-                content += spacer;
-            }
-
-            if (block == 1) {
-                content += table;
-            } else if (block == 2) {
-                content += statistics;
-            } else if (block == 3) {
-                content += details;
-            } else if (block == 4) {
-                content += members;
-            }
-        }
-
-        return {
-            content: `
-                <thead>
-
-                </thead>
-                <tbody style="${ this.settings.globals.font ? `font: ${ this.settings.globals.font };` : '' }" class="${ this.settings.globals.lined ? (this.settings.globals.lined == 1 ? 'css-entry-lined' : 'css-entry-thicklined') : '' } ${ this.settings.globals.opaque ? 'css-entry-opaque' : '' } ${ this.settings.globals['large rows'] ? 'css-maxi-row' : '' }">
-                    ${ content }
-                </tbody>
-            `,
-            width: size
-        };
     }
 }
 
@@ -1445,18 +1395,12 @@ const SettingsCommands = [
     }),
     // Global
     // set static
-    new SettingsCommand(/^(layout) ((table|statistics|members|details|rows)\s*(\,\s*(table|statistics|members|details|rows))*)$/, function (root, string) {
+    new SettingsCommand(/^(layout) ((\||table|statistics|rows|members)(\s+(\||table|statistics|rows|members))*)$/, function (root, string) {
         var [ , key, order ] = this.match(string);
-        root.addGlobal('layout', order.split(',').map(o => ({
-            'table': 1,
-            'statistics': 2,
-            'details': 3,
-            'members': 4,
-            'rows': 3
-        }[o.trim()])));
+        root.addLayout(order.split(' ').map(o => o.trim()));
     }, function (root, string) {
         var [ , key, order ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ order.split(',').map(o => SFormat.Constant(o)).join(',') }`;
+        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(order) }`;
     }),
     // Global
     // set static
@@ -2281,9 +2225,7 @@ class Settings {
         this.customDefinitions = {};
 
         // Settings
-        this.globals = {
-            layout: [ 1, 2, 3, 4 ]
-        };
+        this.globals = {};
 
         // Shared globals
         this.shared = {
@@ -2776,6 +2718,10 @@ class Settings {
         }
     }
 
+    addLayout (layout) {
+        this.globals.layout = layout;
+    }
+
     // Add discard rule
     addDiscardRule (rule) {
         this.discardRules.push(rule);
@@ -2831,6 +2777,32 @@ class Settings {
 
     getOutdatedStyle () {
         return this.globals.outdated;
+    }
+
+    getLayout (hasStatistics, hasRows, hasMembers) {
+        if (typeof this.globals.layout != 'undefined') {
+            return this.globals.layout;
+        } else {
+            if (this.type == TableType.Players) {
+                return [
+                    ... (hasStatistics ? [ 'statistics', hasRows ? '|' : '' ] : []),
+                    ... (hasRows ? [ 'rows', '' ] : []),
+                    'table'
+                ];
+            } else if (this.type == TableType.Group) {
+                return [
+                    'table',
+                    ... (hasStatistics ? [ '', 'statistics' ] : []),
+                    ... (hasRows ? [ hasStatistics ? '|' : '', 'rows' ] : []),
+                    ... (hasMembers ? [ hasRows || hasStatistics ? '|' : '', 'members' ] : [])
+                ];
+            } else {
+                return [
+                    ... (hasRows ? [ 'rows', '|', '' ] : []),
+                    'table'
+                ];
+            }
+        }
     }
 
     getEntryLimit () {
@@ -2936,6 +2908,15 @@ class Settings {
                 } else {
                     delete variable.value;
                 }
+            }
+        }
+
+        // Evaluate custom rows
+        for (let row of this.customRows) {
+            let currentValue = row.ast.eval(array[0], undefined, this, array);
+
+            row.eval = {
+                value: currentValue
             }
         }
 
