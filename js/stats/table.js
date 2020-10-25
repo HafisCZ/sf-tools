@@ -635,10 +635,10 @@ class TableInstance {
             for (let row of this.settings.customRows) {
                 let player = this.array[0][1];
 
-                let value = row.ast.eval(player, player, this.settings);
+                let value = row.ast.eval(player, undefined, this.settings);
 
-                let color = row.color.get(player, player, this.settings, value);
-                let shown = row.value.get(player, player, this.settings, value);
+                let color = row.color.get(player, undefined, this.settings, value);
+                let shown = row.value.get(player, undefined, this.settings, value);
 
                 this.cache.rows += `
                     <tr>
@@ -701,6 +701,20 @@ class TableInstance {
         };
     }
 
+    getCellDisplayValue ({ difference, flip, value, brackets }, val, cmp, player = undefined, compare = undefined, extra = undefined) {
+        let displayValue = value.get(player, compare, this.settings, val, extra);
+        if (!difference || isNaN(cmp)) {
+            return displayValue;
+        } else {
+            let diff = (flip ? -1 : 1) * (val - cmp);
+            return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(player, compare, this.settings, diff, extra));
+        }
+    }
+
+    getCellColor ({ color }, val, player = undefined, compare = undefined, extra = undefined, ignoreBase = false) {
+        return color.get(player, compare, this.settings, val, extra, ignoreBase);
+    }
+
     // Create players table
     createPlayersTable () {
         // Width of the whole table
@@ -715,23 +729,21 @@ class TableInstance {
         // Get rows
         if (this.cache.rows == '' && this.settings.customRows.length) {
             for (let row of this.settings.customRows) {
-                let value = row.eval.value;
-                let reference = row.difference && !isNaN(row.eval.compare) ? row.eval.compare : '';
-
-                if (reference && !isNaN(reference)) {
-                    reference = row.flip ? (reference - value) : (value - reference);
-                    reference = CellGenerator.Difference(reference, row.brackets, row.format_diff ? extra.format(undefined, undefined, this.settings, reference) : (Number.isInteger(reference) ? reference : reference.toFixed(2)));
-                } else {
-                    reference = '';
-                }
-
-                let color = row.color.get(undefined, undefined, this.settings, value);
-                let shown = row.value.get(undefined, undefined, this.settings, value);
+                // Values
+                let val = row.eval.value;
+                let cmp = row.eval.compare;
 
                 this.cache.rows += `
                     <tr>
                         <td class="border-right-thin" colspan="${ leftSpan }">${ row.name }</td>
-                        ${ CellGenerator.WideCell(shown + reference, color, this.getRowSpan(row.width), row.align, row.padding, row.style ? row.style.cssText : undefined) }
+                        ${ CellGenerator.WideCell(
+                            this.getCellDisplayValue(row, val, cmp),
+                            this.getCellColor(row, val),
+                            this.getRowSpan(row.width),
+                            row.align,
+                            row.padding,
+                            row.style ? row.style.cssText : undefined
+                        ) }
                     </tr>
                 `;
             }
@@ -1849,12 +1861,18 @@ const SettingsCommands = [
     new SettingsCommand(/^(format difference|fd) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
         if (arg == 'on') {
+            root.addFormatDifferenceExpression(true);
+
             root.addLocal('format_diff', true);
         } else if (arg == 'off') {
+            root.addFormatDifferenceExpression(false);
+
             root.addLocal('format_diff', false);
         } else {
             var ast = new Expression(arg, root);
             if (ast.isValid()) {
+                root.addFormatDifferenceExpression((env, val) => ast.eval(undefined, undefined, env, val));
+
                 root.addLocal('format_diff', (env, val) => {
                     return ast.eval(undefined, undefined, env, val);
                 });
@@ -1871,12 +1889,18 @@ const SettingsCommands = [
     new SettingsCommand(/^(format statistics|fs) (.*)$/, function (root, string) {
         var [ , key, arg ] = this.match(string);
         if (arg == 'on') {
+            root.addFormatStatisticsExpression(true);
+
             root.addLocal('format_stat', true);
         } else if (arg == 'off') {
+            root.addFormatStatisticsExpression(false);
+
             root.addLocal('format_stat', false);
         } else {
             var ast = new Expression(arg, root);
             if (ast.isValid()) {
+                root.addFormatStatisticsExpression((env, val) => ast.eval(undefined, undefined, env, val));
+
                 root.addLocal('format_stat', (env, val) => {
                     return ast.eval(undefined, undefined, env, val);
                 });
@@ -2354,6 +2378,16 @@ class Settings {
                 obj.value.format = definition.value.format;
             }
 
+            // Merge difference format expression
+            if (!obj.value.format) {
+                obj.value.formatDifference = definition.value.formatDifference;
+            }
+
+            // Merge statistics format expression
+            if (!obj.value.format) {
+                obj.value.formatStatistics = definition.value.formatStatistics;
+            }
+
             // Merge value extra
             if (!obj.value.extra) {
                 obj.value.extra = definition.value.extra;
@@ -2502,6 +2536,8 @@ class Settings {
         return {
             extra: undefined,
             format: undefined,
+            formatDifference: undefined,
+            formatStatistics: undefined,
             rules: new RuleEvaluator(),
             get: function (player, compare, settings, value, extra = undefined) {
                 // Get value from value block
@@ -2524,6 +2560,24 @@ class Settings {
 
                 // Return value
                 return output;
+            },
+            getDifference: function (player, compare, settings, value, extra = undefined) {
+                let nativeDifference = Number.isInteger(value) ? value : value.toFixed(2);
+
+                if (this.formatDifference === true) {
+                    if (typeof this.formatDifference != 'undefined') {
+                        return this.format(player, compare, settings, value, extra);
+                    } else {
+                        return nativeDifference;
+                    }
+                } else if (this.formatDifference) {
+                    return this.formatDifference(settings, value);
+                } else {
+                    return nativeDifference;
+                }
+            },
+            getStatistics: function (player, compare, settings, value, extra = undefined) {
+
             }
         }
     }
@@ -2633,6 +2687,20 @@ class Settings {
         let object = (this.row || this.definition || this.header);
         if (object) {
             object.value.extra = expression;
+        }
+    }
+
+    addFormatStatisticsExpression (expression) {
+        let object = (this.row || this.definition || this.header);
+        if (object) {
+            object.value.formatStatistics = expression;
+        }
+    }
+
+    addFormatDifferenceExpression (expression) {
+        let object = (this.row || this.definition || this.header);
+        if (object) {
+            object.value.formatDifference = expression;
         }
     }
 
