@@ -2792,9 +2792,10 @@ class Settings {
             } else if (this.type == TableType.Group) {
                 return [
                     'table',
-                    ... (hasStatistics ? [ '', 'statistics' ] : []),
-                    ... (hasRows ? [ hasStatistics ? '|' : '', 'rows' ] : []),
-                    ... (hasMembers ? [ hasRows || hasStatistics ? '|' : '', 'members' ] : [])
+                    ... (hasStatistics || hasRows || hasMembers ? [ '' ] : []),
+                    ... (hasStatistics ? [ 'statistics' ] : []),
+                    ... (hasRows ? [ '|', 'rows' ] : []),
+                    ... (hasMembers ? [ '|', 'members' ] : [])
                 ];
             } else {
                 return [
