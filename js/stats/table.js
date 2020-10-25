@@ -625,38 +625,74 @@ class TableInstance {
         }
     }
 
+    getCellDisplayValue ({ difference, flip, value, brackets }, val, cmp, player = undefined, compare = undefined, extra = undefined) {
+        let displayValue = value.get(player, compare, this.settings, val, extra);
+        if (!difference || isNaN(cmp)) {
+            return displayValue;
+        } else {
+            let diff = (flip ? -1 : 1) * (val - cmp);
+            return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(player, compare, this.settings, diff, extra));
+        }
+    }
+
+    getCellColor ({ color }, val, player = undefined, compare = undefined, extra = undefined, ignoreBase = false) {
+        return color.get(player, compare, this.settings, val, extra, ignoreBase);
+    }
+
+    getDivider (leftSpan, bottomSpacer, topSpacer) {
+        return `
+            ${ topSpacer ? `
+                <tr>
+                    <td colspan="${ this.flatSpan + leftSpan }"></td>
+                </tr>
+            ` : '' }
+            <tr>
+                <td class="border-right-thin border-bottom-thick" colspan="${ leftSpan }"></td>
+                <td class="border-bottom-thick" colspan=${ this.flatSpan }></td>
+            </tr>
+            ${ bottomSpacer ? `
+                <tr>
+                    <td colspan="${ this.flatSpan + leftSpan }"></td>
+                </tr>
+            ` : '' }
+        `;
+    }
+
+    getRow (leftSpan, row, val, cmp = undefined, player = undefined, compare = undefined, extra = undefined, ignoreBase = false) {
+        return `
+            <tr>
+                <td class="border-right-thin" colspan="${ leftSpan }">${ row.name }</td>
+                ${ CellGenerator.WideCell(
+                    this.getCellDisplayValue(row, val, cmp, player, compare, extra),
+                    this.getCellColor(row, val, player, compare, extra, ignoreBase),
+                    this.getRowSpan(row.width),
+                    row.align,
+                    row.padding,
+                    row.style ? row.style.cssText : undefined
+                ) }
+            </tr>
+        `;
+    }
+
     createHistoryTable () {
         // Width of the whole table
         let tableWidth = this.flatWidth + 200 + (this.settings.getIndexStyle() ? 50 : 0);
         let indexStyle = this.settings.getIndexStyle();
 
+        let leftSpan = 1 + (indexStyle ? 1 : 0);
+
         // Get rows
         if (this.cache.rows == '' && this.settings.customRows.length) {
+            let player = this.array[0][1];
+
             for (let row of this.settings.customRows) {
-                let player = this.array[0][1];
 
-                let value = row.ast.eval(player, undefined, this.settings);
+                let val = row.ast.eval(player, undefined, this.settings);
 
-                let color = row.color.get(player, undefined, this.settings, value);
-                let shown = row.value.get(player, undefined, this.settings, value);
-
-                this.cache.rows += `
-                    <tr>
-                        <td class="border-right-thin" ${ indexStyle ? 'colspan="2"' : '' }>${ row.name }</td>
-                        ${ CellGenerator.WideCell(shown, color, this.getRowSpan(row.width), row.align, row.padding, row.style ? row.style.cssText : undefined) }
-                    </tr>
-                `;
+                this.cache.rows += this.getRow(leftSpan, row, val, undefined, player);
             }
 
-            this.cache.rows += `
-                <tr>
-                    <td class="border-right-thin border-bottom-thick" ${ indexStyle ? 'colspan="2"' : '' }></td>
-                    <td class="border-bottom-thick" colspan=${ this.flatSpan }></td>
-                </tr>
-                <tr>
-                    <td colspan="${ this.flatSpan + 1 + (indexStyle ? 1 : 0) }"></td>
-                </tr>
-            `;
+            this.cache.rows += this.getDivider(leftSpan, true, false);
         }
 
         // Create left headers
@@ -701,20 +737,6 @@ class TableInstance {
         };
     }
 
-    getCellDisplayValue ({ difference, flip, value, brackets }, val, cmp, player = undefined, compare = undefined, extra = undefined) {
-        let displayValue = value.get(player, compare, this.settings, val, extra);
-        if (!difference || isNaN(cmp)) {
-            return displayValue;
-        } else {
-            let diff = (flip ? -1 : 1) * (val - cmp);
-            return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(player, compare, this.settings, diff, extra));
-        }
-    }
-
-    getCellColor ({ color }, val, player = undefined, compare = undefined, extra = undefined, ignoreBase = false) {
-        return color.get(player, compare, this.settings, val, extra, ignoreBase);
-    }
-
     // Create players table
     createPlayersTable () {
         // Width of the whole table
@@ -728,35 +750,15 @@ class TableInstance {
 
         // Get rows
         if (this.cache.rows == '' && this.settings.customRows.length) {
+
             for (let row of this.settings.customRows) {
-                // Values
                 let val = row.eval.value;
                 let cmp = row.eval.compare;
 
-                this.cache.rows += `
-                    <tr>
-                        <td class="border-right-thin" colspan="${ leftSpan }">${ row.name }</td>
-                        ${ CellGenerator.WideCell(
-                            this.getCellDisplayValue(row, val, cmp),
-                            this.getCellColor(row, val),
-                            this.getRowSpan(row.width),
-                            row.align,
-                            row.padding,
-                            row.style ? row.style.cssText : undefined
-                        ) }
-                    </tr>
-                `;
+                this.cache.rows += this.getRow(leftSpan, row, val, cmp);
             }
 
-            this.cache.rows += `
-                <tr>
-                    <td class="border-right-thin border-bottom-thick" colspan="${ leftSpan }"></td>
-                    <td class="border-bottom-thick" colspan=${ this.flatSpan }></td>
-                </tr>
-                <tr>
-                    <td colspan="${ this.flatSpan + leftSpan }"></td>
-                </tr>
-            `;
+            this.cache.rows += this.getDivider(leftSpan, true, false);
         }
 
         // Create left headers
