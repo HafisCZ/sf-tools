@@ -598,6 +598,10 @@ function compareItems (a, b) {
         if (a == '') return 1;
         else if (b == '') return -1;
         else return a.localeCompare(b);
+    } else if (a == undefined) {
+        return 1;
+    } else if (b == undefined) {
+        return -1;
     } else {
         return b - a;
     }

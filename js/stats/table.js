@@ -156,9 +156,7 @@ class TableInstance {
                         // Sort
                         let vals = header.expr(player, compare, this.settings);
 
-                        if (vals == undefined) {
-                            return -1;
-                        } else if (Array.isArray(vals)) {
+                        if (Array.isArray(vals)) {
                             return vals.reduce((a, b) => a + b, 0);
                         } else {
                             return vals;
@@ -171,7 +169,7 @@ class TableInstance {
                         let val = header.expr(player, compare, this.settings);
 
                         if (val == undefined) {
-                            return this.getEmptyCell(showBorder);
+                            return this.getEmptyCell(header, showBorder);
                         } else {
                             let cmp = header.difference ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
                             return this.getCell(
@@ -216,13 +214,7 @@ class TableInstance {
                         }
                     }, (player, compare) => {
                         // Sort
-                        let val = header.expr(player, compare, this.settings);
-
-                        if (val == undefined) {
-                            return -1;
-                        } else {
-                            return val;
-                        }
+                        return header.expr(player, compare, this.settings);
                     }, showBorder);
                 }
             }
@@ -523,12 +515,10 @@ class TableInstance {
     sort () {
         if (this.sorting.length) {
             this.entries.sort((a, b) => {
-                var { key, flip, order } = this.sorting[0];
-                var result = ((order == 1 && !flip) || (order == 2 && flip)) ? compareItems(a.sorting[key], b.sorting[key]) : compareItems(b.sorting[key], a.sorting[key]);
+                let result = undefined;
 
-                for (var i = 1; i < this.sorting.length; i++) {
-                    var { key, flip, order } = this.sorting[i];
-                    result = result || (((order == 1 && !flip) || (order == 2 && flip)) ? compareItems(a.sorting[key], b.sorting[key]) : compareItems(b.sorting[key], a.sorting[key]));
+                for (let { key, flip, order } of this.sorting) {
+                    result = result || (a.sorting[key] == undefined ? 1 : (b.sorting[key] == undefined ? -1 : (((order == 1 && !flip) || (order == 2 && flip)) ? compareItems(a.sorting[key], b.sorting[key]) : compareItems(b.sorting[key], a.sorting[key]))));
                 }
 
                 return result || (a.sorting['_index'] - b.sorting['_index']);
