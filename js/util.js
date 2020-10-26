@@ -27,6 +27,15 @@ function copyText (text) {
     window.getSelection().removeAllRanges();
 }
 
+// Helper function
+function merge (a, b) {
+    for (var [k, v] of Object.entries(b)) {
+        if (!a.hasOwnProperty(k) && typeof(v) != 'object') a[k] = b[k];
+    }
+
+    return a;
+}
+
 function reverseHealthMultipliers (level, healthMultiplier, constitution, totalHealth) {
 	let baseHealth = (level + 1) * healthMultiplier * constitution;
 	for (let potion = 0; potion <= 1; potion++) {
@@ -497,6 +506,16 @@ function * filterPlayaJSON (o, tt = [], a = []) {
             if (o[i] != null && typeof(o[i]) == 'object') {
                 yield * filterPlayaJSON(o[i], t, a);
             }
+        }
+    }
+}
+
+function * iterate (array) {
+    for (let i = 0; i < array.length; i++) {
+        yield {
+            index: i,
+            array: array,
+            object: array[i]
         }
     }
 }

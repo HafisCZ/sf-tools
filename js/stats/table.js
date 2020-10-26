@@ -1,43 +1,54 @@
+// Table Type
+const TableType = {
+    History: 0,
+    Players: 1,
+    Group: 2
+}
+
+// Category
 class HeaderGroup {
-    constructor (name, empty) {
+    constructor ({ name, empty }) {
         this.name = name;
         this.empty = empty;
+
         this.sortkey = SHA1(name);
 
         this.width = 0;
         this.length = 0;
-
         this.headers = [];
     }
 
-    add (name, settings, defaults, cellgen, statgen, sort, last, span = 1) {
-        var header = {
-            name: name,
+    add (settings, cellGenerator, statisticsGenerator, sort, border, span = 1) {
+        let { alias, name } = settings;
+        let header = {
+            // Header
+            ... settings,
+
+            // Own properties
+            name: alias != undefined ? alias : name,
             generators: {
-                cell: cellgen,
-                statistics: statgen
+                cell: cellGenerator,
+                statistics: statisticsGenerator
             },
             sort: sort,
-            sortkey: `${ this.sortkey }.${ name }.${ this.length }`,
+            sortkey: `${ this.sortkey }.${ name }.${ this.headers.length }`,
             span: span,
-            bordered: last
+            bordered: border
         };
 
-        merge(header, settings);
-        merge(header, defaults);
+        // Set approximate sizes
+        if (typeof header.width == 'undefined') {
+            header.width = Math.max(100, header.name.length * 12);
+        } else if (header.width && header.grouped) {
+            header.width = header.grouped * (header.width + 3);
+        }
+
+        // Sum width and push the header
+        this.width += header.width;
+        this.length++;
 
         this.headers.push(header);
-        this.width += header.width;
-        this.length += span;
     }
-}
-
-// Helper function
-function merge (a, b) {
-    for (var [k, v] of Object.entries(b)) {
-        if (!a.hasOwnProperty(k) && typeof(v) != 'object') a[k] = b[k];
-    }
-    return a;
 }
 
 // Special array for players only
@@ -46,13 +57,18 @@ class PlayersTableArray extends Array {
         super();
 
         this.perf = perf;
-
         this.timestamp = ts;
         this.reference = rs;
     }
 
     add (player, compare, latest, hidden) {
-        super.push({ player: player, compare: compare || player, latest: latest, index: this.length, hidden: hidden });
+        super.push({
+            player: player,
+            compare: compare || player,
+            latest: latest,
+            index: this.length,
+            hidden: hidden
+        });
     }
 }
 
@@ -63,33 +79,17 @@ class GroupTableArray extends Array {
 
         this.joined = joined;
         this.kicked = kicked;
-        this.missing = missing;
-
         this.timestamp = ts;
         this.reference = rs;
+        this.missing = missing;
     }
 
     add (player, compare) {
-        super.push({ player: player, compare: compare || player, index: this.length });
-    }
-}
-
-// Table Type
-const TableType = {
-    History: 0,
-    Players: 1,
-    Group: 2
-}
-
-// Easter eggs :)
-function getEasterEgg (id) {
-    if (id == 'w27_net_p268175' || id == 'w39_net_p321948') {
-        // #1 THE QUEEN
-        return '<i class="chess queen icon"></i>';
-    } else if (id == 'w27_net_p287170' || id == 'w39_net_p329544' || id == 'w42_net_p2' || id == 'w40_net_p1230') {
-        return '<img src="res/icon_sft.png" style="margin-bottom: 1px; width: 24px;"/> ';
-    } else {
-        return '';
+        super.push({
+            player: player,
+            compare: compare || player,
+            index: this.length
+        });
     }
 }
 
@@ -100,6 +100,9 @@ class TableInstance {
         this.settings = new Settings(settings, type);
         this.type = type;
 
+        this.config = [];
+        this.sorting = [];
+
         // Table generator
         this.createTable = [
             () => this.createHistoryTable(),
@@ -107,185 +110,127 @@ class TableInstance {
             () => this.createGroupTable()
         ][ this.type ];
 
-        // Sorting keys
-        this.sorting = [];
+        // Loop over all categories
+        for (let { object: category, index: categoryIndex, array: categories } of iterate(this.settings.categories)) {
+            // Create header group
+            let group = new HeaderGroup(category);
+            let lastCategory = categoryIndex == categories.length - 1;
 
-        // Column configuration
-        this.config = [];
-        this.settings.categories.forEach((category, ci, ca) => {
-            var group = new HeaderGroup(category.name, category.empty);
-            var glast = ci == ca.length - 1;
+            // Loop over all headers
+            for (let { object: header, index: headerIndex, array: headers } of iterate(category.headers)) {
+                let lastHeader = headerIndex == headers.length - 1;
+                let nextHeader = headers[headerIndex + 1];
 
-            category.headers.forEach((header, hi, ha) => {
-                var hlast = (!glast && hi == ha.length - 1) || header.border >= 2 || (hi != ha.length - 1 && (ha[hi + 1].border == 1 || ha[hi + 1].border == 3));
+                let showBorder = (!lastCategory && lastHeader) || (header.border >= 2) || (!lastHeader && (nextHeader.border == 1 || nextHeader.border == 3));
 
                 if (header.grouped) {
-                    if (header.width) {
-                        header.width = header.grouped * (header.width + 3);
-                    }
+                    // Create grouped header
+                    group.add(header, (player, compare) => {
+                        // Cell
+                        let vals = header.expr(player, compare, this.settings);
 
-                    group.add((header.alias != undefined ? header.alias : header.name), header, {
-                        width: Math.max(100, (header.alias || header.name).length * 12)
-                    }, (player, compare) => {
-                        var values = header.expr(player, compare, this.settings);
-                        var references = header.expr(compare, compare, this.settings.getCompareEnvironment());
-
-                        if (values == undefined || !Array.isArray(values)) {
-                            return CellGenerator.PlainSpan(header.grouped, header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
+                        if (!Array.isArray(vals)) {
+                            return this.getEmptyCell(header, showBorder, header.grouped);
                         } else {
-                            var content = '';
+                            let cmps = header.difference ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
 
-                            for (var i = 0; i < header.grouped; i++) {
-                                var value = values[i];
-                                var reference = references[i] == undefined ? value : references[i];
+                            return join(vals, (val, index) => {
+                                let showEndBorder = showBorder && index == header.grouped - 1;
                                 let extra = {
-                                    index: i
+                                    index: index
                                 };
 
-                                if (value == undefined) {
-                                    content += CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, i == header.grouped - 1 && hlast, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
+                                if (val == undefined) {
+                                    return this.getEmptyCell(header, showEndBorder);
                                 } else {
-                                    reference = (header.difference && compare) ? reference : undefined;
-                                    if (!isNaN(reference)) {
-                                        reference = header.flip ? (reference - value) : (value - reference);
-
-                                        var freference = reference;
-                                        if (header.format_diff === undefined) {
-                                            freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
-                                        } else if (header.format_diff === true) {
-                                            if (header.format) {
-                                                freference = header.format(player, compare, this.settings, reference, extra);
-                                            }
-                                        } else if (header.format_diff !== false) {
-                                            freference = header.format_diff(this.settings, reference);
-                                        }
-
-                                        reference = CellGenerator.Difference(reference, header.brackets, freference);
-                                    } else {
-                                        reference = '';
-                                    }
-
-                                    let color = header.color.get(player, compare, this.settings, value, extra);
-                                    let shown = header.value.get(player, compare, this.settings, value, extra);
-
-                                    content += CellGenerator.Cell(shown + reference, color, header.visible ? '' : color, i == header.grouped - 1 && hlast, header.align, header.padding, header.style ? header.style.cssText : undefined);
+                                    return this.getCell(
+                                        header,
+                                        this.getCellDisplayValue(header, val, header.difference ? cmps[index] : undefined, player, compare, extra),
+                                        this.getCellColor(header, val, player, compare, extra),
+                                        showEndBorder
+                                    );
                                 }
-                            }
-
-                            return content;
+                            });
                         }
                     }, null, (player, compare) => {
-                        var value = header.expr(player, compare, this.settings);
-                        if (value == undefined) {
+                        // Sort
+                        let vals = header.expr(player, compare, this.settings);
+
+                        if (vals == undefined) {
                             return -1;
-                        } else if (Array.isArray(value)) {
-                            return value.reduce((a, b) => a + b, 0);
+                        } else if (Array.isArray(vals)) {
+                            return vals.reduce((a, b) => a + b, 0);
                         } else {
-                            return value;
+                            return vals;
                         }
-                    }, hlast, header.grouped);
+                    }, showBorder, header.grouped);
                 } else {
-                    group.add((header.alias != undefined ? header.alias : header.name), header, {
-                        width: Math.max(100, (header.alias || header.name).length * 12)
-                    }, (player, compare) => {
-                        var value = header.expr(player, compare, this.settings);
-                        if (value == undefined) {
-                            return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, hlast, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
-                        }
+                    // Create normal header
+                    group.add(header, (player, compare) => {
+                        // Cell
+                        let val = header.expr(player, compare, this.settings);
 
-                        var reference = (header.difference && compare) ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
-                        if (!isNaN(reference)) {
-                            reference = header.flip ? (reference - value) : (value - reference);
-
-                            var freference = reference;
-                            if (header.format_diff === undefined) {
-                                freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
-                            } else if (header.format_diff === true) {
-                                if (header.format) {
-                                    freference = header.format(player, compare, this.settings, reference);
-                                }
-                            } else if (header.format_diff !== false) {
-                                freference = header.format_diff(this.settings, reference);
-                            }
-
-                            reference = CellGenerator.Difference(reference, header.brackets, freference);
+                        if (val == undefined) {
+                            return this.getEmptyCell(showBorder);
                         } else {
-                            reference = '';
+                            let cmp = header.difference ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
+                            return this.getCell(
+                                header,
+                                this.getCellDisplayValue(header, val, cmp, player, compare),
+                                this.getCellColor(header, val, player, compare),
+                                showBorder
+                            );
                         }
-
-                        let color = header.color.get(player, compare, this.settings, value);
-                        let shown = header.value.get(player, compare, this.settings, value);
-
-                        return CellGenerator.Cell(shown + reference, color, header.visible ? '' : color, hlast, header.align, header.padding, header.style ? header.style.cssText : undefined);
                     }, (players, operation) => {
-                        var value = players.map(p => header.expr(p.player, p.compare, this.settings)).filter(x => x != undefined);
-                        if (value.length == 0) {
-                            return CellGenerator.Plain(header.ndef == undefined ? '?' : header.ndef, undefined, undefined, header.ndefc, header.style ? header.style.cssText : undefined);
-                        }
-
-                        value = operation(value);
-                        if (!header.decimal) {
-                            value = Math.trunc(value);
-                        }
-
-                        var reference = header.difference ? players.map(p => header.expr(p.compare, p.compare, this.settings.getCompareEnvironment())).filter(x => x != undefined) : undefined;
-
-                        if (reference && reference.length) {
-                            reference = operation(reference);
-
-                            if (!isNaN(reference)) {
-                                if (!header.decimal) {
-                                    reference = Math.trunc(reference);
-                                }
-
-                                reference = header.flip ? (reference - value) : (value - reference);
-
-                                var freference = reference;
-                                if (header.format_diff === undefined) {
-                                    freference = Number.isInteger(reference) ? reference : reference.toFixed(2);
-                                } else if (header.format_diff === true) {
-                                    if (header.format) {
-                                        freference = header.format(undefined, undefined, this.settings, reference);
-                                    }
-                                } else if (header.format_diff !== false) {
-                                    freference = header.format_diff(this.settings, reference);
-                                }
-
-                                reference = CellGenerator.Difference(reference, header.brackets, freference);
-                            } else {
-                                reference = '';
+                        // Statistics
+                        let val = players.map(({ player, compare }) => header.expr(player, compare, this.settings)).filter(v => v != undefined);
+                        if (val.length) {
+                            // Get value and trunc if necessary
+                            val = operation(val);
+                            if (!header.decimal) {
+                                val = Math.trunc(val);
                             }
+
+                            // Compare value
+                            let cmp = undefined;
+                            if (header.difference) {
+                                cmp = players.map(({ compare }) => header.expr(compare, compare, this.settings.getCompareEnvironment())).filter(v => v != undefined);
+                                if (cmp.length) {
+                                    cmp = operation(cmp);
+
+                                    if (!header.decimal) {
+                                        cmp = Math.trunc(cmp);
+                                    }
+                                } else {
+                                    cmp = undefined;
+                                }
+                            }
+
+                            return CellGenerator.Cell(
+                                this.getStatisticsDisplayValue(header, val, cmp),
+                                '',
+                                header.statistics_color ? this.getCellColor(header, val, undefined, undefined, undefined, true) : ''
+                            );
                         } else {
-                            reference = '';
+                            return this.getEmptyCell(header);
                         }
-
-                        var color = undefined;
-                        if (header.statistics_color) {
-                            color = header.color.get(undefined, undefined, this.settings, value, undefined, true);
-                        }
-
-                        if (header.format_stat === undefined || header.format_stat === true) {
-                            value = header.value.get(undefined, undefined, this.settings, value);
-                        } else if (header.format_stat !== false) {
-                            value = header.format_stat(this.settings, value);
-                        }
-
-                        return CellGenerator.Cell(value + reference, '', color);
                     }, (player, compare) => {
-                        var value = header.expr(player, compare, this.settings);
-                        if (value == undefined) {
+                        // Sort
+                        let val = header.expr(player, compare, this.settings);
+
+                        if (val == undefined) {
                             return -1;
                         } else {
-                            return value;
+                            return val;
                         }
-                    }, hlast);
+                    }, showBorder);
                 }
-            });
+            }
 
-            if (group.headers.length) {
+            if (group.length) {
                 this.config.push(group);
             }
-        });
+        }
 
         // Scale everything
         if (this.settings.globals.scale) {
@@ -598,6 +543,39 @@ class TableInstance {
         this.cache = { };
     }
 
+    getCell ({ visible, align, padding, style }, value, color, border) {
+        return CellGenerator.Cell(
+            value,
+            color,
+            visible ? '' : color,
+            border,
+            align,
+            padding,
+            style ? style.cssText : undefined
+        );
+    }
+
+    getEmptyCell ({ ndef, ndefc, style }, border = undefined, span = 0) {
+        if (span) {
+            return CellGenerator.PlainSpan(
+                span,
+                ndef == undefined ? '?' : ndef,
+                border,
+                undefined,
+                ndefc,
+                style ? style.cssText : undefined
+            );
+        } else {
+            return CellGenerator.Plain(
+                ndef == undefined ? '?' : ndef,
+                border,
+                undefined,
+                ndefc,
+                style ? style.cssText : undefined
+            );
+        }
+    }
+
     getRowSpan (width) {
         if (width == -1) {
             // Return maximum span when set to -1
@@ -628,6 +606,16 @@ class TableInstance {
         } else {
             let diff = (flip ? -1 : 1) * (val - cmp);
             return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(player, compare, this.settings, diff, extra));
+        }
+    }
+
+    getStatisticsDisplayValue ({ difference, flip, value, brackets }, val, cmp) {
+        let displayValue = value.getStatistics(this.settings, val);
+        if (!difference || isNaN(cmp)) {
+            return displayValue;
+        } else {
+            let diff = (flip ? -1 : 1) * (val - cmp);
+            return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(undefined, undefined, this.settings, diff));
         }
     }
 
@@ -1808,20 +1796,12 @@ const SettingsCommands = [
         var [ , key, arg ] = this.match(string);
         if (arg == 'on') {
             root.addFormatDifferenceExpression(true);
-
-            root.addLocal('format_diff', true);
         } else if (arg == 'off') {
             root.addFormatDifferenceExpression(false);
-
-            root.addLocal('format_diff', false);
         } else {
             var ast = new Expression(arg, root);
             if (ast.isValid()) {
                 root.addFormatDifferenceExpression((env, val) => ast.eval(undefined, undefined, env, val));
-
-                root.addLocal('format_diff', (env, val) => {
-                    return ast.eval(undefined, undefined, env, val);
-                });
             }
         }
     }, function (root, string) {
@@ -1836,20 +1816,12 @@ const SettingsCommands = [
         var [ , key, arg ] = this.match(string);
         if (arg == 'on') {
             root.addFormatStatisticsExpression(true);
-
-            root.addLocal('format_stat', true);
         } else if (arg == 'off') {
             root.addFormatStatisticsExpression(false);
-
-            root.addLocal('format_stat', false);
         } else {
             var ast = new Expression(arg, root);
             if (ast.isValid()) {
                 root.addFormatStatisticsExpression((env, val) => ast.eval(undefined, undefined, env, val));
-
-                root.addLocal('format_stat', (env, val) => {
-                    return ast.eval(undefined, undefined, env, val);
-                });
             }
         }
     }, function (root, string) {
@@ -2509,7 +2481,7 @@ class Settings {
                 let nativeDifference = Number.isInteger(value) ? value : value.toFixed(2);
 
                 if (this.formatDifference === true) {
-                    if (typeof this.formatDifference != 'undefined') {
+                    if (typeof this.format != 'undefined') {
                         return this.format(player, compare, settings, value, extra);
                     } else {
                         return nativeDifference;
@@ -2520,8 +2492,18 @@ class Settings {
                     return nativeDifference;
                 }
             },
-            getStatistics: function (player, compare, settings, value, extra = undefined) {
+            getStatistics: function (settings, value) {
+                let nativeFormat = Number.isInteger(value) ? value : value.toFixed(2);
 
+                if (this.formatStatistics === false) {
+                    return nativeFormat;
+                } else if (this.formatStatistics) {
+                    return this.formatStatistics(settings, value);
+                } else if (typeof this.format != 'undefined') {
+                    return this.format(undefined, undefined, settings, value);
+                } else {
+                    return nativeFormat;
+                }
             }
         }
     }
@@ -2786,7 +2768,7 @@ class Settings {
             if (this.type == TableType.Players) {
                 return [
                     ... (hasStatistics ? [ 'statistics', hasRows ? '|' : '' ] : []),
-                    ... (hasRows ? [ 'rows', '' ] : []),
+                    ... (hasRows ? (hasStatistics ? [ 'rows', '' ] : [ 'rows', '|', '' ]) : []),
                     'table'
                 ];
             } else if (this.type == TableType.Group) {
