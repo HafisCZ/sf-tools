@@ -1265,6 +1265,27 @@ class SettingsCommand {
     }
 };
 
+class Command {
+    constructor (regexp, parse, format, parseAlways = false) {
+        this.regexp = regexp;
+        this.internalParse = parse;
+        this.internalFormat = format;
+        this.parseAlways = parseAlways;
+    }
+
+    isValid (string) {
+        return this.regexp.test(string);
+    }
+
+    parse (root, string) {
+        this.internalParse(root, ... string.match(this.regexp).slice(1));
+    }
+
+    format (root, string) {
+        return this.internalFormat(root, ... string.match(this.regexp).slice(1));
+    }
+}
+
 class CellStyle {
     constructor () {
         this.styles = {};
@@ -1539,109 +1560,9 @@ const SettingsCommands = [
     }),
     // Global
     // indexed - Show indexes in first column of the table
-    new SettingsCommand(/^(indexed) (on|off|static)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addGlobal(key, ARG_MAP[a]);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a, a == 'static' ? 'on' : a) }`;
-    }),
     // Global
     // lined - Show lines between players
-    new SettingsCommand(/^(lined) (on|off|thin|thick)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addGlobal(key, ARG_MAP[a]);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a, a == 'thick' || a == 'thin' ? 'on' : a) }`;
-    }),
-    // Global
-    // performance - Set the amount of entries displayed
-    new SettingsCommand(/^(performance) (\d+)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addGlobal(key, Number(a));
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
-    }),
-    // Global
-    // scale - Set font scale value
-    new SettingsCommand(/^(scale) (\d+)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        if (!isNaN(a) && Number(a) > 0) {
-            root.addGlobal(key, Number(a));
-        }
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ !isNaN(a) && Number(a) > 0 ? SFormat.Normal(a) : SFormat.Error(a) }`;
-    }),
-    new SettingsCommand(/^align title$/, function (root, string) {
-        root.addGlobal('align_title', true);
-    }, function (root, string) {
-        return SFormat.Keyword('align title');
-    }),
-    // Global
-    // font - Set font size
-    new SettingsCommand(/^(font) (.+)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        var f = getCSSFont(a);
-        if (f) {
-            root.addGlobal(key, f);
-        }
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ getCSSFont(a) ? SFormat.Normal(a) : SFormat.Error(a) }`;
-    }),
-    // Global
-    // members - Show member classes and changes
-    // outdated - Mark outdated entries with red text
-    new SettingsCommand(/^(members|outdated|opaque|large rows) (on|off)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addGlobal(key, ARG_MAP[a]);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
-    }),
-    // Local Shared
-    // difference - Show difference between two points in time
-    // hydra - Show hydra achievement
-    // flip - Treat lower value as better
-    // brackets - Show difference within brackets
-    // statistics - Show statistics of a column
-    // maximum - Show maximum knights based on fortress level
-    // grail - Show grail achievement
-    new SettingsCommand(/^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addShared(key, ARG_MAP[a]);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
-    }),
-    new SettingsCommand(/^(clean)$/, function (root, string) {
-        var [ , key ] = this.match(string);
-        root.addLocal(key, true);
-    }, function (root, string) {
-        var [ , key ] = this.match(string);
-        return `${ SFormat.Keyword(key) }`;
-    }),
-    new SettingsCommand(/^(clean) (hard)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addLocal(key, 2);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
-    }),
     // Create new statistics row
-    new SettingsCommand(/^(statistics) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
-        var [ , key, name, a ] = this.match(string);
-        var ast = new Expression(a, root);
-        if (ast.isValid()) {
-            root.addStatistics(name, ast);
-        }
-    }, function (root, string) {
-        var [ , key, name, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ Expression.format(a, root) }`;
-    }),
     // Local Shared
     // width - Width of a column
     new SettingsCommand(/^(width) ((@?)(\S+))$/, function (root, string) {
@@ -1665,67 +1586,13 @@ const SettingsCommands = [
     }),
     // Global
     // simulator - Amount of simulator fights per duo
-    new SettingsCommand(/^(simulator target|simulator source) (\S+)$/, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-
-        root.addGlobal('simulator_target', arg);
-        if (key == 'simulator source') {
-            root.addGlobal('simulator_target_source', true);
-        }
-    }, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-
-        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
-    }),
     // Global
     // simulator - Amount of simulator fights per duo
-    new SettingsCommand(/^(simulator) (\d+)$/, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-
-        if (!isNaN(arg) && arg > 0) {
-            root.addGlobal(key, Number(arg));
-        }
-    }, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-
-        if (!isNaN(arg) && arg > 0) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
-        }
-    }),
     // Local
     // extra - Ending characters for each cell (example %)
-    new SettingsCommand(/^(extra) (.+)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addFormatExtraExpression(p => a);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
-    }),
-    new SettingsCommand(/^(const) (\w+) (.+)$/, function (root, string) {
-        var [ , key, name, value ] = this.match(string);
-        root.addConstant(name, value);
-    }, function (root, string) {
-        var [ , key, name, value ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Normal(value) }`;
-    }, true),
     // Local
     // visible - Show text on the background
-    new SettingsCommand(/^(visible) (on|off)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addShared(key, ARG_MAP[a]);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a) }`;
-    }),
-    new SettingsCommand(/^(style) ([a-zA-Z\-]+) (.*)$/, function (root, string) {
-        var [ , key, a, b ] = this.match(string);
-        root.addStyle(a, b);
-    }, function (root, string) {
-        var [ , key, a, b ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) } ${ SFormat.Normal(b) }`;
-    }),
+
     new SettingsCommand(/^(not defined value) ((@?)(.*))$/, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
         var val = root.constants.getValue(prefix, value);
@@ -1765,22 +1632,10 @@ const SettingsCommands = [
     }),
     // Local Shared
     // border - Show border around columns
-    new SettingsCommand(/^(border) (none|left|right|both)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addShared(key, ARG_MAP[a]);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
-    }),
+
     // Local Shared
     // align - Align column content
-    new SettingsCommand(/^(align) (left|right|center)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addShared(key, a);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(a) }`;
-    }),
+
     // Local
     // format - Specifies formatter for the field
     new SettingsCommand(/^(format difference|fd) (.*)$/, function (root, string) {
@@ -1823,13 +1678,7 @@ const SettingsCommands = [
             return `${ SFormat.Keyword(key) } ${ Expression.format(arg, root) }`;
         }
     }),
-    new SettingsCommand(/^(statistics color) (on|off)$/, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-        root.addShared('statistics_color', ARG_MAP[arg]);
-    }, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
-    }),
+
     // Local
     // format - Specifies formatter for the field
     new SettingsCommand(/^(format|f) (.*)$/, function (root, string) {
@@ -1854,18 +1703,7 @@ const SettingsCommands = [
     }),
     // Local
     // order by
-    new SettingsCommand(/^(order by) (.*)$/, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-        var ast = new Expression(arg, root);
-        if (ast.isValid()) {
-            root.addLocal('order', (player, reference, env, val, extra) => {
-                return ast.eval(player, reference, env, val, extra);
-            });
-        }
-    }, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ Expression.format(arg, root) }`;
-    }),
+
     // Local
     // alias - Override name of the column
     new SettingsCommand(/^(alias) ((@?)(.*))$/, function (root, string) {
@@ -1888,44 +1726,10 @@ const SettingsCommands = [
     }),
     // Local
     // expr - Set expression to the column
-    new SettingsCommand(/^(expr|e) (.+)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        var ast = new Expression(a, root);
-        if (ast.isValid()) {
-            root.addLocal('expr', (player, reference, env, scope, extra) => {
-                return ast.eval(player, reference, env, scope, extra);
-            });
-        }
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ Expression.format(a, root) }`;
-    }),
-    new SettingsCommand(/^discard (.*)$/, function (root, string) {
-        let [ , a ] = this.match(string);
-        var ast = new Expression(a, root);
-        if (ast.isValid()) {
-            root.addDiscardRule((player, reference, env, scope, extra) => {
-                return ast.eval(player, reference, env, scope, extra);
-            });
-        }
-    }, function (root, string) {
-        let [ , a ] = this.match(string);
-        return `${ SFormat.Keyword('discard') } ${ Expression.format(a, root) }`;
-    }),
+
     // Local
     // expc - Set color expression to the column
-    new SettingsCommand(/^(expc|c) (.+)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        var ast = new Expression(a, root);
-        if (ast.isValid()) {
-            root.addColorExpression((player, reference, env, val, extra) => {
-                return ast.eval(player, reference, env, val, extra);
-            });
-        }
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ Expression.format(a, root) }`;
-    }),
+
     // Local
     // value - Add default value
     new SettingsCommand(/^(value) (default) ((@?)(\S+[\S ]*))$/, function (root, string) {
@@ -2049,32 +1853,272 @@ const SettingsCommands = [
 
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ rarg } ${ arg }`;
     }),
-    // padding
-    new SettingsCommand(/^(padding) (.+)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addLocal(key, a);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
-    }),
-    // Create new type
-    new SettingsCommand(/^(define) (\w+)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addDefinition(a);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
-    }),
-    // Extend
-    new SettingsCommand(/^(extend) (\w+)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addExtension(a);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
-    })
-];
 
+    new SettingsCommand(/^(lined) (on|off|thin|thick)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.addGlobal(key, ARG_MAP[a]);
+    }, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a, a == 'thick' || a == 'thin' ? 'on' : a) }`;
+    }),
+    // Global
+    // performance - Set the amount of entries displayed
+    new SettingsCommand(/^(performance) (\d+)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        root.addGlobal(key, Number(a));
+    }, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
+    }),
+    // Global
+    // scale - Set font scale value
+    new SettingsCommand(/^(scale) (\d+)$/, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        if (!isNaN(a) && Number(a) > 0) {
+            root.addGlobal(key, Number(a));
+        }
+    }, function (root, string) {
+        var [ , key, a ] = this.match(string);
+        return `${ SFormat.Keyword(key) } ${ !isNaN(a) && Number(a) > 0 ? SFormat.Normal(a) : SFormat.Error(a) }`;
+    }),
+
+
+
+
+
+
+
+    /*
+        Font
+    */
+    new Command(
+        /^font (.+)$/,
+        (root, font) => {
+            let value = getCSSFont(font);
+            if (value) {
+                root.addGlobal('font', value);
+            }
+        },
+        (root, font) => SFormat.Keyword('font ') + (getCSSFont(font) ? SFormat.Normal(font) : SFormat.Error(value))
+    ),
+    /*
+        Shared options
+    */
+    new Command(
+        /^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/,
+        (root, key, value) => root.addShared(key, ARG_MAP[value]),
+        (root, key, value) => SFormat.Keyword(key) + ' ' + SFormat.Bool(value)
+    ),
+    /*
+        Clean
+    */
+    new Command(
+        /^clean$/,
+        (root) => root.addLocal('clean', true),
+        (root) => SFormat.Keyword('clean')
+    ),
+    new Command(
+        /^clean hard$/,
+        (root) => root.addLocal('clean', 2),
+        (root) => SFormat.Keyword('clean ') + SFoirmat.Constant('hard')
+    ),
+    /*
+        Indexing
+    */
+    new Command(
+        /^indexed (on|off|static)$/,
+        (root, value) => root.addGlobal('indexed', ARG_MAP[value]),
+        (root, value) => SFormat.Keyword('indexed ') + SFormat.Bool(value, value == 'static' ? 'on' : value)
+    ),
+    /*
+        Global options
+    */
+    new Command(
+        /^(members|outdated|opaque|large rows|align title)$/,
+        (root, key) => root.addGlobal(key, true),
+        (root, key) => SFormat.Keyword(key)
+    ),
+    /*
+        Simulator target
+    */
+    new Command(
+        /^simulator (target|source) (\S+)$/,
+        (root, mode, identifier) => {
+            root.addGlobal('simulator_target', identifier);
+            root.addGlobal('simulator_target_source', mode == 'source');
+        },
+        (root, mode, identifier) => SFormat.Keyword('simulator ') + SFormat.Keyword(mode) + ' ' + (identifier in Database.Players ? SFormat.Constant(identifier) : SFormat.Error(identifier))
+    ),
+    /*
+        Statistics
+    */
+    new Command(
+        /^statistics (\S+[\S ]*) as (\S+[\S ]*)$/,
+        (root, name, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addStatistics(name, ast);
+            }
+        },
+        (root, name, expression) => SFormat.Keyword('statistics ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(expression, root)
+    ),
+    /*
+        Simulator cycles
+    */
+    new Command(
+        /^simulator (\d+)$/,
+        (root, value) => {
+            let val = Number(value);
+            if (!isNaN(val) && val > 0) {
+                root.addGlobal('simulator', val);
+            }
+        },
+        (root, value) => SFormat.Keyword('simulator ') + (!isNaN(value) && value > 0 ? SFormat.Normal(value) : SFormat.Error(value))
+    ),
+    /*
+        Extra expression
+    */
+    new Command(
+        /^extra (.+)$/,
+        (root, value) => root.addFormatExtraExpression(a => value),
+        (root, value) => SFormat.Keyword('extra ') + SFormat.Normal(value)
+    ),
+    /*
+        Constant
+    */
+    new Command(
+        /^const (\w+) (.+)$/,
+        (root, name, value) => root.addConstant(name, value),
+        (root, name, value) => SFormat.Keyword('const ') + SFormat.Constant(name) + ' ' + SFormat.Normal(value),
+        true
+    ),
+    /*
+        Cell style
+    */
+    new Command(
+        /^style ([a-zA-Z\-]+) (.*)$/,
+        (root, style, value) => root.addStyle(style, value),
+        (root, style, value) => SFormat.Keyword('style ') + SFormat.Constant(style) + ' ' + SFormat.Normal(value)
+    ),
+    /*
+        Cell content visibility
+    */
+    new Command(
+        /^visible (on|off)$/,
+        (root, value) => root.addShared('visible', ARG_MAP[value]),
+        (root, value) => SFormat.Keyword('visible ') + SFormat.Bool(value)
+    ),
+    /*
+        Cell border
+    */
+    new Command(
+        /^border (none|left|right|both)$/,
+        (root, value) => root.addShared('border', ARG_MAP[value]),
+        (root, value) => SFormat.Keyword('border ') + SFormat.Constant(value)
+    ),
+    /*
+        Toggle statistics color
+    */
+    new Command(
+        /^statistics color (on|off)$/,
+        (root, value) => root.addShared('statistics_color', ARG_MAP[value]),
+        (root, value) => SFormat.Keyword('statistics color ') + SFormat.Bool(value)
+    ),
+    /*
+        Order expression
+    */
+    new Command(
+        /^order by (.+)$/,
+        (root, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addLocal('order', (a, b, c, d, e) => ast.eval(a, b, c, d, e));
+            }
+        },
+        (root, expression) => SFormat.Keyword('order by ') + Expression.format(expression, root)
+    ),
+    /*
+        Value expression
+    */
+    new Command(
+        /^expr (.+)$/,
+        (root, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addLocal('expr', (a, b, c, d, e) => ast.eval(a, b, c, d, e));
+            }
+        },
+        (root, expression) => SFormat.Keyword('expr ') + Expression.format(expression, root)
+    ),
+    /*
+        Cell alignment
+    */
+    new Command(
+        /^align (left|right|center)$/,
+        (root, value) => root.addShared('align', value),
+        (root, value) => SFormat.Keyword('align ') + SFormat.Constant(value)
+    ),
+    /*
+        Discard expression
+    */
+    new Command(
+        /^discard (.+)$/,
+        (root, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addDiscardRule((a, b, c, d, e) => ast.eval(a, b, c, d, e));
+            }
+        },
+        (root, expression) => SFormat.Keyword('discard ') + Expression.format(expression, root)
+    ),
+    /*
+        Color expression
+    */
+    new Command(
+        /^expc (.+)$/,
+        (root, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addColorExpression((a, b, c, d, e) => ast.eval(a, b, c, d, e));
+            }
+        },
+        (root, expression) => SFormat.Keyword('expc ') + Expression.format(expression, root)
+    ),
+    /*
+        Cell padding (left only)
+    */
+    new Command(
+        /^padding (.+)$/,
+        (root, value) => root.addLocal('padding', value),
+        (root, value) => SFormat.Keyword('padding ') + SFormat.Normal(value)
+    ),
+    /*
+        Define extension
+    */
+    new Command(
+        /^define (\w+)$/,
+        (root, name) => root.addDefinition(name),
+        (root, name) => SFormat.Keyword('define ') + SFormat.Normal(name),
+        true
+    ),
+    /*
+        Apply extension
+    */
+    new Command(
+        /^extend (\w+)$/,
+        (root, name) => root.addExtension(name),
+        (root, name) => SFormat.Keyword('extend ') + (name in root.customDefinitions ? SFormat.Constant(name) : SFormat.Error(name))
+    ),
+    /*
+        Force push current header / row / statistic
+    */
+    new Command(
+        /^end$/,
+        (root) => root.push(),
+        (root) => SFormat.Keyword('end'),
+        true
+    )
+];
 
 class Constants {
     constructor () {
@@ -2787,7 +2831,7 @@ class Settings {
     }
 
     getTitleAlign () {
-        return this.globals.align_title;
+        return this.globals['align title'];
     }
 
     getNameStyle () {
