@@ -849,3 +849,21 @@ function SHA1 (text) {
 
     return (cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4)).toLowerCase();
 }
+
+const SP_ENUMS = {
+    'GoldCurve': GOLD_CURVE,
+    'MountSizes': PLAYER_MOUNT,
+    'AchievementNames': ACHIEVEMENTS,
+    'ItemTypes': ITEM_TYPES,
+    'GroupRoles': GROUP_ROLES,
+    'Classes': PLAYER_CLASS,
+    'FortressBuildings': FORTRESS_BUILDINGS,
+    'PlayerActions': PLAYER_ACTIONS,
+    'PotionTypes': POTIONS,
+    'GemTypes': GEMTYPES,
+    'AttributeTypes': GEMATTRIBUTES,
+    'RuneTypes': RUNETYPES,
+    'UnderworldBuildings': UNDERWORLD_BUILDINGS,
+    'ExperienceCurve': ExperienceRequired,
+    'ExperienceTotal': ExperienceTotal
+};

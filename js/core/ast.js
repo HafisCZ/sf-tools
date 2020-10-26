@@ -39,7 +39,6 @@ const PerformanceTracker = new (class {
 
     cache_clear () {
         this.cache = { };
-        this.expressionCache = { };
     }
 
     cache_add (id, player, compare, value) {

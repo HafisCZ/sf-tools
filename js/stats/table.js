@@ -1094,6 +1094,7 @@ class TableController {
 
         // Fill entries
         if (this.echanged || this.schanged) {
+            PerformanceTracker.cache_clear();
             PerformanceTracker.start();
 
             this.table.setEntries(... this.entries);
@@ -2074,23 +2075,6 @@ const SettingsCommands = [
     })
 ];
 
-const SP_ENUMS = {
-    'GoldCurve': GOLD_CURVE,
-    'MountSizes': PLAYER_MOUNT,
-    'AchievementNames': ACHIEVEMENTS,
-    'ItemTypes': ITEM_TYPES,
-    'GroupRoles': GROUP_ROLES,
-    'Classes': PLAYER_CLASS,
-    'FortressBuildings': FORTRESS_BUILDINGS,
-    'PlayerActions': PLAYER_ACTIONS,
-    'PotionTypes': POTIONS,
-    'GemTypes': GEMTYPES,
-    'AttributeTypes': GEMATTRIBUTES,
-    'RuneTypes': RUNETYPES,
-    'UnderworldBuildings': UNDERWORLD_BUILDINGS,
-    'ExperienceCurve': ExperienceRequired,
-    'ExperienceTotal': ExperienceTotal
-};
 
 class Constants {
     constructor () {
