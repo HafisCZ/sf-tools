@@ -7,11 +7,11 @@ const TableType = {
 
 // Category
 class HeaderGroup {
-    constructor ({ name, empty }) {
+    constructor ({ name, empty }, i) {
         this.name = name;
         this.empty = empty;
 
-        this.sortkey = SHA1(name);
+        this.sortkey = `${ SHA1(name) }.${ i }`;
 
         this.width = 0;
         this.length = 0;
@@ -113,7 +113,7 @@ class TableInstance {
         // Loop over all categories
         for (let { object: category, index: categoryIndex, array: categories } of iterate(this.settings.categories)) {
             // Create header group
-            let group = new HeaderGroup(category);
+            let group = new HeaderGroup(category, this.config.length);
             let lastCategory = categoryIndex == categories.length - 1;
 
             // Loop over all headers
@@ -1355,286 +1355,168 @@ class RuleEvaluator {
 }
 
 const SettingsCommands = [
-    // if / endif
-    new SettingsCommand(/^(?:(if|if not) (Group|Player|Players)|(endif|else))$/, function (root, string) {
-        var [ , key1, arg, key2 ] = this.match(string);
-        if (key2) {
-            if (key2 == 'endif') {
-                root.setFilter(null);
+    /*
+        Ignore macro
+    */
+    new Command(
+        /^(?:(if|if not) (Group|Player|Players)|(endif|else))$/,
+        (root, key1, arg1, key2) => {
+            if (key2) {
+                if (key2 == 'endif') {
+                    root.setFilter(null);
+                } else {
+                    root.flipFilter();
+                }
             } else {
-                root.flipFilter();
+                root.setFilter({
+                    'Group': TableType.Group,
+                    'Player': TableType.History,
+                    'Players': TableType.Players
+                }[arg], key1 != 'if');
             }
-        } else {
-            root.setFilter({
-                'Group': TableType.Group,
-                'Player': TableType.History,
-                'Players': TableType.Players
-            }[arg], key1 != 'if');
-        }
-    }, function (root, string) {
-        var [ , key1, arg, key2 ] = this.match(string);
-        if (key2) {
-            return SFormat.Macro(key2);
-        } else {
-            return SFormat.Macro(`${ key1 } ${ arg }`);
-        }
-    }),
-    // Include another template
-    new SettingsCommand(/^import (.+)$/, function (root, string) {
-        var [ , arg ] = this.match(string);
-        /*
-            Do nothing since this keyword is handled before the actual parsing process
-        */
-    }, function (root, string) {
-        var [ , arg ] = this.match(string);
-        if (Templates.exists(arg)) {
-            return `${ SFormat.Keyword('import') } ${ SFormat.Enum(arg) } ${ SFormat.Extras(`(${ Templates.get()[arg].content.length }c)`) }`;
-        } else {
-            return `${ SFormat.Keyword('import') } ${ SFormat.Error(arg) }`;
-        }
-    }),
-    // Global
-    // set static
-    new SettingsCommand(/^(layout) ((\||table|statistics|rows|members)(\s+(\||table|statistics|rows|members))*)$/, function (root, string) {
-        var [ , key, order ] = this.match(string);
-        root.addLayout(order.split(' ').map(o => o.trim()));
-    }, function (root, string) {
-        var [ , key, order ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(order) }`;
-    }),
-    // Global
-    // set static
-    new SettingsCommand(/^(set) (\w+[\w ]*) with all as (.+)$/, function (root, string) {
-        var [ , key, name, asts ] = this.match(string);
-        var ast = new Expression(asts, root);
-        if (ast.isValid()) {
-            root.addVariable(name, ast, true);
-        }
-    }, function (root, string) {
-        var [ , key, name, asts ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('with all as') } ${ Expression.format(asts, root) }`;
-    }, true),
-    // Global
-    // set with - Create a function
-    new SettingsCommand(/^(set) (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/, function (root, string) {
-        var [ , key, name, args, a ] = this.match(string);
-        var ast = new Expression(a, root);
-        if (ast.isValid()) {
-            root.addFunction(name, ast, args.split(',').map(arg => arg.trim()));
-        }
-    }, function (root, string) {
-        var [ , key, name, args, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Function(name) } ${ SFormat.Keyword('with') } ${ args.split(',').map(arg => SFormat.Constant(arg)).join(',') } ${ SFormat.Keyword('as') } ${ Expression.format(a, root) }`;
-    }, true),
-    // Global
-    // set - Create a variable
-    new SettingsCommand(/^(set) (\w+[\w ]*) as (.+)$/, function (root, string) {
-        var [ , key, name, a ] = this.match(string);
-        var ast = new Expression(a, root);
-        if (ast.isValid()) {
-            root.addVariable(name, ast);
-        }
-    }, function (root, string) {
-        var [ , key, name, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ Expression.format(a, root) }`;
-    }, true),
-    // Global
-    // server - show, hide or set width
-    new SettingsCommand(/^(server) ((@?)(\S+))$/, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = root.constants.getValue(prefix, value);
-        if (val != undefined) {
-            if (isNaN(val)) {
-                val = ARG_MAP_SERVER[value];
-            }
-            if (!isNaN(val)) {
-                root.addGlobal(key, Number(val));
-            }
-        }
-    }, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = root.constants.getValue(prefix, value);
-        if (val != undefined && !isNaN(value)) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
-        } else if (ARG_MAP_SERVER[val] != undefined) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
-        } else if (!isNaN(val)) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
-        }
-    }),
-    // Global
-    // name - set width of the name column
-    new SettingsCommand(/^(name) ((@?)(\S+))$/, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = root.constants.getValue(prefix, value);
+        },
+        (root, key1, arg1, key2) => key2 ? SFormat.Macro(key2) : SFormat.Macro(`${ key1 } ${ arg1 }`)
+    ),
+    /*
+        Import macro
+    */
+    new Command(
+        /^import (.+)$/,
+        (root, name) => { /* DO NOTHING AS THIS IS HANDLED DURING THE PARSING ITSELF */ },
+        (root, name) => SFormat.Keyword('import ') + (Templates.exists(name) ? (SFormat.Enum(name) + ' ' + SFormat.Extras(`(${ Templates.get()[name].content.length }c)`)) : SFormat.Error(name))
+    ),
+    /*
+        Server column
+    */
+    new Command(
+        /^server ((@?)(\S+))$/,
+        (root, value, a, b) => {
+            let val = root.constants.getValue(a, b);
+            if (val != undefined) {
+                if (isNaN(val)) {
+                    val = ARG_MAP_SERVER[val];
+                }
 
-        if (val != undefined && !isNaN(val)) {
-            root.addGlobal(key, Number(val));
-        }
-    }, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = root.constants.getValue(prefix, value);
-
-        if (root.constants.isValid(prefix, value) && !isNaN(val)) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
-        } else if (prefix == '@' || isNaN(val)) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
-        }
-    }),
-    // Create new category
-    new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(category)(?: (.+))?$/, function (root, string) {
-        var [ , extend, key, a ] = this.match(string);
-        root.addCategory(a || '', a == undefined);
-        if (extend) {
-            root.addExtension(... extend.slice(0, -1).split(','));
-        }
-    }, function (root, string) {
-        var [ , extend, key, a ] = this.match(string);
-        if (a != undefined) {
-            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
-        } else {
-            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) }`;
-        }
-    }),
-    new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(header)(?: (.+))? (as group of) (\d+)$/, function (root, string) {
-        var [ , extend, key, a, gr, w ] = this.match(string);
-
-        if (!isNaN(w) && Number(w) > 0) {
-            root.addHeader(a || '', Number(w));
-            if (extend) {
-                root.addExtension(... extend.slice(0, -1).split(','));
+                if (!isNaN(val)) {
+                    root.addGlobal('server', Number(val));
+                }
             }
-        }
-    }, function (root, string) {
-        var [ , extend, key, a, gr, w ] = this.match(string);
-        if (a != undefined) {
-            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Normal(a) } ${ SFormat.Keyword(gr) } ${ SFormat.Constant(w) }`;
-        } else {
-            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Keyword(gr) } ${ SFormat.Constant(w) }`;
-        }
-    }),
-    // Create new header
-    new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(header)(?: (.+))?$/, function (root, string) {
-        var [ , extend, key, a ] = this.match(string);
-        root.addHeader(a || '');
-        if (extend) {
-            root.addExtension(... extend.slice(0, -1).split(','));
-        }
-    }, function (root, string) {
-        var [ , extend, key, a ] = this.match(string);
-        if (a != undefined) {
-            if (SP_KEYWORD_MAPPING_0.hasOwnProperty(a)) {
-                return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Reserved(a) }`;
-            } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(a)) {
-                return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.ReservedProtected(a) }`;
-            } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(a)) {
-                return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.ReservedPrivate(a) }`;
-            } else if (SP_KEYWORD_MAPPING_3.hasOwnProperty(a)) {
-                return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.ReservedSpecial(a) }`;
-            } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(a)) {
-                return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.ReservedItemizable(a) }`;
+        },
+        (root, value, a, b) => {
+            let prefix = SFormat.Keyword('server ');
+            let val = root.constants.getValue(a, b);
+
+            if (ARG_MAP_SERVER.hasOwnProperty(value)) {
+                return prefix + SFormat.Bool(value);
+            } else if (root.constants.isValid(a, b) && !isNaN(val)) {
+                return prefix + SFormat.Constant(value);
+            } else if (a == '@' || isNaN(val)) {
+                return prefix + SFormat.Error(value);
             } else {
-                return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
-            }
-        } else {
-            return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) }`;
-        }
-    }),
-    // Create new statistics row
-    new SettingsCommand(/^((?:\w+)(?:\,\w+)*:|)(show) (\S+[\S ]*) as (\S+[\S ]*)$/, function (root, string) {
-        var [ , extend, key, name, a ] = this.match(string);
-        var ast = new Expression(a, root);
-        if (ast.isValid()) {
-            root.addRow(name, ast);
-            if (extend) {
-                root.addExtension(... extend.slice(0, -1).split(','));
+                return prefix + SFormat.Normal(value);
             }
         }
-    }, function (root, string) {
-        var [ , extend, key, name, a ] = this.match(string);
-        return `${ extend ? `${ SFormat.Constant(extend) }` : '' }${ SFormat.Keyword(key) } ${ SFormat.Constant(name) } ${ SFormat.Keyword('as') } ${ Expression.format(a, root) }`;
-    }),
-    // Global
-    // indexed - Show indexes in first column of the table
-    // Global
-    // lined - Show lines between players
-    // Create new statistics row
-    // Local Shared
-    // width - Width of a column
-    new SettingsCommand(/^(width) ((@?)(\S+))$/, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = root.constants.getValue(prefix, value);
+    ),
+    /*
+        Name column
+    */
+    new Command(
+        /^name ((@?)(\S+))$/,
+        (root, value, a, b) => {
+            let val = root.constants.getValue(a, b);
+            if (val != undefined && !isNaN(val)) {
+                root.addGlobal('name', Number(val));
+            }
+        },
+        (root, value, a, b) => {
+            let prefix = SFormat.Keyword('name ');
+            let val = root.constants.getValue(a, b);
 
-        if (val != undefined && !isNaN(val)) {
-            root.addShared('width', Number(val));
+            if (root.constants.isValid(a, b) && !isNaN(val)) {
+                return prefix + SFormat.Constant(value);
+            } else if (a == '@' || isNaN(val)) {
+                return prefix + SFormat.Error(value);
+            } else {
+                return prefix + SFormat.Normal(value);
+            }
         }
-    }, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = root.constants.getValue(prefix, value);
+    ),
+    /*
+        Column width
+    */
+    new Command(
+        /^width ((@?)(\S+))$/,
+        (root, value, a, b) => {
+            let val = root.constants.getValue(a, b);
+            if (val != undefined && !isNaN(val)) {
+                root.addShared('width', Number(val));
+            }
+        },
+        (root, value, a, b) => {
+            let prefix = SFormat.Keyword('width ');
+            let val = root.constants.getValue(a, b);
 
-        if (root.constants.isValid(prefix, value) && !isNaN(val)) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
-        } else if (prefix == '@' || isNaN(val)) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
+            if (root.constants.isValid(a, b) && !isNaN(val)) {
+                return prefix + SFormat.Constant(value);
+            } else if (a == '@' || isNaN(val)) {
+                return prefix + SFormat.Error(value);
+            } else {
+                return prefix + SFormat.Normal(value);
+            }
         }
-    }),
-    // Global
-    // simulator - Amount of simulator fights per duo
-    // Global
-    // simulator - Amount of simulator fights per duo
-    // Local
-    // extra - Ending characters for each cell (example %)
-    // Local
-    // visible - Show text on the background
+    ),
+    /*
+        Not defined value
+    */
+    new Command(
+        /^not defined value ((@?)(.+))$/,
+        (root, value, a, b) => {
+            let val = root.constants.getValue(a, b);
+            if (val != undefined) {
+                root.addShared('ndef', val);
+            }
+        },
+        (root, value, a, b) => {
+            let prefix = SFormat.Keyword('not defined value ');
+            let val = root.constants.getValue(a, b);
 
-    new SettingsCommand(/^(not defined value) ((@?)(.*))$/, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = root.constants.getValue(prefix, value);
-
-        if (val != undefined) {
-            root.addShared('ndef', val);
+            if (root.constants.isValid(a, b)) {
+                return prefix + SFormat.Constant(value);
+            } else if (a == '@') {
+                return prefix + SFormat.Error(value);
+            } else {
+                return prefix + SFormat.Normal(value);
+            }
         }
-    }, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
+    ),
+    /*
+        Not defined color
+    */
+    new Command(
+        /^not defined color ((@?)(.+))$/,
+        (root, value, a, b) => {
+            let val = getCSSColor(root.constants.getValue(a, b));
+            if (val != undefined && val) {
+                root.addShared('ndefc', val);
+            }
+        },
+        (root, value, a, b) => {
+            let prefix = SFormat.Keyword('not defined color ');
+            let val = getCSSColor(root.constants.getValue(a, b));
 
-        if (root.constants.isValid(prefix, value)) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
-        } else if (prefix == '@') {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
+            if (root.constants.isValid(a, b) && val) {
+                return prefix + SFormat.Constant(value);
+            } else if (a == '@' || !val) {
+                return prefix + SFormat.Error(value);
+            } else {
+                return prefix + SFormat.Color(value, val);
+            }
         }
-    }),
-    new SettingsCommand(/^(not defined color) ((@?)(.*))$/, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = getCSSColor(root.constants.getValue(prefix, value));
+    ),
 
-        if (val != undefined && val) {
-            root.addShared('ndefc', val);
-        }
-    }, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = getCSSColor(root.constants.getValue(prefix, value));
 
-        if (root.constants.isValid(prefix, value) && val) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
-        } else if (prefix == '@' || !val) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Color(arg, val) }`;
-        }
-    }),
-    // Local Shared
-    // border - Show border around columns
 
-    // Local Shared
-    // align - Align column content
+
 
     // Local
     // format - Specifies formatter for the field
@@ -1702,9 +1584,6 @@ const SettingsCommands = [
         }
     }),
     // Local
-    // order by
-
-    // Local
     // alias - Override name of the column
     new SettingsCommand(/^(alias) ((@?)(.*))$/, function (root, string) {
         var [ , key, arg, prefix, value ] = this.match(string);
@@ -1725,13 +1604,6 @@ const SettingsCommands = [
         }
     }),
     // Local
-    // expr - Set expression to the column
-
-    // Local
-    // expc - Set color expression to the column
-
-    // Local
-    // value - Add default value
     new SettingsCommand(/^(value) (default) ((@?)(\S+[\S ]*))$/, function (root, string) {
         var [ , key, condition, arg, prefix, value ] = this.match(string);
         var val = root.constants.getValue(prefix, value);
@@ -1854,40 +1726,187 @@ const SettingsCommands = [
         return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ rarg } ${ arg }`;
     }),
 
-    new SettingsCommand(/^(lined) (on|off|thin|thick)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addGlobal(key, ARG_MAP[a]);
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Bool(a, a == 'thick' || a == 'thin' ? 'on' : a) }`;
-    }),
-    // Global
-    // performance - Set the amount of entries displayed
-    new SettingsCommand(/^(performance) (\d+)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        root.addGlobal(key, Number(a));
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ SFormat.Normal(a) }`;
-    }),
-    // Global
-    // scale - Set font scale value
-    new SettingsCommand(/^(scale) (\d+)$/, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        if (!isNaN(a) && Number(a) > 0) {
-            root.addGlobal(key, Number(a));
+
+
+
+    /*
+        Category
+    */
+    new Command(
+        /^((?:\w+)(?:\,\w+)*:|)category(?: (.+))?$/,
+        (root, extensions, name) => {
+            root.addCategory(name || '', name == undefined);
+            if (extensions) {
+                root.addExtension(... extensions.slice(0, -1).split(','));
+            }
+        },
+        (root, extensions, name) => (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('category') + (name ? (' ' + SFormat.Normal(name)) : '')
+    ),
+    /*
+        Grouped header
+    */
+    new Command(
+        /^((?:\w+)(?:\,\w+)*:|)header(?: (.+))? as group of (\d+)$/,
+        (root, extensions, name, length) => {
+            if (length > 0) {
+                root.addHeader(name || '', Number(length));
+                if (extensions) {
+                    root.addExtension(... extensions.slice(0, -1).split(','));
+                }
+            }
+        },
+        (root, extensions, name, length) => {
+            let prefix = (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('header');
+            let suffix = (name ? ' ' : '') + SFormat.Keyword('as group of ') + SFormat.Constant(length);
+            if (name != undefined) {
+                if (SP_KEYWORD_MAPPING_0.hasOwnProperty(name)) {
+                    return prefix + ' ' + SFormat.Reserved(name) + suffix;
+                } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(name)) {
+                    return prefix + ' ' + SFormat.ReservedProtected(name) + suffix;
+                } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(name)) {
+                    return prefix + ' ' + SFormat.ReservedPrivate(name) + suffix;
+                } else if (SP_KEYWORD_MAPPING_3.hasOwnProperty(name)) {
+                    return prefix + ' ' + SFormat.ReservedSpecial(name) + suffix;
+                } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(name)) {
+                    return prefix + ' ' + SFormat.ReservedItemizable(name) + suffix;
+                } else {
+                    return prefix + ' ' + SFormat.Normal(name) + suffix;
+                }
+            } else {
+                return prefix + suffix;
+            }
         }
-    }, function (root, string) {
-        var [ , key, a ] = this.match(string);
-        return `${ SFormat.Keyword(key) } ${ !isNaN(a) && Number(a) > 0 ? SFormat.Normal(a) : SFormat.Error(a) }`;
-    }),
-
-
-
-
-
-
-
+    ),
+    /*
+        Header
+    */
+    new Command(
+        /^((?:\w+)(?:\,\w+)*:|)header(?: (.+))?$/,
+        (root, extensions, name) => {
+            root.addHeader(name || '');
+            if (extensions) {
+                root.addExtension(... extensions.slice(0, -1).split(','));
+            }
+        },
+        (root, extensions, name) => {
+            let prefix = (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('header');
+            if (name != undefined) {
+                if (SP_KEYWORD_MAPPING_0.hasOwnProperty(name)) {
+                    return prefix + ' ' + SFormat.Reserved(name);
+                } else if (SP_KEYWORD_MAPPING_1.hasOwnProperty(name)) {
+                    return prefix + ' ' + SFormat.ReservedProtected(name);
+                } else if (SP_KEYWORD_MAPPING_2.hasOwnProperty(name)) {
+                    return prefix + ' ' + SFormat.ReservedPrivate(name);
+                } else if (SP_KEYWORD_MAPPING_3.hasOwnProperty(name)) {
+                    return prefix + ' ' + SFormat.ReservedSpecial(name);
+                } else if (SP_KEYWORD_MAPPING_5_HO.hasOwnProperty(name)) {
+                    return prefix + ' ' + SFormat.ReservedItemizable(name);
+                } else {
+                    return prefix + ' ' + SFormat.Normal(name);
+                }
+            } else {
+                return prefix;
+            }
+        }
+    ),
+    /*
+        Row
+    */
+    new Command(
+        /^((?:\w+)(?:\,\w+)*:|)show (\S+[\S ]*) as (\S+[\S ]*)$/,
+        (root, extensions, name, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addRow(name, ast);
+                if (extensions) {
+                    root.addExtension(... extensions.slice(0, -1).split(','));
+                }
+            }
+        },
+        (root, extensions, name, expression) => (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('show ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(expression, root)
+    ),
+    /*
+        Layout
+    */
+    new Command(
+        /^layout ((\||table|statistics|rows|members)(\s+(\||table|statistics|rows|members))*)$/,
+        (root, layout) => root.addLayout(layout.split(' ').map(v => v.trim())),
+        (root, layout) => SFormat.Keyword('layout ') + SFormat.Constant(layout)
+    ),
+    /*
+        Table variable
+    */
+    new Command(
+        /^set (\w+[\w ]*) with all as (.+)$/,
+        (root, name, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addVariable(name, ast, true);
+            }
+        },
+        (root, name, expression) => SFormat.Keyword('set ') + SFormat.Constant(name) + SFormat.Keyword(' with all as ') + Expression.format(expression, root),
+        true
+    ),
+    /*
+        Function
+    */
+    new Command(
+        /^set (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
+        (root, name, arguments, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addFunction(name, ast, arguments.split(',').map(v => v.trim()));
+            }
+        },
+        (root, name, arguments, expression) => SFormat.Keyword('set ') + SFormat.Constant(name) + SFormat.Keyword(' with ') + arguments.split(',').map(v => SFormat.Constant(v)).join(',') + SFormat.Keyword(' as ') + Expression.format(expression, root),
+        true
+    ),
+    /*
+        Variable
+    */
+    new Command(
+        /^set (\w+[\w ]*) as (.+)$/,
+        (root, name, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addVariable(name, ast, false);
+            }
+        },
+        (root, name, expression) => SFormat.Keyword('set ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(expression, root),
+        true
+    ),
+    /*
+        Lined
+    */
+    new Command(
+        /^lined (on|off|thin|thick)$/,
+        (root, value) => root.addGlobal('lined', ARG_MAP[value]),
+        (root, value) => SFormat.Keyword('lined ') + SFormat.Bool(value, value == 'thick' || value == 'thin' ? 'on' : value)
+    ),
+    /*
+        Performance (entry cutoff)
+    */
+    new Command(
+        /^performance (\d+)$/,
+        (root, value) => {
+            if (value > 0) {
+                root.addGlobal('performance', Number(value));
+            }
+        },
+        (root, value) => SFormat.Keyword('performance ') + (value > 0 ? SFormat.Normal(value) : SFormat.Error(value))
+    ),
+    /*
+        Scale
+    */
+    new Command(
+        /^scale (\d+)$/,
+        (root, value) => {
+            if (value > 0) {
+                root.addGlobal('scale', Number(value));
+            }
+        },
+        (root, value) => SFormat.Keyword('scale ') + (value > 0 ? SFormat.Normal(value) : SFormat.Error(value))
+    ),
     /*
         Font
     */
@@ -1968,12 +1987,11 @@ const SettingsCommands = [
     new Command(
         /^simulator (\d+)$/,
         (root, value) => {
-            let val = Number(value);
-            if (!isNaN(val) && val > 0) {
-                root.addGlobal('simulator', val);
+            if (value > 0) {
+                root.addGlobal('simulator', Number(value));
             }
         },
-        (root, value) => SFormat.Keyword('simulator ') + (!isNaN(value) && value > 0 ? SFormat.Normal(value) : SFormat.Error(value))
+        (root, value) => SFormat.Keyword('simulator ') + (value > 0 ? SFormat.Normal(value) : SFormat.Error(value))
     ),
     /*
         Extra expression
