@@ -1,4 +1,21 @@
 const CHANGELOG = {
+    'v4.1007': [
+        'Completely reworked settings and table generator',
+        '<code>members</code>, <code>outdated</code>, <code>opaque</code>, <code>large rows</code> no longer accept an argument. Use just them to enable the functionality.',
+        'Undefined values are now always on the bottom when sorting.',
+        'Added fallback to value and color rules if expressions return undefined.',
+        'Added <code>align title</code> keyword that aligns all titles to the bottom.',
+        'Added expression cache to improve performance.',
+        'Added <code>indexof</code> and <code>distinct</code> functions.',
+        'Added <code>discard</code> expression to the Me table that can ignore files.',
+        'Added <code>row_index</code> variable',
+        'Added <code>Scroll Finish</code>, <code>Toilet Fill</code>, <code>Building Start</code> and <code>Underworld Building Start</code> headers',
+        'Added embedded table variables that you can use in the expression directly with:<br/><code>${ expression }</code><br/><code>$ variableName { expression }</code>',
+        'Reworked <code>layout</code> option. Use two spaces to create a space or <code>|</code> to create a divider.',
+        'Division operator now returns 0 when dividing by 0.',
+        'Removed keyword abbreviations.',
+        'Removed itemized headers.'
+    ],
     'v3.943': [
         'Added template management (delete, update, share).',
         'Added website icon.',

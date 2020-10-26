@@ -279,6 +279,7 @@ class TableInstance {
         }
 
         if (!skipEvaluation || this.type == TableType.History) {
+            PerformanceTracker.cache_clear();
             this.clearCache();
         }
 
@@ -1094,7 +1095,6 @@ class TableController {
 
         // Fill entries
         if (this.echanged || this.schanged) {
-            PerformanceTracker.cache_clear();
             PerformanceTracker.start();
 
             this.table.setEntries(... this.entries);
@@ -1372,7 +1372,7 @@ const SettingsCommands = [
                     'Group': TableType.Group,
                     'Player': TableType.History,
                     'Players': TableType.Players
-                }[arg], key1 != 'if');
+                }[arg1], key1 != 'if');
             }
         },
         (root, key1, arg1, key2) => key2 ? SFormat.Macro(key2) : SFormat.Macro(`${ key1 } ${ arg1 }`)
@@ -1513,222 +1513,230 @@ const SettingsCommands = [
             }
         }
     ),
-
-
-
-
-
-    // Local
-    // format - Specifies formatter for the field
-    new SettingsCommand(/^(format difference|fd) (.*)$/, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-        if (arg == 'on') {
-            root.addFormatDifferenceExpression(true);
-        } else if (arg == 'off') {
-            root.addFormatDifferenceExpression(false);
-        } else {
-            var ast = new Expression(arg, root);
-            if (ast.isValid()) {
-                root.addFormatDifferenceExpression((env, val) => ast.eval(undefined, undefined, env, val));
+    /*
+        Value default rule
+    */
+    new Command(
+        /^value default ((@?)(\S+[\S ]*))$/,
+        (root, value, a, b) => {
+            let val = root.constants.getValue(a, b);
+            if (val != undefined) {
+                root.addValueRule(ARG_MAP['default'], 0, val);
+            }
+        },
+        (root, value, a, b) => {
+            let prefix = SFormat.Keyword('value ') + SFormat.Constant('default ');
+            if (root.constants.isValid(a, b)) {
+                return prefix + SFormat.Constant(value);
+            } else if (a == '@') {
+                return prefix + SFormat.Error(value);
+            } else {
+                return prefix + SFormat.Normal(value);
             }
         }
-    }, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-        if (arg == 'on' || arg == 'off') {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ Expression.format(arg, root) }`;
+    ),
+    /*
+        Value rules
+    */
+    new Command(
+        /^value (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\S+[\S ]*))$/,
+        (root, rule, value, a, b, value2, a2, b2) => {
+            let ref = root.constants.getValue(a, b);
+            let val = root.constants.getValue(a2, b2);
+
+            if (val != undefined && ref != undefined) {
+                root.addValueRule(ARG_MAP[rule], ref, val);
+            }
+        },
+        (root, rule, value, a, b, value2, a2, b2) => {
+            let prefix = SFormat.Keyword('value ') + SFormat.Constant(rule) + ' ';
+
+            if (root.constants.isValid(a, b)) {
+                value = SFormat.Constant(value);
+            } else if (a == '@') {
+                value = SFormat.Error(value);
+            } else {
+                value = SFormat.Normal(value);
+            }
+
+            if (root.constants.isValid(a2, b2)) {
+                value2 = SFormat.Constant(value2);
+            } else if (a2 == '@') {
+                value2 = SFormat.Error(value2);
+            } else {
+                value2 = SFormat.Normal(value2);
+            }
+
+            return prefix + value + ' ' + value2;
         }
-    }),
-    new SettingsCommand(/^(format statistics|fs) (.*)$/, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-        if (arg == 'on') {
-            root.addFormatStatisticsExpression(true);
-        } else if (arg == 'off') {
-            root.addFormatStatisticsExpression(false);
-        } else {
-            var ast = new Expression(arg, root);
-            if (ast.isValid()) {
-                root.addFormatStatisticsExpression((env, val) => ast.eval(undefined, undefined, env, val));
+    ),
+    /*
+        Color default rule
+    */
+    new Command(
+        /^color default ((@?)(\S+[\S ]*))$/,
+        (root, value, a, b) => {
+            let val = getCSSColor(root.constants.getValue(a, b));
+            if (val != undefined && val) {
+                root.addColorRule(ARG_MAP['default'], 0, val);
+            }
+        },
+        (root, value, a, b) => {
+            let prefix = SFormat.Keyword('color ') + SFormat.Constant('default ');
+            let val = getCSSColor(root.constants.getValue(a, b));
+
+            if (root.constants.isValid(a, b) && val) {
+                return prefix + SFormat.Constant(value);
+            } else if (a == '@' || !val) {
+                return prefix + SFormat.Error(value);
+            } else {
+                return prefix + SFormat.Color(value, val);
             }
         }
-    }, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-        if (arg == 'on' || arg == 'off') {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Bool(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ Expression.format(arg, root) }`;
-        }
-    }),
+    ),
+    /*
+        Color rules
+    */
+    new Command(
+        /^color (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\S+[\S ]*))$/,
+        (root, rule, value, a, b, value2, a2, b2) => {
+            let ref = root.constants.getValue(a, b);
+            let val = getCSSColor(root.constants.getValue(a2, b2));
 
-    // Local
-    // format - Specifies formatter for the field
-    new SettingsCommand(/^(format|f) (.*)$/, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-        if (ARG_FORMATTERS[arg]) {
-            root.addFormatExpression(ARG_FORMATTERS[arg]);
-        } else {
-            var ast = new Expression(arg, root);
-            if (ast.isValid()) {
-                root.addFormatExpression((player, reference, env, val, extra) => {
-                    return ast.eval(player, reference, env, val, extra);
-                });
+            if (val != undefined && ref != undefined && val) {
+                root.addColorRule(ARG_MAP[rule], ref, val);
+            }
+        },
+        (root, rule, value, a, b, value2, a2, b2) => {
+            let prefix = SFormat.Keyword('color ') + SFormat.Constant(rule) + ' ';
+            let val = getCSSColor(root.constants.getValue(a2, b2));
+
+            if (root.constants.isValid(a, b)) {
+                value = SFormat.Constant(value);
+            } else if (a == '@') {
+                value = SFormat.Error(value);
+            } else {
+                value = SFormat.Normal(value);
+            }
+
+            if (root.constants.isValid(a2, b2) && val) {
+                value2 = SFormat.Constant(value2);
+            } else if (a2 == '@' || !val) {
+                value2 = SFormat.Error(value2);
+            } else {
+                value2 = SFormat.Normal(value2, val);
+            }
+
+            return prefix + value + ' ' + value2;
+        }
+    ),
+    /*
+        Alias
+    */
+    new Command(
+        /^alias ((@?)(.+))$/,
+        (root, value, a, b) => {
+            let val = root.constants.getValue(a, b);
+            if (val != undefined) {
+                root.addAlias(val);
+            }
+        },
+        (root, value, a, b) => {
+            let prefix = SFormat.Keyword('alias ');
+            let val = root.constants.getValue(a, b);
+
+            if (root.constants.isValid(a, b)) {
+                return prefix + SFormat.Constant(value);
+            } else if (a == '@') {
+                return prefix + SFormat.Error(value);
+            } else {
+                return prefix + SFormat.Normal(value);
             }
         }
-    }, function (root, string) {
-        var [ , key, arg ] = this.match(string);
-        if (ARG_FORMATTERS[arg]) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ Expression.format(arg, root) }`;
+    ),
+    /*
+        Statistics format expression
+    */
+    new Command(
+        /^format statistics (.+)$/,
+        (root, expression) => {
+            if (expression == 'on') {
+                root.addFormatStatisticsExpression(true);
+            } else if (expression == 'off') {
+                root.addFormatStatisticsExpression(false);
+            } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+                root.addFormatStatisticsExpression(ARG_FORMATTERS[expression])
+            } else {
+                let ast = new Expression(expression, root);
+                if (ast.isValid()) {
+                    root.addFormatStatisticsExpression((a, b) => ast.eval(undefined, undefined, a, b));
+                }
+            }
+        },
+        (root, expression) => SFormat.Keyword('format statistics ') + (expression == 'on' || expression == 'off' ? SFormat.Bool(expression) : (ARG_FORMATTERS.hasOwnProperty(expression) ? Expression.format(expression, root) : SFormat.Constant(expression)))
+    ),
+    /*
+        Difference format expression
+    */
+    new Command(
+        /^format difference (.+)$/,
+        (root, expression) => {
+            if (expression == 'on') {
+                root.addFormatDifferenceExpression(true);
+            } else if (expression == 'off') {
+                root.addFormatDifferenceExpression(false);
+            } else if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+                root.addFormatDifferenceExpression(ARG_FORMATTERS[expression])
+            } else {
+                let ast = new Expression(expression, root);
+                if (ast.isValid()) {
+                    root.addFormatDifferenceExpression((a, b) => ast.eval(undefined, undefined, a, b));
+                }
+            }
+        },
+        (root, expression) => SFormat.Keyword('format difference ') + (expression == 'on' || expression == 'off' ? SFormat.Bool(expression) : (ARG_FORMATTERS.hasOwnProperty(expression) ? Expression.format(expression, root) : SFormat.Constant(expression)))
+    ),
+    /*
+        Cell background
+    */
+    new Command(
+        /^background ((@?)(.+))$/,
+        (root, value, a, b) => {
+            let val = getCSSColor(root.constants.getValue(a, b));
+            if (val != undefined && val) {
+                root.addShared('background', val);
+            }
+        },
+        (root, value, a, b) => {
+            let prefix = SFormat.Keyword('background ');
+            let val = getCSSColor(root.constants.getValue(a, b));
+
+            if (root.constants.isValid(a, b) && val) {
+                return prefix + SFormat.Constant(value);
+            } else if (a == '@' || !val) {
+                return prefix + SFormat.Error(value);
+            } else {
+                return prefix + SFormat.Color(value, val);
+            }
         }
-    }),
-    // Local
-    // alias - Override name of the column
-    new SettingsCommand(/^(alias) ((@?)(.*))$/, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = root.constants.getValue(prefix, value);
-
-        if (val != undefined) {
-            root.addAlias(val);
-        }
-    }, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-
-        if (root.constants.isValid(prefix, value)) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
-        } else if (prefix == '@') {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Normal(arg) }`;
-        }
-    }),
-    // Local
-    new SettingsCommand(/^(value) (default) ((@?)(\S+[\S ]*))$/, function (root, string) {
-        var [ , key, condition, arg, prefix, value ] = this.match(string);
-        var val = root.constants.getValue(prefix, value);
-
-        if (val != undefined) {
-            root.addValueRule(ARG_MAP[condition], 0, val);
-        }
-    }, function (root, string) {
-        var [ , key, condition, arg, prefix, value ] = this.match(string);
-
-        if (root.constants.isValid(prefix, value)) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Constant(arg) }`;
-        } else if (prefix == '@') {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Error(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Normal(arg) }`;
-        }
-    }),
-    // Local
-    // color - Add default color
-    new SettingsCommand(/^(color) (default) ((@?)(\w+))$/, function (root, string) {
-        var [ , key, condition, arg, prefix, value ] = this.match(string);
-        var val = getCSSColor(root.constants.getValue(prefix, value));
-
-        if (val != undefined && val) {
-            root.addColorRule(ARG_MAP[condition], 0, val);
-        }
-    }, function (root, string) {
-        var [ , key, condition, arg, prefix, value ] = this.match(string);
-        var val = getCSSColor(root.constants.getValue(prefix, value));
-
-        if (root.constants.isValid(prefix, value) && val) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Constant(arg) }`;
-        } else if (prefix == '@' || !val) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Error(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ SFormat.Color(arg, val) }`;
-        }
-    }),
-    new SettingsCommand(/^(background) ((@?)(\w+))$/, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = getCSSColor(root.constants.getValue(prefix, value));
-
-        if (val != undefined && val) {
-            root.addShared(key, val);
-        }
-    }, function (root, string) {
-        var [ , key, arg, prefix, value ] = this.match(string);
-        var val = getCSSColor(root.constants.getValue(prefix, value));
-
-        if (root.constants.isValid(prefix, value) && val) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Constant(arg) }`;
-        } else if (prefix == '@' || !val) {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Error(arg) }`;
-        } else {
-            return `${ SFormat.Keyword(key) } ${ SFormat.Color(arg, val) }`;
-        }
-    }),
-    // Local
-    // value - Add value based on condition
-    new SettingsCommand(/^(value) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\S+[\S ]*))$/, function (root, string) {
-        var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
-        var reference = root.constants.getValue(rprefix, rvalue);
-        var val = root.constants.getValue(prefix, value);
-
-        if (reference != undefined && val != undefined) {
-            root.addValueRule(ARG_MAP[condition], reference, val);
-        }
-    }, function (root, string) {
-        var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
-
-        if (root.constants.isValid(rprefix, rvalue)) {
-            rarg = SFormat.Constant(rarg);
-        } else if (rprefix == '@') {
-            rarg = SFormat.Error(rarg);
-        } else {
-            rarg = SFormat.Normal(rarg);
-        }
-
-        if (root.constants.isValid(prefix, value)) {
-            arg = SFormat.Constant(arg);
-        } else if (prefix == '@') {
-            arg = SFormat.Error(arg);
-        } else {
-            arg = SFormat.Normal(arg);
-        }
-
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ rarg } ${ arg }`;
-    }),
-    // local
-    // color - Add color based on condition
-    new SettingsCommand(/^(color) (equal or above|above or equal|below or equal|equal or below|equal|above|below) ((@?)(.+)) ((@?)(\w+))$/, function (root, string) {
-        var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
-        var reference = root.constants.getValue(rprefix, rvalue);
-        var val = getCSSColor(root.constants.getValue(prefix, value));
-
-        if (reference != undefined && val != undefined) {
-            root.addColorRule(ARG_MAP[condition], reference, val);
-        }
-    }, function (root, string) {
-        var [ , key, condition, rarg, rprefix, rvalue, arg, prefix, value ] = this.match(string);
-        var val = getCSSColor(root.constants.getValue(prefix, value));
-
-        if (root.constants.isValid(rprefix, rvalue)) {
-            rarg = SFormat.Constant(rarg);
-        } else if (rprefix == '@') {
-            rarg = SFormat.Error(rarg);
-        } else {
-            rarg = SFormat.Normal(rarg);
-        }
-
-        if (root.constants.isValid(prefix, value) && val) {
-            arg = SFormat.Constant(arg);
-        } else if (prefix == '@' || !val) {
-            arg = SFormat.Error(arg);
-        } else {
-            arg = SFormat.Color(arg, val);
-        }
-
-        return `${ SFormat.Keyword(key) } ${ SFormat.Constant(condition) } ${ rarg } ${ arg }`;
-    }),
-
-
-
-
+    ),
+    /*
+        Format expression
+    */
+    new Command(
+        /^format (.+)$/,
+        (root, expression) => {
+            if (ARG_FORMATTERS.hasOwnProperty(expression)) {
+                root.addFormatExpression(ARG_FORMATTERS[expression])
+            } else {
+                let ast = new Expression(expression, root);
+                if (ast.isValid()) {
+                    root.addFormatExpression((a, b, c, d, e) => ast.eval(a, b, c, d, e));
+                }
+            }
+        },
+        (root, expression) => SFormat.Keyword('format ') + (ARG_FORMATTERS.hasOwnProperty(expression) ? Expression.format(expression, root) : SFormat.Constant(expression))
+    ),
     /*
         Category
     */

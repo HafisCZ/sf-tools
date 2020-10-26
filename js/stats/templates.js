@@ -1,6 +1,6 @@
 const PredefinedTemplates = {
     'Me Default': `# Show member list
-members on
+members
 
 # Global settings
 statistics on # Show statistics below the table
@@ -58,7 +58,6 @@ category Fortress
 header Fortress Honor`,
     'Players Default': `# Created by Acclamator
 
-outdated off # Do not mark outdated rows
 server 70 # Set server column width to 70px
 name @normal # Set name column width to normal
 indexed static # Show static index column on left side
@@ -189,7 +188,6 @@ color default @green`,
     'Guilds Default': `# Created by Acclamator
 
 # Show member list
-members off
 name @normal
 
 # Global settings

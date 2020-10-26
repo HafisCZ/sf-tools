@@ -1,6 +1,6 @@
 // Version stuff
-const MODULE_VERSION = 'v3.943';
-const TABLE_VERSION = 'v7';
+const MODULE_VERSION = 'v4.1007';
+const TABLE_VERSION = 'v8';
 const CORE_VERSION = 'v5';
 
 // Preferences
