@@ -446,24 +446,35 @@ function calculateTotalAttributePrice (attribute) {
     return price + (TOTAL_GOLD_CURVE[attribute - 1] || 0);
 }
 
-function getCSSColor(string) {
-    var style = new Option().style;
-    style.color = string;
-    if (style.color == '') {
-        style.color = `#${ string }`;
-    }
-
+function toCSSColor (color) {
+    let style = new Option().style;
+    style.color = color;
     return style.color;
 }
 
-function getCSSBackground(string) {
-    var style = new Option().style;
-    style.background = string;
-    if (style.background == '') {
-        style.background = `#${ string }`;
+function getCSSColor (color) {
+    if (COLOR_MAP.hasOwnProperty(color)) {
+        return toCSSColor(COLOR_MAP[color]);
+    } else if (/^\#([\da-fA-F]{8}|[\da-fA-F]{6}|[\da-fA-F]{3,4})$/.test(color)) {
+        return toCSSColor(color);
+    } else if (/^([\da-fA-F]{8}|[\da-fA-F]{6}|[\da-fA-F]{3,4})$/.test(color)) {
+        return toCSSColor('#' + color);
+    } else {
+        return '';
     }
+}
 
-    return style.background;
+function getCSSBackground (color) {
+    let c = getCSSColor(color);
+    if (c) {
+        return c;
+    } else if (color != undefined) {
+        let style = new Option().style;
+        style.background = color;
+        return style.background;
+    } else {
+        return '';
+    }
 }
 
 function getCSSColorFromBackground (string) {

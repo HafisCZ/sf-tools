@@ -1187,19 +1187,20 @@ class TableController {
 const CellGenerator = {
     // Simple cell
     Cell: function (c, b, f, bo, al, pad, style) {
-        return `<td class="${ bo ? 'border-right-thin' : '' }" style="color: ${ getCSSColorFromBackground(f) }; background: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' } ${ style || '' }">${ c }</td>`;
+        let color = getCSSColorFromBackground(f);
+        return `<td class="${ bo ? 'border-right-thin' : '' }" style="${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ al ? `text-align: ${ al };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
     },
     // Wide cell
     WideCell: function (c, b, w, al, pad, style) {
-        return `<td colspan="${ w }" style="background: ${ b }; ${ al ? `text-align: ${ al };` : '' } ${ pad ? `padding-left: ${ pad } !important;` : '' } ${ style || '' }">${ c }</td>`;
+        return `<td colspan="${ w }" style="${ b ? `background:${ b };` : '' }${ al ? `text-align: ${ al };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
     },
     // Plain cell
     Plain: function (c, bo, al, bg, style) {
-        return `<td class="${ bo ? 'border-right-thin' : '' }" style="${ al ? `text-align: ${ al };` : '' } ${ bg ? `background: ${ bg };` : '' } ${ style || '' }">${ c }</td>`;
+        return `<td class="${ bo ? 'border-right-thin' : '' }" style="${ al ? `text-align: ${ al };` : '' }${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
     },
     // Plain cell
     PlainSpan: function (s, c, bo, al, bg, style) {
-        return `<td colspan="${ s }" class="${ bo ? 'border-right-thin' : '' }" style="${ al ? `text-align: ${ al };` : '' } ${ bg ? `background: ${ bg };` : '' } ${ style || '' }">${ c }</td>`;
+        return `<td colspan="${ s }" class="${ bo ? 'border-right-thin' : '' }" style="${ al ? `text-align: ${ al };` : '' }${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
     },
     // Difference
     Difference: function (d, b, c) {
@@ -1610,7 +1611,7 @@ const SettingsCommands = [
             } else if (a2 == '@' || !val) {
                 value2 = SFormat.Error(value2);
             } else {
-                value2 = SFormat.Normal(value2, val);
+                value2 = SFormat.Color(value2, val);
             }
 
             return prefix + value + ' ' + value2;
