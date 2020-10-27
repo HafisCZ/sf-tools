@@ -8,6 +8,9 @@ const PerformanceTracker = new (class {
 
         this.expressions = 0;
         this.expressionCache = { };
+
+        this.allowClears = SiteOptions.cache_policy != CACHE_DONT_CLEAR;
+        this.allowCaching = SiteOptions.cache_policy != CACHE_DISABLE;
     }
 
     start () {
@@ -38,17 +41,19 @@ const PerformanceTracker = new (class {
     }
 
     cache_clear () {
-        this.cache = { };
+        if (this.ignoreClears) {
+            this.cache = {};
+        }
     }
 
     cache_add (id, player, compare, value) {
-        if (player && compare) {
+        if (player && compare && this.allowCaching) {
             this.cache[`${ player.Identifier }-${ player.Timestamp }-${ compare.Timestamp }-${ id }`] = value;
         }
     }
 
     cache_querry (id, player, compare) {
-        if (!player || !compare) {
+        if (!this.allowCaching || !player || !compare) {
             return undefined;
         } else {
             return this.cache[`${ player.Identifier }-${ player.Timestamp }-${ compare.Timestamp }-${ id }`];

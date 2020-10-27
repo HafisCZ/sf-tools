@@ -65,6 +65,10 @@ const SharedPreferences = new (class {
 
 })(window);
 
+const CACHE_DEFAULT = 0;
+const CACHE_DISABLE = 1;
+const CACHE_DONT_CLEAR = 2;
+
 const SiteOptions = new (class {
     constructor () {
         this.options = SharedPreferences.get('options', {
@@ -78,13 +82,23 @@ const SiteOptions = new (class {
             groups_other: false,
             players_other: false,
             files_hide: false,
-            inventory: false
+            inventory: false,
+            cache_policy: 0
         });
 
         this.params = {
             beta: false,
             temp: false
         };
+    }
+
+    get cache_policy () {
+        return this.options.cache_policy;
+    }
+
+    set cache_policy (value) {
+        this.options.cache_policy = value;
+        SharedPreferences.set('options', this.options);
     }
 
     get lazy () {
