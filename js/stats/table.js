@@ -805,7 +805,7 @@ class TableInstance {
 
                         if (block == '|') {
                             return divider;
-                        } else if (block == '') {
+                        } else if (block == '_') {
                             return spacer;
                         } else {
                             return this.cache[block];
@@ -917,7 +917,7 @@ class TableInstance {
 
                         if (block == '|') {
                             return divider;
-                        } else if (block == '') {
+                        } else if (block == '_') {
                             return spacer;
                         } else {
                             return this.cache[block];
@@ -1823,8 +1823,8 @@ const SettingsCommands = [
         Layout
     */
     new Command(
-        /^layout ((\||table|statistics|rows|members)(\s+(\||table|statistics|rows|members))*)$/,
-        (root, layout) => root.addLayout(layout.split(' ').map(v => v.trim())),
+        /^layout ((\||\_|table|statistics|rows|members)(\s+(\||\_|table|statistics|rows|members))*)$/,
+        (root, layout) => root.addLayout(layout.split(/\s+/).map(v => v.trim())),
         (root, layout) => SFormat.Keyword('layout ') + SFormat.Constant(layout)
     ),
     /*
@@ -2812,21 +2812,21 @@ class Settings {
         } else {
             if (this.type == TableType.Players) {
                 return [
-                    ... (hasStatistics ? [ 'statistics', hasRows ? '|' : '' ] : []),
-                    ... (hasRows ? (hasStatistics ? [ 'rows', '' ] : [ 'rows', '|', '' ]) : []),
+                    ... (hasStatistics ? [ 'statistics', hasRows ? '|' : '_' ] : []),
+                    ... (hasRows ? (hasStatistics ? [ 'rows', '_' ] : [ 'rows', '|', '_' ]) : []),
                     'table'
                 ];
             } else if (this.type == TableType.Group) {
                 return [
                     'table',
-                    ... (hasStatistics || hasRows || hasMembers ? [ '' ] : []),
+                    ... (hasStatistics || hasRows || hasMembers ? [ '_' ] : []),
                     ... (hasStatistics ? [ 'statistics' ] : []),
                     ... (hasRows ? [ '|', 'rows' ] : []),
                     ... (hasMembers ? [ '|', 'members' ] : [])
                 ];
             } else {
                 return [
-                    ... (hasRows ? [ 'rows', '|', '' ] : []),
+                    ... (hasRows ? [ 'rows', '|', '_' ] : []),
                     'table'
                 ];
             }
