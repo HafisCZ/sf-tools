@@ -1251,20 +1251,6 @@ const ARG_FORMATTERS = {
     'default': (p, c, e, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
 }
 
-class SettingsCommand {
-    constructor (regexp, parse, format, parseAlways = false) {
-        this.regexp = regexp;
-        this.match = string => string.match(this.regexp);
-        this.parse = parse;
-        this.format = format;
-        this.parseAlways = parseAlways;
-    }
-
-    isValid (string) {
-        return this.regexp.test(string);
-    }
-};
-
 class Command {
     constructor (regexp, parse, format, parseAlways = false) {
         this.regexp = regexp;
@@ -1887,6 +1873,11 @@ const SettingsCommands = [
         Lined
     */
     new Command(
+        /^lined$/,
+        (root, value) => root.addGlobal('lined', 1),
+        (root, value) => SFormat.Keyword('lined')
+    ),
+    new Command(
         /^lined (on|off|thin|thick)$/,
         (root, value) => root.addGlobal('lined', ARG_MAP[value]),
         (root, value) => SFormat.Keyword('lined ') + SFormat.Bool(value, value == 'thick' || value == 'thin' ? 'on' : value)
@@ -1941,17 +1932,22 @@ const SettingsCommands = [
     */
     new Command(
         /^clean$/,
-        (root) => root.addLocal('clean', true),
+        (root) => root.addLocal('clean', 1),
         (root) => SFormat.Keyword('clean')
     ),
     new Command(
         /^clean hard$/,
         (root) => root.addLocal('clean', 2),
-        (root) => SFormat.Keyword('clean ') + SFoirmat.Constant('hard')
+        (root) => SFormat.Keyword('clean ') + SFormat.Constant('hard')
     ),
     /*
         Indexing
     */
+    new Command(
+        /^indexed$/,
+        (root, value) => root.addGlobal('indexed', 1),
+        (root, value) => SFormat.Keyword('indexed')
+    ),
     new Command(
         /^indexed (on|off|static)$/,
         (root, value) => root.addGlobal('indexed', ARG_MAP[value]),
@@ -1964,6 +1960,11 @@ const SettingsCommands = [
         /^(members|outdated|opaque|large rows|align title)$/,
         (root, key) => root.addGlobal(key, true),
         (root, key) => SFormat.Keyword(key)
+    ),
+    new Command(
+        /^(members|outdated|opaque|large rows|align title) (on|off)$/,
+        (root, key, value) => root.addGlobal(key, ARG_MAP[value]),
+        (root, key, value) => SFormat.Keyword(key) + ' ' + SFormat.Bool(value)
     ),
     /*
         Simulator target
