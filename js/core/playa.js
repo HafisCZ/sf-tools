@@ -75,7 +75,7 @@ class SFItem {
     }
 
     morph (from, to) {
-        if (this.Type <= 7) {
+        if (this.Type <= 7 && this.SellPrice.Gold > 0) {
             var data = [ ... this.Data ];
             for (var i = 0; i < 3; i++) {
                 if (data[i + 4] == from) {
