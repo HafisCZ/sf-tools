@@ -590,23 +590,31 @@ class TableInstance {
         }
     }
 
-    getCellDisplayValue ({ difference, flip, value, brackets }, val, cmp, player = undefined, compare = undefined, extra = undefined) {
+    getCellDisplayValue ({ difference, ex_difference, flip, value, brackets }, val, cmp, player = undefined, compare = undefined, extra = undefined) {
         let displayValue = value.get(player, compare, this.settings, val, extra);
         if (!difference || isNaN(cmp)) {
             return displayValue;
         } else {
             let diff = (flip ? -1 : 1) * (val - cmp);
-            return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(player, compare, this.settings, diff, extra));
+            if (Object.is(diff, NaN) && !ex_difference) {
+                return displayValue;
+            } else {
+                return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(player, compare, this.settings, diff, extra));
+            }
         }
     }
 
-    getStatisticsDisplayValue ({ difference, flip, value, brackets }, val, cmp) {
+    getStatisticsDisplayValue ({ difference, ex_difference, flip, value, brackets }, val, cmp) {
         let displayValue = value.getStatistics(this.settings, val);
         if (!difference || isNaN(cmp)) {
             return displayValue;
         } else {
             let diff = (flip ? -1 : 1) * (val - cmp);
-            return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(undefined, undefined, this.settings, diff));
+            if (Object.is(diff, NaN) && !ex_difference) {
+                return displayValue;
+            } else {
+                return displayValue + CellGenerator.Difference(diff, brackets, value.getDifference(undefined, undefined, this.settings, diff));
+            }
         }
     }
 
@@ -2719,6 +2727,8 @@ class Settings {
         if (object) {
             object[name] = value;
         }
+
+        this.addLocal(`ex_${ name }`, value);
     }
 
     // Add extension
