@@ -41,7 +41,7 @@ const PerformanceTracker = new (class {
     }
 
     cache_clear () {
-        if (this.ignoreClears) {
+        if (this.allowClears) {
             this.cache = {};
         }
     }
