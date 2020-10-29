@@ -94,7 +94,7 @@ class DeveloperFloatView extends View {
             transition: 'fade'
         }).modal('show');
 
-        var obj = isgroup ? Database.Groups[id][ts] : Database.Players[id][ts];
+        var obj = isgroup ? Database.getGroup(id, ts) : Database.getPlayer(id, ts);
         var content = '';
         var list = this.list(obj);
         var len = Math.ceil(list.length / 3)
@@ -190,7 +190,7 @@ class GroupDetailView extends View {
                 {
                     label: 'Copy',
                     action: (source) => {
-                        copyText(JSON.stringify(Database.Players[source.attr('data-id')][this.timestamp].toSimulatorModel()));
+                        copyText(JSON.stringify(Database.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorModel()));
                     }
                 }
             ]
@@ -334,31 +334,43 @@ class GroupDetailView extends View {
 
         // Joined and kicked members
         var joined = current.Members.filter(id => !reference.Members.includes(id)).map(id => {
-            return getAt(Database.Players, id, this.timestamp, 'Name') || getAt(Database.Players, id, 'List', 0, 1, 'Name') || id;
+            let p = Database.getPlayer(id, this.timestamp);
+            if (p) {
+                return p.Name;
+            } else {
+                p = Database.getPlayer(id);
+                if (p) {
+                    return p.Latest.Name;
+                } else {
+                    return id;
+                }
+            }
         });
 
         var kicked = reference.Members.filter(id => !current.Members.includes(id)).map(id => {
-            return getAt(Database.Players, id, this.timestamp, 'Name') || getAt(Database.Players, id, 'List', 0, 1, 'Name') || id;
+            let p = Database.getPlayer(id, this.timestamp);
+            if (p) {
+                return p.Name;
+            } else {
+                p = Database.getPlayer(id);
+                if (p) {
+                    return p.Latest.Name;
+                } else {
+                    return id;
+                }
+            }
         });
 
         // Members
         var members = [];
         var missingMembers = [];
         for (var id of current.Members) {
-            if (Database.Players[id] && Database.Players[id][this.timestamp]) {
-                members.push(Database.Players[id][this.timestamp]);
+            let player = Database.getPlayer(id, this.timestamp);
+            if (player) {
+                members.push(player);
             } else {
                 missingMembers.push(current.Names[current.Members.findIndex(x => x == id)]);
             }
-        }
-
-        var updated = false;
-        for (var entry of members) {
-            updated |= Database.preload(entry.Identifier, entry.Timestamp);
-        }
-
-        if (updated) {
-            Database.update();
         }
 
         // Reference members
@@ -366,7 +378,7 @@ class GroupDetailView extends View {
         for (var member of members) {
             var player = Database.Players[member.Identifier];
             if (player) {
-                var playerReference = player[this.reference];
+                var playerReference = Database.getPlayer(member.Identifier, this.reference);
                 if (playerReference && playerReference.Group.Identifier == this.identifier) {
                     membersReferences.push(playerReference);
                 } else {
@@ -896,14 +908,7 @@ class PlayerHistoryView extends View {
         // Table instance
         this.table.setSettings(SettingsManager.get(this.identifier, 'me', PredefinedTemplates['Me Default']));
 
-        var updated = false;
-        for (var [ timestamp, proxy ] of this.list) {
-            updated |= Database.preload(this.identifier, timestamp);
-        }
-
-        if (updated) {
-            Database.update();
-        }
+        this.list.forEach(([ a, b ]) => Database.loadPlayer(b));
 
         this.refresh();
     }
@@ -1222,20 +1227,13 @@ class BrowseView extends View {
                         }
 
                         if (matches) {
-                            entries.add(currentPlayer[1], (ts || currentPlayer)[1], currentPlayer[1].Timestamp == this.timestamp, hidden);
+                            let pp = currentPlayer[1];
+                            let cp = (ts || currentPlayer)[1];
+
+                            entries.add(Database.loadPlayer(pp), Database.loadPlayer(cp), currentPlayer[1].Timestamp == this.timestamp, hidden);
                         }
                     }
                 }
-            }
-
-            var updated = false;
-            for (var entry of entries) {
-                updated |= Database.preload(entry.player.Identifier, entry.player.Timestamp);
-                updated |= Database.preload(entry.compare.Identifier, entry.compare.Timestamp);
-            }
-
-            if (updated) {
-                Database.update();
             }
 
             this.table.setEntries(entries, !this.recalculate, sim, this.autosort);

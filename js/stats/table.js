@@ -252,8 +252,7 @@ class TableInstance {
         // Filter incoming array if needed
         this.array = this.type != TableType.History ? array : array.map(([ timestamp, e ]) => {
             // Preload character
-            shouldUpdate |= Database.preload(e.Identifier, timestamp);
-            let obj = Database.Players[e.Identifier][timestamp];
+            let obj = Database.getPlayer(e.Identifier, timestamp);
 
             // Find if falls under discard rule
             let disc = this.settings.discardRules.some(rule => rule(obj, obj, this.settings));
@@ -261,11 +260,6 @@ class TableInstance {
             // Return stuff
             return disc ? null : [ timestamp, obj ];
         }).filter(e => e);
-
-        // Force db update if necessary
-        if (shouldUpdate) {
-            Database.update();
-        }
 
         // Evaluate variables
         if (this.type == TableType.History) {
@@ -3132,9 +3126,8 @@ class Settings {
             array = array.slice(0, limit);
 
             // Preload all players if needed
-            if (array.reduce((collector, { player, compare }) => collector || Database.preload(player.Identifier, player.Timestamp) || Database.preload(compare.Identifier, compare.Timestamp), false)) {
-                Database.update();
-            }
+            Database.loadPlayer(player);
+            Database.loadPlayer(compare);
 
             // Arrays
             let arrayCurrent = null;
