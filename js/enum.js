@@ -13,7 +13,8 @@ const PLAYER_CLASS = [
 const PLAYER_ACTIONS = [
     'Idle',
     'Working',
-    'Questing'
+    'Questing',
+    'Dungeon'
 ];
 
 const MASK_TYPES = [
