@@ -2866,7 +2866,7 @@ class Settings {
         return this.globals.opaque ? 'css-entry-opaque' : '';
     }
 
-    getLinedStyleValue () {
+    getLinedStyle () {
         return this.globals.lined || 0;
     }
 
