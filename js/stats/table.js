@@ -243,6 +243,8 @@ class TableInstance {
 
         this.flatWidth = this.config.reduce((a, b) => a + b.width, 0);
         this.flatSpan = this.flat.reduce((t, h) => t + h.span, 0);
+
+        this.cellDivider = this.getCellDivider();
     }
 
     // Set players
@@ -528,6 +530,20 @@ class TableInstance {
         this.cache = { };
     }
 
+    getCellDivider () {
+        let lineType = this.settings.getLinedStyle();
+        if (lineType == 2) {
+            // Thick
+            return `<tr class="border-bottom-thick"></tr>`;
+        } else if (lineType == 1) {
+            // Thin
+            return `<tr class="border-bottom-thin"></tr>`;
+        } else {
+            // None
+            return '';
+        }
+    }
+
     getCell ({ visible, align, padding, style }, value, color, border) {
         return CellGenerator.Cell(
             value,
@@ -697,7 +713,7 @@ class TableInstance {
             width: tableWidth,
             content: `
                 <thead></thead>
-                <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getLinedStyle() } ${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
+                <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
                     ${ this.cache.rows }
                     <tr>
                         ${ categoryTitle }
@@ -707,7 +723,7 @@ class TableInstance {
                         ${ headerTitle }
                         ${ this.getHeaderBlock(false) }
                     </tr>
-                    ${ join(this.entries, e => e.content) }
+                    ${ join(this.entries, (e, ei, ea) => e.content + (ei != ea.length - 1 ? this.cellDivider : '')) }
                 </tbody>
             `
         };
@@ -788,7 +804,7 @@ class TableInstance {
                 ${ headerTitle }
                 ${ this.getHeaderBlock(true) }
             </tr>
-            ${ join(this.entries, (e, ei) => e.content.replace('{__INDEX__}', ei + 1), 0, this.array.perf || this.settings.getEntryLimit()) }
+            ${ join(this.entries, (e, ei, ea) => e.content.replace('{__INDEX__}', ei + 1) + (ei != ea.length - 1 ? this.cellDivider : ''), 0, this.array.perf || this.settings.getEntryLimit()) }
         `;
 
         let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, false);
@@ -797,7 +813,7 @@ class TableInstance {
             width: tableWidth,
             content: `
                 <thead></thead>
-                <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getLinedStyle() } ${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
+                <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
                     ${ join(layout, (block, i, array) => {
                         // Counters
                         let first = i == 0;
@@ -899,7 +915,7 @@ class TableInstance {
                 ${ headerTitle }
                 ${ this.getHeaderBlock(true) }
             </tr>
-            ${ join(this.entries, (e, ei) => e.content.replace('{__INDEX__}', ei + 1)) }
+            ${ join(this.entries, (e, ei, ea) => e.content.replace('{__INDEX__}', ei + 1) + (ei != ea.length - 1 ? this.cellDivider : '')) }
             ${ this.entries.missing.length ? `<tr class="css-b-bold">${ CellGenerator.WideCell(CellGenerator.Small(`Player data is missing for following members:<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.flatSpan + leftSpan, 'center') }</tr>` : '' }
         `;
 
@@ -909,7 +925,7 @@ class TableInstance {
             width: tableWidth,
             content: `
                 <thead></thead>
-                <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getLinedStyle() } ${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
+                <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
                     ${ join(layout, (block, i, array) => {
                         // Counters
                         let first = i == 0;
@@ -2850,8 +2866,8 @@ class Settings {
         return this.globals.opaque ? 'css-entry-opaque' : '';
     }
 
-    getLinedStyle () {
-        return [ '', 'css-entry-lined', 'css-entry-thicklined' ][ this.globals.lined || 0 ];
+    getLinedStyleValue () {
+        return this.globals.lined || 0;
     }
 
     getRowStyle () {
