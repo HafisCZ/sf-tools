@@ -9,8 +9,10 @@ const PerformanceTracker = new (class {
         this.expressions = 0;
         this.expressionCache = { };
 
-        this.allowClears = SiteOptions.cache_policy != CACHE_DONT_CLEAR;
-        this.allowCaching = SiteOptions.cache_policy != CACHE_DISABLE;
+        if (typeof SiteOptions !== 'undefined') {
+            this.allowClears = SiteOptions.cache_policy != CACHE_DONT_CLEAR;
+            this.allowCaching = SiteOptions.cache_policy != CACHE_DISABLE;
+        }
     }
 
     start () {

@@ -858,7 +858,7 @@ function SHA1 (text) {
         H4 = (H4 + E) & 0x0ffffffff;
     }
 
-    return (cvt_hex(H0) + cvt_hex(H1) + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4)).toLowerCase();
+    return (cvt_hex(H0) + cvt_hex(H1) /* + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4) */ ).toLowerCase();
 }
 
 const SP_ENUMS = {
