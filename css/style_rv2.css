@@ -12,6 +12,54 @@
     max-height: calc(100vh - 7em - 5.5em);
 }
 
+table.sftools-table {
+    position: absolute;
+    margin-top: 1em;
+    border-spacing: 0;
+    border-collapse: collapse;
+
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 300 !important;
+    font-size: 1.35em !important;
+
+    color: #212529;
+    text-align: center;
+}
+
+table.sftools-table td {
+    height: 1.9em;
+}
+
+table.sftools-table td.left {
+    padding-left: 0.35em;
+    text-align: left;
+}
+
+table.sftools-table td.right {
+    padding-right: 0.35em;
+    text-align: right;
+}
+
+table.sftools-table span {
+    font-size: 70%;
+}
+
+table.sftools-table .headers td {
+    text-overflow: clip;
+    overflow: hidden;
+}
+
+.sftools-loader {
+    opacity: 65%;
+    animation: spin 1.2s linear infinite;
+}
+
+@keyframes spin {
+    100% {
+        transform:rotate(360deg);
+    }
+}
+
 .ui.selection.list.css-selection-list::-webkit-scrollbar {
   display: none;
 }

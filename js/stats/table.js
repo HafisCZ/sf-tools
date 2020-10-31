@@ -11,7 +11,7 @@ class HeaderGroup {
         this.name = name;
         this.empty = empty;
 
-        this.sortkey = `${ SHA1(name) }.${ i }`;
+        this.sortkey = `${ name }.${ i }`;
 
         this.width = 0;
         this.length = 0;
@@ -31,7 +31,7 @@ class HeaderGroup {
                 statistics: statisticsGenerator
             },
             sort: sort,
-            sortkey: `${ this.sortkey }.${ name }.${ this.headers.length }`,
+            sortkey: SHA1(`${ this.sortkey }.${ name }.${ this.headers.length }`),
             span: span,
             bordered: border
         };
@@ -45,7 +45,7 @@ class HeaderGroup {
 
         // Sum width and push the header
         this.width += header.width;
-        this.length++;
+        this.length += span;
 
         this.headers.push(header);
     }
@@ -639,10 +639,7 @@ class TableInstance {
                     <td colspan="${ this.flatSpan + leftSpan }"></td>
                 </tr>
             ` : '' }
-            <tr>
-                <td class="border-right-thin border-bottom-thick" colspan="${ leftSpan }"></td>
-                <td class="border-bottom-thick" colspan=${ this.flatSpan }></td>
-            </tr>
+            <tr class="border-bottom-thick"></tr>
             ${ bottomSpacer ? `
                 <tr>
                     <td colspan="${ this.flatSpan + leftSpan }"></td>
@@ -715,11 +712,11 @@ class TableInstance {
                 <thead></thead>
                 <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
                     ${ this.cache.rows }
-                    <tr>
+                    <tr class="headers">
                         ${ categoryTitle }
                         ${ this.getCategoryBlock(false) }
                     </tr>
-                    <tr class="border-bottom-thick">
+                    <tr class="headers border-bottom-thick">
                         ${ headerTitle }
                         ${ this.getHeaderBlock(false) }
                     </tr>
@@ -797,10 +794,10 @@ class TableInstance {
         }
 
         this.cache.table = `
-            <tr>
+            <tr class="headers">
                 ${ categoryTitle }
                 ${ this.getCategoryBlock(true) }
-            <tr class="border-bottom-thick">
+            <tr class="headers border-bottom-thick">
                 ${ headerTitle }
                 ${ this.getHeaderBlock(true) }
             </tr>
@@ -908,10 +905,10 @@ class TableInstance {
         }
 
         this.cache.table = `
-            <tr>
+            <tr class="headers">
                 ${ categoryTitle }
                 ${ this.getCategoryBlock(true) }
-            <tr class="border-bottom-thick">
+            <tr class="headers border-bottom-thick">
                 ${ headerTitle }
                 ${ this.getHeaderBlock(true) }
             </tr>
@@ -1022,7 +1019,7 @@ class TableInstance {
                 return join(headers, ({ width, span, sortkey, name: headerName }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px;" class="${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'clickable' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ headerName }</td>`
+                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'clickable' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ headerName }</td>`
                 });
             } else {
                 return `<td colspan="${ length }" class="${ notLastCategory ? 'border-right-thin' : '' }">${ aligned && empty ? '' : categoryName }</td>`;
@@ -1041,7 +1038,7 @@ class TableInstance {
                 return join(headers, ({ width, span, name, sortkey }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td colspan="${ span }" style="width: ${ width }px;" class="${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'clickable' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ name }</td>`
+                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'clickable' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ name }</td>`
                 });
             }
         });
@@ -1206,19 +1203,19 @@ const CellGenerator = {
     // Simple cell
     Cell: function (c, b, f, bo, al, pad, style) {
         let color = getCSSColorFromBackground(f);
-        return `<td class="${ bo ? 'border-right-thin' : '' }" style="${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ al ? `text-align: ${ al };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
+        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' }" style="${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
     },
     // Wide cell
     WideCell: function (c, b, w, al, pad, style) {
-        return `<td colspan="${ w }" style="${ b ? `background:${ b };` : '' }${ al ? `text-align: ${ al };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
+        return `<td class="${ al ? al : '' }" colspan="${ w }" style="${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
     },
     // Plain cell
     Plain: function (c, bo, al, bg, style) {
-        return `<td class="${ bo ? 'border-right-thin' : '' }" style="${ al ? `text-align: ${ al };` : '' }${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
+        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' }" style="${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
     },
     // Plain cell
     PlainSpan: function (s, c, bo, al, bg, style) {
-        return `<td colspan="${ s }" class="${ bo ? 'border-right-thin' : '' }" style="${ al ? `text-align: ${ al };` : '' }${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
+        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' }" colspan="${ s }"  style="${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
     },
     // Difference
     Difference: function (d, b, c) {
@@ -2194,7 +2191,7 @@ class Constants {
             'demonhunter': '7',
             'druid': '8',
             'empty': '',
-            'tiny': '15',
+            'tiny': '40',
             'small': '60',
             'normal': '100',
             'large': '160',

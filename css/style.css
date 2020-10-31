@@ -392,20 +392,6 @@ input:disabled {
     border: none !important;
 }
 
-.font-big {
-    font-size: 1.25em !important;
-}
-
-.area-input {
-    max-height: none !important;
-    height: 106em !important;
-    resize: none !important;
-}
-
-.player-small .column {
-    padding-bottom: 0.1em !important;
-}
-
 .table-group tr {
 
 }
@@ -427,6 +413,20 @@ input:disabled {
 
 .table-group span {
     font-size: 70% !important;
+}
+
+.font-big {
+    font-size: 1.25em !important;
+}
+
+.area-input {
+    max-height: none !important;
+    height: 106em !important;
+    resize: none !important;
+}
+
+.player-small .column {
+    padding-bottom: 0.1em !important;
 }
 
 .background-green {
