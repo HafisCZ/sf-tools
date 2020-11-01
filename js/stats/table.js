@@ -1948,7 +1948,7 @@ const SettingsCommands = [
                 root.addGlobal('font', value);
             }
         },
-        (root, font) => SFormat.Keyword('font ') + (getCSSFont(font) ? SFormat.Normal(font) : SFormat.Error(value))
+        (root, font) => SFormat.Keyword('font ') + (getCSSFont(font) ? SFormat.Normal(font) : SFormat.Error(font))
     ),
     /*
         Shared options
