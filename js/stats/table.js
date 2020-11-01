@@ -2832,7 +2832,7 @@ class Settings {
     }
 
     getBackgroundStyle () {
-        return getCSSColor(this.shared.background);
+        return this.shared.background;
     }
 
     getOutdatedStyle () {
