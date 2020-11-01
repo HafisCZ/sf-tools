@@ -40,7 +40,7 @@ class HeaderGroup {
         if (typeof header.width == 'undefined') {
             header.width = Math.max(100, header.name.length * 12);
         } else if (header.width && header.grouped) {
-            header.width = header.grouped * (header.width + 3);
+            header.width = header.grouped * header.width;
         }
 
         // Sum width and push the header
@@ -125,6 +125,7 @@ class TableInstance {
 
                 if (header.grouped) {
                     // Create grouped header
+                    let callWidth = header.width || 100;
                     group.add(header, (player, compare) => {
                         // Cell
                         let vals = header.expr(player, compare, this.settings);
@@ -147,7 +148,8 @@ class TableInstance {
                                         header,
                                         this.getCellDisplayValue(header, val, header.difference ? cmps[index] : undefined, player, compare, extra),
                                         this.getCellColor(header, val, player, compare, extra),
-                                        showEndBorder
+                                        showEndBorder,
+                                        callWidth
                                     );
                                 }
                             });
@@ -559,7 +561,7 @@ class TableInstance {
         }
     }
 
-    getCell ({ visible, align, padding, style }, value, color, border) {
+    getCell ({ visible, align, padding, style }, value, color, border, cellWidth) {
         return CellGenerator.Cell(
             value,
             color,
@@ -567,7 +569,8 @@ class TableInstance {
             border,
             align,
             padding,
-            style ? style.cssText : undefined
+            style ? style.cssText : undefined,
+            cellWidth
         );
     }
 
@@ -1216,9 +1219,9 @@ class TableController {
 // Cell generators
 const CellGenerator = {
     // Simple cell
-    Cell: function (c, b, f, bo, al, pad, style) {
+    Cell: function (c, b, f, bo, al, pad, style, cellWidth) {
         let color = getCSSColorFromBackground(f);
-        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' }" style="${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
+        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' }" style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
     },
     // Wide cell
     WideCell: function (c, b, w, al, pad, style) {
