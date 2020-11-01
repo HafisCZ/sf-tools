@@ -295,7 +295,7 @@ const Database = new (class {
     // Get player
     getPlayer (id, timestamp) {
         let player = this.Players[id];
-        if (timestamp) {
+        if (player && timestamp) {
             return this.loadPlayer(player[timestamp]);
         } else {
             return player;
@@ -349,7 +349,7 @@ const Database = new (class {
 
             // Replace needed references
             let playerObj = this.Players[Identifier];
-            
+
             playerObj[Timestamp] = player;
             playerObj.List.find(([ ts, p ]) => ts == Timestamp)[1] = player;
             if (playerObj.LatestTimestamp == Timestamp) {
