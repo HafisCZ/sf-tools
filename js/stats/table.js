@@ -1690,7 +1690,7 @@ const SettingsCommands = [
                 }
             }
         },
-        (root, expression) => SFormat.Keyword('format statistics ') + (expression == 'on' || expression == 'off' ? SFormat.Bool(expression) : (ARG_FORMATTERS.hasOwnProperty(expression) ? Expression.format(expression, root) : SFormat.Constant(expression)))
+        (root, expression) => SFormat.Keyword('format statistics ') + (expression == 'on' || expression == 'off' ? SFormat.Bool(expression) : (ARG_FORMATTERS.hasOwnProperty(expression) ? SFormat.Constant(expression) : Expression.format(expression, root)))
     ),
     /*
         Difference format expression
@@ -1711,7 +1711,7 @@ const SettingsCommands = [
                 }
             }
         },
-        (root, expression) => SFormat.Keyword('format difference ') + (expression == 'on' || expression == 'off' ? SFormat.Bool(expression) : (ARG_FORMATTERS.hasOwnProperty(expression) ? Expression.format(expression, root) : SFormat.Constant(expression)))
+        (root, expression) => SFormat.Keyword('format difference ') + (expression == 'on' || expression == 'off' ? SFormat.Bool(expression) : (ARG_FORMATTERS.hasOwnProperty(expression) ? SFormat.Constant(expression) : Expression.format(expression, root)))
     ),
     /*
         Cell background
@@ -1752,7 +1752,7 @@ const SettingsCommands = [
                 }
             }
         },
-        (root, expression) => SFormat.Keyword('format ') + (ARG_FORMATTERS.hasOwnProperty(expression) ? Expression.format(expression, root) : SFormat.Constant(expression))
+        (root, expression) => SFormat.Keyword('format ') + (ARG_FORMATTERS.hasOwnProperty(expression) ? SFormat.Constant(expression) : Expression.format(expression, root))
     ),
     /*
         Category
