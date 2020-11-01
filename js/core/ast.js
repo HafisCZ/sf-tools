@@ -1161,6 +1161,14 @@ const SP_FUNCTIONS = {
         } else {
             return undefined;
         }
+    },
+    // Create empty array
+    'makearray': (size, def = 0) => {
+        if (!isNaN(size)) {
+            return new Array(size).fill(def);
+        } else {
+            return undefined;
+        }
     }
 }
 
