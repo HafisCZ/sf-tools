@@ -684,7 +684,14 @@ function download (e, d) {
 function downloadScreenshot ($node, filename, onClone) {
     html2canvas($node.get(0), {
         logging: false,
-        onclone: onClone
+        onclone: doc => {
+            $('<tr class="border-bottom-thick"></tr>').insertAfter($(doc).find('tr.css-entry.border-bottom-thick'));
+            $('<tr class="border-bottom-thin"></tr>').insertAfter($(doc).find('tr.css-entry.border-bottom-thin'));
+
+            if (onClone) {
+                onClone(doc);
+            }
+        }
     }).then((canvas) => {
         canvas.toBlob((blob) => {
             download(filename, blob);
