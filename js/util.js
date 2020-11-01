@@ -93,9 +93,9 @@ function parseOwnDate (text) {
 
             let date = new Date();
 
-            date.setDate(objs[1])
-            date.setMonth(objs[2] - 1);
             date.setFullYear(objs[3]);
+            date.setMonth(objs[2] - 1);
+            date.setDate(objs[1])
 
             date.setHours(objs[4]);
             date.setMinutes(objs[5]);
