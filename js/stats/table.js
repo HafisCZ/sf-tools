@@ -2358,6 +2358,8 @@ class Settings {
             if (!obj.value.rules.rules.length) {
                 obj.value.rules.rules = definition.value.rules.rules;
             }
+
+            this.mergeStyles(obj, definition.style);
         }
     }
 
@@ -2376,6 +2378,33 @@ class Settings {
         // Merge value extra
         if (!obj.value.extra) {
             obj.value.extra = mapping.extra;
+        }
+
+        this.mergeStyles(obj, mapping.style);
+    }
+
+    merge (obj, mapping) {
+        // Merge all non-objects
+        for (var [ key, value ] of Object.entries(mapping)) {
+            if (!obj.hasOwnProperty(key) && typeof value != 'object') obj[key] = mapping[key];
+        }
+
+        this.mergeStyles(obj, mapping.style);
+    }
+
+    mergeStyles (obj, sourceStyle) {
+        if (sourceStyle) {
+            if (obj.style) {
+                // Rewrite styles
+                for (let [ name, value ] of Object.entries(sourceStyle.styles)) {
+                    if (!obj.style.styles.hasOwnProperty(name)) {
+                        obj.style.add(name, value);
+                    }
+                }
+            } else {
+                // Add whole style class
+                obj.style = sourceStyle;
+            }
         }
     }
 
@@ -2399,7 +2428,7 @@ class Settings {
             }
 
             // Merge shared
-            merge(obj, this.shared);
+            this.merge(obj, this.shared);
 
             // Push
             this.customRows.push(obj);
@@ -2441,10 +2470,10 @@ class Settings {
             // Push header if possible
             if (obj.expr) {
                 if (!obj.clean) {
-                    merge(obj, this.sharedCategory);
-                    merge(obj, this.shared);
+                    this.merge(obj, this.sharedCategory);
+                    this.merge(obj, this.shared);
                 } else {
-                    merge(obj, {
+                    this.merge(obj, {
                         visible: true,
                         statistics_color: true
                     });
