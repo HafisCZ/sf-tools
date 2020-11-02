@@ -978,52 +978,18 @@ class TableInstance {
     }
 
     getMembers (leftSpan) {
-        let classWidth = this.getRowSpan(60);
-        let classList = this.array.reduce((c, p) => {
-            c[p.player.Class - 1]++;
-            return c;
-        }, [0, 0, 0, 0, 0, 0, 0, 0]);
-
         return `
             <tr>
-                <td class="border-right-thin" colspan="${ leftSpan }">Warrior</td>
-                <td colspan="${ classWidth }">${ classList[0] }</td>
-                ${ this.array.joined.length ? `
-                    <td class="border-right-thin" rowspan="4" colspan="1">Joined</td>
-                    <td colspan="${ Math.max(1, this.flatSpan - classList - 1) }" rowspan="4">${ this.array.joined.join(', ') }</td>
-                ` : '' }
+                <td class="border-right-thin" colspan=${ leftSpan }>Classes</td>
+                <td colspan="${ this.flatSpan }">${ Object.entries(this.settings.lists.classes).map(([ key, count ]) => PLAYER_CLASS[key] + ': ' + count).join(', ') }</td>
             </tr>
             <tr>
-                <td class="border-right-thin" colspan="${ leftSpan }">Mage</td>
-                <td colspan="${ classWidth }">${ classList[1] }</td>
+                <td class="border-right-thin" colspan=${ leftSpan }>Joined</td>
+                <td colspan="${ this.flatSpan }">${ this.settings.lists.joined.join(', ') }</td>
             </tr>
             <tr>
-                <td class="border-right-thin" colspan="${ leftSpan }">Scout</td>
-                <td colspan="${ classWidth }">${ classList[2] }</td>
-            </tr>
-            <tr>
-                <td class="border-right-thin" colspan="${ leftSpan }">Assassin</td>
-                <td colspan="${ classWidth }">${ classList[3] }</td>
-            </tr>
-            <tr>
-                <td class="border-right-thin" colspan="${ leftSpan }">Battle Mage</td>
-                <td colspan="${ classWidth }">${ classList[4] }</td>
-                ${ this.array.joined.length ? `
-                    <td class="border-right-thin" rowspan="4" colspan="1">Left</td>
-                    <td colspan="${ Math.max(1, this.flatSpan - classList - 1) }" rowspan="4">${ this.array.kicked.join(', ') }</td>
-                ` : '' }
-            </tr>
-            <tr>
-                <td class="border-right-thin" colspan="${ leftSpan }">Berseker</td>
-                <td colspan="${ classWidth }">${ classList[5] }</td>
-            </tr>
-            <tr>
-                <td class="border-right-thin" colspan="${ leftSpan }">Demon Hunter</td>
-                <td colspan="${ classWidth }">${ classList[6] }</td>
-            </tr>
-            <tr>
-                <td class="border-right-thin" colspan="${ leftSpan }">Druid</td>
-                <td colspan="${ classWidth }">${ classList[7] }</td>
+                <td class="border-right-thin" colspan=${ leftSpan }>Left</td>
+                <td colspan="${ this.flatSpan }">${ this.settings.lists.kicked.join(', ') }</td>
             </tr>
         `;
     }
@@ -2996,6 +2962,23 @@ class Settings {
         let compareEnvironment = this.getCompareEnvironment();
         let sameTimestamp = array.timestamp == array.reference;
 
+        // Set lists
+        this.lists = {
+            classes: array.reduce((c, { player }) => {
+                c[player.Class]++;
+                return c;
+            }, {
+                1: 0,
+                2: 0,
+                3: 0,
+                4: 0,
+                5: 0,
+                6: 0,
+                7: 0,
+                8: 0
+            })
+        }
+
         // Run simulator if needed
         this.evalSimulator(array, simulatorLimit, entryLimit);
 
@@ -3076,7 +3059,20 @@ class Settings {
         // Set lists
         this.lists = {
             joined: SiteOptions.obfuscated ? array.joined.map((p, i) => `joined_${ i + 1 }`) : array.joined,
-            kicked: SiteOptions.obfuscated ? array.kicked.map((p, i) => `kicked_${ i + 1 }`) : array.kicked
+            kicked: SiteOptions.obfuscated ? array.kicked.map((p, i) => `kicked_${ i + 1 }`) : array.kicked,
+            classes: array.reduce((c, { player }) => {
+                c[player.Class]++;
+                return c;
+            }, {
+                1: 0,
+                2: 0,
+                3: 0,
+                4: 0,
+                5: 0,
+                6: 0,
+                7: 0,
+                8: 0
+            })
         }
 
         // Run simulator if needed
