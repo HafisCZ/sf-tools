@@ -646,8 +646,8 @@ class TableInstance {
         }
     }
 
-    getCellColor ({ color }, val, player = undefined, compare = undefined, extra = undefined, ignoreBase = false) {
-        return color.get(player, compare, this.settings, val, extra, ignoreBase);
+    getCellColor (header, val, player = undefined, compare = undefined, extra = undefined, ignoreBase = false) {
+        return header.color.get(player, compare, this.settings, val, extra, ignoreBase, header);
     }
 
     getDivider (leftSpan, bottomSpacer, topSpacer) {
@@ -2106,7 +2106,7 @@ const SettingsCommands = [
         (root, expression) => {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addColorExpression((a, b, c, d, e) => ast.eval(a, b, c, d, e));
+                root.addColorExpression((a, b, c, d, e, f) => ast.eval(a, b, c, d, e, undefined, f));
             }
         },
         (root, expression) => SFormat.Keyword('expc ') + Expression.format(expression, root)
@@ -2508,9 +2508,9 @@ class Settings {
         return {
             expression: undefined,
             rules: new RuleEvaluator(),
-            get: function (player, compare, settings, value, extra = undefined, ignoreBase = false) {
+            get: function (player, compare, settings, value, extra = undefined, ignoreBase = false, header = undefined) {
                 // Get color from expression
-                let expressionColor = this.expression ? this.expression(player, compare, settings, value, extra) : undefined;
+                let expressionColor = this.expression ? this.expression(player, compare, settings, value, extra, header) : undefined;
 
                 // Get color from color block
                 let blockColor = this.rules.get(value, ignoreBase || (typeof expressionColor !== 'undefined'));
