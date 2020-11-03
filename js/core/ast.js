@@ -1078,6 +1078,17 @@ const SP_FUNCTIONS = {
             }
         }
     },
+    'average': (array) => {
+        if (Array.isArray(array)) {
+            if (array.length) {
+                return array.reduce((c, a) => c + a) / array.length;
+            } else {
+                return 0;
+            }
+        } else {
+            return undefined;
+        }
+    },
     // RGB
     'rgb': (r, g, b) => {
         if (isNaN(r) || isNaN(g) || isNaN(b)) {
