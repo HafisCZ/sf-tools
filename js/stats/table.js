@@ -1000,10 +1000,10 @@ class TableInstance {
             let notLastCategory = categoryIndex != categoryArray.length - 1;
 
             if (empty && !aligned) {
-                return join(headers, ({ width, span, sortkey, name: headerName }, headerIndex, headerArray) => {
+                return join(headers, ({ width, span, sortkey, name: headerName, align_title }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'clickable' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ headerName }</td>`
+                    return `<td rowspan="2" colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="border-bottom-thick ${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'clickable' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ headerName }</td>`
                 });
             } else {
                 return `<td colspan="${ length }" class="${ notLastCategory ? 'border-right-thin' : '' }">${ aligned && empty ? '' : categoryName }</td>`;
@@ -1019,10 +1019,10 @@ class TableInstance {
             if (empty && !aligned) {
                 return '';
             } else {
-                return join(headers, ({ width, span, name, sortkey }, headerIndex, headerArray) => {
+                return join(headers, ({ width, span, name, sortkey, align_title }, headerIndex, headerArray) => {
                     let lastHeader = notLastCategory && headerIndex == headerArray.length - 1;
 
-                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'clickable' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ name }</td>`
+                    return `<td colspan="${ span }" style="width: ${ width }px; max-width: ${ width }px;" class="${ align_title ? align_title : '' } ${ lastHeader ? 'border-right-thin' : '' } ${ sortable ? 'clickable' : '' }" ${ sortable ? this.getSortingTag(sortkey) : '' }>${ name }</td>`
                 });
             }
         });
@@ -1941,6 +1941,14 @@ const SettingsCommands = [
         (root) => SFormat.Keyword('clean ') + SFormat.Constant('hard')
     ),
     /*
+        Action
+    */
+    new Command(
+        /^action (none|show)$/,
+        (root, value) => root.addLocal('action', value),
+        (root, value) => SFormat.Keyword('action ') + SFormat.Constant(value)
+    ),
+    /*
         Indexing
     */
     new Command(
@@ -1957,12 +1965,12 @@ const SettingsCommands = [
         Global options
     */
     new Command(
-        /^(members|outdated|opaque|large rows|align title)$/,
+        /^(members|outdated|opaque|large rows|align title|empty)$/,
         (root, key) => root.addGlobal(key, true),
         (root, key) => SFormat.Keyword(key)
     ),
     new Command(
-        /^(members|outdated|opaque|large rows|align title) (on|off)$/,
+        /^(members|outdated|opaque|large rows|align title|empty) (on|off)$/,
         (root, key, value) => root.addGlobal(key, ARG_MAP[value]),
         (root, key, value) => SFormat.Keyword(key) + ' ' + SFormat.Bool(value)
     ),
@@ -2084,6 +2092,14 @@ const SettingsCommands = [
         /^align (left|right|center)$/,
         (root, value) => root.addShared('align', value),
         (root, value) => SFormat.Keyword('align ') + SFormat.Constant(value)
+    ),
+    new Command(
+        /^align (left|right|center) (left|right|center)$/,
+        (root, value, value2) => {
+            root.addShared('align', value);
+            root.addShared('align_title', value2);
+        },
+        (root, value, value2) => SFormat.Keyword('align ') + SFormat.Constant(value) + ' ' + SFormat.Constant(value2)
     ),
     /*
         Discard expression
