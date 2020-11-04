@@ -127,7 +127,7 @@ class Expression {
                     value = SFormat.ReservedItemized(token);
                 } else if (SP_KEYWORD_MAPPING_5.hasOwnProperty(token)) {
                     value = SFormat.ReservedItemizable(token);
-                } else if (root.constants.isValid(token[0], token.slice(1))) {
+                } else if (root.constants.exists(token)) {
                     value = SFormat.Constant(token);
                 } else if (SP_ENUMS.hasOwnProperty(token)) {
                     value = SFormat.Enum(token);
@@ -877,9 +877,9 @@ class Expression {
                 }
             } else if (environment.lists.hasOwnProperty(node)) {
                 return environment.lists[node];
-            } else if (node[0] == '@') {
+            } else if (environment.constants.exists(node)) {
                 // Return constant
-                return environment.constants.Values[node.slice(1)];
+                return environment.constants.get(node);
             } else {
                 // Return enum or undefined if everything fails
                 return SP_ENUMS[node];
@@ -1231,6 +1231,11 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Identifier': {
         expr: p => p.Identifier,
+        difference: false,
+        statistics: false
+    },
+    'Prefix': {
+        expr: p => p.Prefix,
         difference: false,
         statistics: false
     },

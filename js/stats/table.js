@@ -2195,20 +2195,36 @@ class Constants {
         }
     }
 
-    getValue (tag, key) {
-        return tag == '@' ? this.Values[key] : key;
+    get (key) {
+        if (typeof key == 'string' && key.length >= 2 && key[0] == '@') {
+            let rkey = key.slice(1);
+            if (this.Values.hasOwnProperty(rkey)) {
+                return this.Values[rkey];
+            } else {
+                return key;
+            }
+        } else {
+            return key;
+        }
     }
 
-    isValid (tag, key) {
-        return tag == '@' && this.Values.hasOwnProperty(key);
+    exists (key) {
+        return typeof key == 'string' && key.length >= 2 && key[0] == '@' && this.Values.hasOwnProperty(key.slice(1));
     }
 
     addConstant (key, value) {
         this.Values[key] = value;
     }
 
-    hasConstant (key) {
-        return this.Values.hasOwnProperty(key);
+    /*
+        Old stuff
+    */
+    getValue (tag, key) {
+        return tag == '@' ? this.Values[key] : key;
+    }
+
+    isValid (tag, key) {
+        return tag == '@' && this.Values.hasOwnProperty(key);
     }
 }
 
