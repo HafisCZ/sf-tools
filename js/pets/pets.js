@@ -34,10 +34,10 @@ const PetLocation = {
 
 const CompactWeekend = {
     Type: {
-        'Epic': 0,
-        'Gold': 1,
-        'Forest' : 2,
-        'Experience' : 3
+        'Experience': 0,
+        'Epic': 1,
+        'Gold': 2,
+        'Forest': 3
     },
     getNext: function (type, date = Date.now()) {
         date = new Date(date);
@@ -111,19 +111,19 @@ const PetDate = {
         return easter.getDate() == d.getDate() && easter.getMonth() == d.getMonth();
     },
     EventXP: d => {
-        var range = CompactWeekend.getNext(3, d);
-        return d.getTime() >= range[0] && d.getTime() <= range[1];
-    },
-    EventEpic: d => {
         var range = CompactWeekend.getNext(0, d);
         return d.getTime() >= range[0] && d.getTime() <= range[1];
     },
-    EventGold: d => {
+    EventEpic: d => {
         var range = CompactWeekend.getNext(1, d);
         return d.getTime() >= range[0] && d.getTime() <= range[1];
     },
-    EventForest: d => {
+    EventGold: d => {
         var range = CompactWeekend.getNext(2, d);
+        return d.getTime() >= range[0] && d.getTime() <= range[1];
+    },
+    EventForest: d => {
+        var range = CompactWeekend.getNext(3, d);
         return d.getTime() >= range[0] && d.getTime() <= range[1];
     },
     Whitsun: d => {
