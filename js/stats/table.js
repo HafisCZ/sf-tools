@@ -618,8 +618,9 @@ class TableInstance {
         }
     }
 
-    getCellDisplayValue ({ difference, ex_difference, flip, value, brackets }, val, cmp, player = undefined, compare = undefined, extra = undefined) {
-        let displayValue = value.get(player, compare, this.settings, val, extra);
+    getCellDisplayValue (header, val, cmp, player = undefined, compare = undefined, extra = undefined) {
+        let { difference, ex_difference, flip, value, brackets } = header;
+        let displayValue = value.get(player, compare, this.settings, val, extra, header);
         if (!difference || isNaN(cmp)) {
             return displayValue;
         } else {
@@ -1717,7 +1718,7 @@ const SettingsCommands = [
             } else {
                 let ast = new Expression(expression, root);
                 if (ast.isValid()) {
-                    root.addFormatExpression((a, b, c, d, e) => ast.eval(a, b, c, d, e));
+                    root.addFormatExpression((a, b, c, d, e, f) => ast.eval(a, b, c, d, e, undefined, f));
                 }
             }
         },
@@ -1818,6 +1819,16 @@ const SettingsCommands = [
             }
         },
         (root, extensions, name, expression) => (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('show ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(expression, root)
+    ),
+    /*
+        Var
+    */
+    new Command(
+        /^var (\w+) (.+)$/,
+        (root, name, value) => {
+            root.addHeaderVariable(name, value);
+        },
+        (root, name, value) => SFormat.Keyword('var ') + SFormat.Constant(name) + ' ' + SFormat.Normal(value)
     ),
     /*
         Layout
@@ -2566,13 +2577,13 @@ class Settings {
             formatDifference: undefined,
             formatStatistics: undefined,
             rules: new RuleEvaluator(),
-            get: function (player, compare, settings, value, extra = undefined) {
+            get: function (player, compare, settings, value, extra = undefined, header = undefined) {
                 // Get value from value block
                 let output = this.rules.get(value);
 
                 // Get value from format expression
                 if (typeof output == 'undefined' && this.format) {
-                    output = this.format(player, compare, settings, value, extra);
+                    output = this.format(player, compare, settings, value, extra, header);
                 }
 
                 // Get value from value itself
@@ -2810,6 +2821,17 @@ class Settings {
         let object = (this.row || this.definition || this.header);
         if (object) {
             object[name] = value;
+        }
+    }
+
+    addHeaderVariable (name, value) {
+        let object = (this.row || this.definition || this.header);
+        if (object) {
+            if (!object.vars) {
+                object.vars = {};
+            }
+
+            object.vars[name] = value;
         }
     }
 

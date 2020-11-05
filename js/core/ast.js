@@ -111,7 +111,7 @@ class Expression {
                     continue;
                 } else if (token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
                     value = token[0] + SFormat.Comment(token.slice(1, token.length - 1)) + token[token.length - 1];
-                } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort', 'distinct', 'indexof' ].includes(token) || root.functions.hasOwnProperty(token)) {
+                } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort', 'distinct', 'indexof', 'var' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
                 } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header' ].includes(token) || root.variables.hasOwnProperty(token)) {
                     value = SFormat.Constant(token);
@@ -801,6 +801,12 @@ class Expression {
 
                     if (object != undefined && object[func]) {
                         return object[func](... node.args[2].map(param => this.evalInternal(player, reference, environment, scope, extra, functionScope, header, param)));
+                    } else {
+                        return undefined;
+                    }
+                } else if (node.op == 'var' && node.args.length == 1) {
+                    if (header && header.vars) {
+                        return header.vars[node.args[0]];
                     } else {
                         return undefined;
                     }
