@@ -2403,6 +2403,7 @@ class Settings {
             }
 
             this.mergeStyles(obj, definition.style);
+            this.mergeVariables(obj, definition.vars);
         }
     }
 
@@ -2429,6 +2430,7 @@ class Settings {
         }
 
         this.mergeStyles(obj, mapping.style);
+        this.mergeVariables(obj, mapping.vars);
     }
 
     merge (obj, mapping) {
@@ -2438,6 +2440,7 @@ class Settings {
         }
 
         this.mergeStyles(obj, mapping.style);
+        this.mergeVariables(obj, mapping.vars);
     }
 
     mergeStyles (obj, sourceStyle) {
@@ -2452,6 +2455,22 @@ class Settings {
             } else {
                 // Add whole style class
                 obj.style = sourceStyle;
+            }
+        }
+    }
+
+    mergeVariables (obj, sourceVars) {
+        if (sourceVars) {
+            if (obj.vars) {
+                // Add vars
+                for (let [ name, value ] of Object.entries(sourceVars)) {
+                    if (!obj.vars.hasOwnProperty(name)) {
+                        obj.vars[name] = value;
+                    }
+                }
+            } else {
+                // Add whole list
+                obj.vars = sourceVars;
             }
         }
     }
@@ -2825,7 +2844,7 @@ class Settings {
     }
 
     addHeaderVariable (name, value) {
-        let object = (this.row || this.definition || this.header);
+        let object = (this.row || this.definition || this.header || this.sharedCategory || this.shared);
         if (object) {
             if (!object.vars) {
                 object.vars = {};
