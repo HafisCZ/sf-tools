@@ -1516,6 +1516,11 @@ class SFOwnPlayer extends SFPlayer {
 
         dataType.skip(1);
         this.Pets = {
+            ShadowLevels: petLevels.slice(0, 20),
+            LightLevels: petLevels.slice(20, 40),
+            EarthLevels: petLevels.slice(40, 60),
+            FireLevels: petLevels.slice(60, 80),
+            WaterLevels: petLevels.slice(80, 100),
             ShadowCount: shadowCount,
             LightCount: lightCount,
             EarthCount: earthCount,
