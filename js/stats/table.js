@@ -2408,7 +2408,7 @@ class Settings {
         }
 
         // Merge diff value expression
-        if (!obj.value.format) {
+        if (!obj.value.formatDifference) {
             obj.value.formatDifference = mapping.format_diff;
         }
 
