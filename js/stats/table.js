@@ -2034,7 +2034,7 @@ const SettingsCommands = [
         Global options
     */
     new Command(
-        /^(members|outdated|opaque|large rows|align title|custom left)$/,
+        /^(members|outdated|opaque|large rows|align title)$/,
         (root, key) => root.addGlobal(key, true),
         (root, key) => SFormat.Keyword(key)
     ),
@@ -2042,6 +2042,20 @@ const SettingsCommands = [
         /^(members|outdated|opaque|large rows|align title) (on|off)$/,
         (root, key, value) => root.addGlobal(key, ARG_MAP[value]),
         (root, key, value) => SFormat.Keyword(key) + ' ' + SFormat.Bool(value)
+    ),
+    /*
+        Custom left category
+    */
+    new Command(
+        /^((?:\w+)(?:\,\w+)*:|)left category$/,
+        (root, extensions) => {
+            root.addGlobal('custom left', true);
+            root.addCategory('', true);
+            if (extensions) {
+                root.addExtension(... extensions.slice(0, -1).split(','));
+            }
+        },
+        (root, extensions) => (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('left category')
     ),
     /*
         Simulator target
