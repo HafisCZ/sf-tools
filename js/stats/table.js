@@ -237,6 +237,17 @@ class TableInstance {
             }
         }
 
+        if (this.settings.globals['custom left']) {
+            this.customLeft = this.config.splice(0, 1);
+            if (this.customLeft.length == 0) {
+                this.customLeft = this.customLeftFlat = this.customLeftSpan = this.customLeftWidth = undefined;
+            } else {
+                this.customLeftFlat = this.customLeft[0].headers;
+                this.customLeftSpan = this.customLeftFlat.reduce((t, h) => t + h.span, 0);
+                this.customLeftWidth = this.customLeftFlat.reduce((t, h) => t + h.width, 0);
+            }
+        }
+
         // Generate flat list
         this.flat = this.config.reduce((array, group) => {
             array.push(... group.headers);
@@ -317,12 +328,18 @@ class TableInstance {
                     `;
                 }
 
-                // Add date
-                content += `
-                    <td class="border-right-thin" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
-                        ${ formatDate(timestamp) }
-                    </td>
-                `;
+                if (this.customLeft) {
+                    for (let header of this.customLeftFlat) {
+                        content += header.generators.cell(player, compare);
+                    }
+                } else {
+                    // Add date
+                    content += `
+                        <td class="border-right-thin" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
+                            ${ formatDate(timestamp) }
+                        </td>
+                    `;
+                }
 
                 // Add columns
                 for (let header of this.flat) {
@@ -693,10 +710,10 @@ class TableInstance {
 
     createHistoryTable () {
         // Width of the whole table
-        let tableWidth = this.flatWidth + 200 + (this.settings.getIndexStyle() ? 50 : 0);
+        let tableWidth = this.flatWidth + (this.customLeftWidth || 200) + (this.settings.getIndexStyle() ? 50 : 0);
         let indexStyle = this.settings.getIndexStyle();
 
-        let leftSpan = 1 + (indexStyle ? 1 : 0);
+        let leftSpan = (this.customLeftSpan || 1) + (indexStyle ? 1 : 0);
 
         // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
@@ -704,24 +721,29 @@ class TableInstance {
         }
 
         // Create left headers
-        let aligned = this.settings.getTitleAlign();
         let headerTitle, categoryTitle;
-        if (aligned) {
-            categoryTitle = `
-                <td colspan="${ indexStyle ? 2 : 1 }" class="border-right-thin"></td>
-            `;
 
-            headerTitle = `
-                ${ indexStyle ? `<td style="width: 50px;" colspan="1" class="border-bottom-thick">#</td>` : '' }
-                <td style="width: 200px;" colspan="1" class="border-bottom-thick border-right-thin">Date</td>
-            `;
+        if (this.customLeft) {
+            categoryTitle = this.getCategoryBlock(false, this.customLeft, true);
+            headerTitle = this.getHeaderBlock(false, this.customLeft, true);
         } else {
-            categoryTitle = `
-                ${ indexStyle ? `<td style="width: 50px;" colspan="1" rowspan="2" class="border-bottom-thick">#</td>` : '' }
-                <td style="width: 200px;" colspan="1" rowspan="2" class="border-bottom-thick border-right-thin">Date</td>
-            `;
+            if (this.settings.getTitleAlign()) {
+                categoryTitle = `
+                    <td colspan="${ indexStyle ? 2 : 1 }" class="border-right-thin"></td>
+                `;
 
-            headerTitle = '';
+                headerTitle = `
+                    ${ indexStyle ? `<td style="width: 50px;" colspan="1" class="border-bottom-thick">#</td>` : '' }
+                    <td style="width: 200px;" colspan="1" class="border-bottom-thick border-right-thin">Date</td>
+                `;
+            } else {
+                categoryTitle = `
+                    ${ indexStyle ? `<td style="width: 50px;" colspan="1" rowspan="2" class="border-bottom-thick">#</td>` : '' }
+                    <td style="width: 200px;" colspan="1" rowspan="2" class="border-bottom-thick border-right-thin">Date</td>
+                `;
+
+                headerTitle = '';
+            }
         }
 
         // Create table Content
@@ -995,10 +1017,10 @@ class TableInstance {
         `;
     }
 
-    getCategoryBlock (sortable) {
+    getCategoryBlock (sortable, config = this.config, alwaysRightBorder = false) {
         let aligned = this.settings.getTitleAlign();
-        return join(this.config, ({ headers, empty, length, name: categoryName }, categoryIndex, categoryArray) => {
-            let notLastCategory = categoryIndex != categoryArray.length - 1;
+        return join(config, ({ headers, empty, length, name: categoryName }, categoryIndex, categoryArray) => {
+            let notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
 
             if (empty && !aligned) {
                 return join(headers, ({ width, span, sortkey, name: headerName, align_title }, headerIndex, headerArray) => {
@@ -1012,10 +1034,10 @@ class TableInstance {
         });
     }
 
-    getHeaderBlock (sortable) {
+    getHeaderBlock (sortable, config = this.config, alwaysRightBorder = false) {
         let aligned = this.settings.getTitleAlign();
-        return join(this.config, ({ headers, empty }, categoryIndex, categoryArray) => {
-            let notLastCategory = categoryIndex != categoryArray.length - 1;
+        return join(config, ({ headers, empty }, categoryIndex, categoryArray) => {
+            let notLastCategory = alwaysRightBorder || categoryIndex != categoryArray.length - 1;
 
             if (empty && !aligned) {
                 return '';
@@ -1976,12 +1998,12 @@ const SettingsCommands = [
         Global options
     */
     new Command(
-        /^(members|outdated|opaque|large rows|align title|empty)$/,
+        /^(members|outdated|opaque|large rows|align title|custom left)$/,
         (root, key) => root.addGlobal(key, true),
         (root, key) => SFormat.Keyword(key)
     ),
     new Command(
-        /^(members|outdated|opaque|large rows|align title|empty) (on|off)$/,
+        /^(members|outdated|opaque|large rows|align title) (on|off)$/,
         (root, key, value) => root.addGlobal(key, ARG_MAP[value]),
         (root, key, value) => SFormat.Keyword(key) + ' ' + SFormat.Bool(value)
     ),
