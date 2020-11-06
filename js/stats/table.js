@@ -237,25 +237,30 @@ class TableInstance {
             }
         }
 
-        if (this.settings.globals['custom left']) {
-            this.customLeft = this.config.splice(0, 1);
-            if (this.customLeft.length == 0) {
-                this.customLeft = this.customLeftFlat = this.customLeftSpan = this.customLeftWidth = undefined;
-            } else {
-                this.customLeftFlat = this.customLeft[0].headers;
-                this.customLeftSpan = this.customLeftFlat.reduce((t, h) => t + h.span, 0);
-                this.customLeftWidth = this.customLeftFlat.reduce((t, h) => t + h.width, 0);
-            }
-        }
-
-        // Generate flat list
         this.flat = this.config.reduce((array, group) => {
             array.push(... group.headers);
             return array;
         }, []);
 
-        this.flatWidth = this.config.reduce((a, b) => a + b.width, 0);
-        this.flatSpan = this.flat.reduce((t, h) => t + h.span, 0);
+        if (this.settings.globals['custom left']) {
+            this.configLeft = this.config.splice(0, 1);
+            if (this.configLeft.length == 0) {
+                this.configLeft = this.leftFlat = this.leftFlatSpan = this.leftFlatWidth = undefined;
+            } else {
+                this.leftFlat = this.configLeft[0].headers;
+                this.leftFlatSpan = this.leftFlat.reduce((a, b) => a + b.span, 0);
+                this.leftFlatWidth = this.leftFlat.reduce((a, b) => a + b.width, 0);
+            }
+        }
+
+        // Generate flat list
+        this.rightFlat = this.config.reduce((array, group) => {
+            array.push(... group.headers);
+            return array;
+        }, []);
+
+        this.rightFlatWidth = this.config.reduce((a, b) => a + b.width, 0);
+        this.rightFlatSpan = this.rightFlat.reduce((t, h) => t + h.span, 0);
 
         this.cellDivider = this.getCellDivider();
     }
@@ -328,9 +333,9 @@ class TableInstance {
                     `;
                 }
 
-                if (this.customLeft) {
-                    for (let header of this.customLeftFlat) {
-                        content += header.generators.cell(player, compare);
+                if (this.leftFlat) {
+                    for (let { action, generators: { cell } } of this.leftFlat) {
+                        content += this.applyActions(action, cell(player, compare), player);
                     }
                 } else {
                     // Add date
@@ -342,7 +347,7 @@ class TableInstance {
                 }
 
                 // Add columns
-                for (let header of this.flat) {
+                for (let header of this.rightFlat) {
                     content += header.generators.cell(player, compare);
                 }
 
@@ -369,28 +374,34 @@ class TableInstance {
                     `;
                 }
 
-                // Add server if enabled
-                let serverStyle = this.settings.getServerStyle();
-                if (serverStyle === undefined || serverStyle > 0) {
+                if (this.leftFlat) {
+                    for (let { action, generators: { cell } } of this.leftFlat) {
+                        content += this.applyActions(action, cell(player, compare), player);
+                    }
+                } else {
+                    // Add server if enabled
+                    let serverStyle = this.settings.getServerStyle();
+                    if (serverStyle === undefined || serverStyle > 0) {
+                        content += `
+                            <td ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
+                                ${ SiteOptions.obfuscated ? 'server' : player.Prefix }
+                            </td>
+                        `;
+                    }
+
+                    // Add name
+                    let showOutdated = this.settings.getOutdatedStyle();
                     content += `
-                        <td ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' }>
-                            ${ SiteOptions.obfuscated ? 'server' : player.Prefix }
+                        <td class="border-right-thin clickable ${ !latest && showOutdated ? 'foreground-red' : '' }" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }">
+                            <span class="css-op-select-el"></span>
+                            ${ SiteOptions.obfuscated ? '' : getEasterEgg(player.Identifier) }
+                            ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
                         </td>
                     `;
                 }
 
-                // Add name
-                let showOutdated = this.settings.getOutdatedStyle();
-                content += `
-                    <td class="border-right-thin clickable ${ !latest && showOutdated ? 'foreground-red' : '' }" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }">
-                        <span class="css-op-select-el"></span>
-                        ${ SiteOptions.obfuscated ? '' : getEasterEgg(player.Identifier) }
-                        ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
-                    </td>
-                `;
-
                 // Add columns
-                for (let header of this.flat) {
+                for (let header of this.rightFlat) {
                     content += header.generators.cell(player, compare);
                 }
 
@@ -448,16 +459,22 @@ class TableInstance {
                     `;
                 }
 
-                // Add name
-                content += `
-                    <td class="border-right-thin clickable" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }">
-                        ${ SiteOptions.obfuscated ? '' : getEasterEgg(player.Identifier) }
-                        ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
-                    </td>
-                `;
+                if (this.leftFlat) {
+                    for (let { action, generators: { cell } } of this.leftFlat) {
+                        content += this.applyActions(action, cell(player, compare), player);
+                    }
+                } else {
+                    // Add name
+                    content += `
+                        <td class="border-right-thin clickable" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }">
+                            ${ SiteOptions.obfuscated ? '' : getEasterEgg(player.Identifier) }
+                            ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
+                        </td>
+                    `;
+                }
 
                 // Add columns
-                for (let header of this.flat) {
+                for (let header of this.rightFlat) {
                     content += header.generators.cell(player, compare);
                 }
 
@@ -578,7 +595,7 @@ class TableInstance {
         }
     }
 
-    getCell ({ visible, align, padding, style }, value, color, border, cellWidth) {
+    getCell ({ visible, align, padding, style, action }, value, color, border, cellWidth) {
         return CellGenerator.Cell(
             value,
             color,
@@ -587,7 +604,8 @@ class TableInstance {
             align,
             padding,
             style ? style.cssText : undefined,
-            cellWidth
+            cellWidth,
+            action
         );
     }
 
@@ -615,11 +633,11 @@ class TableInstance {
     getRowSpan (width) {
         if (width == -1) {
             // Return maximum span when set to -1
-            return this.flatSpan;
+            return this.rightFlatSpan;
         } else if (width) {
             // Calculate span from requested width
             let span = 0;
-            for (let { width: headerWidth, span: headerSpan } of this.flat) {
+            for (let { width: headerWidth, span: headerSpan } of this.rightFlat) {
                 width -= headerWidth;
                 span += headerSpan;
 
@@ -628,7 +646,7 @@ class TableInstance {
                 }
             }
 
-            return Math.max(1, Math.min(span, this.flatSpan));
+            return Math.max(1, Math.min(span, this.rightFlatSpan));
         } else {
             // Return 1 by default
             return 1;
@@ -672,13 +690,13 @@ class TableInstance {
         return `
             ${ topSpacer ? `
                 <tr>
-                    <td colspan="${ this.flatSpan + leftSpan }"></td>
+                    <td colspan="${ this.rightFlatSpan + leftSpan }"></td>
                 </tr>
             ` : '' }
             <tr class="border-bottom-thick"></tr>
             ${ bottomSpacer ? `
                 <tr>
-                    <td colspan="${ this.flatSpan + leftSpan }"></td>
+                    <td colspan="${ this.rightFlatSpan + leftSpan }"></td>
                 </tr>
             ` : '' }
         `;
@@ -687,7 +705,7 @@ class TableInstance {
     getSpacer (leftSpan) {
         return `
             <tr>
-                <td colspan="${ this.flatSpan + leftSpan }"></td>
+                <td colspan="${ this.rightFlatSpan + leftSpan }"></td>
             </tr>
         `;
     }
@@ -710,10 +728,10 @@ class TableInstance {
 
     createHistoryTable () {
         // Width of the whole table
-        let tableWidth = this.flatWidth + (this.customLeftWidth || 200) + (this.settings.getIndexStyle() ? 50 : 0);
+        let tableWidth = this.rightFlatWidth + (this.leftFlatWidth || 200) + (this.settings.getIndexStyle() ? 50 : 0);
         let indexStyle = this.settings.getIndexStyle();
 
-        let leftSpan = (this.customLeftSpan || 1) + (indexStyle ? 1 : 0);
+        let leftSpan = (this.leftFlatSpan || 1) + (indexStyle ? 1 : 0);
 
         // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
@@ -723,9 +741,9 @@ class TableInstance {
         // Create left headers
         let headerTitle, categoryTitle;
 
-        if (this.customLeft) {
-            categoryTitle = this.getCategoryBlock(false, this.customLeft, true);
-            headerTitle = this.getHeaderBlock(false, this.customLeft, true);
+        if (this.configLeft) {
+            categoryTitle = this.getCategoryBlock(false, this.configLeft, true);
+            headerTitle = this.getHeaderBlock(false, this.configLeft, true);
         } else {
             if (this.settings.getTitleAlign()) {
                 categoryTitle = `
@@ -774,9 +792,9 @@ class TableInstance {
         let serverWidth = this.settings.getServerStyle();
         let indexStyle = this.settings.getIndexStyle();
 
-        let tableWidth = this.flatWidth + nameWidth + serverWidth + (indexStyle ? 50 : 0);
+        let tableWidth = this.rightFlatWidth + (this.leftFlatWidth || (nameWidth + serverWidth)) + (indexStyle ? 50 : 0);
 
-        let leftSpan = 1 + (indexStyle ? 1 : 0) + (serverWidth ? 1 : 0);
+        let leftSpan = (this.leftFlatSpan || (1 + (serverWidth ? 1 : 0))) + (indexStyle ? 1 : 0);
         let spacer = this.getSpacer(leftSpan);
         let divider = this.cache.divider = this.getDivider(leftSpan, false, false);
 
@@ -786,31 +804,36 @@ class TableInstance {
         }
 
         // Create left headers
-        let aligned = this.settings.getTitleAlign();
         let headerTitle, categoryTitle;
-        if (aligned) {
-            categoryTitle = `
-                <td colspan="${ leftSpan }" class="border-right-thin"></td>
-            `;
 
-            headerTitle = `
-                ${ indexStyle ? `<td style="width: 50px;" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                ${ serverWidth ? `<td style="width: ${ serverWidth }px;" class="border-bottom-thick clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
-                <td style="width: ${ nameWidth }px;" class="border-bottom-thick border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
-            `;
+        if (this.configLeft) {
+            categoryTitle = this.getCategoryBlock(true, this.configLeft, true);
+            headerTitle = this.getHeaderBlock(true, this.configLeft, true);
         } else {
-            categoryTitle = `
-                ${ indexStyle ? `<td style="width: 50px;" rowspan="2" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                ${ serverWidth ? `<td style="width: ${ serverWidth }px;" rowspan="2" class="border-bottom-thick clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
-                <td style="width: ${ nameWidth }px;" rowspan="2" class="border-bottom-thick border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
-            `;
+            if (this.settings.getTitleAlign()) {
+                categoryTitle = `
+                    <td colspan="${ leftSpan }" class="border-right-thin"></td>
+                `;
 
-            headerTitle = '';
+                headerTitle = `
+                    ${ indexStyle ? `<td style="width: 50px;" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                    ${ serverWidth ? `<td style="width: ${ serverWidth }px;" class="border-bottom-thick clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
+                    <td style="width: ${ nameWidth }px;" class="border-bottom-thick border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                `;
+            } else {
+                categoryTitle = `
+                    ${ indexStyle ? `<td style="width: 50px;" rowspan="2" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                    ${ serverWidth ? `<td style="width: ${ serverWidth }px;" rowspan="2" class="border-bottom-thick clickable" ${ this.getSortingTag('_server') }>Server</td>` : '' }
+                    <td style="width: ${ nameWidth }px;" rowspan="2" class="border-bottom-thick border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                `;
+
+                headerTitle = '';
+            }
         }
 
         // Get statistics
         if (typeof this.cache.statistics == 'undefined') {
-            if (this.flat.reduce((a, { statistics }) => a || statistics, false)) {
+            if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
                 if (this.settings.customStatistics.length) {
                     this.cache.statistics = this.getStatistics(leftSpan, this.settings.customStatistics);
                 } else {
@@ -878,9 +901,9 @@ class TableInstance {
         let nameWidth = this.settings.getNameStyle();
         let indexStyle = this.settings.getIndexStyle();
 
-        let tableWidth = this.flatWidth + nameWidth + (indexStyle ? 50 : 0);
+        let tableWidth = this.rightFlatWidth + (this.leftFlatWidth || nameWidth) + (indexStyle ? 50 : 0);
 
-        let leftSpan = 1 + (indexStyle ? 1 : 0);
+        let leftSpan = (this.leftFlatSpan || 1) + (indexStyle ? 1 : 0);
         let spacer = this.getSpacer(leftSpan);
         let divider = this.cache.divider = this.getDivider(leftSpan, false, false);
 
@@ -891,7 +914,7 @@ class TableInstance {
 
         // Get statistics
         if (typeof this.cache.statistics == 'undefined') {
-            if (this.flat.reduce((a, { statistics }) => a || statistics, false)) {
+            if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
                 if (this.settings.customStatistics.length) {
                     this.cache.statistics = this.getStatistics(leftSpan, this.settings.customStatistics);
                 } else {
@@ -925,24 +948,29 @@ class TableInstance {
         }
 
         // Create left headers
-        let aligned = this.settings.getTitleAlign();
         let headerTitle, categoryTitle;
-        if (aligned) {
-            categoryTitle = `
-                <td colspan="${ leftSpan }" class="border-right-thin"></td>
-            `;
 
-            headerTitle = `
-                ${ indexStyle ? `<td style="width: 50px;" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                <td style="width: ${ nameWidth }px;" class="border-bottom-thick border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
-            `;
+        if (this.configLeft) {
+            categoryTitle = this.getCategoryBlock(true, this.configLeft, true);
+            headerTitle = this.getHeaderBlock(true, this.configLeft, true);
         } else {
-            categoryTitle = `
-                ${ indexStyle ? `<td style="width: 50px;" rowspan="2" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
-                <td style="width: ${ nameWidth }px;" rowspan="2" class="border-bottom-thick border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
-            `;
+            if (this.settings.getTitleAlign()) {
+                categoryTitle = `
+                    <td colspan="${ leftSpan }" class="border-right-thin"></td>
+                `;
 
-            headerTitle = '';
+                headerTitle = `
+                    ${ indexStyle ? `<td style="width: 50px;" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                    <td style="width: ${ nameWidth }px;" class="border-bottom-thick border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                `;
+            } else {
+                categoryTitle = `
+                    ${ indexStyle ? `<td style="width: 50px;" rowspan="2" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` : '' }
+                    <td style="width: ${ nameWidth }px;" rowspan="2" class="border-bottom-thick border-right-thin clickable" ${ this.getSortingTag('_name') }>Name</td>
+                `;
+
+                headerTitle = '';
+            }
         }
 
         this.cache.table = `
@@ -954,7 +982,7 @@ class TableInstance {
                 ${ this.getHeaderBlock(true) }
             </tr>
             ${ join(this.entries, (e, ei, ea) => e.content.replace('{__INDEX__}', ei + 1)) }
-            ${ this.entries.missing.length ? `<tr class="css-b-bold">${ CellGenerator.WideCell(CellGenerator.Small(`Player data is missing for following members:<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.flatSpan + leftSpan, 'center') }</tr>` : '' }
+            ${ this.entries.missing.length ? `<tr class="css-b-bold">${ CellGenerator.WideCell(CellGenerator.Small(`Player data is missing for following members:<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.rightFlatSpan + leftSpan, 'center') }</tr>` : '' }
         `;
 
         let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, this.cache.members);
@@ -984,17 +1012,25 @@ class TableInstance {
         };
     }
 
+    applyActions (action, content, player) {
+        if (action == 'show') {
+            return content.replace('{__ACTION__}', `data-id="${ player.Identifier }"`);
+        }
+
+        return content;
+    }
+
     getStatistics (leftSpan, entries) {
         return `
             <tr>
                 <td class="border-right-thin" colspan="${ leftSpan }"></td>
-                ${ join(this.flat, ({ span, statistics, generators, name }) => `<td colspan="${ span }">${ statistics && generators.statistics ? name : '' }</td>`) }
+                ${ join(this.rightFlat, ({ span, statistics, generators, name }) => `<td colspan="${ span }">${ statistics && generators.statistics ? name : '' }</td>`) }
             </tr>
             ${ this.cache.divider }
             ${ join(entries, ({ name, ast, expression }) => `
                 <tr>
                     <td class="border-right-thin" colspan="${ leftSpan }">${ name }</td>
-                    ${ join(this.flat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.array, expression ? expression : array => ast.eval(undefined, undefined, this.settings, array)) : `<td colspan="${ span }"></td>`) }
+                    ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.array, expression ? expression : array => ast.eval(undefined, undefined, this.settings, array)) : `<td colspan="${ span }"></td>`) }
                 </tr>
             `) }
         `;
@@ -1004,15 +1040,15 @@ class TableInstance {
         return `
             <tr>
                 <td class="border-right-thin" colspan=${ leftSpan }>Classes</td>
-                <td colspan="${ this.flatSpan }">${ Object.entries(this.settings.lists.classes).map(([ key, count ]) => PLAYER_CLASS[key] + ': ' + count).join(', ') }</td>
+                <td colspan="${ this.rightFlatSpan }">${ Object.entries(this.settings.lists.classes).map(([ key, count ]) => PLAYER_CLASS[key] + ': ' + count).join(', ') }</td>
             </tr>
             <tr>
                 <td class="border-right-thin" colspan=${ leftSpan }>Joined</td>
-                <td colspan="${ this.flatSpan }">${ this.settings.lists.joined.join(', ') }</td>
+                <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.joined.join(', ') }</td>
             </tr>
             <tr>
                 <td class="border-right-thin" colspan=${ leftSpan }>Left</td>
-                <td colspan="${ this.flatSpan }">${ this.settings.lists.kicked.join(', ') }</td>
+                <td colspan="${ this.rightFlatSpan }">${ this.settings.lists.kicked.join(', ') }</td>
             </tr>
         `;
     }
@@ -1208,9 +1244,9 @@ class TableController {
 // Cell generators
 const CellGenerator = {
     // Simple cell
-    Cell: function (c, b, f, bo, al, pad, style, cellWidth) {
+    Cell: function (c, b, f, bo, al, pad, style, cellWidth, hasAction) {
         let color = getCSSColorFromBackground(f);
-        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' }" style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
+        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' } ${ hasAction ? 'clickable' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
     },
     // Wide cell
     WideCell: function (c, b, w, al, pad, style) {
