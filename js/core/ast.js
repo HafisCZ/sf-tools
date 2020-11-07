@@ -86,6 +86,8 @@ class Expression {
 
                 this.root = this.evalExpression();
                 this.root = this.postProcess(this.root);
+
+                this.cacheable = this.checkCacheableNode(this.root);
             } else {
                 this.empty = true;
             }
@@ -570,6 +572,28 @@ class Expression {
         }
     }
 
+    checkCacheableNode (node) {
+        if (typeof node == 'object') {
+            if (node.op == 'var') {
+                return false;
+            } else if (node.op == '[a' && node.args && node.args[0] == 'header') {
+                return false;
+            } else {
+                if (node.args) {
+                    for (let arg of node.args) {
+                        if (!this.checkCacheableNode(arg)) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
+
     // Evaluate all simple nodes (simple string joining / math calculation with compile time results)
     postProcess (node) {
         if (typeof(node) == 'object' && !node.raw) {
@@ -590,7 +614,7 @@ class Expression {
     // Outside eval function (always call this from outside of the Expression class)
     eval (player, reference = undefined, environment = { functions: { }, variables: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined, functionScope = undefined, header = undefined) {
         /* PERFORMANCE THINGY */ PerformanceTracker.tick();
-        if (functionScope || extra || scope) {
+        if (functionScope || extra || scope || !this.cacheable) {
             return this.evalInternal(player, reference, environment, scope, extra, functionScope, header, this.root);
         } else {
             if (typeof this.index == 'undefined') {
@@ -1200,6 +1224,10 @@ const SP_FUNCTIONS = {
         } else {
             return undefined;
         }
+    },
+    // Parse number
+    'number': (value) => {
+        return Number(value);
     }
 }
 

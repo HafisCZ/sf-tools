@@ -19,13 +19,13 @@ class HeaderGroup {
     }
 
     add (settings, cellGenerator, statisticsGenerator, sort, border, span = 1) {
-        let { alias, name } = settings;
+        let { expa_eval, alias, name } = settings;
         let header = {
             // Header
             ... settings,
 
             // Own properties
-            name: alias != undefined ? alias : name,
+            name: expa_eval != undefined ? expa_eval : (alias != undefined ? alias : name),
             generators: {
                 cell: cellGenerator,
                 statistics: statisticsGenerator
@@ -123,17 +123,22 @@ class TableInstance {
 
                 let showBorder = (!lastCategory && lastHeader) || (header.border >= 2) || (!lastHeader && (nextHeader.border == 1 || nextHeader.border == 3));
 
+                // Add expression alias
+                if (header.expa) {
+                    header.expa_eval = header.expa(this.settings, header);
+                }
+
                 if (header.grouped) {
                     // Create grouped header
                     let callWidth = header.width || 100;
                     group.add(header, (player, compare) => {
                         // Cell
-                        let vals = header.expr(player, compare, this.settings);
+                        let vals = header.expr(player, compare, this.settings, undefined, undefined, header);
 
                         if (!Array.isArray(vals)) {
                             return this.getEmptyCell(header, showBorder, header.grouped);
                         } else {
-                            let cmps = header.difference ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
+                            let cmps = header.difference ? header.expr(compare, compare, this.settings.getCompareEnvironment(), undefined, undefined, header) : undefined;
 
                             return join(vals, (val, index) => {
                                 let showEndBorder = showBorder && index == header.grouped - 1;
@@ -156,7 +161,7 @@ class TableInstance {
                         }
                     }, null, (player, compare) => {
                         // Sort
-                        let vals = header.expr(player, compare, this.settings);
+                        let vals = header.expr(player, compare, this.settings, undefined, undefined, header);
 
                         if (Array.isArray(vals)) {
                             return vals.reduce((a, b) => a + b, 0);
@@ -168,12 +173,12 @@ class TableInstance {
                     // Create normal header
                     group.add(header, (player, compare) => {
                         // Cell
-                        let val = header.expr(player, compare, this.settings);
+                        let val = header.expr(player, compare, this.settings, undefined, undefined, header);
 
                         if (val == undefined) {
                             return this.getEmptyCell(header, showBorder);
                         } else {
-                            let cmp = header.difference ? header.expr(compare, compare, this.settings.getCompareEnvironment()) : undefined;
+                            let cmp = header.difference ? header.expr(compare, compare, this.settings.getCompareEnvironment(), undefined, undefined, header) : undefined;
                             return this.getCell(
                                 header,
                                 this.getCellDisplayValue(header, val, cmp, player, compare),
@@ -183,7 +188,7 @@ class TableInstance {
                         }
                     }, (players, operation) => {
                         // Statistics
-                        let val = players.map(({ player, compare }) => header.expr(player, compare, this.settings)).filter(v => v != undefined);
+                        let val = players.map(({ player, compare }) => header.expr(player, compare, this.settings, undefined, undefined, header)).filter(v => v != undefined);
                         if (val.length) {
                             // Get value and trunc if necessary
                             val = operation(val);
@@ -194,7 +199,7 @@ class TableInstance {
                             // Compare value
                             let cmp = undefined;
                             if (header.difference) {
-                                cmp = players.map(({ compare }) => header.expr(compare, compare, this.settings.getCompareEnvironment())).filter(v => v != undefined);
+                                cmp = players.map(({ compare }) => header.expr(compare, compare, this.settings.getCompareEnvironment(), undefined, undefined, header)).filter(v => v != undefined);
                                 if (cmp.length) {
                                     cmp = operation(cmp);
 
@@ -216,7 +221,7 @@ class TableInstance {
                         }
                     }, (player, compare) => {
                         // Sort
-                        return header.expr(player, compare, this.settings);
+                        return header.expr(player, compare, this.settings, undefined, undefined, header);
                     }, showBorder);
                 }
             }
@@ -412,15 +417,16 @@ class TableInstance {
                 // Create new entry and push it to the list
                 this.entries.push({
                     content: content,
-                    sorting: this.flat.reduce((obj, { order, sortkey, flip, expr, sort }) => {
+                    sorting: this.flat.reduce((obj, header) => {
+                        let { order, sortkey, flip, expr, sort } = header;
                         if (order) {
                             // Use special order expression if supplied
                             let difference = undefined;
-                            let value = expr(player, compare, this.settings);
+                            let value = expr(player, compare, this.settings, undefined, undefined, header);
 
                             if (!noCompare) {
                                 // Get difference
-                                difference = (flip ? -1 : 1) * (value - expr(compare, compare, this.settings));
+                                difference = (flip ? -1 : 1) * (value - expr(compare, compare, this.settings, undefined, undefined, header));
                             }
 
                             obj[sortkey] = order(player, compare, this.settings, value, { difference: difference });
@@ -485,15 +491,16 @@ class TableInstance {
                 // Create new entry and push it to the list
                 this.entries.push({
                     content: content,
-                    sorting: this.flat.reduce((obj, { order, sortkey, flip, expr, sort }) => {
+                    sorting: this.flat.reduce((obj, header) => {
+                        let { order, sortkey, flip, expr, sort } = header;
                         if (order) {
                             // Use special order expression if supplied
                             let difference = undefined;
-                            let value = expr(player, compare, this.settings);
+                            let value = expr(player, compare, this.settings, undefined, undefined, header);
 
                             if (!noCompare) {
                                 // Get difference
-                                difference = (flip ? -1 : 1) * (value - expr(compare, compare, this.settings));
+                                difference = (flip ? -1 : 1) * (value - expr(compare, compare, this.settings, undefined, undefined, header));
                             }
 
                             obj[sortkey] = order(player, compare, this.settings, value, { difference: difference });
@@ -2176,10 +2183,23 @@ const SettingsCommands = [
         (root, expression) => {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addLocal('expr', (a, b, c, d, e) => ast.eval(a, b, c, d, e));
+                root.addLocal('expr', (a, b, c, d, e, f) => ast.eval(a, b, c, d, e, undefined, f));
             }
         },
         (root, expression) => SFormat.Keyword('expr ') + Expression.format(expression, root)
+    ),
+    /*
+        Alias expression
+    */
+    new Command(
+        /^expa (.+)$/,
+        (root, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addLocal('expa', (a, b) => ast.eval(undefined, undefined, a, undefined, undefined, undefined, b));
+            }
+        },
+        (root, expression) => SFormat.Keyword('expa ') + Expression.format(expression, root)
     ),
     /*
         Cell alignment
