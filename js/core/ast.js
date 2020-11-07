@@ -579,7 +579,7 @@ class Expression {
             } else if (node.op == '[a' && node.args && node.args[0] == 'header') {
                 return false;
             } else {
-                if (node.args) {
+                if (node.args && !node.raw) {
                     for (let arg of node.args) {
                         if (!this.checkCacheableNode(arg)) {
                             return false;
