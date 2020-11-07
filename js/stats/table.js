@@ -334,8 +334,8 @@ class TableInstance {
                 }
 
                 if (this.leftFlat) {
-                    for (let { action, generators: { cell } } of this.leftFlat) {
-                        content += this.applyActions(action, cell(player, compare), player);
+                    for (let header of this.leftFlat) {
+                        content += this.getCellContent(header, player, compare);
                     }
                 } else {
                     // Add date
@@ -348,7 +348,7 @@ class TableInstance {
 
                 // Add columns
                 for (let header of this.rightFlat) {
-                    content += header.generators.cell(player, compare);
+                    content += this.getCellContent(header, player, compare);
                 }
 
                 // Create new entry and push it to the list
@@ -375,8 +375,8 @@ class TableInstance {
                 }
 
                 if (this.leftFlat) {
-                    for (let { action, generators: { cell } } of this.leftFlat) {
-                        content += this.applyActions(action, cell(player, compare), player);
+                    for (let header of this.leftFlat) {
+                        content += this.getCellContent(header, player, compare);
                     }
                 } else {
                     // Add server if enabled
@@ -402,7 +402,7 @@ class TableInstance {
 
                 // Add columns
                 for (let header of this.rightFlat) {
-                    content += header.generators.cell(player, compare);
+                    content += this.getCellContent(header, player, compare);
                 }
 
                 // Add table row end tag
@@ -460,8 +460,8 @@ class TableInstance {
                 }
 
                 if (this.leftFlat) {
-                    for (let { action, generators: { cell } } of this.leftFlat) {
-                        content += this.applyActions(action, cell(player, compare), player);
+                    for (let header of this.leftFlat) {
+                        content += this.getCellContent(header, player, compare);
                     }
                 } else {
                     // Add name
@@ -475,7 +475,7 @@ class TableInstance {
 
                 // Add columns
                 for (let header of this.rightFlat) {
-                    content += header.generators.cell(player, compare);
+                    content += this.getCellContent(header, player, compare);
                 }
 
                 // Add table row end tag
@@ -1012,12 +1012,12 @@ class TableInstance {
         };
     }
 
-    applyActions (action, content, player) {
+    getCellContent ({ action, generators: { cell } }, player, compare) {
         if (action == 'show') {
-            return content.replace('{__ACTION__}', `data-id="${ player.Identifier }"`);
+            return cell(player, compare).replace('{__ACTION__}', `data-id="${ player.Identifier }"`);
+        } else {
+            return cell(player, compare);
         }
-
-        return content;
     }
 
     getStatistics (leftSpan, entries) {
@@ -2014,7 +2014,7 @@ const SettingsCommands = [
     */
     new Command(
         /^action (none|show)$/,
-        (root, value) => root.addLocal('action', value),
+        (root, value) => root.addAction(value),
         (root, value) => SFormat.Keyword('action ') + SFormat.Constant(value)
     ),
     /*
@@ -2912,6 +2912,14 @@ class Settings {
         let object = (this.row || this.definition || this.header);
         if (object) {
             object[name] = value;
+        }
+    }
+
+    // Add action
+    addAction (value) {
+        let object = this.header;
+        if (object) {
+            object['action'] = value;
         }
     }
 
