@@ -313,6 +313,7 @@ class TableInstance {
         let backgroundColor = this.settings.getBackgroundStyle();
         let indexStyle = this.settings.getIndexStyle();
         let dividerStyle = this.getCellDividerStyle();
+        let rowHeight = this.settings.getRowHeight();
 
         if (this.type == TableType.History) {
             // Loop over all items of the array
@@ -322,7 +323,7 @@ class TableInstance {
                 let compare = i < this.array.length - 1 ? this.array[i + 1][1] : player;
 
                 // Add table row start tag
-                let content = `<tr class="css-entry ${ dividerStyle }">`;
+                let content = `<tr class="css-entry ${ dividerStyle }" ${ rowHeight ? `style="height: ${ rowHeight }px;"` : '' }>`;
 
                 // Add row index if enabled
                 if (indexStyle) {
@@ -363,7 +364,7 @@ class TableInstance {
             // Loop over all items of the array
             for (let { player, compare, hidden, index, latest } of this.array) {
                 // Add table row start tag
-                let content = `<tr class="css-entry ${ hidden ? 'css-entry-hidden' :'' } ${ dividerStyle }">`;
+                let content = `<tr class="css-entry ${ hidden ? 'css-entry-hidden' :'' } ${ dividerStyle }" ${ rowHeight ? `style="height: ${ rowHeight }px;"` : '' }>`;
 
                 // Add row index if enabled
                 if (indexStyle) {
@@ -448,7 +449,7 @@ class TableInstance {
             // Loop over all items of the array
             for (let { player, compare, index } of this.array) {
                 // Add table row start tag
-                let content = `<tr class="css-entry ${ dividerStyle }">`;
+                let content = `<tr class="css-entry ${ dividerStyle }" ${ rowHeight ? `style="height: ${ rowHeight }px;"` : '' }>`;
 
                 // Add row index if enabled
                 if (indexStyle) {
@@ -1976,6 +1977,18 @@ const SettingsCommands = [
         (root, value) => SFormat.Keyword('scale ') + (value > 0 ? SFormat.Normal(value) : SFormat.Error(value))
     ),
     /*
+        Row height
+    */
+    new Command(
+        /^row height (\d+)$/,
+        (root, value) => {
+            if (value > 0) {
+                root.addGlobal('row_height', Number(value));
+            }
+        },
+        (root, value) => SFormat.Keyword('row height ') + (value > 0 ? SFormat.Normal(value) : SFormat.Error(value))
+    ),
+    /*
         Font
     */
     new Command(
@@ -3040,6 +3053,10 @@ class Settings {
 
     getRowStyle () {
         return this.globals['large rows'] ? 'css-maxi-row' : '';
+    }
+
+    getRowHeight () {
+        return this.globals['row_height'] || 0;
     }
 
     getFontStyle () {
