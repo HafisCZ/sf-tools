@@ -1437,13 +1437,13 @@ const SettingsCommands = [
         Loop
     */
     new Command(
-        /^loop (\w+) for (.+)$/,
+        /^loop (\w+(?:\s*\,\s*\w+)*) for (.+)$/,
         (root, name, array) => {
             let ast = new Expression(array);
             if (ast.isValid()) {
                 return {
                     ast: ast,
-                    name: name
+                    name: name.split(',').map(x => x.trim())
                 }
             }
         },
@@ -3617,7 +3617,7 @@ class Settings {
         for (let value of array) {
             outputLines.push(
                 ... lines,
-                `var ${ name } ${ value }`
+                ... name.map((key, index) => `var ${ key } ${ value[index] }`)
             );
         }
 
