@@ -95,7 +95,7 @@ class Expression {
     }
 
     // Format
-    static format (string, root) {
+    static format (string, root = { functions: { }, variables: { }, constants: new Constants() }) {
         var content = '';
         var tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp);
         let nextName = false;

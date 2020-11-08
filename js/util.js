@@ -70,7 +70,7 @@ const SFormat = {
     Color: (string, color = string) => `<span class="ta-color" style="color: ${ color };">${ escapeHTML(string) }</span>`,
     Comment: string => `<span class="ta-comment">${ escapeHTML(string) }</span>`,
     Extras: string => `<span class="ta-extras"><span>${ escapeHTML(string) }</span></span>`,
-    Macro: string => `<span class="ta-macro">${ escapeHTML(string) }</span>`,
+    Macro: (string, noescape) => noescape ? `<span class="ta-macro">${ string }</span>` : `<span class="ta-macro">${ escapeHTML(string) }</span>`,
     Lambda: string => `<span class="ta-lambda">${ string }</span>`,
     Constant: string => `<span class="ta-constant">${ escapeHTML(string) }</span>`,
     Function: string => `<span class="ta-function">${ escapeHTML(string) }</span>`,
@@ -685,6 +685,13 @@ function downloadScreenshot ($node, filename, onClone) {
     html2canvas($node.get(0), {
         logging: false,
         onclone: doc => {
+            let $table = $(doc).find('table.sftools-table tbody');
+            $table.each((index, el) => {
+                if ($(el).find('tr.css-entry.border-bottom-thick, tr.css-entry.border-bottom-thin').length && $(el).hasClass('css-entry-opaque')) {
+                    $(el).removeClass('css-entry-opaque').addClass('css-entry-opaque-image');
+                }
+            });
+
             $('<tr class="border-bottom-thick"></tr>').insertAfter($(doc).find('tr.css-entry.border-bottom-thick'));
             $('<tr class="border-bottom-thin"></tr>').insertAfter($(doc).find('tr.css-entry.border-bottom-thin'));
 

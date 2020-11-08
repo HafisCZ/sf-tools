@@ -622,7 +622,7 @@ h3.file-selected {
 }
 
 .ta-macro {
-    background-color: #a8323270;
+    background-color: #a8323240;
     text-shadow: -0.03ex 0 black, 0.03ex 0 black;
 }
 
@@ -670,6 +670,10 @@ h3.file-selected {
 }
 
 .css-entry-opaque tr.css-entry:nth-child(even) {
+    background-color: #7d7d7d3f;
+}
+
+.css-entry-opaque-image tr.css-entry:nth-child(4n+1) {
     background-color: #7d7d7d3f;
 }
 

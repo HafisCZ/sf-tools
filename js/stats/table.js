@@ -126,6 +126,9 @@ class TableInstance {
                 // Add expression alias
                 if (header.expa) {
                     header.expa_eval = header.expa(this.settings, header);
+                    if (header.expa_eval != undefined) {
+                        header.expa_eval = String(header.expa_eval);
+                    }
                 }
 
                 if (header.grouped) {
@@ -1331,7 +1334,7 @@ class Command {
     }
 
     parse (root, string) {
-        this.internalParse(root, ... string.match(this.regexp).slice(1));
+        return this.internalParse(root, ... string.match(this.regexp).slice(1));
     }
 
     format (root, string) {
@@ -1429,6 +1432,27 @@ const SettingsCommands = [
             }
         },
         (root, key1, arg1, key2) => key2 ? SFormat.Macro(key2) : SFormat.Macro(`${ key1 } ${ arg1 }`)
+    ),
+    /*
+        Loop
+    */
+    new Command(
+        /^loop (\w+) for (.+)$/,
+        (root, name, array) => {
+            let ast = new Expression(array);
+            if (ast.isValid()) {
+                return {
+                    ast: ast,
+                    name: name
+                }
+            }
+        },
+        (root, name, array) => SFormat.Macro(SFormat.Keyword('loop ') + SFormat.Constant(name) + SFormat.Keyword(' for ') + Expression.format(array), true)
+    ),
+    new Command(
+        /^end$/,
+        (root) => { /* DO NOTHING AS THIS IS HANDLED DURING THE PARSING ITSELF */ },
+        (root) => SFormat.Macro('end')
     ),
     /*
         Import macro
@@ -2272,9 +2296,9 @@ const SettingsCommands = [
         Force push current header / row / statistic
     */
     new Command(
-        /^end$/,
+        /^push$/,
         (root) => root.push(),
-        (root) => SFormat.Keyword('end'),
+        (root) => SFormat.Keyword('push'),
         true
     )
 ];
@@ -2452,6 +2476,8 @@ class Settings {
                     } else {
                         ignore = false;
                     }
+                } else if (command == SettingsCommands[1] || command == SettingsCommands[2]) {
+                    // Ignore those
                 } else if (!ignore) {
                     // Handle command
                     command.parse(this, trimmed);
@@ -3549,18 +3575,53 @@ class Settings {
 
     static handleImports (originalString) {
         let processedLines = [];
+
+        let loop = undefined;
+        let loopLines = [];
+
         for (let line of originalString.split('\n')) {
-            if (/^import (.+)$/.test(line)) {
+            let ltrim = line.trim();
+
+            if (SettingsCommands[3].isValid(ltrim)) {
                 let [, key ] = line.match(/^import (.+)$/);
                 if (Templates.exists(key)) {
                     processedLines.push(... Templates.get()[key].content.split('\n'));
                 }
+            } else if (SettingsCommands[1].isValid(ltrim)) {
+                loop = SettingsCommands[1].parse(null, ltrim);
+            } else if (SettingsCommands[2].isValid(ltrim)) {
+                if (loop) {
+                    processedLines.push(... Settings.handleLoop(loop, loopLines));
+
+                    loop = undefined;
+                    loopLines = [];
+                }
+            } else if (loop) {
+                loopLines.push(line);
             } else {
                 processedLines.push(line);
             }
         }
 
         return processedLines;
+    }
+
+    static handleLoop({ name, ast }, lines) {
+        let outputLines = [];
+
+        let array = ast.eval();
+        if (!Array.isArray(array)) {
+            array = Object.values(array);
+        }
+
+        for (let value of array) {
+            outputLines.push(
+                ... lines,
+                `var ${ name } ${ value }`
+            );
+        }
+
+        return outputLines;
     }
 };
 
