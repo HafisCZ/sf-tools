@@ -3615,6 +3615,10 @@ class Settings {
         }
 
         for (let value of array) {
+            if (!Array.isArray(value)) {
+                value = [ value ];
+            }
+
             outputLines.push(
                 ... lines,
                 ... name.map((key, index) => `var ${ key } ${ value[index] }`)
