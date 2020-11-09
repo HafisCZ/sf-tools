@@ -3,10 +3,9 @@ const MODULE_VERSION = 'v4.1007';
 const TABLE_VERSION = 'v8';
 const CORE_VERSION = 'v6';
 
-// Preferences
-const Preferences = new (class {
+class PreferencesHandler {
 
-    constructor (window) {
+    constructor () {
         this.storage = window.localStorage || window.sessionStorage || { };
     }
 
@@ -35,35 +34,11 @@ const Preferences = new (class {
         this.anonymous = true;
     }
 
-})(window);
+}
 
-const SharedPreferences = new (class {
-
-    constructor (window) {
-        this.storage = window.localStorage || window.sessionStorage || { };
-    }
-
-    set (key, object) {
-        this.storage[key] = JSON.stringify(object);
-    }
-
-    get (key, def) {
-        return this.storage[key] ? JSON.parse(this.storage[key]) : def;
-    }
-
-    exists (key) {
-        return this.storage[key] != null;
-    }
-
-    remove (key) {
-        delete this.storage[key];
-    }
-
-    keys () {
-        return Object.keys(this.storage);
-    }
-
-})(window);
+// Preferences
+const Preferences = new PreferencesHandler();
+const SharedPreferences = new PreferencesHandler();
 
 const CACHE_DEFAULT = 0;
 const CACHE_DISABLE = 1;
@@ -71,7 +46,8 @@ const CACHE_DONT_CLEAR = 2;
 
 const SiteOptions = new (class {
     constructor () {
-        this.options = SharedPreferences.get('options', {
+        // Get values + defaults
+        this.options = {
             lazy: false,
             beta: false,
             insecure: false,
@@ -84,121 +60,30 @@ const SiteOptions = new (class {
             files_hide: false,
             inventory: false,
             cache_policy: 0
-        });
+        };
 
+        Object.assign(this.options, SharedPreferences.get('options', {}));
+
+        // Add setters & getters
+        for (let propName of Object.keys(this.options)) {
+            Object.defineProperty(this, propName, {
+                get: function () {
+                    return this.options[propName];
+                },
+                set: function (value) {
+                    this.options[propName] = value;
+                    SharedPreferences.set('options', this.options);
+                }
+            });
+        }
+
+        // Add site params
         this.params = {
             beta: false,
             temp: false
         };
     }
 
-    get cache_policy () {
-        return this.options.cache_policy;
-    }
-
-    set cache_policy (value) {
-        this.options.cache_policy = value;
-        SharedPreferences.set('options', this.options);
-    }
-
-    get lazy () {
-        return this.options.lazy;
-    }
-
-    set lazy (value) {
-        this.options.lazy = value;
-        SharedPreferences.set('options', this.options);
-    }
-
-    get inventory () {
-        return this.options.inventory;
-    }
-
-    set inventory (value) {
-        this.options.inventory = value;
-        SharedPreferences.set('options', this.options);
-    }
-
-    get obfuscated () {
-        return this.options.obfuscated;
-    }
-
-    set obfuscated (value) {
-        this.options.obfuscated = value;
-        SharedPreferences.set('options', this.options);
-    }
-
-    get beta () {
-        return this.options.beta;
-    }
-
-    set beta (value) {
-        this.options.beta = value;
-        SharedPreferences.set('options', this.options);
-    }
-
-    get insecure () {
-        return this.options.insecure;
-    }
-
-    set insecure (value) {
-        this.options.insecure = value;
-        SharedPreferences.set('options', this.options);
-    }
-
-    get groups_hidden () {
-        return this.options.groups_hidden;
-    }
-
-    set groups_hidden (value) {
-        this.options.groups_hidden = value;
-        SharedPreferences.set('options', this.options);
-    }
-
-    get players_hidden () {
-        return this.options.players_hidden;
-    }
-
-    set players_hidden (value) {
-        this.options.players_hidden = value;
-        SharedPreferences.set('options', this.options);
-    }
-
-    get browse_hidden () {
-        return this.options.browse_hidden;
-    }
-
-    set browse_hidden (value) {
-        this.options.browse_hidden = value;
-        SharedPreferences.set('options', this.options);
-    }
-
-    get groups_other () {
-        return this.options.groups_other;
-    }
-
-    set groups_other (value) {
-        this.options.groups_other = value;
-        SharedPreferences.set('options', this.options);
-    }
-
-    get players_other () {
-        return this.options.players_other;
-    }
-
-    set players_other (value) {
-        this.options.players_other = value;
-        SharedPreferences.set('options', this.options);
-    }
-
-    get files_hide () {
-        return this.options.files_hide;
-    }
-
-    set files_hide (value) {
-        this.options.files_hide = value;
-        SharedPreferences.set('options', this.options);
-    }
 })();
 
 // IndexedDB Setup
