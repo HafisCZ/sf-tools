@@ -115,7 +115,7 @@ class Expression {
                     value = token[0] + SFormat.Comment(token.slice(1, token.length - 1)) + token[token.length - 1];
                 } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort', 'distinct', 'indexof', 'var' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
-                } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header' ].includes(token) || root.variables.hasOwnProperty(token)) {
+                } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'profile' ].includes(token) || root.variables.hasOwnProperty(token)) {
                     value = SFormat.Constant(token);
                 } else if (SP_KEYWORD_MAPPING_0.hasOwnProperty(token)) {
                     value = SFormat.Reserved(token);
@@ -874,6 +874,9 @@ class Expression {
             } else if (node == 'database') {
                 // Return database
                 return Database;
+            } else if (node == 'profile') {
+                // Return player profile
+                return player && Database.Profiles[player.Identifier];
             } else if (node == 'header') {
                 // Return current header
                 return header;

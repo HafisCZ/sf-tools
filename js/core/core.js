@@ -1,7 +1,7 @@
 // Version stuff
 const MODULE_VERSION = 'v4.1007';
 const TABLE_VERSION = 'v8';
-const CORE_VERSION = 'v6';
+const CORE_VERSION = 'v7';
 
 class PreferencesHandler {
 
@@ -434,6 +434,7 @@ const Database = new (class {
     from (files, pfilter, gfilter) {
         this.Players = {};
         this.Groups = {};
+        this.Profiles = {};
 
         this.Filters = {
             Player: pfilter,
@@ -517,6 +518,7 @@ const Database = new (class {
 
         Preferences.set('hidden', this.Hidden);
     }
+
 })();
 
 const PlayerUpdaters = [
