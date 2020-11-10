@@ -3,6 +3,30 @@ const MODULE_VERSION = 'v4.1007';
 const TABLE_VERSION = 'v8';
 const CORE_VERSION = 'v7';
 
+const Logger = new (class {
+    constructor () {
+        this.colors = {
+            'STORAGE': 'fcba03',
+            'WARNING': 'fc6203',
+            'R_FLAGS': '42adf5',
+            'TAB_GEN': '3bc922',
+            'VERSION': '90f5da',
+            'PERFLOG': 'ffffff',
+            'ECLIENT': 'd142f5'
+        };
+
+        this.log('VERSION', `Module: ${ MODULE_VERSION }, Core: ${ CORE_VERSION }, Table: ${ TABLE_VERSION }`);
+    }
+
+    log (type, text) {
+        console.log(
+            `%c${ type }%c${ text }`,
+            `background-color: #${ this.colors[type] || 'ffffff' }; padding: 0.5em; font-size: 15px; font-weight: bold; color: black;`,
+            'padding: 0.5em; font-size: 15px;'
+        );
+    }
+})();
+
 class PreferencesHandler {
 
     constructor () {
@@ -91,6 +115,68 @@ window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndex
 window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction  || window.msIDBTransaction;
 window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
+class DatabaseHandler {
+
+    constructor (name, stores, onReady, onError) {
+        this.name = name;
+        this.stores = stores;
+
+        // Add stores
+        for (let { name, key } of stores) {
+            this[name] = {
+                // Get all items
+                get: callback => {
+                    let result = [];
+                    this.database.transaction(name).objectStore(name).openCursor().onsuccess = event => {
+                        let cursor = event.target.result;
+                        if (cursor) {
+                            result.push(cursor.value);
+                            cursor.continue();
+                        } else {
+                            callback(result);
+                        }
+                    };
+                },
+                // Set item
+                set: object => {
+                    this.database.transaction([ name ], 'readwrite').objectStore(name).put(object);
+                },
+                // Remove item
+                remove: objectKey => {
+                    this.database.transaction([ name ], 'readwrite').objectStore(name).delete(objectKey);
+                },
+                // Clear store
+                clear: () => {
+                    this.database.transaction([ name ], 'readwrite').objectStore(name).clear()
+                }
+            }
+        }
+
+        // Open db
+        let openRequest = indexedDB.open(this.name, 2);
+
+        // Success
+        openRequest.onsuccess = event => {
+            this.database = openRequest.result;
+            onReady();
+        }
+
+        // Upgrade
+        openRequest.onupgradeneeded = event => {
+            let db = event.target.result;
+
+            for (let { name, key } of this.stores) {
+                db.objectStoreNames.contains(name) || db.createObjectStore(name, {
+                    keyPath: key
+                });
+            }
+        }
+
+        // Error
+        openRequest.onerror = onError;
+    }
+}
+
 // File Database
 const FileDatabase = new (class {
 
@@ -111,18 +197,16 @@ const FileDatabase = new (class {
             this.db = { };
             callback();
         } else {
-            var request = window.indexedDB.open(this.dbname, 1);
-
-            request.onsuccess = (e) => {
-                this.db = request.result;
-                callback();
-            }
-
-            request.onupgradeneeded = function (e) {
-                e.target.result.createObjectStore('files', { keyPath: 'timestamp' });
-            }
-
-            request.onerror = error;
+            this.db = new DatabaseHandler(this.dbname, [
+                {
+                    name: 'files',
+                    key: 'timestamp'
+                },
+                {
+                    name: 'profiles',
+                    key: 'identifier'
+                }
+            ], callback, error);
         }
     }
 
@@ -130,7 +214,7 @@ const FileDatabase = new (class {
         if (this.anonymous) {
             this.db[object.timestamp] = object;
         } else {
-            this.db.transaction(['files'], 'readwrite').objectStore('files').put(object);
+            this.db.files.set(object);
         }
     }
 
@@ -138,16 +222,7 @@ const FileDatabase = new (class {
         if (this.anonymous) {
             callback(Object.values(this.db));
         } else {
-            var result = [];
-            this.db.transaction('files').objectStore('files').openCursor().onsuccess = function (event) {
-                var cursor = event.target.result;
-                if (cursor) {
-                    result.push(cursor.value);
-                    cursor.continue();
-                } else {
-                    callback(result);
-                }
-            }
+            this.db.files.get(callback);
         }
     }
 
@@ -155,7 +230,7 @@ const FileDatabase = new (class {
         if (this.anonymous) {
             delete this.db[key];
         } else {
-            this.db.transaction(['files'], 'readwrite').objectStore('files').delete(key);
+            this.db.files.remove(key);
         }
     }
 
@@ -672,30 +747,6 @@ const UpdateService = {
         }
     }
 }
-
-const Logger = new (class {
-    constructor () {
-        this.colors = {
-            'STORAGE': 'fcba03',
-            'WARNING': 'fc6203',
-            'R_FLAGS': '42adf5',
-            'TAB_GEN': '3bc922',
-            'VERSION': '90f5da',
-            'PERFLOG': 'ffffff',
-            'ECLIENT': 'd142f5'
-        };
-
-        this.log('VERSION', `Module: ${ MODULE_VERSION }, Core: ${ CORE_VERSION }, Table: ${ TABLE_VERSION }`);
-    }
-
-    log (type, text) {
-        console.log(
-            `%c${ type }%c${ text }`,
-            `background-color: #${ this.colors[type] || 'ffffff' }; padding: 0.5em; font-size: 15px; font-weight: bold; color: black;`,
-            'padding: 0.5em; font-size: 15px;'
-        );
-    }
-})();
 
 const Storage = new (class {
     load (callback, error, args) {
