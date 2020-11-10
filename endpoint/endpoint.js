@@ -52,32 +52,9 @@ class EndpointController {
         // Bind success callbacks
         this.window.callback['querry'] = callback;
         this.window.callback['login'] = (text) => {
-            // Process all names
-            let names = text.split(',').slice(1);
-            let prev_date = Date.now();
-
-            this.window.callback['querry_single'] = () => {
-                let took = Date.now() - prev_date;
-                prev_date = Date.now();
-
-                if (names.length) {
-                    // Querry character
-                    if (took < 50) {
-                        setTimeout(() => {
-                            this.window.querry_single(names.pop());
-                        }, 55 - took);
-                    } else {
-                        this.window.querry_single(names.pop());
-                    }
-                } else {
-                    // Collect data if no characters are remaining
-                    Logger.log('ECLIENT', `Collecting data`);
-                    this.window.querry_collect();
-                }
-            }
-
-            // Execute callback
-            this.window.callback['querry_single']();
+            // Querry all
+            Logger.log('ECLIENT', `Querry all`);
+            this.window.querry_all();
         }
 
         // Login

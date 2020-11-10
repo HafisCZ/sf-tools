@@ -41,6 +41,10 @@
                 unity.SendMessage('Controller', 'QuerrySingle', id);
             }
 
+            function querry_all () {
+                unity.SendMessage('Controller', 'QuerryAll', id);
+            }
+
             function querry_collect () {
                 unity.SendMessage('Controller', 'QuerrySingleCollect');
             }

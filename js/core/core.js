@@ -987,6 +987,13 @@ const Storage = new (class {
                         player.id = player.prefix + '_p' + player.save[0];
                     } else if (own && key.includes('playerSave')) {
                         player.save = val.split('/').map(a => Number(a));
+
+                        player.save[4] = 0;
+                        player.save[503] = 0;
+                        player.save[504] = 0;
+                        player.save[505] = 0;
+                        player.save[561] = 0;
+
                         player.id = player.prefix + '_p' + player.save[1];
                     } else if ((!own && key.includes('petbonus')) || (own && key.includes('petsSave'))) {
                         player.pets = val.split('/').map(a => Number(a));
