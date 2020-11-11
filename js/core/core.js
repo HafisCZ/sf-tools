@@ -712,8 +712,8 @@ const Storage = new (class {
         Logger.log('R_FLAGS', `Filters: ${ pfilter }, ${ gfilter }`);
 
         // Set flags
-        this.Lazy = lazy;
-        this.LoadInventory = inventory;
+        Database.Lazy = lazy;
+        Database.LoadInventory = inventory;
 
         // Capture start time
         let loadStart = Date.now();
