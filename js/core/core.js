@@ -64,6 +64,9 @@ class PreferencesHandler {
 const Preferences = new PreferencesHandler();
 const SharedPreferences = new PreferencesHandler();
 
+const DEFAULT_OFFSET = -60 * 60 * 1000;
+const HAS_PROXY = typeof(Proxy) != 'undefined';
+
 const CACHE_DEFAULT = 0;
 const CACHE_DISABLE = 1;
 const CACHE_DONT_CLEAR = 2;
@@ -116,39 +119,26 @@ window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction  ||
 window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
 
 class DatabaseHandler {
-
     constructor (name, stores, onReady, onError) {
         this.name = name;
         this.stores = stores;
 
         // Add stores
         for (let { name, key } of stores) {
+            let getStore = () => this.database.transaction([ name ], 'readwrite').objectStore(name);
             this[name] = {
                 // Get all items
                 get: callback => {
-                    let result = [];
-                    this.database.transaction(name).objectStore(name).openCursor().onsuccess = event => {
-                        let cursor = event.target.result;
-                        if (cursor) {
-                            result.push(cursor.value);
-                            cursor.continue();
-                        } else {
-                            callback(result);
-                        }
-                    };
+                    let r = getStore().getAll();
+                    r.onsuccess = () => callback(r.result);
+                    r.onerror = () => callback([]);
                 },
                 // Set item
-                set: object => {
-                    this.database.transaction([ name ], 'readwrite').objectStore(name).put(object);
-                },
+                set: object => getStore().put(object),
                 // Remove item
-                remove: objectKey => {
-                    this.database.transaction([ name ], 'readwrite').objectStore(name).delete(objectKey);
-                },
-                // Clear store
-                clear: () => {
-                    this.database.transaction([ name ], 'readwrite').objectStore(name).clear()
-                }
+                remove: objectKey => getStore().delete(objectKey),
+                // Remove all items
+                clear: () => getStore().clear()
             }
         }
 
@@ -177,67 +167,27 @@ class DatabaseHandler {
     }
 }
 
-// File Database
-const FileDatabase = new (class {
-
-    temporary () {
-        this.anonymous = true;
-    }
-
-    slot (id) {
-        this.dbname = 'database_' + id;
-    }
-
-    ready (callback, error) {
-        if (!this.dbname) {
-            this.dbname = 'database';
-        }
-
-        if (this.anonymous) {
-            this.db = { };
-            callback();
-        } else {
-            this.db = new DatabaseHandler(this.dbname, [
-                {
-                    name: 'files',
-                    key: 'timestamp'
+class TemporaryDatabase {
+    constructor (stores) {
+        for (let { name, key } of stores) {
+            this[name] = {
+                content: {},
+                // Get all items
+                get: function (callback) {
+                    callback(Object.values(this.content));
                 },
-                {
-                    name: 'profiles',
-                    key: 'identifier'
+                // Set items
+                set: function (object) {
+                    this.content[object[key]] = object;
+                },
+                // Remove item
+                remove: function (key) {
+                    delete this.content[key];
                 }
-            ], callback, error);
+            }
         }
     }
-
-    set (object) {
-        if (this.anonymous) {
-            this.db[object.timestamp] = object;
-        } else {
-            this.db.files.set(object);
-        }
-    }
-
-    get (callback) {
-        if (this.anonymous) {
-            callback(Object.values(this.db));
-        } else {
-            this.db.files.get(callback);
-        }
-    }
-
-    remove (key) {
-        if (this.anonymous) {
-            delete this.db[key];
-        } else {
-            this.db.files.remove(key);
-        }
-    }
-
-})();
-
-const DEFAULT_OFFSET = -60 * 60 * 1000;
-const HAS_PROXY = typeof(Proxy) != 'undefined';
+}
 
 // Database
 const Database = new (class {
@@ -749,62 +699,99 @@ const UpdateService = {
 }
 
 const Storage = new (class {
-    load (callback, error, args) {
-        var loadStart = Date.now();
 
-        if (args.temporary) {
+    /*
+        Load storage
+    */
+    load (callback, error, { temporary = false, slot = 0, lazy = false, inventory = false, pfilter = null, gfilter = null } = {}) {
+        // Print out flags
+        Logger.log('R_FLAGS', `Temporary: ${ temporary }`);
+        Logger.log('R_FLAGS', `Slot: ${ slot }`);
+        Logger.log('R_FLAGS', `Lazy: ${ lazy }`);
+        Logger.log('R_FLAGS', `LoadInventory: ${ inventory }`);
+        Logger.log('R_FLAGS', `Filters: ${ pfilter }, ${ gfilter }`);
+
+        // Set flags
+        this.Lazy = lazy;
+        this.LoadInventory = inventory;
+
+        // Capture start time
+        let loadStart = Date.now();
+
+        // Mark preferences as temporary
+        if (temporary) {
             Preferences.temporary();
-            FileDatabase.temporary();
         }
 
-        if (!args.temporary && args.slot) {
-            FileDatabase.slot(args.slot);
-        }
-
-        Database.Lazy = args.lazy || false;
-        Database.LoadInventory = args.inventory || false;
-
-        Logger.log('R_FLAGS', `Temporary: ${ args.temporary || false }`);
-        Logger.log('R_FLAGS', `Slot: ${ args.slot || 0 }`);
-        Logger.log('R_FLAGS', `Lazy: ${ args.lazy || false }`);
-        Logger.log('R_FLAGS', `LoadInventory: ${ args.inventory || false }`);
-        Logger.log('R_FLAGS', `Filters: ${ args.pfilter || null }, ${ args.gfilter || null }`);
-
-        FileDatabase.ready(() => {
-            FileDatabase.get((current) => {
-                var loadDatabaseEnd = Date.now();
+        // Database callback
+        let onReady = () => {
+            this.db.files.get((current) => {
+                // Set current files
                 this.current = current;
 
+                // Capture database end time
+                let loadDatabaseEnd = Date.now();
+
                 // Correction
-                var corrected = false;
-                for (var i = 0, f; f = this.current[i]; i++) {
-                    if (UpdateService.update(f)) {
-                        corrected = true;
+                let corrected = this.current.reduce((corr, file) => {
+                    if (UpdateService.update(file)) {
+                        this.db.files.set(file);
+                        return true;
+                    } else {
+                        return corr;
                     }
-                }
+                }, false);
 
-                if (corrected) {
-                    this.save(... this.current);
-                }
-                var loadUpdateEnd = Date.now();
+                // Capture update end
+                let loadUpdateEnd = Date.now();
 
-                Database.from(this.current, args.pfilter, args.gfilter);
+                // Create database
+                Database.from(this.current, pfilter, gfilter);
+
+                // Capture end time
                 var loadEnd = Date.now();
 
-                Logger.log('STORAGE', `Database: ${ loadDatabaseEnd - loadStart } ms,  Update: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && Database.Lazy ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
+                Logger.log('STORAGE', `Database: ${ loadDatabaseEnd - loadStart } ms,  Update${ corrected ? '/Yes' : '' }: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && this.Lazy ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
                 if (loadEnd - loadUpdateEnd > 1000) {
                     Logger.log('WARNING', 'Processing step is taking too long!');
                 }
 
                 callback();
             });
-        }, error);
+        }
+
+        // Create database
+        if (temporary) {
+            this.db = new TemporaryDatabase([
+                {
+                    name: 'files',
+                    key: 'timestamp'
+                },
+                {
+                    name: 'profiles',
+                    key: 'identifier'
+                }
+            ]);
+
+            onReady();
+        } else {
+            this.db = new DatabaseHandler(slot ? `database_${ slot }` : 'database', [
+                {
+                    name: 'files',
+                    key: 'timestamp'
+                },
+                {
+                    name: 'profiles',
+                    key: 'identifier'
+                }
+            ], onReady, error);
+        }
     }
 
     save (... files) {
         this.current.sort((a, b) => a.timestamp - b.timestamp);
         for (var i = 0, file; file = files[i]; i++) {
-            FileDatabase.set(file);
+            this.db.files.set(file);
         }
     }
 
@@ -1082,7 +1069,7 @@ const Storage = new (class {
     }
 
     remove (index) {
-        FileDatabase.remove(this.current[index].timestamp);
+        this.db.files.remove(this.current[index].timestamp);
         Database.remove(this.current[index].timestamp);
 
         this.current.splice(index, 1);
@@ -1187,7 +1174,7 @@ const Storage = new (class {
         }
 
         timestamps.forEach(t => {
-            FileDatabase.remove(t);
+            this.db.files.remove(t);
             this.current.splice(this.current.findIndex(file => file.timestamp == t), 1);
         });
 
