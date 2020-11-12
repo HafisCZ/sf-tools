@@ -466,6 +466,10 @@ h3.file-selected {
     position: relative;
 }
 
+[data-sortable] * {
+    pointer-events: none;
+}
+
 [data-sortable="1"]::before {
     content: "\f0de";
     font-family: Icons;
