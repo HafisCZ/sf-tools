@@ -280,7 +280,7 @@
         <div id="view-settings" class="ui main container hidden" style="width: 95vw;">
             <div class="ui grid">
                 <div class="three wide column">
-                    <h3 class="ui centered header">Settings</h3>
+                    <h3 class="ui centered header" style="margin-top: 0;">Settings</h3>
                     <div class="ui middle aligned selection list css-selection-list css-top-line" data-op="settings-list">
 
                     </div>
@@ -740,10 +740,24 @@
                             <label style="color: white;">Password</label>
                             <input type="password" data-op="textPassword">
                         </div>
-                        <div class="field">
-                            <div class="ui checkbox" data-op="onlyOwn">
-                                <input type="checkbox">
-                                <label style="color: white;">Capture only own character</label>
+                        <div class="grouped fields">
+                            <div class="field">
+                                <div class="ui radio checkbox" data-op="modeDefault">
+                                    <input type="radio" name="endpointMode" checked="checked">
+                                    <label style="color: white;">Default mode</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox" data-op="modeOwn">
+                                    <input type="radio" name="endpointMode">
+                                    <label style="color: white;">Capture only own character</label>
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui radio checkbox" data-op="modeAll">
+                                    <input type="radio" name="endpointMode">
+                                    <label style="color: white;">Capture all characters</label>
+                                </div>
                             </div>
                         </div>
                         <br/>
@@ -771,9 +785,8 @@
                     <div class="ui celled relaxed list" data-op="list" style="height: 30em; overflow-y: auto;">
 
                     </div>
-                    <div class="ui three buttons">
+                    <div class="ui two buttons">
                         <button class="ui secondary button fluid" data-op="back">Cancel</button>
-                        <button class="ui teal button fluid" data-op="getnext">Load Next</button>
                         <button class="ui primary button fluid" data-op="import">Continue</button>
                     </div>
                 </div>

@@ -2277,8 +2277,6 @@ class SettingsView extends View {
         // Lists
         this.$settingsList = this.$parent.find('[data-op="settings-list"]');
         this.$templateList = this.$parent.find('[data-op="template-list"]');
-        this.$templateName = this.$parent.find('[data-op="template-name"]');
-        this.$templateSave = this.$parent.find('[data-op="template-save"]');
 
         // Button handling
         this.$parent.find('[data-op="wiki-home"]').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
@@ -3411,25 +3409,14 @@ class EndpointView extends View {
         this.$server = this.$parent.find('[data-op="textServer"]');
         this.$username = this.$parent.find('[data-op="textUsername"]');
         this.$password = this.$parent.find('[data-op="textPassword"]');
-        this.$own = this.$parent.find('[data-op="onlyOwn"]').checkbox();
+
+        this.$modeDefault = this.$parent.find('[data-op="modeDefault"]').checkbox();
+        this.$modeOwn = this.$parent.find('[data-op="modeOwn"]').checkbox();
+        this.$modeAll = this.$parent.find('[data-op="modeAll"]').checkbox();
 
         this.$iframe = this.$parent.find('[data-op="iframe"]');
         this.$list = this.$parent.find('[data-op="list"]');
         this.$import = this.$parent.find('[data-op="import"]');
-
-        this.$next = this.$parent.find('[data-op="getnext"]').click(() => {
-            var $el = $('.list .checkbox:not(.checked)').first()
-            if ($el.length) {
-                this.customTarget = $el.find('label').attr('for');
-                $el.checkbox('check');
-
-                if (!$('.list .checkbox:not(.checked)').first().length) {
-                    this.$next.addClass('disabled');
-                }
-            } else {
-                this.$next.addClass('disabled');
-            }
-        }).addClass('disabled');
 
         this.endpoint = undefined;
         this.downloading = [];
@@ -3460,7 +3447,9 @@ class EndpointView extends View {
             var username = this.$username.val();
             var password = this.$password.val();
             var server = this.$server.dropdown('get value');
-            var own = this.$own.checkbox('is checked');
+
+            var own = this.$modeOwn.checkbox('is checked');
+            var all = this.$modeAll.checkbox('is checked');
 
             if (/^(.{4,})@(.+\.sfgame\..+)$/.test(username)) {
                 [, username, server, ] = username.split(/^(.{4,})@(.+\.sfgame\..+)$/);
@@ -3475,6 +3464,8 @@ class EndpointView extends View {
 
                     if (own) {
                         this.funcLoginSingle(server, username, password);
+                    } else if (all) {
+                        this.funcLoginAll(server, username, password);
                     } else {
                         this.funcLogin(server, username, password);
                     }
@@ -3487,6 +3478,8 @@ class EndpointView extends View {
 
                         if (own) {
                             this.funcLoginSingle(server, username, password);
+                        } else if (all) {
+                            this.funcLoginAll(server, username, password);
                         } else {
                             this.funcLogin(server, username, password);
                         }
@@ -3497,6 +3490,17 @@ class EndpointView extends View {
 
         this.funcLoginSingle = (server, username, password) => {
             this.endpoint.login_querry_only(server, username, password, (text) => {
+                Storage.add(text, Date.now());
+                this.funcShutdown();
+                UI.current.show();
+            }, () => {
+                this.$step4.hide();
+                this.showError('Wrong username or password');
+            });
+        };
+
+        this.funcLoginAll = (server, username, password) => {
+            this.endpoint.login_querry_all(server, username, password, (text) => {
                 Storage.add(text, Date.now());
                 this.funcShutdown();
                 UI.current.show();
@@ -3540,12 +3544,6 @@ class EndpointView extends View {
                         this.showError('Download failed', true);
                     });
                 });
-
-                if ($('.list .checkbox:not(.checked)').first().length) {
-                    this.$next.removeClass('disabled');
-                } else {
-                    this.$next.addClass('disabled');
-                }
             }, () => {
                 this.$step4.hide();
                 this.showError('Wrong username or password');
@@ -3580,7 +3578,6 @@ class EndpointView extends View {
         if (this.downloading.length > 0) {
             this.$import.attr('disabled', 'true');
             this.$import.addClass('loading');
-            this.$next.attr('disabled', 'true');
         }
     }
 
@@ -3589,7 +3586,6 @@ class EndpointView extends View {
         if (this.downloading.length == 0) {
             this.$import.removeAttr('disabled');
             this.$import.removeClass('loading');
-            this.$next.removeAttr('disabled');
         }
     }
 
@@ -3598,7 +3594,7 @@ class EndpointView extends View {
     }
 
     show () {
-        this.$own.checkbox('uncheck');
+        this.$modeDefault.checkbox('check');
 
         this.$step1.show();
         this.$step2.hide();

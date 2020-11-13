@@ -3823,6 +3823,13 @@ const Templates = new (class {
         return this.templates;
     }
 
+    list () {
+        this.initialize();
+
+        // Return list of templates
+        return Object.values(this.templates);
+    }
+
     getKeys () {
         this.initialize();
 
