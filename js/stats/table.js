@@ -3610,19 +3610,21 @@ class Settings {
         let outputLines = [];
 
         let array = ast.eval();
-        if (!Array.isArray(array)) {
-            array = Object.values(array);
-        }
-
-        for (let value of array) {
-            if (!Array.isArray(value)) {
-                value = [ value ];
+        if (array) {
+            if (!Array.isArray(array)) {
+                array = Object.values(array);
             }
 
-            outputLines.push(
-                ... lines,
-                ... name.map((key, index) => `var ${ key } ${ value[index] }`)
-            );
+            for (let value of array) {
+                if (!Array.isArray(value)) {
+                    value = [ value ];
+                }
+
+                outputLines.push(
+                    ... lines,
+                    ... name.map((key, index) => `var ${ key } ${ value[index] }`)
+                );
+            }
         }
 
         return outputLines;

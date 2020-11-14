@@ -1228,6 +1228,15 @@ const SP_FUNCTIONS = {
             return undefined;
         }
     },
+    // Create array with sequence
+    'makesequence': (from, to) => {
+        if (!isNaN(from) && !isNaN(to)) {
+            let len = to - from + 1;
+            return new Array(len).fill(0).map((x, i) => from + i);
+        } else {
+            return undefined;
+        }
+    },
     // Parse number
     'number': (value) => {
         return Number(value);
