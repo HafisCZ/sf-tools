@@ -3905,7 +3905,7 @@ const Templates = new (class {
         return name in this.templates;
     }
 
-    get () {
+    all () {
         this.initialize();
 
         // Return templates
@@ -3926,10 +3926,10 @@ const Templates = new (class {
         return this.keys;
     }
 
-    load (name) {
+    get (name) {
         this.initialize();
 
         // Return loaded settings
-        return new Settings(name in this.templates ? this.templates[name].content : '');
+        return name in this.templates ? this.templates[name].content : '';
     }
 })();
