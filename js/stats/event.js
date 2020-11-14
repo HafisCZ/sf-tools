@@ -2329,8 +2329,8 @@ class SettingsView extends View {
             $b.html(Settings.format(val));
 
             // Update
-            this.$settingsList.settings_selectionlist('set unsaved', val !== this.code);
-            if (val == this.code) {
+            this.$settingsList.settings_selectionlist('set unsaved', this.settings && val !== this.settings.content);
+            if (!this.settings || val == this.settings.code) {
                 this.$save.addClass('disabled');
             } else {
                 this.$save.removeClass('disabled');
@@ -2386,8 +2386,10 @@ class SettingsView extends View {
 
     show (identifier = 'players') {
         // Set code
-        this.identifier = identifier;
-        this.code = SettingsManager.get(identifier, this.getDefault(identifier), this.getDefaultTemplate(identifier));
+        this.settings = {
+            name: identifier,
+            content: SettingsManager.get(identifier, this.getDefault(identifier), this.getDefaultTemplate(identifier))
+        }
 
         // Update settings
         if (this.$settingsList.length) {
@@ -2410,26 +2412,26 @@ class SettingsView extends View {
             {
                 name: 'Players',
                 value: 'players',
-                selected: this.identifier == 'players'
+                selected: this.settings.name == 'players'
             },
             {
                 name: 'Me',
                 value: 'me',
-                selected: this.identifier == 'me'
+                selected: this.settings.name == 'me'
             },
             {
                 name: 'Guilds',
                 value: 'guilds',
-                selected: this.identifier == 'guilds'
+                selected: this.settings.name == 'guilds'
             },
-            ... SettingsManager.list().map(key => {
+            ... SettingsManager.getKeys().map(key => {
                 if ([ 'me', 'players', 'guilds' ].includes(key)) {
                     return null;
                 } else {
                     return {
                         name: Database.Players[key] ? `P: ${ Database.Players[key].Latest.Name }` : (Database.Groups[key] ? `G: ${ Database.Groups[key].Latest.Name }` : key),
                         value: key,
-                        selected: this.identifier == key
+                        selected: this.settings.name == key
                     };
                 }
             }).filter(obj => obj != null)
@@ -2449,13 +2451,13 @@ class SettingsView extends View {
 
     save () {
         let code = this.$area.val();
-        if (code !== this.code) {
+        if (code !== this.settings.content) {
             // Add into history
-            SettingsManager.addHistory(this.code, this.identifier);
+            SettingsManager.addHistory(this.settings.content, this.settings.name);
 
             // Save current code
-            this.code = code;
-            SettingsManager.save(this.code, this.identifier);
+            this.settings.content = code;
+            SettingsManager.save(this.settings.name, this.settings.content, this.settings.parent);
         }
     }
 
@@ -2490,6 +2492,7 @@ class SettingsView extends View {
                     this.$area.val(PredefinedTemplates[value]);
                 } else {
                     this.$area.val(Templates.load(value).getCode());
+                    this.settings.parent = value;
                 }
 
                 this.$area.trigger('input');
@@ -2511,7 +2514,7 @@ class SettingsView extends View {
         if (this.index > 0) {
             this.$area.val(history[this.index - 1].content);
         } else {
-            this.$area.val(this.code);
+            this.$area.val(this.settings.content);
         }
 
         this.$area.trigger('input');
