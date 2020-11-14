@@ -203,7 +203,7 @@
                     event.stopPropagation();
 
                     if (this.shown) {
-                        this.onSave(this.$dropdown.dropdown('get text'));
+                        this.onSave(this.$dropdown.find('input.search').val() || this.$dropdown.dropdown('get value'));
                         $this.templatePopup('hide');
                     } else {
                         var bounds = event.currentTarget.getBoundingClientRect();
@@ -231,7 +231,7 @@
 
                 this.$dropdown.dropdown({
                     allowAdditions: true,
-                    placeholder: 'New template',
+                    forceSelection: false,
                     values: this.getValues()
                 });
             } else if (command == 'hide') {
