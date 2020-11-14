@@ -755,6 +755,15 @@ class TableInstance {
         if (this.configLeft) {
             categoryTitle = this.getCategoryBlock(false, this.configLeft, true);
             headerTitle = this.getHeaderBlock(false, this.configLeft, true);
+
+            if (indexStyle) {
+                if (this.settings.getTitleAlign()) {
+                    categoryTitle = `<td></td>` + categoryTitle;
+                    headerTitle = `<td style="width: 50px;" colspan="1" class="border-bottom-thick">#</td>` + headerTitle;
+                } else {
+                    categoryTitle = `<td style="width: 50px;" colspan="1" rowspan="2" class="border-bottom-thick">#</td>` + categoryTitle;
+                }
+            }
         } else {
             if (this.settings.getTitleAlign()) {
                 categoryTitle = `
@@ -820,6 +829,15 @@ class TableInstance {
         if (this.configLeft) {
             categoryTitle = this.getCategoryBlock(true, this.configLeft, true);
             headerTitle = this.getHeaderBlock(true, this.configLeft, true);
+
+            if (indexStyle) {
+                if (this.settings.getTitleAlign()) {
+                    categoryTitle = `<td></td>` + categoryTitle;
+                    headerTitle = `<td style="width: 50px;" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + headerTitle;
+                } else {
+                    categoryTitle = `<td style="width: 50px;" rowspan="2" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + categoryTitle;
+                }
+            }
         } else {
             if (this.settings.getTitleAlign()) {
                 categoryTitle = `
@@ -964,6 +982,15 @@ class TableInstance {
         if (this.configLeft) {
             categoryTitle = this.getCategoryBlock(true, this.configLeft, true);
             headerTitle = this.getHeaderBlock(true, this.configLeft, true);
+
+            if (indexStyle) {
+                if (this.settings.getTitleAlign()) {
+                    categoryTitle = `<td></td>` + categoryTitle;
+                    headerTitle = `<td style="width: 50px;" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + headerTitle;
+                } else {
+                    categoryTitle = `<td style="width: 50px;" rowspan="2" class="border-bottom-thick clickable" ${ indexStyle == 1 ? this.getSortingTag('_index') : '' }>#</td>` + categoryTitle;
+                }
+            }
         } else {
             if (this.settings.getTitleAlign()) {
                 categoryTitle = `
