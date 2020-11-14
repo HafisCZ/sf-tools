@@ -2306,6 +2306,10 @@ class SettingsView extends View {
             onSave: value => {
                 if (value) {
                     Templates.save(value, this.$area.val());
+
+                    this.settings.parent = value;
+                    this.$settingsList.settings_selectionlist('set unsaved', true);
+
                     this.updateTemplates();
                 }
             }
@@ -2408,12 +2412,12 @@ class SettingsView extends View {
         // Do nothing
     }
 
-    show (identifier = 'players') {
-        // Set code
+    show (key = 'players') {
         this.settings = {
-            name: identifier,
-            content: SettingsManager.get(identifier, this.getDefault(identifier), this.getDefaultTemplate(identifier))
-        }
+            name: key,
+            content: this.getDefaultTemplate(key),
+            ... SettingsManager.getObj(key, this.getDefault(key)) || {}
+        };
 
         // Update settings
         if (this.$settingsList.length) {
@@ -2478,11 +2482,11 @@ class SettingsView extends View {
         if (code !== this.settings.content) {
             // Add into history
             SettingsManager.addHistory(this.settings.content, this.settings.name);
-
-            // Save current code
-            this.settings.content = code;
-            SettingsManager.save(this.settings.name, this.settings.content, this.settings.parent);
         }
+        
+        // Save current code
+        this.settings.content = code;
+        SettingsManager.save(this.settings.name, this.settings.content, this.settings.parent);
     }
 
     updateTemplates () {
@@ -2514,6 +2518,7 @@ class SettingsView extends View {
             onClick: value => {
                 if (PredefinedTemplates[value]) {
                     this.$area.val(PredefinedTemplates[value]);
+                    this.settings.parent = '';
                 } else {
                     this.$area.val(Templates.get(value));
                     this.settings.parent = value;

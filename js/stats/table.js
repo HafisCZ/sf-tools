@@ -3684,10 +3684,7 @@ const SettingsManager = new (class {
             settings.content = content;
             settings.version = MODULE_VERSION;
             settings.timestamp = Date.now();
-
-            if (parent) {
-                settings.parent = parent;
-            }
+            settings.parent = parent;
         } else {
             settings = {
                 name: name,
@@ -3739,6 +3736,11 @@ const SettingsManager = new (class {
         this.initialize();
         let settings = this.settings[name] || this.settings[fallback];
         return settings ? settings.content : template;
+    }
+
+    getObj (name, fallback) {
+        this.initialize();
+        return this.settings[name] || this.settings[fallback];
     }
 
     /*
