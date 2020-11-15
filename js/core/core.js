@@ -459,7 +459,6 @@ const Database = new (class {
     from (files, pfilter, gfilter) {
         this.Players = {};
         this.Groups = {};
-        this.Profiles = {};
 
         this.Filters = {
             Player: pfilter,
@@ -727,7 +726,7 @@ const Storage = new (class {
         let onReady = () => {
             this.db.profiles.get((profiles) => {
                 // Set current profiles
-                this.profiles = profiles.reduce((obj, profile) => {
+                Database.Profiles = profiles.reduce((obj, profile) => {
                     obj[profile.identifier] = profile.values;
                     return obj;
                 }, {});
