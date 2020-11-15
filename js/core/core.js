@@ -715,48 +715,59 @@ const Storage = new (class {
         Database.Lazy = lazy;
         Database.LoadInventory = inventory;
 
-        // Capture start time
-        let loadStart = Date.now();
-
         // Mark preferences as temporary
         if (temporary) {
             Preferences.temporary();
         }
 
+        // Capture start time
+        let loadStart = Date.now();
+
         // Database callback
         let onReady = () => {
-            this.db.files.get((current) => {
-                // Set current files
-                this.current = current;
+            this.db.profiles.get((profiles) => {
+                // Set current profiles
+                this.profiles = profiles.reduce((obj, profile) => {
+                    obj[profile.identifier] = profile.values;
+                    return obj;
+                }, {});
 
-                // Capture database end time
-                let loadDatabaseEnd = Date.now();
+                // Capture profile end time
+                let loadProfilesEnd = Date.now();
 
-                // Correction
-                let corrected = this.current.reduce((corr, file) => {
-                    if (UpdateService.update(file)) {
-                        this.db.files.set(file);
-                        return true;
-                    } else {
-                        return corr;
+                this.db.files.get((current) => {
+                    // Set current files
+                    this.current = current;
+
+                    // Capture database end time
+                    let loadDatabaseEnd = Date.now();
+
+                    // Correction
+                    let corrected = this.current.reduce((corr, file) => {
+                        if (UpdateService.update(file)) {
+                            this.db.files.set(file);
+                            return true;
+                        } else {
+                            return corr;
+                        }
+                    }, false);
+
+                    // Capture update end
+                    let loadUpdateEnd = Date.now();
+
+                    // Create database
+                    Database.from(this.current, pfilter, gfilter);
+
+                    // Capture end time
+                    var loadEnd = Date.now();
+
+                    Logger.log('STORAGE', `Database: ${ loadDatabaseEnd - loadProfilesEnd } ms, Profiles: ${ loadProfilesEnd - loadStart } ms, Update${ corrected ? '/Yes' : '' }: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && this.Lazy ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
+                    if (loadEnd - loadUpdateEnd > 1000) {
+                        Logger.log('WARNING', 'Processing step is taking too long!');
                     }
-                }, false);
 
-                // Capture update end
-                let loadUpdateEnd = Date.now();
-
-                // Create database
-                Database.from(this.current, pfilter, gfilter);
-
-                // Capture end time
-                var loadEnd = Date.now();
-
-                Logger.log('STORAGE', `Database: ${ loadDatabaseEnd - loadStart } ms,  Update${ corrected ? '/Yes' : '' }: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && this.Lazy ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
-                if (loadEnd - loadUpdateEnd > 1000) {
-                    Logger.log('WARNING', 'Processing step is taking too long!');
-                }
-
-                callback();
+                    callback();
+                });
             });
         }
 
