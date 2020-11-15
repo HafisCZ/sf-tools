@@ -2310,6 +2310,10 @@ class SettingsView extends View {
                     this.settings.parent = value;
                     this.$settingsList.settings_selectionlist('set unsaved', true);
 
+                    if (UI.current.refreshTemplateDropdown) {
+                        UI.current.refreshTemplateDropdown();
+                    }
+
                     this.updateTemplates();
                 }
             }
@@ -2483,7 +2487,7 @@ class SettingsView extends View {
             // Add into history
             SettingsManager.addHistory(this.settings.content, this.settings.name);
         }
-        
+
         // Save current code
         this.settings.content = code;
         SettingsManager.save(this.settings.name, this.settings.content, this.settings.parent);
