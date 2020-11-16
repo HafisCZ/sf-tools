@@ -263,6 +263,10 @@
                             <input type="checkbox">
                             <label>Load inventory & companions</label>
                         </div>
+                        <div class="ui checkbox sf-margin left-20 top-05" data-op="checkbox-tracker">
+                            <input type="checkbox">
+                            <label>Enable tracker</label>
+                        </div>
                         <div class="ui checkbox sf-margin left-20 top-05" data-op="checkbox-insecure">
                             <input type="checkbox">
                             <label>Allow restricted tags</label>
@@ -975,7 +979,8 @@
                     temporary: temp,
                     lazy: lazy,
                     slot: slot,
-                    inventory: inventory
+                    inventory: inventory,
+                    trackers: true
                 });
             }
         </script>

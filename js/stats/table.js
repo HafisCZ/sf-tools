@@ -2327,6 +2327,19 @@ const SettingsCommands = [
         (root) => root.push(),
         (root) => SFormat.Keyword('push'),
         true
+    ),
+    /*
+        Tracker
+    */
+    new Command(
+        /^track (\w+(?:\s*\w+)*) when (.+)$/,
+        (root, name, arg) => {
+            let ast = new Expression(arg);
+            if (ast.isValid()) {
+                root.addTracker(name, ast);
+            }
+        },
+        (root, name, arg) => SFormat.Keyword('track ') + SFormat.Constant(name) + SFormat.Keyword(' when ') + Expression.format(arg)
     )
 ];
 
@@ -2427,6 +2440,8 @@ class Settings {
         this.functions = [];
         this.variables = [];
         this.variablesReference = [];
+
+        this.trackers = {};
 
         // Lists
         this.lists = [];
@@ -2563,6 +2578,10 @@ class Settings {
             this.mergeStyles(obj, definition.style);
             this.mergeVariables(obj, definition.vars);
         }
+    }
+
+    addTracker (name, ast) {
+        this.trackers[name] = ast;
     }
 
     // Merge mapping to object

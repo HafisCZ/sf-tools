@@ -347,5 +347,8 @@ color above @3days darkorange
 color above @1day orange
 color above @12hours yellow
 color default @green
-`
+`, 'Tracker': `# Example Tracker Configuration
+track Level100 when Level >= 100
+track Level200 when Level >= 200
+track Level300 when Level >= 300`
 };

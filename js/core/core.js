@@ -86,7 +86,8 @@ const SiteOptions = new (class {
             players_other: false,
             files_hide: false,
             inventory: false,
-            cache_policy: 0
+            cache_policy: 0,
+            tracker: false
         };
 
         Object.assign(this.options, SharedPreferences.get('options', {}));
@@ -318,7 +319,7 @@ const Database = new (class {
         this.update();
     }
 
-    add (... files) {
+    add (files, enableTracker) {
         this.ChangeInitiated = Date.now();
 
         var tempGroups = {};
@@ -352,7 +353,7 @@ const Database = new (class {
                 let player = null;
                 let groupID = null;
 
-                if (HAS_PROXY && Database.Lazy) {
+                if (HAS_PROXY && Database.Lazy && !enableTracker) {
                     player = new Proxy({
                         Data: data,
                         Identifier: data.id,
@@ -419,6 +420,10 @@ const Database = new (class {
                     tempPlayers[player.Identifier] = {};
                 }
                 tempPlayers[player.Identifier][file.timestamp] = player;
+
+                if (enableTracker && Database.Trackers) {
+                    Database.track(player);
+                }
             }
 
             for (var [identifier, groups] of Object.entries(tempGroups)) {
@@ -459,15 +464,54 @@ const Database = new (class {
     from (files, pfilter, gfilter) {
         this.Players = {};
         this.Groups = {};
+        // this.Profiles = {};
 
         this.Filters = {
             Player: pfilter,
             Group: gfilter
         };
 
-        this.add(... files.filter(file => !file.hidden));
+        this.add(files.filter(file => !file.hidden));
 
         this.Hidden = Preferences.get('hidden', []);
+
+        if (this.Trackers) {
+            let scode = SettingsManager.get('tracker', '', PredefinedTemplates.Tracker);
+            let hash = SHA1(scode);
+
+            this.Trackers = new Settings(scode).trackers;
+
+            let oldhash = Preferences.get('tracker', null);
+            if (oldhash != hash) {
+                Preferences.set('tracker', hash);
+                for (let p of Object.keys(Database.Players)) {
+                    for (let [ ts, ] of this.Players[p].List) {
+                        this.track(this.getPlayer(p, ts));
+                    }
+                }
+            }
+        }
+    }
+
+    track (player) {
+        let changed = false;
+        let profile = this.Profiles[player.Identifier] || {
+            identifier: player.Identifier
+        };
+
+        for (let [ name, ast ] of Object.entries(this.Trackers)) {
+            if (ast.eval(player)) {
+                if (!profile[name] || profile[name] > player.Timestamp) {
+                    profile[name] = player.Timestamp;
+                    changed = true;
+                }
+            }
+        }
+
+        if (changed) {
+            Storage.db.profiles.set(profile);
+            this.Profiles[player.Identifier] = profile;
+        }
     }
 
     update () {
@@ -702,7 +746,7 @@ const Storage = new (class {
     /*
         Load storage
     */
-    load (callback, error, { temporary = false, slot = 0, lazy = false, inventory = false, pfilter = null, gfilter = null } = {}) {
+    load (callback, error, { temporary = false, trackers = false, slot = 0, lazy = false, inventory = false, pfilter = null, gfilter = null } = {}) {
         // Print out flags
         Logger.log('R_FLAGS', `Temporary: ${ temporary }`);
         Logger.log('R_FLAGS', `Slot: ${ slot }`);
@@ -713,6 +757,7 @@ const Storage = new (class {
         // Set flags
         Database.Lazy = lazy;
         Database.LoadInventory = inventory;
+        Database.Trackers = trackers && SiteOptions.tracker;
 
         // Mark preferences as temporary
         if (temporary) {
@@ -722,51 +767,58 @@ const Storage = new (class {
         // Capture start time
         let loadStart = Date.now();
 
-        // Database callback
+        // Profiles callback
         let onReady = () => {
-            this.db.profiles.get((profiles) => {
-                // Set current profiles
-                Database.Profiles = profiles.reduce((obj, profile) => {
-                    obj[profile.identifier] = profile.values;
-                    return obj;
-                }, {});
+            if (SiteOptions.tracker) {
+                this.db.profiles.get(onProfilesReady);
+            } else {
+                onProfilesReady([]);
+            }
+        }
 
-                // Capture profile end time
-                let loadProfilesEnd = Date.now();
+        // Database callback
+        let onProfilesReady = (profiles) => {
+            // Set current profiles
+            Database.Profiles = profiles.reduce((obj, profile) => {
+                obj[profile.identifier] = profile;
+                return obj;
+            }, {});
 
-                this.db.files.get((current) => {
-                    // Set current files
-                    this.current = current;
+            // Capture profile end time
+            let loadProfilesEnd = Date.now();
 
-                    // Capture database end time
-                    let loadDatabaseEnd = Date.now();
+            this.db.files.get((current) => {
+                // Set current files
+                this.current = current;
 
-                    // Correction
-                    let corrected = this.current.reduce((corr, file) => {
-                        if (UpdateService.update(file)) {
-                            this.db.files.set(file);
-                            return true;
-                        } else {
-                            return corr;
-                        }
-                    }, false);
+                // Capture database end time
+                let loadDatabaseEnd = Date.now();
 
-                    // Capture update end
-                    let loadUpdateEnd = Date.now();
-
-                    // Create database
-                    Database.from(this.current, pfilter, gfilter);
-
-                    // Capture end time
-                    var loadEnd = Date.now();
-
-                    Logger.log('STORAGE', `Database: ${ loadDatabaseEnd - loadProfilesEnd } ms, Profiles: ${ loadProfilesEnd - loadStart } ms, Update${ corrected ? '/Yes' : '' }: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && this.Lazy ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
-                    if (loadEnd - loadUpdateEnd > 1000) {
-                        Logger.log('WARNING', 'Processing step is taking too long!');
+                // Correction
+                let corrected = this.current.reduce((corr, file) => {
+                    if (UpdateService.update(file)) {
+                        this.db.files.set(file);
+                        return true;
+                    } else {
+                        return corr;
                     }
+                }, false);
 
-                    callback();
-                });
+                // Capture update end
+                let loadUpdateEnd = Date.now();
+
+                // Create database
+                Database.from(this.current, pfilter, gfilter);
+
+                // Capture end time
+                var loadEnd = Date.now();
+
+                Logger.log('STORAGE', `Database: ${ loadDatabaseEnd - loadProfilesEnd } ms, Profiles: ${ loadProfilesEnd - loadStart } ms, Update${ corrected ? '/Yes' : '' }: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && this.Lazy ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
+                if (loadEnd - loadUpdateEnd > 1000) {
+                    Logger.log('WARNING', 'Processing step is taking too long!');
+                }
+
+                callback();
             });
         }
 
@@ -827,7 +879,7 @@ const Storage = new (class {
             files.push(file);
         }
 
-        Database.add(... files);
+        Database.add(files, true);
         this.save(... files);
     }
 
@@ -1074,7 +1126,7 @@ const Storage = new (class {
             this.current.push(file);
         }
 
-        Database.add(file);
+        Database.add([ file ], true);
         this.save(file);
     }
 
@@ -1105,7 +1157,7 @@ const Storage = new (class {
             if (state) {
                 Database.remove(... files.map(file => file.timestamp));
             } else {
-                Database.add(... files);
+                Database.add(files);
             }
 
             // Save files
@@ -1189,7 +1241,7 @@ const Storage = new (class {
         });
 
         Database.remove(... timestamps);
-        Database.add(base);
+        Database.add([ base ]);
 
         this.current.push(base);
         this.save(base);

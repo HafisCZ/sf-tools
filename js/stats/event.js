@@ -1965,6 +1965,16 @@ class FilesView extends View {
             }
         }).checkbox(SiteOptions.lazy ? 'set checked' : 'set unchecked');
 
+        // Trackers
+        this.$lazy = this.$parent.find('[data-op="checkbox-tracker"]').checkbox({
+            onChecked: () => {
+                SiteOptions.tracker = true
+            },
+            onUnchecked: () => {
+                SiteOptions.tracker = false
+            }
+        }).checkbox(SiteOptions.tracker ? 'set checked' : 'set unchecked');
+
         // Hide hidden files
         this.$hidden = this.$parent.find('[data-op="checkbox-hidden"]').checkbox({
             onChecked: () => {
@@ -2392,6 +2402,8 @@ class SettingsView extends View {
             return 'players';
         } else if (v == 'me' || v.includes('_p')) {
             return 'me';
+        } else if (v == 'tracker') {
+            return '';
         } else {
             return 'guilds';
         }
@@ -2403,6 +2415,8 @@ class SettingsView extends View {
             return PredefinedTemplates['Players Default'];
         } else if (v == 'me' || v.includes('_p')) {
             return PredefinedTemplates['Me Default'];
+        } else if (v == 'tracker') {
+            return PredefinedTemplates['Tracker'];
         } else {
             return PredefinedTemplates['Guilds Default'];
         }
@@ -2468,6 +2482,14 @@ class SettingsView extends View {
                 }
             }).filter(obj => obj != null)
         ];
+
+        if (SiteOptions.tracker) {
+            settings.unshift({
+                name: '<i>Tracker Configuration</i>',
+                value: 'tracker',
+                selected: this.settings.name == 'tracker'
+            });
+        }
 
         // Setup list
         this.$settingsList.settings_selectionlist({
