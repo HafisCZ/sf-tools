@@ -499,10 +499,10 @@ const Database = new (class {
             let trackerEntries = Object.entries(this.Trackers);
             let cachedTrackers = Preferences.get('trackers', { });
 
-            let changedTrackers = trackerEntries.map(([ name, ast ]) => cachedTrackers[name] != ast.rstr ? name : null).filter(x => x);
+            let changedTrackers = trackerEntries.map(([ name, { ast, out, hash } ]) => cachedTrackers[name] != hash ? name : null).filter(x => x);
             if (changedTrackers.length) {
-                let cmap = trackerEntries.reduce((col, [ name, ast ]) => {
-                    col[name] = ast.rstr;
+                let cmap = trackerEntries.reduce((col, [ name, { hash } ]) => {
+                    col[name] = hash;
                     return col;
                 }, {})
 
@@ -570,10 +570,14 @@ const Database = new (class {
             identifier: player.Identifier
         };
 
-        for (let [ name, ast ] of Object.entries(this.Trackers)) {
+        for (let [ name, { ast, out } ] of Object.entries(this.Trackers)) {
             if (ast.eval(player)) {
-                if (!profile[name] || profile[name] > player.Timestamp) {
-                    profile[name] = player.Timestamp;
+                if (!profile[name] || profile[name].ts > player.Timestamp) {
+                    profile[name] = {
+                        ts: player.Timestamp,
+                        out: out ? out.eval(player) : player.Timestamp
+                    };
+
                     changed = true;
                 }
             }

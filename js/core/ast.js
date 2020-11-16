@@ -836,8 +836,8 @@ class Expression {
                     }
                 } else if (node.op == 'tracker' && node.args.length == 1) {
                     // Player tracker
-                    if (player && Database.Profiles[player.Identifier]) {
-                        return Database.Profiles[player.Identifier][node.args[0]];
+                    if (player && Database.Profiles[player.Identifier] && Database.Profiles[player.Identifier][node.args[0]]) {
+                        return Database.Profiles[player.Identifier][node.args[0]].out;
                     } else {
                         return undefined;
                     }
