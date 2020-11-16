@@ -3660,25 +3660,121 @@ class Settings {
 
 // Settings manager
 const SettingsManager = new (class {
-    // Save settings
-    save (settings, identifier) {
-        Preferences.set(identifier ? `settings/${ identifier }` : 'settings', settings);
+    initialize () {
+        if (!this.settings) {
+            // Initialize if needed
+            this.settings = Preferences.get('settings', { });
+            this.keys = Object.keys(this.settings);
+
+            /*
+                Convert existing settings in old form into new style
+            */
+            let keys = Preferences.keys().filter(key => key.includes('settings/')).map(key => key.substring(key.indexOf('/') + 1));
+            let backup = {};
+
+            if (keys.length) {
+                for (let key of keys) {
+                    let content = Preferences.get(`settings/${ key }`, '');
+                    backup[key] = content;
+
+                    // Convert existing settings to text
+                    if (typeof content == 'string') {
+                        // Do nothing
+                    } else {
+                        content = '';
+                    }
+
+                    // Save if valid
+                    if (content.length) {
+                        this.saveInternal(key, content);
+                    }
+
+                    Preferences.remove(`settings/${ key }`);
+                }
+
+                this.commit();
+                Preferences.set('settingsBackup', backup);
+            }
+        }
     }
 
-    // Remove
-    remove (identifier) {
-        Preferences.remove(identifier ? `settings/${ identifier }` : 'settings');
+    commit () {
+        // Save current settings
+        Preferences.set('settings', this.settings);
+        this.keys = Object.keys(this.settings);
     }
 
-    // Exists
-    exists (identifier) {
-        return Preferences.exists(identifier ? `settings/${ identifier }` : 'settings');
+    saveInternal (name, content, parent = '') {
+        // Check if settings exist
+        let exists = name in this.settings;
+        let settings = exists ? this.settings[name] : null;
+
+        if (exists) {
+            settings.content = content;
+            settings.version = MODULE_VERSION;
+            settings.timestamp = Date.now();
+            settings.parent = parent;
+        } else {
+            settings = {
+                name: name,
+                content: content,
+                parent: parent,
+                version: MODULE_VERSION,
+                timestamp: Date.now()
+            }
+        }
+
+        this.settings[name] = settings;
     }
 
-    // Keys
+    save (name, content, parent) {
+        this.initialize();
+        this.saveInternal(name, content, parent);
+        this.commit();
+    }
+
+    remove (name) {
+        this.initialize();
+        if (name in this.settings) {
+            delete this.settings[name];
+            this.commit();
+        }
+    }
+
+    exists (name) {
+        this.initialize();
+        return name in this.settings;
+    }
+
+    all () {
+        this.initialize();
+        return this.settings;
+    }
+
     list () {
-        return Preferences.keys().filter(key => key.includes('settings/')).map(key => key.substring(key.indexOf('/') + 1));
+        this.initialize();
+        return Object.values(this.settings);
     }
+
+    getKeys () {
+        this.initialize();
+        return this.keys;
+    }
+
+    get (name, fallback, template) {
+        this.initialize();
+        let settings = this.settings[name] || this.settings[fallback];
+        return settings ? settings.content : template;
+    }
+
+    getObj (name, fallback) {
+        this.initialize();
+        return this.settings[name] || this.settings[fallback];
+    }
+
+    /*
+        History stuff
+    */
 
     // Get history
     getHistory () {
@@ -3703,11 +3799,6 @@ const SettingsManager = new (class {
 
         // Save current history
         Preferences.set('settings_history', history);
-    }
-
-    // Load settings
-    get (name, category, template = '') {
-        return Preferences.get(`settings/${ name }`, Preferences.get(`settings/${ category }`, template));
     }
 })()
 
@@ -3845,7 +3936,7 @@ const Templates = new (class {
         return name in this.templates;
     }
 
-    get () {
+    all () {
         this.initialize();
 
         // Return templates
@@ -3866,10 +3957,10 @@ const Templates = new (class {
         return this.keys;
     }
 
-    load (name) {
+    get (name) {
         this.initialize();
 
         // Return loaded settings
-        return new Settings(name in this.templates ? this.templates[name].content : '');
+        return name in this.templates ? this.templates[name].content : '';
     }
 })();

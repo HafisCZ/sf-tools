@@ -278,6 +278,13 @@
 
         <!-- SettingsView -->
         <div id="view-settings" class="ui main container hidden" style="width: 95vw;">
+            <div class="ui custom popup left center" data-op="save-popup" style="width: 25em;">
+                <h2 class="ui centered header" style="color: black !important; margin-bottom: 1em;">Save template</h2>
+                <div class="ui fluid search scrolling dropdown" data-op="name">
+                    <div class="text"></div>
+                    <i class="dropdown icon"></i>
+                </div>
+            </div>
             <div class="ui grid">
                 <div class="three wide column">
                     <h3 class="ui centered header" style="margin-top: 0;">Settings</h3>
@@ -286,14 +293,8 @@
                     </div>
                     <div class="css-template-heading">
                         <h3 class="ui centered header css-template-header">Templates</h3>
-                        <div class="css-template-add" data-op="addtemplate">
-                            <i class="icons">
-                                <i class="file outline icon"></i>
-                                <i class="corner add icon"></i>
-                            </i>
-                        </div>
                     </div>
-                    <div class="ui middle aligned selection list css-selection-list css-templates-list css-top-line" data-op="template-list">
+                    <div class="ui middle aligned selection list css-selection-list css-top-line" data-op="template-list">
 
                     </div>
                 </div>
@@ -311,6 +312,7 @@
                     <button class="ui fluid secondary basic button" data-op="wiki-home"><div><i class="book icon"></i>Wiki</div></button>
                     <button class="ui fluid secondary basic button" data-op="browse"><div><i class="globe icon"></i>Scripts</div></button>
                     <button class="ui fluid secondary basic button" data-op="templates"><div><i class="edit outline icon"></i>Templates</div></button>
+                    <button class="ui fluid secondary basic button" data-op="save-template"><div><i class="save icon"></i>Save</div></button>
                     <br/>
                     <button class="ui fluid secondary basic button" data-op="copy"><div><i class="copy outline icon"></i>Copy</div></button>
                     <button class="ui fluid secondary basic button" data-op="prev"><div><i class="undo icon"></i>Undo</div></button>
@@ -321,18 +323,19 @@
 
         <!-- SettingsFloatView -->
         <div id="modal-settings" class="ui basic modal text-white css-inverted" style="width: 95vw;">
+            <div class="ui custom popup left center" data-op="save-popup" style="width: 25em;">
+                <h2 class="ui centered header" style="color: black !important; margin-bottom: 1em;">Save template</h2>
+                <div class="ui fluid search scrolling dropdown" data-op="name">
+                    <div class="text"></div>
+                    <i class="dropdown icon"></i>
+                </div>
+            </div>
             <div class="ui grid">
                 <div class="three wide column">
                     <div class="css-template-heading">
                         <h3 class="ui centered header css-template-header">Templates</h3>
-                        <div class="css-template-add" data-op="addtemplate">
-                            <i class="icons">
-                                <i class="file outline icon"></i>
-                                <i class="inverted corner add icon"></i>
-                            </i>
-                        </div>
                     </div>
-                    <div class="ui middle aligned selection list css-selection-list css-templates-list css-template-fullheight css-top-line" data-op="template-list">
+                    <div class="ui middle aligned selection list css-selection-list css-template-fullheight css-top-line" data-op="template-list">
 
                     </div>
                 </div>
@@ -349,13 +352,14 @@
                 <div class="one wide column css-settings-buttons">
                     <button class="ui fluid inverted basic button" data-op="close"><div><i class="close icon"></i>Close</div></button>
                     <br/>
-                    <button class="ui fluid inverted basic button" data-op="save"><div><i class="save icon"></i>Save</div></button>
+                    <button class="ui fluid inverted basic button" data-op="save"><div><i class="save icon"></i>Apply</div></button>
                     <br/>
                     <button class="ui fluid inverted basic button" data-op="delete"><div><i class="trash icon"></i>Remove</div></button>
                     <br/>
                     <button class="ui fluid inverted basic button" data-op="wiki-home"><div><i class="book icon"></i>Wiki</div></button>
                     <button class="ui fluid inverted basic button" data-op="browse"><div><i class="globe icon"></i>Scripts</div></button>
                     <button class="ui fluid inverted basic button" data-op="templates"><div><i class="edit outline icon"></i>Templates</div></button>
+                    <button class="ui fluid inverted basic button" data-op="save-template"><div><i class="save icon"></i>Save</div></button>
                     <br/>
                     <button class="ui fluid inverted basic button" data-op="copy"><div><i class="copy outline icon"></i>Copy</div></button>
                     <button class="ui fluid inverted basic button" data-op="prev"><div><i class="undo icon"></i>Undo</div></button>
@@ -649,47 +653,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <div id="modal-addtemplate" class="ui mini modal">
-            <div class="header">Add template</div>
-            <div class="content">
-                <div class="ui form">
-                    <div class="field">
-                        <label>Template name</label>
-                        <div class="ui fluid small input">
-                            <input type="text" placeholder="Teplate name ..." data-op="name">
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>Tab compatibility</label>
-                        <div class="three fields">
-                            <div class="field">
-                                <div class="ui checkbox" data-op="compatibility-me">
-                                    <input type="checkbox">
-                                    <label>Me</label>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui checkbox" data-op="compatibility-guilds">
-                                    <input type="checkbox">
-                                    <label>Guilds</label>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui checkbox" data-op="compatibility-players">
-                                    <input type="checkbox">
-                                    <label>Players</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="actions">
-                <div class="ui cancel button">Cancel</div>
-                <div class="ui green approve button">Add template</div>
             </div>
         </div>
 

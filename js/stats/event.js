@@ -327,7 +327,7 @@ class GroupDetailView extends View {
             this.table.clearSorting();
         }
 
-        this.table.setSettings(this.templateOverride ? Templates.load(this.templateOverride).code : SettingsManager.get(this.identifier, 'guilds', PredefinedTemplates['Guilds Default']));
+        this.table.setSettings(this.templateOverride ? Templates.get(this.templateOverride) : SettingsManager.get(this.identifier, 'guilds', PredefinedTemplates['Guilds Default']));
 
         var current = this.group[this.timestamp];
         var reference = this.group[this.reference];
@@ -866,7 +866,7 @@ class PlayerHistoryView extends View {
                     this.templateOverride = value;
 
                     $(element).addClass('active');
-                    settings = Templates.load(value).code;
+                    settings = Templates.get(value);
                 }
 
                 this.table.setSettings(settings);
@@ -1339,7 +1339,7 @@ class BrowseView extends View {
                     this.templateOverride = value;
 
                     $(element).addClass('active');
-                    settings = Templates.load(value).code;
+                    settings = Templates.get(value);
                 }
 
                 this.table.setSettings(settings);
@@ -2282,7 +2282,6 @@ class SettingsView extends View {
         this.$parent.find('[data-op="wiki-home"]').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
         this.$parent.find('[data-op="browse"]').click(() => UI.OnlineTemplates.show());
         this.$parent.find('[data-op="templates"]').click(() => UI.Templates.show());
-        this.$parent.find('[data-op="addtemplate"]').click(() => UI.CreateTemplate.show());
 
         this.$parent.find('[data-op="copy"]').click(() => copyText(this.$area.val()));
         this.$parent.find('[data-op="prev"]').click(() => this.history(1));
@@ -2291,6 +2290,39 @@ class SettingsView extends View {
         this.$parent.find('[data-op="close"]').click(() => this.hide());
         this.$save = this.$parent.find('[data-op="save"]').click(() => this.save());
         this.$delete = this.$parent.find('[data-op="delete"]').click(() => this.remove());
+
+        /*
+            Save as template dialog
+        */
+        this.$templatePopup = this.$parent.find('[data-op="save-popup"]').templatePopup('create', {
+            trigger: this.$parent.find('[data-op="save-template"]'),
+            getValues: () => Templates.getKeys().map(key => {
+                return {
+                    name: key,
+                    value: key,
+                    selected: this.settings && key == this.settings.parent
+                }
+            }),
+            onSave: value => {
+                if (value) {
+                    Templates.save(value, this.$area.val());
+
+                    this.settings.parent = value;
+                    this.$settingsList.settings_selectionlist('set unsaved', true);
+
+                    if (UI.current.refreshTemplateDropdown) {
+                        UI.current.refreshTemplateDropdown();
+                    }
+
+                    this.updateTemplates();
+                }
+            }
+        });
+
+        this.$templatePopup.templatePopup('pos', {
+            x: 0,
+            y: -0.25
+        });
 
         // Area
         this.$area = this.$parent.find('textarea');
@@ -2329,8 +2361,8 @@ class SettingsView extends View {
             $b.html(Settings.format(val));
 
             // Update
-            this.$settingsList.settings_selectionlist('set unsaved', val !== this.code);
-            if (val == this.code) {
+            this.$settingsList.settings_selectionlist('set unsaved', this.settings && val !== this.settings.content);
+            if (!this.settings || val == this.settings.code) {
                 this.$save.addClass('disabled');
             } else {
                 this.$save.removeClass('disabled');
@@ -2384,10 +2416,12 @@ class SettingsView extends View {
         // Do nothing
     }
 
-    show (identifier = 'players') {
-        // Set code
-        this.identifier = identifier;
-        this.code = SettingsManager.get(identifier, this.getDefault(identifier), this.getDefaultTemplate(identifier));
+    show (key = 'players') {
+        this.settings = {
+            name: key,
+            content: this.getDefaultTemplate(key),
+            ... SettingsManager.getObj(key, this.getDefault(key)) || {}
+        };
 
         // Update settings
         if (this.$settingsList.length) {
@@ -2410,26 +2444,26 @@ class SettingsView extends View {
             {
                 name: 'Players',
                 value: 'players',
-                selected: this.identifier == 'players'
+                selected: this.settings.name == 'players'
             },
             {
                 name: 'Me',
                 value: 'me',
-                selected: this.identifier == 'me'
+                selected: this.settings.name == 'me'
             },
             {
                 name: 'Guilds',
                 value: 'guilds',
-                selected: this.identifier == 'guilds'
+                selected: this.settings.name == 'guilds'
             },
-            ... SettingsManager.list().map(key => {
+            ... SettingsManager.getKeys().map(key => {
                 if ([ 'me', 'players', 'guilds' ].includes(key)) {
                     return null;
                 } else {
                     return {
                         name: Database.Players[key] ? `P: ${ Database.Players[key].Latest.Name }` : (Database.Groups[key] ? `G: ${ Database.Groups[key].Latest.Name }` : key),
                         value: key,
-                        selected: this.identifier == key
+                        selected: this.settings.name == key
                     };
                 }
             }).filter(obj => obj != null)
@@ -2449,14 +2483,14 @@ class SettingsView extends View {
 
     save () {
         let code = this.$area.val();
-        if (code !== this.code) {
+        if (code !== this.settings.content) {
             // Add into history
-            SettingsManager.addHistory(this.code, this.identifier);
-
-            // Save current code
-            this.code = code;
-            SettingsManager.save(this.code, this.identifier);
+            SettingsManager.addHistory(this.settings.content, this.settings.name);
         }
+
+        // Save current code
+        this.settings.content = code;
+        SettingsManager.save(this.settings.name, this.settings.content, this.settings.parent);
     }
 
     updateTemplates () {
@@ -2488,8 +2522,10 @@ class SettingsView extends View {
             onClick: value => {
                 if (PredefinedTemplates[value]) {
                     this.$area.val(PredefinedTemplates[value]);
+                    this.settings.parent = '';
                 } else {
-                    this.$area.val(Templates.load(value).getCode());
+                    this.$area.val(Templates.get(value));
+                    this.settings.parent = value;
                 }
 
                 this.$area.trigger('input');
@@ -2511,7 +2547,7 @@ class SettingsView extends View {
         if (this.index > 0) {
             this.$area.val(history[this.index - 1].content);
         } else {
-            this.$area.val(this.code);
+            this.$area.val(this.settings.content);
         }
 
         this.$area.trigger('input');
@@ -2522,6 +2558,11 @@ class SettingsView extends View {
 class SettingsFloatView extends SettingsView {
     constructor (parent) {
         super(parent);
+
+        this.$templatePopup.templatePopup('pos', {
+            x: -2.75,
+            y: -5.25
+        });
     }
 
     show (identifier) {
@@ -2851,69 +2892,6 @@ class OnlineShareFileView extends View {
     }
 }
 
-class CreateTemplateView extends View {
-    constructor (parent) {
-        super(parent);
-
-        this.$name = this.$parent.find('[data-op="name"]')
-        this.$cme = this.$parent.find('[data-op="compatibility-me"]')
-        this.$cguilds = this.$parent.find('[data-op="compatibility-guilds"]')
-        this.$cplayers = this.$parent.find('[data-op="compatibility-players"]')
-    }
-
-    show () {
-        // Init
-        this.$name.val('');
-        this.$cme.checkbox('set unchecked');
-        this.$cguilds.checkbox('set unchecked');
-        this.$cplayers.checkbox('set unchecked');
-
-        // Show modal
-        this.$parent.modal({
-            allowMultiple: true,
-            onApprove: () => {
-                // Name
-                let name = this.$name.val();
-
-                // Compatibility
-                let cm = this.$cme.checkbox('is checked');
-                let cg = this.$cguilds.checkbox('is checked');
-                let cp = this.$cplayers.checkbox('is checked');
-
-                // Settings view
-                let view = UI.current == UI.Settings ? UI.Settings : UI.SettingsFloat;
-
-                // Code
-                let code = view.$area.val();
-
-                // Add template
-                if (name) {
-                    Templates.save(name, code, {
-                        cm: cm,
-                        cg: cg,
-                        cp: cp
-                    });
-
-                    if (UI.current.refreshTemplateDropdown) {
-                        UI.current.refreshTemplateDropdown();
-                    }
-
-                    view.updateTemplates();
-                    this.hide();
-                } else {
-                    this.$name.transition('shake');
-                }
-
-                return false;
-            }
-        }).modal('show');
-    }
-
-    hide () {
-        this.$parent.modal('hide');
-    }
-}
-
 class TemplatesView extends View {
     constructor (parent) {
         super(parent);
@@ -3168,7 +3146,7 @@ class TemplatesView extends View {
         this.$delete.addClass('basic');
         this.$update.addClass('basic');
 
-        let tmp = this.tmp = Templates.get()[name];
+        let tmp = this.tmp = Templates.all()[name];
 
         // Set fields
         this.$name.val(tmp.name);
@@ -3655,7 +3633,6 @@ const UI = {
         UI.ChangeLogs = new ChangeLogsView('view-changelog');
         UI.Endpoint = new EndpointView('modal-endpoint');
         UI.ConfirmDialog = new ConfirmDialogView('modal-confirm');
-        UI.CreateTemplate = new CreateTemplateView('modal-addtemplate');
 
         UI.Templates = new TemplatesView('modal-templates');
 
