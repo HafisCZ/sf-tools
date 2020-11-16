@@ -12,7 +12,8 @@ const Logger = new (class {
             'TAB_GEN': '3bc922',
             'VERSION': '90f5da',
             'PERFLOG': 'ffffff',
-            'ECLIENT': 'd142f5'
+            'ECLIENT': 'd142f5',
+            'TRACKER': 'c8f542'
         };
 
         this.log('VERSION', `Module: ${ MODULE_VERSION }, Core: ${ CORE_VERSION }, Table: ${ TABLE_VERSION }`);
@@ -139,7 +140,14 @@ class DatabaseHandler {
                 // Remove item
                 remove: objectKey => getStore().delete(objectKey),
                 // Remove all items
-                clear: () => getStore().clear()
+                clear: () => getStore().clear(),
+                // Add all
+                setMultiple: array => {
+                    let s = getStore();
+                    for (let obj of array) {
+                        s.put(obj);
+                    }
+                }
             }
         }
 
@@ -184,6 +192,16 @@ class TemporaryDatabase {
                 // Remove item
                 remove: function (key) {
                     delete this.content[key];
+                },
+                // Clear
+                clear: () => {
+                    this.content = {};
+                },
+                // Add all
+                setMultiple: array => {
+                    for (let obj of array) {
+                        this.content[obj[key]] = obj;
+                    }
                 }
             }
         }
@@ -476,24 +494,77 @@ const Database = new (class {
         this.Hidden = Preferences.get('hidden', []);
 
         if (this.Trackers) {
-            let scode = SettingsManager.get('tracker', '', PredefinedTemplates.Tracker);
-            let hash = SHA1(scode);
+            this.Trackers = new Settings(SettingsManager.get('tracker', '', PredefinedTemplates.Tracker)).trackers;
 
-            this.Trackers = new Settings(scode).trackers;
+            let trackerEntries = Object.entries(this.Trackers);
+            let cachedTrackers = Preferences.get('trackers', { });
 
-            let oldhash = Preferences.get('tracker', null);
-            if (oldhash != hash) {
-                Preferences.set('tracker', hash);
-                for (let p of Object.keys(Database.Players)) {
-                    for (let [ ts, ] of this.Players[p].List) {
-                        this.track(this.getPlayer(p, ts));
+            let changedTrackers = trackerEntries.map(([ name, ast ]) => cachedTrackers[name] != ast.rstr ? name : null).filter(x => x);
+            if (changedTrackers.length) {
+                let cmap = trackerEntries.reduce((col, [ name, ast ]) => {
+                    col[name] = ast.rstr;
+                    return col;
+                }, {})
+
+                for (let [ key, hash ] of Object.entries(cmap)) {
+                    if (cachedTrackers[key]) {
+                        if (hash != cachedTrackers[key]) {
+                            Logger.log('TRACKER', `Tracker changed! ${ cachedTrackers[key] } -> ${ hash }`);
+                        }
+                    } else {
+                        Logger.log('TRACKER', `Tracker ${ hash } added!`);
                     }
+                }
+
+                Preferences.set('trackers', cmap);
+
+                let changed = { };
+                for (let pid of Object.keys(this.Players)) {
+                    // Untrack changed keys
+                    let x = this.untrack(pid, changedTrackers);
+                    if (x) {
+                        changed[x.identifier] = x;
+                    }
+
+                    for (let [ ts, ] of this.Players[pid].List) {
+                        // Re-track keys
+                        let y = this.track(this.getPlayer(pid, ts), true);
+                        if (y) {
+                            changed[y.identifier] = y;
+                        }
+                    }
+                }
+
+                let centries = Object.values(changed);
+                if (centries.length) {
+                    Storage.db.profiles.setMultiple(centries);
                 }
             }
         }
     }
 
-    track (player) {
+    untrack (pid, trackers) {
+        let profile = this.Profiles[pid];
+        if (profile) {
+            let changed = false;
+
+            for (let key of Object.keys(profile)) {
+                if (trackers.includes(key)) {
+                    delete profile[key];
+                    changed = true;
+                }
+            }
+
+            if (changed) {
+                this.Profiles[pid] = profile;
+                return profile;
+            }
+        }
+
+        return false;
+    }
+
+    track (player, nsave) {
         let changed = false;
         let profile = this.Profiles[player.Identifier] || {
             identifier: player.Identifier
@@ -509,9 +580,15 @@ const Database = new (class {
         }
 
         if (changed) {
-            Storage.db.profiles.set(profile);
             this.Profiles[player.Identifier] = profile;
+            if (nsave) {
+                return profile;
+            } else {
+                Storage.db.profiles.set(profile);
+            }
         }
+
+        return false;
     }
 
     update () {
@@ -813,7 +890,7 @@ const Storage = new (class {
                 // Capture end time
                 var loadEnd = Date.now();
 
-                Logger.log('STORAGE', `Database: ${ loadDatabaseEnd - loadProfilesEnd } ms, Profiles: ${ loadProfilesEnd - loadStart } ms, Update${ corrected ? '/Yes' : '' }: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && this.Lazy ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
+                Logger.log('STORAGE', `Database: ${ loadDatabaseEnd - loadProfilesEnd } ms, ${ SiteOptions.tracker ? `Tracker: ${ loadProfilesEnd - loadStart } ms, ` : '' }Update${ corrected ? '/Yes' : '' }: ${ loadUpdateEnd - loadDatabaseEnd } ms, Processing${ HAS_PROXY && this.Lazy ? '/Lazy' : '' }: ${ loadEnd - loadUpdateEnd } ms`);
                 if (loadEnd - loadUpdateEnd > 1000) {
                     Logger.log('WARNING', 'Processing step is taking too long!');
                 }
