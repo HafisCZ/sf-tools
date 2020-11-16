@@ -500,6 +500,8 @@ const Database = new (class {
             let cachedTrackers = Preferences.get('trackers', { });
 
             let changedTrackers = trackerEntries.map(([ name, { ast, out, hash } ]) => cachedTrackers[name] != hash ? name : null).filter(x => x);
+            changedTrackers.push(... Object.keys(cachedTrackers).filter(name => !this.Trackers[name]));
+
             if (changedTrackers.length) {
                 let cmap = trackerEntries.reduce((col, [ name, { hash } ]) => {
                     col[name] = hash;
@@ -509,10 +511,16 @@ const Database = new (class {
                 for (let [ key, hash ] of Object.entries(cmap)) {
                     if (cachedTrackers[key]) {
                         if (hash != cachedTrackers[key]) {
-                            Logger.log('TRACKER', `Tracker changed! ${ cachedTrackers[key] } -> ${ hash }`);
+                            Logger.log('TRACKER', `Tracker ${ key } changed! ${ cachedTrackers[key] } -> ${ hash }`);
                         }
                     } else {
-                        Logger.log('TRACKER', `Tracker ${ hash } added!`);
+                        Logger.log('TRACKER', `Tracker ${ key } with hash ${ hash } added!`);
+                    }
+                }
+
+                for (let name of changedTrackers) {
+                    if (!this.Trackers[name]) {
+                        Logger.log('TRACKER', `Tracker ${ name } with hash ${ cachedTrackers[name] } removed!`)
                     }
                 }
 
