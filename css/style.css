@@ -514,6 +514,15 @@ h3.file-selected {
 .ta-wrapper {
     position: relative;
     overflow: hidden;
+    height: 100%;
+}
+
+.ta-form {
+    height: 100%;
+}
+
+.ta-form .field {
+    height: 100%;
 }
 
 .css-nomargin-grid > .row {
@@ -532,8 +541,8 @@ h3.file-selected {
 .ta-area {
     color: transparent !important;
     caret-color: black;
-    max-height: calc(100vh - 10em) !important;
-    height: calc(100vh - 10em) !important;
+    max-height: 100% !important;
+    height: 100% !important;
     resize: none !important;
     overflow: auto;
 }
