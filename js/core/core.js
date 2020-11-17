@@ -1,7 +1,7 @@
 // Version stuff
 const MODULE_VERSION = 'v4.1007';
 const TABLE_VERSION = 'v8';
-const CORE_VERSION = 'v7';
+const CORE_VERSION = 'v8';
 
 const Logger = new (class {
     constructor () {
@@ -545,7 +545,12 @@ const Database = new (class {
 
                 let centries = Object.values(changed);
                 if (centries.length) {
-                    Storage.db.profiles.setMultiple(centries);
+                    Storage.db.profiles.setMultiple(centries.map(ce => {
+                        return {
+                            identifier: ce.identifier,
+                            value: JSON.stringify(ce)
+                        };
+                    }));
                 }
             }
         }
@@ -869,7 +874,7 @@ const Storage = new (class {
         let onProfilesReady = (profiles) => {
             // Set current profiles
             Database.Profiles = profiles.reduce((obj, profile) => {
-                obj[profile.identifier] = profile;
+                obj[profile.identifier] = typeof profile.value == 'string' ? JSON.parse(profile.value) : profile;
                 return obj;
             }, {});
 
