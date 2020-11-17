@@ -1159,6 +1159,8 @@ const Storage = new (class {
             }
 
             var own = raw.includes('ownplayername');
+            let owngroups = [];
+
             if (raw.includes('otherplayername') || raw.includes('ownplayername')) {
                 let player = {
                     prefix: prefix || 's1_de',
@@ -1168,6 +1170,9 @@ const Storage = new (class {
                 for (var [key, val] of parsePlayaResponse(raw)) {
                     if (key.includes('groupname')) {
                         player.groupname = val;
+                        if (key.includes('own')) {
+                            owngroups.push(val);
+                        }
                     } else if (key.includes('name')) {
                         player.name = val;
                     } else if (key.includes('unitlevel')) {
@@ -1201,7 +1206,7 @@ const Storage = new (class {
                         player.witch = val.split('/').map(a => Number(a));
                     } else if (own && (key.includes('idlegame') || key.includes('idlesave'))) {
                         player.idle = val.split('/').map(a => Number(a));
-                    } else if (key.includes('otherdescription') && player.save) {
+                    } else if (key.includes('otherdescription') && player.save && owngroups.includes(player.groupname)) {
                         let torem = val.match(/^\_\$r((?:f|r){1,2})\_/);
                         torem = torem ? torem[1] : '';
 

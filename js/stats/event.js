@@ -2471,7 +2471,7 @@ class SettingsView extends View {
                 selected: this.settings.name == 'guilds'
             },
             ... SettingsManager.getKeys().map(key => {
-                if ([ 'me', 'players', 'guilds' ].includes(key)) {
+                if ([ 'me', 'players', 'guilds', 'tracker' ].includes(key)) {
                     return null;
                 } else {
                     return {
