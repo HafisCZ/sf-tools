@@ -1201,6 +1201,20 @@ const Storage = new (class {
                         player.witch = val.split('/').map(a => Number(a));
                     } else if (own && (key.includes('idlegame') || key.includes('idlesave'))) {
                         player.idle = val.split('/').map(a => Number(a));
+                    } else if (key.includes('otherdescription') && player.save) {
+                        let torem = val.match(/^\_\$r((?:f|r){1,2})\_/);
+                        torem = torem ? torem[1] : '';
+
+                        if (torem.includes('f')) {
+                            for (let i = 0; i < 49; i++) player.save[208 + i] = 0;
+                        }
+
+                        if (torem.includes('d')) {
+                            for (let i = 0; i < 5; i++) player.save[253 + i] = 0;
+                            for (let i = 0; i < 11; i++) player.save[183 + i] = 0;
+                            player.save[164] = 0;
+                            player.save[165] = 0;
+                        }
                     }
                 }
 
