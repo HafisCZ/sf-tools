@@ -2513,6 +2513,10 @@ class SettingsView extends View {
         // Save current code
         this.settings.content = code;
         SettingsManager.save(this.settings.name, this.settings.content, this.settings.parent);
+
+        if (SiteOptions.tracker && this.settings.name == 'tracker') {
+            Database.refreshTrackers();
+        }
     }
 
     updateTemplates () {

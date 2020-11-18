@@ -124,6 +124,7 @@ class TableInstance {
             // Save settings
             if (isset) {
                 SettingsManager.save('tracker', trackerCode);
+                Database.refreshTrackers();
             }
         }
 

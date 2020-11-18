@@ -482,7 +482,6 @@ const Database = new (class {
     from (files, pfilter, gfilter) {
         this.Players = {};
         this.Groups = {};
-        // this.Profiles = {};
 
         this.Filters = {
             Player: pfilter,
@@ -494,64 +493,68 @@ const Database = new (class {
         this.Hidden = Preferences.get('hidden', []);
 
         if (this.Trackers) {
-            this.Trackers = new Settings(SettingsManager.get('tracker', '', PredefinedTemplates.Tracker)).trackers;
+            this.refreshTrackers();
+        }
+    }
 
-            let trackerEntries = Object.entries(this.Trackers);
-            let cachedTrackers = Preferences.get('trackers', { });
+    refreshTrackers () {
+        this.Trackers = new Settings(SettingsManager.get('tracker', '', PredefinedTemplates.Tracker)).trackers;
 
-            let changedTrackers = trackerEntries.map(([ name, { ast, out, hash } ]) => cachedTrackers[name] != hash ? name : null).filter(x => x);
-            changedTrackers.push(... Object.keys(cachedTrackers).filter(name => !this.Trackers[name]));
+        let trackerEntries = Object.entries(this.Trackers);
+        let cachedTrackers = Preferences.get('trackers', { });
 
-            if (changedTrackers.length) {
-                let cmap = trackerEntries.reduce((col, [ name, { hash } ]) => {
-                    col[name] = hash;
-                    return col;
-                }, {})
+        let changedTrackers = trackerEntries.map(([ name, { ast, out, hash } ]) => cachedTrackers[name] != hash ? name : null).filter(x => x);
+        changedTrackers.push(... Object.keys(cachedTrackers).filter(name => !this.Trackers[name]));
 
-                for (let [ key, hash ] of Object.entries(cmap)) {
-                    if (cachedTrackers[key]) {
-                        if (hash != cachedTrackers[key]) {
-                            Logger.log('TRACKER', `Tracker ${ key } changed! ${ cachedTrackers[key] } -> ${ hash }`);
-                        }
-                    } else {
-                        Logger.log('TRACKER', `Tracker ${ key } with hash ${ hash } added!`);
+        if (changedTrackers.length) {
+            let cmap = trackerEntries.reduce((col, [ name, { hash } ]) => {
+                col[name] = hash;
+                return col;
+            }, {})
+
+            for (let [ key, hash ] of Object.entries(cmap)) {
+                if (cachedTrackers[key]) {
+                    if (hash != cachedTrackers[key]) {
+                        Logger.log('TRACKER', `Tracker ${ key } changed! ${ cachedTrackers[key] } -> ${ hash }`);
                     }
+                } else {
+                    Logger.log('TRACKER', `Tracker ${ key } with hash ${ hash } added!`);
+                }
+            }
+
+            for (let name of changedTrackers) {
+                if (!this.Trackers[name]) {
+                    Logger.log('TRACKER', `Tracker ${ name } with hash ${ cachedTrackers[name] } removed!`)
+                }
+            }
+
+            Preferences.set('trackers', cmap);
+
+            let changed = { };
+            for (let pid of Object.keys(this.Players)) {
+                // Untrack changed keys
+                let x = this.untrack(pid, changedTrackers);
+                if (x) {
+                    changed[x.identifier] = x;
                 }
 
-                for (let name of changedTrackers) {
-                    if (!this.Trackers[name]) {
-                        Logger.log('TRACKER', `Tracker ${ name } with hash ${ cachedTrackers[name] } removed!`)
+                for (let [ ts, ] of this.Players[pid].List) {
+                    // Re-track keys
+                    let y = this.track(this.getPlayer(pid, ts), true);
+                    if (y) {
+                        changed[y.identifier] = y;
                     }
                 }
+            }
 
-                Preferences.set('trackers', cmap);
-
-                let changed = { };
-                for (let pid of Object.keys(this.Players)) {
-                    // Untrack changed keys
-                    let x = this.untrack(pid, changedTrackers);
-                    if (x) {
-                        changed[x.identifier] = x;
-                    }
-
-                    for (let [ ts, ] of this.Players[pid].List) {
-                        // Re-track keys
-                        let y = this.track(this.getPlayer(pid, ts), true);
-                        if (y) {
-                            changed[y.identifier] = y;
-                        }
-                    }
-                }
-
-                let centries = Object.values(changed);
-                if (centries.length) {
-                    Storage.db.profiles.setMultiple(centries.map(ce => {
-                        return {
-                            identifier: ce.identifier,
-                            value: JSON.stringify(ce)
-                        };
-                    }));
-                }
+            let centries = Object.values(changed);
+            if (centries.length) {
+                Storage.db.profiles.setMultiple(centries.map(ce => {
+                    return {
+                        identifier: ce.identifier,
+                        value: JSON.stringify(ce)
+                    };
+                }));
             }
         }
     }
