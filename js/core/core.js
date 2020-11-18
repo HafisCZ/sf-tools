@@ -1125,6 +1125,7 @@ const Storage = new (class {
             version: 0
         }
 
+        let owngroups = [];
         for (var pair of raws) {
             var [raw, prefix] = pair;
 
@@ -1159,8 +1160,6 @@ const Storage = new (class {
             }
 
             var own = raw.includes('ownplayername');
-            let owngroups = [];
-
             if (raw.includes('otherplayername') || raw.includes('ownplayername')) {
                 let player = {
                     prefix: prefix || 's1_de',
@@ -1170,6 +1169,7 @@ const Storage = new (class {
                 for (var [key, val] of parsePlayaResponse(raw)) {
                     if (key.includes('groupname')) {
                         player.groupname = val;
+
                         if (key.includes('own')) {
                             owngroups.push(val);
                         }
