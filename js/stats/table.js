@@ -2332,25 +2332,25 @@ const SettingsCommands = [
         Tracker
     */
     new Command(
-        /^track (\w+(?:\s*\w+)*) as (.+) when (.+)$/,
-        (root, name, arg, arg2) => {
+        /^(track (\w+(?:\s*\w+)*) as (.+) when (.+))$/,
+        (root, str, name, arg, arg2) => {
             let ast = new Expression(arg);
             let ast2 = new Expression(arg2);
             if (ast.isValid() && ast2.isValid()) {
-                root.addTracker(name, ast2, ast);
+                root.addTracker(name, str, ast2, ast);
             }
         },
-        (root, name, arg, arg2) => SFormat.Keyword('track ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(arg) + SFormat.Keyword(' when ') + Expression.format(arg2)
+        (root, str, name, arg, arg2) => SFormat.Keyword('track ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(arg) + SFormat.Keyword(' when ') + Expression.format(arg2)
     ),
     new Command(
-        /^track (\w+(?:\s*\w+)*) when (.+)$/,
-        (root, name, arg) => {
+        /^(track (\w+(?:\s*\w+)*) when (.+))$/,
+        (root, str, name, arg) => {
             let ast = new Expression(arg);
             if (ast.isValid()) {
-                root.addTracker(name, ast);
+                root.addTracker(name, str, ast);
             }
         },
-        (root, name, arg) => SFormat.Keyword('track ') + SFormat.Constant(name) + SFormat.Keyword(' when ') + Expression.format(arg)
+        (root, str, name, arg) => SFormat.Keyword('track ') + SFormat.Constant(name) + SFormat.Keyword(' when ') + Expression.format(arg)
     )
 ];
 
@@ -2591,8 +2591,9 @@ class Settings {
         }
     }
 
-    addTracker (name, ast, out) {
+    addTracker (name, str, ast, out) {
         this.trackers[name] = {
+            str: str,
             ast: ast,
             out: out,
             hash: ast.rstr + (out ? out.rstr : '0000000000000000')
