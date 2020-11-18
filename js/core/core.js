@@ -1206,8 +1206,8 @@ const Storage = new (class {
                         player.witch = val.split('/').map(a => Number(a));
                     } else if (own && (key.includes('idlegame') || key.includes('idlesave'))) {
                         player.idle = val.split('/').map(a => Number(a));
-                    } else if (key.includes('otherdescription') && player.save && owngroups.includes(player.groupname)) {
-                        let torem = val.match(/^\_\$r((?:f|r){1,2})\_/);
+                    } else if (key.includes('otherdescription') && player.save && !owngroups.includes(player.groupname)) {
+                        let torem = val.match(/^\_\$r((?:f|d){1,2})\_/);
                         torem = torem ? torem[1] : '';
 
                         if (torem.includes('f')) {
