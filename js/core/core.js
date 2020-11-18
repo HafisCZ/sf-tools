@@ -1207,10 +1207,10 @@ const Storage = new (class {
                     } else if (own && (key.includes('idlegame') || key.includes('idlesave'))) {
                         player.idle = val.split('/').map(a => Number(a));
                     } else if (key.includes('otherdescription') && player.save && !owngroups.includes(player.groupname)) {
-                        let torem = val.match(/^\_\$r((?:f|d){1,2})\_/);
-                        torem = torem ? torem[1] : '';
+                        let torem = val.match(/^\$r((?:t|d|T|D){1,2})/);
+                        torem = torem ? torem[1].toLowerCase() : '';
 
-                        if (torem.includes('f')) {
+                        if (torem.includes('t')) {
                             for (let i = 0; i < 49; i++) player.save[208 + i] = 0;
                         }
 
