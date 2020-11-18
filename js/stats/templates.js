@@ -348,7 +348,10 @@ color above @1day orange
 color above @12hours yellow
 color default @green
 `, 'Tracker': `# Example Tracker Configuration
-track Level100 when Level >= 100
-track Level200 when Level >= 200
-track Level300 when Level >= 300`
+
+# Saves the date when the character reached level 100
+# track Level100 when Level >= 100
+
+# Saves the level at which the character was when reaching tower 100
+# track LevelAtTower100 as Level when Tower == 100`
 };

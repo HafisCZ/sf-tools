@@ -2498,6 +2498,11 @@ class SettingsView extends View {
             onSave: value => this.save(),
             onRemove: value => {
                 SettingsManager.remove(value);
+
+                if (SiteOptions.tracker && value == 'tracker') {
+                    Database.refreshTrackers();
+                }
+
                 this.show();
             }
         });
