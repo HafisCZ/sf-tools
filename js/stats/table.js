@@ -98,6 +98,35 @@ class TableInstance {
     constructor (settings, type) {
         // Parameters
         this.settings = new Settings(settings, type);
+
+        // Handle trackers
+        let trackers = this.settings.trackers;
+        if (Object.keys(trackers).length && SiteOptions.tracker) {
+            // Get current tracker settings
+            let trackerSettings = new Settings(SettingsManager.get('tracker', '', PredefinedTemplates.Tracker));
+            let trackerCode = trackerSettings.code;
+
+            // Go through all required trackers
+            let isset = false;
+            for (let [ trackerName, tracker ] of Object.entries(trackers)) {
+                if (trackerName in trackerSettings.trackers) {
+                    if (tracker.hash != trackerSettings.trackers[trackerName].hash) {
+                        Logger.log('TRACKER', `Tracker ${ trackerName } with hash ${ tracker.hash } found but overwritten by ${ trackerSettings.trackers[trackerName].hash }!`);
+                    }
+                } else {
+                    trackerCode += `${ trackerCode ? '\n' : '' }${ tracker.str } # Automatic entry from ${ formatDate(Date.now()) }`;
+                    isset |= true;
+
+                    Logger.log('TRACKER', `Tracker ${ trackerName } with hash ${ tracker.hash } added automatically!`);
+                }
+            }
+
+            // Save settings
+            if (isset) {
+                SettingsManager.save('tracker', trackerCode);
+            }
+        }
+
         this.type = type;
 
         this.config = [];
