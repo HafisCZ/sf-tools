@@ -1,4 +1,26 @@
 const CHANGELOG = {
+    'v4.1100': [
+        'Added trackers. You can now save any data from milestones you want to track.<br/>Check the <a href="https://github.com/HafisCZ/sf-tools/wiki/6.-Trackers">wiki</a> to learn how they work and what you can do with them.',
+        'Reworked template saving. To save a template click on the Save button and write a name / select existing template and click Save again.',
+        'Reworked members keyword to be more compact.',
+        'Added <code>makesequence</code> function.',
+        'Added <code>average</code> function',
+        'Added <code>makearray</code> function',
+        'Added custom row height using the <code>row height</code> keyword.',
+        'Added title alignment to the <code>align</code> keyword.',
+        'Added macro loops to settings.',
+        'Added <code>left category</code> category for custom left columns in the tables.',
+        'Added <code>action show</code> keyword that opens player detail when cell is clicked.',
+        'Added header variables accessible using the <code>var</code> keyword.',
+        'Added <code>expa</code> expressions for custom aliases.',
+        'Improved performance when using lazy loading.',
+        'Fixed images not clickable when used in header titles.',
+        'Fixed settings area not working properly on smaller screens.',
+        'Fixed custom styles.',
+        'Fixed width of grouped headers.',
+        'Fixed table issues when using Chrome-type browsers.',
+        'Fixed duplicated names when using Endpoint.'
+    ],
     'v4.1007': [
         'Completely reworked settings and table generator',
         '<code>members</code>, <code>outdated</code>, <code>opaque</code>, <code>large rows</code> no longer accept an argument. Use just them to enable the functionality.',
