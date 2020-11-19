@@ -144,6 +144,8 @@ function getFightTargetName (type, name, face) {
         return `Shadow ${ NAME_MONSTER[face] }`;
     } else if (NAME_MONSTER[face]) {
         return NAME_MONSTER[face];
+    } else if (type == FIGHT_TYPES.Underworld) {
+        return NAME_UNIT_UNDERWORLD[Math.trunc((face - 899) / 20)];
     } else {
         return 'Unknown';
     }
