@@ -2362,7 +2362,7 @@ const SettingsCommands = [
         Tracker
     */
     new Command(
-        /^(track (\w+(?:\s*\w+)*) as (.+) when (.+))$/,
+        /^(track (\w+(?:[ \w]*\w)?) as (.+) when (.+))$/,
         (root, str, name, arg, arg2) => {
             let ast = new Expression(arg);
             let ast2 = new Expression(arg2);
@@ -2373,7 +2373,7 @@ const SettingsCommands = [
         (root, str, name, arg, arg2) => SFormat.Keyword('track ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(arg) + SFormat.Keyword(' when ') + Expression.format(arg2)
     ),
     new Command(
-        /^(track (\w+(?:\s*\w+)*) when (.+))$/,
+        /^(track (\w+(?:[ \w]*\w)?) when (.+))$/,
         (root, str, name, arg) => {
             let ast = new Expression(arg);
             if (ast.isValid()) {
