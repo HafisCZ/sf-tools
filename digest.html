@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Fight Digest</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="res/favicon.png"/>
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/semantic.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/core/playa.js"></script>
+
+        <style>
+            .container.full-width {
+                width: 100vw;
+                padding: 0 2vw 0 2vw;
+            }
+
+            .bolder {
+                font-weight: bold;
+            }
+        </style>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+            <label for="file-open">
+                <a class="item"><i class="small upload icon"></i>Import fights</a>
+            </label>
+            <input type="file" id="file-open" multiple hidden>
+        </div>
+
+        <div class="ui main container full-width">
+            <table class="ui celled table text-center" style="border-collapse: collapse;">
+                <thead>
+                    <tr style="border-bottom: 1px solid black;">
+                        <td width="200">Name</td>
+                        <td width="100">Level</td>
+                        <td width="100">Class</td>
+                        <td width="100">Strength</td>
+                        <td width="100">Dexterity</td>
+                        <td width="100">Intelligence</td>
+                        <td width="100">Constitution</td>
+                        <td width="100">Luck</td>
+                        <td width="100">Armor</td>
+                        <td width="150">Health</td>
+                        <td width="150">Weapon Min</td>
+                        <td width="150">Weapon Max</td>
+                    </tr>
+                </thead>
+                <tbody id="enemy-table">
+                    <!-- DIGEST CONTENT HERE -->
+                </tbody>
+            </table>
+        </div>
+
+        <script type="text/javascript">
+            // Import files
+            let $fileOpen = $('#file-open').on('change', function () {
+                Array.from(this.files).forEach(file => file.text().then(content => {
+                    try {
+                        importHAR(JSON.parse(content));
+                    } catch (e) {
+                        console.warn(e);
+                    }
+                }));
+            });
+
+            // Fight data
+            let bosses = {};
+
+            // Update damages & show table
+            function show () {
+                // Show table content
+                $('#enemy-table').html(Object.values(bosses).reduce((str, boss) => str + `
+                    <tr>
+                        <td class="bolder">${ boss.Name }</td>
+                        <td class="bolder">${ boss.Level }</td>
+                        <td class="bolder">${ PLAYER_CLASS[boss.Class] }</td>
+                        <td ${ [ 1, 0, 0, 0, 1, 1, 0 ][ boss.Class - 1 ] ? 'class="bolder"' : '' }>${ formatAsSpacedNumber(boss.Strength) }</td>
+                        <td ${ [ 0, 0, 1, 1, 0, 0, 1 ][ boss.Class - 1 ] ? 'class="bolder"' : '' }>${ formatAsSpacedNumber(boss.Dexterity) }</td>
+                        <td ${ [ 0, 1, 0, 0, 0, 0, 0 ][ boss.Class - 1 ] ? 'class="bolder"' : '' }>${ formatAsSpacedNumber(boss.Intelligence) }</td>
+                        <td class="bolder">${ formatAsSpacedNumber(boss.Constitution) }</td>
+                        <td>${ formatAsSpacedNumber(boss.Luck) }</td>
+                        <td>${ formatAsSpacedNumber(boss.Level * [ 50, 10, 25, 25, 50, 25, 50 ][ boss.Class - 1 ]) }</td>
+                        <td class="bolder">${ formatAsSpacedNumber(boss.Health) }</td>
+                        <td>${ formatAsSpacedNumber(boss.Damage.Min) }</td>
+                        <td>${ formatAsSpacedNumber(boss.Damage.Max) }</td>
+                    </tr>
+                `, '')).tablesort();
+            }
+
+            // Digest har file
+            function importHAR (json) {
+                let rawFights = [];
+                for (let [k, v] of filterPlayaJSON(json)) {
+                    if (k == 'text' && v.includes('fightheader')) {
+                        let rawStrings = [];
+                        for (let [key, val] of parsePlayaResponse(v)) {
+                            if (key.includes('.fighters')) rawStrings.push('fighters:' + val);
+                            else if (key.includes('.r')) rawStrings.push('r:' + val);
+                            else if (key.includes('winnerid')) {
+                                rawFights.push(rawStrings.join('&'));
+                                rawStrings = [];
+                            }
+                        }
+                    }
+                }
+
+                for (let rawFight of rawFights) {
+                    let msg = {};
+                    for (var [k, v] of parsePlayaResponse(rawFight)) {
+                        msg[k] = v.split(/[/,]/g).map(d => isNaN(d) ? d : Number(d));
+                    }
+
+                    if ([4, 12].includes(msg['fighters'][0])) {
+                        let fightType = msg['fighters'][0];
+
+                        // Handle fighters
+                        let player = new SFFighter(msg['fighters'].slice(5, 52));
+                        let boss = new SFFighter(msg['fighters'].slice(52, 99));
+                        boss.Name = getFightTargetName(fightType, boss.Name, boss.getMonsterID())
+
+                        // Handle rounds
+                        let rounds = [];
+                        let offset = 0;
+
+                        for (var i = 0; i < msg['r'].length / 3; i++) {
+                            var [
+                                aid,
+                                type,
+                                targetHealthLeft
+                            ] = msg['r'].slice(i * 3, i * 3 + 3);
+
+                            let rage = 1 + (type == 100 ? (offset - 1) : offset++) / 6;
+
+                            if (aid == boss.ID && type != 100 && (type % 10 <= 1)) {
+                                let round = {
+                                    type: type,
+                                    life: targetHealthLeft,
+                                };
+
+                                // Damage
+                                let damage = (rounds.length == 0 ? player.Life : rounds[rounds.length - 1].life) - targetHealthLeft;
+                                round.damage = damage / rage / (type % 10 == 1 ? 2 : 1);
+
+                                // Add round
+                                rounds.push(round);
+                            } else if (aid == boss.ID && type == 100) {
+                                rounds[rounds.length - 1].life = player.Life;
+                            }
+                        }
+
+                        // Clean things up
+                        boss.ID = boss.getMonsterID();
+                        boss.Health = boss.MaximumLife;
+                        boss.ElementalDamage = boss.Wpn1.AttributeTypes[2] > 30 ? {
+                            Type: boss.Wpn1.AttributeTypes[2],
+                            Value: boss.Wpn1.Attributes[2],
+                        } : {
+                            Type: 0,
+                            Value: 0
+                        };
+
+                        delete boss.Face;
+                        delete boss.Life;
+                        delete boss.Race;
+                        delete boss.Mask;
+                        delete boss.Wpn1;
+                        delete boss.Wpn2;
+                        delete boss.MaximumLife;
+
+                        // Get boss
+                        boss.Fights = [];
+                        boss = boss.Name in bosses ? bosses[boss.Name] : (bosses[boss.Name] = boss);
+
+                        // Add fights
+                        boss.Fights.push({
+                            Player: player,
+                            Rounds: rounds
+                        });
+
+                        // Clear
+                        boss.Damage = {
+                            Min: Infinity,
+                            Max: -Infinity
+                        };
+                    }
+                }
+
+                /*
+                    Process fights
+                */
+                for (let boss of Object.values(bosses)) {
+                    for (let fight of boss.Fights) {
+                        let bossAttribute = getMainAttribute(boss, boss.Class);
+                        let playerAttribute = getMainAttribute(fight.Player, boss.Class);
+                        let scale = (1 + Math.max(bossAttribute / 2, bossAttribute - playerAttribute / 2) / 10)
+
+                        for (let round of fight.Rounds) {
+                            let damage = round.damage / scale;
+
+                            boss.Damage.Min = Math.min(boss.Damage.Min, damage);
+                            boss.Damage.Max = Math.max(boss.Damage.Max, damage);
+                        }
+                    }
+                }
+
+                show();
+            }
+
+            /*
+                HELPER FUNCTIONS
+            */
+            function getMainAttribute ({ Strength, Dexterity, Intelligence }, cla) {
+                return cla == 1 || cla == 5 || cla == 6 ? Strength : (cla == 2 || cla == 8 ? Intelligence : Dexterity);
+            }
+
+            function getPlayerHash (a) {
+                return SHA1(JSON.stringify([ a.ID, a.Name, a.Class, a.Strength, a.Dexterity, a.Intelligence, a.Constitution, a.Luck, a.MaximumLife, a.Wpn1, a.Wpn2 ]));
+            }
+        </script>
+    </body>
+</html>
