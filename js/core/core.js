@@ -718,14 +718,6 @@ const PlayerUpdaters = [
         }
     },
     p => {
-        if (p.own && !p.chest) {
-            p.chest = [];
-            return true;
-        } else {
-            return false;
-        }
-    },
-    p => {
         if (p.own && !p.witch) {
             p.witch = [];
             return true;
@@ -1205,6 +1197,12 @@ const Storage = new (class {
                         player.tower = val.split('/').map(a => Number(a));
                     } else if (own && key.includes('fortresschest')) {
                         player.chest = val.split('/').map(a => Number(a));
+                    } else if (own && key.includes('dummies')) {
+                        player.dummy = val.split('/').map(a => Number(a));
+                    } else if (own && key.includes('scrapbook')) {
+                        player.scrapbook = val;
+                    } else if (own && key.includes('legendaries')) {
+                        player.scrapbook_legendary = val;
                     } else if (own && key.includes('witchData')) {
                         player.witch = val.split('/').map(a => Number(a));
                     } else if (own && (key.includes('idlegame') || key.includes('idlesave'))) {

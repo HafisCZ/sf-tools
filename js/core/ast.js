@@ -2314,6 +2314,10 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Mushrooms ? p.Mushrooms.Current : undefined,
         statistics: false
     },
+    'Coins': {
+        expr: p => p.Coins,
+        statistics: false
+    },
     'Shrooms Total': {
         expr: p => p.Mushrooms ? p.Mushrooms.Total : undefined,
         statistics: false
@@ -2790,6 +2794,9 @@ const SP_KEYWORD_MAPPING_5 = {
     },
     'Potions': {
         expr: p => p.Potions
+    },
+    'Dummy': {
+        expr: p => p.Inventory ? p.Inventory.Dummy : undefined
     },
     'Backpack': {
         expr: p => p.Inventory ? p.Inventory.Backpack : undefined

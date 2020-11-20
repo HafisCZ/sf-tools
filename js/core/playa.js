@@ -1258,6 +1258,7 @@ class SFOwnPlayer extends SFPlayer {
             Backpack: [],
             Chest: [],
             Shop: [],
+            Dummy: {},
             Bert: {},
             Mark: {},
             Kunigunde: {}
@@ -1402,7 +1403,10 @@ class SFOwnPlayer extends SFPlayer {
             Finish: dataType.long() * 1000 + data.offset,
             Start: dataType.long() * 1000 + data.offset
         }
-        this.Fortress.Upgrades = dataType.skip(7).long();
+        dataType.skip(4);
+        this.Coins = dataType.long();
+        dataType.skip(2);
+        this.Fortress.Upgrades = dataType.long();
         this.Fortress.Honor = dataType.long();
         this.Fortress.Rank = dataType.long();
         dataType.skip(8); // skip
@@ -1565,17 +1569,34 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Extra.Shadow.Unlocked = this.Dungeons.Shadow.Unlocked + this.Dungeons.Extra.Shadow.reduce((a, b) => a + (b > 0 ? 1 : 0), 0);
 
         if (loadInventory) {
-            dataType = new ComplexDataType(data.chest);
-
-            for (var i = 0; i < 40 && !dataType.empty(); i++) {
-                var item = new SFItem(dataType.sub(12));
-                if (item.Type > 0) {
-                    if (i >= 15) {
-                        this.Inventory.Chest.push(item);
-                    } else {
-                        this.Inventory.Backpack.push(item);
+            if (data.chest) {
+                dataType = new ComplexDataType(data.chest);
+                for (var i = 0; i < 40 && !dataType.empty(); i++) {
+                    var item = new SFItem(dataType.sub(12));
+                    if (item.Type > 0) {
+                        if (i >= 15) {
+                            this.Inventory.Chest.push(item);
+                        } else {
+                            this.Inventory.Backpack.push(item);
+                        }
                     }
                 }
+            }
+
+            if (data.dummy) {
+                dataType = new ComplexDataType(data.dummy);
+                this.Inventory.Dummy = {
+                    Head: new SFItem(dataType.sub(12), 6),
+                    Body: new SFItem(dataType.sub(12), 3),
+                    Hand: new SFItem(dataType.sub(12), 5),
+                    Feet: new SFItem(dataType.sub(12), 4),
+                    Neck: new SFItem(dataType.sub(12), 8),
+                    Belt: new SFItem(dataType.sub(12), 7),
+                    Ring: new SFItem(dataType.sub(12), 9),
+                    Misc: new SFItem(dataType.sub(12), 10),
+                    Wpn1: new SFItem(dataType.sub(12), 1),
+                    Wpn2: new SFItem(dataType.sub(12), 2)
+                };
             }
         }
 
