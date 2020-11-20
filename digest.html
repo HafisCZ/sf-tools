@@ -38,6 +38,10 @@
             .cell-big {
                 width: 11%;
             }
+
+            .text-red {
+                color: red;
+            }
         </style>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
@@ -94,23 +98,33 @@
             // Update damages & show table
             function show () {
                 // Show table content
-                $('#enemy-table').html(Object.values(bosses).reduce((str, boss) => str + `
-                    <tr>
-                        <td class="bolder">${ boss.Name }</td>
-                        <td class="bolder">${ boss.Level }</td>
-                        <td class="bolder">${ PLAYER_CLASS[boss.Class] }</td>
-                        <td ${ [ 1, 0, 0, 0, 1, 1, 0 ][ boss.Class - 1 ] ? 'class="bolder"' : '' }>${ formatAsSpacedNumber(boss.Strength) }</td>
-                        <td ${ [ 0, 0, 1, 1, 0, 0, 1 ][ boss.Class - 1 ] ? 'class="bolder"' : '' }>${ formatAsSpacedNumber(boss.Dexterity) }</td>
-                        <td ${ [ 0, 1, 0, 0, 0, 0, 0 ][ boss.Class - 1 ] ? 'class="bolder"' : '' }>${ formatAsSpacedNumber(boss.Intelligence) }</td>
-                        <td class="bolder">${ formatAsSpacedNumber(boss.Constitution) }</td>
-                        <td>${ formatAsSpacedNumber(boss.Luck) }</td>
-                        <td>${ formatAsSpacedNumber(boss.Level * [ 50, 10, 25, 25, 50, 25, 50 ][ boss.Class - 1 ]) }</td>
-                        <td class="bolder">${ formatAsSpacedNumber(boss.Health) }</td>
-                        <td>${ boss.ElementalDamage.Value ? `${ boss.ElementalDamage.Value }%&nbsp; ${ RUNETYPES[boss.ElementalDamage.Type].split(' ')[0] }` : '' }</td>
-                        <td>${ formatAsSpacedNumber(boss.Damage.Min) }</td>
-                        <td>${ formatAsSpacedNumber(boss.Damage.Max) }</td>
-                    </tr>
-                `, ''));
+                $('#enemy-table').html(Object.values(bosses).reduce((str, boss) => {
+                    let instances = Object.values(boss.Damage.Instances);
+                    return str + `
+                        <tr>
+                            <td class="bolder">${ boss.Name }</td>
+                            <td class="bolder">${ boss.Level }</td>
+                            <td class="bolder">${ PLAYER_CLASS[boss.Class] }</td>
+                            <td ${ [ 1, 0, 0, 0, 1, 1, 0 ][ boss.Class - 1 ] ? 'class="bolder"' : '' }>${ formatAsSpacedNumber(boss.Strength) }</td>
+                            <td ${ [ 0, 0, 1, 1, 0, 0, 1 ][ boss.Class - 1 ] ? 'class="bolder"' : '' }>${ formatAsSpacedNumber(boss.Dexterity) }</td>
+                            <td ${ [ 0, 1, 0, 0, 0, 0, 0 ][ boss.Class - 1 ] ? 'class="bolder"' : '' }>${ formatAsSpacedNumber(boss.Intelligence) }</td>
+                            <td class="bolder">${ formatAsSpacedNumber(boss.Constitution) }</td>
+                            <td>${ formatAsSpacedNumber(boss.Luck) }</td>
+                            <td>${ formatAsSpacedNumber(boss.Level * [ 50, 10, 25, 25, 50, 25, 50 ][ boss.Class - 1 ]) }</td>
+                            <td class="bolder">${ formatAsSpacedNumber(boss.Health) }</td>
+                            <td>${ boss.ElementalDamage.Value ? `${ boss.ElementalDamage.Value }%&nbsp; ${ RUNETYPES[boss.ElementalDamage.Type].split(' ')[0] }` : '' }</td>
+                            ${
+                                instances.length == 1 ? `
+                                    <td>${ formatAsSpacedNumber(boss.Damage.Min) }</td>
+                                    <td>${ formatAsSpacedNumber(boss.Damage.Max) }</td>
+                                ` : `
+                                    <td class="text-red">${ instances.map(i => formatAsSpacedNumber(i.Min)).join('<br/>') }</td>
+                                    <td class="text-red">${ instances.map(i => formatAsSpacedNumber(i.Max)).join('<br/>') }</td>
+                                `
+                            }
+                        </tr>
+                    `;
+                }, ''));
             }
 
             // Digest har file
@@ -141,6 +155,8 @@
 
                         // Handle fighters
                         let player = new SFFighter(msg['fighters'].slice(5, 52));
+                        player.Hash = getPlayerHash(player);
+
                         let boss = new SFFighter(msg['fighters'].slice(52, 99));
                         boss.Name = getFightTargetName(fightType, boss.Name, boss.getMonsterID())
 
@@ -206,7 +222,8 @@
                         // Clear
                         boss.Damage = {
                             Min: Infinity,
-                            Max: -Infinity
+                            Max: -Infinity,
+                            Instances: {}
                         };
                     }
                 }
@@ -221,12 +238,27 @@
                         let scale = (1 + Math.max(bossAttribute / 2, bossAttribute - playerAttribute / 2) / 10)
                         let elemental = (1 + boss.ElementalDamage.Value / 100);
 
+                        // Per fight values
+                        let localMin = Infinity;
+                        let localMax = -Infinity;
+
                         for (let round of fight.Rounds) {
                             let damage = round.damage / scale / elemental;
-
-                            boss.Damage.Min = Math.min(boss.Damage.Min, damage);
-                            boss.Damage.Max = Math.max(boss.Damage.Max, damage);
+                            localMin = Math.min(localMin, damage);
+                            localMax = Math.max(localMax, damage);
                         }
+
+                        // Add per instance
+                        let hash = fight.Player.Hash;
+                        let instances = boss.Damage.Instances;
+
+                        let instance = instances[hash] ? instances[hash] : (instances[hash] = { Min: Infinity, Max: -Infinity });
+                        instance.Min = Math.min(instance.Min, localMin);
+                        instance.Max = Math.max(instance.Max, localMax);
+
+                        // Add globally
+                        boss.Damage.Min = Math.min(boss.Damage.Min, localMin);
+                        boss.Damage.Max = Math.max(boss.Damage.Max, localMax);
                     }
                 }
 
