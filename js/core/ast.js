@@ -2286,6 +2286,12 @@ const SP_KEYWORD_MAPPING_1 = {
 
 // Private
 const SP_KEYWORD_MAPPING_2 = {
+    'Mount Expire': {
+        expr: p => p.MountExpire,
+        format: (p, c, e, x) => x ? formatDate(x) : '?',
+        difference: false,
+        statistics: false
+    },
     'Wood': {
         expr: p => p.Fortress.Wood
     },
