@@ -26,6 +26,18 @@
             .bolder {
                 font-weight: bold;
             }
+
+            .cell-tiny {
+                width: 5%;
+            }
+
+            .cell {
+                width: 7%;
+            }
+
+            .cell-big {
+                width: 11%;
+            }
         </style>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
@@ -40,21 +52,22 @@
         </div>
 
         <div class="ui main container full-width">
-            <table class="ui celled table text-center" style="border-collapse: collapse;">
+            <table class="ui celled table text-center" style="border-collapse: collapse; width: 90vw; margin: auto;">
                 <thead>
                     <tr style="border-bottom: 1px solid black;">
-                        <td width="200">Name</td>
-                        <td width="100">Level</td>
-                        <td width="100">Class</td>
-                        <td width="100">Strength</td>
-                        <td width="100">Dexterity</td>
-                        <td width="100">Intelligence</td>
-                        <td width="100">Constitution</td>
-                        <td width="100">Luck</td>
-                        <td width="100">Armor</td>
-                        <td width="150">Health</td>
-                        <td width="150">Weapon Min</td>
-                        <td width="150">Weapon Max</td>
+                        <td class="cell-big">Name</td>
+                        <td class="cell-tiny">Level</td>
+                        <td class="cell-tiny">Class</td>
+                        <td class="cell">Strength</td>
+                        <td class="cell">Dexterity</td>
+                        <td class="cell">Intelligence</td>
+                        <td class="cell">Constitution</td>
+                        <td class="cell">Luck</td>
+                        <td class="cell-tiny">Armor</td>
+                        <td class="cell">Health</td>
+                        <td class="cell">Rune</td>
+                        <td class="cell">Min</td>
+                        <td class="cell">Max</td>
                     </tr>
                 </thead>
                 <tbody id="enemy-table">
@@ -93,6 +106,7 @@
                         <td>${ formatAsSpacedNumber(boss.Luck) }</td>
                         <td>${ formatAsSpacedNumber(boss.Level * [ 50, 10, 25, 25, 50, 25, 50 ][ boss.Class - 1 ]) }</td>
                         <td class="bolder">${ formatAsSpacedNumber(boss.Health) }</td>
+                        <td>${ boss.ElementalDamage.Value ? `${ boss.ElementalDamage.Value }%&nbsp; ${ RUNETYPES[boss.ElementalDamage.Type].split(' ')[0] }` : '' }</td>
                         <td>${ formatAsSpacedNumber(boss.Damage.Min) }</td>
                         <td>${ formatAsSpacedNumber(boss.Damage.Max) }</td>
                     </tr>
@@ -164,7 +178,7 @@
                         boss.ID = boss.getMonsterID();
                         boss.Health = boss.MaximumLife;
                         boss.ElementalDamage = boss.Wpn1.AttributeTypes[2] > 30 ? {
-                            Type: boss.Wpn1.AttributeTypes[2],
+                            Type: boss.Wpn1.AttributeTypes[2] - 30,
                             Value: boss.Wpn1.Attributes[2],
                         } : {
                             Type: 0,
