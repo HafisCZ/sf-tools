@@ -219,9 +219,10 @@
                         let bossAttribute = getMainAttribute(boss, boss.Class);
                         let playerAttribute = getMainAttribute(fight.Player, boss.Class);
                         let scale = (1 + Math.max(bossAttribute / 2, bossAttribute - playerAttribute / 2) / 10)
+                        let elemental = (1 + boss.ElementalDamage.Value / 100);
 
                         for (let round of fight.Rounds) {
-                            let damage = round.damage / scale;
+                            let damage = round.damage / scale / elemental;
 
                             boss.Damage.Min = Math.min(boss.Damage.Min, damage);
                             boss.Damage.Max = Math.max(boss.Damage.Max, damage);
