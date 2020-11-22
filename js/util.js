@@ -876,7 +876,7 @@ function SHA1 (text) {
 }
 
 const SP_ENUMS = {
-    'GoldCurve': GOLD_CURVE,
+    'GoldCurve': GoldCurve,
     'MountSizes': PLAYER_MOUNT,
     'AchievementNames': ACHIEVEMENTS,
     'ItemTypes': ITEM_TYPES,

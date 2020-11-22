@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Quests</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="res/favicon.png"/>
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/semantic.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        </div>
+
+        <div class="ui main container full-width">
+
+        </div>
+
+        <script type="text/javascript">
+            /*
+                Get bonuses
+            */
+            function getBonuses () {
+                return {
+                    xp: {
+                        enchant: true,
+                        runes: 0.1,
+                        album: 1,
+                        guild: 2
+                    },
+                    gold: {
+                        enchant: true,
+                        runes: 0.5,
+                        tower: 1,
+                        guild: 2
+                    }
+                }
+            }
+
+            /*
+                Create new random quest
+            */
+            function getQuest (level, { xp, gold }, segLeft = 4) {
+                let duration = 1 + Math.trunc(Math.random() * 4);
+
+                let xp_rnd = Math.random();
+                let gold_rnd = 1 - xp_rnd;
+                let red_rnd = Math.random() < 0.05 ? 2 : 1;
+
+                let xp_base = red_rnd * (1 + xp.runes) * (1 + xp.album + xp.guild) * duration * (level >= 393 ? 1.5e9 : ExperienceRequired[level]) / (1.5 + 0.75 * (level - 1)) / 10 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
+                let xp_real = Math.trunc((xp.enchant ? 1.1 : 1) * (xp_rnd * (4 * xp_base) + xp_base));
+
+                let gold_base = red_rnd * (1 + gold.tower + gold.guild) * duration * GoldCurve[level] * 12 / 11 / 1000;
+                let gold_min = Math.min(15e6, (1 + gold.runes) * Math.min(10e6, 1 * gold_base));
+                let gold_max = Math.min(15e6, (1 + gold.runes) * Math.min(10e6, 5 * gold_base));
+                let gold_real = Math.trunc((gold.enchant ? 1.1 : 1) * (gold_rnd * (gold_max - gold_min) + gold_min));
+
+                return {
+                    s: Math.min(duration, segLeft),
+                    x: xp_real,
+                    g: gold_real
+                }
+            }
+
+            /*
+                Decision functions
+            */
+            const Deciders = {
+                pure_gold: function (level, quest) {
+                    return quest.g / quest.s;
+                },
+                pure_xp: function (level, quest) {
+                    return quest.x / quest.s;
+                },
+                pure_time: function (level, quest) {
+                    return 4 - quest.s;
+                },
+                transition: function (swapLevel) {
+                    return (level, quest) => level >= swapLevel ? this.pure_gold(level, quest) : this.pure_xp(level, quest);
+                }
+            }
+
+            /*
+                Simulate from level to level with a strategy
+            */
+            function runUntilLevel (level, targetLevel, strat) {
+                // Counters
+                let gold = 0;
+                let xp = 0;
+                let segments = 0;
+                let quests = 0;
+
+                // Current values
+                let levelXP = 0;
+                let bonuses = getBonuses();
+
+                // Current level
+                level = Math.min(699, Math.max(1, level));
+                let needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
+
+                // Target level
+                targetLevel = Math.min(700, Math.max(level + 1, targetLevel));
+
+                // Run function
+                let runThirst = (thirst) => {
+                    while (thirst) {
+                        // Generate quests
+                        let q = [ 0, 1, 2 ].map(() => {
+                            let quest = getQuest(level, bonuses, thirst);
+                            return {
+                                quest: quest,
+                                co: strat(level, quest)
+                            }
+                        });
+
+                        // Get best quest
+                        q.sort((a, b) => b.co - a.co);
+                        q = q[0].quest;
+
+                        // Add values
+                        quests++;
+                        gold += q.g;
+                        thirst -= q.s;
+                        xp += q.x;
+
+                        segments += q.s;
+                        levelXP += q.x;
+
+                        // Level up if possible
+                        if (levelXP >= needed) {
+                            level++;
+                            levelXP -= needed;
+                            needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
+                        }
+                    }
+                }
+
+                // Run run function
+                while (level < targetLevel) {
+                    runThirst(120);
+                    runThirst(8);
+                }
+
+                // Return collected values
+                return {
+                    xp: xp,
+                    gold: gold,
+                    level: level,
+                    quests: quests,
+                    segments: segments
+                }
+            }
+
+            /*
+                Simulate thirst with a strategy
+            */
+            function runUntilThirst (level, targetSegments, strat) {
+                // Counters
+                let gold = 0;
+                let xp = 0;
+                let segments = 0;
+                let quests = 0;
+
+                // Current values
+                let levelXP = 0;
+                let bonuses = getBonuses();
+
+                // Current level
+                level = Math.min(700, Math.max(1, level));
+                let needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
+
+                // Run function
+                let runThirst = (thirst) => {
+                    while (thirst) {
+                        // Generate quests
+                        let q = [ 0, 1, 2 ].map(() => {
+                            let quest = getQuest(level, bonuses, thirst);
+                            return {
+                                quest: quest,
+                                co: strat(level, quest)
+                            }
+                        });
+
+                        // Get best quest
+                        q.sort((a, b) => b.co - a.co);
+                        q = q[0].quest;
+
+                        // Add values
+                        quests++;
+                        gold += q.g;
+                        thirst -= q.s;
+                        xp += q.x;
+
+                        segments += q.s;
+                        levelXP += q.x;
+
+                        // Level up if possible
+                        if (levelXP >= needed) {
+                            level = Math.min(700, level + 1);
+                            levelXP -= needed;
+                            needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
+                        }
+                    }
+                }
+
+                // Run run function
+                while (segments < targetSegments) {
+                    let rem0 = Math.max(0, Math.min(120, targetSegments - segments));
+                    if (rem0) {
+                        runThirst(rem0);
+                        segments += rem0;
+                    }
+
+                    let rem1 = Math.max(0, Math.min(8, targetSegments - segments));
+                    if (rem1) {
+                        runThirst(rem1);
+                        segments += rem1;
+                    }
+                }
+
+                // Return collected values
+                return {
+                    xp: xp,
+                    gold: gold,
+                    level: level,
+                    quests: quests,
+                    segments: segments
+                }
+            }
+
+            /*
+                Run
+            */
+            let q1 = runUntilLevel(500, 600, Deciders.pure_gold);
+            let q2 = runUntilThirst(500, q1.segments, Deciders.pure_gold);
+
+            $('.main.container').html(`
+                <h2 class="ui header">Until Level:</h2>
+                <div>
+                    ${ Object.entries(q1).map(([ key, val ]) => `${ key }: ${ formatAsSpacedNumber(val) }`).join('<br/>') }
+                </div>
+                <h2 class="ui header">Until Thirst:</h2>
+                <div>
+                    ${ Object.entries(q2).map(([ key, val ]) => `${ key }: ${ formatAsSpacedNumber(val) }`).join('<br/>') }
+                </div>
+            `);
+        </script>
+    </body>
+</html>
