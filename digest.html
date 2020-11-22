@@ -159,6 +159,7 @@
 
                         let boss = new SFFighter(msg['fighters'].slice(52, 99));
                         boss.Name = getFightTargetName(fightType, boss.Name, boss.getMonsterID())
+                        boss.Hash = SHA1(boss.Name + boss.Level);
 
                         // Handle rounds
                         let rounds = [];
@@ -191,7 +192,6 @@
                         }
 
                         // Clean things up
-                        boss.ID = boss.getMonsterID();
                         boss.Health = boss.MaximumLife;
                         boss.ElementalDamage = boss.Wpn1.AttributeTypes[2] > 30 ? {
                             Type: boss.Wpn1.AttributeTypes[2] - 30,
@@ -201,6 +201,7 @@
                             Value: 0
                         };
 
+                        delete boss.ID;
                         delete boss.Face;
                         delete boss.Life;
                         delete boss.Race;
@@ -211,7 +212,7 @@
 
                         // Get boss
                         boss.Fights = [];
-                        boss = boss.Name in bosses ? bosses[boss.Name] : (bosses[boss.Name] = boss);
+                        boss = boss.Hash in bosses ? bosses[boss.Hash] : (bosses[boss.Hash] = boss);
 
                         // Add fights
                         boss.Fights.push({
