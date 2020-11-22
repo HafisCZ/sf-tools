@@ -17,13 +17,28 @@
         <script src="js/util.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+
+        <style>
+            .main.container {
+                display: flex;
+                align-content: space-between;
+            }
+
+            .main.container > div {
+                flex: auto;
+            }
+
+            .main.container > div > div {
+                margin-bottom: 1.5em;
+            }
+        </style>
     </head>
     <body>
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
 
-        <div class="ui main container full-width">
+        <div class="ui main container">
 
         </div>
 
@@ -51,6 +66,37 @@
             /*
                 Create new random quest
             */
+            function getMaxQuest (level, { xp, gold }) {
+                return {
+                    x: Math.trunc((xp.enchant ? 1.1 : 1) * (1 + xp.runes) * (1 + xp.album + xp.guild) * 5 * (level >= 393 ? 1.5e9 : ExperienceRequired[level]) / (1.5 + 0.75 * (level - 1)) / 10 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)))),
+                    g: Math.trunc((gold.enchant ? 1.1 : 1) * Math.min(15e6, (1 + gold.runes) * Math.min(10e6, 5 * (1 + gold.tower + gold.guild) * GoldCurve[level] * 12 / 11 / 1000)))
+                }
+            }
+
+            function getMinQuest (level, { xp, gold }) {
+                return {
+                    x: Math.trunc((xp.enchant ? 1.1 : 1) * (1 + xp.runes) * (1 + xp.album + xp.guild) * 1 * (level >= 393 ? 1.5e9 : ExperienceRequired[level]) / (1.5 + 0.75 * (level - 1)) / 10 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)))),
+                    g: Math.trunc((gold.enchant ? 1.1 : 1) * Math.min(15e6, (1 + gold.runes) * Math.min(10e6, 1 * (1 + gold.tower + gold.guild) * GoldCurve[level] * 12 / 11 / 1000)))
+                }
+            }
+
+            function getAverageQuest (level, obj) {
+                let {
+                    x: minx,
+                    g: ming
+                } = getMinQuest(level, obj);
+
+                let {
+                    x: maxx,
+                    g: maxg
+                } = getMaxQuest(level, obj);
+
+                return {
+                    x: Math.trunc((minx + maxx) / 2),
+                    g: Math.trunc((ming + maxg) / 2)
+                };
+            }
+
             function getQuest (level, { xp, gold }, segLeft = 4) {
                 let duration = 1 + Math.trunc(Math.random() * 4);
 
@@ -88,6 +134,15 @@
                 },
                 transition: function (swapLevel) {
                     return (level, quest) => level >= swapLevel ? this.pure_gold(level, quest) : this.pure_xp(level, quest);
+                },
+                closest_gold: function (level, quest, avg) {
+                    return (quest.g / quest.s) / avg.g;
+                },
+                closest_xp: function (level, quest, avg) {
+                    return (quest.x / quest.s) / avg.x;
+                },
+                random: function (level, quest) {
+                    return 0;
                 }
             }
 
@@ -105,12 +160,15 @@
                 let levelXP = 0;
                 let bonuses = getBonuses();
 
+
                 // Current level
                 level = Math.min(699, Math.max(1, level));
                 let needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
 
                 // Target level
                 targetLevel = Math.min(700, Math.max(level + 1, targetLevel));
+
+                let avg = getAverageQuest(level, bonuses);
 
                 // Run function
                 let runThirst = (thirst) => {
@@ -120,7 +178,7 @@
                             let quest = getQuest(level, bonuses, thirst);
                             return {
                                 quest: quest,
-                                co: strat(level, quest)
+                                co: strat(level, quest, avg)
                             }
                         });
 
@@ -142,6 +200,8 @@
                             level++;
                             levelXP -= needed;
                             needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
+
+                            avg = getAverageQuest(level, bonuses);
                         }
                     }
                 }
@@ -149,7 +209,9 @@
                 // Run run function
                 while (level < targetLevel) {
                     runThirst(120);
-                    runThirst(8);
+                    if (level < targetLevel) {
+                        runThirst(8);
+                    }
                 }
 
                 // Return collected values
@@ -180,6 +242,8 @@
                 level = Math.min(700, Math.max(1, level));
                 let needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
 
+                let avg = getAverageQuest(level, bonuses);
+
                 // Run function
                 let runThirst = (thirst) => {
                     while (thirst) {
@@ -188,7 +252,7 @@
                             let quest = getQuest(level, bonuses, thirst);
                             return {
                                 quest: quest,
-                                co: strat(level, quest)
+                                co: strat(level, quest, avg)
                             }
                         });
 
@@ -210,6 +274,8 @@
                             level = Math.min(700, level + 1);
                             levelXP -= needed;
                             needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
+
+                            avg = getAverageQuest(level, bonuses);
                         }
                     }
                 }
@@ -242,19 +308,37 @@
             /*
                 Run
             */
-            let q1 = runUntilLevel(500, 600, Deciders.pure_gold);
-            let q2 = runUntilThirst(500, q1.segments, Deciders.pure_gold);
 
-            $('.main.container').html(`
-                <h2 class="ui header">Until Level:</h2>
-                <div>
-                    ${ Object.entries(q1).map(([ key, val ]) => `${ key }: ${ formatAsSpacedNumber(val) }`).join('<br/>') }
-                </div>
-                <h2 class="ui header">Until Thirst:</h2>
-                <div>
-                    ${ Object.entries(q2).map(([ key, val ]) => `${ key }: ${ formatAsSpacedNumber(val) }`).join('<br/>') }
-                </div>
-            `);
+            function makeSimulation (startLevel, endLevel, decider) {
+                return function () {
+                    let a = runUntilLevel(startLevel, endLevel, decider);
+                    let b = runUntilThirst(startLevel, a.segments, decider);
+                    return [ a, b ];
+                };
+            }
+
+            let simulations = {
+                'Time': makeSimulation(300, 500, Deciders.pure_time),
+                'Pure Gold': makeSimulation(300, 500, Deciders.pure_gold),
+                'Closest Gold': makeSimulation(300, 500, Deciders.closest_gold),
+                'Pure XP': makeSimulation(300, 500, Deciders.pure_xp),
+                'Closest XP': makeSimulation(300, 500, Deciders.closest_xp),
+                'XP until 393': makeSimulation(300, 500, Deciders.transition(393)),
+                'XP until 420': makeSimulation(300, 500, Deciders.transition(420)),
+                'Random': makeSimulation(300, 500, Deciders.random)
+            };
+
+            $('.main.container').html(Object.entries(simulations).map(([ key, simFunction ]) => {
+                let [ a, b ] = simFunction();
+                return `
+                    <div>
+                        <b>${ key } - Level</b>
+                        <div>${ Object.entries(a).map(([ key, val ]) => `${ key }: ${ formatAsNamedNumber(val) }`).join('<br/>') }</div>
+                        <b>${ key } - Thirst</b>
+                        <div>${ Object.entries(b).map(([ key, val ]) => `${ key }: ${ formatAsNamedNumber(val) }`).join('<br/>') }</div>
+                    </div>
+                `;
+            }).join(''));
         </script>
     </body>
 </html>
