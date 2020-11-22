@@ -907,7 +907,12 @@ class SFPlayer {
         this.Dungeons.Normal.Unlocked = this.Dungeons.Normal.reduce((a, b) => a + (b > 0 ? 1 : 0), 0);
         this.Dungeons.Shadow.Unlocked = this.Dungeons.Shadow.reduce((a, b) => a + (b > 0 ? 1 : 0), 0);
 
-        this.Action.OriginalStatus = this.Action.Status;
+        this.OriginalAction = {
+            Status: this.Action.Status,
+            Finish: this.Action.Finish,
+            Index: this.Action.Index
+        };
+
         if (this.Action.Status < 0 || this.Action.Finish < this.Timestamp) {
             this.Action.Status = 0;
             this.Action.Index = 0;
