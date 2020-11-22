@@ -907,6 +907,7 @@ class SFPlayer {
         this.Dungeons.Normal.Unlocked = this.Dungeons.Normal.reduce((a, b) => a + (b > 0 ? 1 : 0), 0);
         this.Dungeons.Shadow.Unlocked = this.Dungeons.Shadow.reduce((a, b) => a + (b > 0 ? 1 : 0), 0);
 
+        this.Action.OriginalStatus = this.Action.Status;
         if (this.Action.Status < 0 || this.Action.Finish < this.Timestamp) {
             this.Action.Status = 0;
             this.Action.Index = 0;
@@ -950,7 +951,8 @@ class SFOtherPlayer extends SFPlayer {
         this.XPNext = dataType.long();
         this.Honor = dataType.long();
         this.Rank = dataType.long();
-        dataType.skip(1); // skip
+        dataType.short();
+        this.DevilPercent = dataType.short();
         this.Face = {
             Mouth: dataType.long(),
             Hair: {
@@ -1171,7 +1173,9 @@ class SFOwnPlayer extends SFPlayer {
         this.XPNext = dataType.long();
         this.Honor = dataType.long();
         this.Rank = dataType.long();
-        dataType.skip(2); // skip
+        dataType.short();
+        this.DevilPercent = dataType.short();
+        dataType.skip(1); // skip
         this.Mushrooms = {
             Current: dataType.long(),
             Total: dataType.long()
