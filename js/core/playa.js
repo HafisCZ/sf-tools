@@ -916,6 +916,7 @@ class SFPlayer {
         if (this.Action.Status < 0 || this.Action.Finish < this.Timestamp) {
             this.Action.Status = 0;
             this.Action.Index = 0;
+            this.Action.Finish = 0;
         }
 
         this.Potions.LifeIndex = this.Potions.findIndex(x => x.Type == 6);

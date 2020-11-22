@@ -1719,7 +1719,12 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Action Finish': {
         expr: p => p.Action.Finish,
-        format: (p, c, e, x) => x < 0 ? '' : formatDate(x),
+        format: (p, c, e, x) => x <= 0 ? '' : formatDate(x),
+        difference: false,
+        statistics: false
+    },
+    'Action Unclaimed': {
+        expr: p => p.OriginalAction.Status < 0,
         difference: false,
         statistics: false
     },
