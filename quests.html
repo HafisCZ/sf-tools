@@ -155,20 +155,19 @@
                 let xp = 0;
                 let segments = 0;
                 let quests = 0;
+                let segmap = [ 0, 0, 0, 0 ];
 
                 // Current values
                 let levelXP = 0;
                 let bonuses = getBonuses();
 
-
                 // Current level
                 level = Math.min(699, Math.max(1, level));
                 let needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
+                let avg = getAverageQuest(level, bonuses);
 
                 // Target level
                 targetLevel = Math.min(700, Math.max(level + 1, targetLevel));
-
-                let avg = getAverageQuest(level, bonuses);
 
                 // Run function
                 let runThirst = (thirst) => {
@@ -194,6 +193,8 @@
 
                         segments += q.s;
                         levelXP += q.x;
+
+                        segmap[q.s - 1]++;
 
                         // Level up if possible
                         if (levelXP >= needed) {
@@ -220,7 +221,8 @@
                     gold: gold,
                     level: level,
                     quests: quests,
-                    segments: segments
+                    segments: segments,
+                    map: segmap
                 }
             }
 
@@ -233,6 +235,7 @@
                 let xp = 0;
                 let segments = 0;
                 let quests = 0;
+                let segmap = [ 0, 0, 0, 0 ];
 
                 // Current values
                 let levelXP = 0;
@@ -241,7 +244,6 @@
                 // Current level
                 level = Math.min(700, Math.max(1, level));
                 let needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
-
                 let avg = getAverageQuest(level, bonuses);
 
                 // Run function
@@ -269,6 +271,8 @@
                         segments += q.s;
                         levelXP += q.x;
 
+                        segmap[q.s - 1]++;
+
                         // Level up if possible
                         if (levelXP >= needed) {
                             level = Math.min(700, level + 1);
@@ -285,13 +289,11 @@
                     let rem0 = Math.max(0, Math.min(120, targetSegments - segments));
                     if (rem0) {
                         runThirst(rem0);
-                        segments += rem0;
                     }
 
                     let rem1 = Math.max(0, Math.min(8, targetSegments - segments));
                     if (rem1) {
                         runThirst(rem1);
-                        segments += rem1;
                     }
                 }
 
@@ -301,7 +303,8 @@
                     gold: gold,
                     level: level,
                     quests: quests,
-                    segments: segments
+                    segments: segments,
+                    map: segmap
                 }
             }
 
@@ -328,17 +331,17 @@
                 'Random': makeSimulation(300, 500, Deciders.random)
             };
 
-            $('.main.container').html(Object.entries(simulations).map(([ key, simFunction ]) => {
+            $('.main.container').html(Object.entries(simulations).reduce((col, [ key, simFunction ]) => {
                 let [ a, b ] = simFunction();
-                return `
+                return col + `
                     <div>
                         <b>${ key } - Level</b>
-                        <div>${ Object.entries(a).map(([ key, val ]) => `${ key }: ${ formatAsNamedNumber(val) }`).join('<br/>') }</div>
+                        <div>${ Object.entries(a).map(([ key, val ]) => `${ key }: ${ typeof val == 'object' ? val.join('\n') : formatAsNamedNumber(val) }`).join('<br/>') }</div>
                         <b>${ key } - Thirst</b>
-                        <div>${ Object.entries(b).map(([ key, val ]) => `${ key }: ${ formatAsNamedNumber(val) }`).join('<br/>') }</div>
+                        <div>${ Object.entries(b).map(([ key, val ]) => `${ key }: ${ typeof val == 'object' ? val.join('\n') : formatAsNamedNumber(val) }`).join('<br/>') }</div>
                     </div>
                 `;
-            }).join(''));
+            }, ''));
         </script>
     </body>
 </html>
