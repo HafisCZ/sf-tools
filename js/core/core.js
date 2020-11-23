@@ -1209,7 +1209,7 @@ const Storage = new (class {
                         player.idle = val.split('/').map(a => Number(a));
                     } else if (key.includes('otherdescription') && player.save && !owngroups.includes(player.groupname) && val.startsWith('$r')) {
                         let torem = val.slice(2, 4).toLowerCase();
-                        if (/dt|ch/.test(torem)) {
+                        if (/dt|ch|ςh/.test(torem)) {
                             for (let i = 0; i < 49; i++) player.save[208 + i] = 0;
                             for (let i = 0; i < 5; i++) player.save[253 + i] = 0;
                             for (let i = 0; i < 11; i++) player.save[183 + i] = 0;

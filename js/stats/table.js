@@ -1517,7 +1517,7 @@ const SettingsCommands = [
     new Command(
         /^import (.+)$/,
         (root, name) => { /* DO NOTHING AS THIS IS HANDLED DURING THE PARSING ITSELF */ },
-        (root, name) => SFormat.Keyword('import ') + (Templates.exists(name) ? (SFormat.Enum(name) + ' ' + SFormat.Extras(`(${ Templates.get()[name].content.length }c)`)) : SFormat.Error(name))
+        (root, name) => SFormat.Keyword('import ') + (Templates.exists(name) ? (SFormat.Enum(name) + ' ' + SFormat.Extras(`(${ Templates.get(name).length }c)`)) : SFormat.Error(name))
     ),
     /*
         Server column
@@ -3677,7 +3677,7 @@ class Settings {
             if (SettingsCommands[3].isValid(ltrim)) {
                 let [, key ] = line.match(/^import (.+)$/);
                 if (Templates.exists(key)) {
-                    processedLines.push(... Templates.get()[key].content.split('\n'));
+                    processedLines.push(... Templates.get(key).split('\n'));
                 }
             } else if (SettingsCommands[1].isValid(ltrim)) {
                 loop = SettingsCommands[1].parse(null, ltrim);
