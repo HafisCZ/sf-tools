@@ -2347,7 +2347,7 @@ const SettingsCommands = [
     new Command(
         /^extend (\w+)$/,
         (root, name) => root.addExtension(name),
-        (root, name) => SFormat.Keyword('extend ') + (name in root.customDefinitions ? SFormat.Constant(name) : SFormat.Error(name))
+        (root, name) => SFormat.Keyword('extend ') + SFormat.Constant(name)
     ),
     /*
         Force push current header / row / statistic
