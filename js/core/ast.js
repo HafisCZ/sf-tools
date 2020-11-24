@@ -1,4 +1,4 @@
-const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\$|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
+const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\$|\ß|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
 const PerformanceTracker = new (class {
     constructor () {
@@ -133,7 +133,7 @@ class Expression {
                     value = SFormat.Constant(token);
                 } else if (SP_ENUMS.hasOwnProperty(token)) {
                     value = SFormat.Enum(token);
-                } else if (token == '$') {
+                } else if (token == '$' || token == 'ß') {
                     value = SFormat.Keyword(token);
                     nextName = true;
                 } else if (nextName) {
@@ -163,11 +163,13 @@ class Expression {
 
         // All variables in the token string
         let variables = [];
+        let locals = [];
 
         // Current variable
         let brackets = 0;
         let index = null;
         let manualName = null;
+        let local = false;
 
         // Iterate over all tokens
         for (let i = 0; i < this.tokens.length; i++) {
@@ -180,11 +182,21 @@ class Expression {
                     // Save current index and skip next bracket
                     index = i++;
                     brackets++;
+                    local = false;
                 } else if (this.tokens[i + 2] == '{') {
                     // Save current index and skip next bracket
                     index = i++;
                     brackets++;
                     manualName = this.tokens[i++];
+                    local = false;
+                }
+            } else if (token == 'ß') {
+                if (this.tokens[i + 2] == '{') {
+                    // Save current index and skip next bracket
+                    index = i++;
+                    brackets++;
+                    manualName = this.tokens[i++];
+                    local = true;
                 }
             } else if (index != null) {
                 // If there is a variable
@@ -199,7 +211,8 @@ class Expression {
                         variables.push({
                             start: index,
                             length: i - index + 1,
-                            name: manualName
+                            name: manualName,
+                            local: local
                         });
 
                         // Reset temporary vars
@@ -236,7 +249,7 @@ class Expression {
             // Add variable to settings
             tableVariables[name] = {
                 ast: new Expression(tokens.join('')),
-                tableVariable: true
+                tableVariable: !variable.local
             };
         }
     }
