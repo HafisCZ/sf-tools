@@ -107,7 +107,7 @@
                 let xp_base = red_rnd * (1 + xp.runes) * (1 + xp.album + xp.guild) * duration * (level >= 393 ? 1.5e9 : ExperienceRequired[level]) / (1.5 + 0.75 * (level - 1)) / 10 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
                 let xp_real = Math.trunc((xp.enchant ? 1.1 : 1) * (xp_rnd * (4 * xp_base) + xp_base));
 
-                let gold_base = red_rnd * (1 + gold.tower + gold.guild) * duration * GoldCurve[level] * 12 / 11 / 1000;
+                let gold_base = red_rnd * (1 + gold.tower + gold.guild) * duration * (level >= 650 ? 10e6 : GoldCurve[level]) * 12 / 11 / 1000;
                 let gold_min = Math.min(15e6, (1 + gold.runes) * Math.min(10e6, 1 * gold_base));
                 let gold_max = Math.min(15e6, (1 + gold.runes) * Math.min(10e6, 5 * gold_base));
                 let gold_real = Math.trunc((gold.enchant ? 1.1 : 1) * (gold_rnd * (gold_max - gold_min) + gold_min));
@@ -175,6 +175,10 @@
                         // Generate quests
                         let q = [ 0, 1, 2 ].map(() => {
                             let quest = getQuest(level, bonuses, thirst);
+                            if (level >= 700) {
+                                quest.x = 0;
+                            }
+
                             return {
                                 quest: quest,
                                 co: strat(level, quest, avg)
@@ -252,6 +256,10 @@
                         // Generate quests
                         let q = [ 0, 1, 2 ].map(() => {
                             let quest = getQuest(level, bonuses, thirst);
+                            if (level >= 700) {
+                                quest.x = 0;
+                            }
+                            
                             return {
                                 quest: quest,
                                 co: strat(level, quest, avg)
@@ -313,32 +321,52 @@
             */
 
             function makeSimulation (startLevel, endLevel, decider) {
-                return function () {
-                    let a = runUntilLevel(startLevel, endLevel, decider);
-                    let b = runUntilThirst(startLevel, a.segments, decider);
-                    return [ a, b ];
-                };
+                return {
+                    from: startLevel,
+                    to: endLevel,
+                    decider: decider
+                }
             }
 
             let simulations = {
-                'Time': makeSimulation(300, 500, Deciders.pure_time),
-                'Pure Gold': makeSimulation(300, 500, Deciders.pure_gold),
-                'Closest Gold': makeSimulation(300, 500, Deciders.closest_gold),
-                'Pure XP': makeSimulation(300, 500, Deciders.pure_xp),
-                'Closest XP': makeSimulation(300, 500, Deciders.closest_xp),
-                'XP until 393': makeSimulation(300, 500, Deciders.transition(393)),
-                'XP until 420': makeSimulation(300, 500, Deciders.transition(420)),
-                'Random': makeSimulation(300, 500, Deciders.random)
+                'Time': makeSimulation(1, 700, Deciders.pure_time),
+                'Pure Gold': makeSimulation(1, 700, Deciders.pure_gold),
+                'Closest Gold': makeSimulation(1, 700, Deciders.closest_gold),
+                'Pure XP': makeSimulation(1, 700, Deciders.pure_xp),
+                'Closest XP': makeSimulation(1, 700, Deciders.closest_xp),
+                'XP until 393': makeSimulation(1, 700, Deciders.transition(393)),
+                'XP until 420': makeSimulation(1, 700, Deciders.transition(420)),
+                'Random': makeSimulation(1, 700, Deciders.random)
             };
 
-            $('.main.container').html(Object.entries(simulations).reduce((col, [ key, simFunction ]) => {
-                let [ a, b ] = simFunction();
+            let results = {};
+            for (let [ k, { from, to, decider } ] of Object.entries(simulations)) {
+                results[k] = runUntilLevel(from, to, decider);
+            }
+
+            let maxSegments = Object.values(results).reduce((m, a) => Math.max(m, a.segments), 0);
+            for (let [ k, v ] of Object.entries(results)) {
+                let runoff = runUntilThirst(v.level, maxSegments - v.segments, Deciders.pure_gold);
+                results[k] = {
+                    xp: v.xp + runoff.xp,
+                    gold: v.gold + runoff.gold,
+                    segments: v.segments + runoff.segments,
+                    quests: v.quests + runoff.quests,
+                    level: runoff.level,
+                    map: [
+                        v.map[0] + runoff.map[0],
+                        v.map[1] + runoff.map[1],
+                        v.map[2] + runoff.map[2],
+                        v.map[3] + runoff.map[3]
+                    ]
+                };
+            }
+
+            $('.main.container').html(Object.entries(results).reduce((col, [ key, a ]) => {
                 return col + `
                     <div>
-                        <b>${ key } - Level</b>
+                        <b>${ key }</b>
                         <div>${ Object.entries(a).map(([ key, val ]) => `${ key }: ${ typeof val == 'object' ? val.join('\n') : formatAsNamedNumber(val) }`).join('<br/>') }</div>
-                        <b>${ key } - Thirst</b>
-                        <div>${ Object.entries(b).map(([ key, val ]) => `${ key }: ${ typeof val == 'object' ? val.join('\n') : formatAsNamedNumber(val) }`).join('<br/>') }</div>
                     </div>
                 `;
             }, ''));
