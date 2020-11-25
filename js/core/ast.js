@@ -620,6 +620,8 @@ class Expression {
 
             if (node.op && SP_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.raw)).length == node.args.length) {
                 return node.op(... node.args.map(a => a.raw ? a.args : a));
+            } else if (node.op && SP_FUNCTIONS.hasOwnProperty(node.op) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.raw)).length == node.args.length) {
+                return SP_FUNCTIONS[node.op](... node.args.map(a => a.raw ? a.args : a));
             }
         } else if (typeof node === 'string' && node in tableVariables && !isNaN(tableVariables[node].ast.root)) {
             return tableVariables[node].ast.root;

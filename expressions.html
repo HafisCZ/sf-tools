@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="res/favicon.png"/>
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/semantic.min.js"></script>
+
+        <script src="js/plugins.js"></script>
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+
+        <script src="js/core/playa.js"></script>
+        <script src="js/core/ast.js"></script>
+
+        <script src="js/stats/table.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        </div>
+
+        <div class="ui main container">
+            <div class="ui fluid input">
+                <input type="text" placeholder="Your expression">
+            </div>
+            <br/>
+            <div class="ui form">
+                <div class="field">
+                    <label>Expression:</label>
+                    <textarea style="height: 80vh; min-height: 80vh; max-height: 80vh;"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $('.ui.input').on('change input', function () {
+                $('textarea').val(JSON.stringify(new Expression($('input').val()), null, 2));
+            });
+        </script>
+    </body>
+</html>
