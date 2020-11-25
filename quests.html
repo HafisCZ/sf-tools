@@ -92,7 +92,7 @@
                 } = getMaxQuest(level, obj);
 
                 return {
-                    x: Math.trunc((minx + maxx) / 2),
+                    x: level >= 700 ? 0 : Math.trunc((minx + maxx) / 2),
                     g: Math.trunc((ming + maxg) / 2)
                 };
             }
@@ -259,7 +259,7 @@
                             if (level >= 700) {
                                 quest.x = 0;
                             }
-                            
+
                             return {
                                 quest: quest,
                                 co: strat(level, quest, avg)

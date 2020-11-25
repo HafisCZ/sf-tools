@@ -1,4 +1,4 @@
-const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\$|\ß|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
+const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\$\!|\$|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
 const PerformanceTracker = new (class {
     constructor () {
@@ -133,7 +133,7 @@ class Expression {
                     value = SFormat.Constant(token);
                 } else if (SP_ENUMS.hasOwnProperty(token)) {
                     value = SFormat.Enum(token);
-                } else if (token == '$' || token == 'ß') {
+                } else if (token == '$' || token == '$!') {
                     value = SFormat.Keyword(token);
                     nextName = true;
                 } else if (nextName) {
@@ -190,7 +190,7 @@ class Expression {
                     manualName = this.tokens[i++];
                     local = false;
                 }
-            } else if (token == 'ß') {
+            } else if (token == '$!') {
                 if (this.tokens[i + 2] == '{') {
                     // Save current index and skip next bracket
                     index = i++;
