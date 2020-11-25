@@ -81,12 +81,19 @@ class Expression {
             }
 
             if (count == 0) {
-                this.evalEmbeddedVariables(settings);
                 this.rstr = SHA1(this.tokens.join(''));
 
-                this.root = this.evalExpression();
-                this.root = this.postProcess(this.root);
+                // Get settings variable array
+                let tableVariables = (settings ? settings.variables : undefined) || {};
+                this.evalEmbeddedVariables(tableVariables);
 
+                // Generate tree
+                this.root = this.evalExpression();
+
+                // Clean tree
+                this.root = this.postProcess(tableVariables, this.root);
+
+                // Check if tree is cacheable or not
                 this.cacheable = this.checkCacheableNode(this.root);
             } else {
                 this.empty = true;
@@ -157,10 +164,7 @@ class Expression {
     }
 
     // Eval embedded variables
-    evalEmbeddedVariables (settings) {
-        // Get settings variable array
-        let tableVariables = (settings ? settings.variables : undefined) || {};
-
+    evalEmbeddedVariables (tableVariables) {
         // All variables in the token string
         let variables = [];
         let locals = [];
@@ -228,27 +232,25 @@ class Expression {
         for (let i = variables.length - 1; i >= 0; i--) {
             let variable = variables[i];
 
-            // Get tokens and strip first 2 and last 1 token (constrol characters)
+            // Get tokens and strip first 2 and last 1 token (control characters)
             let tokens = this.tokens.splice(variable.start, variable.length);
             tokens = tokens.slice(2 + (variable.name ? 1 : 0), tokens.length - 1);
 
+            // Get expression from tokens
+            let expression = new Expression(tokens.join(''));
+
             // Get placeholder name
             let name = variable.name;
-            while (!name) {
-                let randomName = `__${ Math.trunc(10000 * Math.random()) }`;
-                if (randomName in tableVariables) {
-                    // Ignore name if exists
-                } else {
-                    name = randomName;
-                }
+            if (!(name || name in tableVariables)) {
+                name = `__${ expression.rstr }`;
             }
 
-            // Add placeholder to tokens
-            this.tokens.splice(variable.start, 0, name);
+            // Add variable name to the token list
+            this.tokens.splice(variable.start, 0, isNaN(expression.root) ? name : expression.root);
 
             // Add variable to settings
             tableVariables[name] = {
-                ast: new Expression(tokens.join('')),
+                ast: expression,
                 tableVariable: !variable.local
             };
         }
@@ -608,17 +610,19 @@ class Expression {
     }
 
     // Evaluate all simple nodes (simple string joining / math calculation with compile time results)
-    postProcess (node) {
+    postProcess (tableVariables, node) {
         if (typeof(node) == 'object' && !node.raw) {
             if (node.args) {
                 for (var i = 0; i < node.args.length; i++) {
-                    node.args[i] = this.postProcess(node.args[i]);
+                    node.args[i] = this.postProcess(tableVariables, node.args[i]);
                 }
             }
 
             if (node.op && SP_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.raw)).length == node.args.length) {
                 return node.op(... node.args.map(a => a.raw ? a.args : a));
             }
+        } else if (typeof node === 'string' && node in tableVariables && !isNaN(tableVariables[node].ast.root)) {
+            return tableVariables[node].ast.root;
         }
 
         return node;
