@@ -669,7 +669,7 @@ class SFPlayer {
 
     getClassBonus (attribute) {
         if (this.Class == 5 || this.Class == 6) {
-            return Math.ceil(attribute.Equipment * 11 / 100);
+            return Math.ceil((this.Class == 5 ? attribute.Equipment : attribute.Items) * 11 / 100);
         } else {
             return 0;
         }
