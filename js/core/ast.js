@@ -494,7 +494,7 @@ class Expression {
         while (['*', '/'].includes(this.peek())) {
             node = {
                 op: SP_OPERATORS[this.get()],
-                args: [node, this.peek() == '(' ? this.getSubExpression() : this.getBlock()]
+                args: [node, this.getBlock()]
             }
         }
 
@@ -506,7 +506,7 @@ class Expression {
         while (['+', '-', '%'].includes(this.peek())) {
             node = {
                 op: SP_OPERATORS[this.get()],
-                args: [node, this.peek() == '(' ? this.getSubExpression() : this.getHighPriority()]
+                args: [node, this.getHighPriority()]
             };
         }
 
@@ -518,7 +518,7 @@ class Expression {
         while (['>', '<', '<=', '>=', '==', '!='].includes(this.peek())) {
             node = {
                 op: SP_OPERATORS[this.get()],
-                args: [node, this.peek() == '(' ? this.getSubExpression() : this.getLowPriority()]
+                args: [node, this.getLowPriority()]
             }
         }
 
@@ -530,7 +530,7 @@ class Expression {
         while (['||', '&&'].includes(this.peek())) {
             node = {
                 op: SP_OPERATORS[this.get()],
-                args: [node, this.peek() == '(' ? this.getSubExpression() : this.getBool()]
+                args: [node, this.getBool()]
             };
         }
 
@@ -578,7 +578,7 @@ class Expression {
             if (node.raw) {
                 return `str(${ node.args })`;
             } else if (node.op) {
-                return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.args.map(arg => this.toString(arg)).join(', ') })`;
+                return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.args.map(arg => typeof arg == 'undefined' ? 'undefined' : this.toString(arg)).join(', ') })`;
             } else {
                 return `item(${ node.key }, ${ node.val })`;
             }

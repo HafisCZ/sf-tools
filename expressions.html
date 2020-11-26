@@ -30,21 +30,29 @@
         </div>
 
         <div class="ui main container">
-            <div class="ui fluid input">
-                <input type="text" placeholder="Your expression">
+            <div class="ui fluid expr input">
+                <input id="expr" type="text" placeholder="Your expression">
             </div>
             <br/>
             <div class="ui form">
                 <div class="field">
                     <label>Expression:</label>
-                    <textarea style="height: 80vh; min-height: 80vh; max-height: 80vh;"></textarea>
+                    <div class="ui fluid input">
+                        <input id="estr" disabled type="text">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Dump:</label>
+                    <textarea style="height: 75vh; min-height: 75vh; max-height: 75vh;"></textarea>
                 </div>
             </div>
         </div>
 
         <script type="text/javascript">
-            $('.ui.input').on('change input', function () {
-                $('textarea').val(JSON.stringify(new Expression($('input').val()), null, 2));
+            $('.ui.expr.input').on('change input', function () {
+                let ex = new Expression($('#expr').val());
+                $('#estr').val(ex.toString());
+                $('textarea').val(JSON.stringify(ex, null, 2));
             });
         </script>
     </body>
