@@ -280,19 +280,16 @@ class Expression {
     getString (cast = false) {
         var token = this.get();
         if (this.isString(token)) {
-            return {
-                raw: true,
-                args: token.slice(1, token.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\'')
-            };
+            return this.wrapString(token.slice(1, token.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\''));
         } else {
-            if (cast) {
-                return {
-                    raw: true,
-                    args: token
-                };
-            } else {
-                return token;
-            }
+            return cast ? this.wrapString(token) : token;
+        }
+    }
+
+    wrapString (str) {
+        return {
+            raw: true,
+            args: str
         }
     }
 
@@ -621,7 +618,8 @@ class Expression {
             if (node.op && SP_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.raw)).length == node.args.length) {
                 return node.op(... node.args.map(a => a.raw ? a.args : a));
             } else if (node.op && SP_FUNCTIONS.hasOwnProperty(node.op) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.raw)).length == node.args.length) {
-                return SP_FUNCTIONS[node.op](... node.args.map(a => a.raw ? a.args : a));
+                let res = SP_FUNCTIONS[node.op](... node.args.map(a => a.raw ? a.args : a));
+                return typeof res === 'string' ? this.wrapString(res) : res;
             }
         } else if (typeof node === 'string' && node in tableVariables && !isNaN(tableVariables[node].ast.root)) {
             return tableVariables[node].ast.root;
