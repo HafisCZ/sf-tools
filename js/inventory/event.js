@@ -825,9 +825,10 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
         var mult = (1 + at[i].PotionSize / 100);
         var mult2 = (1 + pb[i] / 100);
         var mult3 = (player.ClassBonus ? 1.11 : 1);
+        var mult4 = (player.Class == 5 ? 1.11 : 1);
 
         attr[i] = Math.ceil(Math.ceil(Math.ceil(ia[i] * mult) * mult2) * mult3) - Math.ceil(Math.ceil(Math.ceil(ca[i] * mult) * mult2) * mult3);
-        gems[i] = Math.ceil(Math.ceil(Math.ceil(getRealGemValue(player, item, i + 1) * mult) * mult2) * mult3) - Math.ceil(Math.ceil(Math.ceil(getRealGemValue(player, base, i + 1) * mult) * mult2) * mult3);
+        gems[i] = Math.ceil(Math.ceil(Math.ceil(getRealGemValue(player, item, i + 1) * mult) * mult2) * mult4) - Math.ceil(Math.ceil(Math.ceil(getRealGemValue(player, base, i + 1) * mult) * mult2) * mult4);
     }
 
     out.Str = out.Ref.Str + attr[0] + (nogem ? 0 : gems[0]);

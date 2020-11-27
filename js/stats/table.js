@@ -1082,7 +1082,7 @@ class TableInstance {
 
     getCellContent ({ action, generators: { cell } }, player, compare) {
         if (action == 'show') {
-            return cell(player, compare).replace('{__ACTION__}', `data-id="${ player.Identifier }"`);
+            return cell(player, compare).replace('{__ACTION__}', `data-id="${ player.Identifier }"`).replace('{__ACTION_OP__}', `<span class="css-op-select-el"></span>`);
         } else {
             return cell(player, compare);
         }
@@ -1314,7 +1314,7 @@ const CellGenerator = {
     // Simple cell
     Cell: function (c, b, f, bo, al, pad, style, cellWidth, hasAction) {
         let color = getCSSColorFromBackground(f);
-        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' } ${ hasAction ? 'clickable' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
+        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' } ${ hasAction ? 'clickable' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ hasAction ? '{__ACTION_OP__}' : '' }${ c }</td>`;
     },
     // Wide cell
     WideCell: function (c, b, w, al, pad, style) {
