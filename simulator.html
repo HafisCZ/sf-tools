@@ -166,6 +166,11 @@
             .class-none {
                 margin-left: 1.75em;
             }
+
+            .css-smaller-pad > .column {
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
@@ -379,12 +384,15 @@
                 <!-- Player list -->
                 <div class="column">
                     <div class="ui grid">
-                        <div class="css-small-row row">
-                            <div class="five wide column">
-                                <button class="ui fluid small button" type="submit" id="sim-add"><i class="small arrow right icon"></i> Add player</button>
+                        <div class="css-small-row row css-smaller-pad">
+                            <div class="four wide column">
+                                <button class="ui fluid small button" type="submit" id="sim-add"><i class="small arrow right icon"></i> Add</button>
                             </div>
-                            <div class="five wide column">
+                            <div class="four wide column">
                                 <button class="ui fluid small button" type="submit" id="sim-save">Save</button>
+                            </div>
+                            <div class="two wide column">
+                                <button class="ui small basic icon fluid button" data-position="bottom center" data-tooltip="DANGEROUS: Enable fight data dump" id="sim-debug"><i class="file code outline icon"></i></button>
                             </div>
                             <div class="two wide column">
                                 <button class="ui tiny basic icon fluid button" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="sim-insert"><i class="paste icon"></i></button>
@@ -396,15 +404,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="css-small-row row">
-                            <div class="five wide column">
+                        <div class="css-small-row row css-smaller-pad">
+                            <div class="four wide column">
                                 <div class="ui small form">
                                     <div class="field" data-tooltip="Amount of fights per two players. Use lower value if using simulator with large amount of people.">
                                         <input class="text-center fluid" type="text" id="sim-iterations" value="10000">
                                     </div>
                                 </div>
                             </div>
-                            <div class="five wide column">
+                            <div class="four wide column">
                                 <div class="ui small form">
                                     <div class="field">
                                         <div class="ui fluid selection compact dropdown" id="sim-mode">
@@ -415,9 +423,9 @@
                                 </div>
                             </div>
                             <div class="two wide column">
-                                <button class="ui small basic icon fluid button" data-position="bottom center" data-tooltip="DANGEROUS: Enable fight data dump" id="sim-debug"><i class="file code outline icon"></i></button>
+                                <button class="ui small basic icon fluid button" data-position="bottom center" data-tooltip="IHOF Mode: Doesn't lower gladiator values" id="sim-glad">IHOF</button>
                             </div>
-                            <div class="four wide column">
+                            <div class="six wide column">
                                 <button class="ui fluid small button" type="submit" id="sim-run">Simulate</button>
                             </div>
                         </div>
@@ -731,6 +739,16 @@
             var players = [];
             var iterator = 0;
 
+            var forcedglad = false;
+            $('#sim-glad').click(function () {
+                forcedglad = !forcedglad;
+                if (forcedglad) {
+                    this.style.setProperty('background', '#21ba45', 'important');
+                } else {
+                    this.style.setProperty('background', '');
+                }
+            });
+
             var modeDump = false;
             $('#sim-debug').click(function () {
                 modeDump = !modeDump;
@@ -847,6 +865,7 @@
 
                     for (var i = 0; i < players.length; i++) {
                         players[i].score = null;
+                        players[i].player.ForceGladiator = forcedglad;
                     }
 
                     showPlayers();
