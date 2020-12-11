@@ -2834,7 +2834,7 @@ class Settings {
                 }
 
                 // Add extra
-                if (typeof output == 'undefined' && this.extra) {
+                if (typeof output != 'undefined' && this.extra) {
                     output = `${ output }${ this.extra(player) }`;
                 }
 
