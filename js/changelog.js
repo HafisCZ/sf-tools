@@ -1,4 +1,22 @@
 const CHANGELOG = {
+    'v4.1133': {
+        label: 'Announcement',
+        content: `
+            Heyo 👋<br>
+            <br>
+            As you might have noticed, SFTools has been very ... quiet ... lately.<br>
+            I didn't drop the project! So you don't need to worry about it disappearing anytime soon.
+            <br>
+            <br>
+            However ... ☹️<br>
+            I simply don't have enough time to keep the rate of updates going like before.<br>
+            If there is a major bug then I will fix it (obviously, I am not Playa), but anything unimportant (including promised features) will have to wait until I find any reasonable time for them.
+            <br>
+            <br>
+            With that said, have a nice 🎄Christmas🎄 :-)<br>
+            - mar
+        `
+    },
     'v4.1100': [
         'Added trackers. You can now save any data from milestones you want to track.<br/>Check the <a href="https://github.com/HafisCZ/sf-tools/wiki/6.-Trackers">wiki</a> to learn how they work and what you can do with them.',
         'Reworked template saving. To save a template click on the Save button and write a name / select existing template and click Save again.',

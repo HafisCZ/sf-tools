@@ -2733,20 +2733,26 @@ class ChangeLogView extends View {
     constructor (parent) {
         super(parent);
 
-        this.$parent.find('[data-op="version"]').text(MODULE_VERSION);
-
         var changes = '';
+        var label = '';
 
-        if (CHANGELOG[MODULE_VERSION]) {
-            for (var entry of CHANGELOG[MODULE_VERSION]) {
-                changes += `
-                    <li style="margin-bottom: 1em;">
-                        ${ entry }
-                    </li>
-                `;
+        if (CHANGELOG[MODULE_VERSION] && CHANGELOG[MODULE_VERSION].label) {
+            label = CHANGELOG[MODULE_VERSION].label;
+            changes += `<div class="text-center" style="margin-left: 5em; margin-right: 7em; font-size: 110%;">${ CHANGELOG[MODULE_VERSION].content }<div>`;
+        } else {
+            label = MODULE_VERSION;
+            if (CHANGELOG[MODULE_VERSION]) {
+                for (var entry of CHANGELOG[MODULE_VERSION]) {
+                    changes += `
+                        <li style="margin-bottom: 1em;">
+                            ${ entry }
+                        </li>
+                    `;
+                }
             }
         }
 
+        this.$parent.find('[data-op="version"]').text(label);
         this.$parent.find('[data-op="changes"]').html(changes);
 
         this.$parent.find('[data-op="accept"]').click(function () {
@@ -2764,25 +2770,41 @@ class ChangeLogsView extends View {
         var changes = '';
 
         for (var [ version, content ] of Object.entries(CHANGELOG)) {
-            changes += `
-                <div class="row css-row-ver">
-                    <div class="two wide column"></div>
-                    <div class="one wide column">
-                        <h3 class="ui header css-h3-ver">${ version }</h3>
+            if (content.label) {
+                changes += `
+                    <div class="row css-row-ver">
+                        <div class="two wide column"></div>
+                        <div class="one wide column">
+                            <h3 class="ui header css-h3-ver">${ version }</h3>
+                        </div>
+                        <div class="thirteen wide column">
+                            <div style="margin-left: 2.75em; margin-top: 0.25em;">
+                                <h3 class="ui header" style="margin-bottom: 0.5em;">${ content.label }</h3>${ content.content }
+                            </div>
+                        </div>
                     </div>
-                    <div class="thirteen wide column">
-                        <ul class="css-ul-ver">
-                            ${
-                                content.map(entry => `
-                                    <li style="margin-bottom: 1em;">
-                                        ${ entry }
-                                    </li>
-                                `).join('')
-                            }
-                        </ul>
+                `;
+            } else {
+                changes += `
+                    <div class="row css-row-ver">
+                        <div class="two wide column"></div>
+                        <div class="one wide column">
+                            <h3 class="ui header css-h3-ver">${ version }</h3>
+                        </div>
+                        <div class="thirteen wide column">
+                            <ul class="css-ul-ver">
+                                ${
+                                    content.map(entry => `
+                                        <li style="margin-bottom: 1em;">
+                                            ${ entry }
+                                        </li>
+                                    `).join('')
+                                }
+                            </ul>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
         }
 
         this.$parent.find('[data-op="list"]').html(changes);
