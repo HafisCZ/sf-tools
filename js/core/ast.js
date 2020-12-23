@@ -1138,7 +1138,7 @@ const SP_FUNCTIONS = {
     'average': (... values) => {
         let { sum, len } = values.reduce((collector, value) => {
             if (Array.isArray(value)) {
-                collector.sum += value.reduce((a, b) => a + b);
+                collector.sum += value.reduce((a, b) => a + b, 0);
                 collector.len += value.length;
             } else {
                 collector.sum += value;
