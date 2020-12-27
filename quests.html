@@ -141,6 +141,11 @@
                 closest_xp: function (level, quest, avg) {
                     return (quest.x / quest.s) / avg.x;
                 },
+                distance: function (level, quest, avg) {
+                  let dist_x = (quest.x / quest.s) / avg.x;
+                  let dist_g = (quest.g / quest.s) / avg.g;
+                  return dist_x < 1 ? Math.max(dist_x, dist_g) : (4 - quest.s);
+                },
                 random: function (level, quest) {
                     return 0;
                 }
@@ -335,8 +340,10 @@
                 'Pure XP': makeSimulation(1, 700, Deciders.pure_xp),
                 'Closest XP': makeSimulation(1, 700, Deciders.closest_xp),
                 'XP until 393': makeSimulation(1, 700, Deciders.transition(393)),
-                'XP until 420': makeSimulation(1, 700, Deciders.transition(420)),
-                'Random': makeSimulation(1, 700, Deciders.random)
+                'XP until 440': makeSimulation(1, 700, Deciders.transition(440)),
+                'XP until 500': makeSimulation(1, 700, Deciders.transition(500)),
+                'Random': makeSimulation(1, 700, Deciders.random),
+                'Distance': makeSimulation(1, 700, Deciders.distance)
             };
 
             let results = {};

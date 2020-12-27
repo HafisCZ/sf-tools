@@ -42,6 +42,18 @@
             .text-red {
                 color: red;
             }
+
+            td.hint-container {
+                position: relative;
+            }
+
+            .hint {
+                color: darkgray;
+                font-size: 80%;
+                position: absolute !important;
+                left: 0.5em;
+                top: 0.1em;
+            }
         </style>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
@@ -115,11 +127,11 @@
                             <td>${ boss.ElementalDamage.Value ? `${ boss.ElementalDamage.Value }%&nbsp; ${ RUNETYPES[boss.ElementalDamage.Type].split(' ')[0] }` : '' }</td>
                             ${
                                 instances.length == 1 ? `
-                                    <td>${ formatAsSpacedNumber(boss.Damage.Min) }</td>
-                                    <td>${ formatAsSpacedNumber(boss.Damage.Max) }</td>
+                                    <td class="hint-container"><span class="hint">${ formatAsSpacedNumber(boss.BaseDamage.Min) }</span>${ formatAsSpacedNumber(boss.Damage.Min) }</td>
+                                    <td class="hint-container"><span class="hint">${ formatAsSpacedNumber(boss.BaseDamage.Max) }</span>${ formatAsSpacedNumber(boss.Damage.Max) }</td>
                                 ` : `
-                                    <td class="text-red">${ instances.map(i => formatAsSpacedNumber(i.Min)).join('<br/>') }</td>
-                                    <td class="text-red">${ instances.map(i => formatAsSpacedNumber(i.Max)).join('<br/>') }</td>
+                                    <td class="hint-container text-red"><span class="hint">${ formatAsSpacedNumber(boss.BaseDamage.Min) }</span>${ instances.map(i => formatAsSpacedNumber(i.Min)).join('<br/>') }</td>
+                                    <td class="hint-container text-red"><span class="hint">${ formatAsSpacedNumber(boss.BaseDamage.Max) }</span>${ instances.map(i => formatAsSpacedNumber(i.Max)).join('<br/>') }</td>
                                 `
                             }
                         </tr>
@@ -208,6 +220,7 @@
                         delete boss.Mask;
                         delete boss.Wpn1;
                         delete boss.Wpn2;
+                        delete boss.Gender;
                         delete boss.MaximumLife;
 
                         // Get boss
@@ -233,6 +246,8 @@
                     Process fights
                 */
                 for (let boss of Object.values(bosses)) {
+                    boss.BaseDamage = getBaseDamage(boss)
+
                     for (let fight of boss.Fights) {
                         let bossAttribute = getMainAttribute(boss, boss.Class);
                         let playerAttribute = getMainAttribute(fight.Player, boss.Class);
@@ -275,6 +290,40 @@
 
             function getPlayerHash (a) {
                 return SHA1(JSON.stringify([ a.ID, a.Name, a.Class, a.Strength, a.Dexterity, a.Intelligence, a.Constitution, a.Luck, a.MaximumLife, a.Wpn1, a.Wpn2 ]));
+            }
+
+            function getBaseDamage ({ Class, Level }, secondary = false) {
+                let min = 1;
+                let max = 2;
+
+                if (Level > 10) {
+                    let num = Level - 10;
+
+                    if (Class == 1 || Class == 5 || Class == 6) {
+                        num = 2.0 * (1 + num)
+                    } else if (Class == 3 || Class == 4 || Class == 7) {
+                        num = 2.5 * (1 + num)
+                    } else {
+                        num = 4.5 * (1 + num)
+                    }
+
+                    num = Math.trunc(num)
+                    min = num - num / 3
+                    max = num + num / 3
+
+                    if (secondary) {
+                        min = Math.trunc(min * 0.1);
+                        max = Math.trunc(max * 0.1);
+                    } else {
+                        min = Math.trunc(min * 0.7);
+                        max = Math.trunc(max * 0.7);
+                    }
+                }
+
+                return {
+                    Min: Math.max(1, min),
+                    Max: Math.max(2, max)
+                }
             }
         </script>
     </body>
