@@ -95,7 +95,7 @@ class GroupTableArray extends Array {
 
 // Table instance
 class TableInstance {
-    constructor (settings, type) {
+    constructor (settings, type, filteredCategories = null) {
         // Parameters
         this.settings = new Settings(settings, type);
 
@@ -260,7 +260,13 @@ class TableInstance {
             }
 
             if (group.length) {
-                this.config.push(group);
+                if (filteredCategories) {
+                    if (filteredCategories.includes(group.name)) {
+                        this.config.push(group);
+                    }
+                } else {
+                    this.config.push(group);
+                }
             }
         }
 
@@ -301,6 +307,8 @@ class TableInstance {
         this.rightFlatSpan = this.rightFlat.reduce((t, h) => t + h.span, 0);
 
         this.cellDivider = this.getCellDivider();
+
+        this.clearCache();
     }
 
     // Set players
@@ -1203,7 +1211,16 @@ class TableController {
         this.ignore = true;
     }
 
+    selectCategories (categories) {
+        this.categories = categories;
+    }
+
     refresh (onChange = () => { /* Do nothing */ }) {
+        if (this.categories) {
+            this.schanged = true;
+            this.echanged = true;
+        }
+
         // Log some console stuff for fun
         let schanged = this.schanged || false;
         let echanged = this.echanged || false;
@@ -1215,8 +1232,16 @@ class TableController {
 
         // Create table
         if (this.schanged) {
-            this.table = new TableInstance(this.settings, this.type);
+            if (this.categories == -1) {
+                this.categories = undefined;
+            }
+
+            this.table = new TableInstance(this.settings, this.type, this.categories);
             this.ignore = false;
+
+            if (this.categories) {
+                this.categories = -1;
+            }
         }
 
         // Fill entries

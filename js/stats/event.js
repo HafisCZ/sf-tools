@@ -1074,9 +1074,10 @@ class BrowseView extends View {
             'h': 'Show hidden',
             'o': 'Show own',
             'sr': 'Sort by custom expression',
-            'q': 'Custom settings (separate header names with comma)'
+            'q': 'Custom settings (separate header names with comma)',
+            'qc': 'Show only selected categories'
         }).change((event) => {
-            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h|o|sr|q):/);
+            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h|o|sr|q|qc):/);
 
             var terms = [
                 {
@@ -1203,6 +1204,8 @@ class BrowseView extends View {
 
                     this.table = this.tableQ;
                     this.table.setSettings(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a.trim() }`, '') }`);
+                } else if (key == 'qc' && typeof(arg) == 'string' && arg.length) {
+                    this.table.selectCategories(arg.split(','));
                 }
             }
 
