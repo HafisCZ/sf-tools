@@ -1205,7 +1205,7 @@ class BrowseView extends View {
                     this.table = this.tableQ;
                     this.table.setSettings(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a.trim() }`, '') }`);
                 } else if (key == 'qc' && typeof(arg) == 'string' && arg.length) {
-                    this.table.selectCategories(arg.split(','));
+                    this.table.selectCategories(arg.split(',').map(x => x.trim()));
                 }
             }
 

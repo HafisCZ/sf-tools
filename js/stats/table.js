@@ -10,6 +10,7 @@ class HeaderGroup {
     constructor ({ name, empty }, i) {
         this.name = name;
         this.empty = empty;
+        this.index = i;
 
         this.sortkey = `${ name }.${ i }`;
 
@@ -259,14 +260,8 @@ class TableInstance {
                 }
             }
 
-            if (group.length) {
-                if (filteredCategories) {
-                    if (filteredCategories.includes(group.name)) {
-                        this.config.push(group);
-                    }
-                } else {
-                    this.config.push(group);
-                }
+            if (filteredCategories ? (filteredCategories.includes(group.name) || filteredCategories.find(filterKey => filterKey == `$${ categoryIndex + 1 }`)) : group.length) {
+                this.config.push(group);
             }
         }
 
