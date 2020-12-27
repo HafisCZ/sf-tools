@@ -1919,7 +1919,7 @@ const SettingsCommands = [
         },
         (root, extensions, name, length) => {
             let prefix = (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('header');
-            let suffix = (name ? ' ' : '') + SFormat.Keyword('as group of ') + SFormat.Constant(length);
+            let suffix = SFormat.Keyword(' as group of ') + SFormat.Constant(length);
             if (name != undefined) {
                 if (SP_KEYWORD_MAPPING_0.hasOwnProperty(name)) {
                     return prefix + ' ' + SFormat.Reserved(name) + suffix;
