@@ -3694,6 +3694,29 @@ class Settings {
         for (let line of originalString.split('\n')) {
             let ltrim = line.trim();
 
+            let commentIndex = -1;
+            let ignored = false;
+
+            for (let i = 0; i < line.length; i++) {
+                if (line[i] == '\'' || line[i] == '\"') {
+                    if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
+                    else {
+                        ignored = ignored ? false : line[i];
+                    }
+                } else if (line[i] == '#' && !ignored) {
+                    commentIndex = i;
+                    break;
+                }
+            }
+
+            if (commentIndex != -1) {
+                ltrim = line.slice(0, commentIndex).trim();
+            }
+
+            if (ltrim.length == 0) {
+                continue;
+            }
+
             if (SettingsCommands[3].isValid(ltrim)) {
                 let [, key ] = line.match(/^import (.+)$/);
                 if (Templates.exists(key)) {
