@@ -2498,9 +2498,9 @@ class Settings {
         this.discardRules = [];
 
         // Variables and functions
-        this.functions = [];
-        this.variables = [];
-        this.variablesReference = [];
+        this.functions = {};
+        this.variables = {};
+        this.variablesReference = {};
 
         this.trackers = {};
 
