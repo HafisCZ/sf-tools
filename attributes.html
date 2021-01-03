@@ -150,7 +150,7 @@
                                     <input type="text" disabled id="gold-capacity">
                                 </div>
                                 <div class="field">
-                                    <label><span class="green">&bull;</span> 25% Potion / Gold PoEL</label>
+                                    <label><span class="green">&bull;</span> 25% Potion</label>
                                     <input type="text" disabled id="gold-pot25">
                                 </div>
                             </div>
@@ -173,7 +173,7 @@
                                     <input type="text" disabled id="gold-witchpot">
                                 </div>
                                 <div class="field">
-                                    <label><span class="green">&bull;</span> Potion of Eternal Life</label>
+                                    <label><span class="green">&bull;</span> Mushroom PoEL</label>
                                     <input type="text" disabled id="gold-pothp">
                                 </div>
                             </div>
@@ -193,6 +193,13 @@
                                 <div class="field">
                                     <label>Twister (Level is enemy level)</label>
                                     <input type="text" disabled id="gold-twisterboss">
+                                </div>
+                                <div class="field">
+
+                                </div>
+                                <div class="field">
+                                    <label><span class="green">&bull;</span> Gold PoEL</label>
+                                    <input type="text" disabled id="gold-pothp-gold">
                                 </div>
                             </div>
                         </div>
@@ -657,7 +664,7 @@
 
                     var runes = Number($('#gold-runes').val());
                     if (runes < 0) runes = 0;
-                    else if (runes > 5) runes = 5;
+                    else if (runes > 4) runes = 4;
 
                     var pit = Number($('#gold-pit').val());
                     if (pit < 1) pit = 1;
@@ -689,10 +696,12 @@
 
                     var potion = (1 + Math.min(1, Math.max(0, (90 - level) / 10))) * getGoldCurve(Math.max(1, level - runes)) * 15 / 1000;
 
-                    var pot10 = Math.min(10E6, potion / 4);
-                    var pothp = Math.min(10E6, potion / 3);
-                    var pot15 = Math.min(10E6, potion / 2);
-                    var pot25 = Math.min(10E6, potion / 1);
+                    var pot10 = Math.min(5E6, potion / 4);
+                    var pot15 = Math.min(5E6, potion / 2);
+                    var pot25 = Math.min(5E6, potion / 1);
+
+                    var pothp = Math.min(5E6, potion / 3);
+                    var pothp_gold = Math.min(10E6, potion / 1);
 
                     var reroll = reward * 5 / 8;
                     var potwitch = reward * 5 / 6;
@@ -719,6 +728,7 @@
                     $('#gold-pot15').val(pot15 >= 999 ? formatAsSpacedNumber(pot15, ' ') : roundShort(pot15));
                     $('#gold-pot25').val(pot25 >= 999 ? formatAsSpacedNumber(pot25, ' ') : roundShort(pot25));
                     $('#gold-pothp').val(pothp >= 999 ? formatAsSpacedNumber(pothp, ' ') : roundShort(pothp));
+                    $('#gold-pothp-gold').val(pothp_gold >= 999 ? formatAsSpacedNumber(pothp_gold, ' ') : roundShort(pothp_gold));
 
                     $('#gold-arena').val(arenagold >= 999 ? formatAsSpacedNumber(arenagold, ' ') : roundShort(arenagold));
 
