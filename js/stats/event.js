@@ -3662,14 +3662,12 @@ const UI = {
             UI.Files.$insecure.show();
             UI.Files.$beta.show();
             UI.Files.$cloudexport.show();
-            UI.Files.$cloudexport2.show();
             UI.FileUpdate.$textTimestamp.parent('div').removeClass('disabled');
         } else {
             UI.Files.$endpoint.hide();
             UI.Files.$insecure.hide();
             UI.Files.$beta.hide();
             UI.Files.$cloudexport.hide();
-            UI.Files.$cloudexport2.hide();
             UI.FileUpdate.$textTimestamp.parent('div').addClass('disabled');
         }
     },
