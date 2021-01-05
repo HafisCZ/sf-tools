@@ -691,17 +691,10 @@
             <div class="ui grid" data-op="step1" style="margin-top: -14em;">
                 <div class="five wide column"></div>
                 <div class="six wide column">
-                    <div class="ui form">
-                        <div class="field">
-                            <label style="color: white;">Server URL</label>
-                            <div class="ui search selection compact dropdown" data-op="textServer">
-                                <div class="text"></div>
-                                <i class="dropdown icon"></i>
-                            </div>
-                        </div>
+                    <div class="ui form darker-placeholder">
                         <div class="field">
                             <label style="color: white;">Username</label>
-                            <input type="text" data-op="textUsername">
+                            <input type="text" data-op="textUsername" placeholder="username@s1.sfgame.de">
                         </div>
                         <div class="field">
                             <label style="color: white;">Password</label>
@@ -711,13 +704,13 @@
                             <div class="field">
                                 <div class="ui radio checkbox" data-op="modeDefault">
                                     <input type="radio" name="endpointMode" checked="checked">
-                                    <label style="color: white;">Default mode</label>
+                                    <label style="color: white;">Capture own + selected characters</label>
                                 </div>
                             </div>
                             <div class="field">
                                 <div class="ui radio checkbox" data-op="modeOwn">
                                     <input type="radio" name="endpointMode">
-                                    <label style="color: white;">Capture only own character</label>
+                                    <label style="color: white;">Capture own character</label>
                                 </div>
                             </div>
                             <div class="field">

@@ -3440,7 +3440,6 @@ class EndpointView extends View {
         this.$errorText = this.$parent.find('[data-op="error-text"]');
         this.$errorButton = this.$parent.find('[data-op="error-button"]');
 
-        this.$server = this.$parent.find('[data-op="textServer"]');
         this.$username = this.$parent.find('[data-op="textUsername"]');
         this.$password = this.$parent.find('[data-op="textPassword"]');
 
@@ -3454,16 +3453,6 @@ class EndpointView extends View {
 
         this.endpoint = undefined;
         this.downloading = [];
-
-        this.$server.dropdown({
-            showOnFocus: false,
-            values: SERVERS.map((s, i) => {
-                return {
-                    name: s,
-                    value: s
-                }
-            })
-        }).dropdown('set selected', 'w1.sfgame.net');
 
         this.$parent.find('[data-op="back"]').click(() => this.funcShutdown());
 
@@ -3480,13 +3469,15 @@ class EndpointView extends View {
         this.$login = this.$parent.find('[data-op="login"]').click(() => {
             var username = this.$username.val();
             var password = this.$password.val();
-            var server = this.$server.dropdown('get value');
+            var server = '';
 
             var own = this.$modeOwn.checkbox('is checked');
             var all = this.$modeAll.checkbox('is checked');
 
             if (/^(.{4,})@(.+\.sfgame\..+)$/.test(username)) {
                 [, username, server, ] = username.split(/^(.{4,})@(.+\.sfgame\..+)$/);
+            } else {
+                return;
             }
 
             if (username.length < 4 || password.length < 4 || !/\.sfgame\./.test(server)) {

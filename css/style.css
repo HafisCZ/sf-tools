@@ -20,6 +20,11 @@ body {
     color: #db0e00 !important;
 }
 
+.darker-placeholder ::placeholder {
+    color: black !important;
+    opacity: 50% !important;
+}
+
 .file-category .segment:nth-last-child(2) {
     margin-bottom: 0;
 }
