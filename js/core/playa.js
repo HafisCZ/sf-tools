@@ -913,8 +913,11 @@ class SFPlayer {
             Index: this.Action.Index
         };
 
-        if (this.Action.Status < 0 || this.Action.Finish < this.Timestamp) {
-            this.Action.Status = 0;
+        if (this.Action.Status < 0) {
+            this.Action.Status += 256;
+        }
+
+        if (this.Action.Status == 0) {
             this.Action.Index = 0;
             this.Action.Finish = 0;
         }

@@ -1736,13 +1736,14 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Status': {
         expr: p => p.Action.Status,
-        format: (p, c, e, x) => PLAYER_ACTIONS[Math.max(0, x)],
+        format: (p, c, e, x) => PLAYER_ACTIONS[x],
         difference: false,
         statistics: false
     },
     'Action Finish': {
         expr: p => p.Action.Finish,
         format: (p, c, e, x) => x <= 0 ? '' : formatDate(x),
+        width: 160,
         difference: false,
         statistics: false
     },
@@ -2025,6 +2026,7 @@ const SP_KEYWORD_MAPPING_0 = {
     'Last Active': {
         expr: p => p.LastOnline,
         format: (p, c, e, x) => formatDate(x),
+        width: 160,
         difference: false,
         statistics: false
     },
