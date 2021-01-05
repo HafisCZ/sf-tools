@@ -3660,13 +3660,11 @@ const UI = {
         if (isbeta) {
             UI.Files.$endpoint.show();
             UI.Files.$insecure.show();
-            UI.Files.$beta.show();
             UI.Files.$cloudexport.show();
             UI.FileUpdate.$textTimestamp.parent('div').removeClass('disabled');
         } else {
             UI.Files.$endpoint.hide();
             UI.Files.$insecure.hide();
-            UI.Files.$beta.hide();
             UI.Files.$cloudexport.hide();
             UI.FileUpdate.$textTimestamp.parent('div').addClass('disabled');
         }

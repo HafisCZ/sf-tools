@@ -271,9 +271,9 @@
                             <input type="checkbox">
                             <label>Allow restricted tags</label>
                         </div>
-                        <div class="ui checkbox sf-margin left-20 top-05" data-op="checkbox-beta">
+                        <div class="ui checkbox sf-margin left-20 top-05 checkbox-war" data-op="checkbox-beta">
                             <input type="checkbox">
-                            <label>Enable experimental features</label>
+                            <label>Experimental features</label>
                         </div>
                     </div>
                 </div>
@@ -936,8 +936,7 @@
                 var temp = keys['temp'] == -1;
                 var slot = isNaN(keys['slot']) ? 0 : Math.max(0, Number(keys['slot']));
 
-                var lazy = keys['lazy'] == -1 || SiteOptions.lazy;
-                var beta = keys['beta'] == -1 || SiteOptions.beta;
+                var beta = SiteOptions.beta;
                 let inventory = keys['inv'] == -1 || SiteOptions.inventory;
 
                 if (temp) {
@@ -977,7 +976,7 @@
                     UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
                 }, {
                     temporary: temp,
-                    lazy: lazy,
+                    lazy: SiteOptions.lazy,
                     slot: slot,
                     inventory: inventory,
                     trackers: true

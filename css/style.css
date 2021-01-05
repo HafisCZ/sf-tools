@@ -16,6 +16,10 @@ body {
     font-size: 85%;
 }
 
+.checkbox-war label {
+    color: #db0e00 !important;
+}
+
 .file-category .segment:nth-last-child(2) {
     margin-bottom: 0;
 }
