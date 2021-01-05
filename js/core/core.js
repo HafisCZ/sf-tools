@@ -1219,6 +1219,14 @@ const Storage = new (class {
                     }
                 }
 
+                if (player.save && !player.own && !owngroups.includes(player.groupname) && [ 'w40_net_p104', 'w40_net_p1416' ].includes(player.id)) {
+                    for (let i = 0; i < 49; i++) player.save[208 + i] = 0;
+                    for (let i = 0; i < 5; i++) player.save[253 + i] = 0;
+                    for (let i = 0; i < 11; i++) player.save[183 + i] = 0;
+                    player.save[164] = 0;
+                    player.save[165] = 0;
+                }
+
                 if (!file.players.find(p => p.name === player.name)) {
                     file.players.push(player);
                 }
