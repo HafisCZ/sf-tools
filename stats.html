@@ -674,17 +674,6 @@
             </div>
         </div>
 
-        <!-- DevView -->
-        <div id="modal-dev" class="ui basic modal">
-            <div class="content text-center">
-                <table class="ui celled structured table table-group" style="font-size: 80% !important;">
-                    <tbody data-op="content">
-
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
         <div id="modal-endpoint" class="ui basic modal">
             <iframe style="opacity: 0%;" data-op="iframe"></iframe>
             <div class="ui grid" data-op="step1" style="margin-top: -14em;">
@@ -893,7 +882,7 @@
                 }
 
                 SiteOptions.params.temp = temp;
-                SiteOptions.params.beta = beta || dev;
+                SiteOptions.params.beta = beta;
 
                 UI.preinitialize();
 
@@ -908,7 +897,7 @@
                     $('#show-settings').click(() => UI.show(UI.Settings));
                     $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
 
-                    UI.beta(beta || dev);
+                    UI.beta(beta);
 
                     if (localStorage.termsOK != 'true') {
                         UI.show(UI.Setup);
