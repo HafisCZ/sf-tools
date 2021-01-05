@@ -17,107 +17,6 @@ class View {
     }
 }
 
-// Developer View
-class DeveloperView extends View {
-    constructor (parent) {
-        super(parent);
-
-        this.$players = this.$parent.find('[data-op="players"]');
-        this.$groups = this.$parent.find('[data-op="groups"]');
-    }
-
-    show () {
-        var players = '';
-        var groups = '';
-
-        for (var obj of Object.values(Database.Players)) {
-            for (var [timestamp, sobj] of obj.List) {
-                players += `<tr class="clickable" data-player-id="${ sobj.Identifier }" data-player-ts="${ timestamp }"><td>${ sobj.Name }</td><td>${ sobj.Identifier }</td><td>${ formatDate(timestamp) }</td><td class="text-left"><i class="small trash alternate glow outline icon" data-remove-id="${ sobj.Identifier }" data-remove-ts="${ timestamp }"></i></td></tr>`;
-            }
-        }
-
-        for (var obj of Object.values(Database.Groups)) {
-            for (var [timestamp, sobj] of obj.List) {
-                groups += `<tr class="clickable" data-group-id="${ sobj.Identifier }" data-group-ts="${ timestamp }"><td>${ sobj.Name }</td><td>${ sobj.Identifier }</td><td>${ formatDate(timestamp) }</td><td class="text-left"><i class="small trash alternate glow outline icon" data-remove-id="${ sobj.Identifier }" data-remove-ts="${ timestamp }"></i></td></tr>`;
-            }
-        }
-
-        this.$players.html(players);
-        this.$groups.html(groups);
-
-        $('[data-remove-id][data-remove-ts]').click((event) => {
-            var obj = $(event.currentTarget);
-            Storage.removeByIDSingle(obj.attr('data-remove-id'), obj.attr('data-remove-ts'));
-
-            this.show();
-        });
-
-        $('[data-player-id][data-player-ts]').click((event) => {
-            var obj = $(event.currentTarget);
-            UI.DeveloperFloat.show(obj.attr('data-player-id'), obj.attr('data-player-ts'));
-        });
-
-        $('[data-group-id][data-group-ts]').click((event) => {
-            var obj = $(event.currentTarget);
-            UI.DeveloperFloat.show(obj.attr('data-group-id'), obj.attr('data-group-ts'), true);
-        });
-    }
-}
-
-// Developer Float View
-class DeveloperFloatView extends View {
-    constructor (parent) {
-        super(parent);
-
-        this.$content = this.$parent.find('[data-op="content"]');
-    }
-
-    list (obj, pref = []) {
-        if (!obj) return [];
-        else {
-            var kv = [];
-            for (var [k, v] of Object.entries(obj)) {
-                if (typeof(v) == 'object') {
-                    kv.push(... this.list(v, [ ...pref, k ]));
-                } else {
-                    kv.push([[ ...pref, k ], v]);
-                }
-            }
-
-            return kv;
-        }
-    }
-
-    show (id, ts, isgroup = false) {
-        this.$parent.modal({
-            centered: false,
-            transition: 'fade'
-        }).modal('show');
-
-        var obj = isgroup ? Database.getGroup(id, ts) : Database.getPlayer(id, ts);
-        var content = '';
-        var list = this.list(obj);
-        var len = Math.ceil(list.length / 3)
-
-        for (var i = 0; i < len; i++) {
-            var [key, val] = list[i];
-            var [key2, val2] = list[i + len] || [ undefined, undefined ];
-            var [key3, val3] = list[i + len * 2] || [ undefined, undefined ];
-            content += `
-            <tr>
-                <td>${ key.join('.') }</td>
-                <td>${ val }</td>
-                <td>${ key2 ? key2.join('.') : '' }</td>
-                <td>${ key2 ? val2 : '' }</td>
-                <td>${ key3 ? key3.join('.') : '' }</td>
-                <td>${ key3 ? val3 : '' }</td>
-            </tr>`;
-        }
-
-        this.$content.html(content);
-    }
-}
-
 // Group Detail View
 class GroupDetailView extends View {
     constructor (parent) {
@@ -3671,8 +3570,6 @@ const UI = {
         UI.PlayerHistory = new PlayerHistoryView('view-history');
         UI.PlayerDetail = new PlayerDetailFloatView('modal-playerdetail');
         UI.GroupDetail = new GroupDetailView('view-groupdetail');
-        UI.Developer = new DeveloperView('view-developer');
-        UI.DeveloperFloat = new DeveloperFloatView('modal-dev');
         UI.ChangeLogs = new ChangeLogsView('view-changelog');
         UI.Endpoint = new EndpointView('modal-endpoint');
         UI.ConfirmDialog = new ConfirmDialogView('modal-confirm');
