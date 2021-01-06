@@ -1878,8 +1878,8 @@ const SettingsCommands = [
         Format expression
     */
     new Command(
-        /^format (.+)$/,
-        (root, expression) => {
+        /^(format|expf) (.+)$/,
+        (root, token, expression) => {
             if (ARG_FORMATTERS.hasOwnProperty(expression)) {
                 root.addFormatExpression(ARG_FORMATTERS[expression])
             } else {
@@ -1889,7 +1889,7 @@ const SettingsCommands = [
                 }
             }
         },
-        (root, expression) => SFormat.Keyword('format ') + (ARG_FORMATTERS.hasOwnProperty(expression) ? SFormat.Constant(expression) : Expression.format(expression, root))
+        (root, token, expression) => SFormat.Keyword(`${ token } `) + (ARG_FORMATTERS.hasOwnProperty(expression) ? SFormat.Constant(expression) : Expression.format(expression, root))
     ),
     /*
         Category
