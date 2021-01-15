@@ -77,7 +77,7 @@ class GroupDetailView extends View {
         this.$parent.find('[data-op="export-s"]').click(() => Storage.exportGroupData(this.identifier, [ this.timestamp ]));
         this.$parent.find('[data-op="export-sr"]').click(() => Storage.exportGroupData(this.identifier, [ this.timestamp, Number(this.reference) ]));
         this.$parent.find('[data-op="share"]').click(() => {
-            UI.OnlineShareFile.show(Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]), this.table.getSettings(), false);
+            UI.OnlineShareFile.show(Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]), this.table.getSettings());
         });
 
         // Context menu
@@ -742,7 +742,7 @@ class PlayerHistoryView extends View {
         this.$parent.find('[data-op="export-l"]').click(() => Storage.exportPlayerData(this.identifier, [ this.list[0][0] ]));
         this.$parent.find('[data-op="export-l5"]').click(() => Storage.exportPlayerData(this.identifier, this.list.slice(0, 5).map(entry => entry[0])));
         this.$parent.find('[data-op="share"]').click(() => {
-            UI.OnlineShareFile.show(Storage.getExportPlayerData(this.identifier, Database.Players[this.identifier].List.map(x => x[0])), this.table.getSettings(), false);
+            UI.OnlineShareFile.show(Storage.getExportPlayerData(this.identifier, Database.Players[this.identifier].List.map(x => x[0])), this.table.getSettings());
         });
 
         this.$name = this.$parent.find('[data-op="name"]');
@@ -908,7 +908,7 @@ class BrowseView extends View {
                             ids.push(source.attr('data-id'));
                         }
 
-                        UI.OnlineShareFile.show(Storage.getExportManyPlayerData(ids), '', false);
+                        UI.OnlineShareFile.show(Storage.getExportManyPlayerData(ids), '');
                     }
                 },
                 {
@@ -1336,7 +1336,7 @@ class GroupsView extends View {
                     label: 'Share',
                     action: (source) => {
                         let group = source.attr('data-id');
-                        UI.OnlineShareFile.show(Storage.getExportGroupData(group, Database.Groups[group].List.map(x => x[0])), '', false);
+                        UI.OnlineShareFile.show(Storage.getExportGroupData(group, Database.Groups[group].List.map(x => x[0])), '');
                     }
                 },
                 {
@@ -1458,7 +1458,7 @@ class PlayersView extends View {
                 {
                     label: 'Share',
                     action: (source) => {
-                        UI.OnlineShareFile.show(Storage.getExportManyPlayerData([ source.attr('data-id') ]), '', false);
+                        UI.OnlineShareFile.show(Storage.getExportManyPlayerData([ source.attr('data-id') ]), '');
                     }
                 },
                 {
@@ -1787,7 +1787,7 @@ class FilesView extends View {
 
         this.$cloudexport = this.$parent.find('[data-op="cloud-export"]').click(() => {
             if (Storage.files().length) {
-                UI.OnlineShareFile.show(Storage.getExportData(), '', true);
+                UI.OnlineShareFile.show(Storage.getExportData(), '');
             }
         });
 
@@ -1812,7 +1812,7 @@ class FilesView extends View {
         this.$cloudexport2 = this.$parent.find('[data-op="cloud-export-partial"]').click(() => {
             var array = this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')));
             if (array.length > 0) {
-                UI.OnlineShareFile.show(Storage.getExportData(array), '', true);
+                UI.OnlineShareFile.show(Storage.getExportData(array), '');
             }
         });
 
@@ -2775,7 +2775,7 @@ class OnlineShareFileView extends View {
         });
     }
 
-    show (data, bundledSettings = '', forceOnce = false) {
+    show (data, bundledSettings = '') {
         // Shared object
         this.sharedObj = {
             data: data,
@@ -2791,12 +2791,6 @@ class OnlineShareFileView extends View {
             this.$bundle.checkbox('set disabled');
         } else {
             this.$bundle.checkbox('set enabled');
-        }
-
-        if (forceOnce) {
-            this.$once.checkbox('set disabled');
-        } else {
-            this.$once.checkbox('set enabled');
         }
 
         // Toggle buttons
