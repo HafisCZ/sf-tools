@@ -2779,8 +2779,7 @@ class OnlineShareFileView extends View {
         // Shared object
         this.sharedObj = {
             data: data,
-            settings: bundledSettings,
-            once: forceOnce
+            settings: bundledSettings
         };
 
         // Setup checkboxes
