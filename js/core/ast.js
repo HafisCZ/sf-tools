@@ -641,6 +641,16 @@ class Expression {
             }
         } else if (typeof node === 'string' && node in tableVariables && !isNaN(tableVariables[node].ast.root)) {
             return tableVariables[node].ast.root;
+        } else if (typeof node == 'string' && /\~\d+/.test(node)) {
+            let index = parseInt(node.slice(1));
+            if (index < this.subexpressions.length) {
+                let subnode = this.subexpressions[index];
+                if (typeof subnode == 'number' || (typeof subnode == 'object' && subnode.raw)) {
+                    return subnode;
+                } else if (typeof subnode == 'string' && subnode in tableVariables && !isNaN(tableVariable[subnode].ast.root)) {
+                    return tableVariables[subnode].ast.root;
+                }
+            }
         }
 
         return node;
