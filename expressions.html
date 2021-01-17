@@ -30,15 +30,24 @@
         </div>
 
         <div class="ui main container">
-            <div class="ui fluid expr input">
-                <input id="expr" type="text" placeholder="Your expression">
+            <div class="ui fluid expr input ta-wrapper">
+                <input id="expr" class="ta-area" type="text" placeholder="Your expression">
+                <div id="efor" class="ta-content" style="width: 100%; margin-left: 1em; margin-top: 0.5em;"></div>
             </div>
             <br/>
             <div class="ui form">
-                <div class="field">
-                    <label>Expression:</label>
-                    <div class="ui fluid input">
-                        <input id="estr" disabled type="text">
+                <div class="two fields">
+                    <div class="thirteen wide field">
+                        <label>Expression:</label>
+                        <div class="ui fluid input">
+                            <input id="estr" disabled type="text">
+                        </div>
+                    </div>
+                    <div class="three wide field">
+                        <label>Result (scope-less):</label>
+                        <div class="ui fluid input">
+                            <input id="eres" disabled type="text">
+                        </div>
                     </div>
                 </div>
                 <div class="field">
@@ -50,8 +59,11 @@
 
         <script type="text/javascript">
             $('.ui.expr.input').on('change input', function () {
-                let ex = new Expression($('#expr').val());
+                let expr = $('#expr').val()
+                let ex = new Expression(expr);
                 $('#estr').val(ex.toString());
+                $('#eres').val(ex.eval());
+                $('#efor').html(Expression.format(expr));
                 $('textarea').val(JSON.stringify(ex, null, 2));
             });
         </script>
