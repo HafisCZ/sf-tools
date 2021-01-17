@@ -2203,6 +2203,8 @@ class SettingsView extends View {
         this.$save = this.$parent.find('[data-op="save"]').click(() => this.save());
         this.$delete = this.$parent.find('[data-op="delete"]').click(() => this.remove());
 
+        this.$parent.find('[data-op="save-apply-template"]').click(() => this.saveApplyTemplate());
+
         /*
             Save as template dialog
         */
@@ -2408,6 +2410,12 @@ class SettingsView extends View {
                 this.show();
             }
         });
+    }
+
+    saveApplyTemplate () {
+        Templates.save(this.settings.parent, this.$area.val());
+        this.save();
+        this.hide();
     }
 
     save () {
