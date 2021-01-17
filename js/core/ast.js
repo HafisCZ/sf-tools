@@ -154,6 +154,8 @@ class Expression {
                     value = SFormat.ReservedItemizable(token);
                 } else if (root.constants.exists(token)) {
                     value = SFormat.Constant(token);
+                } else if (/\~\d+/.test(token)) {
+                    value = SFormat.Enum(token);
                 } else if (SP_ENUMS.hasOwnProperty(token)) {
                     value = SFormat.Enum(token);
                 } else if (token == '$' || token == '$!') {
