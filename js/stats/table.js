@@ -3732,7 +3732,7 @@ class Settings {
                     loopLines = [];
                 }
             } else if (loop) {
-                loopLines.push(line);
+                loopLines.push(line.trim());
             } else {
                 processedLines.push(line);
             }
@@ -3755,10 +3755,16 @@ class Settings {
                     value = [ value ];
                 }
 
-                outputLines.push(
-                    ... lines,
-                    ... name.map((key, index) => `var ${ key } ${ value[index] }`)
-                );
+                let vars = name.map((key, index) => `var ${ key } ${ value[index] }`);
+                
+                for (let line of lines) {
+                    outputLines.push(line);
+                    if (/^(?:\w+(?:\,\w+)*:|)(?:header|show)(?: .+)?$/.test(line)) {
+                        outputLines.push(... vars);
+                    }
+                }
+
+                outputLines.push(... vars);
             }
         }
 
