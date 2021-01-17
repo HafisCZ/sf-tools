@@ -594,10 +594,19 @@ class Expression {
                 return `str(${ node.args })`;
             } else if (node.op) {
                 return `${ typeof(node.op) == 'string' ? node.op : node.op.name }(${ node.args.map(arg => typeof arg == 'undefined' ? 'undefined' : this.toString(arg)).join(', ') })`;
+            } else if (Array.isArray(node)) {
+                return `array(${ node.map(item => this.toString(item)).join(', ') })`;
             } else {
                 return `item(${ node.key }, ${ node.val })`;
             }
         } else {
+            if (typeof(node) == 'string' && /\~\d+/.test(node)) {
+                let index = parseInt(node.slice(1));
+                if (index < this.subexpressions.length) {
+                    return this.toString(this.subexpressions[index]);
+                }
+            }
+
             return node;
         }
     }
