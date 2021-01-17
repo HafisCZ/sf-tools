@@ -780,6 +780,10 @@ class SFPlayer {
             this.Runes.Achievements = 6;
         }
 
+        let partCold = 0;
+        let partFire = 0;
+        let partLightning = 0;
+
         for (var item of Object.values(this.Items)) {
             if (item.HasRune && item.Type != 1) {
                 var rune = item.AttributeTypes[2];
@@ -812,19 +816,19 @@ class SFPlayer {
                     }
                 } else if (rune == 36) {
                     this.Runes.ResistanceFire += value;
-                    this.Runes.Resistance += Math.trunc(value / 3);
+                    partFire += value;
                     if (RUNE_VALUE.SINGLE_RESISTANCE(value) > this.Runes.Runes) {
                         this.Runes.Runes = RUNE_VALUE.SINGLE_RESISTANCE(value);
                     }
                 } else if (rune == 37) {
                     this.Runes.ResistanceCold += value;
-                    this.Runes.Resistance += Math.trunc(value / 3);
+                    partCold += value;
                     if (RUNE_VALUE.SINGLE_RESISTANCE(value) > this.Runes.Runes) {
                         this.Runes.Runes = RUNE_VALUE.SINGLE_RESISTANCE(value);
                     }
                 } else if (rune == 38) {
                     this.Runes.ResistanceLightning += value;
-                    this.Runes.Resistance += Math.trunc(value / 3);
+                    partLightning += value;
                     if (RUNE_VALUE.SINGLE_RESISTANCE(value) > this.Runes.Runes) {
                         this.Runes.Runes = RUNE_VALUE.SINGLE_RESISTANCE(value);
                     }
@@ -884,7 +888,12 @@ class SFPlayer {
         this.Runes.Quality = Math.min(5, this.Runes.Quality);
         this.Runes.XP = Math.min(10, this.Runes.XP);
         this.Runes.Health = Math.min(15, this.Runes.Health);
+
+        this.Runes.Resistance += Math.min(25, Math.trunc(partFire / 3));
+        this.Runes.Resistance += Math.min(25, Math.trunc(partCold / 3));
+        this.Runes.Resistance += Math.min(25, Math.trunc(partLightning / 3));
         this.Runes.Resistance = Math.min(75, this.Runes.Resistance);
+
         this.Runes.ResistanceFire = Math.min(75, this.Runes.ResistanceFire);
         this.Runes.ResistanceCold = Math.min(75, this.Runes.ResistanceCold);
         this.Runes.ResistanceLightning = Math.min(75, this.Runes.ResistanceLightning);
