@@ -2413,7 +2413,10 @@ class SettingsView extends View {
     }
 
     saveApplyTemplate () {
-        Templates.save(this.settings.parent, this.$area.val());
+        if (this.settings.parent) {
+            Templates.save(this.settings.parent, this.$area.val());
+        }
+
         this.save();
         this.hide();
     }
