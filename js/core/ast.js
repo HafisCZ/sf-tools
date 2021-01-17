@@ -1,4 +1,4 @@
-const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\-\>|\$\!|\$|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
+const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\~\d+|\;|\$\!|\$|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
 const PerformanceTracker = new (class {
     constructor () {
@@ -83,18 +83,34 @@ class Expression {
             if (count == 0) {
                 this.rstr = SHA1(this.tokens.join(''));
 
+                this.cacheable = true;
+                this.subexpressions = [];
+
                 // Get settings variable array
                 let tableVariables = (settings ? settings.variables : undefined) || {};
                 this.evalEmbeddedVariables(tableVariables);
 
                 // Generate tree
                 this.root = this.evalExpression();
+                while (this.tokens[0] == ';') {
+                    let sub_root = this.postProcess(tableVariables, this.root);
+                    this.cacheable &&= this.checkCacheableNode(sub_root);
+                    this.subexpressions.push(sub_root);
+
+                    this.tokens.shift();
+                    while (this.tokens[0] == ';') {
+                        this.subexpressions.push(undefined);
+                        this.tokens.shift();
+                    }
+
+                    this.root = this.evalExpression();
+                }
 
                 // Clean tree
                 this.root = this.postProcess(tableVariables, this.root);
 
                 // Check if tree is cacheable or not
-                this.cacheable = this.checkCacheableNode(this.root);
+                this.cacheable &&= this.checkCacheableNode(this.root);
             } else {
                 this.empty = true;
             }
@@ -631,6 +647,8 @@ class Expression {
     // Outside eval function (always call this from outside of the Expression class)
     eval (player, reference = undefined, environment = { functions: { }, variables: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined, functionScope = undefined, header = undefined) {
         /* PERFORMANCE THINGY */ PerformanceTracker.tick();
+        this.subexpressions_cache_indexes = [];
+        this.subexpressions_cache = [];
         if (functionScope || extra || scope || !this.cacheable) {
             return this.evalInternal(player, reference, environment, scope, extra, functionScope, header, this.root);
         } else {
@@ -907,6 +925,18 @@ class Expression {
             } else if (node == 'header') {
                 // Return current header
                 return header;
+            } else if (typeof node != 'undefined' && node.startsWith('~')) {
+                // Return sub expressions
+                let sub_index = parseInt(node.slice(1));
+                if (sub_index < this.subexpressions.length) {
+                    if (!this.subexpressions_cache_indexes.includes(sub_index)) {
+                        this.subexpressions_cache_indexes.push(sub_index);
+                        this.subexpressions_cache[sub_index] = this.evalInternal(player, reference, environment, scope, extra, functionScope, header, this.subexpressions[sub_index]);
+                    }
+                    return this.subexpressions_cache[sub_index];
+                } else {
+                    return undefined;
+                }
             } else if (node == 'row_index') {
                 // Return row index
                 return environment && environment.row_indexes && player ? environment.row_indexes[`${ player.Identifier }_${ player.Timestamp }`] : undefined;
