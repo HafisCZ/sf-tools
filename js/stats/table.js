@@ -2248,6 +2248,14 @@ const SettingsCommands = [
         (root, value) => SFormat.Keyword('visible ') + SFormat.Bool(value)
     ),
     /*
+        Cell content breaking
+    */
+    new Command(
+        /^breakline (on|off)$/,
+        (root, value) => root.addBreaklineRule(ARG_MAP[value]),
+        (root, value) => SFormat.Keyword('breakline ') + SFormat.Bool(value)
+    ),
+    /*
         Cell border
     */
     new Command(
@@ -2836,6 +2844,7 @@ class Settings {
         return {
             extra: undefined,
             format: undefined,
+            breakline: true,
             formatDifference: undefined,
             formatStatistics: undefined,
             rules: new RuleEvaluator(),
@@ -2856,6 +2865,11 @@ class Settings {
                 // Add extra
                 if (typeof output != 'undefined' && this.extra) {
                     output = `${ output }${ this.extra(player) }`;
+                }
+
+                // Replace spaces with unbreakable ones
+                if (this.breakline == 0) {
+                    output = output.replace(/\ /g, '&nbsp;')
                 }
 
                 // Return value
@@ -2989,6 +3003,13 @@ class Settings {
         let object = (this.row || this.definition || this.header);
         if (object) {
             object.value.format = expression;
+        }
+    }
+
+    addBreaklineRule (value) {
+        let object = (this.row || this.definition || this.header);
+        if (object) {
+            object.value.breakline = value;
         }
     }
 
@@ -3756,7 +3777,7 @@ class Settings {
                 }
 
                 let vars = name.map((key, index) => `var ${ key } ${ value[index] }`);
-                
+
                 for (let line of lines) {
                     outputLines.push(line);
                     if (/^(?:\w+(?:\,\w+)*:|)(?:header|show)(?: .+)?$/.test(line)) {
