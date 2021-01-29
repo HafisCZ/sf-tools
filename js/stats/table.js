@@ -7,9 +7,9 @@ const TableType = {
 
 // Category
 class HeaderGroup {
-    constructor ({ name, empty }, i) {
-        this.name = name;
-        this.empty = empty;
+    constructor ({ name, empty, expa_eval }, i) {
+        this.name = expa_eval != undefined ? expa_eval : name;
+        this.empty =  expa_eval != undefined ? expa_eval.length == 0 : empty;
         this.index = i;
 
         this.sortkey = `${ name }.${ i }`;
@@ -143,6 +143,14 @@ class TableInstance {
 
         // Loop over all categories
         for (let { object: category, index: categoryIndex, array: categories } of iterate(this.settings.categories)) {
+            // Add expression alias
+            if (category.expa) {
+                category.expa_eval = category.expa(this.settings, category);
+                if (category.expa_eval != undefined) {
+                    category.expa_eval = String(category.expa_eval);
+                }
+            }
+
             // Create header group
             let group = new HeaderGroup(category, this.config.length);
             let lastCategory = categoryIndex == categories.length - 1;
@@ -2305,7 +2313,7 @@ const SettingsCommands = [
         (root, expression) => {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addLocal('expa', (a, b) => ast.eval(undefined, undefined, a, undefined, undefined, undefined, b));
+                root.addAliasExpression((a, b) => ast.eval(undefined, undefined, a, undefined, undefined, undefined, b));
             }
         },
         (root, expression) => SFormat.Keyword('expa ') + Expression.format(expression, root)
@@ -2816,6 +2824,8 @@ class Settings {
         // Push category
         let obj = this.category;
         if (obj) {
+            this.merge(obj, this.sharedCategory);
+
             this.categories.push(obj);
             this.category = null;
         }
@@ -2995,6 +3005,13 @@ class Settings {
         let object = (this.row || this.definition || this.header);
         if (object) {
             object.color.expression = expression;
+        }
+    }
+
+    addAliasExpression (expression) {
+        let object = (this.row || this.definition || this.header || this.category);
+        if (object) {
+            object['expa'] = expression;
         }
     }
 
