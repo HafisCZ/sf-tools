@@ -1,4 +1,4 @@
-const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\~\d+|\;|\$\!|\$|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
+const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\~\d+|\`[^\`]*\`|\;|\$\!|\$|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
 const PerformanceTracker = new (class {
     constructor () {
@@ -136,6 +136,14 @@ class Expression {
                     continue;
                 } else if (token.length > 1 && ['\'', '\"'].includes(token[0]) && ['\'', '\"'].includes(token[token.length - 1])) {
                     value = token[0] + SFormat.Comment(token.slice(1, token.length - 1)) + token[token.length - 1];
+                } else if (token.length > 1 && token[0] == '`' && token[token.length - 1] == '`') {
+                    value = `\`${ token.slice(1, token.length - 1).split(/(\{\d+\})/g).map(st => {
+                        if (/(\{\d+\})/.test(st)) {
+                            return SFormat.Function(st);
+                        } else {
+                            return SFormat.Comment(st);
+                        }
+                    }).join('') }\``;
                 } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort', 'distinct', 'indexof', 'var', 'tracker' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
                 } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries' ].includes(token) || root.variables.hasOwnProperty(token)) {
@@ -334,6 +342,10 @@ class Expression {
         return /[_a-zA-Z]\w*/.test(token) && follow == '(';
     }
 
+    isTemplate (token, follow) {
+        return /^\`.*\`$/.test(token) && follow == '(';
+    }
+
     // Get global function
     getFunction () {
         var name = this.get();
@@ -354,6 +366,35 @@ class Expression {
 
             return {
                 op: name,
+                args: args
+            }
+        }
+    }
+
+    getTemplate () {
+        var val = this.get();
+        var args = [
+            {
+                raw: true,
+                args: val.slice(1, val.length - 1)
+            }
+        ];
+
+        this.get();
+
+        if (this.peek() == ')') {
+            this.get();
+            return {
+                op: 'format',
+                args: args
+            };
+        } else {
+            do {
+                args.push(this.evalExpression());
+            } while (this.get() == ',');
+
+            return {
+                op: 'format',
                 args: args
             }
         }
@@ -479,6 +520,9 @@ class Expression {
         } else if (this.isString(token)) {
             // Get string
             node = this.getString();
+        } else if (this.isTemplate(token, follow)) {
+            // Get template
+            node = this.getTemplate();
         } else if (this.isUnaryOperator(token)) {
             // Get unary operator
             node = this.getUnaryOperator();
