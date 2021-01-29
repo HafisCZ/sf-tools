@@ -3797,7 +3797,7 @@ class Settings {
 
                 for (let line of lines) {
                     outputLines.push(line);
-                    if (/^(?:\w+(?:\,\w+)*:|)(?:header|show)(?: .+)?$/.test(line)) {
+                    if (/^(?:\w+(?:\,\w+)*:|)(?:header|show|category)(?: .+)?$/.test(line)) {
                         outputLines.push(... vars);
                     }
                 }
