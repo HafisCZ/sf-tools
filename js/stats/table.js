@@ -3665,7 +3665,7 @@ class Settings {
             var ignored = false;
 
             for (var i = 0; i < line.length; i++) {
-                if (line[i] == '\'' || line[i] == '\"') {
+                if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
                     if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
                     else {
                         ignored = ignored ? false : line[i];
@@ -3719,7 +3719,7 @@ class Settings {
             let ignored = false;
 
             for (let i = 0; i < line.length; i++) {
-                if (line[i] == '\'' || line[i] == '\"') {
+                if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
                     if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
                     else {
                         ignored = ignored ? false : line[i];
