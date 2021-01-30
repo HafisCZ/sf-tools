@@ -1495,12 +1495,18 @@ class RuleEvaluator {
     }
 }
 
+const FilterTypes = {
+    'Group': TableType.Group,
+    'Player': TableType.History,
+    'Players': TableType.Players
+};
+
 const SettingsCommands = [
     /*
         Ignore macro
     */
     new Command(
-        /^(?:(if|if not) (Group|Player|Players)|(endif|else))$/,
+        /^(?:(if|if not) (Group|Player|Players|.+)|(endif|else))$/,
         (root, key1, arg1, key2) => {
             if (key2) {
                 if (key2 == 'endif') {
@@ -1508,12 +1514,13 @@ const SettingsCommands = [
                 } else {
                     root.flipFilter();
                 }
+            } else if (arg1 in FilterTypes) {
+                root.setFilter(FilterTypes[arg1], key1 != 'if');
             } else {
-                root.setFilter({
-                    'Group': TableType.Group,
-                    'Player': TableType.History,
-                    'Players': TableType.Players
-                }[arg1], key1 != 'if');
+                let ast = new Expression(arg1);
+                if (ast.isValid()) {
+                    root.setFilter(ast, key1 != 'if');
+                }
             }
         },
         (root, key1, arg1, key2) => key2 ? SFormat.Macro(key2) : SFormat.Macro(`${ key1 } ${ arg1 }`)
@@ -2552,18 +2559,70 @@ class Settings {
 
         // Reset filter
         this.setFilter(null);
-
-        // Ignore flag
         let ignore = false;
 
         // Parse settings
-        for (let line of Settings.handleImports(string)) {
-            // Handle comments
+        for (let line of Settings.handleMacros(string, type)) {
+            // Find valid command
+            let command = SettingsCommands.find(command => command.isValid(line));
+            if (command) {
+                if (command == SettingsCommands[0]) {
+                    // Handle macros
+                    command.parse(this, line);
+
+                    // Set up filtering
+                    if (this.filter.type != null) {
+                        if (typeof this.filter.type != 'boolean') {
+                            if (this.filter.type instanceof Expression) {
+                                this.filter.type = this.filter.type.eval();
+                            } else {
+                                this.filter.type = this.filter.type == type
+                            }
+                        }
+
+                        ignore = this.filter.invert ? this.filter.type : !this.filter.type;
+                    } else {
+                        ignore = false;
+                    }
+                } else if (command == SettingsCommands[1] || command == SettingsCommands[2]) {
+                    // Ignore those
+                } else if (!ignore) {
+                    // Handle command
+                    command.parse(this, line);
+                }
+            }
+        }
+
+        // Push last category
+        this.pushCategory();
+    }
+
+    // Set line filter
+    setFilter (type, invert = false) {
+        this.filter = {
+            type: type,
+            invert: invert
+        }
+    }
+
+    // Flip filter
+    flipFilter () {
+        this.filter.invert = !this.filter.invert;
+    }
+
+    static handleMacros (originalString) {
+        let processedLines = [];
+
+        let loop = undefined;
+        let loopLines = [];
+
+        for (let line of originalString.split('\n')) {
+            // Comment handling
             let commentIndex = -1;
             let ignored = false;
 
             for (let i = 0; i < line.length; i++) {
-                if (line[i] == '\'' || line[i] == '\"') {
+                if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
                     if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
                     else {
                         ignored = ignored ? false : line[i];
@@ -2578,34 +2637,75 @@ class Settings {
                 line = line.slice(0, commentIndex);
             }
 
-            // Trim command
-            let trimmed = line.trim();
+            line = line.trim();
 
-            // Find valid command
-            let command = SettingsCommands.find(command => command.isValid(trimmed));
+            // Skip if line is empty
+            if (line.length == 0) {
+                continue;
+            }
 
-            if (command) {
-                if (command == SettingsCommands[0]) {
-                    // Handle macros
-                    command.parse(this, trimmed);
-
-                    // Set up filtering
-                    if (this.filter.type != null) {
-                        ignore = this.filter.invert ? (this.filter.type == type) : (this.filter.type != type);
-                    } else {
-                        ignore = false;
-                    }
-                } else if (command == SettingsCommands[1] || command == SettingsCommands[2]) {
-                    // Ignore those
-                } else if (!ignore) {
-                    // Handle command
-                    command.parse(this, trimmed);
+            if (SettingsCommands[3].isValid(line)) {
+                let [, key ] = line.match(/^import (.+)$/);
+                if (Templates.exists(key)) {
+                    processedLines.push(... Templates.get(key).split('\n'));
                 }
+            } else if (SettingsCommands[1].isValid(line)) {
+                loop = SettingsCommands[1].parse(null, line);
+            } else if (SettingsCommands[2].isValid(line)) {
+                if (loop) {
+                    processedLines.push(... Settings.handleLoop(loop, loopLines));
+
+                    loop = undefined;
+                    loopLines = [];
+                }
+            } else if (loop) {
+                loopLines.push(line);
+            } else {
+                processedLines.push(line);
             }
         }
 
-        // Push last category
-        this.pushCategory();
+        return processedLines;
+    }
+
+    static handleLoop({ name, ast }, lines) {
+        let outputLines = [];
+
+        let array = ast.eval();
+        if (array) {
+            if (!Array.isArray(array)) {
+                array = Object.values(array);
+            }
+
+            for (let value of array) {
+                if (!Array.isArray(value)) {
+                    value = [ value ];
+                }
+
+                let vars = name.map((key, index) => `var ${ key } ${ value[index] }`);
+                let reps = name.map((key, index) => {
+                    return {
+                        exp: new RegExp(`__${ key }__`),
+                        val: value[index]
+                    };
+                });
+
+                for (let line of lines) {
+                    for (let { exp, val } of reps) {
+                        line = line.replace(exp, val)
+                    }
+
+                    outputLines.push(line);
+                    if (/^(?:\w+(?:\,\w+)*:|)(?:header|show|category)(?: .+)?$/.test(line)) {
+                        outputLines.push(... vars);
+                    }
+                }
+
+                outputLines.push(... vars);
+            }
+        }
+
+        return outputLines;
     }
 
     // Merge definition to object
@@ -3174,19 +3274,6 @@ class Settings {
         }
     }
 
-    // Set line filter
-    setFilter (type, invert = false) {
-        this.filter = {
-            type: type,
-            invert: invert
-        }
-    }
-
-    // Flip filter
-    flipFilter () {
-        this.filter.invert = !this.filter.invert;
-    }
-
     // Random getters and stuff
     getIndexStyle () {
         return this.globals.indexed;
@@ -3652,7 +3739,7 @@ class Settings {
     static parseConstants(string) {
         var settings = new Settings('');
 
-        for (var line of Settings.handleImports(string)) {
+        for (var line of Settings.handleMacros(string)) {
             var commentIndex = line.indexOf('#');
             if (commentIndex != -1) {
                 line = line.slice(0, commentIndex);
@@ -3721,92 +3808,6 @@ class Settings {
         }
 
         return content;
-    }
-
-    static handleImports (originalString) {
-        let processedLines = [];
-
-        let loop = undefined;
-        let loopLines = [];
-
-        for (let line of originalString.split('\n')) {
-            let ltrim = line.trim();
-
-            let commentIndex = -1;
-            let ignored = false;
-
-            for (let i = 0; i < line.length; i++) {
-                if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
-                    if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
-                    else {
-                        ignored = ignored ? false : line[i];
-                    }
-                } else if (line[i] == '#' && !ignored) {
-                    commentIndex = i;
-                    break;
-                }
-            }
-
-            if (commentIndex != -1) {
-                ltrim = line.slice(0, commentIndex).trim();
-            }
-
-            if (ltrim.length == 0) {
-                continue;
-            }
-
-            if (SettingsCommands[3].isValid(ltrim)) {
-                let [, key ] = line.match(/^import (.+)$/);
-                if (Templates.exists(key)) {
-                    processedLines.push(... Templates.get(key).split('\n'));
-                }
-            } else if (SettingsCommands[1].isValid(ltrim)) {
-                loop = SettingsCommands[1].parse(null, ltrim);
-            } else if (SettingsCommands[2].isValid(ltrim)) {
-                if (loop) {
-                    processedLines.push(... Settings.handleLoop(loop, loopLines));
-
-                    loop = undefined;
-                    loopLines = [];
-                }
-            } else if (loop) {
-                loopLines.push(line.trim());
-            } else {
-                processedLines.push(line);
-            }
-        }
-
-        return processedLines;
-    }
-
-    static handleLoop({ name, ast }, lines) {
-        let outputLines = [];
-
-        let array = ast.eval();
-        if (array) {
-            if (!Array.isArray(array)) {
-                array = Object.values(array);
-            }
-
-            for (let value of array) {
-                if (!Array.isArray(value)) {
-                    value = [ value ];
-                }
-
-                let vars = name.map((key, index) => `var ${ key } ${ value[index] }`);
-
-                for (let line of lines) {
-                    outputLines.push(line);
-                    if (/^(?:\w+(?:\,\w+)*:|)(?:header|show|category)(?: .+)?$/.test(line)) {
-                        outputLines.push(... vars);
-                    }
-                }
-
-                outputLines.push(... vars);
-            }
-        }
-
-        return outputLines;
     }
 };
 
