@@ -412,8 +412,8 @@
                     a.Constitution,
                     a.Luck,
                     a.MaximumLife,
-                    a.Wpn1,
-                    a.Wpn2
+                    collapseItem(a.Wpn1),
+                    collapseItem(a.Wpn2)
                 ]));
             }
 
@@ -427,9 +427,23 @@
                     a.Constitution.Total,
                     a.Luck.Total,
                     a.Health,
-                    a.Items.Wpn1,
-                    a.Items.Wpn2
+                    collapseItem(a.Items.Wpn1),
+                    collapseItem(a.Items.Wpn2)
                 ]));
+            }
+
+            function collapseItem (i) {
+                return [
+                    i.GemType,
+                    i.GemValue,
+                    i.Attributes,
+                    i.AttributeTypes,
+                    i.Enchantment,
+                    i.RuneType,
+                    i.RuneValue,
+                    i.DamageMin,
+                    i.DamageMax
+                ]
             }
 
             function getBaseDamage ({ Class, Level }, secondary = false) {
