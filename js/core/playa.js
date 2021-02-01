@@ -487,8 +487,8 @@ class SFFighter {
         this.Gender = dataType.long();
         this.Class = dataType.long();
 
-        this.Wpn1 = new SFItem(dataType.sub(12));
-        this.Wpn2 = new SFItem(dataType.sub(12));
+        this.Wpn1 = new SFItem(dataType.sub(12), 1);
+        this.Wpn2 = new SFItem(dataType.sub(12), 2);
 
         this.Mask = this.Wpn1.Type == -11 ? 1 : (this.Wpn2.Type == -12 ? 2 : 0);
     }
@@ -608,7 +608,12 @@ class SFPlayer {
     }
 
     getHealth () {
-        return Math.trunc(Math.floor((1 + this.Dungeons.Player / 100) * (this.Level + 1) * this.Constitution.Total * ((this.Class == 1 || this.Class == 5 || (this.Class == 8 && this.Mask == 1)) ? 5 : ((this.Class == 2 || (this.Class == 8 && this.Mask == 0)) ? 2 : 4))) * (1 + this.Runes.Health / 100) * (this.Potions.Life ? 1.25 : 1));
+        let ma = ((this.Class == 1 || this.Class == 5 || (this.Class == 8 && this.Mask == 1)) ? 5 : ((this.Class == 2 || (this.Class == 8 && this.Mask == 0)) ? 2 : 4));
+        let mb = (100 + this.Dungeons.Player) / 100;
+        let mc = this.Potions.Life ? 1.25 : 1;
+        let md = (100 + this.Runes.Health) / 100;
+
+        return Math.trunc(Math.floor(Math.floor(this.Constitution.Total * ma * (this.Level + 1) * mb) * mc) * md);
     }
 
     getEquipmentBonus (attribute) {

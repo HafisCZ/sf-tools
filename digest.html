@@ -15,6 +15,7 @@
 
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
+        <script src="js/core/core.js"></script>
         <script src="js/core/playa.js"></script>
 
         <style>
@@ -41,6 +42,19 @@
 
             .text-red {
                 color: red;
+            }
+
+            .text-green {
+                color: green;
+            }
+
+            .text-total {
+                font-weight: bold;
+                text-decoration: underline;
+            }
+
+            .text-small {
+                font-size: 80%;
             }
 
             td.hint-container {
@@ -106,12 +120,30 @@
 
             // Fight data
             let bosses = {};
+            let players = {};
 
             // Update damages & show table
             function show () {
                 // Show table content
                 $('#enemy-table').html(Object.values(bosses).reduce((str, boss) => {
                     let instances = Object.values(boss.Damage.Instances);
+
+                    let min = '';
+                    if (boss.Damage.Min != Infinity) {
+                        min += `<span class="text-total text-green">${ formatAsSpacedNumber(boss.Damage.Min) }</span><br/>`
+                    }
+                    if (boss.Damage.UMin != Infinity) {
+                        min += `<span class="text-total text-red">${ formatAsSpacedNumber(boss.Damage.UMin) }</span><br/>`
+                    }
+
+                    let max = '';
+                    if (boss.Damage.Max != -Infinity) {
+                        max += `<span class="text-total text-green">${ formatAsSpacedNumber(boss.Damage.Max) }</span><br/>`
+                    }
+                    if (boss.Damage.UMax != -Infinity) {
+                        max += `<span class="text-total text-red">${ formatAsSpacedNumber(boss.Damage.UMax) }</span><br/>`
+                    }
+
                     return str + `
                         <tr>
                             <td class="bolder">${ boss.Name }</td>
@@ -125,15 +157,14 @@
                             <td>${ formatAsSpacedNumber(boss.Level * [ 50, 10, 25, 25, 50, 25, 50 ][ boss.Class - 1 ]) }</td>
                             <td class="bolder">${ formatAsSpacedNumber(boss.Health) }</td>
                             <td>${ boss.ElementalDamage.Value ? `${ boss.ElementalDamage.Value }%&nbsp; ${ RUNETYPES[boss.ElementalDamage.Type].split(' ')[0] }` : '' }</td>
-                            ${
-                                instances.length == 1 ? `
-                                    <td class="hint-container"><span class="hint">${ formatAsSpacedNumber(boss.BaseDamage.Min) }</span>${ formatAsSpacedNumber(boss.Damage.Min) }</td>
-                                    <td class="hint-container"><span class="hint">${ formatAsSpacedNumber(boss.BaseDamage.Max) }</span>${ formatAsSpacedNumber(boss.Damage.Max) }</td>
-                                ` : `
-                                    <td class="hint-container text-red"><span class="hint">${ formatAsSpacedNumber(boss.BaseDamage.Min) }</span>${ instances.map(i => formatAsSpacedNumber(i.Min)).join('<br/>') }</td>
-                                    <td class="hint-container text-red"><span class="hint">${ formatAsSpacedNumber(boss.BaseDamage.Max) }</span>${ instances.map(i => formatAsSpacedNumber(i.Max)).join('<br/>') }</td>
-                                `
-                            }
+                            <td class="hint-container">
+                                <span class="hint">${ formatAsSpacedNumber(boss.BaseDamage.Min) }</span>
+                                ${ min }${ instances.map(i => `<span class="text-small ${ i.Verified ? 'text-green' : 'text-red' }">${ formatAsSpacedNumber(i.Min) }</span>`).join('<br/>') }
+                            </td>
+                            <td class="hint-container">
+                                <span class="hint">${ formatAsSpacedNumber(boss.BaseDamage.Max) }</span>
+                                ${ max }${ instances.map(i => `<span class="text-small ${ i.Verified ? 'text-green' : 'text-red' }">${ formatAsSpacedNumber(i.Max) }</span>`).join('<br/>') }
+                            </td>
                         </tr>
                     `;
                 }, ''));
@@ -142,6 +173,7 @@
             // Digest har file
             function importHAR (json) {
                 let rawFights = [];
+
                 for (let [k, v] of filterPlayaJSON(json)) {
                     if (k == 'text' && v.includes('fightheader')) {
                         let rawStrings = [];
@@ -152,6 +184,47 @@
                                 rawFights.push(rawStrings.join('&'));
                                 rawStrings = [];
                             }
+                        }
+                    } else if (k == 'text' && v.includes('ownplayername')) {
+                        let data = {
+                            own: true
+                        };
+
+                        for (let [key, val] of parsePlayaResponse(v)) {
+                            if (key.includes('ownplayersave')) {
+                                data.save = val.split('/').map(d => Number(d));
+                            } else if (key.includes('playername')) {
+                                data.name = val;
+                            }
+                        }
+
+                        UpdateService.updatePlayer(data);
+
+                        let player = new SFOwnPlayer(data);
+
+                        player.Hash = getPlayerHash_Model(player);
+                        players[player.Hash] = player;
+                    } else if (k == 'text' && v.includes('ownplayersave')) {
+                        let data = {
+                            own: true
+                        };
+
+                        for (let [key, val] of parsePlayaResponse(v)) {
+                            if (key.includes('ownplayersave')) {
+                                data.save = val.split('/').map(d => Number(d));
+                            }
+                        }
+
+                        let p = Object.values(players).find(x => x.ID == data.save[1]);
+                        if (p) {
+                            data.name = p.Name;
+
+                            UpdateService.updatePlayer(data);
+
+                            player = new SFOwnPlayer(data);
+
+                            player.Hash = getPlayerHash_Model(player);
+                            players[player.Hash] = player;
                         }
                     }
                 }
@@ -167,6 +240,14 @@
 
                         // Handle fighters
                         let player = new SFFighter(msg['fighters'].slice(5, 52));
+
+                        let { potion, runes, portal } = reverseHealthMultipliers(player.Level, (player.Class == 1 || player.Class == 5 || (player.Class == 8 && player.Mask == 1)) ? 5 : ((player.Class == 2 || (player.Class == 8 && player.Mask == 0)) ? 2 : 4), player.Constitution, player.MaximumLife);
+                        let ma = (player.Class == 1 || player.Class == 5 || (player.Class == 8 && player.Mask == 1)) ? 5 : ((player.Class == 2 || (player.Class == 8 && player.Mask == 0)) ? 2 : 4);
+                        let mb = (100 + portal) / 100;
+                        let mc = potion ? 1.25 : 1;
+                        let md = (100 + runes) / 100;
+
+                        player.MaximumLife = Math.trunc(Math.floor(Math.floor(player.Constitution * ma * (player.Level + 1) * mb) * mc) * md);
                         player.Hash = getPlayerHash(player);
 
                         let boss = new SFFighter(msg['fighters'].slice(52, 99));
@@ -237,6 +318,8 @@
                         boss.Damage = {
                             Min: Infinity,
                             Max: -Infinity,
+                            UMin: Infinity,
+                            UMax: -Infinity,
                             Instances: {}
                         };
                     }
@@ -246,13 +329,38 @@
                     Process fights
                 */
                 for (let boss of Object.values(bosses)) {
-                    boss.BaseDamage = getBaseDamage(boss)
+                    boss.BaseDamage = getBaseDamage(boss);
 
                     for (let fight of boss.Fights) {
+                        let resistance = 0;
+                        let elementalResistance = 0;
+
+                        let player = players[fight.Player.Hash];
+                        if (player) {
+                            if (boss.ElementalDamage.Type == 10) {
+                                elementalResistance = player.Runes.ResistanceFire;
+                            } else if (boss.ElementalDamage.Type == 11) {
+                                elementalResistance = player.Runes.ResistanceCold;
+                            } else if (boss.ElementalDamage.Type == 12) {
+                                elementalResistance = player.Runes.ResistanceLightning;
+                            }
+
+                            resistance = player.Armor / boss.Level;
+                            if (player.Class == 1 || player.Class == 7 || (player.Class == 8 && player.Mask == 1)) {
+                                resistance = Math.min(50, resistance);
+                            } else if (player.Class == 2 || (player.Class == 8 && player.Mask == 0)) {
+                                resistance = Math.min(10, resistance);
+                            } else if (player.Class == 3 || player.Class == 4 || player.Class == 6 || player.Class == 8) {
+                                resistance = Math.min(25, resistance);
+                            } else if (player.Class == 5) {
+                                resistance = Math.min(10, resistance) + 40;
+                            }
+                        }
+
                         let bossAttribute = getMainAttribute(boss, boss.Class);
                         let playerAttribute = getMainAttribute(fight.Player, boss.Class);
-                        let scale = (1 + Math.max(bossAttribute / 2, bossAttribute - playerAttribute / 2) / 10)
-                        let elemental = (1 + boss.ElementalDamage.Value / 100);
+                        let scale = (1 + Math.max(bossAttribute / 2, bossAttribute - playerAttribute / 2) / 10) * (1 - resistance / 100);
+                        let elemental = (1 + (boss.ElementalDamage.Value / 100) * (1 - elementalResistance / 100));
 
                         // Per fight values
                         let localMin = Infinity;
@@ -271,10 +379,16 @@
                         let instance = instances[hash] ? instances[hash] : (instances[hash] = { Min: Infinity, Max: -Infinity });
                         instance.Min = Math.min(instance.Min, localMin);
                         instance.Max = Math.max(instance.Max, localMax);
+                        instance.Verified = typeof player != 'undefined';
 
                         // Add globally
-                        boss.Damage.Min = Math.min(boss.Damage.Min, localMin);
-                        boss.Damage.Max = Math.max(boss.Damage.Max, localMax);
+                        if (instance.Verified) {
+                            boss.Damage.Min = Math.min(boss.Damage.Min, localMin);
+                            boss.Damage.Max = Math.max(boss.Damage.Max, localMax);
+                        } else {
+                            boss.Damage.UMin = Math.min(boss.Damage.UMin, localMin);
+                            boss.Damage.UMax = Math.max(boss.Damage.UMax, localMax);
+                        }
                     }
                 }
 
@@ -289,7 +403,33 @@
             }
 
             function getPlayerHash (a) {
-                return SHA1(JSON.stringify([ a.ID, a.Name, a.Class, a.Strength, a.Dexterity, a.Intelligence, a.Constitution, a.Luck, a.MaximumLife, a.Wpn1, a.Wpn2 ]));
+                return SHA1(JSON.stringify([
+                    a.Name,
+                    a.Class,
+                    a.Strength,
+                    a.Dexterity,
+                    a.Intelligence,
+                    a.Constitution,
+                    a.Luck,
+                    a.MaximumLife,
+                    a.Wpn1,
+                    a.Wpn2
+                ]));
+            }
+
+            function getPlayerHash_Model (a) {
+                return SHA1(JSON.stringify([
+                    a.Name,
+                    a.Class,
+                    a.Strength.Total,
+                    a.Dexterity.Total,
+                    a.Intelligence.Total,
+                    a.Constitution.Total,
+                    a.Luck.Total,
+                    a.Health,
+                    a.Items.Wpn1,
+                    a.Items.Wpn2
+                ]));
             }
 
             function getBaseDamage ({ Class, Level }, secondary = false) {

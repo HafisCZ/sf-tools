@@ -756,6 +756,14 @@ const PlayerUpdaters = [
         } else {
             return false;
         }
+    },
+    p => {
+        if (!p.units) {
+            p.units = [ 0, 0, 0, 0 ];
+            return true;
+        } else {
+            return false;
+        }
     }
 ];
 
@@ -779,6 +787,17 @@ const GroupUpdaters = [
 ];
 
 const UpdateService = {
+    updatePlayer: function (p) {
+        var updated = false;
+
+        for (var updater of PlayerUpdaters) {
+            if (updater(p)) {
+                updated = true;
+            }
+        }
+
+        return updated;
+    },
     update: function (file) {
         var updated = false;
 
