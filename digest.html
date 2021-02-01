@@ -128,12 +128,29 @@
                 $('#enemy-table').html(Object.values(bosses).reduce((str, boss) => {
                     let instances = Object.values(boss.Damage.Instances);
 
+                    let verified = 0;
+                    let verified_rounds = 0;
+
+                    let unverified = 0;
+                    let unverified_rounds = 0;
+
+                    let verified_hashes = Object.entries(boss.Damage.Instances).filter(([hash, i]) => i.Verified).map(([hash, i]) => hash);
+                    for (let fight of boss.Fights) {
+                        if (verified_hashes.includes(fight.Player.Hash)) {
+                            verified++;
+                            verified_rounds += fight.Rounds.length;
+                        } else {
+                            unverified++;
+                            unverified_rounds += fight.Rounds.length;
+                        }
+                    }
+
                     let min = '';
                     if (boss.Damage.Min != Infinity) {
-                        min += `<span class="text-total text-green">${ formatAsSpacedNumber(boss.Damage.Min) }</span><br/>`
+                        min += `<span class="text-total text-green">${ formatAsSpacedNumber(boss.Damage.Min) } <span style="font-size: 70%">(${ verified_rounds } / ${ verified })</span></span><br/>`
                     }
                     if (boss.Damage.UMin != Infinity) {
-                        min += `<span class="text-total text-red">${ formatAsSpacedNumber(boss.Damage.UMin) }</span><br/>`
+                        min += `<span class="text-total text-red">${ formatAsSpacedNumber(boss.Damage.UMin) } <span style="font-size: 70%">(${ unverified_rounds } / ${ unverified })</span></span><br/>`
                     }
 
                     let max = '';
