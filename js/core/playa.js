@@ -490,7 +490,7 @@ class SFFighter {
         this.Wpn1 = new SFItem(dataType.sub(12), 1);
         this.Wpn2 = new SFItem(dataType.sub(12), 2);
 
-        this.Mask = this.Wpn1.Type == -11 ? 1 : (this.Wpn2.Type == -12 ? 2 : 0);
+        this.Mask = this.Wpn1.Type == -11 ? 1 : (this.Wpn1.Type == -12 ? 2 : 0);
     }
 
     getMonsterID () {
