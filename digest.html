@@ -125,7 +125,7 @@
             // Update damages & show table
             function show () {
                 // Show table content
-                $('#enemy-table').html(Object.values(bosses).reduce((str, boss) => {
+                $('#enemy-table').html(Object.values(bosses).sort((a, b) => a.Level - b.Level).reduce((str, boss) => {
                     let instances = Object.values(boss.Damage.Instances);
 
                     let verified = 0;
