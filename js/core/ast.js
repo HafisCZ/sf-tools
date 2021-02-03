@@ -1090,6 +1090,13 @@ const SP_FUNCTIONS = {
             return Math.abs(value);
         }
     },
+    'sqrt': (value) => {
+        if (isNaN(value)) {
+            return undefined;
+        } else {
+            return Math.sqrt(value);
+        }
+    },
     // Fixed format
     'fixed': (value, decimals) => {
         if (isNaN(value)) {
