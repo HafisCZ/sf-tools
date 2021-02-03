@@ -2685,7 +2685,7 @@ class Settings {
                 let vars = name.map((key, index) => `var ${ key } ${ value[index] }`);
                 let reps = name.map((key, index) => {
                     return {
-                        exp: new RegExp(`__${ key }__`),
+                        exp: new RegExp(`__${ key }__`, 'g'),
                         val: value[index]
                     };
                 });
