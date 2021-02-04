@@ -303,7 +303,7 @@ class PetModel {
 
         this.Critical = 2 * (1 + 0.05 * this.Gladiator);
         this.SkipChance = target.Class == MAGE ? 0 : (this.Class == WARRIOR ? 25 : (this.Class == MAGE ? 0 : 50));
-        this.CriticalChance = Math.min(50, this.Attribute * 20 / 6 / target.Level);
+        this.CriticalChance = Math.min(50, (this.Attribute * 3.75) / (target.Level * 2));
     }
 
     hasAdvantage (target) {
