@@ -327,10 +327,14 @@
                         <div class="row" style="padding-top: 0;">
                             <div class="sixteen wide column">
                                 <div class="ui small form">
-                                    <div class="four fields">
+                                    <div class="five fields">
                                         <div class="field">
                                             <label>Winrate %</label>
                                             <input class="text-center fluid" disabled type="text" id="sim-results" value="">
+                                        </div>
+                                        <div class="field">
+                                            <label>< 10% HP %</label>
+                                            <input class="text-center fluid" disabled type="text" id="sim-results-10" value="">
                                         </div>
                                         <div class="field">
                                             <label>Min HP %</label>
@@ -807,10 +811,12 @@
                                 winrate,
                                 health_min,
                                 health_max,
-                                health_avg
+                                health_avg,
+                                health_sub10
                             } = message.data.results;
 
                             $('#sim-results').val(winrate.toFixed(2) + '%');
+                            $('#sim-results-10').val(health_sub10.toFixed(2) + '%');
                             $('#sim-results-min').val(health_min.toFixed(0) + '%');
                             $('#sim-results-avg').val(health_avg.toFixed(0) + '%');
                             $('#sim-results-max').val(health_max.toFixed(0) + '%');
