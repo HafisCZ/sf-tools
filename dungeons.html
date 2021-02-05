@@ -19,7 +19,8 @@
         <script src="js/plugins.js"></script>
 
         <script src="js/core/playa.js"></script>
-        <script src="js/sim/players.js"></script>
+        <script src="js/sim/dungeon_data.js"></script>
+        <script src="js/sim/dungeons.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
 
@@ -135,18 +136,9 @@
                 <div class="column">
                     <div class="ui form" id="sim-editor">
                         <div class="bordered bone">
-                            <div id="boss-only">
-                                <div class="field">
-                                    <label>Shadow</label>
-                                    <div class="ui selection compact dropdown" data-path="Shadow">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label>Name</label>
-                                    <input class="text-center" disabled type="text" data-path="Name">
-                                </div>
+                            <div class="field">
+                                <label>Name</label>
+                                <input class="text-center" disabled type="text" data-path="Name">
                             </div>
                             <div class="two fields">
                                 <div class="field">
@@ -166,10 +158,6 @@
                                 <div class="field">
                                     <label>Level</label>
                                     <input class="text-center" type="text" data-path="Level">
-                                </div>
-                                <div class="field">
-                                    <label>Health</label>
-                                    <input class="text-center" type="text" data-path="HealthOverride" placeholder="Set HP if abnormal">
                                 </div>
                             </div>
                             <div class="five fields">
@@ -342,23 +330,11 @@
                             </div>
                         </div>
                         <div class="row padding-none">
-                            <div class="two wide text-center column">
-                                Class
+                            <div class="eight wide text-center column">
+                                Player
                             </div>
-                            <div class="two wide column">
-                                Level
-                            </div>
-                            <div class="four wide column">
-                                Name
-                            </div>
-                            <div class="two wide text-center column">
-                                Class
-                            </div>
-                            <div class="two wide column">
-                                Level
-                            </div>
-                            <div class="four wide column">
-                                Name
+                            <div class="eight wide text-center column">
+                                Enemy
                             </div>
                         </div>
                         <div class="row padding-none">
@@ -373,8 +349,19 @@
                                 </div>
                             </div>
                             <div class="eight wide column">
-                                <div class="ui middle aligned grid" id="sim-players2">
-
+                                <div class="ui form" style="margin-top: -0.4em;">
+                                    <div class="field">
+                                        <div class="ui fluid search selection dropdown" id="dungeon-list">
+                                          <div class="text"></div>
+                                          <i class="dropdown icon"></i>
+                                        </div>
+                                    </div>
+                                    <div class="field" style="margin-top: 1.25em;">
+                                        <div class="ui fluid search selection dropdown" id="boss-list">
+                                          <div class="text"></div>
+                                          <i class="dropdown icon"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         <div>
@@ -398,10 +385,8 @@
                         name: new Field('[data-path="Name"]', ''),
                         class: new Field('[data-path="Class"]', '1'),
                         mask: new Field('[data-path="Mask"]', '0'),
-                        shadow: new Field('[data-path="Shadow"]', 'false'),
                         level: new Field('[data-path="Level"]', '', Field.isNumber),
                         armor: new Field('[data-path="Armor"]', '', Field.isNumber),
-                        health_override: new Field('[data-path="HealthOverride"]', '', Field.isNumber),
 
                         resistance_fire: new Field('[data-path="Runes.ResistanceFire"]', '', Field.isResistanceRune),
                         resistance_cold: new Field('[data-path="Runes.ResistanceCold"]', '', Field.isResistanceRune),
@@ -439,8 +424,7 @@
                         values: Object.entries(ClassMap).map((e) => {
                             return {
                                 name: `<img class="ui centered image class-picture" src="res/class${ e[0] }.png"><span>${ e[1] }</span>`,
-                                value: e[0],
-                                disabled: !hasImplementation(e[0])
+                                value: e[0]
                             };
                         })
                     }).dropdown('setting', 'onChange', (value, text) => {
@@ -470,19 +454,6 @@
                             }
                         ]
                     }).dropdown('set selected', '0');
-
-                    this.fields['shadow'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'No',
-                                value: false
-                            },
-                            {
-                                name: 'Yes',
-                                value: true
-                            }
-                        ]
-                    }).dropdown('set selected', 'false');
 
                     this.fields['potion_life'].$object.dropdown({
                         values: [
@@ -590,37 +561,17 @@
                         }
                     }
 
-                    if (index > 0 && index < 4) {
+                    if (index > 0) {
                         this.fields['class'].set(index);
                     }
 
-                    this.fields['class'].toggle(index == 0 || index == 4);
+                    this.fields['class'].toggle(index == 0);
                     this.fields['gladiator'].toggle(index == 0);
                     this.fields['portal_hp'].toggle(index == 0);
                     this.fields['portal_damage'].toggle(index == 0);
                     this.fields['potion_life'].toggle(index == 0);
-                    this.fields['runes_health'].toggle(index < 4);
-                    this.fields['enchantment'].toggle(index < 4);
-                    this.fields['armor'].toggle(index < 4);
-                    this.fields['weapon1_enchantment'].toggle(index < 4);
-                    this.fields['weapon2_enchantment'].toggle(index < 4);
-                    this.fields['level'].toggle(index == 0 || index == 4);
-                    this.fields['health_override'].show(index == 4);
-                    this.fields['shadow'].show(index == 4);
-
-                    if (index == 4) {
-                        $('#boss-only').removeClass('field').addClass('two fields');
-                    } else {
-                        $('#boss-only').addClass('field').removeClass('two fields');
-                    }
-
-                    this.fields['name'].set([
-                        'Player',
-                        'Bert',
-                        'Mark',
-                        'Kunigunde',
-                        'Boss'
-                    ][index]);
+                    this.fields['level'].toggle(index == 0);
+                    this.fields['name'].set(['Player', 'Bert', 'Mark', 'Kunigunde'][index]);
                 }
 
                 read () {
@@ -660,12 +611,76 @@
             })();
 
             // On paste event handler
-            $('#sim-editor input').on('paste', function (event) {
-                event.stopPropagation();
-            });
-
             var players = [ EditorController.genEmpty(), EditorController.genEmpty(1), EditorController.genEmpty(2), EditorController.genEmpty(3) ];
-            var boss = EditorController.genEmpty();
+
+            var boss = null;
+            var boss_shadow = false;
+
+            function getBossData (data) {
+                return {
+                    ArmorAuto: true,
+                    Class: data.class,
+                    Mask: 0,
+                    Level: data.level,
+                    AutoHealth: data.health,
+                    Identifier: 999,
+                    Strength: { Total: data.str },
+                    Dexterity: { Total: data.dex },
+                    Intelligence: { Total: data.int },
+                    Constitution: { Total: data.con },
+                    Luck: { Total: data.lck },
+                    Dungeons: { Player: 0, Group: 0 },
+                    Fortress: { Gladiator: 0 },
+                    Underworld: { Gladiator: 0 },
+                    Potions: { Life: 0 },
+                    Runes: {
+                        Health: 0,
+                        ResistanceFire: data.runes && data.runes.type == 40 ? data.runes.resist : 0,
+                        ResistanceCold: data.runes && data.runes.type == 41 ? data.runes.resist : 0,
+                        ResistanceLightning: data.runes && data.runes.type == 42 ? data.runes.resist : 0,
+                    },
+                    Items: {
+                        Hand: { HasEnchantment: false },
+                        Wpn1: {
+                            AttributeTypes: { 2: data.runes ? data.runes.type : 0 },
+                            Attributes: { 2: data.runes ? data.runes.damage : 0 },
+                            DamageMax: data.max,
+                            DamageMin: data.min,
+                            HasEnchantment: false
+                        },
+                        Wpn2: {
+                            AttributeTypes: { 2: data.runes ? data.runes.type : 0 },
+                            Attributes: { 2: data.runes ? data.runes.damage : 0 },
+                            DamageMax: data.max2 || 0,
+                            DamageMin: data.min2 || 0,
+                            HasEnchantment: false
+                        }
+                    }
+                };
+            }
+
+            $('#dungeon-list').dropdown({
+                values: Object.entries(DUNGEON_DATA).map(([ id, dungeon ]) => {
+                    return {
+                        name: dungeon.shadow ? `<span style="text-shadow:0px 0px 8px #390074;">${ dungeon.name }<span>` : dungeon.name,
+                        value: id
+                    };
+                })
+            }).dropdown('setting', 'onChange', (value, text) => {
+                let dungeon = DUNGEON_DATA[value];
+                boss_shadow = dungeon.shadow;
+                $('#boss-list').dropdown({
+                    values: Object.entries(dungeon.floors).map(([ name, _boss ]) => {
+                        return {
+                            name: boss_shadow ? `<span style="text-shadow:0px 0px 8px #390074;">${ _boss.pos }. ${ name }<span>` : `${ _boss.pos }. ${ name }`,
+                            value: name
+                        };
+                    })
+                }).dropdown('setting', 'onChange', (value, text) => {
+                    boss = getBossData(dungeon.floors[value]);
+                }).dropdown('set selected', Object.keys(dungeon.floors)[0]);
+            }).dropdown('set selected', '1');
+
             var selected = 0;
 
             $(document.body).on('paste', function (event) {
@@ -685,7 +700,7 @@
                             data.Fortress.Gladiator = data.Underworld.Gladiator;
                         }
 
-                        if (selected > 0 && selected < 4) {
+                        if (selected > 0) {
                             for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
                                 var path = EditorController.fields[key].path();
                                 setObjectAt(obj, path, getObjectAt(players[0], path));
@@ -699,25 +714,25 @@
                 }
             });
 
+            players[0] = {"Armor":1133,"Class":8,"Mask":2,"Name":"DaGlada","Level":49,"Identifier":"s42_de_p455","Constitution":{"Total":1270},"Dexterity":{"Total":64},"Dungeons":{"Player":0,"Group":0},"Fortress":{"Gladiator":0},"Underworld":{"Gladiator":0},"Intelligence":{"Total":1090},"Strength":{"Total":57},"Potions":{"Life":25},"Luck":{"Total":948},"Runes":{"Health":0,"ResistanceCold":0,"ResistanceFire":0,"ResistanceLightning":0},"Items":{"Hand":{"HasEnchantment":false},"Wpn1":{"AttributeTypes":{"2":4},"Attributes":{"2":0},"DamageMax":267,"DamageMin":157,"HasEnchantment":false},"Wpn2":{"AttributeTypes":{"2":0},"Attributes":{"2":0},"DamageMax":0,"DamageMin":0,"HasEnchantment":false}}};
+
+            $('#sim-editor input').on('paste', function (event) { event.stopPropagation(); });
+
             // Save button
             $('#sim-save').click(function () {
                 if (EditorController.valid()) {
-                    if (selected < 4) {
-                        var obj = EditorController.read();
-                        if (selected == 0) {
-                            for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
-                                var path = EditorController.fields[key].path();
+                    var obj = EditorController.read();
+                    if (selected == 0) {
+                        for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
+                            var path = EditorController.fields[key].path();
 
-                                setObjectAt(players[1], path, getObjectAt(obj, path));
-                                setObjectAt(players[2], path, getObjectAt(obj, path));
-                                setObjectAt(players[3], path, getObjectAt(obj, path));
-                            }
+                            setObjectAt(players[1], path, getObjectAt(obj, path));
+                            setObjectAt(players[2], path, getObjectAt(obj, path));
+                            setObjectAt(players[3], path, getObjectAt(obj, path));
                         }
-
-                        players[selected] = obj;
-                    } else {
-                        boss = EditorController.read();
                     }
+
+                    players[selected] = obj;
 
                     show();
                 }
@@ -734,35 +749,18 @@
                     content1 += `
                         <div class="row selectable ${ selected == i ? 'selected' : 'nselected' }" data-index="${ i }">
                             <div class="four wide text-center column">
-                                <img class="ui medium centered image" style="width: 50px; opacity: ${ i == 0 || boss.Shadow == true ? '100' : '25' }%;" src="res/portrait${ i ? i : '' }.png">
+                                <img class="ui medium centered image" style="width: 50px; opacity: ${ i == 0 || boss_shadow ? '100' : '25' }%;" src="res/portrait${ i ? i : '' }.png">
                             </div>
-                            <div class="three wide text-center column">
-                                <b>${ i == 0 ? (players[i].Level || '?') : '' }</b>
+                            <div class="eight wide column text-center">
+                                <b>${ ['You', 'Bert', 'Mark', 'Kunigunde'][i] }</b>
                             </div>
-                            <div class="two wide column"></div>
-                            <div class="seven wide column">
-                                <b>${ i == 0 ? 'Player' : NAME_UNIT_COMPANION[390 + i] }</b>
+                            <div class="four wide column">
                             </div>
                         </div>
                     `;
                 }
 
                 $('#sim-players1').html(content1);
-
-                $('#sim-players2').html(`
-                    <div class="row selectable ${ selected == 4 ? 'selected' : 'nselected' }" data-index="${ 4 }">
-                        <div class="four wide text-center column">
-                            <img class="ui medium centered image" style="width: 50px;" src="res/class${ boss.Class }.png">
-                        </div>
-                        <div class="three wide text-center column">
-                            <b>${ boss.Level || '?' }</b>
-                        </div>
-                        <div class="two wide column"></div>
-                        <div class="seven wide column">
-                            <b>Boss</b>
-                        </div>
-                    </div>
-                `);
 
                 $('[data-index]').click(function () {
                     select(Number($(this).attr('data-index')));
@@ -772,38 +770,31 @@
             function select (index) {
                 selected = index;
 
-                if (selected < 4) {
-                    EditorController.fill(players[selected], selected);
-                    show();
-                } else {
-                    EditorController.fill(boss, 4);
-                    show();
-                }
+                EditorController.fill(players[selected], selected);
+                show();
             }
 
             select(0);
 
             $('#sim-run').click(function () {
-                toggleAll(true);
+                if (boss && players[0].Level) {
+                    toggleAll(true);
 
-                // Update dungeon boss data
-                boss.ArmorAuto = true;
+                    var worker = new Worker('js/sim/dungeons.js');
 
-                var worker = new Worker('js/sim/players.js');
+                    worker.addEventListener('message', function (message) {
+                        if (message.data.command == 'finished') {
+                            toggleAll();
+                            $('#sim-results').val(message.data.results.toFixed(2) + '%');
+                        }
+                    }, false);
 
-                worker.addEventListener('message', function (message) {
-                    if (message.data.command == 'finished') {
-                        toggleAll();
-                        $('#sim-results').val(message.data.results.toFixed(2) + '%');
-                    }
-                }, false);
-
-                worker.postMessage({
-                    mode: SimulatorType.Dungeon,
-                    player: boss.Shadow ? [ ... players.slice(1, 4), players[0] ] : [ players[0] ],
-                    players: [ boss ],
-                    iterations: Number($('#sim-iterations').val())
-                });
+                    worker.postMessage({
+                        players: boss_shadow ? [ ... players.slice(1, 4), players[0] ] : [ players[0] ],
+                        boss: boss,
+                        iterations: Number($('#sim-iterations').val())
+                    });
+                }
             });
         </script>
     </body>

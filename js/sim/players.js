@@ -129,18 +129,14 @@ class FighterModel {
 
     // Damage Reduction
     getDamageReduction (source) {
-        if (this.Player.ArmorAuto) {
-            return source.Player.Class == MAGE ? 0 : ((this.getMaximumDamageReduction() * this.Player.Level) / source.Player.Level);
+        if (source.Player.Class == MAGE) {
+            return 0;
+        } else if (this.Player.Class == BATTLEMAGE) {
+            return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level + 40);
+        } else if (this.Player.Class == DRUID && this.Player.Mask == 1) {
+            return Math.min(this.getMaximumDamageReduction(), 2 * this.Player.Armor / source.Player.Level);
         } else {
-            if (source.Player.Class == MAGE) {
-                return 0;
-            } else if (this.Player.Class == BATTLEMAGE) {
-                return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level + 40);
-            } else if (this.Player.Class == DRUID && this.Player.Mask == 1) {
-                return Math.min(this.getMaximumDamageReduction(), 2 * this.Player.Armor / source.Player.Level);
-            } else {
-                return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level);
-            }
+            return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level);
         }
     }
 
@@ -215,17 +211,13 @@ class FighterModel {
 
     // Health
     getHealth () {
-        if (this.Player.HealthOverride) {
-            return this.Player.HealthOverride;
-        } else {
-            var a = 1 + this.Player.Potions.Life / 100;
-            var b = 1 + this.Player.Dungeons.Player / 100;
-            var c = 1 + this.Player.Runes.Health / 100;
-            var d = this.Player.Level + 1;
-            var e = this.getHealthMultiplier();
+        var a = 1 + this.Player.Potions.Life / 100;
+        var b = 1 + this.Player.Dungeons.Player / 100;
+        var c = 1 + this.Player.Runes.Health / 100;
+        var d = this.Player.Level + 1;
+        var e = this.getHealthMultiplier();
 
-            return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(this.Player.Constitution.Total * a) * b) * c) * d) * e);
-        }
+        return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(this.Player.Constitution.Total * a) * b) * c) * d) * e);
     }
 
     // Get damage range
