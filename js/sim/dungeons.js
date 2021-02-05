@@ -435,11 +435,21 @@ class DungeonSimulator {
         this.cache(players, boss);
 
         let score = 0;
+        let healths = [];
+
         for (let i = 0; i < iterations; i++) {
-            score += this.battle();
+            let { win, health } = this.battle();
+
+            score += win;
+            healths.push(health);
         }
 
-        return 100 * score / iterations;
+        return {
+            winrate: 100 * score / iterations,
+            health_min: 100 * Math.min(... healths),
+            health_max: 100 * Math.max(... healths),
+            health_avg: 100 * healths.reduce((a, b) => a + b, 0) / healths.length
+        };
     }
 
     cache (players, boss) {
@@ -452,8 +462,8 @@ class DungeonSimulator {
         this.lb = [ this.cache_boss ];
 
         // Reset health
-        for (let p of this.la) p.Health = p.TotalHealth;
-        for (let p of this.lb) p.Health = p.TotalHealth;
+        for (let p of this.la) p.Health = p.getHealth();
+        for (let p of this.lb) p.Health = p.getHealth();
 
         // Run fight
         while (this.la.length > 0 && this.lb.length > 0) {
@@ -474,7 +484,10 @@ class DungeonSimulator {
         }
 
         // Return result based on empty array
-        return (this.la.length > 0 ? this.la[0].Index : this.lb[0].Index) == 0;
+        return {
+            win: (this.la.length > 0 ? this.la[0].Index : this.lb[0].Index) == 0,
+            health: Math.max(0, this.lb.length > 0 ? (this.lb[0].Health / this.lb[0].getHealth()) : 0)
+        };
     }
 
     fight () {

@@ -307,13 +307,13 @@
                 <div class="column">
                     <div class="ui grid">
                         <div class="row">
-                            <div class="three wide column">
+                            <div class="four wide column">
                                 <button class="ui fluid button" type="submit" id="sim-save">Save</button>
                             </div>
-                            <div class="three wide column">
+                            <div class="four wide column">
                                 <button class="ui fluid basic icon button" data-position="bottom center" data-tooltip="Copy current" id="sim-copyCurrent"><i class="outline copy icon"></i> 1</button>
                             </div>
-                            <div class="three wide column">
+                            <div class="four wide column">
                                 <div class="ui small form">
                                     <div class="field" data-position="bottom center" data-tooltip="Amount of iterations. Using more iterations will improve the accuracy but can lower the performance.">
                                         <input class="text-center fluid" type="text" id="sim-iterations" value="10000">
@@ -323,9 +323,28 @@
                             <div class="four wide column">
                                 <button class="ui fluid button" type="submit" id="sim-run">Simulate</button>
                             </div>
-                            <div class="three wide column">
+                        </div>
+                        <div class="row" style="padding-top: 0;">
+                            <div class="sixteen wide column">
                                 <div class="ui small form">
-                                    <input class="text-center fluid" disabled type="text" id="sim-results" value="">
+                                    <div class="four fields">
+                                        <div class="field">
+                                            <label>Winrate %</label>
+                                            <input class="text-center fluid" disabled type="text" id="sim-results" value="">
+                                        </div>
+                                        <div class="field">
+                                            <label>Min HP %</label>
+                                            <input class="text-center fluid" disabled type="text" id="sim-results-min" value="">
+                                        </div>
+                                        <div class="field">
+                                            <label>Avg HP %</label>
+                                            <input class="text-center fluid" disabled type="text" id="sim-results-avg" value="">
+                                        </div>
+                                        <div class="field">
+                                            <label>Max HP %</label>
+                                            <input class="text-center fluid" disabled type="text" id="sim-results-max" value="">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -783,7 +802,18 @@
                     worker.addEventListener('message', function (message) {
                         if (message.data.command == 'finished') {
                             toggleAll();
-                            $('#sim-results').val(message.data.results.toFixed(2) + '%');
+
+                            let {
+                                winrate,
+                                health_min,
+                                health_max,
+                                health_avg
+                            } = message.data.results;
+
+                            $('#sim-results').val(winrate.toFixed(2) + '%');
+                            $('#sim-results-min').val(health_min.toFixed(0) + '%');
+                            $('#sim-results-avg').val(health_avg.toFixed(0) + '%');
+                            $('#sim-results-max').val(health_max.toFixed(0) + '%');
                         }
                     }, false);
 
