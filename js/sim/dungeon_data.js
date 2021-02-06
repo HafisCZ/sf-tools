@@ -3,63 +3,143 @@ DUNGEON_DATA = {
         name: 'Desecrated Catacombs',
         shadow: false,
         floors: {
-            'Ghost': { pos: 1, id: 0, class: 2, level: 10, str: 48, dex: 63, int: 104, con: 77, lck: 47, health: 1694, min: 33, max: 40 }
+            'Ghost': { pos: 1, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 77, lck: 47, health: 1694, min: 29, max: 51 },
+            'Skeleton': { pos: 2, id: 0, class: 1, level: 12, str: 120, dex: 68, int: 59, con: 101, lck: 51, health: 6565, min: 13, max: 28 },
+            'Undead': { pos: 3, id: 0, class: 1, level: 14, str: 149, dex: 78, int: 69, con: 124, lck: 65, health: 9300, min: 17, max: 33 },
+            'Devious Vampire': { pos: 4, id: 0, class: 3, level: 16, str: 84, dex: 195, int: 83, con: 131, lck: 94, health: 8908, min: 27, max: 47 },
+            'Night Ghoul': { pos: 5, id: 0, class: 1, level: 18, str: 214, dex: 101, int: 89, con: 169, lck: 93, health: 16055, min: 25, max: 43 },
+            'Banshee': { pos: 6, id: 0, class: 2, level: 22, str: 97, dex: 99, int: 303, con: 198, lck: 137, health: 9108, min: 71, max: 116 },
+            'Skeleton Soldier': { pos: 7, id: 0, class: 1, level: 26, str: 359, dex: 135, int: 122, con: 260, lck: 142, health: 35100, min: 36, max: 63 },
+            'Voodoo Master': { pos: 8, id: 0, class: 2, level: 30, str: 126, dex: 130, int: 460, con: 279, lck: 193, health: 17298, min: 97, max: 160 },
+            'Flesh Golem': { pos: 9, id: 0, class: 1, level: 40, str: 614, dex: 207, int: 191, con: 445, lck: 238, health: 91225, min: 54, max: 95 },
+            'Lord of Darkness': { pos: 10, id: 0, class: 3, level: 50, str: 221, dex: 847, int: 213, con: 561, lck: 292, health: 114444, min: 86, max: 151 }
         }
     },
     '2': {
         name: 'The Mines of Gloria',
         shadow: false,
         floors: {
-
+            'Water Glompf': { pos: 1, id: 0, class: 3, level: 20, str: 101, dex: 264, int: 101, con: 174, lck: 119, health: 14616, min: 35, max: 58 },
+            'Yeti': { pos: 2, id: 0, class: 1, level: 24, str: 317, dex: 126, int: 117, con: 238, lck: 130, health: 29750, min: 35, max: 58 },
+            'Skeleton': { pos: 3, id: 0, class: 1, level: 28, str: 393, dex: 138, int: 125, con: 284, lck: 152, health: 41180, min: 40, max: 67 },
+            'Ugly Gremlin': { pos: 4, id: 0, class: 3, level: 34, str: 143, dex: 554, int: 144, con: 303, lck: 216, health: 42420, min: 64, max: 98 },
+            'Stone Giant': { pos: 5, id: 0, class: 1, level: 38, str: 592, dex: 178, int: 162, con: 398, lck: 195, health: 77610, min: 59, max: 89 },
+            'Fire Elemental': { pos: 6, id: 0, class: 2, level: 44, str: 191, dex: 190, int: 780, con: 411, lck: 259, health: 36990, min: 146, max: 240 },
+            'Stone Troll': { pos: 7, id: 0, class: 1, level: 48, str: 744, dex: 243, int: 230, con: 563, lck: 246, health: 137935, min: 69, max: 122 },
+            'Redlight Succubus': { pos: 8, id: 0, class: 3, level: 56, str: 250, dex: 960, int: 240, con: 680, lck: 345, health: 155040, min: 92, max: 160 },
+            'Abhorrent Demon': { pos: 9, id: 0, class: 3, level: 66, str: 300, dex: 1160, int: 290, con: 880, lck: 420, health: 235840, min: 102, max: 175 },
+            'Hell Beast': { pos: 10, id: 0, class: 1, level: 70, str: 1240, dex: 385, int: 360, con: 960, lck: 340, health: 340800, min: 85, max: 143 }
         }
     },
     '3': {
         name: 'The Ruins of Gnark',
         shadow: false,
         floors: {
-
+            'Sewer Rat': { pos: 1, id: 0, class: 3, level: 32, str: 155, dex: 486, int: 161, con: 276, lck: 205, health: 36432, min: 58, max: 95 },
+            'Dusty Bat': { pos: 2, id: 0, class: 3, level: 36, str: 141, dex: 602, int: 149, con: 344, lck: 230, health: 50912, min: 60, max: 108 },
+            'Terror Tarantula': { pos: 3, id: 0, class: 3, level: 42, str: 205, dex: 726, int: 224, con: 403, lck: 247, health: 69316, min: 71, max: 124 },
+            'Rowdy Robber': { pos: 4, id: 0, class: 1, level: 46, str: 768, dex: 215, int: 183, con: 539, lck: 249, health: 126665, min: 66, max: 115 },
+            'Dirty Rotten Scoundrel': { pos: 5, id: 0, class: 1, level: 54, str: 920, dex: 265, int: 240, con: 640, lck: 260, health: 176000, min: 70, max: 127 },
+            'Grim Wolf': { pos: 6, id: 0, class: 3, level: 60, str: 270, dex: 1040, int: 260, con: 760, lck: 375, health: 185440, min: 97, max: 165 },
+            'Bad Bandit': { pos: 7, id: 0, class: 1, level: 64, str: 1120, dex: 340, int: 315, con: 840, lck: 310, health: 273000, min: 79, max: 137 },
+            'Beastie': { pos: 8, id: 0, class: 3, level: 76, str: 350, dex: 1360, int: 340, con: 1080, lck: 495, health: 332640, min: 112, max: 190 },
+            'Grave Robber': { pos: 9, id: 0, class: 1, level: 86, str: 1560, dex: 505, int: 480, con: 1280, lck: 420, health: 556800, min: 101, max: 159 },
+            'Robber Chief': { pos: 10, id: 0, class: 1, level: 90, str: 1640, dex: 535, int: 510, con: 1360, lck: 440, health: 618800, min: 105, max: 163 }
         }
     },
     '4': {
         name: 'The Cutthroat Grotto',
         shadow: false,
         floors: {
-
+            'Wind Elemental': { pos: 1, id: 0, class: 3, level: 52, str: 230, dex: 880, int: 220, con: 601, lck: 315, health: 127412, min: 88, max: 154 },
+            'Pirate Dark Beard': { pos: 2, id: 0, class: 3, level: 58, str: 260, dex: 1000, int: 250, con: 720, lck: 360, health: 169920, min: 94, max: 161 },
+            'Rowdy Robber': { pos: 3, id: 0, class: 1, level: 62, str: 1080, dex: 325, int: 300, con: 800, lck: 300, health: 252000, min: 77, max: 135 },
+            'Shadow Alligator': { pos: 4, id: 0, class: 1, level: 68, str: 1200, dex: 370, int: 345, con: 920, lck: 330, health: 317400, min: 83, max: 141 },
+            'Sturdy Swashbuckler': { pos: 5, id: 0, class: 1, level: 74, str: 1320, dex: 415, int: 390, con: 1040, lck: 360, health: 390000, min: 89, max: 147 },
+            'Mean Monster Rabbit': { pos: 6, id: 0, class: 3, level: 82, str: 380, dex: 1480, int: 370, con: 1200, lck: 540, health: 398400, min: 118, max: 199 },
+            'Cutthroat': { pos: 7, id: 0, class: 1, level: 84, str: 1520, dex: 490, int: 465, con: 1240, lck: 410, health: 527000, min: 99, max: 157 },
+            'Pirate Blood Nose': { pos: 8, id: 0, class: 1, level: 96, str: 1760, dex: 580, int: 555, con: 1480, lck: 470, health: 717800, min: 111, max: 169 },
+            'Octopus': { pos: 9, id: 0, class: 3, level: 102, str: 480, dex: 1880, int: 470, con: 1600, lck: 690, health: 659200, min: 138, max: 229 },
+            'Pirate Leader': { pos: 10, id: 0, class: 3, level: 110, str: 520, dex: 2040, int: 510, con: 1760, lck: 750, health: 781440, min: 147, max: 241 }
         }
     },
     '5': {
         name: 'The Emerald Scale Altar',
         shadow: false,
         floors: {
-
+            'Rattling Cobra': { pos: 1, id: 0, class: 3, level: 72, str: 330, dex: 1280, int: 320, con: 1000, lck: 465, health: 292000, min: 108, max: 183 },
+            'Slashing Saurus': { pos: 2, id: 0, class: 3, level: 78, str: 360, dex: 1400, int: 350, con: 1120, lck: 510, health: 353920, min: 114, max: 193 },
+            'Roaring Raptor': { pos: 3, id: 0, class: 3, level: 80, str: 370, dex: 1440, int: 360, con: 1160, lck: 525, health: 375840, min: 117, max: 196 },
+            'Swamp Warrior': { pos: 4, id: 0, class: 3, level: 88, str: 410, dex: 1600, int: 400, con: 1320, lck: 585, health: 469920, min: 125, max: 208 },
+            'Green Rex': { pos: 5, id: 0, class: 1, level: 94, str: 1720, dex: 565, int: 540, con: 1440, lck: 460, health: 684000, min: 109, max: 167 },
+            'Saurus Rogue': { pos: 6, id: 0, class: 3, level: 100, str: 470, dex: 1840, int: 460, con: 1560, lck: 675, health: 630240, min: 136, max: 226 },
+            'Swamp Dragon': { pos: 7, id: 0, class: 1, level: 108, str: 2000, dex: 670, int: 645, con: 1720, lck: 530, health: 937400, min: 123, max: 181 },
+            'Swamp Gorgon': { pos: 8, id: 0, class: 2, level: 114, str: 520, dex: 540, int: 2200, con: 1760, lck: 775, health: 404800, min: 287, max: 431 },
+            'Toxic Dragon': { pos: 9, id: 0, class: 1, level: 122, str: 2280, dex: 775, int: 750, con: 2000, lck: 600, health: 1230000, min: 137, max: 195 },
+            'King Saurus': { pos: 10, id: 0, class: 3, level: 130, str: 620, dex: 2440, int: 610, con: 2160, lck: 900, health: 1131840, min: 166, max: 271 }
         }
     },
     '6': {
         name: 'The Toxic Tree',
         shadow: false,
         floors: {
-
+            'Toxic Tree': { pos: 1, id: 0, class: 1, level: 92, str: 1680, dex: 550, int: 525, con: 1400, lck: 450, health: 651000, min: 107, max: 164 },
+            'Ugly Gremlin': { pos: 2, id: 0, class: 3, level: 98, str: 460, dex: 1800, int: 450, con: 1520, lck: 660, health: 601920, min: 134, max: 222 },
+            'Rabid Wolf': { pos: 3, id: 0, class: 2, level: 104, str: 470, dex: 490, int: 2000, con: 1560, lck: 700, health: 327600, min: 268, max: 399 },
+            'Slime Blob': { pos: 4, id: 0, class: 3, level: 106, str: 500, dex: 1960, int: 490, con: 1680, lck: 720, health: 719040, min: 142, max: 234 },
+            'Greenish Gremlin': { pos: 5, id: 0, class: 3, level: 118, str: 560, dex: 2200, int: 550, con: 1920, lck: 810, health: 913920, min: 154, max: 253 },
+            'Infected Brown Bear': { pos: 6, id: 0, class: 1, level: 124, str: 2320, dex: 790, int: 765, con: 2040, lck: 610, health: 1275000, min: 139, max: 197 },
+            'Greedy Gremlin': { pos: 7, id: 0, class: 3, level: 128, str: 610, dex: 2400, int: 600, con: 2120, lck: 885, health: 1093920, min: 164, max: 268 },
+            'Swamp Muncher': { pos: 8, id: 0, class: 2, level: 136, str: 630, dex: 650, int: 2640, con: 2200, lck: 940, health: 602800, min: 332, max: 487 },
+            'Cruel Gremlin': { pos: 9, id: 0, class: 3, level: 144, str: 690, dex: 2720, int: 680, con: 2440, lck: 1005, health: 1415200, min: 182, max: 292 },
+            'Terrible Toxic Gremlin': { pos: 10, id: 0, class: 3, level: 150, str: 720, dex: 2840, int: 710, con: 2560, lck: 1050, health: 1546240, min: 186, max: 301 }
         }
     },
     '7': {
         name: 'The Magma Stream',
         shadow: false,
         floors: {
-
+            'Fire Scorpion': { pos: 1, id: 0, class: 3, level: 112, str: 530, dex: 2080, int: 520, con: 1800, lck: 765, health: 813600, min: 149, max: 244 },
+            'Fire Basilisk': { pos: 2, id: 0, class: 3, level: 116, str: 550, dex: 2160, int: 540, con: 1880, lck: 795, health: 879840, min: 152, max: 248 },
+            'Lava Blob': { pos: 3, id: 0, class: 2, level: 120, str: 550, dex: 570, int: 2320, con: 1880, lck: 820, health: 454960, min: 299, max: 447 },
+            'Lava Giant': { pos: 4, id: 0, class: 1, level: 126, str: 2360, dex: 805, int: 780, con: 2080, lck: 620, health: 1320800, min: 141, max: 199 },
+            'Dragon of Darkness': { pos: 5, id: 0, class: 1, level: 134, str: 2520, dex: 865, int: 840, con: 2240, lck: 660, health: 1512000, min: 149, max: 207 },
+            'Hell Cyclops': { pos: 6, id: 0, class: 1, level: 138, str: 2600, dex: 895, int: 870, con: 2320, lck: 680, health: 1612400, min: 153, max: 211 },
+            'Fire Elemental': { pos: 7, id: 0, class: 2, level: 142, str: 660, dex: 680, int: 2760, con: 2320, lck: 985, health: 663520, min: 343, max: 495 },
+            'Lava Giant': { pos: 8, id: 0, class: 1, level: 146, str: 2760, dex: 955, int: 930, con: 2480, lck: 720, health: 1822800, min: 161, max: 219 },
+            'Giant Dragon': { pos: 9, id: 0, class: 1, level: 148, str: 2800, dex: 970, int: 945, con: 2520, lck: 730, health: 1877400, min: 163, max: 221 },
+            'Ghost of the Volcano': { pos: 10, id: 0, class: 1, level: 170, str: 3240, dex: 1135, int: 1110, con: 2960, lck: 840, health: 2530800, min: 185, max: 243 }
         }
     },
     '8': {
         name: 'The Frost Blood Temple',
         shadow: false,
         floors: {
-
+            'Yeti': { pos: 1, id: 0, class: 1, level: 132, str: 2480, dex: 850, int: 825, con: 2200, lck: 650, health: 1463000, min: 147, max: 204 },
+            'Black Phantom': { pos: 2, id: 0, class: 3, level: 140, str: 670, dex: 2640, int: 660, con: 2360, lck: 975, health: 1331040, min: 176, max: 286 },
+            'Dragon of Cold': { pos: 3, id: 0, class: 1, level: 154, str: 2920, dex: 1015, int: 990, con: 2640, lck: 760, health: 2046000, min: 169, max: 227 },
+            'Unholy Monk': { pos: 4, id: 0, class: 3, level: 158, str: 760, dex: 3000, int: 750, con: 2720, lck: 1110, health: 1729920, min: 194, max: 313 },
+            'Hell Alien': { pos: 5, id: 0, class: 3, level: 164, str: 790, dex: 3120, int: 780, con: 2840, lck: 1155, health: 1874400, min: 200, max: 322 },
+            'The Extraterrestrial': { pos: 6, id: 0, class: 2, level: 168, str: 790, dex: 810, int: 3280, con: 2840, lck: 1180, health: 959920, min: 395, max: 565 },
+            'Dragon of Madness': { pos: 7, id: 0, class: 1, level: 172, str: 3280, dex: 1150, int: 1125, con: 3000, lck: 850, health: 2595000, min: 187, max: 245 },
+            'Twilight Alien': { pos: 8, id: 0, class: 3, level: 180, str: 870, dex: 3440, int: 860, con: 3160, lck: 1275, health: 2287840, min: 216, max: 346 },
+            'Out of State Alien': { pos: 9, id: 0, class: 2, level: 185, str: 875, dex: 895, int: 3620, con: 3180, lck: 1305, health: 1182960, min: 429, max: 608 },
+            'Killing Machine': { pos: 10, id: 0, class: 2, level: 200, str: 950, dex: 970, int: 3920, con: 3480, lck: 1410, health: 1398960, min: 459, max: 645 }
         }
     },
     '9': {
         name: 'The Pyramids of Madness',
         shadow: false,
         floors: {
-
+            'Cave Cyclops': { pos: 1, id: 0, class: 1, level: 152, str: 2880, dex: 1000, int: 975, con: 2600, lck: 750, health: 1989000, min: 167, max: 225 },
+            'Sandstorm': { pos: 2, id: 0, class: 2, level: 156, str: 730, dex: 750, int: 3040, con: 2600, lck: 1090, health: 816400, min: 374, max: 536 },
+            'Hell Alien': { pos: 3, id: 0, class: 3, level: 160, str: 770, dex: 3040, int: 760, con: 2760, lck: 1125, health: 1777440, min: 196, max: 316 },
+            'Bigfoot': { pos: 4, id: 0, class: 1, level: 162, str: 3080, dex: 1075, int: 1050, con: 2800, lck: 800, health: 2282000, min: 177, max: 235 },
+            'Ghost': { pos: 5, id: 0, class: 2, level: 166, str: 780, dex: 800, int: 3240, con: 2800, lck: 1165, health: 935200, min: 391, max: 562 },
+            'Timmy Suprino': { pos: 6, id: 0, class: 1, level: 174, str: 3320, dex: 1165, int: 1140, con: 3040, lck: 860, health: 2660000, min: 189, max: 247 },
+            'Demoralizing Demon': { pos: 7, id: 0, class: 3, level: 176, str: 850, dex: 3360, int: 840, con: 3080, lck: 1245, health: 2180640, min: 212, max: 340 },
+            'Pink Monster Rabbit': { pos: 8, id: 0, class: 3, level: 178, str: 860, dex: 3400, int: 850, con: 3120, lck: 1260, health: 2233920, min: 214, max: 343 },
+            'Banshee': { pos: 9, id: 0, class: 2, level: 190, str: 900, dex: 920, int: 3720, con: 3280, lck: 1340, health: 1252960, min: 439, max: 621 }
         }
     },
     '10': {
