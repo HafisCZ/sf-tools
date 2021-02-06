@@ -207,7 +207,16 @@ DUNGEON_DATA = {
         name: 'Nordic Gods',
         shadow: false,
         floors: {
-
+            'Heimdall': { pos: 1, id: 0, class: 1, level: 210, str: 8000, dex: 2000, int: 2000, con: 36000, lck: 4000, health: 43560000, runes: { type: 41, resist: 30, damage: 30 }, min: 728, max: 1229 },
+            'Valkyries': { pos: 2, id: 0, class: 1, level: 240, str: 10965, dex: 1762, int: 12000, con: 40500, lck: 5000, health: 55687500, runes: { type: 42, resist: 30, damage: 30 }, min: 840, max: 1439 },
+            'Hel': { pos: 3, id: 0, class: 2, level: 270, str: 4000, dex: 4000, int: 11500, con: 51000, lck: 7500, health: 31416000, runes: { type: 40, resist: 30, damage: 30 }, min: 2126, max: 3643 },
+            'Thor': { pos: 4, id: 0, class: 1, level: 305, str: 15000, dex: 3500, int: 3500, con: 58500, lck: 8000, health: 101351256, runes: { type: 42, resist: 30, damage: 30 }, min: 1067, max: 1829 },
+            'Odin': { pos: 5, id: 0, class: 1, level: 330, str: 12500, dex: 6000, int: 6000, con: 73500, lck: 9000, health: 137445008, runes: { type: 40, resist: 40, damage: 40 }, min: 1155, max: 1979 },
+            'Loki': { pos: 6, id: 0, class: 4, level: 360, str: 6500, dex: 18500, int: 6500, con: 83500, lck: 11500, health: 135938000, runes: { type: 41, resist: 45, damage: 45 }, min: 1262, max: 2159 },
+            'Ymir': { pos: 7, id: 0, class: 6, level: 390, str: 22500, dex: 6500, int: 6500, con: 81500, lck: 10500, health: 143440000, runes: { type: 41, resist: 45, damage: 45 }, min: 1365, max: 3836 },
+            'Midgard Serpent': { pos: 8, id: 0, class: 3, level: 420, str: 10500, dex: 22500, int: 10500, con: 112500, lck: 15500, health: 212850000, runes: { type: 42, resist: 50, damage: 50 }, min: 1837, max: 3148 },
+            'Fenris Wolf': { pos: 9, id: 0, class: 6, level: 455, str: 29500, dex: 7000, int: 7000, con: 115000, lck: 16000, health: 235290000, runes: { type: 42, resist: 55, damage: 55 }, min: 1615, max: 4078 },
+            'Surtr': { pos: 10, id: 0, class: 6, level: 500, str: 38500, dex: 10500, int: 10500, con: 158000, lck: 23000, health: 354552000, runes: { type: 40, resist: 60, damage: 60 }, min: 1775, max: 4558 }
         }
     },
     '20': {
