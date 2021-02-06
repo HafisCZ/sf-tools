@@ -146,14 +146,32 @@ DUNGEON_DATA = {
         name: 'Black Skull Fortress',
         shadow: false,
         floors: {
-
+            'Dark Rider': { pos: 1, id: 0, class: 3, level: 205, str: 995, dex: 3940, int: 985, con: 3660, lck: 1450, health: 3015840, min: 241, max: 386 },
+            'Skeleton Warrior': { pos: 2, id: 0, class: 1, level: 210, str: 4040, dex: 1420, int: 1395, con: 3760, lck: 1010, health: 3966800, min: 225, max: 284 },
+            'Black Skull Warrior': { pos: 3, id: 0, class: 1, level: 215, str: 4140, dex: 1455, int: 1430, con: 3860, lck: 1030, health: 4168800, min: 229, max: 289 },
+            'Night Troll': { pos: 4, id: 0, class: 1, level: 220, str: 4240, dex: 1490, int: 1465, con: 3960, lck: 1050, health: 4375800, min: 235, max: 294 },
+            'Panther': { pos: 5, id: 0, class: 3, level: 225, str: 1095, dex: 4340, int: 1085, con: 4060, lck: 1590, health: 3670240, min: 261, max: 418 },
+            'Man-Eater': { pos: 6, id: 0, class: 3, level: 230, str: 1120, dex: 4440, int: 1110, con: 4160, lck: 1625, health: 3843840, min: 266, max: 426 },
+            'Swamp Dragon': { pos: 7, id: 0, class: 2, level: 235, str: 1125, dex: 1145, int: 4620, con: 4180, lck: 1655, health: 1972960, min: 528, max: 727 },
+            'Black Skull Warrior': { pos: 8, id: 0, class: 1, level: 240, str: 4640, dex: 1630, int: 1605, con: 4360, lck: 1130, health: 5253800, min: 255, max: 314 },
+            'Dragon of Darkness': { pos: 9, id: 0, class: 1, level: 245, str: 4740, dex: 1665, int: 1640, con: 4460, lck: 1150, health: 5485800, min: 261, max: 319 },
+            'Knight of the Black Skull': { pos: 10, id: 0, class: 1, level: 250, str: 4840, dex: 1700, int: 1675, con: 4560, lck: 1170, health: 5722800, min: 265, max: 324 }
         }
     },
     '11': {
         name: 'Circus of Terror',
         shadow: false,
         floors: {
-
+            'Happy Slappy the Clown': { pos: 1, id: 0, class: 1, level: 255, str: 4940, dex: 1735, int: 1710, con: 4660, lck: 1190, health: 5964800, min: 270, max: 338 },
+            'The Blind Knife Thrower': { pos: 2, id: 0, class: 3, level: 260, str: 1270, dex: 5040, int: 1260, con: 4760, lck: 1835, health: 4969440, min: 307, max: 485 },
+            'Miniature Gnome': { pos: 3, id: 0, class: 1, level: 265, str: 5140, dex: 1805, int: 1780, con: 4860, lck: 1230, health: 6463800, min: 280, max: 369 },
+            'The Bearded Lady': { pos: 4, id: 0, class: 1, level: 270, str: 5240, dex: 1840, int: 1815, con: 4960, lck: 1250, health: 6720800, min: 285, max: 384 },
+            'The Psycho Juggler': { pos: 5, id: 0, class: 2, level: 275, str: 1325, dex: 1345, int: 5420, con: 4980, lck: 1935, health: 2748960, min: 609, max: 939 },
+            'Siamese Twins': { pos: 6, id: 0, class: 3, level: 280, str: 1370, dex: 5440, int: 1360, con: 5160, lck: 1975, health: 5799840, min: 346, max: 548 },
+            'Bronco the Joker': { pos: 7, id: 0, class: 1, level: 285, str: 5540, dex: 1945, int: 1920, con: 5260, lck: 1310, health: 7521800, min: 300, max: 429 },
+            'The Snake-man': { pos: 8, id: 0, class: 3, level: 290, str: 1420, dex: 5640, int: 1410, con: 5360, lck: 2045, health: 6239040, min: 366, max: 578 },
+            'Madame Mystique': { pos: 9, id: 0, class: 2, level: 295, str: 1425, dex: 1445, int: 5820, con: 5380, lck: 2075, health: 3184960, min: 653, max: 1079 },
+            'Bozo the Terror Clown': { pos: 10, id: 0, class: 1, level: 300, str: 5840, dex: 2050, int: 2025, con: 5560, lck: 1370, health: 8367800, min: 315, max: 474 }
         }
     },
     '12': {
