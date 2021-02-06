@@ -171,7 +171,7 @@
                             <td ${ [ 0, 1, 0, 0, 0, 0, 0 ][ boss.Class - 1 ] ? 'class="bolder"' : '' } valign="top">${ formatAsSpacedNumber(boss.Intelligence) }</td>
                             <td class="bolder" valign="top">${ formatAsSpacedNumber(boss.Constitution) }</td>
                             <td valign="top">${ formatAsSpacedNumber(boss.Luck) }</td>
-                            <td valign="top">${ formatAsSpacedNumber(boss.Level * [ 50, 10, 25, 25, 50, 25, 50 ][ boss.Class - 1 ]) }</td>
+                            <td valign="top">${ formatAsSpacedNumber(boss.Level * [ 50, 10, 25, 25, 10, 25, 50 ][ boss.Class - 1 ]) }</td>
                             <td class="bolder" valign="top">${ formatAsSpacedNumber(boss.Health) }</td>
                             <td valign="top">${ boss.ElementalDamage.Value ? `${ boss.ElementalDamage.Value }%&nbsp; ${ RUNETYPES[boss.ElementalDamage.Type].split(' ')[0] }` : '' }</td>
                             <td class="hint-container">
@@ -274,6 +274,7 @@
                         // Handle rounds
                         let rounds = [];
                         let offset = 0;
+                        let nextlife = null;
 
                         for (var i = 0; i < msg['r'].length / 3; i++) {
                             var [
@@ -291,14 +292,41 @@
                                 };
 
                                 // Damage
-                                let damage = (rounds.length == 0 ? player.Life : rounds[rounds.length - 1].life) - targetHealthLeft;
+                                let damage = 0;
+                                if (rounds.length == 0) {
+                                    if (nextlife != null) {
+                                        damage = nextlife - targetHealthLeft;
+                                        nextlife = null;
+                                    } else {
+                                        damage = player.Life - targetHealthLeft;
+                                    }
+                                } else {
+                                    damage = rounds[rounds.length - 1].life - targetHealthLeft;
+                                }
+
                                 round.damage = damage / rage / (type % 10 == 1 ? 2 : 1);
 
                                 // Add round
                                 rounds.push(round);
                             } else if (aid == boss.ID && type == 100) {
                                 rounds[rounds.length - 1].life = player.Life;
+                            } else if (aid == boss.ID && type == 15) {
+                                nextlife = targetHealthLeft;
                             }
+                        }
+
+                        if (boss.Class == 4) {
+                            rounds = rounds.map(({ type, life, damage }) => {
+                                if (type < 2) {
+                                    return {
+                                        type: type,
+                                        life: life,
+                                        damage: (damage / 0.625) / 2
+                                    };
+                                } else {
+                                    return null;
+                                }
+                            }).filter(r => r);
                         }
 
                         // Clean things up
