@@ -445,11 +445,9 @@ class DungeonSimulator {
         }
 
         return {
-            winrate: 100 * score / iterations,
-            health_min: 100 * Math.min(... healths),
-            health_max: 100 * Math.max(... healths),
-            health_avg: 100 * healths.reduce((a, b) => a + b, 0) / healths.length,
-            health_sub10: 100 * healths.reduce((a, b) => a + (b < 0.1 ? 1 : 0), 0) / healths.length
+            iterations: iterations,
+            score: score,
+            healths: healths
         };
     }
 

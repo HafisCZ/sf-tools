@@ -22,6 +22,7 @@
         <script src="js/sim/dungeon_data.js"></script>
         <script src="js/sim/dungeons.js"></script>
 
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
 
         <style>
@@ -107,9 +108,9 @@
                 opacity: 50%;
             }
 
-            #sim-players1, #sim-players2 {
-                min-height: 30em;
+            #sim-players1 {
                 align-content: flex-start;
+                padding-bottom: 0.75em;
             }
 
             .class-picture {
@@ -324,34 +325,6 @@
                                 <button class="ui fluid button" type="submit" id="sim-run">Simulate</button>
                             </div>
                         </div>
-                        <div class="row" style="padding-top: 0;">
-                            <div class="sixteen wide column">
-                                <div class="ui small form">
-                                    <div class="five fields">
-                                        <div class="field">
-                                            <label>Winrate %</label>
-                                            <input class="text-center fluid" disabled type="text" id="sim-results" value="">
-                                        </div>
-                                        <div class="field">
-                                            <label>< 10% HP %</label>
-                                            <input class="text-center fluid" disabled type="text" id="sim-results-10" value="">
-                                        </div>
-                                        <div class="field">
-                                            <label>Min HP %</label>
-                                            <input class="text-center fluid" disabled type="text" id="sim-results-min" value="">
-                                        </div>
-                                        <div class="field">
-                                            <label>Avg HP %</label>
-                                            <input class="text-center fluid" disabled type="text" id="sim-results-avg" value="">
-                                        </div>
-                                        <div class="field">
-                                            <label>Max HP %</label>
-                                            <input class="text-center fluid" disabled type="text" id="sim-results-max" value="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="row padding-none">
                             <div class="eight wide text-center column">
                                 Player
@@ -387,7 +360,12 @@
                                     </div>
                                 </div>
                             </div>
-                        <div>
+                        </div>
+                        <div class="row" style="padding-top: 0;">
+                            <div class="sixteen wide column">
+                                <canvas id="winchart" style="width: 100%; height: 17.75em;"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -686,7 +664,8 @@
                 values: Object.entries(DUNGEON_DATA).map(([ id, dungeon ]) => {
                     return {
                         name: dungeon.shadow ? `<span style="text-shadow:0px 0px 8px #390074;">${ dungeon.name }<span>` : dungeon.name,
-                        value: id
+                        value: id,
+                        disabled: Object.keys(dungeon.floors).length == 0
                     };
                 })
             }).dropdown('setting', 'onChange', (value, text) => {
@@ -702,6 +681,7 @@
                 }).dropdown('setting', 'onChange', (value, text) => {
                     boss = getBossData(dungeon.floors[value]);
                 }).dropdown('set selected', Object.keys(dungeon.floors)[0]);
+                show();
             }).dropdown('set selected', '1');
 
             var selected = 0;
@@ -797,6 +777,63 @@
 
             select(0);
 
+            chart = new Chart($('#winchart'), {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        fill: false,
+                        borderWidth: 1.5,
+                        data: []
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true
+                    },
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                min: 0,
+                                max: 100,
+                                padding: 10,
+                                stepSize: 20,
+                                callback: function (value, index, values) {
+                                    return `${ value }%`;
+                                }
+                            }
+                        }],
+                        xAxes: [{
+                            display: false
+                        }]
+                    },
+                    tooltips: {
+                        enabled: false
+                    },
+                    animation: {
+                        duration: 0
+                    },
+                    events: [],
+                    hover: {
+                        animationDuration: 0,
+                    },
+                    showTooltips: false,
+                    responsiveAnimationDuration: 0,
+                    elements: {
+                        line: {
+                            borderColor: 'black',
+                            tension: 0
+                        },
+                        point: {
+                            radius: 0
+                        }
+                    }
+                }
+            });
+
             $('#sim-run').click(function () {
                 if (boss && players[0].Level) {
                     toggleAll(true);
@@ -807,19 +844,22 @@
                         if (message.data.command == 'finished') {
                             toggleAll();
 
-                            let {
-                                winrate,
-                                health_min,
-                                health_max,
-                                health_avg,
-                                health_sub10
-                            } = message.data.results;
+                            let { score, iterations, healths } = message.data.results;
 
-                            $('#sim-results').val(winrate.toFixed(2) + '%');
-                            $('#sim-results-10').val(health_sub10.toFixed(2) + '%');
-                            $('#sim-results-min').val(health_min.toFixed(0) + '%');
-                            $('#sim-results-avg').val(health_avg.toFixed(0) + '%');
-                            $('#sim-results-max').val(health_max.toFixed(0) + '%');
+                            healths.sort((a, b) => a - b);
+
+                            let i = healths.length;
+                            if (i > 20000) {
+                                while (i--) {
+                                    healths.splice((i + 1) * 2 - 1, 1);
+                                }
+                            }
+
+                            chart.options.title.text =  `Winrate: ${(100 * score / iterations).toFixed(2)}% (${score} out of ${iterations})`;
+                            chart.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
+                            chart.data.labels = healths.map((a, b) => b);
+
+                            chart.update(0);
                         }
                     }, false);
 
