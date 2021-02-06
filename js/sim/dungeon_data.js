@@ -181,7 +181,26 @@ DUNGEON_DATA = {
         name: 'Hemorridor',
         shadow: false,
         floors: {
-
+            'Orc on Warg': { pos: 1, id: 0, class: 1, level: 200, str: 8800, dex: 1120, int: 1120, con: 28000, lck: 3600, health: 28140000, min: 684, max: 1154 },
+            'Troll Trio': { pos: 2, id: 0, class: 1, level: 213, str: 8069, dex: 1995, int: 2014, con: 36296, lck: 3954, health: 38836720, min: 728, max: 1229 },
+            'The King': { pos: 3, id: 0, class: 2, level: 228, str: 1333, dex: 1333, int: 9709, con: 37840, lck: 4128, health: 17330720, min: 1752, max: 2959 },
+            'Smollum': { pos: 4, id: 0, class: 3, level: 242, str: 1749, dex: 10965, int: 1762, con: 40940, lck: 5287, health: 39793680, min: 1034, max: 1747 },
+            'Spiders again': { pos: 5, id: 0, class: 3, level: 258, str: 3559, dex: 11269, int: 3559, con: 45315, lck: 7049, health: 46946340, min: 1102, max: 1861 },
+            'Orc Boss': { pos: 6, id: 0, class: 1, level: 273, str: 11818, dex: 4209, int: 4209, con: 51395, lck: 7562, health: 70411152, min: 932, max: 1574 },
+            'Bezog': { pos: 7, id: 0, class: 3, level: 289, str: 3832, dex: 12720, int: 3773, con: 53410, lck: 7811, health: 61955600, min: 1232, max: 2084 },
+            'Smoulder': { pos: 8, id: 0, class: 2, level: 305, str: 3163, dex: 3163, int: 15023, con: 58878, lck: 8102, health: 36033336, min: 2340, max: 3959 },
+            'Nazguls...Nazgulses?': { pos: 9, id: 0, class: 5, level: 319, str: 14904, dex: 5706, int: 5736, con: 72152, lck: 10503, health: 115443200, min: 1088, max: 1839 },
+            'Monster in the Lake': { pos: 10, id: 0, class: 3, level: 333, str: 6207, dex: 12783, int: 6207, con: 73553, lck: 8967, health: 98266808, min: 1420, max: 2399 },
+            'Valaraukar': { pos: 11, id: 0, class: 5, level: 348, str: 17737, dex: 3446, int: 3446, con: 66115, lck: 9591, health: 115370672, min: 1187, max: 2007 },
+            'Urcsi the Uruk': { pos: 12, id: 0, class: 1, level: 362, str: 18561, dex: 6602, int: 6602, con: 83598, lck: 11886, health: 151730368, min: 1234, max: 2087 },
+            'Prompter Splittongue': { pos: 13, id: 0, class: 2, level: 377, str: 5718, dex: 5813, int: 20594, con: 88667, lck: 13464, health: 67032252, min: 2895, max: 4886 },
+            'Samowar the Pale': { pos: 14, id: 0, class: 4, level: 392, str: 6639, dex: 22792, int: 6633, con: 81699, lck: 10532, health: 128430832, min: 1336, max: 2257 },
+            'Oliphaunt Tamer': { pos: 15, id: 0, class: 2, level: 408, str: 6497, dex: 6606, int: 22857, con: 99498, lck: 14397, health: 81389360, min: 3130, max: 5286 },
+            'Undead Army': { pos: 16, id: 0, class: 1, level: 424, str: 22421, dex: 10797, int: 10620, con: 112800, lck: 15630, health: 239700000, min: 1446, max: 2441 },
+            'Shelantula': { pos: 17, id: 0, class: 3, level: 440, str: 9250, dex: 23036, int: 9250, con: 108665, lck: 15697, health: 191685056, min: 1874, max: 3167 },
+            'Ruler of the Nine': { pos: 18, id: 0, class: 5, level: 456, str: 29669, dex: 6988, int: 6988, con: 116680, lck: 16639, health: 266613792, min: 1554, max: 2627 },
+            'Mauron\'s Maw': { pos: 19, id: 0, class: 1, level: 474, str: 36039, dex: 15498, int: 15498, con: 160331, lck: 22927, health: 380786112, min: 1616, max: 2725 },
+            'The Necromancer': { pos: 20, id: 0, class: 1, level: 500, str: 38231, dex: 10473, int: 10474, con: 158088, lck: 22969, health: 396010432, min: 1704, max: 2879 }
         }
     },
     '19': {
@@ -350,4 +369,12 @@ DUNGEON_DATA = {
             'Hades': { pos: 9, id: 0, class: 3, level: 645, str: 75000, dex: 200000, int: 75000, con: 360000, lck: 100000, health: 19099799552, runes: { type: 40, resist: 60, damage: 60 }, min: 1074, max: 2159 }
         }
     },
+    '200': {
+        name: 'Tavern',
+        shadow: false,
+        floors: {
+            'Strider': { pos: 5, id: 0, class: 3, level: 558, str: 23240, dex: 191252, int: 23262, con: 168904, lck: 44108, health: 814349440, runes: { type: 42, resist: 75, damage: 60 }, min: 1022, max: 2858 },
+            'The Empress': { pos: 10, id: 0, class: 7, level: 700, str: 10000, dex: 315000, int: 10000, con: 295000, lck: 35000, health: 1230000000, runes: { type: 42, resist: 75, damage: 60 }, min: 1170, max: 3480 }
+        }
+    }
 };
