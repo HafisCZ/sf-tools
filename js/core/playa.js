@@ -2005,7 +2005,7 @@ function toSimulatorModel (p) {
             Group: p.Dungeons.Group
         },
         Fortress: {
-            Gladiator: p.Fortress.Gladiator || 0
+            Gladiator: (p.Fortress ? p.Fortress.Gladiator : 0) || 0
         },
         Underworld: {
             Gladiator: p.Underworld ? p.Underworld.Gladiator : 0
