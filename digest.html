@@ -171,7 +171,7 @@
                             <td ${ [ 0, 1, 0, 0, 0, 0, 0 ][ boss.Class - 1 ] ? 'class="bolder"' : '' } valign="top">${ formatAsSpacedNumber(boss.Intelligence) }</td>
                             <td class="bolder" valign="top">${ formatAsSpacedNumber(boss.Constitution) }</td>
                             <td valign="top">${ formatAsSpacedNumber(boss.Luck) }</td>
-                            <td valign="top">${ formatAsSpacedNumber(boss.Level * [ 50, 10, 25, 25, 10, 25, 50 ][ boss.Class - 1 ]) }</td>
+                            <td valign="top">${ formatAsSpacedNumber(boss.Level * [ 50, 10, 25, 25, 10, 25, 50 ][ boss.Class - 1 ]) } <span style="font-size: 75%;" class="text-red">${ boss.ElementalResistance }%</span></td>
                             <td class="bolder" valign="top">${ formatAsSpacedNumber(boss.Health) }</td>
                             <td valign="top">${ boss.ElementalDamage.Value ? `${ boss.ElementalDamage.Value }%&nbsp; ${ RUNETYPES[boss.ElementalDamage.Type].split(' ')[0] }` : '' }</td>
                             <td class="hint-container">
@@ -273,6 +273,7 @@
 
                         // Handle rounds
                         let rounds = [];
+                        let rounds_taken = [];
                         let offset = 0;
                         let nextlife = null;
 
@@ -312,6 +313,12 @@
                                 rounds[rounds.length - 1].life = player.Life;
                             } else if (aid == boss.ID && type == 15) {
                                 nextlife = targetHealthLeft;
+                            } else if (aid != boss.ID && type <= 1) {
+                                rounds_taken.push({
+                                    life: targetHealthLeft,
+                                    crit: type == 1,
+                                    damage: ((rounds_taken.length > 0 ? rounds_taken[rounds_taken.length - 1].life : boss.Life) - targetHealthLeft) / rage
+                                });
                             }
                         }
 
@@ -356,7 +363,8 @@
                         // Add fights
                         boss.Fights.push({
                             Player: player,
-                            Rounds: rounds
+                            Rounds: rounds,
+                            Taken: rounds_taken
                         });
                     }
                 }
@@ -371,6 +379,7 @@
             function analyze () {
                 for (let boss of Object.values(bosses)) {
                     boss.BaseDamage = getBaseDamage(boss);
+                    boss.ElementalResistance = 0;
                     boss.Damage = {
                         Min: Infinity,
                         Max: -Infinity,
@@ -440,6 +449,42 @@
                         } else {
                             boss.Damage.UMin = Math.min(boss.Damage.UMin, localMin);
                             boss.Damage.UMax = Math.max(boss.Damage.UMax, localMax);
+                        }
+                    }
+
+                    for (let [ hash, player] of Object.entries(players)) {
+                        let fightsForHash = boss.Fights.filter(fight => fight.Player.Hash == hash);
+                        if (player.Runes.Damage > 0 && fightsForHash.length > 0) {
+                            let elemDamage = player.Runes.Damage / 100;
+
+                            let attrPlayer = getMainAttribute(player, player.Class).Total;
+                            let attrBoss = getMainAttribute(boss, player.Class);
+
+                            let armorBoss = boss.Level * [ 50, 10, 25, 25, 10, 25, 50 ][ boss.Class - 1 ] + (boss.Class == 5 ? 40 : 0)
+
+                            let multAttr = (1 + Math.max(attrPlayer / 2, attrPlayer - attrBoss / 2) / 10);
+                            let multArmor = (1 - (armorBoss / player.Level) / 100);
+                            let multPortal = (1 + player.Dungeons.Group / 100)
+                            let baseRaw = multAttr * multArmor * multPortal;
+
+                            let fistDamage = getBaseDamage(player);
+
+                            let multCritical = (2 * (1 + (player.Items.Wpn1.HasEnchantment ? 0.05 : 0)) * (1 + 0.05 * player.Underworld.Gladiator));
+
+                            let takenDamages = [];
+                            for (let fight of fightsForHash) {
+                                takenDamages.push(... fight.Taken.map(round => round.damage / (round.crit ? multCritical : 1)));
+                            }
+
+                            let realMin = Math.min(... takenDamages);
+                            let baseMin = baseRaw * Math.max(fistDamage.Min, player.Items.Wpn1.DamageMin);
+                            let resistanceMin = 100 * (1 - (realMin / baseMin - 1) / elemDamage);
+
+                            let realMax = Math.max(... takenDamages);
+                            let baseMax = baseRaw * Math.max(fistDamage.Max, player.Items.Wpn1.DamageMax);
+                            let resistanceMax = 100 * (1 - (realMax / baseMax - 1) / elemDamage);
+
+                            boss.ElementalResistance = Math.trunc(Math.max(boss.ElementalResistance, resistanceMin, resistanceMax));
                         }
                     }
                 }
