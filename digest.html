@@ -339,7 +339,7 @@
                             Value: 0
                         };
 
-                        delete boss.ID;
+                        boss.ID = -boss.Face.Mouth;
                         delete boss.Face;
                         delete boss.Life;
                         delete boss.Race;
@@ -358,23 +358,26 @@
                             Player: player,
                             Rounds: rounds
                         });
-
-                        // Clear
-                        boss.Damage = {
-                            Min: Infinity,
-                            Max: -Infinity,
-                            UMin: Infinity,
-                            UMax: -Infinity,
-                            Instances: {}
-                        };
                     }
                 }
 
                 /*
                     Process fights
                 */
+                analyze();
+                show();
+            }
+
+            function analyze () {
                 for (let boss of Object.values(bosses)) {
                     boss.BaseDamage = getBaseDamage(boss);
+                    boss.Damage = {
+                        Min: Infinity,
+                        Max: -Infinity,
+                        UMin: Infinity,
+                        UMax: -Infinity,
+                        Instances: {}
+                    };
 
                     for (let fight of boss.Fights) {
                         let resistance = 0;
@@ -436,8 +439,6 @@
                         }
                     }
                 }
-
-                show();
             }
 
             /*
