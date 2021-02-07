@@ -700,28 +700,15 @@
             $(document.body).on('paste', function (event) {
                 try {
                     var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
-                    if (data.Class || data.save) {
-                        var obj = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
-
-                        SFItem.forceCorrectRune(obj.Items.Wpn1);
-                        SFItem.forceCorrectRune(obj.Items.Wpn2);
-
-                        if (obj.Class != 4) {
-                            obj.Items.Wpn2 = SFItem.empty();
+                    if (Array.isArray(data)) {
+                        for (let i = 0; i < 4; i++) {
+                            selected = i;
+                            loadEditor(data[i]);
+                            saveEditor();
                         }
-
-                        if (data.Underworld) {
-                            data.Fortress.Gladiator = data.Underworld.Gladiator;
-                        }
-
-                        if (selected > 0) {
-                            for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
-                                var path = EditorController.fields[key].path();
-                                setObjectAt(obj, path, getObjectAt(players[0], path));
-                            }
-                        }
-
-                        EditorController.fill(obj, selected);
+                    } else if (data.Class) {
+                        loadEditor();
+                        saveEditor();
                     }
                 } catch (e) {
                     console.info(e);
@@ -731,7 +718,31 @@
             $('#sim-editor input').on('paste', function (event) { event.stopPropagation(); });
 
             // Save button
-            $('#sim-save').click(function () {
+            $('#sim-save').click(saveEditor);
+
+            function loadEditor (data) {
+                SFItem.forceCorrectRune(data.Items.Wpn1);
+                SFItem.forceCorrectRune(data.Items.Wpn2);
+
+                if (data.Class != 4) {
+                    data.Items.Wpn2 = SFItem.empty();
+                }
+
+                if (data.Underworld) {
+                    data.Fortress.Gladiator = data.Underworld.Gladiator;
+                }
+
+                if (selected > 0) {
+                    for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
+                        var path = EditorController.fields[key].path();
+                        setObjectAt(data, path, getObjectAt(players[0], path));
+                    }
+                }
+
+                EditorController.fill(data, selected);
+            }
+
+            function saveEditor () {
                 if (EditorController.valid()) {
                     var obj = EditorController.read();
                     if (selected == 0) {
@@ -748,7 +759,7 @@
 
                     show();
                 }
-            });
+            }
 
             // Copy buttons
             $('#sim-copyCurrent').click(() => copyText(JSON.stringify(EditorController.read())));
