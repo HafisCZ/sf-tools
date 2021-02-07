@@ -19,6 +19,7 @@
         <script src="js/plugins.js"></script>
 
         <script src="js/core/playa.js"></script>
+        <script src="js/core/core.js"></script>
         <script src="js/sim/dungeon_data.js"></script>
         <script src="js/sim/dungeons.js"></script>
 
@@ -127,6 +128,17 @@
                 left: 1em;
                 bottom: 1em;
             }
+
+            .statistics-module {
+                position: absolute;
+                left: 2em;
+                top: 5em;
+                width: 10vw;
+            }
+
+            body {
+                overflow-y: hidden !important;
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
@@ -138,6 +150,10 @@
         <div class="footer">
             <b>Notice:</b> <span style="font-size: 90%;">The sim should be very accurate, but sometimes you might win a fight in-game that the sim shows as impossible.<br/>
             In that case save the fight in a HAR file and send to mar21#4673 in <a href="https://discord.gg/XWfSwe3">S&F Tavern</a></span>
+        </div>
+
+        <div class="statistics-module" id="stats-module">
+            <div class="ui fluid basic black button" id="load-stats">Load characters</div>
         </div>
 
         <div class="ui main container">
@@ -900,6 +916,36 @@
                         iterations: Number($('#sim-iterations').val())
                     });
                 }
+            });
+
+            $('#load-stats').click(() => {
+                Storage.load(function () {
+                    $('#stats-module').empty();
+
+                    for (let pid of Object.keys(Database.Players)) {
+                        let player = Database.getPlayer(pid).Latest;
+
+                        $('#stats-module').append($(`<div class="ui fluid button basic black" style="margin-bottom: 0.5em;">${ player.Name } @ ${ player.Prefix }</div>`).click(() => {
+                            let data = player.toSimulatorShadowModel();
+                            if (Array.isArray(data)) {
+                                for (let i = 0; i < 4; i++) {
+                                    selected = i;
+                                    loadEditor(data[i]);
+                                    saveEditor();
+                                }
+                            } else if (data.Class) {
+                                loadEditor(data);
+                                saveEditor();
+                            }
+                        }));
+                    }
+                }, function () {
+                    $('#stats-module').html('');
+                }, {
+                    inventory: true,
+                    pfilter: p => p.own,
+                    gfilter: g => false
+                });
             });
         </script>
     </body>
