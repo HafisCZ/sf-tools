@@ -528,7 +528,26 @@ DUNGEON_DATA = {
         name: '13th Floor',
         shadow: true,
         floors: {
-
+            'Hellgore the Hellish': { pos: 1, id: 243, class: 1, level: 424, str: 9041, dex: 3171, int: 3141, con: 47883, lck: 2049, health: 101751376, min: 4535, max: 9045 },
+            'Henry the Magic Fairy': { pos: 2, id: 244, class: 2, level: 428, str: 2342, dex: 2365, int: 9511, con: 49434, lck: 3374, health: 42414372, min: 10557, max: 20581 },
+            'Jet the Panty Raider': { pos: 3, id: 245, class: 1, level: 432, str: 9811, dex: 3441, int: 3411, con: 52140, lck: 2201, health: 112883104, min: 4628, max: 9222 },
+            'Clapper van Hellsing': { pos: 4, id: 246, class: 2, level: 436, str: 2545, dex: 2568, int: 10322, con: 53922, lck: 3657, health: 47127828, min: 10533, max: 19240 },
+            'The KOma KOmmander': { pos: 5, id: 247, class: 1, level: 440, str: 10958, dex: 3842, int: 3813, con: 58465, lck: 2428, health: 128915328, min: 4709, max: 9401 },
+            'Roughian the Ruthless': { pos: 6, id: 248, class: 3, level: 444, str: 3133, dex: 12490, int: 3122, con: 66896, lck: 4454, health: 119074880, min: 5942, max: 11862 },
+            'Ben the Marketeer': { pos: 7, id: 249, class: 2, level: 448, str: 3360, dex: 3383, int: 13579, con: 71868, lck: 4796, health: 64537464, min: 11207, max: 20640 },
+            'Hector the Contractor': { pos: 8, id: 250, class: 1, level: 452, str: 14533, dex: 5093, int: 5064, con: 78150, lck: 3140, health: 177009744, min: 4879, max: 9249 },
+            'Motu with a Club': { pos: 9, id: 251, class: 1, level: 456, str: 15630, dex: 5477, int: 5448, con: 84188, lck: 3359, health: 192369584, min: 4880, max: 9743 },
+            'Jack the Hammerer': { pos: 10, id: 252, class: 1, level: 460, str: 19366, dex: 6785, int: 6756, con: 104742, lck: 4105, health: 241430304, min: 4919, max: 9823 },
+            'Thesi the Terrible': { pos: 11, id: 253, class: 3, level: 468, str: 8140, dex: 23230, int: 8100, con: 115210, lck: 4920, health: 216133952, min: 7441, max: 14439 },
+            'Peter the Impaler': { pos: 12, id: 254, class: 1, level: 476, str: 27870, dex: 9760, int: 9720, con: 126730, lck: 5900, health: 302251040, min: 7086, max: 14148 },
+            'Gert the Ghastly': { pos: 13, id: 255, class: 2, level: 484, str: 11660, dex: 11710, int: 33440, con: 139400, lck: 7080, health: 135218000, min: 19460, max: 34885 },
+            'Leander, Lord of Lies': { pos: 14, id: 256, class: 1, level: 492, str: 40120, dex: 14050, int: 13990, con: 153340, lck: 8490, health: 377983104, min: 10206, max: 20378 },
+            'Hannah the Hellish': { pos: 15, id: 257, class: 2, level: 500, str: 16780, dex: 16860, int: 48140, con: 168670, lck: 10180, health: 169007344, min: 28462, max: 52706 },
+            'Alex, Angel of Abyss': { pos: 16, id: 258, class: 1, level: 508, str: 57760, dex: 20230, int: 20130, con: 185530, lck: 12210, health: 472173856, min: 14735, max: 29356 },
+            'Jan the Hacker': { pos: 17, id: 259, class: 1, level: 516, str: 69310, dex: 24270, int: 24150, con: 204080, lck: 14650, health: 527546816, min: 17974, max: 35111 },
+            'Four-handed Peter ': { pos: 18, id: 260, class: 1, level: 524, str: 83170, dex: 29120, int: 28980, con: 224480, lck: 17580, health: 589260032, min: 21311, max: 41831 },
+            'The Artist Andreas': { pos: 19, id: 261, class: 3, level: 532, str: 34940, dex: 99800, int: 34770, con: 246920, lck: 21090, health: 526433440, min: 31926, max: 62970 },
+            'Marv the Minor Evil': { pos: 20, id: 262, class: 2, level: 540, str: 41920, dex: 41720, int: 119760, con: 271610, lck: 25300, health: 293882016, min: 70776, max: 136537 }
         }
     },
     '114': {
