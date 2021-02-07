@@ -480,21 +480,48 @@ DUNGEON_DATA = {
         name: 'Black Skull Fortress',
         shadow: true,
         floors: {
-
+            'Dark Rider': { pos: 1, id: 101, class: 3, level: 352, str: 1708, dex: 6765, int: 1691, con: 34562, lck: 2489, health: 48801544, min: 4747, max: 9412 },
+            'Skeleton Warrior': { pos: 2, id: 115, class: 1, level: 354, str: 6810, dex: 2393, int: 2351, con: 34859, lck: 1702, health: 61874724, min: 3793, max: 7572 },
+            'Black Skull Warrior': { pos: 3, id: 159, class: 1, level: 356, str: 6855, dex: 2409, int: 2367, con: 35150, lck: 1705, health: 62742752, min: 3845, max: 7615 },
+            'Night Troll': { pos: 4, id: 21, class: 1, level: 358, str: 6899, dex: 2424, int: 2383, con: 35442, lck: 1708, health: 63618392, min: 3829, max: 7653 },
+            'Panther': { pos: 5, id: 61, class: 3, level: 360, str: 1752, dex: 6944, int: 1736, con: 35728, lck: 2544, health: 51591232, min: 4813, max: 9626 },
+            'Man-Eater': { pos: 6, id: 163, class: 3, level: 362, str: 1762, dex: 6988, int: 1747, con: 36008, lck: 2557, health: 52283616, min: 4847, max: 9672 },
+            'Swamp Dragon': { pos: 7, id: 161, class: 2, level: 364, str: 1742, dex: 1773, int: 7156, con: 35607, lck: 2563, health: 25993110, min: 9198, max: 17512 },
+            'Black Skull Warrior': { pos: 8, id: 159, class: 1, level: 366, str: 7076, dex: 2485, int: 2447, con: 36570, lck: 1723, health: 67105952, min: 3916, max: 7591 },
+            'Dragon of Darkness': { pos: 9, id: 158, class: 1, level: 368, str: 7119, dex: 2500, int: 2463, con: 36844, lck: 1727, health: 67977184, min: 3952, max: 7833 },
+            'Knight of the Black Skull': { pos: 10, id: 165, class: 1, level: 370, str: 7163, dex: 2516, int: 2479, con: 37114, lck: 1731, health: 68846472, min: 3964, max: 7873 }
         }
     },
     '111': {
         name: 'Circus of Terror',
         shadow: true,
         floors: {
-
+            'Happy Slappy the Clown': { pos: 1, id: 173, class: 1, level: 372, str: 7206, dex: 2531, int: 2494, con: 37389, lck: 1736, health: 69730488, min: 3980, max: 7945 },
+            'The Blind Knife Thrower': { pos: 2, id: 174, class: 3, level: 374, str: 1826, dex: 7249, int: 1812, con: 37658, lck: 2639, health: 56487000, min: 5024, max: 9980 },
+            'Miniature Gnome': { pos: 3, id: 175, class: 1, level: 376, str: 7292, dex: 2561, int: 2525, con: 37922, lck: 1745, health: 71482968, min: 4082, max: 7966 },
+            'The Bearded Lady': { pos: 4, id: 176, class: 1, level: 378, str: 7336, dex: 2576, int: 2541, con: 38192, lck: 1750, health: 72373840, min: 4055, max: 8051 },
+            'The Psycho Juggler': { pos: 5, id: 177, class: 2, level: 380, str: 1830, dex: 1858, int: 7489, con: 37846, lck: 2673, health: 28838652, min: 9157, max: 17530 },
+            'Siamese Twins': { pos: 6, id: 178, class: 3, level: 382, str: 1869, dex: 7421, int: 1855, con: 38714, lck: 2694, health: 59309848, min: 5163, max: 9965 },
+            'Bronco the Joker': { pos: 7, id: 179, class: 1, level: 384, str: 7464, dex: 2620, int: 2586, con: 38978, lck: 1765, health: 75032648, min: 4115, max: 8191 },
+            'The Snake-man': { pos: 8, id: 180, class: 3, level: 386, str: 1890, dex: 7507, int: 1876, con: 39237, lck: 2721, health: 60738876, min: 5162, max: 10319 },
+            'Madame Mystique': { pos: 9, id: 181, class: 2, level: 388, str: 1874, dex: 1900, int: 7654, con: 38918, lck: 2729, health: 30278204, min: 9868, max: 18597 },
+            'Bozo the Terror Clown': { pos: 10, id: 182, class: 1, level: 390, str: 7592, dex: 2665, int: 2632, con: 39754, lck: 1781, health: 77719072, min: 4180, max: 8336 }
         }
     },
     '112': {
         name: 'Hell',
         shadow: true,
         floors: {
-
+            'Restless Soul': { pos: 1, id: 183, class: 2, level: 392, str: 1895, dex: 1921, int: 7737, con: 39440, lck: 2756, health: 30999840, min: 9910, max: 18710 },
+            'Furious Soul': { pos: 2, id: 184, class: 2, level: 394, str: 1906, dex: 1931, int: 7778, con: 39704, lck: 2770, health: 31366160, min: 9918, max: 18819 },
+            'Old Soul': { pos: 3, id: 185, class: 1, level: 396, str: 7718, dex: 2709, int: 2677, con: 40513, lck: 1797, health: 80418304, min: 4237, max: 8464 },
+            'Pest': { pos: 4, id: 186, class: 3, level: 398, str: 1952, dex: 7761, int: 1940, con: 40766, lck: 2804, health: 65062536, min: 5335, max: 10577 },
+            'Soul Clump': { pos: 5, id: 187, class: 2, level: 400, str: 1938, dex: 1963, int: 7901, con: 40480, lck: 2812, health: 32464960, min: 9869, max: 19019 },
+            'Scourge': { pos: 6, id: 188, class: 1, level: 404, str: 7884, dex: 2766, int: 2736, con: 41476, lck: 1824, health: 83988896, min: 4343, max: 8638 },
+            'Hellhound': { pos: 7, id: 189, class: 3, level: 408, str: 2003, dex: 7965, int: 1991, con: 41932, lck: 2874, health: 68600752, min: 5473, max: 10904 },
+            'The Fuehrer's Heap': { pos: 8, id: 190, class: 1, level: 412, str: 8046, dex: 2823, int: 2793, con: 42383, lck: 1854, health: 87520896, min: 4431, max: 8806 },
+            'The Devil's Advocate': { pos: 9, id: 191, class: 1, level: 416, str: 8127, dex: 2851, int: 2821, con: 42840, lck: 1868, health: 89321400, min: 4609, max: 8868 },
+            'Beelzeboss': { pos: 10, id: 192, class: 1, level: 420, str: 8208, dex: 2880, int: 2850, con: 43296, lck: 1884, health: 91138080, min: 4499, max: 8979 }
         }
     },
     '113': {
