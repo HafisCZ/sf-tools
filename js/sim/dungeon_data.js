@@ -321,16 +321,16 @@ DUNGEON_DATA = {
         name: 'Mount Olympus',
         shadow: false,
         floors: {
-            'Singing Sirens': { pos: 1, id: 0, class: 2, level: 210, str: 2000, dex: 2000, int: 8000, con: 80000, lck: 4000, health: 52800000, runes: { type: 41, resist: 30, damage: 30 }, min: 791, max: 1589 },
-            'Polyphemus the Cyclops': { pos: 2, id: 0, class: 1, level: 240, str: 12000, dex: 4000, int: 4000, con: 100000, lck: 5000, health: 187500000, runes: { type: 42, resist: 35, damage: 35 }, min: 320, max: 639 },
-            'Cerberus': { pos: 3, id: 0, class: 3, level: 270, str: 6000, dex: 16000, int: 6000, con: 120000, lck: 6000, health: 201600000, runes: { type: 40, resist: 35, damage: 35 }, min: 450, max: 899 },
-            'Medusa': { pos: 4, id: 0, class: 2, level: 305, str: 8000, dex: 8000, int: 20000, con: 140000, lck: 7000, health: 132300000, runes: { type: 41, resist: 40, damage: 40 }, min: 1070, max: 2128 },
-            'Athena': { pos: 5, id: 0, class: 2, level: 330, str: 10000, dex: 10000, int: 24000, con: 160000, lck: 8000, health: 163200000,runes: { type: 40, resist: 40, damage: 40 },  min: 1150, max: 2286 },
-            'Hercules': { pos: 6, id: 0, class: 1, level: 360, str: 28000, dex: 12000, int: 12000, con: 180000, lck: 10000, health: 499500000, runes: { type: 42, resist: 45, damage: 45 }, min: 480, max: 959 },
-            'Ares': { pos: 7, id: 0, class: 1, level: 390, str: 32000, dex: 14000, int: 14000, con: 200000, lck: 11000, health: 600000000, runes: { type: 40, resist: 45, damage: 45 }, min: 520, max: 1049 },
-            'Poseidon': { pos: 8, id: 0, class: 3, level: 420, str: 16000, dex: 36000, int: 16000, con: 220000, lck: 12000, health: 567600000, runes: { type: 41, resist: 50, damage: 50 }, min: 700, max: 1399 },
-            'Hades': { pos: 9, id: 0, class: 3, level: 455, str: 28000, dex: 40000, int: 28000, con: 250000, lck: 13000, health: 697500032, runes: { type: 40, resist: 60, damage: 60 }, min: 760, max: 1519 },
-            'Zeus': { pos: 10, id: 0, class: 2, level: 500, str: 33333, dex: 33333, int: 44444, con: 300000, lck: 15000, health: 459000000, runes: { type: 42, resist: 60, damage: 60 }, min: 1643, max: 3279 }
+            'Singing Sirens': { pos: 1, id: 1410, class: 2, level: 210, str: 2000, dex: 2000, int: 8000, con: 80000, lck: 4000, health: 52800000, runes: { type: 41, resist: 30, damage: 30 }, min: 630, max: 1265 },
+            'Polyphemus the Cyclops': { pos: 2, id: 1411, class: 1, level: 240, str: 12000, dex: 4000, int: 4000, con: 100000, lck: 5000, health: 187500000, runes: { type: 42, resist: 35, damage: 35 }, min: 320, max: 639 },
+            'Cerberus': { pos: 3, id: 1412, class: 3, level: 270, str: 6000, dex: 16000, int: 6000, con: 120000, lck: 6000, health: 201600000, runes: { type: 40, resist: 35, damage: 35 }, min: 450, max: 899 },
+            'Medusa': { pos: 4, id: 1413, class: 2, level: 305, str: 8000, dex: 8000, int: 20000, con: 140000, lck: 7000, health: 132300000, runes: { type: 41, resist: 40, damage: 40 }, min: 920, max: 1829 },
+            'Athena': { pos: 5, id: 1414, class: 2, level: 330, str: 10000, dex: 10000, int: 24000, con: 160000, lck: 8000, health: 163200000, runes: { type: 40, resist: 40, damage: 40 }, min: 1001, max: 1988 },
+            'Hercules': { pos: 6, id: 1415, class: 1, level: 360, str: 28000, dex: 12000, int: 12000, con: 180000, lck: 10000, health: 499500000, runes: { type: 42, resist: 45, damage: 45 }, min: 480, max: 959 },
+            'Ares': { pos: 7, id: 1416, class: 1, level: 390, str: 32000, dex: 14000, int: 14000, con: 200000, lck: 11000, health: 600000000, runes: { type: 40, resist: 45, damage: 45 }, min: 520, max: 1049 },
+            'Poseidon': { pos: 8, id: 1417, class: 3, level: 420, str: 16000, dex: 36000, int: 16000, con: 220000, lck: 12000, health: 567600000, runes: { type: 41, resist: 50, damage: 50 }, min: 700, max: 1399 },
+            'Hades': { pos: 9, id: 1418, class: 3, level: 455, str: 28000, dex: 40000, int: 28000, con: 250000, lck: 13000, health: 697500032, runes: { type: 40, resist: 60, damage: 60 }, min: 761, max: 1517 },
+            'Zeus': { pos: 10, id: 1419, class: 2, level: 500, str: 33333, dex: 33333, int: 44444, con: 300000, lck: 15000, health: 459000000, runes: { type: 42, resist: 60, damage: 60 }, min: 1500, max: 2996 }
         }
     },
     '101': {
