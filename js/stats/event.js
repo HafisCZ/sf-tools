@@ -96,7 +96,8 @@ class GroupDetailView extends View {
                     label: 'Copy with companions',
                     action: (source) => {
                         copyText(JSON.stringify(Database.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorShadowModel()));
-                    }
+                    },
+                    enabled: SiteOptions.inventory
                 }
             ]
         });
@@ -910,7 +911,8 @@ class BrowseView extends View {
                     label: 'Copy with companions',
                     action: (source) => {
                         copyText(JSON.stringify(Database.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
-                    }
+                    },
+                    enabled: SiteOptions.inventory
                 },
                 {
                     label: 'Share',
@@ -1471,7 +1473,8 @@ class PlayersView extends View {
                     label: 'Copy with companions',
                     action: (source) => {
                         copyText(JSON.stringify(Database.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
-                    }
+                    },
+                    enabled: SiteOptions.inventory
                 },
                 {
                     label: 'Share',
