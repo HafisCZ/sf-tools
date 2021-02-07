@@ -519,8 +519,8 @@ DUNGEON_DATA = {
             'Soul Clump': { pos: 5, id: 187, class: 2, level: 400, str: 1938, dex: 1963, int: 7901, con: 40480, lck: 2812, health: 32464960, min: 9869, max: 19019 },
             'Scourge': { pos: 6, id: 188, class: 1, level: 404, str: 7884, dex: 2766, int: 2736, con: 41476, lck: 1824, health: 83988896, min: 4343, max: 8638 },
             'Hellhound': { pos: 7, id: 189, class: 3, level: 408, str: 2003, dex: 7965, int: 1991, con: 41932, lck: 2874, health: 68600752, min: 5473, max: 10904 },
-            'The Fuehrer's Heap': { pos: 8, id: 190, class: 1, level: 412, str: 8046, dex: 2823, int: 2793, con: 42383, lck: 1854, health: 87520896, min: 4431, max: 8806 },
-            'The Devil's Advocate': { pos: 9, id: 191, class: 1, level: 416, str: 8127, dex: 2851, int: 2821, con: 42840, lck: 1868, health: 89321400, min: 4609, max: 8868 },
+            'The Fuehrer\'s Heap': { pos: 8, id: 190, class: 1, level: 412, str: 8046, dex: 2823, int: 2793, con: 42383, lck: 1854, health: 87520896, min: 4431, max: 8806 },
+            'The Devil\'s Advocate': { pos: 9, id: 191, class: 1, level: 416, str: 8127, dex: 2851, int: 2821, con: 42840, lck: 1868, health: 89321400, min: 4609, max: 8868 },
             'Beelzeboss': { pos: 10, id: 192, class: 1, level: 420, str: 8208, dex: 2880, int: 2850, con: 43296, lck: 1884, health: 91138080, min: 4499, max: 8979 }
         }
     },
