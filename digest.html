@@ -394,14 +394,18 @@
                             }
 
                             resistance = player.Armor / boss.Level;
-                            if (player.Class == 1 || player.Class == 7 || (player.Class == 8 && player.Mask == 1)) {
-                                resistance = Math.min(50, resistance);
-                            } else if (player.Class == 2 || (player.Class == 8 && player.Mask == 0)) {
-                                resistance = Math.min(10, resistance);
-                            } else if (player.Class == 3 || player.Class == 4 || player.Class == 6 || player.Class == 8) {
-                                resistance = Math.min(25, resistance);
-                            } else if (player.Class == 5) {
-                                resistance = Math.min(10, resistance) + 40;
+                            if (boss.Class == 2) {
+                                resistance = 0;
+                            } else {
+                                if (player.Class == 1 || player.Class == 7 || (player.Class == 8 && player.Mask == 1)) {
+                                    resistance = Math.min(50, resistance);
+                                } else if (player.Class == 2 || (player.Class == 8 && player.Mask == 0)) {
+                                    resistance = Math.min(10, resistance);
+                                } else if (player.Class == 3 || player.Class == 4 || player.Class == 6 || player.Class == 8) {
+                                    resistance = Math.min(25, resistance);
+                                } else if (player.Class == 5) {
+                                    resistance = Math.min(10, resistance) + 40;
+                                }
                             }
                         }
 
