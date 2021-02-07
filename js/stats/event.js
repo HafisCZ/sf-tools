@@ -91,6 +91,12 @@ class GroupDetailView extends View {
                     action: (source) => {
                         copyText(JSON.stringify(Database.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorModel()));
                     }
+                },
+                {
+                    label: 'Copy with companions',
+                    action: (source) => {
+                        copyText(JSON.stringify(Database.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorShadowModel()));
+                    }
                 }
             ]
         });
@@ -901,6 +907,12 @@ class BrowseView extends View {
                     }
                 },
                 {
+                    label: 'Copy with companions',
+                    action: (source) => {
+                        copyText(JSON.stringify(Database.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
+                    }
+                },
+                {
                     label: 'Share',
                     action: (source) => {
                         let ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => $(el).attr('data-id'));
@@ -1453,6 +1465,12 @@ class PlayersView extends View {
                     label: 'Copy',
                     action: (source) => {
                         copyText(JSON.stringify(Database.Players[source.attr('data-id')].Latest.toSimulatorModel()));
+                    }
+                },
+                {
+                    label: 'Copy with companions',
+                    action: (source) => {
+                        copyText(JSON.stringify(Database.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
                     }
                 },
                 {

@@ -593,6 +593,10 @@ class SFPlayer {
         return toSimulatorModel(this);
     }
 
+    toSimulatorShadowModel () {
+        return toSimulatorShadowModel(this);
+    }
+
     hasGuild () {
         return this.Group.Identifier != null;
     }
@@ -1971,6 +1975,15 @@ class SFCompanion extends SFPlayer {
         this.Runes.DamageCold = Math.min(60, this.Runes.DamageCold);
         this.Runes.DamageLightning = Math.min(60, this.Runes.DamageLightning);
     }
+}
+
+function toSimulatorShadowModel (p) {
+    return p.Companions ? [
+        p.toSimulatorModel(),
+        toSimulatorModel(p.Companions.Bert),
+        toSimulatorModel(p.Companions.Mark),
+        toSimulatorModel(p.Companions.Kunigunde),
+    ] : p.toSimulatorModel();
 }
 
 function toSimulatorModel (p) {
