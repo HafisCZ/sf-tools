@@ -121,6 +121,12 @@
             .class-none {
                 margin-left: 1.75em;
             }
+
+            .footer {
+                position: fixed;
+                left: 1em;
+                bottom: 1em;
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
@@ -129,6 +135,11 @@
             <div class="right menu">
                 <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
             </div>
+        </div>
+
+        <div class="footer">
+            <b>Notice:</b> <span style="font-size: 90%;">The sim should be very accurate, but sometimes you might win a fight in-game that the sim shows as impossible.<br/>
+            In that case save the fight in a HAR file and send to mar21#4673 in <a href="https://discord.gg/XWfSwe3">S&F Tavern</a></span>
         </div>
 
         <div class="ui main container">
@@ -840,7 +851,7 @@
 
                     if (boss_shadow) {
                         let bert = players[1];
-                        
+
                         let hp_a = (100 + bert.Dungeons.Player) / 100;
                         let hp_b = (100 + bert.Potions.Life) / 100;
                         let hp_c = (100 + bert.Runes.Health) / 100;
