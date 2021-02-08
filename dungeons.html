@@ -942,32 +942,29 @@
                 Storage.load(function () {
                     $('#stats-list').empty();
 
-                    for (let pid of Object.keys(Database.Players)) {
-                        let player = Database.getPlayer(pid).Latest;
-                        if (player.Own) {
-                            $('#stats-list').append($(`
-                                <div class="ui fluid button basic vertical animated gray" style="margin-bottom: 0.5em;">
-                                    <div class="visible content">
-                                        <span style="color: black;">${ player.Name } @ ${ player.Prefix }<span>
-                                    </div>
-                                    <div class="hidden content">
-                                        <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }<span>
-                                    </div>
+                    for (let player of Object.keys(Database.Players).map(pid => Database.getPlayer(pid).Latest).filter(p => p.Own).sort((a, b) => b.Timestamp - a.Timestamp)) {
+                        $('#stats-list').append($(`
+                            <div class="ui fluid button basic vertical animated gray" style="margin-bottom: 0.5em;">
+                                <div class="visible content">
+                                    <span style="color: black;">${ player.Name } @ ${ player.Prefix }<span>
                                 </div>
-                                `).click(() => {
-                                let data = player.toSimulatorShadowModel();
-                                if (Array.isArray(data)) {
-                                    for (let i = 0; i < 4; i++) {
-                                        selected = i;
-                                        loadEditor(data[i]);
-                                        saveEditor();
-                                    }
-                                } else if (data.Class) {
-                                    loadEditor(data);
+                                <div class="hidden content">
+                                    <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }<span>
+                                </div>
+                            </div>
+                            `).click(() => {
+                            let data = player.toSimulatorShadowModel();
+                            if (Array.isArray(data)) {
+                                for (let i = 0; i < 4; i++) {
+                                    selected = i;
+                                    loadEditor(data[i]);
                                     saveEditor();
                                 }
-                            }));
-                        }
+                            } else if (data.Class) {
+                                loadEditor(data);
+                                saveEditor();
+                            }
+                        }));
                     }
                 }, function () {
                     $('#stats-list').empty();
