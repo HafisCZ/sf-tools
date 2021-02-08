@@ -594,7 +594,26 @@ DUNGEON_DATA = {
         name: 'Hemorridor',
         shadow: true,
         floors: {
-
+            'Orc on Warg': { pos: 1, id: 1200, class: 1, level: 328, str: 52800, dex: 6720, int: 6720, con: 126000, lck: 21600, health: 207270000, min: 1118, max: 1891 },
+            'Troll Trio': { pos: 2, id: 1201, class: 1, level: 349, str: 48416, dex: 11972, int: 12081, con: 163332, lck: 23725, health: 285831008, min: 1190, max: 2010 },
+            'The King': { pos: 3, id: 1202, class: 2, level: 370, str: 7998, dex: 7998, int: 58256, con: 170280, lck: 24768, health: 126347760, min: 2845, max: 4764 },
+            'Smollum': { pos: 4, id: 1203, class: 3, level: 392, str: 10493, dex: 65789, int: 10573, con: 184230, lck: 31720, health: 289609568, min: 1670, max: 2816 },
+            'Spiders again': { pos: 5, id: 1204, class: 3, level: 414, str: 21357, dex: 67614, int: 21357, con: 203916, lck: 42294, health: 338500544, min: 1794, max: 2970 },
+            'Orc Boss': { pos: 6, id: 1205, class: 1, level: 437, str: 70908, dex: 25251, int: 25251, con: 231278, lck: 45372, health: 506498816, min: 1498, max: 2511 },
+            'Bezog': { pos: 7, id: 1206, class: 3, level: 461, str: 22991, dex: 76322, int: 22638, con: 240345, lck: 46864, health: 444157568, min: 2064, max: 3262 },
+            'Smoulder': { pos: 8, id: 1207, class: 2, level: 485, str: 18980, dex: 18980, int: 90136, con: 264951, lck: 48613, health: 257532368, min: 3755, max: 6243 },
+            'Nazguls...Nazgulses?': { pos: 9, id: 1208, class: 5, level: 505, str: 89425, dex: 34237, int: 34416, con: 324682, lck: 63017, health: 821445440, min: 1725, max: 2908 },
+            'Monster in the Lake': { pos: 10, id: 1209, class: 3, level: 525, str: 37239, dex: 76696, int: 37239, con: 330986, lck: 53802, health: 696394560, min: 2236, max: 3778 },
+            'Valaraukar': { pos: 11, id: 1210, class: 5, level: 546, str: 106424, dex: 20679, int: 20679, con: 347519, lck: 57549, health: 950464448, min: 1870, max: 3141 },
+            'Urcsi the Uruk': { pos: 12, id: 1211, class: 1, level: 567, str: 111363, dex: 39613, int: 39613, con: 376189, lck: 71319, health: 1068376768, min: 1935, max: 3264 },
+            'Prompter Splittongue': { pos: 13, id: 1212, class: 4, level: 588, str: 34306, dex: 123563, int: 34306, con: 399001, lck: 80786, health: 940046336, min: 4030, max: 6764 },
+            'Samowar the Pale': { pos: 14, id: 1213, class: 2, level: 600, str: 39832, dex: 39832, int: 136753, con: 417645, lck: 63190, health: 502009280, min: 4609, max: 7769 },
+            'Oliphaunt Tamer': { pos: 15, id: 1214, class: 1, level: 612, str: 137144, dex: 39634, int: 39634, con: 447741, lck: 86381, health: 1372326144, min: 2084, max: 3520 },
+            'Undead Army': { pos: 16, id: 1215, class: 1, level: 624, str: 163224, dex: 64781, int: 63721, con: 507599, lck: 93780, health: 1586246912, min: 2127, max: 3587 },
+            'Shelantula': { pos: 17, id: 1216, class: 3, level: 636, str: 55499, dex: 174216, int: 55499, con: 538992, lck: 94184, health: 1373351680, min: 2722, max: 4531 },
+            'Ruler of the Nine': { pos: 18, id: 1217, class: 5, level: 648, str: 182015, dex: 41927, int: 41927, con: 575061, lck: 99832, health: 1866072960, min: 2212, max: 3727 },
+            'Mauron\'s Maw': { pos: 19, id: 1218, class: 1, level: 660, str: 195334, dex: 50000, int: 50000, con: 651487, lck: 117563, health: 2153164544, min: 2586, max: 3662 }, // TODO: Fix span
+            'The Necromancer': { pos: 20, id: 1219, class: 1, level: 666, str: 229388, dex: 62835, int: 62835, con: 711394, lck: 137813, health: 2372498944, min: 2298, max: 3815 } // TODO: Fix span
         }
     },
     '119': {
