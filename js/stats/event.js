@@ -3566,9 +3566,9 @@ const UI = {
     show: function (screen, ... arguments) {
         UI.current = screen;
 
-        $('.ui.container').addClass('hidden');
+        $('.ui.container').addClass('css-hidden');
 
-        screen.$parent.removeClass('hidden');
+        screen.$parent.removeClass('css-hidden');
         screen.show(... arguments);
     },
     beta: function (isbeta) {

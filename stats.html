@@ -39,7 +39,7 @@
     </head>
     <body>
         <div class="ui fixed borderless huge menu css-menu">
-            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a> <span class="css-temporary hidden">Temporary</span></div>
+            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a> <span class="css-temporary css-hidden">Temporary</span></div>
             <a class="item" id="show-players"><i class="small user icon"></i>Me</a>
             <a class="item" id="show-groups"><i class="small archive icon"></i>Guilds</a>
             <a class="item" id="show-browse"><i class="small database icon"></i>Players</a>
@@ -60,7 +60,7 @@
         </div>
 
         <!-- SetupView -->
-        <div id="modal-setup" class="ui main container hidden">
+        <div id="modal-setup" class="ui main container css-hidden">
             <div class="ui active dimmer" style="color: white;">
                 <h2 class="ui header white">Before you start ...</h2>
                 <p>
@@ -117,7 +117,7 @@
         </div>
 
         <!-- ChangeLogView -->
-        <div id="modal-changelog" class="ui main container hidden">
+        <div id="modal-changelog" class="ui main container css-hidden">
             <div class="ui active dimmer" style="color: white;">
                 <h2 class="ui header white" data-op="version"></h2>
                 <div style="text-align: left; width: 50vw; line-height: 1.5em; max-height: 70vh; overflow-y: auto;">
@@ -128,7 +128,7 @@
         </div>
 
         <!-- ChangeLogView -->
-        <div id="view-changelog" class="ui main container hidden">
+        <div id="view-changelog" class="ui main container css-hidden">
             <div class="ui basic segment" style="padding: 0; padding-top: 1em;">
                 <div class="ui close left rail">
                     <div class="ui basic segment">
@@ -172,7 +172,7 @@
         </div>
 
         <!-- FilesView -->
-        <div id="view-files" class="ui main container hidden sf-container">
+        <div id="view-files" class="ui main container css-hidden sf-container">
             <div class="ui grid">
                 <div class="twelve wide column" data-op="list"></div>
                 <div class="four wide column">
@@ -204,7 +204,7 @@
                             <label class="fluid ui secondary button" for="button-upload">
                                 <i class="small upload icon"></i> Import from File
                             </label>
-                            <input type="file" multiple data-op="upload" accept=".har,.json" class="hidden" id="button-upload">
+                            <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
                         </div>
                         <label class="fluid ui secondary button sf-margin top-05" data-op="shared">
                             <i class="small share alternate icon"></i> Import Shared
@@ -280,7 +280,7 @@
         </div>
 
         <!-- SettingsView -->
-        <div id="view-settings" class="ui main container hidden" style="width: 95vw;">
+        <div id="view-settings" class="ui main container css-hidden" style="width: 95vw;">
             <div class="ui custom popup left center" data-op="save-popup" style="width: 25em;">
                 <h2 class="ui centered header" style="color: black !important; margin-bottom: 1em;">Save template</h2>
                 <div class="ui fluid search scrolling dropdown" data-op="name">
@@ -373,7 +373,7 @@
         </div>
 
         <!-- PlayersView -->
-        <div id="view-players" class="ui main container hidden sf-container">
+        <div id="view-players" class="ui main container css-hidden sf-container">
             <div class="ui basic segment margin-none-bottom padding-none-bottom">
                 <div class="ui grid">
                     <div class="three wide left aligned column"></div>
@@ -406,7 +406,7 @@
         </div>
 
         <!-- GroupsView -->
-        <div id="view-groups" class="ui main container hidden sf-container">
+        <div id="view-groups" class="ui main container css-hidden sf-container">
             <div class="ui five column grid" data-op="list"></div>
             <div class="ui five column grid margin-large-top" data-op="list-secondary"></div>
             <div class="css-gl-show-other">
@@ -424,7 +424,7 @@
         </div>
 
         <!-- BrowseView -->
-        <div id="view-browse" class="ui main container hidden sf-container">
+        <div id="view-browse" class="ui main container css-hidden sf-container">
             <div class="ui basic segment margin-none-bottom padding-none-bottom">
                 <div class="ui grid">
                     <div class="three wide left aligned column">
@@ -469,7 +469,7 @@
         <div id="modal-playerdetail" class="ui basic large modal"></div>
 
         <!-- PlayerHistoryView -->
-        <div id="view-history" class="ui main container hidden sf-container">
+        <div id="view-history" class="ui main container css-hidden sf-container">
             <div class="ui basic segment margin-none-bottom padding-none-bottom">
                 <div class="ui grid">
                     <div class="three wide column"></div>
@@ -790,7 +790,7 @@
         </div>
 
         <!-- GroupDetailView -->
-        <div id="view-groupdetail" class="ui main container hidden sf-container">
+        <div id="view-groupdetail" class="ui main container css-hidden sf-container">
             <div class="ui segment center aligned basic">
                 <div class="ui extreme header" data-op="name"></div>
             </div>
@@ -879,7 +879,7 @@
                 let inventory = keys['inv'] == -1 || SiteOptions.inventory;
 
                 if (temp) {
-                    $('.css-temporary').removeClass('hidden');
+                    $('.css-temporary').removeClass('css-hidden');
                 }
 
                 SiteOptions.params.temp = temp;

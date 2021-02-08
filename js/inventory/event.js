@@ -1354,9 +1354,9 @@ const UI = {
         UI.current = screen;
 
         $('#show-compare, #show-crystal').off('click').hide();
-        $('.ui.container').addClass('hidden');
+        $('.ui.container').addClass('css-hidden');
 
-        screen.$parent.removeClass('hidden');
+        screen.$parent.removeClass('css-hidden');
         screen.show(... arguments);
     },
     initialize: function () {

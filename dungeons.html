@@ -133,7 +133,7 @@
                 position: absolute;
                 left: 2em;
                 top: 5em;
-                width: 10vw;
+                width: 15em;
             }
 
             body {
@@ -147,6 +147,14 @@
 
             #boss-list .text {
                 width: 100%;
+            }
+
+            #load-stats {
+                margin-bottom: 0.5em;
+            }
+
+            #stats-list > div {
+                font-size: 90%;
             }
         </style>
     </head>
@@ -162,7 +170,10 @@
         </div>
 
         <div class="statistics-module" id="stats-module">
-            <div class="ui fluid basic gray button" id="load-stats">Load characters</div>
+            <div class="ui fluid basic gray button" id="load-stats"><i class="sync alternate icon"></i>Poll saved characters</div>
+            <div id="stats-list">
+                <!-- LIST -->
+            </div>
         </div>
 
         <div class="ui main container">
@@ -670,9 +681,9 @@
                     Potions: { Life: 0 },
                     Runes: {
                         Health: 0,
-                        ResistanceFire: data.runes && data.runes.type == 40 ? data.runes.resist : 0,
-                        ResistanceCold: data.runes && data.runes.type == 41 ? data.runes.resist : 0,
-                        ResistanceLightning: data.runes && data.runes.type == 42 ? data.runes.resist : 0,
+                        ResistanceFire: data.runes ? data.runes.resist : 0,
+                        ResistanceCold: data.runes ? data.runes.resist : 0,
+                        ResistanceLightning: data.runes ? data.runes.resist : 0,
                     },
                     Items: {
                         Hand: { HasEnchantment: data.class == 6 },
@@ -929,27 +940,37 @@
 
             $('#load-stats').click(() => {
                 Storage.load(function () {
-                    $('#stats-module').empty();
+                    $('#stats-list').empty();
 
                     for (let pid of Object.keys(Database.Players)) {
                         let player = Database.getPlayer(pid).Latest;
-
-                        $('#stats-module').append($(`<div class="ui fluid button basic gray" style="margin-bottom: 0.5em;">${ player.Name } @ ${ player.Prefix }</div>`).click(() => {
-                            let data = player.toSimulatorShadowModel();
-                            if (Array.isArray(data)) {
-                                for (let i = 0; i < 4; i++) {
-                                    selected = i;
-                                    loadEditor(data[i]);
+                        if (player.Own) {
+                            $('#stats-list').append($(`
+                                <div class="ui fluid button basic vertical animated gray" style="margin-bottom: 0.5em;">
+                                    <div class="visible content">
+                                        <span style="color: black;">${ player.Name } @ ${ player.Prefix }<span>
+                                    </div>
+                                    <div class="hidden content">
+                                        <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }<span>
+                                    </div>
+                                </div>
+                                `).click(() => {
+                                let data = player.toSimulatorShadowModel();
+                                if (Array.isArray(data)) {
+                                    for (let i = 0; i < 4; i++) {
+                                        selected = i;
+                                        loadEditor(data[i]);
+                                        saveEditor();
+                                    }
+                                } else if (data.Class) {
+                                    loadEditor(data);
                                     saveEditor();
                                 }
-                            } else if (data.Class) {
-                                loadEditor(data);
-                                saveEditor();
-                            }
-                        }));
+                            }));
+                        }
                     }
                 }, function () {
-                    $('#stats-module').html('');
+                    $('#stats-list').empty();
                 }, {
                     inventory: true,
                     pfilter: p => p.own,
