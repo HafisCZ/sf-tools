@@ -305,32 +305,32 @@ DUNGEON_DATA = {
         name: 'Nordic Gods',
         shadow: false,
         floors: {
-            'Heimdall': { pos: 1, id: 0, class: 1, level: 210, str: 8000, dex: 2000, int: 2000, con: 36000, lck: 4000, health: 43560000, runes: { type: 41, resist: 30, damage: 30 }, min: 728, max: 1229 },
-            'Valkyries': { pos: 2, id: 0, class: 1, level: 240, str: 10965, dex: 1762, int: 12000, con: 40500, lck: 5000, health: 55687500, runes: { type: 42, resist: 30, damage: 30 }, min: 840, max: 1439 },
-            'Hel': { pos: 3, id: 0, class: 2, level: 270, str: 4000, dex: 4000, int: 11500, con: 51000, lck: 7500, health: 31416000, runes: { type: 40, resist: 30, damage: 30 }, min: 2126, max: 3643 },
-            'Thor': { pos: 4, id: 0, class: 1, level: 305, str: 15000, dex: 3500, int: 3500, con: 58500, lck: 8000, health: 101351256, runes: { type: 42, resist: 30, damage: 30 }, min: 1067, max: 1829 },
-            'Odin': { pos: 5, id: 0, class: 1, level: 330, str: 12500, dex: 6000, int: 6000, con: 73500, lck: 9000, health: 137445008, runes: { type: 40, resist: 40, damage: 40 }, min: 1155, max: 1979 },
-            'Loki': { pos: 6, id: 0, class: 4, level: 360, str: 6500, dex: 18500, int: 6500, con: 83500, lck: 11500, health: 135938000, runes: { type: 41, resist: 45, damage: 45 }, min: 2524, max: 4319 },
-            'Ymir': { pos: 7, id: 0, class: 6, level: 390, str: 22500, dex: 6500, int: 6500, con: 81500, lck: 10500, health: 143440000, runes: { type: 41, resist: 45, damage: 45 }, min: 1365, max: 3836 },
-            'Midgard Serpent': { pos: 8, id: 0, class: 3, level: 420, str: 10500, dex: 22500, int: 10500, con: 112500, lck: 15500, health: 212850000, runes: { type: 42, resist: 50, damage: 50 }, min: 1837, max: 3148 },
-            'Fenris Wolf': { pos: 9, id: 0, class: 6, level: 455, str: 29500, dex: 7000, int: 7000, con: 115000, lck: 16000, health: 235290000, runes: { type: 42, resist: 55, damage: 55 }, min: 1615, max: 4078 },
-            'Surtr': { pos: 10, id: 0, class: 6, level: 500, str: 38500, dex: 10500, int: 10500, con: 158000, lck: 23000, health: 354552000, runes: { type: 40, resist: 60, damage: 60 }, min: 1775, max: 4558 }
+            'Heimdall': { pos: 1, id: 0, class: 1, level: 210, str: 8000, dex: 2000, int: 2000, con: 36000, lck: 4000, health: 43560000, runes: { type: 41, resist: 30, damage: 30 }, min: 728, max: 1229 }, // TODO: Elemental
+            'Valkyries': { pos: 2, id: 0, class: 1, level: 240, str: 10965, dex: 1762, int: 12000, con: 40500, lck: 5000, health: 55687500, runes: { type: 42, resist: 30, damage: 30 }, min: 840, max: 1439 }, // TODO: Elemental
+            'Hel': { pos: 3, id: 0, class: 2, level: 270, str: 4000, dex: 4000, int: 11500, con: 51000, lck: 7500, health: 31416000, runes: { type: 40, resist: 30, damage: 30 }, min: 2126, max: 3643 }, // TODO: Elemental
+            'Thor': { pos: 4, id: 0, class: 1, level: 305, str: 15000, dex: 3500, int: 3500, con: 58500, lck: 8000, health: 101351256, runes: { type: 42, resist: 30, damage: 30 }, min: 1067, max: 1829 }, // TODO: Elemental
+            'Odin': { pos: 5, id: 0, class: 1, level: 330, str: 12500, dex: 6000, int: 6000, con: 73500, lck: 9000, health: 137445008, runes: { type: 40, resist: 40, damage: 40 }, min: 1155, max: 1979 }, // TODO: Elemental
+            'Loki': { pos: 6, id: 0, class: 4, level: 360, str: 6500, dex: 18500, int: 6500, con: 83500, lck: 11500, health: 135938000, runes: { type: 41, resist: 45, damage: 45 }, min: 2524, max: 4319 }, // TODO: Elemental
+            'Ymir': { pos: 7, id: 0, class: 6, level: 390, str: 22500, dex: 6500, int: 6500, con: 81500, lck: 10500, health: 143440000, runes: { type: 41, resist: 45, damage: 45 }, min: 1365, max: 3836 }, // TODO: Elemental
+            'Midgard Serpent': { pos: 8, id: 0, class: 3, level: 420, str: 10500, dex: 22500, int: 10500, con: 112500, lck: 15500, health: 212850000, runes: { type: 42, resist: 50, damage: 50 }, min: 1837, max: 3148 }, // TODO: Elemental
+            'Fenris Wolf': { pos: 9, id: 0, class: 6, level: 455, str: 29500, dex: 7000, int: 7000, con: 115000, lck: 16000, health: 235290000, runes: { type: 42, resist: 55, damage: 55 }, min: 1615, max: 4078 }, // TODO: Elemental
+            'Surtr': { pos: 10, id: 0, class: 6, level: 500, str: 38500, dex: 10500, int: 10500, con: 158000, lck: 23000, health: 354552000, runes: { type: 40, resf: 60, damage: 60 }, min: 1775, max: 4558 }
         }
     },
     '20': {
         name: 'Mount Olympus',
         shadow: false,
         floors: {
-            'Singing Sirens': { pos: 1, id: 1410, class: 2, level: 210, str: 2000, dex: 2000, int: 8000, con: 80000, lck: 4000, health: 52800000, runes: { type: 41, resist: 30, damage: 30 }, min: 630, max: 1265 },
-            'Polyphemus the Cyclops': { pos: 2, id: 1411, class: 1, level: 240, str: 12000, dex: 4000, int: 4000, con: 100000, lck: 5000, health: 187500000, runes: { type: 42, resist: 35, damage: 35 }, min: 320, max: 639 },
-            'Cerberus': { pos: 3, id: 1412, class: 3, level: 270, str: 6000, dex: 16000, int: 6000, con: 120000, lck: 6000, health: 201600000, runes: { type: 40, resist: 35, damage: 35 }, min: 450, max: 899 },
-            'Medusa': { pos: 4, id: 1413, class: 2, level: 305, str: 8000, dex: 8000, int: 20000, con: 140000, lck: 7000, health: 132300000, runes: { type: 41, resist: 40, damage: 40 }, min: 920, max: 1829 },
-            'Athena': { pos: 5, id: 1414, class: 2, level: 330, str: 10000, dex: 10000, int: 24000, con: 160000, lck: 8000, health: 163200000, runes: { type: 40, resist: 40, damage: 40 }, min: 1001, max: 1988 },
-            'Hercules': { pos: 6, id: 1415, class: 1, level: 360, str: 28000, dex: 12000, int: 12000, con: 180000, lck: 10000, health: 499500000, runes: { type: 42, resist: 45, damage: 45 }, min: 480, max: 959 },
-            'Ares': { pos: 7, id: 1416, class: 1, level: 390, str: 32000, dex: 14000, int: 14000, con: 200000, lck: 11000, health: 600000000, runes: { type: 40, resist: 45, damage: 45 }, min: 520, max: 1049 },
-            'Poseidon': { pos: 8, id: 1417, class: 3, level: 420, str: 16000, dex: 36000, int: 16000, con: 220000, lck: 12000, health: 567600000, runes: { type: 41, resist: 50, damage: 50 }, min: 700, max: 1399 },
-            'Hades': { pos: 9, id: 1418, class: 3, level: 455, str: 28000, dex: 40000, int: 28000, con: 250000, lck: 13000, health: 697500032, runes: { type: 40, resist: 60, damage: 60 }, min: 761, max: 1517 },
-            'Zeus': { pos: 10, id: 1419, class: 2, level: 500, str: 33333, dex: 33333, int: 44444, con: 300000, lck: 15000, health: 459000000, runes: { type: 42, resist: 60, damage: 60 }, min: 1500, max: 2996 }
+            'Singing Sirens': { pos: 1, id: 1410, class: 2, level: 210, str: 2000, dex: 2000, int: 8000, con: 80000, lck: 4000, health: 52800000, runes: { type: 41, resist: 30, damage: 30 }, min: 630, max: 1265 }, // TODO: Elemental
+            'Polyphemus the Cyclops': { pos: 2, id: 1411, class: 1, level: 240, str: 12000, dex: 4000, int: 4000, con: 100000, lck: 5000, health: 187500000, runes: { type: 42, resist: 35, damage: 35 }, min: 320, max: 639 }, // TODO: Elemental
+            'Cerberus': { pos: 3, id: 1412, class: 3, level: 270, str: 6000, dex: 16000, int: 6000, con: 120000, lck: 6000, health: 201600000, runes: { type: 40, resist: 35, damage: 35 }, min: 450, max: 899 }, // TODO: Elemental
+            'Medusa': { pos: 4, id: 1413, class: 2, level: 305, str: 8000, dex: 8000, int: 20000, con: 140000, lck: 7000, health: 132300000, runes: { type: 41, resist: 40, damage: 40 }, min: 920, max: 1829 }, // TODO: Elemental
+            'Athena': { pos: 5, id: 1414, class: 2, level: 330, str: 10000, dex: 10000, int: 24000, con: 160000, lck: 8000, health: 163200000, runes: { type: 40, resist: 40, damage: 40 }, min: 1001, max: 1988 }, // TODO: Elemental
+            'Hercules': { pos: 6, id: 1415, class: 1, level: 360, str: 28000, dex: 12000, int: 12000, con: 180000, lck: 10000, health: 499500000, runes: { type: 42, resist: 45, damage: 45 }, min: 480, max: 959 }, // TODO: Elemental
+            'Ares': { pos: 7, id: 1416, class: 1, level: 390, str: 32000, dex: 14000, int: 14000, con: 200000, lck: 11000, health: 600000000, runes: { type: 40, resf: 60, resc: 20, resl: 60, damage: 45 }, min: 520, max: 1049 },
+            'Poseidon': { pos: 8, id: 1417, class: 3, level: 420, str: 16000, dex: 36000, int: 16000, con: 220000, lck: 12000, health: 567600000, runes: { type: 41, resist: 50, damage: 50 }, min: 700, max: 1399 }, // TODO: Elemental
+            'Hades': { pos: 9, id: 1418, class: 3, level: 455, str: 28000, dex: 40000, int: 28000, con: 250000, lck: 13000, health: 697500032, runes: { type: 40, resist: 60, damage: 60 }, min: 761, max: 1517 }, // TODO: Elemental
+            'Zeus': { pos: 10, id: 1419, class: 2, level: 500, str: 33333, dex: 33333, int: 44444, con: 300000, lck: 15000, health: 459000000, runes: { type: 42, resf: 60, resc: 60, resl: 60, damage: 60 }, min: 1500, max: 2996 }
         }
     },
     '101': {
@@ -608,7 +608,7 @@ DUNGEON_DATA = {
         name: 'Mount Olympus',
         shadow: true,
         floors: {
-            'Hades': { pos: 9, id: 0, class: 3, level: 645, str: 75000, dex: 200000, int: 75000, con: 360000, lck: 100000, health: 19099799552, runes: { type: 40, resist: 60, damage: 60 }, min: 1074, max: 2159 }
+            'Hades': { pos: 9, id: 0, class: 3, level: 645, str: 75000, dex: 200000, int: 75000, con: 360000, lck: 100000, health: 19099799552, runes: { type: 40, resf: 60, resc: 60, resl: 60, damage: 60 }, min: 1074, max: 2159 }
         }
     },
     '200': {
