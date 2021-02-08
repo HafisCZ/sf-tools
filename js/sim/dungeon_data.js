@@ -607,15 +607,36 @@ DUNGEON_DATA = {
         name: 'Time-honored School of Magic',
         shadow: true,
         floors: {
-            'Diabolical Dolores': { pos: 15, id: 0, class: 2, level: 550, str: 33900, dex: 34464, int: 119256, con: 389340, lck: 75114, health: 785428544, min: 3892, max: 5328 }
+            // TODO: Check all of these again
+            'Eloquent Hat': { pos: 1, id: 1100, class: 3, level: 410, str: 8400, dex: 66000, int: 8400, con: 157500, lck: 27000, health: 468750016, min: 1500, max: 1624 },
+            'Sour Argus': { pos: 2, id: 1101, class: 1, level: 420, str: 58332, dex: 14424, int: 14556, con: 196785, lck: 28584, health: 597611456, min: 700, max: 1969 },
+            'Fluffy Friend': { pos: 3, id: 1102, class: 3, level: 430, str: 9300, dex: 67740, int: 9360, con: 198000, lck: 28800, health: 513187488, min: 1705, max: 1819 },
+            'A. van Blame': { pos: 4, id: 1103, class: 3, level: 440, str: 11790, dex: 73920, int: 11880, con: 207000, lck: 35640, health: 554774976, min: 1165, max: 2474 },
+            'Phony Locky': { pos: 5, id: 1104, class: 2, level: 450, str: 23214, dex: 23190, int: 73494, con: 221647, lck: 45972, health: 299962912, min: 1911, max: 4818 },
+            'Killer Stare': { pos: 6, id: 1105, class: 3, level: 460, str: 26790, dex: 74640, int: 26580, con: 243450, lck: 47760, health: 706649984, min: 1757, max: 2041 },
+            'Bad Kisser': { pos: 7, id: 1106, class: 3, level: 470, str: 23460, dex: 77880, int: 23100, con: 245250, lck: 47820, health: 722437504, min: 1005, max: 2919 },
+            'Guardian of the Golden Egg': { pos: 8, id: 1107, class: 1, level: 480, str: 89244, dex: 18792, int: 11916, con: 262327, lck: 48132, health: 1039800576, min: 1410, max: 1689 },
+            'Gentle Giant': { pos: 9, id: 1108, class: 1, level: 490, str: 86820, dex: 33240, int: 33414, con: 315225, lck: 61182, health: 1307133056, min: 1115, max: 2364 },
+            'Pedigree Bad Boy': { pos: 10, id: 1109, class: 2, level: 500, str: 35466, dex: 26028, int: 73044, con: 315225, lck: 51240, health: 534621568, min: 2567, max: 5151 },
+            'Unrepentant Penitent': { pos: 11, id: 1110, class: 2, level: 510, str: 19326, dex: 19326, int: 99462, con: 278055, lck: 53784, health: 483444928, min: 2152, max: 6080 },
+            'The Gifted One (and Ron)': { pos: 12, id: 1111, class: 2, level: 520, str: 36768, dex: 36342, int: 102168, con: 345127, lck: 65430, health: 622523712, min: 3234, max: 5251 },
+            'Stumbledoor': { pos: 13, id: 1112, class: 2, level: 530, str: 30906, dex: 31422, int: 111318, con: 359460, lck: 72780, health: 676144192, min: 2481, max: 6267 },
+            'Petey Rat': { pos: 14, id: 1113, class: 3, level: 540, str: 35250, dex: 121020, int: 35220, con: 325350, lck: 55920, health: 1264800000, min: 1350, max: 3599 },
+            'Diabolical Dolores': { pos: 15, id: 1114, class: 2, level: 550, str: 33900, dex: 34464, int: 119256, con: 389340, lck: 75114, health: 785428544, min: 3892, max: 5330 },
+            'Inconveniently Infinite Inferi': { pos: 16, id: 1115, class: 1, level: 560, str: 224978, dex: 55368, int: 54462, con: 433845, lck: 80154, health: 1196667008, min: 1226, max: 2952 },
+            'Bella the Beastly': { pos: 17, id: 1116, class: 2, level: 570, str: 46638, dex: 46632, int: 116148, con: 410917, lck: 79146, health: 876589696, min: 3627, max: 5890 },
+            'Lucius the Pure-Blood': { pos: 18, id: 1117, class: 2, level: 580, str: 34644, dex: 34650, int: 147120, con: 433935, lck: 82506, health: 943157696, min: 3980, max: 5964 },
+            'Cutsie Cuddler': { pos: 19, id: 1118, class: 3, level: 590, str: 45021, dex: 165800, int: 75600, con: 44342, lck: 101840, health: 1545725056, min: 2120, max: 5229 },
+            'You Should Know Who ...': { pos: 20, id: 1119, class: 2, level: 600, str: 50682, dex: 50268, int: 183510, con: 569115, lck: 110250, health: 1427435264, min: 4776, max: 7369 }
         }
     },
     '117': {
         name: 'Hemorridor',
         shadow: true,
         floors: {
+            // TODO: Check all of these again
             'Orc on Warg': { pos: 1, id: 1200, class: 1, level: 328, str: 52800, dex: 6720, int: 6720, con: 126000, lck: 21600, health: 207270000, min: 1118, max: 1891 },
-            'Troll Trio': { pos: 2, id: 1201, class: 1, level: 349, str: 48416, dex: 11972, int: 12081, con: 163332, lck: 23725, health: 285831008, min: 1190, max: 2010 },
+            'Troll Trio': { pos: 2, id: 1201, class: 1, level: 349, str: 48416, dex: 11972, int: 12081, con: 163332, lck: 23725, health: 285831008, min: 1190, max: 3248 },
             'The King': { pos: 3, id: 1202, class: 2, level: 370, str: 7998, dex: 7998, int: 58256, con: 170280, lck: 24768, health: 126347760, min: 2845, max: 4764 },
             'Smollum': { pos: 4, id: 1203, class: 3, level: 392, str: 10493, dex: 65789, int: 10573, con: 184230, lck: 31720, health: 289609568, min: 1670, max: 2816 },
             'Spiders again': { pos: 5, id: 1204, class: 3, level: 414, str: 21357, dex: 67614, int: 21357, con: 203916, lck: 42294, health: 338500544, min: 1794, max: 2970 },
@@ -640,13 +661,15 @@ DUNGEON_DATA = {
         name: 'Nordic Gods',
         shadow: true,
         floors: {
-
+            // TODO: Check all of these again
+            'Heimdall': { pos: 1, id: 0, class: 1, level: 345, str: 48500, dex: 12000, int: 12000, con: 163000, lck: 23500, health: 318257504, runes: { type: 41, damage: 60 }, min: 1018, max: 1670 }, // TODO: Elemental
         }
     },
     '120': {
         name: 'Mount Olympus',
         shadow: true,
         floors: {
+            // TODO: Check all of these again
             'Hades': { pos: 9, id: 0, class: 3, level: 645, str: 75000, dex: 200000, int: 75000, con: 360000, lck: 100000, health: 19099799552, runes: { type: 40, resf: 60, resc: 60, resl: 60, damage: 60 }, min: 1074, max: 2159 }
         }
     },
