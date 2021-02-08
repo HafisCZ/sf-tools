@@ -554,7 +554,27 @@ DUNGEON_DATA = {
         name: 'Easteros',
         shadow: true,
         floors: {
-
+            // TODO: Check all of these again
+            'Robert Drunkatheon': { pos: 1, id: 600, class: 1, level: 464, str: 9040, dex: 3173, int: 3135, con: 47416, lck: 2110, health: 110242200, min: 5039, max: 8797 },
+            'Lefty Lennister': { pos: 2, id: 601, class: 1, level: 468, str: 9126, dex: 3202, int: 3166, con: 47938, lck: 2120, health: 112414608, min: 5030, max: 9944 },
+            'Petyr the Pimp': { pos: 3, id: 602, class: 2, level: 472, str: 4576, dex: 4634, int: 18651, con: 95656, lck: 6636, health: 90490576, min: 11385, max: 22701 },
+            'Holundor': { pos: 4, id: 603, class: 1, level: 476, str: 18592, dex: 6524, int: 6454, con: 97944, lck: 4284, health: 233596448, min: 5101, max: 10170 },
+            'Drogo the Threatening': { pos: 5, id: 604, class: 1, level: 480, str: 18761, dex: 6582, int: 6514, con: 98962, lck: 4306, health: 238003616, min: 5133, max: 10259 },
+            'The Ginger Slowworm': { pos: 6, id: 605, class: 2, level: 484, str: 7945, dex: 8026, int: 32266, con: 167706, lck: 11446, health: 162674816, min: 11672, max: 23265 },
+            'Queen Mother': { pos: 7, id: 606, class: 3, level: 488, str: 8625, dex: 34344, int: 8586, con: 182798, lck: 12301, health: 357552896, min: 6520, max: 13024 },
+            'The Miniature Poodle': { pos: 8, id: 607, class: 1, level: 492, str: 41522, dex: 14558, int: 14457, con: 222387, lck: 9089, health: 548183936, min: 5260, max: 10509 },
+            'The Riding Mountainrange': { pos: 9, id: 608, class: 1, level: 496, str: 47500, dex: 16500, int: 16000, con: 270000, lck: 11000, health: 670950016, min: 6337, max: 10105 },
+            'Joffrey the Kid Despot': { pos: 10, id: 609, class: 2, level: 500, str: 9500, dex: 11000, int: 40200, con: 190000, lck: 29800, health: 454106400, min: 12038, max: 24020 },
+            'Cool Villain': { pos: 11, id: 610, class: 3, level: 504, str: 10719, dex: 42680, int: 10670, con: 227166, lck: 15287, health: 458875328, min: 7833, max: 12252 },
+            'Brygitte': { pos: 12, id: 611, class: 2, level: 508, str: 13425, dex: 13546, int: 54428, con: 284718, lck: 19279, health: 289842912, min: 12223, max: 24428 },
+            'Snowman and Shadow Wolf': { pos: 13, id: 612, class: 1, level: 512, str: 54533, dex: 19122, int: 18973, con: 290763, lck: 12109, health: 745807104, min: 5652, max: 10901 },
+            'The Woman in Red': { pos: 14, id: 613, class: 3, level: 516, str: 13838, dex: 55118, int: 13779, con: 294118, lck: 19707, health: 608236032, min: 6901, max: 13768 },
+            'Boyish Brienne': { pos: 15, id: 614, class: 1, level: 520, str: 66837, dex: 23434, int: 23261, con: 356928, lck: 14768, health: 929797440, min: 6105, max: 10998 },
+            'Ramsay the Degrader': { pos: 16, id: 615, class: 1, level: 524, str: 67527, dex: 23675, int: 23504, con: 360872, lck: 14886, health: 947289024, min: 5860, max: 10685 },
+            'Faceless': { pos: 17, id: 616, class: 2, level: 528, str: 16985, dex: 17120, int: 68752, con: 361823, lck: 24319, health: 382808736, min: 14601, max: 23926 },
+            'Vicious Gnome': { pos: 18, id: 617, class: 2, level: 532, str: 20016, dex: 20171, int: 80997, con: 426706, lck: 28643, health: 454868608, min: 14576, max: 24519 },
+            'The Protector': { pos: 19, id: 618, class: 1, level: 536, str: 81165, dex: 28453, int: 28262, con: 434616, lck: 17779, health: 1166944000, min: 6172, max: 11183 },
+            'The Hard to Burn': { pos: 20, id: 619, class: 3, level: 540, str: 20563, dex: 81950, int: 20487, con: 439082, lck: 29219, health: 950173440, min: 7214, max: 13561 }
         }
     },
     '115': {
@@ -612,8 +632,8 @@ DUNGEON_DATA = {
             'Undead Army': { pos: 16, id: 1215, class: 1, level: 624, str: 163224, dex: 64781, int: 63721, con: 507599, lck: 93780, health: 1586246912, min: 2127, max: 3587 },
             'Shelantula': { pos: 17, id: 1216, class: 3, level: 636, str: 55499, dex: 174216, int: 55499, con: 538992, lck: 94184, health: 1373351680, min: 2722, max: 4531 },
             'Ruler of the Nine': { pos: 18, id: 1217, class: 5, level: 648, str: 182015, dex: 41927, int: 41927, con: 575061, lck: 99832, health: 1866072960, min: 2212, max: 3727 },
-            'Mauron\'s Maw': { pos: 19, id: 1218, class: 1, level: 660, str: 195334, dex: 50000, int: 50000, con: 651487, lck: 117563, health: 2153164544, min: 2586, max: 3662 }, // TODO: Fix span
-            'The Necromancer': { pos: 20, id: 1219, class: 1, level: 666, str: 229388, dex: 62835, int: 62835, con: 711394, lck: 137813, health: 2372498944, min: 2298, max: 3815 } // TODO: Fix span
+            'Mauron\'s Maw': { pos: 19, id: 1218, class: 1, level: 660, str: 195334, dex: 50000, int: 50000, con: 651487, lck: 117563, health: 2153164544, min: 2251, max: 3798 },
+            'The Necromancer': { pos: 20, id: 1219, class: 1, level: 666, str: 229388, dex: 62835, int: 62835, con: 711394, lck: 137813, health: 2372498944, min: 2268, max: 3834 }
         }
     },
     '119': {
