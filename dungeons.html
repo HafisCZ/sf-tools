@@ -139,6 +139,15 @@
             body {
                 overflow-y: hidden !important;
             }
+
+            .text .boss-image {
+                top: -0.75em !important;
+                right: -0.75em !important;
+            }
+
+            #boss-list .text {
+                width: 100%;
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
@@ -153,7 +162,7 @@
         </div>
 
         <div class="statistics-module" id="stats-module">
-            <div class="ui fluid basic black button" id="load-stats">Load characters</div>
+            <div class="ui fluid basic gray button" id="load-stats">Load characters</div>
         </div>
 
         <div class="ui main container">
@@ -699,7 +708,7 @@
                 $('#boss-list').dropdown({
                     values: Object.entries(dungeon.floors).map(([ name, _boss ]) => {
                         return {
-                            name: boss_shadow ? `<span style="text-shadow:0px 0px 8px #390074;">${ _boss.pos }. ${ name }<span>` : `${ _boss.pos }. ${ name }`,
+                            name: `${ boss_shadow ? '<span style="text-shadow:0px 0px 8px #390074;">' : '<span>' }<img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">${ _boss.pos }. ${ name }<span>`,
                             value: name
                         };
                     })
@@ -925,7 +934,7 @@
                     for (let pid of Object.keys(Database.Players)) {
                         let player = Database.getPlayer(pid).Latest;
 
-                        $('#stats-module').append($(`<div class="ui fluid button basic black" style="margin-bottom: 0.5em;">${ player.Name } @ ${ player.Prefix }</div>`).click(() => {
+                        $('#stats-module').append($(`<div class="ui fluid button basic gray" style="margin-bottom: 0.5em;">${ player.Name } @ ${ player.Prefix }</div>`).click(() => {
                             let data = player.toSimulatorShadowModel();
                             if (Array.isArray(data)) {
                                 for (let i = 0; i < 4; i++) {
