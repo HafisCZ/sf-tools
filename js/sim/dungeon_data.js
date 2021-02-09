@@ -662,7 +662,16 @@ DUNGEON_DATA = {
         shadow: true,
         floors: {
             // TODO: Check all of these again
-            'Heimdall': { pos: 1, id: 0, class: 1, level: 345, str: 48500, dex: 12000, int: 12000, con: 163000, lck: 23500, health: 318257504, runes: { type: 41, damage: 60 }, min: 1018, max: 1670 }, // TODO: Elemental
+            'Heimdall': { pos: 1, id: 1400, class: 1, level: 345, str: 48500, dex: 12000, int: 12000, con: 163000, lck: 23500, health: 318257504, runes: { type: 41, damage: 60 }, min: 1018, max: 1670 },
+            // 2
+            // 3
+            // 4
+            // 5
+            // 6
+            // 7
+            'Midgard Serpent': { pos: 8, id: 1407, class: 3, level: 625, str: 63500, dex: 163000, int: 63500, con: 507500, lck: 93500, health: 1417955072, runes: { type: 42, resf: 0, resc: 0, resl: 60, damage: 60 }, min: 1970, max: 3376 }
+            // 9
+            // 10
         }
     },
     '120': {
@@ -670,7 +679,16 @@ DUNGEON_DATA = {
         shadow: true,
         floors: {
             // TODO: Check all of these again
+            'Singing Sirens': { pos: 1, id: 1410, class: 2, level: 345, str: 15000, dex: 15000, int: 45000, con: 200000, lck: 23500, health: 2875500032, runes: { type: 41, resf: 0, resc: 60, resl: 60, damage: 30 }, min: 1038, max: 2069 },
+            'Polyphemus the Cyclops': { pos: 2, id: 1411, class: 1, level: 390, str: 60000, dex: 20000, int: 20000, con: 220000, lck: 31500, health: 8910000128, runes: { type: 42, resist: 35, damage: 35 }, min: 546, max: 1006 },
+            'Cerberus': { pos: 3, id: 1412, class: 3, level: 435, str: 25000, dex: 75000, int: 25000, con: 240000, lck: 45000, health: 8650800128, runes: { type: 40, resist: 35, damage: 35 }, min: 584, max: 1174 },
+            // 4
+            // 5
+            // 6
+            'Ares': { pos: 7, id: 1416, class: 1, level: 600, str: 135000, dex: 45000, int: 45000, con: 320000, lck: 63000, health: 19764000768, runes: { type: 40, resf: 60, resc: 20, resl: 60, damage: 45 }, min: 614, max: 1226 },
+            // 8
             'Hades': { pos: 9, id: 0, class: 3, level: 645, str: 75000, dex: 200000, int: 75000, con: 360000, lck: 100000, health: 19099799552, runes: { type: 40, resf: 60, resc: 60, resl: 60, damage: 60 }, min: 1074, max: 2159 }
+            // 10
         }
     },
     '200': {
