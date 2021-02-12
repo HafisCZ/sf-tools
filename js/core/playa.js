@@ -1685,7 +1685,33 @@ class SFOwnPlayer extends SFPlayer {
             var bert = {
                 Level: dataType.long()
             };
-            dataType.skip(18);
+            dataType.skip(3);
+            bert.Strength = {
+                Type: 1,
+                Base: dataType.long(),
+                Bonus: dataType.skip(4).long()
+            };
+            bert.Dexterity = {
+                Type: 2,
+                Base: dataType.back(5).long(),
+                Bonus: dataType.skip(4).long()
+            };
+            bert.Intelligence = {
+                Type: 3,
+                Base: dataType.back(5).long(),
+                Bonus: dataType.skip(4).long()
+            };
+            bert.Constitution = {
+                Type: 4,
+                Base: dataType.back(5).long(),
+                Bonus: dataType.skip(4).long()
+            };
+            bert.Luck = {
+                Type: 5,
+                Base: dataType.back(5).long(),
+                Bonus: dataType.skip(4).long()
+            };
+            dataType.skip(5);
             bert.Armor = dataType.long();
             bert.Damage = {
                 Min: dataType.long(),
@@ -1708,7 +1734,33 @@ class SFOwnPlayer extends SFPlayer {
             var mark = {
                 Level: dataType.long()
             };
-            dataType.skip(18);
+            dataType.skip(3);
+            mark.Strength = {
+                Type: 1,
+                Base: dataType.long(),
+                Bonus: dataType.skip(4).long()
+            };
+            mark.Dexterity = {
+                Type: 2,
+                Base: dataType.back(5).long(),
+                Bonus: dataType.skip(4).long()
+            };
+            mark.Intelligence = {
+                Type: 3,
+                Base: dataType.back(5).long(),
+                Bonus: dataType.skip(4).long()
+            };
+            mark.Constitution = {
+                Type: 4,
+                Base: dataType.back(5).long(),
+                Bonus: dataType.skip(4).long()
+            };
+            mark.Luck = {
+                Type: 5,
+                Base: dataType.back(5).long(),
+                Bonus: dataType.skip(4).long()
+            };
+            dataType.skip(5);
             mark.Armor = dataType.long();
             mark.Damage = {
                 Min: dataType.long(),
@@ -1731,7 +1783,33 @@ class SFOwnPlayer extends SFPlayer {
             var kuni = {
                 Level: dataType.long()
             };
-            dataType.skip(18);
+            dataType.skip(3);
+            kuni.Strength = {
+                Type: 1,
+                Base: dataType.long(),
+                Bonus: dataType.skip(4).long()
+            };
+            kuni.Dexterity = {
+                Type: 2,
+                Base: dataType.back(5).long(),
+                Bonus: dataType.skip(4).long()
+            };
+            kuni.Intelligence = {
+                Type: 3,
+                Base: dataType.back(5).long(),
+                Bonus: dataType.skip(4).long()
+            };
+            kuni.Constitution = {
+                Type: 4,
+                Base: dataType.back(5).long(),
+                Bonus: dataType.skip(4).long()
+            };
+            kuni.Luck = {
+                Type: 5,
+                Base: dataType.back(5).long(),
+                Bonus: dataType.skip(4).long()
+            };
+            dataType.skip(5);
             kuni.Armor = dataType.long();
             kuni.Damage = {
                 Min: dataType.long(),
@@ -1832,37 +1910,13 @@ class SFCompanion extends SFPlayer {
             }
         }
 
-        this.Strength = {
-            Base: player.Strength.Base,
-            Type: 1
-        };
-
-        this.Dexterity = {
-            Base: player.Dexterity.Base,
-            Type: 2
-        };
-
-        this.Intelligence = {
-            Base: player.Intelligence.Base,
-            Type: 3
-        };
-
-        this.Constitution = {
-            Base: player.Constitution.Base,
-            Type: 4
-        };
-
-        this.Luck = {
-            Base: player.Luck.Base,
-            Type: 5
-        };
+        this.Strength = comp.Strength;
+        this.Dexterity = comp.Dexterity;
+        this.Intelligence = comp.Intelligence;
+        this.Constitution = comp.Constitution;
+        this.Luck = comp.Luck;
 
         this.Primary = this.getPrimaryAttribute();
-
-        var pa = [ this.Strength, this.Dexterity, this.Intelligence ];
-        if (this.Primary.Type != player.Primary.Type) {
-            [ pa[this.Primary.Type - 1].Base, pa[player.Primary.Type - 1].Base ] = [ pa[player.Primary.Type - 1].Base, pa[this.Primary.Type - 1].Base ];
-        }
 
         this.addCalculatedAttributes(this.Strength, player.Pets.Water);
         this.addCalculatedAttributes(this.Dexterity, player.Pets.Light);
