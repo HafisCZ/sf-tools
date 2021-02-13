@@ -265,7 +265,27 @@ DUNGEON_DATA = {
             'Bootlegged Puss': { pos: 17, id: 416, class: 1, level: 232, str: 4964, dex: 1962, int: 1940, con: 19020, lck: 3126, health: 22158300, min: 311, max: 620 },
             'Dotty from Kansas': { pos: 18, id: 417, class: 3, level: 234, str: 1977, dex: 5012, int: 1956, con: 19204, lck: 3160, health: 18051760, min: 392, max: 783 },
             'The Last Airgazer': { pos: 19, id: 418, class: 1, level: 236, str: 5059, dex: 1993, int: 1975, con: 19392, lck: 3198, health: 22979520, min: 316, max: 631 },
-            'A Rabbit and a Hedgehog': { pos: 20, id: 419, class: 3, level: 238, str: 2009, dex: 5109, int: 1990, con: 19584, lck: 3230, health: 18722304, min: 399, max: 796 }
+            'A Rabbit and a Hedgehog': { pos: 20, id: 419, class: 3, level: 238, str: 2009, dex: 5109, int: 1990, con: 19584, lck: 3230, health: 18722304, min: 399, max: 796 },
+            'Holger Nilsson': { pos: 21, id: 420, class: 1, level: 240, str: 5157, dex: 2024, int: 2009, con: 19780, lck: 3262, health: 23834900, min: 322, max: 641 },
+            'High-Spirited Ghost': { pos: 22, id: 421, class: 1, level: 242, str: 5206, dex: 2043, int: 2028, con: 19960, lck: 3295, health: 24251400, min: 324, max: 647 },
+            'Blood-Red Riding Hood': { pos: 23, id: 422, class: 1, level: 244, str: 5252, dex: 2058, int: 2042, con: 20160, lck: 3330, health: 24696000, min: 327, max: 652 },
+            'Snowflake': { pos: 24, id: 423, class: 1, level: 246, str: 5302, dex: 2077, int: 2061, con: 20360, lck: 3362, health: 25144600, min: 330, max: 657 },
+            'Star Money': { pos: 25, id: 424, class: 2, level: 248, str: 2090, dex: 2078, int: 5348, con: 20544, lck: 3398, health: 10230912, min: 747, max: 1492 },
+            'Miss Match': { pos: 26, id: 425, class: 3, level: 250, str: 2109, dex: 5398, int: 2098, con: 20728, lck: 3430, health: 20810912, min: 419, max: 836 },
+            'Ice Queen': { pos: 27, id: 426, class: 3, level: 252, str: 2139, dex: 5448, int: 2128, con: 20944, lck: 3476, health: 21195328, min: 422, max: 841 },
+            'Badly Raised Boys': { pos: 28, id: 427, class: 1, level: 254, str: 5498, dex: 2173, int: 2162, con: 21160, lck: 3522, health: 26979000, min: 340, max: 679 },
+            'Lambikins and Fishy': { pos: 29, id: 428, class: 1, level: 256, str: 5549, dex: 2207, int: 2198, con: 21356, lck: 3567, health: 27442460, min: 343, max: 684 },
+            'Donkey Shot': { pos: 30, id: 429, class: 1, level: 258, str: 5596, dex: 2241, int: 2228, con: 21572, lck: 3613, health: 27935740, min: 346, max: 690 },
+            'Street Thief with Monkey': { pos: 31, id: 430, class: 1, level: 260, str: 5646, dex: 2275, int: 2263, con: 21792, lck: 3657, health: 28438560, min: 348, max: 695 },
+            'Alice in Wonder': { pos: 32, id: 431, class: 2, level: 262, str: 2306, dex: 2296, int: 5694, con: 21992, lck: 3705, health: 11567792, min: 790, max: 1577 },
+            'Penterabbit': { pos: 33, id: 432, class: 1, level: 264, str: 5744, dex: 2340, int: 2331, con: 22204, lck: 3751, health: 29420300, min: 354, max: 705 },
+            'Dynamic Peter': { pos: 34, id: 433, class: 1, level: 266, str: 5796, dex: 2377, int: 2362, con: 22412, lck: 3794, health: 29920020, min: 356, max: 711 },
+            'Foolish Princess': { pos: 35, id: 434, class: 1, level: 268, str: 5846, dex: 2405, int: 2396, con: 22628, lck: 3840, health: 30434660, min: 359, max: 716 },
+            'Pleasure Addict': { pos: 36, id: 435, class: 3, level: 270, str: 2442, dex: 5894, int: 2430, con: 22828, lck: 3885, health: 24745552, min: 452, max: 903 },
+            'Amnastasia Rubliovka': { pos: 37, id: 436, class: 3, level: 272, str: 2472, dex: 5945, int: 2465, con: 23044, lck: 3934, health: 25164048, min: 455, max: 908 },
+            'Useless Livestock': { pos: 38, id: 437, class: 1, level: 274, str: 5995, dex: 2507, int: 2498, con: 23264, lck: 3975, health: 31988000, min: 367, max: 732 },
+            'Humpty Dumpty': { pos: 39, id: 438, class: 1, level: 276, str: 6046, dex: 2538, int: 2531, con: 23452, lck: 4022, health: 32481020, min: 370, max: 737 },
+            'King Chinbeard': { pos: 40, id: 439, class: 1, level: 278, str: 6092, dex: 2572, int: 2566, con: 23668, lck: 4069, health: 33016860, min: 372, max: 743 }
         }
     },
     '16': {
