@@ -435,8 +435,10 @@ class Field {
         this.validator = validator;
         this.isDropdown = this.$object.hasClass('dropdown');
         this.$object.on('change input', () => {
-            this.valid();
-        })
+            if (this.valid()) {
+                this.triggerListener();
+            }
+        });
     }
 
     valid () {
@@ -502,6 +504,22 @@ class Field {
             this.$object.dropdown('set selected', this.defaultValue);
         } else {
             this.$object.val(this.defaultValue);
+        }
+    }
+
+    setListener (listener) {
+        this.changeListener = listener;
+        
+        if (this.isDropdown) {
+            this.$object.dropdown('setting', 'onChange', () => {
+                this.triggerListener();
+            });
+        }
+    }
+
+    triggerListener () {
+        if (this.changeListener) {
+            this.changeListener();
         }
     }
 
