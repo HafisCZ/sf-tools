@@ -362,13 +362,18 @@
                 <div class="column">
                     <div class="ui grid">
                         <div class="row">
-                            <div class="four wide column">
+                            <div class="three wide column">
                                 <button class="ui fluid basic icon button" data-position="bottom center" data-tooltip="Copy current" id="sim-copyCurrent"><i class="outline copy icon"></i> 1</button>
                             </div>
-                            <div class="four wide column">
+                            <div class="five wide column">
                                 <div class="ui small form">
-                                    <div class="field" data-position="bottom center" data-tooltip="Amount of iterations. Using more iterations will improve the accuracy but can lower the performance.">
-                                        <input class="text-center fluid" type="text" id="sim-iterations" value="10000">
+                                    <div class="two fields">
+                                        <div class="field" data-position="bottom center" data-tooltip="Simulator threads. Keep this number BELOW your processor core count!">
+                                            <input class="text-center fluid" type="text" id="sim-threads" value="2">
+                                        </div>
+                                        <div class="field" data-position="bottom center" data-tooltip="Amount of iterations per thread.">
+                                            <input class="text-center fluid" type="text" id="sim-iterations" value="5000">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -909,54 +914,6 @@
                 }
             });
 
-            $('#sim-run').click(function () {
-                if (boss && players[0].Level) {
-                    toggleAll(true);
-
-                    if (boss_shadow) {
-                        let bert = players[1];
-
-                        let hp_a = (100 + bert.Dungeons.Player) / 100;
-                        let hp_b = (100 + bert.Potions.Life) / 100;
-                        let hp_c = (100 + bert.Runes.Health) / 100;
-                        let hp_d = 1.22;
-
-                        players[1].AutoHealth = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
-                    }
-
-                    var worker = new Worker('js/sim/dungeons.js');
-
-                    worker.addEventListener('message', function (message) {
-                        if (message.data.command == 'finished') {
-                            toggleAll();
-
-                            let { score, iterations, healths } = message.data.results;
-
-                            healths.sort((a, b) => a - b);
-
-                            let i = healths.length;
-                            if (i > 20000) {
-                                while (i--) {
-                                    healths.splice((i + 1) * 2 - 1, 1);
-                                }
-                            }
-
-                            chart.options.title.text =  `Winrate: ${(100 * score / iterations).toFixed(2)}% (${score} out of ${iterations})`;
-                            chart.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
-                            chart.data.labels = healths.map((a, b) => b);
-
-                            chart.update(0);
-                        }
-                    }, false);
-
-                    worker.postMessage({
-                        players: boss_shadow ? [ ... players.slice(1, 4), players[0] ] : [ players[0] ],
-                        boss: boss,
-                        iterations: Number($('#sim-iterations').val())
-                    });
-                }
-            });
-
             $('#load-stats').click(() => {
                 Storage.load(function () {
                     $('#stats-list').empty();
@@ -1000,6 +957,68 @@
                     pfilter: p => p.own,
                     gfilter: g => false
                 });
+            });
+
+            $('#sim-run').click(function () {
+                if (boss && players[0].Level) {
+                    toggleAll(true);
+
+                    if (boss_shadow) {
+                        let bert = players[1];
+
+                        let hp_a = (100 + bert.Dungeons.Player) / 100;
+                        let hp_b = (100 + bert.Potions.Life) / 100;
+                        let hp_c = (100 + bert.Runes.Health) / 100;
+                        let hp_d = 1.22;
+
+                        players[1].AutoHealth = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
+                    }
+
+                    let threads = Math.max(1, Number($('#sim-threads').val()) || 2);
+                    let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+                    let pchars = boss_shadow ? [ ... players.slice(1, 4), players[0] ] : [ players[0] ];
+
+                    let results = [];
+                    let totalScore = 0;
+                    let totalTries = 0;
+
+                    for (let i = 0; i < threads; i++) {
+                        let worker = new Worker('js/sim/dungeons.js');
+
+                        worker.addEventListener('message', (message) => {
+                            if (message.data.command == 'finished') {
+                                let { score, iterations, healths } = message.data.results;
+
+                                results.push(... healths);
+                                totalScore += score;
+                                totalTries += iterations;
+
+                                if (totalTries == threads * iterations) {
+                                    healths.sort((a, b) => a - b);
+
+                                    while (healths.length > 5000) {
+                                        let i = healths.length;
+                                        while (i--) healths.splice((i + 1) * 2 - 1, 1);
+                                    }
+
+                                    chart.options.title.text =  `Winrate: ${ (100 * totalScore / totalTries).toFixed(2) }% (${ totalScore } out of ${ totalTries })`;
+                                    chart.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
+                                    chart.data.labels = healths.map((a, b) => b);
+
+                                    chart.update(0);
+
+                                    toggleAll();
+                                }
+                            }
+                        }, false);
+
+                        worker.postMessage({
+                            players: pchars,
+                            boss: boss,
+                            iterations: iterations
+                        });
+                    }
+                }
             });
         </script>
     </body>
