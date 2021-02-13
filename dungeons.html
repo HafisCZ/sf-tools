@@ -363,9 +363,6 @@
                     <div class="ui grid">
                         <div class="row">
                             <div class="four wide column">
-                                <button class="ui fluid button" type="submit" id="sim-save">Save</button>
-                            </div>
-                            <div class="four wide column">
                                 <button class="ui fluid basic icon button" data-position="bottom center" data-tooltip="Copy current" id="sim-copyCurrent"><i class="outline copy icon"></i> 1</button>
                             </div>
                             <div class="four wide column">
@@ -375,7 +372,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="four wide column">
+                            <div class="eight wide column">
                                 <button class="ui fluid button" type="submit" id="sim-run">Simulate</button>
                             </div>
                         </div>
@@ -603,6 +600,16 @@
                             }
                         ]
                     }).dropdown('set selected', 'false');
+
+                    for (let field of Object.values(this.fields)) {
+                        field.setListener(() => this.changeListener());
+                    }
+                }
+
+                changeListener () {
+                    if (this.valid()) {
+                        saveEditor();
+                    }
                 }
 
                 fill (object, index) {
@@ -743,12 +750,20 @@
             $(document.body).on('paste', function (event) {
                 try {
                     var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
+
+                    let oldSelected = selected;
+
                     if (Array.isArray(data)) {
                         for (let i = 0; i < 4; i++) {
                             selected = i;
                             loadEditor(data[i]);
                             saveEditor();
                         }
+
+                        selected = oldSelected;
+                        loadEditor(data[selected]);
+
+                        show();
                     } else if (data.Class) {
                         loadEditor(data);
                         saveEditor();
@@ -759,9 +774,6 @@
             });
 
             $('#sim-editor input').on('paste', function (event) { event.stopPropagation(); });
-
-            // Save button
-            $('#sim-save').click(saveEditor);
 
             function loadEditor (data) {
                 SFItem.forceCorrectRune(data.Items.Wpn1);
@@ -799,8 +811,6 @@
                     }
 
                     players[selected] = obj;
-
-                    show();
                 }
             }
 
@@ -962,17 +972,25 @@
                                 </div>
                             </div>
                             `).click(() => {
-                            let data = player.toSimulatorShadowModel();
-                            if (Array.isArray(data)) {
-                                for (let i = 0; i < 4; i++) {
-                                    selected = i;
-                                    loadEditor(data[i]);
+                                let data = player.toSimulatorShadowModel();
+
+                                let oldSelected = selected;
+
+                                if (Array.isArray(data)) {
+                                    for (let i = 0; i < 4; i++) {
+                                        selected = i;
+                                        loadEditor(data[i]);
+                                        saveEditor();
+                                    }
+
+                                    selected = oldSelected;
+                                    loadEditor(data[selected]);
+
+                                    show();
+                                } else if (data.Class) {
+                                    loadEditor(data);
                                     saveEditor();
                                 }
-                            } else if (data.Class) {
-                                loadEditor(data);
-                                saveEditor();
-                            }
                         }));
                     }
                 }, function () {
