@@ -246,7 +246,26 @@ DUNGEON_DATA = {
         name: 'Tower',
         shadow: false,
         floors: {
-
+            // Missing - 1
+            // Missing - 2
+            'Tinvalid': { pos: 3, id: 402, class: 3, level: 204, str: 1730, dex: 4292, int: 1695, con: 16328, lck: 2654, health: 13388960, min: 342, max: 681 },
+            'Harmless Teddy Bear': { pos: 4, id: 403, class: 1, level: 206, str: 4340, dex: 1746, int: 1715, con: 16512, lck: 2690, health: 17089920, min: 276, max: 551 },
+            'Flowerlina': { pos: 5, id: 404, class: 1, level: 208, str: 4385, dex: 1763, int: 1733, con: 16712, lck: 2726, health: 17464040, min: 279, max: 556 },
+            'Tooth Fairy': { pos: 6, id: 405, class: 2, level: 210, str: 1782, dex: 1747, int: 4434, con: 16896, lck: 2757, health: 7130112, min: 634, max: 1265 },
+            'Ugly Chick': { pos: 7, id: 406, class: 1, level: 212, str: 4482, dex: 1794, int: 1766, con: 17100, lck: 2790, health: 18211500, min: 284, max: 568 },
+            'Warbling Birdie': { pos: 8, id: 407, class: 2, level: 214, str: 1812, dex: 1786, int: 4529, con: 17284, lck: 2822, health: 7432120, min: 646, max: 1289 },
+            'Well-Meaning Fairy': { pos: 9, id: 408, class: 2, level: 216, str: 1828, dex: 1800, int: 4578, con: 17484, lck: 2858, health: 7588056, min: 651, max: 1300 },
+            'Trickeribook's Cheatinchild': { pos: 10, id: 409, class: 1, level: 218, str: 4627, dex: 1846, int: 1818, con: 17680, lck: 2890, health: 19359600, min: 292, max: 583 },
+            'Singing Dumpling': { pos: 11, id: 410, class: 2, level: 220, str: 1861, dex: 1835, int: 4674, con: 17860, lck: 2926, health: 7894120, min: 663, max: 1324 },
+            'Puppeteer's Right': { pos: 12, id: 411, class: 2, level: 222, str: 1878, dex: 1854, int: 4722, con: 18064, lck: 2957, health: 8056544, min: 670, max: 1337 },
+            'Grinning Cat': { pos: 13, id: 412, class: 1, level: 224, str: 4771, dex: 1898, int: 1869, con: 18240, lck: 2991, health: 20520000, min: 299, max: 600 },
+            'Ambitious Frog': { pos: 14, id: 413, class: 1, level: 226, str: 4820, dex: 1909, int: 1887, con: 18440, lck: 3027, health: 20929400, min: 303, max: 604 },
+            'Pinociwhatsit': { pos: 15, id: 414, class: 1, level: 228, str: 4870, dex: 1928, int: 1907, con: 18620, lck: 3060, health: 21319900, min: 306, max: 609 },
+            '3x3 Wishes': { pos: 16, id: 415, class: 2, level: 230, str: 1943, dex: 1921, int: 4916, con: 18824, lck: 3094, health: 8696688, min: 694, max: 1385 },
+            'Bootlegged Puss': { pos: 17, id: 416, class: 1, level: 232, str: 4964, dex: 1962, int: 1940, con: 19020, lck: 3126, health: 22158300, min: 311, max: 620 },
+            'Dotty from Kansas': { pos: 18, id: 417, class: 3, level: 234, str: 1977, dex: 5012, int: 1956, con: 19204, lck: 3160, health: 18051760, min: 392, max: 783 },
+            'The Last Airgazer': { pos: 19, id: 418, class: 1, level: 236, str: 5059, dex: 1993, int: 1975, con: 19392, lck: 3198, health: 22979520, min: 316, max: 631 },
+            'A Rabbit and a Hedgehog': { pos: 20, id: 419, class: 3, level: 238, str: 2009, dex: 5109, int: 1990, con: 19584, lck: 3230, health: 18722304, min: 399, max: 796 }
         }
     },
     '16': {
