@@ -509,9 +509,13 @@ class Field {
 
     setListener (listener) {
         this.changeListener = listener;
-        
+
         if (this.isDropdown) {
-            this.$object.dropdown('setting', 'onChange', () => {
+            let existingListener = this.$object.dropdown('setting', 'onChange');
+            this.$object.dropdown('setting', 'onChange', (e, t, n) => {
+                if (existingListener) {
+                    existingListener(e, t, n);
+                }
                 this.triggerListener();
             });
         }
