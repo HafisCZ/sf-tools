@@ -244,7 +244,7 @@ DUNGEON_DATA = {
     },
     '15': {
         name: 'Tower',
-        shadow: false,
+        shadow: true,
         floors: {
             // Missing - 1
             // Missing - 2
