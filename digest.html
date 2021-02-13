@@ -252,7 +252,7 @@
                         msg[k] = v.split(/[/,]/g).map(d => isNaN(d) ? d : Number(d));
                     }
 
-                    if ([4, 12].includes(msg['fighters'][0])) {
+                    if ([4, 5, 12].includes(msg['fighters'][0])) {
                         let fightType = msg['fighters'][0];
 
                         // Handle fighters
