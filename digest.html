@@ -161,6 +161,11 @@
                         max += `<span class="text-total text-red">${ formatAsSpacedNumber(boss.Damage.UMax) }</span><br/>`
                     }
 
+                    let resistString = '';
+                    for (let [ i, resistValue ] of Object.entries(boss.ElementalResistance)) {
+                        resistString += `<br/><span style="font-size: 75%;" class="text-red">${ [ 'Fire', 'Cold', 'Lightning' ][i] }: ${ resistValue }%</span>`;
+                    }
+
                     return str + `
                         <tr>
                             <td class="bolder" valign="top">${ boss.Name }</td>
@@ -171,7 +176,7 @@
                             <td ${ [ 0, 1, 0, 0, 0, 0, 0 ][ boss.Class - 1 ] ? 'class="bolder"' : '' } valign="top">${ formatAsSpacedNumber(boss.Intelligence) }</td>
                             <td class="bolder" valign="top">${ formatAsSpacedNumber(boss.Constitution) }</td>
                             <td valign="top">${ formatAsSpacedNumber(boss.Luck) }</td>
-                            <td valign="top">${ formatAsSpacedNumber(boss.Level * [ 50, 10, 25, 25, 10, 25, 50 ][ boss.Class - 1 ]) } <span style="font-size: 75%;" class="text-red">${ boss.ElementalResistance }%</span></td>
+                            <td valign="top">${ formatAsSpacedNumber(boss.Level * [ 50, 10, 25, 25, 10, 25, 50 ][ boss.Class - 1 ]) }${ resistString }</td>
                             <td class="bolder" valign="top">${ formatAsSpacedNumber(boss.Health) }</td>
                             <td valign="top">${ boss.ElementalDamage.Value ? `${ boss.ElementalDamage.Value }%&nbsp; ${ RUNETYPES[boss.ElementalDamage.Type].split(' ')[0] }` : '' }</td>
                             <td class="hint-container">
@@ -379,7 +384,7 @@
             function analyze () {
                 for (let boss of Object.values(bosses)) {
                     boss.BaseDamage = getBaseDamage(boss);
-                    boss.ElementalResistance = 0;
+                    boss.ElementalResistance = {};
                     boss.Damage = {
                         Min: Infinity,
                         Max: -Infinity,
@@ -456,14 +461,28 @@
                         let fightsForHash = boss.Fights.filter(fight => fight.Player.Hash == hash);
                         if (player.Runes.Damage > 0 && fightsForHash.length > 0) {
                             let elemDamage = player.Runes.Damage / 100;
+                            let elemDamageType = player.Items.Wpn1.AttributeTypes[2] - 40;
 
                             let attrPlayer = getMainAttribute(player, player.Class).Total;
                             let attrBoss = getMainAttribute(boss, player.Class);
 
-                            let armorBoss = boss.Level * [ 50, 10, 25, 25, 10, 25, 50 ][ boss.Class - 1 ] + (boss.Class == 5 ? 40 : 0)
+                            let armorBoss = boss.Level * [ 50, 10, 25, 25, 10, 25, 50 ][ boss.Class - 1 ] / player.Level;
+                            if (player.Class == 2) {
+                                armorBoss = 0;
+                            } else {
+                                if (boss.Class == 1 || boss.Class == 7 || (boss.Class == 8 && boss.Mask == 1)) {
+                                    armorBoss = Math.min(50, armorBoss);
+                                } else if (boss.Class == 2 || (boss.Class == 8 && boss.Mask == 0)) {
+                                    armorBoss = Math.min(10, armorBoss);
+                                } else if (boss.Class == 3 || boss.Class == 4 || boss.Class == 6 || boss.Class == 8) {
+                                    armorBoss = Math.min(25, armorBoss);
+                                } else if (boss.Class == 5) {
+                                    armorBoss = Math.min(10, armorBoss) + 40;
+                                }
+                            }
 
                             let multAttr = (1 + Math.max(attrPlayer / 2, attrPlayer - attrBoss / 2) / 10);
-                            let multArmor = (1 - (armorBoss / player.Level) / 100);
+                            let multArmor = (1 - armorBoss / 100);
                             let multPortal = (1 + player.Dungeons.Group / 100)
                             let baseRaw = multAttr * multArmor * multPortal;
 
@@ -484,7 +503,7 @@
                             let baseMax = baseRaw * Math.max(fistDamage.Max, player.Items.Wpn1.DamageMax);
                             let resistanceMax = 100 * (1 - (realMax / baseMax - 1) / elemDamage);
 
-                            boss.ElementalResistance = Math.trunc(Math.max(boss.ElementalResistance, resistanceMin, resistanceMax));
+                            boss.ElementalResistance[elemDamageType] = Math.trunc(Math.max(boss.ElementalResistance[elemDamageType] || 0, resistanceMin, resistanceMax));
                         }
                     }
                 }

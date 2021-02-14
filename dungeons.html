@@ -702,9 +702,9 @@
                     Potions: { Life: 0 },
                     Runes: {
                         Health: 0,
-                        ResistanceFire: data.runes && data.runes.resf ? data.runes.resf : 0,
-                        ResistanceCold: data.runes && data.runes.resc ? data.runes.resc : 0,
-                        ResistanceLightning: data.runes && data.runes.resl ? data.runes.resl : 0,
+                        ResistanceFire: data.runes && data.runes.res ? data.runes.res[0] : 0,
+                        ResistanceCold: data.runes && data.runes.res ? data.runes.res[1] : 0,
+                        ResistanceLightning: data.runes && data.runes.res ? data.runes.res[2] : 0,
                     },
                     Items: {
                         Hand: { HasEnchantment: data.class == 6 },
