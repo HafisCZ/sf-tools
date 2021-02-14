@@ -246,8 +246,8 @@ DUNGEON_DATA = {
         name: 'Tower',
         shadow: true,
         floors: {
-            // Missing - 1
-            // Missing - 2
+            'Living Cake Man': { pos: 1, id: 400, class: 1, level: 200, str: 4194, dex: 1697, int: 1665, con: 15940, lck: 2589, health: 16019700, min: 268, max: 534 },
+            'Green Fairy Drinkerbell': { pos: 2, id: 401, class: 2, level: 202, str: 1714, dex: 1678, int: 4242, con: 16140, lck: 2622, health: 6552840, min: 610, max: 1217 },
             'Tinvalid': { pos: 3, id: 402, class: 3, level: 204, str: 1730, dex: 4292, int: 1695, con: 16328, lck: 2654, health: 13388960, min: 342, max: 681 },
             'Harmless Teddy Bear': { pos: 4, id: 403, class: 1, level: 206, str: 4340, dex: 1746, int: 1715, con: 16512, lck: 2690, health: 17089920, min: 276, max: 551 },
             'Flowerlina': { pos: 5, id: 404, class: 1, level: 208, str: 4385, dex: 1763, int: 1733, con: 16712, lck: 2726, health: 17464040, min: 279, max: 556 },
