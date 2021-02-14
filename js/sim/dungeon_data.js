@@ -760,9 +760,8 @@ DUNGEON_DATA = {
         name: 'Nordic Gods',
         shadow: true,
         floors: {
-            // TODO: Check all of these again
-            'Heimdall': { pos: 1, id: 1400, class: 1, level: 345, str: 48500, dex: 12000, int: 12000, con: 163000, lck: 23500, health: 318257504, runes: { type: 41, damage: 60 }, min: 1018, max: 1670 },
-            // 2
+            'Heimdall': { pos: 1, id: 1400, class: 1, level: 345, str: 48500, dex: 12000, int: 12000, con: 163000, lck: 23500, health: 318257504, runes: { type: 41, res: [0, 5, 0], damage: 60 }, min: 1190, max: 2011 },
+            'Valkyries': { pos: 2, id: 1401, class: 1, level: 390, str: 65500, dex: 10500, int: 10500, con: 184000, lck: 31500, health: 404800000, runes: { type: 42, res: [10, 10, 60], damage: 60 }, min: 1365, max: 2339 },
             // 3
             // 4
             // 5
