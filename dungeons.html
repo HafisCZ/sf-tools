@@ -989,7 +989,7 @@
                             if (message.data.command == 'finished') {
                                 let { score, iterations, healths } = message.data.results;
 
-                                results.push(... healths);
+                                results = results.concat(healths);
                                 totalScore += score;
                                 totalTries += iterations;
 
