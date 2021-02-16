@@ -385,8 +385,12 @@
                 show();
             }
 
-            function findInDungeonData (monsterId) {
+            function findInDungeonData (monsterId, shadow) {
                 for (let dungeon of Object.values(DUNGEON_DATA)) {
+                    if (dungeon.shadow != shadow) {
+                        continue;
+                    }
+                    
                     for (let boss of Object.values(dungeon.floors)) {
                         if (boss.id == monsterId) {
                             return boss;
@@ -474,7 +478,7 @@
                         }
                     }
 
-                    let data = findInDungeonData(boss.ID);
+                    let data = findInDungeonData(boss.ID, boss.Name.startsWith('Shadow'));
                     let elSet = data && data.runes && data.runes.res;
                     let arSet = data && data.armor;
 
