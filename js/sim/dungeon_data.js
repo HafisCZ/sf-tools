@@ -777,17 +777,16 @@ DUNGEON_DATA = {
         name: 'Mount Olympus',
         shadow: true,
         floors: {
-            // TODO: Check all of these again
-            'Singing Sirens': { pos: 1, id: 1410, class: 2, level: 345, str: 15000, dex: 15000, int: 45000, con: 200000, lck: 23500, health: 2875500032, runes: { type: 41, res: [0, 60, 60], damage: 30 }, min: 1038, max: 2069 },
-            'Polyphemus the Cyclops': { pos: 2, id: 1411, class: 1, level: 390, str: 60000, dex: 20000, int: 20000, con: 220000, lck: 31500, health: 8910000128, runes: { type: 42, damage: 35 }, min: 546, max: 1006 },
-            'Cerberus': { pos: 3, id: 1412, class: 3, level: 435, str: 25000, dex: 75000, int: 25000, con: 240000, lck: 45000, health: 8650800128, runes: { type: 40, damage: 35 }, min: 584, max: 1174 },
-            // 4
-            // 5
-            // 6
-            'Ares': { pos: 7, id: 1416, class: 1, level: 600, str: 135000, dex: 45000, int: 45000, con: 320000, lck: 63000, health: 19764000768, runes: { type: 40, res: [60, 20, 60], damage: 45 }, min: 614, max: 1226 },
-            // 8
-            'Hades': { pos: 9, id: 0, class: 3, level: 645, str: 75000, dex: 200000, int: 75000, con: 360000, lck: 100000, health: 19099799552, runes: { type: 40, res: [60, 60, 60], damage: 60 }, min: 1074, max: 2159 }
-            // 10
+            'Singing Sirens': { pos: 1, id: 1410, class: 2, level: 345, str: 15000, dex: 15000, int: 45000, con: 200000, lck: 23500, health: 2875500032, runes: { type: 41, res: [5, 60, 5], damage: 30 }, min: 1038, max: 2069 },
+            'Polyphemus the Cyclops': { pos: 2, id: 1411, class: 1, level: 390, str: 60000, dex: 20000, int: 20000, con: 220000, lck: 31500, health: 8910000128, runes: { type: 42, res: [10, 10, 60], damage: 35 }, min: 520, max: 1049 },
+            'Cerberus': { pos: 3, id: 1412, class: 3, level: 435, str: 25000, dex: 75000, int: 25000, con: 240000, lck: 45000, health: 8650800128, runes: { type: 40, res: [60, 15, 15], damage: 35 }, min: 725, max: 1459 },
+            'Medusa': { pos: 4, id: 1413, class: 2, level: 485, str: 30000, dex: 30000, int: 90000, con: 260000, lck: 48500, health: 5212349952, runes: { type: 41, res: [20, 60, 20], damage: 40 }, min: 1460, max: 2919 },
+            'Athena': { pos: 5, id: 1414, class: 2, level: 525, str: 35000, dex: 35000, int: 105000, con: 280000, lck: 53500, health: 6066899968, runes: { type: 40, res: [60, 25, 25], damage: 40 }, min: 1578, max: 3159 },
+            'Hercules': { pos: 6, id: 1415, class: 1, level: 565, str: 120000, dex: 40000, int: 40000, con: 300000, lck: 71500, health: 17465624576, runes: { type: 42, res: [40, 40, 40], damage: 45 }, min: 750, max: 1509 },
+            'Ares': { pos: 7, id: 1416, class: 1, level: 600, str: 135000, dex: 45000, int: 45000, con: 320000, lck: 63000, health: 19764000768, runes: { type: 40, res: [60, 20, 60], damage: 45 }, min: 800, max: 1599 },
+            'Poseidon': { pos: 3, id: 1417, class: 3, level: 625, str: 50000, dex: 150000, int: 50000, con: 340000, lck: 93500, health: 17487900672, runes: { type: 41, res: [60, 60, 60], damage: 50 }, min: 1045, max: 2089 }
+            // Hades
+            // zeus
         }
     },
     '200': {
