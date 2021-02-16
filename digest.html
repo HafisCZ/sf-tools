@@ -17,6 +17,7 @@
         <script src="js/util.js"></script>
         <script src="js/core/core.js"></script>
         <script src="js/core/playa.js"></script>
+        <script src="js/sim/dungeon_data.js"></script>
 
         <style>
             .container.full-width {
@@ -384,6 +385,18 @@
                 show();
             }
 
+            function findInDungeonData (monsterId) {
+                for (let dungeon of Object.values(DUNGEON_DATA)) {
+                    for (let boss of Object.values(dungeon.floors)) {
+                        if (boss.id == monsterId) {
+                            return boss;
+                        }
+                    }
+                }
+
+                return null;
+            }
+
             function analyze () {
                 for (let boss of Object.values(bosses)) {
                     boss.BaseDamage = getBaseDamage(boss);
@@ -461,15 +474,31 @@
                         }
                     }
 
-                    for (let [ hash, player] of Object.entries(players)) {
+                    let data = findInDungeonData(boss.ID);
+                    let elSet = data && data.runes && data.runes.res;
+                    let arSet = data && data.armor;
+
+                    if (elSet) {
+                        boss.ElementalResistance = data.runes.res;
+                    }
+
+                    if (arSet) {
+                        boss.Armor = data.armor;
+                    }
+
+                    if (!arSet) for (let [ hash, player] of Object.entries(players)) {
                         let fightsForHash = boss.Fights.filter(fight => fight.Player.Hash == hash);
-                        if (player.Runes.Damage == 0 && fightsForHash.length > 0) {
+                        if ((player.Runes.Damage == 0 || elSet) && fightsForHash.length > 0) {
                             let attrPlayer = getMainAttribute(player, player.Class).Total;
                             let attrBoss = getMainAttribute(boss, player.Class);
 
                             let multAttr = (1 + Math.max(attrPlayer / 2, attrPlayer - attrBoss / 2) / 10);
                             let multPortal = (1 + player.Dungeons.Group / 100)
                             let baseRaw = multAttr * multPortal;
+
+                            if (elSet && player.Runes.Damage > 0) {
+                                baseRaw *= (1 + (player.Runes.Damage / 100) * (1 - boss.ElementalResistance[player.Items.Wpn1.AttributeTypes[2] - 40] / 100));
+                            }
 
                             let fistDamage = getBaseDamage(player);
 
