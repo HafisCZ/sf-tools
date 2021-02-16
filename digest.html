@@ -162,6 +162,9 @@
                     }
 
                     let resistString = '';
+                    if (boss.Armor) {
+                        resistString += `<br/><span style="font-size: 75%;" class="text-red">${ boss.Armor }</span>`;
+                    }
                     for (let [ i, resistValue ] of Object.entries(boss.ElementalResistance)) {
                         resistString += `<br/><span style="font-size: 75%;" class="text-red">${ [ 'Fire', 'Cold', 'Lightning' ][i] }: ${ resistValue }%</span>`;
                     }
@@ -385,6 +388,7 @@
                 for (let boss of Object.values(bosses)) {
                     boss.BaseDamage = getBaseDamage(boss);
                     boss.ElementalResistance = {};
+                    boss.Armor = 0;
                     boss.Damage = {
                         Min: Infinity,
                         Max: -Infinity,
@@ -459,6 +463,37 @@
 
                     for (let [ hash, player] of Object.entries(players)) {
                         let fightsForHash = boss.Fights.filter(fight => fight.Player.Hash == hash);
+                        if (player.Runes.Damage == 0 && fightsForHash.length > 0) {
+                            let attrPlayer = getMainAttribute(player, player.Class).Total;
+                            let attrBoss = getMainAttribute(boss, player.Class);
+
+                            let multAttr = (1 + Math.max(attrPlayer / 2, attrPlayer - attrBoss / 2) / 10);
+                            let multPortal = (1 + player.Dungeons.Group / 100)
+                            let baseRaw = multAttr * multPortal;
+
+                            let fistDamage = getBaseDamage(player);
+
+                            let multCritical = (2 * (1 + (player.Items.Wpn1.HasEnchantment ? 0.05 : 0)) * (1 + 0.05 * player.Underworld.Gladiator));
+
+                            let takenDamages = [];
+                            for (let fight of fightsForHash) {
+                                takenDamages.push(... fight.Taken.map(round => round.damage / (round.crit ? multCritical : 1)));
+                            }
+
+                            let realMin = Math.min(... takenDamages);
+                            let baseMin = baseRaw * Math.max(fistDamage.Min, player.Items.Wpn1.DamageMin);
+                            let resistanceMin = player.Level * 100 * (1 - realMin / baseMin);
+
+                            let realMax = Math.max(... takenDamages);
+                            let baseMax = baseRaw * Math.max(fistDamage.Max, player.Items.Wpn1.DamageMax);
+                            let resistanceMax = player.Level * 100 * (1 - realMax / baseMax);
+
+                            boss.Armor = Math.trunc(Math.max(boss.Armor, resistanceMin, resistanceMax));
+                        }
+                    }
+
+                    for (let [ hash, player] of Object.entries(players)) {
+                        let fightsForHash = boss.Fights.filter(fight => fight.Player.Hash == hash);
                         if (player.Runes.Damage > 0 && fightsForHash.length > 0) {
                             let elemDamage = player.Runes.Damage / 100;
                             let elemDamageType = player.Items.Wpn1.AttributeTypes[2] - 40;
@@ -466,7 +501,12 @@
                             let attrPlayer = getMainAttribute(player, player.Class).Total;
                             let attrBoss = getMainAttribute(boss, player.Class);
 
-                            let armorBoss = boss.Level * [ 50, 10, 25, 25, 10, 25, 50 ][ boss.Class - 1 ] / player.Level;
+                            let armorBase = boss.Level * [ 50, 10, 25, 25, 10, 25, 50 ][ boss.Class - 1 ];
+                            if (boss.Armor) {
+                                armorBase = boss.Armor;
+                            }
+
+                            let armorBoss = armorBase / player.Level;
                             if (player.Class == 2) {
                                 armorBoss = 0;
                             } else {
