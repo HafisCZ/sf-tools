@@ -813,11 +813,11 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
         var cascale = 1 / Math.pow(1.03, base.Upgrades);
 
         for (var i = 0; i < 5; i++) {
-            ia[i] /= iascale;
+            ia[i] *= iascale;
         }
 
         for (var i = 0; i < 5; i++) {
-            ca[i] /= cascale;
+            ca[i] *= cascale;
         }
     }
 
