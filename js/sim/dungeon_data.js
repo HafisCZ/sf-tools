@@ -405,16 +405,16 @@ DUNGEON_DATA = {
         name: 'Nordic Gods',
         shadow: false,
         floors: {
-            'Heimdall': { pos: 1, id: 0, class: 1, level: 210, str: 8000, dex: 2000, int: 2000, con: 36000, lck: 4000, health: 43560000, runes: { type: 41, res: [5, 60, 5], damage: 30 }, min: 728, max: 1229 },
-            'Valkyries': { pos: 2, id: 0, class: 1, level: 240, str: 10965, dex: 1762, int: 12000, con: 40500, lck: 5000, health: 55687500, runes: { type: 42, res: [10, 10, 60], damage: 30 }, min: 840, max: 1439 },
-            'Hel': { pos: 3, id: 0, class: 2, level: 270, str: 4000, dex: 4000, int: 11500, con: 51000, lck: 7500, health: 31416000, runes: { type: 40, res: [30, 30, 30], damage: 30 }, min: 2126, max: 3643 },
-            'Thor': { pos: 4, id: 0, class: 1, level: 305, str: 15000, dex: 3500, int: 3500, con: 58500, lck: 8000, health: 101351256, runes: { type: 42, res: [15, 15, 60], damage: 30 }, min: 1067, max: 1829 },
-            'Odin': { pos: 5, id: 0, class: 1, level: 330, str: 12500, dex: 6000, int: 6000, con: 73500, lck: 9000, health: 137445008, runes: { type: 40, res: [60, 25, 25], damage: 40 }, min: 1155, max: 1979 },
-            'Loki': { pos: 6, id: 0, class: 4, level: 360, str: 6500, dex: 18500, int: 6500, con: 83500, lck: 11500, health: 135938000, runes: { type: 41, res: [40, 40, 40], damage: 45 }, min: 2524, max: 4319, ass: true },
-            'Ymir': { pos: 7, id: 0, class: 6, level: 390, str: 22500, dex: 6500, int: 6500, con: 81500, lck: 10500, health: 143440000, runes: { type: 41, res: [40, 60, 40], damage: 45 }, min: 1365, max: 3836 },
-            'Midgard Serpent': { pos: 8, id: 0, class: 3, level: 420, str: 10500, dex: 22500, int: 10500, con: 112500, lck: 15500, health: 212850000, runes: { type: 42, res: [50, 50, 50], damage: 50 }, min: 1837, max: 3148 },
-            'Fenris Wolf': { pos: 9, id: 0, class: 6, level: 455, str: 29500, dex: 7000, int: 7000, con: 115000, lck: 16000, health: 235290000, runes: { type: 42, res: [55, 55, 60], damage: 55 }, min: 1595, max: 4223 },
-            'Surtr': { pos: 10, id: 0, class: 6, level: 500, str: 38500, dex: 10500, int: 10500, con: 158000, lck: 23000, health: 354552000, runes: { type: 40, res: [60, 30, 30], damage: 60 }, min: 1764, max: 4558 }
+            'Heimdall': { pos: 1, id: 1400, class: 1, level: 210, str: 8000, dex: 2000, int: 2000, con: 36000, lck: 4000, health: 43560000, runes: { type: 41, res: [0, 5, 0], damage: 30 }, min: 728, max: 1229, armor: 15500 },
+            'Valkyries': { pos: 2, id: 1401, class: 1, level: 240, str: 10965, dex: 1762, int: 12000, con: 40500, lck: 5000, health: 55687500, runes: { type: 42, res: [10, 10, 60], damage: 30 }, min: 840, max: 1439 },
+            'Hel': { pos: 3, id: 1402, class: 2, level: 270, str: 4000, dex: 4000, int: 11500, con: 51000, lck: 7500, health: 31416000, runes: { type: 40, res: [35, 35, 35], damage: 30 }, min: 2126, max: 3643 },
+            'Thor': { pos: 4, id: 1403, class: 1, level: 305, str: 15000, dex: 3500, int: 3500, con: 58500, lck: 8000, health: 101351256, runes: { type: 42, res: [15, 25, 60], damage: 30 }, min: 1067, max: 1829 },
+            'Odin': { pos: 5, id: 1404, class: 1, level: 330, str: 12500, dex: 6000, int: 6000, con: 73500, lck: 9000, health: 137445008, runes: { type: 40, res: [60, 30, 30], damage: 40 }, min: 1155, max: 1979 },
+            'Loki': { pos: 6, id: 1405, class: 4, level: 360, str: 6500, dex: 18500, int: 6500, con: 83500, lck: 11500, health: 135938000, runes: { type: 41, res: [40, 50, 50], damage: 45 }, min: 2524, max: 4319, ass: true },
+            'Ymir': { pos: 7, id: 1406, class: 6, level: 390, str: 22500, dex: 6500, int: 6500, con: 81500, lck: 10500, health: 143440000, runes: { type: 41, res: [50, 50, 10], damage: 45 }, min: 1365, max: 3836 },
+            'Midgard Serpent': { pos: 8, id: 1407, class: 3, level: 420, str: 10500, dex: 22500, int: 10500, con: 112500, lck: 15500, health: 212850000, runes: { type: 42, res: [50, 50, 50], damage: 50 }, min: 1837, max: 3148 },
+            'Fenris Wolf': { pos: 9, id: 1408, class: 6, level: 455, str: 29500, dex: 7000, int: 7000, con: 115000, lck: 16000, health: 235290000, runes: { type: 42, res: [50, 50, 50], damage: 55 }, min: 1595, max: 4223 },
+            'Surtr': { pos: 10, id: 1409, class: 6, level: 500, str: 38500, dex: 10500, int: 10500, con: 158000, lck: 23000, health: 354552000, runes: { type: 40, res: [60, 50, 50], damage: 60 }, min: 1764, max: 4558 }
         }
     },
     '20': {
@@ -766,11 +766,11 @@ DUNGEON_DATA = {
             'Hel': { pos: 3, id: 1402, class: 2, level: 435, str: 25000, dex: 25000, int: 70500, con: 231000, lck: 45000, health: 226149008, runes: { type: 40, res: [35, 35, 35], damage: 60 }, min: 3425, max: 5871 },
             'Thor': { pos: 4, id: 1403, class: 1, level: 485, str: 90000, dex: 19000, int: 18500, con: 265000, lck: 48500, health: 721462528, runes: { type: 42, res: [15, 25, 60], damage: 60 }, min: 1697, max: 2909 },
             'Odin': { pos: 5, id: 1404, class: 1, level: 525, str: 76500, dex: 37000, int: 37000, con: 330500, lck: 53500, health: 972496256, runes: { type: 40, res: [60, 30, 30], damage: 60 }, min: 1837, max: 3149 },
-            'Loki': { pos: 6, id: 1405, class: 4, level: 565, str: 39500, dex: 111000, int: 39500, con: 376000, lck: 71500, health: 951280000, runes: { type: 41, res: [40, 50, 50], damage: 60 }, min: 3955, max: 6779, ass: true },
-            'Ymir': { pos: 7, id: 1406, class: 6, level: 600, str: 136500, dex: 39500, int: 39500, con: 417500, lck: 63000, health: 1120570112, runes: { type: 42, res: [50, 50, 10], damage: 60 }, min: 2104, max: 5379 },
-            'Midgard Serpent': { pos: 8, id: 1407, class: 3, level: 625, str: 63500, dex: 163000, int: 63500, con: 507500, lck: 93500, health: 1417955072, runes: { type: 42, res: [50, 50, 50], damage: 60 }, min: 2734, max: 4686 },
-            'Fenris Wolf': { pos: 9, id: 1408, class: 6, level: 645, str: 182000, dex: 42000, int: 42000, con: 575000, lck: 100000, health: 1657149952, runes: { type: 42, res: [50, 50, 50], damage: 60 }, min: 2264, max: 5620 },
-            'Surtr': { pos: 10, id: 1409, class: 6, level: 660, str: 229500, dex: 62500, int: 62500, con: 711000, lck: 137000, health: 2096028032, runes: { type: 40, res: [50, 50, 50], damage: 60 }, min: 2311, max: 5646 }
+            'Loki': { pos: 6, id: 1405, class: 4, level: 565, str: 39500, dex: 111000, int: 39500, con: 376000, lck: 71500, health: 951280000, runes: { type: 41, res: [40, 50, 50], damage: 60 }, min: 3955, max: 6779, ass: true, armor: 12500 },
+            'Ymir': { pos: 7, id: 1406, class: 6, level: 600, str: 136500, dex: 39500, int: 39500, con: 417500, lck: 63000, health: 1120570112, runes: { type: 42, res: [50, 50, 10], damage: 60 }, min: 2104, max: 5379, armor: 12500 },
+            'Midgard Serpent': { pos: 8, id: 1407, class: 3, level: 625, str: 63500, dex: 163000, int: 63500, con: 507500, lck: 93500, health: 1417955072, runes: { type: 42, res: [50, 50, 50], damage: 60 }, min: 2734, max: 4686, armor: 12500 },
+            'Fenris Wolf': { pos: 9, id: 1408, class: 6, level: 645, str: 182000, dex: 42000, int: 42000, con: 575000, lck: 100000, health: 1657149952, runes: { type: 42, res: [50, 50, 50], damage: 60 }, min: 2264, max: 5620, armor: 12500 },
+            'Surtr': { pos: 10, id: 1409, class: 6, level: 660, str: 229500, dex: 62500, int: 62500, con: 711000, lck: 137000, health: 2096028032, runes: { type: 40, res: [60, 60, 60], damage: 60 }, min: 2311, max: 5646, armor: 12500 }
         }
     },
     '120': {
@@ -782,7 +782,7 @@ DUNGEON_DATA = {
             'Cerberus': { pos: 3, id: 1412, class: 3, level: 435, str: 25000, dex: 75000, int: 25000, con: 240000, lck: 45000, health: 8650800128, runes: { type: 40, res: [60, 15, 15], damage: 35 }, min: 725, max: 1459 },
             'Medusa': { pos: 4, id: 1413, class: 2, level: 485, str: 30000, dex: 30000, int: 90000, con: 260000, lck: 48500, health: 5212349952, runes: { type: 41, res: [20, 60, 20], damage: 40 }, min: 1460, max: 2919 },
             'Athena': { pos: 5, id: 1414, class: 2, level: 525, str: 35000, dex: 35000, int: 105000, con: 280000, lck: 53500, health: 6066899968, runes: { type: 40, res: [60, 25, 25], damage: 40 }, min: 1578, max: 3159 },
-            'Hercules': { pos: 6, id: 1415, class: 1, level: 565, str: 120000, dex: 40000, int: 40000, con: 300000, lck: 71500, health: 17465624576, runes: { type: 42, res: [40, 40, 40], damage: 45 }, min: 750, max: 1509 },
+            'Hercules': { pos: 6, id: 1415, class: 1, level: 565, str: 120000, dex: 40000, int: 40000, con: 300000, lck: 71500, health: 17465624576, runes: { type: 42, res: [40, 40, 40], damage: 45 }, min: 750, max: 1509, armor: 17500 },
             'Ares': { pos: 7, id: 1416, class: 1, level: 600, str: 135000, dex: 45000, int: 45000, con: 320000, lck: 63000, health: 19764000768, runes: { type: 40, res: [60, 20, 60], damage: 45 }, min: 800, max: 1599 },
             'Poseidon': { pos: 3, id: 1417, class: 3, level: 625, str: 50000, dex: 150000, int: 50000, con: 340000, lck: 93500, health: 17487900672, runes: { type: 41, res: [60, 60, 60], damage: 50 }, min: 1045, max: 2089 }
             // Hades
