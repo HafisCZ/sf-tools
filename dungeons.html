@@ -422,6 +422,13 @@
                                           <i class="dropdown icon"></i>
                                         </div>
                                     </div>
+                                    <div class="field disabled" style="margin-top: 3.7em;">
+                                        <label>Currently open dungeons</label>
+                                        <div class="ui fluid search selection dropdown" id="available-list">
+                                          <div class="text"></div>
+                                          <i class="dropdown icon"></i>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -690,7 +697,6 @@
 
             var boss = null;
             var dungeon = null;
-            var boss_shadow = false;
 
             function getBossData (data) {
                 return {
@@ -745,12 +751,11 @@
                 })
             }).dropdown('setting', 'onChange', (value, text) => {
                 dungeon = DUNGEON_DATA[value];
-                boss_shadow = dungeon.shadow;
 
                 $('#boss-list').dropdown({
                     values: Object.entries(dungeon.floors).map(([ name, _boss ]) => {
                         return {
-                            name: `<span${ boss_shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
+                            name: `<span${ dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
                                        <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">
                                            ${ _boss.pos }. ${ name }
                                            ${ _boss.runes ? `
@@ -830,7 +835,7 @@
                     content1 += `
                         <div class="row selectable ${ selected == i ? 'selected' : 'nselected' }" data-index="${ i }">
                             <div class="four wide text-center column">
-                                <img class="ui medium centered image" style="width: 50px; opacity: ${ i == 0 || boss_shadow ? '100' : '25' }%;" src="res/portrait${ i ? i : '' }.png">
+                                <img class="ui medium centered image" style="width: 50px; opacity: ${ i == 0 || dungeon.shadow ? '100' : '25' }%;" src="res/portrait${ i ? i : '' }.png">
                             </div>
                             <div class="eight wide column text-center">
                                 <b>${ ['You', 'Bert', 'Mark', 'Kunigunde'][i] }</b>
@@ -880,6 +885,25 @@
                 }
             }
 
+            var DUNGEON_ARR_TO_DID = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20 ];
+            function getDungeonEnemyAt (dungeon, isShadow, enemyIndex) {
+                if (enemyIndex < 0) {
+                    return null;
+                } else {
+                    let dung = DUNGEON_DATA[dungeon + (isShadow ? 100 : 0)];
+                    let boss = Object.entries(dung.floors)[enemyIndex];
+                    if (boss) {
+                        return {
+                            dungeon: dung,
+                            name: boss[0],
+                            boss: boss[1]
+                        };
+                    } else {
+                        return null;
+                    }
+                }
+            }
+
             $('#load-stats').click(() => {
                 Storage.load(function () {
                     $('#stats-list').empty();
@@ -896,6 +920,20 @@
                             </div>
                             `).click(() => {
                                 showData(player.toSimulatorShadowModel());
+
+                                let normalDungeons = player.Dungeons.Normal.concat(player.Dungeons.Extra.Normal);
+                                let shadowDungeons = player.Dungeons.Shadow.concat(player.Dungeons.Extra.Shadow);
+                                let tower = player.Dungeons.Tower;
+                                let youtube = player.Dungeons.Extra.Youtube;
+
+                                let availableBosses = [
+                                    getDungeonEnemyAt(15, false, tower),
+                                    getDungeonEnemyAt(15, true, youtube - 2),
+                                    ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon - 2)),
+                                    ... shadowDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], true, dungeon - 2)),
+                                ].filter(boss => boss);
+
+
                             }
                         ));
                     }
@@ -914,7 +952,7 @@
 
                     let playerInstances = players.map(p => JSON.parse(JSON.stringify(p)));
 
-                    if (boss_shadow) {
+                    if (dungeon.shadow) {
                         let bert = playerInstances[1];
 
                         let hp_a = (100 + bert.Dungeons.Player) / 100;
@@ -933,7 +971,7 @@
 
                     let threads = Math.max(1, Number($('#sim-threads').val()) || 2);
                     let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
-                    let pchars = boss_shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
+                    let pchars = dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
 
                     let results = [];
                     let totalScore = 0;
