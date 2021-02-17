@@ -857,61 +857,8 @@
 
             select(0);
 
-            chart = new Chart($('#winchart'), {
-                type: 'line',
-                data: {
-                    datasets: [{
-                        fill: false,
-                        borderWidth: 1.5,
-                        data: []
-                    }]
-                },
-                options: {
-                    title: {
-                        display: true
-                    },
-                    legend: {
-                        display: false
-                    },
-                    scales: {
-                        yAxes: [{
-                            display: true,
-                            ticks: {
-                                min: 0,
-                                max: 100,
-                                padding: 10,
-                                stepSize: 20,
-                                callback: function (value, index, values) {
-                                    return `${ value }%`;
-                                }
-                            }
-                        }],
-                        xAxes: [{
-                            display: false
-                        }]
-                    },
-                    tooltips: {
-                        enabled: false
-                    },
-                    animation: {
-                        duration: 0
-                    },
-                    events: [],
-                    hover: {
-                        animationDuration: 0,
-                    },
-                    showTooltips: false,
-                    responsiveAnimationDuration: 0,
-                    elements: {
-                        line: {
-                            borderColor: 'black',
-                            tension: 0
-                        },
-                        point: {
-                            radius: 0
-                        }
-                    }
-                }
+            var chart = new Chart($('#winchart'), {
+                type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,callback:function(value,index,values){return `${ value }%`}}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'black',tension:0},point:{radius:0}}}
             });
 
             function showData (data) {
@@ -950,7 +897,7 @@
                             `).click(() => {
                                 showData(player.toSimulatorShadowModel());
                             }
-                        }));
+                        ));
                     }
                 }, function () {
                     $('#stats-list').empty();
