@@ -772,25 +772,7 @@
 
             $(document.body).on('paste', function (event) {
                 try {
-                    var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
-
-                    let oldSelected = selected;
-
-                    if (Array.isArray(data)) {
-                        for (let i = 0; i < 4; i++) {
-                            selected = i;
-                            loadEditor(data[i]);
-                            saveEditor();
-                        }
-
-                        selected = oldSelected;
-                        loadEditor(data[selected]);
-
-                        show();
-                    } else if (data.Class) {
-                        loadEditor(data);
-                        saveEditor();
-                    }
+                    showData(JSON.parse(event.originalEvent.clipboardData.getData('text')));
                 } catch (e) {
                     console.info(e);
                 }
@@ -932,6 +914,25 @@
                 }
             });
 
+            function showData (data) {
+                let oldSelected = selected;
+                if (Array.isArray(data)) {
+                    for (let i = 0; i < 4; i++) {
+                        selected = i;
+                        loadEditor(data[i]);
+                        saveEditor();
+                    }
+
+                    selected = oldSelected;
+                    loadEditor(data[selected]);
+
+                    show();
+                } else if (data.Class) {
+                    loadEditor(data);
+                    saveEditor();
+                }
+            }
+
             $('#load-stats').click(() => {
                 Storage.load(function () {
                     $('#stats-list').empty();
@@ -947,25 +948,8 @@
                                 </div>
                             </div>
                             `).click(() => {
-                                let data = player.toSimulatorShadowModel();
-
-                                let oldSelected = selected;
-
-                                if (Array.isArray(data)) {
-                                    for (let i = 0; i < 4; i++) {
-                                        selected = i;
-                                        loadEditor(data[i]);
-                                        saveEditor();
-                                    }
-
-                                    selected = oldSelected;
-                                    loadEditor(data[selected]);
-
-                                    show();
-                                } else if (data.Class) {
-                                    loadEditor(data);
-                                    saveEditor();
-                                }
+                                showData(player.toSimulatorShadowModel());
+                            }
                         }));
                     }
                 }, function () {
