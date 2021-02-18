@@ -26,6 +26,10 @@ table.sftools-table {
     text-align: center;
 }
 
+table.sftools-table b {
+    font-weight: bold;
+}
+
 table.sftools-table td {
     height: 1.9em;
 }
