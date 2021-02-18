@@ -328,13 +328,8 @@ class Expression {
     getUnaryOperator () {
         return {
             op: SP_OPERATORS[this.get() == '-' ? 'u-' : '!'],
-            args: [ this.getBlock() ]
+            args: [ this.getVal() ]
         }
-    }
-
-    // Get token block
-    getBlock () {
-        return this.peek() == '(' ? this.getSubExpression() : this.getVal();
     }
 
     // Is global function
@@ -517,6 +512,9 @@ class Expression {
 
         if (token == undefined) {
             // Ignore undefined value
+        } else if (token == '(') {
+            node = this.getSubExpression();
+
         } else if (this.isString(token)) {
             // Get string
             node = this.getString();
@@ -549,11 +547,11 @@ class Expression {
     }
 
     getHighPriority () {
-        let node = this.getBlock();
+        let node = this.getVal();
         while (['*', '/'].includes(this.peek())) {
             node = {
                 op: SP_OPERATORS[this.get()],
-                args: [node, this.getBlock()]
+                args: [node, this.getVal()]
             }
         }
 
