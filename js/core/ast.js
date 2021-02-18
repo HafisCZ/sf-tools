@@ -1044,6 +1044,9 @@ class Expression {
 }
 
 const SP_FUNCTIONS = {
+    'flatten': (... values) => {
+        return values.flat(Infinity);
+    },
     // Truncate number
     'trunc': (value) => {
         if (isNaN(value)) {
