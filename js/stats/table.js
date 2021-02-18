@@ -1506,24 +1506,27 @@ const SettingsCommands = [
         Ignore macro
     */
     new Command(
-        /^(?:(if|if not) (Group|Player|Players|.+)|(endif|else))$/,
-        (root, key1, arg1, key2) => {
-            if (key2) {
-                if (key2 == 'endif') {
+        /^(?:if( not)? (.+)|(endif|else))$/,
+        (root, notSwitch, arg, ifSwitch) => {
+            if (ifSwitch) {
+                if (ifSwitch == 'endif') {
                     root.setFilter(null);
                 } else {
                     root.flipFilter();
                 }
-            } else if (arg1 in FilterTypes) {
-                root.setFilter(FilterTypes[arg1], key1 != 'if');
             } else {
-                let ast = new Expression(arg1);
-                if (ast.isValid()) {
-                    root.setFilter(ast, key1 != 'if');
+                let shouldFlip = !!notSwitch
+                if (arg in FilterTypes) {
+                    root.setFilter(FilterTypes[arg], shouldFlip);
+                } else {
+                    let ast = new Expression(arg);
+                    if (ast.isValid()) {
+                        root.setFilter(ast, shouldFlip);
+                    }
                 }
             }
         },
-        (root, key1, arg1, key2) => key2 ? SFormat.Macro(key2) : SFormat.Macro(`${ key1 } ${ arg1 }`)
+        (root, notSwitch, arg, ifSwitch) => ifSwitch ? SFormat.Macro(ifSwitch) : SFormat.Macro(`if${ notSwitch } ${ arg }`)
     ),
     /*
         Loop
