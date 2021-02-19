@@ -246,6 +246,7 @@ DUNGEON_DATA = {
         name: 'Tower',
         shadow: true,
         disable_companion_gladiator: true,
+        auto_armor_multiplier: 1.5,
         floors: {
             'Living Cake Man': { pos: 1, id: 400, class: 1, level: 200, str: 4194, dex: 1697, int: 1665, con: 15940, lck: 2589, health: 16019700, min: 268, max: 534 },
             'Green Fairy Drinkerbell': { pos: 2, id: 401, class: 2, level: 202, str: 1714, dex: 1678, int: 4242, con: 16140, lck: 2622, health: 6552840, min: 610, max: 1217 },

@@ -720,7 +720,7 @@
 
             function getBossData (data) {
                 return {
-                    ArmorAuto: typeof data.armor === 'undefined',
+                    ArmorAuto: data.armor ? 0 : (dungeon.auto_armor_multiplier || 1),
                     Armor: data.armor,
                     Class: data.class,
                     Mask: 0,

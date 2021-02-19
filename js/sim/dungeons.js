@@ -115,7 +115,7 @@ class FighterModel {
     getDamageReduction (source) {
         if (this.Player.ArmorAuto) {
             let maximumReduction = this.getMaximumDamageReduction();
-            return source.Player.Class == MAGE ? 0 : Math.min(maximumReduction, maximumReduction * this.Player.Level / source.Player.Level);
+            return source.Player.Class == MAGE ? 0 : (this.Player.ArmorAuto * Math.min(maximumReduction, maximumReduction * this.Player.Level / source.Player.Level));
         } else {
             if (source.Player.Class == MAGE) {
                 return 0;
