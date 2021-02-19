@@ -1526,7 +1526,7 @@ const SettingsCommands = [
                 }
             }
         },
-        (root, notSwitch, arg, ifSwitch) => ifSwitch ? SFormat.Macro(ifSwitch) : SFormat.Macro(`if${ notSwitch } ${ arg }`)
+        (root, notSwitch, arg, ifSwitch) => ifSwitch ? SFormat.Macro(ifSwitch) : SFormat.Macro(`if${ notSwitch ? ' not' : '' } ${ arg }`)
     ),
     /*
         Loop
