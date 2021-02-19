@@ -9,7 +9,7 @@ DUNGEON_DATA = {
             'Devious Vampire': { pos: 4, id: 0, class: 3, level: 16, str: 84, dex: 195, int: 83, con: 131, lck: 94, health: 8908, min: 27, max: 47 },
             'Night Ghoul': { pos: 5, id: 0, class: 1, level: 18, str: 214, dex: 101, int: 89, con: 169, lck: 93, health: 16055, min: 25, max: 43 },
             'Banshee': { pos: 6, id: 0, class: 2, level: 22, str: 97, dex: 99, int: 303, con: 198, lck: 137, health: 9108, min: 71, max: 116 },
-            'Skeleton Soldier': { pos: 7, id: 0, class: 1, level: 26, str: 359, dex: 135, int: 122, con: 260, lck: 142, health: 35100, min: 36, max: 63 },
+            'Skeleton Soldier': { pos: 7, id: 0, class: 1, level: 26, str: 359, dex: 135, int: 122, con: 260, lck: 142, health: 35100, min: 33, max: 63 },
             'Voodoo Master': { pos: 8, id: 0, class: 2, level: 30, str: 126, dex: 130, int: 460, con: 279, lck: 193, health: 17298, min: 97, max: 160 },
             'Flesh Golem': { pos: 9, id: 0, class: 1, level: 40, str: 614, dex: 207, int: 191, con: 445, lck: 238, health: 91225, min: 54, max: 95 },
             'Lord of Darkness': { pos: 10, id: 0, class: 3, level: 50, str: 221, dex: 847, int: 213, con: 561, lck: 292, health: 114444, min: 86, max: 151 }
@@ -154,7 +154,7 @@ DUNGEON_DATA = {
             'Man-Eater': { pos: 6, id: 0, class: 3, level: 230, str: 1120, dex: 4440, int: 1110, con: 4160, lck: 1625, health: 3843840, min: 266, max: 426 },
             'Swamp Dragon': { pos: 7, id: 0, class: 2, level: 235, str: 1125, dex: 1145, int: 4620, con: 4180, lck: 1655, health: 1972960, min: 528, max: 727 },
             'Black Skull Warrior': { pos: 8, id: 0, class: 1, level: 240, str: 4640, dex: 1630, int: 1605, con: 4360, lck: 1130, health: 5253800, min: 255, max: 314 },
-            'Dragon of Darkness': { pos: 9, id: 0, class: 1, level: 245, str: 4740, dex: 1665, int: 1640, con: 4460, lck: 1150, health: 5485800, min: 261, max: 319 },
+            'Dragon of Darkness': { pos: 9, id: 0, class: 1, level: 245, str: 4740, dex: 1665, int: 1640, con: 4460, lck: 1150, health: 5485800, min: 260, max: 319 },
             'Knight of the Black Skull': { pos: 10, id: 0, class: 1, level: 250, str: 4840, dex: 1700, int: 1675, con: 4560, lck: 1170, health: 5722800, min: 265, max: 324 }
         }
     },
@@ -162,8 +162,8 @@ DUNGEON_DATA = {
         name: 'Circus of Terror',
         shadow: false,
         floors: {
-            'Happy Slappy the Clown': { pos: 1, id: 0, class: 1, level: 255, str: 4940, dex: 1735, int: 1710, con: 4660, lck: 1190, health: 5964800, min: 270, max: 338 },
-            'The Blind Knife Thrower': { pos: 2, id: 0, class: 3, level: 260, str: 1270, dex: 5040, int: 1260, con: 4760, lck: 1835, health: 4969440, min: 307, max: 485 },
+            'Happy Slappy the Clown': { pos: 1, id: 0, class: 1, level: 255, str: 4940, dex: 1735, int: 1710, con: 4660, lck: 1190, health: 5964800, min: 270, max: 339 },
+            'The Blind Knife Thrower': { pos: 2, id: 0, class: 3, level: 260, str: 1270, dex: 5040, int: 1260, con: 4760, lck: 1835, health: 4969440, min: 306, max: 488 },
             'Miniature Gnome': { pos: 3, id: 0, class: 1, level: 265, str: 5140, dex: 1805, int: 1780, con: 4860, lck: 1230, health: 6463800, min: 280, max: 369 },
             'The Bearded Lady': { pos: 4, id: 0, class: 1, level: 270, str: 5240, dex: 1840, int: 1815, con: 4960, lck: 1250, health: 6720800, min: 285, max: 384 },
             'The Psycho Juggler': { pos: 5, id: 0, class: 2, level: 275, str: 1325, dex: 1345, int: 5420, con: 4980, lck: 1935, health: 2748960, min: 609, max: 939 },
