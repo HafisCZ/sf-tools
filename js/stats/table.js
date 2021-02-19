@@ -3766,45 +3766,62 @@ class Settings {
         var settings = Settings.parseConstants(string);
         var content = '';
 
-        for (var line of string.split('\n')) {
-            var comment;
-            var commentIndex = -1;
-            var ignored = false;
+        SettingsHighlightCache.setCurrent(settings);
 
-            for (var i = 0; i < line.length; i++) {
-                if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
-                    if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
-                    else {
-                        ignored = ignored ? false : line[i];
+        for (let line of string.split('\n')) {
+            if (SettingsHighlightCache.has(line)) {
+                content += SettingsHighlightCache.get(line);
+            } else {
+                let comment;
+                let commentIndex = -1;
+                let originalLine = line;
+                let ignored = false;
+
+                for (var i = 0; i < line.length; i++) {
+                    if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
+                        if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
+                        else {
+                            ignored = ignored ? false : line[i];
+                        }
+                    } else if (line[i] == '#' && !ignored) {
+                        commentIndex = i;
+                        break;
                     }
-                } else if (line[i] == '#' && !ignored) {
-                    commentIndex = i;
-                    break;
                 }
-            }
 
-            if (commentIndex != -1) {
-                comment = line.slice(commentIndex);
-                line = line.slice(0, commentIndex);
-            }
+                if (commentIndex != -1) {
+                    comment = line.slice(commentIndex);
+                    line = line.slice(0, commentIndex);
+                }
 
-            var trimmed = line.trim();
-            var spacing = line.match(/\s+$/);
-            var prespace = line.match(/^\s+/);
+                let trimmed = line.trim();
+                let spacing = line.match(/\s+$/);
+                let prespace = line.match(/^\s+/);
 
-            if (prespace) {
-                content += prespace[0].replace(/ /g, '&nbsp;');
-            }
+                let currentContent = ''
 
-            var command = SettingsCommands.find(command => command.isValid(trimmed));
-            content += command ? command.format(settings, trimmed) : SFormat.Error(trimmed);
+                if (prespace) {
+                    currentContent += prespace[0].replace(/ /g, '&nbsp;');
+                }
 
-            if (spacing) {
-                content += spacing[0].replace(/ /g, '&nbsp;');
-            }
+                let command = SettingsCommands.find(command => command.isValid(trimmed));
+                if (command) {
+                    currentContent += command.format(settings, trimmed);
+                } else {
+                    currentContent += SFormat.Error(trimmed);
+                }
 
-            if (commentIndex != -1) {
-                content += SFormat.Comment(comment);
+                if (spacing) {
+                    currentContent += spacing[0].replace(/ /g, '&nbsp;');
+                }
+
+                if (commentIndex != -1) {
+                    currentContent += SFormat.Comment(comment);
+                }
+
+                SettingsHighlightCache.store(originalLine, currentContent);
+
+                content += currentContent;
             }
 
             content += '</br>';
@@ -3813,6 +3830,33 @@ class Settings {
         return content;
     }
 };
+
+const SettingsHighlightCache = new (class {
+    initialize () {
+        this.hash = null;
+        this.cache = {};
+    }
+
+    setCurrent (tempSettings) {
+        let newHash = SHA1(JSON.stringify(tempSettings));
+        if (newHash != this.hash) {
+            this.hash = newHash;
+            this.cache = {};
+        }
+    }
+
+    has (line) {
+        return line in this.cache;
+    }
+
+    get (line) {
+        return this.cache[line];
+    }
+
+    store (line, output) {
+        this.cache[line] = output;
+    }
+})();
 
 // Settings manager
 const SettingsManager = new (class {
