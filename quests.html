@@ -43,79 +43,343 @@
         </div>
 
         <script type="text/javascript">
-            /*
-                Get bonuses
-            */
-            function getBonuses () {
-                return {
-                    xp: {
+
+            class SimulatorCharacter {
+                /*
+                    Set level, bonuses, buildings and stuff
+                */
+                constructor () {
+                    this.level = 1;
+                    this.level_xp = 0;
+                    this.level_xp_next = this.getNextLevel();
+
+                    this.fortress = {
+                        academy: 20,
+                        mine: 20,
+                        pit: 50
+                    }
+
+                    this.xp = {
                         enchant: true,
                         runes: 0.1,
                         album: 1,
-                        guild: 2
-                    },
-                    gold: {
+                        guild: 2,
+                        hydra: 7
+                    };
+
+                    this.gold = {
                         enchant: true,
                         runes: 0.5,
                         tower: 1,
                         guild: 2
+                    };
+                }
+
+                /*
+                    Progress
+                */
+                setLevel (level) {
+                    this.level = Math.min(700, level);
+                    this.level_xp_next = this.getNextLevel();
+                }
+
+                addExperience (xp) {
+                    if ((this.level_xp += xp) >= this.level_xp_next) {
+                        this.level_xp -= this.level_xp_next;
+                        this.setLevel(this.level + 1);
+
+                        return true;
                     }
                 }
-            }
 
-            /*
-                Create new random quest
-            */
-            function getMaxQuest (level, { xp, gold }) {
-                return {
-                    x: Math.trunc((xp.enchant ? 1.1 : 1) * (1 + xp.runes) * (1 + xp.album + xp.guild) * 5 * (level >= 393 ? 1.5e9 : ExperienceRequired[level]) / (1.5 + 0.75 * (level - 1)) / 10 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)))),
-                    g: Math.trunc((gold.enchant ? 1.1 : 1) * Math.min(15e6, (1 + gold.runes) * Math.min(10e6, 5 * (1 + gold.tower + gold.guild) * GoldCurve[level] * 12 / 11 / 1000)))
+                /*
+                    Experience needed for next level
+                */
+                getNextLevel () {
+                    if (this.level >= 393) {
+                        return 1500000000;
+                    } else {
+                        return ExperienceRequired[this.level];
+                    }
                 }
-            }
 
-            function getMinQuest (level, { xp, gold }) {
-                return {
-                    x: Math.trunc((xp.enchant ? 1.1 : 1) * (1 + xp.runes) * (1 + xp.album + xp.guild) * 1 * (level >= 393 ? 1.5e9 : ExperienceRequired[level]) / (1.5 + 0.75 * (level - 1)) / 10 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)))),
-                    g: Math.trunc((gold.enchant ? 1.1 : 1) * Math.min(15e6, (1 + gold.runes) * Math.min(10e6, 1 * (1 + gold.tower + gold.guild) * GoldCurve[level] * 12 / 11 / 1000)))
+                /*
+                    Level multiplier
+                */
+                getLevelMultiplier () {
+                    return 1.5 + 0.75 * (this.level - 1);
                 }
-            }
 
-            function getAverageQuest (level, obj) {
-                let {
-                    x: minx,
-                    g: ming
-                } = getMinQuest(level, obj);
+                /*
+                    Base experience
+                */
+                getBase () {
+                    return Math.trunc(this.getNextLevel() / this.getLevelMultiplier());
+                }
 
-                let {
-                    x: maxx,
-                    g: maxg
-                } = getMaxQuest(level, obj);
+                /*
+                    Experience from daily quest
+                */
+                getDailyQuest () {
+                    return Math.trunc(this.getBase() * (1 + 0.25 * this.xp.hydra));
+                }
 
-                return {
-                    x: level >= 700 ? 0 : Math.trunc((minx + maxx) / 2),
-                    g: Math.trunc((ming + maxg) / 2)
-                };
-            }
+                /*
+                    Experience from one won arena attack
+                */
+                getArenaExperience () {
+                    return Math.trunc(this.getBase() / 10);
+                }
 
-            function getQuest (level, { xp, gold }, segLeft = 4) {
-                let duration = 1 + Math.trunc(Math.random() * 4);
+                /*
+                    Academy hourly base
+                */
+                getReducedBase () {
+                    return Math.trunc(this.getBase() / Math.max(1, Math.exp(30090.33 / 5000000 * (this.level - 99))));
+                }
 
-                let xp_rnd = Math.random();
-                let gold_rnd = 1 - xp_rnd;
-                let red_rnd = Math.random() < 0.05 ? 2 : 1;
+                /*
+                    Experience from one hour of academy
+                */
+                getAcademy () {
+                    return Math.trunc(this.fortress.academy * this.getReducedBase() / 30);
+                }
 
-                let xp_base = red_rnd * (1 + xp.runes) * (1 + xp.album + xp.guild) * duration * (level >= 393 ? 1.5e9 : ExperienceRequired[level]) / (1.5 + 0.75 * (level - 1)) / 10 / Math.max(1, Math.exp(30090.33 / 5000000 * (level - 99)));
-                let xp_real = Math.trunc((xp.enchant ? 1.1 : 1) * (xp_rnd * (4 * xp_base) + xp_base));
+                /*
+                    Experience from spin of wheel (small)
+                */
+                getWheelExperience () {
+                    return this.level >= 700 ? 0 : Math.trunc(this.getReducedBase());
+                }
 
-                let gold_base = red_rnd * (1 + gold.tower + gold.guild) * duration * (level >= 650 ? 10e6 : GoldCurve[level]) * 12 / 11 / 1000;
-                let gold_min = Math.min(15e6, (1 + gold.runes) * Math.min(10e6, 1 * gold_base));
-                let gold_max = Math.min(15e6, (1 + gold.runes) * Math.min(10e6, 5 * gold_base));
-                let gold_real = Math.trunc((gold.enchant ? 1.1 : 1) * (gold_rnd * (gold_max - gold_min) + gold_min));
+                /*
+                    Experience from differenct calendar books
+                    1 - 1 book
+                    2 - 2 books
+                    3 - 3 books
+                    0 - full level
+                */
+                getCalendarExperience (amount) {
+                    return Math.trunc(this.getNextLevel() / [1, 15, 10, 5][amount]);
+                }
 
-                return {
-                    s: Math.min(duration, segLeft),
-                    x: xp_real,
-                    g: gold_real
+                /*
+                    Gold curve
+                */
+                static getGoldCurve (level) {
+                    return level >= 650 ? 10000000 : GoldCurve[level];
+                }
+
+                /*
+                    Gold base
+                */
+                getGoldBase () {
+                    return SimulatorCharacter.getGoldCurve(this.level) * 12 / 1000;
+                }
+
+                /*
+                    Gold from hour of guard duty
+                */
+                getGuardDuty () {
+                    return Math.min(10000000, (1 + this.gold.guild + this.gold.tower) * this.getGoldBase() / 3);
+                }
+
+                /*
+                    Gold from hour of gold pit
+                */
+                getGoldPit () {
+                    return this.fortress.pit * this.getGoldBase() / 75;
+                }
+
+                /*
+                    Gold from gems
+                */
+                getSmallGemValue () {
+                    return Math.min(10000000, this.getGemValueMultiplier() * this.getGoldBase() / 6) - Math.min(3000, 150 * this.fortress.mine);
+                }
+
+                getMediumGemValue () {
+                    return Math.min(10000000, this.getGemValueMultiplier() * SimulatorCharacter.getGoldCurve(this.level + 5) / 500) - Math.min(3000, 150 * this.fortress.mine);
+                }
+
+                getLargeGemValue () {
+                    return Math.min(10000000, this.getGemValueMultiplier() * SimulatorCharacter.getGoldCurve(this.level + 10) / 500) - Math.min(3000, 150 * this.fortress.mine);
+                }
+
+                getDiceGold () {
+                    return this.getGoldBase() / 3;
+                }
+
+                /*
+                    Gold from calendar bars
+                */
+                getLargeCalendarGold () {
+                    return 25 * this.getGoldBase() / 3;
+                }
+
+                getSmallCalendarGold () {
+                    return 75 * this.getGoldBase() / 30;
+                }
+
+                getFruitGold () {
+                    return this.getGoldBase() * 5 / 6;
+                }
+
+                getArenaGold () {
+                    return this.level > 95 ? Math.trunc(SimulatorCharacter.getGoldCurve(this.level) / 50 / this.getArenaGoldMultiplier()) : this.level;
+                }
+
+                /*
+                    Experience from defeating a habitat
+                */
+                getHabitat () {
+                    return Math.trunc(this.getReducedBase() * this.getLevelMultiplier() / 5);
+                }
+
+                /*
+                    Gold multiplier for mine gems
+                */
+                getGemValueMultiplier () {
+                    return [0, 1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22][this.fortress.mine] || 24
+                }
+
+                /*
+                    Arena gold multipler
+                */
+                getArenaGoldMultiplier () {
+                    if (this.level >= 300) {
+                        return 10;
+                    } else if (this.level >= 250) {
+                        return 15;
+                    } else if (this.level >= 200) {
+                        return 20;
+                    } else if (this.level >= 150) {
+                        return 24;
+                    } else {
+                        return 28;
+                    }
+                }
+
+                /*
+                    Quests
+                */
+                getQuestBonus () {
+                    return (this.xp.enchant ? 1.1 : 1) * (1 + this.xp.runes) * (1 + this.xp.album + this.xp.guild);
+                }
+
+                getQuestGoldBase () {
+                    return (1 + this.gold.tower + this.gold.guild) * this.getGoldBase() / 11;
+                }
+
+                getMaxQuest () {
+                    return {
+                        x: Math.trunc(5 * this.getQuestBonus() * this.getReducedBase() / 10),
+                        g: Math.trunc((this.gold.enchant ? 1.1 : 1) * Math.min(15e6, (1 + this.gold.runes) * Math.min(10e6, 5 * this.getQuestGoldBase())))
+                    }
+                }
+
+                getMinQuest () {
+                    return {
+                        x: Math.trunc(1 * this.getQuestBonus() * this.getReducedBase() / 10),
+                        g: Math.trunc((this.gold.enchant ? 1.1 : 1) * Math.min(15e6, (1 + this.gold.runes) * Math.min(10e6, 1 * this.getQuestGoldBase())))
+                    }
+                }
+
+                getAverageQuest () {
+                    let { x: minx, g: ming } = this.getMinQuest();
+                    let { x: maxx, g: maxg } = this.getMaxQuest();
+
+                    return {
+                        x: this.level >= 700 ? 0 : Math.trunc((minx + maxx) / 2),
+                        g: Math.trunc((ming + maxg) / 2)
+                    };
+                }
+
+                getQuest (segLeft = 4) {
+                    let duration = 1 + Math.trunc(Math.random() * 4);
+
+                    let xp_rnd = Math.random();
+                    let gold_rnd = 1 - xp_rnd;
+                    let red_rnd = Math.random() < 0.05 ? 2 : 1;
+
+                    let xp_base = red_rnd * this.getQuestBonus() * duration * this.getReducedBase() / 10;
+                    let xp_real = Math.trunc(4 * xp_rnd * xp_base + xp_base);
+
+                    let gold_base = red_rnd * duration * this.getQuestGoldBase();
+                    let gold_min = Math.min(15e6, (1 + this.gold.runes) * Math.min(10e6, 1 * gold_base));
+                    let gold_max = Math.min(15e6, (1 + this.gold.runes) * Math.min(10e6, 5 * gold_base));
+                    let gold_real = Math.trunc((this.gold.enchant ? 1.1 : 1) * (gold_rnd * (gold_max - gold_min) + gold_min));
+
+                    return {
+                        s: Math.min(duration, segLeft),
+                        x: this.level >= 700 ? 0 : xp_real,
+                        g: gold_real
+                    }
+                }
+
+                getDailyExperienceIncome (day) {
+                    return this.level >= 700 ? 0 : (
+                        this.getDailyQuest(),
+                        + 6 * this.getWheelExperience()
+                        + 10 * this.getArenaExperience(),
+                        + 24 * this.getAcademy(),
+                        + this.getCalendarExperienceIncome(day)
+                    );
+                }
+
+                getCalendarExperienceIncome (day) {
+                    let type = {
+                        19: 0,
+                        24: 1, 39: 0,
+                        59: 0,
+                        79: 0,
+                        82: 1, 86: 2, 98: 3, 99: 0,
+                        119: 0,
+                        139: 0,
+                        155: 1, 156: 2, 159: 0,
+                        179: 0,
+                        183: 1, 187: 2, 199: 0,
+                        219: 0,
+                        227: 1, 236: 2, 238: 3, 239: 0
+                    }[day % 240];
+
+                    return type != undefined && this.level < 700 ? this.getCalendarExperience(type) : 0;
+                }
+
+                getDailyGoldIncome (day) {
+                    return (
+                        this.getFruitGold()
+                        + 23 * this.getGuardDuty()
+                        + 24 * this.getGoldPit()
+                        + 10 * this.getArenaGold()
+                        + (this.getSmallGemValue() + this.getMediumGemValue() + this.getLargeGemValue()) / 3
+                        + this.getDiceGold()
+                        + this.getCalendarGoldIncome(day)
+                    );
+                }
+
+                getCalendarGoldIncome (day) {
+                    let type = {
+                        6: 0, 17: 1,
+                        31: 0,
+                        51: 0, 58: 1,
+                        70: 0,
+                        87: 0,
+                        108: 0, 118: 1,
+                        130: 0, 131: 1,
+                        164: 0, 169: 1,
+                        189: 0,
+                        208: 0,
+                        232: 0
+                    }[day % 240];
+
+                    if (type === 0) {
+                        return this.getSmallCalendarGold();
+                    } else if (type === 1) {
+                        return this.getLargeCalendarGold();
+                    } else {
+                        return 0;
+                    }
                 }
             }
 
@@ -154,7 +418,7 @@
             /*
                 Simulate from level to level with a strategy
             */
-            function runUntilLevel (level, targetLevel, strat) {
+            function runUntilLevel (level, targetLevel, strat, startDay = 0) {
                 // Counters
                 let gold = 0;
                 let xp = 0;
@@ -162,83 +426,76 @@
                 let quests = 0;
                 let segmap = [ 0, 0, 0, 0 ];
 
-                // Current values
-                let levelXP = 0;
-                let bonuses = getBonuses();
+                let character = new SimulatorCharacter();
+                character.setLevel(level);
 
-                // Current level
-                level = Math.min(699, Math.max(1, level));
-                let needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
-                let avg = getAverageQuest(level, bonuses);
-
-                // Target level
-                targetLevel = Math.min(700, Math.max(level + 1, targetLevel));
+                let avg = character.getAverageQuest();
 
                 // Run function
                 let runThirst = (thirst) => {
                     while (thirst) {
                         // Generate quests
                         let q = [ 0, 1, 2 ].map(() => {
-                            let quest = getQuest(level, bonuses, thirst);
-                            if (level >= 700) {
-                                quest.x = 0;
-                            }
-
+                            let quest = character.getQuest(thirst);
                             return {
                                 quest: quest,
-                                co: strat(level, quest, avg)
+                                co: strat(character.level, quest, avg)
                             }
                         });
 
                         // Get best quest
-                        q.sort((a, b) => b.co - a.co);
-                        q = q[0].quest;
+                        q = q.sort((a, b) => b.co - a.co)[0].quest;
 
                         // Add values
                         quests++;
+                        segmap[q.s - 1]++;
                         gold += q.g;
                         thirst -= q.s;
+                        segments += q.s;
                         xp += q.x;
 
-                        segments += q.s;
-                        levelXP += q.x;
-
-                        segmap[q.s - 1]++;
-
-                        // Level up if possible
-                        if (levelXP >= needed) {
-                            level++;
-                            levelXP -= needed;
-                            needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
-
-                            avg = getAverageQuest(level, bonuses);
+                        if (character.addExperience(q.x)) {
+                            avg = character.getAverageQuest();
                         }
                     }
                 }
 
                 // Run run function
-                while (level < targetLevel) {
+                let day = startDay;
+                while (character.level < targetLevel) {
                     runThirst(120);
-                    if (level < targetLevel) {
+                    if (character.level < targetLevel) {
                         runThirst(8);
                     }
+
+                    gold += character.getDailyGoldIncome(day);
+
+                    let dx = character.getDailyExperienceIncome(day);
+                    if (character.addExperience(dx)) {
+                        avg = character.getAverageQuest();
+                    }
+
+                    xp += dx;
+
+                    day++;
                 }
 
                 // Return collected values
                 return {
                     xp: xp,
                     gold: gold,
-                    level: level,
+                    level: character.level,
                     quests: quests,
                     segments: segments,
-                    map: segmap
+                    map: segmap,
+                    day: day
                 }
             }
 
             /*
                 Simulate thirst with a strategy
             */
-            function runUntilThirst (level, targetSegments, strat) {
+            function runUntilThirst (level, targetSegments, strat, startDay = 0) {
                 // Counters
                 let gold = 0;
                 let xp = 0;
@@ -246,58 +503,42 @@
                 let quests = 0;
                 let segmap = [ 0, 0, 0, 0 ];
 
-                // Current values
-                let levelXP = 0;
-                let bonuses = getBonuses();
+                let character = new SimulatorCharacter();
+                character.setLevel(level);
 
-                // Current level
-                level = Math.min(700, Math.max(1, level));
-                let needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
-                let avg = getAverageQuest(level, bonuses);
+                let avg = character.getAverageQuest();
 
                 // Run function
                 let runThirst = (thirst) => {
                     while (thirst) {
                         // Generate quests
                         let q = [ 0, 1, 2 ].map(() => {
-                            let quest = getQuest(level, bonuses, thirst);
-                            if (level >= 700) {
-                                quest.x = 0;
-                            }
-
+                            let quest = character.getQuest(thirst);
                             return {
                                 quest: quest,
-                                co: strat(level, quest, avg)
+                                co: strat(character.level, quest, avg)
                             }
                         });
 
                         // Get best quest
-                        q.sort((a, b) => b.co - a.co);
-                        q = q[0].quest;
+                        q = q.sort((a, b) => b.co - a.co)[0].quest;
 
                         // Add values
                         quests++;
                         gold += q.g;
                         thirst -= q.s;
                         xp += q.x;
-
                         segments += q.s;
-                        levelXP += q.x;
-
                         segmap[q.s - 1]++;
 
-                        // Level up if possible
-                        if (levelXP >= needed) {
-                            level = Math.min(700, level + 1);
-                            levelXP -= needed;
-                            needed = level >= 393 ? 1.5e9 : ExperienceRequired[level];
-
-                            avg = getAverageQuest(level, bonuses);
+                        if (character.addExperience(q.x)) {
+                            avg = character.getAverageQuest();
                         }
                     }
                 }
 
                 // Run run function
+                let day = startDay;
                 while (segments < targetSegments) {
                     let rem0 = Math.max(0, Math.min(120, targetSegments - segments));
                     if (rem0) {
@@ -308,16 +549,28 @@
                     if (rem1) {
                         runThirst(rem1);
                     }
+
+                    gold += character.getDailyGoldIncome(day);
+
+                    let dx = character.getDailyExperienceIncome(day);
+                    if (character.addExperience(dx)) {
+                        avg = character.getAverageQuest();
+                    }
+
+                    xp += dx;
+
+                    day++;
                 }
 
                 // Return collected values
                 return {
                     xp: xp,
                     gold: gold,
-                    level: level,
+                    level: character.level,
                     quests: quests,
                     segments: segments,
-                    map: segmap
+                    map: segmap,
+                    day: day
                 }
             }
 
@@ -334,16 +587,16 @@
             }
 
             let simulations = {
-                'Time': makeSimulation(1, 700, Deciders.pure_time),
-                'Pure Gold': makeSimulation(1, 700, Deciders.pure_gold),
-                'Closest Gold': makeSimulation(1, 700, Deciders.closest_gold),
-                'Pure XP': makeSimulation(1, 700, Deciders.pure_xp),
-                'Closest XP': makeSimulation(1, 700, Deciders.closest_xp),
-                'XP until 393': makeSimulation(1, 700, Deciders.transition(393)),
-                'XP until 440': makeSimulation(1, 700, Deciders.transition(440)),
-                'XP until 500': makeSimulation(1, 700, Deciders.transition(500)),
-                'Random': makeSimulation(1, 700, Deciders.random),
-                'Distance': makeSimulation(1, 700, Deciders.distance)
+                'Time': makeSimulation(100, 650, Deciders.pure_time),
+                'Pure Gold': makeSimulation(100, 650, Deciders.pure_gold),
+                'Closest Gold': makeSimulation(100, 650, Deciders.closest_gold),
+                'Pure XP': makeSimulation(100, 650, Deciders.pure_xp),
+                'Closest XP': makeSimulation(100, 650, Deciders.closest_xp),
+                'XP until 393': makeSimulation(100, 650, Deciders.transition(393)),
+                'XP until 440': makeSimulation(100, 650, Deciders.transition(440)),
+                'XP until 500': makeSimulation(100, 650, Deciders.transition(500)),
+                'Random': makeSimulation(100, 650, Deciders.random),
+                'Distance': makeSimulation(100, 650, Deciders.distance)
             };
 
             let results = {};
@@ -353,13 +606,14 @@
 
             let maxSegments = Object.values(results).reduce((m, a) => Math.max(m, a.segments), 0);
             for (let [ k, v ] of Object.entries(results)) {
-                let runoff = runUntilThirst(v.level, maxSegments - v.segments, Deciders.pure_gold);
+                let runoff = runUntilThirst(v.level, maxSegments - v.segments, Deciders.pure_gold, v.day);
                 results[k] = {
                     xp: v.xp + runoff.xp,
                     gold: v.gold + runoff.gold,
                     segments: v.segments + runoff.segments,
                     quests: v.quests + runoff.quests,
                     level: runoff.level,
+                    day: v.day,
                     map: [
                         v.map[0] + runoff.map[0],
                         v.map[1] + runoff.map[1],
