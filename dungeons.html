@@ -716,6 +716,7 @@
             var players = [ EditorController.genEmpty(), EditorController.genEmpty(1), EditorController.genEmpty(2), EditorController.genEmpty(3) ];
 
             var boss = null;
+            var dungeon_current = null;
             var dungeon = null;
 
             function getBossData (data) {
@@ -770,6 +771,7 @@
                     };
                 })
             }).dropdown('setting', 'onChange', (value, text) => {
+                dungeon_current = value;
                 dungeon = DUNGEON_DATA[value];
 
                 $('#boss-list').dropdown({
@@ -790,6 +792,7 @@
                 }).dropdown('setting', 'onChange', (value, text) => {
                     $('#available-list').dropdown('clear');
 
+                    dungeon = DUNGEON_DATA[dungeon_current];
                     boss = getBossData(dungeon.floors[value]);
                 }).dropdown('set selected', Object.keys(dungeon.floors)[0]);
                 show();
