@@ -221,6 +221,8 @@
                                 data.save = val.split('/').map(d => Number(d));
                             } else if (key.includes('playername')) {
                                 data.name = val;
+                            } else if (key.includes('towerSave')) {
+                                data.tower = val.split('/').map(a => Number(a));
                             }
                         }
 
@@ -238,6 +240,8 @@
                         for (let [key, val] of parsePlayaResponse(v)) {
                             if (key.includes('ownplayersave')) {
                                 data.save = val.split('/').map(d => Number(d));
+                            } else if (key.includes('towerSave')) {
+                                data.tower = val.split('/').map(a => Number(a));
                             }
                         }
 
