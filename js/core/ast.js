@@ -942,11 +942,11 @@ class Expression {
                 } else if (SP_KEYWORDS.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple call
                     var obj = this.evalInternal(player, reference, environment, scope, extra, functionScope, header, node.args[0]);
-                    return obj ? SP_KEYWORDS[node.op].expr(obj, null, environment) : undefined;
+                    return obj && typeof obj === 'object' ? SP_KEYWORDS[node.op].expr(obj, null, environment) : undefined;
                 } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple indirect call
                     var obj = this.evalInternal(player, reference, environment, scope, extra, functionScope, header, node.args[0]);
-                    return obj ? SP_KEYWORDS_INDIRECT[node.op].expr(player, null, environment, obj) : undefined;
+                    return obj && typeof obj === 'object' ? SP_KEYWORDS_INDIRECT[node.op].expr(player, null, environment, obj) : undefined;
                 } else if (SP_FUNCTIONS.hasOwnProperty(node.op)) {
                     // Predefined function
                     return SP_FUNCTIONS[node.op](... node.args.map(arg => this.evalInternal(player, reference, environment, scope, extra, functionScope, header, arg)));
