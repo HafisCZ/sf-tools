@@ -193,6 +193,10 @@
             #available-list .menu .boss-name {
                 top: 1.5em;
             }
+
+            #winchart.faded-out {
+                opacity: 0.5 !important;
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
@@ -649,6 +653,7 @@
                 changeListener () {
                     if (this.valid()) {
                         saveEditor();
+                        settingsChanged();
                     }
                 }
 
@@ -719,12 +724,17 @@
             var dungeon_current = null;
             var dungeon = null;
 
-            function getBossData (data) {
+            function settingsChanged () {
+                $('#winchart').addClass('faded-out');
+            }
+
+            function getBossData (data, name = '') {
                 return {
                     ArmorAuto: data.armor ? 0 : (dungeon.auto_armor_multiplier || 1),
                     Armor: data.armor,
                     Class: data.class,
                     Mask: 0,
+                    Name: name,
                     Level: data.level,
                     AutoHealth: data.health,
                     Identifier: 999,
@@ -791,9 +801,10 @@
                     })
                 }).dropdown('setting', 'onChange', (value, text) => {
                     $('#available-list').dropdown('clear');
+                    settingsChanged();
 
                     dungeon = DUNGEON_DATA[dungeon_current];
-                    boss = getBossData(dungeon.floors[value]);
+                    boss = getBossData(dungeon.floors[value], value);
                 }).dropdown('set selected', Object.keys(dungeon.floors)[0]);
                 show();
             }).dropdown('set selected', '1');
@@ -978,10 +989,12 @@
                                         })
                                     }).dropdown('setting', 'onChange', (value, text) => {
                                         if (!isNaN(value) && value && value.length > 0) {
+                                            settingsChanged();
+
                                             let sel = availableBosses[value];
 
                                             dungeon = sel.dungeon;
-                                            boss = getBossData(sel.boss);
+                                            boss = getBossData(sel.boss, sel.name);
                                         }
                                     });
                                 } else {
@@ -1049,11 +1062,15 @@
                                         while (i--) healths.splice((i + 1) * 2 - 1, 1);
                                     }
 
-                                    chart.options.title.text =  `Winrate: ${ (100 * totalScore / totalTries).toFixed(2) }% (${ totalScore } out of ${ totalTries })`;
+                                    chart.options.title.text = [
+                                        `${ dungeon.name }: ${ boss.Name }`,
+                                        `Winrate: ${ (100 * totalScore / totalTries).toFixed(2) }% (${ totalScore } out of ${ totalTries })`
+                                    ];
                                     chart.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
                                     chart.data.labels = healths.map((a, b) => b);
 
                                     chart.update(0);
+                                    $('#winchart').removeClass('faded-out');
 
                                     toggleAll();
                                 }
