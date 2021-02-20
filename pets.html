@@ -226,7 +226,7 @@
                                     <input class="text-center" data-path="Pack" placeholder="Pets you caught">
                                 </div>
                                 <div class="field">
-                                    <label>At 100+</label>
+                                    <label>At 100 - 199</label>
                                     <input class="text-center" data-path="At100" placeholder="Pets at 100 - 199">
                                 </div>
                                 <div class="field">
@@ -263,6 +263,10 @@
                                 <div class="field">
                                     <label>Defense</label>
                                     <input class="text-center" disabled data-dpath="DefenseAttribute">
+                                </div>
+                                <div class="field">
+                                    <label>Luck</label>
+                                    <input class="text-center" disabled data-dpath="LuckAttribute">
                                 </div>
                             </div>
                             <div class="two fields">
@@ -329,7 +333,7 @@
                                     <input class="text-center" data-path="Pack" placeholder="Pets you caught">
                                 </div>
                                 <div class="field">
-                                    <label>At 100+</label>
+                                    <label>At 100 - 199</label>
                                     <input class="text-center" data-path="At100" placeholder="Pets at 100 - 199">
                                 </div>
                                 <div class="field">
@@ -366,6 +370,10 @@
                                 <div class="field">
                                     <label>Defense</label>
                                     <input class="text-center" disabled data-dpath="DefenseAttribute">
+                                </div>
+                                <div class="field">
+                                    <label>Luck</label>
+                                    <input class="text-center" disabled data-dpath="LuckAttribute">
                                 </div>
                             </div>
                             <div class="two fields">
@@ -637,6 +645,7 @@
                     this.$root.find('[data-dpath="TotalHealth"]').val(formatAsSpacedNumber(model.TotalHealth, ' '));
                     this.$root.find('[data-dpath="Attribute"]').val(formatAsSpacedNumber(model.Attribute, ' '));
                     this.$root.find('[data-dpath="DefenseAttribute"]').val(formatAsSpacedNumber(model.DefenseAttribute, ' '));
+                    this.$root.find('[data-dpath="LuckAttribute"]').val(formatAsSpacedNumber(model.LuckAttribute, ' '));
 
                     if (initialized) {
                         this.$root.find('[data-dpath="SkipChance"]').val(model.SkipChance > 0 ? `${ model.SkipChance.toFixed(2) }%` : 'None');

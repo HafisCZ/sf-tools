@@ -256,6 +256,10 @@ const PET_FACTOR_MAP = [
     10, 11, 12, 13, 14, 16, 18, 20, 25, 30, 35, 40, 50, 60, 70, 80, 100, 130, 160, 160
 ];
 
+const PET_FACTOR_MAP_LUCK = [
+    7.5, 8.5, 9.0, 9.5, 10.5, 12.0, 13.5, 15.0, 19.0, 22.5, 26.0, 30.0, 37.5, 45.0, 52.5, 60.0, 75, 97.5, 120, 120
+];
+
 const PET_HABITAT_MAP = [
     1, 3, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70, 75
 ];
@@ -272,10 +276,13 @@ class PetModel {
         this.Gladiator = gladiator;
         this.Boss = boss;
 
+        let multiplier = (this.Level + 1) * (1 + this.Bonus / 100);
+
         // Vars
         this.Class = PET_CLASS_MAP[this.Type][this.Pet] + 1;
-        this.Attribute = Math.trunc(PET_FACTOR_MAP[this.Pet] * (this.Level + 1) * (1 + this.Bonus / 100));
-        this.DefenseAttribute = Math.trunc(this.Attribute / 2);
+        this.Attribute = Math.trunc(PET_FACTOR_MAP[this.Pet] * multiplier);
+        this.DefenseAttribute = Math.trunc(this.Attribute * 0.5);
+        this.LuckAttribute = Math.trunc(PET_FACTOR_MAP_LUCK[this.Pet] * multiplier);
         this.TotalHealth = (this.Level + 1) * this.Attribute * (this.Class == WARRIOR ? 5 : (this.Class == MAGE ? 2 : 4));
         this.Armor = this.Level * (this.Class == WARRIOR ? 50 : (this.Class == SCOUT ? 25 : 10));
     }
@@ -303,7 +310,7 @@ class PetModel {
 
         this.Critical = 2 * (1 + 0.05 * this.Gladiator);
         this.SkipChance = target.Class == MAGE ? 0 : (this.Class == WARRIOR ? 25 : (this.Class == MAGE ? 0 : 50));
-        this.CriticalChance = Math.min(50, (this.Attribute * 3.75) / (target.Level * 2));
+        this.CriticalChance = Math.min(50, 5 * this.LuckAttribute / (target.Level * 2));
     }
 
     hasAdvantage (target) {
