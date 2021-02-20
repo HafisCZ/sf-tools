@@ -2214,7 +2214,7 @@ class SettingsView extends View {
         // Button handling
         this.$parent.find('[data-op="wiki-home"]').click(() => window.open('https://github.com/HafisCZ/sf-tools/wiki', '_blank'));
         this.$parent.find('[data-op="browse"]').click(() => UI.OnlineTemplates.show());
-        this.$parent.find('[data-op="templates"]').click(() => UI.Templates.show());
+        this.$parent.find('[data-op="templates"]').click(() => UI.Templates.show(this.settings.parent));
 
         this.$parent.find('[data-op="copy"]').click(() => copyText(this.$area.val()));
         this.$parent.find('[data-op="prev"]').click(() => this.history(1));
@@ -3072,7 +3072,7 @@ class TemplatesView extends View {
         }
     }
 
-    show () {
+    show (template = null) {
         // Refresh stuff
         this.currentContent = this.getCurrentView().$area.val();
         this.refreshList();
@@ -3085,6 +3085,13 @@ class TemplatesView extends View {
                 return !this.loading;
             }
         }).modal('show');
+
+        if (template) {
+            this.showTemplate(template);
+
+            this.$templates.find('[data-value]').removeClass('selected');
+            this.$templates.find(`[data-value="${ template }"]`).addClass('selected');
+        }
     }
 
     refreshList () {
