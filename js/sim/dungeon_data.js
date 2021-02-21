@@ -785,8 +785,8 @@ DUNGEON_DATA = {
             'Athena': { pos: 5, id: 1414, class: 2, level: 525, str: 35000, dex: 35000, int: 105000, con: 280000, lck: 53500, health: 6066899968, runes: { type: 40, res: [60, 25, 25], damage: 40 }, min: 1578, max: 3159 },
             'Hercules': { pos: 6, id: 1415, class: 1, level: 565, str: 120000, dex: 40000, int: 40000, con: 300000, lck: 71500, health: 17465624576, runes: { type: 42, res: [40, 40, 40], damage: 45 }, min: 750, max: 1509, armor: 17500 },
             'Ares': { pos: 7, id: 1416, class: 1, level: 600, str: 135000, dex: 45000, int: 45000, con: 320000, lck: 63000, health: 19764000768, runes: { type: 40, res: [60, 20, 60], damage: 45 }, min: 800, max: 1599 },
-            'Poseidon': { pos: 3, id: 1417, class: 3, level: 625, str: 50000, dex: 150000, int: 50000, con: 340000, lck: 93500, health: 17487900672, runes: { type: 41, res: [60, 60, 60], damage: 50 }, min: 1045, max: 2089 }
-            // Hades
+            'Poseidon': { pos: 8, id: 1417, class: 3, level: 625, str: 50000, dex: 150000, int: 50000, con: 340000, lck: 93500, health: 17487900672, runes: { type: 41, res: [60, 60, 60], damage: 50 }, min: 1045, max: 2089, armor: 12500 },
+            'Hades': { pos: 9, id: 1418, class: 3, level: 645, str: 75000, dex: 200000, int: 75000, con: 360000, lck: 100000, health: 19099799552, runes: { type: 40, res: [60, 60, 60], damage: 60 }, min: 1075, max: 2159, armor: 12500 },
             // zeus
         }
     },
