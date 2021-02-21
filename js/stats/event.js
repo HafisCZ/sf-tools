@@ -2271,6 +2271,8 @@ class SettingsView extends View {
         $b.css('font-family', this.$area.css('font-family'));
         $b.css('line-height', this.$area.css('line-height'));
 
+        var $b_o = $b.clone();
+
         // Input handling
         this.$area.on('input', (event) => {
             var val = $(event.target).val();
@@ -2293,7 +2295,8 @@ class SettingsView extends View {
             }
 
             // Set content
-            $b.html(Settings.format(val));
+            $b.remove();
+            $b = $b_o.clone().html(Settings.format(val)).appendTo(this.$wrapper);
 
             // Update
             this.$settingsList.settings_selectionlist('set unsaved', this.settings && val !== this.settings.content);
