@@ -1034,6 +1034,7 @@
                         let hp_c = (100 + bert.Runes.Health) / 100;
                         let hp_d = 1.22;
 
+                        playerInstances[1].NoSkip = true;
                         playerInstances[1].AutoHealth = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
                     }
 

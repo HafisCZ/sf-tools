@@ -151,7 +151,7 @@ class FighterModel {
 
     // Block Chance
     getBlockChance (source) {
-        if (source.Player.Class == MAGE) {
+        if (source.Player.Class == MAGE || this.Player.NoSkip) {
             return 0;
         } else {
             switch (this.Player.Class) {
