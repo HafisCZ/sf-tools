@@ -648,16 +648,20 @@
                     for (let field of Object.values(this.fields)) {
                         field.setListener(() => this.changeListener());
                     }
+
+                    this.enableListener = true;
                 }
 
                 changeListener () {
-                    if (this.valid()) {
+                    if (this.valid() && this.enableListener) {
                         saveEditor();
                         settingsChanged();
                     }
                 }
 
                 fill (object, index) {
+                    this.enableListener = false;
+
                     if (object) {
                         for (var [key, field] of Object.entries(this.fields)) {
                             field.set(getObjectAt(object, field.path()));
@@ -679,6 +683,8 @@
                     this.fields['potion_life'].toggle(index == 0);
                     this.fields['level'].toggle(index == 0);
                     this.fields['name'].set(['Player', 'Bert', 'Mark', 'Kunigunde'][index]);
+
+                    this.enableListener = true;
                 }
 
                 read () {
