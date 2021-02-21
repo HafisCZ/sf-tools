@@ -106,7 +106,7 @@ DUNGEON_DATA = {
             'Dragon of Darkness': { pos: 5, id: 0, class: 1, level: 134, str: 2520, dex: 865, int: 840, con: 2240, lck: 660, health: 1512000, min: 149, max: 207 },
             'Hell Cyclops': { pos: 6, id: 0, class: 1, level: 138, str: 2600, dex: 895, int: 870, con: 2320, lck: 680, health: 1612400, min: 153, max: 211 },
             'Fire Elemental': { pos: 7, id: 0, class: 2, level: 142, str: 660, dex: 680, int: 2760, con: 2320, lck: 985, health: 663520, min: 343, max: 495 },
-            'Lava Giant': { pos: 8, id: 0, class: 1, level: 146, str: 2760, dex: 955, int: 930, con: 2480, lck: 720, health: 1822800, min: 161, max: 219 },
+            'Lava Giant ': { pos: 8, id: 0, class: 1, level: 146, str: 2760, dex: 955, int: 930, con: 2480, lck: 720, health: 1822800, min: 161, max: 219 },
             'Giant Dragon': { pos: 9, id: 0, class: 1, level: 148, str: 2800, dex: 970, int: 945, con: 2520, lck: 730, health: 1877400, min: 163, max: 221 },
             'Ghost of the Volcano': { pos: 10, id: 0, class: 1, level: 170, str: 3240, dex: 1135, int: 1110, con: 2960, lck: 840, health: 2530800, min: 185, max: 243 }
         }
@@ -541,7 +541,7 @@ DUNGEON_DATA = {
             'Dragon of Darkness': { pos: 5, id: 0, class: 1, level: 300, str: 5641, dex: 1936, int: 1880, con: 27577, lck: 1477, health: 41503384, min: 3229, max: 6399 },
             'Hell Cyclops': { pos: 6, id: 0, class: 1, level: 302, str: 5689, dex: 1958, int: 1903, con: 27924, lck: 1488, health: 42304860, min: 3240, max: 6451 },
             'Fire Elemental': { pos: 7, id: 0, class: 2, level: 304, str: 1412, dex: 1455, int: 5908, con: 27313, lck: 2108, health: 16660930, min: 7428, max: 14612 },
-            'Lava Giant': { pos: 8, id: 0, class: 1, level: 306, str: 5784, dex: 2001, int: 1949, con: 28584, lck: 1509, health: 43876440, min: 3277, max: 6510 },
+            'Lava Giant ': { pos: 8, id: 0, class: 1, level: 306, str: 5784, dex: 2001, int: 1949, con: 28584, lck: 1509, health: 43876440, min: 3277, max: 6510 },
             'Giant Dragon': { pos: 9, id: 0, class: 1, level: 308, str: 5827, dex: 2018, int: 1966, con: 28842, lck: 1519, health: 44560888, min: 3341, max: 6449 },
             'Ghost of the Volcano': { pos: 10, id: 0, class: 1, level: 310, str: 5908, dex: 2069, int: 2024, con: 29684, lck: 1531, health: 46158620, min: 3335, max: 6612 }
         }
