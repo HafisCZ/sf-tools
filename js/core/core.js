@@ -858,7 +858,13 @@ const Storage = new (class {
     /*
         Load storage
     */
-    load (callback, error, { temporary = false, trackers = false, slot = 0, lazy = false, inventory = false, pfilter = null, gfilter = null } = {}) {
+    load (callback, error, { temporary = false, trackers = false, slot = 0, lazy = false, inventory = false, pfilter = null, gfilter = null, debug_snapshot = null } = {}) {
+        // Set flags for debug snapshot
+        if (debug_snapshot) {
+            temporary = true;
+            inventory = true;
+        }
+
         // Print out flags
         Logger.log('R_FLAGS', `Temporary: ${ temporary }`);
         Logger.log('R_FLAGS', `Slot: ${ slot }`);
@@ -874,6 +880,9 @@ const Storage = new (class {
         // Mark preferences as temporary
         if (temporary) {
             Preferences.temporary();
+            if (debug_snapshot) {
+                Preferences.storage = debug_snapshot.preferences;
+            }
         }
 
         // Capture start time
@@ -881,7 +890,9 @@ const Storage = new (class {
 
         // Profiles callback
         let onReady = () => {
-            if (SiteOptions.tracker) {
+            if (debug_snapshot) {
+                onProfilesReady(debug_snapshot.profiles, true);
+            } else if (SiteOptions.tracker) {
                 this.db.profiles.get(onProfilesReady);
             } else {
                 onProfilesReady([]);
@@ -889,9 +900,9 @@ const Storage = new (class {
         }
 
         // Database callback
-        let onProfilesReady = (profiles) => {
+        let onProfilesReady = (profiles, profiles_ready = false) => {
             // Set current profiles
-            Database.Profiles = profiles.reduce((obj, profile) => {
+            Database.Profiles = profiles_ready ? profiles : profiles.reduce((obj, profile) => {
                 obj[profile.identifier] = typeof profile.value == 'string' ? JSON.parse(profile.value) : profile;
                 return obj;
             }, {});
@@ -947,6 +958,10 @@ const Storage = new (class {
                 }
             ]);
 
+            if (debug_snapshot) {
+                this.db.files.content = debug_snapshot.files;
+            }
+
             onReady();
         } else {
             this.db = new DatabaseHandler(slot ? `database_${ slot }` : 'database', [
@@ -963,7 +978,7 @@ const Storage = new (class {
     }
 
     exportFullDebug () {
-        download(`debug_snapshot_${ Date.now() }`, new Blob([ JSON.stringify({
+        download(`debug_snapshot_${ Date.now() }.json`, new Blob([ JSON.stringify({
             files: this.files(),
             profiles: Database.Profiles,
             preferences: Preferences.getAll()

@@ -839,6 +839,8 @@
             <table class="sftools-table" data-op="table"></table>
         </div>
 
+        <input type="file" accept=".json" id="snapshot-upload" style="display: none;">
+
         <!-- UI Handler -->
         <script type="text/javascript">
             var rawKeys = window.location.href.split(/[\?\&]/);
@@ -887,7 +889,7 @@
 
                 UI.preinitialize();
 
-                Storage.load(function () {
+                let loadStorage = (debug_snapshot) => Storage.load(function () {
                     UI.initialize();
                     UI.show(UI.Groups);
 
@@ -913,8 +915,27 @@
                     lazy: SiteOptions.lazy,
                     slot: slot,
                     inventory: inventory,
-                    trackers: true
+                    trackers: true,
+                    debug_snapshot: debug_snapshot
                 });
+
+                if (keys['snapshot'] == -1) {
+                    $('#snapshot-upload').change((event) => {
+                        var reader = new FileReader();
+                        reader.readAsText(Array.from(event.target.files)[0], 'UTF-8');
+                        reader.onload = e => {
+                            try {
+                                loadStorage(JSON.parse(e.target.result));
+                            } catch (exception) {
+                                console.log(exception);
+                            }
+                        }
+                    });
+
+                    $(document).one('click', () => $('#snapshot-upload').click());
+                } else {
+                    loadStorage();
+                }
             }
         </script>
     </body>
