@@ -2309,7 +2309,7 @@ class SettingsView extends View {
             var sy = $(this).scrollTop();
             var sx = $(this).scrollLeft();
             $b.css('transform', `translate(${ -sx }px, ${ -sy }px)`);
-            $b.css('clip-path', `inset(${ sy }px ${ sx }px 0px 0px)`);
+            // $b.css('clip-path', `inset(${ sy }px ${ sx }px 0px 0px)`);
         });
 
         // Paste handling
