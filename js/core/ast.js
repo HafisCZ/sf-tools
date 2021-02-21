@@ -548,7 +548,7 @@ class Expression {
 
     getHighPriority () {
         let node = this.getVal();
-        while (['*', '/'].includes(this.peek())) {
+        while (['*', '/', '%'].includes(this.peek())) {
             node = {
                 op: SP_OPERATORS[this.get()],
                 args: [node, this.getVal()]
@@ -560,7 +560,7 @@ class Expression {
 
     getLowPriority () {
         let node = this.getHighPriority();
-        while (['+', '-', '%'].includes(this.peek())) {
+        while (['+', '-'].includes(this.peek())) {
             node = {
                 op: SP_OPERATORS[this.get()],
                 args: [node, this.getHighPriority()]
