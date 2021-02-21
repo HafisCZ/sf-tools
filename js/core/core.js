@@ -54,6 +54,10 @@ class PreferencesHandler {
         return Object.keys(this.storage);
     }
 
+    getAll () {
+        return this.storage;
+    }
+
     temporary () {
         this.storage = { };
         this.anonymous = true;
@@ -956,6 +960,14 @@ const Storage = new (class {
                 }
             ], onReady, error);
         }
+    }
+
+    exportFullDebug () {
+        download(`debug_snapshot_${ Date.now() }`, new Blob([ JSON.stringify({
+            files: this.files(),
+            profiles: Database.Profiles,
+            preferences: Preferences.getAll()
+        }) ], { type: 'application/json' }))
     }
 
     save (... files) {
