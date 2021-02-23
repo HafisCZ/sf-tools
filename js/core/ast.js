@@ -1,65 +1,47 @@
 const ExpressionRegExp = /(\'[^\']*\'|\"[^\"]*\"|\~\d+|\`[^\`]*\`|\;|\$\!|\$|\{|\}|\|\||\%|\!\=|\!|\&\&|\>\=|\<\=|\=\=|\(|\)|\+|\-|\/|\*|\>|\<|\?|\:|(?<!\.)\d+(?:.\d+)?e\d+|(?<!\.)\d+\.\d+|\.|\[|\]|\,)/;
 
-const PerformanceTracker = new (class {
+const ExpressionCache = new (class {
     constructor () {
-        this.calls = 0;
-        this.hits = 0;
-        this.cache = { };
+        this.reset();
+        this.start();
+    }
 
-        this.expressions = 0;
-        this.expressionCache = { };
-
-        if (typeof SiteOptions !== 'undefined') {
-            this.allowClears = SiteOptions.cache_policy != CACHE_DONT_CLEAR;
-            this.allowCaching = SiteOptions.cache_policy != CACHE_DISABLE;
-        }
+    reset () {
+        this.cache = {};
     }
 
     start () {
         this.calls = 0;
         this.hits = 0;
-
         this.time = Date.now();
     }
 
-    tick () {
-        this.calls++;
-    }
-
-    hit () {
-        this.hits++;
-    }
-
     stop () {
-        Logger.log('PERFLOG', `${ this.hits } hits (${ this.calls - this.hits } missed) in ${ Date.now() - this.time } ms. ${ this.expressions } expression${ this.expressions > 1 ? 's' : '' } indexed.`);
+        Logger.log('PERFLOG', `${ this.hits } hits (${ this.calls - this.hits } missed) in ${ Date.now() - this.time } ms.`);
     }
 
-    getIndex (tokens) {
-        if (!(tokens in this.expressionCache)) {
-            this.expressionCache[tokens] = this.expressions++;;
-        }
-
-        return this.expressionCache[tokens];
-    }
-
-    cache_clear () {
-        if (this.allowClears) {
-            this.cache = {};
+    set (p, c, n, v) {
+        if (p && c) {
+            this.cache[this.key(p, c, n)] = v;
         }
     }
 
-    cache_add (id, player, compare, value) {
-        if (player && compare && this.allowCaching) {
-            this.cache[`${ player.Identifier }-${ player.Timestamp }-${ compare.Timestamp }-${ id }`] = value;
-        }
+    get (p, c, n) {
+        return this.cache[this.key(p, c, n)];
     }
 
-    cache_querry (id, player, compare) {
-        if (!this.allowCaching || !player || !compare) {
-            return undefined;
+    has (p, c, n) {
+        this.calls++;
+        if (p && c && (this.key(p, c, n) in this.cache)) {
+            this.hits++;
+            return true;
         } else {
-            return this.cache[`${ player.Identifier }-${ player.Timestamp }-${ compare.Timestamp }-${ id }`];
+            return false;
         }
+    }
+
+    key (p, c, n) {
+        return `${ p.Identifier }.${ p.Timestamp }${ c.Timestamp }.${ n }`
     }
 })();
 
@@ -146,7 +128,7 @@ class Expression {
                     }).join('') }\``;
                 } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort', 'distinct', 'indexof', 'var', 'tracker' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
-                } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries' ].includes(token) || root.variables.hasOwnProperty(token)) {
+                } else if (['this', 'undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index' ].includes(token) || root.variables.hasOwnProperty(token)) {
                     value = SFormat.Constant(token);
                 } else if (SP_KEYWORD_MAPPING_0.hasOwnProperty(token)) {
                     value = SFormat.Reserved(token);
@@ -709,24 +691,16 @@ class Expression {
 
     // Outside eval function (always call this from outside of the Expression class)
     eval (player, reference = undefined, environment = { functions: { }, variables: { }, constants: new Constants(), lists: { } }, scope = undefined, extra = undefined, functionScope = undefined, header = undefined) {
-        /* PERFORMANCE THINGY */ PerformanceTracker.tick();
         this.subexpressions_cache_indexes = [];
         this.subexpressions_cache = [];
-        if (functionScope || extra || scope || !this.cacheable) {
+
+        if (scope || extra || functionScope || !this.cacheable || !player || !reference) {
             return this.evalInternal(player, reference, environment, scope, extra, functionScope, header, this.root);
+        } else if (ExpressionCache.has(player, reference, this.rstr)) {
+            return ExpressionCache.get(player, reference, this.rstr);
         } else {
-            if (typeof this.index == 'undefined') {
-                this.index = PerformanceTracker.getIndex(this.rstr);
-            }
-
-            let value = PerformanceTracker.cache_querry(this.index, player, reference);
-            if (typeof value == 'undefined') {
-                value = this.evalInternal(player, reference, environment, scope, extra, functionScope, header, this.root);
-                PerformanceTracker.cache_add(this.index, player, reference, value);
-            } else {
-                PerformanceTracker.hit();
-            }
-
+            let value = this.evalInternal(player, reference, environment, scope, extra, functionScope, header, this.root);
+            ExpressionCache.set(player, reference, this.rstr, value);
             return value;
         }
     }
@@ -800,38 +774,38 @@ class Expression {
 
                     if (mapper) {
                         if (array.segmented) {
-                            values = array.map(obj => {
+                            values = array.map((obj, i) => {
                                 return {
                                     key: mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.args.reduce((c, a, i) => {
                                         c[a] = obj[i];
                                         return c;
-                                    }, {}), functionScope, header),
+                                    }, {}), Object.assign({ loop_index: i }, functionScope), header),
                                     val: obj
                                 };
                             });
                         } else {
-                            values = array.map(obj => {
+                            values = array.map((obj, i) => {
                                 return {
                                     key: mapper.ast.eval(player, reference, environment, obj, mapper.args.reduce((c, a) => {
                                         c[a] = obj;
                                         return c;
-                                    }, {}), functionScope, header),
+                                    }, {}), Object.assign({ loop_index: i }, functionScope), header),
                                     val: obj
                                 };
                             });
                         }
                     } else {
                         if (array.segmented) {
-                            values = array.map(obj => {
+                            values = array.map((obj, i) => {
                                 return {
-                                    key: this.evalInternal(obj[0], obj[1], environment, obj[0], undefined, functionScope, header, node.args[1]),
+                                    key: this.evalInternal(obj[0], obj[1], environment, obj[0], undefined, Object.assign({ loop_index: i }, functionScope), header, node.args[1]),
                                     val: obj
                                 };
                             });
                         } else {
-                            values = array.map(obj => {
+                            values = array.map((obj, i) => {
                                 return {
-                                    key: this.evalInternal(player, reference, environment, obj, obj, functionScope, header, node.args[1]),
+                                    key: this.evalInternal(player, reference, environment, obj, obj, Object.assign({ loop_index: i }, functionScope), header, node.args[1]),
                                     val: obj
                                 };
                             });
@@ -851,21 +825,21 @@ class Expression {
                     // Does not allow 'this' in any scenario
                     if (mapper) {
                         if (array.segmented) {
-                            values = array.map(obj => mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.args.reduce((c, a, i) => {
+                            values = array.map((obj, i) => mapper.ast.eval(obj[0], obj[1], environment, obj[0], mapper.args.reduce((c, a, i) => {
                                 c[a] = obj[i];
                                 return c;
-                            }, {})), functionScope, header);
+                            }, {})), Object.assign({ loop_index: i }, functionScope), header);
                         } else {
-                            values = array.map(obj => mapper.ast.eval(player, reference, environment, obj, mapper.args.reduce((c, a) => {
+                            values = array.map((obj, i) => mapper.ast.eval(player, reference, environment, obj, mapper.args.reduce((c, a) => {
                                 c[a] = obj;
                                 return c;
-                            }, {})), functionScope, header);
+                            }, {})), Object.assign({ loop_index: i }, functionScope), header);
                         }
                     } else {
                         if (array.segmented) {
-                            values = array.map(obj => this.evalInternal(obj[0], obj[1], environment, obj[0], undefined, functionScope, header, node.args[1]));
+                            values = array.map((obj, i) => this.evalInternal(obj[0], obj[1], environment, obj[0], undefined, Object.assign({ loop_index: i }, functionScope), header, node.args[1]));
                         } else {
-                            values = array.map(obj => this.evalInternal(player, reference, environment, obj, obj, functionScope, header, node.args[1]));
+                            values = array.map((obj, i) => this.evalInternal(player, reference, environment, obj, obj, Object.assign({ loop_index: i }, functionScope), header, node.args[1]));
                         }
                     }
 
@@ -1019,14 +993,16 @@ class Expression {
             } else if (functionScope && typeof(functionScope) == 'object' && functionScope[node] != undefined) {
                 // Return function scope variable (only if exists)
                 return functionScope[node];
-            } else if (environment.variables[node] != undefined) {
-                // Return environment variable
-                if (environment.variables[node].value != undefined) {
-                    return environment.variables[node].value;
-                } else if (environment.variables[node].ast) {
-                    return environment.variables[node].ast.eval(player, reference, environment);
+            } else if (node in environment.variables) {
+                let variable = environment.variables[node];
+                if (typeof variable.value != 'undefined') {
+                    return variable.value;
+                } else if (ExpressionCache.has(player, reference, node)) {
+                    return ExpressionCache.get(player, reference, node);
                 } else {
-                    return undefined;
+                    let value = variable.ast.eval(player, reference, environment);
+                    ExpressionCache.set(player, reference, node, value);
+                    return value;
                 }
             } else if (environment.lists.hasOwnProperty(node)) {
                 return environment.lists[node];

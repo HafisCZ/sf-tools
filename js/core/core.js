@@ -72,10 +72,6 @@ const SharedPreferences = new PreferencesHandler();
 const DEFAULT_OFFSET = -60 * 60 * 1000;
 const HAS_PROXY = typeof(Proxy) != 'undefined';
 
-const CACHE_DEFAULT = 0;
-const CACHE_DISABLE = 1;
-const CACHE_DONT_CLEAR = 2;
-
 const SiteOptions = new (class {
     constructor () {
         // Get values + defaults
@@ -91,7 +87,6 @@ const SiteOptions = new (class {
             players_other: false,
             files_hide: false,
             inventory: false,
-            cache_policy: 0,
             tracker: false
         };
 

@@ -342,7 +342,7 @@ class TableInstance {
         }
 
         if (!skipEvaluation || this.type == TableType.History) {
-            PerformanceTracker.cache_clear();
+            ExpressionCache.reset();
             this.clearCache();
         }
 
@@ -1249,11 +1249,11 @@ class TableController {
 
         // Fill entries
         if (this.echanged || this.schanged) {
-            PerformanceTracker.start();
+            ExpressionCache.start();
 
             this.table.setEntries(... this.entries);
 
-            PerformanceTracker.stop();
+            ExpressionCache.stop();
         }
 
         // Reset sorting
