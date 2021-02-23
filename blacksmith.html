@@ -39,6 +39,32 @@
             .right {
                 text-align: right;
             }
+
+            .my-table {
+                width: 100%;
+
+            }
+
+            .my-table thead td {
+                text-align: center;
+            }
+
+            .my-table td.left {
+                text-align: left;
+            }
+
+            .my-table td.center {
+                text-align: center;
+            }
+
+            .my-table tbody tr {
+                height: 2.5em;
+            }
+
+            .my-table tbody td {
+                padding-right: 0.5em;
+                padding-left: 0.5em;
+            }
         </style>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
@@ -51,7 +77,7 @@
             </div>
         </div>
 
-        <div class="ui main container">
+        <div class="ui main container" style="width: 70vw;">
             <h3 class="ui centered header">Upgrade prices & returns</h3>
             <div class="ui grid">
                 <div class="row">
@@ -80,33 +106,25 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="one wide text-center column">
-
-                    </div>
-                    <div class="one wide text-center column">
-                        Bonus
-                    </div>
-                    <div class="two wide text-center column">
-                        Needed
-                    </div>
-                    <div class="two wide text-center column">
-                        Total Needed
-                    </div>
-                    <div class="two wide text-center column">
-                        Reclaimable
-                    </div>
-                    <div class="four wide text-center column">
-                        Lost
-                    </div>
-                    <div class="four wide text-center column">
-                        Total Lost
-                    </div>
-                </div>
-                <div class="row" id="priceTable">
-
-                </div>
             </div>
+            <table class="my-table">
+                <thead>
+                    <tr>
+                        <td style="width: 4%;">#</td>
+                        <td style="width: 8%;">Bonus</td>
+                        <td style="width: 8%;">Total Bonus</td>
+                        <td style="width: 10%;">Needed</td>
+                        <td style="width: 10%;">Total</td>
+                        <td style="width: 10%;">Reclaimable</td>
+                        <td style="width: 10%;">Total</td>
+                        <td style="width: 20%;">Lost</td>
+                        <td style="width: 20%;">Total Lost</td>
+                    </tr>
+                </thead>
+                <tbody id="priceTable">
+
+                </tbody>
+            </table>
         </div>
 
         <script type="text/javascript">
@@ -191,6 +209,8 @@
                         Crystal: 0
                     }
 
+                    var original = item.getBlacksmithPrice();
+
                     for (var i = 0; i < 20; i++) {
                         var upgradePrice = item.getBlacksmithUpgradePrice();
                         totalPrice.Metal += upgradePrice.Metal;
@@ -203,6 +223,11 @@
                         var dismantlePrice = item.getBlacksmithPrice();
                         var currentAttribute = item.Attributes[0];
 
+                        var totalReturn = {
+                            Metal: dismantlePrice.Metal - original.Metal,
+                            Crystal: dismantlePrice.Crystal - original.Crystal
+                        }
+
                         dismantlePrice.Metal -= previousDismantlePrice.Metal;
                         dismantlePrice.Crystal -= previousDismantlePrice.Crystal;
 
@@ -213,6 +238,8 @@
                             Index: i,
                             Upgrade: upgradePrice,
                             Return: dismantlePrice,
+                            Attribute: currentAttribute,
+                            TotalReturn: totalReturn,
                             Lost: {
                                 Metal: upgradePrice.Metal - dismantlePrice.Metal,
                                 Crystal: upgradePrice.Crystal - dismantlePrice.Crystal
@@ -225,79 +252,97 @@
                                 Metal: totalPrice.Metal,
                                 Crystal: totalPrice.Crystal
                             },
-                            AttributeDelta: currentAttribute - previousAttribute
+                            AttributeDelta: currentAttribute - previousAttribute,
+                            TotalAttributeDelta: currentAttribute - attribute
                         });
+                    }
+
+                    function formatNum (x) {
+                        return formatAsSpacedNumber(x, ' ');
                     }
 
                     var content = '';
                     for (var price of prices) {
                         content += `
-                            <div class="one wide text-center column">
-                                ${ price.Index + 1 }
-                            </div>
-                            <div class="one wide text-center column">
-                                ${ formatAsSpacedNumber(price.AttributeDelta, ' ') }
-                            </div>
-                            <div class="two wide column">
-                                <div class="right">
-                                    ${ formatAsSpacedNumber(price.Upgrade.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                </div>
-                                <div class="right">
-                                    ${ formatAsSpacedNumber(price.Upgrade.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                </div>
-                            </div>
-                            <div class="two wide column">
-                                <div class="right">
-                                    ${ formatAsSpacedNumber(price.TotalUpgrade.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                </div>
-                                <div class="right">
-                                    ${ formatAsSpacedNumber(price.TotalUpgrade.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                </div>
-                            </div>
-                            <div class="two wide column">
-                                <div class="right">
-                                    ${ formatAsSpacedNumber(price.Return.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                </div>
-                                <div class="right">
-                                    ${ formatAsSpacedNumber(price.Return.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                </div>
-                            </div>
-                            <div class="four wide column">
-                                <div class="segmented right">
-                                    <div class="half">
-                                        ${ formatAsSpacedNumber(price.Lost.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
+                            <tr>
+                                <td class="center">
+                                    ${ price.Index + 1 }
+                                </td>
+                                <td class="center">
+                                    ${ formatNum(price.AttributeDelta) }
+                                </td>
+                                <td class="center">
+                                    ${ formatNum(price.TotalAttributeDelta) }
+                                </td>
+                                <td>
+                                    <div class="right">
+                                        ${ formatAsSpacedNumber(price.Upgrade.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
                                     </div>
-                                    <div class="half text-center">
-                                        ${ (100 * price.Lost.Metal / Math.max(1, price.Upgrade.Metal)).toFixed(1) }%
+                                    <div class="right">
+                                        ${ formatAsSpacedNumber(price.Upgrade.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
                                     </div>
-                                </div>
-                                <div class="segmented">
-                                    <div class="half">
-                                        ${ formatAsSpacedNumber(price.Lost.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
+                                </td>
+                                <td>
+                                    <div class="right">
+                                        ${ formatAsSpacedNumber(price.TotalUpgrade.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
                                     </div>
-                                    <div class="half text-center">
-                                        ${ (100 * price.Lost.Crystal / Math.max(1, price.Upgrade.Crystal)).toFixed(1) }%
+                                    <div class="right">
+                                        ${ formatAsSpacedNumber(price.TotalUpgrade.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="four wide column">
-                                <div class="segmented right">
-                                    <div class="half">
-                                        ${ formatAsSpacedNumber(price.TotalLost.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
+                                </td>
+                                <td>
+                                    <div class="right">
+                                        ${ formatAsSpacedNumber(price.Return.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
                                     </div>
-                                    <div class="half text-center">
-                                        ${ (100 * price.TotalLost.Metal / Math.max(1, price.TotalUpgrade.Metal)).toFixed(1) }%
+                                    <div class="right">
+                                        ${ formatAsSpacedNumber(price.Return.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
                                     </div>
-                                </div>
-                                <div class="segmented">
-                                    <div class="half">
-                                        ${ formatAsSpacedNumber(price.TotalLost.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
+                                </td>
+                                <td>
+                                    <div class="right">
+                                        ${ formatAsSpacedNumber(price.TotalReturn.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
                                     </div>
-                                    <div class="half text-center">
-                                        ${ (100 * price.TotalLost.Crystal / Math.max(1, price.TotalUpgrade.Crystal)).toFixed(1) }%
+                                    <div class="right">
+                                        ${ formatAsSpacedNumber(price.TotalReturn.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
                                     </div>
-                                </div>
-                            </div>
+                                </td>
+                                <td>
+                                    <div class="segmented right">
+                                        <div class="half">
+                                            ${ formatAsSpacedNumber(price.Lost.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
+                                        </div>
+                                        <div class="half text-center">
+                                            ${ (100 * price.Lost.Metal / Math.max(1, price.Upgrade.Metal)).toFixed(1) }%
+                                        </div>
+                                    </div>
+                                    <div class="segmented">
+                                        <div class="half">
+                                            ${ formatAsSpacedNumber(price.Lost.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
+                                        </div>
+                                        <div class="half text-center">
+                                            ${ (100 * price.Lost.Crystal / Math.max(1, price.Upgrade.Crystal)).toFixed(1) }%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="segmented right">
+                                        <div class="half">
+                                            ${ formatAsSpacedNumber(price.TotalLost.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
+                                        </div>
+                                        <div class="half text-center">
+                                            ${ (100 * price.TotalLost.Metal / Math.max(1, price.TotalUpgrade.Metal)).toFixed(1) }%
+                                        </div>
+                                    </div>
+                                    <div class="segmented">
+                                        <div class="half">
+                                            ${ formatAsSpacedNumber(price.TotalLost.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
+                                        </div>
+                                        <div class="half text-center">
+                                            ${ (100 * price.TotalLost.Crystal / Math.max(1, price.TotalUpgrade.Crystal)).toFixed(1) }%
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
                         `;
                     }
 
