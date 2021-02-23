@@ -77,7 +77,7 @@ class GroupDetailView extends View {
         this.$parent.find('[data-op="export-s"]').click(() => Storage.exportGroupData(this.identifier, [ this.timestamp ]));
         this.$parent.find('[data-op="export-sr"]').click(() => Storage.exportGroupData(this.identifier, [ this.timestamp, Number(this.reference) ]));
         this.$parent.find('[data-op="share"]').click(() => {
-            UI.OnlineShareFile.show(Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]), this.table.getSettings());
+            UI.OnlineShareFile.show(Storage.getExportGroupData(this.identifier, [ Number(this.timestamp), Number(this.reference) ]));
         });
 
         // Context menu
@@ -749,7 +749,7 @@ class PlayerHistoryView extends View {
         this.$parent.find('[data-op="export-l"]').click(() => Storage.exportPlayerData(this.identifier, [ this.list[0][0] ]));
         this.$parent.find('[data-op="export-l5"]').click(() => Storage.exportPlayerData(this.identifier, this.list.slice(0, 5).map(entry => entry[0])));
         this.$parent.find('[data-op="share"]').click(() => {
-            UI.OnlineShareFile.show(Storage.getExportPlayerData(this.identifier, Database.Players[this.identifier].List.map(x => x[0])), this.table.getSettings());
+            UI.OnlineShareFile.show(Storage.getExportPlayerData(this.identifier, Database.Players[this.identifier].List.map(x => x[0])));
         });
 
         this.$name = this.$parent.find('[data-op="name"]');
@@ -922,7 +922,7 @@ class BrowseView extends View {
                             ids.push(source.attr('data-id'));
                         }
 
-                        UI.OnlineShareFile.show(Storage.getExportManyPlayerData(ids), '');
+                        UI.OnlineShareFile.show(Storage.getExportManyPlayerData(ids));
                     }
                 },
                 {
@@ -1350,7 +1350,7 @@ class GroupsView extends View {
                     label: 'Share',
                     action: (source) => {
                         let group = source.attr('data-id');
-                        UI.OnlineShareFile.show(Storage.getExportGroupData(group, Database.Groups[group].List.map(x => x[0])), '');
+                        UI.OnlineShareFile.show(Storage.getExportGroupData(group, Database.Groups[group].List.map(x => x[0])));
                     }
                 },
                 {
@@ -1479,7 +1479,7 @@ class PlayersView extends View {
                 {
                     label: 'Share',
                     action: (source) => {
-                        UI.OnlineShareFile.show(Storage.getExportManyPlayerData([ source.attr('data-id') ]), '');
+                        UI.OnlineShareFile.show(Storage.getExportManyPlayerData([ source.attr('data-id') ]));
                     }
                 },
                 {
@@ -1808,7 +1808,7 @@ class FilesView extends View {
 
         this.$cloudexport = this.$parent.find('[data-op="cloud-export"]').click(() => {
             if (Storage.files().length) {
-                UI.OnlineShareFile.show(Storage.getExportData(), '');
+                UI.OnlineShareFile.show(Storage.getExportData());
             }
         });
 
@@ -1833,7 +1833,7 @@ class FilesView extends View {
         this.$cloudexport2 = this.$parent.find('[data-op="cloud-export-partial"]').click(() => {
             var array = this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')));
             if (array.length > 0) {
-                UI.OnlineShareFile.show(Storage.getExportData(array), '');
+                UI.OnlineShareFile.show(Storage.getExportData(array));
             }
         });
 
@@ -2787,7 +2787,6 @@ class OnlineShareFileView extends View {
 
         // Setup checkboxes
         this.$once = this.$parent.find('[data-op="once"]');
-        this.$bundle = this.$parent.find('[data-op="bundle"]');
 
         // Other elements
         this.$code = this.$parent.find('[data-op="code"]');
@@ -2800,32 +2799,23 @@ class OnlineShareFileView extends View {
         // Handlers
         this.$button.click(() => {
             let once = this.$once.checkbox('is checked');
-            let bundle = this.$bundle.checkbox('is checked');
 
             // Set button to loading state
             this.$button.addClass('loading disabled');
 
             // Send request
-            this.send(!once, bundle);
+            this.send(once);
         });
     }
 
-    show (data, bundledSettings = '') {
+    show (data) {
         // Shared object
         this.sharedObj = {
-            data: data,
-            settings: bundledSettings
+            data: data
         };
 
         // Setup checkboxes
         this.$once.checkbox('set checked');
-        this.$bundle.checkbox('set unchecked');
-
-        if (!bundledSettings) {
-            this.$bundle.checkbox('set disabled');
-        } else {
-            this.$bundle.checkbox('set enabled');
-        }
 
         // Toggle buttons
         this.$buttonContainer.show();
@@ -2851,13 +2841,12 @@ class OnlineShareFileView extends View {
         }
     }
 
-    send (multipleUses = false, bundleSettings = false) {
+    send (singleUse = true) {
         // Setup form data
         let data = new FormData();
-        data.append('multiple', !this.sharedObj.once && multipleUses);
+        data.append('multiple', !singleUse);
         data.append('file', JSON.stringify({
-            data: this.sharedObj.data,
-            settings: bundleSettings ? this.sharedObj.settings : ''
+            data: this.sharedObj.data
         }));
 
         // Create request
