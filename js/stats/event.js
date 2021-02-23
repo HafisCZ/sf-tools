@@ -2479,7 +2479,8 @@ class SettingsView extends View {
             ... Templates.getKeys().map(key => {
                 return {
                     name: key,
-                    value: key
+                    value: key,
+                    selected: key == this.settings.parent
                 }
             })
         ];

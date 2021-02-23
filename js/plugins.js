@@ -378,7 +378,7 @@
             // Setup
             $this.html(this.items.reduce((c, item) => c + `
                 <div class="item" data-value="${ item.value }">
-                    <div class="content css-entry-label">
+                    <div class="content css-entry-label ${ item.selected ? 'css-entry-highlight' : '' }">
                         ${ item.name }
                     </div>
                 </div>

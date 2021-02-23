@@ -69,3 +69,8 @@
 .icon.css-star:hover, .icon.css-unstar:hover {
     opacity: 1;
 }
+
+.css-entry-highlight {
+    font-weight: bold;
+    text-decoration: underline;
+}
