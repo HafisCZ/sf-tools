@@ -1067,6 +1067,13 @@ const SP_FUNCTIONS = {
             return Math.abs(value);
         }
     },
+    'pow': (value, exp) => {
+        if (isNaN(value) || isNaN(exp)) {
+            return undefined;
+        } else {
+            return Math.pow(value, exp);
+        }
+    },
     'sqrt': (value) => {
         if (isNaN(value)) {
             return undefined;
