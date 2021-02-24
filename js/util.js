@@ -27,6 +27,14 @@ function copyText (text) {
     window.getSelection().removeAllRanges();
 }
 
+function createWebWorker (location) {
+    if (document.location.protocol == 'file:') {
+        return new Worker(URL.createObjectURL(new Blob([ $.ajax({ method: 'GET', url: 'https://sftools.mar21.eu/' + location, dataType: 'text', async: false }).responseText ], { type: 'text/javascript' })));
+    } else {
+        return new Worker(location);
+    }
+}
+
 // Helper function
 function merge (a, b) {
     for (var [k, v] of Object.entries(b)) {

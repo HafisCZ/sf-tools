@@ -916,7 +916,7 @@
 
                         freeze();
 
-                        var worker = new Worker('js/sim/pets.js');
+                        var worker = createWebWorker('js/sim/pets.js');
 
                         worker.addEventListener('message', (message) => {
                             if (message.data.command == 'finished') {

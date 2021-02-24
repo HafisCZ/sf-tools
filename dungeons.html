@@ -1064,7 +1064,7 @@
                     let totalTries = 0;
 
                     for (let i = 0; i < threads; i++) {
-                        let worker = new Worker('js/sim/dungeons.js');
+                        let worker = createWebWorker('js/sim/dungeons.js');
 
                         worker.addEventListener('message', (message) => {
                             if (message.data.command == 'finished') {

@@ -931,7 +931,7 @@
                     var chance = 0;
 
                     for (var i = 0; i < threads; i++) {
-                        var worker = new Worker('js/sim/players.js');
+                        var worker = createWebWorker('js/sim/players.js');
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {

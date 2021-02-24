@@ -894,7 +894,7 @@
 
                     for (var i = 0; i < players.length; i += blockSize) {
                         var block = players.slice(i, i + blockSize);
-                        var worker = new Worker('js/sim/players.js');
+                        var worker = createWebWorker('js/sim/players.js');
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {

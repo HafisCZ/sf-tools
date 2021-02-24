@@ -743,7 +743,7 @@
                     if (a && b && (a.Level > 0 || a.Boss) && (b.Level > 0 || b.Boss)) {
                         freeze();
 
-                        var worker = new Worker('js/sim/pets.js');
+                        var worker = createWebWorker('js/sim/pets.js');
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
@@ -793,7 +793,7 @@
                     if (a && b && a.Pet < 19 && !a.Boss && b.Boss) {
                         freeze();
 
-                        var worker = new Worker('js/sim/pets.js');
+                        var worker = createWebWorker('js/sim/pets.js');
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
@@ -837,7 +837,7 @@
                         var maps_finished = 0;
 
                         for (var i = 0; i < count; i++) {
-                            var worker = new Worker('js/sim/pets.js');
+                            var worker = createWebWorker('js/sim/pets.js');
 
                             worker.addEventListener('message', function (message) {
                                 if (message.data.command == 'finished') {
@@ -891,7 +891,7 @@
                         var maps_finished = 0;
 
                         for (var i = 0; i < count; i++) {
-                            var worker = new Worker('js/sim/pets.js');
+                            var worker = createWebWorker('js/sim/pets.js');
 
                             worker.addEventListener('message', function (message) {
                                 if (message.data.command == 'finished') {
