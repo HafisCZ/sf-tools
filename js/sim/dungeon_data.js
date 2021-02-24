@@ -245,7 +245,6 @@ DUNGEON_DATA = {
     '15': {
         name: 'Tower',
         shadow: true,
-        disable_companion_gladiator: true,
         auto_armor_multiplier: 1.5,
         floors: {
             'Living Cake Man': { pos: 1, id: 400, class: 1, level: 200, str: 4194, dex: 1697, int: 1665, con: 15940, lck: 2589, health: 16019700, min: 268, max: 534 },
