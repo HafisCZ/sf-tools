@@ -3417,6 +3417,12 @@ class Settings {
 
         // Iterate over all variables
         for (let [ name, variable ] of Object.entries(this.variables)) {
+            // Copy over to reference variables
+            this.variablesReference[name] = {
+                ast: variable.ast,
+                tableVariable: variable.tableVariable
+            }
+            
             // Run only if it is a table variable
             if (variable.tableVariable) {
                 // Get value
