@@ -164,7 +164,7 @@
 
                     let resistString = '';
                     if (boss.Armor) {
-                        resistString += `<br/><span style="font-size: 75%;" class="text-red">${ boss.Armor }</span>`;
+                        resistString += `<br/><span style="font-size: 75%;" class="text-red">${ formatAsSpacedNumber(boss.Armor) }</span>`;
                     }
                     for (let [ i, resistValue ] of Object.entries(boss.ElementalResistance)) {
                         resistString += `<br/><span style="font-size: 75%;" class="text-red">${ [ 'Fire', 'Cold', 'Lightning' ][i] }: ${ resistValue }%</span>`;
@@ -394,7 +394,7 @@
                     if (dungeon.shadow != shadow) {
                         continue;
                     }
-                    
+
                     for (let boss of Object.values(dungeon.floors)) {
                         if (boss.id == monsterId) {
                             return boss;
@@ -519,11 +519,11 @@
 
                             let realMin = Math.min(... takenDamages);
                             let baseMin = baseRaw * Math.max(fistDamage.Min, player.Items.Wpn1.DamageMin);
-                            let resistanceMin = player.Level * 100 * (1 - realMin / baseMin);
+                            let resistanceMin = player.Level * (100 * (1 - realMin / baseMin) - (boss.Class == 5 ? 40 : 0));
 
                             let realMax = Math.max(... takenDamages);
                             let baseMax = baseRaw * Math.max(fistDamage.Max, player.Items.Wpn1.DamageMax);
-                            let resistanceMax = player.Level * 100 * (1 - realMax / baseMax);
+                            let resistanceMax = player.Level * (100 * (1 - realMax / baseMax) - (boss.Class == 5 ? 40 : 0));
 
                             boss.Armor = Math.trunc(Math.max(boss.Armor, resistanceMin, resistanceMax));
                         }
