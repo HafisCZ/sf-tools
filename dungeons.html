@@ -1077,17 +1077,18 @@
                                 if (totalTries == threads * iterations) {
                                     healths.sort((a, b) => a - b);
 
-                                    while (healths.length > 5000) {
-                                        let i = healths.length;
-                                        while (i--) healths.splice((i + 1) * 2 - 1, 1);
+                                    let reduced_healths = [];
+                                    let step = Math.max(Math.floor(healths.length / 5000), 1);
+                                    for (let i = 0; i < healths.length; i += step) {
+                                        reduced_healths.push(healths[i]);
                                     }
 
                                     chart.options.title.text = [
                                         `${ dungeon.name }: ${ boss.Name }`,
                                         `Winrate: ${ (100 * totalScore / totalTries).toFixed(2) }% (${ totalScore } out of ${ totalTries })`
                                     ];
-                                    chart.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
-                                    chart.data.labels = healths.map((a, b) => b);
+                                    chart.data.datasets[0].data = reduced_healths.map((h, i) => { return { x: i, y: h * 100 }; });
+                                    chart.data.labels = reduced_healths.map((a, b) => b);
 
                                     chart.update(0);
                                     $('#winchart').removeClass('faded-out');
