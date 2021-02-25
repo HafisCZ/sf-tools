@@ -680,7 +680,7 @@ class Expression {
                 let subnode = this.subexpressions[index];
                 if (typeof subnode == 'number' || (typeof subnode == 'object' && subnode.raw)) {
                     return subnode;
-                } else if (typeof subnode == 'string' && subnode in tableVariables && !isNaN(tableVariable[subnode].ast.root)) {
+                } else if (typeof subnode == 'string' && subnode in tableVariables && !isNaN(tableVariables[subnode].ast.root)) {
                     return tableVariables[subnode].ast.root;
                 }
             }
