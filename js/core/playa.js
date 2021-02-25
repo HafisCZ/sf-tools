@@ -1635,6 +1635,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Witch.Stage = dataType.long();
         this.Witch.Items = dataType.long();
         this.Witch.ItemsNext = Math.max(0, dataType.long());
+        this.Witch.Item = dataType.long();
         this.Witch.Items = Math.min(this.Witch.Items, this.Witch.ItemsNext);
 
         dataType.skip(3);

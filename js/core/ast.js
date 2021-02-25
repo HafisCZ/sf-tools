@@ -2524,6 +2524,10 @@ const SP_KEYWORD_MAPPING_2 = {
         statistics: false,
         width: 160
     },
+    'Witch Item': {
+        expr: p => p.Witch.Item,
+        format: (p, c, e, x) => x ? ITEM_TYPES[x] : ''
+    },
     'Witch Items': {
         expr: p => p.Witch.Items
     },
