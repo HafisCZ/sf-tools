@@ -327,7 +327,7 @@ DUNGEON_DATA = {
             'Sigi Musclehead': { pos: 78, id: 477, class: 1, level: 354, str: 8787, dex: 4088, int: 4093, con: 33976, lck: 5881, health: 60307400, min: 474, max: 945 },
             'Pied Piper': { pos: 79, id: 478, class: 3, level: 356, str: 4199, dex: 9029, int: 4175, con: 34896, lck: 5997, health: 49831488, min: 595, max: 1188 },
             'The Guys from Oz': { pos: 80, id: 479, class: 1, level: 358, str: 9274, dex: 4313, int: 4256, con: 35824, lck: 6107, health: 64304080, min: 479, max: 956 },
-            '"Little" John': { pos: 81, id: 480, class: 1, level: 360, str: 9996, dex: 4642, int: 4556, con: 38556, lck: 6534, health: 69593584, min: 482, max: 961 },
+            '\'Little\' John': { pos: 81, id: 480, class: 1, level: 360, str: 9996, dex: 4642, int: 4556, con: 38556, lck: 6534, health: 69593584, min: 482, max: 961 },
             'The Easter Bunny': { pos: 82, id: 481, class: 1, level: 362, str: 10761, dex: 4999, int: 4877, con: 41494, lck: 6989, health: 75311608, min: 484, max: 967 },
             'Honey Robbear': { pos: 83, id: 482, class: 1, level: 364, str: 11583, dex: 5380, int: 5213, con: 44629, lck: 7466, health: 81447928, min: 487, max: 972 },
             'Shirk the Ogre': { pos: 84, id: 483, class: 1, level: 366, str: 12460, dex: 5781, int: 5578, con: 47979, lck: 7980, health: 88041464, min: 490, max: 977 },
