@@ -220,8 +220,26 @@ class FighterModel {
         return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(this.Player.Constitution.Total * a) * b) * c) * d) * e);
     }
 
+    getBaseDamage (secondary = false) {
+        let min = 1;
+        let max = 2;
+
+        if (this.Player.Level > 10) {
+            let num = Math.trunc((this.Player.Level - 9) * [2.0, 4.5, 2.5, 2.5, 2.0, 2.0, 2.5, 4.5][this.Player.Class - 1]);
+            let mul = secondary ? 0.1 : 0.7;
+
+            min = Math.trunc(mul * num * 2 / 3);
+            max = Math.trunc(mul * num * 4 / 3);
+        }
+
+        return {
+            Min: Math.max(1, min),
+            Max: Math.max(2, max)
+        };
+    }
+
     // Get damage range
-    getDamageRange (weapon, target) {
+    getDamageRange (weapon, target, secondary = false) {
         let mp = 1 - target.getDamageReduction(this) / 100;
 
         let mf = (1 - target.Player.Runes.ResistanceFire / 100) * (getRuneValue(weapon, RUNE.FIRE_DAMAGE) / 100);
@@ -235,9 +253,11 @@ class FighterModel {
 
         let dm = m * (1 + Math.max(aa / 2, aa - ad) / 10);
 
+        let bd = this.getBaseDamage(secondary);
+
         return {
-            Max: Math.ceil(dm * weapon.DamageMax),
-            Min: Math.ceil(dm * weapon.DamageMin)
+            Max: Math.ceil(dm * Math.max(weapon.DamageMax, bd.Max)),
+            Min: Math.ceil(dm * Math.max(weapon.DamageMin, bd.Min))
         };
     }
 
@@ -345,7 +365,7 @@ class AssassinModel extends FighterModel {
         super(i, p);
     }
 
-    getDamageRange (weapon, target) {
+    getDamageRange (weapon, target, secondary = false) {
         var range = super.getDamageRange(weapon, target);
         return {
             Max: Math.ceil(range.Max * 5 / 8),
@@ -359,7 +379,7 @@ class AssassinModel extends FighterModel {
         var weapon = this.Player.Items.Wpn2;
         if (weapon) {
             this.Weapon2 = {
-                Range: this.getDamageRange(weapon, target),
+                Range: this.getDamageRange(weapon, target, true),
                 Critical: this.getCriticalMultiplier(weapon, target)
             }
         }

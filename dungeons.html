@@ -1055,6 +1055,10 @@
                         }
                     }
 
+                    for (let i = 0; i < 4; i++) {
+                        playerInstances[i].IsRealPlayer = true;
+                    }
+
                     let threads = Math.max(1, Number($('#sim-threads').val()) || 2);
                     let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
                     let pchars = dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
