@@ -737,6 +737,7 @@
             // On paste event handler
             var players = [ EditorController.genEmpty(), EditorController.genEmpty(1), EditorController.genEmpty(2), EditorController.genEmpty(3) ];
 
+            var boss_current = null;
             var boss = null;
             var dungeon_current = null;
             var dungeon = null;
@@ -822,6 +823,7 @@
 
                     dungeon = DUNGEON_DATA[dungeon_current];
                     boss = getBossData(dungeon.floors[value], value);
+                    boss_current = boss;
                 }).dropdown('set selected', Object.keys(dungeon.floors)[0]);
                 show();
             }).dropdown('set selected', '1');
@@ -974,6 +976,9 @@
                                 </div>
                             </div>
                             `).click(() => {
+                                dungeon = DUNGEON_DATA[dungeon_current];
+                                boss = boss_current
+
                                 showData(player.toSimulatorShadowModel());
 
                                 let normalDungeons = player.Dungeons.Normal.concat(player.Dungeons.Extra.Normal);
