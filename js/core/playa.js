@@ -2049,6 +2049,7 @@ function toSimulatorModel (p) {
         Name: p.Name,
         Level: p.Level,
         Identifier: p.Identifier,
+        Prefix: p.Prefix,
         Constitution: {
             Total: p.Constitution.Total
         },
