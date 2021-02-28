@@ -80,6 +80,26 @@
                 margin-top: 2em !important;
             }
 
+            .sim-player-name-ihof {
+                position: relative;
+            }
+
+            .sim-player-name span {
+                display: none;
+            }
+
+            .sim-player-name-ihof b {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+            }
+
+            .sim-player-name-ihof span {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
             .selectable {
                 -moz-user-select: -moz-none;
                 -khtml-user-select: none;
@@ -736,6 +756,7 @@
                 } else {
                     this.style.setProperty('background', '');
                 }
+                $('.sim-player-name, .sim-player-name-ihof').toggleClass('sim-player-name').toggleClass('sim-player-name-ihof');
             });
 
             var modeDump = false;
@@ -1097,8 +1118,9 @@
                                 <b>${ player.Level }</b>
                             </div>
                             <div class="one wide column"></div>
-                            <div class="four wide column">
+                            <div class="four wide column sim-player-name${ modeIhof ? '-ihof' : '' }">
                                 <b>${ player.Name }</b>
+                                <span>${ player.Prefix }</span>
                             </div>
                             <div class="two wide text-center column">
                                 ${ score ? (mode == 2 ? `${ score.avg } pt` : (mode == 1 && index == yourself ? '' : `${ score.avg.toFixed(2) }%`)) : '' }
