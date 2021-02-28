@@ -206,7 +206,15 @@ class FighterModel {
 
     // Critical Multiplier
     getCriticalMultiplier (weapon, target) {
-        return 2 * (1 + 0.05 * (this.Player.ForceGladiator ? this.Player.Fortress.Gladiator : Math.max(0, this.Player.Fortress.Gladiator - target.Player.Fortress.Gladiator))) * (weapon.HasEnchantment ? 1.05 : 1);
+        let base = 2 * (weapon.HasEnchantment ? 1.05 : 1);
+
+        let gladiator = 0.05 * Math.max(0, this.Player.Fortress.Gladiator - target.Player.Fortress.Gladiator);
+        if (this.Player.IHOFMode) {
+            // Make gladiator not reduceable and automatically maxed when in IHOF mode
+            gladiator = 0.05 * 15;
+        }
+
+        return base * gladiator;
     }
 
     // Health

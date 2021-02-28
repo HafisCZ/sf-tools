@@ -412,7 +412,7 @@
                                 </div>
                             </div>
                             <div class="two wide column">
-                                <button class="ui small basic icon fluid button" data-position="bottom center" data-tooltip="IHOF Mode: Doesn't lower gladiator values" id="sim-glad">IHOF</button>
+                                <button class="ui small basic icon fluid button" data-position="bottom center" data-tooltip="IHOF Mode: Doesn't lower gladiator values" id="sim-ihof">IHOF</button>
                             </div>
                             <div class="five wide column">
                                 <button class="ui fluid small button" type="submit" id="sim-run">Simulate</button>
@@ -728,10 +728,10 @@
             var players = [];
             var iterator = 0;
 
-            var forcedglad = false;
-            $('#sim-glad').click(function () {
-                forcedglad = !forcedglad;
-                if (forcedglad) {
+            var modeIhof = false;
+            $('#sim-ihof').click(function () {
+                modeIhof = !modeIhof;
+                if (modeIhof) {
                     this.style.setProperty('background', '#21ba45', 'important');
                 } else {
                     this.style.setProperty('background', '');
@@ -857,7 +857,7 @@
 
                     for (var i = 0; i < players.length; i++) {
                         players[i].score = null;
-                        players[i].player.ForceGladiator = forcedglad;
+                        players[i].player.IHOFMode = modeIhof;
                     }
 
                     showPlayers();
