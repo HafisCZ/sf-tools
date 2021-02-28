@@ -1344,8 +1344,13 @@ const SP_FUNCTIONS = {
     // Create array with sequence
     'makesequence': (from, to) => {
         if (!isNaN(from) && !isNaN(to)) {
-            let len = to - from + 1;
-            return new Array(len).fill(0).map((x, i) => from + i);
+            if (to > from) {
+                let len = to - from + 1;
+                return new Array(len).fill(0).map((x, i) => from + i);
+            } else {
+                let len = from - to + 1;
+                return new Array(len).fill(0).map((x, i) => from - i);
+            }
         } else {
             return undefined;
         }
