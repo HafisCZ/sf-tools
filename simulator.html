@@ -145,10 +145,6 @@
                 font-size: 80%;
             }
 
-            .debug-title {
-                font-size: 110%;
-            }
-
             .class-picture {
                  margin-left: -0.75em !important;
                  margin-right: 0.5em !important;
@@ -173,9 +169,6 @@
         </div>
 
         <div class="debug-container">
-            <div class="debug-title">
-                DANGEROUS: Use <code>sftools.mar21.eu/simulator?t=10</code> to use specified amount of threads.
-            </div>
             <div class="debug">
 
             </div>
@@ -853,6 +846,9 @@
                     console.info(e);
                 }
             });
+
+            $('#sim-threads').captiveInputField('player_sim/threads', 4, v => !isNaN(v) && v >= 1);
+            $('#sim-iterations').captiveInputField('player_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
 
             // Run simulation
             $('#sim-run').click(function () {

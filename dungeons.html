@@ -486,6 +486,9 @@
                 }
             }
 
+            $('#sim-threads').captiveInputField('dungeon_sim/threads', 4, v => !isNaN(v) && v >= 1);
+            $('#sim-iterations').captiveInputField('dungeon_sim/iterations', 5000, v => !isNaN(v) && v >= 1);
+
             const EditorController = new (class {
                 constructor () {
                     this.fields = {

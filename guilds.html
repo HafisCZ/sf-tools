@@ -336,7 +336,7 @@
                             <div class="four wide column">
                                 <div class="ui small form">
                                     <div class="field" data-tooltip="Amount of threads. Using more threads will improve the accuracy. Each thread equals to 5000 iterations.">
-                                        <input class="text-center fluid" type="text" id="sim-iterations" value="4">
+                                        <input class="text-center fluid" type="text" id="sim-threads" value="4">
                                     </div>
                                 </div>
                             </div>
@@ -425,6 +425,8 @@
                     $('.ui.main.container').removeClass('frozen');
                 }
             }
+
+            $('#sim-threads').captiveInputField('dungeon_sim/threads', 4, v => !isNaN(v) && v >= 1);
 
             const EditorController = new (class {
                 constructor () {
@@ -925,7 +927,7 @@
 
                     toggleAll(true);
 
-                    var threads = Number($('#sim-iterations').val()) || 4;
+                    var threads = Number($('#sim-threads').val()) || 4;
 
                     var finished = 0;
                     var chance = 0;

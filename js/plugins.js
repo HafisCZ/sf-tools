@@ -391,6 +391,18 @@
         });
     };
 
+    $.fn.captiveInputField = function (storageKey, defaultValue, validator = () => true) {
+        return this.each(function () {
+            let $this = $(this);
+            $this.val(storageKey in window.localStorage ? window.localStorage[storageKey] : defaultValue);
+            $this.on('input change', () => {
+                if (validator($this.val())) {
+                    window.localStorage[storageKey] = $this.val();
+                }
+            });
+        });
+    }
+
     $.fn.templateList = function (args) {
         return this.each(function () {
             let $this = $(this);
