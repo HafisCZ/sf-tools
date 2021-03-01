@@ -80,7 +80,6 @@ class ExpressionScope {
     }
 
     get (key) {
-        if (key == 'loop_index')
         if (this.self.length && typeof this.self[0] === 'object' && key in this.self[0]) {
             return this.self[0][key];
         }
