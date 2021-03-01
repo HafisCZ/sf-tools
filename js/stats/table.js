@@ -3761,7 +3761,22 @@ class Settings {
         var settings = new Settings('');
 
         for (var line of Settings.handleMacros(string)) {
-            var commentIndex = line.indexOf('#');
+            let commentIndex = -1;
+            let originalLine = line;
+            let ignored = false;
+
+            for (var i = 0; i < line.length; i++) {
+                if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
+                    if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
+                    else {
+                        ignored = ignored ? false : line[i];
+                    }
+                } else if (line[i] == '#' && !ignored) {
+                    commentIndex = i;
+                    break;
+                }
+            }
+
             if (commentIndex != -1) {
                 line = line.slice(0, commentIndex);
             }
