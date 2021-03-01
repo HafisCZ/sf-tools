@@ -94,6 +94,10 @@ class GroupTableArray extends Array {
     }
 }
 
+function getSafeExpr (obj, ...args) {
+    return obj instanceof Expression ? obj.eval(...args) : obj(...args);
+}
+
 // Table instance
 class TableInstance {
     constructor (settings, type, filteredCategories = null) {
@@ -175,12 +179,12 @@ class TableInstance {
                     let callWidth = header.width || 100;
                     group.add(header, (player, compare) => {
                         // Cell
-                        let vals = header.expr(player, compare, this.settings, undefined, undefined, header);
+                        let vals = getSafeExpr(header.expr, player, compare, this.settings, undefined, header);
 
                         if (!Array.isArray(vals)) {
                             return this.getEmptyCell(header, showBorder, header.grouped);
                         } else {
-                            let cmps = header.difference ? header.expr(compare, compare, this.settings.getCompareEnvironment(), undefined, undefined, header) : undefined;
+                            let cmps = header.difference ? getSafeExpr(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
 
                             return join(vals, (val, index) => {
                                 let showEndBorder = showBorder && index == header.grouped - 1;
@@ -203,7 +207,7 @@ class TableInstance {
                         }
                     }, null, (player, compare) => {
                         // Sort
-                        let vals = header.expr(player, compare, this.settings, undefined, undefined, header);
+                        let vals = getSafeExpr(header.expr, player, compare, this.settings, undefined, header);
 
                         if (Array.isArray(vals)) {
                             return vals.reduce((a, b) => a + b, 0);
@@ -215,12 +219,12 @@ class TableInstance {
                     // Create normal header
                     group.add(header, (player, compare) => {
                         // Cell
-                        let val = header.expr(player, compare, this.settings, undefined, undefined, header);
+                        let val = getSafeExpr(header.expr, player, compare, this.settings, undefined, header);
 
                         if (val == undefined) {
                             return this.getEmptyCell(header, showBorder);
                         } else {
-                            let cmp = header.difference ? header.expr(compare, compare, this.settings.getCompareEnvironment(), undefined, undefined, header) : undefined;
+                            let cmp = header.difference ? getSafeExpr(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header) : undefined;
                             return this.getCell(
                                 header,
                                 this.getCellDisplayValue(header, val, cmp, player, compare),
@@ -230,7 +234,7 @@ class TableInstance {
                         }
                     }, (players, operation) => {
                         // Statistics
-                        let val = players.map(({ player, compare }) => header.expr(player, compare, this.settings, undefined, undefined, header)).filter(v => v != undefined);
+                        let val = players.map(({ player, compare }) => getSafeExpr(header.expr, player, compare, this.settings, undefined, header)).filter(v => v != undefined);
                         if (val.length) {
                             // Get value and trunc if necessary
                             val = operation(val);
@@ -241,7 +245,7 @@ class TableInstance {
                             // Compare value
                             let cmp = undefined;
                             if (header.difference) {
-                                cmp = players.map(({ compare }) => header.expr(compare, compare, this.settings.getCompareEnvironment(), undefined, undefined, header)).filter(v => v != undefined);
+                                cmp = players.map(({ compare }) => getSafeExpr(header.expr, compare, compare, this.settings.getCompareEnvironment(), undefined, header)).filter(v => v != undefined);
                                 if (cmp.length) {
                                     cmp = operation(cmp);
 
@@ -263,7 +267,7 @@ class TableInstance {
                         }
                     }, (player, compare) => {
                         // Sort
-                        return header.expr(player, compare, this.settings, undefined, undefined, header);
+                        return getSafeExpr(header.expr, player, compare, this.settings, undefined, header);
                     }, showBorder);
                 }
             }
@@ -324,7 +328,7 @@ class TableInstance {
             let obj = Database.getPlayer(e.Identifier, timestamp);
 
             // Find if falls under discard rule
-            let disc = this.settings.discardRules.some(rule => rule(obj, obj, this.settings));
+            let disc = this.settings.discardRules.some(rule => rule.eval(obj, obj, this.settings));
 
             // Return stuff
             return disc ? null : [ timestamp, obj ];
@@ -466,14 +470,14 @@ class TableInstance {
                         if (order) {
                             // Use special order expression if supplied
                             let difference = undefined;
-                            let value = expr(player, compare, this.settings, undefined, undefined, header);
+                            let value = getSafeExpr(expr, player, compare, this.settings, undefined, header);
 
                             if (!noCompare) {
                                 // Get difference
-                                difference = (flip ? -1 : 1) * (value - expr(compare, compare, this.settings, undefined, undefined, header));
+                                difference = (flip ? -1 : 1) * (value - getSafeExpr(expr, compare, compare, this.settings, undefined, header));
                             }
 
-                            obj[sortkey] = order(player, compare, this.settings, value, { difference: difference });
+                            obj[sortkey] = getSafeExpr(order, player, compare, this.settings, new ExpressionScope().addSelf(value).add({ difference: difference }));
                         } else {
                             // Return native sorting function
                             obj[sortkey] = sort(player, compare);
@@ -540,14 +544,14 @@ class TableInstance {
                         if (order) {
                             // Use special order expression if supplied
                             let difference = undefined;
-                            let value = expr(player, compare, this.settings, undefined, undefined, header);
+                            let value = getSafeExpr(expr, player, compare, this.settings, undefined, header);
 
                             if (!noCompare) {
                                 // Get difference
-                                difference = (flip ? -1 : 1) * (value - expr(compare, compare, this.settings, undefined, undefined, header));
+                                difference = (flip ? -1 : 1) * (value - getSafeExpr(expr, compare, compare, this.settings, undefined, header));
                             }
 
-                            obj[sortkey] = order(player, compare, this.settings, value, { difference: difference });
+                            obj[sortkey] = getSafeExpr(order, player, compare, this.settings, new ExpressionScope().addSelf(value).add({ difference: difference }));
                         } else {
                             // Return native sorting function
                             obj[sortkey] = sort(player, compare);
@@ -1109,7 +1113,7 @@ class TableInstance {
             ${ join(entries, ({ name, ast, expression }) => `
                 <tr>
                     <td class="border-right-thin" colspan="${ leftSpan }">${ name }</td>
-                    ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.array, expression ? expression : array => ast.eval(undefined, undefined, this.settings, array)) : `<td colspan="${ span }"></td>`) }
+                    ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.array, expression ? expression : array => ast.eval(undefined, undefined, this.settings, new ExpressionScope().addSelf(array))) : `<td colspan="${ span }"></td>`) }
                 </tr>
             `) }
         `;
@@ -1841,7 +1845,7 @@ const SettingsCommands = [
             } else {
                 let ast = new Expression(expression, root);
                 if (ast.isValid()) {
-                    root.addFormatStatisticsExpression((a, b) => ast.eval(undefined, undefined, a, b));
+                    root.addFormatStatisticsExpression(ast);
                 }
             }
         },
@@ -1862,7 +1866,7 @@ const SettingsCommands = [
             } else {
                 let ast = new Expression(expression, root);
                 if (ast.isValid()) {
-                    root.addFormatDifferenceExpression((a, b) => ast.eval(undefined, undefined, a, b));
+                    root.addFormatDifferenceExpression(ast);
                 }
             }
         },
@@ -1903,7 +1907,7 @@ const SettingsCommands = [
             } else {
                 let ast = new Expression(expression, root);
                 if (ast.isValid()) {
-                    root.addFormatExpression((a, b, c, d, e, f) => ast.eval(a, b, c, d, e, undefined, f));
+                    root.addFormatExpression(ast);
                 }
             }
         },
@@ -2297,7 +2301,7 @@ const SettingsCommands = [
         (root, expression) => {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addLocal('order', (a, b, c, d, e) => ast.eval(a, b, c, d, e));
+                root.addLocal('order', ast);
             }
         },
         (root, expression) => SFormat.Keyword('order by ') + Expression.format(expression, root)
@@ -2310,7 +2314,7 @@ const SettingsCommands = [
         (root, expression) => {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addLocal('expr', (a, b, c, d, e, f) => ast.eval(a, b, c, d, e, undefined, f));
+                root.addLocal('expr', ast);
             }
         },
         (root, expression) => SFormat.Keyword('expr ') + Expression.format(expression, root)
@@ -2323,7 +2327,7 @@ const SettingsCommands = [
         (root, expression) => {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addAliasExpression((a, b) => ast.eval(undefined, undefined, a, undefined, undefined, undefined, b));
+                root.addAliasExpression(ast);
             }
         },
         (root, expression) => SFormat.Keyword('expa ') + Expression.format(expression, root)
@@ -2352,7 +2356,7 @@ const SettingsCommands = [
         (root, expression) => {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addDiscardRule((a, b, c, d, e) => ast.eval(a, b, c, d, e));
+                root.addDiscardRule(ast);
             }
         },
         (root, expression) => SFormat.Keyword('discard ') + Expression.format(expression, root)
@@ -2365,7 +2369,7 @@ const SettingsCommands = [
         (root, expression) => {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addColorExpression((a, b, c, d, e, f) => ast.eval(a, b, c, d, e, undefined, f));
+                root.addColorExpression(ast);
             }
         },
         (root, expression) => SFormat.Keyword('expc ') + Expression.format(expression, root)
@@ -2721,8 +2725,8 @@ class Settings {
             }
 
             // Merge color expression
-            if (!obj.color.expression) {
-                obj.color.expression = definition.color.expression;
+            if (!obj.color.expr) {
+                obj.color.expr = definition.color.expr;
             }
 
             // Merge color rules
@@ -2937,11 +2941,11 @@ class Settings {
     // Create color block
     getColorBlock () {
         return {
-            expression: undefined,
+            expr: undefined,
             rules: new RuleEvaluator(),
             get: function (player, compare, settings, value, extra = undefined, ignoreBase = false, header = undefined) {
                 // Get color from expression
-                let expressionColor = this.expression ? this.expression(player, compare, settings, value, extra, header) : undefined;
+                let expressionColor = this.expr ? this.expr.eval(player, compare, settings, new ExpressionScope().addSelf(value).add(extra), header) : undefined;
 
                 // Get color from color block
                 let blockColor = this.rules.get(value, ignoreBase || (typeof expressionColor !== 'undefined'));
@@ -2966,8 +2970,12 @@ class Settings {
                 let output = this.rules.get(value);
 
                 // Get value from format expression
-                if (typeof output == 'undefined' && this.format) {
-                    output = this.format(player, compare, settings, value, extra, header);
+                if (typeof output == 'undefined') {
+                    if (this.format instanceof Expression) {
+                        output = this.format.eval(player, compare, settings, new ExpressionScope().addSelf(value).add(extra), header);
+                    } else if (typeof this.format == 'function') {
+                        output = this.format(player, compare, settings, value, extra, header);
+                    }
                 }
 
                 // Get value from value itself
@@ -2992,8 +3000,10 @@ class Settings {
                 let nativeDifference = Number.isInteger(value) ? value : value.toFixed(2);
 
                 if (this.formatDifference === true) {
-                    if (typeof this.format != 'undefined') {
-                        return this.format(player, compare, settings, value, extra);
+                    if (this.format instanceof Expression) {
+                        output = this.format.eval(player, compare, settings, new ExpressionScope().addSelf(value).add(extra));
+                    } else if (typeof this.format == 'function') {
+                        output = this.format(player, compare, settings, value, extra);
                     } else {
                         return nativeDifference;
                     }
@@ -3009,8 +3019,10 @@ class Settings {
                 if (this.formatStatistics === false) {
                     return nativeFormat;
                 } else if (this.formatStatistics) {
-                    return this.formatStatistics(settings, value);
-                } else if (typeof this.format != 'undefined') {
+                    return this.formatStatistics.eval(undefined, undefined, settings, new ExpressionScope().addSelf(value));
+                } else if (this.format instanceof Expression) {
+                    return this.format.eval(undefined, undefined, settings, new ExpressionScope().addSelf(value));
+                } else if (typeof this.format == 'function') {
                     return this.format(undefined, undefined, settings, value);
                 } else {
                     return nativeFormat;
@@ -3107,7 +3119,7 @@ class Settings {
     addColorExpression (expression) {
         let object = (this.row || this.definition || this.header);
         if (object) {
-            object.color.expression = expression;
+            object.color.expr = expression;
         }
     }
 
@@ -3422,11 +3434,11 @@ class Settings {
                 ast: variable.ast,
                 tableVariable: variable.tableVariable
             }
-            
+
             // Run only if it is a table variable
             if (variable.tableVariable) {
                 // Get value
-                let value = variable.ast.eval(undefined, undefined, this, scope);
+                let value = variable.ast.eval(undefined, undefined, this, new ExpressionScope().addSelf(scope));
 
                 // Set value if valid
                 if (!isNaN(value) || typeof(value) == 'object' || typeof('value') == 'string') {
@@ -3439,7 +3451,7 @@ class Settings {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.ast.eval(array[0], undefined, this, array);
+            let currentValue = row.ast.eval(array[0], undefined, this, new ExpressionScope().addSelf(array));
 
             row.eval = {
                 value: currentValue
@@ -3509,8 +3521,8 @@ class Settings {
 
             if (variable.tableVariable) {
                 // Calculate values of table variable
-                let currentValue = variable.ast.eval(undefined, undefined, this, arrayCurrent);
-                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(undefined, undefined, this, arrayCompare);
+                let currentValue = variable.ast.eval(undefined, undefined, this, new ExpressionScope().addSelf(arrayCurrent));
+                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(undefined, undefined, this, new ExpressionScope().addSelf(arrayCompare));
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -3529,8 +3541,8 @@ class Settings {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.ast.eval(undefined, undefined, this, arrayCurrent);
-            let compareValue = sameTimestamp ? currentValue : row.ast.eval(undefined, undefined, compareEnvironment, arrayCompare);
+            let currentValue = row.ast.eval(undefined, undefined, this, new ExpressionScope().addSelf(arrayCurrent));
+            let compareValue = sameTimestamp ? currentValue : row.ast.eval(undefined, undefined, compareEnvironment, new ExpressionScope().addSelf(arrayCompare));
 
             row.eval = {
                 value: currentValue,
@@ -3608,8 +3620,8 @@ class Settings {
 
             if (variable.tableVariable) {
                 // Calculate values of table variable
-                let currentValue = variable.ast.eval(ownPlayer.player, ownPlayer.compare, this, arrayCurrent);
-                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(ownPlayer.compare, ownPlayer.compare, this, arrayCompare);
+                let currentValue = variable.ast.eval(ownPlayer.player, ownPlayer.compare, this, new ExpressionScope().addSelf(arrayCurrent));
+                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(ownPlayer.compare, ownPlayer.compare, this, new ExpressionScope().addSelf(arrayCompare));
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -3628,8 +3640,8 @@ class Settings {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.ast.eval(ownPlayer.player, ownPlayer.compare, this, arrayCurrent);
-            let compareValue = sameTimestamp ? currentValue : row.ast.eval(ownPlayer.compare, ownPlayer.compare, compareEnvironment, arrayCompare);
+            let currentValue = row.ast.eval(ownPlayer.player, ownPlayer.compare, this, new ExpressionScope().addSelf(arrayCurrent));
+            let compareValue = sameTimestamp ? currentValue : row.ast.eval(ownPlayer.compare, ownPlayer.compare, compareEnvironment, new ExpressionScope().addSelf(arrayCompare));
 
             row.eval = {
                 value: currentValue,
