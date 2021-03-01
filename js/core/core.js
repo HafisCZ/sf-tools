@@ -876,7 +876,10 @@ const Storage = new (class {
         if (temporary) {
             Preferences.temporary();
             if (debug_snapshot) {
+                SharedPreferences.temporary();
+
                 Preferences.storage = debug_snapshot.preferences;
+                SharedPreferences.storage = debug_snapshot.preferences;
             }
         }
 
@@ -976,7 +979,7 @@ const Storage = new (class {
         download(`debug_snapshot_${ Date.now() }.json`, new Blob([ JSON.stringify({
             files: this.files(),
             profiles: Database.Profiles,
-            preferences: Preferences.getAll()
+            preferences: SharedPreferences.getAll()
         }) ], { type: 'application/json' }))
     }
 
