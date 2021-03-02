@@ -2329,16 +2329,18 @@ class SettingsView extends View {
                     a.selectionStart = s + 2;
                     a.selectionEnd = d + 2;
                 } else {
-                    let o = 0, i;
+                    let o = 0, oo = 0, i;
                     for (i = d - 1; i > s; i--) {
                         if (v[i] == '\n') {
                             v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
+                            oo++;
                         }
                     }
 
                     while (i >= 0) {
                         if (v[i] == '\n') {
                             v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
+                            o++;
                             break;
                         } else {
                             i--;
@@ -2347,7 +2349,7 @@ class SettingsView extends View {
 
                     this.$area.val(v);
                     a.selectionStart = s + o * 2;
-                    a.selectionEnd = d + o * 2;
+                    a.selectionEnd = d + (oo + o) * 2;
                 }
 
                 this.$area.trigger('input');
