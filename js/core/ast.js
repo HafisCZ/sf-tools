@@ -177,7 +177,7 @@ class Expression {
                             return SFormat.Comment(st);
                         }
                     }).join('') }\``;
-                } else if (SP_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'slice', 'filter', 'format', 'difference', 'at', 'array', 'difference', 'join', 'sort', 'distinct', 'indexof', 'var', 'tracker' ].includes(token) || root.functions.hasOwnProperty(token)) {
+                } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'difference', 'sort', 'var', 'tracker' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
                 } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index' ].includes(token) || root.variables.hasOwnProperty(token)) {
                     value = SFormat.Constant(token);
@@ -783,42 +783,6 @@ class Expression {
                     }
 
                     return str;
-                } else if (node.op == 'at' && node.args.length == 2) {
-                    var array = this.evalToArray(player, reference, environment, scope, header, node.args[0]);
-                    var arg = this.evalInternal(player, reference, environment, scope, header, node.args[1]);
-
-                    if (isNaN(arg)) {
-                        return undefined;
-                    } else {
-                        if (arg < 0) arg = 0;
-                        else if (arg > array.length - 1) {
-                            arg = array.length - 1;
-                        }
-
-                        return array[arg];
-                    }
-                } else if (node.op == 'join' && node.args.length == 2) {
-                    var array = this.evalToArray(player, reference, environment, scope, header, node.args[0]);
-                    var arg = this.evalInternal(player, reference, environment, scope, header, node.args[1]);
-
-                    return array.join(arg);
-                } else if (node.op == 'indexof' && node.args.length == 2) {
-                    let array = this.evalToArray(player, reference, environment, scope, header, node.args[0]);
-                    let item = this.evalInternal(player, reference, environment, scope, header, node.args[1]);
-
-                    for (let i = 0; i < array.length; i++) {
-                        if (array[i] == item) {
-                            return i;
-                        }
-                    }
-
-                    return -1;
-                } else if (node.op == 'distinct' && node.args.length == 1) {
-                    let array = this.evalToArray(player, reference, environment, scope, header, node.args[0]);
-                    let values = Array.from(new Set(array));
-                    values.segmented = array.segmented;
-
-                    return values;
                 } else if (node.op == 'sort' && node.args.length == 2) {
                     // Multiple array functions condensed
                     var array = this.evalToArray(player, reference, environment, scope, header, node.args[0]);
@@ -890,15 +854,6 @@ class Expression {
                         case 'filter': return array.filter((a, i) => values[i]);
                         case 'map': return values;
                     }
-                } else if (node.op == 'slice' && (node.args.length == 2 || node.args.length == 3)) {
-                    // Simple slice
-                    var array = this.evalToArray(player, reference, environment, scope, header, node.args[0]);
-                    var sliced = array.slice(node.args[1], node.args[2]);
-                    sliced.segmented = array.segmented;
-                    return sliced;
-                } else if (node.op == 'array') {
-                    // Simple toArray function
-                    return this.evalToArray(player, reference, environment, scope, header, node.args[0]);
                 } else if (node.op == '{' || node.op == '[') {
                     // Simple object or array constructor
                     var obj = node.op == '{' ? {} : [];
@@ -964,7 +919,15 @@ class Expression {
                     return obj && typeof obj === 'object' ? SP_KEYWORDS_INDIRECT[node.op].expr(player, null, environment, obj) : undefined;
                 } else if (SP_FUNCTIONS.hasOwnProperty(node.op)) {
                     // Predefined function
-                    return SP_FUNCTIONS[node.op](... node.args.map(arg => this.evalInternal(player, reference, environment, scope, header, arg)));
+                    return SP_FUNCTIONS[node.op](
+                        ... node.args.map(arg => this.evalInternal(player, reference, environment, scope, header, arg))
+                    );
+                } else if (SP_ARRAY_FUNCTIONS.hasOwnProperty(node.op) && node.args.length > 0) {
+                    // Predefined array functions (first argument is array type)
+                    return SP_ARRAY_FUNCTIONS[node.op](
+                        this.evalToArray(player, reference, environment, scope, header, node.args[0]),
+                        ... node.args.slice(1).map(arg => this.evalInternal(player, reference, environment, scope, header, arg))
+                    );
                 } else {
                     // Return undefined
                     return undefined;
@@ -1051,6 +1014,41 @@ class Expression {
         }
     }
 }
+
+const SP_ARRAY_FUNCTIONS = {
+    'distinct': (array) => {
+        let values = Array.from(new Set(array));
+        values.segmented = array.segmented;
+        return values;
+    },
+    'array': (array) => {
+        return array;
+    },
+    'slice': (array, from, to) => {
+        let values = array.slice(from, to);
+        values.segmented = array.segmented;
+        return values;
+    },
+    'join': (array, delim) => {
+        return array.join(delim);
+    },
+    'at': (array, index) => {
+        if (isNaN(index)) {
+            return undefined;
+        } else {
+            return array[Math.min(array.length, Math.max(0, index))];
+        }
+    },
+    'indexof': (array, obj) => {
+        for (let i = 0; i < array.length; i++) {
+            if (array[i] == obj) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+};
 
 const SP_FUNCTIONS = {
     'flatten': (... values) => {
