@@ -897,8 +897,8 @@ class Expression {
 
                     return mapper.ast.eval(player, reference, environment, scope.copy().add(scope2), header);
                 } else if (node.op == 'difference' && node.args.length == 1) {
-                    var a = this.evalInternal(player, reference, environment, player, header, node.args[0]);
-                    var b = this.evalInternal(reference, reference, environment, reference, header, node.args[0]);
+                    var a = this.evalInternal(player, reference, environment, scope, header, node.args[0]);
+                    var b = this.evalInternal(reference, reference, environment, scope, header, node.args[0]);
 
                     if (isNaN(a) || isNaN(b)) {
                         return undefined;
