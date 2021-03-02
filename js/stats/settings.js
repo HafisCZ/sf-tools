@@ -40,27 +40,6 @@ const ARG_FORMATTERS = {
     'default': (p, c, e, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
 }
 
-class Command {
-    constructor (regexp, parse, format, parseAlways = false) {
-        this.regexp = regexp;
-        this.internalParse = parse;
-        this.internalFormat = format;
-        this.parseAlways = parseAlways;
-    }
-
-    isValid (string) {
-        return this.regexp.test(string);
-    }
-
-    parse (root, string) {
-        return this.internalParse(root, ... string.match(this.regexp).slice(1));
-    }
-
-    format (root, string) {
-        return this.internalFormat(root, ... string.match(this.regexp).slice(1));
-    }
-}
-
 class CellStyle {
     constructor () {
         this.styles = {};
@@ -130,67 +109,103 @@ class RuleEvaluator {
 }
 
 const FilterTypes = {
-    'Group': TableType.Group,
+    'Guild': TableType.Group,
     'Player': TableType.History,
     'Players': TableType.Players
 };
 
+class Command {
+    constructor (regexp, parse, format) {
+        this.regexp = regexp;
+        this.internalParse = parse;
+        this.internalFormat = format;
+
+        this.canParseAlways = false;
+        this.canParse = true;
+        this.canCopy = false;
+    }
+
+    isValid (string) {
+        return this.regexp.test(string);
+    }
+
+    parse (root, string) {
+        return this.internalParse(root, ... string.match(this.regexp).slice(1));
+    }
+
+    parseAsMacro (string) {
+        return string.match(this.regexp).slice(1);
+    }
+
+    format (root, string) {
+        return this.internalFormat(root, ... string.match(this.regexp).slice(1));
+    }
+
+    parseAlways () {
+        this.canParseAlways = true;
+        return this;
+    }
+
+    parseNever () {
+        this.canParse = false;
+        return this;
+    }
+
+    copyable () {
+        this.canCopy = true;
+        return this;
+    }
+}
+
 const SettingsCommands = [
     /*
-        Ignore macro
+        If not
     */
     new Command(
-        /^(?:if( not)? (.+)|(endif|else))$/,
-        (root, notSwitch, arg, ifSwitch) => {
-            if (ifSwitch) {
-                if (ifSwitch == 'endif') {
-                    root.setFilter(null);
-                } else {
-                    root.flipFilter();
-                }
-            } else {
-                let shouldFlip = !!notSwitch
-                if (arg in FilterTypes) {
-                    root.setFilter(FilterTypes[arg], shouldFlip);
-                } else {
-                    let ast = new Expression(arg);
-                    if (ast.isValid()) {
-                        root.setFilter(ast, shouldFlip);
-                    }
-                }
-            }
-        },
-        (root, notSwitch, arg, ifSwitch) => ifSwitch ? SFormat.Macro(ifSwitch) : SFormat.Macro(`if${ notSwitch ? ' not' : '' } ${ arg }`)
-    ),
+        /^if not (.+)$/,
+        null,
+        (root, arg) => SFormat.Macro(`if not ${ arg }`)
+    ).parseNever(),
+    /*
+        If
+    */
+    new Command(
+        /^if (.+)$/,
+        null,
+        (root, arg) => SFormat.Macro(`if ${ arg }`)
+    ).parseNever(),
+    /*
+        Else if
+    */
+    new Command(
+        /^else if (.+)$/,
+        null,
+        (root, arg) => SFormat.Macro(`else if ${ arg }`)
+    ).parseNever(),
+    /*
+        Else
+    */
+    new Command(
+        /^else$/,
+        null,
+        (root) => SFormat.Macro('else')
+    ).parseNever(),
     /*
         Loop
     */
     new Command(
         /^loop (\w+(?:\s*\,\s*\w+)*) for (.+)$/,
-        (root, name, array) => {
-            let ast = new Expression(array);
-            if (ast.isValid()) {
-                return {
-                    ast: ast,
-                    name: name.split(',').map(x => x.trim())
-                }
-            }
-        },
+        null,
         (root, name, array) => SFormat.Macro(SFormat.Keyword('loop ') + SFormat.Constant(name) + SFormat.Keyword(' for ') + Expression.format(array), true)
-    ),
-    new Command(
-        /^end$/,
-        (root) => { /* DO NOTHING AS THIS IS HANDLED DURING THE PARSING ITSELF */ },
-        (root) => SFormat.Macro('end')
-    ),
+    ).parseNever(),
     /*
-        Import macro
+        End loop or condition
     */
     new Command(
-        /^import (.+)$/,
-        (root, name) => { /* DO NOTHING AS THIS IS HANDLED DURING THE PARSING ITSELF */ },
-        (root, name) => SFormat.Keyword('import ') + (Templates.exists(name) ? (SFormat.Enum(name) + ' ' + SFormat.Extras(`(${ Templates.get(name).length }c)`)) : SFormat.Error(name))
-    ),
+        /^end$/,
+        null,
+        (root) => SFormat.Macro('end')
+    ).parseNever(),
     /*
         Server column
     */
@@ -270,7 +285,7 @@ const SettingsCommands = [
                 return prefix + SFormat.Normal(value);
             }
         }
-    ),
+    ).copyable(),
     /*
         Not defined value
     */
@@ -294,7 +309,7 @@ const SettingsCommands = [
                 return prefix + SFormat.Normal(value);
             }
         }
-    ),
+    ).copyable(),
     /*
         Not defined color
     */
@@ -318,7 +333,7 @@ const SettingsCommands = [
                 return prefix + SFormat.Color(value, val);
             }
         }
-    ),
+    ).copyable(),
     /*
         Value default rule
     */
@@ -340,7 +355,7 @@ const SettingsCommands = [
                 return prefix + SFormat.Normal(value);
             }
         }
-    ),
+    ).copyable(),
     /*
         Value rules
     */
@@ -375,7 +390,7 @@ const SettingsCommands = [
 
             return prefix + value + ' ' + value2;
         }
-    ),
+    ).copyable(),
     /*
         Color default rule
     */
@@ -399,7 +414,7 @@ const SettingsCommands = [
                 return prefix + SFormat.Color(value, val);
             }
         }
-    ),
+    ).copyable(),
     /*
         Color rules
     */
@@ -435,7 +450,7 @@ const SettingsCommands = [
 
             return prefix + value + ' ' + value2;
         }
-    ),
+    ).copyable(),
     /*
         Alias
     */
@@ -459,7 +474,7 @@ const SettingsCommands = [
                 return prefix + SFormat.Normal(value);
             }
         }
-    ),
+    ).copyable(),
     /*
         Statistics format expression
     */
@@ -480,7 +495,7 @@ const SettingsCommands = [
             }
         },
         (root, expression) => SFormat.Keyword('format statistics ') + (expression == 'on' || expression == 'off' ? SFormat.Bool(expression) : (ARG_FORMATTERS.hasOwnProperty(expression) ? SFormat.Constant(expression) : Expression.format(expression, root)))
-    ),
+    ).copyable(),
     /*
         Difference format expression
     */
@@ -501,7 +516,7 @@ const SettingsCommands = [
             }
         },
         (root, expression) => SFormat.Keyword('format difference ') + (expression == 'on' || expression == 'off' ? SFormat.Bool(expression) : (ARG_FORMATTERS.hasOwnProperty(expression) ? SFormat.Constant(expression) : Expression.format(expression, root)))
-    ),
+    ).copyable(),
     /*
         Cell background
     */
@@ -525,7 +540,7 @@ const SettingsCommands = [
                 return prefix + SFormat.Color(value, val);
             }
         }
-    ),
+    ).copyable(),
     /*
         Format expression
     */
@@ -542,7 +557,7 @@ const SettingsCommands = [
             }
         },
         (root, token, expression) => SFormat.Keyword(`${ token } `) + (ARG_FORMATTERS.hasOwnProperty(expression) ? SFormat.Constant(expression) : Expression.format(expression, root))
-    ),
+    ).copyable(),
     /*
         Category
     */
@@ -555,7 +570,7 @@ const SettingsCommands = [
             }
         },
         (root, extensions, name) => (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('category') + (name ? (' ' + SFormat.Normal(name)) : '')
-    ),
+    ).copyable(),
     /*
         Grouped header
     */
@@ -590,7 +605,7 @@ const SettingsCommands = [
                 return prefix + suffix;
             }
         }
-    ),
+    ).copyable(),
     /*
         Header
     */
@@ -622,7 +637,7 @@ const SettingsCommands = [
                 return prefix;
             }
         }
-    ),
+    ).copyable(),
     /*
         Row
     */
@@ -648,7 +663,7 @@ const SettingsCommands = [
             root.addHeaderVariable(name, value);
         },
         (root, name, value) => SFormat.Keyword('var ') + SFormat.Constant(name) + ' ' + SFormat.Normal(value)
-    ),
+    ).copyable(),
     /*
         Layout
     */
@@ -669,8 +684,7 @@ const SettingsCommands = [
             }
         },
         (root, name, expression) => SFormat.Keyword('set ') + SFormat.Constant(name) + SFormat.Keyword(' with all as ') + Expression.format(expression, root),
-        true
-    ),
+    ).parseAlways(),
     /*
         Function
     */
@@ -683,8 +697,7 @@ const SettingsCommands = [
             }
         },
         (root, name, arguments, expression) => SFormat.Keyword('set ') + SFormat.Constant(name) + SFormat.Keyword(' with ') + arguments.split(',').map(v => SFormat.Constant(v)).join(',') + SFormat.Keyword(' as ') + Expression.format(expression, root),
-        true
-    ),
+    ).parseAlways(),
     /*
         Variable
     */
@@ -697,8 +710,7 @@ const SettingsCommands = [
             }
         },
         (root, name, expression) => SFormat.Keyword('set ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(expression, root),
-        true
-    ),
+    ).parseAlways(),
     /*
         Lined
     */
@@ -768,7 +780,7 @@ const SettingsCommands = [
         /^(difference|hydra|flip|brackets|statistics|maximum|grail|decimal) (on|off)$/,
         (root, key, value) => root.addShared(key, ARG_MAP[value]),
         (root, key, value) => SFormat.Keyword(key) + ' ' + SFormat.Bool(value)
-    ),
+    ).copyable(),
     /*
         Clean
     */
@@ -776,12 +788,12 @@ const SettingsCommands = [
         /^clean$/,
         (root) => root.addLocal('clean', 1),
         (root) => SFormat.Keyword('clean')
-    ),
+    ).copyable(),
     new Command(
         /^clean hard$/,
         (root) => root.addLocal('clean', 2),
         (root) => SFormat.Keyword('clean ') + SFormat.Constant('hard')
-    ),
+    ).copyable(),
     /*
         Action
     */
@@ -789,7 +801,7 @@ const SettingsCommands = [
         /^action (none|show)$/,
         (root, value) => root.addAction(value),
         (root, value) => SFormat.Keyword('action ') + SFormat.Constant(value)
-    ),
+    ).copyable(),
     /*
         Indexing
     */
@@ -873,7 +885,7 @@ const SettingsCommands = [
         /^extra (.+)$/,
         (root, value) => root.addFormatExtraExpression(a => value),
         (root, value) => SFormat.Keyword('extra ') + SFormat.Normal(value)
-    ),
+    ).copyable(),
     /*
         Constant
     */
@@ -881,8 +893,7 @@ const SettingsCommands = [
         /^const (\w+) (.+)$/,
         (root, name, value) => root.addConstant(name, value),
         (root, name, value) => SFormat.Keyword('const ') + SFormat.Constant(name) + ' ' + SFormat.Normal(value),
-        true
-    ),
+    ).parseAlways(),
     /*
         Cell style
     */
@@ -890,7 +901,7 @@ const SettingsCommands = [
         /^style ([a-zA-Z\-]+) (.*)$/,
         (root, style, value) => root.addStyle(style, value),
         (root, style, value) => SFormat.Keyword('style ') + SFormat.Constant(style) + ' ' + SFormat.Normal(value)
-    ),
+    ).copyable(),
     /*
         Cell content visibility
     */
@@ -898,7 +909,7 @@ const SettingsCommands = [
         /^visible (on|off)$/,
         (root, value) => root.addShared('visible', ARG_MAP[value]),
         (root, value) => SFormat.Keyword('visible ') + SFormat.Bool(value)
-    ),
+    ).copyable(),
     /*
         Cell content breaking
     */
@@ -906,7 +917,7 @@ const SettingsCommands = [
         /^breakline (on|off)$/,
         (root, value) => root.addBreaklineRule(ARG_MAP[value]),
         (root, value) => SFormat.Keyword('breakline ') + SFormat.Bool(value)
-    ),
+    ).copyable(),
     /*
         Cell border
     */
@@ -914,7 +925,7 @@ const SettingsCommands = [
         /^border (none|left|right|both)$/,
         (root, value) => root.addShared('border', ARG_MAP[value]),
         (root, value) => SFormat.Keyword('border ') + SFormat.Constant(value)
-    ),
+    ).copyable(),
     /*
         Toggle statistics color
     */
@@ -922,7 +933,7 @@ const SettingsCommands = [
         /^statistics color (on|off)$/,
         (root, value) => root.addShared('statistics_color', ARG_MAP[value]),
         (root, value) => SFormat.Keyword('statistics color ') + SFormat.Bool(value)
-    ),
+    ).copyable(),
     /*
         Order expression
     */
@@ -935,7 +946,7 @@ const SettingsCommands = [
             }
         },
         (root, expression) => SFormat.Keyword('order by ') + Expression.format(expression, root)
-    ),
+    ).copyable(),
     /*
         Value expression
     */
@@ -948,7 +959,7 @@ const SettingsCommands = [
             }
         },
         (root, expression) => SFormat.Keyword('expr ') + Expression.format(expression, root)
-    ),
+    ).copyable(),
     /*
         Alias expression
     */
@@ -961,7 +972,7 @@ const SettingsCommands = [
             }
         },
         (root, expression) => SFormat.Keyword('expa ') + Expression.format(expression, root)
-    ),
+    ).copyable(),
     /*
         Cell alignment
     */
@@ -969,7 +980,7 @@ const SettingsCommands = [
         /^align (left|right|center)$/,
         (root, value) => root.addShared('align', value),
         (root, value) => SFormat.Keyword('align ') + SFormat.Constant(value)
-    ),
+    ).copyable(),
     new Command(
         /^align (left|right|center) (left|right|center)$/,
         (root, value, value2) => {
@@ -977,7 +988,7 @@ const SettingsCommands = [
             root.addShared('align_title', value2);
         },
         (root, value, value2) => SFormat.Keyword('align ') + SFormat.Constant(value) + ' ' + SFormat.Constant(value2)
-    ),
+    ).copyable(),
     /*
         Discard expression
     */
@@ -1003,7 +1014,7 @@ const SettingsCommands = [
             }
         },
         (root, expression) => SFormat.Keyword('expc ') + Expression.format(expression, root)
-    ),
+    ).copyable(),
     /*
         Cell padding (left only)
     */
@@ -1011,7 +1022,7 @@ const SettingsCommands = [
         /^padding (.+)$/,
         (root, value) => root.addLocal('padding', value),
         (root, value) => SFormat.Keyword('padding ') + SFormat.Normal(value)
-    ),
+    ).copyable(),
     /*
         Define extension
     */
@@ -1035,9 +1046,8 @@ const SettingsCommands = [
     new Command(
         /^push$/,
         (root) => root.push(),
-        (root) => SFormat.Keyword('push'),
-        true
-    ),
+        (root) => SFormat.Keyword('push')
+    ).parseAlways(),
     /*
         Tracker
     */
@@ -1063,6 +1073,13 @@ const SettingsCommands = [
         (root, str, name, arg) => SFormat.Keyword('track ') + SFormat.Constant(name) + SFormat.Keyword(' when ') + Expression.format(arg)
     )
 ];
+
+SettingsCommands.MACRO_IFNOT = SettingsCommands[0];
+SettingsCommands.MACRO_IF = SettingsCommands[1];
+SettingsCommands.MACRO_ELSEIF = SettingsCommands[2];
+SettingsCommands.MACRO_ELSE = SettingsCommands[3];
+SettingsCommands.MACRO_LOOP = SettingsCommands[4];
+SettingsCommands.MACRO_END = SettingsCommands[5];
 
 class Constants {
     constructor () {
@@ -1194,39 +1211,11 @@ class Settings {
         this.definition = null;
         this.row = null;
 
-        // Reset filter
-        this.setFilter(null);
-        let ignore = false;
-
         // Parse settings
         for (let line of Settings.handleMacros(string, type)) {
-            // Find valid command
             let command = SettingsCommands.find(command => command.isValid(line));
             if (command) {
-                if (command == SettingsCommands[0]) {
-                    // Handle macros
-                    command.parse(this, line);
-
-                    // Set up filtering
-                    if (this.filter.type != null) {
-                        if (typeof this.filter.type != 'boolean') {
-                            if (this.filter.type instanceof Expression) {
-                                this.filter.type = this.filter.type.eval();
-                            } else {
-                                this.filter.type = this.filter.type == type
-                            }
-                        }
-
-                        ignore = this.filter.invert ? this.filter.type : !this.filter.type;
-                    } else {
-                        ignore = false;
-                    }
-                } else if (command == SettingsCommands[1] || command == SettingsCommands[2]) {
-                    // Ignore those
-                } else if (!ignore) {
-                    // Handle command
-                    command.parse(this, line);
-                }
+                command.parse(this, line);
             }
         }
 
@@ -1234,95 +1223,170 @@ class Settings {
         this.pushCategory();
     }
 
-    // Set line filter
-    setFilter (type, invert = false) {
-        this.filter = {
-            type: type,
-            invert: invert
-        }
-    }
+    static handleConditionals (lines, type) {
+        let output = [];
+        let shouldDiscard = false;
 
-    // Flip filter
-    flipFilter () {
-        this.filter.invert = !this.filter.invert;
-    }
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
 
-    static handleMacros (originalString) {
-        let processedLines = [];
+            if (SettingsCommands.MACRO_IF.isValid(line)) {
+                let rule = null;
+                let ruleMustBeTrue = false;
 
-        let loop = undefined;
-        let loopLines = [];
+                if (SettingsCommands.MACRO_IFNOT.isValid(line)) {
+                    rule = SettingsCommands.MACRO_IFNOT;
+                    ruleMustBeTrue = true;
+                } else {
+                    rule = SettingsCommands.MACRO_IF;
+                }
 
-        for (let line of originalString.split('\n')) {
-            line =  Settings.stripComments(line)[0].trim();
+                let cond = rule.parseAsMacro(line)[0].trim();
+                if (cond in FilterTypes) {
+                    shouldDiscard = ruleMustBeTrue ? (FilterTypes[cond] == type) : (FilterTypes[cond] != type);
+                } else {
+                    let condExpression = new Expression(cond);
+                    if (condExpression.isValid()) {
+                        let result = condExpression.eval();
+                        shouldDiscard = ruleMustBeTrue ? !result : result;
+                    }
+                }
+            } else if (SettingsCommands.MACRO_IF.isValid(line)) {
+                let cond = SettingsCommands.MACRO_IF.parseAsMacro(line)[0].trim();
+                if (cond in FilterTypes) {
+                    shouldDiscard = FilterTypes[cond] != type;
+                } else {
+                    let condExpression = new Expression(cond);
+                    if (condExpression.isValid()) {
+                        shouldDiscard = !condExpression.eval();
+                    }
+                }
+            } else if (SettingsCommands.MACRO_ELSEIF.isValid(line)) {
+                let cond = SettingsCommands.MACRO_ELSEIF.parseAsMacro(line)[0].trim();
+                if (cond in FilterTypes) {
+                    shouldDiscard = FilterTypes[cond] != type;
+                } else {
+                    let condExpression = new Expression(cond);
+                    if (condExpression.isValid()) {
+                        let result = condExpression.eval();
+                        shouldDiscard = !result;
+                    }
+                }
+            } else if (SettingsCommands.MACRO_ELSE.isValid(line)) {
+                shouldDiscard = !shouldDiscard;
+            } else if (SettingsCommands.MACRO_LOOP.isValid(line)) {
+                let endsRequired = 1;
+                if (!shouldDiscard) {
+                    output.push(line);
+                }
 
-            // Skip if line is empty
-            if (line.length == 0) {
-                continue;
+                while (++i < lines.length) {
+                    line = lines[i];
+
+                    if (SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line)) {
+                        endsRequired++;
+                        if (!shouldDiscard) {
+                            output.push(line);
+                        }
+                    } else if (SettingsCommands.MACRO_END.isValid(line)) {
+                        if (!shouldDiscard) {
+                            output.push(line);
+                        }
+
+                        if (--endsRequired == 0) break;
+                    } else if (!shouldDiscard) {
+                        output.push(line);
+                    }
+                }
+            } else if (SettingsCommands.MACRO_END.isValid(line)) {
+                shouldDiscard = false;
+            } else if (!shouldDiscard) {
+                output.push(line);
             }
+        }
 
-            if (SettingsCommands[3].isValid(line)) {
-                let [, key ] = line.match(/^import (.+)$/);
-                if (Templates.exists(key)) {
-                    processedLines.push(... Templates.get(key).split('\n'));
-                }
-            } else if (SettingsCommands[1].isValid(line)) {
-                loop = SettingsCommands[1].parse(null, line);
-            } else if (SettingsCommands[2].isValid(line)) {
-                if (loop) {
-                    processedLines.push(... Settings.handleLoop(loop, loopLines));
+        return output;
+    }
 
-                    loop = undefined;
-                    loopLines = [];
+    static handleLoops (lines) {
+        let output = [];
+
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i];
+
+            if (SettingsCommands.MACRO_LOOP.isValid(line)) {
+                let [ names, values ] = SettingsCommands.MACRO_LOOP.parseAsMacro(line);
+
+                let variableNames = names.split(',').map(name => name.trim());
+                let variableValues = [];
+
+                let valuesExpression = new Expression(values);
+                if (valuesExpression.isValid()) {
+                    variableValues = valuesExpression.eval();
+                    if (!variableValues) {
+                        variableValues = [];
+                    } else if (!Array.isArray(variableValues)) {
+                        variableValues = Object.values(array);
+                    }
                 }
-            } else if (loop) {
-                loopLines.push(line);
+
+                let loop = [];
+
+                let endsRequired = 1;
+                while (++i < lines.length) {
+                    line = lines[i];
+
+                    if (SettingsCommands.MACRO_END.isValid(line)) {
+                        if (--endsRequired == 0) break;
+                    } else if (SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line)) {
+                        endsRequired++;
+                    }
+
+                    loop.push(line);
+                }
+
+                for (let block of variableValues) {
+                    if (!Array.isArray(block)) {
+                        block = [ block ];
+                    }
+
+                    let varArray = variableNames.map((key, index) => `var ${ key } ${ block[index] }`);
+                    let replacementArray = variableNames.map((key, index) => {
+                        return {
+                            regexp: new RegExp(`__${ key }__`, 'g'),
+                            value: block[index]
+                        }
+                    });
+
+                    for (let loopLine of loop) {
+                        for (let { regexp, value } of replacementArray) {
+                            loopLine = loopLine.replace(regexp, value)
+                        }
+
+                        output.push(loopLine);
+
+                        if (/^(?:\w+(?:\,\w+)*:|)(?:header|show|category)(?: .+)?$/.test(loopLine)) {
+                            output.push(... varArray);
+                        }
+                    }
+                }
             } else {
-                processedLines.push(line);
+                output.push(line);
             }
         }
 
-        return processedLines;
+        return output;
     }
 
-    static handleLoop({ name, ast }, lines) {
-        let outputLines = [];
-
-        let array = ast.eval();
-        if (array) {
-            if (!Array.isArray(array)) {
-                array = Object.values(array);
-            }
-
-            for (let value of array) {
-                if (!Array.isArray(value)) {
-                    value = [ value ];
-                }
-
-                let vars = name.map((key, index) => `var ${ key } ${ value[index] }`);
-                let reps = name.map((key, index) => {
-                    return {
-                        exp: new RegExp(`__${ key }__`, 'g'),
-                        val: value[index]
-                    };
-                });
-
-                for (let line of lines) {
-                    for (let { exp, val } of reps) {
-                        line = line.replace(exp, val)
-                    }
-
-                    outputLines.push(line);
-                    if (/^(?:\w+(?:\,\w+)*:|)(?:header|show|category)(?: .+)?$/.test(line)) {
-                        outputLines.push(... vars);
-                    }
-                }
-
-                outputLines.push(... vars);
-            }
+    static handleMacros (string, type) {
+        let lines = string.split('\n').map(line => Settings.stripComments(line)[0].trim()).filter(line => line.length);
+        while (lines.some(line => SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line))) {
+            lines = Settings.handleConditionals(lines, type);
+            lines = Settings.handleLoops(lines);
+            lines = Settings.handleConditionals(lines, type);
         }
 
-        return outputLines;
+        return lines;
     }
 
     // Merge definition to object
@@ -2376,7 +2440,7 @@ class Settings {
             let trimmed = Settings.stripComments(line)[0].trim();
 
             for (let command of SettingsCommands) {
-                if (command.parseAlways && command.isValid(trimmed)) {
+                if (command.canParse && command.canParseAlways && command.isValid(trimmed)) {
                     command.parse(settings, trimmed);
                     break;
                 }
