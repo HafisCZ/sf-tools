@@ -153,7 +153,7 @@ DUNGEON_DATA = {
             'Panther': { pos: 5, id: 0, class: 3, level: 225, str: 1095, dex: 4340, int: 1085, con: 4060, lck: 1590, health: 3670240, min: 261, max: 418 },
             'Man-Eater': { pos: 6, id: 0, class: 3, level: 230, str: 1120, dex: 4440, int: 1110, con: 4160, lck: 1625, health: 3843840, min: 266, max: 426 },
             'Swamp Dragon': { pos: 7, id: 0, class: 2, level: 235, str: 1125, dex: 1145, int: 4620, con: 4180, lck: 1655, health: 1972960, min: 528, max: 727 },
-            'Black Skull Warrior': { pos: 8, id: 0, class: 1, level: 240, str: 4640, dex: 1630, int: 1605, con: 4360, lck: 1130, health: 5253800, min: 255, max: 314 },
+            'Black Skull Warrior ': { pos: 8, id: 0, class: 1, level: 240, str: 4640, dex: 1630, int: 1605, con: 4360, lck: 1130, health: 5253800, min: 255, max: 314 },
             'Dragon of Darkness': { pos: 9, id: 0, class: 1, level: 245, str: 4740, dex: 1665, int: 1640, con: 4460, lck: 1150, health: 5485800, min: 260, max: 319 },
             'Knight of the Black Skull': { pos: 10, id: 0, class: 1, level: 250, str: 4840, dex: 1700, int: 1675, con: 4560, lck: 1170, health: 5722800, min: 265, max: 324 }
         }
@@ -587,7 +587,7 @@ DUNGEON_DATA = {
             'Panther': { pos: 5, id: 61, class: 3, level: 360, str: 1752, dex: 6944, int: 1736, con: 35728, lck: 2544, health: 51591232, min: 4813, max: 9626 },
             'Man-Eater': { pos: 6, id: 163, class: 3, level: 362, str: 1762, dex: 6988, int: 1747, con: 36008, lck: 2557, health: 52283616, min: 4847, max: 9672 },
             'Swamp Dragon': { pos: 7, id: 161, class: 2, level: 364, str: 1742, dex: 1773, int: 7156, con: 35607, lck: 2563, health: 25993110, min: 9198, max: 17512 },
-            'Black Skull Warrior': { pos: 8, id: 159, class: 1, level: 366, str: 7076, dex: 2485, int: 2447, con: 36570, lck: 1723, health: 67105952, min: 3916, max: 7591 },
+            'Black Skull Warrior ': { pos: 8, id: 159, class: 1, level: 366, str: 7076, dex: 2485, int: 2447, con: 36570, lck: 1723, health: 67105952, min: 3916, max: 7591 },
             'Dragon of Darkness': { pos: 9, id: 158, class: 1, level: 368, str: 7119, dex: 2500, int: 2463, con: 36844, lck: 1727, health: 67977184, min: 3952, max: 7833 },
             'Knight of the Black Skull': { pos: 10, id: 165, class: 1, level: 370, str: 7163, dex: 2516, int: 2479, con: 37114, lck: 1731, health: 68846472, min: 3964, max: 7873 }
         }
