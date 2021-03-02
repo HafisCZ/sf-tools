@@ -3007,7 +3007,9 @@ class Settings {
                     } else {
                         return nativeDifference;
                     }
-                } else if (this.formatDifference) {
+                } else if (this.formatDifference instanceof Expression) {
+                    return this.formatDifference.eval(player, compare, settings, new ExpressionScope().addSelf(value).add(extra));
+                } else if (typeof this.formatDifference == 'function') {
                     return this.formatDifference(settings, value);
                 } else {
                     return nativeDifference;
