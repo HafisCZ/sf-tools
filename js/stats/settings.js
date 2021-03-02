@@ -1225,6 +1225,8 @@ class Settings {
 
     static handleConditionals (lines, type) {
         let output = [];
+
+        let condition = false;
         let shouldDiscard = false;
 
         for (let i = 0; i < lines.length; i++) {
@@ -1244,36 +1246,36 @@ class Settings {
                 let cond = rule.parseAsMacro(line)[0].trim();
                 if (cond in FilterTypes) {
                     shouldDiscard = ruleMustBeTrue ? (FilterTypes[cond] == type) : (FilterTypes[cond] != type);
+                    condition = true;
                 } else {
                     let condExpression = new Expression(cond);
                     if (condExpression.isValid()) {
                         let result = condExpression.eval();
                         shouldDiscard = ruleMustBeTrue ? !result : result;
-                    }
-                }
-            } else if (SettingsCommands.MACRO_IF.isValid(line)) {
-                let cond = SettingsCommands.MACRO_IF.parseAsMacro(line)[0].trim();
-                if (cond in FilterTypes) {
-                    shouldDiscard = FilterTypes[cond] != type;
-                } else {
-                    let condExpression = new Expression(cond);
-                    if (condExpression.isValid()) {
-                        shouldDiscard = !condExpression.eval();
+                        condition = true;
                     }
                 }
             } else if (SettingsCommands.MACRO_ELSEIF.isValid(line)) {
-                let cond = SettingsCommands.MACRO_ELSEIF.parseAsMacro(line)[0].trim();
-                if (cond in FilterTypes) {
-                    shouldDiscard = FilterTypes[cond] != type;
-                } else {
-                    let condExpression = new Expression(cond);
-                    if (condExpression.isValid()) {
-                        let result = condExpression.eval();
-                        shouldDiscard = !result;
+                if (condition) {
+                    if (shouldDiscard) {
+                        let cond = SettingsCommands.MACRO_ELSEIF.parseAsMacro(line)[0].trim();
+                        if (cond in FilterTypes) {
+                            shouldDiscard = FilterTypes[cond] != type;
+                        } else {
+                            let condExpression = new Expression(cond);
+                            if (condExpression.isValid()) {
+                                let result = condExpression.eval();
+                                shouldDiscard = !result;
+                            }
+                        }
+                    } else {
+                        shouldDiscard = true;
                     }
                 }
             } else if (SettingsCommands.MACRO_ELSE.isValid(line)) {
-                shouldDiscard = !shouldDiscard;
+                if (condition) {
+                    shouldDiscard = !shouldDiscard;
+                }
             } else if (SettingsCommands.MACRO_LOOP.isValid(line)) {
                 let endsRequired = 1;
                 if (!shouldDiscard) {
@@ -1300,6 +1302,7 @@ class Settings {
                 }
             } else if (SettingsCommands.MACRO_END.isValid(line)) {
                 shouldDiscard = false;
+                condition = false;
             } else if (!shouldDiscard) {
                 output.push(line);
             }
