@@ -2624,27 +2624,7 @@ class Settings {
         let loopLines = [];
 
         for (let line of originalString.split('\n')) {
-            // Comment handling
-            let commentIndex = -1;
-            let ignored = false;
-
-            for (let i = 0; i < line.length; i++) {
-                if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
-                    if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
-                    else {
-                        ignored = ignored ? false : line[i];
-                    }
-                } else if (line[i] == '#' && !ignored) {
-                    commentIndex = i;
-                    break;
-                }
-            }
-
-            if (commentIndex != -1) {
-                line = line.slice(0, commentIndex);
-            }
-
-            line = line.trim();
+            line =  Settings.stripComments(line)[0].trim();
 
             // Skip if line is empty
             if (line.length == 0) {
@@ -3760,32 +3740,12 @@ class Settings {
     */
 
     static parseConstants(string) {
-        var settings = new Settings('');
+        let settings = new Settings('');
 
         for (var line of Settings.handleMacros(string)) {
-            let commentIndex = -1;
-            let originalLine = line;
-            let ignored = false;
+            let trimmed = Settings.stripComments(line)[0].trim();
 
-            for (var i = 0; i < line.length; i++) {
-                if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
-                    if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
-                    else {
-                        ignored = ignored ? false : line[i];
-                    }
-                } else if (line[i] == '#' && !ignored) {
-                    commentIndex = i;
-                    break;
-                }
-            }
-
-            if (commentIndex != -1) {
-                line = line.slice(0, commentIndex);
-            }
-
-            var trimmed = line.trim();
-
-            for (var command of SettingsCommands) {
+            for (let command of SettingsCommands) {
                 if (command.parseAlways && command.isValid(trimmed)) {
                     command.parse(settings, trimmed);
                     break;
@@ -3794,6 +3754,31 @@ class Settings {
         }
 
         return settings;
+    }
+
+    static stripComments (line) {
+        let comment;
+        let commentIndex = -1;
+
+        let ignored = false;
+        for (var i = 0; i < line.length; i++) {
+            if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
+                if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
+                else {
+                    ignored = ignored ? false : line[i];
+                }
+            } else if (line[i] == '#' && !ignored) {
+                commentIndex = i;
+                break;
+            }
+        }
+
+        if (commentIndex != -1) {
+            comment = line.slice(commentIndex);
+            line = line.slice(0, commentIndex);
+        }
+
+        return [ line, comment, commentIndex ];
     }
 
     // Format code
@@ -3807,31 +3792,10 @@ class Settings {
             if (SettingsHighlightCache.has(line)) {
                 content += SettingsHighlightCache.get(line);
             } else {
-                let comment;
-                let commentIndex = -1;
-                let originalLine = line;
-                let ignored = false;
-
-                for (var i = 0; i < line.length; i++) {
-                    if (line[i] == '\'' || line[i] == '\"' || line[i] == '\`') {
-                        if (line[i - 1] == '\\' || (ignored && line[i] != ignored)) continue;
-                        else {
-                            ignored = ignored ? false : line[i];
-                        }
-                    } else if (line[i] == '#' && !ignored) {
-                        commentIndex = i;
-                        break;
-                    }
-                }
-
-                if (commentIndex != -1) {
-                    comment = line.slice(commentIndex);
-                    line = line.slice(0, commentIndex);
-                }
-
-                let trimmed = line.trim();
-                let spacing = line.match(/\s+$/);
-                let prespace = line.match(/^\s+/);
+                let [ commandLine, comment, commentIndex ] = Settings.stripComments(line);
+                let trimmed = commandLine.trim();
+                let spacing = commandLine.match(/\s+$/);
+                let prespace = commandLine.match(/^\s+/);
 
                 let currentContent = ''
 
@@ -3854,7 +3818,7 @@ class Settings {
                     currentContent += SFormat.Comment(comment);
                 }
 
-                SettingsHighlightCache.store(originalLine, currentContent);
+                SettingsHighlightCache.store(line, currentContent);
 
                 content += currentContent;
             }
