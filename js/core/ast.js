@@ -827,15 +827,35 @@ class Expression {
 
                     if (mapper) {
                         if (array.segmented) {
-                            values = array.map((obj, i) => mapper.ast.eval(obj[0], obj[1], environment, scope.copy().addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index: i }), header));
+                            values = array.map((obj, i) => {
+                                return {
+                                    key: mapper.ast.eval(obj[0], obj[1], environment, scope.copy().addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index: i }), header),
+                                    val: obj
+                                };
+                            });
                         } else {
-                            values = array.map((obj, i) => mapper.ast.eval(player, reference, environment, scope.copy().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index: i }), header));
+                            values = array.map((obj, i) => {
+                                return {
+                                    key: mapper.ast.eval(player, reference, environment, scope.copy().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index: i }), header),
+                                    val: obj
+                                };
+                            });
                         }
                     } else {
                         if (array.segmented) {
-                            values = array.map((obj, i) => this.evalInternal(obj[0], obj[1], environment, scope.copy().addSelf(obj[0]).add({ loop_index: i }), header, node.args[1]));
+                            values = array.map((obj, i) => {
+                                return {
+                                    key: this.evalInternal(obj[0], obj[1], environment, scope.copy().addSelf(obj[0]).add({ loop_index: i }), header, node.args[1]),
+                                    val: obj
+                                };
+                            });
                         } else {
-                            values = array.map((obj, i) => this.evalInternal(player, reference, environment, scope.copy().addSelf(obj).add({ loop_index: i }), header, node.args[1]));
+                            values = array.map((obj, i) => {
+                                return {
+                                    key: this.evalInternal(player, reference, environment, scope.copy().addSelf(obj).add({ loop_index: i }), header, node.args[1]),
+                                    val: obj
+                                };
+                            });
                         }
                     }
 
