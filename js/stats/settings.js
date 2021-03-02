@@ -2490,27 +2490,21 @@ class Settings {
                 content += SettingsHighlightCache.get(line);
             } else {
                 let [ commandLine, comment, commentIndex ] = Settings.stripComments(line);
-                let trimmed = commandLine.trim();
-                let spacing = commandLine.match(/\s+$/);
-                let prespace = commandLine.match(/^\s+/);
+                let [ , prefix, trimmed, suffix ] = commandLine.match(/^(\s*)(\S(?:.*\S)?)?(\s*)$/);
 
-                let currentContent = ''
+                let currentContent = '';
+                currentContent += prefix.replace(/ /g, '&nbsp;');
 
-                if (prespace) {
-                    currentContent += prespace[0].replace(/ /g, '&nbsp;');
+                if (trimmed) {
+                    let command = SettingsCommands.find(command => command.isValid(trimmed));
+                    if (command) {
+                        currentContent += command.format(settings, trimmed);
+                    } else {
+                        currentContent += SFormat.Error(trimmed);
+                    }
                 }
 
-                let command = SettingsCommands.find(command => command.isValid(trimmed));
-                if (command) {
-                    currentContent += command.format(settings, trimmed);
-                } else {
-                    currentContent += SFormat.Error(trimmed);
-                }
-
-                if (spacing) {
-                    currentContent += spacing[0].replace(/ /g, '&nbsp;');
-                }
-
+                currentContent += suffix.replace(/ /g, '&nbsp;');
                 if (commentIndex != -1) {
                     currentContent += SFormat.Comment(comment);
                 }
