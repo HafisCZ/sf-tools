@@ -2315,6 +2315,45 @@ class SettingsView extends View {
             $b.css('transform', `translate(${ -sx }px, ${ -sy }px)`);
         });
 
+        this.$area.keydown((e) => {
+            if (e.key == 'Tab') {
+                e.preventDefault();
+
+                let a = this.$area.get(0);
+                let v = this.$area.val();
+                let s = a.selectionStart;
+                let d = a.selectionEnd;
+
+                if (s == d) {
+                    this.$area.val(v.substring(0, s) + '  ' + v.substring(s));
+                    a.selectionStart = s + 2;
+                    a.selectionEnd = d + 2;
+                } else {
+                    let o = 0, i;
+                    for (i = d - 1; i > s; i--) {
+                        if (v[i] == '\n') {
+                            v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
+                        }
+                    }
+
+                    while (i >= 0) {
+                        if (v[i] == '\n') {
+                            v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
+                            break;
+                        } else {
+                            i--;
+                        }
+                    }
+
+                    this.$area.val(v);
+                    a.selectionStart = s + o * 2;
+                    a.selectionEnd = d + o * 2;
+                }
+
+                this.$area.trigger('input');
+            }
+        });
+
         // Paste handling
         this.$area.on('paste', () => {
             this.pasted = true;
