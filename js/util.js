@@ -692,6 +692,8 @@ function download (e, d) {
 function downloadScreenshot ($node, filename, onClone) {
     html2canvas($node.get(0), {
         logging: false,
+        allowTaint: true,
+        useCORS: true,
         onclone: doc => {
             let $table = $(doc).find('table.sftools-table tbody');
             $table.each((index, el) => {
