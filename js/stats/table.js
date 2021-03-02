@@ -2327,7 +2327,7 @@ const SettingsCommands = [
         (root, expression) => {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addAliasExpression((a, b) => ast.eval(undefined, undefined, a, new ExpressionScope().addSelf(b)));
+                root.addAliasExpression((a, b) => ast.eval(undefined, undefined, a, undefined, b));
             }
         },
         (root, expression) => SFormat.Keyword('expa ') + Expression.format(expression, root)
