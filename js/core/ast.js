@@ -747,7 +747,7 @@ class Expression {
         this.subexpressions_cache_indexes = [];
         this.subexpressions_cache = [];
 
-        if ((scope && !scope.empty()) || !this.cacheable || !player || !reference) {
+        if (!scope.empty() || !this.cacheable || !player || !reference) {
             return this.evalInternal(player, reference, environment, scope, header, this.root);
         } else if (ExpressionCache.has(player, reference, this.rstr)) {
             return ExpressionCache.get(player, reference, this.rstr);
