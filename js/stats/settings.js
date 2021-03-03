@@ -1251,7 +1251,7 @@ class Settings {
                     let condExpression = new Expression(cond);
                     if (condExpression.isValid()) {
                         let result = condExpression.eval();
-                        shouldDiscard = ruleMustBeTrue ? !result : result;
+                        shouldDiscard = ruleMustBeTrue ? result : !result;
                         condition = true;
                     }
                 }
