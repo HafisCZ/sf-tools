@@ -2361,6 +2361,22 @@ class SettingsView extends View {
             this.pasted = true;
         });
 
+        this.$area.on('dragover dragenter', e => {
+            e.preventDefault();
+            e.stopPropagation();
+        }).on('drop', e => {
+            if (e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length && e.originalEvent.dataTransfer.files[0].type == 'text/plain') {
+                e.preventDefault();
+                e.stopPropagation();
+
+                let r = new FileReader();
+                r.readAsText(e.originalEvent.dataTransfer.files[0], 'UTF-8');
+                r.onload = f => {
+                    this.$area.val(f.target.result).trigger('input');
+                }
+            }
+        });
+
         // History position
         this.index = 0;
     }
