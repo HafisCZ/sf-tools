@@ -988,9 +988,10 @@ class BrowseView extends View {
             'o': 'Show own',
             'sr': 'Sort by custom expression',
             'q': 'Custom settings (separate header names with comma)',
-            'qc': 'Show only selected categories'
+            'qc': 'Show only selected categories',
+            't': 'Show online template directly'
         }).change((event) => {
-            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h|o|sr|q|qc):/);
+            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h|o|sr|q|qc|t):/);
 
             var terms = [
                 {
@@ -1119,6 +1120,18 @@ class BrowseView extends View {
                     this.table.setSettings(`category${ arg.split(',').reduce((c, a) => c + `\nheader ${ a.trim() }`, '') }`);
                 } else if (key == 'qc' && typeof(arg) == 'string' && arg.length) {
                     this.table.selectCategories(arg.split(',').map(x => x.trim()));
+                } else if (key == 't' && typeof(arg) == 'string' && arg.length) {
+                    let script = this.tryGetSettings(arg.trim());
+                    if (script) {
+                        this.tableQEnabled = true;
+                        this.recalculate = true;
+
+                        // Clear original sort
+                        this.table.clearSorting();
+
+                        this.table = this.tableQ;
+                        this.table.setSettings(script);
+                    }
                 }
             }
 
@@ -1158,6 +1171,22 @@ class BrowseView extends View {
 
             this.recalculate = false;
         });
+    }
+
+    tryGetSettings (code) {
+        if (typeof this.settingsRepo == 'undefined') {
+            this.settingsRepo = {};
+        }
+
+        if (!(code in this.settingsRepo)) {
+            this.settingsRepo[code] = $.ajax({
+                url: `https://sftools-api.herokuapp.com/scripts?key=${ code }`,
+                type: 'GET',
+                async: false
+            }).responseJSON.content;
+        }
+
+        return this.settingsRepo[code];
     }
 
     show () {
@@ -3374,12 +3403,7 @@ class OnlineFilesView extends View {
         this.onReceive = (code, obj) => {
             this.$ok.removeClass('loading');
             if (code && obj) {
-                let data = JSON.parse(obj);
-                if (data.settings) {
-                    Templates.save(`Shared ${ code }`, data.settings);
-                }
-
-                Storage.import(data.data);
+                Storage.import(JSON.parse(obj).data);
                 this.$parent.modal('hide');
 
                 callback();
