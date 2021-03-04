@@ -315,17 +315,27 @@ class TableInstance {
     setEntries (array, skipEvaluation = false, simulatorLimit = 0, manualSort = null) {
         let shouldUpdate = false;
 
-        // Filter incoming array if needed
-        this.array = this.type != TableType.History ? array : array.map(([ timestamp, e ]) => {
-            // Preload character
-            let obj = Database.getPlayer(e.Identifier, timestamp);
+        if (this.type == TableType.History) {
+            this.array = array.map(([ timestamp, e ]) => {
+                let obj = Database.getPlayer(e.Identifier, timestamp);
+                let disc = this.settings.discardRules.some(rule => rule.eval(obj, obj, this.settings));
 
-            // Find if falls under discard rule
-            let disc = this.settings.discardRules.some(rule => rule.eval(obj, obj, this.settings));
+                return disc ? null : [ timestamp, obj ];
+            }).filter(e => e);
+        } else if (this.type == TableType.Players) {
+            this.array = array.map(obj => {
+                let { player, compare } = obj;
 
-            // Return stuff
-            return disc ? null : [ timestamp, obj ];
-        }).filter(e => e);
+                let p = Database.getPlayer(player.Identifier, player.Timestamp);
+                let c = Database.getPlayer(player.Identifier, compare.Timestamp);
+
+                let disc = this.settings.discardRules.some(rule => rule.eval(p, c, this.settings));
+
+                return disc ? null : obj;
+            }).filter(e => e);
+        } else {
+            this.array = array;
+        }
 
         // Evaluate variables
         if (this.type == TableType.History) {
