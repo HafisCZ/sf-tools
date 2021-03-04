@@ -1678,9 +1678,9 @@ class Settings {
 
                 if (this.formatDifference === true) {
                     if (this.format instanceof Expression) {
-                        output = this.format.eval(player, compare, settings, new ExpressionScope().addSelf(value).add(extra));
+                        return this.format.eval(player, compare, settings, new ExpressionScope().addSelf(value).add(extra));
                     } else if (typeof this.format == 'function') {
-                        output = this.format(player, compare, settings, value, extra);
+                        return this.format(player, compare, settings, value, extra);
                     } else {
                         return nativeDifference;
                     }
