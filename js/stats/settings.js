@@ -207,6 +207,32 @@ const SettingsCommands = [
         (root) => SFormat.Macro('end')
     ).parseNever(),
     /*
+        Macro-compatible function
+    */
+    new Command(
+        /^mset (\w+[\w ]*) with (\w+[\w ]*(?:,\s*\w+[\w ]*)*) as (.+)$/,
+        (root, name, arguments, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addFunction(name, ast, arguments.split(',').map(v => v.trim()));
+            }
+        },
+        (root, name, arguments, expression) => SFormat.Macro('mset') + SFormat.Keyword(' ') + SFormat.Constant(name) + SFormat.Keyword(' with ') + arguments.split(',').map(v => SFormat.Constant(v)).join(',') + SFormat.Keyword(' as ') + Expression.format(expression, root),
+    ).parseAlways(),
+    /*
+        Macro-compatible variable
+    */
+    new Command(
+        /^mset (\w+[\w ]*) as (.+)$/,
+        (root, name, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addVariable(name, ast, false);
+            }
+        },
+        (root, name, expression) => SFormat.Macro('mset') + SFormat.Keyword(' ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(expression, root),
+    ).parseAlways(),
+    /*
         Server column
     */
     new Command(
@@ -1080,6 +1106,8 @@ SettingsCommands.MACRO_ELSEIF = SettingsCommands[2];
 SettingsCommands.MACRO_ELSE = SettingsCommands[3];
 SettingsCommands.MACRO_LOOP = SettingsCommands[4];
 SettingsCommands.MACRO_END = SettingsCommands[5];
+SettingsCommands.MACRO_FUNCTION = SettingsCommands[6];
+SettingsCommands.MACRO_VARIABLE = SettingsCommands[6];
 
 class Constants {
     constructor () {
@@ -1381,6 +1409,30 @@ class Settings {
         return output;
     }
 
+    static handleMacroVariables (lines, settings) {
+        for (let line of lines) {
+            if (SettingsCommands.MACRO_FUNCTION.isValid(line)) {
+                let [name, variables, expression] = SettingsCommands.MACRO_FUNCTION.parseAsMacro(line);
+                let ast = new Expression(expression);
+                if (ast.isValid()) {
+                    settings.functions[name] = {
+                        ast: ast,
+                        args: variables.split(',').map(v => v.trim())
+                    };
+                }
+            } else if (SettingsCommands.MACRO_VARIABLE.isValid(line)) {
+                let [name, expression] = SettingsCommands.MACRO_VARIABLE.parseAsMacro(line);
+                let ast = new Expression(expression);
+                if (ast.isValid()) {
+                    settings.variables[name] = {
+                        ast: ast,
+                        tableVariable: false
+                    };
+                }
+            }
+        }
+    }
+
     static handleMacros (string, type) {
         let lines = string.split('\n').map(line => Settings.stripComments(line)[0].trim()).filter(line => line.length);
 
@@ -1399,6 +1451,8 @@ class Settings {
             constants: constants,
             lists: { }
         };
+
+        Settings.handleMacroVariables(lines, settings);
 
         while (lines.some(line => SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line))) {
             lines = Settings.handleConditionals(lines, type, settings, scope);
