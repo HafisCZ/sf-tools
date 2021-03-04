@@ -1339,7 +1339,7 @@ class Settings {
         return output;
     }
 
-    static handleLoops (lines) {
+    static handleLoops (lines, settings, scope) {
         let output = [];
 
         for (let i = 0; i < lines.length; i++) {
@@ -1353,11 +1353,15 @@ class Settings {
 
                 let valuesExpression = new Expression(values);
                 if (valuesExpression.isValid()) {
-                    variableValues = valuesExpression.eval();
+                    variableValues = valuesExpression.eval(undefined, undefined, settings, scope);
                     if (!variableValues) {
                         variableValues = [];
                     } else if (!Array.isArray(variableValues)) {
-                        variableValues = Object.values(array);
+                        if (typeof variableValues == 'object') {
+                            variableValues = Object.values(variableValues);
+                        } else {
+                            variableValues = [ variableValues ];
+                        }
                     }
                 }
 
@@ -1456,7 +1460,7 @@ class Settings {
 
         while (lines.some(line => SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line))) {
             lines = Settings.handleConditionals(lines, type, settings, scope);
-            lines = Settings.handleLoops(lines);
+            lines = Settings.handleLoops(lines, settings, scope);
             lines = Settings.handleConditionals(lines, type, settings, scope);
         }
 
