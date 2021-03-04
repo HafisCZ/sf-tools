@@ -1223,7 +1223,7 @@ class Settings {
         this.pushCategory();
     }
 
-    static handleConditionals (lines, type) {
+    static handleConditionals (lines, type, settings, scope) {
         let output = [];
 
         let condition = false;
@@ -1250,7 +1250,7 @@ class Settings {
                 } else {
                     let condExpression = new Expression(cond);
                     if (condExpression.isValid()) {
-                        let result = condExpression.eval();
+                        let result = condExpression.eval(undefined, undefined, settings, scope);
                         shouldDiscard = ruleMustBeTrue ? result : !result;
                         condition = true;
                     }
@@ -1264,7 +1264,7 @@ class Settings {
                         } else {
                             let condExpression = new Expression(cond);
                             if (condExpression.isValid()) {
-                                let result = condExpression.eval();
+                                let result = condExpression.eval(undefined, undefined, settings, scope);
                                 shouldDiscard = !result;
                             }
                         }
@@ -1383,10 +1383,27 @@ class Settings {
 
     static handleMacros (string, type) {
         let lines = string.split('\n').map(line => Settings.stripComments(line)[0].trim()).filter(line => line.length);
+
+        let scope = new ExpressionScope().add({
+            table: type,
+        }).add(SiteOptions.options);
+
+        let constants = new Constants();
+        constants.addConstant('guild', TableType.Group);
+        constants.addConstant('player', TableType.History);
+        constants.addConstant('players', TableType.Players);
+
+        let settings = {
+            functions: { },
+            variables: { },
+            constants: constants,
+            lists: { }
+        };
+
         while (lines.some(line => SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line))) {
-            lines = Settings.handleConditionals(lines, type);
+            lines = Settings.handleConditionals(lines, type, settings, scope);
             lines = Settings.handleLoops(lines);
-            lines = Settings.handleConditionals(lines, type);
+            lines = Settings.handleConditionals(lines, type, settings, scope);
         }
 
         return lines;
