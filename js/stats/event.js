@@ -1943,11 +1943,9 @@ class FilesView extends View {
         this.$obfuscated = this.$parent.find('[data-op="checkbox-obfuscated"]').checkbox({
             onChecked: () => {
                 SiteOptions.obfuscated = true;
-                this.show();
             },
             onUnchecked: () => {
                 SiteOptions.obfuscated = false;
-                this.show();
             }
         }).checkbox(SiteOptions.obfuscated ? 'set checked' : 'set unchecked');
 
@@ -1967,11 +1965,9 @@ class FilesView extends View {
         this.$insecure = this.$parent.find('[data-op="checkbox-insecure"]').checkbox({
             onChecked: () => {
                 SiteOptions.insecure = true;
-                this.show();
             },
             onUnchecked: () => {
                 SiteOptions.insecure = false;
-                this.show();
             }
         }).checkbox(SiteOptions.insecure ? 'set checked' : 'set unchecked');
 
@@ -1979,11 +1975,9 @@ class FilesView extends View {
         this.$inventory = this.$parent.find('[data-op="checkbox-inventory"]').checkbox({
             onChecked: () => {
                 SiteOptions.inventory = true;
-                this.show();
             },
             onUnchecked: () => {
                 SiteOptions.inventory = false;
-                this.show();
             }
         }).checkbox(SiteOptions.inventory ? 'set checked' : 'set unchecked');
 
