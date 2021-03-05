@@ -1107,7 +1107,7 @@ SettingsCommands.MACRO_ELSE = SettingsCommands[3];
 SettingsCommands.MACRO_LOOP = SettingsCommands[4];
 SettingsCommands.MACRO_END = SettingsCommands[5];
 SettingsCommands.MACRO_FUNCTION = SettingsCommands[6];
-SettingsCommands.MACRO_VARIABLE = SettingsCommands[6];
+SettingsCommands.MACRO_VARIABLE = SettingsCommands[7];
 
 class Constants {
     constructor () {
