@@ -1740,6 +1740,10 @@ class Settings {
                     output = `${ output }${ this.extra(player) }`;
                 }
 
+                if (typeof output == 'undefined') {
+                    output = '';
+                }
+
                 // Replace spaces with unbreakable ones
                 if (this.breakline == 0) {
                     output = output.replace(/\ /g, '&nbsp;')
