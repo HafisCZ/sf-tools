@@ -1413,42 +1413,7 @@ class Settings {
         return output;
     }
 
-    static handleMacroVariables (lines, settings) {
-        for (let line of lines) {
-            if (SettingsCommands.MACRO_FUNCTION.isValid(line)) {
-                let [name, variables, expression] = SettingsCommands.MACRO_FUNCTION.parseAsMacro(line);
-                let ast = new Expression(expression);
-                if (ast.isValid()) {
-                    settings.functions[name] = {
-                        ast: ast,
-                        args: variables.split(',').map(v => v.trim())
-                    };
-                }
-            } else if (SettingsCommands.MACRO_VARIABLE.isValid(line)) {
-                let [name, expression] = SettingsCommands.MACRO_VARIABLE.parseAsMacro(line);
-                let ast = new Expression(expression);
-                if (ast.isValid()) {
-                    settings.variables[name] = {
-                        ast: ast,
-                        tableVariable: false
-                    };
-                }
-            }
-        }
-    }
-
-    static handleMacros (string, type) {
-        let lines = string.split('\n').map(line => Settings.stripComments(line)[0].trim()).filter(line => line.length);
-
-        let scope = new ExpressionScope().add({
-            table: type,
-        }).add(SiteOptions.options);
-
-        let constants = new Constants();
-        constants.addConstant('guild', TableType.Group);
-        constants.addConstant('player', TableType.History);
-        constants.addConstant('players', TableType.Players);
-
+    static handleMacroVariables (lines, constants) {
         let settings = {
             functions: { },
             variables: { },
@@ -1456,12 +1421,61 @@ class Settings {
             lists: { }
         };
 
-        Settings.handleMacroVariables(lines, settings);
+        let is_unsafe = 0;
+        for (let line of lines) {
+            if (SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line)) {
+                is_unsafe++;
+            } else if (SettingsCommands.MACRO_END.isValid(line)) {
+                if (is_unsafe > 0) {
+                    is_unsafe--;
+                }
+            } else if (is_unsafe == 0) {
+                if (SettingsCommands.MACRO_FUNCTION.isValid(line)) {
+                    let [name, variables, expression] = SettingsCommands.MACRO_FUNCTION.parseAsMacro(line);
+                    let ast = new Expression(expression);
+                    if (ast.isValid()) {
+                        settings.functions[name] = {
+                            ast: ast,
+                            args: variables.split(',').map(v => v.trim())
+                        };
+                    }
+                } else if (SettingsCommands.MACRO_VARIABLE.isValid(line)) {
+                    let [name, expression] = SettingsCommands.MACRO_VARIABLE.parseAsMacro(line);
+                    let ast = new Expression(expression);
+                    if (ast.isValid()) {
+                        settings.variables[name] = {
+                            ast: ast,
+                            tableVariable: false
+                        };
+                    }
+                }
+            }
+        }
 
+        return settings;
+    }
+
+    static handleMacros (string, type) {
+        let lines = string.split('\n').map(line => Settings.stripComments(line)[0].trim()).filter(line => line.length);
+
+        // Scope for macros
+        let scope = new ExpressionScope().add({
+            table: type,
+        }).add(SiteOptions.options);
+
+        // Special constants for macros
+        let constants = new Constants();
+        constants.addConstant('guild', TableType.Group);
+        constants.addConstant('player', TableType.History);
+        constants.addConstant('players', TableType.Players);
+
+        // Generate initial settings
+        let settings = Settings.handleMacroVariables(lines, constants);
         while (lines.some(line => SettingsCommands.MACRO_IF.isValid(line) || SettingsCommands.MACRO_LOOP.isValid(line))) {
             lines = Settings.handleConditionals(lines, type, settings, scope);
+            settings = Settings.handleMacroVariables(lines, constants);
             lines = Settings.handleLoops(lines, settings, scope);
-            lines = Settings.handleConditionals(lines, type, settings, scope);
+            settings = Settings.handleMacroVariables(lines, constants);
         }
 
         return lines;
