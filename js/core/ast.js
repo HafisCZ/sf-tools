@@ -179,7 +179,7 @@ class Expression {
                     }).join('') }\``;
                 } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'difference', 'sort', 'var', 'tracker' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
-                } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index' ].includes(token) || root.variables.hasOwnProperty(token)) {
+                } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index', 'table_timestamp', 'table_reference' ].includes(token) || root.variables.hasOwnProperty(token)) {
                     value = SFormat.Constant(token);
                 } else if (/(\.*)this/.test(token)) {
                     value = SFormat.Constant(token);
@@ -963,6 +963,10 @@ class Expression {
                 } else {
                     return undefined;
                 }
+            } else if (node == 'table_timestamp') {
+                return environment.timestamp;
+            } else if (node == 'table_reference') {
+                return environment.reference;
             } else if (node == 'header') {
                 // Return current header
                 return header;

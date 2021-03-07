@@ -2043,7 +2043,9 @@ class Settings {
             lists: {},
             // Constants have to be propagated through the environment
             constants: this.constants,
-            row_indexes: this.row_indexes
+            row_indexes: this.row_indexes,
+            timestamp: this.reference,
+            reference: this.reference
         }
     }
 
@@ -2245,6 +2247,9 @@ class Settings {
             })
         }
 
+        this.timestamp = array.timestamp;
+        this.reference = array.reference;
+
         // Run simulator if needed
         this.evalSimulator(array, simulatorLimit, entryLimit);
 
@@ -2340,6 +2345,9 @@ class Settings {
                 8: 0
             })
         }
+
+        this.timestamp = array.timestamp;
+        this.reference = array.reference;
 
         // Run simulator if needed
         this.evalSimulator(array, simulatorLimit, entryLimit);
