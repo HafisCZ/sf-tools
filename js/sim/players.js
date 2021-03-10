@@ -214,7 +214,7 @@ class FighterModel {
             gladiator = 0.05 * 15;
         }
 
-        return base * gladiator;
+        return base * (1 + gladiator);
     }
 
     // Health
