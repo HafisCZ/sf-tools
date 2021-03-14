@@ -1193,7 +1193,7 @@ const Storage = new (class {
                     }
                 }
 
-                if (!file.groups.find(g => g.name === group.name) && group.rank) {
+                if (!file.groups.find(g => g.id === group.id) && group.rank) {
                     file.groups.push(group);
                 }
             }
@@ -1271,7 +1271,7 @@ const Storage = new (class {
                     player.save[165] = 0;
                 }
 
-                if (!file.players.find(p => p.name === player.name)) {
+                if (!file.players.find(p => p.id === player.id)) {
                     file.players.push(player);
                 }
             }
