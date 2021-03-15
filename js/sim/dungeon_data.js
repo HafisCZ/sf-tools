@@ -433,6 +433,12 @@ DUNGEON_DATA = {
             'Zeus': { pos: 10, id: 1419, class: 2, level: 500, str: 33333, dex: 33333, int: 44444, con: 300000, lck: 15000, health: 459000000, runes: { type: 42, res: [60, 60, 60], damage: 60 }, min: 1500, max: 2996 }
         }
     },
+    '100': {
+        name: 'Twister',
+        floors: {
+            'Grey Ghoul': { pos: 486, id: 32, class: 1, level: 385, str: 56327, dex: 19741, int: 19625, con: 76759, lck: 12247, health: 148144864, min: 426, max: 808 }
+        }
+    },
     '101': {
         name: 'Desecrated Catacombs',
         shadow: true,
