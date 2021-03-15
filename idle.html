@@ -45,7 +45,18 @@
                     <h1 class="ui centered header">Arena Manager</h1>
                 </div>
                 <div class="two wide column">
-
+                    <div class="ui mini form">
+                        <div class="ui selection fluid compact dropdown" id="suggest-mode">
+                            <input type="hidden" value="0">
+                            <i class="dropdown icon"></i>
+                            <div class="default text"></div>
+                            <div class="menu">
+                                <div class="item" data-value="0" style="font-size: .78571429rem;">Next 1 + BP</div>
+                                <div class="item" data-value="1" style="font-size: .78571429rem;">Only next 1</div>
+                                <div class="item" data-value="2" style="font-size: .78571429rem;">Only breakpoint</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="four wide wide column">
                     <div class="ui mini form">
@@ -276,9 +287,10 @@
             var display = 0;
 
             $('#display').on('click', function () { display = display == 0 ? 1 : 0; if (display) { $(this).text('Scientific'); } else { $(this).text('Labeled'); } update(); });
-            $('[data-setting="level"], [data-setting="boosts"], #runes, #money, #reqhours').on('input change', update);
+            $('[data-setting="level"], [data-setting="boosts"], #runes, #money, #reqhours, #suggest-mode').on('input change', update);
             $('[data-bulk]').on('click', function () { if ($(this).hasClass('green')) { $(this).removeClass('green'); bulk = 0; } else { $('[data-bulk]').removeClass('green'); $(this).addClass('green'); bulk = $(this).attr('data-bulk'); } update(); });
             $('[data-setting="clevel"]').parent('.field').on('click', function () { var child = $(this).children('[data-setting]'); $(`[data-setting="level"][data-building="${ child.attr('data-building') }"]`).val(child.val()); update(); });
+            $('#suggest-mode').dropdown();
 
             function formatNumber (value) {
                 if (display == 0 || value < 1E6) {
@@ -327,7 +339,8 @@
                     }),
                     runes: $('#runes').val(),
                     money: $('#money').val(),
-                    hours: $('#reqhours').val()
+                    hours: $('#reqhours').val(),
+                    suggest: $('#suggest-mode').dropdown('get value')
                 };
             }
 
@@ -335,6 +348,7 @@
                 $('#runes').val(data.runes);
                 $('#money').val(data.money);
                 $('#reqhours').val(data.hours);
+                $('#suggest-mode').dropdown('set selected', data.suggest || 0);
                 data.buildings.forEach(b => {
                     $(`[data-building="${ b.id }"][data-setting="${ b.key }"]`).val(b.value);
                 })
@@ -377,6 +391,8 @@
                     localStorage.idle = JSON.stringify(getTable());
                 }
 
+                var suggestMode = parseInt($('#suggest-mode').dropdown('get value'));
+
                 // Money multiplier from runes
                 var runeMultiplier = 1 + 0.05 * getField('#runes');
 
@@ -407,9 +423,21 @@
                     var amortization = building.getAmortisation(level, (bulk > 0 && bulk < 5) ? Multipliers[bulk - 1] : 1) / boost.rate;
                     var amortizationBreakpoint = building.getBreakpointAmortisation(level) / boost.rate;
 
-                    if (i == 0 || (bulk < 5 && amortization < amortizationValue) || amortizationBreakpoint < amortizationValue) {
-                        amortizationIndex = i;
-                        amortizationValue = bulk < 5 ? Math.min(amortization, amortizationBreakpoint) : amortizationBreakpoint;
+                    if (suggestMode == 1) {
+                        if (i == 0 || (bulk < 5 && amortization < amortizationValue)) {
+                            amortizationIndex = i;
+                            amortizationValue = amortization;
+                        }
+                    } else if (suggestMode == 2) {
+                        if (i == 0 || amortizationBreakpoint < amortizationValue) {
+                            amortizationIndex = i;
+                            amortizationValue = amortizationBreakpoint;
+                        }
+                    } else {
+                        if (i == 0 || (bulk < 5 && amortization < amortizationValue) || amortizationBreakpoint < amortizationValue) {
+                            amortizationIndex = i;
+                            amortizationValue = bulk < 5 ? Math.min(amortization, amortizationBreakpoint) : amortizationBreakpoint;
+                        }
                     }
                 });
 
