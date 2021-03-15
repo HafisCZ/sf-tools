@@ -1000,6 +1000,7 @@ class Expression {
                 } else if (ExpressionCache.has(player, reference, node)) {
                     return ExpressionCache.get(player, reference, node);
                 } else {
+                    ExpressionCache.set(player, reference, node, undefined);
                     let value = variable.ast.eval(player, reference, environment);
                     ExpressionCache.set(player, reference, node, value);
                     return value;
