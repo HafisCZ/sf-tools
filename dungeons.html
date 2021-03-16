@@ -989,10 +989,12 @@
                                 let shadowDungeons = player.Dungeons.Shadow.concat(player.Dungeons.Extra.Shadow);
                                 let tower = player.Dungeons.Tower;
                                 let youtube = player.Dungeons.Extra.Youtube;
+                                let twister = player.Dungeons.Twister;
 
                                 let availableBosses = [
                                     ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon - 2)),
                                     getDungeonEnemyAt(15, false, tower),
+                                    getDungeonEnemyAt(100, false, twister - 2),
                                     ... shadowDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], true, dungeon - 2)),
                                     getDungeonEnemyAt(15, true, youtube - 2),
                                 ].filter(boss => boss);
