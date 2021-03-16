@@ -2171,7 +2171,7 @@ const SP_KEYWORD_MAPPING_0 = {
         statistics: false
     },
     'Guild Joined': {
-        expr: p => p.Group.Joined,
+        expr: p => p.hasGuild() ? p.Group.Joined : undefined,
         format: (p, c, e, x) => p.hasGuild() ? formatDate(x) : '',
         difference: false,
         statistics: false
