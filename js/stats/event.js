@@ -3312,7 +3312,7 @@ class OnlineTemplatesView extends View {
                 });
 
                 this.showScripts(message);
-            }).fail(function () {
+            }).fail(() => {
                 this.showScripts([]);
             });
         } else {
