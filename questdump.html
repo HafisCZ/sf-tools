@@ -102,10 +102,10 @@
                 $('#main-container').append(quests.map(q => q.map(quest => {
                     return `
                         <div class="column text-center quest-container">
-                            ${ quest.red ? `<div style="color: red;"><b>Epic Quest</b></div>` : '' }
+                            <div${ quest.red ? ' style="color: red;"' : '' }><b>${ quest.red ? 'Epic ' : '' }Quest</b></div>
                             <div><b>Level:</b><span>${ quest.level }</span></div>
                             <div><b>Gold:</b><span>${ formatAsSpacedNumber(quest.gold, ' ') }</span></div>
-                            ${ quest.item_gold ? `<div style="color: green;"><b>Item:</b><span>${ formatAsSpacedNumber(quest.item_gold, ' ') }</span></div>` : '' }
+                            <div${ quest.item_gold ? ' style="color: green;"' : '' }><b>Item:</b><span>${ formatAsSpacedNumber(quest.item_gold, ' ') }</span></div>
                             <div><b>XP:</b><span>${ formatAsSpacedNumber(quest.xp, ' ') }</span></div>
                             <div><b>Duration:</b><span>${ quest.duration / 60 } min</span></div>
                         </div>
