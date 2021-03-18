@@ -60,6 +60,19 @@
         </div>
 
         <script type="text/javascript">
+            function isHighStakesQuest (e) {
+                e = Math.abs(e);
+                if (e <= 148) {
+                    if (e != 139 && e != 145 && e != 148) {
+                        return false;
+                    }
+                } else if (e != 152 && e != 155 && e != 157) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
             function ripQuests (json) {
                 let saves = [];
                 for (let [key, val] of filterPlayaJSON(json)) {
@@ -81,13 +94,15 @@
                         item_gold: s[976 / 4 + 10 + i * 12] / 100,
                         duration: s[964 / 4 + i],
                         xp: s[1120 / 4 + i],
-                        gold: s[1132 / 4 + i] / 100
+                        gold: s[1132 / 4 + i] / 100,
+                        red: isHighStakesQuest(s[940 / 4 + i])
                     };
                 }));
 
                 $('#main-container').append(quests.map(q => q.map(quest => {
                     return `
                         <div class="column text-center quest-container">
+                            ${ quest.red ? `<div style="color: red;"><b>Epic Quest</b></div>` : '' }
                             <div><b>Level:</b><span>${ quest.level }</span></div>
                             <div><b>Gold:</b><span>${ formatAsSpacedNumber(quest.gold, ' ') }</span></div>
                             ${ quest.item_gold ? `<div style="color: green;"><b>Item:</b><span>${ formatAsSpacedNumber(quest.item_gold, ' ') }</span></div>` : '' }
