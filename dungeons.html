@@ -966,6 +966,23 @@
                 }
             }
 
+            function getTwisterEnemyAt (enemyIndex) {
+                if (enemyIndex < 0) {
+                    return null;
+                } else {
+                    let boss = Object.entries(DUNGEON_DATA['100'].floors).find(x => x[1].pos == enemyIndex);
+                    if (boss) {
+                        return {
+                            dungeon: DUNGEON_DATA['100'],
+                            name: boss[0],
+                            boss: boss[1]
+                        }
+                    } else {
+                        return null;
+                    }
+                }
+            }
+
             $('#load-stats').click(() => {
                 Storage.load(function () {
                     $('#stats-list').empty();
@@ -995,7 +1012,7 @@
                                 let availableBosses = [
                                     ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon - 2)),
                                     getDungeonEnemyAt(15, false, tower),
-                                    getDungeonEnemyAt(100, false, twister - 2),
+                                    getTwisterEnemyAt(twister - 1),
                                     ... shadowDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], true, dungeon - 2)),
                                     getDungeonEnemyAt(15, true, youtube - 2),
                                 ].filter(boss => boss);
