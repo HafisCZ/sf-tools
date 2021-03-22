@@ -574,10 +574,10 @@ class SFPlayer {
 
         this.Achievements = [];
         this.Achievements.Owned = 0;
-        for (var i = 0; i < 80; i++) {
+        for (var i = 0; i < ACHIEVEMENTS_COUNT; i++) {
             this.Achievements.push({
                 Owned: data.achievements[i] == 1,
-                Progress: data.achievements[i + 80] || 0
+                Progress: data.achievements[i + ACHIEVEMENTS_COUNT] || 0
             });
 
             if (data.achievements[i] == 1 && i < data.achievements.length / 2) {

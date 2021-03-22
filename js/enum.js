@@ -929,6 +929,7 @@ const ATTACK_TYPES = {
     100: 'Revive'
 };
 
+const ACHIEVEMENTS_COUNT = 90;
 const ACHIEVEMENTS = [
     'Globetrotter',
     'The Count',
@@ -1009,7 +1010,17 @@ const ACHIEVEMENTS = [
     'Lancelot',
     'Door Opener',
     'Odin',
-    'Loki'
+    'Loki',
+    'Zeus',
+    'Hades',
+    'Five of a Kind',
+    'Capacious Pockets',
+    'Birth of a Legend',
+    'Living Legend',
+    'Second Wardrobe',
+    '100-Timer',
+    'A Thousand Points Plan',
+    'Ten Grand'
 ];
 
 const UNDERWORLD_BUILDINGS = [
@@ -1047,7 +1058,6 @@ const GUILD_ROLE_MEMBER = 3;
 const GUILD_ROLE_INVITED = 4;
 
 const SCRAPBOOK_COUNT = 2200;
-const ACHIEVEMENT_COUNT = 80;
 
 const RUNE_VALUE = {
     GOLD: function (rune) {

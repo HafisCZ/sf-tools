@@ -695,14 +695,21 @@ const PlayerUpdaters = [
         }
     },
     p => {
+        if (p.achievements && p.achievements.length % 2 != 0) {
+            p.achievements.pop();
+            return true;
+        } else {
+            return false;
+        }
+    },
+    p => {
         if (!p.achievements) {
             p.achievements = [];
             return true;
-        } else if (p.achievements.length == 60) {
-            p.achievements = [ ... p.achievements.slice(0, 60), ... new Array(20).fill(0), ... p.achievements.slice(60, 120), ... new Array(20).fill(0) ];
-            return true;
-        } else if (p.achievements.length == 70) {
-            p.achievements = [ ... p.achievements.slice(0, 70), ... new Array(10).fill(0), ... p.achievements.slice(70, 140), ... new Array(10).fill(0) ];
+        } else if (p.achievements.length != 0 && p.achievements.length != ACHIEVEMENTS_COUNT * 2) {
+            let currentAmount = p.achievements.length;
+            let missingAmount = ACHIEVEMENTS_COUNT - currentAmount / 2;
+            p.achievements = [ ... p.achievements.slice(0, currentAmount), ... new Array(missingAmount).fill(0), ... p.achievements.slice(currentAmount, currentAmount * 2), ... new Array(missingAmount).fill(0) ];
             return true;
         } else {
             return false;
