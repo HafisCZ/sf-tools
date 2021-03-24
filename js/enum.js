@@ -80,7 +80,8 @@ const GEMTYPES = [
     'Intelligence',
     'Constitution',
     'Luck',
-    'Black'
+    'Black',
+    'Legendary'
 ];
 
 const GEMATTRIBUTES = [
@@ -90,7 +91,8 @@ const GEMATTRIBUTES = [
     'Intelligence',
     'Constitution',
     'Luck',
-    'All'
+    'All',
+    'Main/Con'
 ];
 
 const RUNETYPES = [

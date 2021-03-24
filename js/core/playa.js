@@ -629,7 +629,7 @@ class SFPlayer {
                 }
             }
 
-            if (item.HasGem && (item.GemType == attribute.Type || item.GemType == 6)) {
+            if (item.HasGem && (item.GemType == attribute.Type || item.GemType == 6 || (item.GemType == 7 && (attribute.Type == this.Primary.Type || attribute.Type == 4)))) {
                 bonus += item.GemValue * (item.Type == 1 && this.Class != 4 ? 2 : 1);
             }
         }
@@ -668,7 +668,7 @@ class SFPlayer {
     getEquipmentGemBonus (attribute) {
         var bonus = 0;
         for (var item of Object.values(this.Items)) {
-            if (item.HasGem && (item.GemType == attribute.Type || item.GemType == 6)) {
+            if (item.HasGem && (item.GemType == attribute.Type || item.GemType == 6 || (item.GemType == 7 && (attribute.Type == this.Primary.Type || attribute.Type == 4)))) {
                 bonus += item.GemValue * (item.Type == 1 && this.Class != 4 ? 2 : 1);
             }
         }
@@ -733,7 +733,7 @@ class SFPlayer {
         attribute.TotalCost = calculateTotalAttributePrice(attribute.Purchased ? attribute.Purchased : (attribute.Base - this.Achievements.Owned * 5));
         attribute.PotionSize = this.getPotionSize(attribute);
 
-        if (!attribute.Bonus) {
+        if (!attribute.Bonus || true) {
             attribute.Total = attribute.Base + attribute.Pet + attribute.Potion + attribute.Class + attribute.Equipment;
         } else {
             attribute.Total = attribute.Base + attribute.Bonus;

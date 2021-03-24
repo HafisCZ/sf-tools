@@ -398,7 +398,8 @@ const COLOR = [
     'yellow',
     'lightgreen',
     'magenta',
-    'red'
+    'red',
+    'orange'
 ];
 
 function getLocalizedValue (label, gold, metal, crystals) {
@@ -511,10 +512,10 @@ function getLocalizedGem (type, value) {
     `;
 }
 
-function getLocalizedAttribute (attribute, ups, gemtype, gemvalue, double) {
+function getLocalizedAttribute (attribute, ups, gemtype, gemvalue, double, mtype) {
     var base = Math.trunc(attribute.Value * Math.pow(1 / 1.03, ups));
     var upgrades = attribute.Value - base;
-    var gem = gemtype == attribute.Type || gemtype == 6 ? gemvalue : 0;
+    var gem = gemtype == attribute.Type || gemtype == 6 || (gemtype == 7 && attribute.Type == 4) || (gemtype == 7 && attribute.Type == mtype) ? gemvalue : 0;
 
     var content = `<span style="color: gray;">${ base }</span>`;
 
@@ -676,7 +677,7 @@ function getCompareSocketLine (base, item) {
 }
 
 function getRealGemValue (player, item, type) {
-    if (item.GemType == type || item.GemType == 6) {
+    if (item.GemType == type || item.GemType == 6 || (item.GemType == 7 && type == player.Primary.Type) || (item.GemType == 7 && type == 4)) {
         if (player.Class != 1 && player.Class != 4 && item.Type == 1) {
             return item.GemValue * 2;
         } else {
@@ -1252,11 +1253,11 @@ class InventoryView extends View {
                     </div>
                     <div class="front">
                         <div class="css-inventory-item-attribute">
-                            ${ item.Strength.Value ? getLocalizedAttribute(item.Strength, item.Upgrades, item.GemType, item.GemValue, double) : '' }
-                            ${ item.Dexterity.Value ? getLocalizedAttribute(item.Dexterity, item.Upgrades, item.GemType, item.GemValue, double) : '' }
-                            ${ item.Intelligence.Value ? getLocalizedAttribute(item.Intelligence, item.Upgrades, item.GemType, item.GemValue, double) : '' }
-                            ${ item.Constitution.Value ? getLocalizedAttribute(item.Constitution, item.Upgrades, item.GemType, item.GemValue, double) : '' }
-                            ${ item.Luck.Value ? getLocalizedAttribute(item.Luck, item.Upgrades, item.GemType, item.GemValue, double) : '' }
+                            ${ item.Strength.Value ? getLocalizedAttribute(item.Strength, item.Upgrades, item.GemType, item.GemValue, double, this.Player.Primary.Type) : '' }
+                            ${ item.Dexterity.Value ? getLocalizedAttribute(item.Dexterity, item.Upgrades, item.GemType, item.GemValue, double, this.Player.Primary.Type) : '' }
+                            ${ item.Intelligence.Value ? getLocalizedAttribute(item.Intelligence, item.Upgrades, item.GemType, item.GemValue, double, this.Player.Primary.Type) : '' }
+                            ${ item.Constitution.Value ? getLocalizedAttribute(item.Constitution, item.Upgrades, item.GemType, item.GemValue, double, this.Player.Primary.Type) : '' }
+                            ${ item.Luck.Value ? getLocalizedAttribute(item.Luck, item.Upgrades, item.GemType, item.GemValue, double, this.Player.Primary.Type) : '' }
                         </div>
                         <div class="css-inventory-item-extra">
                             ${ item.Type == 1 ? `<div class="item"><b>Damage range</b> ${ item.DamageMin } - ${ item.DamageMax }</div>` : '' }
