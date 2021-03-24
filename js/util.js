@@ -27,6 +27,24 @@ function copyText (text) {
     window.getSelection().removeAllRanges();
 }
 
+function decodeScrapbook (data) {
+    if (data) {
+        let base_data = atob(data.replace(/-/g, '+').replace(/_/g, '/'));
+
+        let output = [];
+        for (let i = 0; i < base_data.length; i++) {
+            let value = base_data.charCodeAt(i);
+            for (let j = 0; j < 8; j++) {
+                output[i * 8 + j] = (value & Math.pow(2, 7 - j)) != 0;
+            }
+        }
+
+        return output;
+    } else {
+        return [];
+    }
+}
+
 function createWebWorker (location) {
     if (document.location.protocol == 'file:') {
         return new Worker(URL.createObjectURL(new Blob([ $.ajax({ method: 'GET', url: 'https://sftools.mar21.eu/' + location, dataType: 'text', async: false }).responseText ], { type: 'text/javascript' })));
