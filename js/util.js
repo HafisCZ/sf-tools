@@ -35,13 +35,13 @@ function decodeScrapbook (data) {
         for (let i = 0; i < base_data.length; i++) {
             let value = base_data.charCodeAt(i);
             for (let j = 0; j < 8; j++) {
-                output[i * 8 + j] = (value & Math.pow(2, 7 - j)) != 0;
+                output[i * 8 + j] = (value & Math.pow(2, 7 - j)) != 0 ? '1' : '0';
             }
         }
 
-        return output;
+        return output.join('');
     } else {
-        return [];
+        return '';
     }
 }
 

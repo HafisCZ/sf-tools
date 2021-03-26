@@ -1878,6 +1878,9 @@ class SFOwnPlayer extends SFPlayer {
             this.Dungeons.Extra.Normal[0] = 0;
             this.Dungeons.Extra.Shadow[0] = 0;
         }
+
+        this.Scrapbook = decodeScrapbook(data.scrapbook);
+        this.ScrapbookLegendary = decodeScrapbook(data.scrapbook_legendary);
     }
 }
 
