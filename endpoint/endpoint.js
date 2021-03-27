@@ -44,12 +44,13 @@ class EndpointController {
         this.window.login(server, username, password);
     }
 
-    login_querry_all (server, username, password, callback, error) {
+    login_querry_all (server, username, password, callback, error, progress) {
         // Bind error callbacks
         this.window.error['login'] = error;
         this.window.error['querry'] = error;
 
         // Bind success callbacks
+        this.window.callback['progress'] = progress;
         this.window.callback['querry'] = callback;
         this.window.callback['login'] = (text) => {
             // Querry all
