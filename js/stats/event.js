@@ -3434,6 +3434,9 @@ class EndpointView extends View {
         this.$step2 = this.$parent.find('[data-op="step2"]');
         this.$step3 = this.$parent.find('[data-op="step3"]');
         this.$step4 = this.$parent.find('[data-op="step4"]');
+        this.$step5 = this.$parent.find('[data-op="step5"]');
+
+        this.$progress = this.$step5.find('.ui.progress');
 
         this.$error = this.$parent.find('[data-op="error"]');
         this.$errorText = this.$parent.find('[data-op="error-text"]');
@@ -3531,6 +3534,12 @@ class EndpointView extends View {
             }, () => {
                 this.$step4.hide();
                 this.showError('Wrong username or password');
+            }, percentDone => {
+                this.$step4.hide();
+                this.$step5.show();
+                this.$progress.progress({
+                    percent: percentDone
+                })
             });
         };
 
@@ -3624,6 +3633,7 @@ class EndpointView extends View {
         this.$step2.hide();
         this.$step3.hide();
         this.$step4.hide();
+        this.$step5.hide();
 
         this.$error.hide();
 
