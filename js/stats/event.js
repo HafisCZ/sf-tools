@@ -3533,6 +3533,7 @@ class EndpointView extends View {
                 UI.current.show();
             }, () => {
                 this.$step4.hide();
+                this.$step5.hide();
                 this.showError('Wrong username or password');
             }, percentDone => {
                 this.$step4.hide();
