@@ -480,6 +480,30 @@
         </div>
 
         <script type="text/javascript">
+            if (new Date().getMonth() == 3 && new Date().getDate() == 1) {
+                let randomString = orig => {
+                    let str = ''
+                    for (let i = 0; i < orig.length; i++) {
+                        if (/[a-z]/.test(orig[i])) {
+                            str += 'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26));
+                        } else if (/[A-Z]/.test(orig[i])) {
+                            str += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.charAt(Math.floor(Math.random() * 26));
+                        } else {
+                            str += orig[i];
+                        }
+                    }
+                    return str;
+                }
+
+                for (let [k, v] of Object.entries(DUNGEON_DATA)) {
+                    v.name = randomString(v.name);
+                    for (let [k2, v2] of Object.entries(v.floors)) {
+                        delete v.floors[k2];
+                        v.floors[randomString(k2)] = v2;
+                    }
+                }
+            }
+
             function toggleAll (dis) {
                 if (dis) {
                     $('.ui.main.container').addClass('frozen');
