@@ -733,7 +733,7 @@ class SFPlayer {
         attribute.TotalCost = calculateTotalAttributePrice(attribute.Purchased ? attribute.Purchased : (attribute.Base - this.Achievements.Owned * 5));
         attribute.PotionSize = this.getPotionSize(attribute);
 
-        if (!attribute.Bonus || true) {
+        if (!attribute.Bonus) {
             attribute.Total = attribute.Base + attribute.Pet + attribute.Potion + attribute.Class + attribute.Equipment;
         } else {
             attribute.Total = attribute.Base + attribute.Bonus;
