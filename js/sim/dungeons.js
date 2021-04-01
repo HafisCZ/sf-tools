@@ -505,14 +505,14 @@ class DungeonSimulator {
                 console.log('%cNEW ROUND STARTING', 'background-color: #400b6e; padding: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;');
 
                 console.log(
-                    `%c${ this.a.Index == 0 ? 'PLAYER' : ' BOSS ' } / INIT%c HP: ${ formatNumber(this.a.TotalHealth) }, SKIP: ${ this.a.SkipChance }, CRIT: ${ this.a.CriticalChance.toFixed(2) }, RED: ${ this.a.getDamageReduction(this.b).toFixed(2) }`,
-                    `background-color: #${ this.a.Index == 0 ? '04154a' : '6e0b0b' }; padding: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;`,
+                    `%c${ this.a.Index == 0 ? 'PLAYER' : ' BOSS ' } / INIT%c\nHP: ${ formatNumber(this.a.TotalHealth) }\nSKIP: ${ this.a.SkipChance }\nCRIT: ${ this.a.CriticalChance.toFixed(2) }\nRED: ${ this.a.getDamageReduction(this.b).toFixed(2) }\nRANGE: ${ formatNumber(this.a.Weapon1.Range.Min) } - ${ formatNumber(this.a.Weapon1.Range.Max) }${ this.a.Weapon2 ? `\nRANGE: ${ formatNumber(this.a.Weapon2.Range.Min) } - ${ formatNumber(this.a.Weapon2.Range.Max) }` : '' }`,
+                    `background-color: #${ this.a.Index == 0 ? '04154a' : '6e0b0b' }; padding-left: 10px; padding-right: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;`,
                     `padding: 0.5em; font-size: 14px;`
                 )
 
                 console.log(
-                    `%c${ this.b.Index == 0 ? 'PLAYER' : ' BOSS ' } / INIT%c HP: ${ formatNumber(this.b.TotalHealth) }, SKIP: ${ this.b.SkipChance }, CRIT: ${ this.b.CriticalChance.toFixed(2) }, RED: ${ this.b.getDamageReduction(this.a).toFixed(2) }`,
-                    `background-color: #${ this.b.Index == 0 ? '04154a' : '6e0b0b' }; padding: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;`,
+                    `%c${ this.b.Index == 0 ? 'PLAYER' : ' BOSS ' } / INIT%c\nHP: ${ formatNumber(this.b.TotalHealth) }\nSKIP: ${ this.b.SkipChance }\nCRIT: ${ this.b.CriticalChance.toFixed(2) }\nRED: ${ this.b.getDamageReduction(this.a).toFixed(2) }\nRANGE: ${ formatNumber(this.b.Weapon1.Range.Min) } - ${ formatNumber(this.b.Weapon1.Range.Max) }${ this.b.Weapon2 ? `\nRANGE: ${ formatNumber(this.b.Weapon2.Range.Min) } - ${ formatNumber(this.b.Weapon2.Range.Max) }` : '' }`,
+                    `background-color: #${ this.b.Index == 0 ? '04154a' : '6e0b0b' }; padding-left: 10px; padding-right: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;`,
                     `padding: 0.5em; font-size: 14px;`
                 )
 
@@ -647,13 +647,13 @@ class DungeonSimulator {
         if (FIGHT_LOG_ENABLED) {
             if (source.Index == 0) {
                 console.log(
-                    `%c${ { 'Player': 'PLAYER', 'Kunigunde': ' KUNI ', 'Mark': ' MARK ', 'Bert': ' BERT ' }[ source.Player.Name ] }%c${ formatNumber(damage) }`,
+                    `%c${ { 'Player': 'PLAYER', 'Kunigunde': ' KUNI ', 'Mark': ' MARK ', 'Bert': ' BERT ' }[ source.Player.Name ] }%c${ rage.toFixed(2) } / ${ formatNumber(damage) }`,
                     `background-color: #94e0b4; padding: 10px; font-size: 14px; font-weight: bold; color: black; font-family: monospace;`,
                     `padding: 0.5em; font-size: 14px;${ critical ? ' color: red;' : '' }`
                 );
             } else {
                 console.log(
-                    `%c BOSS %c${ formatNumber(damage) }`,
+                    `%c BOSS %c${ rage.toFixed(2) } / ${ formatNumber(damage) }`,
                     `background-color: #f28c3d; padding: 10px; font-size: 14px; font-weight: bold; color: black; font-family: monospace;`,
                     `padding: 0.5em; font-size: 14px;${ critical ? ' color: red;' : '' }`
                 );
