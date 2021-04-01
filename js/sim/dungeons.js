@@ -194,8 +194,8 @@ class FighterModel {
     }
 
     // Critical Multiplier
-    getCriticalMultiplier (weapon, target) {
-        return 2 * (1 + 0.05 * (this.Player.ForceGladiator ? this.Player.Fortress.Gladiator : Math.max(0, this.Player.Fortress.Gladiator - target.Player.Fortress.Gladiator))) * (weapon.HasEnchantment ? 1.05 : 1);
+    getCriticalMultiplier (weapon, weapon2, target) {
+        return 2 * (1 + 0.05 * (this.Player.ForceGladiator ? this.Player.Fortress.Gladiator : Math.max(0, this.Player.Fortress.Gladiator - target.Player.Fortress.Gladiator))) * (weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment) ? 1.05 : 1);
     }
 
     // Health
@@ -264,10 +264,11 @@ class FighterModel {
 
         // Weapon
         var weapon = this.Player.Items.Wpn1;
-        this.Weapon1 = {
-            Range: this.getDamageRange(weapon, target),
-            Critical: this.getCriticalMultiplier(weapon, target)
-        };
+        var weapon2 = this.Player.Items.Wpn2;
+
+        this.Weapon1 = this.getDamageRange(weapon, target);
+
+        this.Critical = this.getCriticalMultiplier(weapon, weapon2, target);
     }
 
     onFightStart (target) {
@@ -371,10 +372,7 @@ class AssassinModel extends FighterModel {
 
         var weapon = this.Player.Items.Wpn2;
         if (weapon) {
-            this.Weapon2 = {
-                Range: this.getDamageRange(weapon, target, true),
-                Critical: this.getCriticalMultiplier(weapon, target)
-            }
+            this.Weapon2 = this.getDamageRange(weapon, target, true);
         }
     }
 }
@@ -505,13 +503,13 @@ class DungeonSimulator {
                 console.log('%cNEW ROUND STARTING', 'background-color: #400b6e; padding: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;');
 
                 console.log(
-                    `%c${ this.a.Index == 0 ? 'PLAYER' : ' BOSS ' } / INIT%c\nHP: ${ formatNumber(this.a.TotalHealth) }\nSKIP: ${ this.a.SkipChance }\nCRIT: ${ this.a.CriticalChance.toFixed(2) }\nRED: ${ this.a.getDamageReduction(this.b).toFixed(2) }\nRANGE: ${ formatNumber(this.a.Weapon1.Range.Min) } - ${ formatNumber(this.a.Weapon1.Range.Max) }${ this.a.Weapon2 ? `\nRANGE: ${ formatNumber(this.a.Weapon2.Range.Min) } - ${ formatNumber(this.a.Weapon2.Range.Max) }` : '' }`,
+                    `%c${ this.a.Index == 0 ? 'PLAYER' : ' BOSS ' } / INIT%c\nHP: ${ formatNumber(this.a.TotalHealth) }\nSKIP: ${ this.a.SkipChance }\nCRIT: ${ this.a.CriticalChance.toFixed(2) } MUL: ${ this.a.Critical.toFixed(3) }\nRED: ${ this.a.getDamageReduction(this.b).toFixed(2) }\nRANGE: ${ formatNumber(this.a.Weapon1.Min) } - ${ formatNumber(this.a.Weapon1.Max) }${ this.a.Weapon2 ? `\nRANGE: ${ formatNumber(this.a.Weapon2.Min) } - ${ formatNumber(this.a.Weapon2.Max) }` : '' }`,
                     `background-color: #${ this.a.Index == 0 ? '04154a' : '6e0b0b' }; padding-left: 10px; padding-right: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;`,
                     `padding: 0.5em; font-size: 14px;`
                 )
 
                 console.log(
-                    `%c${ this.b.Index == 0 ? 'PLAYER' : ' BOSS ' } / INIT%c\nHP: ${ formatNumber(this.b.TotalHealth) }\nSKIP: ${ this.b.SkipChance }\nCRIT: ${ this.b.CriticalChance.toFixed(2) }\nRED: ${ this.b.getDamageReduction(this.a).toFixed(2) }\nRANGE: ${ formatNumber(this.b.Weapon1.Range.Min) } - ${ formatNumber(this.b.Weapon1.Range.Max) }${ this.b.Weapon2 ? `\nRANGE: ${ formatNumber(this.b.Weapon2.Range.Min) } - ${ formatNumber(this.b.Weapon2.Range.Max) }` : '' }`,
+                    `%c${ this.b.Index == 0 ? 'PLAYER' : ' BOSS ' } / INIT%c\nHP: ${ formatNumber(this.b.TotalHealth) }\nSKIP: ${ this.b.SkipChance }\nCRIT: ${ this.b.CriticalChance.toFixed(2) } MUL: ${ this.b.Critical.toFixed(3) }\nRED: ${ this.b.getDamageReduction(this.a).toFixed(2) }\nRANGE: ${ formatNumber(this.b.Weapon1.Min) } - ${ formatNumber(this.b.Weapon1.Max) }${ this.b.Weapon2 ? `\nRANGE: ${ formatNumber(this.b.Weapon2.Min) } - ${ formatNumber(this.b.Weapon2.Max) }` : '' }`,
                     `background-color: #${ this.b.Index == 0 ? '04154a' : '6e0b0b' }; padding-left: 10px; padding-right: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;`,
                     `padding: 0.5em; font-size: 14px;`
                 )
@@ -636,9 +634,9 @@ class DungeonSimulator {
         var critical = getRandom(source.CriticalChance);
 
         if (!skipped) {
-            damage = rage * (Math.random() * (1 + weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
+            damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
             if (critical) {
-                damage *= weapon.Critical;
+                damage *= source.Critical;
             }
 
             damage = Math.ceil(damage);
