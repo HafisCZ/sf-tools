@@ -68,7 +68,7 @@ function reverseHealthMultipliers (level, healthMultiplier, constitution, totalH
 		for (let runes = 0; runes <= 15; runes++) {
 			for (let portal = 0; portal <= 50; portal++) {
 				let calculatedHealth = Math.ceil(Math.ceil(Math.ceil(baseHealth * (1 + portal / 100)) * (1 + runes / 100)) * (potion == 0 ? 0 : 1.25));
-				if (Math.abs(calculatedHealth - totalHealth) <= healthMultiplier) {
+				if (Math.abs(calculatedHealth - totalHealth) <= 5 * healthMultiplier) {
 					return {
 						potion: potion == 0 ? 0 : 25,
 						runes: runes,
