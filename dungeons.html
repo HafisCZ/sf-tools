@@ -770,6 +770,7 @@
             var boss = null;
             var dungeon_current = null;
             var dungeon = null;
+            var log = window.location.href.includes('log');
 
             function settingsChanged () {
                 $('#winchart').addClass('faded-out');
@@ -1120,6 +1121,11 @@
                     let totalScore = 0;
                     let totalTries = 0;
 
+                    if (log) {
+                        threads = 1;
+                        iterations = 1;
+                    }
+
                     for (let i = 0; i < threads; i++) {
                         let worker = createWebWorker('js/sim/dungeons.js');
 
@@ -1158,7 +1164,8 @@
                         worker.postMessage({
                             players: pchars,
                             boss: boss,
-                            iterations: iterations
+                            iterations: iterations,
+                            log: log
                         });
                     }
                 }
