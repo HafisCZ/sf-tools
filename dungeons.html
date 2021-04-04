@@ -348,6 +348,13 @@
                                     <input class="text-center" type="text" data-path="Armor" placeholder="Armor points">
                                 </div>
                                 <div class="field">
+                                    <label>Shield</label>
+                                    <div class="ui selection compact dropdown" data-path="BlockChance">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
+                                    </div>
+                                </div>
+                                <div class="field">
                                     <label>Fire</label>
                                     <input class="text-center" type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
                                 </div>
@@ -535,6 +542,7 @@
                         gladiator: new Field('[data-path="Fortress.Gladiator"]', '', Field.isGladiator),
                         potion_life: new Field('[data-path="Potions.Life"]', '0'),
                         enchantment: new Field('[data-path="Items.Hand.HasEnchantment"]', 'false'),
+                        shield: new Field('[data-path="BlockChance"]', '25'),
 
                         str: new Field('[data-path="Strength.Total"]', '', Field.isNumber),
                         dex: new Field('[data-path="Dexterity.Total"]', '', Field.isNumber),
@@ -570,6 +578,7 @@
                             $('[data-optional="Weapon2"]').hide();
                         }
 
+                        this.fields['shield'].show(value == 1);
                         this.fields['mask'].show(value == 8);
                     }).dropdown('set selected', '1');
 
@@ -603,6 +612,19 @@
                             }
                         ]
                     }).dropdown('set selected', '0');
+
+                    this.fields['shield'].$object.dropdown({
+                        values: [
+                            {
+                                name: 'No',
+                                value: 0
+                            },
+                            {
+                                name: 'Yes',
+                                value: 25
+                            }
+                        ]
+                    }).dropdown('set selected', '25');
 
                     this.fields['weapon1_rune'].$object.dropdown({
                         values: [
@@ -722,6 +744,7 @@
                     this.fields['portal_damage'].toggle(index == 0);
                     this.fields['potion_life'].toggle(index == 0);
                     this.fields['level'].toggle(index == 0);
+                    this.fields['shield'].show(object.Class == 1 && index == 0);
                     this.fields['name'].set(['Player', 'Bert', 'Mark', 'Kunigunde'][index]);
 
                     this.enableListener = true;
@@ -874,13 +897,9 @@
                 SFItem.forceCorrectRune(data.Items.Wpn1);
                 SFItem.forceCorrectRune(data.Items.Wpn2);
 
-                if (data.Class != 4) {
-                    data.Items.Wpn2 = SFItem.empty();
-                }
-
-                if (data.Underworld) {
-                    data.Fortress.Gladiator = data.Underworld.Gladiator;
-                }
+                if (data.Class == 1) data.BlockChance = data.Items.Wpn2.DamageMin;
+                if (data.Class != 4) data.Items.Wpn2 = SFItem.empty();
+                if (data.Underworld) data.Fortress.Gladiator = data.Underworld.Gladiator;
 
                 if (selected > 0) {
                     for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
@@ -1101,6 +1120,10 @@
 
                         playerInstances[1].NoSkip = true;
                         playerInstances[1].AutoHealth = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
+                    }
+
+                    if (playerInstances[0].Class == 1 && playerInstances[0].BlockChance == '0') {
+                        playerInstances[0].NoSkip = true;
                     }
 
                     if (dungeon.disable_companion_gladiator) {
