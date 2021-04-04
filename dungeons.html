@@ -901,7 +901,7 @@
                 SFItem.forceCorrectRune(data.Items.Wpn1);
                 SFItem.forceCorrectRune(data.Items.Wpn2);
 
-                if (data.Class == 1) data.BlockChance = data.Items.Wpn2.DamageMin;
+                if (data.Class == 1 && typeof data.BlockChance == 'undefined') data.BlockChance = data.Items.Wpn2.DamageMin;
                 if (data.Class != 4) data.Items.Wpn2 = SFItem.empty();
                 if (data.Underworld) data.Fortress.Gladiator = data.Underworld.Gladiator;
 
