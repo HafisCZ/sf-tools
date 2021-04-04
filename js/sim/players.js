@@ -205,8 +205,8 @@ class FighterModel {
     }
 
     // Critical Multiplier
-    getCriticalMultiplier (weapon, target) {
-        let base = 2 * (weapon.HasEnchantment ? 1.05 : 1);
+    getCriticalMultiplier (weapon, weapon2, target) {
+        let base = 2 * ((weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment)) ? 1.05 : 1);
 
         let gladiator = 0.05 * Math.max(0, this.Player.Fortress.Gladiator - target.Player.Fortress.Gladiator);
         if (this.Player.IHOFMode) {
@@ -278,11 +278,11 @@ class FighterModel {
         this.TotalHealth = this.getHealth();
 
         // Weapon
-        var weapon = this.Player.Items.Wpn1;
-        this.Weapon1 = {
-            Range: this.getDamageRange(weapon, target),
-            Critical: this.getCriticalMultiplier(weapon, target)
-        };
+        let weapon1 = this.Player.Items.Wpn1;
+        let weapon2 = this.Player.Items.Wpn2;
+
+        this.Weapon1 = this.getDamageRange(weapon1, target);
+        this.Critical = this.getCriticalMultiplier(weapon1, weapon2, target);
     }
 
     onFightStart (target) {
@@ -386,10 +386,7 @@ class AssassinModel extends FighterModel {
 
         var weapon = this.Player.Items.Wpn2;
         if (weapon) {
-            this.Weapon2 = {
-                Range: this.getDamageRange(weapon, target, true),
-                Critical: this.getCriticalMultiplier(weapon, target)
-            }
+            this.Weapon2 = this.getDamageRange(weapon, target, true);
         }
     }
 }
@@ -686,11 +683,11 @@ class GuildSimulator {
         var critical = false;
 
         if (!skipped) {
-            damage = rage * (Math.random() * (1 + weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
+            damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
 
             critical = getRandom(source.CriticalChance);
             if (critical) {
-                damage *= weapon.Critical;
+                damage *= source.Critical;
             }
 
             damage = Math.ceil(damage);
@@ -1101,11 +1098,11 @@ class FightSimulator {
         var critical = false;
 
         if (!skipped) {
-            damage = rage * (Math.random() * (weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
+            damage = rage * (Math.random() * (weapon.Max - weapon.Min) + weapon.Min);
 
             critical = getRandom(source.CriticalChance);
             if (critical) {
-                damage *= weapon.Critical;
+                damage *= source.Critical;
             }
 
             damage = Math.ceil(damage);
@@ -1281,11 +1278,11 @@ class DungeonSimulator {
         var critical = false;
 
         if (!skipped) {
-            damage = rage * (Math.random() * (1 + weapon.Range.Max - weapon.Range.Min) + weapon.Range.Min);
+            damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
 
             critical = getRandom(source.CriticalChance);
             if (critical) {
-                damage *= weapon.Critical;
+                damage *= source.Critical;
             }
 
             damage = Math.ceil(damage);
