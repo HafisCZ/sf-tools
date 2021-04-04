@@ -16,6 +16,20 @@ body {
     font-size: 85%;
 }
 
+.paste-target {
+    position: absolute;
+    right: 2em;
+    top: 5em;
+    border: 3px #a9d1ce dashed;
+    width: 8.5em;
+    color: #5f827f;
+    height: 8.5em;
+    text-align: center;
+    padding: 0.5em;
+    padding-top: 1em;
+    pointer-events: none;
+}
+
 .checkbox-war label {
     color: #db0e00 !important;
 }
