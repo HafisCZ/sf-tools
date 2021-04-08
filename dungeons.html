@@ -1150,7 +1150,7 @@
 
                     if (log) {
                         threads = 1;
-                        iterations = 1;
+                        iterations = 2000;
                     }
 
                     for (let i = 0; i < threads; i++) {
@@ -1159,6 +1159,11 @@
                         worker.addEventListener('message', (message) => {
                             if (message.data.command == 'finished') {
                                 let { score, iterations, healths } = message.data.results;
+                                if (message.data.log.length) {
+                                    download('logs.json', new Blob([ JSON.stringify(message.data.log) ], {
+                                        type: 'application/json'
+                                    }));
+                                }
 
                                 results = results.concat(healths);
                                 totalScore += score;

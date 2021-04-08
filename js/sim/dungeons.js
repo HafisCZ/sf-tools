@@ -435,7 +435,8 @@ class DemonHunterModel extends FighterModel {
     }
 }
 
-FIGHT_LOG_ENABLED = false;
+FIGHT_DUMP_ENABLED = false;
+FIGHT_DUMP_OUTPUT = [];
 
 // WebWorker hooks
 self.addEventListener('message', function (message) {
@@ -443,12 +444,13 @@ self.addEventListener('message', function (message) {
     let boss = message.data.boss;
     let iterations = message.data.iterations || 100000;
     if (message.data.log || false) {
-        FIGHT_LOG_ENABLED = true;
+        FIGHT_DUMP_ENABLED = true;
     }
 
     self.postMessage({
         command: 'finished',
-        results: new DungeonSimulator().simulate(players, boss, iterations)
+        results: new DungeonSimulator().simulate(players, boss, iterations),
+        log: FIGHT_DUMP_OUTPUT
     });
 
     self.close();
@@ -480,6 +482,103 @@ class DungeonSimulator {
         this.cache_boss = FighterModel.create(1, boss);
     }
 
+    log (stage, ... args) {
+        if (stage == 0) {
+            this.log_obj = {
+                targetA: {
+                    ID: this.a.Player.ID || this.a.Index,
+                    Name: this.a.Player.Name,
+                    Level: this.a.Player.Level,
+                    MaximumLife: this.a.TotalHealth,
+                    Life: this.a.TotalHealth,
+                    Strength: this.a.Player.Strength.Total,
+                    Dexterity: this.a.Player.Dexterity.Total,
+                    Intelligence: this.a.Player.Intelligence.Total,
+                    Constitution: this.a.Player.Constitution.Total,
+                    Luck: this.a.Player.Luck.Total,
+                    Face: this.a.Player.Face,
+                    Race: this.a.Player.Race,
+                    Gender: this.a.Player.Gender,
+                    Class: this.a.Player.Class,
+                    Wpn1: this.a.Player.Items.Wpn1,
+                    Wpn2: this.a.Player.Items.Wpn2
+                },
+                targetB: {
+                    ID: this.b.Player.ID || this.b.Index,
+                    Name: this.b.Player.Name,
+                    Level: this.b.Player.Level,
+                    MaximumLife: this.b.TotalHealth,
+                    Life: this.b.TotalHealth,
+                    Strength: this.b.Player.Strength.Total,
+                    Dexterity: this.b.Player.Dexterity.Total,
+                    Intelligence: this.b.Player.Intelligence.Total,
+                    Constitution: this.b.Player.Constitution.Total,
+                    Luck: this.b.Player.Luck.Total,
+                    Face: this.b.Player.Face,
+                    Race: this.b.Player.Race,
+                    Gender: this.b.Player.Gender,
+                    Class: this.b.Player.Class,
+                    Wpn1: this.b.Player.Items.Wpn1,
+                    Wpn2: this.b.Player.Items.Wpn2
+                },
+                rounds: []
+            };
+
+            FIGHT_DUMP_OUTPUT.push(this.log_obj);
+        } else if (stage == 1) {
+            this.log_obj.rounds.push({
+                attackCrit: false,
+                attackType: 15,
+                attackMissed: false,
+                attackDamage: this.as,
+                attackSecondary: false,
+                attacker: this.a.Player.ID || this.a.Index,
+                target: this.b.Player.ID || this.b.Index
+            });
+        } else if (stage == 2) {
+            this.log_obj.rounds.push({
+                attackCrit: false,
+                attackType: 15,
+                attackMissed: false,
+                attackSecondary: false,
+                attackDamage: this.bs,
+                attacker: this.b.Player.ID || this.b.Index,
+                target: this.a.Player.ID || this.a.Index
+            });
+        } else if (stage == 3) {
+            this.log_obj.rounds.push({
+                attackCrit: false,
+                attackType: 16,
+                attackMissed: true,
+                attackSecondary: false,
+                attackDamage: 0,
+                attacker: this.a.Player.ID || this.a.Index,
+                target: this.b.Player.ID || this.b.Index
+            });
+        } else if (stage == 4) {
+            let [ source, target, weapon, damage, skipped, critical ] = args;
+            this.log_obj.rounds.push({
+                attackCrit: critical,
+                attackType: (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)),
+                attackMissed: skipped,
+                attackDamage: damage,
+                attackSecondary: weapon != source.Weapon1,
+                attacker: source.Player.ID || source.Index,
+                target: target.Player.ID || target.Index
+            });
+        } else if (stage == 5) {
+            this.log_obj.rounds.push({
+                attackCrit: false,
+                attackType: 100,
+                attackMissed: false,
+                attackDamage: 0,
+                attackSecondary: false,
+                attacker: this.a.Player.ID || this.a.Index,
+                target: this.b.Player.ID || this.b.Index
+            });
+        }
+    }
+
     battle () {
         this.la = [ ... this.cache_players ];
         this.lb = [ this.cache_boss ];
@@ -499,37 +598,7 @@ class DungeonSimulator {
             this.as = this.a.onFightStart(this.b);
             this.bs = this.b.onFightStart(this.a);
 
-            if (FIGHT_LOG_ENABLED) {
-                console.log('%cNEW ROUND STARTING', 'background-color: #400b6e; padding: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;');
-
-                console.log(
-                    `%c${ this.a.Index == 0 ? 'PLAYER' : ' BOSS ' } / INIT%c\nHP: ${ formatNumber(this.a.TotalHealth) }\nSKIP: ${ this.a.SkipChance }\nCRIT: ${ this.a.CriticalChance.toFixed(2) } MUL: ${ this.a.Critical.toFixed(3) }\nRED: ${ this.a.getDamageReduction(this.b).toFixed(2) }\nRANGE: ${ formatNumber(this.a.Weapon1.Min) } - ${ formatNumber(this.a.Weapon1.Max) }${ this.a.Weapon2 ? `\nRANGE: ${ formatNumber(this.a.Weapon2.Min) } - ${ formatNumber(this.a.Weapon2.Max) }` : '' }`,
-                    `background-color: #${ this.a.Index == 0 ? '04154a' : '6e0b0b' }; padding-left: 10px; padding-right: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;`,
-                    `padding: 0.5em; font-size: 14px;`
-                )
-
-                console.log(
-                    `%c${ this.b.Index == 0 ? 'PLAYER' : ' BOSS ' } / INIT%c\nHP: ${ formatNumber(this.b.TotalHealth) }\nSKIP: ${ this.b.SkipChance }\nCRIT: ${ this.b.CriticalChance.toFixed(2) } MUL: ${ this.b.Critical.toFixed(3) }\nRED: ${ this.b.getDamageReduction(this.a).toFixed(2) }\nRANGE: ${ formatNumber(this.b.Weapon1.Min) } - ${ formatNumber(this.b.Weapon1.Max) }${ this.b.Weapon2 ? `\nRANGE: ${ formatNumber(this.b.Weapon2.Min) } - ${ formatNumber(this.b.Weapon2.Max) }` : '' }`,
-                    `background-color: #${ this.b.Index == 0 ? '04154a' : '6e0b0b' }; padding-left: 10px; padding-right: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;`,
-                    `padding: 0.5em; font-size: 14px;`
-                )
-
-                if (this.as > 0) {
-                    console.log(
-                        `%c${ this.a.Index == 0 ? 'PLAYER' : ' BOSS ' } / FIREBALL%c${ formatNumber(this.as) }`,
-                        `background-color: #${ this.a.Index == 0 ? '04154a' : '6e0b0b' }; padding: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;`,
-                        `padding: 0.5em; font-size: 14px;`
-                    )
-                }
-
-                if (this.bs > 0) {
-                    console.log(
-                        `%c${ this.b.Index == 0 ? 'PLAYER' : ' BOSS ' } / FIREBALL%c${ formatNumber(this.bs) }`,
-                        `background-color: #${ this.b.Index == 0 ? '04154a' : '6e0b0b' }; padding: 10px; font-size: 14px; font-weight: bold; color: white; font-family: monospace;`,
-                        `padding: 0.5em; font-size: 14px;`
-                    )
-                }
-            }
+            if (FIGHT_DUMP_ENABLED) this.log(0);
 
             if (this.fight() == 0) {
                 this.la.shift();
@@ -554,8 +623,12 @@ class DungeonSimulator {
 
             if (this.as > 0) {
                 this.b.Health -= this.as;
+                if (FIGHT_DUMP_ENABLED) this.log(1);
             } else if (this.bs > 0) {
                 this.a.Health -= this.bs;
+                if (FIGHT_DUMP_ENABLED) this.log(2);
+            } else {
+                if (FIGHT_DUMP_ENABLED) this.log(3);
             }
         }
 
@@ -570,7 +643,9 @@ class DungeonSimulator {
             }
 
             if (this.b.DamageTaken) {
-                if (this.b.onDamageTaken(this.a, damage) == 0) {
+                let alive = this.b.onDamageTaken(this.a, damage);
+                if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
+                if (alive == 0) {
                     break;
                 }
             } else {
@@ -587,7 +662,9 @@ class DungeonSimulator {
                 }
 
                 if (this.b.DamageTaken) {
-                    if (this.b.onDamageTaken(this.a, damage2) == 0) {
+                    let alive = this.b.onDamageTaken(this.a, damage2);
+                    if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
+                    if (alive == 0) {
                         break;
                     }
                 } else {
@@ -608,7 +685,9 @@ class DungeonSimulator {
                     }
 
                     if (this.b.DamageTaken) {
-                        return this.b.onDamageTaken(this.a, damage3) > 0;
+                        let alive = this.b.onDamageTaken(this.a, damage3);
+                        if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
+                        return alive > 0;
                     } else {
                         this.b.Health -= damage3;
                         return this.b.Health >= 0
@@ -642,21 +721,7 @@ class DungeonSimulator {
             damage = Math.ceil(damage);
         }
 
-        if (FIGHT_LOG_ENABLED) {
-            if (source.Index == 0) {
-                console.log(
-                    `%c${ { 'Player': 'PLAYER', 'Kunigunde': ' KUNI ', 'Mark': ' MARK ', 'Bert': ' BERT ' }[ source.Player.Name ] }%c${ rage.toFixed(2) } / ${ formatNumber(damage) }`,
-                    `background-color: #94e0b4; padding: 10px; font-size: 14px; font-weight: bold; color: black; font-family: monospace;`,
-                    `padding: 0.5em; font-size: 14px;${ critical ? ' color: red;' : '' }`
-                );
-            } else {
-                console.log(
-                    `%c BOSS %c${ rage.toFixed(2) } / ${ formatNumber(damage) }`,
-                    `background-color: #f28c3d; padding: 10px; font-size: 14px; font-weight: bold; color: black; font-family: monospace;`,
-                    `padding: 0.5em; font-size: 14px;${ critical ? ' color: red;' : '' }`
-                );
-            }
-        }
+        if (FIGHT_DUMP_ENABLED) this.log(4, source, target, weapon, damage, skipped, critical);
 
         return damage;
     }
