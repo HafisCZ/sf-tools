@@ -333,6 +333,10 @@ class TableInstance {
 
                 return disc ? null : obj;
             }).filter(e => e);
+
+            this.array.perf = array.perf;
+            this.array.timestamp = array.timestamp;
+            this.array.reference = array.reference;
         } else {
             this.array = array;
         }
