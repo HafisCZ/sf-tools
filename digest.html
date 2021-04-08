@@ -305,6 +305,10 @@
                                     life: targetHealthLeft,
                                 };
 
+                                if (type >= 20 && type < 30) {
+                                    offset++;
+                                }
+
                                 // Damage
                                 let damage = 0;
                                 if (rounds.length == 0) {
@@ -458,7 +462,7 @@
                         let localMax = -Infinity;
 
                         for (let round of fight.Rounds) {
-                            let damage = round.damage / scale / elemental;
+                            let damage = round.damage / scale / elemental / (boss.Class == 6 ? 1.25 : 1);
                             localMin = Math.min(localMin, damage);
                             localMax = Math.max(localMax, damage);
                         }
