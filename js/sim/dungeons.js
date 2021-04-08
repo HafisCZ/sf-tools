@@ -209,7 +209,7 @@ class FighterModel {
             var d = this.Player.Level + 1;
             var e = this.getHealthMultiplier();
 
-            return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(this.Player.Constitution.Total * a) * b) * c) * d) * e);
+            return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(this.Player.Constitution.Total * a) * b) * c) * d) * e) % Math.pow(2, 32);
         }
     }
 
