@@ -1130,8 +1130,8 @@
                         playerInstances[0].NoSkip = true;
                     }
 
-                    if (dungeon.disable_companion_gladiator) {
-                        for (let i = 1; i < 4; i++) {
+                    if (dungeon.force_no_gladiator) {
+                        for (let i = 0; i < 4; i++) {
                             playerInstances[i].Fortress.Gladiator = 0;
                         }
                     }
