@@ -2651,7 +2651,7 @@ class SettingsFloatView extends SettingsView {
             UI.current.refreshTemplateDropdown();
         }
 
-        SettingsManager.remove(this.identifier);
+        SettingsManager.remove(this.settings.name);
         this.hide();
         UI.current.load();
     }
