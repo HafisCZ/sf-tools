@@ -208,6 +208,14 @@
             #winchart.faded-out {
                 opacity: 0.5 !important;
             }
+
+            .ui.dimmer {
+                overflow-y: hidden !important;
+            }
+
+            body.dimmed {
+                margin-right: 0 !important;
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
@@ -431,8 +439,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="eight wide column">
+                            <div class="six wide column">
                                 <button class="ui fluid button" type="submit" id="sim-run">Simulate</button>
+                            </div>
+                            <div class="two wide column" style="padding-left: 0;">
+                                <button class="ui fluid button disabled" type="submit" id="sim-run-all">All</button>
                             </div>
                         </div>
                         <div class="row padding-none">
@@ -488,6 +499,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="ui mini modal">
+          <div class="header">Results</div>
+          <div class="content">
+
+          </div>
         </div>
 
         <script type="text/javascript">
@@ -797,6 +815,7 @@
             var boss = null;
             var dungeon_current = null;
             var dungeon = null;
+            var availableBosses = null;
             var log = window.location.href.includes('log');
 
             function settingsChanged () {
@@ -1057,7 +1076,7 @@
                                 let youtube = player.Dungeons.Extra.Youtube;
                                 let twister = player.Dungeons.Twister;
 
-                                let availableBosses = [
+                                availableBosses = [
                                     ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon - 2)),
                                     getDungeonEnemyAt(15, false, tower),
                                     getTwisterEnemyAt(twister - 1),
@@ -1067,6 +1086,7 @@
 
                                 if (availableBosses.length) {
                                     $('#available-list').parent('.field').removeClass('disabled');
+                                    $('#sim-run-all').removeClass('disabled');
                                     $('#available-list').dropdown({
                                         values: availableBosses.map(({ dungeon: _dungeon, boss: _boss, name }, index) => {
                                             return {
@@ -1095,6 +1115,7 @@
                                     });
                                 } else {
                                     $('#available-list').parent('.field').addClass('disabled');
+                                    $('#sim-run-all').addClass('disabled');
                                 }
                             }
                         ));
@@ -1106,6 +1127,89 @@
                     pfilter: p => p.own,
                     gfilter: g => false
                 });
+            });
+
+            function showMassDungeonResults (bosses, results) {
+                $('.ui.modal .content').html(`
+                    <div class="ui two column grid">
+                        ${ bosses.map(({ boss, dungeon, name }, index) => {
+                            return `<div class="twelve wide column">${ name }</div><div class="four wide column">${ results[index] }%</div>`;
+                        }).join('') }
+                    </div>
+                `);
+                $('.ui.modal').modal('show');
+            }
+
+            $('#sim-run-all').click(function () {
+                if (availableBosses && availableBosses.length > 0 && players[0].Level) {
+                    toggleAll(true);
+
+                    let results = [];
+                    let logs = [];
+                    let resultsRemaining = availableBosses.length;
+
+                    for (let [index, { boss, dungeon, name }] of Object.entries(availableBosses)) {
+                        let playerInstances = players.map(p => JSON.parse(JSON.stringify(p)));
+
+                        if (dungeon.shadow) {
+                            let bert = playerInstances[1];
+
+                            let hp_a = (100 + bert.Dungeons.Player) / 100;
+                            let hp_b = (100 + bert.Potions.Life) / 100;
+                            let hp_c = (100 + bert.Runes.Health) / 100;
+                            let hp_d = 1.22;
+
+                            playerInstances[1].NoSkip = true;
+                            playerInstances[1].AutoHealth = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
+                        }
+
+                        if (playerInstances[0].Class == 1 && playerInstances[0].BlockChance == '0') {
+                            playerInstances[0].NoSkip = true;
+                        }
+
+                        if (dungeon.force_no_gladiator) {
+                            for (let i = 0; i < 4; i++) {
+                                playerInstances[i].Fortress.Gladiator = 0;
+                            }
+                        }
+
+                        for (let i = 0; i < 4; i++) {
+                            playerInstances[i].IsRealPlayer = true;
+                        }
+
+                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+                        let pchars = dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
+
+                        if (log) {
+                            iterations = 2000;
+                        }
+
+                        let worker = createWebWorker('js/sim/dungeons.js');
+
+                        worker.addEventListener('message', (message) => {
+                            if (message.data.command == 'finished') {
+                                let { score, iterations } = message.data.results;
+                                if (message.data.log.length) {
+                                    logs.push(... message.data.log);
+                                }
+
+                                results[index] = (100 * score / iterations).toFixed(2);
+
+                                if (--resultsRemaining <= 0) {
+                                    toggleAll();
+                                    showMassDungeonResults(availableBosses, results);
+                                }
+                            }
+                        }, false);
+
+                        worker.postMessage({
+                            players: pchars,
+                            boss: getBossData(boss),
+                            iterations: iterations,
+                            log: log
+                        });
+                    }
+                }
             });
 
             $('#sim-run').click(function () {
