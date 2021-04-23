@@ -1171,7 +1171,6 @@ const Storage = new (class {
             version: 0
         }
 
-        let owngroups = [];
         for (var pair of raws) {
             var [raw, prefix] = pair;
 
@@ -1215,10 +1214,6 @@ const Storage = new (class {
                 for (var [key, val] of parsePlayaResponse(raw)) {
                     if (key.includes('groupname')) {
                         player.groupname = val;
-
-                        if (key.includes('own')) {
-                            owngroups.push(val);
-                        }
                     } else if (key.includes('name')) {
                         player.name = val;
                     } else if (key.includes('unitlevel')) {
@@ -1258,24 +1253,7 @@ const Storage = new (class {
                         player.witch = val.split('/').map(a => Number(a));
                     } else if (own && (key.includes('idlegame') || key.includes('idlesave'))) {
                         player.idle = val.split('/').map(a => Number(a));
-                    } else if (key.includes('otherdescription') && player.save && !owngroups.includes(player.groupname) && val.startsWith('$r')) {
-                        let torem = val.slice(2, 4).toLowerCase();
-                        if (/dt|ch|ςh/.test(torem)) {
-                            for (let i = 0; i < 49; i++) player.save[208 + i] = 0;
-                            for (let i = 0; i < 5; i++) player.save[253 + i] = 0;
-                            for (let i = 0; i < 11; i++) player.save[183 + i] = 0;
-                            player.save[164] = 0;
-                            player.save[165] = 0;
-                        }
                     }
-                }
-
-                if (player.save && !player.own && !owngroups.includes(player.groupname) && [ 'w40_net_p104', 'w40_net_p1416' ].includes(player.id)) {
-                    for (let i = 0; i < 49; i++) player.save[208 + i] = 0;
-                    for (let i = 0; i < 5; i++) player.save[253 + i] = 0;
-                    for (let i = 0; i < 11; i++) player.save[183 + i] = 0;
-                    player.save[164] = 0;
-                    player.save[165] = 0;
                 }
 
                 if (!file.players.find(p => p.id === player.id)) {
