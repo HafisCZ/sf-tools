@@ -792,7 +792,7 @@ DUNGEON_DATA = {
             'Ares': { pos: 7, id: 1416, class: 1, level: 600, str: 135000, dex: 45000, int: 45000, con: 320000, lck: 63000, health: 19764000768, runes: { type: 40, res: [60, 20, 60], damage: 45 }, min: 800, max: 1599 },
             'Poseidon': { pos: 8, id: 1417, class: 3, level: 625, str: 50000, dex: 150000, int: 50000, con: 340000, lck: 93500, health: 17487900672, runes: { type: 41, res: [60, 60, 60], damage: 50 }, min: 1045, max: 2089, armor: 12500 },
             'Hades': { pos: 9, id: 1418, class: 3, level: 645, str: 75000, dex: 200000, int: 75000, con: 360000, lck: 100000, health: 19099799552, runes: { type: 40, res: [60, 60, 60], damage: 60 }, min: 1075, max: 2159, armor: 12500 },
-            // zeus
+            'Zeus': { pos: 10, id: 1419, class: 2, level: 660, str: 100000, dex: 100000, int: 250000, con: 500000, lck: 137000, health: 13567500288, runes: { type: 42, res: [60, 60, 60], damage: 60 }, min: 2000, max: 4000 }
         }
     },
     '200': {
