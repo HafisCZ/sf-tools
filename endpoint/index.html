@@ -3,11 +3,10 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <script src="build/uloader.js"></script>
     </head>
     <body>
-        <div id="upixel" style="width: 300px; height: 300px;"></div>
+        <canvas id="upixel" width=1 height=1 style="width: 1px; height: 1px; background: #231F20"></canvas>
+        <script src="Build/eb91ce6fc77fd402baa3db7a9b11cb41.js"></script>
         <script type="text/javascript">
             var callback = { };
             var error = { };
@@ -15,14 +14,18 @@
             var unity = undefined;
 
             function load (callback) {
-                unity = UnityLoader.instantiate('upixel', 'build/latest.json', {
-                    onProgress: function (ins, progress) {
-                        if (!ins.Module) return;
-                        else if (progress == 1) {
-                            callback();
-                        }
-                    }
-                });
+                createUnityInstance(document.querySelector("#upixel"), {
+                    dataUrl: "build/1dc90770b948645f13df12be8f48e370.data",
+                    frameworkUrl: "build/da91bbedf4acdea480b7705f445ccfb4.js",
+                    codeUrl: "build/cc0d4acede1fdb5353cc133d0946a163.wasm",
+                    streamingAssetsUrl: "StreamingAssets",
+                    companyName: "mar21",
+                    productName: "Endpoint",
+                    productVersion: "8.0",
+              }).then(unityInstance => {
+                  unity = unityInstance;
+                  callback();
+              });
             }
 
             function destroy (callback) {
