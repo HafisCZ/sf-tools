@@ -436,7 +436,31 @@ DUNGEON_DATA = {
     '100': {
         name: 'Twister',
         floors: {
-            'Grey Ghoul': { pos: 486, id: 32, class: 1, level: 385, str: 56327, dex: 19741, int: 19625, con: 76759, lck: 12247, health: 148144864, min: 426, max: 808 }
+            'Grey Ghoul': { pos: 486, id: 32, class: 1, level: 385, str: 56327, dex: 19741, int: 19625, con: 76759, lck: 12247, health: 148144864, min: 426, max: 808 },
+            'Blood Occultist': { pos: 658, id: 573, class: 1, level: 428, str: 59957, dex: 21023, int: 20859, con: 81160, lck: 13318, health: 174088192, min: 469, max: 943 },
+            'Gragosh the Destroyer': { pos: 711, id: 234, class: 1, level: 441, str: 67005, dex: 23491, int: 23314, con: 90796, lck: 14839, health: 200659168, min: 483, max: 990 },
+            'Puppeteer\'s Right': { pos: 777, id: 411, class: 1, level: 456, str: 76022, dex: 26651, int: 26457, con: 103124, lck: 16775, health: 235638336, min: 503, max: 1044 },
+            'Sewer Rat': { pos: 830, id: 28, class: 1, level: 467, str: 83398, dex: 29241, int: 29033, con: 113216, lck: 18360, health: 264925440, min: 519, max: 1082 },
+            'Dirty Bat': { pos: 867, id: 1, class: 1, level: 474, str: 88573, dex: 31056, int: 30839, con: 120303, lck: 19464, health: 285719616, min: 528, max: 1108 },
+            'Dirty Bat ': { pos: 868, id: 1, class: 1, level: 474, str: 88675, dex: 31092, int: 30875, con: 120441, lck: 19487, health: 286047360, min: 524, max: 1108 },
+            'Dirty Bat  ': { pos: 869, id: 1, class: 1, level: 474, str: 88777, dex: 31128, int: 30910, con: 120580, lck: 19509, health: 286377504, min: 525, max: 1108 },
+            'Dirty Bat   ': { pos: 870, id: 1, class: 1, level: 475, str: 89088, dex: 31233, int: 31015, con: 121011, lck: 19575, health: 288006176, min: 525, max: 1110 },
+            'Dirty Bat    ': { pos: 871, id: 1, class: 1, level: 475, str: 89190, dex: 31269, int: 31051, con: 121150, lck: 19598, health: 288336992, min: 527, max: 1110 },
+            'Dirty Bat     ': { pos: 872, id: 1, class: 1, level: 475, str: 89293, dex: 31305, int: 31087, con: 121290, lck: 19620, health: 288670208, min: 528, max: 1111 },
+            'Dirty Bat      ': { pos: 873, id: 1, class: 1, level: 475, str: 89395, dex: 31341, int: 31122, con: 121428, lck: 19642, health: 288998656, min: 525, max: 1110 },
+            'Dirty Bat       ': { pos: 874, id: 1, class: 1, level: 475, str: 89498, dex: 31377, int: 31158, con: 121568, lck: 19665, health: 289331840, min: 526, max: 1111 },
+            'Bat Out of hell': { pos: 875, id: 2, class: 1, level: 476, str: 89810, dex: 31482, int: 31264, con: 122001, lck: 19731, health: 290972384, min: 525, max: 1113 },
+            'Undead': { pos: 876, id: 6, class: 1, level: 476, str: 89913, dex: 31518, int: 31299, con: 122140, lck: 19754, health: 291303904, min: 526, max: 1112 },
+            'Restless Soul': { pos: 877, id: 183, class: 1, level: 476, str: 90015, dex: 31554, int: 31335, con: 122280, lck: 19776, health: 291637792, min: 527, max: 1114 },
+            'Dragon of Hell': { pos: 939, id: 148, class: 1, level: 488, str: 99083, dex: 34734, int: 34499, con: 134700, lck: 21710, health: 329341504, min: 544, max: 1157 },
+            'Dynamic Peter': { pos: 947, id: 433, class: 1, level: 490, str: 100382, dex: 35191, int: 34954, con: 136484, lck: 21989, health: 335068224, min: 544, max: 1162 },
+            'Jungle Scorpion': { pos: 954, id: 64, class: 1, level: 491, str: 101353, dex: 35527, int: 35288, con: 137814, lck: 22200, health: 339022432, min: 546, max: 1163 },
+            'Miniature Gnome': { pos: 962, id: 175, class: 1, level: 493, str: 102665, dex: 35988, int: 35748, con: 139606, lck: 22472, health: 344826816, min: 546, max: 1174 },
+            'Butthead': { pos: 981, id: 216, class: 1, level: 497, str: 105634, dex: 37033, int: 36788, con: 143682, lck: 23112, health: 357768192, min: 554, max: 1189 },
+            'Three Ghosts': { pos: 990, id: 496, class: 1, level: 499, str: 107078, dex: 37541, int: 37293, con: 145665, lck: 23414, health: 364162496, min: 555, max: 1197 },
+            'Nevorfull': { pos: 998, id: 824, class: 1, level: 500, str: 108183, dex: 37924, int: 37674, con: 147177, lck: 23653, health: 368678400, min: 556, max: 1201 },
+            'Swamp Nymphomaniac': { pos: 999, id: 68, class: 1, level: 500, str: 108292, dex: 37962, int: 37712, con: 147326, lck: 23676, health: 369051616, min: 555, max: 1201 },
+            'Shniva': { pos: 1000, id: 228, class: 3, level: 501, str: 34075, dex: 135800, int: 33950, con: 138915, lck: 48412, health: 278941312, min: 872, max: 1334 }
         }
     },
     '101': {
