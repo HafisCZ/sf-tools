@@ -282,7 +282,7 @@
 
                         let boss = new SFFighter(msg['fighters'].slice(52, 99));
                         boss.Name = getFightTargetName(fightType, boss.Name, boss.getMonsterID())
-                        boss.Hash = SHA1(boss.Name + boss.Level);
+                        boss.Hash = SHA1(boss.Name + boss.Level + boss.Constitution + boss.Strength + boss.Dexterity + boss.Intelligence + boss.Luck);
 
                         // Handle rounds
                         let rounds = [];
