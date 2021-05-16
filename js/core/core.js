@@ -87,7 +87,8 @@ const SiteOptions = new (class {
             players_other: false,
             files_hide: false,
             inventory: false,
-            tracker: false
+            tracker: false,
+            recent: false
         };
 
         Object.assign(this.options, SharedPreferences.get('options', {}));
@@ -125,14 +126,29 @@ class DatabaseHandler {
         this.stores = stores;
 
         // Add stores
-        for (let { name, key } of stores) {
+        for (let { name, key, getCursor } of stores) {
             let getStore = () => this.database.transaction([ name ], 'readwrite').objectStore(name);
             this[name] = {
                 // Get all items
                 get: callback => {
-                    let r = getStore().getAll();
-                    r.onsuccess = () => callback(r.result);
-                    r.onerror = () => callback([]);
+                    if (getCursor) {
+                        let r = getStore().openCursor(getCursor)
+                        let v = [];
+                        r.onsuccess = event => {
+                            let c = event.target.result;
+                            if (c) {
+                                v.push(c.value);
+                                c.continue();
+                            } else {
+                                callback(v);
+                            }
+                        };
+                        r.onerror = () => callback(v);
+                    } else {
+                        let r = getStore().getAll();
+                        r.onsuccess = () => callback(r.result);
+                        r.onerror = () => callback([]);
+                    }
                 },
                 // Set item
                 set: object => getStore().put(object),
@@ -972,7 +988,8 @@ const Storage = new (class {
             this.db = new DatabaseHandler(slot ? `database_${ slot }` : 'database', [
                 {
                     name: 'files',
-                    key: 'timestamp'
+                    key: 'timestamp',
+                    getCursor: SiteOptions.recent ? IDBKeyRange.lowerBound((Date.now() - 2419200000)) : undefined
                 },
                 {
                     name: 'profiles',

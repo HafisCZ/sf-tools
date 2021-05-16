@@ -1981,6 +1981,15 @@ class FilesView extends View {
             }
         }).checkbox(SiteOptions.inventory ? 'set checked' : 'set unchecked');
 
+        this.$recent = this.$parent.find('[data-op="checkbox-recent"]').checkbox({
+            onChecked: () => {
+                SiteOptions.recent = true;
+            },
+            onUnchecked: () => {
+                SiteOptions.recent = false;
+            }
+        }).checkbox(SiteOptions.recent ? 'set checked' : 'set unchecked');
+
         // Collapsed things
         this.shown = {};
     }
@@ -3661,11 +3670,13 @@ const UI = {
         if (isbeta) {
             UI.Files.$endpoint.show();
             UI.Files.$insecure.show();
+            UI.Files.$recent.show();
             UI.Files.$cloudexport.show();
             UI.FileUpdate.$textTimestamp.parent('div').removeClass('disabled');
         } else {
             UI.Files.$endpoint.hide();
             UI.Files.$insecure.hide();
+            UI.Files.$recent.hide();
             UI.Files.$cloudexport.hide();
             UI.FileUpdate.$textTimestamp.parent('div').addClass('disabled');
         }
