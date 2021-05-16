@@ -2458,6 +2458,12 @@ const SP_KEYWORD_MAPPING_2 = {
     'Stone': {
         expr: p => p.Fortress.Stone
     },
+    'Scrapbook Items': {
+        expr: p => p.Scrapbook
+    },
+    'Scrapbook Legendaries': {
+        expr: p => p.ScrapbookLegendary
+    },
     'Aura': {
         expr: p => p.Toilet.Aura,
         statistics: false
