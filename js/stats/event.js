@@ -494,7 +494,7 @@ class PlayerDetailFloatView extends View {
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Achievements</div>
-                            <div class="detail-item text-center">${ player.Achievements.Owned } / 80${ asDiff(player.Achievements.Owned, compare.Achievements.Owned, formatAsSpacedNumber) }</div>
+                            <div class="detail-item text-center">${ player.Achievements.Owned } / ${ ACHIEVEMENTS_COUNT }${ asDiff(player.Achievements.Owned, compare.Achievements.Owned, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
                             <div class="detail-item">Mount</div>
