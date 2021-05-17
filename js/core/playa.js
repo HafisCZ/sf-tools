@@ -1602,7 +1602,7 @@ class SFOwnPlayer extends SFPlayer {
         if (loadInventory) {
             if (data.chest) {
                 dataType = new ComplexDataType(data.chest);
-                for (var i = 0; i < 40 && !dataType.empty(); i++) {
+                for (var i = 0; i < 45 && !dataType.empty(); i++) {
                     var item = new SFItem(dataType.sub(12));
                     if (item.Type > 0) {
                         if (i >= 15) {
