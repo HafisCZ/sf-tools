@@ -836,22 +836,67 @@ class TableInstance {
             }
         }
 
+        // Get statistics
+        if (typeof this.cache.statistics == 'undefined') {
+            if (this.rightFlat.reduce((a, { statistics }) => a || statistics, false)) {
+                if (this.settings.customStatistics.length) {
+                    this.cache.statistics = this.getStatistics(leftSpan, this.settings.customStatistics);
+                } else {
+                    this.cache.statistics = this.getStatistics(leftSpan, [
+                        {
+                            name: 'Minimum',
+                            expression: array => Math.min(... array)
+                        },
+                        {
+                            name: 'Average',
+                            expression: array => array.reduce((a, b) => a + b, 0) / array.length
+                        },
+                        {
+                            name: 'Maximum',
+                            expression: array => Math.max(... array)
+                        }
+                    ]);
+                }
+            } else {
+                this.cache.statistics = '';
+            }
+        }
+
+        this.cache.table = `
+            <tr class="headers">
+                ${ categoryTitle }
+                ${ this.getCategoryBlock(false) }
+            </tr>
+            <tr class="headers border-bottom-thick">
+                ${ headerTitle }
+                ${ this.getHeaderBlock(false) }
+            </tr>
+            ${ join(this.entries, (e, ei, ea) => e.content) }
+        `;
+
+        let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, false);
+
         // Create table Content
         return {
             width: tableWidth,
             content: `
                 <thead></thead>
                 <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
-                    ${ this.cache.rows }
-                    <tr class="headers">
-                        ${ categoryTitle }
-                        ${ this.getCategoryBlock(false) }
-                    </tr>
-                    <tr class="headers border-bottom-thick">
-                        ${ headerTitle }
-                        ${ this.getHeaderBlock(false) }
-                    </tr>
-                    ${ join(this.entries, (e, ei, ea) => e.content) }
+                    ${ join(layout, (block, i, array) => {
+                        // Counters
+                        let first = i == 0;
+                        let last = i == array.length - 1;
+                        let prev = array[i - 1];
+                        let next = array[i + 1];
+
+                        if (block == '|') {
+                            return divider;
+                        } else if (block == '_') {
+                            return spacer;
+                        } else {
+                            return this.cache[block];
+                        }
+                    }) }
                 </tbody>
             `
         };
@@ -1110,6 +1155,19 @@ class TableInstance {
         }
     }
 
+    getArrayForStatistics () {
+        if (this.type == 0) {
+            return this.array.map(([timestamp, player], index, array) => {
+                return {
+                    player: player,
+                    compare: array[index + 1]?.[1] || player
+                };
+            });
+        } else {
+            return this.array;
+        }
+    }
+
     getStatistics (leftSpan, entries) {
         return `
             <tr>
@@ -1120,7 +1178,7 @@ class TableInstance {
             ${ join(entries, ({ name, ast, expression }) => `
                 <tr>
                     <td class="border-right-thin" colspan="${ leftSpan }">${ name }</td>
-                    ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.array, expression ? expression : array => ast.eval(undefined, undefined, this.settings, new ExpressionScope().addSelf(array))) : `<td colspan="${ span }"></td>`) }
+                    ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.getArrayForStatistics(), expression ? expression : array => ast.eval(undefined, undefined, this.settings, new ExpressionScope().addSelf(array))) : `<td colspan="${ span }"></td>`) }
                 </tr>
             `) }
         `;
