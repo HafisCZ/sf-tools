@@ -795,6 +795,7 @@ class TableInstance {
         let indexStyle = this.settings.getIndexStyle();
 
         let leftSpan = (this.leftFlatSpan || 1) + (indexStyle ? 1 : 0);
+        let spacer = this.getSpacer(leftSpan);
 
         // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
