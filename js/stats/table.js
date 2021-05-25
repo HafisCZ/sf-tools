@@ -318,7 +318,7 @@ class TableInstance {
             this.global_key = '_order_by';
         } else if (sort_col = this.flat.find(x => 'glob_order' in x)) {
             this.global_key = sort_col['sortkey'];
-            this.global_ord = sort_col['glob_order'] ? -1 : 1;
+            this.global_ord = sort_col['glob_order'] ? 1 : -1;
         }
     }
 
