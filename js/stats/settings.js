@@ -973,6 +973,11 @@ const SettingsCommands = [
         },
         (root, expression) => SFormat.Keyword('order by ') + Expression.format(expression, root)
     ).copyable(),
+    new Command(
+        /^glob order (asc|des)$/,
+        (root, value) => root.addLocal('glob_order', value == 'asc'),
+        (root, value) => SFormat.Keyword('glob order ') + SFormat.Constant(value)
+    ).copyable(),
     /*
         Value expression
     */

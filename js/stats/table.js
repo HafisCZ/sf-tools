@@ -309,6 +309,17 @@ class TableInstance {
         this.cellDivider = this.getCellDivider();
 
         this.clearCache();
+
+        this.global_key = '_index';
+        this.global_ord = 1;
+
+        let sort_col;
+        if (this.settings.globals.order_by) {
+            this.global_key = '_order_by';
+        } else if (sort_col = this.flat.find(x => 'glob_order' in x)) {
+            this.global_key = sort_col['sortkey'];
+            this.global_ord = sort_col['glob_order'] ? -1 : 1;
+        }
     }
 
     // Set players
@@ -500,7 +511,7 @@ class TableInstance {
                         // Default sorting keys
                         '_name': player.Name,
                         '_index': index,
-                        '_server': player.Prefix,
+                        '_server': player.Prefix
                     })
                 });
             }
@@ -618,8 +629,6 @@ class TableInstance {
 
     // Execute sort
     sort () {
-        let global_key = this.settings.globals.order_by ? '_order_by' : '_index';
-        
         if (this.sorting.length) {
             this.entries.sort((a, b) => {
                 let result = undefined;
@@ -628,10 +637,10 @@ class TableInstance {
                     result = result || (a.sorting[key] == undefined ? 1 : (b.sorting[key] == undefined ? -1 : (((order == 1 && !flip) || (order == 2 && flip)) ? compareItems(a.sorting[key], b.sorting[key]) : compareItems(b.sorting[key], a.sorting[key]))));
                 }
 
-                return result || (a.sorting[global_key] - b.sorting[global_key]);
+                return result || (this.global_ord * (a.sorting[this.global_key] - b.sorting[this.global_key]));
             });
         } else {
-            this.entries.sort((a, b) => a.sorting[global_key] - b.sorting[global_key]);
+            this.entries.sort((a, b) => this.global_ord * (a.sorting[this.global_key] - b.sorting[this.global_key]));
         }
     }
 
@@ -1333,6 +1342,9 @@ class TableController {
             ExpressionCache.start();
 
             this.table.setEntries(... this.entries);
+            if (this.type != TableType.History) {
+                this.table.sort();
+            }
 
             ExpressionCache.stop();
         }
