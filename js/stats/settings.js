@@ -1029,6 +1029,19 @@ const SettingsCommands = [
         (root, expression) => SFormat.Keyword('discard ') + Expression.format(expression, root)
     ),
     /*
+        Order all expression
+    */
+    new Command(
+        /^order all by (.+)$/,
+        (root, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addDefaultOrder(ast);
+            }
+        },
+        (root, expression) => SFormat.Keyword('order all by ') + Expression.format(expression, root)
+    ),
+    /*
         Color expression
     */
     new Command(
@@ -2037,6 +2050,10 @@ class Settings {
     // Add discard rule
     addDiscardRule (rule) {
         this.discardRules.push(rule);
+    }
+
+    addDefaultOrder (order) {
+        this.globals.order_by = order;
     }
 
     // Get code

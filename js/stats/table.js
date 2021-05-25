@@ -490,13 +490,17 @@ class TableInstance {
                             obj[sortkey] = sort(player, compare);
                         }
 
+                        if (this.settings.globals.order_by) {
+                            obj['_order_by'] = getSafeExpr(this.settings.globals.order_by, player, compare, this.settings)
+                        }
+
                         // Return sorting object
                         return obj;
                     }, {
                         // Default sorting keys
                         '_name': player.Name,
                         '_index': index,
-                        '_server': player.Prefix
+                        '_server': player.Prefix,
                     })
                 });
             }
@@ -564,6 +568,10 @@ class TableInstance {
                             obj[sortkey] = sort(player, compare);
                         }
 
+                        if (this.settings.globals.order_by) {
+                            obj['_order_by'] = getSafeExpr(this.settings.globals.order_by, player, compare, this.settings)
+                        }
+
                         // Return sorting object
                         return obj;
                     }, {
@@ -610,6 +618,8 @@ class TableInstance {
 
     // Execute sort
     sort () {
+        let global_key = this.settings.globals.order_by ? '_order_by' : '_index';
+        
         if (this.sorting.length) {
             this.entries.sort((a, b) => {
                 let result = undefined;
@@ -618,10 +628,10 @@ class TableInstance {
                     result = result || (a.sorting[key] == undefined ? 1 : (b.sorting[key] == undefined ? -1 : (((order == 1 && !flip) || (order == 2 && flip)) ? compareItems(a.sorting[key], b.sorting[key]) : compareItems(b.sorting[key], a.sorting[key]))));
                 }
 
-                return result || (a.sorting['_index'] - b.sorting['_index']);
+                return result || (a.sorting[global_key] - b.sorting[global_key]);
             });
         } else {
-            this.entries.sort((a, b) => a.sorting['_index'] - b.sorting['_index']);
+            this.entries.sort((a, b) => a.sorting[global_key] - b.sorting[global_key]);
         }
     }
 
