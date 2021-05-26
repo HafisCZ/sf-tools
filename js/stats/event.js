@@ -3671,6 +3671,7 @@ const UI = {
             UI.Files.$endpoint.show();
             UI.Files.$insecure.show();
             UI.Files.$recent.show();
+            UI.Files.$obfuscated.show();
             UI.Files.$cloudexport.show();
             UI.FileUpdate.$textTimestamp.parent('div').removeClass('disabled');
         } else {
@@ -3678,6 +3679,7 @@ const UI = {
             UI.Files.$insecure.hide();
             UI.Files.$recent.hide();
             UI.Files.$cloudexport.hide();
+            UI.Files.$obfuscated.hide();
             UI.FileUpdate.$textTimestamp.parent('div').addClass('disabled');
         }
     },
