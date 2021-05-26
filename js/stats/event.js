@@ -162,7 +162,7 @@ class GroupDetailView extends View {
         this.$name.text(this.group.Latest.Name);
 
         this.timestamp = this.group.LatestTimestamp;
-        this.reference = this.group.LatestTimestamp;
+        this.reference = (SiteOptions.always_prev && this.group.List[1] ? this.group.List[1][0] : undefined) || this.group.LatestTimestamp;
 
         var listTimestamp = [];
         var listReference = [];
@@ -177,7 +177,8 @@ class GroupDetailView extends View {
             if (timestamp <= this.timestamp) {
                 listReference.push({
                     name: formatDate(timestamp),
-                    value: timestamp
+                    value: timestamp,
+                    selected: timestamp == this.reference
                 });
             }
         }
