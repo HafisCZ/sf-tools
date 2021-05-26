@@ -1918,7 +1918,7 @@ class FilesView extends View {
         }).checkbox(SiteOptions.lazy ? 'set checked' : 'set unchecked');
 
         // Trackers
-        this.$lazy = this.$parent.find('[data-op="checkbox-tracker"]').checkbox({
+        this.$tracker = this.$parent.find('[data-op="checkbox-tracker"]').checkbox({
             onChecked: () => {
                 SiteOptions.tracker = true
             },
@@ -1926,6 +1926,15 @@ class FilesView extends View {
                 SiteOptions.tracker = false
             }
         }).checkbox(SiteOptions.tracker ? 'set checked' : 'set unchecked');
+
+        this.$parent.find('[data-op="checkbox-alwaysprev"]').checkbox({
+            onChecked: () => {
+                SiteOptions.always_prev = true
+            },
+            onUnchecked: () => {
+                SiteOptions.always_prev = false
+            }
+        }).checkbox(SiteOptions.always_prev ? 'set checked' : 'set unchecked');
 
         // Hide hidden files
         this.$hidden = this.$parent.find('[data-op="checkbox-hidden"]').checkbox({

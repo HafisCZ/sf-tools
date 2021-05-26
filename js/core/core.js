@@ -88,7 +88,8 @@ const SiteOptions = new (class {
             files_hide: false,
             inventory: false,
             tracker: false,
-            recent: false
+            recent: false,
+            always_prev: false
         };
 
         Object.assign(this.options, SharedPreferences.get('options', {}));
