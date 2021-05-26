@@ -974,9 +974,9 @@ const SettingsCommands = [
         (root, expression) => SFormat.Keyword('order by ') + Expression.format(expression, root)
     ).copyable(),
     new Command(
-        /^glob order (asc|des)$/,
-        (root, value) => root.addLocal('glob_order', value == 'asc'),
-        (root, value) => SFormat.Keyword('glob order ') + SFormat.Constant(value)
+        /^glob order (asc|des)(?: (\d+))?$/,
+        (root, value, index) => root.addGlobOrder(parseInt(index), value == 'asc'),
+        (root, value, index) => SFormat.Keyword('glob order ') + SFormat.Constant(`${ value } ${ index || '' }`)
     ).copyable(),
     /*
         Value expression
@@ -1917,6 +1917,16 @@ class Settings {
         let object = (this.row || this.definition || this.header || this.category);
         if (object) {
             object['expa'] = expression;
+        }
+    }
+
+    addGlobOrder (index, order) {
+        let object = this.header;
+        if (object) {
+            object['glob_order'] = {
+                ord: order,
+                index: index
+            }
         }
     }
 

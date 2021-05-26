@@ -313,12 +313,22 @@ class TableInstance {
         this.global_key = '_index';
         this.global_ord = 1;
 
-        let sort_col;
         if (this.settings.globals.order_by) {
             this.global_key = '_order_by';
-        } else if (sort_col = this.flat.find(x => 'glob_order' in x)) {
-            this.global_key = sort_col['sortkey'];
-            this.global_ord = sort_col['glob_order'] ? 1 : -1;
+        } else if (this.flat.some(x => 'glob_order' in x)) {
+            let sorting = [];
+
+            for (let { sortkey, glob_order } of this.flat) {
+                if (typeof glob_order != 'undefined') {
+                    sorting.splice(glob_order.index || sorting.length, 0, {
+                        key: sortkey,
+                        flip: undefined,
+                        order: glob_order.ord ? -1 : 1
+                    });
+                }
+            }
+
+            this.global_sorting = sorting;
         }
     }
 
@@ -629,19 +639,19 @@ class TableInstance {
 
     // Execute sort
     sort () {
-        if (this.sorting.length) {
-            this.entries.sort((a, b) => {
-                let result = undefined;
+        this.entries.sort((a, b) => this._sort_globally(a, b, this.sorting) || this._sort_globally(a, b, this.global_sorting) || this._sort_default(a, b));
+    }
 
-                for (let { key, flip, order } of this.sorting) {
-                    result = result || (a.sorting[key] == undefined ? 1 : (b.sorting[key] == undefined ? -1 : (((order == 1 && !flip) || (order == 2 && flip)) ? compareItems(a.sorting[key], b.sorting[key]) : compareItems(b.sorting[key], a.sorting[key]))));
-                }
-
-                return result || (this.global_ord * (a.sorting[this.global_key] - b.sorting[this.global_key]));
-            });
+    _sort_globally (a, b, sort_list) {
+        if (sort_list) {
+            return sort_list.reduce((result, { key, flip, order }) => result || (a.sorting[key] == undefined ? 1 : (b.sorting[key] == undefined ? -1 : (((order == 1 && !flip) || (order == 2 && flip)) ? compareItems(a.sorting[key], b.sorting[key]) : compareItems(b.sorting[key], a.sorting[key])))), undefined);
         } else {
-            this.entries.sort((a, b) => this.global_ord * (a.sorting[this.global_key] - b.sorting[this.global_key]));
+            return undefined;
         }
+    }
+
+    _sort_default (a, b) {
+        return this.global_ord * (a.sorting[this.global_key] - b.sorting[this.global_key]);
     }
 
     clearCache () {
