@@ -323,7 +323,7 @@ class TableInstance {
                     sorting.splice(glob_order.index || sorting.length, 0, {
                         key: sortkey,
                         flip: undefined,
-                        order: glob_order.ord ? -1 : 1
+                        order: glob_order.ord ? 2 : 1
                     });
                 }
             }
@@ -1268,7 +1268,14 @@ class TableInstance {
 
     getSortingTag (key) {
         let index = this.sorting.findIndex(s => s.key == key);
-        return `data-sortable-key="${ key }" data-sortable="${ this.sorting[index] ? this.sorting[index].order : 0 }" data-sortable-index=${ this.sorting.length == 1 ? '' : (index + 1) }`;
+        let str = `data-sortable-key="${ key }" data-sortable="${ this.sorting[index] ? this.sorting[index].order : 0 }" data-sortable-index="${ this.sorting.length == 1 ? '' : (index + 1) }"`;
+
+        if (this.global_sorting) {
+            let global_index = this.global_sorting.findIndex(s => s.key == key);
+            str = `${ str } data-default-sortable="${ this.global_sorting[global_index] ? this.global_sorting[global_index].order : 0 }" data-default-sortable-index="${ this.global_sorting.length == 1 ? '' : (global_index + 1) }"`;
+        }
+
+        return str;
     }
 }
 

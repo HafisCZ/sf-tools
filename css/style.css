@@ -493,13 +493,38 @@ h3.file-selected {
     pointer-events: none;
 }
 
+[data-sortable]::before {
+    transform: scale(0.7);
+}
+
+[data-sortable]::after {
+    transform: scale(0.7);
+}
+
+[data-default-sortable="1"][data-sortable="0"]::before {
+    content: "\f0de";
+    font-family: Icons;
+    position: absolute;
+    left: 1px;
+    top: 3px;
+    color: gray;
+}
+
 [data-sortable="1"]::before {
     content: "\f0de";
     font-family: Icons;
     position: absolute;
     left: 1px;
     top: 3px;
-    transform: scale(0.7);
+}
+
+[data-default-sortable="2"][data-sortable="0"]::before {
+    content: "\f0dd";
+    font-family: Icons;
+    position: absolute;
+    left: 1px;
+    top: 3px;
+    color: gray;
 }
 
 [data-sortable="2"]::before {
@@ -508,22 +533,35 @@ h3.file-selected {
     position: absolute;
     left: 1px;
     bottom: 3px;
-    transform: scale(0.7);
+}
+
+[data-default-sortable="1"][data-sortable="0"]::after {
+    content: attr(data-default-sortable-index);
+    position: absolute;
+    left: 1px;
+    top: 33%;
+    color: gray;
 }
 
 [data-sortable="1"]::after {
     content: attr(data-sortable-index);
     position: absolute;
     left: 1px;
-    transform: scale(0.7);
     top: 33%;
+}
+
+[data-default-sortable="2"][data-sortable="0"]::after {
+    content: attr(data-default-sortable-index);
+    position: absolute;
+    left: 1px;
+    top: 33%;
+    color: gray;
 }
 
 [data-sortable="2"]::after {
     content: attr(data-sortable-index);
     position: absolute;
     left: 1px;
-    transform: scale(0.7);
     top: 33%;
 }
 
