@@ -329,6 +329,7 @@ class TableInstance {
             }
 
             this.global_sorting = sorting;
+            this.setDefaultSorting();
         }
     }
 
@@ -639,7 +640,11 @@ class TableInstance {
 
     // Execute sort
     sort () {
-        this.entries.sort((a, b) => this._sort_globally(a, b, this.sorting) || this._sort_globally(a, b, this.global_sorting) || this._sort_default(a, b));
+        this.entries.sort((a, b) => this._sort_globally(a, b, this.sorting) || this._sort_default(a, b));
+    }
+
+    setDefaultSorting () {
+        this.sorting = [ ...this.global_sorting ];
     }
 
     _sort_globally (a, b, sort_list) {
@@ -1268,14 +1273,7 @@ class TableInstance {
 
     getSortingTag (key) {
         let index = this.sorting.findIndex(s => s.key == key);
-        let str = `data-sortable-key="${ key }" data-sortable="${ this.sorting[index] ? this.sorting[index].order : 0 }" data-sortable-index="${ this.sorting.length == 1 ? '' : (index + 1) }"`;
-
-        if (this.global_sorting) {
-            let global_index = this.global_sorting.findIndex(s => s.key == key);
-            str = `${ str } data-default-sortable="${ this.global_sorting[global_index] ? this.global_sorting[global_index].order : 0 }" data-default-sortable-index="${ this.global_sorting.length == 1 ? '' : (global_index + 1) }"`;
-        }
-
-        return str;
+        return `data-sortable-key="${ key }" data-sortable="${ this.sorting[index] ? this.sorting[index].order : 0 }" data-sortable-index="${ this.sorting.length == 1 ? '' : (index + 1) }"`;
     }
 }
 
@@ -1429,6 +1427,9 @@ class TableController {
                 }
 
                 // Redraw table
+                this.refresh(onChange);
+            } else if (this.table.global_sorting) {
+                this.table.setDefaultSorting();
                 this.refresh(onChange);
             }
         }).mousedown(event => {
