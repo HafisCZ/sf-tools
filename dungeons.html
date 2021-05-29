@@ -1078,7 +1078,7 @@
 
                                 availableBosses = [
                                     ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon - 2)),
-                                    getDungeonEnemyAt(15, false, tower),
+                                    getDungeonEnemyAt(15, false, player.Dungeons.Normal.Total < 90 ? -1 : tower),
                                     getTwisterEnemyAt(twister - 1),
                                     ... shadowDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], true, dungeon - 2)),
                                     getDungeonEnemyAt(15, true, youtube - 2),
