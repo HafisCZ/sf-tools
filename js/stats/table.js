@@ -1196,7 +1196,7 @@ class TableInstance {
             return this.array.map(([timestamp, player], index, array) => {
                 return {
                     player: player,
-                    compare: array[index + 1]?.[1] || player
+                    compare: array[index + 1] ? array[index + 1][1] : player
                 };
             });
         } else {
