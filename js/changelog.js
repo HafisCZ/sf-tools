@@ -1,4 +1,21 @@
 const CHANGELOG = {
+    'v4.1443': [
+        'Added default sorting order.',
+        'Added macro-able variables and fuctions.',
+        'Added access to site options to macros.',
+        'Added <code>t</code> filter option.',
+        'Added <code>table_reference</code> and <code>table_timestamp</code> timestamps to settings.',
+        'Added drag & drop to settings.',
+        'Added <code>discard</code> to player table.',
+        'Added statistic rows to Me tab.',
+        'Added access to scrapbook data.',
+        'Added progress bar to endpoint.',
+        'Fixed infinite recursion in variables.',
+        'Fixed script list when not available.',
+        'Fixed achievement names.',
+        'Removed private flags.',
+        'Disabled unity cache for endpoint.'
+    ],
     'v4.1346': [
         'Reworked macros.',
         'Reworked expression scopes',
