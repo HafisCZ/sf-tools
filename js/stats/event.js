@@ -3467,6 +3467,7 @@ class EndpointView extends View {
         this.$modeDefault = this.$parent.find('[data-op="modeDefault"]').checkbox();
         this.$modeOwn = this.$parent.find('[data-op="modeOwn"]').checkbox();
         this.$modeAll = this.$parent.find('[data-op="modeAll"]').checkbox();
+        this.setModeSelection();
 
         this.$iframe = this.$parent.find('[data-op="iframe"]');
         this.$list = this.$parent.find('[data-op="list"]');
@@ -3613,6 +3614,27 @@ class EndpointView extends View {
         }
     }
 
+    setModeSelection () {
+        let selectionMode = window.localStorage['endpoint_mode'] || 'default';
+        switch (selectionMode) {
+            case 'own': {
+                this.$modeOwn.checkbox('set checked');
+                break;
+            }
+            case 'all': {
+                this.$modeAll.checkbox('set checked');
+                break;
+            }
+            default: {
+                this.$modeDefault.checkbox('set checked');
+            }
+        }
+
+        this.$modeDefault.checkbox({ onChecked: () => { window.localStorage['endpoint_mode'] = 'default' } });
+        this.$modeOwn.checkbox({ onChecked: () => { window.localStorage['endpoint_mode'] = 'own' } });
+        this.$modeAll.checkbox({ onChecked: () => { window.localStorage['endpoint_mode'] = 'all' } });
+    }
+
     showError (text, hard = false) {
         this.$error.show();
         this.$errorText.text(text);
@@ -3647,8 +3669,6 @@ class EndpointView extends View {
     }
 
     show () {
-        this.$modeDefault.checkbox('check');
-
         this.$step1.show();
         this.$step2.hide();
         this.$step3.hide();
