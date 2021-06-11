@@ -540,27 +540,35 @@ class Field {
     }
 
     static isNumber (val) {
-        return !isNaN(val) && val >= 0;
+        return !isNaN(val) && Number.isInteger(val) && val >= 0;
+    }
+
+    static isWeaponDamage (val) {
+        return Field.isNumber(val) && val <= 3480;
+    }
+
+    static isPlayerLevel (val) {
+        return Field.isNonZero(val) && val <= 700;
     }
 
     static isGladiator (val) {
-        return !isNaN(val) && val >= 0 && val <= 15;
+        return Field.isNumber(val) && val <= 15;
     }
 
     static isDamageRune (val) {
-        return !isNaN(val) && val >= 0 && val <= 60;
+        return Field.isNumber(val) && val <= 60;
     }
 
     static isResistanceRune (val) {
-        return !isNaN(val) && val >= 0 && val <= 75;
+        return Field.isNumber(val) && val <= 75;
     }
 
     static isDungeon (val) {
-        return !isNaN(val) && val >= 0 && val <= 50;
+        return Field.isNumber(val) && val <= 50;
     }
 
     static isHealthRune (val) {
-        return !isNaN(val) && val >= 0 && val <= 15;
+        return Field.isNumber(val) && val <= 15;
     }
 
     static isNonZero (val) {

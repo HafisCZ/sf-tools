@@ -554,7 +554,7 @@
                         name: new Field('[data-path="Name"]', ''),
                         class: new Field('[data-path="Class"]', '1'),
                         mask: new Field('[data-path="Mask"]', '0'),
-                        level: new Field('[data-path="Level"]', '', Field.isNumber),
+                        level: new Field('[data-path="Level"]', '', Field.isPlayerLevel),
                         armor: new Field('[data-path="Armor"]', '', Field.isNumber),
 
                         resistance_fire: new Field('[data-path="Runes.ResistanceFire"]', '', Field.isResistanceRune),
@@ -576,14 +576,14 @@
                         con: new Field('[data-path="Constitution.Total"]', '', Field.isNumber),
                         lck: new Field('[data-path="Luck.Total"]', '', Field.isNumber),
 
-                        weapon1_min: new Field('[data-path="Items.Wpn1.DamageMin"]', '', Field.isNumber),
-                        weapon1_max: new Field('[data-path="Items.Wpn1.DamageMax"]', '', Field.isNumber),
+                        weapon1_min: new Field('[data-path="Items.Wpn1.DamageMin"]', '', Field.isWeaponDamage),
+                        weapon1_max: new Field('[data-path="Items.Wpn1.DamageMax"]', '', Field.isWeaponDamage),
                         weapon1_enchantment: new Field('[data-path="Items.Wpn1.HasEnchantment"]', 'false'),
                         weapon1_rune: new Field('[data-path="Items.Wpn1.AttributeTypes.2"]', '0'),
                         weapon1_value: new Field('[data-path="Items.Wpn1.Attributes.2"]', '', Field.isDamageRune),
 
-                        weapon2_min: new Field('[data-path="Items.Wpn2.DamageMin"]', '', Field.isNumber),
-                        weapon2_max: new Field('[data-path="Items.Wpn2.DamageMax"]', '', Field.isNumber),
+                        weapon2_min: new Field('[data-path="Items.Wpn2.DamageMin"]', '', Field.isWeaponDamage),
+                        weapon2_max: new Field('[data-path="Items.Wpn2.DamageMax"]', '', Field.isWeaponDamage),
                         weapon2_enchantment: new Field('[data-path="Items.Wpn2.HasEnchantment"]', 'false'),
                         weapon2_rune: new Field('[data-path="Items.Wpn2.AttributeTypes.2"]', '0'),
                         weapon2_value: new Field('[data-path="Items.Wpn2.Attributes.2"]', '', Field.isDamageRune)
