@@ -26,6 +26,10 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
 
+        <script type="text/javascript">
+            LOGICAL_PROCS = (navigator || {}).hardwareConcurrency || 4;
+        </script>
+
         <style>
             .bordered .fields:last-of-type {
                 margin-bottom: 0;
@@ -1156,73 +1160,80 @@
                 $('.ui.modal').modal('show');
             }
 
+            function preparePlayerInstances (dungeon) {
+                let playerInstances = players.map(p => JSON.parse(JSON.stringify(p)));
+
+                if (dungeon.shadow) {
+                    let bert = playerInstances[1];
+
+                    let hp_a = (100 + bert.Dungeons.Player) / 100;
+                    let hp_b = (100 + bert.Potions.Life) / 100;
+                    let hp_c = (100 + bert.Runes.Health) / 100;
+                    let hp_d = 1.22;
+
+                    playerInstances[1].NoSkip = true;
+                    playerInstances[1].AutoHealth = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
+                }
+
+                if (playerInstances[0].Class == 1 && playerInstances[0].BlockChance == '0') {
+                    playerInstances[0].NoSkip = true;
+                }
+
+                if (dungeon.force_no_gladiator) {
+                    for (let i = 0; i < 4; i++) {
+                        playerInstances[i].Fortress.Gladiator = 0;
+                    }
+                }
+
+                for (let i = 0; i < 4; i++) {
+                    playerInstances[i].IsRealPlayer = true;
+                }
+
+                return dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
+            }
+
             $('#sim-run-all').click(function () {
                 if (availableBosses && availableBosses.length > 0 && players[0].Level) {
                     toggleAll(true);
 
                     let results = [];
-                    let logs = [];
                     let resultsRemaining = availableBosses.length;
 
+                    let maximumInstances = Math.max(1, Number($('#sim-threads').val()) || LOGICAL_PROCS);
+                    let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+
+                    let pendingInstances = [];
+
                     for (let [index, { boss, dungeon, name }] of Object.entries(availableBosses)) {
-                        let playerInstances = players.map(p => JSON.parse(JSON.stringify(p)));
-
-                        if (dungeon.shadow) {
-                            let bert = playerInstances[1];
-
-                            let hp_a = (100 + bert.Dungeons.Player) / 100;
-                            let hp_b = (100 + bert.Potions.Life) / 100;
-                            let hp_c = (100 + bert.Runes.Health) / 100;
-                            let hp_d = 1.22;
-
-                            playerInstances[1].NoSkip = true;
-                            playerInstances[1].AutoHealth = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
-                        }
-
-                        if (playerInstances[0].Class == 1 && playerInstances[0].BlockChance == '0') {
-                            playerInstances[0].NoSkip = true;
-                        }
-
-                        if (dungeon.force_no_gladiator) {
-                            for (let i = 0; i < 4; i++) {
-                                playerInstances[i].Fortress.Gladiator = 0;
-                            }
-                        }
-
-                        for (let i = 0; i < 4; i++) {
-                            playerInstances[i].IsRealPlayer = true;
-                        }
-
-                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
-                        let pchars = dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
-
-                        if (log) {
-                            iterations = 2000;
-                        }
-
                         let worker = createWebWorker('js/sim/dungeons.js');
 
-                        worker.addEventListener('message', (message) => {
+                        worker.addEventListener('message', (message) => {console.log(message);
                             if (message.data.command == 'finished') {
                                 let { score, iterations } = message.data.results;
-                                if (message.data.log.length) {
-                                    logs.push(... message.data.log);
-                                }
 
-                                results[index] = 100 * score / iterations;
+                                results[message.data.index] = 100 * score / iterations;
                                 if (--resultsRemaining <= 0) {
                                     toggleAll();
                                     showMassDungeonResults(availableBosses, results);
+                                } else if (pendingInstances.length > 0) {
+                                    let [ secWorker, args ] = pendingInstances.pop();
+                                    secWorker.postMessage(args);
                                 }
                             }
                         }, false);
 
-                        worker.postMessage({
-                            players: pchars,
+                        pendingInstances.push([worker, {
+                            players: preparePlayerInstances(dungeon),
                             boss: getBossData(boss),
                             iterations: iterations,
-                            log: log
-                        });
+                            index: index
+                        }])
+                    }
+
+                    let currentInstances = Math.min(maximumInstances, pendingInstances.length);
+                    for (let i = 0; i < currentInstances; i++) {
+                        let [ worker, args ] = pendingInstances.pop();
+                        worker.postMessage(args);
                     }
                 }
             });
@@ -1231,37 +1242,9 @@
                 if (boss && players[0].Level) {
                     toggleAll(true);
 
-                    let playerInstances = players.map(p => JSON.parse(JSON.stringify(p)));
-
-                    if (dungeon.shadow) {
-                        let bert = playerInstances[1];
-
-                        let hp_a = (100 + bert.Dungeons.Player) / 100;
-                        let hp_b = (100 + bert.Potions.Life) / 100;
-                        let hp_c = (100 + bert.Runes.Health) / 100;
-                        let hp_d = 1.22;
-
-                        playerInstances[1].NoSkip = true;
-                        playerInstances[1].AutoHealth = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
-                    }
-
-                    if (playerInstances[0].Class == 1 && playerInstances[0].BlockChance == '0') {
-                        playerInstances[0].NoSkip = true;
-                    }
-
-                    if (dungeon.force_no_gladiator) {
-                        for (let i = 0; i < 4; i++) {
-                            playerInstances[i].Fortress.Gladiator = 0;
-                        }
-                    }
-
-                    for (let i = 0; i < 4; i++) {
-                        playerInstances[i].IsRealPlayer = true;
-                    }
-
+                    let playerInstances = preparePlayerInstances(dungeon);
                     let threads = Math.max(1, Number($('#sim-threads').val()) || 2);
                     let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
-                    let pchars = dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
 
                     let results = [];
                     let totalScore = 0;
@@ -1313,7 +1296,7 @@
                         }, false);
 
                         worker.postMessage({
-                            players: pchars,
+                            players: playerInstances,
                             boss: boss,
                             iterations: iterations,
                             log: log

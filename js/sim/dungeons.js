@@ -442,6 +442,7 @@ FIGHT_DUMP_OUTPUT = [];
 self.addEventListener('message', function (message) {
     let players = message.data.players;
     let boss = message.data.boss;
+    let index = message.data.index;
     let iterations = message.data.iterations || 100000;
     if (message.data.log || false) {
         FIGHT_DUMP_ENABLED = true;
@@ -450,7 +451,8 @@ self.addEventListener('message', function (message) {
     self.postMessage({
         command: 'finished',
         results: new DungeonSimulator().simulate(players, boss, iterations),
-        log: FIGHT_DUMP_OUTPUT
+        log: FIGHT_DUMP_OUTPUT,
+        index: index
     });
 
     self.close();
