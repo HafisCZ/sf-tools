@@ -1262,7 +1262,11 @@
                             if (message.data.command == 'finished') {
                                 let { score, iterations, healths } = message.data.results;
                                 if (message.data.log.length) {
-                                    download('logs.json', new Blob([ JSON.stringify(message.data.log) ], {
+                                    download('logs.json', new Blob([ JSON.stringify({
+                                        fights: message.data.log,
+                                        players: players,
+                                        boss: boss
+                                    }) ], {
                                         type: 'application/json'
                                     }));
                                 }
