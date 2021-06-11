@@ -50,6 +50,7 @@ class ExpressionScope {
         let _copy = new ExpressionScope();
         _copy.self = [ ... this.self ];
         _copy.indirect = [ ... this.indirect ];
+        _copy.tags = [ ... this.tags ];
 
         return _copy;
     }
@@ -61,6 +62,7 @@ class ExpressionScope {
     constructor () {
         this.self = [];
         this.indirect = [];
+        this.tags = [];
     }
 
     addSelf (obj) {
@@ -68,11 +70,31 @@ class ExpressionScope {
         return this;
     }
 
-    add (obj) {
+    add (obj, tag = null) {
         if (obj != undefined) {
             this.indirect.unshift(obj);
+            this.tags.unshift(tag);
         }
         return this;
+    }
+
+    hasProbableRecursion (min) {
+        if (this.tags.length < min) {
+            return false;
+        } else {
+            let tag = this.tags[0];
+            for (let i = 1; i < min; i++) {
+                if (tag != this.tags[i] || !this.compareIndirect(0, i)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
+    compareIndirect (a, b) {
+        return JSON.stringify(this.indirect[a]) == JSON.stringify(this.indirect[b]);
     }
 
     getSelf (offset = 0) {
@@ -873,7 +895,12 @@ class Expression {
                         scope2[mapper.args[i]] = this.evalInternal(player, reference, environment, scope, header, node.args[i]);
                     }
 
-                    return mapper.ast.eval(player, reference, environment, scope.copy().add(scope2), header);
+                    let builtScope = scope.copy().add(scope2, mapper.ast.rstr);
+                    if (builtScope.hasProbableRecursion(10)) {
+                        return undefined;
+                    } else {
+                        return mapper.ast.eval(player, reference, environment, builtScope, header);
+                    }
                 } else if (node.op == 'difference' && node.args.length == 1) {
                     var a = this.evalInternal(player, reference, environment, scope, header, node.args[0]);
                     var b = this.evalInternal(reference, reference, environment, scope, header, node.args[0]);
