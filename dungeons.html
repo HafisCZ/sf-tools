@@ -1193,7 +1193,7 @@
             }
 
             $('#sim-run-all').click(function () {
-                if (availableBosses && availableBosses.length > 0 && players[0].Level) {
+                if (availableBosses && availableBosses.length > 0 && EditorController.valid()) {
                     toggleAll(true);
 
                     let results = [];
@@ -1239,7 +1239,7 @@
             });
 
             $('#sim-run').click(function () {
-                if (boss && players[0].Level) {
+                if (boss && EditorController.valid()) {
                     toggleAll(true);
 
                     let playerInstances = preparePlayerInstances(dungeon);
