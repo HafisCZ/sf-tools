@@ -581,7 +581,10 @@
                     r.onload = event => {
                         try {
                             var data = JSON.parse(event.target.result);
-                            if (data.rounds) {
+
+                            if (data.fights) {
+                                importJSON(data.fights);
+                            } else if (data.rounds) {
                                 importJSON([ data ]);
                             } else if (Array.isArray(data)) {
                                 importJSON(data);
