@@ -544,7 +544,7 @@ class Field {
     }
 
     static isWeaponDamage (val) {
-        return Field.isNumber(val) && val <= 3480;
+        return Field.isNumber(val) && val <= 6000;
     }
 
     static isPlayerLevel (val) {
