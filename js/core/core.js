@@ -1259,7 +1259,7 @@ const Storage = new (class {
                         file.version = Number(val);
                     } else if (own && key.includes('towerSave')) {
                         player.tower = val.split('/').map(a => Number(a));
-                    } else if (own && key.includes('fortresschest')) {
+                    } else if (own && key.includes('fortresschest') && val.length) {
                         player.chest = val.split('/').map(a => Number(a));
                     } else if (own && key.includes('dummies')) {
                         player.dummy = val.split('/').map(a => Number(a));
