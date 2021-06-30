@@ -525,7 +525,7 @@ function formatAsSpacedNumber(n, delim = '&nbsp') {
 }
 
 function * parsePlayaResponse (response) {
-    var o = response.split('&');
+    var o = response.split('&').filter(x => x.length);
     for (var i = 0, a; a = o[i]; i++) {
         yield a.split(':', 2);
     }
