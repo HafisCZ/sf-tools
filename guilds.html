@@ -927,6 +927,9 @@
 
                     toggleAll(true);
 
+                    for (let p of players1) p.player.ForceGladiator = true;
+                    for (let p of players2) p.player.ForceGladiator = true;
+
                     var threads = Number($('#sim-threads').val()) || 4;
 
                     var finished = 0;
