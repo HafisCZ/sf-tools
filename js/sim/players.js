@@ -213,7 +213,6 @@ class FighterModel {
             // Make gladiator not reduceable and automatically maxed when in IHOF mode
             gladiator = 0.05 * 15;
         } else if (this.Player.ForceGladiator) {
-            console.log('yee');
             gladiator = 0.05 * this.Player.Fortress.Gladiator;
         }
 
