@@ -1207,7 +1207,7 @@
                     for (let [index, { boss, dungeon, name }] of Object.entries(availableBosses)) {
                         let worker = createWebWorker('js/sim/dungeons.js');
 
-                        worker.addEventListener('message', (message) => {console.log(message);
+                        worker.addEventListener('message', (message) => {
                             if (message.data.command == 'finished') {
                                 let { score, iterations } = message.data.results;
 
