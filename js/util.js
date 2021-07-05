@@ -568,6 +568,10 @@ class ComplexDataType {
         return this.values.length <= this.ptr;
     }
 
+    atLeast (size) {
+        return (this.ptr + size) < this.values.length;
+    }
+
     long () {
         return this.values[this.ptr++] || 0;
     }
