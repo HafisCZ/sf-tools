@@ -3502,7 +3502,7 @@ class EndpointView extends View {
                 return;
             }
 
-            if (username.length < 4 || password.length < 4 || !/\.sfgame\./.test(server)) {
+            if (username.length < 3 || password.length < 3 || !/\.sfgame\./.test(server)) {
                 return;
             } else {
                 if (this.endpoint) {
