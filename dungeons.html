@@ -13,6 +13,16 @@
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
 
+        <script src="https://js.sentry-cdn.com/c545f98538e446fd9b2ea2d2a4103273.min.js" crossorigin="anonymous">
+            Sentry.onLoad(function() {
+                Sentry.init({
+                  dsn: 'https://c545f98538e446fd9b2ea2d2a4103273@o496093.ingest.sentry.io/5569896',
+                  maxBreadcrumbs: 50,
+                  debug: true,
+                });
+            });
+        </script>
+
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
 
