@@ -26,6 +26,7 @@ const DATABASE_PARAMS_V5 = [
 ];
 
 const DATABASE_PARAMS_V1 = [
+    'database',
     2,
     {
         files: {
