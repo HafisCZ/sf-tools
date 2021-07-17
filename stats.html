@@ -18,13 +18,11 @@
         <script src="vendor/js/html2canvas.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
 
-        <script src="https://js.sentry-cdn.com/c545f98538e446fd9b2ea2d2a4103273.min.js" crossorigin="anonymous">
-            Sentry.onLoad(function() {
-                Sentry.init({
-                  dsn: 'https://c545f98538e446fd9b2ea2d2a4103273@o496093.ingest.sentry.io/5569896',
-                  maxBreadcrumbs: 50,
-                  debug: true,
-                });
+        <script src="https://browser.sentry-cdn.com/6.9.0/bundle.min.js" integrity="sha384-WO22OE751vRf/HrLRHFis3ipNR16hUk5Q0qW9ascPaSswHI9Q/0ZFMaMvJ0ZgmSI" crossorigin="anonymous"></script>
+        <script>
+            Sentry.init({
+              dsn: 'https://c545f98538e446fd9b2ea2d2a4103273@o496093.ingest.sentry.io/5569896',
+              maxBreadcrumbs: 50
             });
         </script>
 
