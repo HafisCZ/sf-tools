@@ -515,6 +515,7 @@ class SFGroup {
         this.Own = data.own;
         this.Timestamp = data.timestamp;
 
+        this.MembersPresent = 0;
         this.MemberCount = data.save[3];
         this.Honor = data.save[13];
         this.Pet = data.save[378];

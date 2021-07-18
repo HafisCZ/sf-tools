@@ -276,11 +276,123 @@ const DatabaseManager = new (class {
                     ... DatabaseUtils.createProfileFilter(profile.filters?.groups)
                 );
 
-                // TODO: Finish loading into player models
-                console.log(players, groups);
+                groups.forEach(group => this.addGroup(group));
+                players.forEach(group => this.addPlayer(group));
+                this.updateLists();
             }
 
             resolve();
         });
+    }
+
+    addPlayer (data) {
+        let player = new Proxy({
+            Data: data,
+            Identifier: data.identifier,
+            Timestamp: data.timestamp,
+            Own: data.own,
+            Name: data.name,
+            Prefix: data.prefix.replace(/\_/g, ' '),
+            Class: data.class
+        }, {
+            get: function (target, prop) {
+                if (prop == 'Data' || prop == 'Identifier' || prop == 'Timestamp' || prop == 'Own' || prop == 'Name' || prop == 'Prefix' || prop == 'Class') {
+                    return target[prop];
+                } else if (prop == 'IsProxy') {
+                    return true;
+                } else {
+                    return DatabaseManager.getPlayer(target.Identifier, target.Timestamp)[prop];
+                }
+            }
+        });
+
+        // Increment counter in group
+        if (this.Groups[data.identifier]?.[data.timestamp]) {
+            this.Groups[data.identifier][data.timestamp].MembersPresent++;
+        }
+
+        this.registerModel('Players', data.identifier, data.timestamp, player);
+    }
+
+    addGroup (data) {
+        this.registerModel('Groups', data.identifier, data.timestamp, new SFGroup(data));
+    }
+
+    registerModel (type, identifier, timestamp, model) {
+        if (!this[type][identifier]) this[type][identifier] = {};
+        this[type][identifier][timestamp] = model;
+    }
+
+    updateLists () {
+
+    }
+
+    hasPlayer (id, timestamp) {
+        return this.Players[id] && (timestamp ? this.Players[id][timestamp] : true) ? true : false;
+    }
+
+    // Check if group exists
+    hasGroup (id, timestamp) {
+        return this.Groups[id] && (timestamp ? this.Groups[id][timestamp] : true) ? true : false;
+    }
+
+    // Get player
+    getPlayer (id, timestamp) {
+        let player = this.Players[id];
+        if (player && timestamp) {
+            return this.loadPlayer(player[timestamp]);
+        } else {
+            return player;
+        }
+    }
+
+    // Get group
+    getGroup (id, timestamp) {
+        if (timestamp && this.Groups[id]) {
+            return this.Groups[id][timestamp];
+        } else {
+            return this.Groups[id];
+        }
+    }
+
+    loadPlayer (lazyPlayer) {
+        if (lazyPlayer && lazyPlayer.IsProxy) {
+            let { Identifier: identifier, Timestamp: timestamp, Data: data, Own: own } = lazyPlayer;
+
+            // Get player
+            let player = own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
+
+            // Get player group
+            let group = this.getGroup(player.Group.Identifier, timestamp);
+            if (group) {
+                // Find index of player in the group
+                let gi = group.Members.findIndex(i => i == identifier);
+
+                // Add guild information
+                player.Group.Group = group;
+                player.Group.Role = group.Roles[gi];
+                player.Group.Index = gi;
+                player.Group.Rank = group.Rank;
+                player.Group.ReadyDefense = group.States[gi] == 1 || group.States[gi] == 3;
+                player.Group.ReadyAttack = group.States[gi] > 1;
+
+                if (group.Own) {
+                    player.Group.Own = true;
+                    player.Group.Pet = group.Pets[gi];
+                    player.Group.Treasure = group.Treasures[gi];
+                    player.Group.Instructor = group.Instructors[gi];
+
+                    if (!player.Fortress.Knights && group.Knights) {
+                        player.Fortress.Knights = group.Knights[gi];
+                    }
+                } else {
+                    player.Group.Pet = group.Pets[gi];
+                }
+            }
+
+            return player;
+        } else {
+            return lazyPlayer;
+        }
     }
 })();
