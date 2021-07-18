@@ -263,6 +263,7 @@ const DatabaseManager = new (class {
         this._reset();
     }
 
+    // INTERNAL: Reset all content
     _reset () {
         this.Database = null;
         this.Options = {};
@@ -273,37 +274,11 @@ const DatabaseManager = new (class {
         this.Trackers = {};
 
         // Pools
-        this.Timestamps = new Set();
-        this.Identifiers = new Set();
+        this.Identifiers = Object.create(null);
+        this.Timestamps = Object.create(null);
     }
 
-    load (profile = DEFAULT_PROFILE) {
-        this._reset();
-        return new Promise(async (resolve, reject) => {
-            if (profile.temporary) {
-                this.Database = await DatabaseUtils.createTemporarySession();
-            } else {
-                this.Database = await DatabaseUtils.createSession(profile.slot);
-
-                let players = DatabaseUtils.filterArray(profile, 'players') || (await this.Database.where(
-                    'players',
-                    ... DatabaseUtils.profileFilter(profile, 'players')
-                ));
-
-                let groups = DatabaseUtils.filterArray(profile, 'groups') || (await this.Database.where(
-                    'groups',
-                    ... DatabaseUtils.profileFilter(profile, 'groups')
-                ));
-
-                groups.forEach(group => this._addGroup(group));
-                players.forEach(group => this._addPlayer(group));
-                this._updateLists();
-            }
-
-            resolve();
-        });
-    }
-
+    // INTERNAL: Add player
     _addPlayer (data) {
         let player = new Proxy({
             Data: data,
@@ -325,7 +300,6 @@ const DatabaseManager = new (class {
             }
         });
 
-        // Increment counter in group
         if (this.hasGroup(data.group, data.timestamp)) {
             this.Groups[data.group][data.timestamp].MembersPresent++;
         }
@@ -333,20 +307,28 @@ const DatabaseManager = new (class {
         this._registerModel('Players', data.identifier, data.timestamp, player);
     }
 
+    // INTERNAL: Add group
     _addGroup (data) {
         this._registerModel('Groups', data.identifier, data.timestamp, new SFGroup(data));
     }
 
+    // INTERNAL: Add model
     _registerModel (type, identifier, timestamp, model) {
-        if (!this.Identifiers.has(identifier)) {
-            this.Identifiers.add(identifier);
+        if (!this.Identifiers[identifier]) {
+            this.Identifiers[identifier] = new Set();
             this[type][identifier] = {};
         }
+        this.Identifiers[identifier].add(timestamp);
 
-        this.Timestamps.add(timestamp);
+        if (!this.Timestamps[timestamp]) {
+            this.Timestamps[timestamp] = new Set();
+        }
+        this.Timestamps[timestamp].add(identifier);
+
         this[type][identifier][timestamp] = model;
     }
 
+    // INTERNAL: Update internal player/group lists
     _updateLists () {
         this.Latest = 0;
 
@@ -403,34 +385,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    hasPlayer (id, timestamp) {
-        return this.Players[id] && (timestamp ? this.Players[id][timestamp] : true) ? true : false;
-    }
-
-    // Check if group exists
-    hasGroup (id, timestamp) {
-        return this.Groups[id] && (timestamp ? this.Groups[id][timestamp] : true) ? true : false;
-    }
-
-    // Get player
-    getPlayer (id, timestamp) {
-        let player = this.Players[id];
-        if (player && timestamp) {
-            return this._loadPlayer(player[timestamp]);
-        } else {
-            return player;
-        }
-    }
-
-    // Get group
-    getGroup (id, timestamp) {
-        if (timestamp && this.Groups[id]) {
-            return this.Groups[id][timestamp];
-        } else {
-            return this.Groups[id];
-        }
-    }
-
+    // INTERNAL: Load player from proxy
     _loadPlayer (lazyPlayer) {
         if (lazyPlayer && lazyPlayer.IsProxy) {
             const { Identifier: identifier, Timestamp: timestamp, Data: data, Own: own } = lazyPlayer;
@@ -478,5 +433,108 @@ const DatabaseManager = new (class {
         } else {
             return lazyPlayer;
         }
+    }
+
+    // Load database
+    load (profile = DEFAULT_PROFILE) {
+        this._reset();
+        return new Promise(async (resolve, reject) => {
+            if (profile.temporary) {
+                this.Database = await DatabaseUtils.createTemporarySession();
+            } else {
+                this.Database = await DatabaseUtils.createSession(profile.slot);
+
+                let players = DatabaseUtils.filterArray(profile, 'players') || (await this.Database.where(
+                    'players',
+                    ... DatabaseUtils.profileFilter(profile, 'players')
+                ));
+
+                let groups = DatabaseUtils.filterArray(profile, 'groups') || (await this.Database.where(
+                    'groups',
+                    ... DatabaseUtils.profileFilter(profile, 'groups')
+                ));
+
+                groups.forEach(group => this._addGroup(group));
+                players.forEach(group => this._addPlayer(group));
+                this._updateLists();
+            }
+
+            resolve();
+        });
+    }
+
+    // Check if player exists
+    hasPlayer (id, timestamp) {
+        return this.Players[id] && (timestamp ? this.Players[id][timestamp] : true) ? true : false;
+    }
+
+    // Check if group exists
+    hasGroup (id, timestamp) {
+        return this.Groups[id] && (timestamp ? this.Groups[id][timestamp] : true) ? true : false;
+    }
+
+    // Get player
+    getPlayer (id, timestamp) {
+        let player = this.Players[id];
+        if (player && timestamp) {
+            return this._loadPlayer(player[timestamp]);
+        } else {
+            return player;
+        }
+    }
+
+    // Get group
+    getGroup (id, timestamp) {
+        if (timestamp && this.Groups[id]) {
+            return this.Groups[id][timestamp];
+        } else {
+            return this.Groups[id];
+        }
+    }
+
+    // Remove one or more timestamps
+    removeTimestamps (... timestamps) {
+        for (const timestamp of timestamps.filter(timestamp => this.Timestamps[timestamp])) {
+            this.Timestamps[timestamp].forEach(identifier => {
+                let isPlayer = /_p\d/.test(identifier);
+                this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, timestamp]);
+
+                let object = this[isPlayer ? 'Players' : 'Groups'][identifier];
+                delete object[timestamp];
+                if (!Object.keys(object).filter(ts => !isNaN(ts)).length) {
+                    delete this[isPlayer ? 'Players' : 'Groups'][identifier];
+                }
+
+                this.Identifiers[identifier].remove(timestamp);
+                if (this.Timestamps[timestamp].length) {
+                    delete this.Timestamps[timestamp];
+                }
+            });
+
+            delete this.Timestamps[timestamp];
+        }
+
+        this._updateLists();
+    }
+
+    removeIdentifiers (... identifiers) {
+        for (const identifier of identifiers.filter(identifier => this.Identifiers[identifier])) {
+            delete this.Players[identifier];
+            delete this.Groups[identifier];
+
+            this.Identifiers[identifier].forEach(timestamp => {
+                let isPlayer = /_p\d/.test(identifier);
+                this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, timestamp]);
+
+                this.Timestamps[timestamp].remove(identifier);
+                if (this.Timestamps[timestamp].length) {
+                    delete this.Timestamps[timestamp];
+                }
+            });
+
+            delete this.Identifiers[identifier];
+        }
+
+        this._updateLists();
     }
 })();
