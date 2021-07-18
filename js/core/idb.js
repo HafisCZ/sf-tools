@@ -207,14 +207,15 @@ class DatabaseUtils {
     }
 
     static getNameFromSlot (slot = 0) {
-        if (slot) {
-            return `database_${slot}`
-        } else {
-            return 'database'
-        }
+        return slot ? `database_${slot}` : 'database';
     }
 
-    static createProfileFilter (filter) {
+    static filterArray (profile, type) {
+        return _dig(profile, 'filters', type, 'mode') === 'none' ? [] : undefined;
+    }
+
+    static profileFilter (profile, type) {
+        let filter = _dig(profile, 'filters', type);
         if (filter) {
             let { name, mode, value } = filter;
 
@@ -234,6 +235,11 @@ class DatabaseUtils {
             return [];
         }
     }
+}
+
+function _dig (obj, ... path) {
+    for (let i = 0; obj && i < path.length; i++) obj = obj[path[i]];
+    return obj;
 }
 
 const DEFAULT_PROFILE = Object.freeze({
@@ -256,6 +262,7 @@ const DatabaseManager = new (class {
 
         this.Players = {};
         this.Groups = {};
+        this.Trackers = {};
     }
 
     load (profile = DEFAULT_PROFILE) {
@@ -266,15 +273,15 @@ const DatabaseManager = new (class {
             } else {
                 this.Database = await DatabaseUtils.createSession(profile.slot);
 
-                let players = await this.Database.where(
+                let players = DatabaseUtils.filterArray(profile, 'players') || (await this.Database.where(
                     'players',
-                    ... DatabaseUtils.createProfileFilter(profile.filters?.players)
-                );
+                    ... DatabaseUtils.profileFilter(profile, 'players')
+                ));
 
-                let groups = await this.Database.where(
+                let groups = DatabaseUtils.filterArray(profile, 'groups') || (await this.Database.where(
                     'groups',
-                    ... DatabaseUtils.createProfileFilter(profile.filters?.groups)
-                );
+                    ... DatabaseUtils.profileFilter(profile, 'groups')
+                ));
 
                 groups.forEach(group => this.addGroup(group));
                 players.forEach(group => this.addPlayer(group));
@@ -324,7 +331,59 @@ const DatabaseManager = new (class {
     }
 
     updateLists () {
+        this.Latest = 0;
 
+        for (const [identifier, player] of Object.entries(this.Players)) {
+            player.LatestTimestamp = 0;
+            player.List = Object.entries(player).reduce((array, [ ts, obj ]) => {
+                if (!isNaN(ts)) {
+                    var timestamp = Number(ts);
+                    array.push([ timestamp, obj ]);
+                    if (this.Latest < timestamp) {
+                        this.Latest = timestamp;
+                    }
+                    if (player.LatestTimestamp < timestamp) {
+                        player.LatestTimestamp = timestamp;
+                    }
+                }
+
+                return array;
+            }, []);
+
+            player.List.sort((a, b) => b[0] - a[0]);
+            player.Latest = player[player.LatestTimestamp];
+            player.Own = player.List.find(x => x[1].Own) != undefined;
+
+            if (this.Latest < player.LatestTimestamp) {
+                this.Latest = player.LatestTimestamp;
+            }
+        }
+
+        for (const [identifier, group] of Object.entries(this.Groups)) {
+            group.LatestTimestamp = 0;
+            group.List = Object.entries(group).reduce((array, [ ts, obj ]) => {
+                if (!isNaN(ts)) {
+                    var timestamp = Number(ts);
+                    array.push([ timestamp, obj ]);
+                    if (this.Latest < timestamp) {
+                        this.Latest = timestamp;
+                    }
+                    if (group.LatestTimestamp < timestamp) {
+                        group.LatestTimestamp = timestamp;
+                    }
+                }
+
+                return array;
+            }, []);
+
+            group.List.sort((a, b) => b[0] - a[0]);
+            group.Latest = group[group.LatestTimestamp];
+            group.Own = group.List.find(x => x[1].Own) != undefined;
+
+            if (this.Latest < group.LatestTimestamp) {
+                this.Latest = group.LatestTimestamp;
+            }
+        }
     }
 
     hasPlayer (id, timestamp) {
@@ -360,7 +419,7 @@ const DatabaseManager = new (class {
             let { Identifier: identifier, Timestamp: timestamp, Data: data, Own: own } = lazyPlayer;
 
             // Get player
-            let player = own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
+            let player = own ? new SFOwnPlayer(data, true) : new SFOtherPlayer(data);
 
             // Get player group
             let group = this.getGroup(player.Group.Identifier, timestamp);
