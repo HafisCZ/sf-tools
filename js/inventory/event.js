@@ -21,7 +21,7 @@ class View {
 class PlayerSelectView extends View {
     constructor (parent) {
         super(parent);
-        var players = Object.values(Database.Players).map(player => player.Latest);
+        var players = Object.values(DatabaseManager.Players).map(player => player.Latest);
 
         if (players.length) {
             var content = '';
@@ -82,7 +82,7 @@ class ResourcesView extends View {
         this.$parent.find('[data-op="list"]').html('');
 
         // Current player
-        this.Player = Database.Players[id].Latest;
+        this.Player = DatabaseManager.Players[id].Latest;
         this.Items = [];
 
         // Dismantling
@@ -1064,7 +1064,7 @@ class InventoryView extends View {
         this.$parent.find('[data-op="list"]').html('');
 
         // Current player
-        this.Player = Database.Players[id].Latest;
+        this.Player = DatabaseManager.Players[id].Latest;
         this.Items = [];
 
         // Micro-ing
