@@ -72,9 +72,7 @@ class IndexedDBWrapper {
 
     store (store, index) {
         let databaseStore = this.database.transaction(store, 'readwrite').objectStore(store);
-        if (Array.isArray(index)) {
-            return databaseStore;
-        } else if (index) {
+        if (index) {
             return databaseStore.index(index);
         } else {
             return databaseStore;
@@ -150,12 +148,16 @@ class MigrationUtils {
         group.identifier = group.id;
         delete group.id;
 
+        group.own = group.own ? 1 : 0;
+
         return group;
     }
 
     static migratePlayer (player) {
         player.identifier = player.id;
         delete player.id;
+
+        player.own = player.own ? 1 : 0;
 
         let group = player.save[player.own ? 435 : 161];
         if (group) {
@@ -209,12 +211,36 @@ class DatabaseUtils {
             return 'database'
         }
     }
+
+    static createProfileFilter (filter) {
+        if (filter) {
+            let { name, mode, value } = filter;
+
+            let range = null;
+            if (mode == 'below') {
+                range = IDBKeyRange.upperBound(... value);
+            } else if (mode == 'above') {
+                range = IDBKeyRange.lowerBound(... value);
+            } else if (mode == 'between') {
+                range = IDBKeyRange.bound(... value);
+            } else {
+                range = IDBKeyRange.only(... value);
+            }
+
+            return [name, range];
+        } else {
+            return [];
+        }
+    }
 }
 
 const DEFAULT_PROFILE = Object.freeze({
     temporary: false,
     slot: 0,
-    filters: []
+    filters: {
+        players: null,
+        groups: null
+    }
 });
 
 const DatabaseManager = new (class {
@@ -230,32 +256,6 @@ const DatabaseManager = new (class {
         this.Groups = {};
     }
 
-    _createFilter (filters) {
-        if (!filters || filters.size < 1) {
-            return undefined;
-        }
-
-        let indexes = [];
-        for (let { name, mode, values } of (filters || [])) {
-            let value = null;
-            if (mode == 'below') {
-                value = IDBKeyRange.upperBound(... values);
-            } else if (mode == 'above') {
-                value = IDBKeyRange.lowerBound(... values);
-            } else if (mode == 'equal') {
-                value = IDBKeyRange.bound(... values);
-            } else {
-                value = IDBKeyRange.only(... values);
-            }
-
-            indexes.push({
-                name: value
-            });
-        }
-
-        return indexes;
-    }
-
     load (profile = DEFAULT_PROFILE) {
         this.reset();
         return new Promise(async (resolve, reject) => {
@@ -264,10 +264,18 @@ const DatabaseManager = new (class {
             } else {
                 this.Database = await DatabaseUtils.createSession(profile.slot);
 
-                let players = await this.Database.where('players', this._createFilter(profile.filters));
-                let groups = await this.Database.where('groups', this._createFilter(profile.filters));
+                let players = await this.Database.where(
+                    'players',
+                    ... DatabaseUtils.createProfileFilter(profile.filters?.players)
+                );
+
+                let groups = await this.Database.where(
+                    'groups',
+                    ... DatabaseUtils.createProfileFilter(profile.filters?.groups)
+                );
 
                 // TODO: Finish loading into player models
+                console.log(players, groups);
             }
 
             resolve();
