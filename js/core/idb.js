@@ -177,6 +177,8 @@ class DatabaseUtils {
         let database = await new IndexedDBWrapper(... DATABASE_PARAMS_V5).open();
 
         if (await IndexedDBWrapper.exists(... DATABASE_PARAMS_V1)) {
+            Logger.log('MIGRATE', `Migrating files`);
+
             let migratedDatabase = await new IndexedDBWrapper(... DATABASE_PARAMS_V1).open();
             let migratedFiles = await migratedDatabase.where('files');
 
@@ -190,13 +192,18 @@ class DatabaseUtils {
                 }
             }
 
+            Logger.log('MIGRATE', `Migrating trackers`);
             let migratedTrackers = await migratedDatabase.where('profiles');
             for (let tracker of migratedTrackers) {
                 await database.set('trackers', tracker);
             }
 
+            Logger.log('MIGRATE', `Cleaning up database`);
+
             migratedDatabase.close();
             //await _databaseDelete(DATABASE_PARAMS_V1[0]);
+
+            Logger.log('MIGRATE', `All migrations finished`);
         }
 
         return database;

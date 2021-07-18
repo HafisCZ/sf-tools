@@ -13,7 +13,8 @@ const Logger = new (class {
             'VERSION': '90f5da',
             'PERFLOG': 'ffffff',
             'ECLIENT': 'd142f5',
-            'TRACKER': 'c8f542'
+            'TRACKER': 'c8f542',
+            'MIGRATE': '7a8ccf'
         };
 
         this.log('VERSION', `Module: ${ MODULE_VERSION }, Core: ${ CORE_VERSION }, Table: ${ TABLE_VERSION }`);
