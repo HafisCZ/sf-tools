@@ -321,8 +321,8 @@ const DatabaseManager = new (class {
         });
 
         // Increment counter in group
-        if (this.Groups[data.identifier]?.[data.timestamp]) {
-            this.Groups[data.identifier][data.timestamp].MembersPresent++;
+        if (this.hasGroup(data.group, data.timestamp)) {
+            this.Groups[data.group][data.timestamp].MembersPresent++;
         }
 
         this.registerModel('Players', data.identifier, data.timestamp, player);
@@ -423,7 +423,7 @@ const DatabaseManager = new (class {
 
     loadPlayer (lazyPlayer) {
         if (lazyPlayer && lazyPlayer.IsProxy) {
-            let { Identifier: identifier, Timestamp: timestamp, Data: data, Own: own } = lazyPlayer;
+            const { Identifier: identifier, Timestamp: timestamp, Data: data, Own: own } = lazyPlayer;
 
             // Get player
             let player = own ? new SFOwnPlayer(data, true) : new SFOtherPlayer(data);
