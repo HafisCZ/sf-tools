@@ -209,7 +209,7 @@ class DatabaseUtils {
         return database;
     }
 
-    static async createTemporarySession () {
+    static createTemporarySession () {
         return null;
     }
 
@@ -438,11 +438,15 @@ const DatabaseManager = new (class {
     // Load database
     load (profile = DEFAULT_PROFILE) {
         this._reset();
-        return new Promise(async (resolve, reject) => {
-            if (profile.temporary) {
-                this.Database = await DatabaseUtils.createTemporarySession();
-            } else {
-                this.Database = await DatabaseUtils.createSession(profile.slot);
+
+        if (profile.temporary) {
+            return new Promise((resolve, reject) => {
+                this.Database = DatabaseUtils.createTemporarySession();
+                resolve();
+            });
+        } else {
+            return DatabaseUtils.createSession(profile.slot).then(async database => {
+                this.Database = database;
 
                 let players = DatabaseUtils.filterArray(profile, 'players') || (await this.Database.where(
                     'players',
@@ -457,10 +461,8 @@ const DatabaseManager = new (class {
                 groups.forEach(group => this._addGroup(group));
                 players.forEach(group => this._addPlayer(group));
                 this._updateLists();
-            }
-
-            resolve();
-        });
+            });
+        }
     }
 
     // Check if player exists
