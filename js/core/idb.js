@@ -267,6 +267,7 @@ const DatabaseManager = new (class {
     _reset () {
         this.Database = null;
         this.Options = {};
+        this.Hidden = [];
 
         // Models
         this.Players = {};
@@ -461,6 +462,8 @@ const DatabaseManager = new (class {
                 groups.forEach(group => this._addGroup(group));
                 players.forEach(group => this._addPlayer(group));
                 this._updateLists();
+
+                this.Hidden = Preferences.get('hidden', []);
             });
         }
     }
@@ -538,5 +541,28 @@ const DatabaseManager = new (class {
         }
 
         this._updateLists();
+    }
+
+    hide (identifier) {
+        var index = this.Hidden.indexOf(identifier);
+        if (index >= 0) {
+            this.Hidden.splice(index, 1);
+        } else {
+            this.Hidden.push(identifier);
+        }
+
+        Preferences.set('hidden', this.Hidden);
+    }
+
+    refreshTrackers () {
+
+    }
+
+    track (player, nsave) {
+
+    }
+
+    untrack (pid, trackers) {
+
     }
 })();
