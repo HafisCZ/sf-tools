@@ -20,6 +20,7 @@
 
         <script src="js/core/playa.js"></script>
         <script src="js/core/core.js"></script>
+        <script src="js/core/idb.js"></script>
 
         <script src="js/lang.js"></script>
         <script src="js/inventory/event.js"></script>
@@ -219,23 +220,30 @@
             $('#show-compare, #show-crystal').hide();
 
             UI.preinitialize();
-            Storage.load(function () {
+            DatabaseManager.load({
+                filters: {
+                    players: {
+                        name: 'own',
+                        mode: 'equal',
+                        value: [1]
+                    },
+                    groups: {
+                        mode: 'none'
+                    }
+                }
+            }).then(function () {
                 UI.initialize();
 
                 var id = window.location.href.match(/^.*\?id=(.*)$/);
-                if (id && Database.Players[id[1]]) {
+                if (id && DatabaseManager.Players[id[1]]) {
                     UI.show(UI.Inventory, id[1]);
                     UI.reset(true);
                 } else {
                     UI.show(UI.PlayerSelect);
                 }
-            }, function () {
+            }).catch(function () {
                 // Firefox private mode
                 UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
-            }, {
-                inventory: true,
-                pfilter: p => p.own,
-                gfilter: g => false
             });
         </script>
     </body>
