@@ -877,7 +877,7 @@ const SettingsCommands = [
             root.addGlobal('simulator_target', identifier);
             root.addGlobal('simulator_target_source', mode == 'source');
         },
-        (root, mode, identifier) => SFormat.Keyword('simulator ') + SFormat.Keyword(mode) + ' ' + (identifier in Database.Players ? SFormat.Constant(identifier) : SFormat.Error(identifier))
+        (root, mode, identifier) => SFormat.Keyword('simulator ') + SFormat.Keyword(mode) + ' ' + (identifier in DatabaseManager.Players ? SFormat.Constant(identifier) : SFormat.Error(identifier))
     ),
     /*
         Statistics
@@ -2473,8 +2473,8 @@ class Settings {
             array = array.slice(0, limit);
 
             // Preload all players if needed
-            Database.loadPlayer(player);
-            Database.loadPlayer(compare);
+            DatabaseManager.loadPlayer(player);
+            DatabaseManager.loadPlayer(compare);
 
             // Arrays
             let arrayCurrent = null;
@@ -2483,9 +2483,9 @@ class Settings {
             // Simulate
             if (sameTimestamp) {
                 // Create arrays
-                arrayCurrent = array.map(({ player: { Identifier, Timestamp } }) => {
+                arrayCurrent = array.map(({ player: { Identifier: identifier, Timestamp: timestamp } }) => {
                     return {
-                        player: Database.Players[Identifier][Timestamp].toSimulatorModel()
+                        player: DatabaseManager.getPlayer(identifier, timestamp).toSimulatorModel()
                     };
                 });
 
@@ -2503,15 +2503,15 @@ class Settings {
                 new FightSimulator().simulate(arrayCurrent, cycles, targetCurrent, this.globals.simulator_target_source);
             } else {
                 // Create arrays
-                arrayCurrent = array.map(({ player: { Identifier, Timestamp } }) => {
+                arrayCurrent = array.map(({ player: { Identifier: identifier, Timestamp: timestamp } }) => {
                     return {
-                        player: Database.Players[Identifier][Timestamp].toSimulatorModel()
+                        player: DatabaseManager.getPlayer(identifier, timestamp).toSimulatorModel()
                     };
                 });
 
-                arrayCompare = array.map(({ compare: { Identifier, Timestamp } }) => {
+                arrayCompare = array.map(({ compare: { Identifier: identifier, Timestamp: timestamp } }) => {
                     return {
-                        player: Database.Players[Identifier][Timestamp].toSimulatorModel()
+                        player: DatabaseManager.getPlayer(identifier, timestamp).toSimulatorModel()
                     };
                 });
 

@@ -89,13 +89,13 @@ class GroupDetailView extends View {
                 {
                     label: 'Copy',
                     action: (source) => {
-                        copyText(JSON.stringify(Database.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorModel()));
+                        copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorModel()));
                     }
                 },
                 {
                     label: 'Copy with companions',
                     action: (source) => {
-                        copyText(JSON.stringify(Database.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorShadowModel()));
+                        copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorShadowModel()));
                     },
                     enabled: SiteOptions.inventory
                 }
@@ -157,7 +157,7 @@ class GroupDetailView extends View {
         this.refreshTemplateDropdown();
 
         this.identifier = identitifier;
-        this.group = Database.Groups[identitifier];
+        this.group = DatabaseManager.getGroup(identitifier);
 
         this.$name.text(this.group.Latest.Name);
 
@@ -241,11 +241,11 @@ class GroupDetailView extends View {
 
         // Joined and kicked members
         var joined = current.Members.filter(id => !reference.Members.includes(id)).map(id => {
-            let p = Database.getPlayer(id, this.timestamp);
+            let p = DatabaseManager.getPlayer(id, this.timestamp);
             if (p) {
                 return p.Name;
             } else {
-                p = Database.getPlayer(id);
+                p = DatabaseManager.getPlayer(id);
                 if (p) {
                     return p.Latest.Name;
                 } else {
@@ -255,11 +255,11 @@ class GroupDetailView extends View {
         });
 
         var kicked = reference.Members.filter(id => !current.Members.includes(id)).map(id => {
-            let p = Database.getPlayer(id, this.timestamp);
+            let p = DatabaseManager.getPlayer(id, this.timestamp);
             if (p) {
                 return p.Name;
             } else {
-                p = Database.getPlayer(id);
+                p = DatabaseManager.getPlayer(id);
                 if (p) {
                     return p.Latest.Name;
                 } else {
@@ -272,7 +272,7 @@ class GroupDetailView extends View {
         var members = [];
         var missingMembers = [];
         for (var id of current.Members) {
-            let player = Database.getPlayer(id, this.timestamp);
+            let player = DatabaseManager.getPlayer(id, this.timestamp);
             if (player) {
                 members.push(player);
             } else {
@@ -283,9 +283,9 @@ class GroupDetailView extends View {
         // Reference members
         var membersReferences = [];
         for (var member of members) {
-            var player = Database.Players[member.Identifier];
+            var player = DatabaseManager.getPlayer(member.Identifier);
             if (player) {
-                var playerReference = Database.getPlayer(member.Identifier, this.reference);
+                var playerReference = DatabaseManager.getPlayer(member.Identifier, this.reference);
                 if (playerReference && playerReference.Group.Identifier == this.identifier) {
                     membersReferences.push(playerReference);
                 } else {
@@ -331,7 +331,7 @@ class PlayerDetailFloatView extends View {
     }
 
     show (identifier, timestamp, reference = timestamp) {
-        var player = Database.Players[identifier];
+        var player = DatabaseManager.getPlayer(identifier);
 
         var xx = player.List.concat();
         xx.reverse();
@@ -750,7 +750,7 @@ class PlayerHistoryView extends View {
         this.$parent.find('[data-op="export-l"]').click(() => Storage.exportPlayerData(this.identifier, [ this.list[0][0] ]));
         this.$parent.find('[data-op="export-l5"]').click(() => Storage.exportPlayerData(this.identifier, this.list.slice(0, 5).map(entry => entry[0])));
         this.$parent.find('[data-op="share"]').click(() => {
-            UI.OnlineShareFile.show(Storage.getExportPlayerData(this.identifier, Database.Players[this.identifier].List.map(x => x[0])));
+            UI.OnlineShareFile.show(Storage.getExportPlayerData(this.identifier, DatabaseManager.getPlayer(this.identifier).List.map(x => x[0])));
         });
 
         this.$name = this.$parent.find('[data-op="name"]');
@@ -800,8 +800,9 @@ class PlayerHistoryView extends View {
         this.refreshTemplateDropdown();
         this.identifier = identifier;
 
-        this.list = Database.Players[identifier].List;
-        this.player = Database.Players[identifier].Latest;
+        const { List: list, Latest: player } = DatabaseManager.getPlayer(identifier);
+        this.list = list;
+        this.player = player;
 
         this.$name.text(this.player.Name);
 
@@ -815,7 +816,7 @@ class PlayerHistoryView extends View {
         // Table instance
         this.table.setSettings(SettingsManager.get(this.identifier, 'me', PredefinedTemplates['Me Default']));
 
-        this.list.forEach(([ a, b ]) => Database.loadPlayer(b));
+        this.list.forEach(([ a, b ]) => DatabaseManager._loadPlayer(b));
 
         this.refresh();
     }
@@ -884,10 +885,10 @@ class BrowseView extends View {
                         var sel = this.$parent.find('[data-id].css-op-select');
                         if (sel.length) {
                             for (var el of sel) {
-                                Database.hide($(el).attr('data-id'));
+                                DatabaseManager.hide($(el).attr('data-id'));
                             }
                         } else {
-                            Database.hide(source.attr('data-id'));
+                            DatabaseManager.hide(source.attr('data-id'));
                         }
 
                         this.$filter.trigger('change');
@@ -900,9 +901,9 @@ class BrowseView extends View {
                         let cnt = null;
 
                         if (sel.length) {
-                            cnt = sel.toArray().map(x => Database.Players[$(x).attr('data-id')].Latest.toSimulatorModel());
+                            cnt = sel.toArray().map(x => DatabaseManager.getPlayer($(x).attr('data-id')).Latest.toSimulatorModel());
                         } else {
-                            cnt = Database.Players[source.attr('data-id')].Latest.toSimulatorModel();
+                            cnt = DatabaseManager.getPlayer(source.attr('data-id')).Latest.toSimulatorModel();
                         }
 
                         copyText(JSON.stringify(cnt));
@@ -911,7 +912,7 @@ class BrowseView extends View {
                 {
                     label: 'Copy with companions',
                     action: (source) => {
-                        copyText(JSON.stringify(Database.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
+                        copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
                     },
                     enabled: SiteOptions.inventory
                 },
@@ -1106,7 +1107,7 @@ class BrowseView extends View {
                     this.shidden = true;
                 } else if (key == 'o') {
                     terms.push({
-                        test: (arg, player, timestamp) => Database.Players[player.Identifier].Own
+                        test: (arg, player, timestamp) => DatabaseManager.getPlayer(player.Identifier).Own
                     });
                     this.recalculate = true;
                     this.shidden = true;
@@ -1142,8 +1143,8 @@ class BrowseView extends View {
 
             var entries = new PlayersTableArray(perf, this.timestamp, this.reference);
 
-            for (var player of Object.values(Database.Players)) {
-                var hidden = Database.Hidden.includes(player.Latest.Identifier);
+            for (var player of Object.values(DatabaseManager.Players)) {
+                var hidden = DatabaseManager.Hidden.includes(player.Latest.Identifier);
                 if (this.hidden || !hidden || this.shidden) {
                     var currentPlayer = player.List.find(entry => entry[0] <= this.timestamp);
                     if (currentPlayer) {
@@ -1160,7 +1161,7 @@ class BrowseView extends View {
                             let pp = currentPlayer[1];
                             let cp = (ts || currentPlayer)[1];
 
-                            entries.add(Database.loadPlayer(pp), Database.loadPlayer(cp), currentPlayer[1].Timestamp == this.timestamp, hidden);
+                            entries.add(DatabaseManager._loadPlayer(pp), DatabaseManager._loadPlayer(cp), currentPlayer[1].Timestamp == this.timestamp, hidden);
                         }
                     }
                 }
@@ -1197,17 +1198,17 @@ class BrowseView extends View {
         var timestamps = [];
         var references = [];
 
-        for (var file of Object.values(Storage.files().filter(file => !file.hidden))) {
+        for (const timestamp of Object.keys(DatabaseManager.Timestamps)) {
             timestamps.push({
-                name: formatDate(file.timestamp),
-                value: file.timestamp,
-                selected: file.timestamp == Database.Latest
+                name: formatDate(timestamp),
+                value: timestamp,
+                selected: timestamp == DatabaseManager.Latest
             });
 
             references.push({
-                name: formatDate(file.timestamp),
-                value: file.timestamp,
-                selected: file.timestamp == Database.Latest
+                name: formatDate(timestamp),
+                value: timestamp,
+                selected: timestamp == DatabaseManager.Latest
             });
         }
 
@@ -1250,8 +1251,8 @@ class BrowseView extends View {
             this.$filter.trigger('change');
         });
 
-        this.timestamp = Database.Latest;
-        this.reference = Database.Latest;
+        this.timestamp = DatabaseManager.Latest;
+        this.reference = DatabaseManager.Latest;
 
         this.load();
     }
@@ -1359,17 +1360,17 @@ class GroupsView extends View {
                 {
                     label: 'Show / Hide',
                     action: (source) => {
-                        Database.hide(source.attr('data-id'));
+                        DatabaseManager.hide(source.attr('data-id'));
                         this.show();
                     }
                 },
                 {
                     label: 'Copy',
                     action: (source) => {
-                        let group = Database.Groups[source.attr('data-id')].Latest;
+                        let group = DatabaseManager.getGroup(source.attr('data-id')).Latest;
                         copyText(JSON.stringify(group.Members.map(id => {
-                            if (Database.Players[id] && Database.Players[id][group.Timestamp]) {
-                                return Database.Players[id][group.Timestamp].toSimulatorModel();
+                            if (DatabaseManager.hasPlayer(id, group.Timestamp)) {
+                                return DatabaseManager.getPlayer(id, group.Timestamp).toSimulatorModel();
                             } else {
                                 return null;
                             }
@@ -1380,7 +1381,7 @@ class GroupsView extends View {
                     label: 'Share',
                     action: (source) => {
                         let group = source.attr('data-id');
-                        UI.OnlineShareFile.show(Storage.getExportGroupData(group, Database.Groups[group].List.map(x => x[0])));
+                        UI.OnlineShareFile.show(Storage.getExportGroupData(group, DatabaseManager.getGroup(group).List.map(x => x[0])));
                     }
                 },
                 {
@@ -1401,17 +1402,17 @@ class GroupsView extends View {
         var index = 0;
         var index2 = 0;
 
-        var groups = Object.values(Database.Groups);
+        var groups = Object.values(DatabaseManager.Groups);
         groups.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
 
         for (var i = 0, group; group = groups[i]; i++) {
-            var hidden = Database.Hidden.includes(group.Latest.Identifier);
+            var hidden = DatabaseManager.Hidden.includes(group.Latest.Identifier);
             if (this.hidden || !hidden) {
                 if (group.Own) {
                     content += `
                         ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
                         <div class="column">
-                            <div class="ui segment clickable ${ Database.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
+                            <div class="ui segment clickable ${ DatabaseManager.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
                                 <span class="css-timestamp">${ formatDate(group.LatestTimestamp) }</span>
                                 <img class="ui medium centered image" src="res/group.png">
                                 <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
@@ -1424,7 +1425,7 @@ class GroupsView extends View {
                     content2 += `
                         ${ index2 % 5 == 0 ? `${ index2 != 0 ? '</div>' : '' }<div class="row">` : '' }
                         <div class="column">
-                            <div class="ui segment clickable ${ Database.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
+                            <div class="ui segment clickable ${ DatabaseManager.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
                                 <span class="css-timestamp">${ formatDate(group.LatestTimestamp) }</span>
                                 <img class="ui medium centered image" src="res/group.png">
                                 <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
@@ -1489,20 +1490,20 @@ class PlayersView extends View {
                 {
                     label: 'Show / Hide',
                     action: (source) => {
-                        Database.hide(source.attr('data-id'));
+                        DatabaseManager.hide(source.attr('data-id'));
                         this.show();
                     }
                 },
                 {
                     label: 'Copy',
                     action: (source) => {
-                        copyText(JSON.stringify(Database.Players[source.attr('data-id')].Latest.toSimulatorModel()));
+                        copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id')).Latest.toSimulatorModel()));
                     }
                 },
                 {
                     label: 'Copy with companions',
                     action: (source) => {
-                        copyText(JSON.stringify(Database.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
+                        copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
                     },
                     enabled: SiteOptions.inventory
                 },
@@ -1616,7 +1617,7 @@ class PlayersView extends View {
                     });
                 } else if (key == 'l') {
                     terms.push({
-                        test: (arg, player) => player.Timestamp == Database.Latest,
+                        test: (arg, player) => player.Timestamp == DatabaseManager.Latest,
                         arg: arg.toLowerCase()
                     });
                 } else if (key == 'e') {
@@ -1638,8 +1639,8 @@ class PlayersView extends View {
 
             this.entries = [];
 
-            for (var player of Object.values(Database.Players)) {
-                var hidden = Database.Hidden.includes(player.Latest.Identifier);
+            for (var player of Object.values(DatabaseManager.Players)) {
+                var hidden = DatabaseManager.Hidden.includes(player.Latest.Identifier);
                 if (this.hidden || !hidden || this.shidden) {
                     var matches = true;
                     for (var term of terms) {
@@ -1673,13 +1674,13 @@ class PlayersView extends View {
         var index2 = 0;
 
         for (var i = 0, player; player = players[i]; i++) {
-            var hidden = Database.Hidden.includes(player.Latest.Identifier);
+            var hidden = DatabaseManager.Hidden.includes(player.Latest.Identifier);
             if (this.hidden || !hidden || this.shidden) {
                 if (player.Own || this.nosep) {
                     content += `
                         ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
                         <div class="column">
-                            <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ player.Latest.Identifier }">
+                            <div class="ui segment clickable ${ DatabaseManager.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ player.Latest.Identifier }">
                                 <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
                                 <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
                                 <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
@@ -1692,7 +1693,7 @@ class PlayersView extends View {
                     content2 += `
                         ${ index2 % 5 == 0 ? `${ index2 != 0 ? '</div>' : '' }<div class="row">` : '' }
                         <div class="column">
-                            <div class="ui segment clickable ${ Database.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ player.Latest.Identifier }">
+                            <div class="ui segment clickable ${ DatabaseManager.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ player.Latest.Identifier }">
                                 <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
                                 <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
                                 <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
@@ -2006,8 +2007,8 @@ class FilesView extends View {
 
     show () {
         // Set counters
-        this.$gcount.text(Object.keys(Database.Groups).length);
-        this.$pcount.text(Object.keys(Database.Players).length);
+        this.$gcount.text(Object.keys(DatabaseManager.Groups).length);
+        this.$pcount.text(Object.keys(DatabaseManager.Players).length);
         this.$rpcount.text(Storage.files().map(f => f.players ? f.players.length : 0).reduce((a, b) => a + b, 0));
         this.$fcount.text(Storage.files().length);
 
@@ -2502,7 +2503,7 @@ class SettingsView extends View {
                     return null;
                 } else {
                     return {
-                        name: Database.Players[key] ? `P: ${ Database.Players[key].Latest.Name }` : (Database.Groups[key] ? `G: ${ Database.Groups[key].Latest.Name }` : key),
+                        name: DatabaseManager.getPlayer(key) ? `P: ${ DatabaseManager.getPlayer(key).Latest.Name }` : (DatabaseManager.getGroup(key) ? `G: ${ DatabaseManager.getGroup(key).Latest.Name }` : key),
                         value: key,
                         selected: this.settings.name == key
                     };
@@ -2527,7 +2528,7 @@ class SettingsView extends View {
                 SettingsManager.remove(value);
 
                 if (SiteOptions.tracker && value == 'tracker') {
-                    Database.refreshTrackers();
+                    DatabaseManager.refreshTrackers();
                 }
 
                 this.show();
@@ -2556,7 +2557,7 @@ class SettingsView extends View {
         SettingsManager.save(this.settings.name, this.settings.content, this.settings.parent);
 
         if (SiteOptions.tracker && this.settings.name == 'tracker') {
-            Database.refreshTrackers();
+            DatabaseManager.refreshTrackers();
         }
     }
 

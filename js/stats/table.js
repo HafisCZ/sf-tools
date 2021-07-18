@@ -122,7 +122,7 @@ class TableInstance {
             // Save settings
             if (isset) {
                 SettingsManager.save('tracker', trackerCode);
-                Database.refreshTrackers();
+                DatabaseManager.refreshTrackers();
             }
         }
 
@@ -339,7 +339,7 @@ class TableInstance {
 
         if (this.type == TableType.History) {
             this.array = array.map(([ timestamp, e ]) => {
-                let obj = Database.getPlayer(e.Identifier, timestamp);
+                let obj = DatabaseManager.getPlayer(e.Identifier, timestamp);
                 let disc = this.settings.discardRules.some(rule => rule.eval(obj, obj, this.settings));
 
                 return disc ? null : [ timestamp, obj ];
@@ -348,8 +348,8 @@ class TableInstance {
             this.array = array.map(obj => {
                 let { player, compare } = obj;
 
-                let p = Database.getPlayer(player.Identifier, player.Timestamp);
-                let c = Database.getPlayer(player.Identifier, compare.Timestamp);
+                let p = DatabaseManager.getPlayer(player.Identifier, player.Timestamp);
+                let c = DatabaseManager.getPlayer(player.Identifier, compare.Timestamp);
 
                 let disc = this.settings.discardRules.some(rule => rule.eval(p, c, this.settings));
 
