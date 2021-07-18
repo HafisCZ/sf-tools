@@ -456,6 +456,14 @@ const DatabaseManager = new (class {
                 }
             }
 
+            let playerObj = this.Players[identifier];
+
+            playerObj[timestamp] = player;
+            playerObj.List.find(([ ts, p ]) => ts == timestamp)[1] = player;
+            if (playerObj.LatestTimestamp == timestamp) {
+                playerObj.Latest = player;
+            }
+
             return player;
         } else {
             return lazyPlayer;
