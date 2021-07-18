@@ -8,7 +8,8 @@ const DATABASE_PARAMS_V5 = [
                 own: 'own',
                 identifier: 'identifier',
                 timestamp: 'timestamp',
-                group: 'group'
+                group: 'group',
+                prefix: 'prefix'
             }
         },
         groups: {
@@ -16,7 +17,8 @@ const DATABASE_PARAMS_V5 = [
             indexes: {
                 own: 'own',
                 identifier: 'identifier',
-                timestamp: 'timestamp'
+                timestamp: 'timestamp',
+                prefix: 'prefix'
             }
         },
         trackers: {
