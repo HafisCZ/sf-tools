@@ -72,7 +72,13 @@ class IndexedDBWrapper {
 
     store (store, index) {
         let databaseStore = this.database.transaction(store, 'readwrite').objectStore(store);
-        return index ? databaseStore.index(index) : databaseStore;
+        if (Array.isArray(index)) {
+            return databaseStore;
+        } else if (index) {
+            return databaseStore.index(index);
+        } else {
+            return databaseStore;
+        }
     }
 
     open () {
@@ -161,8 +167,8 @@ class MigrationUtils {
 }
 
 class DatabaseUtils {
-    static async createSession(toMigrateSlot) {
-        DATABASE_PARAMS_V1[0] = DatabaseUtils.getNameFromSlot(toMigrateSlot);
+    static async createSession(slot) {
+        DATABASE_PARAMS_V1[0] = DatabaseUtils.getNameFromSlot(slot);
 
         let database = await new IndexedDBWrapper(... DATABASE_PARAMS_V5).open();
 
@@ -205,6 +211,12 @@ class DatabaseUtils {
     }
 }
 
+const DEFAULT_PROFILE = Object.freeze({
+    temporary: false,
+    slot: 0,
+    filters: []
+});
+
 const DatabaseManager = new (class {
     constructor () {
         this.reset();
@@ -218,13 +230,44 @@ const DatabaseManager = new (class {
         this.Groups = {};
     }
 
-    load (profile = {}) {
+    _createFilter (filters) {
+        if (!filters || filters.size < 1) {
+            return undefined;
+        }
+
+        let indexes = [];
+        for (let { name, mode, values } of (filters || [])) {
+            let value = null;
+            if (mode == 'below') {
+                value = IDBKeyRange.upperBound(... values);
+            } else if (mode == 'above') {
+                value = IDBKeyRange.lowerBound(... values);
+            } else if (mode == 'equal') {
+                value = IDBKeyRange.bound(... values);
+            } else {
+                value = IDBKeyRange.only(... values);
+            }
+
+            indexes.push({
+                name: value
+            });
+        }
+
+        return indexes;
+    }
+
+    load (profile = DEFAULT_PROFILE) {
         this.reset();
         return new Promise(async (resolve, reject) => {
             if (profile.temporary) {
                 this.Database = await DatabaseUtils.createTemporarySession();
             } else {
                 this.Database = await DatabaseUtils.createSession(profile.slot);
+
+                let players = await this.Database.where('players', this._createFilter(profile.filters));
+                let groups = await this.Database.where('groups', this._createFilter(profile.filters));
+
+                // TODO: Finish loading into player models
             }
 
             resolve();
