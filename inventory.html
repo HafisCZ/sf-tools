@@ -242,7 +242,7 @@
                     UI.show(UI.PlayerSelect);
                 }
             }).catch(function () {
-                // Firefox private mode
+                Logger.log('WARNING', 'Database could not be opened!');
                 UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
             });
         </script>

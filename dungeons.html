@@ -1138,6 +1138,7 @@
                         ));
                     }
                 }).catch(function () {
+                    Logger.log('WARNING', 'Database could not be opened!');
                     $('#stats-list').empty();
                 });
             });
