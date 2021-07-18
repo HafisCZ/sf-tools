@@ -260,20 +260,25 @@ const DEFAULT_PROFILE = Object.freeze({
 
 const DatabaseManager = new (class {
     constructor () {
-        this.reset();
+        this._reset();
     }
 
-    reset () {
+    _reset () {
         this.Database = null;
         this.Options = {};
 
+        // Models
         this.Players = {};
         this.Groups = {};
         this.Trackers = {};
+
+        // Pools
+        this.Timestamps = new Set();
+        this.Identifiers = new Set();
     }
 
     load (profile = DEFAULT_PROFILE) {
-        this.reset();
+        this._reset();
         return new Promise(async (resolve, reject) => {
             if (profile.temporary) {
                 this.Database = await DatabaseUtils.createTemporarySession();
@@ -290,16 +295,16 @@ const DatabaseManager = new (class {
                     ... DatabaseUtils.profileFilter(profile, 'groups')
                 ));
 
-                groups.forEach(group => this.addGroup(group));
-                players.forEach(group => this.addPlayer(group));
-                this.updateLists();
+                groups.forEach(group => this._addGroup(group));
+                players.forEach(group => this._addPlayer(group));
+                this._updateLists();
             }
 
             resolve();
         });
     }
 
-    addPlayer (data) {
+    _addPlayer (data) {
         let player = new Proxy({
             Data: data,
             Identifier: data.identifier,
@@ -325,19 +330,24 @@ const DatabaseManager = new (class {
             this.Groups[data.group][data.timestamp].MembersPresent++;
         }
 
-        this.registerModel('Players', data.identifier, data.timestamp, player);
+        this._registerModel('Players', data.identifier, data.timestamp, player);
     }
 
-    addGroup (data) {
-        this.registerModel('Groups', data.identifier, data.timestamp, new SFGroup(data));
+    _addGroup (data) {
+        this._registerModel('Groups', data.identifier, data.timestamp, new SFGroup(data));
     }
 
-    registerModel (type, identifier, timestamp, model) {
-        if (!this[type][identifier]) this[type][identifier] = {};
+    _registerModel (type, identifier, timestamp, model) {
+        if (!this.Identifiers.has(identifier)) {
+            this.Identifiers.add(identifier);
+            this[type][identifier] = {};
+        }
+
+        this.Timestamps.add(timestamp);
         this[type][identifier][timestamp] = model;
     }
 
-    updateLists () {
+    _updateLists () {
         this.Latest = 0;
 
         for (const [identifier, player] of Object.entries(this.Players)) {
@@ -406,7 +416,7 @@ const DatabaseManager = new (class {
     getPlayer (id, timestamp) {
         let player = this.Players[id];
         if (player && timestamp) {
-            return this.loadPlayer(player[timestamp]);
+            return this._loadPlayer(player[timestamp]);
         } else {
             return player;
         }
@@ -421,7 +431,7 @@ const DatabaseManager = new (class {
         }
     }
 
-    loadPlayer (lazyPlayer) {
+    _loadPlayer (lazyPlayer) {
         if (lazyPlayer && lazyPlayer.IsProxy) {
             const { Identifier: identifier, Timestamp: timestamp, Data: data, Own: own } = lazyPlayer;
 
