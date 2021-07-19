@@ -570,6 +570,22 @@ const DatabaseManager = new (class {
         Preferences.set('hidden', this.Hidden);
     }
 
+    // HAR - string
+    // Endpoint - string
+    // Share - object
+    // JSON - string
+    import (text, timestamp, offset) {
+        if (typeof text === 'string') {
+            text = JSON.parse(text);
+        }
+
+        this._import(json, timestamp, offset);
+    }
+
+    merge (timestamps) {
+
+    }
+
     refreshTrackers () {
 
     }
