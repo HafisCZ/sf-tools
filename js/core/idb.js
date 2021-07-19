@@ -152,6 +152,7 @@ class MigrationUtils {
             delete group.id;
         }
 
+        group.timestamp = parseInt(group.timestamp);
         group.own = group.own ? 1 : 0;
 
         return group;
@@ -163,6 +164,7 @@ class MigrationUtils {
             delete player.id;
         }
 
+        player.timestamp = parseInt(player.timestamp);
         player.own = player.own ? 1 : 0;
 
         let group = player.save[player.own ? 435 : 161];
@@ -522,7 +524,7 @@ const DatabaseManager = new (class {
         for (const timestamp of timestamps.filter(timestamp => this.Timestamps[timestamp])) {
             this.Timestamps[timestamp].forEach(identifier => {
                 let isPlayer = /_p\d/.test(identifier);
-                this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, timestamp]);
+                this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
                 let object = this[isPlayer ? 'Players' : 'Groups'][identifier];
                 delete object[timestamp];
@@ -549,7 +551,7 @@ const DatabaseManager = new (class {
 
             this.Identifiers[identifier].forEach(timestamp => {
                 let isPlayer = /_p\d/.test(identifier);
-                this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, timestamp]);
+                this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
                 this.Timestamps[timestamp].delete(identifier);
                 if (this.Timestamps[timestamp].size == 0) {
@@ -578,8 +580,15 @@ const DatabaseManager = new (class {
             let newestTimestamp = timestamps.shift();
             for (let timestamp of timestamps) {
                 let file = this._getFile(timestamp);
-                file.groups.forEach(group => group.timestamp = newestTimestamp);
-                file.players.forEach(player => player.timestamp = newestTimestamp);
+
+                for (let player of file.players) {
+                    player.timestamp = newestTimestamp;
+                }
+
+                for (let group of file.groups) {
+                    group.timestamp = newestTimestamp;
+                }
+
                 this._addFile(file);
             }
 
@@ -620,9 +629,9 @@ const DatabaseManager = new (class {
                 let isPlayer = /_p\d/.test(identifier);
 
                 if (isPlayer) {
-                    players.push(this.getPlayer(identifier, timestamp));
+                    players.push(this.getPlayer(identifier, timestamp).Data);
                 } else {
-                    groups.push(this.getGroup(identifier, timestamp));
+                    groups.push(this.getGroup(identifier, timestamp).Data);
                 }
             }
         }
