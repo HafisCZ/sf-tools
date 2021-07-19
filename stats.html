@@ -884,7 +884,8 @@
             UI.preinitialize();
 
             DatabaseManager.load({
-                slot: slot
+                slot: slot,
+                temporary: temp
             }).then(function () {
                 UI.initialize();
                 UI.show(UI.Groups);
