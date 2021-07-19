@@ -527,7 +527,7 @@ const DatabaseManager = new (class {
                 }
 
                 this.Identifiers[identifier].remove(timestamp);
-                if (this.Timestamps[timestamp].length) {
+                if (this.Timestamps[timestamp].size == 0) {
                     delete this.Timestamps[timestamp];
                 }
             });
@@ -548,7 +548,7 @@ const DatabaseManager = new (class {
                 this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, timestamp]);
 
                 this.Timestamps[timestamp].remove(identifier);
-                if (this.Timestamps[timestamp].length) {
+                if (this.Timestamps[timestamp].size == 0) {
                     delete this.Timestamps[timestamp];
                 }
             });
