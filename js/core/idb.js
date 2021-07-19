@@ -180,7 +180,7 @@ class DatabaseUtils {
 
         let database = await new IndexedDBWrapper(... DATABASE_PARAMS_V5).open();
 
-        if (await IndexedDBWrapper.exists(... DATABASE_PARAMS_V1)) {
+        if (false && await IndexedDBWrapper.exists(... DATABASE_PARAMS_V1)) {
             Logger.log('MIGRATE', `Migrating files`);
 
             let migratedDatabase = await new IndexedDBWrapper(... DATABASE_PARAMS_V1).open();
@@ -600,6 +600,28 @@ const DatabaseManager = new (class {
 
     untrack (pid, trackers) {
 
+    }
+
+    _getFile (timestamp) {
+        let players = [];
+        let groups = [];
+
+        if (this.Timestamps[timestamp] && this.Timestamps[timestamp].size != 0) {
+            for (let identifier of this.Timestamps[timestamp]) {
+                let isPlayer = /_p\d/.test(identifier);
+
+                if (isPlayer) {
+                    players.push(this.getPlayer(identifier, timestamp));
+                } else {
+                    groups.push(this.getGroup(identifier, timestamp));
+                }
+            }
+        }
+
+        return {
+            players: players,
+            groups: groups
+        }
     }
 
     async _addFile (file) {
