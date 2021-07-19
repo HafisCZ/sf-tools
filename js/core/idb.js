@@ -694,7 +694,8 @@ const DatabaseManager = new (class {
                 if (raw.includes('groupSave') || raw.includes('groupsave')) {
                     var group = {
                         prefix: prefix || 's1_de',
-                        timestamp: timestamp
+                        timestamp: timestamp,
+                        offset: offset
                     };
 
                     for (var [key, val] of parsePlayaResponse(raw)) {
@@ -727,7 +728,8 @@ const DatabaseManager = new (class {
                     let player = {
                         prefix: prefix || 's1_de',
                         own: own,
-                        timestamp: timestamp
+                        timestamp: timestamp,
+                        offset: offset
                     };
 
                     for (var [key, val] of parsePlayaResponse(raw)) {
