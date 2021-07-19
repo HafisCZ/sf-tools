@@ -483,7 +483,7 @@ const DatabaseManager = new (class {
                 players.forEach(group => this._addPlayer(group));
                 this._updateLists();
 
-                this.Hidden = Preferences.get('hidden', []);
+                this.Hidden = new Set(Preferences.get('hidden_identifiers', []));
             });
         }
     }
@@ -564,14 +564,11 @@ const DatabaseManager = new (class {
     }
 
     hide (identifier) {
-        var index = this.Hidden.indexOf(identifier);
-        if (index >= 0) {
-            this.Hidden.splice(index, 1);
-        } else {
-            this.Hidden.push(identifier);
+        if (!this.Hidden.delete(identifier)) {
+            this.Hidden.add(identifier);
         }
 
-        Preferences.set('hidden', this.Hidden);
+        Preferences.set('hidden_identifiers', Array.from(this.Hidden));
     }
 
     // HAR - string
@@ -601,6 +598,8 @@ const DatabaseManager = new (class {
     untrack (pid, trackers) {
 
     }
+
+
 
     _getFile (timestamp) {
         let players = [];

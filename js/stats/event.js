@@ -1142,7 +1142,7 @@ class BrowseView extends View {
             var entries = new PlayersTableArray(perf, this.timestamp, this.reference);
 
             for (var player of Object.values(DatabaseManager.Players)) {
-                var hidden = DatabaseManager.Hidden.includes(player.Latest.Identifier);
+                var hidden = DatabaseManager.Hidden.has(player.Latest.Identifier);
                 if (this.hidden || !hidden || this.shidden) {
                     var currentPlayer = player.List.find(entry => entry[0] <= this.timestamp);
                     if (currentPlayer) {
@@ -1404,7 +1404,7 @@ class GroupsView extends View {
         groups.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
 
         for (var i = 0, group; group = groups[i]; i++) {
-            var hidden = DatabaseManager.Hidden.includes(group.Latest.Identifier);
+            var hidden = DatabaseManager.Hidden.has(group.Latest.Identifier);
             if (this.hidden || !hidden) {
                 if (group.Own) {
                     content += `
