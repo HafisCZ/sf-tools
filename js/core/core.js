@@ -87,9 +87,7 @@ const SiteOptions = new (class {
             groups_other: false,
             players_other: false,
             files_hide: false,
-            inventory: false,
             tracker: false,
-            recent: false,
             always_prev: false
         };
 
@@ -107,12 +105,6 @@ const SiteOptions = new (class {
                 }
             });
         }
-
-        // Add site params
-        this.params = {
-            beta: false,
-            temp: false
-        };
     }
 
 })();

@@ -96,8 +96,7 @@ class GroupDetailView extends View {
                     label: 'Copy with companions',
                     action: (source) => {
                         copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorShadowModel()));
-                    },
-                    enabled: SiteOptions.inventory
+                    }
                 }
             ]
         });
@@ -913,8 +912,7 @@ class BrowseView extends View {
                     label: 'Copy with companions',
                     action: (source) => {
                         copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
-                    },
-                    enabled: SiteOptions.inventory
+                    }
                 },
                 {
                     label: 'Share',
@@ -1504,8 +1502,7 @@ class PlayersView extends View {
                     label: 'Copy with companions',
                     action: (source) => {
                         copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
-                    },
-                    enabled: SiteOptions.inventory
+                    }
                 },
                 {
                     label: 'Share',
@@ -1980,16 +1977,6 @@ class FilesView extends View {
                 SiteOptions.insecure = false;
             }
         }).checkbox(SiteOptions.insecure ? 'set checked' : 'set unchecked');
-
-        // Enable inventory
-        this.$inventory = this.$parent.find('[data-op="checkbox-inventory"]').checkbox({
-            onChecked: () => {
-                SiteOptions.inventory = true;
-            },
-            onUnchecked: () => {
-                SiteOptions.inventory = false;
-            }
-        }).checkbox(SiteOptions.inventory ? 'set checked' : 'set unchecked');
 
         // Collapsed things
         this.shown = {};
