@@ -371,7 +371,7 @@ const DatabaseManager = new (class {
             }, []);
 
             player.List.sort((a, b) => b[0] - a[0]);
-            player.Latest = player[player.LatestTimestamp];
+            player.Latest = this._loadPlayer(player[player.LatestTimestamp]);
             player.Own = player.List.find(x => x[1].Own) != undefined;
 
             if (this.Latest < player.LatestTimestamp) {
