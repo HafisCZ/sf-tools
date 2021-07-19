@@ -535,7 +535,7 @@ function * filterPlayaJSON (o, tt = [], a = []) {
     for (var i in o) {
         if (i == 'url') {
             a[0] = o[i];
-        } else if (i == 'startedDateTime' && !a[1]) {
+        } else if (i == 'startedDateTime') {
             a[1] = new Date(o[i]);
         } else {
             const t = tt.concat(i);
