@@ -571,6 +571,22 @@ const DatabaseManager = new (class {
         Preferences.set('hidden_identifiers', Array.from(this.Hidden));
     }
 
+    merge (timestamps) {
+        if (timestamps.length > 1) {
+            timestamps.sort((b, a) => a - b);
+
+            let newestTimestamp = timestamps.shift();
+            for (let timestamp of timestamps) {
+                let file = this._getFile(timestamp);
+                file.groups.forEach(group => group.timestamp = newestTimestamp);
+                file.players.forEach(player => player.timestamp = newestTimestamp);
+                this._addFile(file);
+            }
+
+            this.removeTimestamps(... timestamps);
+        }
+    }
+
     // HAR - string
     // Endpoint - string
     // Share - object
@@ -581,10 +597,6 @@ const DatabaseManager = new (class {
         }
 
         this._import(text, timestamp, offset);
-    }
-
-    merge (timestamps) {
-
     }
 
     refreshTrackers () {
@@ -598,8 +610,6 @@ const DatabaseManager = new (class {
     untrack (pid, trackers) {
 
     }
-
-
 
     _getFile (timestamp) {
         let players = [];
