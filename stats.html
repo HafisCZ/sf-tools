@@ -265,10 +265,6 @@
                             <input type="checkbox">
                             <label>Show hidden files</label>
                         </div>
-                        <div class="ui checkbox sf-margin left-20 top-05" data-op="checkbox-inventory">
-                            <input type="checkbox">
-                            <label>Load inventory & companions</label>
-                        </div>
                         <div class="ui checkbox sf-margin left-20 top-05" data-op="checkbox-tracker">
                             <input type="checkbox">
                             <label>Enable tracker</label>
@@ -869,17 +865,11 @@
             }
 
             var temp = keys['temp'] == -1;
-            var slot = isNaN(keys['slot']) ? 0 : Math.max(0, Number(keys['slot']));
-
-            var beta = SiteOptions.beta;
-            let inventory = keys['inv'] == -1 || SiteOptions.inventory;
-
             if (temp) {
                 $('.css-temporary').removeClass('css-hidden');
             }
 
-            SiteOptions.params.temp = temp;
-            SiteOptions.params.beta = beta;
+            var slot = isNaN(keys['slot']) ? 0 : Math.max(0, Number(keys['slot']));
 
             UI.preinitialize();
 
@@ -897,14 +887,13 @@
                 $('#show-settings').click(() => UI.show(UI.Settings));
                 $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
 
-                UI.beta(beta);
-
                 if (localStorage.termsOK != 'true') {
                     UI.show(UI.Setup);
                 } else if (localStorage.changeLogOk != MODULE_VERSION) {
                     UI.show(UI.ChangeLog);
                 }
             }).catch(function (e) {
+                console.error(e);
                 Logger.log('WARNING', 'Database could not be opened!');
                 UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
             });
