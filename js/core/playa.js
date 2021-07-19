@@ -1675,7 +1675,7 @@ class SFOwnPlayer extends SFPlayer {
 
         this.Witch.Stage = this.Witch.Scrolls.filter(s => s.Owned).length;
 
-        if (data.tower.length && loadInventory) {
+        if (data.tower && data.tower.length && loadInventory) {
             this.Companions = {
                 Bert: {},
                 Mark: {},
