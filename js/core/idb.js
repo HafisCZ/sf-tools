@@ -601,4 +601,154 @@ const DatabaseManager = new (class {
     untrack (pid, trackers) {
 
     }
+
+    async _addFile (file) {
+        for (let group of file.groups) {
+            let migratedGroup = MigrationUtils.migrateGroup(group);
+            this._addGroup(migratedGroup);
+
+            await this.Database.set('groups', migratedGroup);
+        }
+
+        for (let player of file.players) {
+            let migratedPlayer = MigrationUtils.migratePlayer(player);
+            this._addPlayer(migratedPlayer);
+
+            await this.Database.set('players', migratedPlayer);
+        }
+
+        this._updateLists();
+    }
+
+    _import (json, timestamp, offset = -3600000) {
+        if (Array.isArray(json)) {
+            // Archive, Share
+            for (let file of json) {
+                this._addFile(file);
+            }
+        } else {
+            // HAR, Endpoint
+            let raws = [];
+            let file = {
+                groups: [],
+                players: []
+            }
+
+            for (var [key, val, url, ts] of filterPlayaJSON(json)) {
+                if (ts) {
+                    timestamp = ts.getTime();
+                    offset = ts.getTimezoneOffset() * 60 * 1000;
+                }
+
+                if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername'))) {
+                    var url = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
+                    if (url.length > 2) {
+                        raws.push([val, url[1] + '_' + url[2]]);
+                    }
+                }
+            }
+
+            for (var pair of raws) {
+                var [raw, prefix] = pair;
+
+                if (raw.includes('groupSave') || raw.includes('groupsave')) {
+                    var group = {
+                        prefix: prefix || 's1_de',
+                        timestamp: timestamp
+                    };
+
+                    for (var [key, val] of parsePlayaResponse(raw)) {
+                        if (key.includes('groupname')) {
+                            group.name = val;
+                        } else if (key.includes('grouprank')) {
+                            group.rank = Number(val);
+                        } else if (key.includes('groupknights')) {
+                            group.knights = val.split(',').map(a => Number(a));
+                        } else if (key.includes('owngroupsave') && group.own == undefined) {
+                            group.save = val.split('/').map(a => Number(a));
+                            group.own = true;
+                            group.identifier = group.prefix + '_g' + group.save[0];
+                        } else if (key.includes('groupSave') && group.own == undefined) {
+                            group.save = val.split('/').map(a => Number(a));
+                            group.own = false;
+                            group.identifier = group.prefix + '_g' + group.save[0];
+                        } else if (key.includes('groupmember')) {
+                            group.names = val.split(',');
+                        }
+                    }
+
+                    if (!file.groups.find(g => g.id === group.id) && group.rank) {
+                        file.groups.push(group);
+                    }
+                }
+
+                var own = raw.includes('ownplayername');
+                if (raw.includes('otherplayername') || raw.includes('ownplayername')) {
+                    let player = {
+                        prefix: prefix || 's1_de',
+                        own: own,
+                        timestamp: timestamp
+                    };
+
+                    for (var [key, val] of parsePlayaResponse(raw)) {
+                        if (key.includes('groupname')) {
+                            player.groupname = val;
+                        } else if (key.includes('name')) {
+                            player.name = val;
+                        } else if (key.includes('unitlevel')) {
+                            player.units = val.split('/').map(a => Number(a));
+                        } else if (key.includes('achievement') && !key.includes('new')) {
+                            player.achievements = val.split('/').map(a => Number(a));
+                        } else if (key.includes('fortressrank')) {
+                            player.fortressrank = Number(val);
+                        } else if (!own && key.includes('playerlookat')) {
+                            player.save = val.split('/').map(a => Number(a));
+                            player.identifier = player.prefix + '_p' + player.save[0];
+                            if (player.save[161]) {
+                                player.group = `${player.prefix}_g${player.save[161]}`
+                            }
+                        } else if (own && key.includes('playerSave')) {
+                            player.save = val.split('/').map(a => Number(a));
+
+                            player.save[4] = 0;
+                            player.save[503] = 0;
+                            player.save[504] = 0;
+                            player.save[505] = 0;
+                            player.save[561] = 0;
+
+                            player.identifier = player.prefix + '_p' + player.save[1];
+                            if (player.save[435]) {
+                                player.group = `${player.prefix}_g${player.save[435]}`
+                            }
+                        } else if ((!own && key.includes('petbonus')) || (own && key.includes('petsSave'))) {
+                            player.pets = val.split('/').map(a => Number(a));
+                        } else if (key.includes('serverversion')) {
+                            file.version = Number(val);
+                        } else if (own && key.includes('towerSave')) {
+                            player.tower = val.split('/').map(a => Number(a));
+                        } else if (own && key.includes('fortresschest') && val.length) {
+                            player.chest = val.split('/').map(a => Number(a));
+                        } else if (own && key.includes('dummies')) {
+                            player.dummy = val.split('/').map(a => Number(a));
+                        } else if (own && key.includes('scrapbook')) {
+                            player.scrapbook = val;
+                        } else if (own && key.includes('legendaries')) {
+                            player.scrapbook_legendary = val;
+                        } else if (own && key.includes('witchData')) {
+                            player.witch = val.split('/').map(a => Number(a));
+                        } else if (own && (key.includes('idlegame') || key.includes('idlesave'))) {
+                            player.idle = val.split('/').map(a => Number(a));
+                        }
+                    }
+
+
+                    if (!file.players.find(p => p.identifier === player.identifier)) {
+                        file.players.push(player);
+                    }
+                }
+            }
+
+            this._addFile(file);
+        }
+    }
 })();
