@@ -931,10 +931,10 @@ class BrowseView extends View {
                         var sel = this.$parent.find('[data-id].css-op-select');
                         if (sel.length) {
                             for (var el of sel) {
-                                Storage.removeByID($(el).attr('data-id'));
+                                DatabaseManager.removeIdentifiers($(el).attr('data-id'));
                             }
                         } else {
-                            Storage.removeByID(source.attr('data-id'));
+                            DatabaseManager.removeIdentifiers(source.attr('data-id'));
                         }
 
                         this.$filter.trigger('change');
@@ -1385,7 +1385,7 @@ class GroupsView extends View {
                 {
                     label: 'Remove permanently',
                     action: (source) => {
-                        Storage.removeByID(source.attr('data-id'));
+                        DatabaseManager.removeIdentifiers(source.attr('data-id'));
                         this.show();
                     }
                 }
@@ -1513,7 +1513,7 @@ class PlayersView extends View {
                 {
                     label: 'Remove permanently',
                     action: (source) => {
-                        Storage.removeByID(source.attr('data-id'));
+                        DatabaseManager.removeIdentifiers(source.attr('data-id'));
                         this.show();
                     }
                 }
@@ -1841,10 +1841,7 @@ class FilesView extends View {
 
         this.$wipeall = this.$parent.find('[data-op="wipeall"]').click(() => {
             UI.ConfirmDialog.show('Database wipe', 'Are you sure you want to delete all stored player data?', () => {
-                while (Storage.files().length) {
-                    Storage.remove(0);
-                }
-
+                DatabaseManager.removeTimestamps(... Object.keys(DatabaseManager.Timestamps));
                 this.show();
             }, true);
         });
@@ -1868,7 +1865,7 @@ class FilesView extends View {
         this.$parent.find('[data-op="merge"]').click(() => {
             var array = this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')));
             if (array.length > 1) {
-                Storage.merge(array);
+                DatabaseManager.merge(array);
                 this.show();
             }
         });
@@ -1880,7 +1877,7 @@ class FilesView extends View {
                 reader.readAsText(file, 'UTF-8');
                 reader.onload = e => {
                     try {
-                        Storage.add(e.target.result, file.lastModified);
+                        DatabaseManager.import(e.target.result, file.lastModified);
                         this.show();
                     } catch (exception) {
                         UI.Exception.alert('A problem occured while trying to upload this file.<br><br>' + exception);
@@ -3394,7 +3391,7 @@ class OnlineFilesView extends View {
         this.onReceive = (code, obj) => {
             this.$ok.removeClass('loading');
             if (code && obj) {
-                Storage.import(JSON.parse(obj).data);
+                DatabaseManager.import(JSON.parse(obj).data);
                 this.$parent.modal('hide');
 
                 callback();
@@ -3460,7 +3457,7 @@ class EndpointView extends View {
             this.$step4.show();
             this.$step3.hide();
             this.endpoint.querry_collect((text) => {
-                Storage.add(text, Date.now());
+                DatabaseManager.import(text, Date.now());
                 this.funcShutdown();
                 UI.current.show();
             });
@@ -3515,7 +3512,7 @@ class EndpointView extends View {
 
         this.funcLoginSingle = (server, username, password) => {
             this.endpoint.login_querry_only(server, username, password, (text) => {
-                Storage.add(text, Date.now());
+                DatabaseManager.import(text, Date.now());
                 this.funcShutdown();
                 UI.current.show();
             }, () => {
@@ -3526,7 +3523,7 @@ class EndpointView extends View {
 
         this.funcLoginAll = (server, username, password) => {
             this.endpoint.login_querry_all(server, username, password, (text) => {
-                Storage.add(text, Date.now());
+                DatabaseManager.import(text, Date.now());
                 this.funcShutdown();
                 UI.current.show();
             }, () => {
