@@ -530,7 +530,7 @@ const DatabaseManager = new (class {
                     delete this[isPlayer ? 'Players' : 'Groups'][identifier];
                 }
 
-                this.Identifiers[identifier].remove(timestamp);
+                this.Identifiers[identifier].delete(timestamp);
                 if (this.Timestamps[timestamp].size == 0) {
                     delete this.Timestamps[timestamp];
                 }
@@ -551,7 +551,7 @@ const DatabaseManager = new (class {
                 let isPlayer = /_p\d/.test(identifier);
                 this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, timestamp]);
 
-                this.Timestamps[timestamp].remove(identifier);
+                this.Timestamps[timestamp].delete(identifier);
                 if (this.Timestamps[timestamp].size == 0) {
                     delete this.Timestamps[timestamp];
                 }
