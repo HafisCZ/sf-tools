@@ -448,12 +448,14 @@ self.addEventListener('message', function (message) {
         FIGHT_DUMP_ENABLED = true;
     }
 
-    self.postMessage({
-        command: 'finished',
-        results: new DungeonSimulator().simulate(players, boss, iterations),
-        log: FIGHT_DUMP_OUTPUT,
-        index: index
-    });
+    if (players && boss) {
+        self.postMessage({
+            command: 'finished',
+            results: new DungeonSimulator().simulate(players, boss, iterations),
+            log: FIGHT_DUMP_OUTPUT,
+            index: index
+        });
+    }
 
     self.close();
 });
