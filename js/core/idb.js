@@ -210,7 +210,23 @@ class DatabaseUtils {
     }
 
     static createTemporarySession () {
-        return null;
+        return new (class {
+            set (store, value) {
+                return Promise.resolve();
+            }
+
+            get (store, key) {
+                return Promise.resolve();
+            }
+
+            remove (store, key) {
+                return Promise.resolve();
+            }
+
+            where (store, index, query) {
+                return Promise.resolve([]);
+            }
+        })();
     }
 
     static getNameFromSlot (slot = 0) {

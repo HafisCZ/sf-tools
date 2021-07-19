@@ -1725,7 +1725,6 @@ class PlayersView extends View {
 
         this.settings = SettingsManager.get('me', 'me', PredefinedTemplates['Me Default']);
         this.$filter.trigger('change');
-
     }
 }
 
