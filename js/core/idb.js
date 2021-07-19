@@ -147,8 +147,10 @@ class IndexedDBWrapper {
 
 class MigrationUtils {
     static migrateGroup (group) {
-        group.identifier = group.id;
-        delete group.id;
+        if (group.id) {
+            group.identifier = group.id;
+            delete group.id;
+        }
 
         group.own = group.own ? 1 : 0;
 
@@ -156,8 +158,10 @@ class MigrationUtils {
     }
 
     static migratePlayer (player) {
-        player.identifier = player.id;
-        delete player.id;
+        if (player.id) {
+            player.identifier = player.id;
+            delete player.id;
+        }
 
         player.own = player.own ? 1 : 0;
 
