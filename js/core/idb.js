@@ -577,13 +577,13 @@ const DatabaseManager = new (class {
     // HAR - string
     // Endpoint - string
     // Share - object
-    // JSON - string
+    // Archive - string
     import (text, timestamp, offset) {
         if (typeof text === 'string') {
             text = JSON.parse(text);
         }
 
-        this._import(json, timestamp, offset);
+        this._import(text, timestamp, offset);
     }
 
     merge (timestamps) {
