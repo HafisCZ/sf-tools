@@ -3235,7 +3235,7 @@ class EndpointView extends View {
             this.$step4.show();
             this.$step3.hide();
             this.endpoint.querry_collect((text) => {
-                DatabaseManager.import(text, Date.now());
+                DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000);
                 this.funcShutdown();
                 UI.current.show();
             });
@@ -3290,7 +3290,7 @@ class EndpointView extends View {
 
         this.funcLoginSingle = (server, username, password) => {
             this.endpoint.login_querry_only(server, username, password, (text) => {
-                DatabaseManager.import(text, Date.now());
+                DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000);
                 this.funcShutdown();
                 UI.current.show();
             }, () => {
@@ -3301,7 +3301,7 @@ class EndpointView extends View {
 
         this.funcLoginAll = (server, username, password) => {
             this.endpoint.login_querry_all(server, username, password, (text) => {
-                DatabaseManager.import(text, Date.now());
+                DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000);
                 this.funcShutdown();
                 UI.current.show();
             }, () => {
