@@ -720,8 +720,8 @@ const DatabaseManager = new (class {
                         }
                     }
 
-                    if (!file.groups.find(g => g.id === group.id) && group.rank) {
-                        file.groups.push(group);
+                    if (!groups.find(g => g.id === group.id) && group.rank) {
+                        groups.push(group);
                     }
                 }
 
@@ -767,7 +767,7 @@ const DatabaseManager = new (class {
                         } else if ((!own && key.includes('petbonus')) || (own && key.includes('petsSave'))) {
                             player.pets = val.split('/').map(a => Number(a));
                         } else if (key.includes('serverversion')) {
-                            file.version = Number(val);
+                            // file.version = Number(val);
                         } else if (own && key.includes('towerSave')) {
                             player.tower = val.split('/').map(a => Number(a));
                         } else if (own && key.includes('fortresschest') && val.length) {
@@ -786,8 +786,8 @@ const DatabaseManager = new (class {
                     }
 
 
-                    if (!file.players.find(p => p.identifier === player.identifier)) {
-                        file.players.push(player);
+                    if (!players.find(p => p.identifier === player.identifier)) {
+                        players.push(player);
                     }
                 }
             }
