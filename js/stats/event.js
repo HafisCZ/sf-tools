@@ -1637,7 +1637,7 @@ class PlayersView extends View {
             this.entries = [];
 
             for (var player of Object.values(DatabaseManager.Players)) {
-                var hidden = DatabaseManager.Hidden.includes(player.Latest.Identifier);
+                var hidden = DatabaseManager.Hidden.has(player.Latest.Identifier);
                 if (this.hidden || !hidden || this.shidden) {
                     var matches = true;
                     for (var term of terms) {
@@ -1671,7 +1671,7 @@ class PlayersView extends View {
         var index2 = 0;
 
         for (var i = 0, player; player = players[i]; i++) {
-            var hidden = DatabaseManager.Hidden.includes(player.Latest.Identifier);
+            var hidden = DatabaseManager.Hidden.has(player.Latest.Identifier);
             if (this.hidden || !hidden || this.shidden) {
                 if (player.Own || this.nosep) {
                     content += `
