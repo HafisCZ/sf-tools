@@ -523,7 +523,7 @@ const DatabaseManager = new (class {
     removeTimestamps (... timestamps) {
         for (const timestamp of timestamps.filter(timestamp => this.Timestamps[timestamp])) {
             this.Timestamps[timestamp].forEach(identifier => {
-                let isPlayer = /_p\d/.test(identifier);
+                let isPlayer = this._isPlayer(identifier);
                 this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
                 let object = this[isPlayer ? 'Players' : 'Groups'][identifier];
@@ -532,9 +532,9 @@ const DatabaseManager = new (class {
                     delete this[isPlayer ? 'Players' : 'Groups'][identifier];
                 }
 
-                this.Identifiers[identifier].delete(timestamp);
-                if (this.Timestamps[timestamp].size == 0) {
-                    delete this.Timestamps[timestamp];
+                this.Identifiers[identifier].delete(parseInt(timestamp));
+                if (this.Identifiers[identifier].size == 0) {
+                    delete this.Identifiers[identifier];
                 }
             });
 
@@ -550,7 +550,7 @@ const DatabaseManager = new (class {
             delete this.Groups[identifier];
 
             this.Identifiers[identifier].forEach(timestamp => {
-                let isPlayer = /_p\d/.test(identifier);
+                let isPlayer = this._isPlayer(identifier);
                 this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
                 this.Timestamps[timestamp].delete(identifier);
@@ -580,13 +580,8 @@ const DatabaseManager = new (class {
             let newestTimestamp = timestamps.shift();
             for (let timestamp of timestamps) {
                 let file = this._getFile(timestamp);
-
-                for (let player of file.players) {
-                    player.timestamp = newestTimestamp;
-                }
-
-                for (let group of file.groups) {
-                    group.timestamp = newestTimestamp;
+                for (let item of file) {
+                    file.timestamp = newestTimestamp;
                 }
 
                 this._addFile(file);
@@ -621,36 +616,41 @@ const DatabaseManager = new (class {
     }
 
     _getFile (timestamp) {
-        let players = [];
-        let groups = [];
-
+        let file = [];
         if (this.Timestamps[timestamp] && this.Timestamps[timestamp].size != 0) {
             for (let identifier of this.Timestamps[timestamp]) {
-                let isPlayer = /_p\d/.test(identifier);
+                file.push((this._isPlayer(identifier) ? this.getPlayer : this.getGroup)(identifier, timestamp).Data);
+            }
+        }
 
-                if (isPlayer) {
-                    players.push(this.getPlayer(identifier, timestamp).Data);
+        return file;
+    }
+
+    _isPlayer (identifier) {
+        return /_p\d/.test(identifier);
+    }
+
+    async _addFile (items, players_ex, groups_ex) {
+        let players = players_ex || [];
+        let groups = groups_ex || [];
+        if (items) {
+            for (let item of items) {
+                if (this._isPlayer(item.identifier)) {
+                    players.push(item);
                 } else {
-                    groups.push(this.getGroup(identifier, timestamp).Data);
+                    groups.push(item);
                 }
             }
         }
 
-        return {
-            players: players,
-            groups: groups
-        }
-    }
-
-    async _addFile (file) {
-        for (let group of file.groups) {
+        for (let group of groups) {
             let migratedGroup = MigrationUtils.migrateGroup(group);
             this._addGroup(migratedGroup);
 
             await this.Database.set('groups', migratedGroup);
         }
 
-        for (let player of file.players) {
+        for (let player of players) {
             let migratedPlayer = MigrationUtils.migratePlayer(player);
             this._addPlayer(migratedPlayer);
 
@@ -663,16 +663,18 @@ const DatabaseManager = new (class {
     _import (json, timestamp, offset = -3600000) {
         if (Array.isArray(json)) {
             // Archive, Share
-            for (let file of json) {
-                this._addFile(file);
+            if (_dig(json, 0, 'players') || _dig(json, 0, 'groups')) {
+                for (let file of json) {
+                    this._addFile(null, file.players, file.groups);
+                }
+            } else {
+                this._addFile(json);
             }
         } else {
             // HAR, Endpoint
             let raws = [];
-            let file = {
-                groups: [],
-                players: []
-            }
+            let groups = [];
+            let players = [];
 
             for (var [key, val, url, ts] of filterPlayaJSON(json)) {
                 if (ts) {
@@ -790,7 +792,7 @@ const DatabaseManager = new (class {
                 }
             }
 
-            this._addFile(file);
+            this._addFile(null, players, groups);
         }
     }
 })();
