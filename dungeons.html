@@ -1140,17 +1140,39 @@
                         ));
                     }
 
-                    $('#stats-list').append($(`
-                        <div class="ui fluid button basic vertical gray" style="margin-bottom: 0.5em;">
-                            <div class="visible content">
-                                <span style="color: gray;">+ Import new<span>
-                            </div>
-                        </div>
-                        `).click(() => {
-                            Endpoint.start().then(() => {
-                                $('#load-stats').trigger('click');
-                            });
-                        })
+                    $('#stats-list').append(
+                        $('<div class="ui two basic gray buttons"></div>').append(
+                            $(`
+                                <div class="ui fluid button vertical">
+                                    <div class="visible content">
+                                        <span style="color: gray;">Endpoint<span>
+                                    </div>
+                                </div>
+                            `).click(() => {
+                                Endpoint.start().then(() => {
+                                    $('#load-stats').trigger('click');
+                                });
+                            }),
+                            $(`
+                                <label class="ui fluid button vertical" for="button-upload">
+                                    <span style="color: gray;">HAR<span>
+                                </label>
+                                <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
+                            `).change((event) => {
+                                Array.from(event.target.files).forEach(file => {
+                                    let reader = new FileReader();
+                                    reader.readAsText(file, 'UTF-8');
+                                    reader.onload = e => {
+                                        try {
+                                            DatabaseManager.import(e.target.result, file.lastModified);
+                                            $('#load-stats').trigger('click');
+                                        } catch (exception) {
+                                            Logger.log('WARNING', 'Error occured while trying to import a file!');
+                                        }
+                                    }
+                                });
+                            })
+                        )
                     );
                 }).catch(function () {
                     Logger.log('WARNING', 'Database could not be opened!');
