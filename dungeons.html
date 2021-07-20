@@ -1138,20 +1138,20 @@
                                 }
                             }
                         ));
-
-                        $('#stats-list').append($(`
-                            <div class="ui fluid button basic vertical gray" style="margin-bottom: 0.5em;">
-                                <div class="visible content">
-                                    <span style="color: gray;">+ Import new<span>
-                                </div>
-                            </div>
-                            `).click(() => {
-                                Endpoint.start().then(() => {
-                                    $('#load-stats').trigger('click');
-                                });
-                            })
-                        );
                     }
+
+                    $('#stats-list').append($(`
+                        <div class="ui fluid button basic vertical gray" style="margin-bottom: 0.5em;">
+                            <div class="visible content">
+                                <span style="color: gray;">+ Import new<span>
+                            </div>
+                        </div>
+                        `).click(() => {
+                            Endpoint.start().then(() => {
+                                $('#load-stats').trigger('click');
+                            });
+                        })
+                    );
                 }).catch(function () {
                     Logger.log('WARNING', 'Database could not be opened!');
                     $('#stats-list').empty();
