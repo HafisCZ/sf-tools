@@ -81,12 +81,15 @@ class EndpointController {
 
 const Endpoint = new ( class {
     start () {
-        if (!this.$parent) {
-            this._createModal();
-            this._addBindings();
-        }
+        return new Promise(resolve => {
+            if (!this.$parent) {
+                this._createModal();
+                this._addBindings();
+            }
 
-        this._show();
+            this.resolveFunction = resolve;
+            this._show();
+        })
     }
 
     _show () {
@@ -156,6 +159,7 @@ const Endpoint = new ( class {
     }
 
     _hide () {
+        this.resolveFunction();
         this.$parent.modal('hide');
     }
 
@@ -195,7 +199,6 @@ const Endpoint = new ( class {
             this.endpoint.querry_collect((text) => {
                 DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000);
                 this._funcShutdown();
-                UI.current.show();
             });
         });
 
@@ -251,7 +254,6 @@ const Endpoint = new ( class {
         this.endpoint.login_querry_only(server, username, password, (text) => {
             DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000);
             this._funcShutdown();
-            UI.current.show();
         }, () => {
             this.$step4.hide();
             this._showError('Wrong username or password');
@@ -262,7 +264,6 @@ const Endpoint = new ( class {
         this.endpoint.login_querry_all(server, username, password, (text) => {
             DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000);
             this._funcShutdown();
-            UI.current.show();
         }, () => {
             this.$step4.hide();
             this.$step5.hide();

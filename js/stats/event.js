@@ -1888,7 +1888,9 @@ class FilesView extends View {
         });
 
         this.$endpoint = this.$parent.find('[data-op="endpoint"]').click(() => {
-            Endpoint.start();
+            Endpoint.start().then(() => {
+                UI.current.show();
+            });
         });
 
         this.$shared = this.$parent.find('[data-op="shared"]').click(() => {
