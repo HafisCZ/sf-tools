@@ -197,8 +197,9 @@ const Endpoint = new ( class {
             this.$step4.show();
             this.$step3.hide();
             this.endpoint.querry_collect((text) => {
-                DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000);
-                this._funcShutdown();
+                DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).then(() => {
+                    this._funcShutdown();
+                });
             });
         });
 
@@ -252,8 +253,9 @@ const Endpoint = new ( class {
 
     _funcLoginSingle (server, username, password) {
         this.endpoint.login_querry_only(server, username, password, (text) => {
-            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000);
-            this._funcShutdown();
+            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).then(() => {
+                this._funcShutdown();
+            });
         }, () => {
             this.$step4.hide();
             this._showError('Wrong username or password');
@@ -262,8 +264,9 @@ const Endpoint = new ( class {
 
     _funcLoginAll (server, username, password) {
         this.endpoint.login_querry_all(server, username, password, (text) => {
-            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000);
-            this._funcShutdown();
+            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).then(() => {
+                this._funcShutdown();
+            });
         }, () => {
             this.$step4.hide();
             this.$step5.hide();
