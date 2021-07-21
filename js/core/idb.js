@@ -573,7 +573,7 @@ const DatabaseManager = new (class {
         Preferences.set('hidden_identifiers', Array.from(this.Hidden));
     }
 
-    merge (timestamps) {
+    async merge (timestamps) {
         if (timestamps.length > 1) {
             timestamps.sort((b, a) => a - b);
 
@@ -584,7 +584,7 @@ const DatabaseManager = new (class {
                     file.timestamp = newestTimestamp;
                 }
 
-                this._addFile(file);
+                await this._addFile(file);
             }
 
             this.removeTimestamps(... timestamps);
@@ -596,11 +596,14 @@ const DatabaseManager = new (class {
     // Share - object
     // Archive - string
     import (text, timestamp, offset) {
-        if (typeof text === 'string') {
-            text = JSON.parse(text);
-        }
+        return new Promise(async (resolve, reject) => {
+            if (typeof text === 'string') {
+                text = JSON.parse(text);
+            }
 
-        this._import(text, timestamp, offset);
+            await this._import(text, timestamp, offset, resolve);
+            resolve();
+        });
     }
 
     refreshTrackers () {
@@ -660,15 +663,15 @@ const DatabaseManager = new (class {
         this._updateLists();
     }
 
-    _import (json, timestamp, offset = -3600000) {
+    async _import (json, timestamp, offset = -3600000) {
         if (Array.isArray(json)) {
             // Archive, Share
             if (_dig(json, 0, 'players') || _dig(json, 0, 'groups')) {
                 for (let file of json) {
-                    this._addFile(null, file.players, file.groups);
+                    await this._addFile(null, file.players, file.groups);
                 }
             } else {
-                this._addFile(json);
+                await this._addFile(json);
             }
         } else {
             // HAR, Endpoint
@@ -792,7 +795,7 @@ const DatabaseManager = new (class {
                 }
             }
 
-            this._addFile(null, players, groups);
+            await this._addFile(null, players, groups);
         }
     }
 })();

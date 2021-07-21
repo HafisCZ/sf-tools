@@ -1164,8 +1164,9 @@
                                     reader.readAsText(file, 'UTF-8');
                                     reader.onload = e => {
                                         try {
-                                            DatabaseManager.import(e.target.result, file.lastModified);
-                                            $('#load-stats').trigger('click');
+                                            DatabaseManager.import(e.target.result, file.lastModified).then(() => {
+                                                $('#load-stats').trigger('click');
+                                            });
                                         } catch (exception) {
                                             Logger.log('WARNING', 'Error occured while trying to import a file!');
                                         }
