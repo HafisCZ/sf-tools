@@ -1725,100 +1725,6 @@ class PlayersView extends View {
     }
 }
 
-// Files Modal
-class FileUpdate extends View {
-    constructor (parent) {
-        super(parent);
-
-        this.$textLabel = this.$parent.find('[data-op="textLabel"]');
-        this.$textVersion = this.$parent.find('[data-op="textVersion"]');
-        this.$textTimestamp = this.$parent.find('[data-op="textTimestamp"]');
-        this.$textColor = this.$parent.find('[data-op="textColor"]');
-
-        this.$parent.find('[data-op="back"]').click(() => {
-            this.hide();
-        });
-
-        this.$parent.find('[data-op="save"]').click(() => {
-            let shouldSave = false;
-
-            // Raw values
-            let label = this.$textLabel.val().trim();
-            let version = this.$textVersion.val().trim();
-            let color = this.$textColor.val().trim();
-            let timestamp = this.$textTimestamp.val().trim();
-
-            // Change stuff
-            if (label != this.currentLabel) {
-                shouldSave |= true;
-
-                this.currentFile.label = label;
-            }
-
-            let numberVersion = Number(version);
-            if (version != this.currentVersion && Number.isInteger(numberVersion)) {
-                shouldSave |= true;
-
-                this.currentFile.version = numberVersion;
-            }
-
-            if (color != this.currentColor) {
-                if (color in COLOR_MAP) {
-                    shouldSave |= true;
-
-                    this.currentFile.color = color;
-                } else if (color == '') {
-                    shouldSave |= true;
-
-                    delete this.currentFile.color;
-                }
-            }
-
-            // Update file if needed
-            if (shouldSave) {
-                Storage.update(this.currentIndex, this.currentFile);
-            }
-
-            // Change timestamp
-            let numberTimestamp = parseOwnDate(timestamp);
-            if (numberTimestamp != this.currentTimestamp) {
-                Storage.updateTimestamp(this.currentIndex, numberTimestamp);
-            }
-
-            // Refresh view and hide modal
-            UI.show(UI.Files);
-            this.hide();
-        });
-    }
-
-    show (id) {
-        this.currentIndex = id;
-        this.currentFile = Storage.files()[id];
-
-        // Current values
-        this.currentLabel = this.currentFile.label || '';
-        this.currentVersion = this.currentFile.version || 0;
-        this.currentColor = this.currentFile.color || '';
-        this.currentTimestamp = parseOwnDate(formatDate(this.currentFile.timestamp));
-
-        // Set inputs
-        this.$textLabel.val(this.currentLabel);
-        this.$textVersion.val(this.currentVersion);
-        this.$textColor.val(this.currentColor);
-        this.$textTimestamp.val(formatDate(this.currentTimestamp));
-
-        // Show modal
-        this.$parent.modal({
-            centered: true,
-            transition: 'fade'
-        }).modal('show');
-    }
-
-    hide () {
-        this.$parent.modal('hide');
-    }
-}
-
 // Files View
 class FilesView extends View {
     constructor (parent) {
@@ -3230,7 +3136,6 @@ const UI = {
         UI.Settings = new SettingsView('view-settings');
         UI.SettingsFloat = new SettingsFloatView('modal-settings');
         UI.Files = new FilesView('view-files');
-        UI.FileUpdate = new FileUpdate('modal-fileupdate');
         UI.Players = new PlayersView('view-players');
         UI.Groups = new GroupsView('view-groups');
         UI.Browse = new BrowseView('view-browse');
