@@ -284,6 +284,12 @@ const DEFAULT_PROFILE = Object.freeze({
     }
 });
 
+const Exporter = new (class {
+    json (content, name = Date.now()) {
+        download(`${ name }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
+    }
+})();
+
 const DatabaseManager = new (class {
     constructor () {
         this._reset();
