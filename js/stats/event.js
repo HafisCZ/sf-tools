@@ -74,34 +74,22 @@ class GroupDetailView extends View {
         let exportConstraints = player => player.group == this.identifier;
 
         this.$parent.find('[data-op="export"]').click(() => {
-            DatabaseManager.export(null, this.group.List.map(entry => entry[0]), exportConstraints).then(file => {
-                Exporter.json(file);
-            });
+            DatabaseManager.export(null, this.group.List.map(entry => entry[0]), exportConstraints).then(Exporter.json);
         });
         this.$parent.find('[data-op="export-l"]').click(() => {
-            DatabaseManager.export(null, [ _dig(this.group.List, 0, 0) ], exportConstraints).then(file => {
-                Exporter.json(file);
-            });
+            DatabaseManager.export(null, [ _dig(this.group.List, 0, 0) ], exportConstraints).then(Exporter.json);
         });
         this.$parent.find('[data-op="export-l5"]').click(() => {
-            DatabaseManager.export(null, this.group.List.slice(0, 5).map(entry => entry[0]), exportConstraints).then(file => {
-                Exporter.json(file);
-            });
+            DatabaseManager.export(null, this.group.List.slice(0, 5).map(entry => entry[0]), exportConstraints).then(Exporter.json);
         });
         this.$parent.find('[data-op="export-s"]').click(() => {
-            DatabaseManager.export(null, [ this.timestamp ], exportConstraints).then(file => {
-                Exporter.json(file);
-            });
+            DatabaseManager.export(null, [ this.timestamp ], exportConstraints).then(Exporter.json);
         });
         this.$parent.find('[data-op="export-sr"]').click(() => {
-            DatabaseManager.export(null, [ this.timestamp, this.reference ], exportConstraints).then(file => {
-                Exporter.json(file);
-            });
+            DatabaseManager.export(null, [ this.timestamp, this.reference ], exportConstraints).then(Exporter.json);
         });
         this.$parent.find('[data-op="share"]').click(() => {
-            DatabaseManager.export(null, [ this.timestamp, this.reference ], exportConstraints).then(file => {
-                UI.OnlineShareFile.show(file);
-            });
+            DatabaseManager.export(null, [ this.timestamp, this.reference ], exportConstraints).then(UI.OnlineShareFile.show);
         });
 
         // Context menu
@@ -770,24 +758,16 @@ class PlayerHistoryView extends View {
         });
 
         this.$parent.find('[data-op="export"]').click(() => {
-            DatabaseManager.export([ this.identifier ]).then(file => {
-                Exporter.json(file);
-            });
+            DatabaseManager.export([ this.identifier ]).then(Exporter.json);
         });
         this.$parent.find('[data-op="export-l"]').click(() => {
-            DatabaseManager.export([ this.identifier ], [ this.list[0][0] ]).then(file => {
-                Exporter.json(file);
-            });
+            DatabaseManager.export([ this.identifier ], [ this.list[0][0] ]).then(Exporter.json);
         });
         this.$parent.find('[data-op="export-l5"]').click(() => {
-            DatabaseManager.export([ this.identifier ], this.list.slice(0, 5).map(entry => entry[0])).then(file => {
-                Exporter.json(file);
-            });
+            DatabaseManager.export([ this.identifier ], this.list.slice(0, 5).map(entry => entry[0])).then(Exporter.json);
         });
         this.$parent.find('[data-op="share"]').click(() => {
-            DatabaseManager.export([ this.identifier ]).then(file => {
-                UI.OnlineShareFile.show(file);
-            });
+            DatabaseManager.export([ this.identifier ]).then(UI.OnlineShareFile.show);
         });
 
         this.$name = this.$parent.find('[data-op="name"]');
@@ -960,9 +940,7 @@ class BrowseView extends View {
                             ids.push(source.attr('data-id'));
                         }
 
-                        DatabaseManager.export(ids).then(file => {
-                            UI.OnlineShareFile.show(file);
-                        });
+                        DatabaseManager.export(ids).then(UI.OnlineShareFile.show);
                     }
                 },
                 {
@@ -1418,9 +1396,7 @@ class GroupsView extends View {
                 {
                     label: 'Share',
                     action: (source) => {
-                        DatabaseManager.export([ source.attr('data-id') ]).then(file => {
-                            UI.OnlineShareFile.show(file);
-                        });
+                        DatabaseManager.export([ source.attr('data-id') ]).then(UI.OnlineShareFile.show);
                     }
                 },
                 {
@@ -1548,9 +1524,7 @@ class PlayersView extends View {
                 {
                     label: 'Share',
                     action: (source) => {
-                        DatabaseManager.export([ source.attr('data-id') ]).then(file => {
-                            UI.OnlineShareFile.show(file);
-                        });
+                        DatabaseManager.export([ source.attr('data-id') ]).then(UI.OnlineShareFile.show);
                     }
                 },
                 {
@@ -1777,15 +1751,11 @@ class FilesView extends View {
 
         // Export archive file
         this.$parent.find('[data-op="export"]').click(() => {
-            DatabaseManager.export().then(file => {
-                Exporter.json(file);
-            });
+            DatabaseManager.export().then(Exporter.json);
         });
 
         this.$cloudexport = this.$parent.find('[data-op="cloud-export"]').click(() => {
-            DatabaseManager.export().then(file => {
-                UI.OnlineShareFile.show(file);
-            });
+            DatabaseManager.export().then(UI.OnlineShareFile.show);
         });
 
         this.$wipeall = this.$parent.find('[data-op="wipeall"]').click(() => {
@@ -1797,15 +1767,11 @@ class FilesView extends View {
 
         // Export archive file from selected files
         this.$parent.find('[data-op="export-partial"]').click(() => {
-            DatabaseManager.export(this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')))).then(file => {
-                Exporter.json(file);
-            });
+            DatabaseManager.export(this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')))).then(Exporter.json);
         });
 
         this.$cloudexport2 = this.$parent.find('[data-op="cloud-export-partial"]').click(() => {
-            DatabaseManager.export(this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')))).then(file => {
-                UI.OnlineShareFile.show(file);
-            });
+            DatabaseManager.export(this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')))).then(UI.OnlineShareFile.show);
         });
 
         // Merge selected files
