@@ -622,9 +622,9 @@ const DatabaseManager = new (class {
         });
     }
 
-    export (identifiers, timestamps, constraints) {
+    export (identifiers, timestamps, constraint) {
         return new Promise((resolve, reject) => {
-            resolve(this._getFile(identifiers, timestamps, constraints));
+            resolve(this._getFile(identifiers, timestamps, constraint));
         });
     }
 
@@ -640,7 +640,7 @@ const DatabaseManager = new (class {
 
     }
 
-    _getFile (identifiers, timestamps, constraints = null) {
+    _getFile (identifiers, timestamps, constraint = null) {
         let players = [];
         let groups = [];
 
@@ -665,11 +665,9 @@ const DatabaseManager = new (class {
                 let isPlayer = this._isPlayer(identifier);
                 let data = (isPlayer ? this.getPlayer(identifier, timestamp) : this.getGroup(identifier, timestamp)).Data;
 
-                if (_present(constraints) && constraints.some(constraint => !constraint(data))) {
-                    continue;
+                if (!_present(constraint) || constraint(data)) {
+                    (isPlayer ? players : groups).push(data);
                 }
-
-                (isPlayer ? players : groups).push(data);
             }
         }
 

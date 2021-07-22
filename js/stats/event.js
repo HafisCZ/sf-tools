@@ -71,9 +71,7 @@ class GroupDetailView extends View {
             }
         });
 
-        let exportConstraints = [
-            player => player.group == this.identifier
-        ];
+        let exportConstraints = player => player.group == this.identifier;
 
         this.$parent.find('[data-op="export"]').click(() => {
             DatabaseManager.export(null, this.group.List.map(entry => entry[0]), exportConstraints).then(file => {
