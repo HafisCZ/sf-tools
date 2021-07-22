@@ -271,6 +271,10 @@ function _dig (obj, ... path) {
     return obj;
 }
 
+function _present (obj) {
+    return obj !== null && typeof obj !== 'undefined';
+}
+
 const DEFAULT_PROFILE = Object.freeze({
     temporary: false,
     slot: 0,
@@ -579,7 +583,7 @@ const DatabaseManager = new (class {
 
             let newestTimestamp = timestamps.shift();
             for (let timestamp of timestamps) {
-                let file = this._getFile(timestamp);
+                let file = this._getFile(null, [ timestamp ]);
 
                 for (let item of file.players) {
                     item.timestamp = newestTimestamp;
@@ -611,6 +615,12 @@ const DatabaseManager = new (class {
         });
     }
 
+    export (identifiers, timestamps, constraints) {
+        return new Promise((resolve, reject) => {
+            resolve(this._getFile(identifiers, timestamps, constraints));
+        });
+    }
+
     refreshTrackers () {
 
     }
@@ -623,17 +633,36 @@ const DatabaseManager = new (class {
 
     }
 
-    _getFile (timestamp) {
+    _getFile (identifiers, timestamps, constraints = null) {
         let players = [];
         let groups = [];
 
-        if (this.Timestamps[timestamp] && this.Timestamps[timestamp].size != 0) {
+        if (!_present(identifiers)) {
+            identifiers = Object.keys(this.Identifiers);
+        }
+
+        if (!_present(timestamps)) {
+            timestamps = Object.keys(this.Timestamps);
+        }
+
+        for (let timestamp of timestamps) {
+            if (!_present(this.Timestamps[timestamp]) || this.Timestamps[timestamp].size == 0) {
+                continue;
+            }
+
             for (let identifier of this.Timestamps[timestamp]) {
-                if (this._isPlayer(identifier)) {
-                    players.push(this.getPlayer(identifier, timestamp).Data);
-                } else {
-                    groups.push(this.getGroup(identifier, timestamp).Data);
+                if (!identifiers.includes(identifier)) {
+                    continue;
                 }
+
+                let isPlayer = this._isPlayer(identifier);
+                let data = (isPlayer ? this.getPlayer(identifier, timestamp) : this.getGroup(identifier, timestamp)).Data;
+
+                if (_present(constraints) && constraints.some(constraint => !constraint(data))) {
+                    continue;
+                }
+
+                (isPlayer ? players : groups).push(data);
             }
         }
 
