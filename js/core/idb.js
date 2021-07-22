@@ -152,6 +152,7 @@ class MigrationUtils {
             delete group.id;
         }
 
+        group.group = group.identifier;
         group.timestamp = parseInt(group.timestamp);
         group.own = group.own ? 1 : 0;
 
