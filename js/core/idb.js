@@ -580,8 +580,13 @@ const DatabaseManager = new (class {
             let newestTimestamp = timestamps.shift();
             for (let timestamp of timestamps) {
                 let file = this._getFile(timestamp);
-                for (let item of file) {
-                    file.timestamp = newestTimestamp;
+
+                for (let item of file.players) {
+                    item.timestamp = newestTimestamp;
+                }
+
+                for (let item of file.groups) {
+                    item.timestamp = newestTimestamp;
                 }
 
                 await this._addFile(file);
@@ -619,14 +624,23 @@ const DatabaseManager = new (class {
     }
 
     _getFile (timestamp) {
-        let file = [];
+        let players = [];
+        let groups = [];
+
         if (this.Timestamps[timestamp] && this.Timestamps[timestamp].size != 0) {
             for (let identifier of this.Timestamps[timestamp]) {
-                file.push((this._isPlayer(identifier) ? this.getPlayer : this.getGroup)(identifier, timestamp).Data);
+                if (this._isPlayer(identifier)) {
+                    players.push(this.getPlayer(identifier, timestamp).Data);
+                } else {
+                    groups.push(this.getGroup(identifier, timestamp).Data);
+                }
             }
         }
 
-        return file;
+        return {
+            players: players,
+            groups: groups
+        };
     }
 
     _isPlayer (identifier) {
