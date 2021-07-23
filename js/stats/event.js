@@ -1853,12 +1853,10 @@ class FilesView extends View {
     }
 
     updateSearchResults () {
-        let values = this.$filters.dropdown('get value');
-
-        let prefixes = values.pop();
-        let group_identifiers = values.pop().map(value => value != '0' ? value : undefined);
-        let player_identifiers = values.pop();
-        let timestamps = values.map(value => parseInt(value));
+        let prefixes = this.$filter_prefix.dropdown('get value');
+        let group_identifiers = this.$filter_group.dropdown('get value').map(value => value != '0' ? value : undefined);
+        let player_identifiers = this.$filter_player.dropdown('get value');
+        let timestamps = this.$filter_timestamp.dropdown('get value').map(value => parseInt(value));
 
         DatabaseManager.export(null, null, data => {
             if (prefixes.length > 0 && !prefixes.includes(data.prefix)) {
@@ -1968,11 +1966,32 @@ class FilesView extends View {
         `);
 
         this.$results = this.$parent.find('[data-op="files-search-results"]');
-        this.$filters = this.$parent.find('[data-op="files-search-timestamp"], [data-op="files-search-player"], [data-op="files-search-group"], [data-op="files-search-prefix"]').dropdown({
-            placeholder: 'Any'
-        }).dropdown('setting', 'onChange', () => this.updateSearchResults());
 
-        $(this.$filters.get(0)).dropdown('set selected', [ String(DatabaseManager.Latest) ]);
+        this.$filter_player = this.$parent.find('[data-op="files-search-player"]').dropdown({
+            placeholder: 'Any'
+        }).dropdown('setting', 'onChange', () => {
+            this.updateSearchResults();
+        });
+
+        this.$filter_group = this.$parent.find('[data-op="files-search-group"]').dropdown({
+            placeholder: 'Any'
+        }).dropdown('setting', 'onChange', () => {
+            this.updateSearchResults();
+        });
+
+        this.$filter_prefix = this.$parent.find('[data-op="files-search-prefix"]').dropdown({
+            placeholder: 'Any'
+        }).dropdown('setting', 'onChange', () => {
+            this.updateSearchResults()
+        });
+
+        this.$filter_timestamp = this.$parent.find('[data-op="files-search-timestamp"]').dropdown({
+            placeholder: 'Any'
+        }).dropdown('setting', 'onChange', () => {
+            this.updateSearchResults();
+        });
+
+        this.$filter_timestamp.dropdown('set selected', [ String(DatabaseManager.Latest) ]);
     }
 
     show () {
