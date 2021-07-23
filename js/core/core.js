@@ -77,8 +77,6 @@ const SiteOptions = new (class {
     constructor () {
         // Get values + defaults
         this.options = {
-            lazy: false,
-            beta: false,
             insecure: false,
             obfuscated: false,
             groups_hidden: false,
@@ -86,8 +84,6 @@ const SiteOptions = new (class {
             browse_hidden: false,
             groups_other: false,
             players_other: false,
-            files_hide: false,
-            tracker: false,
             always_prev: false
         };
 

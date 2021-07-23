@@ -1816,27 +1816,6 @@ class FilesView extends View {
         this.$rpcount = this.$parent.find('[data-op="rpcount"]');
         this.$fcount = this.$parent.find('[data-op="fcount"]');
 
-        // Setup checkboxes
-        // Lazy loading
-        this.$lazy = this.$parent.find('[data-op="checkbox-lazy"]').checkbox({
-            onChecked: () => {
-                SiteOptions.lazy = true
-            },
-            onUnchecked: () => {
-                SiteOptions.lazy = false
-            }
-        }).checkbox(SiteOptions.lazy ? 'set checked' : 'set unchecked');
-
-        // Trackers
-        this.$tracker = this.$parent.find('[data-op="checkbox-tracker"]').checkbox({
-            onChecked: () => {
-                SiteOptions.tracker = true
-            },
-            onUnchecked: () => {
-                SiteOptions.tracker = false
-            }
-        }).checkbox(SiteOptions.tracker ? 'set checked' : 'set unchecked');
-
         this.$parent.find('[data-op="checkbox-alwaysprev"]').checkbox({
             onChecked: () => {
                 SiteOptions.always_prev = true
@@ -1845,18 +1824,6 @@ class FilesView extends View {
                 SiteOptions.always_prev = false
             }
         }).checkbox(SiteOptions.always_prev ? 'set checked' : 'set unchecked');
-
-        // Hide hidden files
-        this.$hidden = this.$parent.find('[data-op="checkbox-hidden"]').checkbox({
-            onChecked: () => {
-                SiteOptions.files_hide = true;
-                this.show();
-            },
-            onUnchecked: () => {
-                SiteOptions.files_hide = false;
-                this.show();
-            }
-        }).checkbox(SiteOptions.files_hide ? 'set checked' : 'set unchecked');
 
         // Obfuscate player names
         this.$obfuscated = this.$parent.find('[data-op="checkbox-obfuscated"]').checkbox({
@@ -1867,18 +1834,6 @@ class FilesView extends View {
                 SiteOptions.obfuscated = false;
             }
         }).checkbox(SiteOptions.obfuscated ? 'set checked' : 'set unchecked');
-
-        // Enable beta features
-        this.$beta = this.$parent.find('[data-op="checkbox-beta"]').checkbox({
-            onChecked: () => {
-                SiteOptions.beta = true;
-                this.show();
-            },
-            onUnchecked: () => {
-                SiteOptions.beta = false;
-                this.show();
-            }
-        }).checkbox(SiteOptions.beta ? 'set checked' : 'set unchecked');
 
         // Enable insecure tables
         this.$insecure = this.$parent.find('[data-op="checkbox-insecure"]').checkbox({
@@ -3123,21 +3078,6 @@ const UI = {
 
         screen.$parent.removeClass('css-hidden');
         screen.show(... arguments);
-    },
-    beta: function (isbeta) {
-        if (isbeta) {
-            UI.Files.$endpoint.show();
-            UI.Files.$insecure.show();
-            UI.Files.$obfuscated.show();
-            UI.Files.$cloudexport.show();
-            UI.FileUpdate.$textTimestamp.parent('div').removeClass('disabled');
-        } else {
-            UI.Files.$endpoint.hide();
-            UI.Files.$insecure.hide();
-            UI.Files.$cloudexport.hide();
-            UI.Files.$obfuscated.hide();
-            UI.FileUpdate.$textTimestamp.parent('div').addClass('disabled');
-        }
     },
     initialize: function () {
         UI.Settings = new SettingsView('view-settings');
