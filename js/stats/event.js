@@ -1879,7 +1879,7 @@ class FilesView extends View {
 
             return true;
         }).then(({ players }) => {
-            this.$results.html(players.map(player => `
+            this.$results.html(players.sort((a, b) => a.timestamp - b.timestamp).map(player => `
                 <tr>
                     <td class="selectable clickable text-center" data-mark="${player.identifier}/${player.timestamp}"><i class="circle outline icon"></i></td>
                     <td class="text-center">${ this.timeMap[player.timestamp] }</td>
@@ -1919,6 +1919,7 @@ class FilesView extends View {
         }, {});
 
         this.prefixArray = DatabaseManager.Prefixes;
+        this.timeArray = Object.entries(this.timeMap).sort((a, b) => parseInt(b[0]) - parseInt(a[1]));
 
         // TODO: Add file entries
         this.$fileList.html(`
@@ -1927,7 +1928,7 @@ class FilesView extends View {
                     <div class="field">
                         <label>Timestamp</label>
                         <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-timestamp">
-                            ${ Object.entries(this.timeMap).map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
+                            ${ this.timeArray.map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
                         </select>
                     </div>
                     <div class="field">
