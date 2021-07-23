@@ -3188,10 +3188,10 @@ class OnlineFilesView extends View {
         this.onReceive = (code, obj) => {
             this.$ok.removeClass('loading');
             if (code && obj) {
-                DatabaseManager.import(JSON.parse(obj).data);
-                this.$parent.modal('hide');
-
-                callback();
+                DatabaseManager.import(JSON.parse(obj).data).then(() => {
+                    this.$parent.modal('hide');
+                    callback();
+                });
             } else {
                 this.$input.addClass('error').transition('shake');
                 this.$error.show();
