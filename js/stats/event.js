@@ -1896,8 +1896,7 @@ class FilesView extends View {
         });
     }
 
-    show () {
-        // Set counters
+    updateLists () {
         this.$gcount.text(Object.keys(DatabaseManager.Groups).length);
         this.$pcount.text(Object.keys(DatabaseManager.Players).length);
         this.$rpcount.text(Object.values(DatabaseManager.Timestamps).reduce((a, b) => a + b.size, 0));
@@ -1971,7 +1970,16 @@ class FilesView extends View {
         this.$filters = this.$parent.find('[data-op="files-search-timestamp"], [data-op="files-search-player"], [data-op="files-search-group"], [data-op="files-search-prefix"]').dropdown({
             placeholder: 'Any'
         }).dropdown('setting', 'onChange', () => this.updateSearchResults());
-        $(this.$filters.get(0)).dropdown('set selected', [ this.timeArray[0][0] ]);
+
+        $(this.$filters.get(0)).dropdown('set selected', [ String(DatabaseManager.Latest) ]);
+    }
+
+    show () {
+        // Set counters
+        if (this.lastChange != DatabaseManager.LastChange) {
+            this.lastChange = DatabaseManager.LastChange;
+            this.updateLists();
+        }
 
         // Bind stuff
         $('.ui.sticky').sticky({
