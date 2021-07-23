@@ -1971,8 +1971,7 @@ class FilesView extends View {
         this.$filters = this.$parent.find('[data-op="files-search-timestamp"], [data-op="files-search-player"], [data-op="files-search-group"], [data-op="files-search-prefix"]').dropdown({
             placeholder: 'Any'
         }).dropdown('setting', 'onChange', () => this.updateSearchResults());
-
-        this.updateSearchResults();
+        $(this.$filters.get(0)).dropdown('set selected', [ this.timeArray[0][0] ]);
 
         // Bind stuff
         $('.ui.sticky').sticky({
