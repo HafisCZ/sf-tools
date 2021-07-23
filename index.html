@@ -492,7 +492,7 @@
             var item = localStorage['version'] ? JSON.parse(localStorage['version']) : { expire: 0 };
             if (item.expire < Date.now()) {
                 $.ajax(
-                    "https://api.github.com/repos/hafiscz/sf-tools/commits",
+                    "https://api.github.com/repos/hafiscz/sf-tools-beta/commits",
                     {
                         data: {
                             per_page: 1
@@ -506,7 +506,7 @@
                     var sha = response.data[0].sha;
 
                     $.ajax(
-                        `https://api.github.com/repos/hafiscz/sf-tools/compare/88b32f42210cb848c77b7891f6e47a0000876ed4...${ sha }`,
+                        `https://api.github.com/repos/hafiscz/sf-tools-beta/compare/e6c1c06edc6d36908717e0f229cfef3410fd2d8b...${ sha }`,
                         {
                             data: {
                                 per_page: 1
