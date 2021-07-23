@@ -934,8 +934,8 @@ class Expression {
                     }
                 } else if (node.op == 'tracker' && node.args.length == 1) {
                     // Player tracker
-                    if (player && Database.Profiles[player.Identifier] && Database.Profiles[player.Identifier][node.args[0]]) {
-                        return Database.Profiles[player.Identifier][node.args[0]].out;
+                    if (player && DatabaseManager.getTracker(player.Identifier, node.args[0])) {
+                        return DatabaseManager.getTracker(player.Identifier, node.args[0]).out;
                     } else {
                         return undefined;
                     }
@@ -986,10 +986,10 @@ class Expression {
                 return reference;
             } else if (node == 'database') {
                 // Return database
-                return Database;
+                return DatabaseManager;
             } else if (node == 'entries') {
                 if (player) {
-                    return Database.getPlayer(player.Identifier).List.map(([ t, e ]) => e);
+                    return DatabaseManager.getPlayer(player.Identifier).List.map(([ t, e ]) => e);
                 } else {
                     return undefined;
                 }
