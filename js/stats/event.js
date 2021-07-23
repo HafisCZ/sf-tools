@@ -1791,9 +1791,11 @@ class FilesView extends View {
             reader.readAsText(file, 'UTF-8');
             reader.onload = event => {
                 try {
-                    DatabaseManager.import(event.target.result, file.lastModified);
-                    this.show();
+                    DatabaseManager.import(event.target.result, file.lastModified).then(() => {
+                        this.show();
+                    });
                 } catch (exception) {
+                    console.error(exception);
                     UI.Exception.alert('A problem occured while trying to upload this file.<br><br>' + exception);
                     Logger.log('WARNING', 'Error occured while trying to import a file!');
                 }
@@ -1828,16 +1830,16 @@ class FilesView extends View {
 
         this.$fileList = this.$parent.find('[data-op="list"]');
 
-        this.$parent.find('[data-op="export"]').click(this.exportAllJson);
-        this.$parent.find('[data-op="export-partial"]').click(this.exportSelectedJson);
-        this.$parent.find('[data-op="cloud-export"]').click(this.exportAllCloud);
-        this.$parent.find('[data-op="cloud-export-partial"]').click(this.exportSelectedCloud);
-        this.$parent.find('[data-op="delete-all"]').click(this.deleteAll);
-        this.$parent.find('[data-op="delete"]').click(this.deleteSelected);
-        this.$parent.find('[data-op="merge"]').click(this.mergeSelected)
+        this.$parent.find('[data-op="export"]').click(() => this.exportAllJson());
+        this.$parent.find('[data-op="export-partial"]').click(() => this.exportSelectedJson());
+        this.$parent.find('[data-op="cloud-export"]').click(() => this.exportAllCloud());
+        this.$parent.find('[data-op="cloud-export-partial"]').click(() => this.exportSelectedCloud());
+        this.$parent.find('[data-op="delete-all"]').click(() => this.deleteAll());
+        this.$parent.find('[data-op="delete"]').click(() => this.deleteSelected());
+        this.$parent.find('[data-op="merge"]').click(() => this.mergeSelected())
         this.$parent.find('[data-op="upload"]').change(event => this.importJson(event));
-        this.$parent.find('[data-op="endpoint"]').click(this.importEndpoint);
-        this.$parent.find('[data-op="shared"]').click(this.importCloud);
+        this.$parent.find('[data-op="endpoint"]').click(() => this.importEndpoint());
+        this.$parent.find('[data-op="shared"]').click(() => this.importCloud());
 
         // Statistics
         this.$gcount = this.$parent.find('[data-op="gcount"]');
@@ -1850,6 +1852,50 @@ class FilesView extends View {
         this.prepareCheckbox('insecure', 'insecure');
     }
 
+    updateSearchResults () {
+        let values = this.$filters.dropdown('get value');
+
+        let prefixes = values.pop();
+        let group_identifiers = values.pop();
+        let player_identifiers = values.pop();
+        let timestamps = values.map(value => parseInt(value));
+
+        DatabaseManager.export(null, null, data => {
+            if (prefixes.length > 0 && !prefixes.includes(data.prefix)) {
+                return false;
+            }
+
+            if (group_identifiers.length > 0 && !group_identifiers.includes(data.group)) {
+                return false;
+            }
+
+            if (player_identifiers.length > 0 && !player_identifiers.includes(data.identifier)) {
+                return false;
+            }
+
+            if (timestamps.length > 0 && !timestamps.includes(data.timestamp)) {
+                return false;
+            }
+
+            return true;
+        }).then(({ players }) => {
+            this.$results.html(players.map(player => `
+                <tr>
+                    <td class="selectable clickable text-center" data-mark="${player.identifier}/${player.timestamp}"><i class="circle outline icon"></i></td>
+                    <td class="text-center">${ this.timeMap[player.timestamp] }</td>
+                    <td class="text-center">${ player.prefix }</td>
+                    <td>${ player.name }</td>
+                    <td>${ this.groupMap[player.group] || '' }</td>
+                </tr>
+            `).join(''));
+
+            this.$parent.find('[data-mark]').click((event) => {
+                let data = event.currentTarget.dataset.mark;
+                $(`[data-mark="${data}"] > i`).toggleClass('outline');
+            });
+        });
+    }
+
     show () {
         // Set counters
         this.$gcount.text(Object.keys(DatabaseManager.Groups).length);
@@ -1857,8 +1903,75 @@ class FilesView extends View {
         this.$rpcount.text(Object.values(DatabaseManager.Timestamps).reduce((a, b) => a + b.size, 0));
         this.$fcount.text(Object.keys(DatabaseManager.Timestamps).length);
 
+        this.timeMap = Object.keys(DatabaseManager.Timestamps).reduce((memo, timestamp) => {
+            memo[timestamp] = formatDate(timestamp);
+            return memo;
+        }, {});
+
+        this.playerMap = Object.entries(DatabaseManager.Players).reduce((memo, [identifier, player]) => {
+            memo[identifier] = player.Latest.Name;
+            return memo;
+        }, {});
+
+        this.groupMap = Object.entries(DatabaseManager.Groups).reduce((memo, [identifier, group]) => {
+            memo[identifier] = group.Latest.Name;
+            return memo;
+        }, {});
+
+        this.prefixArray = DatabaseManager.Prefixes;
+
         // TODO: Add file entries
-        this.$fileList.html('');
+        this.$fileList.html(`
+            <div class="ui tiny form">
+                <div class="three fields">
+                    <div class="field">
+                        <label>Timestamp</label>
+                        <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-timestamp">
+                            ${ Object.entries(this.timeMap).map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Player</label>
+                        <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-player">
+                            ${ Object.entries(this.playerMap).map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Group</label>
+                        <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-group">
+                            ${ Object.entries(this.groupMap).map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Prefix</label>
+                        <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-prefix">
+                            ${ this.prefixArray.map(value => `<option value="${ value }">${ value }</option>`).join('') }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <table class="ui compact fixed table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;"></th>
+                        <th style="width: 20%;" class="text-center">Timestamp</th>
+                        <th style="width: 15%;" class="text-center">Prefix</th>
+                        <th style="width: 30%;">Name</th>
+                        <th style="width: 30%;">Group</th>
+                    </tr>
+                </thead>
+                <tbody data-op="files-search-results">
+
+                </tbody>
+            </table>
+        `);
+
+        this.$results = this.$parent.find('[data-op="files-search-results"]');
+        this.$filters = this.$parent.find('[data-op="files-search-timestamp"], [data-op="files-search-player"], [data-op="files-search-group"], [data-op="files-search-prefix"]').dropdown({
+            placeholder: 'Any'
+        }).dropdown('setting', 'onChange', () => this.updateSearchResults());
+
+        this.updateSearchResults();
 
         // Bind stuff
         $('.ui.sticky').sticky({
