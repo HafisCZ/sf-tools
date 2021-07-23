@@ -284,6 +284,10 @@ function _uniq (array) {
     return Array.from(new Set(array));
 }
 
+function _sum (array) {
+    return array.reduce((m, v) => m + v, 0);
+}
+
 const DEFAULT_PROFILE = Object.freeze({
     temporary: false,
     slot: 0,

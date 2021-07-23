@@ -49,6 +49,8 @@ class SFItem {
         this.AttributeTypes = attributeType;
         this.Attributes = attributeValue;
         this.HasEnchantment = enchantmentType > 0;
+        this.Color = (this.Index >= 50 || this.Type == 10) ? 0 : ((damageMax + damageMin + _sum(attributeType) + _sum(attributeValue)) % 5);
+        this.ColorClass = (this.Type >= 8) ? 0 : this.Class;
 
         this.SellPrice = {
             Gold: gold / 100
@@ -99,6 +101,19 @@ class SFItem {
         if (item.AttributeTypes[2] < 31) {
             item.Attributes[2] = 0;
         }
+    }
+
+    getScrapbookPosition () {
+        let boundary_start = _dig(SCRAPBOOK_BOUNDARIES, this.ColorClass, this.Type - 1, this.IsEpic ? 1 : 0);
+        let position = this.Index - 1;
+        if (this.IsEpic) {
+            position -= 49;
+        } else if (this.Type != 10) {
+            position *= 5;
+            position += this.Color;
+        }
+
+        return Math.max(0, boundary_start + position);
     }
 
     clone () {
