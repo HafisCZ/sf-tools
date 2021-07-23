@@ -1856,7 +1856,7 @@ class FilesView extends View {
         let values = this.$filters.dropdown('get value');
 
         let prefixes = values.pop();
-        let group_identifiers = values.pop();
+        let group_identifiers = values.pop().map(value => value != '0' ? value : undefined);
         let player_identifiers = values.pop();
         let timestamps = values.map(value => parseInt(value));
 
@@ -1916,6 +1916,7 @@ class FilesView extends View {
             memo[identifier] = group.Latest.Name;
             return memo;
         }, {});
+        this.groupMap['0'] = 'None';
 
         this.prefixArray = DatabaseManager.Prefixes;
         this.timeArray = Object.entries(this.timeMap).sort((a, b) => parseInt(b[0]) - parseInt(a[1]));
