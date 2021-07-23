@@ -1879,7 +1879,7 @@ class FilesView extends View {
 
             return true;
         }).then(({ players }) => {
-            this.$results.html(players.sort((a, b) => a.timestamp - b.timestamp).slice(0, 100).map(player => `
+            this.$results.html(players.sort((a, b) => b.timestamp - a.timestamp).slice(0, 100).map(player => `
                 <tr>
                     <td class="selectable clickable text-center" data-mark="${player.identifier}/${player.timestamp}"><i class="circle outline icon"></i></td>
                     <td class="text-center">${ this.timeMap[player.timestamp] }</td>
