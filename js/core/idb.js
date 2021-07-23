@@ -671,7 +671,7 @@ const DatabaseManager = new (class {
                 }
 
                 let isPlayer = this._isPlayer(identifier);
-                let data = (isPlayer ? this.getPlayer(identifier, timestamp) : this.getGroup(identifier, timestamp)).Data;
+                let data = (isPlayer ? this.Players[identifier][timestamp] : this.Groups[identifier][timestamp]).Data;
 
                 if (!_present(constraint) || constraint(data)) {
                     (isPlayer ? players : groups).push(data);
