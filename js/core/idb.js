@@ -310,6 +310,7 @@ const DatabaseManager = new (class {
         // Pools
         this.Identifiers = Object.create(null);
         this.Timestamps = Object.create(null);
+        this.Prefixes = [];
     }
 
     // INTERNAL: Add player
@@ -417,6 +418,8 @@ const DatabaseManager = new (class {
                 this.Latest = group.LatestTimestamp;
             }
         }
+
+        this.Prefixes = Array.from(new Set(Object.keys(this.Identifiers).map(identifier => this.getAny(identifier).Latest.Data.prefix)));
     }
 
     // INTERNAL: Load player from proxy
@@ -512,8 +515,8 @@ const DatabaseManager = new (class {
     }
 
     // Get player
-    getPlayer (id, timestamp) {
-        let player = this.Players[id];
+    getPlayer (identifier, timestamp) {
+        let player = this.Players[identifier];
         if (player && timestamp) {
             return this._loadPlayer(player[timestamp]);
         } else {
@@ -522,12 +525,16 @@ const DatabaseManager = new (class {
     }
 
     // Get group
-    getGroup (id, timestamp) {
-        if (timestamp && this.Groups[id]) {
-            return this.Groups[id][timestamp];
+    getGroup (identifier, timestamp) {
+        if (timestamp && this.Groups[identifier]) {
+            return this.Groups[identifier][timestamp];
         } else {
-            return this.Groups[id];
+            return this.Groups[identifier];
         }
+    }
+
+    getAny (identifier) {
+        return this[this._isPlayer(identifier) ? 'Players' : 'Groups'][identifier];
     }
 
     // Remove one or more timestamps
