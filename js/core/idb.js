@@ -366,6 +366,7 @@ const DatabaseManager = new (class {
     // INTERNAL: Update internal player/group lists
     _updateLists () {
         this.Latest = 0;
+        this.LastChange = Date.now();
 
         for (const [identifier, player] of Object.entries(this.Players)) {
             player.LatestTimestamp = 0;
