@@ -636,6 +636,19 @@ const DatabaseManager = new (class {
         });
     }
 
+    getGroupsFor (players) {
+        let groups = {};
+
+        for (let player of players) {
+            let group = _dig(this.Groups, player.group, player.timestamp, 'Data');
+            if (_present(group) && !groups[_uuid(group)]) {
+                groups[_uuid(group)] = group;
+            }
+        }
+
+        return Object.values(groups);
+    }
+
     refreshTrackers () {
 
     }
