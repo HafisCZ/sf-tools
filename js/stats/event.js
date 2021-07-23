@@ -1744,71 +1744,100 @@ class PlayersView extends View {
 
 // Files View
 class FilesView extends View {
+    // Export all to json file
+    exportAllJson () {
+        DatabaseManager.export().then(Exporter.json);
+    }
+
+    // Export all to cloud
+    exportAllCloud () {
+        DatabaseManager.export().then(UI.OnlineShareFile.show);
+    }
+
+    // Export selected to json file
+    exportSelectedJson () {
+        DatabaseManager.export(this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')))).then(Exporter.json);
+    }
+
+    // Export selected to cloud
+    exportSelectedCloud () {
+        DatabaseManager.export(this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')))).then(UI.OnlineShareFile.show);
+    }
+
+    // Delete all
+    deleteAll () {
+        UI.ConfirmDialog.show('Database wipe', 'Are you sure you want to delete all stored player data?', () => {
+            DatabaseManager.removeTimestamps(... Object.keys(DatabaseManager.Timestamps));
+            this.show();
+        }, true);
+    }
+
+    // Delete selected
+    deleteSelected () {
+
+    }
+
+    // Merge selected
+    mergeSelected () {
+        DatabaseManager.merge(this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')))).then(() => {
+            this.show();
+        });
+    }
+
+    // Import file via har
+    importJson (fileEvent) {
+        Array.from(fileEvent.target.files).forEach(file => {
+            var reader = new FileReader();
+            reader.readAsText(file, 'UTF-8');
+            reader.onload = event => {
+                try {
+                    DatabaseManager.import(event.target.result, file.lastModified);
+                    this.show();
+                } catch (exception) {
+                    UI.Exception.alert('A problem occured while trying to upload this file.<br><br>' + exception);
+                    Logger.log('WARNING', 'Error occured while trying to import a file!');
+                }
+            }
+        });
+    }
+
+    // Import file via endpoint
+    importEndpoint () {
+        Endpoint.start().then(() => {
+            UI.current.show();
+        });
+    }
+
+    // Import file via cloud
+    importCloud () {
+        UI.OnlineFiles.show(() => {
+            UI.show(UI.Files);
+        });
+    }
+
+    // Prepare checkbox
+    prepareCheckbox (property, name) {
+        this.$parent.find(`[data-op="checkbox-${ name }"]`).checkbox({
+            onChecked: () => { SiteOptions[property] = true },
+            onUnchecked: () => { SiteOptions[property] = false }
+        }).checkbox(SiteOptions[property] ? 'set checked' : 'set unchecked');
+    }
+
     constructor (parent) {
         super(parent);
 
-        this.$list = this.$parent.find('[data-op="list"]');
+        this.$fileList = this.$parent.find('[data-op="list"]');
 
-        // Export archive file
-        this.$parent.find('[data-op="export"]').click(() => {
-            DatabaseManager.export().then(Exporter.json);
-        });
-
-        this.$cloudexport = this.$parent.find('[data-op="cloud-export"]').click(() => {
-            DatabaseManager.export().then(UI.OnlineShareFile.show);
-        });
-
-        this.$wipeall = this.$parent.find('[data-op="wipeall"]').click(() => {
-            UI.ConfirmDialog.show('Database wipe', 'Are you sure you want to delete all stored player data?', () => {
-                DatabaseManager.removeTimestamps(... Object.keys(DatabaseManager.Timestamps));
-                this.show();
-            }, true);
-        });
-
-        // Export archive file from selected files
-        this.$parent.find('[data-op="export-partial"]').click(() => {
-            DatabaseManager.export(this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')))).then(Exporter.json);
-        });
-
-        this.$cloudexport2 = this.$parent.find('[data-op="cloud-export-partial"]').click(() => {
-            DatabaseManager.export(this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')))).then(UI.OnlineShareFile.show);
-        });
-
-        // Merge selected files
-        this.$parent.find('[data-op="merge"]').click(() => {
-            var array = this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')));
-            if (array.length > 1) {
-                DatabaseManager.merge(array);
-                this.show();
-            }
-        });
-
-        // Upload
-        this.$parent.find('[data-op="upload"]').change((event) => {
-            Array.from(event.target.files).forEach(file => {
-                var reader = new FileReader();
-                reader.readAsText(file, 'UTF-8');
-                reader.onload = e => {
-                    try {
-                        DatabaseManager.import(e.target.result, file.lastModified);
-                        this.show();
-                    } catch (exception) {
-                        UI.Exception.alert('A problem occured while trying to upload this file.<br><br>' + exception);
-                        Logger.log('WARNING', 'Error occured while trying to import a file!');
-                    }
-                }
-            });
-        });
-
-        this.$endpoint = this.$parent.find('[data-op="endpoint"]').click(() => {
-            Endpoint.start().then(() => {
-                UI.current.show();
-            });
-        });
-
-        this.$shared = this.$parent.find('[data-op="shared"]').click(() => {
-            UI.OnlineFiles.show(() => UI.show(UI.Files));
-        });
+        this.$parent.find('[data-op="export"]').click(this.exportAllJson);
+        this.$parent.find('[data-op="export-partial"]').click(this.exportSelectedJson);
+        this.$parent.find('[data-op="cloud-export"]').click(this.exportAllCloud);
+        this.$parent.find('[data-op="cloud-export-partial"]').click(this.exportSelectedCloud);
+        this.$parent.find('[data-op="delete-all"]').click(this.deleteAll);
+        this.$parent.find('[data-op="delete"]').click(this.deleteSelected);
+        this.$parent.find('[data-op="merge"]').click(this.mergeSelected)
+        this.$parent.find('[data-op="upload"]').change(event => this.importJson(event));
+        this.$parent.find('[data-op="endpoint"]').click(this.importEndpoint);
+        this.$parent.find('[data-op="shared"]').click(this.importCloud);
 
         // Statistics
         this.$gcount = this.$parent.find('[data-op="gcount"]');
@@ -1816,37 +1845,9 @@ class FilesView extends View {
         this.$rpcount = this.$parent.find('[data-op="rpcount"]');
         this.$fcount = this.$parent.find('[data-op="fcount"]');
 
-        this.$parent.find('[data-op="checkbox-alwaysprev"]').checkbox({
-            onChecked: () => {
-                SiteOptions.always_prev = true
-            },
-            onUnchecked: () => {
-                SiteOptions.always_prev = false
-            }
-        }).checkbox(SiteOptions.always_prev ? 'set checked' : 'set unchecked');
-
-        // Obfuscate player names
-        this.$obfuscated = this.$parent.find('[data-op="checkbox-obfuscated"]').checkbox({
-            onChecked: () => {
-                SiteOptions.obfuscated = true;
-            },
-            onUnchecked: () => {
-                SiteOptions.obfuscated = false;
-            }
-        }).checkbox(SiteOptions.obfuscated ? 'set checked' : 'set unchecked');
-
-        // Enable insecure tables
-        this.$insecure = this.$parent.find('[data-op="checkbox-insecure"]').checkbox({
-            onChecked: () => {
-                SiteOptions.insecure = true;
-            },
-            onUnchecked: () => {
-                SiteOptions.insecure = false;
-            }
-        }).checkbox(SiteOptions.insecure ? 'set checked' : 'set unchecked');
-
-        // Collapsed things
-        this.shown = {};
+        this.prepareCheckbox('always_prev', 'alwaysprev');
+        this.prepareCheckbox('obfuscated', 'obfuscated');
+        this.prepareCheckbox('insecure', 'insecure');
     }
 
     show () {
@@ -1857,11 +1858,11 @@ class FilesView extends View {
         this.$fcount.text(Object.keys(DatabaseManager.Timestamps).length);
 
         // TODO: Add file entries
-        this.$list.html('');
+        this.$fileList.html('');
 
         // Bind stuff
         $('.ui.sticky').sticky({
-            context: this.$list.get(0),
+            context: this.$fileList.get(0),
             offset: 70
         });
     }
