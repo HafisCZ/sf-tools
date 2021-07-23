@@ -488,6 +488,7 @@ const DatabaseManager = new (class {
         if (profile.temporary) {
             return new Promise((resolve, reject) => {
                 this.Database = DatabaseUtils.createTemporarySession();
+                this._updateLists();
                 resolve();
             });
         } else {
