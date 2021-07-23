@@ -276,6 +276,14 @@ function _present (obj) {
     return obj !== null && typeof obj !== 'undefined';
 }
 
+function _uuid (player) {
+    return `${ player.identifier }-${ player.timestamp }`;
+}
+
+function _uniq (array) {
+    return Array.from(new Set(array));
+}
+
 const DEFAULT_PROFILE = Object.freeze({
     temporary: false,
     slot: 0,

@@ -1756,12 +1756,20 @@ class FilesView extends View {
 
     // Export selected to json file
     exportSelectedJson () {
-        DatabaseManager.export(this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')))).then(Exporter.json);
+        let players = Object.values(this.selectedPlayers);
+        Exporter.json({
+            players: players,
+            groups: DatabaseManager.getGroupsFor(players)
+        });
     }
 
     // Export selected to cloud
     exportSelectedCloud () {
-        DatabaseManager.export(this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')))).then(UI.OnlineShareFile.show);
+        let players = Object.values(this.selectedPlayers);
+        UI.OnlineShareFile.show({
+            players: players,
+            groups: DatabaseManager.getGroupsFor(players)
+        });
     }
 
     // Delete all
@@ -1774,12 +1782,12 @@ class FilesView extends View {
 
     // Delete selected
     deleteSelected () {
-
+        // TODO: Implement
     }
 
     // Merge selected
     mergeSelected () {
-        DatabaseManager.merge(this.$parent.find('.selected').toArray().map(object => Number($(object).attr('data-id')))).then(() => {
+        DatabaseManager.merge(_uniq(Object.values(this.selectedPlayers).map(player => player.timestamp))).then(() => {
             this.show();
         });
     }
@@ -1858,28 +1866,20 @@ class FilesView extends View {
         let player_identifiers = this.$filter_player.dropdown('get value');
         let timestamps = this.$filter_timestamp.dropdown('get value').map(value => parseInt(value));
 
-        DatabaseManager.export(null, null, data => {
-            if (prefixes.length > 0 && !prefixes.includes(data.prefix)) {
-                return false;
-            }
+        DatabaseManager.export(null, null, data => (
+            (prefixes.length == 0 || prefixes.includes(data.prefix)) &&
+            (group_identifiers.length == 0 || group_identifiers.includes(data.group)) &&
+            (player_identifiers.length == 0 || player_identifiers.includes(data.identifier)) &&
+            (timestamps.length == 0 || timestamps.includes(data.timestamp))
+        )).then(({ players }) => {
+            this.currentPlayers = players.reduce((memo, player) => {
+                memo[_uuid(player)] = player;
+                return memo;
+            }, {});
 
-            if (group_identifiers.length > 0 && !group_identifiers.includes(data.group)) {
-                return false;
-            }
-
-            if (player_identifiers.length > 0 && !player_identifiers.includes(data.identifier)) {
-                return false;
-            }
-
-            if (timestamps.length > 0 && !timestamps.includes(data.timestamp)) {
-                return false;
-            }
-
-            return true;
-        }).then(({ players }) => {
             this.$results.html(players.sort((a, b) => b.timestamp - a.timestamp).slice(0, 100).map(player => `
                 <tr>
-                    <td class="selectable clickable text-center" data-mark="${player.identifier}/${player.timestamp}"><i class="circle outline icon"></i></td>
+                    <td class="selectable clickable text-center" data-mark="${_uuid(player)}"><i class="circle ${ this.selectedPlayers[_uuid(player)] ? '' : 'outline ' }icon"></i></td>
                     <td class="text-center">${ this.timeMap[player.timestamp] }</td>
                     <td class="text-center">${ player.prefix }</td>
                     <td>${ player.name }</td>
@@ -1888,8 +1888,13 @@ class FilesView extends View {
             `).join(''));
 
             this.$parent.find('[data-mark]').click((event) => {
-                let data = event.currentTarget.dataset.mark;
-                $(`[data-mark="${data}"] > i`).toggleClass('outline');
+                let uuid = event.currentTarget.dataset.mark;
+
+                if ($(`[data-mark="${uuid}"] > i`).toggleClass('outline').hasClass('outline')) {
+                    delete this.selectedPlayers[uuid];
+                } else {
+                    this.selectedPlayers[uuid] = this.currentPlayers[uuid];
+                }
             });
         });
     }
@@ -1995,6 +2000,8 @@ class FilesView extends View {
     }
 
     show () {
+        this.selectedPlayers = {};
+
         // Set counters
         if (this.lastChange != DatabaseManager.LastChange) {
             this.lastChange = DatabaseManager.LastChange;
