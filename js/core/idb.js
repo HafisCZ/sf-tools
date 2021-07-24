@@ -293,6 +293,8 @@ function _empty (obj) {
         return obj.size == 0;
     } else if (obj instanceof Array) {
         return obj.length == 0;
+    } else if (typeof obj === 'undefined') {
+        return true;
     } else {
         return Object.keys(obj).length == 0;
     }
