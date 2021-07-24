@@ -784,6 +784,12 @@
                 }).dropdown('setting', 'onChange', name => {
                     if (name != ProfileManager.getLastProfile() || !DatabaseManager.Database) {
                         currentView = UI.current;
+                        if (currentView == UI.PlayerHistory) {
+                            currentView = UI.Players;
+                        } else if (currentView == UI.GroupDetail) {
+                            currentView = UI.Groups;
+                        }
+
                         $profileSelector.addClass('disabled');
                         loadDatabase(ProfileManager.getProfile(name));
                     }
