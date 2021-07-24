@@ -1837,6 +1837,7 @@ class FilesView extends View {
     constructor (parent) {
         super(parent);
 
+        this.$fileCounter = this.$parent.find('[data-op="selected-counter"]');
         this.$fileList = this.$parent.find('[data-op="list"]');
 
         this.$parent.find('[data-op="export"]').click(() => this.exportAllJson());
@@ -1859,6 +1860,38 @@ class FilesView extends View {
         this.prepareCheckbox('always_prev', 'alwaysprev');
         this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('insecure', 'insecure');
+    }
+
+    markAll () {
+        let playersToMark = [];
+        let playersToIgnore = [];
+
+        for (let [uuid, player] of Object.entries(this.currentPlayers)) {
+            if (uuid in this.selectedPlayers) {
+                playersToIgnore.push(uuid);
+            } else {
+                playersToMark.push(uuid);
+            }
+        }
+
+        let noneToMark = _empty(playersToMark);
+        if (noneToMark && !_empty(playersToIgnore)) {
+            for (let uuid of playersToIgnore) {
+                delete this.selectedPlayers[uuid];
+                $(`[data-mark="${uuid}"] > i`).addClass('outline');
+            }
+        } else if (!noneToMark) {
+            for (let uuid of playersToMark) {
+                this.selectedPlayers[uuid] = this.currentPlayers[uuid];
+                $(`[data-mark="${uuid}"] > i`).removeClass('outline');
+            }
+        }
+
+        this.updateSelectedCounter();
+    }
+
+    updateSelectedCounter () {
+        this.$fileCounter.html(_empty(this.selectedPlayers) ? 'No' : Object.keys(this.selectedPlayers).length);
     }
 
     updateSearchResults () {
@@ -1896,6 +1929,8 @@ class FilesView extends View {
                 } else {
                     this.selectedPlayers[uuid] = this.currentPlayers[uuid];
                 }
+
+                this.updateSelectedCounter();
             });
         });
     }
@@ -1958,7 +1993,7 @@ class FilesView extends View {
             <table class="ui compact fixed table">
                 <thead>
                     <tr>
-                        <th style="width: 5%;"></th>
+                        <th class="clickable text-center" data-op="mark-all"><i class="adjust icon"></i></th>
                         <th style="width: 20%;" class="text-center">Timestamp</th>
                         <th style="width: 15%;" class="text-center">Prefix</th>
                         <th style="width: 30%;">Name</th>
@@ -1972,6 +2007,9 @@ class FilesView extends View {
         `);
 
         this.$results = this.$parent.find('[data-op="files-search-results"]');
+        this.$parent.find('[data-op="mark-all"]').click(() => {
+            this.markAll();
+        });
 
         this.$filter_player = this.$parent.find('[data-op="files-search-player"]').dropdown({
             placeholder: 'Any'
@@ -2007,6 +2045,8 @@ class FilesView extends View {
         if (this.lastChange != DatabaseManager.LastChange) {
             this.lastChange = DatabaseManager.LastChange;
             this.updateLists();
+        } else {
+            this.$results.find('[data-mark] > i').addClass('outline');
         }
 
         // Bind stuff
