@@ -129,6 +129,21 @@ const ProfileManager = new (class {
                         value: [1]
                     }
                 }
+            },
+            'month_old': {
+                name: '< 1 month',
+                filters: {
+                    players: {
+                        name: 'timestamp',
+                        mode: 'above',
+                        value: [Date.now() - 2419200000]
+                    },
+                    groups: {
+                        name: 'timestamp',
+                        mode: 'above',
+                        value: [Date.now() - 2419200000]
+                    }
+                }
             }
         };
 
