@@ -43,15 +43,18 @@
     <body>
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a> <span class="css-temporary css-hidden">Temporary</span></div>
-            <a class="item" id="show-players"><i class="small user icon"></i>Me</a>
+            <a class="item" id="show-players"><i class="small user icon"></i>Players</a>
             <a class="item" id="show-groups"><i class="small archive icon"></i>Guilds</a>
-            <a class="item" id="show-browse"><i class="small database icon"></i>Players</a>
-            <a class="item" id="show-files"><i class="small upload icon"></i>Files</a>
-            <a class="item" id="show-settings"><i class="small cog icon"></i>Settings</a>
+            <a class="item" id="show-browse"><i class="small database icon"></i>Browse</a>
+            <a class="item" id="show-settings"><i class="small edit icon"></i>Scripts</a>
+            <a class="item" id="show-files"><i class="small folder open icon"></i>Files</a>
             <div class="right menu" id="show-right-menu">
                 <a class="item" href="stats.html?temp" target="_blank"><i class="small user secret icon"></i><span class="css-small">Temporary session<span></a>
                 <a class="item" id="show-changelog"><i class="small sticky note icon"></i><span class="css-small">Changelog<span></a>
-                <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
+                <a class="item css-small" data-op="profile-label">Profile:</a>
+                <div class="ui dropdown css-small item" data-op="profile-selector" style="width: 10rem;">
+                    <div class="text"></div>
+                </div>
             </div>
         </div>
 
@@ -735,34 +738,52 @@
                 $('.css-temporary').removeClass('css-hidden');
             }
 
-            var slot = isNaN(keys['slot']) ? 0 : Math.max(0, Number(keys['slot']));
+            let $profileSelector = $('[data-op="profile-selector"]');
+
+            function loadDatabase (profile) {
+                DatabaseManager.load(profile).then(function () {
+                    UI.initialize();
+                    UI.show(UI.Groups);
+
+                    $('#show-players').click(() => UI.show(UI.Players));
+                    $('#show-groups').click(() => UI.show(UI.Groups));
+                    $('#show-browse').click(() => UI.show(UI.Browse));
+                    $('#show-files').click(() => UI.show(UI.Files));
+                    $('#show-settings').click(() => UI.show(UI.Settings));
+                    $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
+
+                    if (localStorage.termsOK != 'true') {
+                        UI.show(UI.Setup);
+                    } else if (localStorage.changeLogOk != MODULE_VERSION) {
+                        UI.show(UI.ChangeLog);
+                    }
+
+                    $profileSelector.removeClass('disabled');
+                }).catch(function (e) {
+                    console.error(e);
+                    Logger.log('WARNING', 'Database could not be opened!');
+                    UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
+                });
+            }
 
             UI.preinitialize();
 
-            DatabaseManager.load({
-                slot: slot,
-                temporary: temp
-            }).then(function () {
-                UI.initialize();
-                UI.show(UI.Groups);
-
-                $('#show-players').click(() => UI.show(UI.Players));
-                $('#show-groups').click(() => UI.show(UI.Groups));
-                $('#show-browse').click(() => UI.show(UI.Browse));
-                $('#show-files').click(() => UI.show(UI.Files));
-                $('#show-settings').click(() => UI.show(UI.Settings));
-                $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
-
-                if (localStorage.termsOK != 'true') {
-                    UI.show(UI.Setup);
-                } else if (localStorage.changeLogOk != MODULE_VERSION) {
-                    UI.show(UI.ChangeLog);
-                }
-            }).catch(function (e) {
-                console.error(e);
-                Logger.log('WARNING', 'Database could not be opened!');
-                UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
-            });
+            if (temp) {
+                $('[data-op="profile-selector"], [data-op="profile-label"]').hide();
+                Preferences.temporary();
+                loadDatabase({
+                    temporary: true
+                });
+            } else {
+                $profileSelector.dropdown({
+                    values: ProfileManager.getProfiles()
+                }).dropdown('setting', 'onChange', name => {
+                    if (name != ProfileManager.getLastProfile() || !DatabaseManager.Database) {
+                        $profileSelector.addClass('disabled');
+                        loadDatabase(ProfileManager.getProfile(name));
+                    }
+                }).dropdown('set selected', ProfileManager.getLastProfile());
+            }
         </script>
     </body>
 </html>

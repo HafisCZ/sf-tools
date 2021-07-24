@@ -101,5 +101,59 @@ const SiteOptions = new (class {
             });
         }
     }
+})();
 
+const DEFAULT_PROFILE = Object.freeze({
+    name: 'Default',
+    temporary: false,
+    slot: 0,
+    filters: {
+        players: null,
+        groups: null
+    }
+});
+
+const ProfileManager = new (class {
+    constructor () {
+        this.profiles = {
+            'default': DEFAULT_PROFILE,
+            'own': {
+                name: 'Own only',
+                filters: {
+                    players: {
+                        name: 'own',
+                        value: [1]
+                    },
+                    groups: {
+                        name: 'own',
+                        value: [1]
+                    }
+                }
+            }
+        };
+
+        Object.assign(this.profiles, Preferences.get('profiles', {}));
+        this.profile = Preferences.get('profiles_last', 'default');
+    }
+
+    getProfiles () {
+        return Object.entries(this.profiles).map(([key, { name }]) => {
+            return {
+                selected: this.profile == key,
+                value: key,
+                name
+            }
+        });
+    }
+
+    getProfile (name) {
+        this.profile = name;
+        Preferences.set('profiles_last', name);
+
+        return this.profiles[name];
+    }
+
+    getLastProfile () {
+        return this.profile;
+    }
 })();

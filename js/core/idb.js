@@ -298,15 +298,6 @@ function _empty (obj) {
     }
 }
 
-const DEFAULT_PROFILE = Object.freeze({
-    temporary: false,
-    slot: 0,
-    filters: {
-        players: null,
-        groups: null
-    }
-});
-
 const Exporter = new (class {
     json (content, name = Date.now()) {
         download(`${ name }.json`, new Blob([ JSON.stringify(content) ], { type: 'application/json' }));
