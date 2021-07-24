@@ -311,6 +311,9 @@ const DatabaseManager = new (class {
 
     // INTERNAL: Reset all content
     _reset () {
+        if (this.Database) {
+            this.Database.close();
+        }
         this.Database = null;
         this.Options = {};
         this.Hidden = [];
