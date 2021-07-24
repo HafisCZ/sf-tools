@@ -1782,7 +1782,8 @@ class FilesView extends View {
 
     // Delete selected
     deleteSelected () {
-        // TODO: Implement
+        DatabaseManager.remove(Object.values(this.selectedPlayers));
+        this.show();
     }
 
     // Merge selected

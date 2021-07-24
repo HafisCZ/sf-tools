@@ -288,6 +288,16 @@ function _sum (array) {
     return array.reduce((m, v) => m + v, 0);
 }
 
+function _empty (obj) {
+    if (obj instanceof Set) {
+        return obj.size == 0;
+    } else if (obj instanceof Array) {
+        return obj.length == 0;
+    } else {
+        return Object.keys(obj).length == 0;
+    }
+}
+
 const DEFAULT_PROFILE = Object.freeze({
     temporary: false,
     slot: 0,
@@ -554,22 +564,38 @@ const DatabaseManager = new (class {
         return this[this._isPlayer(identifier) ? 'Players' : 'Groups'][identifier];
     }
 
+    remove (players) {
+        for (let { identifier, timestamp, group } of players) {
+            this.Database.remove('players', [identifier, timestamp]);
+            this._removeFromPool(identifier, timestamp);
+            delete this.Players[identifier][timestamp];
+            if (!this.Identifiers[identifier]) {
+                delete this.Players[identifier];
+            }
+
+            if (group && this.Identifiers[group] && _empty(Array.from(this.Timestamps[timestamp]).filter(identifier => _dig(this.Players, identifier, timestamp, 'Data', 'group') == group))) {
+                this.Database.remove('groups', [group, timestamp]);
+                this._removeFromPool(group, timestamp);
+                delete this.Groups[group][timestamp];
+                if (!this.Identifiers[group]) {
+                    delete this.Groups[group];
+                }
+            }
+        }
+
+        this._updateLists();
+    }
+
     // Remove one or more timestamps
     removeTimestamps (... timestamps) {
         for (const timestamp of timestamps.filter(timestamp => this.Timestamps[timestamp])) {
             this.Timestamps[timestamp].forEach(identifier => {
                 let isPlayer = this._isPlayer(identifier);
                 this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
-
-                let object = this[isPlayer ? 'Players' : 'Groups'][identifier];
-                delete object[timestamp];
-                if (!Object.keys(object).filter(ts => !isNaN(ts)).length) {
+                this._removeFromPool(identifier, timestamp);
+                delete this[isPlayer ? 'Players' : 'Groups'][identifier][timestamp];
+                if (_empty(this.Identifiers[identifier])) {
                     delete this[isPlayer ? 'Players' : 'Groups'][identifier];
-                }
-
-                this.Identifiers[identifier].delete(parseInt(timestamp));
-                if (this.Identifiers[identifier].size == 0) {
-                    delete this.Identifiers[identifier];
                 }
             });
 
@@ -577,6 +603,18 @@ const DatabaseManager = new (class {
         }
 
         this._updateLists();
+    }
+
+    _removeFromPool (identifier, timestamp) {
+        this.Timestamps[timestamp].delete(identifier);
+        if (this.Timestamps[timestamp].size == 0) {
+            delete this.Timestamps[timestamp];
+        }
+
+        this.Identifiers[identifier].delete(parseInt(timestamp));
+        if (this.Identifiers[identifier].size == 0) {
+            delete this.Identifiers[identifier];
+        }
     }
 
     removeIdentifiers (... identifiers) {
@@ -587,11 +625,7 @@ const DatabaseManager = new (class {
             this.Identifiers[identifier].forEach(timestamp => {
                 let isPlayer = this._isPlayer(identifier);
                 this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
-
-                this.Timestamps[timestamp].delete(identifier);
-                if (this.Timestamps[timestamp].size == 0) {
-                    delete this.Timestamps[timestamp];
-                }
+                this._removeFromPool(identifier, timestamp);
             });
 
             delete this.Identifiers[identifier];
