@@ -2048,12 +2048,6 @@ class FilesView extends View {
         } else {
             this.$results.find('[data-mark] > i').addClass('outline');
         }
-
-        // Bind stuff
-        $('.ui.sticky').sticky({
-            context: this.$fileList.get(0),
-            offset: 70
-        });
     }
 }
 
