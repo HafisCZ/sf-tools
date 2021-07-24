@@ -739,24 +739,28 @@
             }
 
             let $profileSelector = $('[data-op="profile-selector"]');
+            let currentView = null;
 
             function loadDatabase (profile) {
                 DatabaseManager.load(profile).then(function () {
-                    UI.initialize();
-                    UI.show(UI.Groups);
+                    if (!UI.current) {
+                        UI.initialize();
 
-                    $('#show-players').click(() => UI.show(UI.Players));
-                    $('#show-groups').click(() => UI.show(UI.Groups));
-                    $('#show-browse').click(() => UI.show(UI.Browse));
-                    $('#show-files').click(() => UI.show(UI.Files));
-                    $('#show-settings').click(() => UI.show(UI.Settings));
-                    $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
+                        $('#show-players').click(() => UI.show(UI.Players));
+                        $('#show-groups').click(() => UI.show(UI.Groups));
+                        $('#show-browse').click(() => UI.show(UI.Browse));
+                        $('#show-files').click(() => UI.show(UI.Files));
+                        $('#show-settings').click(() => UI.show(UI.Settings));
+                        $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
 
-                    if (localStorage.termsOK != 'true') {
-                        UI.show(UI.Setup);
-                    } else if (localStorage.changeLogOk != MODULE_VERSION) {
-                        UI.show(UI.ChangeLog);
+                        if (localStorage.termsOK != 'true') {
+                            UI.show(UI.Setup);
+                        } else if (localStorage.changeLogOk != MODULE_VERSION) {
+                            UI.show(UI.ChangeLog);
+                        }
                     }
+
+                    UI.show(currentView || UI.Groups);
 
                     $profileSelector.removeClass('disabled');
                 }).catch(function (e) {
@@ -779,6 +783,7 @@
                     values: ProfileManager.getProfiles()
                 }).dropdown('setting', 'onChange', name => {
                     if (name != ProfileManager.getLastProfile() || !DatabaseManager.Database) {
+                        currentView = UI.current;
                         $profileSelector.addClass('disabled');
                         loadDatabase(ProfileManager.getProfile(name));
                     }
