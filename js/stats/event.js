@@ -1838,7 +1838,6 @@ class FilesView extends View {
         super(parent);
 
         this.$fileCounter = this.$parent.find('[data-op="selected-counter"]');
-        this.$fileList = this.$parent.find('[data-op="list"]');
 
         this.$parent.find('[data-op="export"]').click(() => this.exportAllJson());
         this.$parent.find('[data-op="export-partial"]').click(() => this.exportSelectedJson());
@@ -1851,11 +1850,21 @@ class FilesView extends View {
         this.$parent.find('[data-op="endpoint"]').click(() => this.importEndpoint());
         this.$parent.find('[data-op="shared"]').click(() => this.importCloud());
 
-        // Statistics
-        this.$gcount = this.$parent.find('[data-op="gcount"]');
-        this.$pcount = this.$parent.find('[data-op="pcount"]');
-        this.$rpcount = this.$parent.find('[data-op="rpcount"]');
-        this.$fcount = this.$parent.find('[data-op="fcount"]');
+        this.$uniqueTimestamp = this.$parent.find('[data-op="unique-timestamp"]');
+        this.$uniquePlayer = this.$parent.find('[data-op="unique-player"]');
+        this.$uniqueGroup = this.$parent.find('[data-op="unique-group"]');
+        this.$uniquePrefix = this.$parent.find('[data-op="unique-prefix"]');
+
+        this.$filter_timestamp = this.$parent.find('[data-op="files-search-timestamp"]');
+        this.$filter_player = this.$parent.find('[data-op="files-search-player"]');
+        this.$filter_group = this.$parent.find('[data-op="files-search-group"]');
+        this.$filter_prefix = this.$parent.find('[data-op="files-search-prefix"]');
+        this.$filter_type = this.$parent.find('[data-op="files-search-type"]');
+
+        this.$results = this.$parent.find('[data-op="files-search-results"]');
+        this.$parent.find('[data-op="mark-all"]').click(() => {
+            this.markAll();
+        });
 
         this.prepareCheckbox('always_prev', 'alwaysprev');
         this.prepareCheckbox('obfuscated', 'obfuscated');
@@ -1899,12 +1908,14 @@ class FilesView extends View {
         let group_identifiers = this.$filter_group.dropdown('get value').map(value => value != '0' ? value : undefined);
         let player_identifiers = this.$filter_player.dropdown('get value');
         let timestamps = this.$filter_timestamp.dropdown('get value').map(value => parseInt(value));
+        let type = parseInt(this.$filter_type.dropdown('get value'));
 
         DatabaseManager.export(null, null, data => (
             (prefixes.length == 0 || prefixes.includes(data.prefix)) &&
             (group_identifiers.length == 0 || group_identifiers.includes(data.group)) &&
             (player_identifiers.length == 0 || player_identifiers.includes(data.identifier)) &&
-            (timestamps.length == 0 || timestamps.includes(data.timestamp))
+            (timestamps.length == 0 || timestamps.includes(data.timestamp)) &&
+            (!type || data.own != type - 1)
         )).then(({ players }) => {
             this.currentPlayers = players.reduce((memo, player) => {
                 memo[_uuid(player)] = player;
@@ -1936,11 +1947,6 @@ class FilesView extends View {
     }
 
     updateLists () {
-        this.$gcount.text(Object.keys(DatabaseManager.Groups).length);
-        this.$pcount.text(Object.keys(DatabaseManager.Players).length);
-        this.$rpcount.text(Object.values(DatabaseManager.Timestamps).reduce((a, b) => a + b.size, 0));
-        this.$fcount.text(Object.keys(DatabaseManager.Timestamps).length);
-
         this.timeMap = Object.keys(DatabaseManager.Timestamps).reduce((memo, timestamp) => {
             memo[timestamp] = formatDate(timestamp);
             return memo;
@@ -1960,76 +1966,51 @@ class FilesView extends View {
         this.prefixArray = DatabaseManager.Prefixes;
         this.timeArray = Object.entries(this.timeMap).sort((a, b) => parseInt(b[0]) - parseInt(a[1]));
 
-        // TODO: Add file entries
-        this.$fileList.html(`
-            <div class="ui tiny form">
-                <div class="three fields">
-                    <div class="field">
-                        <label>Timestamp</label>
-                        <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-timestamp">
-                            ${ this.timeArray.map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>Player</label>
-                        <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-player">
-                            ${ Object.entries(this.playerMap).map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>Group</label>
-                        <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-group">
-                            ${ Object.entries(this.groupMap).map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label>Prefix</label>
-                        <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-prefix">
-                            ${ this.prefixArray.map(value => `<option value="${ value }">${ value }</option>`).join('') }
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <table class="ui compact fixed table">
-                <thead>
-                    <tr>
-                        <th class="clickable text-center" data-op="mark-all"><i class="adjust icon"></i></th>
-                        <th style="width: 20%;" class="text-center">Timestamp</th>
-                        <th style="width: 15%;" class="text-center">Prefix</th>
-                        <th style="width: 30%;">Name</th>
-                        <th style="width: 30%;">Group</th>
-                    </tr>
-                </thead>
-                <tbody data-op="files-search-results">
-
-                </tbody>
-            </table>
-        `);
-
-        this.$results = this.$parent.find('[data-op="files-search-results"]');
-        this.$parent.find('[data-op="mark-all"]').click(() => {
-            this.markAll();
-        });
+        this.$uniqueTimestamp.html(Object.keys(this.timeMap).length);
+        this.$uniquePlayer.html(Object.keys(this.playerMap).length);
+        this.$uniqueGroup.html(Object.keys(this.groupMap).length - 1);
+        this.$uniquePrefix.html(this.prefixArray.length);
 
         this.$filter_player = this.$parent.find('[data-op="files-search-player"]').dropdown({
-            placeholder: 'Any'
+            placeholder: 'Any',
+            values: Object.entries(this.playerMap).map(([value, name]) => {
+                return { name, value };
+            })
         }).dropdown('setting', 'onChange', () => {
             this.updateSearchResults();
         });
 
-        this.$filter_group = this.$parent.find('[data-op="files-search-group"]').dropdown({
-            placeholder: 'Any'
+        this.$filter_group.dropdown({
+            placeholder: 'Any',
+            values: Object.entries(this.groupMap).map(([value, name]) => {
+                return { name, value };
+            })
         }).dropdown('setting', 'onChange', () => {
             this.updateSearchResults();
         });
 
-        this.$filter_prefix = this.$parent.find('[data-op="files-search-prefix"]').dropdown({
-            placeholder: 'Any'
+        this.$filter_prefix.dropdown({
+            placeholder: 'Any',
+            values: this.prefixArray.map((prefix) => {
+                return {
+                    name: _pretty_prefix(prefix),
+                    value: prefix
+                };
+            })
         }).dropdown('setting', 'onChange', () => {
             this.updateSearchResults()
         });
 
-        this.$filter_timestamp = this.$parent.find('[data-op="files-search-timestamp"]').dropdown({
+        this.$filter_timestamp.dropdown({
+            placeholder: 'Any',
+            values: this.timeArray.map(([value, name]) => {
+                return { name, value };
+            })
+        }).dropdown('setting', 'onChange', () => {
+            this.updateSearchResults();
+        });
+
+        this.$filter_type.dropdown({
             placeholder: 'Any'
         }).dropdown('setting', 'onChange', () => {
             this.updateSearchResults();

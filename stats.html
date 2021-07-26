@@ -178,33 +178,66 @@
         </div>
 
         <!-- FilesView -->
-        <div id="view-files" class="ui main container css-hidden sf-container">
+        <div id="view-files" class="ui main container css-hidden sf-container" style="width: 85vw;">
             <div class="ui grid">
-                <div class="twelve wide column" data-op="list"></div>
-                <div class="four wide column">
+                <div class="three wide column">
                     <div class="ui segment">
-                        <div class="ui tiny two vertical statistics">
-                            <div class="statistic">
-                                <div class="value" data-op="pcount"></div>
-                                <div class="label">Players</div>
+                        <div class="ui large header">Filters</div>
+                        <div class="ui tiny form">
+                            <div class="field">
+                                <label>Timestamp (<span data-op="unique-timestamp"></span> unique)</label>
+                                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-timestamp">
+
+                                </select>
                             </div>
-                            <div class="statistic">
-                                <div class="value" data-op="rpcount"></div>
-                                <div class="label">Entries</div>
+                            <div class="field">
+                                <label>Player (<span data-op="unique-player"></span> unique)</label>
+                                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-player">
+
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label>Group (<span data-op="unique-group"></span> unique)</label>
+                                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-group">
+
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label>Prefix (<span data-op="unique-prefix"></span> unique)</label>
+                                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-prefix">
+
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label>Type</label>
+                                <select class="ui fluid search selection dropdown" data-op="files-search-type">
+                                    <option value="0">Show all characters</option>
+                                    <option value="1">Show only own characters</option>
+                                    <option value="2">Show only other characters</option>
+                                </select>
                             </div>
                         </div>
-                        <br>
-                        <div class="ui tiny two vertical statistics" style="margin-bottom: 0.5em;">
-                            <div class="statistic">
-                                <div class="value" data-op="gcount"></div>
-                                <div class="label">Groups</div>
-                            </div>
-                            <div class="statistic">
-                                <div class="value" data-op="fcount"></div>
-                                <div class="label">Files</div>
-                            </div>
-                        </div>
-                        <hr/>
+                    </div>
+                </div>
+                <div class="ten wide column">
+                    <table class="ui compact fixed table">
+                        <thead>
+                            <tr>
+                                <th class="clickable text-center" data-op="mark-all"><i class="adjust icon"></i></th>
+                                <th style="width: 20%;" class="text-center">Timestamp</th>
+                                <th style="width: 15%;" class="text-center">Prefix</th>
+                                <th style="width: 30%;">Name</th>
+                                <th style="width: 30%;">Group</th>
+                            </tr>
+                        </thead>
+                        <tbody data-op="files-search-results">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="three wide column">
+                    <div class="ui segment">
+                        <div class="ui large header">Import / Export</div>
                         <!-- IMPORT -->
                         <div>
                             <label class="fluid ui secondary button" for="button-upload">
