@@ -521,7 +521,7 @@ class SFGroup {
     constructor (data) {
         this.Data = data;
 
-        this.Prefix = data.prefix.replace('_', ' ');
+        this.Prefix = _pretty_prefix(data.prefix);
         this.ID = data.save[0];
         this.Identifier = data.prefix + '_g' + this.ID;
 
@@ -1188,7 +1188,7 @@ class SFOtherPlayer extends SFPlayer {
         };
 
         this.Name = data.name;
-        this.Prefix = data.prefix.replace('_', ' ');
+        this.Prefix = _pretty_prefix(data.prefix);
         this.Identifier = data.prefix + '_p' + this.ID;
 
         this.Group.Identifier = this.Group.Name ? `${ data.prefix }_g${ this.Group.ID }` : null;
@@ -1603,7 +1603,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Pets.TotalLevel = dataType.long();
 
         this.Name = data.name;
-        this.Prefix = data.prefix.replace('_', ' ');
+        this.Prefix = _pretty_prefix(data.prefix);
         this.Identifier = data.prefix + '_p' + this.ID;
 
         this.Group.Identifier = this.Group.Name ? `${ data.prefix }_g${ this.Group.ID }` : null;

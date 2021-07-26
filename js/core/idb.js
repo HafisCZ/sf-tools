@@ -288,6 +288,14 @@ function _sum (array) {
     return array.reduce((m, v) => m + v, 0);
 }
 
+function _pretty_prefix (prefix) {
+    let [serverName, ...serverDomain] = prefix.split('_');
+    let properName = serverName.charAt(0).toUpperCase() + serverName.slice(1);
+    let properDomain = serverDomain.join('.').toUpperCase();
+
+    return `${properName} .${properDomain}`;
+}
+
 function _empty (obj) {
     if (obj instanceof Set) {
         return obj.size == 0;

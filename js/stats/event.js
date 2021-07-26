@@ -1017,7 +1017,7 @@ class BrowseView extends View {
                        var matches = arg.reduce((total, term) => {
                            var subterms = term.split('|').map(rarg => rarg.trim());
                            for (var subterm of subterms) {
-                               if (player.Name.toLowerCase().includes(subterm) || player.Prefix.includes(subterm) || PLAYER_CLASS_SEARCH[player.Class].includes(subterm) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(subterm))) {
+                               if (player.Name.toLowerCase().includes(subterm) || player.Data.prefix.includes(subterm) || PLAYER_CLASS_SEARCH[player.Class].includes(subterm) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(subterm))) {
                                    return total + 1;
                                }
                            }
@@ -1084,7 +1084,7 @@ class BrowseView extends View {
                     terms.push({
                         test: (arg, player) => {
                             for (var term of arg) {
-                                if (player.Prefix.includes(term)) {
+                                if (player.Data.prefix.includes(term)) {
                                     return true;
                                 }
                             }
@@ -1556,7 +1556,7 @@ class PlayersView extends View {
                        var matches = arg.reduce((total, term) => {
                            var subterms = term.split('|').map(rarg => rarg.trim());
                            for (var subterm of subterms) {
-                               if (player.Name.toLowerCase().includes(subterm) || player.Prefix.includes(subterm) || PLAYER_CLASS_SEARCH[player.Class].includes(subterm) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(subterm))) {
+                               if (player.Name.toLowerCase().includes(subterm) || player.Data.prefix.includes(subterm) || PLAYER_CLASS_SEARCH[player.Class].includes(subterm) || (player.hasGuild() && player.Group.Name.toLowerCase().includes(subterm))) {
                                    return total + 1;
                                }
                            }
@@ -1620,7 +1620,7 @@ class PlayersView extends View {
                     terms.push({
                         test: (arg, player) => {
                             for (var term of arg) {
-                                if (player.Prefix.includes(term)) {
+                                if (player.Data.prefix.includes(term)) {
                                     return true;
                                 }
                             }
