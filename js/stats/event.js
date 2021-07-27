@@ -1855,12 +1855,7 @@ class FilesView extends View {
         this.$uniqueGroup = this.$parent.find('[data-op="unique-group"]');
         this.$uniquePrefix = this.$parent.find('[data-op="unique-prefix"]');
 
-        this.$filter_timestamp = this.$parent.find('[data-op="files-search-timestamp"]');
-        this.$filter_player = this.$parent.find('[data-op="files-search-player"]');
-        this.$filter_group = this.$parent.find('[data-op="files-search-group"]');
-        this.$filter_prefix = this.$parent.find('[data-op="files-search-prefix"]');
-        this.$filter_type = this.$parent.find('[data-op="files-search-type"]');
-
+        this.$filters = this.$parent.find('[data-op="filters"]');
         this.$results = this.$parent.find('[data-op="files-search-results"]');
         this.$parent.find('[data-op="mark-all"]').click(() => {
             this.markAll();
@@ -1911,7 +1906,7 @@ class FilesView extends View {
         let type = parseInt(this.$filter_type.dropdown('get value'));
 
         DatabaseManager.export(null, null, data => (
-            (prefixes.length == 0 || prefixes.includes(data.prefix)) &&
+            (!prefixes || prefixes.length == 0 || prefixes.includes(data.prefix)) &&
             (group_identifiers.length == 0 || group_identifiers.includes(data.group)) &&
             (player_identifiers.length == 0 || player_identifiers.includes(data.identifier)) &&
             (timestamps.length == 0 || timestamps.includes(data.timestamp)) &&
@@ -1947,21 +1942,9 @@ class FilesView extends View {
     }
 
     updateLists () {
-        this.timeMap = Object.keys(DatabaseManager.Timestamps).reduce((memo, timestamp) => {
-            memo[timestamp] = formatDate(timestamp);
-            return memo;
-        }, {});
-
-        this.playerMap = Object.entries(DatabaseManager.Players).reduce((memo, [identifier, player]) => {
-            memo[identifier] = player.Latest.Name;
-            return memo;
-        }, {});
-
-        this.groupMap = Object.entries(DatabaseManager.Groups).reduce((memo, [identifier, group]) => {
-            memo[identifier] = group.Latest.Name;
-            return memo;
-        }, {});
-        this.groupMap['0'] = 'None';
+        this.timeMap = _array_to_hash(Object.keys(DatabaseManager.Timestamps), (ts) => [ts, formatDate(ts)]);
+        this.playerMap = _array_to_hash(Object.entries(DatabaseManager.Players), ([id, player]) => [id, player.Latest.Name]);
+        this.groupMap = _array_to_hash(Object.entries(DatabaseManager.Groups), ([id, group]) => [id, group.Latest.Name], { 0: 'None' });
 
         this.prefixArray = DatabaseManager.Prefixes;
         this.timeArray = Object.entries(this.timeMap).sort((a, b) => parseInt(b[0]) - parseInt(a[1]));
@@ -1971,49 +1954,64 @@ class FilesView extends View {
         this.$uniqueGroup.html(Object.keys(this.groupMap).length - 1);
         this.$uniquePrefix.html(this.prefixArray.length);
 
-        this.$filter_player = this.$parent.find('[data-op="files-search-player"]').dropdown({
-            placeholder: 'Any',
-            values: Object.entries(this.playerMap).map(([value, name]) => {
-                return { name, value };
-            })
-        }).dropdown('setting', 'onChange', () => {
-            this.updateSearchResults();
-        });
+        this.$filters.html(`
+            <div class="field">
+                <label>Timestamp (<span data-op="unique-timestamp"></span> unique)</label>
+                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-timestamp">
+                    ${ this.timeArray.map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
+                </select>
+            </div>
+            <div class="field">
+                <label>Player (<span data-op="unique-player"></span> unique)</label>
+                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-player">
+                    ${ Object.entries(this.playerMap).map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
+                </select>
+            </div>
+            <div class="field">
+                <label>Group (<span data-op="unique-group"></span> unique)</label>
+                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-group">
+                    ${ Object.entries(this.groupMap).map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
+                </select>
+            </div>
+            <div class="field">
+                <label>Prefix (<span data-op="unique-prefix"></span> unique)</label>
+                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-prefix">
+                    ${ this.prefixArray.map(value => `<option value="${ value }">${ _pretty_prefix(value) }</option>`).join('') }
+                </select>
+            </div>
+            <div class="field">
+                <label>Type</label>
+                <select class="ui fluid search selection dropdown" data-op="files-search-type">
+                    <option value="0">Show all characters</option>
+                    <option value="1">Show only own characters</option>
+                    <option value="2">Show only other characters</option>
+                </select>
+            </div>
+        `);
 
-        this.$filter_group.dropdown({
-            placeholder: 'Any',
-            values: Object.entries(this.groupMap).map(([value, name]) => {
-                return { name, value };
-            })
-        }).dropdown('setting', 'onChange', () => {
-            this.updateSearchResults();
-        });
 
-        this.$filter_prefix.dropdown({
-            placeholder: 'Any',
-            values: this.prefixArray.map((prefix) => {
-                return {
-                    name: _pretty_prefix(prefix),
-                    value: prefix
-                };
-            })
-        }).dropdown('setting', 'onChange', () => {
-            this.updateSearchResults()
-        });
-
-        this.$filter_timestamp.dropdown({
-            placeholder: 'Any',
-            values: this.timeArray.map(([value, name]) => {
-                return { name, value };
-            })
-        }).dropdown('setting', 'onChange', () => {
-            this.updateSearchResults();
-        });
-
-        this.$filter_type.dropdown({
+        this.$filter_timestamp = this.$parent.find('[data-op="files-search-timestamp"]').dropdown({
+            onChange: this.updateSearchResults.bind(this),
             placeholder: 'Any'
-        }).dropdown('setting', 'onChange', () => {
-            this.updateSearchResults();
+        });
+
+        this.$filter_player = this.$parent.find('[data-op="files-search-player"]').dropdown({
+            onChange: this.updateSearchResults.bind(this),
+            placeholder: 'Any'
+        });
+
+        this.$filter_group = this.$parent.find('[data-op="files-search-group"]').dropdown({
+            onChange: this.updateSearchResults.bind(this),
+            placeholder: 'Any'
+        });
+
+        this.$filter_prefix = this.$parent.find('[data-op="files-search-prefix"]').dropdown({
+            onChange: this.updateSearchResults.bind(this),
+            placeholder: 'Any'
+        });
+
+        this.$filter_type = this.$parent.find('[data-op="files-search-type"]').dropdown({
+            onChange: this.updateSearchResults.bind(this)
         });
 
         this.$filter_timestamp.dropdown('set selected', [ String(DatabaseManager.Latest) ]);

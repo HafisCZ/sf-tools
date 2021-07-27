@@ -296,6 +296,14 @@ function _pretty_prefix (prefix) {
     return `${properName} .${properDomain}`;
 }
 
+function _array_to_hash (array, processor, base = {}) {
+    return array.reduce((memo, object) => {
+        const [key, value] = processor(object);
+        memo[key] = value;
+        return memo;
+    }, base);
+}
+
 function _empty (obj) {
     if (obj instanceof Set) {
         return obj.size == 0;
