@@ -672,7 +672,7 @@ const DatabaseManager = new (class {
                     item.timestamp = newestTimestamp;
                 }
 
-                await this._addFile(file);
+                await this._addFile(null, file.players, file.groups, 'merge');
             }
 
             this.removeTimestamps(... timestamps);
