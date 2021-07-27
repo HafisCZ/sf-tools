@@ -2233,10 +2233,10 @@ const SP_KEYWORD_MAPPING_0 = {
     '9 Pyramid': {
         expr: p => Math.max(0, p.Dungeons.Normal[8] - 2)
     },
-    '10 Circus': {
+    '10 Fortress': {
         expr: p => Math.max(0, p.Dungeons.Normal[9] - 2)
     },
-    '11 Fortress': {
+    '11 Circus': {
         expr: p => Math.max(0, p.Dungeons.Normal[10] - 2)
     },
     '12 Hell': {
@@ -2275,10 +2275,10 @@ const SP_KEYWORD_MAPPING_0 = {
     'S9 Pyramid': {
         expr: p => Math.max(0, p.Dungeons.Shadow[8] - 2)
     },
-    'S10 Circus': {
+    'S10 Fortress': {
         expr: p => Math.max(0, p.Dungeons.Shadow[9] - 2)
     },
-    'S11 Fortress': {
+    'S11 Circus': {
         expr: p => Math.max(0, p.Dungeons.Shadow[10] - 2)
     },
     'S12 Hell': {
