@@ -51,9 +51,9 @@
             <div class="right menu" id="show-right-menu">
                 <a class="item" href="stats.html?temp" target="_blank"><i class="small user secret icon"></i><span class="css-small">Temporary session<span></a>
                 <a class="item" id="show-changelog"><i class="small sticky note icon"></i><span class="css-small">Changelog<span></a>
-                <a class="item css-small" data-op="profile-label">Profile:</a>
-                <div class="ui dropdown css-small item" data-op="profile-selector" style="width: 10rem;">
-                    <div class="text"></div>
+                <div class="item clickable" style="width: 10rem;" data-op="profile-div">
+                    <div style="font-size: 65%; position: absolute; top: 1em;">Profile:</div>
+                    <div class="css-small" style="position: absolute; bottom: 0.8em;" data-op="change-profile"></div>
                 </div>
             </div>
         </div>
@@ -721,6 +721,15 @@
             <table class="sftools-table" data-op="table"></table>
         </div>
 
+        <div id="modal-select-profile" class="ui mini modal">
+            <div class="header">Select profile</div>
+            <div class="content text-center">
+                <div class="ui massive link list">
+
+                </div>
+            </div>
+        </div>
+
         <!-- UI Handler -->
         <script type="text/javascript">
             var rawKeys = window.location.href.split(/[\?\&]/);
@@ -740,8 +749,12 @@
                 $('.css-temporary').removeClass('css-hidden');
             }
 
-            let $profileSelector = $('[data-op="profile-selector"]');
+            let $profileSelector = $('[data-op="change-profile"]');
             let currentView = null;
+
+            function toggleAll (dis) {
+                $('body')[dis ? 'addClass' : 'removeClass']('frozen');
+            }
 
             function loadDatabase (profile) {
                 DatabaseManager.load(profile).then(function () {
@@ -764,7 +777,7 @@
 
                     UI.show(currentView || UI.Groups);
 
-                    $profileSelector.removeClass('disabled');
+                    toggleAll(false);
                 }).catch(function (e) {
                     console.error(e);
                     Logger.log('WARNING', 'Database could not be opened!');
@@ -774,17 +787,14 @@
 
             UI.preinitialize();
 
-            if (temp) {
-                $('[data-op="profile-selector"], [data-op="profile-label"]').hide();
-                Preferences.temporary();
-                loadDatabase({
-                    temporary: true
-                });
-            } else {
-                $profileSelector.dropdown({
-                    values: ProfileManager.getProfiles()
-                }).dropdown('setting', 'onChange', name => {
-                    if (name != ProfileManager.getLastProfile() || !DatabaseManager.Database) {
+            $profileSelector.click(() => {
+                let $profileList = $('#modal-select-profile .list');
+                $profileList.empty();
+                for (let { value, name, selected } of ProfileManager.getProfiles()) {
+                    $profileList.append($(`<a class="item${ selected ? ' active' : '' }">${ name }</a>`).click(() => {
+                        $('#modal-select-profile').modal('hide');
+
+                        toggleAll(true);
                         currentView = UI.current;
                         if (currentView == UI.PlayerHistory) {
                             currentView = UI.Players;
@@ -792,10 +802,25 @@
                             currentView = UI.Groups;
                         }
 
-                        $profileSelector.addClass('disabled');
-                        loadDatabase(ProfileManager.getProfile(name));
-                    }
-                }).dropdown('set selected', ProfileManager.getLastProfile());
+                        $profileSelector.text(name);
+
+                        loadDatabase(ProfileManager.getProfile(value));
+                    }));
+                }
+
+                $('#modal-select-profile').modal('show');
+            });
+
+            if (temp) {
+                $('[data-op="profile-div"]').hide();
+                Preferences.temporary();
+                loadDatabase({
+                    temporary: true
+                });
+            } else {
+                let lastProfile = ProfileManager.getProfile(ProfileManager.getLastProfile());
+                $profileSelector.text(lastProfile.name);
+                loadDatabase(lastProfile);
             }
         </script>
     </body>
