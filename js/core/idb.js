@@ -290,6 +290,14 @@ function _sum (array) {
     return array.reduce((m, v) => m + v, 0);
 }
 
+function _jsonify (text) {
+    if (typeof text === 'string') {
+        return JSON.parse(text);
+    } else {
+        return text;
+    }
+}
+
 function _pretty_prefix (prefix) {
     let [serverName, ...serverDomain] = prefix.split('_');
     let properName = serverName.charAt(0).toUpperCase() + serverName.slice(1);
@@ -306,16 +314,32 @@ function _array_to_hash (array, processor, base = {}) {
     }, base);
 }
 
+function _readfile (file) {
+    return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        fileReader.readAsText(file, 'UTF-8');
+        fileReader.onload = (event) => {
+            resolve(event.target.result);
+        };
+    });
+}
+
 function _empty (obj) {
     if (obj instanceof Set) {
         return obj.size == 0;
     } else if (obj instanceof Array) {
+        return obj.length == 0;
+    } else if (typeof obj === 'string') {
         return obj.length == 0;
     } else if (typeof obj === 'undefined') {
         return true;
     } else {
         return Object.keys(obj).length == 0;
     }
+}
+
+function _not_empty (obj) {
+    return !_empty(obj);
 }
 
 const Exporter = new (class {
@@ -685,12 +709,12 @@ const DatabaseManager = new (class {
     // Archive - string
     import (text, timestamp, offset, origin) {
         return new Promise(async (resolve, reject) => {
-            if (typeof text === 'string') {
-                text = JSON.parse(text);
+            try {
+                await this._import(_jsonify(text), timestamp, offset, origin);
+                resolve();
+            } catch (exception) {
+                reject(exception);
             }
-
-            await this._import(text, timestamp, offset, origin);
-            resolve();
         });
     }
 

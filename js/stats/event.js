@@ -1795,20 +1795,19 @@ class FilesView extends View {
 
     // Import file via har
     importJson (fileEvent) {
+        let pendingPromises = [];
         Array.from(fileEvent.target.files).forEach(file => {
-            var reader = new FileReader();
-            reader.readAsText(file, 'UTF-8');
-            reader.onload = event => {
-                try {
-                    DatabaseManager.import(event.target.result, file.lastModified).then(() => {
-                        this.show();
-                    });
-                } catch (exception) {
+            pendingPromises.push(_readfile(file).then(fileContent => {
+                return DatabaseManager.import(fileContent, file.lastModified).catch((exception) => {
                     console.error(exception);
                     UI.Exception.alert('A problem occured while trying to upload this file.<br><br>' + exception);
                     Logger.log('WARNING', 'Error occured while trying to import a file!');
-                }
-            }
+                });
+            }));
+        });
+
+        Promise.all(pendingPromises).then(() => {
+            this.show();
         });
     }
 
