@@ -146,12 +146,13 @@ class IndexedDBWrapper {
 }
 
 class MigrationUtils {
-    static migrateGroup (group) {
+    static migrateGroup (group, origin) {
         if (group.id) {
             group.identifier = group.id;
             delete group.id;
         }
 
+        group.origin = origin;
         group.group = group.identifier;
         group.timestamp = parseInt(group.timestamp);
         group.own = group.own ? 1 : 0;
@@ -159,12 +160,13 @@ class MigrationUtils {
         return group;
     }
 
-    static migratePlayer (player) {
+    static migratePlayer (player, origin) {
         if (player.id) {
             player.identifier = player.id;
             delete player.id;
         }
 
+        player.origin = origin;
         player.timestamp = parseInt(player.timestamp);
         player.own = player.own ? 1 : 0;
 
@@ -191,11 +193,11 @@ class DatabaseUtils {
 
             for (let file of migratedFiles) {
                 for (let player of file.players) {
-                    await database.set('players', MigrationUtils.migratePlayer(player));
+                    await database.set('players', MigrationUtils.migratePlayer(player, 'migration'));
                 }
 
                 for (let group of file.groups) {
-                    await database.set('groups', MigrationUtils.migrateGroup(group));
+                    await database.set('groups', MigrationUtils.migrateGroup(group, 'migration'));
                 }
             }
 
@@ -681,13 +683,13 @@ const DatabaseManager = new (class {
     // Endpoint - string
     // Share - object
     // Archive - string
-    import (text, timestamp, offset) {
+    import (text, timestamp, offset, origin) {
         return new Promise(async (resolve, reject) => {
             if (typeof text === 'string') {
                 text = JSON.parse(text);
             }
 
-            await this._import(text, timestamp, offset, resolve);
+            await this._import(text, timestamp, offset, origin);
             resolve();
         });
     }
@@ -764,7 +766,7 @@ const DatabaseManager = new (class {
         return /_p\d/.test(identifier);
     }
 
-    async _addFile (items, players_ex, groups_ex) {
+    async _addFile (items, players_ex, groups_ex, origin) {
         let players = players_ex || [];
         let groups = groups_ex || [];
         if (items) {
@@ -778,14 +780,14 @@ const DatabaseManager = new (class {
         }
 
         for (let group of groups) {
-            let migratedGroup = MigrationUtils.migrateGroup(group);
+            let migratedGroup = MigrationUtils.migrateGroup(group, origin);
             this._addGroup(migratedGroup);
 
             await this.Database.set('groups', migratedGroup);
         }
 
         for (let player of players) {
-            let migratedPlayer = MigrationUtils.migratePlayer(player);
+            let migratedPlayer = MigrationUtils.migratePlayer(player, origin);
             this._addPlayer(migratedPlayer);
 
             await this.Database.set('players', migratedPlayer);
@@ -794,15 +796,15 @@ const DatabaseManager = new (class {
         this._updateLists();
     }
 
-    async _import (json, timestamp, offset = -3600000) {
+    async _import (json, timestamp, offset = -3600000, origin = null) {
         if (Array.isArray(json)) {
             // Archive, Share
             if (_dig(json, 0, 'players') || _dig(json, 0, 'groups')) {
                 for (let file of json) {
-                    await this._addFile(null, file.players, file.groups);
+                    await this._addFile(null, file.players, file.groups, origin);
                 }
             } else {
-                await this._addFile(json);
+                await this._addFile(json, null, null, origin);
             }
         } else {
             // HAR, Endpoint
@@ -926,7 +928,7 @@ const DatabaseManager = new (class {
                 }
             }
 
-            await this._addFile(null, players, groups);
+            await this._addFile(null, players, groups, origin);
         }
     }
 })();

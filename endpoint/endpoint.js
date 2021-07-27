@@ -80,7 +80,9 @@ class EndpointController {
 }
 
 const Endpoint = new ( class {
-    start () {
+    start (origin = 'endpoint') {
+        this.origin = origin;
+
         return new Promise(resolve => {
             if (!this.$parent) {
                 this._createModal();
@@ -197,7 +199,7 @@ const Endpoint = new ( class {
             this.$step4.show();
             this.$step3.hide();
             this.endpoint.querry_collect((text) => {
-                DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).then(() => {
+                DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).then(() => {
                     this._funcShutdown();
                 });
             });
@@ -253,7 +255,7 @@ const Endpoint = new ( class {
 
     _funcLoginSingle (server, username, password) {
         this.endpoint.login_querry_only(server, username, password, (text) => {
-            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).then(() => {
+            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).then(() => {
                 this._funcShutdown();
             });
         }, () => {
@@ -264,7 +266,7 @@ const Endpoint = new ( class {
 
     _funcLoginAll (server, username, password) {
         this.endpoint.login_querry_all(server, username, password, (text) => {
-            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000).then(() => {
+            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).then(() => {
                 this._funcShutdown();
             });
         }, () => {

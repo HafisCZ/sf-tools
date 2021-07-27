@@ -1989,7 +1989,6 @@ class FilesView extends View {
             </div>
         `);
 
-
         this.$filter_timestamp = this.$parent.find('[data-op="files-search-timestamp"]').dropdown({
             onChange: this.updateSearchResults.bind(this),
             placeholder: 'Any'

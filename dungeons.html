@@ -1149,7 +1149,7 @@
                                     </div>
                                 </div>
                             `).click(() => {
-                                Endpoint.start().then(() => {
+                                Endpoint.start('endpoint/dungeons').then(() => {
                                     $('#load-stats').trigger('click');
                                 });
                             }),
