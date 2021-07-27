@@ -932,7 +932,6 @@ const DatabaseManager = new (class {
                         data.groupname = r.owngroupname?.string;
                         data.units = r.unitlevel?.numbers;
                         data.achievements = r.achievement?.numbers;
-                        data.fortressrank = r.otherplayerfortressrank?.number;
                         data.pets = r.ownpets?.numbers;
                         data.tower = r.owntower?.numbers;
                         data.chest = r.fortresschest?.numbers;
