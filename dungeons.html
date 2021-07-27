@@ -510,7 +510,7 @@
             </div>
         </div>
 
-        <div class="ui mini modal">
+        <div id="results-modal" class="ui mini modal">
           <div class="header">Results</div>
           <div class="content">
 
@@ -1190,7 +1190,7 @@
                     }
                 }).sort((b, a) => a.result - b.result);
 
-                $('.ui.modal .content').html(`
+                $('#results-modal .content').html(`
                     <div class="ui two column grid">
                         ${ bosses.map(({ boss, dungeon, name, result }) => {
                             return `
@@ -1206,7 +1206,7 @@
                         }).join('') }
                     </div>
                 `);
-                $('.ui.modal').modal('show');
+                $('#results-modal').modal('show');
             }
 
             function preparePlayerInstances (dungeon) {
