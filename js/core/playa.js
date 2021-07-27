@@ -590,14 +590,24 @@ class SFPlayer {
 
         this.Achievements = [];
         this.Achievements.Owned = 0;
-        for (var i = 0; i < ACHIEVEMENTS_COUNT; i++) {
-            this.Achievements.push({
-                Owned: data.achievements[i] == 1,
-                Progress: data.achievements[i + ACHIEVEMENTS_COUNT] || 0
-            });
 
-            if (data.achievements[i] == 1 && i < data.achievements.length / 2) {
-                this.Achievements.Owned++;
+        const achievements = data.achievements || [];
+        const half = Math.trunc(achievements.length / 2);
+        for (var i = 0; i < ACHIEVEMENTS_COUNT; i++) {
+            if (i >= half) {
+                this.Achievements.push({
+                    Owned: false,
+                    Progress: 0
+                });
+            } else {
+                this.Achievements.push({
+                    Owned: achievements[i] == 1,
+                    Progress: achievements[i + half] || 0
+                });
+
+                if (achievements[i] == 1) {
+                    this.Achievements.Owned++;
+                }
             }
         }
 
