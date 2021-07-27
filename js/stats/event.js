@@ -1921,7 +1921,7 @@ class FilesView extends View {
                 <tr>
                     <td class="selectable clickable text-center" data-mark="${_uuid(player)}"><i class="circle ${ this.selectedPlayers[_uuid(player)] ? '' : 'outline ' }icon"></i></td>
                     <td class="text-center">${ this.timeMap[player.timestamp] }</td>
-                    <td class="text-center">${ player.prefix }</td>
+                    <td class="text-center">${ this.prefixMap[player.prefix] }</td>
                     <td>${ player.name }</td>
                     <td>${ this.groupMap[player.group] || '' }</td>
                 </tr>
@@ -1945,14 +1945,14 @@ class FilesView extends View {
         this.timeMap = _array_to_hash(Object.keys(DatabaseManager.Timestamps), (ts) => [ts, formatDate(ts)]);
         this.playerMap = _array_to_hash(Object.entries(DatabaseManager.Players), ([id, player]) => [id, player.Latest.Name]);
         this.groupMap = _array_to_hash(Object.entries(DatabaseManager.Groups), ([id, group]) => [id, group.Latest.Name], { 0: 'None' });
+        this.prefixMap = _array_to_hash(DatabaseManager.Prefixes, (prefix) => [prefix, _pretty_prefix(prefix)]);
 
-        this.prefixArray = DatabaseManager.Prefixes;
         this.timeArray = Object.entries(this.timeMap).sort((a, b) => parseInt(b[0]) - parseInt(a[1]));
 
         this.$uniqueTimestamp.html(Object.keys(this.timeMap).length);
         this.$uniquePlayer.html(Object.keys(this.playerMap).length);
         this.$uniqueGroup.html(Object.keys(this.groupMap).length - 1);
-        this.$uniquePrefix.html(this.prefixArray.length);
+        this.$uniquePrefix.html(Object.keys(this.prefixMap).length);
 
         this.$filters.html(`
             <div class="field">
@@ -1964,19 +1964,19 @@ class FilesView extends View {
             <div class="field">
                 <label>Player (<span data-op="unique-player"></span> unique)</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-player">
-                    ${ Object.entries(this.playerMap).map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
+                    ${ Object.entries(this.playerMap).map(([player, value]) => `<option value="${ player }">${ value }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
                 <label>Group (<span data-op="unique-group"></span> unique)</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-group">
-                    ${ Object.entries(this.groupMap).map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
+                    ${ Object.entries(this.groupMap).map(([group, value]) => `<option value="${ group }">${ value }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
                 <label>Prefix (<span data-op="unique-prefix"></span> unique)</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-prefix">
-                    ${ this.prefixArray.map(value => `<option value="${ value }">${ _pretty_prefix(value) }</option>`).join('') }
+                    ${ Object.entries(this.prefixMap).map(([prefix, value]) => `<option value="${ prefix }">${ value }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
