@@ -951,7 +951,7 @@ const DatabaseManager = new (class {
                         }
                     } else {
                         data.own = false;
-                        data.name = r.otherplayername.string;
+                        data.name = r.otherplayername?.string;
                         data.save = r.otherplayer.numbers;
                         data.identifier = data.prefix + '_p' + data.save[0];
 
