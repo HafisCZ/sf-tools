@@ -68,6 +68,7 @@ class ResourcesView extends View {
         this.$bert = this.$parent.find('[data-op="bert"] [data-op="list"]');
         this.$mark = this.$parent.find('[data-op="mark"] [data-op="list"]');
         this.$kunigunde = this.$parent.find('[data-op="kunigunde"] [data-op="list"]');
+        this.$dummy = this.$parent.find('[data-op="dummy"] [data-op="list"]');
 
         // Summary
         this.$summary = this.$parent.find('[data-op="summary"]');
@@ -98,6 +99,7 @@ class ResourcesView extends View {
         this.bert = mapArray(this.Player.Inventory.Bert, this.Items, true);
         this.mark = mapArray(this.Player.Inventory.Mark, this.Items, true);
         this.kunigunde = mapArray(this.Player.Inventory.Kunigunde, this.Items, true);
+        this.dummy = mapArray(this.Player.Inventory.Dummy, this.Items, true);
 
         for (var item of Object.values(this.Items)) {
             item.BaseUpgrades = item.Upgrades;
@@ -213,6 +215,7 @@ class ResourcesView extends View {
         this.refreshBlock(this.$bert, this.bert);
         this.refreshBlock(this.$mark, this.mark);
         this.refreshBlock(this.$kunigunde, this.kunigunde);
+        this.refreshBlock(this.$dummy, this.dummy);
 
         this.$parent.find('[data-id] .clickable').click(event => {
             var id = $(event.currentTarget).parent('[data-id]').attr('data-id');
@@ -1015,6 +1018,7 @@ class InventoryView extends View {
         this.$backpack = this.$parent.find('[data-op="backpack"] [data-op="list"]');
         this.$chest = this.$parent.find('[data-op="chest"] [data-op="list"]');
         this.$shops = this.$parent.find('[data-op="shops"] [data-op="list"]');
+        this.$dummy = this.$parent.find('[data-op="dummy"] [data-op="list"]');
         this.$player = this.$parent.find('[data-op="player"] [data-op="list"]');
         this.$bert = this.$parent.find('[data-op="bert"] [data-op="list"]');
         this.$mark = this.$parent.find('[data-op="mark"] [data-op="list"]');
@@ -1086,6 +1090,8 @@ class InventoryView extends View {
         this.bert = mapArray(this.Player.Inventory.Bert, this.Items);
         this.mark = mapArray(this.Player.Inventory.Mark, this.Items);
         this.kunigunde = mapArray(this.Player.Inventory.Kunigunde, this.Items);
+        this.shops = mapArray(this.Player.Inventory.Shop, this.Items);
+        this.dummy = mapArray(this.Player.Inventory.Dummy, this.Items);
 
         if (!this.Player.Companions) {
             this.$parent.find('.css-companions').hide();
@@ -1181,6 +1187,7 @@ class InventoryView extends View {
             this.refreshBlock(this.$backpack, this.backpack, false);
             this.refreshBlock(this.$chest, this.chest, false);
             this.refreshBlock(this.$shops, this.shops, true);
+            this.refreshBlock(this.$dummy, this.dummy, false);
             this.refreshBlock(this.$player, this.Selected == 0 ? null : this.player, false);
             this.refreshBlock(this.$bert, this.Selected == 1 ? null : this.bert, false);
             this.refreshBlock(this.$mark, this.Selected == 2 ? null : this.mark, false);
@@ -1190,6 +1197,7 @@ class InventoryView extends View {
             this.refreshBlock(this.$backpack, this.backpack, false, i => this.isCorrectType(i));
             this.refreshBlock(this.$chest, this.chest, false, i => this.isCorrectType(i));
             this.refreshBlock(this.$shops, this.shops, true, i => this.isCorrectType(i));
+            this.refreshBlock(this.$dummy, this.dummy, false, i => this.isCorrectType(i));
             this.refreshBlock(this.$player, this.Selected == 0 ? null : this.player, false, i => this.isCorrectType(i));
             this.refreshBlock(this.$bert, this.Selected == 1 ? null : this.bert, false, i => this.isCorrectType(i));
             this.refreshBlock(this.$mark, this.Selected == 2 ? null : this.mark, false, i => this.isCorrectType(i));

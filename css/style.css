@@ -809,6 +809,10 @@ h3.file-selected {
     border: 1px solid orange;
 }
 
+.css-inventory-segment[data-op="dummy"] {
+    border: 1px solid gray;
+}
+
 .css-inventory-segment .ui.header {
     color: lightgray;
     padding-left: .75em;
