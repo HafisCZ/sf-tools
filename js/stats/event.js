@@ -1775,15 +1775,17 @@ class FilesView extends View {
     // Delete all
     deleteAll () {
         UI.ConfirmDialog.show('Database wipe', 'Are you sure you want to delete all stored player data?', () => {
-            DatabaseManager.removeTimestamps(... Object.keys(DatabaseManager.Timestamps));
-            this.show();
+            DatabaseManager.removeTimestamps(... Object.keys(DatabaseManager.Timestamps)).then(() => {
+                this.show();
+            });
         }, true);
     }
 
     // Delete selected
     deleteSelected () {
-        DatabaseManager.remove(Object.values(this.selectedPlayers));
-        this.show();
+        DatabaseManager.remove(Object.values(this.selectedPlayers)).then(() => {
+            this.show();
+        });
     }
 
     // Merge selected
