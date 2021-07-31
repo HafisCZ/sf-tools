@@ -274,6 +274,18 @@ function _dig (obj, ... path) {
     return obj;
 }
 
+function _try (obj, method, ... args) {
+    if (typeof obj !== 'undefined') {
+        if (typeof obj[method] === 'function') {
+            return obj[method](... args);
+        } else {
+            return obj[method];
+        }
+    } else {
+        return undefined;
+    }
+}
+
 function _present (obj) {
     return obj !== null && typeof obj !== 'undefined';
 }
@@ -929,17 +941,17 @@ const DatabaseManager = new (class {
                         data.identifier = data.prefix + '_p' + data.save[1];
 
                         // Optionals
-                        data.groupname = r.owngroupname?.string;
-                        data.units = r.unitlevel?.numbers;
-                        data.achievements = r.achievement?.numbers;
-                        data.pets = r.ownpets?.numbers;
-                        data.tower = r.owntower?.numbers;
-                        data.chest = r.fortresschest?.numbers;
-                        data.dummy = r.dummies?.numbers;
-                        data.scrapbook = r.scrapbook?.string;
-                        data.scrapbook_legendary = r.legendaries?.string;
-                        data.witch = r.witch?.numbers;
-                        data.idle = r.idle?.numbers;
+                        data.groupname = _try(r.owngroupname, 'string');
+                        data.units = _try(r.unitlevel, 'numbers');
+                        data.achievements = _try(r.achievement, 'numbers');
+                        data.pets = _try(r.ownpets, 'numbers');
+                        data.tower = _try(r.owntower, 'numbers');
+                        data.chest = _try(r.fortresschest, 'numbers');
+                        data.dummy = _try(r.dummies, 'numbers');
+                        data.scrapbook = _try(r.scrapbook, 'string');
+                        data.scrapbook_legendary = _try(r.legendaries, 'string');
+                        data.witch = _try(r.witch, 'numbers');
+                        data.idle = _try(r.idle, 'numbers');
 
                         // Post-process
                         if (data.save[435]) {
@@ -951,16 +963,16 @@ const DatabaseManager = new (class {
                         }
                     } else {
                         data.own = false;
-                        data.name = r.otherplayername?.string;
+                        data.name = r.otherplayername.string;
                         data.save = r.otherplayer.numbers;
                         data.identifier = data.prefix + '_p' + data.save[0];
 
                         // Optionals
-                        data.groupname = r.otherplayergroupname?.string;
-                        data.units = r.otherplayerunitlevel?.numbers;
-                        data.achievements = r.otherplayerachievement?.numbers;
-                        data.fortressrank = r.otherplayerfortressrank?.number;
-                        data.pets = r.otherplayerpetbonus?.numbers;
+                        data.groupname = _try(r.otherplayergroupname, 'string');
+                        data.units = _try(r.otherplayerunitlevel, 'numbers');
+                        data.achievements = _try(r.otherplayerachievement, 'numbers');
+                        data.fortressrank = _try(r.otherplayerfortressrank, 'number');
+                        data.pets = _try(r.otherplayerpetbonus, 'numbers');
 
                         // Post-process
                         if (data.save[161]) {
