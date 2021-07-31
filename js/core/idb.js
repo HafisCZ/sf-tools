@@ -904,7 +904,7 @@ const DatabaseManager = new (class {
                         offset: offset
                     };
 
-                    if (r.owngroupsave) {
+                    if (r.owngroupsave && r.owngroupname) {
                         data.own = true;
                         data.name = r.owngroupname.string;
                         data.rank = r.owngrouprank.number;
