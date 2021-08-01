@@ -1551,7 +1551,9 @@ class SFOwnPlayer extends SFPlayer {
             Fire: dataType.long(),
             Water: dataType.long()
         };
-        dataType.skip(146);
+        dataType.skip(101);
+        this.Pets.Dungeons = dataType.sub(5);
+        dataType.skip(41);
         this.Metal = dataType.long();
         this.Crystals = dataType.long();
         dataType.skip(2);

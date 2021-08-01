@@ -17,6 +17,14 @@
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
 
+        <script src="js/plugins.js"></script>
+
+        <script src="js/core/util.js"></script>
+        <script src="js/core/playa.js"></script>
+        <script src="js/core/core.js"></script>
+        <script src="js/core/idb.js"></script>
+        <script src="endpoint/endpoint.js"></script>
+
         <script src="js/sim/pets.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
@@ -135,9 +143,23 @@
                 right: 0px;
                 transform: scale(0.8);
             }
+
+            .statistics-module {
+                position: absolute;
+                left: 2em;
+                top: 5em;
+                width: 15em;
+            }
         </style>
     </head>
     <body class="margin-none-bottom">
+        <div class="statistics-module" id="stats-module">
+            <div class="ui fluid basic gray button" id="load-stats"><i class="sync alternate icon"></i>Poll saved characters</div>
+            <div id="stats-list">
+                <!-- LIST -->
+            </div>
+        </div>
+
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
             <div class="right menu">
@@ -917,6 +939,116 @@
                         }
                     }
                 }
+            });
+
+            $('#load-stats').click(() => {
+                DatabaseManager.load({
+                    filters: {
+                        players: {
+                            name: 'own',
+                            mode: 'equal',
+                            value: [1]
+                        },
+                        groups: {
+                            mode: 'none'
+                        }
+                    }
+                }).then(function () {
+                    $('#stats-list').empty();
+
+                    for (let player of Object.keys(DatabaseManager.Players).map(pid => DatabaseManager.getPlayer(pid).Latest).sort((a, b) => b.Timestamp - a.Timestamp).filter(p => p.Pets && p.Pets.TotalLevel)) {
+                        $('#stats-list').append($(`
+                            <div class="ui fluid button basic vertical animated gray" style="margin-bottom: 0.5em;">
+                                <div class="visible content">
+                                    <span style="color: black;">${ player.Name } @ ${ player.Prefix }<span>
+                                </div>
+                                <div class="hidden content">
+                                    <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }<span>
+                                </div>
+                            </div>
+                            `).click(() => {
+                                let currentType = petA.Type;
+                                let currentName = [
+                                    'Shadow', 'Light', 'Earth', 'Fire', 'Water'
+                                ][currentType];
+
+                                let gladiator = _try(player.Underworld, 'Gladiator') || 0;
+                                let pack = player.Pets[`${currentName}Count`];
+                                let petLevels = player.Pets[`${currentName}Levels`];
+                                let at100 = _len_where(petLevels, l => _between(l, 99, 200));
+                                let at200 = _len_where(petLevels, l => l == 200);
+
+                                let pets = petLevels.map((level, i) => {
+                                    return {
+                                        Gladiator: gladiator,
+                                        Pet: i,
+                                        Type: currentType,
+                                        Boss: 0,
+                                        Level: level,
+                                        Pack: pack,
+                                        At100: at100,
+                                        At200: at200,
+                                        Index: 0
+                                    }
+                                });
+
+                                let bestPet = pets.filter(data => data.Level).map(data => PetModel.fromObject(data)).sort((a, b) => b.Attribute - a.Attribute)[0];
+                                petA.loadData(pets[bestPet.Pet]);
+
+                                let dungeonPet = player.Pets.Dungeons[currentType];
+                                if (dungeonPet < 20) {
+                                    petB.loadData({
+                                        Gladiator: 0,
+                                        Pet: dungeonPet,
+                                        Type: currentType,
+                                        Boss: 1,
+                                        Level: 0,
+                                        Pack: 0,
+                                        At100: 0,
+                                        At200: 0,
+                                        Index: 1
+                                    });
+                                }
+                            }
+                        ));
+                    }
+
+                    $('#stats-list').append(
+                        $('<div class="ui two basic tiny gray buttons"></div>').append(
+                            $(`
+                                <div class="ui fluid button vertical">
+                                    <div class="visible content">
+                                        <span style="color: gray;">Endpoint<span>
+                                    </div>
+                                </div>
+                            `).click(() => {
+                                Endpoint.start('endpoint/dungeons').then(() => {
+                                    $('#load-stats').trigger('click');
+                                });
+                            }),
+                            $(`
+                                <label class="ui fluid button vertical" for="button-upload">
+                                    <span style="color: gray;">HAR<span>
+                                </label>
+                                <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
+                            `).change((fileEvent) => {
+                                let pendingPromises = [];
+                                Array.from(fileEvent.target.files).forEach(file => {
+                                    pendingPromises.push(_readfile(file).then(fileContent => {
+                                        return DatabaseManager.import(fileContent, file.lastModified);
+                                    }));
+                                });
+
+                                Promise.all(pendingPromises).then(() => {
+                                    $('#load-stats').trigger('click');
+                                });
+                            })
+                        )
+                    );
+                }).catch(function () {
+                    Logger.log('WARNING', 'Database could not be opened!');
+                    $('#stats-list').empty();
+                });
             });
         </script>
     </body>

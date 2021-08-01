@@ -31,6 +31,14 @@ function _len_of_when (array, key) {
     return count;
 }
 
+function _len_where (array, filter) {
+    let count = 0;
+    for (const obj of array) {
+        if (filter(obj)) count++;
+    }
+    return count;
+}
+
 function _between (val, min, max) {
     return val > min && val < max;
 }
