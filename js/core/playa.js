@@ -985,6 +985,58 @@ class SFPlayer {
             this.Fortress.Fortifications
         );
     }
+
+    static loadEquipment (dataType) {
+        return {
+            Head: new SFItem(dataType.sub(12), 6),
+            Body: new SFItem(dataType.sub(12), 3),
+            Hand: new SFItem(dataType.sub(12), 5),
+            Feet: new SFItem(dataType.sub(12), 4),
+            Neck: new SFItem(dataType.sub(12), 8),
+            Belt: new SFItem(dataType.sub(12), 7),
+            Ring: new SFItem(dataType.sub(12), 9),
+            Misc: new SFItem(dataType.sub(12), 10),
+            Wpn1: new SFItem(dataType.sub(12), 1),
+            Wpn2: new SFItem(dataType.sub(12), 2)
+        };
+    }
+
+    static loadAttributes (player, dataType, skipPurchased = true) {
+        player.Strength = {
+            Type: 1,
+            Base: dataType.long(),
+            Bonus: dataType.skip(4).long()
+        };
+
+        player.Dexterity = {
+            Type: 2,
+            Base: dataType.back(5).long(),
+            Bonus: dataType.skip(4).long()
+        };
+
+        player.Intelligence = {
+            Type: 3,
+            Base: dataType.back(5).long(),
+            Bonus: dataType.skip(4).long()
+        };
+
+        player.Constitution = {
+            Type: 4,
+            Base: dataType.back(5).long(),
+            Bonus: dataType.skip(4).long()
+        };
+
+        player.Luck = {
+            Type: 5,
+            Base: dataType.back(5).long(),
+            Bonus: dataType.skip(4).long()
+        };
+
+        // Skip purchased attributes
+        if (skipPurchased) {
+            dataType.skip(5);
+        }
+    }
 }
 
 class SFOtherPlayer extends SFPlayer {
@@ -1034,32 +1086,7 @@ class SFOtherPlayer extends SFPlayer {
         this.MirrorPieces = getMirrorPieces(dataType.short());
         this.Class = dataType.short();
         dataType.clear(); // skip
-        this.Strength = {
-            Type: 1,
-            Base: dataType.long(),
-            Bonus: dataType.skip(4).long()
-        };
-        this.Dexterity = {
-            Type: 2,
-            Base: dataType.back(5).long(),
-            Bonus: dataType.skip(4).long()
-        };
-        this.Intelligence = {
-            Type: 3,
-            Base: dataType.back(5).long(),
-            Bonus: dataType.skip(4).long()
-        };
-        this.Constitution = {
-            Type: 4,
-            Base: dataType.back(5).long(),
-            Bonus: dataType.skip(4).long()
-        };
-        this.Luck = {
-            Type: 5,
-            Base: dataType.back(5).long(),
-            Bonus: dataType.skip(4).long()
-        };
-        dataType.skip(5); // skip
+        SFPlayer.loadAttributes(this, dataType);
         this.Action = {
             Status: dataType.short()
         };
@@ -1067,18 +1094,7 @@ class SFOtherPlayer extends SFPlayer {
         this.Action.Index = dataType.short();
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + data.offset;
-        this.Items = {
-            Head: new SFItem(dataType.sub(12), 6),
-            Body: new SFItem(dataType.sub(12), 3),
-            Hand: new SFItem(dataType.sub(12), 5),
-            Feet: new SFItem(dataType.sub(12), 4),
-            Neck: new SFItem(dataType.sub(12), 8),
-            Belt: new SFItem(dataType.sub(12), 7),
-            Ring: new SFItem(dataType.sub(12), 9),
-            Misc: new SFItem(dataType.sub(12), 10),
-            Wpn1: new SFItem(dataType.sub(12), 1),
-            Wpn2: new SFItem(dataType.sub(12), 2)
-        };
+        this.Items = SFPlayer.loadEquipment(dataType);
         this.Mount = dataType.short();
         this.Dungeons = {
             Normal: []
@@ -1192,7 +1208,7 @@ class SFOtherPlayer extends SFPlayer {
 }
 
 class SFOwnPlayer extends SFPlayer {
-    constructor (data, loadInventory = false) {
+    constructor (data) {
         super();
 
         this.init(data);
@@ -1247,31 +1263,7 @@ class SFOwnPlayer extends SFPlayer {
         this.MirrorPieces = getMirrorPieces(dataType.short());
         this.Class = dataType.short();
         dataType.clear(); // skip
-        this.Strength = {
-            Type: 1,
-            Base: dataType.long(),
-            Bonus: dataType.skip(4).long()
-        };
-        this.Dexterity = {
-            Type: 2,
-            Base: dataType.back(5).long(),
-            Bonus: dataType.skip(4).long()
-        };
-        this.Intelligence = {
-            Type: 3,
-            Base: dataType.back(5).long(),
-            Bonus: dataType.skip(4).long()
-        };
-        this.Constitution = {
-            Type: 4,
-            Base: dataType.back(5).long(),
-            Bonus: dataType.skip(4).long()
-        };
-        this.Luck = {
-            Type: 5,
-            Base: dataType.back(5).long(),
-            Bonus: dataType.skip(4).long()
-        };
+        SFPlayer.loadAttributes(this, dataType, false);
         this.Strength.Purchased = dataType.long();
         this.Dexterity.Purchased = dataType.long();
         this.Intelligence.Purchased = dataType.long();
@@ -1284,18 +1276,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Action.Index = dataType.short();
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + data.offset;
-        this.Items = {
-            Head: new SFItem(dataType.sub(12), 6),
-            Body: new SFItem(dataType.sub(12), 3),
-            Hand: new SFItem(dataType.sub(12), 5),
-            Feet: new SFItem(dataType.sub(12), 4),
-            Neck: new SFItem(dataType.sub(12), 8),
-            Belt: new SFItem(dataType.sub(12), 7),
-            Ring: new SFItem(dataType.sub(12), 9),
-            Misc: new SFItem(dataType.sub(12), 10),
-            Wpn1: new SFItem(dataType.sub(12), 1),
-            Wpn2: new SFItem(dataType.sub(12), 2)
-        };
+        this.Items = SFPlayer.loadEquipment(dataType);
         this.Inventory = {
             Backpack: [],
             Chest: [],
@@ -1595,36 +1576,22 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Extra.Normal.Unlocked = this.Dungeons.Normal.Unlocked + this.Dungeons.Extra.Normal.reduce((a, b) => a + (b > 0 ? 1 : 0), 0);
         this.Dungeons.Extra.Shadow.Unlocked = this.Dungeons.Shadow.Unlocked + this.Dungeons.Extra.Shadow.reduce((a, b) => a + (b > 0 ? 1 : 0), 0);
 
-        if (loadInventory) {
-            if (data.chest) {
-                dataType = new ComplexDataType(data.chest);
-                for (var i = 0; i < 45 && dataType.atLeast(12); i++) {
-                    var item = new SFItem(dataType.sub(12));
-                    if (item.Type > 0) {
-                        if (i >= 15) {
-                            this.Inventory.Chest.push(item);
-                        } else {
-                            this.Inventory.Backpack.push(item);
-                        }
+        if (data.chest) {
+            dataType = new ComplexDataType(data.chest);
+            for (var i = 0; i < 45 && dataType.atLeast(12); i++) {
+                var item = new SFItem(dataType.sub(12));
+                if (item.Type > 0) {
+                    if (i >= 15) {
+                        this.Inventory.Chest.push(item);
+                    } else {
+                        this.Inventory.Backpack.push(item);
                     }
                 }
             }
+        }
 
-            if (data.dummy) {
-                dataType = new ComplexDataType(data.dummy);
-                this.Inventory.Dummy = {
-                    Head: new SFItem(dataType.sub(12), 6),
-                    Body: new SFItem(dataType.sub(12), 3),
-                    Hand: new SFItem(dataType.sub(12), 5),
-                    Feet: new SFItem(dataType.sub(12), 4),
-                    Neck: new SFItem(dataType.sub(12), 8),
-                    Belt: new SFItem(dataType.sub(12), 7),
-                    Ring: new SFItem(dataType.sub(12), 9),
-                    Misc: new SFItem(dataType.sub(12), 10),
-                    Wpn1: new SFItem(dataType.sub(12), 1),
-                    Wpn2: new SFItem(dataType.sub(12), 2)
-                };
-            }
+        if (data.dummy) {
+            this.Inventory.Dummy = SFPlayer.loadEquipment(new ComplexDataType(data.dummy));
         }
 
         dataType = new ComplexDataType(data.witch);
@@ -1660,171 +1627,27 @@ class SFOwnPlayer extends SFPlayer {
 
         this.Witch.Stage = _len_of_when(this.Witch.Scrolls, 'Owned');
 
-        if (data.tower && data.tower.length && loadInventory) {
-            this.Companions = {
-                Bert: {},
-                Mark: {},
-                Kunigunde: {}
-            };
-
+        if (_not_empty(data.tower)) {
             dataType = new ComplexDataType(data.tower);
+
             dataType.skip(3);
-            var bert = {
-                Level: dataType.long()
-            };
-            dataType.skip(3);
-            bert.Strength = {
-                Type: 1,
-                Base: dataType.long(),
-                Bonus: dataType.skip(4).long()
-            };
-            bert.Dexterity = {
-                Type: 2,
-                Base: dataType.back(5).long(),
-                Bonus: dataType.skip(4).long()
-            };
-            bert.Intelligence = {
-                Type: 3,
-                Base: dataType.back(5).long(),
-                Bonus: dataType.skip(4).long()
-            };
-            bert.Constitution = {
-                Type: 4,
-                Base: dataType.back(5).long(),
-                Bonus: dataType.skip(4).long()
-            };
-            bert.Luck = {
-                Type: 5,
-                Base: dataType.back(5).long(),
-                Bonus: dataType.skip(4).long()
-            };
-            dataType.skip(5);
-            bert.Armor = dataType.long();
-            bert.Damage = {
-                Min: dataType.long(),
-                Max: dataType.long()
-            };
-            bert.Damage.Avg = Math.trunc((bert.Damage.Min + bert.Damage.Max) / 2);
-            this.Inventory.Bert = {
-                Head: new SFItem(dataType.sub(12), 6),
-                Body: new SFItem(dataType.sub(12), 3),
-                Hand: new SFItem(dataType.sub(12), 5),
-                Feet: new SFItem(dataType.sub(12), 4),
-                Neck: new SFItem(dataType.sub(12), 8),
-                Belt: new SFItem(dataType.sub(12), 7),
-                Ring: new SFItem(dataType.sub(12), 9),
-                Misc: new SFItem(dataType.sub(12), 10),
-                Wpn1: new SFItem(dataType.sub(12), 1),
-                Wpn2: new SFItem(dataType.sub(12), 2)
-            };
+            var bert = SFCompanion.fromTower(dataType);
+            this.Inventory.Bert = SFPlayer.loadEquipment(dataType);
+
             dataType.skip(6);
-            var mark = {
-                Level: dataType.long()
-            };
-            dataType.skip(3);
-            mark.Strength = {
-                Type: 1,
-                Base: dataType.long(),
-                Bonus: dataType.skip(4).long()
-            };
-            mark.Dexterity = {
-                Type: 2,
-                Base: dataType.back(5).long(),
-                Bonus: dataType.skip(4).long()
-            };
-            mark.Intelligence = {
-                Type: 3,
-                Base: dataType.back(5).long(),
-                Bonus: dataType.skip(4).long()
-            };
-            mark.Constitution = {
-                Type: 4,
-                Base: dataType.back(5).long(),
-                Bonus: dataType.skip(4).long()
-            };
-            mark.Luck = {
-                Type: 5,
-                Base: dataType.back(5).long(),
-                Bonus: dataType.skip(4).long()
-            };
-            dataType.skip(5);
-            mark.Armor = dataType.long();
-            mark.Damage = {
-                Min: dataType.long(),
-                Max: dataType.long()
-            };
-            mark.Damage.Avg = Math.trunc((mark.Damage.Min + mark.Damage.Max) / 2);
-            this.Inventory.Mark = {
-                Head: new SFItem(dataType.sub(12), 6),
-                Body: new SFItem(dataType.sub(12), 3),
-                Hand: new SFItem(dataType.sub(12), 5),
-                Feet: new SFItem(dataType.sub(12), 4),
-                Neck: new SFItem(dataType.sub(12), 8),
-                Belt: new SFItem(dataType.sub(12), 7),
-                Ring: new SFItem(dataType.sub(12), 9),
-                Misc: new SFItem(dataType.sub(12), 10),
-                Wpn1: new SFItem(dataType.sub(12), 1),
-                Wpn2: new SFItem(dataType.sub(12), 2)
-            };
+            var mark = SFCompanion.fromTower(dataType);
+            this.Inventory.Mark = SFPlayer.loadEquipment(dataType);
+
             dataType.skip(6);
-            var kuni = {
-                Level: dataType.long()
-            };
-            dataType.skip(3);
-            kuni.Strength = {
-                Type: 1,
-                Base: dataType.long(),
-                Bonus: dataType.skip(4).long()
-            };
-            kuni.Dexterity = {
-                Type: 2,
-                Base: dataType.back(5).long(),
-                Bonus: dataType.skip(4).long()
-            };
-            kuni.Intelligence = {
-                Type: 3,
-                Base: dataType.back(5).long(),
-                Bonus: dataType.skip(4).long()
-            };
-            kuni.Constitution = {
-                Type: 4,
-                Base: dataType.back(5).long(),
-                Bonus: dataType.skip(4).long()
-            };
-            kuni.Luck = {
-                Type: 5,
-                Base: dataType.back(5).long(),
-                Bonus: dataType.skip(4).long()
-            };
-            dataType.skip(5);
-            kuni.Armor = dataType.long();
-            kuni.Damage = {
-                Min: dataType.long(),
-                Max: dataType.long()
-            };
-            kuni.Damage.Avg = Math.trunc((kuni.Damage.Min + kuni.Damage.Max) / 2);
-            this.Inventory.Kunigunde = {
-                Head: new SFItem(dataType.sub(12), 6),
-                Body: new SFItem(dataType.sub(12), 3),
-                Hand: new SFItem(dataType.sub(12), 5),
-                Feet: new SFItem(dataType.sub(12), 4),
-                Neck: new SFItem(dataType.sub(12), 8),
-                Belt: new SFItem(dataType.sub(12), 7),
-                Ring: new SFItem(dataType.sub(12), 9),
-                Misc: new SFItem(dataType.sub(12), 10),
-                Wpn1: new SFItem(dataType.sub(12), 1),
-                Wpn2: new SFItem(dataType.sub(12), 2)
+            var kuni = SFCompanion.fromTower(dataType);
+            this.Inventory.Kunigunde = SFPlayer.loadEquipment(dataType);
+
+            this.Companions = {
+                Bert: new SFCompanion(this, bert, this.Inventory.Bert, 1),
+                Mark: new SFCompanion(this, mark, this.Inventory.Mark, 2),
+                Kunigunde: new SFCompanion(this, kuni, this.Inventory.Kunigunde, 3)
             };
 
-            bert.Class = 1;
-            mark.Class = 2;
-            kuni.Class = 3;
-            this.Companions.Bert = new SFCompanion(this, bert, this.Inventory.Bert);
-            this.Companions.Mark = new SFCompanion(this, mark, this.Inventory.Mark);
-            this.Companions.Kunigunde = new SFCompanion(this, kuni, this.Inventory.Kunigunde);
-        }
-
-        if (data.tower) {
             this.Dungeons.Extra.Normal[0] = data.tower[150];
             this.Dungeons.Extra.Shadow[0] = data.tower[298];
 
@@ -1871,11 +1694,11 @@ class SFOwnPlayer extends SFPlayer {
 }
 
 class SFCompanion extends SFPlayer {
-    constructor (player, comp, items) {
+    constructor (player, comp, items, pclass) {
         super();
 
         this.Level = comp.Level;
-        this.Class = comp.Class;
+        this.Class = pclass;
         this.Armor = comp.Armor;
         this.Damage = comp.Damage;
         this.Potions = player.Potions;
@@ -2018,6 +1841,23 @@ class SFCompanion extends SFPlayer {
         this.Runes.DamageFire = Math.min(60, this.Runes.DamageFire);
         this.Runes.DamageCold = Math.min(60, this.Runes.DamageCold);
         this.Runes.DamageLightning = Math.min(60, this.Runes.DamageLightning);
+    }
+
+    static fromTower (dataType) {
+        var data = {
+            Level: dataType.long()
+        };
+        dataType.skip(3);
+        SFPlayer.loadAttributes(data, dataType);
+
+        data.Armor = dataType.long();
+        data.Damage = {
+            Min: dataType.long(),
+            Max: dataType.long()
+        };
+        data.Damage.Avg = Math.trunc((data.Damage.Min + data.Damage.Max) / 2);
+
+        return data;
     }
 }
 

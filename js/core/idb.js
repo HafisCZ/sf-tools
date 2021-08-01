@@ -449,7 +449,7 @@ const DatabaseManager = new (class {
             const { Identifier: identifier, Timestamp: timestamp, Data: data, Own: own } = lazyPlayer;
 
             // Get player
-            let player = own ? new SFOwnPlayer(data, true) : new SFOtherPlayer(data);
+            let player = own ? new SFOwnPlayer(data) : new SFOtherPlayer(data);
 
             // Get player group
             let group = this.getGroup(player.Group.Identifier, timestamp);
