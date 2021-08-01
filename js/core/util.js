@@ -26,7 +26,7 @@ function _nil (obj) {
 function _len_of_when (array, key) {
     let count = 0;
     for (const obj of array) {
-        if (obj[key]) count++;
+        if (obj && obj[key]) count++;
     }
     return count;
 }
