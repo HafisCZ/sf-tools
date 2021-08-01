@@ -1553,7 +1553,7 @@ class SFOwnPlayer extends SFPlayer {
         };
         dataType.skip(101);
         this.Pets.Dungeons = dataType.sub(5);
-        dataType.skip(41);
+        dataType.skip(40);
         this.Metal = dataType.long();
         this.Crystals = dataType.long();
         dataType.skip(2);
