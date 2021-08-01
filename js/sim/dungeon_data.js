@@ -554,9 +554,9 @@ DUNGEON_DATA = {
             'Greenish Gremlin': { pos: 5, id: 0, class: 3, level: 280, str: 1328, dex: 5220, int: 1305, con: 25052, lck: 1922, health: 28158448, min: 3747, max: 7490, armor: 5390 },
             'Infected Brown Bear': { pos: 6, id: 0, class: 1, level: 282, str: 5276, dex: 1796, int: 1739, con: 25514, lck: 1387, health: 36102312, min: 3031, max: 6009, armor: 6226 },
             'Greedy Gremlin': { pos: 7, id: 0, class: 3, level: 284, str: 1353, dex: 5325, int: 1331, con: 25866, lck: 1963, health: 29487240, min: 3800, max: 7597, armor: 5510 },
-            'Swamp Muncher': { pos: 8, id: 0, class: 2, level: 286, str: 1324, dex: 1366, int: 5551, con: 25443, lck: 1976, health: 14604282, min: 6923, max: 13546, armor: 4440 },
-            'Cruel Gremlin': { pos: 9, id: 0, class: 3, level: 288, str: 1380, dex: 5440, int: 1360, con: 26840, lck: 2010, health: 31027040, min: 3931, max: 7676, armor: 5840 },
-            'Terrible Toxic Gremlin': { pos: 10, id: 0, class: 3, level: 290, str: 1392, dex: 5490, int: 1372, con: 27220, lck: 2030, health: 31684080, min: 3903, max: 7732, armor: 4570 }
+            'Swamp Muncher': { pos: 8, id: 0, class: 2, level: 286, str: 1324, dex: 1366, int: 5551, con: 25443, lck: 1976, health: 14604282, min: 6923, max: 13659, armor: 4440 },
+            'Cruel Gremlin': { pos: 9, id: 0, class: 3, level: 288, str: 1380, dex: 5440, int: 1360, con: 26840, lck: 2010, health: 31027040, min: 3853, max: 7676, armor: 5840 },
+            'Terrible Toxic Gremlin': { pos: 10, id: 0, class: 3, level: 290, str: 1392, dex: 5490, int: 1372, con: 27220, lck: 2030, health: 31684080, min: 3903, max: 7743, armor: 4570 }
         }
     },
     '107': {
@@ -564,14 +564,14 @@ DUNGEON_DATA = {
         shadow: true,
         floors: {
             'Fire Scorpion': { pos: 1, id: 0, class: 3, level: 292, str: 1381, dex: 5422, int: 1355, con: 25806, lck: 1994, health: 30244632, min: 3909, max: 7797, armor: 3370 },
-            'Fire Basilisk': { pos: 2, id: 0, class: 3, level: 294, str: 1393, dex: 5474, int: 1368, con: 26202, lck: 2014, health: 30918360, min: 4006, max: 7866, armor: 3240 },
-            'Lava Blob': { pos: 3, id: 0, class: 2, level: 296, str: 1356, dex: 1406, int: 5722, con: 25504, lck: 2022, health: 15149376, min: 7180, max: 14252, armor: 1660 },
-            'Lava Giant': { pos: 4, id: 0, class: 1, level: 298, str: 5581, dex: 1903, int: 1844, con: 27054, lck: 1466, health: 40445728, min: 3255, max: 6370, armor: 9270 },
-            'Dragon of Darkness': { pos: 5, id: 0, class: 1, level: 300, str: 5641, dex: 1936, int: 1880, con: 27577, lck: 1477, health: 41503384, min: 3229, max: 6399, armor: 7200 },
-            'Hell Cyclops': { pos: 6, id: 0, class: 1, level: 302, str: 5689, dex: 1958, int: 1903, con: 27924, lck: 1488, health: 42304860, min: 3240, max: 6451, armor: 7240 },
-            'Fire Elemental': { pos: 7, id: 0, class: 2, level: 304, str: 1412, dex: 1455, int: 5908, con: 27313, lck: 2108, health: 16660930, min: 7428, max: 14612, armor: 1660 },
+            'Fire Basilisk': { pos: 2, id: 0, class: 3, level: 294, str: 1393, dex: 5474, int: 1368, con: 26202, lck: 2014, health: 30918360, min: 3935, max: 7862, armor: 3240 },
+            'Lava Blob': { pos: 3, id: 0, class: 2, level: 296, str: 1356, dex: 1406, int: 5722, con: 25504, lck: 2022, health: 15149376, min: 7172, max: 14252, armor: 1660 },
+            'Lava Giant': { pos: 4, id: 0, class: 1, level: 298, str: 5581, dex: 1903, int: 1844, con: 27054, lck: 1466, health: 40445728, min: 3243, max: 6370, armor: 9270 },
+            'Dragon of Darkness': { pos: 5, id: 0, class: 1, level: 300, str: 5641, dex: 1936, int: 1880, con: 27577, lck: 1477, health: 41503384, min: 3221, max: 6400, armor: 7200 },
+            'Hell Cyclops': { pos: 6, id: 0, class: 1, level: 302, str: 5689, dex: 1958, int: 1903, con: 27924, lck: 1488, health: 42304860, min: 3235, max: 6456, armor: 7240 },
+            'Fire Elemental': { pos: 7, id: 0, class: 2, level: 304, str: 1412, dex: 1455, int: 5908, con: 27313, lck: 2108, health: 16660930, min: 7428, max: 14625, armor: 1660 },
             'Lava Giant ': { pos: 8, id: 0, class: 1, level: 306, str: 5784, dex: 2001, int: 1949, con: 28584, lck: 1509, health: 43876440, min: 3277, max: 6510, armor: 8500 },
-            'Giant Dragon': { pos: 9, id: 0, class: 1, level: 308, str: 5827, dex: 2018, int: 1966, con: 28842, lck: 1519, health: 44560888, min: 3341, max: 6449, armor: 7550 },
+            'Giant Dragon': { pos: 9, id: 0, class: 1, level: 308, str: 5827, dex: 2018, int: 1966, con: 28842, lck: 1519, health: 44560888, min: 3303, max: 6574, armor: 7550 },
             'Ghost of the Volcano': { pos: 10, id: 0, class: 1, level: 310, str: 5908, dex: 2069, int: 2024, con: 29684, lck: 1531, health: 46158620, min: 3335, max: 6612, armor: 8740 }
         }
     },
