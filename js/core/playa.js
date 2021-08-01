@@ -986,10 +986,10 @@ class SFPlayer {
         );
 
         if (this.Data.units) {
-            this.Fortress.Wall = data.units[0];
-            this.Fortress.Warriors = data.units[1];
-            this.Fortress.Mages = data.units[2];
-            this.Fortress.Archers = data.units[3];
+            this.Fortress.Wall = this.Data.units[0];
+            this.Fortress.Warriors = this.Data.units[1];
+            this.Fortress.Mages = this.Data.units[2];
+            this.Fortress.Archers = this.Data.units[3];
         }
     }
 
