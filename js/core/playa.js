@@ -984,6 +984,13 @@ class SFPlayer {
             this.Fortress.Smithy +
             this.Fortress.Fortifications
         );
+
+        if (this.Data.units) {
+            this.Fortress.Wall = data.units[0];
+            this.Fortress.Warriors = data.units[1];
+            this.Fortress.Mages = data.units[2];
+            this.Fortress.Archers = data.units[3];
+        }
     }
 
     static loadEquipment (dataType) {
@@ -1148,10 +1155,6 @@ class SFOtherPlayer extends SFPlayer {
         this.Flags.NoInvite = dataType.long();
         dataType.skip(2); // skip
         this.Fortress = {
-            Wall: data.units[0],
-            Warriors: data.units[1],
-            Mages: data.units[2],
-            Archers: data.units[3],
             Rank: data.fortressrank,
             Fortress: dataType.long(),
             LaborerQuarters: dataType.long(),
@@ -1385,10 +1388,6 @@ class SFOwnPlayer extends SFPlayer {
         this.Flags.NoInvite = dataType.long();
         dataType.skip(2); // skip
         this.Fortress = {
-            Wall: data.units[0],
-            Warriors: data.units[1],
-            Mages: data.units[2],
-            Archers: data.units[3],
             Rank: data.fortressrank,
             Fortress: dataType.long(),
             LaborerQuarters: dataType.long(),
