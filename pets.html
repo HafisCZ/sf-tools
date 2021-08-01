@@ -1033,12 +1033,7 @@
                                 <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
                             `).change((fileEvent) => {
                                 let pendingPromises = [];
-                                Array.from(fileEvent.target.files).forEach(file => {
-                                    pendingPromises.push(_readfile(file).then(fileContent => {
-                                        return DatabaseManager.import(fileContent, file.lastModified);
-                                    }));
-                                });
-
+                                Array.from(fileEvent.target.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified))));
                                 Promise.all(pendingPromises).then(() => {
                                     $('#load-stats').trigger('click');
                                 });

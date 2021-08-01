@@ -1784,15 +1784,11 @@ class FilesView extends View {
     // Import file via har
     importJson (fileEvent) {
         let pendingPromises = [];
-        Array.from(fileEvent.target.files).forEach(file => {
-            pendingPromises.push(_readfile(file).then(fileContent => {
-                return DatabaseManager.import(fileContent, file.lastModified).catch((exception) => {
-                    console.error(exception);
-                    UI.Exception.alert('A problem occured while trying to upload this file.<br><br>' + exception);
-                    Logger.log('WARNING', 'Error occured while trying to import a file!');
-                });
-            }));
-        });
+        Array.from(fileEvent.target.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified).catch((exception) => {
+            console.error(exception);
+            UI.Exception.alert('A problem occured while trying to upload this file.<br><br>' + exception);
+            Logger.log('WARNING', 'Error occured while trying to import a file!');
+        }))));
 
         Promise.all(pendingPromises).then(() => {
             this.show();

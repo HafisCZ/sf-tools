@@ -97,16 +97,6 @@ function _array_to_hash (array, processor, base = {}) {
     }, base);
 }
 
-function _readfile (file) {
-    return new Promise((resolve, reject) => {
-        const fileReader = new FileReader();
-        fileReader.readAsText(file, 'UTF-8');
-        fileReader.onload = (event) => {
-            resolve(event.target.result);
-        };
-    });
-}
-
 function _empty (obj) {
     if (obj instanceof Set) {
         return obj.size == 0;
