@@ -17,6 +17,7 @@
         <script src="js/util.js"></script>
         <script src="js/core/util.js"></script>
         <script src="js/core/core.js"></script>
+        <script src="js/core/idb.js"></script>
         <script src="js/core/playa.js"></script>
         <script src="js/sim/dungeon_data.js"></script>
 
@@ -111,18 +112,12 @@
         <script type="text/javascript">
             // Import files
             let $fileOpen = $('#file-open').on('change', function () {
-                Array.from(this.files).forEach(file => file.text().then(content => {
-                    try {
-                        importHAR(JSON.parse(content));
-                    } catch (e) {
-                        console.warn(e);
-                    }
-                }));
+                Array.from(this.files).forEach(file => file.text().then(text => importHAR(JSON.parse(text))).catch(console.warn));
             });
 
             // Fight data
-            let bosses = {};
-            let players = {};
+            const bosses = {};
+            const players = {};
 
             // Update damages & show table
             function show () {
@@ -197,199 +192,179 @@
                 }, ''));
             }
 
-            // Digest har file
+            function extractFights (json) {
+                let raws = [];
+                for (let [key, value] of filterPlayaJSON(json)) {
+                    if (key !== 'text') {
+                        continue;
+                    }
+
+                    if (value.includes('fightheader')) {
+                        let rawFight = [];
+                        for (let [key2, value2] of parsePlayaResponse(value)) {
+                            if (key2.includes('.fighters')) rawFight.push('fighters:' + value2);
+                            else if (key2.includes('.r')) rawFight.push('r:' + value2);
+                            else if (key2.includes('winnerid')) {
+                                raws.push(rawFight.join('&'));
+                                rawFight = [];
+                            }
+                        }
+                    }
+
+                    let r = PlayaResponse.fromText(value);
+                    if (r.ownplayersave) {
+                         let save = r.ownplayersave.numbers;
+                         let name = _try(r.ownplayername, 'string') || _try(Object.values(players).find(p => p.ID === save[1]), 'Name');
+                         let tower = _try(r.owntower, 'numbers') || [];
+
+                         if (name) {
+                             let player = new SFOwnPlayer({
+                                 prefix: '',
+                                 name: name,
+                                 save: save,
+                                 tower: tower
+                             });
+
+                             let pool = [ addHashToPlayer(player) ];
+                             if (player.Companions) {
+                                 pool.push(
+                                     addHashToPlayer(player.Companions.Bert),
+                                     addHashToPlayer(player.Companions.Mark),
+                                     addHashToPlayer(player.Companions.Kunigunde)
+                                 );
+                             }
+
+                             for (const p of pool) {
+                                 players[p.Hash] = p;
+                             }
+                         }
+                    }
+                }
+
+                return raws;
+            }
+
             function importHAR (json) {
-                let rawFights = [];
-
-                for (let [k, v] of filterPlayaJSON(json)) {
-                    if (k == 'text' && v.includes('fightheader')) {
-                        let rawStrings = [];
-                        for (let [key, val] of parsePlayaResponse(v)) {
-                            if (key.includes('.fighters')) rawStrings.push('fighters:' + val);
-                            else if (key.includes('.r')) rawStrings.push('r:' + val);
-                            else if (key.includes('winnerid')) {
-                                rawFights.push(rawStrings.join('&'));
-                                rawStrings = [];
-                            }
-                        }
-                    } else if (k == 'text' && v.includes('ownplayername')) {
-                        let data = {
-                            own: true,
-                            prefix: '',
-                            tower: []
-                        };
-
-                        for (let [key, val] of parsePlayaResponse(v)) {
-                            if (key.includes('ownplayersave')) {
-                                data.save = val.split('/').map(d => Number(d));
-                            } else if (key.includes('playername')) {
-                                data.name = val;
-                            } else if (key.includes('towerSave')) {
-                                data.tower = val.split('/').map(a => Number(a));
-                            }
-                        }
-
-                        let player = new SFOwnPlayer(data);
-
-                        player.Hash = getPlayerHash_Model(player);
-                        players[player.Hash] = player;
-                    } else if (k == 'text' && v.includes('ownplayersave')) {
-                        let data = {
-                            own: true,
-                            prefix: '',
-                            tower: []
-                        };
-
-                        for (let [key, val] of parsePlayaResponse(v)) {
-                            if (key.includes('ownplayersave')) {
-                                data.save = val.split('/').map(d => Number(d));
-                            } else if (key.includes('towerSave')) {
-                                data.tower = val.split('/').map(a => Number(a));
-                            }
-                        }
-
-                        let p = Object.values(players).find(x => x.ID == data.save[1]);
-                        if (p) {
-                            data.name = p.Name;
-
-                            player = new SFOwnPlayer(data);
-
-                            player.Hash = getPlayerHash_Model(player);
-                            players[player.Hash] = player;
-                        }
-                    }
-                }
-
-                for (let rawFight of rawFights) {
+                for (const rawFight of extractFights(json)) {
                     let msg = {};
-                    for (var [k, v] of parsePlayaResponse(rawFight)) {
-                        msg[k] = v.split(/[/,]/g).map(d => isNaN(d) ? d : Number(d));
+                    for (var [key, val] of parsePlayaResponse(rawFight)) {
+                        msg[key] = val.split(/[/,]/g).map(v => isNaN(v) ? v : Number(v));
                     }
 
-                    if ([4, 5, 12].includes(msg['fighters'][0])) {
-                        let fightType = msg['fighters'][0];
+                    if (![4, 5, 12].includes(msg['fighters'][0])) {
+                        continue;
+                    }
 
-                        // Handle fighters
-                        let player = new SFFighter(msg['fighters'].slice(5, 52));
+                    let fightType = msg['fighters'][0];
 
-                        let { potion, runes, portal } = reverseHealthMultipliers(player.Level, (player.Class == 1 || player.Class == 5 || (player.Class == 8 && player.Mask == 1)) ? 5 : ((player.Class == 2 || (player.Class == 8 && player.Mask == 0)) ? 2 : 4), player.Constitution, player.MaximumLife);
-                        let ma = (player.Class == 1 || player.Class == 5 || (player.Class == 8 && player.Mask == 1)) ? 5 : ((player.Class == 2 || (player.Class == 8 && player.Mask == 0)) ? 2 : 4);
-                        let mb = (100 + portal) / 100;
-                        let mc = potion ? 1.25 : 1;
-                        let md = (100 + runes) / 100;
+                    // Handle fighters
+                    let player = addHashToPlayer(new SFFighter(msg['fighters'].slice(5, 52)));
 
-                        player.MaximumLife = Math.trunc(Math.floor(Math.floor(player.Constitution * ma * (player.Level + 1) * mb) * mc) * md);
-                        player.Hash = getPlayerHash(player);
+                    let boss = new SFFighter(msg['fighters'].slice(52, 99));
+                    boss.Name = getFightTargetName(fightType, boss.Name, boss.getMonsterID());
+                    boss.Hash = SHA1(boss.Name + boss.Level + boss.Constitution + boss.Strength + boss.Dexterity + boss.Intelligence + boss.Luck);
 
-                        let boss = new SFFighter(msg['fighters'].slice(52, 99));
-                        boss.Name = getFightTargetName(fightType, boss.Name, boss.getMonsterID())
-                        boss.Hash = SHA1(boss.Name + boss.Level + boss.Constitution + boss.Strength + boss.Dexterity + boss.Intelligence + boss.Luck);
+                    // Handle rounds
+                    let rounds = [];
+                    let rounds_taken = [];
+                    let offset = 0;
+                    let nextlife = null;
 
-                        // Handle rounds
-                        let rounds = [];
-                        let rounds_taken = [];
-                        let offset = 0;
-                        let nextlife = null;
+                    for (var i = 0; i < msg['r'].length / 3; i++) {
+                        var [
+                            aid,
+                            type,
+                            targetHealthLeft
+                        ] = msg['r'].slice(i * 3, i * 3 + 3);
 
-                        for (var i = 0; i < msg['r'].length / 3; i++) {
-                            var [
-                                aid,
-                                type,
-                                targetHealthLeft
-                            ] = msg['r'].slice(i * 3, i * 3 + 3);
+                        let rage = 1 + (type == 100 ? (offset - 1) : offset++) / 6;
 
-                            let rage = 1 + (type == 100 ? (offset - 1) : offset++) / 6;
+                        if (aid == boss.ID && type != 100 && (type % 10 <= 1)) {
+                            let round = {
+                                type: type,
+                                life: targetHealthLeft,
+                            };
 
-                            if (aid == boss.ID && type != 100 && (type % 10 <= 1)) {
-                                let round = {
-                                    type: type,
-                                    life: targetHealthLeft,
-                                };
-
-                                if (type >= 20 && type < 30) {
-                                    offset++;
-                                }
-
-                                // Damage
-                                let damage = 0;
-                                if (rounds.length == 0) {
-                                    if (nextlife != null) {
-                                        damage = nextlife - targetHealthLeft;
-                                        nextlife = null;
-                                    } else {
-                                        damage = player.Life - targetHealthLeft;
-                                    }
-                                } else {
-                                    damage = rounds[rounds.length - 1].life - targetHealthLeft;
-                                }
-
-                                round.damage = damage / rage / (type % 10 == 1 ? 2 : 1);
-
-                                // Add round
-                                rounds.push(round);
-                            } else if (aid == boss.ID && type == 100) {
-                                rounds[rounds.length - 1].life = player.Life;
-                            } else if (aid == boss.ID && type == 15) {
-                                nextlife = targetHealthLeft;
-                            } else if (aid != boss.ID && type <= 1) {
-                                rounds_taken.push({
-                                    life: targetHealthLeft,
-                                    crit: type == 1,
-                                    damage: ((rounds_taken.length > 0 ? rounds_taken[rounds_taken.length - 1].life : boss.Life) - targetHealthLeft) / rage
-                                });
+                            if (type >= 20 && type < 30) {
+                                offset++;
                             }
-                        }
 
-                        if (boss.Class == 4) {
-                            rounds = rounds.map(({ type, life, damage }) => {
-                                if (type < 2) {
-                                    return {
-                                        type: type,
-                                        life: life,
-                                        damage: damage / 0.625
-                                    };
+                            // Damage
+                            let damage = 0;
+                            if (rounds.length == 0) {
+                                if (nextlife != null) {
+                                    damage = nextlife - targetHealthLeft;
+                                    nextlife = null;
                                 } else {
-                                    return null;
+                                    damage = player.Life - targetHealthLeft;
                                 }
-                            }).filter(r => r);
+                            } else {
+                                damage = rounds[rounds.length - 1].life - targetHealthLeft;
+                            }
+
+                            round.damage = damage / rage / (type % 10 == 1 ? 2 : 1);
+
+                            // Add round
+                            rounds.push(round);
+                        } else if (aid == boss.ID && type == 100) {
+                            rounds[rounds.length - 1].life = player.Life;
+                        } else if (aid == boss.ID && type == 15) {
+                            nextlife = targetHealthLeft;
+                        } else if (aid != boss.ID && type <= 1) {
+                            rounds_taken.push({
+                                life: targetHealthLeft,
+                                crit: type == 1,
+                                damage: ((rounds_taken.length > 0 ? rounds_taken[rounds_taken.length - 1].life : boss.Life) - targetHealthLeft) / rage
+                            });
                         }
-
-                        // Clean things up
-                        boss.Health = boss.MaximumLife;
-                        boss.ElementalDamage = boss.Wpn1.AttributeTypes[2] > 30 ? {
-                            Type: boss.Wpn1.AttributeTypes[2] - 30,
-                            Value: boss.Wpn1.Attributes[2],
-                        } : {
-                            Type: 0,
-                            Value: 0
-                        };
-
-                        boss.ID = -boss.Face.Mouth;
-                        delete boss.Face;
-                        delete boss.Life;
-                        delete boss.Race;
-                        delete boss.Mask;
-                        delete boss.Wpn1;
-                        delete boss.Wpn2;
-                        delete boss.Gender;
-                        delete boss.MaximumLife;
-
-                        // Get boss
-                        boss.Fights = [];
-                        boss = boss.Hash in bosses ? bosses[boss.Hash] : (bosses[boss.Hash] = boss);
-
-                        // Add fights
-                        boss.Fights.push({
-                            Player: player,
-                            Rounds: rounds,
-                            Taken: rounds_taken
-                        });
                     }
+
+                    if (boss.Class == 4) {
+                        rounds = rounds.map(({ type, life, damage }) => {
+                            if (type < 2) {
+                                return {
+                                    type: type,
+                                    life: life,
+                                    damage: damage / 0.625
+                                };
+                            } else {
+                                return null;
+                            }
+                        }).filter(r => r);
+                    }
+
+                    // Clean things up
+                    boss.Health = boss.MaximumLife;
+                    boss.ElementalDamage = boss.Wpn1.AttributeTypes[2] > 30 ? {
+                        Type: boss.Wpn1.AttributeTypes[2] - 30,
+                        Value: boss.Wpn1.Attributes[2],
+                    } : {
+                        Type: 0,
+                        Value: 0
+                    };
+
+                    boss.ID = -boss.Face.Mouth;
+                    delete boss.Face;
+                    delete boss.Life;
+                    delete boss.Race;
+                    delete boss.Mask;
+                    delete boss.Wpn1;
+                    delete boss.Wpn2;
+                    delete boss.Gender;
+                    delete boss.MaximumLife;
+
+                    // Get boss
+                    boss.Fights = [];
+                    boss = boss.Hash in bosses ? bosses[boss.Hash] : (bosses[boss.Hash] = boss);
+
+                    // Add fights
+                    boss.Fights.push({
+                        Player: player,
+                        Rounds: rounds,
+                        Taken: rounds_taken
+                    });
                 }
 
-                /*
-                    Process fights
-                */
                 analyze();
                 show();
             }
@@ -598,48 +573,61 @@
                 return cla == 1 || cla == 5 || cla == 6 ? Strength : (cla == 2 || cla == 8 ? Intelligence : Dexterity);
             }
 
-            function getPlayerHash (a) {
-                return SHA1(JSON.stringify([
-                    a.Name,
-                    a.Class,
-                    a.Strength,
-                    a.Dexterity,
-                    a.Intelligence,
-                    a.Constitution,
-                    a.Luck,
-                    a.MaximumLife,
-                    collapseItem(a.Wpn1),
-                    collapseItem(a.Wpn2)
-                ]));
+            function addHashToPlayer (p) {
+                if (p.ID < 0) {
+                    let pClass = -p.ID - 390;
+                    let ownerID = _try(Object.values(players).find(player => player.Name == p.Name && player.Level == p.Level), 'ID') || 0;
+                    p.ID = ownerID + 10000000 * pClass;
+                }
+
+                p.Hash = getHash(p);
+                return p;
             }
 
-            function getPlayerHash_Model (a) {
-                return SHA1(JSON.stringify([
-                    a.Name,
-                    a.Class,
-                    a.Strength.Total,
-                    a.Dexterity.Total,
-                    a.Intelligence.Total,
-                    a.Constitution.Total,
-                    a.Luck.Total,
-                    a.Health,
-                    collapseItem(a.Items.Wpn1),
-                    collapseItem(a.Items.Wpn2)
-                ]));
-            }
+            function getItemHash (i) {
+                if (i.AttributeTypes[0] == 0) {
+                    return '';
+                }
 
-            function collapseItem (i) {
-                return [
-                    i.GemType,
-                    i.GemValue,
-                    i.Attributes,
-                    i.AttributeTypes,
+                return SHA1(JSON.stringify([
+                    i.DamageMin, i.DamageMax,
                     i.Enchantment,
-                    i.RuneType,
-                    i.RuneValue,
-                    i.DamageMin,
-                    i.DamageMax
-                ]
+                    i.RuneType, i.RuneValue,
+                    i.AttributeTypes,
+                    i.Attributes,
+                    i.GemType, i.GemValue
+                ]));
+            }
+
+            function getHash (p) {
+                let array = [];
+                if (p instanceof SFPlayer) {
+                    array = [
+                        p.ID,
+                        p.Class,
+                        p.Strength.Total,
+                        p.Dexterity.Total,
+                        p.Intelligence.Total,
+                        p.Constitution.Total,
+                        p.Luck.Total,
+                        getItemHash(p.Items.Wpn1),
+                        p.Class == 4 ? getItemHash(p.Items.Wpn2) : ''
+                    ];
+                } else if (p instanceof SFFighter) {
+                    array = [
+                        p.ID,
+                        p.Class,
+                        p.Strength,
+                        p.Dexterity,
+                        p.Intelligence,
+                        p.Constitution,
+                        p.Luck,
+                        getItemHash(p.Wpn1),
+                        p.Class == 4 ? getItemHash(p.Wpn2) : ''
+                    ];
+                }
+
+                return SHA1(JSON.stringify(array));
             }
 
             function getBaseDamage ({ Class, Level }, secondary = false) {
