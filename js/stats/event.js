@@ -256,12 +256,7 @@ class GroupDetailView extends View {
             if (p) {
                 return p.Name;
             } else {
-                p = DatabaseManager.getPlayer(id);
-                if (p) {
-                    return p.Latest.Name;
-                } else {
-                    return id;
-                }
+                return _dig(DatabaseManager.getPlayer(id), 'Latest', 'Name') || id;
             }
         });
 
@@ -270,12 +265,7 @@ class GroupDetailView extends View {
             if (p) {
                 return p.Name;
             } else {
-                p = DatabaseManager.getPlayer(id);
-                if (p) {
-                    return p.Latest.Name;
-                } else {
-                    return id;
-                }
+                return _dig(DatabaseManager.getPlayer(id), 'Latest', 'Name') || id;
             }
         });
 
@@ -300,9 +290,7 @@ class GroupDetailView extends View {
                 if (playerReference && playerReference.Group.Identifier == this.identifier) {
                     membersReferences.push(playerReference);
                 } else {
-                    var xx = player.List.concat();
-                    xx.reverse();
-                    var ts = xx.find(p => p[0] >= this.reference && p[0] <= member.Timestamp && p[1].Group.Identifier == this.identifier);
+                    var ts = player.List.concat().reverse().find(p => p[0] >= this.reference && p[0] <= member.Timestamp && p[1].Group.Identifier == this.identifier);
                     if (ts) {
                         membersReferences.push(ts[1]);
                     }
@@ -344,9 +332,7 @@ class PlayerDetailFloatView extends View {
     show (identifier, timestamp, reference = timestamp) {
         var player = DatabaseManager.getPlayer(identifier);
 
-        var xx = player.List.concat();
-        xx.reverse();
-        var compare = xx.find(p => p[0] >= reference && p[0] <= timestamp);
+        var compare = player.List.concat().reverse().find(p => p[0] >= reference && p[0] <= timestamp);
 
         player = player[Math.min(timestamp, player.LatestTimestamp)];
 

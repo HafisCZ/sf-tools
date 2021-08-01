@@ -1165,22 +1165,7 @@ class SFOtherPlayer extends SFPlayer {
         this.Dungeons.Group = dataType.byte();
         this.Dungeons.Player = dataType.byte();
         this.Dungeons.Normal[13] = dataType.long();
-        this.Dungeons.Shadow = [
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte()
-        ];
+        this.Dungeons.Shadow = dataType.byteArray(14);
         dataType.skip(1);
         this.Mask = dataType.long();
         dataType.clear(); // skip
@@ -1474,22 +1459,7 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(5); // skip
         this.Fortress.Knights = dataType.long();
         dataType.skip(5); // skip
-        this.Dungeons.Shadow = [
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte(),
-            dataType.byte()
-        ];
+        this.Dungeons.Shadow = dataType.byteArray(14);
         dataType.clear(); // skip
         dataType.skip(12); // skip
         this.Dungeons.Extra.Normal[1] = dataType.long();
@@ -1517,8 +1487,8 @@ class SFOwnPlayer extends SFPlayer {
                 ReadyRunes: data.idle[75],
                 Runes: data.idle[76],
                 Upgrades: {
-                    Speed: data.idle.slice(43, 53),
-                    Money: data.idle.slice(53, 63)
+                    Speed: _slice_len(data.idle, 43, 10),
+                    Money: _slice_len(data.idle, 53, 10)
                 }
             };
 
@@ -1528,7 +1498,7 @@ class SFOwnPlayer extends SFPlayer {
                 }
             }
 
-            this.Idle.Upgrades.Total = this.Idle.Upgrades.Speed.reduce((a, b) => a + b, 0) + this.Idle.Upgrades.Money.reduce((a, b) => a + b, 0);
+            this.Idle.Upgrades.Total = _sum(this.Idle.Upgrades.Speed) + _sum(this.Idle.Upgrades.Money);
         }
 
         dataType = new ComplexDataType(data.pets);
@@ -1681,24 +1651,14 @@ class SFOwnPlayer extends SFPlayer {
 
             var type = picIndex % 1000;
 
-            this.Witch.Scrolls[{
-                11: 0,
-                31: 1,
-                41: 2,
-                51: 3,
-                61: 4,
-                71: 5,
-                81: 6,
-                91: 7,
-                101: 8
-            }[type]] = {
+            this.Witch.Scrolls[SCROLL_MAP[type]] = {
                 Date: date,
                 Type: type,
-                Owned: date > 0 && date < this.Timestamp
+                Owned: _between(date, 0, this.Timestamp)
             };
         }
 
-        this.Witch.Stage = this.Witch.Scrolls.filter(s => s.Owned).length;
+        this.Witch.Stage = _len_of_when(this.Witch.Scrolls, 'Owned');
 
         if (data.tower && data.tower.length && loadInventory) {
             this.Companions = {

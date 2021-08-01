@@ -600,6 +600,15 @@ class ComplexDataType {
         return this.bytes.shift();
     }
 
+    byteArray (len) {
+        const array = [];
+        for (let i = 0; i < len; i++) {
+            array.push(this.byte());
+        }
+
+        return array;
+    }
+
     assert (size, soft) {
         if (this.values.length < size) {
             if (soft) {

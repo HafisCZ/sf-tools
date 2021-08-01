@@ -23,6 +23,18 @@ const MASK_TYPES = [
     'Cat'
 ];
 
+const SCROLL_MAP = {
+    11: 0,
+    31: 1,
+    41: 2,
+    51: 3,
+    61: 4,
+    71: 5,
+    81: 6,
+    91: 7,
+    101: 8
+};
+
 function getEasterEgg (id) {
     if (id == 'w27_net_p268175' || id == 'w39_net_p321948') {
         // #1 THE QUEEN

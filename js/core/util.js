@@ -19,16 +19,50 @@ function _present (obj) {
     return obj !== null && typeof obj !== 'undefined';
 }
 
+function _nil (obj) {
+    return !_present(obj);
+}
+
+function _len_of_when (array, key) {
+    let count = 0;
+    for (const obj of array) {
+        if (obj[key]) count++;
+    }
+    return count;
+}
+
+function _between (val, min, max) {
+    return val > min && val < max;
+}
+
 function _uuid (player) {
     return `${ player.identifier }-${ player.timestamp }`;
+}
+
+function _str_if_present (strings, ... args) {
+    if (args.some(_nil)) {
+        return undefined;
+    } else {
+        const len = strings.length;
+        let arr = strings[0];
+        for (let i = 1; i < len; i++) {
+            arr += args[i - 1];
+            arr += strings[i];
+        }
+        return arr;
+    }
 }
 
 function _uniq (array) {
     return Array.from(new Set(array));
 }
 
-function _sum (array) {
-    return array.reduce((m, v) => m + v, 0);
+function _sum (array, base = 0) {
+    return array.reduce((m, v) => m + v, base);
+}
+
+function _slice_len (array, begin, len) {
+    return array.slice(begin, begin + len);
 }
 
 function _jsonify (text) {
