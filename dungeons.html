@@ -1163,7 +1163,7 @@
                             `).change((fileEvent) => {
                                 let pendingPromises = [];
                                 Array.from(fileEvent.target.files).forEach(file => {
-                                    pendingPromises.push(_readfile(file).then(fileContent => {
+                                    pendingPromises.push(file.text().then(fileContent => {
                                         return DatabaseManager.import(fileContent, file.lastModified);
                                     }));
                                 });
