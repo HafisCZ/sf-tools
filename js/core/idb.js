@@ -806,6 +806,8 @@ const DatabaseManager = new (class {
             } else {
                 await this._addFile(json, null, null, origin);
             }
+        } else if (typeof json == 'object' && _dig(json, 'players')) {
+            await this._addFile(null, json.players, json.groups, origin);
         } else {
             // HAR, Endpoint
             let raws = [];
