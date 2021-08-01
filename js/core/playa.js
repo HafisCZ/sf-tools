@@ -1602,7 +1602,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Witch.Item = dataType.long();
         this.Witch.Items = Math.min(this.Witch.Items, this.Witch.ItemsNext);
 
-        dataType.skip(3);
+        dataType.skip(2);
 
         this.Witch.Finish = dataType.long() * 1000 + data.offset;
         if (this.Witch.Finish < this.Timestamp) {
