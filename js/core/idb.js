@@ -405,7 +405,7 @@ const DatabaseManager = new (class {
                 return array;
             }, []);
 
-            player.List.sort((a, b) => b[0] - a[0]);
+            _sort_des(player.List, le => le[0]);
             player.Latest = this._loadPlayer(player[player.LatestTimestamp]);
             player.Own = player.List.find(x => x[1].Own) != undefined;
 
@@ -431,7 +431,7 @@ const DatabaseManager = new (class {
                 return array;
             }, []);
 
-            group.List.sort((a, b) => b[0] - a[0]);
+            _sort_des(group.List, le => le[0]);
             group.Latest = group[group.LatestTimestamp];
             group.Own = group.List.find(x => x[1].Own) != undefined;
 

@@ -31,6 +31,22 @@ function _len_of_when (array, key) {
     return count;
 }
 
+function _sort_des (array, map) {
+    if (map) {
+        return array.sort((a, b) => map(b) - map(a));
+    } else {
+        return array.sort((a, b) => b - a);
+    }
+}
+
+function _sort_asc (array, map) {
+    if (map) {
+        return array.sort((a, b) => map(a) - map(b));
+    } else {
+        return array.sort((a, b) => a - b);
+    }
+}
+
 function _len_where (array, filter) {
     let count = 0;
     for (const obj of array) {

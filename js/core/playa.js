@@ -1149,7 +1149,7 @@ class SFOtherPlayer extends SFPlayer {
             Type: getPotionType(dataType.back(6).long()),
             Size: dataType.skip(5).long()
         }];
-        this.Potions.sort((a, b) => b.Size - a.Size);
+        _sort_des(this.Potions, potion => potion.Size);
         this.Potions.Life = dataType.long();
         this.Flags.HideFrame = dataType.long();
         this.Flags.NoInvite = dataType.long();
@@ -1378,7 +1378,7 @@ class SFOwnPlayer extends SFPlayer {
             Expire: dataType.skip(2).long() * 1000 + data.offset,
             Size: dataType.skip(2).long()
         }];
-        this.Potions.sort((a, b) => b.Size - a.Size);
+        _sort_des(this.Potions, potion => potion.Size);
         this.Potions.Life = dataType.long();
         dataType.skip(12); // skip
         this.Toilet.Capacity = dataType.long();
