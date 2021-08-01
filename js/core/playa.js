@@ -1628,28 +1628,6 @@ class SFOwnPlayer extends SFPlayer {
 
         this.Witch.Stage = _len_of_when(this.Witch.Scrolls, 'Owned');
 
-        if (_not_empty(data.tower)) {
-            dataType = new ComplexDataType(data.tower);
-
-            dataType.skip(3);
-            var bert = SFCompanion.fromTower(dataType);
-            this.Inventory.Bert = SFPlayer.loadEquipment(dataType);
-
-            dataType.skip(6);
-            var mark = SFCompanion.fromTower(dataType);
-            this.Inventory.Mark = SFPlayer.loadEquipment(dataType);
-
-            dataType.skip(6);
-            var kuni = SFCompanion.fromTower(dataType);
-            this.Inventory.Kunigunde = SFPlayer.loadEquipment(dataType);
-
-            this.Companions = {
-                Bert: new SFCompanion(this, bert, this.Inventory.Bert, 1),
-                Mark: new SFCompanion(this, mark, this.Inventory.Mark, 2),
-                Kunigunde: new SFCompanion(this, kuni, this.Inventory.Kunigunde, 3)
-            };
-        }
-
         if (data.tower) {
             this.Dungeons.Extra.Normal[0] = data.tower[150];
             this.Dungeons.Extra.Shadow[0] = data.tower[298];
@@ -1691,6 +1669,28 @@ class SFOwnPlayer extends SFPlayer {
             this.Dungeons.Extra.Shadow[0] = 0;
         }
 
+        if (_not_empty(data.tower)) {
+            dataType = new ComplexDataType(data.tower);
+
+            dataType.skip(3);
+            var bert = SFCompanion.fromTower(dataType);
+            this.Inventory.Bert = SFPlayer.loadEquipment(dataType);
+
+            dataType.skip(6);
+            var mark = SFCompanion.fromTower(dataType);
+            this.Inventory.Mark = SFPlayer.loadEquipment(dataType);
+
+            dataType.skip(6);
+            var kuni = SFCompanion.fromTower(dataType);
+            this.Inventory.Kunigunde = SFPlayer.loadEquipment(dataType);
+
+            this.Companions = {
+                Bert: new SFCompanion(this, bert, this.Inventory.Bert, 1),
+                Mark: new SFCompanion(this, mark, this.Inventory.Mark, 2),
+                Kunigunde: new SFCompanion(this, kuni, this.Inventory.Kunigunde, 3)
+            };
+        }
+
         this.Scrapbook = decodeScrapbook(data.scrapbook);
         this.ScrapbookLegendary = decodeScrapbook(data.scrapbook_legendary);
     }
@@ -1709,6 +1709,7 @@ class SFCompanion extends SFPlayer {
         this.Pets = player.Pets;
         this.Dungeons = player.Dungeons;
         this.Achievements = player.Achievements;
+        this.Underworld = player.Underworld;
 
         this.Items = items;
         for (var [ key, item ] of Object.entries(this.Items)) {
