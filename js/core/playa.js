@@ -1544,7 +1544,7 @@ class SFOwnPlayer extends SFPlayer {
             EarthLevel: earthLevel,
             FireLevel: fireLevel,
             WaterLevel: waterLevel,
-            TotalLevel: dataType.long(),
+            TotalCount: dataType.long(),
             Shadow: dataType.long(),
             Light: dataType.long(),
             Earth: dataType.long(),
@@ -1560,7 +1560,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Pets.EarthFood = dataType.long();
         this.Pets.FireFood = dataType.long();
         this.Pets.WaterFood = dataType.long();
-        this.Pets.TotalLevel = dataType.long();
+        this.Pets.TotalLevel = shadowLevel + lightLevel + fireLevel + earthLevel + waterLevel;
 
         this.Name = data.name;
         this.Prefix = _pretty_prefix(data.prefix);
