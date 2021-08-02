@@ -1882,6 +1882,8 @@ class FilesView extends View {
     }
 
     updateSearchResults () {
+        this.updateSelectedCounter();
+        
         let prefixes = this.$filter_prefix.dropdown('get value');
         let group_identifiers = this.$filter_group.dropdown('get value').map(value => value != '0' ? value : undefined);
         let player_identifiers = this.$filter_player.dropdown('get value');
@@ -1996,7 +1998,11 @@ class FilesView extends View {
             onChange: this.updateSearchResults.bind(this)
         });
 
-        this.$filter_timestamp.dropdown('set selected', [ String(DatabaseManager.Latest) ]);
+        if (DatabaseManager.Latest) {
+            this.$filter_timestamp.dropdown('set selected', [ String(DatabaseManager.Latest) ]);
+        } else {
+            this.updateSearchResults();
+        }
     }
 
     show () {
