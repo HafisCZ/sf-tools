@@ -1318,29 +1318,18 @@
                                     }));
                                 }
 
-                                results = results.concat(healths);
+                                if (threads * iterations > 1E9) {
+                                    results = results.concat(truncateHealths(_sort_asc(healths)));
+                                } else {
+                                    results = results.concat(healths);
+                                }
+
                                 totalScore += score;
                                 totalTries += iterations;
 
                                 if (totalTries == threads * iterations) {
-                                    healths.sort((a, b) => a - b);
-
-                                    let reduced_healths = [];
-                                    let step = Math.max(Math.floor(healths.length / 5000), 1);
-                                    for (let i = 0; i < healths.length; i += step) {
-                                        reduced_healths.push(healths[i]);
-                                    }
-
-                                    chart.options.title.text = [
-                                        `${ dungeon.name }: ${ boss.Name }`,
-                                        `Winrate: ${ (100 * totalScore / totalTries).toFixed(2) }% (${ totalScore } out of ${ totalTries })`
-                                    ];
-                                    chart.data.datasets[0].data = reduced_healths.map((h, i) => { return { x: i, y: h * 100 }; });
-                                    chart.data.labels = reduced_healths.map((a, b) => b);
-
-                                    chart.update(0);
+                                    showGraph(dungeon, boss, totalScore, totalTries, truncateHealths(_sort_asc(results)));
                                     $('#winchart').removeClass('faded-out');
-
                                     toggleAll();
                                 }
                             }
@@ -1355,6 +1344,28 @@
                     }
                 }
             });
+
+            function truncateHealths (healths) {
+                let step = Math.max(1, Math.floor(healths.length / 5000));
+                let alen = Math.ceil(healths.length / step);
+                let arry = new Array(alen);
+                for (let i = 0; i < alen; i++) {
+                    let slice = _slice_len(healths, i * step, step);
+                    arry[i] = Math.max(0, _sum(slice) / slice.length);
+                }
+
+                return arry;
+            }
+
+            function showGraph (dungeon, boss, score, tries, healths) {
+                chart.options.title.text = [
+                    `${ dungeon.name }: ${ boss.Name }`,
+                    `Winrate: ${ (100 * score / tries).toFixed(2) }% (${ score } out of ${ tries })`
+                ];
+                chart.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
+                chart.data.labels = healths.map((a, b) => b);
+                chart.update(0);
+            }
         </script>
     </body>
 </html>
