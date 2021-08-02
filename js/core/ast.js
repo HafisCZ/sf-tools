@@ -149,7 +149,7 @@ class Expression {
                 this.root = this.evalExpression();
                 while (this.tokens[0] == ';') {
                     let sub_root = this.postProcess(tableVariables, this.root);
-                    this.cacheable &&= this.checkCacheableNode(sub_root);
+                    this.cacheable = this.cacheable && this.checkCacheableNode(sub_root);
                     this.subexpressions.push(sub_root);
 
                     this.tokens.shift();
@@ -165,7 +165,7 @@ class Expression {
                 this.root = this.postProcess(tableVariables, this.root);
 
                 // Check if tree is cacheable or not
-                this.cacheable &&= this.checkCacheableNode(this.root);
+                this.cacheable = this.cacheable && this.checkCacheableNode(this.root);
             } else {
                 this.empty = true;
             }
