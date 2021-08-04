@@ -1459,6 +1459,18 @@ class SFOwnPlayer extends SFPlayer {
         this.Mask = dataType.long();
         this.Dungeons.Extra.Normal[3] = dataType.short();
         this.Dungeons.Extra.Shadow[3] = dataType.short();
+        dataType.skip(2);
+        this.CalendarType = dataType.long();
+        this.Underworld = {
+            TimeMachineMushrooms: dataType.long()
+        };
+        dataType.skip(3);
+        this.LegendaryDungeonTries = dataType.long();
+        dataType.skip(2);
+        this.UsedAdventureTime = dataType.long();
+        dataType.skip(9);
+        this.ClientVersion = dataType.long();
+        this.AdventureSkips = dataType.long();
 
         if (data.idle) {
             this.Idle = {
@@ -1633,22 +1645,20 @@ class SFOwnPlayer extends SFPlayer {
             this.Dungeons.Extra.Shadow[0] = data.tower[298];
 
             dataType = new ComplexDataType(data.tower.slice(448));
-            this.Underworld = {
-                Heart: dataType.long(),
-                Gate: dataType.long(),
-                GoldPit: dataType.long(),
-                Extractor: dataType.long(),
-                GoblinPit: dataType.long(),
-                Torture: dataType.long(),
-                Gladiator: dataType.long(),
-                TrollBlock: dataType.long(),
-                TimeMachine: dataType.long(),
-                Keeper: dataType.long(),
-                Souls: dataType.long(),
-                ExtractorSouls: dataType.long(),
-                ExtractorMax: dataType.long(),
-                MaxSouls: dataType.long()
-            };
+            this.Underworld.Heart = dataType.long();
+            this.Underworld.Gate = dataType.long();
+            this.Underworld.GoldPit = dataType.long();
+            this.Underworld.Extractor = dataType.long();
+            this.Underworld.GoblinPit = dataType.long();
+            this.Underworld.Torture = dataType.long();
+            this.Underworld.Gladiator = dataType.long();
+            this.Underworld.TrollBlock = dataType.long();
+            this.Underworld.TimeMachine = dataType.long();
+            this.Underworld.Keeper = dataType.long();
+            this.Underworld.Souls = dataType.long();
+            this.Underworld.ExtractorSouls = dataType.long();
+            this.Underworld.ExtractorMax = dataType.long();
+            this.Underworld.MaxSouls = dataType.long();
             dataType.skip(1);
             this.Underworld.ExtractorHourly = dataType.long();
             this.Underworld.GoldPitGold = dataType.long() / 100;
