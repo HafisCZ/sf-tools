@@ -1471,7 +1471,6 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(5);
         this.ClientVersion = dataType.long();
         this.AdventureSkips = dataType.long();
-        console.log(dataType.ptr);
         this.Summer = {
             Missions: [
                 {
