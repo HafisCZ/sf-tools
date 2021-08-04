@@ -2658,6 +2658,10 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Underworld ? p.Underworld.TimeMachine : undefined,
         statistics: false
     },
+    'Time Machine Shrooms': {
+        expr: p => p.Underworld ? p.Underworld.TimeMachineMushrooms : undefined,
+        statistics: false
+    },
     'Keeper': {
         expr: p => p.Underworld ? p.Underworld.Keeper : undefined,
         statistics: false
@@ -2835,6 +2839,10 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Water Food': {
         expr: p => p.Pets.WaterFood,
+        statistics: false
+    },
+    'Summer Score': {
+        expr: p => p.Summer.TotalPoints,
         statistics: false
     }
 };
