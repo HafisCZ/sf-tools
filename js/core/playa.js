@@ -1468,9 +1468,33 @@ class SFOwnPlayer extends SFPlayer {
         this.LegendaryDungeonTries = dataType.long();
         dataType.skip(2);
         this.UsedAdventureTime = dataType.long();
-        dataType.skip(9);
+        dataType.skip(5);
         this.ClientVersion = dataType.long();
         this.AdventureSkips = dataType.long();
+        console.log(dataType.ptr);
+        this.Summer = {
+            Missions: [
+                {
+                    Type: dataType.long(),
+                    Current: dataType.skip(2).long(),
+                    Target: dataType.skip(2).long(),
+                    Points: dataType.skip(2).long()
+                },
+                {
+                    Type: dataType.back(9).long(),
+                    Current: dataType.skip(2).long(),
+                    Target: dataType.skip(2).long(),
+                    Points: dataType.skip(2).long()
+                },
+                {
+                    Type: dataType.back(9).long(),
+                    Current: dataType.skip(2).long(),
+                    Target: dataType.skip(2).long(),
+                    Points: dataType.skip(2).long()
+                }
+            ],
+            TotalPoints: dataType.long()
+        }
 
         if (data.idle) {
             this.Idle = {
