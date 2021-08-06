@@ -428,6 +428,13 @@
             </div>
         </div>
 
+        <div id="results-modal" class="ui tiny modal">
+            <div class="header">Results</div>
+            <div class="content">
+
+            </div>
+        </div>
+
         <script type="text/javascript">
             function clearMaps () {
                 $('#sim-maps').html('');
@@ -694,6 +701,8 @@
                 }
 
                 loadData (data) {
+                    if (!data) return;
+
                     this.$at100.val(data.At100).trigger('input');
                     this.$at200.val(data.At200).trigger('input');
                     this.$pack.val(data.Pack).trigger('input');
@@ -759,24 +768,22 @@
 
             $('#sim-run').click(function () {
                 if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
-                    var a = petA.getData();
-                    var b = petB.getData();
-
-                    if (a && b && (a.Level > 0 || a.Boss) && (b.Level > 0 || b.Boss)) {
+                    freeze();
+                    simulateFight(petA.getData(), petB.getData()).then(chance => {
+                        $('#sim-result').html(chance.toFixed(chance < 0.01 ? 5 : 2) + '%');
                         freeze();
+                    });
+                }
+            });
 
-                        var worker = createWebWorker('js/sim/pets.js');
+            function simulateFight (a, b) {
+                return new Promise((resolve, reject) => {
+                    if (a && b && (a.Level > 0 || a.Boss) && (b.Level > 0 || b.Boss)) {
+                        let worker = createWebWorker('js/sim/pets.js');
 
-                        worker.addEventListener('message', function (message) {
+                        worker.addEventListener('message', (message) => {
                             if (message.data.command == 'finished') {
-                                var chance = message.data.results;
-                                if (chance < 0.01) {
-                                    $('#sim-result').html(message.data.results.toFixed(5) + '%');
-                                } else {
-                                    $('#sim-result').html(message.data.results.toFixed(2) + '%');
-                                }
-
-                                freeze();
+                                resolve([message.data.results, a, b]);
                             }
                         }, false);
 
@@ -785,9 +792,11 @@
                             players: [a, b],
                             useArmor: useArmor
                         });
+                    } else {
+                        reject();
                     }
-                }
-            });
+                });
+            }
 
             function getPetColor (num) {
                 if (num < 0.01) {
@@ -965,52 +974,69 @@
                                 <div class="hidden content">
                                     <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }<span>
                                 </div>
+                                <div style="position: absolute; right: 0.25em; top: 32.5%;" data-player-id="${ player.Identifier }">
+                                    <i class="expand icon"></i>
+                                </div>
                             </div>
                             `).click(() => {
-                                let currentType = petA.Type;
-                                let currentName = [
-                                    'Shadow', 'Light', 'Earth', 'Fire', 'Water'
-                                ][currentType];
-
-                                let gladiator = _try(player.Underworld, 'Gladiator') || 0;
-                                let pack = player.Pets[`${currentName}Count`];
-                                let petLevels = player.Pets[`${currentName}Levels`];
-                                let at100 = _len_where(petLevels, l => _between(l, 99, 200));
-                                let at200 = _len_where(petLevels, l => l == 200);
-
-                                let pets = petLevels.map((level, i) => {
-                                    return {
-                                        Gladiator: gladiator,
-                                        Pet: i,
-                                        Type: currentType,
-                                        Boss: 0,
-                                        Level: level,
-                                        Pack: pack,
-                                        At100: at100,
-                                        At200: at200,
-                                        Index: 0
-                                    }
-                                });
-
-                                let bestPet = pets.filter(data => data.Level).map(data => PetModel.fromObject(data)).sort((a, b) => b.Attribute - a.Attribute)[0];
-                                petA.loadData(pets[bestPet.Pet]);
-
-                                let dungeonPet = player.Pets.Dungeons[currentType];
-                                if (dungeonPet < 20) {
-                                    petB.loadData({
-                                        Gladiator: 0,
-                                        Pet: dungeonPet,
-                                        Type: currentType,
-                                        Boss: 1,
-                                        Level: 0,
-                                        Pack: 0,
-                                        At100: 0,
-                                        At200: 0,
-                                        Index: 1
-                                    });
-                                }
+                                let [playerPet, bossPet] = getPetsFor(player, petA.Type);
+                                petA.loadData(playerPet);
+                                petB.loadData(bossPet);
                             }
                         ));
+
+                        $(`div[data-player-id="${ player.Identifier }"]`).click((event) => {
+                            event.stopPropagation();
+                            freeze();
+
+                            let petFights = [];
+                            let results = [];
+
+                            for (let type = 0; type < 5; type++) {
+                                let [pet1, pet2] = getPetsFor(player, type);
+                                if (pet2) {
+                                    petFights.push(simulateFight(pet1, pet2).then(([chance, a, b]) => {
+                                        results.push({
+                                            chance,
+                                            player: a,
+                                            boss: b
+                                        });
+                                    }));
+                                }
+                            }
+
+                            Promise.all(petFights).then(() => {
+                                freeze();
+                                _sort_des(results, i => i.chance);
+
+                                $('#results-modal .content').html(`
+                                    <div class="ui three column grid">
+                                        ${ results.map(({ chance, player, boss }) => {
+                                            let playerIndex = 800 + 20 * player.Type + player.Pet;
+                                            let bossIndex = 800 + 20 * boss.Type + boss.Pet;
+                                            return `
+                                                <div class="two wide column">
+                                                    <img src="res/pets/monster${ playerIndex }.png" style="height: 3em;">
+                                                </div>
+                                                <div class="four wide column" style="line-height: 3em; font-size: 110%;">
+                                                    ${ NAME_MONSTER[playerIndex] }
+                                                </div>
+                                                <div class="two wide column">
+                                                    <img src="res/pets/monster${ bossIndex }.png" style="height: 3em;">
+                                                </div>
+                                                <div class="four wide column" style="line-height: 3em; font-size: 110%;">
+                                                    ${ NAME_MONSTER[bossIndex] }
+                                                </div>
+                                                <div class="four wide column text-center" style="line-height: 3em;">
+                                                    ${ chance == 0 ? 'Not possible' : `${ chance.toFixed(chance < 0.01 ? 5 : 2) }%` }
+                                                </div>
+                                            `;
+                                        }).join('') }
+                                    </div>
+                                `);
+                                $('#results-modal').modal('show');
+                            });
+                        });
                     }
 
                     $('#stats-list').append(
@@ -1045,6 +1071,55 @@
                     $('#stats-list').empty();
                 });
             });
+
+            function getPetsFor (player, type) {
+                let currentType = type;
+                let currentName = [
+                    'Shadow', 'Light', 'Earth', 'Fire', 'Water'
+                ][currentType];
+
+                let gladiator = _try(player.Underworld, 'Gladiator') || 0;
+                let pack = player.Pets[`${currentName}Count`];
+                let petLevels = player.Pets[`${currentName}Levels`];
+                let at100 = _len_where(petLevels, l => _between(l, 99, 200));
+                let at200 = _len_where(petLevels, l => l == 200);
+
+                let pets = petLevels.map((level, i) => {
+                    return {
+                        Gladiator: gladiator,
+                        Pet: i,
+                        Type: currentType,
+                        Boss: 0,
+                        Level: level,
+                        Pack: pack,
+                        At100: at100,
+                        At200: at200,
+                        Index: 0
+                    }
+                });
+
+                let bestPet = pets.filter(data => data.Level).map(data => PetModel.fromObject(data)).sort((a, b) => b.Attribute - a.Attribute)[0];
+
+                let pet1 = pets[bestPet.Pet];
+                let pet2 = null;
+
+                let dungeonPet = player.Pets.Dungeons[currentType];
+                if (dungeonPet < 20) {
+                    pet2 = {
+                        Gladiator: 0,
+                        Pet: dungeonPet,
+                        Type: currentType,
+                        Boss: 1,
+                        Level: 0,
+                        Pack: 0,
+                        At100: 0,
+                        At200: 0,
+                        Index: 1
+                    };
+                }
+
+                return [pet1, pet2];
+            }
         </script>
     </body>
 </html>
