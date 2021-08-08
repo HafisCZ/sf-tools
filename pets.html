@@ -769,8 +769,10 @@
             $('#sim-run').click(function () {
                 if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
                     freeze();
-                    simulateFight(petA.getData(), petB.getData()).then(chance => {
+                    simulateFight(petA.getData(), petB.getData()).then(([chance, a, b]) => {
                         $('#sim-result').html(chance.toFixed(chance < 0.01 ? 5 : 2) + '%');
+                        freeze();
+                    }).catch(() => {
                         freeze();
                     });
                 }
