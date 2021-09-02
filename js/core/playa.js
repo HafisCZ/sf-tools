@@ -74,6 +74,8 @@ class SFItem {
 
         this.RuneType = this.getRuneType();
         this.RuneValue = this.getRuneValue();
+
+        this.Name = Loca.get(this.Type, this.Index, this.Class);
     }
 
     morph (from, to) {

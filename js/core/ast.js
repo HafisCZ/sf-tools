@@ -2925,6 +2925,10 @@ const SP_KEYWORD_MAPPING_4 = {
         format: (p, c, e, x) => ITEM_TYPES[x],
         difference: false
     },
+    'Item Name': {
+        expr: (p, c, e, i) => i.Name,
+        difference: false
+    },
     'Item Upgrades': {
         expr: (p, c, e, i) => i.Upgrades,
         format: (p, c, e, x) => x == 0 ? '' : x
@@ -2975,7 +2979,7 @@ const SP_KEYWORD_MAPPING_4 = {
         format: (p, c, e, x) => x == 0 ? '' : x,
         difference: false
     },
-    'Item Name': {
+    'Item Slot': {
         expr: (p, c, e, i) => i.Slot,
         format: (p, c, e, x) => x == 2 && p.Class == 4 ? ITEM_TYPES[1] : ITEM_TYPES[x],
         difference: false
