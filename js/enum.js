@@ -977,7 +977,7 @@ const ATTACK_TYPES = {
     100: 'Revive'
 };
 
-const ACHIEVEMENTS_COUNT = 90;
+const ACHIEVEMENTS_COUNT = 92;
 const ACHIEVEMENTS = [
     'Globetrotter',
     'The Count',
