@@ -1105,7 +1105,7 @@ const GUILD_ROLE_OFFICER = 2;
 const GUILD_ROLE_MEMBER = 3;
 const GUILD_ROLE_INVITED = 4;
 
-const SCRAPBOOK_COUNT = 2200;
+const SCRAPBOOK_COUNT = 2210;
 
 const RUNE_VALUE = {
     GOLD: function (rune) {
