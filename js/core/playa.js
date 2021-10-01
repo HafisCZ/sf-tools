@@ -1496,6 +1496,9 @@ class SFOwnPlayer extends SFPlayer {
             ],
             TotalPoints: dataType.long()
         }
+        dataType.skip(3)
+        this.Dungeons.Extra.Normal[4] = dataType.short();
+        this.Dungeons.Extra.Shadow[4] = dataType.short();
 
         if (data.idle) {
             this.Idle = {

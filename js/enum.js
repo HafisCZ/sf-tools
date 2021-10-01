@@ -955,7 +955,17 @@ const NAME_MONSTER = {
     1336: 'ZeboPL',
     1337: 'Dhalucard',
     1338: 'Earliboy',
-    1339: 'Skate702'
+    1339: 'Skate702',
+    1129: 'Frightening Fidget',
+    1128: 'Skullsplitter Shakes',
+    1127: 'Atrocious Abawuwu',
+    1126: 'Sinister Salesman',
+    1125: 'Wily Witch',
+    1124: 'Brutal Blacksmith',
+    1123: 'Sepulchral Scammer',
+    1122: 'Baneful Bartender',
+    1121: 'Deserted City Guard',
+    1120: 'Dancing Mushroom'
 }
 
 const ATTACK_TYPES = {

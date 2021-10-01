@@ -433,6 +433,22 @@ DUNGEON_DATA = {
             'Zeus': { pos: 10, id: 1419, class: 2, level: 500, str: 33333, dex: 33333, int: 44444, con: 300000, lck: 15000, health: 459000000, runes: { type: 42, res: [60, 60, 60], damage: 60 }, min: 1500, max: 2996 }
         }
     },
+    '21': {
+        name: 'Tavern of the Dark Doppelgangers',
+        shadow: false,
+        floors: {
+            'Dancing Mushroom': { pos: 1, id: 1120, class: 2, level: 410, str: 7000, dex: 7000, int: 20000, con: 18000, lck: 4000, health: 10000000, min: 1420, max: 2290, armor: 35000 },
+            'Deserted City Guard': { pos: 2, id: 1121, class: 1, level: 420, str: 24000, dex: 8500, int: 8500, con: 20000, lck: 5000, health: 30000000, min: 651, max: 1049, armor: 36000 },
+            'Baneful Bartender': { pos: 3, id: 1122, class: 1, level: 430, str: 29000, dex: 10000, int: 10000, con: 22000, lck: 6000, health: 25000000, min: 650, max: 1099, armor: 37000 },
+            'Sepulchral Scammer': { pos: 4, id: 1123, class: 3, level: 440, str: 12000, dex: 35000, int: 12000, con: 24000, lck: 7500, health: 35000000, min: 850, max: 1399, armor: 35000 },
+            'Brutal Blacksmith': { pos: 5, id: 1124, class: 1, level: 450, str: 42000, dex: 15000, int: 15000, con: 26000, lck: 9000, health: 10000000, min: 703, max: 1136, armor: 37000 },
+            'Wily Witch': { pos: 6, id: 1125, class: 2, level: 460, str: 18000, dex: 18000, int: 50000, con: 29000, lck: 11000, health: 25000000, min: 1551, max: 2599, armor: 34000 },
+            'Sinister Salesman': { pos: 7, id: 1126, class: 3, level: 470, str: 21000, dex: 60000, int: 21000, con: 32000, lck: 13000, health: 35000000, min: 913, max: 1449, armor: 35000 },
+            'Atrocious Abawuwu': { pos: 8, id: 1127, class: 2, level: 480, str: 25000, dex: 25000, int: 72000, con: 35000, lck: 15000, health: 50000000, min: 1614, max: 2698, armor: 34000 },
+            'Skullsplitter Shakes': { pos: 9, id: 1128, class: 1, level: 490, str: 86000, dex: 30000, int: 30000, con: 39000, lck: 19000, health: 30000000, min: 750, max: 1244, armor: 37000 },
+            'Frightening Fidget': { pos: 10, id: 1129, class: 2, level: 500, str: 35000, dex: 35000, int: 90000, con: 43000, lck: 21000, health: 50000000, min: 1701, max: 2798, armor: 34000 }
+        }
+    },
     '100': {
         name: 'Twister',
         floors: {
@@ -817,6 +833,13 @@ DUNGEON_DATA = {
             'Poseidon': { pos: 8, id: 1417, class: 3, level: 625, str: 50000, dex: 150000, int: 50000, con: 340000, lck: 93500, health: 17487900672, runes: { type: 41, res: [60, 60, 60], damage: 50 }, min: 1045, max: 2089, armor: 12500 },
             'Hades': { pos: 9, id: 1418, class: 3, level: 645, str: 75000, dex: 200000, int: 75000, con: 360000, lck: 100000, health: 19099799552, runes: { type: 40, res: [60, 60, 60], damage: 60 }, min: 1075, max: 2159, armor: 12500 },
             'Zeus': { pos: 10, id: 1419, class: 2, level: 660, str: 100000, dex: 100000, int: 250000, con: 500000, lck: 137000, health: 13567500288, runes: { type: 42, res: [60, 60, 60], damage: 60 }, min: 2000, max: 4000 }
+        }
+    },
+    '121': {
+        name: 'Tavern of the Dark Doppelgangers',
+        shadow: true,
+        floors: {
+
         }
     },
     '200': {

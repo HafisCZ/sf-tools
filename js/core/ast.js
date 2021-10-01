@@ -2579,6 +2579,9 @@ const SP_KEYWORD_MAPPING_2 = {
     '18 Greek': {
         expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[3] - 2) : undefined
     },
+    '19 Birthday': {
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[4] - 2) : undefined
+    },
     'S15 Academy': {
         expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[0] - 2) : undefined
     },
@@ -2590,6 +2593,9 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'S18 Greek': {
         expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[3] - 2) : undefined
+    },
+    'S19 Birthday': {
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[4] - 2) : undefined
     },
     'Scrolls': {
         expr: p => p.Witch.Stage
