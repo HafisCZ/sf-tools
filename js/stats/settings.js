@@ -2472,10 +2472,6 @@ class Settings {
             // Slice the array depending on the entry limit
             array = array.slice(0, limit);
 
-            // Preload all players if needed
-            DatabaseManager.loadPlayer(player);
-            DatabaseManager.loadPlayer(compare);
-
             // Arrays
             let arrayCurrent = null;
             let arrayCompare = null;
