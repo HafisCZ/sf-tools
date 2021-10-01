@@ -566,7 +566,7 @@ const DatabaseManager = new (class {
         return new Promise(async (resolve, reject) => {
             for (let { identifier, timestamp, group } of players) {
                 await this.Database.remove('players', [identifier, timestamp]);
-                this._removeFromPool(identifier, timestamp);
+                await this._removeFromPool(identifier, timestamp);
 
                 delete this.Players[identifier][timestamp];
                 if (!this.Identifiers[identifier]) {
@@ -575,7 +575,7 @@ const DatabaseManager = new (class {
 
                 if (group && this.Identifiers[group] && _empty(Array.from(this.Timestamps[timestamp]).filter(identifier => _dig(this.Players, identifier, timestamp, 'Data', 'group') == group))) {
                     await this.Database.remove('groups', [group, timestamp]);
-                    this._removeFromPool(group, timestamp);
+                    await this._removeFromPool(group, timestamp);
 
                     delete this.Groups[group][timestamp];
                     if (!this.Identifiers[group]) {
@@ -596,7 +596,7 @@ const DatabaseManager = new (class {
                 for (const identifier of this.Timestamps[timestamp]) {
                     let isPlayer = this._isPlayer(identifier);
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
-                    this._removeFromPool(identifier, timestamp);
+                    await this._removeFromPool(identifier, timestamp);
 
                     delete this[isPlayer ? 'Players' : 'Groups'][identifier][timestamp];
                     if (_empty(this.Identifiers[identifier])) {
@@ -613,15 +613,19 @@ const DatabaseManager = new (class {
     }
 
     _removeFromPool (identifier, timestamp) {
-        this.Timestamps[timestamp].delete(identifier);
-        if (this.Timestamps[timestamp].size == 0) {
-            delete this.Timestamps[timestamp];
-        }
+        return new Promise((resolve, reject) => {
+            this.Timestamps[timestamp].delete(identifier);
+            if (this.Timestamps[timestamp].size == 0) {
+                delete this.Timestamps[timestamp];
+            }
 
-        this.Identifiers[identifier].delete(parseInt(timestamp));
-        if (this.Identifiers[identifier].size == 0) {
-            delete this.Identifiers[identifier];
-        }
+            this.Identifiers[identifier].delete(parseInt(timestamp));
+            if (this.Identifiers[identifier].size == 0) {
+                delete this.Identifiers[identifier];
+            }
+
+            resolve();
+        });
     }
 
     removeIdentifiers (... identifiers) {
@@ -630,11 +634,11 @@ const DatabaseManager = new (class {
                 delete this.Players[identifier];
                 delete this.Groups[identifier];
 
-                this.Identifiers[identifier].forEach(async timestamp => {
+                for (const timestamp of this.Identifiers[identifier]) {
                     let isPlayer = this._isPlayer(identifier);
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
-                    this._removeFromPool(identifier, timestamp);
-                });
+                    await this._removeFromPool(identifier, timestamp);
+                }
 
                 delete this.Identifiers[identifier];
             }
