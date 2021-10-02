@@ -839,7 +839,16 @@ DUNGEON_DATA = {
         name: 'Tavern of the Dark Doppelgangers',
         shadow: true,
         floors: {
-
+            'Dancing Mushroom': { pos: 1, id: 1120, class: 2, level: 400, str: 35000, dex: 15000, int: 35000, con: 180000, lck: 20000, health: 6074999808, min: 1351, max: 2249 },
+            'Deserted City Guard': { pos: 2, id: 1121, class: 1, level: 400, str: 45000, dex: 15000, int: 45000, con: 200000, lck: 23500, health: 3037499904, min: 600, max: 999 },
+            'Baneful Bartender': { pos: 3, id: 1122, class: 1, level: 400, str: 60000, dex: 20000, int: 20000, con: 220000, lck: 31500, health: 8099999744, min: 600, max: 999 },
+            'Sepulchral Scammer': { pos: 4, id: 1123, class: 3, level: 400, str: 25000, dex: 75000, int: 25000, con: 240000, lck: 45000, health: 8099999744, min: 750, max: 1249 },
+            'Brutal Blacksmith': { pos: 5, id: 1124, class: 1, level: 400, str: 90000, dex: 30000, int: 30000, con: 260000, lck: 48500, health: 5062499840, min: 600, max: 999 },
+            'Wily Witch': { pos: 6, id: 1125, class: 2, level: 400, str: 35000, dex: 35000, int: 105000, con: 280000, lck: 53500, health: 6074999808, min: 1350, max: 2249 },
+            'Sinister Salesman': { pos: 7, id: 1126, class: 3, level: 450, str: 40000, dex: 120000, int: 40000, con: 300000, lck: 71500, health: 16199999488, min: 850, max: 1399 },
+            'Atrocious Abawuwu': { pos: 8, id: 1127, class: 2, level: 500, str: 50000, dex: 50000, int: 150000, con: 320000, lck: 93500, health: 16199999488, min: 1700, max: 2799 },
+            'Skullsplitter Shakes': { pos: 9, id: 1128, class: 1, level: 550, str: 200000, dex: 75000, int: 75000, con: 330000, lck: 100000, health: 18225000448, min: 850, max: 1399 },
+            'Frightening Fidget': { pos: 10, id: 1129, class: 2, level: 600, str: 100000, dex: 100000, int: 250000, con: 430000, lck: 137000, health: 12149999616, min: 2050, max: 3398 }
         }
     },
     '200': {
