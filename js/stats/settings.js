@@ -2717,6 +2717,14 @@ const SettingsManager = new (class {
         }
     }
 
+    tracker () {
+        return new Settings(this.get('tracker', '', ''));
+    }
+
+    trackerConfig () {
+        return this.tracker().trackers;
+    }
+
     commit () {
         // Save current settings
         Preferences.set('settings', this.settings);

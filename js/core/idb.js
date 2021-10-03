@@ -325,7 +325,10 @@ const DatabaseManager = new (class {
         // Models
         this.Players = {};
         this.Groups = {};
-        this.Trackers = {};
+
+        this.TrackerData = {}; // Metadata
+        this.TrackedPlayers = {}; // Tracker results
+        this.TrackerConfig = {}; // Tracker configurations (individual trackers)
 
         // Pools
         this.Identifiers = Object.create(null);
@@ -510,19 +513,29 @@ const DatabaseManager = new (class {
             return DatabaseUtils.createSession(profile.slot).then(async database => {
                 this.Database = database;
 
-                let players = DatabaseUtils.filterArray(profile, 'players') || (await this.Database.where(
-                    'players',
-                    ... DatabaseUtils.profileFilter(profile, 'players')
-                ));
-
                 let groups = DatabaseUtils.filterArray(profile, 'groups') || (await this.Database.where(
                     'groups',
                     ... DatabaseUtils.profileFilter(profile, 'groups')
                 ));
+                for (const group of groups) {
+                    this._addGroup(group);
+                }
 
-                groups.forEach(group => this._addGroup(group));
-                players.forEach(group => this._addPlayer(group));
+                let players = DatabaseUtils.filterArray(profile, 'players') || (await this.Database.where(
+                    'players',
+                    ... DatabaseUtils.profileFilter(profile, 'players')
+                ));
+                for (const player of players) {
+                    this._addPlayer(player);
+                }
+
+                let trackers = await this.Database.where('trackers');
+                for (const tracker of trackers) {
+                    this.TrackedPlayers[tracker.identifier] = tracker;
+                }
+
                 this._updateLists();
+                this.refreshTrackers();
 
                 this.Hidden = new Set(Preferences.get('hidden_identifiers', []));
             });
@@ -717,18 +730,6 @@ const DatabaseManager = new (class {
         return Object.values(groups);
     }
 
-    refreshTrackers () {
-
-    }
-
-    track (player, nsave) {
-
-    }
-
-    untrack (pid, trackers) {
-
-    }
-
     _getFile (identifiers, timestamps, constraint = null) {
         let players = [];
         let groups = [];
@@ -795,9 +796,105 @@ const DatabaseManager = new (class {
             this._addPlayer(migratedPlayer);
 
             await this.Database.set('players', migratedPlayer);
+
+            const { identifier, timestamp } = migratedPlayer;
+            this._track(identifier, timestamp);
         }
 
         this._updateLists();
+    }
+
+    getTracker (identifier, tracker) {
+        return _dig(this.TrackedPlayers, identifier, tracker, 'out');
+    }
+
+    async refreshTrackers () {
+        this.TrackerConfig = SettingsManager.trackerConfig();
+        this.TrackerConfigEntries = Object.entries(this.TrackerConfig);
+        this.TrackerData = Preferences.get('tracker_data', {});
+
+        const addTrackers = _compact(this.TrackerConfigEntries.map(([ name, { ast, out, hash } ]) => this.TrackerData[name] != hash ? name : undefined));
+        const remTrackers = Object.keys(this.TrackerData).filter(name => !this.TrackerConfig[name]);
+
+        this.TrackerData = _array_to_hash(this.TrackerConfigEntries, ([name, { hash }]) => [name, hash]);;
+        Preferences.set('tracker_data', this.TrackerData);
+
+        if (_not_empty(remTrackers)) {
+            for (const name of remTrackers) {
+                Logger.log('TRACKER', `Removed tracker ${ name }`);
+            }
+
+            for (const identifier of Object.keys(this.TrackedPlayers)) {
+                await this._untrack(identifier, remTrackers);
+            }
+        }
+
+        if (_not_empty(addTrackers)) {
+            for (const [ name, { hash } ] of this.TrackerConfigEntries) {
+                if (this.TrackerData[name]) {
+                    if (hash != this.TrackerData[key]) {
+                        Logger.log('TRACKER', `Tracker ${ key } changed! ${ this.TrackerData[key] } -> ${ hash }`);
+                    }
+                } else {
+                    Logger.log('TRACKER', `Tracker ${ name } with hash ${ hash } added!`);
+                }
+            }
+
+            for (let identifier of Object.keys(this.Players)) {
+                await this._untrack(identifier, addTrackers);
+                for (const [ timestamp, ] of this.getPlayer(identifier).List) {
+                    if (this._track(identifier, timestamp)) {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    async _track (identifier, timestamp) {
+        const player = this.getPlayer(identifier, timestamp);
+        const playerTracker = this.TrackedPlayers[identifier] || {
+            identifier: identifier
+        };
+
+        let trackerChanged = false;
+        for (const [ name, { ast, out } ] of this.TrackerConfigEntries) {
+            const currentTracker = playerTracker[name];
+            if (ast.eval(player) && (_nil(currentTracker) || currentTracker.ts > timestamp)) {
+                playerTracker[name] = {
+                    ts: timestamp,
+                    out: out ? out.eval(player) : timestamp
+                }
+                trackerChanged = true;
+            }
+        }
+
+        if (trackerChanged) {
+            this.TrackedPlayers[identifier] = playerTracker;
+            await this.Database.set('trackers', playerTracker);
+
+            Logger.log('TRACKER', `Tracking updated for ${ identifier }`);
+        }
+
+        return trackerChanged;
+    }
+
+    async _untrack (identifier, removedTrackers) {
+        const currentTracker = this.TrackedPlayers[identifier];
+        if (currentTracker) {
+            let trackerChanged = false;
+            for (const name of Object.keys(currentTracker)) {
+                if (removedTrackers.includes(name)) {
+                    delete currentTracker[name];
+                    trackerChanged = true;
+                }
+            }
+
+            if (trackerChanged) {
+                this.TrackedPlayers[identifier] = currentTracker;
+                await this.Database.set('trackers', currentTracker);
+            }
+        }
     }
 
     async _import (json, timestamp, offset = -3600000, origin = null) {

@@ -99,9 +99,9 @@ class TableInstance {
 
         // Handle trackers
         let trackers = this.settings.trackers;
-        if (Object.keys(trackers).length && SiteOptions.tracker) {
+        if (Object.keys(trackers).length > 0) {
             // Get current tracker settings
-            let trackerSettings = new Settings(SettingsManager.get('tracker', '', PredefinedTemplates.Tracker));
+            let trackerSettings = SettingsManager.tracker();
             let trackerCode = trackerSettings.code;
 
             // Go through all required trackers

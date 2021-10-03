@@ -933,9 +933,8 @@ class Expression {
                         return undefined;
                     }
                 } else if (node.op == 'tracker' && node.args.length == 1) {
-                    // Player tracker
-                    if (player && DatabaseManager.getTracker(player.Identifier, node.args[0])) {
-                        return DatabaseManager.getTracker(player.Identifier, node.args[0]).out;
+                    if (player) {
+                        return DatabaseManager.getTracker(player.Identifier, node.args[0]);
                     } else {
                         return undefined;
                     }

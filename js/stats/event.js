@@ -1883,7 +1883,7 @@ class FilesView extends View {
 
     updateSearchResults () {
         this.updateSelectedCounter();
-        
+
         let prefixes = this.$filter_prefix.dropdown('get value');
         let group_identifiers = this.$filter_group.dropdown('get value').map(value => value != '0' ? value : undefined);
         let player_identifiers = this.$filter_player.dropdown('get value');
@@ -2284,13 +2284,11 @@ class SettingsView extends View {
             }).filter(obj => obj != null)
         ];
 
-        if (SiteOptions.tracker) {
-            settings.unshift({
-                name: '<i>Tracker Configuration</i>',
-                value: 'tracker',
-                selected: this.settings.name == 'tracker'
-            });
-        }
+        settings.unshift({
+            name: '<i>Tracker Configuration</i>',
+            value: 'tracker',
+            selected: this.settings.name == 'tracker'
+        });
 
         // Setup list
         this.$settingsList.settings_selectionlist({
@@ -2299,8 +2297,7 @@ class SettingsView extends View {
             onSave: value => this.save(),
             onRemove: value => {
                 SettingsManager.remove(value);
-
-                if (SiteOptions.tracker && value == 'tracker') {
+                if (value == 'tracker') {
                     DatabaseManager.refreshTrackers();
                 }
 
@@ -2328,8 +2325,7 @@ class SettingsView extends View {
         // Save current code
         this.settings.content = code;
         SettingsManager.save(this.settings.name, this.settings.content, this.settings.parent);
-
-        if (SiteOptions.tracker && this.settings.name == 'tracker') {
+        if (this.settings.name == 'tracker') {
             DatabaseManager.refreshTrackers();
         }
     }

@@ -23,6 +23,10 @@ function _nil (obj) {
     return !_present(obj);
 }
 
+function _compact (obj) {
+    return obj.filter(val => _present(val));
+}
+
 function _len_of_when (array, key) {
     let count = 0;
     for (const obj of array) {
