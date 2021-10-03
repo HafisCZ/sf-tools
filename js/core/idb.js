@@ -329,6 +329,7 @@ const DatabaseManager = new (class {
         this.TrackerData = {}; // Metadata
         this.TrackedPlayers = {}; // Tracker results
         this.TrackerConfig = {}; // Tracker configurations (individual trackers)
+        this.TrackerConfigEntries = [];
 
         // Pools
         this.Identifiers = Object.create(null);
