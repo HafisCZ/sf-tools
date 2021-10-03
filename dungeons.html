@@ -920,10 +920,12 @@
             var selected = 0;
 
             $(document.body).on('paste', function (event) {
-                try {
-                    showData(JSON.parse(event.originalEvent.clipboardData.getData('text')));
-                } catch (e) {
-                    console.info(e);
+                if (event.target.type != 'text') {
+                    try {
+                        showData(JSON.parse(event.originalEvent.clipboardData.getData('text')));
+                    } catch (e) {
+                        // Do nothing
+                    }
                 }
             });
 
