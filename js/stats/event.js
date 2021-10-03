@@ -89,7 +89,7 @@ class GroupDetailView extends View {
             DatabaseManager.export(null, [ this.timestamp, this.reference ], exportConstraints).then(Exporter.json);
         });
         this.$parent.find('[data-op="share"]').click(() => {
-            DatabaseManager.export(null, [ this.timestamp, this.reference ], exportConstraints).then(UI.OnlineShareFile.show);
+            DatabaseManager.export(null, [ this.timestamp, this.reference ], exportConstraints).then(data => UI.OnlineShareFile.show(data));
         });
 
         // Context menu
@@ -753,7 +753,7 @@ class PlayerHistoryView extends View {
             DatabaseManager.export([ this.identifier ], this.list.slice(0, 5).map(entry => entry[0])).then(Exporter.json);
         });
         this.$parent.find('[data-op="share"]').click(() => {
-            DatabaseManager.export([ this.identifier ]).then(UI.OnlineShareFile.show);
+            DatabaseManager.export([ this.identifier ]).then(data => UI.OnlineShareFile.show(data));
         });
 
         this.$name = this.$parent.find('[data-op="name"]');
@@ -926,7 +926,7 @@ class BrowseView extends View {
                             ids.push(source.attr('data-id'));
                         }
 
-                        DatabaseManager.export(ids).then(UI.OnlineShareFile.show);
+                        DatabaseManager.export(ids).then(data => UI.OnlineShareFile.show(data));
                     }
                 },
                 {
@@ -1382,7 +1382,7 @@ class GroupsView extends View {
                 {
                     label: 'Share',
                     action: (source) => {
-                        DatabaseManager.export([ source.attr('data-id') ]).then(UI.OnlineShareFile.show);
+                        DatabaseManager.export([ source.attr('data-id') ]).then(data => UI.OnlineShareFile.show(data));
                     }
                 },
                 {
@@ -1510,7 +1510,7 @@ class PlayersView extends View {
                 {
                     label: 'Share',
                     action: (source) => {
-                        DatabaseManager.export([ source.attr('data-id') ]).then(UI.OnlineShareFile.show);
+                        DatabaseManager.export([ source.attr('data-id') ]).then(data => UI.OnlineShareFile.show(data));
                     }
                 },
                 {
@@ -1737,7 +1737,7 @@ class FilesView extends View {
 
     // Export all to cloud
     exportAllCloud () {
-        DatabaseManager.export().then(UI.OnlineShareFile.show);
+        DatabaseManager.export().then(data => UI.OnlineShareFile.show(data));
     }
 
     // Export selected to json file
