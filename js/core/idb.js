@@ -798,9 +798,8 @@ const DatabaseManager = new (class {
         }
 
         this._updateLists();
-
         for (const { identifier, timestamp } of migratedPlayers) {
-            this._track(identifier, timestamp);
+            await this._track(identifier, timestamp);
         }
     }
 
