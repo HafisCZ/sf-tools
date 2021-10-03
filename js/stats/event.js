@@ -1833,11 +1833,6 @@ class FilesView extends View {
         this.$parent.find('[data-op="endpoint"]').click(() => this.importEndpoint());
         this.$parent.find('[data-op="shared"]').click(() => this.importCloud());
 
-        this.$uniqueTimestamp = this.$parent.find('[data-op="unique-timestamp"]');
-        this.$uniquePlayer = this.$parent.find('[data-op="unique-player"]');
-        this.$uniqueGroup = this.$parent.find('[data-op="unique-group"]');
-        this.$uniquePrefix = this.$parent.find('[data-op="unique-prefix"]');
-
         this.$filters = this.$parent.find('[data-op="filters"]');
         this.$results = this.$parent.find('[data-op="files-search-results"]');
         this.$parent.find('[data-op="mark-all"]').click(() => {
@@ -1934,11 +1929,6 @@ class FilesView extends View {
 
         this.timeArray = Object.entries(this.timeMap).sort((a, b) => parseInt(b[0]) - parseInt(a[1]));
 
-        this.$uniqueTimestamp.html(Object.keys(this.timeMap).length);
-        this.$uniquePlayer.html(Object.keys(this.playerMap).length);
-        this.$uniqueGroup.html(Object.keys(this.groupMap).length - 1);
-        this.$uniquePrefix.html(Object.keys(this.prefixMap).length);
-
         this.$filters.html(`
             <div class="field">
                 <label>Timestamp (<span data-op="unique-timestamp"></span> unique)</label>
@@ -1997,6 +1987,11 @@ class FilesView extends View {
         this.$filter_type = this.$parent.find('[data-op="files-search-type"]').dropdown({
             onChange: this.updateSearchResults.bind(this)
         });
+
+        this.$parent.find('[data-op="unique-timestamp"]').html(Object.keys(this.timeMap).length);
+        this.$parent.find('[data-op="unique-player"]').html(Object.keys(this.playerMap).length);
+        this.$parent.find('[data-op="unique-group"]').html(Object.keys(this.groupMap).length - 1);
+        this.$parent.find('[data-op="unique-prefix"]').html(Object.keys(this.prefixMap).length);
 
         if (DatabaseManager.Latest) {
             this.$filter_timestamp.dropdown('set selected', [ String(DatabaseManager.Latest) ]);
