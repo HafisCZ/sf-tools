@@ -535,7 +535,7 @@ const DatabaseManager = new (class {
                 }
 
                 this._updateLists();
-                this.refreshTrackers();
+                await this.refreshTrackers();
 
                 this.Hidden = new Set(Preferences.get('hidden_identifiers', []));
             });
