@@ -13,6 +13,7 @@
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
+        <script src="js/loca.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
 
@@ -222,11 +223,11 @@
             <h1> SFTools </h1>
             <div class="ui one columns stackable grid" style="display: none; margin-top: 1.5em; margin-bottom: 3.5em;" id="sf-about">
                 <div class="newcol column">
-                    <h3>Someone with a lot of free time</h3>
+                    <h3 data-loca="index.admin"></h3>
                     <h2 class="role-admin">mar21</h2>
                 </div>
                 <div class="newcol column">
-                    <h3>Helpers - Research, Testing, Feedback, etc.</h3>
+                    <h3 data-loca="index.helper"></h3>
                     <h2 class="role-veteran">BoeseMelone</h2>
                     <a href="https://www.youtube.com/channel/UCMsDR7QC6GPF3Wg4hMQIXKw"><h2 class="role-mentor linked">Zeraffim</h2></a>
                     <h2 class="role-admin">Zorago</h2>
@@ -243,7 +244,7 @@
                 </div>
                 <div class="newcol column" style="display: flex; margin-left: 10%; margin-right: 10%;">
                     <div style="flex: auto;">
-                        <h3>Testers</h3>
+                        <h3 data-loca="index.tester"></h3>
                         <h2 class="role-adventurer">bl4ckwoolf <span class="extras">the Tracker<span></h2>
                         <h2 class="role-adventurer">AreYouAWiiizard</h2>
                         <div class="divider"></div>
@@ -251,12 +252,12 @@
                         <h2 class="role-adventurer">dracareys</h2>
                     </div>
                     <div style="flex: auto;">
-                        <h3>Chief Wiki Manager</h3>
+                        <h3 data-loca="index.cwm"></h3>
                         <h2 class="role-toolwizard">rafa97sam</h2>
                     </div>
                 </div>
                 <div class="newcol column">
-                    <h3>Other mentions</h3>
+                    <h3 data-loca="index.others"></h3>
                     <h2 class="role-playa">Leander</h2>
                     <h2 class="role-playa">Playa TD</h2>
                     <h2 class="role-playa">Alex <span class="extras">the good dev<span></h2>
@@ -276,23 +277,17 @@
                 <div class="column">
                     <a href="stats.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Track progress of yourself and your guild
-                            </div>
-                            <div class="dvheader singleline">
-                                Statistics
-                            </div>
+                            <div class="dvdescription" data-loca="index.stats.desc"></div>
+                            <div class="dvheader singleline" data-loca="index.stats.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="stats.html?temp">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Create temporary instance of Statistics
-                            </div>
+                            <div class="dvdescription" data-loca="index.temp.desc"></div>
                             <div class="dvheader singleline">
-                                <span class="dvholder">Playground<span class="dvchild">Temporary</span></span>
+                                <span class="dvholder"><span data-loca="index.temp.title"></span><span class="dvchild" data-loca="temporary"></span></span>
                             </div>
                         </div>
                     </a>
@@ -300,168 +295,112 @@
                 <div class="column">
                     <a href="https://github.com/HafisCZ/sf-tools/wiki">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                How to do magic with tables and much more
-                            </div>
-                            <div class="dvheader singleline">
-                                Wiki
-                            </div>
+                            <div class="dvdescription" data-loca="index.wiki.desc"></div>
+                            <div class="dvheader singleline" data-loca="index.wiki.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="https://bit.ly/Rune-bonuses">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Zorago's rune bonus table
-                            </div>
-                            <div class="dvheader twoline">
-                                Rune Bonuses
-                            </div>
+                            <div class="dvdescription" data-loca="index.runes.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.runes.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="inventory.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Compare items, calculate upgrades & more
-                            </div>
-                            <div class="dvheader twoline">
-                                Inventory Manager
-                            </div>
+                            <div class="dvdescription" data-loca="index.inventory.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.inventory.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="idle.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Check the production of your Arena Manager
-                            </div>
-                            <div class="dvheader twoline">
-                                Arena Manager
-                            </div>
+                            <div class="dvdescription" data-loca="index.idle.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.idle.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="calendar.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Look at when you can catch pets
-                            </div>
-                            <div class="dvheader twoline">
-                                Pet Calendar
-                            </div>
+                            <div class="dvdescription" data-loca="index.calendar.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.calendar.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="compare.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Look at what changes if you equip the new item
-                            </div>
-                            <div class="dvheader twoline">
-                                Item Comparison
-                            </div>
+                            <div class="dvdescription" data-loca="index.compare.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.compare.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="simulator.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Simulate the probable outcome of a PvP battle
-                            </div>
-                            <div class="dvheader twoline">
-                                Fight Simulator
-                            </div>
+                            <div class="dvdescription" data-loca="index.players.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.players.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="guilds.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Simulate the probable outcome of a guild battle
-                            </div>
-                            <div class="dvheader twoline">
-                                Guild Simulator
-                            </div>
+                            <div class="dvdescription" data-loca="index.guild.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.guild.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="pets.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Simulate the probable outcome of a pet battle
-                            </div>
-                            <div class="dvheader twoline">
-                                Pet Simulator
-                            </div>
+                            <div class="dvdescription" data-loca="index.pets.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.pets.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="dungeons.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Simulate the probable outcome of a dungeon battle
-                            </div>
-                            <div class="dvheader twoline">
-                                Dungeon Simulator
-                            </div>
+                            <div class="dvdescription" data-loca="index.dungeons.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.dungeons.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="fights.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Display all PVP fights stored within archive file
-                            </div>
-                            <div class="dvheader twoline">
-                                Fight viewer
-                            </div>
+                            <div class="dvdescription" data-loca="index.fights.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.fights.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="digest.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Display all PVE fights stored within archive file
-                            </div>
-                            <div class="dvheader twoline">
-                                Boss viewer
-                            </div>
+                            <div class="dvdescription" data-loca="index.digest.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.digest.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="attributes.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                Curves & calculators
-                            </div>
-                            <div class="dvheader twoline">
-                                Gold & Experience
-                            </div>
+                            <div class="dvdescription" data-loca="index.atts.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.atts.title"></div>
                         </div>
                     </a>
                 </div>
                 <div class="column">
                     <a href="blacksmith.html">
                         <div class="dvselection">
-                            <div class="dvdescription">
-                                What it costs and what gets lost
-                            </div>
-                            <div class="dvheader twoline">
-                                Blacksmith Upgrades
-                            </div>
+                            <div class="dvdescription" data-loca="index.smith.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.smith.title"></div>
                         </div>
                     </a>
                 </div>
@@ -543,6 +482,8 @@
                     $('#sf-about').hide();
                 }
             });
+
+            localizeAll();
         </script>
     </body>
 </html>
