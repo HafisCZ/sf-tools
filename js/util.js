@@ -568,7 +568,7 @@ class ComplexDataType {
     }
 
     atLeast (size) {
-        return (this.ptr + size) < this.values.length;
+        return (this.ptr + size) <= this.values.length;
     }
 
     long () {
