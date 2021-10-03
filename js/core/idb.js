@@ -784,24 +784,24 @@ const DatabaseManager = new (class {
             }
         }
 
-        for (let group of groups) {
-            let migratedGroup = MigrationUtils.migrateGroup(group, origin);
-            this._addGroup(migratedGroup);
+        const migratedGroups = groups.map(group => MigrationUtils.migrateGroup(group, origin));
+        const migratedPlayers = players.map(player => MigrationUtils.migratePlayer(player, origin));
 
-            await this.Database.set('groups', migratedGroup);
+        for (let group of migratedGroups) {
+            this._addGroup(group);
+            await this.Database.set('groups', group);
         }
 
-        for (let player of players) {
-            let migratedPlayer = MigrationUtils.migratePlayer(player, origin);
-            this._addPlayer(migratedPlayer);
-
-            await this.Database.set('players', migratedPlayer);
-
-            const { identifier, timestamp } = migratedPlayer;
-            this._track(identifier, timestamp);
+        for (let player of migratedPlayers) {
+            this._addPlayer(player);
+            await this.Database.set('players', player);
         }
 
         this._updateLists();
+
+        for (const { identifier, timestamp } of migratedPlayers) {
+            this._track(identifier, timestamp);
+        }
     }
 
     getTracker (identifier, tracker) {
