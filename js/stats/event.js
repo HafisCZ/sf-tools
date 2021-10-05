@@ -1945,6 +1945,7 @@ class FilesView extends View {
         let group_identifiers = this.$filter_group.dropdown('get value').map(value => value != '0' ? value : undefined);
         let player_identifiers = this.$filter_player.dropdown('get value');
         let timestamps = this.$filter_timestamp.dropdown('get value').map(value => parseInt(value));
+        let origins = this.$filter_origin.dropdown('get value');
         let type = parseInt(this.$filter_type.dropdown('get value'));
 
         DatabaseManager.export(null, null, data => (
@@ -1952,6 +1953,7 @@ class FilesView extends View {
             (group_identifiers.length == 0 || group_identifiers.includes(data.group)) &&
             (player_identifiers.length == 0 || player_identifiers.includes(data.identifier)) &&
             (timestamps.length == 0 || timestamps.includes(data.timestamp)) &&
+            (origins.length == 0 || origins.includes(`${data.origin}`)) &&
             (!type || data.own != type - 1)
         )).then(({ players }) => {
             this.currentPlayers = players.reduce((memo, player) => {
@@ -2064,6 +2066,20 @@ class FilesView extends View {
                     <option value="2">Show only other characters</option>
                 </select>
             </div>
+            <div class="field">
+                <label>Origin</label>
+                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-origin">
+                    <option value="undefined">HAR</option>
+                    <option value="endpoint">Endpoint</option>
+                    <option value="endpoint/dungeons">Dungeons (Endpoint)</option>
+                    <option value="har/dungeons">Dungeons (HAR)</option>
+                    <option value="endpoint/pets">Pets (HAR)</option>
+                    <option value="har/pets">Pets (Endpoint)</option>
+                    <option value="merge">Merged</option>
+                    <option value="share">Shared</option>
+                    <option value="migration">Migrated</option>
+                </select>
+            </div>
         `);
 
         this.$filter_timestamp = this.$parent.find('[data-op="files-search-timestamp"]').dropdown({
@@ -2082,6 +2098,11 @@ class FilesView extends View {
         });
 
         this.$filter_prefix = this.$parent.find('[data-op="files-search-prefix"]').dropdown({
+            onChange: this.updateSearchResults.bind(this),
+            placeholder: 'Any'
+        });
+
+        this.$filter_origin = this.$parent.find('[data-op="files-search-origin"]').dropdown({
             onChange: this.updateSearchResults.bind(this),
             placeholder: 'Any'
         });
