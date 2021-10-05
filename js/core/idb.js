@@ -897,6 +897,17 @@ const DatabaseManager = new (class {
         }
     }
 
+    findVersionFor (timestamp) {
+        for (const identifier of this.Timestamps[timestamp]) {
+            const version = _dig(this.getAny(identifier), timestamp, 'Data', 'version');
+            if (version) {
+                return version;
+            }
+        }
+
+        return undefined;
+    }
+
     async _import (json, timestamp, offset = -3600000, origin = null) {
         if (Array.isArray(json)) {
             // Archive, Share
@@ -914,6 +925,7 @@ const DatabaseManager = new (class {
             let raws = [];
             let groups = [];
             let players = [];
+            let currentVersion = undefined;
 
             for (var [key, val, url, ts] of filterPlayaJSON(json)) {
                 if (ts) {
@@ -995,6 +1007,9 @@ const DatabaseManager = new (class {
                         for (const i of [4, 503, 504, 505, 561]) {
                             data.save[i] = 0;
                         }
+
+                        // Save version
+                        currentVersion = r.serverversion.number;
                     } else {
                         data.own = false;
                         data.name = r.otherplayername.string;
@@ -1018,6 +1033,10 @@ const DatabaseManager = new (class {
                         players.push(data);
                     }
                 }
+            }
+
+            for (const player of players) {
+                player.version = currentVersion;
             }
 
             await this._addFile(null, players, groups, origin);

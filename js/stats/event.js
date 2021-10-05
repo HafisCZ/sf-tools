@@ -1742,20 +1742,32 @@ class FilesView extends View {
 
     // Export selected to json file
     exportSelectedJson () {
-        let players = Object.values(this.selectedPlayers);
-        Exporter.json({
-            players: players,
-            groups: DatabaseManager.getGroupsFor(players)
-        });
+        if (this.simple) {
+            DatabaseManager.export(undefined, this.selectedFiles).then((file) => {
+                Exporter.json(file);
+            });
+        } else {
+            let players = Object.values(this.selectedPlayers);
+            Exporter.json({
+                players: players,
+                groups: DatabaseManager.getGroupsFor(players)
+            });
+        }
     }
 
     // Export selected to cloud
     exportSelectedCloud () {
-        let players = Object.values(this.selectedPlayers);
-        UI.OnlineShareFile.show({
-            players: players,
-            groups: DatabaseManager.getGroupsFor(players)
-        });
+        if (this.simple) {
+            DatabaseManager.export(undefined, this.selectedFiles).then((file) => {
+                UI.OnlineShareFile.show(file);
+            });
+        } else {
+            let players = Object.values(this.selectedPlayers);
+            UI.OnlineShareFile.show({
+                players: players,
+                groups: DatabaseManager.getGroupsFor(players)
+            });
+        }
     }
 
     // Delete all
@@ -1769,16 +1781,20 @@ class FilesView extends View {
 
     // Delete selected
     deleteSelected () {
-        DatabaseManager.remove(Object.values(this.selectedPlayers)).then(() => {
-            this.show();
-        });
+        if (this.simple) {
+            DatabaseManager.removeTimestamps(... this.selectedFiles).then(() => this.show());
+        } else {
+            DatabaseManager.remove(Object.values(this.selectedPlayers)).then(() => this.show());
+        }
     }
 
     // Merge selected
     mergeSelected () {
-        DatabaseManager.merge(_uniq(Object.values(this.selectedPlayers).map(player => player.timestamp))).then(() => {
-            this.show();
-        });
+        if (this.simple) {
+            DatabaseManager.merge(this.selectedFiles).then(() => this.show());
+        } else {
+            DatabaseManager.merge(_uniq(Object.values(this.selectedPlayers).map(player => player.timestamp))).then(() => this.show());
+        }
     }
 
     // Import file via har
@@ -1835,9 +1851,9 @@ class FilesView extends View {
 
         this.$filters = this.$parent.find('[data-op="filters"]');
         this.$results = this.$parent.find('[data-op="files-search-results"]');
-        this.$parent.find('[data-op="mark-all"]').click(() => {
-            this.markAll();
-        });
+        this.$resultsSimple = this.$parent.find('[data-op="files-search-results-simple"]');
+
+        this.$parent.find('[data-op="mark-all"]').click(() => this.markAll());
 
         this.prepareCheckbox('always_prev', 'alwaysprev');
         this.prepareCheckbox('obfuscated', 'obfuscated');
@@ -1846,39 +1862,68 @@ class FilesView extends View {
 
         this.$advancedLeft = this.$parent.find('[data-op="advanced-left"]');
         this.$advancedCenter = this.$parent.find('[data-op="advanced-center"]');
+        this.$simpleCenter = this.$parent.find('[data-op="simple-center"]');
 
         SiteOptions.onChange('advanced', enabled => this.setLayout(enabled));
-        this.setLayout(SiteOptions.advanced);
+        this.setLayout(SiteOptions.advanced, true);
     }
 
-    setLayout (advanced) {
+    setLayout (advanced, supressUpdate = false) {
         this.$advancedLeft.toggle(advanced);
         this.$advancedCenter.toggle(advanced);
-        this.show();
+        this.$simpleCenter.toggle(!advanced);
+        this.simple = !advanced;
+        if (!supressUpdate) this.show(true);
     }
 
     markAll () {
-        let playersToMark = [];
-        let playersToIgnore = [];
+        if (this.simple) {
+            let filesToMark = [];
+            let filesToIgnore = [];
 
-        for (let [uuid, player] of Object.entries(this.currentPlayers)) {
-            if (uuid in this.selectedPlayers) {
-                playersToIgnore.push(uuid);
-            } else {
-                playersToMark.push(uuid);
+            for (const timestamp of _int_keys(this.currentFiles)) {
+                if (this.selectedFiles.includes(timestamp)) {
+                    filesToIgnore.push(timestamp);
+                } else {
+                    filesToMark.push(timestamp);
+                }
             }
-        }
 
-        let noneToMark = _empty(playersToMark);
-        if (noneToMark && !_empty(playersToIgnore)) {
-            for (let uuid of playersToIgnore) {
-                delete this.selectedPlayers[uuid];
-                $(`[data-mark="${uuid}"] > i`).addClass('outline');
+            let noneToMark = _empty(filesToMark);
+            if (noneToMark && !_empty(filesToIgnore)) {
+                for (let timestamp of filesToIgnore) {
+                    _remove(this.selectedFiles, timestamp);
+                    $(`[data-timestamp="${timestamp}"] > i`).addClass('outline');
+                }
+            } else if (!noneToMark) {
+                for (let timestamp of filesToMark) {
+                    this.selectedFiles.push(timestamp);
+                    $(`[data-timestamp="${timestamp}"] > i`).removeClass('outline');
+                }
             }
-        } else if (!noneToMark) {
-            for (let uuid of playersToMark) {
-                this.selectedPlayers[uuid] = this.currentPlayers[uuid];
-                $(`[data-mark="${uuid}"] > i`).removeClass('outline');
+        } else {
+            let playersToMark = [];
+            let playersToIgnore = [];
+
+            for (let [uuid, player] of Object.entries(this.currentPlayers)) {
+                if (uuid in this.selectedPlayers) {
+                    playersToIgnore.push(uuid);
+                } else {
+                    playersToMark.push(uuid);
+                }
+            }
+
+            let noneToMark = _empty(playersToMark);
+            if (noneToMark && !_empty(playersToIgnore)) {
+                for (let uuid of playersToIgnore) {
+                    delete this.selectedPlayers[uuid];
+                    $(`[data-mark="${uuid}"] > i`).addClass('outline');
+                }
+            } else if (!noneToMark) {
+                for (let uuid of playersToMark) {
+                    this.selectedPlayers[uuid] = this.currentPlayers[uuid];
+                    $(`[data-mark="${uuid}"] > i`).removeClass('outline');
+                }
             }
         }
 
@@ -1886,7 +1931,11 @@ class FilesView extends View {
     }
 
     updateSelectedCounter () {
-        this.$fileCounter.html(_empty(this.selectedPlayers) ? 'No' : Object.keys(this.selectedPlayers).length);
+        if (this.simple) {
+            this.$fileCounter.html(_empty(this.selectedFiles) ? 'No' : Object.keys(this.selectedFiles).length);
+        } else {
+            this.$fileCounter.html(_empty(this.selectedPlayers) ? 'No' : Object.keys(this.selectedPlayers).length);
+        }
     }
 
     updateSearchResults () {
@@ -1931,6 +1980,37 @@ class FilesView extends View {
 
                 this.updateSelectedCounter();
             });
+        });
+    }
+
+    updateFileList () {
+        this.currentFiles = _array_to_hash(Object.keys(DatabaseManager.Timestamps).map(v => parseInt(v)), (ts) => [ts, {
+            prettyDate: formatDate(ts),
+            playerCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager._isPlayer(id)),
+            groupCount: _len_where(DatabaseManager.Timestamps[ts], id => !DatabaseManager._isPlayer(id)),
+            version: DatabaseManager.findVersionFor(ts)
+        }]);
+
+        this.$resultsSimple.html(Object.entries(this.currentFiles).map(([timestamp, { prettyDate, playerCount, groupCount, version }]) => `
+            <tr>
+                <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle ${ this.selectedFiles.includes(timestamp) ? '' : 'outline ' }icon"></i></td>
+                <td class="text-center">${ prettyDate }</td>
+                <td class="text-center">${ playerCount }</td>
+                <td>${ groupCount }</td>
+                <td>${ version || 'Not known' }</td>
+            </tr>
+        `).join(''));
+
+        this.$parent.find('[data-timestamp]').click((event) => {
+            let timestamp = parseInt(event.currentTarget.dataset.timestamp);
+
+            if ($(`[data-timestamp="${timestamp}"] > i`).toggleClass('outline').hasClass('outline')) {
+                _remove(this.selectedFiles, timestamp);
+            } else {
+                this.selectedFiles.push(timestamp);
+            }
+
+            this.updateSelectedCounter();
         });
     }
 
@@ -2013,15 +2093,22 @@ class FilesView extends View {
         }
     }
 
-    show () {
+    show (forceUpdate = false) {
         this.selectedPlayers = {};
+        this.selectedFiles = [];
 
         // Set counters
-        if (this.lastChange != DatabaseManager.LastChange) {
+        if (this.lastChange != DatabaseManager.LastChange || forceUpdate) {
             this.lastChange = DatabaseManager.LastChange;
-            this.updateLists();
+            if (this.simple) {
+                this.updateFileList();
+            } else {
+                this.updateLists();
+            }
+            this.updateSelectedCounter();
         } else {
             this.$results.find('[data-mark] > i').addClass('outline');
+            this.$results.find('[data-timestamp] > i').addClass('outline');
         }
     }
 }

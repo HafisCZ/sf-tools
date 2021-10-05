@@ -23,6 +23,13 @@ function _nil (obj) {
     return !_present(obj);
 }
 
+function _remove (arr, obj) {
+    const index = arr.indexOf(obj);
+    if (index > -1) {
+        arr.splice(index, 1);
+    }
+}
+
 function _compact (obj) {
     return obj.filter(val => _present(val));
 }
@@ -41,6 +48,10 @@ function _sort_des (array, map) {
     } else {
         return array.sort((a, b) => b - a);
     }
+}
+
+function _int_keys(hash) {
+    return Object.keys(hash).map(v => parseInt(v));
 }
 
 function _sort_asc (array, map) {
