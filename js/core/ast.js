@@ -2466,13 +2466,25 @@ const SP_KEYWORD_MAPPING_1 = {
         expr: p => p.Group.Pet
     },
     'Guild Portal Floor': {
-        expr: p => p.Group.Group ? p.Group.Group.PortalFloor : undefined
+        expr: p => _dig(p, 'Group', 'Group', 'PortalFloor')
     },
     'Guild Portal Life': {
-        expr: p => p.Group.Group ? p.Group.Group.PortalLife : undefined
+        expr: p => _dig(p, 'Group', 'Group', 'PortalLife')
     },
     'Guild Portal Percent': {
-        expr: p => p.Group.Group ? p.Group.Group.PortalPercent : undefined
+        expr: p => _dig(p, 'Group', 'Group', 'PortalPercent')
+    },
+    'Guild Honor': {
+        expr: p => _dig(p, 'Group', 'Group', 'Honor')
+    },
+    'Guild Knights': {
+        expr: p => _dig(p, 'Group', 'Group', 'TotalKnights')
+    },
+    'Guild Treasure': {
+        expr: p => (_dig(p, 'Group', 'Group', 'TotalTreasure') || 0) + 2 * Math.min(p.Dungeons.Raid, 50)
+    },
+    'Guild Instructor': {
+        expr: p => (_dig(p, 'Group', 'Group', 'TotalInstructor') || 0) + 2 * Math.min(p.Dungeons.Raid, 50)
     }
 };
 

@@ -579,6 +579,10 @@ class SFGroup {
                 this.MemberCount--;
             }
         }
+
+        this.TotalKnights = data.save[370];
+        this.TotalInstructor = Math.trunc(Math.min(_sum(this.Instructors), 500) / 5);
+        this.TotalTreasure = Math.trunc(Math.min(_sum(this.Treasures), 500) / 5);
     }
 }
 
