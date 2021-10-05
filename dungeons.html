@@ -1169,7 +1169,7 @@
                                 let pendingPromises = [];
                                 Array.from(fileEvent.target.files).forEach(file => {
                                     pendingPromises.push(file.text().then(fileContent => {
-                                        return DatabaseManager.import(fileContent, file.lastModified);
+                                        return DatabaseManager.import(fileContent, file.lastModified, undefined, 'har/dungeons');
                                     }));
                                 });
 

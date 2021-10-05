@@ -1965,7 +1965,8 @@ class FilesView extends View {
                     <td class="text-center">${ this.timeMap[player.timestamp] }</td>
                     <td class="text-center">${ this.prefixMap[player.prefix] }</td>
                     <td>${ player.name }</td>
-                    <td>${ this.groupMap[player.group] || '' }</td>
+                    <td class="text-center">${ this.groupMap[player.group] || '' }</td>
+                    <td class="text-center">${ player.origin || '' }</td>
                 </tr>
             `).join(''));
 
@@ -1988,16 +1989,18 @@ class FilesView extends View {
             prettyDate: formatDate(ts),
             playerCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager._isPlayer(id)),
             groupCount: _len_where(DatabaseManager.Timestamps[ts], id => !DatabaseManager._isPlayer(id)),
-            version: DatabaseManager.findVersionFor(ts)
+            version: DatabaseManager.findDataFieldFor(ts, 'version'),
+            origin: DatabaseManager.findDataFieldFor(ts, 'origin')
         }]);
 
-        this.$resultsSimple.html(Object.entries(this.currentFiles).map(([timestamp, { prettyDate, playerCount, groupCount, version }]) => `
+        this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin }]) => `
             <tr>
                 <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle ${ this.selectedFiles.includes(timestamp) ? '' : 'outline ' }icon"></i></td>
                 <td class="text-center">${ prettyDate }</td>
                 <td class="text-center">${ playerCount }</td>
                 <td>${ groupCount }</td>
-                <td>${ version || 'Not known' }</td>
+                <td class="text-center">${ version || 'Not known' }</td>
+                <td class="text-center">${ origin || '' }</td>
             </tr>
         `).join(''));
 
@@ -3281,7 +3284,7 @@ class OnlineFilesView extends View {
         this.onReceive = (code, obj) => {
             this.$ok.removeClass('loading');
             if (code && obj) {
-                DatabaseManager.import(JSON.parse(obj).data).then(() => {
+                DatabaseManager.import(JSON.parse(obj).data, undefined, undefined, 'shared').then(() => {
                     this.$parent.modal('hide');
                     callback();
                 });

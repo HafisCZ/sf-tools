@@ -1053,7 +1053,7 @@
                                     </div>
                                 </div>
                             `).click(() => {
-                                Endpoint.start('endpoint/dungeons').then(() => {
+                                Endpoint.start('endpoint/pets').then(() => {
                                     $('#load-stats').trigger('click');
                                 });
                             }),
@@ -1064,7 +1064,7 @@
                                 <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
                             `).change((fileEvent) => {
                                 let pendingPromises = [];
-                                Array.from(fileEvent.target.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified))));
+                                Array.from(fileEvent.target.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified, undefined, 'har/pets'))));
                                 Promise.all(pendingPromises).then(() => {
                                     $('#load-stats').trigger('click');
                                 });

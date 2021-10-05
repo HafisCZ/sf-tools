@@ -897,9 +897,9 @@ const DatabaseManager = new (class {
         }
     }
 
-    findVersionFor (timestamp) {
+    findDataFieldFor (timestamp, field) {
         for (const identifier of this.Timestamps[timestamp]) {
-            const version = _dig(this.getAny(identifier), timestamp, 'Data', 'version');
+            const version = _dig(this.getAny(identifier), timestamp, 'Data', field);
             if (version) {
                 return version;
             }
