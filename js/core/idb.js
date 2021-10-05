@@ -335,6 +335,7 @@ const DatabaseManager = new (class {
         this.Identifiers = Object.create(null);
         this.Timestamps = Object.create(null);
         this.Prefixes = [];
+        this.GroupNames = {};
     }
 
     // INTERNAL: Add player
@@ -361,6 +362,10 @@ const DatabaseManager = new (class {
 
         if (this.hasGroup(data.group, data.timestamp)) {
             this.Groups[data.group][data.timestamp].MembersPresent++;
+        }
+
+        if (data.group) {
+            this.GroupNames[data.group] = data.groupname;
         }
 
         this._registerModel('Players', data.identifier, data.timestamp, player);
