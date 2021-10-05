@@ -834,7 +834,7 @@ class TableInstance {
 
         // Get rows
         if (typeof this.cache.rows == 'undefined' && this.settings.customRows.length) {
-            this.cache.rows = join(this.settings.customRows, row => this.getRow(leftSpan, row, row.eval.value, undefined, this.array[0][1])) + this.getDivider(leftSpan, true, false);
+            this.cache.rows = join(this.settings.customRows, row => this.getRow(leftSpan, row, row.eval.value, undefined, _dig(this.array, 0, 1))) + this.getDivider(leftSpan, true, false);
         }
 
         // Create left headers
