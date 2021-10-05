@@ -78,6 +78,7 @@ const SiteOptions = new (class {
         this.options = {
             insecure: false,
             obfuscated: false,
+            advanced: false,
             groups_hidden: false,
             players_hidden: false,
             browse_hidden: false,
@@ -85,6 +86,8 @@ const SiteOptions = new (class {
             players_other: false,
             always_prev: false
         };
+
+        this.listeners = [];
 
         Object.assign(this.options, SharedPreferences.get('options', {}));
 
@@ -97,9 +100,23 @@ const SiteOptions = new (class {
                 set: function (value) {
                     this.options[propName] = value;
                     SharedPreferences.set('options', this.options);
+                    this.changed(propName);
                 }
             });
         }
+    }
+
+    changed (option) {
+        for (const { name, callback } of this.listeners) {
+            if (name == option) callback(this.options[option]);
+        }
+    }
+
+    onChange (option, listener) {
+        this.listeners.push({
+            name: option,
+            callback: listener
+        })
     }
 })();
 

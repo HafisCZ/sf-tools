@@ -1842,6 +1842,7 @@ class FilesView extends View {
         this.prepareCheckbox('always_prev', 'alwaysprev');
         this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('insecure', 'insecure');
+        this.prepareCheckbox('advanced', 'advanced');
     }
 
     markAll () {
