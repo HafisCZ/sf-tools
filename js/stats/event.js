@@ -1843,6 +1843,18 @@ class FilesView extends View {
         this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('insecure', 'insecure');
         this.prepareCheckbox('advanced', 'advanced');
+
+        this.$advancedLeft = this.$parent.find('[data-op="advanced-left"]');
+        this.$advancedCenter = this.$parent.find('[data-op="advanced-center"]');
+
+        SiteOptions.onChange('advanced', enabled => this.setLayout(enabled));
+        this.setLayout(SiteOptions.advanced);
+    }
+
+    setLayout (advanced) {
+        this.$advancedLeft.toggle(advanced);
+        this.$advancedCenter.toggle(advanced);
+        this.show();
     }
 
     markAll () {
