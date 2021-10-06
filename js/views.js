@@ -40,7 +40,7 @@ class FloatingPopup {
             transition: 'fade',
             closable: this.closeable,
             onHidden: () => this.resolvePromise(),
-            duration: 600
+            duration: 0
         }).modal('show');
     }
 
