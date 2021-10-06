@@ -88,7 +88,7 @@ const TermsAndConditionsPopup = new (class extends UncloseableFloatingPopup {
                         <li style="margin-top: 0.5em;">The site is distributed <b>AS IS</b> wthout any warranties. You are fully responsible for use of this site.</li>
                         <li style="margin-top: 0.5em;">You're free to share, copy and modify the site, but you are not allowed to distribute it or any of it's parts without explicit approval.</li>
                         <li style="margin-top: 0.5em;">You agree to limit data collection from the game to reasonable amounts.</li>
-                        <li style="margin-top: 0.5em;">You agree to follow the Shakes & Fidget <a href="https://s1.sfgame.de/legal.php?l=en&t=terms">Terms and Conditions</a></li>
+                        <li style="margin-top: 0.5em;">You agree to follow the Shakes & Fidget <a href="https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html">Terms and Conditions</a></li>
                         <li style="margin-top: 0.5em;">You are not allowed to automate any part of this tool.</li>
                     </ul>
                 </div>
