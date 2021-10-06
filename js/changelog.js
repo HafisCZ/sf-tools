@@ -1,4 +1,48 @@
 const CHANGELOG = {
+    'v5.0190': {
+        'Statistics': [
+            'Reworked database & file handling and loading improved speed',
+            'Reworked response parser',
+            'Added many performance optimizations',
+            'Added advanced & simple modes for file management',
+            'Added origin value to players (how they were added into the tool)',
+            'Added several group headers',
+            'Added item names',
+            'Added Summer event and other misc data',
+            'Added simple tool profiles',
+            'Added new version of html2canvas library',
+            'Fixed settings bug when using Safari on iOS',
+            'Fixed custom rows without players in Me',
+            'Fixed cacheable detection for expressions',
+            'Fixed headers for misordered dungeons',
+            'Fixed scrapbook decoding',
+            'Fixed extensive loading time of Files tab',
+            'Removed option to disable lazy loading'
+        ],
+        'Dungeon Simulator': [
+            'Added standalone endpoint & HAR integration',
+            'Added Tavern of the Dark Doppelgangers',
+            'Adjusted several armor values for Shadow World opponents'
+        ],
+        'Pet Simulator': [
+            'Added standalone endpoint & HAR integration',
+            'Added simulate all option',
+            'Fixed mage check for whether fight is possible'
+        ],
+        'Boss Viewer': [
+            'Added support for companion data'
+        ],
+        'Inventory Manager': [
+            'Added Mannequin',
+            'Fixed shop items not appearing'
+        ],
+        'All tools': [
+            'Added new Terms of Service and Changlog pop-ups',
+            'Added partial support for multiple languages',
+            'Added Sentry for error tracking',
+            'Added new gem look'
+        ]
+    },
     'v4.1443': [
         'Added default sorting order.',
         'Added macro-able variables and fuctions.',
@@ -61,24 +105,6 @@ const CHANGELOG = {
         'Removed server selection from endpoint login.',
         'Removed developer view.'
     ],
-    'v4.1133': {
-        label: 'Announcement',
-        content: `
-            Heyo 👋<br>
-            <br>
-            As you might have noticed, SFTools has been very ... quiet ... lately.<br>
-            I didn't drop the project! So you don't need to worry about it disappearing anytime soon.
-            <br>
-            <br>
-            However ... ☹️<br>
-            I simply don't have enough time to keep the rate of updates going like before.<br>
-            If there is a major bug then I will fix it (obviously, I am not Playa), but anything unimportant (including promised features) will have to wait until I find any reasonable time for them.
-            <br>
-            <br>
-            With that said, have a nice 🎄Christmas🎄 :-)<br>
-            - mar
-        `
-    },
     'v4.1100': [
         'Added trackers. You can now save any data from milestones you want to track.<br/>Check the <a href="https://github.com/HafisCZ/sf-tools/wiki/6.-Trackers">wiki</a> to learn how they work and what you can do with them.',
         'Reworked template saving. To save a template click on the Save button and write a name / select existing template and click Save again.',
