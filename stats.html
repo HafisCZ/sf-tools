@@ -86,41 +86,6 @@
         <!-- ChangeLogView -->
         <div id="view-changelog" class="ui main container css-hidden">
             <div class="ui basic segment" style="padding: 0; padding-top: 1em;">
-                <div class="ui close left rail">
-                    <div class="ui basic segment">
-                        <h2 class="ui centered header">Usage terms</h2>
-                        <div style="text-align: left; margin-left: -3em; margin-right: -2em;">
-                            <ul>
-                                <li>
-                                    It is advised to never share HAR files, as they <b>might</b> contain private data.
-                                    If needed, you can import & export the file to create safe to share version.
-                                </li>
-                                <li style="margin-top: 1em;">
-                                    This site is distributed <b>AS IS</b>, without any warranties. It is recommended to keep a complete archive file or the original files used in case something happens.
-                                </li>
-                                <li style="margin-top: 1em;">
-                                    You are free to use, share and download this site, but you're not allowed to redistribute it or any of its parts.
-                                </li>
-                                <li style="margin-top: 1em;">
-                                    You agree to limit the data collection to reasonable amounts, such as capturing single guild or at most 100 players at once.
-                                </li>
-                                <li style="margin-top: 1em;">
-                                    By using this tool you agree to and follow the Shakes & Fidget <a href="https://s1.sfgame.de/legal.php?l=en&t=terms">Terms and Conditions</a>.
-                                </li>
-                                <li style="margin-top: 1em;">
-                                    All data shared via the integrated share function are not protected in any other way other than the share key. The key is valid only for 24 hours after which the data will be automatically deleted.
-                                </li>
-                                <li style="margin-top: 1em;">
-                                    Automating the collection process in any way is strictly forbidden!
-                                </li>
-                                <li style="margin-top: 1em;">
-                                    The owner of this site is in no way responsible for any losses caused by the use of this site or any of its functions.
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="ui tiny red basic fluid button" data-op="deny-terms">I no longer accept these terms</div>
-                    </div>
-                </div>
                 <div class="ui grid" data-op="list">
 
                 </div>
@@ -242,6 +207,10 @@
                         <div class="ui checkbox sf-margin left-20 top-05" data-op="checkbox-insecure">
                             <input type="checkbox">
                             <label>Allow restricted tags</label>
+                        </div>
+                        <div class="ui checkbox sf-margin left-20 top-05" data-op="checkbox-terms">
+                            <input type="checkbox">
+                            <label>Accept Terms of Service</label>
                         </div>
                     </div>
                 </div>

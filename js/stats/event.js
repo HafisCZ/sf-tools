@@ -1859,12 +1859,20 @@ class FilesView extends View {
         this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('insecure', 'insecure');
         this.prepareCheckbox('advanced', 'advanced');
+        this.prepareCheckbox('terms_accepted', 'terms');
 
         this.$advancedLeft = this.$parent.find('[data-op="advanced-left"]');
         this.$advancedCenter = this.$parent.find('[data-op="advanced-center"]');
         this.$simpleCenter = this.$parent.find('[data-op="simple-center"]');
 
         SiteOptions.onChange('advanced', enabled => this.setLayout(enabled));
+        SiteOptions.onChange('terms_accepted', enabled => {
+            if (enabled) {
+                this.$parent.find(`[data-op="checkbox-terms"]`).checkbox('set checked');
+            } else {
+                PopUpController.show(TermsAndConditionsPopup);
+            }
+        });
         this.setLayout(SiteOptions.advanced, true);
     }
 
@@ -2692,11 +2700,6 @@ class ChangeLogsView extends View {
         }
 
         this.$parent.find('[data-op="list"]').html(changes);
-
-        this.$parent.find('[data-op="deny-terms"]').click(() => {
-            SiteOptions.terms_accepted = false;
-            TermsAndConditionsPopup.open();
-        });
     }
 }
 
