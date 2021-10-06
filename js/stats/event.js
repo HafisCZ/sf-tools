@@ -2582,19 +2582,6 @@ class LoaderView extends View {
     }
 }
 
-// Setup View
-class SetupView extends View {
-    constructor (parent) {
-        super(parent);
-
-        this.$parent.find('[data-op="accept"]').click(function () {
-            localStorage.termsOK = true;
-
-            UI.show(UI.Groups);
-        });
-    }
-}
-
 class ConfirmDialogView extends View {
     constructor (parent) {
         super(parent);
@@ -2660,41 +2647,6 @@ class ConfirmDialogView extends View {
     }
 }
 
-// Changelog View
-class ChangeLogView extends View {
-    constructor (parent) {
-        super(parent);
-
-        var changes = '';
-        var label = '';
-
-        if (CHANGELOG[MODULE_VERSION] && CHANGELOG[MODULE_VERSION].label) {
-            label = CHANGELOG[MODULE_VERSION].label;
-            changes += `<div class="text-center" style="margin-left: 5em; margin-right: 7em; font-size: 110%;">${ CHANGELOG[MODULE_VERSION].content }<div>`;
-        } else {
-            label = MODULE_VERSION;
-            if (CHANGELOG[MODULE_VERSION]) {
-                for (var entry of CHANGELOG[MODULE_VERSION]) {
-                    changes += `
-                        <li style="margin-bottom: 1em;">
-                            ${ entry }
-                        </li>
-                    `;
-                }
-            }
-        }
-
-        this.$parent.find('[data-op="version"]').text(label);
-        this.$parent.find('[data-op="changes"]').html(changes);
-
-        this.$parent.find('[data-op="accept"]').click(function () {
-            localStorage.changeLogOk = MODULE_VERSION;
-
-            UI.show(UI.Groups);
-        });
-    }
-}
-
 class ChangeLogsView extends View {
     constructor (parent) {
         super(parent);
@@ -2742,8 +2694,8 @@ class ChangeLogsView extends View {
         this.$parent.find('[data-op="list"]').html(changes);
 
         this.$parent.find('[data-op="deny-terms"]').click(() => {
-            localStorage.termsOK = false;
-            UI.show(UI.Setup);
+            SiteOptions.terms_accepted = false;
+            TermsAndConditionsPopup.open();
         });
     }
 }
@@ -3374,7 +3326,5 @@ const UI = {
     preinitialize: function () {
         UI.Loader = new LoaderView('modal-loader');
         UI.Exception = new ExceptionView('modal-exception');
-        UI.Setup = new SetupView('modal-setup');
-        UI.ChangeLog = new ChangeLogView('modal-changelog');
     }
 }

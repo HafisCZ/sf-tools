@@ -1,7 +1,7 @@
 // Version stuff
 const MODULE_VERSION = 'v5.0000';
 const TABLE_VERSION = 'v9';
-const CORE_VERSION = 'BETA v1';
+const CORE_VERSION = 'BETA v2';
 
 const Logger = new (class {
     constructor () {
@@ -79,6 +79,8 @@ const SiteOptions = new (class {
             insecure: false,
             obfuscated: false,
             advanced: false,
+            terms_accepted: false,
+            version_accepted: false,
             groups_hidden: false,
             players_hidden: false,
             browse_hidden: false,
