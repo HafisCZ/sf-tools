@@ -129,34 +129,38 @@ const TermsAndConditionsPopup = new (class extends UncloseableFloatingPopup {
 
 const ChangeLogPopup = new (class extends UncloseableFloatingPopup {
     _createModal () {
-        let changes = '';
-        let label = '';
+        const release = MODULE_VERSION;
+        const entries = CHANGELOG[release];
 
-        if (CHANGELOG[MODULE_VERSION] && CHANGELOG[MODULE_VERSION].label) {
-            label = CHANGELOG[MODULE_VERSION].label;
-            changes += `<div class="text-center" style="margin-left: 5em; margin-right: 7em; font-size: 110%;">${ CHANGELOG[MODULE_VERSION].content }<div>`;
-        } else {
-            label = MODULE_VERSION;
-            if (CHANGELOG[MODULE_VERSION]) {
-                for (const entry of CHANGELOG[MODULE_VERSION]) {
-                    changes += `
-                        <li style="margin-bottom: 1em;">
-                            ${ entry }
-                        </li>
-                    `;
+        let content = '';
+        if (Array.isArray(entries)) {
+            for (const entry of entries) {
+                content += `
+                    <li style="margin-top: 0.5em;">${entry}</li>
+                `
+            }
+        } else if (entries) {
+            for (const [ category, changes ] of Object.entries(entries)) {
+                content += `<h4 class="ui header" style="color: orange; margin-left: -1em; margin-bottom: 0;">${category}</h4>`
+                for (const entry of changes) {
+                    content += `
+                        <li style="margin-top: 0.5em;">${entry}</li>
+                    `
                 }
             }
+        } else {
+            content = '<p style="text-align: center; margin-top: 20%; margin-bottom: 20%;"><b>Changes are yet to be announced</b></p>'
         }
 
         return `
             <div class="ui basic modal">
-                <h2 class="ui centered header">${label}</h2>
-                <div style="text-align: left; width: 50vw; line-height: 1.5em; max-height: 70vh; overflow-y: auto;">
+                <h2 class="ui centered header" style="padding-bottom: 0.5em;">Release <span style="color: orange;">${release}</span></h2>
+                <div style="text-align: left; margin-left: 15em; margin-right: 15em; line-height: 1.3em; max-height: 50vh; overflow-y: scroll;">
                     <ul>
-                        ${changes}
+                        ${content}
                     </ul>
                 </div>
-                <button class="ui inverted fluid button" style="width: 30%; margin-left: 35%; margin-right: 35%; margin-top: 2em;" data-op="accept">Ok</button>
+                <button class="ui black fluid button" style="width: 30%; margin-left: 35%; margin-right: 35%; margin-top: 2em;" data-op="accept">Continue</button>
             </div>
         `;
     }

@@ -2662,21 +2662,7 @@ class ChangeLogsView extends View {
         var changes = '';
 
         for (var [ version, content ] of Object.entries(CHANGELOG)) {
-            if (content.label) {
-                changes += `
-                    <div class="row css-row-ver">
-                        <div class="two wide column"></div>
-                        <div class="one wide column">
-                            <h3 class="ui header css-h3-ver">${ version }</h3>
-                        </div>
-                        <div class="thirteen wide column">
-                            <div style="margin-left: 2.75em; margin-top: 0.25em;">
-                                <h3 class="ui header" style="margin-bottom: 0.5em;">${ content.label }</h3>${ content.content }
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else {
+            if (Array.isArray(content)) {
                 changes += `
                     <div class="row css-row-ver">
                         <div class="two wide column"></div>
