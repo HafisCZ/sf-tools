@@ -156,6 +156,7 @@ class MigrationUtils {
         group.group = group.identifier;
         group.timestamp = parseInt(group.timestamp);
         group.own = group.own ? 1 : 0;
+        group.names = group.names || group.members;
 
         return group;
     }
