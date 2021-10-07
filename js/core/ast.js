@@ -107,6 +107,20 @@ class ExpressionScope {
         return this.self[offset];
     }
 
+    has (key) {
+        if (this.self.length && typeof this.self[0] === 'object' && key in this.self[0]) {
+            return true;
+        }
+
+        for (let i = 0; i < this.indirect.length; i++) {
+            if (typeof this.indirect[i] === 'object' && key in this.indirect[i]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     get (key) {
         if (this.self.length && typeof this.self[0] === 'object' && key in this.self[0]) {
             return this.self[0][key];
@@ -1026,8 +1040,8 @@ class Expression {
                 return SP_KEYWORDS[node].expr(player, reference, environment);
             } else if (player && SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
                 return SP_KEYWORDS_INDIRECT[node].expr(player, reference, environment, scope.getSelf());
-            } else if (scope && (scopeValue = scope.get(node)) != undefined) {
-                return scopeValue;
+            } else if (scope && scope.has(node)) {
+                return scope.get(node);
             } else if (node in environment.variables) {
                 let variable = environment.variables[node];
                 if (typeof variable.value != 'undefined') {
