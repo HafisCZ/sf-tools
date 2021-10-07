@@ -1260,7 +1260,7 @@ class Settings {
         // Parse settings
         for (let line of Settings.handleMacros(string, type)) {
             let command = SettingsCommands.find(command => command.isValid(line));
-            if (command) {
+            if (command && command.canParse) {
                 command.parse(this, line);
             }
         }
