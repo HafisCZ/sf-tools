@@ -838,8 +838,8 @@ const DatabaseManager = new (class {
         if (_not_empty(addTrackers)) {
             for (const [ name, { hash } ] of this.TrackerConfigEntries) {
                 if (this.TrackerData[name]) {
-                    if (hash != this.TrackerData[key]) {
-                        Logger.log('TRACKER', `Tracker ${ key } changed! ${ this.TrackerData[key] } -> ${ hash }`);
+                    if (hash != this.TrackerData[name]) {
+                        Logger.log('TRACKER', `Tracker ${ name } changed! ${ this.TrackerData[name] } -> ${ hash }`);
                     }
                 } else {
                     Logger.log('TRACKER', `Tracker ${ name } with hash ${ hash } added!`);
