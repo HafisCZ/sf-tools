@@ -186,7 +186,7 @@ class DatabaseUtils {
 
         let database = await new IndexedDBWrapper(... DATABASE_PARAMS_V5).open();
 
-        if (false && await IndexedDBWrapper.exists(... DATABASE_PARAMS_V1)) {
+        if (await IndexedDBWrapper.exists(... DATABASE_PARAMS_V1)) {
             Logger.log('MIGRATE', `Migrating files`);
 
             let migratedDatabase = await new IndexedDBWrapper(... DATABASE_PARAMS_V1).open();
@@ -211,7 +211,7 @@ class DatabaseUtils {
             Logger.log('MIGRATE', `Cleaning up database`);
 
             migratedDatabase.close();
-            //await _databaseDelete(DATABASE_PARAMS_V1[0]);
+            await IndexedDBWrapper.delete(DATABASE_PARAMS_V1[0]);
 
             Logger.log('MIGRATE', `All migrations finished`);
         }
