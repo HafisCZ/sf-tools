@@ -1325,7 +1325,7 @@
                                     }));
                                 }
 
-                                if (threads * iterations > 1E9) {
+                                if (threads * iterations > 1E7) {
                                     results = results.concat(truncateHealths(_sort_asc(healths)));
                                 } else {
                                     results = results.concat(healths);
