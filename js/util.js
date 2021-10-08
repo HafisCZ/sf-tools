@@ -29,7 +29,7 @@ function copyText (text) {
 
 function decodeScrapbook (data) {
     if (data) {
-        let base_string = atob(data.replaceAll('-', '+').replaceAll('_', '/'));
+        let base_string = atob(data.replace(/-/g, '+').replace(/_/g, '/'));
         let output = new Array(base_string.length * 8);
         for (let i = 0; i < base_string.length; i++) {
             let char = base_string.charCodeAt(i);
