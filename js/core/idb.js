@@ -592,21 +592,31 @@ const DatabaseManager = new (class {
                 if (!this.Identifiers[identifier]) {
                     delete this.Players[identifier];
                 }
-
-                if (group && this.Identifiers[group] && _empty(Array.from(this.Timestamps[timestamp]).filter(identifier => _dig(this.Players, identifier, timestamp, 'Data', 'group') == group))) {
-                    await this.Database.remove('groups', [group, timestamp]);
-                    await this._removeFromPool(group, timestamp);
-
-                    delete this.Groups[group][timestamp];
-                    if (!this.Identifiers[group]) {
-                        delete this.Groups[group];
-                    }
-                }
             }
 
+            await this._groupsCleanup();
             this._updateLists();
             resolve();
         });
+    }
+
+    async _groupsCleanup () {
+        for (const identifier of Object.keys(this.Groups)) {
+            for (const timestamp of this.Identifiers[identifier]) {
+                const group = this.getGroup(identifier, timestamp);
+                group.MembersPresent = Array.from(this.Timestamps[timestamp]).filter(id => _dig(this.Players, id, timestamp, 'Data', 'group') == identifier);
+
+                if (group.MembersPresent < 1) {
+                    await this.Database.remove('groups', [identifier, timestamp]);
+                    await this._removeFromPool(identifier, timestamp);
+
+                    delete this.Groups[identifier][timestamp];
+                    if (!this.Identifiers[identifier]) {
+                        delete this.Groups[identifier];
+                    }
+                }
+            }
+        }
     }
 
     // Remove one or more timestamps
