@@ -86,7 +86,8 @@ const SiteOptions = new (class {
             browse_hidden: false,
             groups_other: false,
             players_other: false,
-            always_prev: false
+            always_prev: false,
+            migration_allowed: false
         };
 
         this.listeners = [];

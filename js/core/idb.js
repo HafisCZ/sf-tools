@@ -181,12 +181,14 @@ class MigrationUtils {
 }
 
 class DatabaseUtils {
-    static async createSession(slot) {
+    static async migrateable (slot) {
         DATABASE_PARAMS_V1[0] = DatabaseUtils.getNameFromSlot(slot);
+        return IndexedDBWrapper.exists(... DATABASE_PARAMS_V1);
+    }
 
+    static async createSession(attemptMigration = false) {
         let database = await new IndexedDBWrapper(... DATABASE_PARAMS_V5).open();
-
-        if (await IndexedDBWrapper.exists(... DATABASE_PARAMS_V1)) {
+        if (attemptMigration && SiteOptions.migration_allowed) {
             Logger.log('MIGRATE', `Migrating files`);
 
             let migratedDatabase = await new IndexedDBWrapper(... DATABASE_PARAMS_V1).open();
@@ -504,7 +506,7 @@ const DatabaseManager = new (class {
     }
 
     // Load database
-    load (profile = DEFAULT_PROFILE) {
+    async load (profile = DEFAULT_PROFILE) {
         this._reset();
 
         if (profile.temporary) {
@@ -517,7 +519,8 @@ const DatabaseManager = new (class {
                 resolve();
             });
         } else {
-            return DatabaseUtils.createSession(profile.slot).then(async database => {
+            const attemptMigration = await DatabaseUtils.migrateable(profile.slot);
+            return DatabaseUtils.createSession(attemptMigration).then(async database => {
                 this.Database = database;
 
                 let groups = DatabaseUtils.filterArray(profile, 'groups') || (await this.Database.where(
@@ -541,6 +544,9 @@ const DatabaseManager = new (class {
                     this.TrackedPlayers[tracker.identifier] = tracker;
                 }
 
+                if (attemptMigration) {
+                    this._groupsCleanup();
+                }
                 this._updateLists();
                 await this.refreshTrackers();
 
