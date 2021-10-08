@@ -59,20 +59,11 @@ const PopUpController = new (class {
     constructor () {
         this.queue = [];
         this.active = undefined;
+        this.promise = Promise.resolve();
     }
 
     show (popup) {
-        if (popup) {
-            this.queue.push(popup);
-
-            if (!this.active) {
-                this.active = this.queue.shift();
-                this.active.open().then(() => {
-                    this.active = undefined;
-                    this.show(this.queue.shift());
-                });
-            }
-        }
+        return (this.promise = this.promise.then(() => popup.open()));
     }
 })();
 
@@ -168,6 +159,53 @@ const ChangeLogPopup = new (class extends UncloseableFloatingPopup {
     _createBindings () {
         this.$parent.find('[data-op="accept"]').click(() => {
             SiteOptions.version_accepted = MODULE_VERSION;
+            this.close();
+        });
+    }
+})();
+
+const PendingMigrationPopup = new (class extends UncloseableFloatingPopup {
+    _createModal () {
+        return `
+            <div class="ui basic mini modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
+                <h2 class="ui centered header" style="padding-bottom: 0.5em; padding-top: 0;">Migrate your data over to <span style="color: orange;">SFTools V5</span></h2>
+                <div style="text-align: justify; margin-top: 1em; line-height: 1.3em;">
+                    A migration is needed in order for you to be able to use your previously stored data.
+                </div>
+                <div style="text-align: justify; margin-top: 1em; line-height: 1.3em;">
+                    If you want to attempt the migration without possibly causing any permanent damage, press the Try button. After you verify that everything is in order you can relaunch the tool and press Continue.
+                </div>
+                <div style="text-align: justify; margin-top: 1em; line-height: 1.3em;">
+                    To proceed with the migration fully, click Continue button. Be aware that this is a destructive operation and after the migration finishes you won't be able to use your data with the previous versions of this tool.
+                </div>
+                <div style="text-align: justify; margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
+                    If the migration fails, please reload the site and click the Skip button. You will gain access to the site and your data won't be affected. You will need to wait until the issue is resolved or contact the support at support@mar21.eu.
+                </div>
+                <div class="ui three fluid buttons">
+                    <button class="ui black fluid button" data-op="skip">Skip</button>
+                    <button class="ui orange fluid button" data-op="try">Try</button>
+                    <button class="ui red fluid button" data-op="accept">Continue</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$parent.find('[data-op="try"]').click(() => {
+            SiteOptions.migration_allowed = true;
+            SiteOptions.migration_accepted = false;
+            this.close();
+        });
+
+        this.$parent.find('[data-op="accept"]').click(() => {
+            SiteOptions.migration_allowed = true;
+            SiteOptions.migration_accepted = true;
+            this.close();
+        });
+
+        this.$parent.find('[data-op="skip"]').click(() => {
+            SiteOptions.migration_allowed = false;
+            SiteOptions.migration_accepted = false;
             this.close();
         });
     }

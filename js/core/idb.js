@@ -188,34 +188,40 @@ class DatabaseUtils {
 
     static async createSession(attemptMigration = false) {
         let database = await new IndexedDBWrapper(... DATABASE_PARAMS_V5).open();
-        if (attemptMigration && SiteOptions.migration_allowed) {
-            Logger.log('MIGRATE', `Migrating files`);
 
-            let migratedDatabase = await new IndexedDBWrapper(... DATABASE_PARAMS_V1).open();
-            let migratedFiles = await migratedDatabase.where('files');
+        if (attemptMigration) {
+            await PopUpController.show(PendingMigrationPopup);
+            if (SiteOptions.migration_allowed) {
+                Logger.log('MIGRATE', `Migrating files`);
 
-            for (let file of migratedFiles) {
-                for (let player of file.players) {
-                    await database.set('players', MigrationUtils.migratePlayer(player, 'migration'));
+                let migratedDatabase = await new IndexedDBWrapper(... DATABASE_PARAMS_V1).open();
+                let migratedFiles = await migratedDatabase.where('files');
+
+                for (let file of migratedFiles) {
+                    for (let player of file.players) {
+                        await database.set('players', MigrationUtils.migratePlayer(player, 'migration'));
+                    }
+
+                    for (let group of file.groups) {
+                        await database.set('groups', MigrationUtils.migrateGroup(group, 'migration'));
+                    }
                 }
 
-                for (let group of file.groups) {
-                    await database.set('groups', MigrationUtils.migrateGroup(group, 'migration'));
+                Logger.log('MIGRATE', `Migrating trackers`);
+                let migratedTrackers = await migratedDatabase.where('profiles');
+                for (let tracker of migratedTrackers) {
+                    await database.set('trackers', tracker);
                 }
+
+                Logger.log('MIGRATE', `Cleaning up database`);
+
+                migratedDatabase.close();
+                if (SiteOptions.migration_accepted) {
+                    await IndexedDBWrapper.delete(DATABASE_PARAMS_V1[0]);
+                }
+
+                Logger.log('MIGRATE', `All migrations finished`);
             }
-
-            Logger.log('MIGRATE', `Migrating trackers`);
-            let migratedTrackers = await migratedDatabase.where('profiles');
-            for (let tracker of migratedTrackers) {
-                await database.set('trackers', tracker);
-            }
-
-            Logger.log('MIGRATE', `Cleaning up database`);
-
-            migratedDatabase.close();
-            await IndexedDBWrapper.delete(DATABASE_PARAMS_V1[0]);
-
-            Logger.log('MIGRATE', `All migrations finished`);
         }
 
         return database;
