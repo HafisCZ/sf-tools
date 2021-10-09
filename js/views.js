@@ -144,14 +144,14 @@ const ChangeLogPopup = new (class extends UncloseableFloatingPopup {
         }
 
         return `
-            <div class="ui basic modal">
-                <h2 class="ui centered header" style="padding-bottom: 0.5em;">Release <span style="color: orange;">${release}</span></h2>
-                <div style="text-align: left; margin-left: 15em; margin-right: 15em; line-height: 1.3em; max-height: 50vh; overflow-y: scroll;">
+            <div class="ui tiny basic modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
+                <h2 class="ui centered header" style="padding-top: 0; padding-bottom: 0.5em;">Release <span style="color: orange;">${release}</span></h2>
+                <div style="text-align: left; line-height: 1.3em; margin-left: -18px; max-height: 50vh; overflow-y: scroll;">
                     <ul>
                         ${content}
                     </ul>
                 </div>
-                <button class="ui black fluid button" style="width: 30%; margin-left: 35%; margin-right: 35%; margin-top: 2em;" data-op="accept">Continue</button>
+                <button class="ui black fluid button" style="margin-top: 2em;" data-op="accept">Continue</button>
             </div>
         `;
     }
