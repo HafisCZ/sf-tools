@@ -1196,8 +1196,6 @@ class SFOtherPlayer extends SFPlayer {
         dataType.clear(); // skip
 
         dataType = new ComplexDataType(data.pets);
-        dataType.assert(6);
-
         dataType.skip(1); // skip
         this.Pets = {
             Shadow: dataType.long(),
@@ -1526,8 +1524,6 @@ class SFOwnPlayer extends SFPlayer {
         }
 
         dataType = new ComplexDataType(data.pets);
-        dataType.assert(288);
-
         dataType.skip(2);
 
         let petLevels = dataType.sub(100);
@@ -1537,7 +1533,6 @@ class SFOwnPlayer extends SFPlayer {
         let earthCount = 0;
         let fireCount = 0;
         let waterCount = 0;
-
         let shadowLevel = 0;
         let lightLevel = 0;
         let earthLevel = 0;
