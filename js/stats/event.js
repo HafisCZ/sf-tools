@@ -2659,33 +2659,79 @@ class ChangeLogsView extends View {
     constructor (parent) {
         super(parent);
 
-        var changes = '';
 
-        for (var [ version, content ] of Object.entries(CHANGELOG)) {
-            if (Array.isArray(content)) {
-                changes += `
-                    <div class="row css-row-ver">
-                        <div class="two wide column"></div>
-                        <div class="one wide column">
-                            <h3 class="ui header css-h3-ver">${ version }</h3>
-                        </div>
-                        <div class="thirteen wide column">
-                            <ul class="css-ul-ver">
-                                ${
-                                    content.map(entry => `
-                                        <li style="margin-bottom: 1em;">
-                                            ${ entry }
-                                        </li>
-                                    `).join('')
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                `;
+        let entries = [];
+        let content = '';
+        if (Array.isArray(entries)) {
+            for (const entry of entries) {
+                content += `
+                    <li style="margin-top: 0.5em;">${entry}</li>
+                `
             }
+        } else if (entries) {
+
+        } else {
+            content = '<p><b>Changes are yet to be announced</b></p>'
         }
 
-        this.$parent.find('[data-op="list"]').html(changes);
+        this.$parent.find('[data-op="list"]').html(Object.keys(CHANGELOG).map((version) => this.getChanges(version)).join(''));
+    }
+
+    getChanges (version) {
+        const entries = CHANGELOG[version];
+
+        if (Array.isArray(entries)) {
+            const content = entries.map(entry => `<li style="margin-bottom: 0.5em;">${entry}</li>`).join('');
+            return `
+                <div class="row css-row-ver">
+                    <div class="two wide column"></div>
+                    <div class="one wide column">
+                        <h3 class="ui header css-h3-ver">${ version }</h3>
+                    </div>
+                    <div class="thirteen wide column">
+                        <ul class="css-ul-ver">
+                            ${content}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        } else if (entries) {
+            let content = ''
+            for (const [ category, changes ] of Object.entries(entries)) {
+                const entries = changes.map(entry => `<li style="margin-top: 0.5em;">${entry}</li>`).join('')
+                content += `
+                    <h3 class="ui header css-h3-ver" style="margin-left: 1.5em; margin-bottom: 0em; margin-top: ${content.length == 0 ? '0' : '1'}em !important;">${category}</h3>
+                    <ul class="css-ul-ver">
+                        ${entries}
+                    </ul>
+                `;
+            }
+            return `
+                <div class="row css-row-ver">
+                    <div class="two wide column"></div>
+                    <div class="one wide column">
+                        <h3 class="ui header css-h3-ver">${version}</h3>
+                    </div>
+                    <div class="thirteen wide column">
+                        ${content}
+                    </div>
+                </div>
+            `;
+        } else {
+            return `
+                <div class="row css-row-ver">
+                    <div class="two wide column"></div>
+                    <div class="one wide column">
+                        <h3 class="ui header css-h3-ver">${ version }</h3>
+                    </div>
+                    <div class="thirteen wide column">
+                        <ul class="css-ul-ver">
+                            Changes are yet to be announced
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
     }
 }
 
