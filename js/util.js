@@ -609,13 +609,9 @@ class ComplexDataType {
         return array;
     }
 
-    assert (size, soft) {
+    assert (size) {
         if (this.values.length < size) {
-            if (soft) {
-                ComplexDataType.Errors++;
-            } else {
-                throw `ComplexDataType Exception: Expected ${ size } values but ${ this.values.length } were supplied!`;
-            }
+            throw `ComplexDataType Exception: Expected ${ size } values but ${ this.values.length } were supplied!`;
         }
     }
 
@@ -639,8 +635,6 @@ class ComplexDataType {
         return this;
     }
 }
-
-ComplexDataType.Errors = 0;
 
 function compareItems (a, b) {
     if (typeof(a) == 'string' && typeof(b) == 'string') {

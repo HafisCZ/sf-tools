@@ -1059,7 +1059,7 @@ class SFOtherPlayer extends SFPlayer {
         this.init(data);
 
         var dataType = new ComplexDataType(data.save);
-        dataType.assert(256, true);
+        dataType.assert(256);
 
         this.ID = dataType.long();
         this.LastOnline = dataType.long() * 1000 + data.offset;
@@ -1196,7 +1196,7 @@ class SFOtherPlayer extends SFPlayer {
         dataType.clear(); // skip
 
         dataType = new ComplexDataType(data.pets);
-        dataType.assert(6, true);
+        dataType.assert(6);
 
         dataType.skip(1); // skip
         this.Pets = {
@@ -1526,7 +1526,7 @@ class SFOwnPlayer extends SFPlayer {
         }
 
         dataType = new ComplexDataType(data.pets);
-        dataType.assert(288, true);
+        dataType.assert(288);
 
         dataType.skip(2);
 
