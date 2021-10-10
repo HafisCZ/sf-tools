@@ -2747,22 +2747,6 @@ class ExceptionView extends View {
     }
 }
 
-class InfoView extends View {
-    constructor (parent) {
-        super(parent);
-
-        this.$name = this.$parent.find('[data-op="name"]');
-        this.$content = this.$parent.find('[data-op="content"]');
-    }
-
-    show (name, text) {
-        this.$name.html(name);
-        this.$content.html(text);
-
-        this.$parent.modal('show');
-    }
-}
-
 class OnlineShareFileView extends View {
     constructor (parent) {
         super(parent);
