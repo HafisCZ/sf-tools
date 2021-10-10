@@ -1773,14 +1773,14 @@ class FilesView extends View {
     // Delete all
     deleteAll () {
         UI.ConfirmDialog.show('Database wipe', 'Are you sure you want to delete all stored player data?', () => {
-            DatabaseManager.removeTimestamps(... Object.keys(DatabaseManager.Timestamps)).then(() => {
-                this.show();
-            });
+            PopUpController.open(LoaderPopup);
+            DatabaseManager.removeTimestamps(... Object.keys(DatabaseManager.Timestamps)).then(() => this.show());
         }, true);
     }
 
     // Delete selected
     deleteSelected () {
+        PopUpController.open(LoaderPopup);
         if (this.simple) {
             DatabaseManager.removeTimestamps(... this.selectedFiles).then(() => this.show());
         } else {
@@ -1790,6 +1790,7 @@ class FilesView extends View {
 
     // Merge selected
     mergeSelected () {
+        PopUpController.open(LoaderPopup);
         if (this.simple) {
             DatabaseManager.merge(this.selectedFiles).then(() => this.show());
         } else {
@@ -1799,6 +1800,8 @@ class FilesView extends View {
 
     // Import file via har
     importJson (fileEvent) {
+        PopUpController.open(LoaderPopup);
+        
         let pendingPromises = [];
         Array.from(fileEvent.target.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified).catch((exception) => {
             console.error(exception);
@@ -1806,23 +1809,17 @@ class FilesView extends View {
             Logger.log('WARNING', 'Error occured while trying to import a file!');
         }))));
 
-        Promise.all(pendingPromises).then(() => {
-            this.show();
-        });
+        Promise.all(pendingPromises).then(() => this.show());
     }
 
     // Import file via endpoint
     importEndpoint () {
-        Endpoint.start().then(() => {
-            UI.current.show();
-        });
+        Endpoint.start().then(() => this.show());
     }
 
     // Import file via cloud
     importCloud () {
-        UI.OnlineFiles.show(() => {
-            UI.show(UI.Files);
-        });
+        UI.OnlineFiles.show(() => this.show());
     }
 
     // Prepare checkbox
@@ -2134,6 +2131,8 @@ class FilesView extends View {
     show (forceUpdate = false) {
         this.selectedPlayers = {};
         this.selectedFiles = [];
+
+        PopUpController.close(LoaderPopup);
 
         // Set counters
         if (this.lastChange != DatabaseManager.LastChange || forceUpdate) {
