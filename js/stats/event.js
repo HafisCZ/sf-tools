@@ -1156,7 +1156,7 @@ class BrowseView extends View {
 
                         var matches = true;
                         for (var term of terms) {
-                            matches &= term.test(term.arg, currentPlayer[1], this.timestamp, (ts || currentPlayer)[1]);
+                            matches &= term.test(term.arg, DatabaseManager._loadPlayer(currentPlayer[1]), this.timestamp, (ts || currentPlayer)[1]);
                         }
 
                         if (matches) {
