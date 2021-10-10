@@ -873,7 +873,7 @@ const DatabaseManager = new (class {
 
                 const list = this.getPlayer(identifier).List;
                 for (let i = list.length - 1; i >= 0; i--) {
-                    if (this._track(identifier, _dig(list, i, 0))) {
+                    if (await this._track(identifier, _dig(list, i, 0))) {
                         break;
                     }
                 }
