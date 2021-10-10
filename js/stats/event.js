@@ -1801,7 +1801,7 @@ class FilesView extends View {
     // Import file via har
     importJson (fileEvent) {
         PopUpController.open(LoaderPopup);
-        
+
         let pendingPromises = [];
         Array.from(fileEvent.target.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified).catch((exception) => {
             console.error(exception);
@@ -1867,7 +1867,7 @@ class FilesView extends View {
             if (enabled) {
                 this.$parent.find(`[data-op="checkbox-terms"]`).checkbox('set checked');
             } else {
-                PopUpController.show(TermsAndConditionsPopup);
+                PopUpController.open(TermsAndConditionsPopup);
             }
         });
         this.setLayout(SiteOptions.advanced, true);
