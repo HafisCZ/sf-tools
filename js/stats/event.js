@@ -2597,22 +2597,25 @@ class ConfirmDialogView extends View {
             this.hide();
         });
 
-        this.$yes = this.$parent.find('[data-op="yes"]');
+        this.$yes = this.$parent.find('[data-op="yes"]').click(() => {
+            this.accept();
+        });
+
         this.$title = this.$parent.find('[data-op="title"]');
         this.$content = this.$parent.find('[data-op="content"]');
+    }
+
+    accept () {
+        if (this.commitAction) {
+            this.commitAction();
+        }
+        this.hide();
     }
 
     show (title, content, action, delayedYes = false) {
         this.$title.text(title);
         this.$content.text(content);
-
-        this.$yes.one('click', () => {
-            if (action) {
-                action();
-            }
-
-            this.hide();
-        });
+        this.commitAction = action;
 
         if (delayedYes) {
             this.$yes.addClass('disabled').text('Wait 2 seconds ...');
