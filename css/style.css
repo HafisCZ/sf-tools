@@ -9,6 +9,11 @@ body {
     overflow-x: auto;
 }
 
+.profiles-disabled {
+    pointer-events: none;
+    opacity: 50%;
+}
+
 .css-timestamp {
     position: absolute;
     top: 0.25em;

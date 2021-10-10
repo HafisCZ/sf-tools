@@ -88,7 +88,8 @@ const SiteOptions = new (class {
             players_other: false,
             always_prev: false,
             migration_allowed: true,
-            migration_accepted: false
+            migration_accepted: false,
+            profile: 'default'
         };
 
         this.listeners = [];
@@ -136,7 +137,7 @@ const DEFAULT_PROFILE = Object.freeze({
 
 const ProfileManager = new (class {
     constructor () {
-        this.profiles = {
+        this.profiles = Object.assign({
             'default': DEFAULT_PROFILE,
             'own': {
                 name: 'Own only',
@@ -152,7 +153,7 @@ const ProfileManager = new (class {
                 }
             },
             'month_old': {
-                name: '< 1 month',
+                name: 'Newer that 1 month',
                 filters: {
                     players: {
                         name: 'timestamp',
@@ -166,30 +167,36 @@ const ProfileManager = new (class {
                     }
                 }
             }
-        };
-
-        Object.assign(this.profiles, Preferences.get('profiles', {}));
-        this.profile = Preferences.get('profiles_last', 'default');
+        }, Preferences.get('profiles', {}));
     }
 
-    getProfiles () {
-        return Object.entries(this.profiles).map(([key, { name }]) => {
-            return {
-                selected: this.profile == key,
-                value: key,
-                name
-            }
-        });
+    getDefaultProfile () {
+        return this.profiles['default'];
+    }
+
+    getActiveProfile () {
+        return this.profiles[SiteOptions.profile] || this.getDefaultProfile();
     }
 
     getProfile (name) {
-        this.profile = name;
-        Preferences.set('profiles_last', name);
-
-        return this.profiles[name];
+        return this.profiles[name] || this.getActiveProfile();
     }
 
-    getLastProfile () {
-        return this.profile;
+    setActiveProfile (name) {
+        SiteOptions.profile = name;
+    }
+
+    removeProfile (name) {
+        delete this.profiles[name];
+        Preferences.set('profiles', this.profiles);
+    }
+
+    setProfile (name, profile) {
+        this.profiles[name] = profile;
+        Preferences.set('profiles', this.profiles);
+    }
+
+    getProfiles () {
+        return Object.entries(this.profiles);
     }
 })();

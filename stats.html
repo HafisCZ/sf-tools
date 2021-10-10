@@ -52,12 +52,9 @@
             <a class="item" id="show-settings"><i class="small edit icon"></i>Scripts</a>
             <a class="item" id="show-files"><i class="small folder open icon"></i>Files</a>
             <div class="right menu" id="show-right-menu">
-                <a class="item" href="stats.html?temp" target="_blank"><i class="small user secret icon"></i><span class="css-small">Temporary session<span></a>
-                <a class="item" id="show-changelog"><i class="small sticky note icon"></i><span class="css-small">Changelog<span></a>
-                <div class="item clickable" style="width: 10rem;" data-op="profile-div">
-                    <div style="font-size: 65%; position: absolute; top: 1em;">Profile:</div>
-                    <div class="css-small" style="position: absolute; bottom: 0.8em;" data-op="change-profile"></div>
-                </div>
+                <a class="item" href="stats.html?temp" target="_blank"><i class="small user secret icon"></i>Temporary session</a>
+                <a class="item" id="show-changelog"><i class="small sticky note icon"></i>Changelog</a>
+                <a class="item" id="show-profile"><i class="small wrench icon"></i>Profile</a>
             </div>
         </div>
 
@@ -660,101 +657,49 @@
             <table class="sftools-table" data-op="table"></table>
         </div>
 
-        <div id="modal-select-profile" class="ui mini modal">
-            <div class="header">Select profile</div>
-            <div class="content text-center">
-                <div class="ui massive link list">
-
-                </div>
-            </div>
-        </div>
-
         <!-- UI Handler -->
         <script type="text/javascript">
-            var rawKeys = window.location.href.split(/[\?\&]/);
-            var keys = {};
-
-            for (var key of rawKeys.slice(1)) {
-                if (key.includes('=')) {
-                    var [k, v] = key.split('=', 2);
-                    keys[k] = v;
-                } else {
-                    keys[key] = -1;
-                }
-            }
-
-            var temp = keys['temp'] == -1;
-            if (temp) {
-                $('.css-temporary').removeClass('css-hidden');
-            }
-
-            let $profileSelector = $('[data-op="change-profile"]');
-            let currentView = null;
-
             function toggleAll (dis) {
                 $('body')[dis ? 'addClass' : 'removeClass']('frozen');
             }
 
-            function loadDatabase (profile) {
-                DatabaseManager.load(profile).then(function () {
-                    if (!UI.current) {
-                        UI.initialize();
+            let params = parseParams(window.location.href);
+            let param_temporary = params['temp'] == -1;
+            let param_profile = params['profile'];
 
-                        $('#show-players').click(() => UI.show(UI.Players));
-                        $('#show-groups').click(() => UI.show(UI.Groups));
-                        $('#show-browse').click(() => UI.show(UI.Browse));
-                        $('#show-files').click(() => UI.show(UI.Files));
-                        $('#show-settings').click(() => UI.show(UI.Settings));
-                        $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
-                    }
-
-                    UI.show(currentView || UI.Groups);
-
-                    toggleAll(false);
-                }).catch(function (e) {
-                    console.error(e);
-                    Logger.log('WARNING', 'Database could not be opened!');
-                    UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
-                });
+            if (param_temporary) {
+                $('.css-temporary').removeClass('css-hidden');
             }
 
             UI.preinitialize();
 
-            $profileSelector.click(() => {
-                let $profileList = $('#modal-select-profile .list');
-                $profileList.empty();
-                for (let { value, name, selected } of ProfileManager.getProfiles()) {
-                    $profileList.append($(`<a class="item${ selected ? ' active' : '' }">${ name }</a>`).click(() => {
-                        $('#modal-select-profile').modal('hide');
-
-                        toggleAll(true);
-                        currentView = UI.current;
-                        if (currentView == UI.PlayerHistory) {
-                            currentView = UI.Players;
-                        } else if (currentView == UI.GroupDetail) {
-                            currentView = UI.Groups;
-                        }
-
-                        $profileSelector.text(name);
-
-                        loadDatabase(ProfileManager.getProfile(value));
-                    }));
-                }
-
-                $('#modal-select-profile').modal('show');
-            });
-
-            if (temp) {
-                $('[data-op="profile-div"]').hide();
+            let profile = ProfileManager.getProfile(param_profile);
+            if (param_temporary) {
                 Preferences.temporary();
-                loadDatabase({
+                $('#show-profile').addClass('profiles-disabled');
+                profile = {
                     temporary: true
-                });
-            } else {
-                let lastProfile = ProfileManager.getProfile(ProfileManager.getLastProfile());
-                $profileSelector.text(lastProfile.name);
-                loadDatabase(lastProfile);
+                };
             }
+
+            DatabaseManager.load(profile).then(function () {
+                UI.initialize();
+
+                $('#show-players').click(() => UI.show(UI.Players));
+                $('#show-groups').click(() => UI.show(UI.Groups));
+                $('#show-browse').click(() => UI.show(UI.Browse));
+                $('#show-files').click(() => UI.show(UI.Files));
+                $('#show-settings').click(() => UI.show(UI.Settings));
+                $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
+
+                UI.show(UI.Groups);
+
+                toggleAll(false);
+            }).catch(function (e) {
+                console.error(e);
+                Logger.log('WARNING', 'Database could not be opened!');
+                UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
+            });
         </script>
     </body>
 </html>
