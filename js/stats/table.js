@@ -341,6 +341,7 @@ class TableInstance {
             this.array = array.map(([ timestamp, e ]) => {
                 let obj = DatabaseManager.getPlayer(e.Identifier, timestamp);
                 let disc = this.settings.discardRules.some(rule => rule.eval(obj, obj, this.settings));
+                ExpressionCache.reset();
 
                 return disc ? null : [ timestamp, obj ];
             }).filter(e => e);
@@ -352,6 +353,7 @@ class TableInstance {
                 let c = DatabaseManager.getPlayer(player.Identifier, compare.Timestamp);
 
                 let disc = this.settings.discardRules.some(rule => rule.eval(p, c, this.settings));
+                ExpressionCache.reset();
 
                 return disc ? null : obj;
             }).filter(e => e);
