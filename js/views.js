@@ -1,29 +1,41 @@
 class FloatingPopup {
-    constructor (closeable = true) {
-        this.closeable = closeable;
+    constructor (opacity = 0.85) {
+        this.opacity = opacity;
     }
 
     open () {
         return new Promise((resolve, reject) => {
-            this.resolvePromise = resolve;
+            this.resolve = resolve;
 
             if (!this._hasParent()) {
-                this.$parent = $(this._createModal()).appendTo($('body').first());
+                const modal = $(this._createModal()).addClass('active');
+                const container = $(`
+                    <div style="display: none; z-index: 999; position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, ${this.opacity})">
+                    </div>
+                `);
+
+                modal.appendTo(container);
+                container.appendTo($('body').first());
+                this.$parent = container;
 
                 this._createModal();
                 this._createBindings();
             }
 
-            this._show();
+            this.$parent.show();
         });
     }
 
     close () {
-        this._hide();
+        if (this._hasParent() && this.resolve) {
+            this.$parent.hide();
+            this.resolve();
+            this.resolve = undefined;
+        }
     }
 
     _hasParent () {
-        return typeof this.$parent !== 'undefined'
+        return typeof this.$parent !== 'undefined';
     }
 
     _createModal () {
@@ -33,41 +45,24 @@ class FloatingPopup {
     _createBindings () {
 
     }
-
-    _show () {
-        this.$parent.modal({
-            centered: true,
-            transition: 'fade',
-            closable: this.closeable,
-            onHidden: () => this.resolvePromise(),
-            duration: 0
-        }).modal('show');
-    }
-
-    _hide () {
-        this.$parent.modal('hide');
-    }
-}
-
-class UncloseableFloatingPopup extends FloatingPopup {
-    constructor () {
-        super(false);
-    }
 }
 
 const PopUpController = new (class {
     constructor () {
         this.queue = [];
-        this.active = undefined;
         this.promise = Promise.resolve();
     }
 
-    show (popup) {
+    open (popup) {
         return (this.promise = this.promise.then(() => popup.open()));
+    }
+
+    close (popup) {
+        popup.close();
     }
 })();
 
-const TermsAndConditionsPopup = new (class extends UncloseableFloatingPopup {
+const TermsAndConditionsPopup = new (class extends FloatingPopup {
     _createModal () {
         return `
             <div class="ui basic modal">
@@ -118,7 +113,7 @@ const TermsAndConditionsPopup = new (class extends UncloseableFloatingPopup {
     }
 })();
 
-const ChangeLogPopup = new (class extends UncloseableFloatingPopup {
+const ChangeLogPopup = new (class extends FloatingPopup {
     _createModal () {
         const release = MODULE_VERSION;
         const entries = CHANGELOG[release];
@@ -164,7 +159,7 @@ const ChangeLogPopup = new (class extends UncloseableFloatingPopup {
     }
 })();
 
-const PendingMigrationPopup = new (class extends UncloseableFloatingPopup {
+const PendingMigrationPopup = new (class extends FloatingPopup {
     _createModal () {
         return `
             <div class="ui basic mini modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
@@ -211,13 +206,27 @@ const PendingMigrationPopup = new (class extends UncloseableFloatingPopup {
     }
 })();
 
+const LoaderPopup = new (class extends FloatingPopup {
+    constructor () {
+        super(0);
+    }
+
+    _createModal () {
+        return `
+            <div class="ui basic modal" style="text-align: center;">
+                <img src="res/favicon.png" class="sftools-loader" width="100">
+            </div>
+        `;
+    }
+})();
+
 // Automatically open Terms and Conditions if not accepted yet
 document.addEventListener("DOMContentLoaded", function() {
     if (!SiteOptions.terms_accepted) {
-        PopUpController.show(TermsAndConditionsPopup);
+        PopUpController.open(TermsAndConditionsPopup);
     }
 
     if (SiteOptions.version_accepted != MODULE_VERSION) {
-        PopUpController.show(ChangeLogPopup);
+        PopUpController.open(ChangeLogPopup);
     }
 });
