@@ -870,8 +870,10 @@ const DatabaseManager = new (class {
 
             for (let identifier of Object.keys(this.Players)) {
                 await this._untrack(identifier, addTrackers);
-                for (const [ timestamp, ] of this.getPlayer(identifier).List) {
-                    if (this._track(identifier, timestamp)) {
+
+                const list = this.getPlayer(identifier).List;
+                for (let i = list.length - 1; i >= 0; i--) {
+                    if (this._track(identifier, _dig(list, i, 0))) {
                         break;
                     }
                 }
