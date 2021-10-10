@@ -373,10 +373,6 @@ const DatabaseManager = new (class {
             this.Groups[data.group][data.timestamp].MembersPresent++;
         }
 
-        if (data.group) {
-            this.GroupNames[data.group] = data.groupname;
-        }
-
         this._registerModel('Players', data.identifier, data.timestamp, player);
     }
 
@@ -405,6 +401,7 @@ const DatabaseManager = new (class {
     _updateLists () {
         this.Latest = 0;
         this.LastChange = Date.now();
+        this.GroupNames = {};
 
         for (const [identifier, player] of Object.entries(this.Players)) {
             player.LatestTimestamp = 0;
@@ -417,6 +414,9 @@ const DatabaseManager = new (class {
                     }
                     if (player.LatestTimestamp < timestamp) {
                         player.LatestTimestamp = timestamp;
+                    }
+                    if (obj.Data.group) {
+                        this.GroupNames[obj.Data.group] = obj.Data.groupname;
                     }
                 }
 
