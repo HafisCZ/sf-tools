@@ -698,7 +698,7 @@ class Expression {
             // Create node
             node = {
                 args: [node, arg1, arg2],
-                op: SP_OPERATORS['?']
+                op: '?:'
             };
         }
 
@@ -912,6 +912,16 @@ class Expression {
                     }
 
                     return obj;
+                } else if (node.op == '?:') {
+                    let condition = node.args[0];
+                    let branch1 = node.args[1];
+                    let branch2 = node.args[2];
+
+                    if (this.evalInternal(player, reference, environment, scope, header, condition)) {
+                        return this.evalInternal(player, reference, environment, scope, header, branch1);
+                    } else {
+                        return this.evalInternal(player, reference, environment, scope, header, branch2);
+                    }
                 } else if (environment.functions[node.op]) {
                     var mapper = environment.functions[node.op];
                     var scope2 = {};
