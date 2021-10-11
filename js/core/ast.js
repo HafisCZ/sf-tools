@@ -1478,7 +1478,7 @@ const SP_FUNCTIONS = {
         return Number(value);
     },
     'presence': (value) => {
-        return !!(value || (Array.isArray(value) && value.length) || (typeof value === 'object' && !isEmptyObject(value)));
+        return !!((Array.isArray(value) && value.length) || (typeof value === 'object' && !isEmptyObject(value)) || value);
     }
 }
 
