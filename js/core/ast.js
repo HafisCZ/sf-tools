@@ -1478,7 +1478,15 @@ const SP_FUNCTIONS = {
         return Number(value);
     },
     'presence': (value) => {
-        return !!((Array.isArray(value) && value.length) || (typeof value === 'object' && !isEmptyObject(value)) || value);
+        if (value === null) {
+            return false;
+        } else if (Array.isArray(value)) {
+            return value.length > 0
+        } else if (typeof value === 'object') {
+            return !isEmptyObject(value);
+        } else {
+            return !!value;
+        }
     }
 }
 
