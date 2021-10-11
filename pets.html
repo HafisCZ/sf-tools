@@ -506,8 +506,12 @@
                 }
             }
 
-            function freeze () {
-                $('.ui.main.container').toggleClass('frozen');
+            function toggleAll (dis) {
+                if (dis) {
+                    PopupController.open(LoaderPopup);
+                } else {
+                    PopupController.close(LoaderPopup);
+                }
             }
 
             const PET_TYPE_NAMES = [
@@ -773,12 +777,12 @@
 
             $('#sim-run').click(function () {
                 if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
-                    freeze();
+                    toggleAll(true);
                     simulateFight(petA.getData(), petB.getData()).then(([chance, a, b]) => {
                         $('#sim-result').html(chance.toFixed(chance < 0.01 ? 5 : 2) + '%');
-                        freeze();
+                        toggleAll();
                     }).catch(() => {
-                        freeze();
+                        toggleAll();
                     });
                 }
             });
@@ -829,14 +833,14 @@
                     var b = petB.getData();
 
                     if (a && b && a.Pet < 19 && !a.Boss && b.Boss) {
-                        freeze();
+                        toggleAll(true);
 
                         var worker = createWebWorker('js/sim/pets.js');
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
                                 addMap(message.data.results, `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b.Type] } ${ b.Pet + 1 } - ${ NAME_MONSTER[800 + b.Type * 20 + b.Pet] }`);
-                                freeze();
+                                toggleAll();
                             }
                         }, false);
 
@@ -860,7 +864,7 @@
                     var temp = petB.getData();
 
                     if (a && a.Pet < 19 && temp && !a.Boss && temp.Boss) {
-                        freeze();
+                        toggleAll(true);
 
                         var count = 0;
                         for (var i = temp.Pet; i < Math.min(20, temp.Pet + 5); i++) {
@@ -883,7 +887,7 @@
                                     maps_finished++;
 
                                     if (maps_finished == count) {
-                                        freeze();
+                                        toggleAll();
 
                                         for (var j = 0; j < maps.length; j++) {
                                             addMap(maps[j], `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b[j].Type] } ${ b[j].Pet + 1 } - ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
@@ -914,7 +918,7 @@
                     var temp = petB.getData();
 
                     if (a && a.Pet < 19 && temp && !a.Boss && temp.Boss) {
-                        freeze();
+                        toggleAll(true);
 
                         var count = 0;
                         for (var i = temp.Pet; i < Math.min(20, temp.Pet + 10); i++) {
@@ -937,7 +941,7 @@
                                     maps_finished++;
 
                                     if (maps_finished == count) {
-                                        freeze();
+                                        toggleAll();
 
                                         for (var j = 0; j < maps.length; j++) {
                                             addMap(maps[j], `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b[j].Type] } ${ b[j].Pet + 1 } - ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
@@ -994,7 +998,7 @@
 
                         $(`div[data-player-id="${ player.Identifier }"]`).click((event) => {
                             event.stopPropagation();
-                            freeze();
+                            toggleAll(true);
 
                             let petFights = [];
                             let results = [];
@@ -1013,7 +1017,7 @@
                             }
 
                             Promise.all(petFights).then(() => {
-                                freeze();
+                                toggleAll();
                                 _sort_des(results, i => i.chance);
 
                                 $('#results-modal .content').html(`

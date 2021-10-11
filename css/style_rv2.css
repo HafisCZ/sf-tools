@@ -53,17 +53,6 @@ table.sftools-table .headers td {
     overflow: hidden;
 }
 
-.sftools-loader {
-    opacity: 65%;
-    animation: spin 1.2s linear infinite;
-}
-
-@keyframes spin {
-    100% {
-        transform:rotate(360deg);
-    }
-}
-
 .ui.selection.list.css-selection-list::-webkit-scrollbar {
   display: none;
 }

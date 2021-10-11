@@ -425,9 +425,9 @@
         <script type="text/javascript">
             function toggleAll (dis) {
                 if (dis) {
-                    $('.ui.main.container').addClass('frozen');
+                    PopupController.open(LoaderPopup);
                 } else {
-                    $('.ui.main.container').removeClass('frozen');
+                    PopupController.close(LoaderPopup);
                 }
             }
 

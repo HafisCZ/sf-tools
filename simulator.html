@@ -506,9 +506,9 @@
         <script type="text/javascript">
             function toggleAll (dis) {
                 if (dis) {
-                    $('.ui.main.container').addClass('frozen');
+                    PopupController.open(LoaderPopup);
                 } else {
-                    $('.ui.main.container').removeClass('frozen');
+                    PopupController.close(LoaderPopup);
                 }
             }
 
@@ -738,7 +738,7 @@
 
             EditorController.clear();
 
-            const Logger = new (class {
+            const UILogger = new (class {
                 constructor ($root) {
                     this.$root = $root;
                 }
@@ -884,7 +884,7 @@
             // Run simulation
             $('#sim-run').click(function () {
                 if (players.length > 1 && (mode != 1 || (mode == 1 && players.find(p => p.index == yourself)))) {
-                    Logger.clear();
+                    UILogger.clear();
 
                     for (var i = 0; i < players.length; i++) {
                         players[i].score = null;
@@ -903,7 +903,7 @@
                     var logs = [];
 
                     if (mode == 2) {
-                        Logger.append(`GENERATING LADDER`);
+                        UILogger.append(`GENERATING LADDER`);
 
                         ladder = [ ... players ];
                         new FightSimulator().simulateMultiple(ladder, ladder, 100);
@@ -915,9 +915,9 @@
                         }
                     }
 
-                    Logger.append(`BLOCK SIZE: <b>${ blockSize }</b>`);
-                    Logger.append(`ITERATIONS: <b><b>${ iterations }</b>`);
-                    Logger.append(`<b><br/>STARTING ${ blocks } THREADS</b>`);
+                    UILogger.append(`BLOCK SIZE: <b>${ blockSize }</b>`);
+                    UILogger.append(`ITERATIONS: <b><b>${ iterations }</b>`);
+                    UILogger.append(`<b><br/>STARTING ${ blocks } THREADS</b>`);
 
                     for (var i = 0; i < players.length; i += blockSize) {
                         var block = players.slice(i, i + blockSize);
@@ -931,7 +931,7 @@
                                     logs.push(... message.data.logs);
                                 }
 
-                                Logger.append(`THREAD FINISHED IN <b>${ message.data.time / 1000 }</b> SECONDS`);
+                                UILogger.append(`THREAD FINISHED IN <b>${ message.data.time / 1000 }</b> SECONDS`);
 
                                 if (results.length == players.length) {
                                     toggleAll();
