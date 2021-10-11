@@ -213,8 +213,8 @@ const Endpoint = new ( class {
             var own = this.$modeOwn.checkbox('is checked');
             var all = this.$modeAll.checkbox('is checked');
 
-            if (/^(.{4,})@(.+\.sfgame\..+)$/.test(username)) {
-                [, username, server, ] = username.split(/^(.{4,})@(.+\.sfgame\..+)$/);
+            if (/^(.{3,})@(.+\.sfgame\..+)$/.test(username)) {
+                [, username, server, ] = username.split(/^(.{3,})@(.+\.sfgame\..+)$/);
             } else {
                 return;
             }
