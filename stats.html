@@ -659,10 +659,6 @@
 
         <!-- UI Handler -->
         <script type="text/javascript">
-            function toggleAll (dis) {
-                $('body')[dis ? 'addClass' : 'removeClass']('frozen');
-            }
-
             let params = parseParams(window.location.href);
             let param_temporary = params['temp'] == -1;
             let param_profile = params['profile'];
@@ -693,8 +689,6 @@
                 $('#show-changelog').click(() => UI.show(UI.ChangeLogs));
 
                 UI.show(UI.Groups);
-
-                toggleAll(false);
             }).catch(function (e) {
                 console.error(e);
                 Logger.log('WARNING', 'Database could not be opened!');
