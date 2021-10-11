@@ -666,8 +666,9 @@ class Expression {
     getBoolMerge () {
         let node = this.getBool();
         while (['||', '&&'].includes(this.peek())) {
+            let operator = this.get();
             node = {
-                op: SP_OPERATORS[this.get()],
+                op: operator == '||' ? operator : SP_OPERATORS[operator],
                 args: [node, this.getBool()]
             };
         }
@@ -919,6 +920,16 @@ class Expression {
 
                     if (this.evalInternal(player, reference, environment, scope, header, condition)) {
                         return this.evalInternal(player, reference, environment, scope, header, branch1);
+                    } else {
+                        return this.evalInternal(player, reference, environment, scope, header, branch2);
+                    }
+                } else if (node.op == '||') {
+                    let branch1 = node.args[0];
+                    let branch2 = node.args[1];
+
+                    let resolved1 = this.evalInternal(player, reference, environment, scope, header, branch1);
+                    if (resolved1) {
+                        return resolved1;
                     } else {
                         return this.evalInternal(player, reference, environment, scope, header, branch2);
                     }
