@@ -47,7 +47,7 @@ class FloatingPopup {
     }
 }
 
-const PopUpController = new (class {
+const PopupController = new (class {
     constructor () {
         this.queue = [];
         this.promise = Promise.resolve();
@@ -67,8 +67,8 @@ const TermsAndConditionsPopup = new (class extends FloatingPopup {
         return `
             <div class="ui basic modal">
                 <h2 class="ui centered header" style="padding-bottom: 0.5em; text-decoration: underline;">Terms and Conditions</h2>
-                <h4 class="ui centered header" style="padding-top: 0; color: orange;">§1 General use</h4>
-                <div style="padding-right: 15em; padding-left: 15em;">
+                <div style="height: 65vh; overflow-y: auto; margin-right: 15em; margin-left: 15em;">
+                    <h4 class="ui centered header" style="padding-top: 0; color: orange;">§1 General use</h4>
                     <ul style="margin-top: 0; line-height: 1.3em;">
                         <li>It is advised to never share HAR files as they <b>might</b> contain private data such as IP address and cookies.</li>
                         <li style="margin-top: 0.5em;">The site is distributed <b>AS IS</b> wthout any warranties. You are fully responsible for use of this site.</li>
@@ -77,27 +77,23 @@ const TermsAndConditionsPopup = new (class extends FloatingPopup {
                         <li style="margin-top: 0.5em;">You agree to follow the Shakes & Fidget <a href="https://cdn.playa-games.com/res/sfgame3/legal/html/terms_en.html">Terms and Conditions</a></li>
                         <li style="margin-top: 0.5em;">You are not allowed to automate any part of this tool.</li>
                     </ul>
-                </div>
-                <h4 class="ui centered header" style="padding-top: 0; color: orange;">§2 Endpoint</h4>
-                <div style="padding-right: 15em; padding-left: 15em;">
+                    <h4 class="ui centered header" style="padding-top: 0; color: orange;">§2 Endpoint</h4>
                     <ul style="margin-top: 0; line-height: 1.3em;">
                         <li>Endpoint is a Unity application bundled with the tool that allows you to log into the game and collect limited data about yourself and your guild members without the lengthy process of creating a HAR file.</li>
                         <li style="margin-top: 0.5em;">It is not possible to capture any other players than those listed above.</li>
                         <li style="margin-top: 0.5em;">Everything happens locally in a identical way to playing the game through browser.</li>
                     </ul>
-                </div>
-                <h4 class="ui centered header" style="padding-top: 0; color: orange;">§3 Integrated share service</h4>
-                <div style="padding-right: 15em; padding-left: 15em;">
+                    <h4 class="ui centered header" style="padding-top: 0; color: orange;">§3 Integrated share service</h4>
                     <ul style="margin-top: 0; line-height: 1.3em;">
                         <li>All data shared via the integrated share function is not protected in any other way other than the share key.</li>
                         <li style="margin-top: 0.5em;">The shared data might be deleted at any point of time, up to full 2 days.</li>
                     </ul>
-                </div>
-                <h4 class="ui centered header" style="padding-top: 0; color: orange;">§4 Sentry</h4>
-                <div style="padding-right: 15em; padding-left: 15em;">
+                    <h4 class="ui centered header" style="padding-top: 0; color: orange;">§4 Sentry</h4>
                     <ul style="margin-top: 0; line-height: 1.3em;">
                         <li>All errors raised during use of this tool will be reported via Sentry.io tool.</li>
                         <li style="margin-top: 0.5em;">These reports are anonymous so that it's not possible to track their origin.</li>
+                        <li style="margin-top: 0.5em;">Please note that certain ad-blockers might prevent Sentry from working.</li>
+                        <li style="margin-top: 0.5em;">If you want to contribute to this project I recommend disabling ad-blockers for this site.</li>
                     </ul>
                 </div>
                 <button class="ui green fluid button" style="width: 30%; margin-left: 35%; margin-right: 35%; margin-top: 2em;" data-op="accept">I understand & accept these terms</button>
@@ -223,10 +219,10 @@ const LoaderPopup = new (class extends FloatingPopup {
 // Automatically open Terms and Conditions if not accepted yet
 document.addEventListener("DOMContentLoaded", function() {
     if (!SiteOptions.terms_accepted) {
-        PopUpController.open(TermsAndConditionsPopup);
+        PopupController.open(TermsAndConditionsPopup);
     }
 
     if (SiteOptions.version_accepted != MODULE_VERSION) {
-        PopUpController.open(ChangeLogPopup);
+        PopupController.open(ChangeLogPopup);
     }
 });

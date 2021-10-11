@@ -1773,14 +1773,14 @@ class FilesView extends View {
     // Delete all
     deleteAll () {
         UI.ConfirmDialog.show('Database wipe', 'Are you sure you want to delete all stored player data?', () => {
-            PopUpController.open(LoaderPopup);
+            PopupController.open(LoaderPopup);
             DatabaseManager.removeTimestamps(... Object.keys(DatabaseManager.Timestamps)).then(() => this.show());
         }, true);
     }
 
     // Delete selected
     deleteSelected () {
-        PopUpController.open(LoaderPopup);
+        PopupController.open(LoaderPopup);
         if (this.simple) {
             DatabaseManager.removeTimestamps(... this.selectedFiles).then(() => this.show());
         } else {
@@ -1790,7 +1790,7 @@ class FilesView extends View {
 
     // Merge selected
     mergeSelected () {
-        PopUpController.open(LoaderPopup);
+        PopupController.open(LoaderPopup);
         if (this.simple) {
             DatabaseManager.merge(this.selectedFiles).then(() => this.show());
         } else {
@@ -1800,7 +1800,7 @@ class FilesView extends View {
 
     // Import file via har
     importJson (fileEvent) {
-        PopUpController.open(LoaderPopup);
+        PopupController.open(LoaderPopup);
 
         let pendingPromises = [];
         Array.from(fileEvent.target.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified).catch((exception) => {
@@ -1867,7 +1867,7 @@ class FilesView extends View {
             if (enabled) {
                 this.$parent.find(`[data-op="checkbox-terms"]`).checkbox('set checked');
             } else {
-                PopUpController.open(TermsAndConditionsPopup);
+                PopupController.open(TermsAndConditionsPopup);
             }
         });
         this.setLayout(SiteOptions.advanced, true);
@@ -2132,7 +2132,7 @@ class FilesView extends View {
         this.selectedPlayers = {};
         this.selectedFiles = [];
 
-        PopUpController.close(LoaderPopup);
+        PopupController.close(LoaderPopup);
 
         // Set counters
         if (this.lastChange != DatabaseManager.LastChange || forceUpdate) {
