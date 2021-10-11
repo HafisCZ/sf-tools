@@ -12,6 +12,10 @@ body {
 .sftools-loader {
     opacity: 65%;
     animation: spin 1.2s linear infinite;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 @keyframes spin {
