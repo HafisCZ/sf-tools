@@ -84,18 +84,22 @@ class ExpressionScope {
         return this;
     }
 
-    hasProbableRecursion (min) {
-        if (this.tags.length < min) {
+    hasProbableRecursion (depth, maxOccurences = 1) {
+        if (this.tags.length < depth) {
             return false;
         } else {
             let tag = this.tags[0];
-            for (let i = 1; i < min; i++) {
-                if (tag != this.tags[i] || !this.compareIndirect(0, i)) {
-                    return false;
+            let occurences = 0;
+
+            for (let i = 1; i < depth; i++) {
+                if (tag == this.tags[i] && this.compareIndirect(0, i)) {
+                    if (++occurences > maxOccurences) {
+                        return true;
+                    }
                 }
             }
 
-            return true;
+            return false;
         }
     }
 
