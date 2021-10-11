@@ -190,7 +190,7 @@ class DatabaseUtils {
         let database = await new IndexedDBWrapper(... DATABASE_PARAMS_V5).open();
 
         if (attemptMigration) {
-            await PopupController.show(PendingMigrationPopup);
+            await PopupController.open(PendingMigrationPopup);
             if (SiteOptions.migration_allowed) {
                 Logger.log('MIGRATE', `Migrating files`);
 
