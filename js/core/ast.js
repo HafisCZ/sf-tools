@@ -1129,6 +1129,14 @@ const SP_ARRAY_FUNCTIONS = {
     }
 };
 
+function isEmptyObject (object) {
+    for (const i in object) {
+        return false;
+    }
+
+    return true;
+}
+
 const SP_FUNCTIONS = {
     'flatten': (... values) => {
         return values.flat(Infinity);
@@ -1468,6 +1476,9 @@ const SP_FUNCTIONS = {
     // Parse number
     'number': (value) => {
         return Number(value);
+    },
+    'presence': (value) => {
+        return !!(value || (Array.isArray(value) && value.length) || (typeof value === 'object' && !isEmptyObject(value)));
     }
 }
 
