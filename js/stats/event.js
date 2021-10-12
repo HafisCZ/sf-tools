@@ -330,17 +330,17 @@ class PlayerDetailFloatView extends View {
     }
 
     show (identifier, timestamp, reference = timestamp) {
-        var player = DatabaseManager.getPlayer(identifier);
-
-        var compare = player.List.concat().reverse().find(p => p[0] >= reference && p[0] <= timestamp);
-
-        player = player[Math.min(timestamp, player.LatestTimestamp)];
-
-        if (compare) {
-            compare = compare[1];
-        } else {
-            compare = player;
+        let playerObject = DatabaseManager.getPlayer(identifier);
+        let timestampsReverse = playerObject.List.map(([ts, ]) => ts).reverse(); // Newest to oldest
+        let timestamps = playerObject.List.map(([ts, ]) => ts); // Oldest to newest
+        let timestampCurrent = timestamps.find(t => t <= timestamp) || playerObject.LatestTimestamp;
+        let timestampReference = timestampsReverse.find(t => t >= reference && t <= timestampCurrent);
+        if (!timestampReference) {
+            timestampReference = timestampCurrent;
         }
+
+        let player = DatabaseManager.getPlayer(identifier, timestampCurrent);
+        let compare = DatabaseManager.getPlayer(identifier, timestampReference);
 
         var diff = player.Timestamp != compare.Timestamp;
         var asDiff = (a, b, formatter) => {
