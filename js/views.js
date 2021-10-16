@@ -65,9 +65,9 @@ const PopupController = new (class {
 const TermsAndConditionsPopup = new (class extends FloatingPopup {
     _createModal () {
         return `
-            <div class="ui basic modal">
-                <h2 class="ui centered header" style="padding-bottom: 0.5em; text-decoration: underline;">Terms and Conditions</h2>
-                <div style="height: 65vh; overflow-y: auto; margin-right: 15em; margin-left: 15em;">
+            <div class="ui basic tiny modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
+                <h2 class="ui centered header" style="padding-bottom: 0.5em; padding-top: 0; text-decoration: underline;">Terms and Conditions</h2>
+                <div style="height: 65vh; overflow-y: auto;">
                     <h4 class="ui centered header" style="padding-top: 0; color: orange;">§1 General use</h4>
                     <ul style="margin-top: 0; line-height: 1.3em;">
                         <li>It is advised to never share HAR files as they <b>might</b> contain private data such as IP address and cookies.</li>
@@ -96,7 +96,7 @@ const TermsAndConditionsPopup = new (class extends FloatingPopup {
                         <li style="margin-top: 0.5em;">If you want to contribute to this project I recommend disabling ad-blockers for this site.</li>
                     </ul>
                 </div>
-                <button class="ui green fluid button" style="width: 30%; margin-left: 35%; margin-right: 35%; margin-top: 2em;" data-op="accept">I understand & accept these terms</button>
+                <button class="ui green fluid button" style="margin-top: 1em;" data-op="accept">I understand & accept these terms</button>
             </div>
         `;
     }
