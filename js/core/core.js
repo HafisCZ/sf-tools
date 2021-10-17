@@ -144,11 +144,11 @@ const ProfileManager = new (class {
                 filters: {
                     players: {
                         name: 'own',
-                        value: [1]
+                        value: ['1']
                     },
                     groups: {
                         name: 'own',
-                        value: [1]
+                        value: ['1']
                     }
                 }
             },
@@ -158,12 +158,12 @@ const ProfileManager = new (class {
                     players: {
                         name: 'timestamp',
                         mode: 'above',
-                        value: [Date.now() - 2419200000]
+                        value: ['now() - 2419200000']
                     },
                     groups: {
                         name: 'timestamp',
                         mode: 'above',
-                        value: [Date.now() - 2419200000]
+                        value: ['now() - 2419200000']
                     }
                 }
             }

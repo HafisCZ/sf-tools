@@ -3313,6 +3313,61 @@ class OnlineFilesView extends View {
     }
 }
 
+class ProfilesView extends View {
+    constructor (parent) {
+        super(parent);
+
+        this.$list = this.$parent.find('[data-op="list"]')
+    }
+
+    show () {
+        let content = '';
+        for (const [key, { name, filters }] of ProfileManager.getProfiles()) {
+            content += `
+                <div class="row" style="margin-top: 1em; border: 1px solid black; border-radius: .25em;">
+                    <div class="four wide column"><h3 class="ui clickable ${ key == ProfileManager.getActiveProfileName() ? 'orange' : '' } header" data-key="${key}">${name}</h3></div>
+                    <div class="twelve wide column">
+                        <table class="ui table" style="table-layout: fixed;">
+                            <tr>
+                                <td style="width: 20%;">Player filter</td>
+                                <td>${ this.showRules(filters.players) }</td>
+                            </tr>
+                            <tr>
+                                <td>Group filter</td>
+                                <td>${ this.showRules(filters.groups) }</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            `
+        }
+
+        this.$list.html(content);
+        this.$parent.find('[data-key]').click(event => {
+            const key = event.target.dataset.key;
+            ProfileManager.setActiveProfile(key);
+            window.location.href = window.location.href;
+        });
+    }
+
+    showRules (rule) {
+        if (rule) {
+            const { name, mode, value } = rule;
+            return `<b>${name}</b> ${this.stringifyMode(mode)} ${value ? value.map(v => Expression.format(v)).join('<br/>') : ''}`;
+        } else {
+            return '<b>None</b>';
+        }
+    }
+
+    stringifyMode (v) {
+        return {
+            'above': '>',
+            'below': '<',
+            'between': '<>'
+        }[v] || '==';
+    }
+}
+
 // UI object collection
 const UI = {
     current: null,
@@ -3340,6 +3395,7 @@ const UI = {
         UI.OnlineTemplates = new OnlineTemplatesView('modal-onlinetemplates');
         UI.OnlineFiles = new OnlineFilesView('modal-onlinefile');
         UI.OnlineShareFile = new OnlineShareFileView('modal-share');
+        UI.Profiles = new ProfilesView('view-profiles');
     },
     preinitialize: function () {
         UI.Loader = new LoaderView('modal-loader');

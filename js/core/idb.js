@@ -281,6 +281,9 @@ class DatabaseUtils {
         let filter = _dig(profile, 'filters', type);
         if (filter) {
             let { name, mode, value } = filter;
+            if (value) {
+                value = value.map(v => new Expression(v).eval());
+            }
 
             let range = null;
             if (mode == 'below') {

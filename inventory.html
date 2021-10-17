@@ -23,7 +23,8 @@
         <script src="js/core/playa.js"></script>
         <script src="js/core/core.js"></script>
         <script src="js/core/idb.js"></script>
-
+        <script src="js/core/ast.js"></script>
+        <script src="js/stats/settings.js"></script>
         <script src="js/changelog.js"></script>
         <script src="js/inventory/event.js"></script>
         <script src="js/views.js"></script>
@@ -240,7 +241,7 @@
                     players: {
                         name: 'own',
                         mode: 'equal',
-                        value: [1]
+                        value: ['1']
                     },
                     groups: {
                         mode: 'none'
@@ -256,7 +257,8 @@
                 } else {
                     UI.show(UI.PlayerSelect);
                 }
-            }).catch(function () {
+            }).catch(function (e) {
+                console.error(e);
                 Logger.log('WARNING', 'Database could not be opened!');
                 UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
             });
