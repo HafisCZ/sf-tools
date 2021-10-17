@@ -100,6 +100,7 @@ class IndexedDBWrapper {
             openRequest.onupgradeneeded = (event) => {
                 let database = openRequest.result;
                 if (event.oldVersion < 1) {
+                    Logger.log('STORAGE', 'Creating database');
                     for (const [ name, { key, indexes } ] of Object.entries(this.stores)) {
                         let store = database.createObjectStore(name, { keyPath: key });
                         if (indexes) {
@@ -109,6 +110,7 @@ class IndexedDBWrapper {
                         }
                     }
                 } else if (Array.isArray(this.updaters)) {
+                    Logger.log('STORAGE', 'Updating database to new version');
                     for (const updater of this.updaters) {
                         if (updater.shouldApply(event.oldVersion)) {
                             updater.apply(event.currentTarget.transaction);
