@@ -1,6 +1,6 @@
 const DATABASE_PARAMS_V5 = [
     'sftools',
-    2,
+    3,
     {
         players: {
             key: ['identifier', 'timestamp'],
@@ -10,7 +10,8 @@ const DATABASE_PARAMS_V5 = [
                 timestamp: 'timestamp',
                 group: 'group',
                 prefix: 'prefix',
-                profile: 'profile'
+                profile: 'profile',
+                origin: 'origin'
             }
         },
         groups: {
@@ -20,7 +21,8 @@ const DATABASE_PARAMS_V5 = [
                 identifier: 'identifier',
                 timestamp: 'timestamp',
                 prefix: 'prefix',
-                profile: 'profile'
+                profile: 'profile',
+                origin: 'origin'
             }
         },
         trackers: {
@@ -33,6 +35,13 @@ const DATABASE_PARAMS_V5 = [
             apply: transaction => {
                 transaction.objectStore('players').createIndex('profile', 'profile');
                 transaction.objectStore('groups').createIndex('profile', 'profile');
+            }
+        },
+        {
+            shouldApply: version => version < 3,
+            apply: transaction => {
+                transaction.objectStore('players').createIndex('origin', 'origin');
+                transaction.objectStore('groups').createIndex('origin', 'origin');
             }
         }
     ]
