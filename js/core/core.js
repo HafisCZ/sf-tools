@@ -202,6 +202,10 @@ const ProfileManager = new (class {
         Preferences.set('profiles', this.profiles);
     }
 
+    getFreeProfileName () {
+        return `profile_${Object.keys(this.profiles).length}`;
+    }
+
     getProfiles () {
         return Object.entries(this.profiles);
     }

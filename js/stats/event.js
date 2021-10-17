@@ -3342,11 +3342,43 @@ class ProfilesView extends View {
             `
         }
 
+        content += `
+            <div class="row" style="margin-top: 1em;">
+                <div class="sixteen wide column" style="padding: 0;">
+                    <div class="ui fluid basic lightgray button" data-op="create" style="margin: -1em; padding: 1em; margin-left: 0; line-height: 2em;">Create new profile</div>
+                </div>
+            </div>
+        `
+
         this.$list.html(content);
         this.$parent.find('[data-key]').click(event => {
             const key = event.target.dataset.key;
             ProfileManager.setActiveProfile(key);
             window.location.href = window.location.href;
+        });
+
+        this.$parent.find('[data-op="create"]').click(() => {
+            this.addProfile();
+            this.show();
+        });
+    }
+
+    addProfile () {
+        const name = ProfileManager.getFreeProfileName();
+        ProfileManager.setProfile(name, {
+            name: 'Testing profile',
+            filters: {
+                players: {
+                    name: 'profile',
+                    mode: 'equals',
+                    value: [`'${name}'`]
+                },
+                groups: {
+                    name: 'profile',
+                    mode: 'equals',
+                    value: [`'${name}'`]
+                }
+            }
         });
     }
 
