@@ -669,6 +669,7 @@
             let params = parseParams(window.location.href);
             let param_temporary = params['temp'] == -1;
             let param_profile = params['profile'];
+            let param_slot = params['slot'];
 
             if (param_temporary) {
                 $('.css-temporary').removeClass('css-hidden');
@@ -683,6 +684,8 @@
                 profile = {
                     temporary: true
                 };
+            } else if (param_slot) {
+                profile['slot'] = param_slot;
             }
 
             DatabaseManager.load(profile).then(function () {

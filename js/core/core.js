@@ -125,7 +125,7 @@ const SiteOptions = new (class {
     }
 })();
 
-const DEFAULT_PROFILE = Object.freeze({
+const DEFAULT_PROFILE = {
     name: 'Default',
     temporary: false,
     slot: 0,
@@ -133,7 +133,7 @@ const DEFAULT_PROFILE = Object.freeze({
         players: null,
         groups: null
     }
-});
+};
 
 const ProfileManager = new (class {
     constructor () {
