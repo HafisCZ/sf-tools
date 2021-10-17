@@ -144,10 +144,12 @@ const ProfileManager = new (class {
                 filters: {
                     players: {
                         name: 'own',
+                        mode: 'equals',
                         value: ['1']
                     },
                     groups: {
                         name: 'own',
+                        mode: 'equals',
                         value: ['1']
                     }
                 }

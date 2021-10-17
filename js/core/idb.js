@@ -303,7 +303,7 @@ class DatabaseUtils {
                 range = IDBKeyRange.lowerBound(... value);
             } else if (mode == 'between') {
                 range = IDBKeyRange.bound(... value);
-            } else {
+            } else if (mode == 'equals') {
                 range = IDBKeyRange.only(... value);
             }
 
