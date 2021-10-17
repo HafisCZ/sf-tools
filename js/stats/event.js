@@ -3364,7 +3364,7 @@ class ProfilesView extends View {
             'above': '>',
             'below': '<',
             'between': '<>'
-        }[v] || '==';
+        }[v] || '=';
     }
 }
 
