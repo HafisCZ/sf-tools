@@ -158,12 +158,12 @@ const ProfileManager = new (class {
                     players: {
                         name: 'timestamp',
                         mode: 'above',
-                        value: ['now() - 2419200000']
+                        value: ['now() - 4 * @7days']
                     },
                     groups: {
                         name: 'timestamp',
                         mode: 'above',
-                        value: ['now() - 2419200000']
+                        value: ['now() - 4 * @7days']
                     }
                 }
             }
