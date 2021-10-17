@@ -3336,10 +3336,7 @@ const UI = {
         UI.GroupDetail = new GroupDetailView('view-groupdetail');
         UI.ChangeLogs = new ChangeLogsView('view-changelog');
         UI.ConfirmDialog = new ConfirmDialogView('modal-confirm');
-
         UI.Templates = new TemplatesView('modal-templates');
-
-        // Online
         UI.OnlineTemplates = new OnlineTemplatesView('modal-onlinetemplates');
         UI.OnlineFiles = new OnlineFilesView('modal-onlinefile');
         UI.OnlineShareFile = new OnlineShareFileView('modal-share');
@@ -3347,5 +3344,11 @@ const UI = {
     preinitialize: function () {
         UI.Loader = new LoaderView('modal-loader');
         UI.Exception = new ExceptionView('modal-exception');
+    },
+    register: function (view, id) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.addEventListener('click', () => UI.show(view));
+        }
     }
 }
