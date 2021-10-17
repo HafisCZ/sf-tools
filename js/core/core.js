@@ -182,6 +182,10 @@ const ProfileManager = new (class {
         return this.profiles[name] || this.getActiveProfile();
     }
 
+    getActiveProfileName () {
+        return SiteOptions.profile || 'default';
+    }
+
     setActiveProfile (name) {
         SiteOptions.profile = name;
     }

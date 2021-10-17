@@ -1,6 +1,6 @@
 const DATABASE_PARAMS_V5 = [
     'sftools',
-    1,
+    2,
     {
         players: {
             key: ['identifier', 'timestamp'],
@@ -9,7 +9,8 @@ const DATABASE_PARAMS_V5 = [
                 identifier: 'identifier',
                 timestamp: 'timestamp',
                 group: 'group',
-                prefix: 'prefix'
+                prefix: 'prefix',
+                profile: 'profile'
             }
         },
         groups: {
@@ -18,13 +19,23 @@ const DATABASE_PARAMS_V5 = [
                 own: 'own',
                 identifier: 'identifier',
                 timestamp: 'timestamp',
-                prefix: 'prefix'
+                prefix: 'prefix',
+                profile: 'profile'
             }
         },
         trackers: {
             key: 'identifier'
         }
-    }
+    },
+    [
+        {
+            shouldApply: version => version < 2,
+            apply: transaction => {
+                transaction.objectStore('players').createIndex('profile', 'profile');
+                transaction.objectStore('groups').createIndex('profile', 'profile');
+            }
+        }
+    ]
 ];
 
 const DATABASE_PARAMS_V1 = [
@@ -65,10 +76,11 @@ class IndexedDBWrapper {
         });
     }
 
-    constructor (name, version, stores) {
+    constructor (name, version, stores, updaters) {
         this.name = name;
         this.version = version;
         this.stores = stores;
+        this.updaters = updaters;
         this.database = null;
     }
 
@@ -87,11 +99,19 @@ class IndexedDBWrapper {
 
             openRequest.onupgradeneeded = (event) => {
                 let database = openRequest.result;
-                for (let [ name, { key, indexes } ] of Object.entries(this.stores)) {
-                    let store = database.createObjectStore(name, { keyPath: key });
-                    if (indexes) {
-                        for (let [ indexName, indexKey ] of Object.entries(indexes)) {
-                            store.createIndex(indexName, indexKey);
+                if (event.oldVersion < 1) {
+                    for (const [ name, { key, indexes } ] of Object.entries(this.stores)) {
+                        let store = database.createObjectStore(name, { keyPath: key });
+                        if (indexes) {
+                            for (let [ indexName, indexKey ] of Object.entries(indexes)) {
+                                store.createIndex(indexName, indexKey);
+                            }
+                        }
+                    }
+                } else if (Array.isArray(this.updaters)) {
+                    for (const updater of this.updaters) {
+                        if (updater.shouldApply(event.oldVersion)) {
+                            updater.apply(event.currentTarget.transaction);
                         }
                     }
                 }
@@ -157,6 +177,7 @@ class MigrationUtils {
         group.timestamp = parseInt(group.timestamp);
         group.own = group.own ? 1 : 0;
         group.names = group.names || group.members;
+        group.profile = ProfileManager.getActiveProfileName();
 
         return group;
     }
@@ -170,6 +191,7 @@ class MigrationUtils {
         player.origin = origin;
         player.timestamp = parseInt(player.timestamp);
         player.own = player.own ? 1 : 0;
+        player.profile = ProfileManager.getActiveProfileName();
 
         let group = player.save[player.own ? 435 : 161];
         if (group) {
