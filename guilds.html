@@ -852,7 +852,7 @@
                             <div class="player-index">${ i + 1 }</div>
                             <div class="four wide text-center column">
                                 <img class="ui medium centered image ${ players2[i].Inactive ? 'inactive' : '' }" style="width: 50px;" src="res/class${ player.Class }.png">
-                                ${ player.Class == 8 && player.Mask > 0 ? `<img class="ui image ${ players2[i].Inactive ? 'inactive' : '' }" src="res/mask${ player.Mask }.png" style="position: absolute; left: 1em; top: 0em; scale: 0.3;">` : '' }
+                                ${ player.Class == 8 && player.Mask > 0 ? `<img class="ui image ${ players2[i].Inactive ? 'inactive' : '' }" src="res/mask${ player.Mask }.png" style="position: absolute; right: 0.75em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
                             </div>
                             <div class="three wide text-center column">
                                 <b>${ player.Level }</b>
