@@ -177,7 +177,7 @@ class IndexedDBWrapper {
 }
 
 class MigrationUtils {
-    static migrateGroup (group, origin) {
+    static migrateGroup (group, origin, timestampDefault) {
         if (group.id) {
             group.identifier = group.id;
             delete group.id;
@@ -185,7 +185,7 @@ class MigrationUtils {
 
         group.origin = origin;
         group.group = group.identifier;
-        group.timestamp = parseInt(group.timestamp);
+        group.timestamp = parseInt(group.timestamp || timestampDefault);
         group.own = group.own ? 1 : 0;
         group.names = group.names || group.members;
         group.profile = ProfileManager.getActiveProfileName();
@@ -193,14 +193,15 @@ class MigrationUtils {
         return group;
     }
 
-    static migratePlayer (player, origin) {
+    static migratePlayer (player, origin, timestampDefault, versionDefault) {
         if (player.id) {
             player.identifier = player.id;
             delete player.id;
         }
 
         player.origin = origin;
-        player.timestamp = parseInt(player.timestamp);
+        player.timestamp = parseInt(player.timestamp || timestampDefault);
+        player.version = player.version || versionDefault;
         player.own = player.own ? 1 : 0;
         player.profile = ProfileManager.getActiveProfileName();
 
@@ -231,12 +232,15 @@ class DatabaseUtils {
                 let migratedFiles = await migratedDatabase.where('files');
 
                 for (let file of migratedFiles) {
+                    const version = file.version;
+                    const timestamp = file.timestamp;
+
                     for (let player of file.players) {
-                        await database.set('players', MigrationUtils.migratePlayer(player, 'migration'));
+                        await database.set('players', MigrationUtils.migratePlayer(player, 'migration', timestamp, version));
                     }
 
                     for (let group of file.groups) {
-                        await database.set('groups', MigrationUtils.migrateGroup(group, 'migration'));
+                        await database.set('groups', MigrationUtils.migrateGroup(group, 'migration', timestamp));
                     }
                 }
 
