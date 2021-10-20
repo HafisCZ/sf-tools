@@ -41,13 +41,6 @@
             </div>
         </div>
 
-        <!-- LoaderView -->
-        <div id="modal-loader" class="ui main container">
-            <div class="ui active dimmer" data-op="text">
-                <div class="ui large text loader">Loading</div>
-            </div>
-        </div>
-
         <!-- PlayerSelectView -->
         <div id="view-playerselect" class="ui main container css-hidden sf-container">
             <div class="ui five column grid" data-op="list"></div>
@@ -220,35 +213,14 @@
             </div>
         </div>
 
-        <!-- ExceptionView -->
-        <div id="modal-exception" class="ui basic modal">
-            <div class="ui icon header">
-                <i class="exclamation triangle icon"></i>
-                Error
-            </div>
-            <div class="content text-center">
-                <p data-op="content"></p>
-            </div>
-        </div>
-
         <!-- UI Handler -->
         <script type="text/javascript">
             $('#show-compare, #show-crystal').hide();
 
-            UI.preinitialize();
-            DatabaseManager.load({
-                filters: {
-                    players: {
-                        name: 'own',
-                        mode: 'equals',
-                        value: ['1']
-                    },
-                    groups: {
-                        mode: 'none'
-                    }
-                }
-            }).then(function () {
+            PopupController.open(LoaderPopup);
+            DatabaseManager.load(SELF_PROFILE).then(function () {
                 UI.initialize();
+                PopupController.close(LoaderPopup);
 
                 var id = window.location.href.match(/^.*\?id=(.*)$/);
                 if (id && DatabaseManager.Players[id[1]]) {
@@ -258,9 +230,9 @@
                     UI.show(UI.PlayerSelect);
                 }
             }).catch(function (e) {
-                console.error(e);
-                Logger.log('WARNING', 'Database could not be opened!');
-                UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
+                PopupController.close(LoaderPopup);
+                PopupController.open(ErrorPopup, `<h4 class="ui white header text-center">Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.</h4><br>${e.message}`);
+                Logger.error(e, 'Database could not be opened!');
             });
         </script>
     </body>

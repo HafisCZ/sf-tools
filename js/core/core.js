@@ -27,6 +27,11 @@ const Logger = new (class {
             'padding: 0.5em; font-size: 15px;'
         );
     }
+
+    error (err, text) {
+        this.log('WARNING', text);
+        console.error(err);
+    }
 })();
 
 class PreferencesHandler {
@@ -132,6 +137,19 @@ const DEFAULT_PROFILE = {
     filters: {
         players: null,
         groups: null
+    }
+};
+
+const SELF_PROFILE = {
+    filters: {
+        players: {
+            name: 'own',
+            mode: 'equals',
+            value: ['1']
+        },
+        groups: {
+            mode: 'none'
+        }
     }
 };
 

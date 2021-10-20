@@ -58,13 +58,6 @@
             </div>
         </div>
 
-        <!-- LoaderView -->
-        <div id="modal-loader" class="ui main container">
-            <div class="ui active dimmer" data-op="text" style="z-index: 998;">
-                <img src="res/favicon.png" class="sftools-loader" width="100">
-            </div>
-        </div>
-
         <div id="modal-confirm" class="ui basic modal">
             <div class="ui grid">
                 <div class="five wide column"></div>
@@ -436,17 +429,6 @@
             <table class="sftools-table" data-op="table"></table>
         </div>
 
-        <!-- ExceptionView -->
-        <div id="modal-exception" class="ui basic modal">
-            <div class="ui icon header">
-                <i class="exclamation triangle icon"></i>
-                Error
-            </div>
-            <div class="content text-center">
-                <p data-op="content"></p>
-            </div>
-        </div>
-
         <div id="modal-share" class="ui mini modal">
             <div class="header">File sharing</div>
             <div class="content text-left" style="height: 15em;">
@@ -675,8 +657,6 @@
                 $('.css-temporary').removeClass('css-hidden');
             }
 
-            UI.preinitialize();
-
             let profile = ProfileManager.getProfile(param_profile);
             if (param_temporary) {
                 Preferences.temporary();
@@ -688,6 +668,7 @@
                 profile['slot'] = param_slot;
             }
 
+            PopupController.open(LoaderPopup);
             DatabaseManager.load(profile).then(function () {
                 UI.initialize();
                 UI.register(UI.Players, 'show-players');
@@ -697,11 +678,12 @@
                 UI.register(UI.Settings, 'show-settings');
                 UI.register(UI.ChangeLogs, 'show-changelog');
                 UI.register(UI.Profiles, 'show-profile');
+                PopupController.close(LoaderPopup);
                 UI.show(UI.Groups);
             }).catch(function (e) {
-                console.error(e);
-                Logger.log('WARNING', 'Database could not be opened!');
-                UI.Loader.alert("Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.");
+                PopupController.close(LoaderPopup);
+                PopupController.open(ErrorPopup, `<h4 class="ui white header text-center">Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.</h4><br>${e.message}`);
+                Logger.error(e, 'Database could not be opened!');
             });
         </script>
     </body>

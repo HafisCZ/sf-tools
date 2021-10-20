@@ -1804,9 +1804,8 @@ class FilesView extends View {
 
         let pendingPromises = [];
         Array.from(fileEvent.target.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified).catch((exception) => {
-            console.error(exception);
-            UI.Exception.alert('A problem occured while trying to upload this file.<br><br>' + exception);
-            Logger.log('WARNING', 'Error occured while trying to import a file!');
+            PopupController.open(WarningPopup, exception);
+            Logger.error(exception, 'Error occured while trying to import a file!');
         }))));
 
         Promise.all(pendingPromises).then(() => this.show());
@@ -2575,17 +2574,6 @@ class SettingsFloatView extends SettingsView {
         SettingsManager.remove(this.settings.name);
         this.hide();
         UI.current.load();
-    }
-}
-
-// Setup View
-class LoaderView extends View {
-    constructor (parent) {
-        super(parent);
-    }
-
-    alert (text) {
-        this.$parent.find('[data-op="text"]').html(`<h1 class="ui header white">${ text }</h1>`);
     }
 }
 
@@ -3429,10 +3417,6 @@ const UI = {
         UI.OnlineFiles = new OnlineFilesView('modal-onlinefile');
         UI.OnlineShareFile = new OnlineShareFileView('modal-share');
         UI.Profiles = new ProfilesView('view-profiles');
-    },
-    preinitialize: function () {
-        UI.Loader = new LoaderView('modal-loader');
-        UI.Exception = new ExceptionView('modal-exception');
     },
     register: function (view, id) {
         const element = document.getElementById(id);

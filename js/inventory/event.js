@@ -1323,29 +1323,6 @@ class InventoryView extends View {
     }
 }
 
-// Loader View
-class LoaderView extends View {
-    constructor (parent) {
-        super(parent);
-    }
-
-    alert (text) {
-        this.$parent.find('[data-op="text"]').html(`<h1 class="ui header white">${ text }</h1>`);
-    }
-}
-
-// Exception View
-class ExceptionView extends View {
-    constructor (parent) {
-        super(parent);
-    }
-
-    alert (text) {
-        this.$parent.find('[data-op="content"]').html(text);
-        this.$parent.modal('show');
-    }
-}
-
 // UI object collection
 const UI = {
     current: null,
@@ -1376,9 +1353,5 @@ const UI = {
         UI.PlayerSelect = new PlayerSelectView('view-playerselect');
         UI.Inventory = new InventoryView('view-inventory');
         UI.Resources = new ResourcesView('view-resources');
-    },
-    preinitialize: function () {
-        UI.Loader = new LoaderView('modal-loader');
-        UI.Exception = new ExceptionView('modal-exception');
     }
 }

@@ -3,7 +3,7 @@ class FloatingPopup {
         this.opacity = opacity;
     }
 
-    open () {
+    open (...args) {
         return new Promise((resolve, reject) => {
             this.resolve = resolve;
 
@@ -22,6 +22,7 @@ class FloatingPopup {
                 this._createBindings();
             }
 
+            this._applyArguments(...args);
             this.$parent.show();
         });
     }
@@ -36,6 +37,10 @@ class FloatingPopup {
 
     _hasParent () {
         return typeof this.$parent !== 'undefined';
+    }
+
+    _applyArguments () {
+
     }
 
     _createModal () {
@@ -53,8 +58,8 @@ const PopupController = new (class {
         this.promise = Promise.resolve();
     }
 
-    open (popup) {
-        return (this.promise = this.promise.then(() => popup.open()));
+    open (popup, ...args) {
+        return (this.promise = this.promise.then(() => popup.open(...args)));
     }
 
     close (popup) {
@@ -213,6 +218,60 @@ const LoaderPopup = new (class extends FloatingPopup {
                 <img src="res/favicon.png" class="sftools-loader" width="100">
             </div>
         `;
+    }
+})();
+
+// Non-blocking popup about an exception that occured
+const WarningPopup = new (class extends FloatingPopup {
+    constructor () {
+        super(0);
+    }
+
+    _createModal () {
+        return `
+            <div class="ui basic tiny modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
+                <h2 class="ui centered header" style="padding-bottom: 0.5em; padding-top: 0;"><i class="exclamation triangle icon" style="color: orange; font-size: 1em; line-height: 0.75em;"></i> An issue has occured!</h2>
+                <div class="text-center" style="text-align: justify; margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;" data-op="text">
+                    ...
+                </div>
+                <button class="ui black fluid button" data-op="continue">Continue</button>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$text = this.$parent.find('[data-op="text"]');
+        this.$parent.find('[data-op="continue"]').click(() => this.close());
+    }
+
+    _applyArguments (error) {
+        this.$text.text(error instanceof Error ? error.message : error);
+    }
+})();
+
+// Blocking popup about an exception that occured and is blocking execution
+const ErrorPopup = new (class extends FloatingPopup {
+    _createModal () {
+        return `
+            <div class="ui basic tiny modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
+                <h2 class="ui centered header" style="padding-bottom: 0.5em; padding-top: 0;"><i class="times circle icon" style="color: red; font-size: 1em; line-height: 0.75em;"></i> A fatal error has occured!</h2>
+                <div class="text-center" style="text-align: justify; margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;" data-op="text">
+                    ...
+                </div>
+                <button class="ui red fluid button" data-op="continue">Click here or refresh the page</button>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$text = this.$parent.find('[data-op="text"]');
+        this.$parent.find('[data-op="continue"]').click(() => {
+            window.location.href = window.location.href;
+        });
+    }
+
+    _applyArguments (error) {
+        this.$text.html(error instanceof Error ? error.message : error);
     }
 })();
 

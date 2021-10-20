@@ -962,18 +962,7 @@
             });
 
             $('#load-stats').click(() => {
-                DatabaseManager.load({
-                    filters: {
-                        players: {
-                            name: 'own',
-                            mode: 'equals',
-                            value: ['1']
-                        },
-                        groups: {
-                            mode: 'none'
-                        }
-                    }
-                }).then(function () {
+                DatabaseManager.load(SELF_PROFILE).then(function () {
                     $('#stats-list').empty();
 
                     for (let player of Object.keys(DatabaseManager.Players).map(pid => DatabaseManager.getPlayer(pid).Latest).sort((a, b) => b.Timestamp - a.Timestamp).filter(p => p.Pets && p.Pets.TotalLevel)) {
