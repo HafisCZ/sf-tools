@@ -75,8 +75,6 @@ class PreferencesHandler {
 const Preferences = new PreferencesHandler();
 const SharedPreferences = new PreferencesHandler();
 
-const DEFAULT_OFFSET = -60 * 60 * 1000;
-
 const SiteOptions = new (class {
     constructor () {
         // Get values + defaults
