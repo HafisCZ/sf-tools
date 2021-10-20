@@ -44,7 +44,7 @@ const PriceTable = (function (max, costs, multipliers) {
         }
     }
     return table;
-})(20001, InitialCosts, Multipliers);
+})(25001, InitialCosts, Multipliers);
 
 function getRunesFromMoney (money) {
     return Math.trunc((Math.PI * 11592991 / 10748438389408) * Math.pow(money, 0.83));

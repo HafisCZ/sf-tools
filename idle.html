@@ -306,7 +306,7 @@
             // Shortcut getters
             function getLevel (id, def = 0) {
                 var level = Number($(`[data-building="${ id }"][data-setting="level"]`).val()) || def;
-                return Math.max(0, Math.min(20000, level));
+                return Math.max(0, Math.min(25000, level));
             }
 
             function getBoosts (id) {
@@ -478,9 +478,9 @@
                     // Target level
                     var target = 0;
                     if (bulk == 5) {
-                        target = Math.min(20000, Building.getBreakpointLevel(Building.getNearestBreakpoint(level) + 1));
+                        target = Math.min(25000, Building.getBreakpointLevel(Building.getNearestBreakpoint(level) + 1));
                     } else if (bulk > 0) {
-                        target = Math.min(20000, level + Multipliers[bulk - 1]);
+                        target = Math.min(25000, level + Multipliers[bulk - 1]);
                     }
 
                     // Set fields
@@ -496,7 +496,7 @@
                     }
 
                     // Set cost fields
-                    if (level < 20000) {
+                    if (level < 25000) {
                         var upgradeCost = building.getUpgradePrice(level, target ? (target - level) : 1);
                         setMoneyField(getFieldId(i, 'cost'), upgradeCost);
 
