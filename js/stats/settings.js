@@ -2420,7 +2420,9 @@ class Settings {
         arrayCompare.segmented = true;
 
         // Get own player
-        let ownPlayer = array.find(entry => entry.player.Own) || array[0];
+        let ownEntry = array.find(entry => entry.player.Own) || array[0];
+        let ownPlayer = _dig(ownEntry, 'player');
+        let ownCompare = _dig(ownEntry, 'compare');
 
         // Evaluate variables
         for (let [ name, variable ] of Object.entries(this.variables)) {
@@ -2432,8 +2434,8 @@ class Settings {
 
             if (variable.tableVariable) {
                 // Calculate values of table variable
-                let currentValue = variable.ast.eval(ownPlayer.player, ownPlayer.compare, this, new ExpressionScope().addSelf(arrayCurrent));
-                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(ownPlayer.compare, ownPlayer.compare, this, new ExpressionScope().addSelf(arrayCompare));
+                let currentValue = variable.ast.eval(ownPlayer, ownCompare, this, new ExpressionScope().addSelf(arrayCurrent));
+                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(ownCompare, ownCompare, this, new ExpressionScope().addSelf(arrayCompare));
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -2452,8 +2454,8 @@ class Settings {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.ast.eval(ownPlayer.player, ownPlayer.compare, this, new ExpressionScope().addSelf(arrayCurrent));
-            let compareValue = sameTimestamp ? currentValue : row.ast.eval(ownPlayer.compare, ownPlayer.compare, compareEnvironment, new ExpressionScope().addSelf(arrayCompare));
+            let currentValue = row.ast.eval(ownPlayer, ownCompare, this, new ExpressionScope().addSelf(arrayCurrent));
+            let compareValue = sameTimestamp ? currentValue : row.ast.eval(ownCompare, ownCompare, compareEnvironment, new ExpressionScope().addSelf(arrayCompare));
 
             row.eval = {
                 value: currentValue,
