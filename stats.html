@@ -648,42 +648,44 @@
 
         <!-- UI Handler -->
         <script type="text/javascript">
-            let params = parseParams(window.location.href);
-            let param_temporary = params['temp'] == -1;
-            let param_profile = params['profile'];
-            let param_slot = params['slot'];
+            window.addEventListener('load', function() {
+                let params = parseParams(window.location.href);
+                let param_temporary = params['temp'] == -1;
+                let param_profile = params['profile'];
+                let param_slot = params['slot'];
 
-            if (param_temporary) {
-                $('.css-temporary').removeClass('css-hidden');
-            }
+                if (param_temporary) {
+                    $('.css-temporary').removeClass('css-hidden');
+                }
 
-            let profile = ProfileManager.getProfile(param_profile);
-            if (param_temporary) {
-                Preferences.temporary();
-                $('#show-profile').addClass('profiles-disabled');
-                profile = {
-                    temporary: true
-                };
-            } else if (param_slot) {
-                profile['slot'] = param_slot;
-            }
+                let profile = ProfileManager.getProfile(param_profile);
+                if (param_temporary) {
+                    Preferences.temporary();
+                    $('#show-profile').addClass('profiles-disabled');
+                    profile = {
+                        temporary: true
+                    };
+                } else if (param_slot) {
+                    profile['slot'] = param_slot;
+                }
 
-            PopupController.open(LoaderPopup);
-            DatabaseManager.load(profile).then(function () {
-                UI.initialize();
-                UI.register(UI.Players, 'show-players');
-                UI.register(UI.Groups, 'show-groups');
-                UI.register(UI.Browse, 'show-browse');
-                UI.register(UI.Files, 'show-files');
-                UI.register(UI.Settings, 'show-settings');
-                UI.register(UI.ChangeLogs, 'show-changelog');
-                UI.register(UI.Profiles, 'show-profile');
-                PopupController.close(LoaderPopup);
-                UI.show(UI.Groups);
-            }).catch(function (e) {
-                PopupController.close(LoaderPopup);
-                PopupController.open(ErrorPopup, `<h4 class="ui white header text-center">Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.</h4><br>${e.message}`);
-                Logger.error(e, 'Database could not be opened!');
+                PopupController.open(LoaderPopup);
+                DatabaseManager.load(profile).then(function () {
+                    UI.initialize();
+                    UI.register(UI.Players, 'show-players');
+                    UI.register(UI.Groups, 'show-groups');
+                    UI.register(UI.Browse, 'show-browse');
+                    UI.register(UI.Files, 'show-files');
+                    UI.register(UI.Settings, 'show-settings');
+                    UI.register(UI.ChangeLogs, 'show-changelog');
+                    UI.register(UI.Profiles, 'show-profile');
+                    PopupController.close(LoaderPopup);
+                    UI.show(UI.Groups);
+                }).catch(function (e) {
+                    PopupController.close(LoaderPopup);
+                    PopupController.open(ErrorPopup, `<h4 class="ui white header text-center">Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.</h4><br>${e.message}`);
+                    Logger.error(e, 'Database could not be opened!');
+                });
             });
         </script>
     </body>
