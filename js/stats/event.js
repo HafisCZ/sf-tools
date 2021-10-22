@@ -1966,7 +1966,7 @@ class FilesView extends View {
             }, {});
 
             this.$results.html(players.sort((a, b) => b.timestamp - a.timestamp).slice(0, 100).map(player => `
-                <tr>
+                <tr data-tr-mark="${_uuid(player)}">
                     <td class="selectable clickable text-center" data-mark="${_uuid(player)}"><i class="circle ${ this.selectedPlayers[_uuid(player)] ? '' : 'outline ' }icon"></i></td>
                     <td class="text-center">${ this.timeMap[player.timestamp] }</td>
                     <td class="text-center">${ this.prefixMap[player.prefix] }</td>
@@ -1979,12 +1979,42 @@ class FilesView extends View {
             this.$parent.find('[data-mark]').click((event) => {
                 let uuid = event.currentTarget.dataset.mark;
 
-                if ($(`[data-mark="${uuid}"] > i`).toggleClass('outline').hasClass('outline')) {
-                    delete this.selectedPlayers[uuid];
+                if (event.shiftKey && this.lastSelectedPlayer && this.lastSelectedPlayer != uuid) {
+                    // Elements
+                    const $startSelector = $(`tr[data-tr-mark="${this.lastSelectedPlayer}"]`);
+                    const $endSelector = $(`tr[data-tr-mark="${uuid}"]`);
+                    // Element indexes
+                    const startSelectorIndex = $startSelector.index();
+                    const endSelectorIndex = $endSelector.index();
+                    const selectDown = startSelectorIndex < endSelectorIndex;
+                    const elementArray = selectDown ? $startSelector.nextUntil($endSelector) : $endSelector.nextUntil($startSelector);
+                    // Get list of timestamps to be changed
+                    const toChange = [ uuid, this.lastSelectedPlayer ];
+                    for (const obj of elementArray.toArray()) {
+                        toChange.push(obj.dataset.trMark);
+                    }
+
+                    // Change all timestamps
+                    if (uuid in this.selectedPlayers) {
+                        for (const mark of toChange) {
+                            $(`[data-mark="${mark}"] > i`).addClass('outline');
+                            delete this.selectedPlayers[mark];
+                        }
+                    } else {
+                        for (const mark of toChange) {
+                            $(`[data-mark="${mark}"] > i`).removeClass('outline');
+                            this.selectedPlayers[mark] = this.currentPlayers[mark];
+                        }
+                    }
                 } else {
-                    this.selectedPlayers[uuid] = this.currentPlayers[uuid];
+                    if ($(`[data-mark="${uuid}"] > i`).toggleClass('outline').hasClass('outline')) {
+                        delete this.selectedPlayers[uuid];
+                    } else {
+                        this.selectedPlayers[uuid] = this.currentPlayers[uuid];
+                    }
                 }
 
+                this.lastSelectedPlayer = uuid;
                 this.updateSelectedCounter();
             });
         });
@@ -2013,7 +2043,7 @@ class FilesView extends View {
         this.$parent.find('[data-timestamp]').click((event) => {
             const timestamp = parseInt(event.currentTarget.dataset.timestamp);
 
-            if (event.shiftKey && this.lastSelectedTimestamp) {
+            if (event.shiftKey && this.lastSelectedTimestamp && this.lastSelectedTimestamp != timestamp) {
                 // Elements
                 const $startSelector = $(`tr[data-tr-timestamp="${this.lastSelectedTimestamp}"]`);
                 const $endSelector = $(`tr[data-tr-timestamp="${timestamp}"]`);
