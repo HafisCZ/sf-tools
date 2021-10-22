@@ -2144,7 +2144,7 @@ class FilesView extends View {
             this.updateSelectedCounter();
         } else {
             this.$results.find('[data-mark] > i').addClass('outline');
-            this.$results.find('[data-timestamp] > i').addClass('outline');
+            this.$resultsSimple.find('[data-timestamp] > i').addClass('outline');
         }
     }
 }
