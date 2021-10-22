@@ -2000,7 +2000,7 @@ class FilesView extends View {
         }]);
 
         this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin }]) => `
-            <tr>
+            <tr data-tr-timestamp="${timestamp}">
                 <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle ${ this.selectedFiles.includes(timestamp) ? '' : 'outline ' }icon"></i></td>
                 <td class="text-center">${ prettyDate }</td>
                 <td class="text-center">${ playerCount }</td>
@@ -2011,14 +2011,44 @@ class FilesView extends View {
         `).join(''));
 
         this.$parent.find('[data-timestamp]').click((event) => {
-            let timestamp = parseInt(event.currentTarget.dataset.timestamp);
+            const timestamp = parseInt(event.currentTarget.dataset.timestamp);
 
-            if ($(`[data-timestamp="${timestamp}"] > i`).toggleClass('outline').hasClass('outline')) {
-                _remove(this.selectedFiles, timestamp);
+            if (event.shiftKey && this.lastSelectedTimestamp) {
+                // Elements
+                const $startSelector = $(`tr[data-tr-timestamp="${this.lastSelectedTimestamp}"]`);
+                const $endSelector = $(`tr[data-tr-timestamp="${timestamp}"]`);
+                // Element indexes
+                const startSelectorIndex = $startSelector.index();
+                const endSelectorIndex = $endSelector.index();
+                const selectDown = startSelectorIndex < endSelectorIndex;
+                const elementArray = selectDown ? $startSelector.nextUntil($endSelector) : $endSelector.nextUntil($startSelector);
+                // Get list of timestamps to be changed
+                const toChange = [ timestamp, this.lastSelectedTimestamp ];
+                for (const obj of elementArray.toArray()) {
+                    toChange.push(parseInt(obj.dataset.trTimestamp));
+                }
+
+                // Change all timestamps
+                if (_has(this.selectedFiles, timestamp)) {
+                    for (const ts of toChange) {
+                        $(`[data-timestamp="${ts}"] > i`).addClass('outline');
+                        _remove_unless_includes(this.selectedFiles, ts);
+                    }
+                } else {
+                    for (const ts of toChange) {
+                        $(`[data-timestamp="${ts}"] > i`).removeClass('outline');
+                        _push_unless_includes(this.selectedFiles, ts);
+                    }
+                }
             } else {
-                this.selectedFiles.push(timestamp);
+                if ($(`[data-timestamp="${timestamp}"] > i`).toggleClass('outline').hasClass('outline')) {
+                    _remove(this.selectedFiles, timestamp);
+                } else {
+                    this.selectedFiles.push(timestamp);
+                }
             }
 
+            this.lastSelectedTimestamp = timestamp;
             this.updateSelectedCounter();
         });
     }
@@ -2130,6 +2160,8 @@ class FilesView extends View {
     show (forceUpdate = false) {
         this.selectedPlayers = {};
         this.selectedFiles = [];
+        this.lastSelectedTimestamp = null;
+        this.lastSelectedPlayer = null;
 
         PopupController.close(LoaderPopup);
 

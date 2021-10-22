@@ -15,6 +15,23 @@ function _try (obj, method, ... args) {
     }
 }
 
+function _has (arr, obj) {
+    return arr.indexOf(obj) > -1;
+}
+
+function _push_unless_includes(arr, obj) {
+    if (!_has(arr, obj)) {
+        arr.push(obj);
+    }
+}
+
+function _remove_unless_includes(arr, obj) {
+    const index = arr.indexOf(obj);
+    if (index > -1) {
+        arr.splice(index, 1);
+    }
+}
+
 function _present (obj) {
     return obj !== null && typeof obj !== 'undefined';
 }
