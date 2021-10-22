@@ -9,6 +9,13 @@ body {
     overflow-x: auto;
 }
 
+tr[data-tr-timestamp], tr[data-tr-mark] {
+    user-select: none;
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+}
+
 .sftools-loader {
     opacity: 65%;
     animation: spin 1.2s linear infinite;
