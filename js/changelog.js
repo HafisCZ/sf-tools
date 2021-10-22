@@ -1,5 +1,5 @@
 const CHANGELOG = {
-    'v5.0190': {
+    'v5.1716': {
         'Statistics': [
             'Reworked database & file handling and loading improved speed',
             'Reworked response parser',

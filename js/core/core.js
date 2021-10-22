@@ -1,5 +1,5 @@
 // Version stuff
-const MODULE_VERSION = 'v5.0190';
+const MODULE_VERSION = 'v5.1716';
 const TABLE_VERSION = 'v9';
 const CORE_VERSION = 'BETA v2';
 
