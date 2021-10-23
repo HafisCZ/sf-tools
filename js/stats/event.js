@@ -1989,7 +1989,14 @@ class FilesView extends View {
                 return memo;
             }, {});
 
-            this.$results.html(players.sort((a, b) => b.timestamp - a.timestamp).slice(0, 100).map(player => `
+            const sortedPlayers = players.sort((a, b) => b.timestamp - a.timestamp);
+
+            let notice = ''
+            if (sortedPlayers.length > 250) {
+                notice = `<tr style="height: 2em;"><td colspan="6" class="text-center" style="font-weight: bold; line-height: 2em;">Another ${sortedPlayers.length - 100} entries have been hidden to improve performance</td></tr>`
+            }
+
+            this.$results.html(sortedPlayers.slice(0, 250).map(player => `
                 <tr data-tr-mark="${_uuid(player)}" ${player.hidden ? 'style="color: gray;"' : ''}>
                     <td class="selectable clickable text-center" data-mark="${_uuid(player)}"><i class="circle ${ this.selectedPlayers[_uuid(player)] ? '' : 'outline ' }icon"></i></td>
                     <td class="text-center">${ this.timeMap[player.timestamp] }</td>
@@ -1998,7 +2005,7 @@ class FilesView extends View {
                     <td class="text-center">${ this.groupMap[player.group] || '' }</td>
                     <td class="text-center">${ player.origin || '' }</td>
                 </tr>
-            `).join(''));
+            `).join('') + notice);
 
             this.$parent.find('[data-mark]').click((event) => {
                 let uuid = event.currentTarget.dataset.mark;
