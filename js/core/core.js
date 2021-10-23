@@ -107,6 +107,7 @@ const SiteOptions = new (class {
                 },
                 set: function (value) {
                     this.options[propName] = value;
+                    Logger.log('R_FLAGS', `${propName} set to ${value}`)
                     SharedPreferences.set('options', this.options);
                     this.changed(propName);
                 }
