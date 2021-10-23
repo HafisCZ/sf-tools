@@ -764,7 +764,7 @@ const DatabaseManager = new (class {
         return new Promise(async (resolve, reject) => {
             if (from && to) {
                 const file = this._getFile(null, [ from ]);
-                
+
                 for (const i of file.players) {
                     i.timestamp = to;
                 }
@@ -1074,9 +1074,9 @@ const DatabaseManager = new (class {
 
     findDataFieldFor (timestamp, field) {
         for (const identifier of this.Timestamps[timestamp]) {
-            const version = _dig(this.getAny(identifier), timestamp, 'Data', field);
-            if (version) {
-                return version;
+            const value = _dig(this.getAny(identifier), timestamp, 'Data', field);
+            if (value) {
+                return value;
             }
         }
 
