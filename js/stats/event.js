@@ -2054,6 +2054,7 @@ class FilesView extends View {
                     <td>${ groupCount }</td>
                     <td class="text-center">${ version || 'Not known' }</td>
                     <td class="text-center">${ origin || '' }</td>
+                    <td class="clickable text-center" data-edit="${timestamp}"><i class="wrench icon"></i></td>
                 </tr>
             `;
         }).join(''));
@@ -2098,6 +2099,15 @@ class FilesView extends View {
 
             this.lastSelectedTimestamp = timestamp;
             this.updateSelectedCounter();
+        });
+
+        this.$parent.find('[data-edit]').click((event) => {
+            const timestamp = parseInt(event.currentTarget.dataset.edit);
+            PopupController.open(FileEditPopup, timestamp).then((result) => {
+                if (result) {
+                    this.show();
+                }
+            });
         });
     }
 

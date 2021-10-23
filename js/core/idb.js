@@ -369,6 +369,7 @@ const DatabaseManager = new (class {
         if (this.Database) {
             this.Database.close();
         }
+
         this.Database = null;
         this.Options = {};
         this.Hidden = [];
@@ -757,6 +758,27 @@ const DatabaseManager = new (class {
         }
 
         Preferences.set('hidden_identifiers', Array.from(this.Hidden));
+    }
+
+    rebase (from, to) {
+        return new Promise(async (resolve, reject) => {
+            if (from && to) {
+                const file = this._getFile(null, [ from ]);
+                
+                for (const i of file.players) {
+                    i.timestamp = to;
+                }
+
+                for (const i of file.groups) {
+                    i.timestamp = to;
+                }
+
+                await this._addFile(null, file.players, file.groups);
+                await this.removeTimestamps(from);
+            }
+
+            resolve();
+        });
     }
 
     merge (timestamps) {

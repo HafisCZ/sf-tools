@@ -31,11 +31,11 @@ class FloatingPopup {
         });
     }
 
-    close () {
+    close (value) {
         this.shouldOpen = false;
         if (this._hasParent() && this.resolve) {
             this.$parent.hide();
-            this.resolve();
+            this.resolve(value);
             this.resolve = undefined;
         }
     }
@@ -282,6 +282,52 @@ const ErrorPopup = new (class extends FloatingPopup {
 
     _applyArguments (error) {
         this.$text.html(error instanceof Error ? error.message : error);
+    }
+})();
+
+const FileEditPopup = new (class extends FloatingPopup {
+    constructor () {
+        super(0);
+    }
+
+    _createModal () {
+        return `
+            <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Edit file</h2>
+                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
+                    <div class="field">
+                        <label>Timestamp</label>
+                        <input data-op="timestamp" type="text">
+                    </div>
+                </div>
+                <div class="ui three fluid buttons">
+                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
+                    <button class="ui orange fluid button" data-op="save">Save</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$parent.find('[data-op="cancel"]').click(() => {
+            this.close();
+        });
+
+        this.$parent.find('[data-op="save"]').click(() => {
+            const newTimestamp = parseOwnDate(this.$timestamp.val());
+            if (newTimestamp && newTimestamp != this.sourceTimestamp) {
+                DatabaseManager.rebase(this.sourceTimestamp, newTimestamp).then(() => this.close(true));
+            } else {
+                this.close();
+            }
+        });
+
+        this.$timestamp = this.$parent.find('[data-op="timestamp"]')
+    }
+
+    _applyArguments (timestamp) {
+        this.sourceTimestamp = timestamp;
+        this.$timestamp.val(formatDate(timestamp));
     }
 })();
 
