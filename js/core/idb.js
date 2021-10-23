@@ -1083,6 +1083,18 @@ const DatabaseManager = new (class {
         return undefined;
     }
 
+    findDataFieldValuesFor (timestamp, field) {
+        const values = new Set();
+        for (const identifier of this.Timestamps[timestamp]) {
+            const value = _dig(this.getAny(identifier), timestamp, 'Data', field);
+            if (value) {
+                values.add(value);
+            }
+        }
+
+        return Array.from(values);
+    }
+
     async _import (json, timestamp, offset = -3600000, origin = null) {
         if (Array.isArray(json)) {
             // Archive, Share

@@ -1755,6 +1755,12 @@ class FilesView extends View {
         }
     }
 
+    tagSelected () {
+        if (this.simple && _not_empty(this.selectedFiles)) {
+            PopupController.open(FileTagPopup, this.selectedFiles).then(() => this.show());
+        }
+    }
+
     // Export selected to cloud
     exportSelectedCloud () {
         if (this.simple) {
@@ -1856,6 +1862,7 @@ class FilesView extends View {
         this.$parent.find('[data-op="endpoint"]').click(() => this.importEndpoint());
         this.$parent.find('[data-op="shared"]').click(() => this.importCloud());
 
+        this.$tags = this.$parent.find('[data-op="tags"]').click(() => this.tagSelected());
         this.$filters = this.$parent.find('[data-op="filters"]');
         this.$results = this.$parent.find('[data-op="files-search-results"]');
         this.$resultsSimple = this.$parent.find('[data-op="files-search-results-simple"]');
@@ -2222,6 +2229,8 @@ class FilesView extends View {
         this.lastSelectedPlayer = null;
 
         PopupController.close(LoaderPopup);
+
+        this.$tags.toggle(this.simple);
 
         // Set counters
         if (this.lastChange != DatabaseManager.LastChange || forceUpdate) {

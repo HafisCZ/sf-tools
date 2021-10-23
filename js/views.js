@@ -302,7 +302,7 @@ const FileEditPopup = new (class extends FloatingPopup {
                 </div>
                 <div class="ui three fluid buttons">
                     <button class="ui black fluid button" data-op="cancel">Cancel</button>
-                    <button class="ui orange fluid button" data-op="save">Save</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">Save</button>
                 </div>
             </div>
         `;
@@ -328,6 +328,56 @@ const FileEditPopup = new (class extends FloatingPopup {
     _applyArguments (timestamp) {
         this.sourceTimestamp = timestamp;
         this.$timestamp.val(formatDate(timestamp));
+    }
+})();
+
+const FileTagPopup = new (class extends FloatingPopup {
+    constructor () {
+        super(0);
+    }
+
+    _createModal () {
+        return `
+            <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Edit tags</h2>
+                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
+                    <div class="field">
+                        <label>Current tags:</label>
+                        <input disabled data-op="old-tags" type="text">
+                    </div>
+                    <div class="field">
+                        <label>Replacement tags:</label>
+                        <input data-op="new-tags" type="text">
+                    </div>
+                </div>
+                <div class="ui three fluid buttons">
+                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">Save</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$oldTags = this.$parent.find('[data-op="old-tags"]');
+        this.$newTags = this.$parent.find('[data-op="new-tags"]');
+
+        this.$parent.find('[data-op="cancel"]').click(() => {
+            this.close();
+        });
+
+        this.$parent.find('[data-op="save"]').click(() => {
+            this.close();
+        });
+    }
+
+    _applyArguments (timestamps) {
+        const tags = new Set();
+        for (const timestamp of timestamps) {
+            tags.add(...DatabaseManager.findDataFieldValuesFor(timestamp));
+        }
+
+        // TODO: Finish
     }
 })();
 
