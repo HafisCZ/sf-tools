@@ -141,24 +141,28 @@ class IndexedDBWrapper {
     }
 
     set (store, value) {
+        Logger.log('STORAGE', `ADD TO ${store}`);
         return new Promise((resolve, reject) => _bindOnSuccessOnError(
             this.store(store).put(value), resolve, reject
         ));
     }
 
     get (store, key) {
+        Logger.log('STORAGE', `GET ${key} FROM ${store}`);
         return new Promise((resolve, reject) => _bindOnSuccessOnError(
             this.store(store).get(key), resolve, reject
         ));
     }
 
     remove (store, key) {
+        Logger.log('STORAGE', `REMOVE ${key} FROM ${store}`);
         return new Promise((resolve, reject) => _bindOnSuccessOnError(
             this.store(store).delete(key), resolve, reject
         ));
     }
 
     where (store, index, query) {
+        Logger.log('STORAGE', `GET ALL FROM ${store}${ index ? ` WITH INDEX ${index}` : '' }`);
         return new Promise((resolve, reject) => {
             let items = [];
             let cursorRequest = this.store(store, index).openCursor(query);
