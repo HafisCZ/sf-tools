@@ -1170,7 +1170,10 @@
                             })
                         )
                     );
+
+                    PopupController.close(LoaderPopup);
                 }).catch(function () {
+                    PopupController.close(LoaderPopup);
                     Logger.log('WARNING', 'Database could not be opened!');
                     $('#stats-list').empty();
                 });
