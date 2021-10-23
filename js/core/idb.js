@@ -576,7 +576,9 @@ const DatabaseManager = new (class {
                     ... DatabaseUtils.profileFilter(profile, 'groups')
                 ));
                 for (const group of groups) {
-                    this._addGroup(group);
+                    if (!group.hidden || SiteOptions.hidden) {
+                        this._addGroup(group);
+                    }
                 }
 
                 let players = DatabaseUtils.filterArray(profile, 'players') || (await this.Database.where(
@@ -584,7 +586,9 @@ const DatabaseManager = new (class {
                     ... DatabaseUtils.profileFilter(profile, 'players')
                 ));
                 for (const player of players) {
-                    this._addPlayer(player);
+                    if (!player.hidden || SiteOptions.hidden) {
+                        this._addPlayer(player);
+                    }
                 }
 
                 let trackers = await this.Database.where('trackers');
@@ -593,7 +597,7 @@ const DatabaseManager = new (class {
                 }
 
                 if (attemptMigration) {
-                    this._groupsCleanup();
+                    await this._groupsCleanup();
                 }
                 this._updateLists();
                 await this.refreshTrackers();
@@ -640,12 +644,7 @@ const DatabaseManager = new (class {
         return new Promise(async (resolve, reject) => {
             for (let { identifier, timestamp, group } of players) {
                 await this.Database.remove('players', [identifier, timestamp]);
-                await this._removeFromPool(identifier, timestamp);
-
-                delete this.Players[identifier][timestamp];
-                if (!this.Identifiers[identifier]) {
-                    delete this.Players[identifier];
-                }
+                await this._unload(identifier, timestamp);
             }
 
             await this._groupsCleanup();
@@ -654,20 +653,45 @@ const DatabaseManager = new (class {
         });
     }
 
+    async _unload (identifier, timestamp) {
+        return new Promise(async (resolve, reject) => {
+            await this._removeFromPool(identifier, timestamp);
+
+            if (this._isPlayer(identifier)) {
+                delete this.Players[identifier][timestamp];
+                if (_empty(this.Identifiers[identifier])) {
+                    delete this.Players[identifier];
+                }
+            } else {
+                delete this.Groups[identifier][timestamp];
+                if (_empty(this.Identifiers[identifier])) {
+                    delete this.Groups[identifier];
+                }
+            }
+
+            resolve();
+        });
+    }
+
     async _groupsCleanup () {
         for (const identifier of Object.keys(this.Groups)) {
             for (const timestamp of this.Identifiers[identifier]) {
                 const group = this.getGroup(identifier, timestamp);
-                group.MembersPresent = Array.from(this.Timestamps[timestamp]).filter(id => _dig(this.Players, id, timestamp, 'Data', 'group') == identifier);
+                group.MembersPresent = Array.from(this.Timestamps[timestamp]).filter(id => _dig(this.Players, id, timestamp, 'Data', 'group') == identifier).length;
 
-                if (group.MembersPresent < 1) {
+                if (group.MembersPresent < 1 && (!group.Data.hidden_members || SiteOptions.hidden)) {
                     await this.Database.remove('groups', [identifier, timestamp]);
-                    await this._removeFromPool(identifier, timestamp);
+                    await this._unload(identifier, timestamp);
+                } else if (!group.Data.hidden && group.MembersPresent < 1 && group.Data.hidden_members) {
+                    group.Data.hidden = true;
+                    await this.Database.set('groups', group.Data);
 
-                    delete this.Groups[identifier][timestamp];
-                    if (!this.Identifiers[identifier]) {
-                        delete this.Groups[identifier];
+                    if (!SiteOptions.hidden) {
+                        await this._unload(identifier, timestamp);
                     }
+                } else if (group.Data.hidden && !group.Data.hidden_members) {
+                    group.Data.hidden = false;
+                    await this.Database.set('groups', group.Data);
                 }
             }
         }
@@ -680,12 +704,7 @@ const DatabaseManager = new (class {
                 for (const identifier of this.Timestamps[timestamp]) {
                     let isPlayer = this._isPlayer(identifier);
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
-                    await this._removeFromPool(identifier, timestamp);
-
-                    delete this[isPlayer ? 'Players' : 'Groups'][identifier][timestamp];
-                    if (_empty(this.Identifiers[identifier])) {
-                        delete this[isPlayer ? 'Players' : 'Groups'][identifier];
-                    }
+                    await this._unload(identifier, timestamp);
                 }
 
                 delete this.Timestamps[timestamp];
@@ -732,7 +751,7 @@ const DatabaseManager = new (class {
         });
     }
 
-    hide (identifier) {
+    hideIdentifier (identifier) {
         if (!this.Hidden.delete(identifier)) {
             this.Hidden.add(identifier);
         }
@@ -761,6 +780,68 @@ const DatabaseManager = new (class {
                 }
 
                 await this.removeTimestamps(... timestamps);
+            }
+
+            resolve();
+        });
+    }
+
+    async _setSafe (obj) {
+        await this.Database.set(this._isPlayer(obj.identifier) ? 'players' : 'groups', obj);
+    }
+
+    hide (players) {
+        return new Promise(async (resolve, reject) => {
+            const pendingGroups = {};
+
+            for (const player of players) {
+                if ((player.hidden = !player.hidden) && !SiteOptions.hidden) {
+                    this._unload(player.identifier, player.timestamp);
+                }
+
+                await this.Database.set('players', player);
+
+                const groupIdentifier = player.group;
+                const group = this.getGroup(groupIdentifier, player.timestamp);
+                if (group) {
+                    if (isNaN(group.Data.hidden_members)) {
+                        group.Data.hidden_members = 0;
+                    }
+
+                    group.Data.hidden_members += (player.hidden ?  1 : -1);
+                    pendingGroups[groupIdentifier] = group.Data;
+                }
+            }
+
+            for (const group of Object.values(pendingGroups)) {
+                await this.Database.set('groups', group);
+            }
+
+            await this._groupsCleanup();
+
+            this._updateLists();
+            resolve();
+        });
+    }
+
+    hideTimestamps (... timestamps) {
+        return new Promise(async (resolve, reject) => {
+            if (_not_empty(timestamps)) {
+                const sample = timestamps[0];
+                const shouldHide = _any_true(this.Timestamps[sample], id => this._isPlayer(id) && !_dig(this.Players, id, sample, 'Data', 'hidden'));
+
+                for (const ts of timestamps) {
+                    for (const id of this.Timestamps[ts]) {
+                        const obj = _dig(this.getAny(id), ts, 'Data');
+                        if ((obj.hidden = shouldHide) && !SiteOptions.hidden) {
+                            this._unload(id, ts);
+                        }
+
+                        await this._setSafe(obj);
+                    }
+                }
+
+                this._updateLists();
             }
 
             resolve();

@@ -108,6 +108,7 @@ const SiteOptions = new (class {
             insecure: false,
             obfuscated: false,
             advanced: false,
+            hidden: false,
             terms_accepted: false,
             version_accepted: false,
             groups_hidden: false,

@@ -888,10 +888,10 @@ class BrowseView extends View {
                         var sel = this.$parent.find('[data-id].css-op-select');
                         if (sel.length) {
                             for (var el of sel) {
-                                DatabaseManager.hide($(el).attr('data-id'));
+                                DatabaseManager.hideIdentifier($(el).attr('data-id'));
                             }
                         } else {
-                            DatabaseManager.hide(source.attr('data-id'));
+                            DatabaseManager.hideIdentifier(source.attr('data-id'));
                         }
 
                         this.$filter.trigger('change');
@@ -1362,7 +1362,7 @@ class GroupsView extends View {
                 {
                     label: 'Show / Hide',
                     action: (source) => {
-                        DatabaseManager.hide(source.attr('data-id'));
+                        DatabaseManager.hideIdentifier(source.attr('data-id'));
                         this.show();
                     }
                 },
@@ -1491,7 +1491,7 @@ class PlayersView extends View {
                 {
                     label: 'Show / Hide',
                     action: (source) => {
-                        DatabaseManager.hide(source.attr('data-id'));
+                        DatabaseManager.hideIdentifier(source.attr('data-id'));
                         this.show();
                     }
                 },
@@ -1798,6 +1798,16 @@ class FilesView extends View {
         }
     }
 
+    // Hide selected
+    hideSelected () {
+        PopupController.open(LoaderPopup);
+        if (this.simple) {
+            DatabaseManager.hideTimestamps(... this.selectedFiles).then(() => this.show());
+        } else {
+            DatabaseManager.hide(Object.values(this.selectedPlayers)).then(() => this.show());
+        }
+    }
+
     // Import file via har
     importJson (fileEvent) {
         PopupController.open(LoaderPopup);
@@ -1840,7 +1850,8 @@ class FilesView extends View {
         this.$parent.find('[data-op="cloud-export-partial"]').click(() => this.exportSelectedCloud());
         this.$parent.find('[data-op="delete-all"]').click(() => this.deleteAll());
         this.$parent.find('[data-op="delete"]').click(() => this.deleteSelected());
-        this.$parent.find('[data-op="merge"]').click(() => this.mergeSelected())
+        this.$parent.find('[data-op="merge"]').click(() => this.mergeSelected());
+        this.$parent.find('[data-op="hide"]').click(() => this.hideSelected());
         this.$parent.find('[data-op="upload"]').change(event => this.importJson(event));
         this.$parent.find('[data-op="endpoint"]').click(() => this.importEndpoint());
         this.$parent.find('[data-op="shared"]').click(() => this.importCloud());
@@ -1856,12 +1867,16 @@ class FilesView extends View {
         this.prepareCheckbox('insecure', 'insecure');
         this.prepareCheckbox('advanced', 'advanced');
         this.prepareCheckbox('terms_accepted', 'terms');
+        this.prepareCheckbox('hidden', 'hidden');
 
         this.$advancedLeft = this.$parent.find('[data-op="advanced-left"]');
         this.$advancedCenter = this.$parent.find('[data-op="advanced-center"]');
         this.$simpleCenter = this.$parent.find('[data-op="simple-center"]');
 
         SiteOptions.onChange('advanced', enabled => this.setLayout(enabled));
+        SiteOptions.onChange('hidden', () => {
+            window.location.href = window.location.href;
+        });
         SiteOptions.onChange('terms_accepted', enabled => {
             if (enabled) {
                 this.$parent.find(`[data-op="checkbox-terms"]`).checkbox('set checked');
@@ -1966,7 +1981,7 @@ class FilesView extends View {
             }, {});
 
             this.$results.html(players.sort((a, b) => b.timestamp - a.timestamp).slice(0, 100).map(player => `
-                <tr data-tr-mark="${_uuid(player)}">
+                <tr data-tr-mark="${_uuid(player)}" ${player.hidden ? 'style="color: gray;"' : ''}>
                     <td class="selectable clickable text-center" data-mark="${_uuid(player)}"><i class="circle ${ this.selectedPlayers[_uuid(player)] ? '' : 'outline ' }icon"></i></td>
                     <td class="text-center">${ this.timeMap[player.timestamp] }</td>
                     <td class="text-center">${ this.prefixMap[player.prefix] }</td>
@@ -2029,16 +2044,19 @@ class FilesView extends View {
             origin: DatabaseManager.findDataFieldFor(ts, 'origin')
         }]);
 
-        this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin }]) => `
-            <tr data-tr-timestamp="${timestamp}">
-                <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle ${ this.selectedFiles.includes(timestamp) ? '' : 'outline ' }icon"></i></td>
-                <td class="text-center">${ prettyDate }</td>
-                <td class="text-center">${ playerCount }</td>
-                <td>${ groupCount }</td>
-                <td class="text-center">${ version || 'Not known' }</td>
-                <td class="text-center">${ origin || '' }</td>
-            </tr>
-        `).join(''));
+        this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin }]) => {
+            const allHidden = !_any_true(DatabaseManager.Timestamps[timestamp], id => !_dig(DatabaseManager.getAny(id), timestamp, 'Data', 'hidden'));
+            return `
+                <tr data-tr-timestamp="${timestamp}" ${allHidden ? 'style="color: gray;"' : ''}>
+                    <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle ${ this.selectedFiles.includes(timestamp) ? '' : 'outline ' }icon"></i></td>
+                    <td class="text-center">${ prettyDate }</td>
+                    <td class="text-center">${ playerCount }</td>
+                    <td>${ groupCount }</td>
+                    <td class="text-center">${ version || 'Not known' }</td>
+                    <td class="text-center">${ origin || '' }</td>
+                </tr>
+            `;
+        }).join(''));
 
         this.$parent.find('[data-timestamp]').click((event) => {
             const timestamp = parseInt(event.currentTarget.dataset.timestamp);
