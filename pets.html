@@ -742,7 +742,7 @@
                     petB.fillDebugInformation(b, false);
                 }
 
-                if (petA && petB && petA.Pet < 19 && petA.Boss == 0 && petB.Boss == 1) {
+                if (petA && petB && petA.Boss == 0 && petB.Boss == 1) {
                     $('#sim-generate').removeClass('disabled');
                 } else {
                     $('#sim-generate').addClass('disabled');
@@ -832,7 +832,7 @@
                     var a = petA.getData();
                     var b = petB.getData();
 
-                    if (a && b && a.Pet < 19 && !a.Boss && b.Boss) {
+                    if (a && b && !a.Boss && b.Boss) {
                         toggleAll(true);
 
                         var worker = createWebWorker('js/sim/pets.js');
@@ -863,7 +863,7 @@
 
                     var temp = petB.getData();
 
-                    if (a && a.Pet < 19 && temp && !a.Boss && temp.Boss) {
+                    if (a && temp && !a.Boss && temp.Boss) {
                         toggleAll(true);
 
                         var count = 0;
@@ -917,7 +917,7 @@
 
                     var temp = petB.getData();
 
-                    if (a && a.Pet < 19 && temp && !a.Boss && temp.Boss) {
+                    if (a && temp && !a.Boss && temp.Boss) {
                         toggleAll(true);
 
                         var count = 0;
