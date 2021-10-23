@@ -19,6 +19,16 @@ function _has (arr, obj) {
     return arr.indexOf(obj) > -1;
 }
 
+function _any_true (arr, m) {
+    for (const a of arr) {
+        if (m(a)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function _push_unless_includes(arr, obj) {
     if (!_has(arr, obj)) {
         arr.push(obj);
