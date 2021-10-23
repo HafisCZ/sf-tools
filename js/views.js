@@ -276,7 +276,7 @@ const ErrorPopup = new (class extends FloatingPopup {
 })();
 
 // Automatically open Terms and Conditions if not accepted yet
-document.addEventListener("DOMContentLoaded", function() {
+window.addEventListener('load', function() {
     if (!SiteOptions.terms_accepted) {
         PopupController.open(TermsAndConditionsPopup);
     }
