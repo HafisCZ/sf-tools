@@ -346,7 +346,7 @@ const FileTagPopup = new (class extends FloatingPopup {
                         <input disabled data-op="old-tags" type="text">
                     </div>
                     <div class="field">
-                        <label>Replacement tags:</label>
+                        <label>Replacement tag:</label>
                         <input data-op="new-tags" type="text">
                     </div>
                 </div>
