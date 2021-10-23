@@ -2215,11 +2215,7 @@ class FilesView extends View {
         this.$parent.find('[data-op="unique-group"]').html(Object.keys(this.groupMap).length - 1);
         this.$parent.find('[data-op="unique-prefix"]').html(Object.keys(this.prefixMap).length);
 
-        if (DatabaseManager.Latest) {
-            this.$filter_timestamp.dropdown('set selected', [ String(DatabaseManager.Latest) ]);
-        } else {
-            this.updateSearchResults();
-        }
+        this.updateSearchResults();
     }
 
     show (forceUpdate = false) {
