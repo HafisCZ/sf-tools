@@ -35,9 +35,36 @@ const Logger = new (class {
 })();
 
 class PreferencesHandler {
+    static _isAccessible () {
+        let currentValue = PreferencesHandler.available;
+
+        if (typeof currentValue === 'undefined') {
+            try {
+                window.localStorage;
+                currentValue = true;
+            } catch (exception) {
+                currentValue = false;
+            }
+
+            if (!currentValue) {
+                Logger.log('WARNING', 'Storage is not accessible');
+                PreferencesHandler.available = currentValue;
+            }
+        }
+
+        return currentValue;
+    }
+
+    _getStorage (kind) {
+        if (PreferencesHandler._isAccessible()) {
+            return window[kind];
+        } else {
+            return undefined;
+        }
+    }
 
     constructor () {
-        this.storage = window.localStorage || window.sessionStorage || { };
+        this.storage = this._getStorage('localStorage') || this._getStorage('sessionStorage') || { };
     }
 
     set (key, object) {
@@ -68,7 +95,6 @@ class PreferencesHandler {
         this.storage = { };
         this.anonymous = true;
     }
-
 }
 
 // Preferences

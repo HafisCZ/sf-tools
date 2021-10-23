@@ -287,11 +287,13 @@ const ErrorPopup = new (class extends FloatingPopup {
 
 // Automatically open Terms and Conditions if not accepted yet
 window.addEventListener('load', function() {
-    if (!SiteOptions.terms_accepted) {
-        PopupController.open(TermsAndConditionsPopup);
-    }
+    if (PreferencesHandler._isAccessible()) {
+        if (!SiteOptions.terms_accepted) {
+            PopupController.open(TermsAndConditionsPopup);
+        }
 
-    if (SiteOptions.version_accepted != MODULE_VERSION) {
-        PopupController.open(ChangeLogPopup);
+        if (SiteOptions.version_accepted != MODULE_VERSION) {
+            PopupController.open(ChangeLogPopup);
+        }
     }
 });
