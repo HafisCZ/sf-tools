@@ -5,34 +5,43 @@ class FloatingPopup {
 
     open (...args) {
         return new Promise((resolve, reject) => {
-            this.resolve = resolve;
+            if (this.shouldOpen) {
+                this.resolve = resolve;
 
-            if (!this._hasParent()) {
-                const modal = $(this._createModal()).addClass('active');
-                const container = $(`
-                    <div style="display: none; z-index: 999; position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, ${this.opacity})">
-                    </div>
-                `);
+                if (!this._hasParent()) {
+                    const modal = $(this._createModal()).addClass('active');
+                    const container = $(`
+                        <div style="display: none; z-index: 999; position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, ${this.opacity})">
+                        </div>
+                    `);
 
-                modal.appendTo(container);
-                container.appendTo($('body').first());
-                this.$parent = container;
+                    modal.appendTo(container);
+                    container.appendTo($('body').first());
+                    this.$parent = container;
 
-                this._createModal();
-                this._createBindings();
+                    this._createModal();
+                    this._createBindings();
+                }
+
+                this._applyArguments(...args);
+                this.$parent.show();
+            } else {
+                resolve();
             }
-
-            this._applyArguments(...args);
-            this.$parent.show();
         });
     }
 
     close () {
+        this.shouldOpen = false;
         if (this._hasParent() && this.resolve) {
             this.$parent.hide();
             this.resolve();
             this.resolve = undefined;
         }
+    }
+
+    openable () {
+        this.shouldOpen = true;
     }
 
     _hasParent () {
@@ -59,6 +68,7 @@ const PopupController = new (class {
     }
 
     open (popup, ...args) {
+        popup.openable();
         return (this.promise = this.promise.then(() => popup.open(...args)));
     }
 
