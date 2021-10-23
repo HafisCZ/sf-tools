@@ -818,7 +818,7 @@ const DatabaseManager = new (class {
 
             for (const player of players) {
                 if ((player.hidden = !player.hidden) && !SiteOptions.hidden) {
-                    this._unload(player.identifier, player.timestamp);
+                    await this._unload(player.identifier, player.timestamp);
                 }
 
                 await this.Database.set('players', player);
@@ -856,7 +856,7 @@ const DatabaseManager = new (class {
                     for (const id of this.Timestamps[ts]) {
                         const obj = _dig(this.getAny(id), ts, 'Data');
                         if ((obj.hidden = shouldHide) && !SiteOptions.hidden) {
-                            this._unload(id, ts);
+                            await this._unload(id, ts);
                         }
 
                         await this._setSafe(obj);
