@@ -1973,6 +1973,7 @@ class FilesView extends View {
         let timestamps = this.$filter_timestamp.dropdown('get value').map(value => parseInt(value));
         let origins = this.$filter_origin.dropdown('get value');
         let type = parseInt(this.$filter_type.dropdown('get value'));
+        let hidden = this.$filter_hidden.dropdown('get value');
 
         DatabaseManager.export(null, null, data => (
             (!prefixes || prefixes.length == 0 || prefixes.includes(data.prefix)) &&
@@ -1980,7 +1981,8 @@ class FilesView extends View {
             (player_identifiers.length == 0 || player_identifiers.includes(data.identifier)) &&
             (timestamps.length == 0 || timestamps.includes(data.timestamp)) &&
             (origins.length == 0 || origins.includes(`${data.origin}`)) &&
-            (!type || data.own != type - 1)
+            (!type || data.own != type - 1) &&
+            (!SiteOptions.hidden || hidden.length == 0 || (SiteOptions.hidden && (data.hidden && hidden.includes('yes')) || (!data.hidden && hidden.includes('no'))))
         )).then(({ players }) => {
             this.currentPlayers = players.reduce((memo, player) => {
                 memo[_uuid(player)] = player;
@@ -2179,6 +2181,13 @@ class FilesView extends View {
                     <option value="migration">Migrated</option>
                 </select>
             </div>
+            <div class="field" ${ SiteOptions.hidden ? '' : 'style="display: none;"' }>
+                <label>Hidden</label>
+                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-hidden">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
         `);
 
         this.$filter_timestamp = this.$parent.find('[data-op="files-search-timestamp"]').dropdown({
@@ -2202,6 +2211,11 @@ class FilesView extends View {
         });
 
         this.$filter_origin = this.$parent.find('[data-op="files-search-origin"]').dropdown({
+            onChange: this.updateSearchResults.bind(this),
+            placeholder: 'Any'
+        });
+
+        this.$filter_hidden = this.$parent.find('[data-op="files-search-hidden"]').dropdown({
             onChange: this.updateSearchResults.bind(this),
             placeholder: 'Any'
         });
