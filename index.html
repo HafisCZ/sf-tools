@@ -431,7 +431,7 @@
                 return `${ date.getDate() }. ${ months[date.getMonth()] } ${ date.getFullYear() } ${ date.getHours() }:${ date.getMinutes() < 10 ? '0' : '' }${ date.getMinutes() }`;
             }
 
-            var item = localStorage['version'] ? JSON.parse(localStorage['version']) : { expire: 0 };
+            var item = SharedPreferences.get('version', { expire: 0 });
             if (item.expire < Date.now()) {
                 $.ajax(
                     "https://api.github.com/repos/hafiscz/sf-tools/commits",
@@ -458,19 +458,18 @@
                         }
                     ).then(function (response2) {
                         var version = parseInt(response2.data.total_commits) + 1;
-
-                        localStorage['version'] = JSON.stringify({
+                        SharedPreferences.set('version', {
                             timestamp: date.getTime(),
                             message: message,
                             version: version,
                             expire: Date.now() + 1800000
-                        });
+                        })
+
                         $(".footer-repo").html(`v${ VERSION_MAJOR }.${ version }<br/>Last updated on ${ formatDate(date) } - ${ message }`);
                     })
                 });
             } else {
-                var obj = JSON.parse(localStorage['version']);
-                $(".footer-repo").html(`v${ VERSION_MAJOR }.${ obj.version }<br/>Last updated on ${ formatDate(new Date(obj.timestamp)) } - ${ obj.message }`);
+                $(".footer-repo").html(`v${ VERSION_MAJOR }.${ item.version }<br/>Last updated on ${ formatDate(new Date(item.timestamp)) } - ${ item.message }`);
             }
 
             var showAbout = false;
