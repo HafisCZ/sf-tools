@@ -25,6 +25,12 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
     user-select: none;
 }
 
+[data-tr-timestamp] .ui.label {
+    padding-left: 6px;
+    padding-right: 6px;
+    min-width: 1em;
+}
+
 @keyframes spin {
     100% {
         transform:rotate(360deg);
