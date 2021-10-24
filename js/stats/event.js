@@ -1446,8 +1446,8 @@ class GroupsView extends View {
         this.$list.html(content);
         this.$list2.html(content2);
 
-        this.$parent.find('[data-id]').click(function () {
-            UI.show(UI.GroupDetail, $(this).attr('data-id'));
+        this.$parent.find('[data-id]').click((event) => {
+            UI.show(UI.GroupDetail, event.currentTarget.dataset.id);
         });
 
         this.$context.context('bind', this.$parent.find('[data-id]'));
