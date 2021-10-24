@@ -258,7 +258,7 @@ class DatabaseUtils {
 
                 Logger.log('MIGRATE', `Cleaning up database`);
 
-                migratedDatabase.close();
+                await migratedDatabase.close();
                 if (SiteOptions.migration_accepted) {
                     await IndexedDBWrapper.delete(DATABASE_PARAMS_V1[0]);
                 }
