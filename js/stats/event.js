@@ -117,7 +117,7 @@ class GroupDetailView extends View {
         this.$configure = this.$parent.find('[data-op="configure"]').contextmenu(event => {
             event.preventDefault();
         }).click(event => {
-            let caller = $(event.target);
+            let caller = $(event.currentTarget);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
                 UI.SettingsFloat.show(this.identifier, 'guilds', PredefinedTemplates['Guilds Default']);
             }
@@ -315,7 +315,7 @@ class GroupDetailView extends View {
             this.$table.find('tbody').append($('<tr data-cloneext style="height: 2em;"></tr>'));
 
             this.$parent.find('[data-id]').click((event) => {
-                UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp, this.reference);
+                UI.PlayerDetail.show(event.currentTarget.dataset.id, this.timestamp, this.reference);
             });
 
             this.$context.context('bind', this.$parent.find('[data-id]'));
@@ -728,7 +728,7 @@ class PlayerHistoryView extends View {
         this.$configure = this.$parent.find('[data-op="configure"]').contextmenu(event => {
             event.preventDefault();
         }).click(event => {
-            let caller = $(event.target);
+            let caller = $(event.currentTarget);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
                 UI.SettingsFloat.show(this.identifier, 'me', PredefinedTemplates['Me Default']);
             }
@@ -962,7 +962,7 @@ class BrowseView extends View {
         this.$configure = this.$parent.find('[data-op="configure"]').contextmenu(event => {
             event.preventDefault();
         }).click(event => {
-            let caller = $(event.target);
+            let caller = $(event.currentTarget);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
                 UI.SettingsFloat.show('players', 'players', PredefinedTemplates['Players Default']);
             }
@@ -995,7 +995,7 @@ class BrowseView extends View {
             'qc': 'Show only selected categories',
             't': 'Show online template directly'
         }).change((event) => {
-            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h|o|sr|q|qc|t):/);
+            var filter = $(event.currentTarget).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h|o|sr|q|qc|t):/);
 
             var terms = [
                 {
@@ -1316,9 +1316,9 @@ class BrowseView extends View {
         this.table.refresh(() => {
             this.$parent.find('[data-id]').click((event) => {
                 if (event.ctrlKey) {
-                    $(event.target).toggleClass('css-op-select');
+                    $(event.currentTarget).toggleClass('css-op-select');
                 } else {
-                    UI.PlayerDetail.show($(event.target).attr('data-id'), this.timestamp, this.reference);
+                    UI.PlayerDetail.show(event.currentTarget.dataset.id, this.timestamp, this.reference);
                 }
             }).mousedown((event) => {
                 event.preventDefault();
@@ -1534,7 +1534,7 @@ class PlayersView extends View {
             'h': 'Show hidden',
             'o': 'Show other'
         }).change((event) => {
-            var filter = $(event.target).val().split(/(?:\s|\b)(c|p|g|s|e|l|a|h|o):/);
+            var filter = $(event.currentTarget).val().split(/(?:\s|\b)(c|p|g|s|e|l|a|h|o):/);
 
             var terms = [
                 {
@@ -1823,7 +1823,7 @@ class FilesView extends View {
         PopupController.open(LoaderPopup);
 
         let pendingPromises = [];
-        Array.from(fileEvent.target.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified).catch((exception) => {
+        Array.from(fileEvent.currentTarget.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified).catch((exception) => {
             PopupController.open(WarningPopup, exception);
             Logger.error(exception, 'Error occured while trying to import a file!');
         }))));
@@ -2357,7 +2357,7 @@ class SettingsView extends View {
 
         // Input handling
         this.$area.on('input', (event) => {
-            var val = $(event.target).val();
+            var val = $(event.currentTarget).val();
             if (this.pasted) {
                 val = val.replace(/\t/g, ' ');
 
@@ -3475,7 +3475,7 @@ class ProfilesView extends View {
 
         this.$list.html(content);
         this.$parent.find('[data-key]').click(event => {
-            const key = event.target.dataset.key;
+            const key = event.currentTarget.dataset.key;
             ProfileManager.setActiveProfile(key);
             window.location.href = window.location.href;
         });
