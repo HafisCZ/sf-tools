@@ -31,8 +31,8 @@
                             event.stopPropagation();
                         });
 
-                        this.$popup.append($(`<div class="css-search-entry" data-entry="${ btoa(this.array[i]) }">${ this.array[i] }</div>`).on('click', event => {
-                            $this.searchfield('select', atob($(event.currentTarget).attr('data-entry')));
+                        this.$popup.append($(`<div class="css-search-entry" data-entry="${ _string_to_binary(this.array[i]) }">${ this.array[i] }</div>`).on('click', event => {
+                            $this.searchfield('select', _binary_to_string($(event.currentTarget).attr('data-entry')));
                         }).append(star));
                     }
 
@@ -42,8 +42,8 @@
                             event.stopPropagation();
                         });
 
-                        this.$popup.append($(`<div class="css-search-entry" data-entry="${ btoa(this.starred[i]) }">${ this.starred[i] }</div>`).on('click', event => {
-                            $this.searchfield('select', atob($(event.currentTarget).attr('data-entry')));
+                        this.$popup.append($(`<div class="css-search-entry" data-entry="${ _string_to_binary(this.starred[i]) }">${ this.starred[i] }</div>`).on('click', event => {
+                            $this.searchfield('select', _binary_to_string($(event.currentTarget).attr('data-entry')));
                         }).append(star));
                     }
                 });

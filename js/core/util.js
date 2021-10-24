@@ -185,3 +185,23 @@ function _hashCode (str) {
 function _strToHSL (str) {
     return `hsl(${ _hashCode(str) % 360 }, 100%, 30%)`;
 }
+
+function _string_to_binary(str) {
+    const arr = new Uint16Array(str.length);
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = str.charCodeAt(i);
+    }
+
+    return btoa(String.fromCharCode(...new Uint8Array(arr.buffer)));
+}
+
+function _binary_to_string(bin) {
+  const binary = atob(bin);
+  const bytes = new Uint8Array(binary.length);
+
+  for (let i = 0; i < bytes.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+
+  return String.fromCharCode(...new Uint16Array(bytes.buffer));
+}
