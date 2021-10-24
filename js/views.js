@@ -338,16 +338,16 @@ const FileTagPopup = new (class extends FloatingPopup {
 
     _createModal () {
         return `
-            <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+            <div class="ui basic mini modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
                 <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Edit tags</h2>
                 <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
                     <div class="field">
                         <label>Current tags:</label>
-                        <input disabled data-op="old-tags" type="text">
+                        <input data-op="old-tags" type="text" placeholder="None" disabled>
                     </div>
                     <div class="field">
                         <label>Replacement tag:</label>
-                        <input data-op="new-tags" type="text">
+                        <input data-op="new-tags" type="text" placeholder="None">
                     </div>
                 </div>
                 <div class="ui three fluid buttons">
@@ -367,17 +367,18 @@ const FileTagPopup = new (class extends FloatingPopup {
         });
 
         this.$parent.find('[data-op="save"]').click(() => {
-            this.close();
+            const tag = this.$newTags.val();
+            DatabaseManager.setTag(this.timestamps, tag).then(() => this.close(true));
         });
     }
 
     _applyArguments (timestamps) {
-        const tags = new Set();
-        for (const timestamp of timestamps) {
-            tags.add(...DatabaseManager.findDataFieldValuesFor(timestamp));
-        }
+        this.timestamps = timestamps;
 
-        // TODO: Finish
+        const tags = DatabaseManager.findUsedTags(timestamps);
+
+        this.$oldTags.val(Object.entries(tags).map(([key, count]) => `${key === 'undefined' ? 'None' : key} (${count})`).join(', '));
+        this.$newTags.val('');
     }
 })();
 

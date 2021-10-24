@@ -764,6 +764,24 @@ const DatabaseManager = new (class {
         Preferences.set('hidden_identifiers', Array.from(this.Hidden));
     }
 
+    setTag (timestamps, tag) {
+        return new Promise(async (resolve, reject) => {
+            const { players } = this._getFile(null, timestamps);
+            for (const player of players) {
+                if (!tag || _empty(tag)) {
+                    delete player.tag;
+                } else {
+                    player.tag = tag;
+                }
+
+                await this.Database.set('players', player);
+            }
+
+            this.LastChange = Date.now();
+            resolve();
+        });
+    }
+
     rebase (from, to) {
         return new Promise(async (resolve, reject) => {
             if (from && to) {
@@ -1087,16 +1105,18 @@ const DatabaseManager = new (class {
         return undefined;
     }
 
-    findDataFieldValuesFor (timestamp, field) {
-        const values = new Set();
-        for (const identifier of this.Timestamps[timestamp]) {
-            const value = _dig(this.getAny(identifier), timestamp, 'Data', field);
-            if (value) {
-                values.add(value);
+    findUsedTags (timestamps) {
+        const tags = {};
+        const { players } = this._getFile(null, timestamps);
+        for (const player of players) {
+            if (tags[player.tag]) {
+                tags[player.tag] += 1;
+            } else {
+                tags[player.tag] = 1;
             }
         }
 
-        return Array.from(values);
+        return tags;
     }
 
     async _import (json, timestamp, offset = -3600000, origin = null) {

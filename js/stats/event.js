@@ -1757,7 +1757,11 @@ class FilesView extends View {
 
     tagSelected () {
         if (this.simple && _not_empty(this.selectedFiles)) {
-            PopupController.open(FileTagPopup, this.selectedFiles).then(() => this.show());
+            PopupController.open(FileTagPopup, this.selectedFiles).then((result) => {
+                if (result) {
+                    this.show();
+                }
+            });
         }
     }
 
