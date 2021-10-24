@@ -375,9 +375,18 @@ const FileTagPopup = new (class extends FloatingPopup {
     _applyArguments (timestamps) {
         this.timestamps = timestamps;
 
-        const tags = DatabaseManager.findUsedTags(timestamps);
+        const tags = Object.entries(DatabaseManager.findUsedTags(timestamps));
+        if (tags.length == 1) {
+            const tag = _dig(tags, 0, 0);
+            if (tag == 'undefined') {
+                this.$oldTags.val('');
+            } else {
+                this.$oldTags.val(tag);
+            }
+        } else {
+            this.$oldTags.val(tags.map(([key, count]) => `${key === 'undefined' ? 'None' : key} (${count})`).join(', '));
+        }
 
-        this.$oldTags.val(Object.entries(tags).map(([key, count]) => `${key === 'undefined' ? 'None' : key} (${count})`).join(', '));
         this.$newTags.val('');
     }
 })();
