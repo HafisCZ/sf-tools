@@ -2061,17 +2061,32 @@ class FilesView extends View {
             playerCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager._isPlayer(id)),
             groupCount: _len_where(DatabaseManager.Timestamps[ts], id => !DatabaseManager._isPlayer(id)),
             version: DatabaseManager.findDataFieldFor(ts, 'version'),
-            origin: DatabaseManager.findDataFieldFor(ts, 'origin')
+            origin: DatabaseManager.findDataFieldFor(ts, 'origin'),
+            tags: (() => {
+                let tagContent = '';
+                const tags = Object.entries(DatabaseManager.findUsedTags([ ts ]));
+                if (tags.length == 1) {
+                    const tag = _dig(tags, 0, 0);
+                    if (tag !== 'undefined') {
+                        tagContent = tag;
+                    }
+                } else {
+                    tagContent = tags.map(([key, count]) => `${key === 'undefined' ? 'None' : key} (${count})`).join(', ');
+                }
+
+                return tagContent
+            })()
         }]);
 
-        this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin }]) => {
+        this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags }]) => {
             const allHidden = !_any_true(DatabaseManager.Timestamps[timestamp], id => !_dig(DatabaseManager.getAny(id), timestamp, 'Data', 'hidden'));
             return `
                 <tr data-tr-timestamp="${timestamp}" ${allHidden ? 'style="color: gray;"' : ''}>
                     <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle ${ this.selectedFiles.includes(timestamp) ? '' : 'outline ' }icon"></i></td>
                     <td class="text-center">${ prettyDate }</td>
                     <td class="text-center">${ playerCount }</td>
-                    <td>${ groupCount }</td>
+                    <td class="text-center">${ groupCount }</td>
+                    <td>${ _empty(tags) ? '' : `<div class="ui horizontal label" style="background-color: ${_strToHSL(tags)}; color: white;">${tags}</div>` }</td>
                     <td class="text-center">${ version || 'Not known' }</td>
                     <td class="text-center">${ origin || '' }</td>
                     <td class="clickable text-center" data-edit="${timestamp}"><i class="wrench icon"></i></td>

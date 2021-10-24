@@ -172,3 +172,16 @@ function _empty (obj) {
 function _not_empty (obj) {
     return !_empty(obj);
 }
+
+function _hashCode (str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        hash = hash & hash;
+    }
+    return hash;
+}
+
+function _strToHSL (str) {
+    return `hsl(${ _hashCode(str) % 360 }, 100%, 30%)`;
+}
