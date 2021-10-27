@@ -1200,17 +1200,17 @@ class BrowseView extends View {
         var timestamps = [];
         var references = [];
 
-        for (const timestamp of Object.keys(DatabaseManager.Timestamps)) {
+        for (const timestamp of DatabaseManager.PlayerTimestamps) {
             timestamps.push({
                 name: formatDate(timestamp),
                 value: timestamp,
-                selected: timestamp == DatabaseManager.Latest
+                selected: timestamp == DatabaseManager.LatestPlayer
             });
 
             references.push({
                 name: formatDate(timestamp),
                 value: timestamp,
-                selected: timestamp == DatabaseManager.Latest
+                selected: timestamp == DatabaseManager.LatestPlayer
             });
         }
 
@@ -1253,8 +1253,8 @@ class BrowseView extends View {
             this.$filter.trigger('change');
         });
 
-        this.timestamp = DatabaseManager.Latest;
-        this.reference = DatabaseManager.Latest;
+        this.timestamp = DatabaseManager.LatestPlayer;
+        this.reference = DatabaseManager.LatestPlayer;
 
         this.load();
     }
@@ -2090,7 +2090,7 @@ class FilesView extends View {
             this.tagFilter = undefined;
         }
 
-        this.currentFiles = _array_to_hash(Object.keys(DatabaseManager.Timestamps).map(v => parseInt(v)), (ts) => [ts, {
+        this.currentFiles = _array_to_hash(DatabaseManager.PlayerTimestamps, (ts) => [ts, {
             prettyDate: formatDate(ts),
             playerCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager._isPlayer(id)),
             groupCount: _len_where(DatabaseManager.Timestamps[ts], id => !DatabaseManager._isPlayer(id)),
@@ -2127,7 +2127,7 @@ class FilesView extends View {
         this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).filter(([, { tags: { tagList } }]) => {
             return typeof this.tagFilter === 'undefined' || tagList.includes(this.tagFilter) || (tagList.includes('undefined') && this.tagFilter === '');
         }).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags: { tagContent } }]) => {
-            const allHidden = !_any_true(DatabaseManager.Timestamps[timestamp], id => !_dig(DatabaseManager.getAny(id), timestamp, 'Data', 'hidden'));
+            const allHidden = !_any_true(DatabaseManager.Timestamps[timestamp], id => DatabaseManager.Players[id] && !_dig(DatabaseManager.Players, id, timestamp, 'Data', 'hidden'));
             return `
                 <tr data-tr-timestamp="${timestamp}" ${allHidden ? 'style="color: gray;"' : ''}>
                     <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle ${ this.selectedFiles.includes(timestamp) ? '' : 'outline ' }icon"></i></td>
@@ -2191,7 +2191,7 @@ class FilesView extends View {
     }
 
     updateLists () {
-        this.timeMap = _array_to_hash(Object.keys(DatabaseManager.Timestamps), (ts) => [ts, formatDate(ts)]);
+        this.timeMap = _array_to_hash(DatabaseManager.PlayerTimestamps, (ts) => [ts, formatDate(ts)]);
         this.playerMap = _array_to_hash(Object.entries(DatabaseManager.Players), ([id, player]) => [id, player.Latest.Name]);
         this.groupMap = _array_to_hash(Object.entries(DatabaseManager.Groups), ([id, group]) => [id, group.Latest.Name], { 0: 'None' });
         for (const [ id, name ] of Object.entries(DatabaseManager.GroupNames)) {
@@ -3533,7 +3533,7 @@ class ProfilesView extends View {
     }
 
     addProfile () {
-        
+
     }
 
     showRules (rule) {

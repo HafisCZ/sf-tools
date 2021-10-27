@@ -447,17 +447,23 @@ const DatabaseManager = new (class {
     // INTERNAL: Update internal player/group lists
     _updateLists () {
         this.Latest = 0;
+        this.LatestPlayer = 0;
         this.LastChange = Date.now();
         this.GroupNames = {};
+
+        const playerTimestamps = new Set();
 
         for (const [identifier, player] of Object.entries(this.Players)) {
             player.LatestTimestamp = 0;
             player.List = Object.entries(player).reduce((array, [ ts, obj ]) => {
                 if (!isNaN(ts)) {
-                    var timestamp = Number(ts);
+                    const timestamp = Number(ts);
                     array.push([ timestamp, obj ]);
                     if (this.Latest < timestamp) {
                         this.Latest = timestamp;
+                    }
+                    if (this.LatestPlayer < timestamp) {
+                        this.LatestPlayer = timestamp;
                     }
                     if (player.LatestTimestamp < timestamp) {
                         player.LatestTimestamp = timestamp;
@@ -465,6 +471,7 @@ const DatabaseManager = new (class {
                     if (obj.Data.group) {
                         this.GroupNames[obj.Data.group] = obj.Data.groupname;
                     }
+                    playerTimestamps.add(timestamp);
                 }
 
                 return array;
@@ -483,7 +490,7 @@ const DatabaseManager = new (class {
             group.LatestTimestamp = 0;
             group.List = Object.entries(group).reduce((array, [ ts, obj ]) => {
                 if (!isNaN(ts)) {
-                    var timestamp = Number(ts);
+                    const timestamp = Number(ts);
                     array.push([ timestamp, obj ]);
                     if (this.Latest < timestamp) {
                         this.Latest = timestamp;
@@ -505,6 +512,7 @@ const DatabaseManager = new (class {
             }
         }
 
+        this.PlayerTimestamps = Array.from(playerTimestamps);
         this.Prefixes = Array.from(new Set(Object.keys(this.Identifiers).map(identifier => this.getAny(identifier).Latest.Data.prefix)));
     }
 
