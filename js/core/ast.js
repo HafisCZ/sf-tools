@@ -174,7 +174,7 @@ class Expression {
     }
 
     // Format
-    static format (string, root = { functions: { }, variables: { }, constants: new Constants() }) {
+    static format (string, root = { functions: { }, variables: { }, constants: Constants.DEFAULT }, extraIdentifiers) {
         var content = '';
         var tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp);
         let nextName = false;
@@ -200,6 +200,8 @@ class Expression {
                             return SFormat.Comment(st);
                         }
                     }).join('') }\``;
+                } else if (extraIdentifiers && extraIdentifiers.includes(token)) {
+                    value = SFormat.Reserved(token);
                 } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'difference', 'sort', 'var', 'tracker' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
                 } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index', 'table_timestamp', 'table_reference' ].includes(token) || root.variables.hasOwnProperty(token)) {
@@ -767,7 +769,7 @@ class Expression {
     }
 
     // Outside eval function (always call this from outside of the Expression class)
-    eval (player, reference = undefined, environment = { functions: { }, variables: { }, constants: new Constants(), lists: { } }, scope = ExpressionScope.DEFAULT_SCOPE, header = undefined) {
+    eval (player, reference = undefined, environment = { functions: { }, variables: { }, constants: Constants.DEFAULT, lists: { } }, scope = ExpressionScope.DEFAULT_SCOPE, header = undefined) {
         this.subexpressions_cache_indexes = [];
         this.subexpressions_cache = [];
 

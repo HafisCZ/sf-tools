@@ -1208,6 +1208,8 @@ class Constants {
     }
 }
 
+Constants.DEFAULT = new Constants();
+
 class Settings {
     // Contructor
     constructor (string, type) {
