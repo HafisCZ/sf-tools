@@ -3495,7 +3495,8 @@ class ProfilesView extends View {
             content += `
                 <div class="row" style="margin-top: 1em; border: 1px solid black; border-radius: .25em;">
                     <div class="four wide column">
-                        <h3 class="ui clickable ${ key == ProfileManager.getActiveProfileName() ? 'orange' : '' } header" data-key="${key}">${name}<br/>
+                        <h3 class="ui ${ key == ProfileManager.getActiveProfileName() ? 'orange' : '' } header">
+                            <span data-key="${key}" class="clickable">${name}</span><br/>
                             <span style="font-size: 90%;">(${key})</span>
                         </h3>
                         ${
