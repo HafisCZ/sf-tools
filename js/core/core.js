@@ -194,11 +194,6 @@ const ProfileManager = new (class {
                     value: ['now() - 4 * @7days']
                 },
                 secondary: null
-            },
-            'custom1': {
-                name: 'Migrated',
-                primary: null,
-                secondary: 'origin == "migration"'
             }
         }, Preferences.get('db_profiles', {}));
     }
