@@ -1896,6 +1896,9 @@ class FilesView extends View {
             }
         });
         this.setLayout(SiteOptions.advanced, true);
+
+        this.$tagFilter = this.$parent.find('[data-op="simple-tags"]');
+        this.tagFilter = undefined;
     }
 
     setLayout (advanced, supressUpdate = false) {
@@ -2056,6 +2059,42 @@ class FilesView extends View {
     }
 
     updateFileList () {
+        let currentTags = Object.keys(DatabaseManager.findUsedTags(undefined));
+        if (currentTags.length > 1 || currentTags[0] !== 'undefined') {
+            let content = `
+                <div data-tag="*" class="ui basic tiny button">All</div>
+                <div data-tag="" class="ui basic black tiny button">None</div>
+            `;
+            for (const name of currentTags) {
+                if (name !== 'undefined') {
+                    content += `
+                        <div data-tag="${name}" class="ui basic tiny button" style="background-color: ${_strToHSL(name)}; color: white;">${name}</div>
+                    `;
+                }
+            }
+
+            this.$tagFilter.html(content);
+            this.$tagFilter.show();
+            if (this.tagFilter !== '' && this.tagFilter !== undefined && !currentTags.includes(this.tagFilter)) {
+                this.tagFilter = undefined;
+            }
+
+            document.querySelector(`[data-tag="${ typeof this.tagFilter === 'undefined' ? '*' : this.tagFilter }"]`).classList.remove('basic');
+
+            this.$parent.find('[data-tag]').click((event) => {
+                const tag = event.currentTarget.dataset.tag;
+                const tagToFilter = tag === '*' ? undefined : tag;
+
+                if (tagToFilter !== this.tagFilter) {
+                    this.tagFilter = tagToFilter;
+                    this.show(true);
+                }
+            });
+        } else {
+            this.$tagFilter.hide();
+            this.tagFilter = undefined;
+        }
+
         this.currentFiles = _array_to_hash(Object.keys(DatabaseManager.Timestamps).map(v => parseInt(v)), (ts) => [ts, {
             prettyDate: formatDate(ts),
             playerCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager._isPlayer(id)),
@@ -2063,22 +2102,36 @@ class FilesView extends View {
             version: DatabaseManager.findDataFieldFor(ts, 'version'),
             origin: DatabaseManager.findDataFieldFor(ts, 'origin'),
             tags: (() => {
+                const tagMap = DatabaseManager.findUsedTags([ts]);
+                const tagEntries = _sort_des(Object.entries(tagMap), ([, a]) => a);
+
                 let tagContent = '';
-                const tags = Object.entries(DatabaseManager.findUsedTags([ ts ]));
-                if (tags.length == 1) {
-                    const tag = _dig(tags, 0, 0);
-                    if (tag !== 'undefined') {
-                        tagContent = tag;
+                for (const [name, count] of tagEntries) {
+                    const countText = tagEntries.length > 1 ? ` (${count})` : '';
+
+                    if (name === 'undefined') {
+                        if (tagEntries.length > 1) {
+                            tagContent += `
+                                <div class="ui gray horizontal label">None${countText}</div>
+                            `;
+                        }
+                    } else {
+                        tagContent += `
+                            <div class="ui horizontal label" style="background-color: ${_strToHSL(name)}; color: white;">${name}${countText}</div>
+                        `;
                     }
-                } else {
-                    tagContent = tags.map(([key, count]) => `${key === 'undefined' ? 'None' : key} (${count})`).join(', ');
                 }
 
-                return tagContent
+                return {
+                    tagList: Object.keys(tagMap),
+                    tagContent
+                };
             })()
         }]);
 
-        this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags }]) => {
+        this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).filter(([, { tags: { tagList } }]) => {
+            return typeof this.tagFilter === 'undefined' || tagList.includes(this.tagFilter) || (tagList.includes('undefined') && this.tagFilter === '');
+        }).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags: { tagContent } }]) => {
             const allHidden = !_any_true(DatabaseManager.Timestamps[timestamp], id => !_dig(DatabaseManager.getAny(id), timestamp, 'Data', 'hidden'));
             return `
                 <tr data-tr-timestamp="${timestamp}" ${allHidden ? 'style="color: gray;"' : ''}>
@@ -2086,7 +2139,7 @@ class FilesView extends View {
                     <td class="text-center">${ prettyDate }</td>
                     <td class="text-center">${ playerCount }</td>
                     <td class="text-center">${ groupCount }</td>
-                    <td>${ _empty(tags) ? '' : `<div class="ui horizontal label" style="background-color: ${_strToHSL(tags)}; color: white;">${tags}</div>` }</td>
+                    <td>${ tagContent }</td>
                     <td class="text-center">${ version || 'Not known' }</td>
                     <td class="text-center">${ origin || '' }</td>
                     <td class="clickable text-center" data-edit="${timestamp}"><i class="wrench icon"></i></td>
