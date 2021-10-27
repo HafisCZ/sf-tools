@@ -3486,7 +3486,7 @@ class ProfilesView extends View {
 
         this.$list = this.$parent.find('[data-op="list"]')
 
-        this.exprIdentifiers = ['timestamp', 'origin', 'identifier', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname'];
+        this.exprIdentifiers = ['timestamp', 'origin', 'identifier', 'profile', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname'];
     }
 
     show () {
