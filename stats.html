@@ -681,6 +681,10 @@
                     $('.css-temporary').removeClass('css-hidden');
                 }
 
+                if (param_profile) {
+                    $('#show-profile').addClass('profiles-disabled');
+                }
+
                 let profile = ProfileManager.getProfile(param_profile);
                 if (param_temporary) {
                     Preferences.temporary();
