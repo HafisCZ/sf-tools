@@ -368,12 +368,15 @@ const FileTagPopup = new (class extends FloatingPopup {
 
         this.$parent.find('[data-op="save"]').click(() => {
             const tag = this.$newTags.val();
-            DatabaseManager.setTag(this.timestamps, tag).then(() => this.close(true));
+            this.close();
+            PopupController.open(LoaderPopup);
+            DatabaseManager.setTag(this.timestamps, tag).then(this.callback);
         });
     }
 
-    _applyArguments (timestamps) {
+    _applyArguments (timestamps, callback) {
         this.timestamps = timestamps;
+        this.callback = callback;
 
         const tags = Object.entries(DatabaseManager.findUsedTags(timestamps));
         if (tags.length == 1) {
