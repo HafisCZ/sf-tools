@@ -866,6 +866,7 @@ const DatabaseManager = new (class {
                     }
                 }
 
+                await this._groupsCleanup();
                 this._updateLists();
             }
 
