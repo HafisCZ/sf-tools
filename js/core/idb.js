@@ -1102,7 +1102,7 @@ const DatabaseManager = new (class {
 
     findDataFieldFor (timestamp, field) {
         for (const identifier of this.Timestamps[timestamp]) {
-            const value = _dig(this.getAny(identifier), timestamp, 'Data', field);
+            const value = _dig(this.Players, identifier, timestamp, 'Data', field);
             if (value) {
                 return value;
             }
