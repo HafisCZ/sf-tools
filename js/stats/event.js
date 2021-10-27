@@ -2187,11 +2187,7 @@ class FilesView extends View {
 
         this.$parent.find('[data-edit]').click((event) => {
             const timestamp = parseInt(event.currentTarget.dataset.edit);
-            PopupController.open(FileEditPopup, timestamp).then((result) => {
-                if (result) {
-                    this.show();
-                }
-            });
+            PopupController.open(FileEditPopup, timestamp, () => this.show());
         });
     }
 

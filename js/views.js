@@ -314,9 +314,11 @@ const FileEditPopup = new (class extends FloatingPopup {
         });
 
         this.$parent.find('[data-op="save"]').click(() => {
-            const newTimestamp = parseOwnDate(this.$timestamp.val());
-            if (newTimestamp && newTimestamp != this.sourceTimestamp) {
-                DatabaseManager.rebase(this.sourceTimestamp, newTimestamp).then(() => this.close(true));
+            const newTimestamp = Math.trunc(parseOwnDate(this.$timestamp.val()) / 60000);
+            if (newTimestamp && newTimestamp != this.truncatedTimestamp) {
+                this.close();
+                PopupController.open(LoaderPopup);
+                DatabaseManager.rebase(this.sourceTimestamp, newTimestamp * 60000).then(this.callback);
             } else {
                 this.close();
             }
@@ -325,8 +327,10 @@ const FileEditPopup = new (class extends FloatingPopup {
         this.$timestamp = this.$parent.find('[data-op="timestamp"]')
     }
 
-    _applyArguments (timestamp) {
+    _applyArguments (timestamp, callback) {
+        this.callback = callback;
         this.sourceTimestamp = timestamp;
+        this.truncatedTimestamp = Math.trunc(timestamp / 60000);
         this.$timestamp.val(formatDate(timestamp));
     }
 })();
