@@ -148,8 +148,8 @@ function _pretty_prefix (prefix) {
 }
 
 function _array_to_hash (array, processor, base = {}) {
-    return array.reduce((memo, object) => {
-        const [key, value] = processor(object);
+    return array.reduce((memo, object, i) => {
+        const [key, value] = processor(object, i);
         memo[key] = value;
         return memo;
     }, base);
