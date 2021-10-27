@@ -1403,8 +1403,7 @@ class GroupsView extends View {
         var index = 0;
         var index2 = 0;
 
-        var groups = Object.values(DatabaseManager.Groups);
-        groups.sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
+        var groups = Object.values(DatabaseManager.Groups).filter(g => g.MembersPresent).sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
 
         for (var i = 0, group; group = groups[i]; i++) {
             var hidden = DatabaseManager.Hidden.has(group.Latest.Identifier);
