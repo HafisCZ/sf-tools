@@ -584,9 +584,11 @@ const DatabaseManager = new (class {
             return DatabaseUtils.createSession(attemptMigration).then(async database => {
                 this.Database = database;
 
-                let groups = await this.Database.where('groups');
-                for (const group of groups) {
-                    this._addGroup(group);
+                if (!profile.only_players) {
+                    let groups = await this.Database.where('groups');
+                    for (const group of groups) {
+                        this._addGroup(group);
+                    }
                 }
 
                 let players = DatabaseUtils.filterArray(profile) || (await this.Database.where(
@@ -612,9 +614,11 @@ const DatabaseManager = new (class {
                     }
                 }
 
-                let trackers = await this.Database.where('trackers');
-                for (const tracker of trackers) {
-                    this.TrackedPlayers[tracker.identifier] = tracker;
+                if (!profile.only_players) {
+                    let trackers = await this.Database.where('trackers');
+                    for (const tracker of trackers) {
+                        this.TrackedPlayers[tracker.identifier] = tracker;
+                    }
                 }
 
                 if (attemptMigration) {

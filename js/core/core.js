@@ -170,7 +170,8 @@ const SELF_PROFILE = {
         mode: 'equals',
         value: ['1']
     },
-    secondary: null
+    secondary: null,
+    only_players: true
 };
 
 const ProfileManager = new (class {
