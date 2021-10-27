@@ -390,6 +390,7 @@ const DatabaseManager = new (class {
         // Pools
         this.Identifiers = Object.create(null);
         this.Timestamps = Object.create(null);
+        this.PlayerTimestamps = [];
         this.Prefixes = [];
         this.GroupNames = {};
     }
