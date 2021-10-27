@@ -160,23 +160,17 @@ const DEFAULT_PROFILE = {
     name: 'Default',
     temporary: false,
     slot: 0,
-    filters: {
-        players: null,
-        groups: null
-    }
+    primary: null,
+    secondary: null
 };
 
 const SELF_PROFILE = {
-    filters: {
-        players: {
-            name: 'own',
-            mode: 'equals',
-            value: ['1']
-        },
-        groups: {
-            mode: 'none'
-        }
-    }
+    primary: {
+        name: 'own',
+        mode: 'equals',
+        value: ['1']
+    },
+    secondary: null
 };
 
 const ProfileManager = new (class {
@@ -185,35 +179,28 @@ const ProfileManager = new (class {
             'default': DEFAULT_PROFILE,
             'own': {
                 name: 'Own only',
-                filters: {
-                    players: {
-                        name: 'own',
-                        mode: 'equals',
-                        value: ['1']
-                    },
-                    groups: {
-                        name: 'own',
-                        mode: 'equals',
-                        value: ['1']
-                    }
-                }
+                primary: {
+                    name: 'own',
+                    mode: 'equals',
+                    value: ['1']
+                },
+                secondary: null
             },
             'month_old': {
                 name: 'Newer that 1 month',
-                filters: {
-                    players: {
-                        name: 'timestamp',
-                        mode: 'above',
-                        value: ['now() - 4 * @7days']
-                    },
-                    groups: {
-                        name: 'timestamp',
-                        mode: 'above',
-                        value: ['now() - 4 * @7days']
-                    }
-                }
+                primary: {
+                    name: 'timestamp',
+                    mode: 'above',
+                    value: ['now() - 4 * @7days']
+                },
+                secondary: null
+            },
+            'custom1': {
+                name: 'Migrated',
+                primary: null,
+                secondary: 'origin == "migration"'
             }
-        }, Preferences.get('profiles', {}));
+        }, Preferences.get('db_profiles', {}));
     }
 
     getDefaultProfile () {
@@ -238,16 +225,12 @@ const ProfileManager = new (class {
 
     removeProfile (name) {
         delete this.profiles[name];
-        Preferences.set('profiles', this.profiles);
+        Preferences.set('db_profiles', this.profiles);
     }
 
     setProfile (name, profile) {
         this.profiles[name] = profile;
-        Preferences.set('profiles', this.profiles);
-    }
-
-    getFreeProfileName () {
-        return `profile_${Object.keys(this.profiles).length}`;
+        Preferences.set('db_profiles', this.profiles);
     }
 
     getProfiles () {

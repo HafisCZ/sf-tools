@@ -294,12 +294,12 @@ class DatabaseUtils {
         return slot ? `database_${slot}` : 'database';
     }
 
-    static filterArray (profile, type) {
-        return _dig(profile, 'filters', type, 'mode') === 'none' ? [] : undefined;
+    static filterArray (profile) {
+        return _dig(profile, 'primary', 'mode') === 'none' ? [] : undefined;
     }
 
-    static profileFilter (profile, type) {
-        let filter = _dig(profile, 'filters', type);
+    static profileFilter (profile) {
+        let filter = profile.primary;
         if (filter) {
             let { name, mode, value } = filter;
             if (value) {
@@ -576,22 +576,28 @@ const DatabaseManager = new (class {
             return DatabaseUtils.createSession(attemptMigration).then(async database => {
                 this.Database = database;
 
-                let groups = DatabaseUtils.filterArray(profile, 'groups') || (await this.Database.where(
-                    'groups',
-                    ... DatabaseUtils.profileFilter(profile, 'groups')
-                ));
+                let groups = await this.Database.where('groups');
                 for (const group of groups) {
                     if (!group.hidden || SiteOptions.hidden) {
                         this._addGroup(group);
                     }
                 }
 
-                let players = DatabaseUtils.filterArray(profile, 'players') || (await this.Database.where(
+                let players = DatabaseUtils.filterArray(profile) || (await this.Database.where(
                     'players',
-                    ... DatabaseUtils.profileFilter(profile, 'players')
+                    ... DatabaseUtils.profileFilter(profile)
                 ));
-                for (const player of players) {
-                    if (!player.hidden || SiteOptions.hidden) {
+
+                if (profile.secondary) {
+                    const filter = new Expression(profile.secondary);
+                    for (const player of players) {
+                        ExpressionCache.reset();
+                        if (filter.eval(undefined, undefined, undefined, new ExpressionScope().addSelf(player))) {
+                            this._addPlayer(player);
+                        }
+                    }
+                } else {
+                    for (const player of players) {
                         this._addPlayer(player);
                     }
                 }

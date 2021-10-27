@@ -3486,23 +3486,25 @@ class ProfilesView extends View {
         super(parent);
 
         this.$list = this.$parent.find('[data-op="list"]')
+
+        this.exprIdentifiers = ['timestamp', 'origin', 'identifier', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname'];
     }
 
     show () {
         let content = '';
-        for (const [key, { name, filters }] of ProfileManager.getProfiles()) {
+        for (const [key, { name, primary, secondary }] of ProfileManager.getProfiles()) {
             content += `
                 <div class="row" style="margin-top: 1em; border: 1px solid black; border-radius: .25em;">
                     <div class="four wide column"><h3 class="ui clickable ${ key == ProfileManager.getActiveProfileName() ? 'orange' : '' } header" data-key="${key}">${name}</h3></div>
                     <div class="twelve wide column">
                         <table class="ui table" style="table-layout: fixed;">
                             <tr>
-                                <td style="width: 20%;">Player filter</td>
-                                <td>${ this.showRules(filters.players) }</td>
+                                <td style="width: 20%;">Primary filter</td>
+                                <td>${ this.showRules(primary) }</td>
                             </tr>
                             <tr>
-                                <td>Group filter</td>
-                                <td>${ this.showRules(filters.groups) }</td>
+                                <td>Secondary filter</td>
+                                <td>${ Expression.format(secondary || '', undefined, this.exprIdentifiers) }</td>
                             </tr>
                         </table>
                     </div>
@@ -3532,22 +3534,7 @@ class ProfilesView extends View {
     }
 
     addProfile () {
-        const name = ProfileManager.getFreeProfileName();
-        ProfileManager.setProfile(name, {
-            name: 'Testing profile',
-            filters: {
-                players: {
-                    name: 'profile',
-                    mode: 'equals',
-                    value: [`'${name}'`]
-                },
-                groups: {
-                    name: 'profile',
-                    mode: 'equals',
-                    value: [`'${name}'`]
-                }
-            }
-        });
+        
     }
 
     showRules (rule) {
