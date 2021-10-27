@@ -1403,7 +1403,7 @@ class GroupsView extends View {
         var index = 0;
         var index2 = 0;
 
-        var groups = Object.values(DatabaseManager.Groups).filter(g => g.MembersPresent).sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
+        var groups = Object.values(DatabaseManager.Groups).filter(g => g.List.some(([, g]) => g.MembersPresent)).sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
 
         for (var i = 0, group; group = groups[i]; i++) {
             var hidden = DatabaseManager.Hidden.has(group.Latest.Identifier);
@@ -2193,7 +2193,7 @@ class FilesView extends View {
     updateLists () {
         this.timeMap = _array_to_hash(DatabaseManager.PlayerTimestamps, (ts) => [ts, formatDate(ts)]);
         this.playerMap = _array_to_hash(Object.entries(DatabaseManager.Players), ([id, player]) => [id, player.Latest.Name]);
-        this.groupMap = _array_to_hash(Object.entries(DatabaseManager.Groups), ([id, group]) => [id, group.Latest.Name], { 0: 'None' });
+        this.groupMap = _array_to_hash(Object.entries(DatabaseManager.Groups).filter(([id,]) => DatabaseManager.Groups[id].List.some(([, g]) => g.MembersPresent)), ([id, group]) => [id, group.Latest.Name], { 0: 'None' });
         for (const [ id, name ] of Object.entries(DatabaseManager.GroupNames)) {
             if (!this.groupMap[id]) {
                 this.groupMap[id] = name;

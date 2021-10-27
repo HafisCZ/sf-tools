@@ -513,7 +513,7 @@ const DatabaseManager = new (class {
         }
 
         this.PlayerTimestamps = Array.from(playerTimestamps);
-        this.Prefixes = Array.from(new Set(Object.keys(this.Identifiers).map(identifier => this.getAny(identifier).Latest.Data.prefix)));
+        this.Prefixes = Array.from(new Set(Object.keys(this.Identifiers).filter(id => this._isPlayer(id)).map(identifier => this.Players[identifier].Latest.Data.prefix)));
     }
 
     // INTERNAL: Load player from proxy
@@ -586,9 +586,7 @@ const DatabaseManager = new (class {
 
                 let groups = await this.Database.where('groups');
                 for (const group of groups) {
-                    if (!group.hidden || SiteOptions.hidden) {
-                        this._addGroup(group);
-                    }
+                    this._addGroup(group);
                 }
 
                 let players = DatabaseUtils.filterArray(profile) || (await this.Database.where(
@@ -599,14 +597,18 @@ const DatabaseManager = new (class {
                 if (profile.secondary) {
                     const filter = new Expression(profile.secondary);
                     for (const player of players) {
-                        ExpressionCache.reset();
-                        if (filter.eval(undefined, undefined, undefined, new ExpressionScope().addSelf(player))) {
-                            this._addPlayer(player);
+                        if (!player.hidden || SiteOptions.hidden) {
+                            ExpressionCache.reset();
+                            if (filter.eval(undefined, undefined, undefined, new ExpressionScope().addSelf(player))) {
+                                this._addPlayer(player);
+                            }
                         }
                     }
                 } else {
                     for (const player of players) {
-                        this._addPlayer(player);
+                        if (!player.hidden || SiteOptions.hidden) {
+                            this._addPlayer(player);
+                        }
                     }
                 }
 
@@ -697,21 +699,6 @@ const DatabaseManager = new (class {
             for (const timestamp of this.Identifiers[identifier]) {
                 const group = this.getGroup(identifier, timestamp);
                 group.MembersPresent = Array.from(this.Timestamps[timestamp]).filter(id => _dig(this.Players, id, timestamp, 'Data', 'group') == identifier).length;
-
-                if (group.MembersPresent < 1 && (!group.Data.hidden_members || SiteOptions.hidden)) {
-                    await this.Database.remove('groups', [identifier, timestamp]);
-                    await this._unload(identifier, timestamp);
-                } else if (!group.Data.hidden && group.MembersPresent < 1 && group.Data.hidden_members) {
-                    group.Data.hidden = true;
-                    await this.Database.set('groups', group.Data);
-
-                    if (!SiteOptions.hidden) {
-                        await this._unload(identifier, timestamp);
-                    }
-                } else if (group.Data.hidden && !group.Data.hidden_members) {
-                    group.Data.hidden = false;
-                    await this.Database.set('groups', group.Data);
-                }
             }
         }
     }
@@ -844,39 +831,17 @@ const DatabaseManager = new (class {
         });
     }
 
-    async _setSafe (obj) {
-        await this.Database.set(this._isPlayer(obj.identifier) ? 'players' : 'groups', obj);
-    }
-
     hide (players) {
         return new Promise(async (resolve, reject) => {
-            const pendingGroups = {};
-
             for (const player of players) {
                 if ((player.hidden = !player.hidden) && !SiteOptions.hidden) {
                     await this._unload(player.identifier, player.timestamp);
                 }
 
                 await this.Database.set('players', player);
-
-                const groupIdentifier = player.group;
-                const group = this.getGroup(groupIdentifier, player.timestamp);
-                if (group) {
-                    if (isNaN(group.Data.hidden_members)) {
-                        group.Data.hidden_members = 0;
-                    }
-
-                    group.Data.hidden_members += (player.hidden ?  1 : -1);
-                    pendingGroups[groupIdentifier] = group.Data;
-                }
-            }
-
-            for (const group of Object.values(pendingGroups)) {
-                await this.Database.set('groups', group);
             }
 
             await this._groupsCleanup();
-
             this._updateLists();
             resolve();
         });
@@ -890,12 +855,14 @@ const DatabaseManager = new (class {
 
                 for (const ts of timestamps) {
                     for (const id of this.Timestamps[ts]) {
-                        const obj = _dig(this.getAny(id), ts, 'Data');
-                        if ((obj.hidden = shouldHide) && !SiteOptions.hidden) {
-                            await this._unload(id, ts);
-                        }
+                        if (this._isPlayer(id)) {
+                            const obj = _dig(this.Players, id, ts, 'Data');
+                            if ((obj.hidden = shouldHide) && !SiteOptions.hidden) {
+                                await this._unload(id, ts);
+                            }
 
-                        await this._setSafe(obj);
+                            await this.Database.set('players', obj);
+                        }
                     }
                 }
 
