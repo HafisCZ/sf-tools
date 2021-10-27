@@ -398,6 +398,89 @@ const FileTagPopup = new (class extends FloatingPopup {
     }
 })();
 
+const ProfileCreatePopup = new (class extends FloatingPopup {
+
+    constructor () {
+        super(0);
+    }
+
+    _createModal () {
+        return `
+            <div class="ui basic mini modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Create/Edit profile</h2>
+                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
+                    <div class="two fields">
+                        <div class="four wide field">
+                            <label>ID:</label>
+                            <input class="text-center" data-op="id" type="text" disabled>
+                        </div>
+                        <div class="twelve wide field">
+                            <label>Name:</label>
+                            <input data-op="name" type="text">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Secondary filter:</label>
+                        <div class="ta-wrapper">
+                            <input class="ta-area" data-op="secondary" type="text">
+                            <div class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui three fluid buttons">
+                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">Save</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$id = this.$parent.find('[data-op="id"]');
+        this.$name = this.$parent.find('[data-op="name"]');
+
+        this.$secondary = this.$parent.find('[data-op="secondary"]');
+        this.$secondary.on('change input', (e) => {
+            this.$parent.find('.ta-content').html(Expression.format($(e.currentTarget).val() || '', undefined, UI.Profiles.exprIdentifiers));
+        });
+
+        this.$parent.find('[data-op="cancel"]').click(() => {
+            this.close();
+        });
+
+        this.$parent.find('[data-op="save"]').click(() => {
+            ProfileManager.setProfile(this.id, Object.assign(this.profile || {}, {
+                name: this.$name.val(),
+                primary: null,
+                secondary: this.$secondary.val()
+            }));
+            this.close();
+            this.callback();
+        });
+    }
+
+    _applyArguments (callback, id) {
+        this.callback = callback;
+        this.id = id || SHA1(String(Date.now())).slice(0, 4);
+        this.profile = undefined;
+
+        if (id) {
+            this.profile = ProfileManager.getProfile(id);
+
+            const { name, primary, secondary } = this.profile;
+            this.$id.val(id);
+
+            // TODO: primary filter
+            this.$secondary.val(secondary);
+            this.$name.val(name);
+        } else {
+            this.$id.val(this.id);
+            this.$secondary.val('');
+            this.$name.val('');
+        }
+    }
+})();
+
 // Automatically open Terms and Conditions if not accepted yet
 window.addEventListener('load', function() {
     if (PreferencesHandler._isAccessible()) {

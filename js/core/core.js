@@ -198,6 +198,10 @@ const ProfileManager = new (class {
         }, Preferences.get('db_profiles', {}));
     }
 
+    isEditable (key) {
+        return !['default', 'own', 'month_old'].includes(key) && SiteOptions.profile != key;
+    }
+
     getDefaultProfile () {
         return this.profiles['default'];
     }

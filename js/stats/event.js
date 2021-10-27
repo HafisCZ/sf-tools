@@ -3494,7 +3494,19 @@ class ProfilesView extends View {
         for (const [key, { name, primary, secondary }] of ProfileManager.getProfiles()) {
             content += `
                 <div class="row" style="margin-top: 1em; border: 1px solid black; border-radius: .25em;">
-                    <div class="four wide column"><h3 class="ui clickable ${ key == ProfileManager.getActiveProfileName() ? 'orange' : '' } header" data-key="${key}">${name}</h3></div>
+                    <div class="four wide column">
+                        <h3 class="ui clickable ${ key == ProfileManager.getActiveProfileName() ? 'orange' : '' } header" data-key="${key}">${name}<br/>
+                            <span style="font-size: 90%;">(${key})</span>
+                        </h3>
+                        ${
+                            ProfileManager.isEditable(key) ? `
+                                <div style="position: absolute; left: 1em; bottom: 0;">
+                                    <i class="clickable trash alternate outline icon" data-delete="${key}"></i>
+                                    <i class="clickable wrench icon" style="margin-left: 1em;" data-edit="${key}"></i>
+                                </div>
+                            ` : ''
+                        }
+                    </div>
                     <div class="twelve wide column">
                         <table class="ui table" style="table-layout: fixed;">
                             <tr>
@@ -3526,6 +3538,17 @@ class ProfilesView extends View {
             window.location.href = window.location.href;
         });
 
+        this.$parent.find('[data-delete]').click((event) => {
+            const key = event.currentTarget.dataset.delete;
+            ProfileManager.removeProfile(key);
+            this.show();
+        });
+
+        this.$parent.find('[data-edit]').click((event) => {
+            const key = event.currentTarget.dataset.edit;
+            PopupController.open(ProfileCreatePopup, () => this.show(), key);
+        });
+
         this.$parent.find('[data-op="create"]').click(() => {
             this.addProfile();
             this.show();
@@ -3533,7 +3556,7 @@ class ProfilesView extends View {
     }
 
     addProfile () {
-
+        PopupController.open(ProfileCreatePopup, () => this.show());
     }
 
     showRules (rule) {
