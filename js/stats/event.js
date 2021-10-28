@@ -2244,8 +2244,8 @@ class FilesView extends View {
                     <option value="endpoint">Endpoint</option>
                     <option value="endpoint/dungeons">Dungeons (Endpoint)</option>
                     <option value="har/dungeons">Dungeons (HAR)</option>
-                    <option value="endpoint/pets">Pets (HAR)</option>
-                    <option value="har/pets">Pets (Endpoint)</option>
+                    <option value="endpoint/pets">Pets (Endpoint)</option>
+                    <option value="har/pets">Pets (HAR)</option>
                     <option value="merge">Merged</option>
                     <option value="share">Shared</option>
                     <option value="migration">Migrated</option>
