@@ -2542,11 +2542,10 @@ class SettingsView extends View {
     }
 
     show (key = 'players') {
-        this.settings = {
+        this.settings = Object.assign({
             name: key,
-            content: this.getDefaultTemplate(key),
-            ... SettingsManager.getObj(key, this.getDefault(key)) || {}
-        };
+            content: this.getDefaultTemplate(key)
+        }, SettingsManager.getObj(key, this.getDefault(key)) || {});
 
         // Update settings
         if (this.$settingsList.length) {
