@@ -1890,10 +1890,10 @@ class FilesView extends View {
                 PopupController.open(TermsAndConditionsPopup);
             }
         });
-        this.setLayout(SiteOptions.advanced, true);
 
         this.$tagFilter = this.$parent.find('[data-op="simple-tags"]');
         this.tagFilter = undefined;
+        this.setLayout(SiteOptions.advanced, true);
     }
 
     setLayout (advanced, supressUpdate = false) {
@@ -2055,7 +2055,7 @@ class FilesView extends View {
 
     updateFileList () {
         let currentTags = Object.keys(DatabaseManager.findUsedTags(undefined));
-        if (currentTags.length > 1 || currentTags[0] !== 'undefined') {
+        if (currentTags.length > 1 || (currentTags.length == 1 && currentTags[0] !== 'undefined')) {
             let content = `
                 <div data-tag="*" class="ui basic tiny button">All</div>
                 <div data-tag="" class="ui basic black tiny button">None</div>
