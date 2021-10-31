@@ -117,7 +117,7 @@ class GroupDetailView extends View {
         this.$configure = this.$parent.find('[data-op="configure"]').contextmenu(event => {
             event.preventDefault();
         }).click(event => {
-            let caller = $(event.currentTarget);
+            let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
                 UI.SettingsFloat.show(this.identifier, 'guilds', PredefinedTemplates['Guilds Default']);
             }
@@ -728,7 +728,7 @@ class PlayerHistoryView extends View {
         this.$configure = this.$parent.find('[data-op="configure"]').contextmenu(event => {
             event.preventDefault();
         }).click(event => {
-            let caller = $(event.currentTarget);
+            let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
                 UI.SettingsFloat.show(this.identifier, 'me', PredefinedTemplates['Me Default']);
             }
@@ -962,7 +962,7 @@ class BrowseView extends View {
         this.$configure = this.$parent.find('[data-op="configure"]').contextmenu(event => {
             event.preventDefault();
         }).click(event => {
-            let caller = $(event.currentTarget);
+            let caller = $(event.target);
             if (caller.hasClass('icon') || caller.hasClass('button')) {
                 UI.SettingsFloat.show('players', 'players', PredefinedTemplates['Players Default']);
             }
