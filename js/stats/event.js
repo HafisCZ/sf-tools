@@ -1795,11 +1795,17 @@ class FilesView extends View {
 
     // Merge selected
     mergeSelected () {
-        PopupController.open(LoaderPopup);
         if (this.simple) {
-            DatabaseManager.merge(this.selectedFiles).then(() => this.show());
+            if (this.selectedFiles.length > 1) {
+                PopupController.open(LoaderPopup);
+                DatabaseManager.merge(this.selectedFiles).then(() => this.show());
+            }
         } else {
-            DatabaseManager.merge(_uniq(Object.values(this.selectedPlayers).map(player => player.timestamp))).then(() => this.show());
+            const timestamps = _uniq(Object.values(this.selectedPlayers).map(player => player.timestamp));
+            if (timestamps.length > 1) {
+                PopupController.open(LoaderPopup);
+                DatabaseManager.merge(timestamps).then(() => this.show());
+            }
         }
     }
 
