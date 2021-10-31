@@ -268,7 +268,16 @@ const ErrorPopup = new (class extends FloatingPopup {
                 <div class="text-center" style="text-align: justify; margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;" data-op="text">
                     ...
                 </div>
-                <button class="ui red fluid button" data-op="continue">Click here or refresh the page</button>
+                <div style="margin-top: 2em;">
+                    <div class="text-center" style="text-align: justify; margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
+                        <h4 class="ui white header">This error might have also been caused by your current profile.<br>
+                        Click the revert button below to revert back to default profile.</h4>
+                    </div>
+                </div>
+                <div class="ui two buttons">
+                    <button class="ui red fluid button" data-op="continue">Click here or refresh the page</button>
+                    <button class="ui red fluid button" data-op="continue-default">Revert back to default profile</button>
+                </div>
             </div>
         `;
     }
@@ -276,6 +285,11 @@ const ErrorPopup = new (class extends FloatingPopup {
     _createBindings () {
         this.$text = this.$parent.find('[data-op="text"]');
         this.$parent.find('[data-op="continue"]').click(() => {
+            window.location.href = window.location.href;
+        });
+
+        this.$parent.find('[data-op="continue-default"]').click(() => {
+            ProfileManager.setActiveProfile('default');
             window.location.href = window.location.href;
         });
     }
