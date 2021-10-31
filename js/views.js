@@ -441,7 +441,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
 
         this.$secondary = this.$parent.find('[data-op="secondary"]');
         this.$secondary.on('change input', (e) => {
-            this.$parent.find('.ta-content').html(Expression.format($(e.currentTarget).val() || '', undefined, UI.Profiles.exprIdentifiers));
+            this.$parent.find('.ta-content').html(Expression.format($(e.currentTarget).val() || '', undefined, PROFILES_PROPS));
         });
 
         this.$parent.find('[data-op="cancel"]').click(() => {
@@ -471,7 +471,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
             this.$id.val(id);
 
             // TODO: primary filter
-            this.$secondary.val(secondary);
+            this.$secondary.val(secondary).trigger('change');
             this.$name.val(name);
         } else {
             this.$id.val(this.id);

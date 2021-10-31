@@ -3485,13 +3485,14 @@ class OnlineFilesView extends View {
     }
 }
 
+const PROFILES_PROPS = ['timestamp', 'origin', 'identifier', 'profile', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname'];
+const PROFILES_INDEXES = ['own', 'identifier', 'timestamp', 'group', 'prefix', 'profile', 'origin'];
+
 class ProfilesView extends View {
     constructor (parent) {
         super(parent);
 
         this.$list = this.$parent.find('[data-op="list"]')
-
-        this.exprIdentifiers = ['timestamp', 'origin', 'identifier', 'profile', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname'];
     }
 
     show () {
@@ -3521,7 +3522,7 @@ class ProfilesView extends View {
                             </tr>
                             <tr>
                                 <td>Secondary filter</td>
-                                <td>${ Expression.format(secondary || '', undefined, this.exprIdentifiers) }</td>
+                                <td>${ Expression.format(secondary || '', undefined, PROFILES_PROPS) }</td>
                             </tr>
                         </table>
                     </div>
