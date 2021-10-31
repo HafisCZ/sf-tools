@@ -556,6 +556,13 @@
                 }
             }
 
+            let ignoreChanges = false;
+            function withoutUpdate (func) {
+                ignoreChanges = true;
+                func();
+                ignoreChanges = false;
+            }
+
             $('#sim-threads').captiveInputField('dungeon_sim/threads', 4, v => !isNaN(v) && v >= 1);
             $('#sim-iterations').captiveInputField('dungeon_sim/iterations', 5000, v => !isNaN(v) && v >= 1);
 
@@ -909,7 +916,10 @@
                         };
                     })
                 }).dropdown('setting', 'onChange', (value, text) => {
-                    $('#available-list').dropdown('clear');
+                    if (!ignoreChanges) {
+                        $('#available-list').dropdown('clear');
+                    }
+
                     settingsChanged();
 
                     dungeon = DUNGEON_DATA[dungeon_current];
@@ -1036,10 +1046,12 @@
                 if (enemyIndex < 0) {
                     return null;
                 } else {
-                    let dung = DUNGEON_DATA[dungeon + (isShadow ? 100 : 0)];
+                    let id = dungeon + (isShadow ? 100 : 0);
+                    let dung = DUNGEON_DATA[id];
                     let boss = Object.entries(dung.floors)[enemyIndex];
                     if (boss) {
                         return {
+                            id,
                             dungeon: dung,
                             name: boss[0],
                             boss: boss[1]
@@ -1128,6 +1140,11 @@
 
                                             dungeon = sel.dungeon;
                                             boss = getBossData(sel.boss, sel.name);
+
+                                            withoutUpdate(() => {
+                                                $('#dungeon-list').dropdown('set selected', sel.id);
+                                                $('#boss-list').dropdown('set selected', sel.name);
+                                            });
                                         }
                                     });
                                 } else {
