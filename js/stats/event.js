@@ -170,7 +170,7 @@ class GroupDetailView extends View {
         this.identifier = identitifier;
         this.group = DatabaseManager.getGroup(identitifier);
 
-        this.$name.text(this.group.Latest.Name);
+        this.$name.html(`${this.group.Latest.Name} <span style="opacity: 50%; font-weight: initial; font-size: initial">${this.identifier}</span>`);
 
         this.timestamp = this.group.LatestTimestamp;
         this.reference = (SiteOptions.always_prev && this.group.List[1] ? this.group.List[1][0] : undefined) || this.group.LatestTimestamp;
@@ -807,7 +807,7 @@ class PlayerHistoryView extends View {
         this.list = list;
         this.player = player;
 
-        this.$name.text(this.player.Name);
+        this.$name.html(`${this.player.Name} <span style="opacity: 50%; font-weight: initial; font-size: initial">${this.player.Identifier}</span>`);
 
         this.load();
     }
