@@ -456,14 +456,14 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
                         <div class="field">
                             <label>Value 1:</label>
                             <div class="ta-wrapper" style="height: initial;">
-                                <input class="ta-area" data-op="primary" type="text">
+                                <input class="ta-area" data-op="primary" type="text" placeholder="Primary AST expression">
                                 <div data-op="primary-content" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                             </div>
                         </div>
                         <div class="field">
                             <label>Value 2:</label>
                             <div class="ta-wrapper" style="height: initial;">
-                                <input class="ta-area" data-op="primary-2" type="text">
+                                <input class="ta-area" data-op="primary-2" type="text" placeholder="Primary AST expression (optional)">
                                 <div data-op="primary-content-2" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                             </div>
                         </div>
@@ -472,7 +472,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
                     <div class="field">
                         <label>Secondary filter:</label>
                         <div class="ta-wrapper">
-                            <input class="ta-area" data-op="secondary" type="text">
+                            <input class="ta-area" data-op="secondary" type="text" placeholder="Secondary AST expression">
                             <div data-op="secondary-content" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                         </div>
                     </div>
