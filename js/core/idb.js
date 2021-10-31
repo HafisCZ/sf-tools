@@ -792,6 +792,7 @@ const DatabaseManager = new (class {
         return new Promise(async (resolve, reject) => {
             if (from && to) {
                 const file = this._getFile(null, [ from ]);
+                const origin = this.findDataFieldFor(from, 'origin')
 
                 for (const i of file.players) {
                     i.timestamp = to;
@@ -801,7 +802,7 @@ const DatabaseManager = new (class {
                     i.timestamp = to;
                 }
 
-                await this._addFile(null, file.players, file.groups);
+                await this._addFile(null, file.players, file.groups, origin);
                 await this.removeTimestamps(from);
             }
 
