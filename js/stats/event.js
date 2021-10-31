@@ -3486,7 +3486,7 @@ class OnlineFilesView extends View {
 }
 
 const PROFILES_PROPS = ['timestamp', 'origin', 'identifier', 'profile', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname'];
-const PROFILES_INDEXES = ['own', 'identifier', 'timestamp', 'group', 'prefix', 'profile', 'origin'];
+const PROFILES_INDEXES = ['own', 'identifier', 'timestamp', 'group', 'prefix', 'profile', 'origin', 'tag'];
 
 class ProfilesView extends View {
     constructor (parent) {
