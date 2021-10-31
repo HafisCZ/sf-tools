@@ -1,4 +1,27 @@
 const CHANGELOG = {
+    'v5.1785': {
+        'Statistics': [
+            'Added proper profiles & profile management',
+            'Added file tags',
+            'Added option to hide players / timestamps',
+            'Added option to change file timestamps',
+            'Added option to select multiple files by using shift-click',
+            'Added notice for player list longer than allowed',
+            'Fixed handling of local storage when not available',
+            'Fixed timestamp sorting in advanced file mode',
+            'Fixed filtering by non-ascii characters',
+            'Fixed several issues when using translation tools',
+            'Fixed compatibility issues',
+            'Fixed empty guilds appearing',
+            'Fixed swapped pet origins'
+        ],
+        'Dungeon Simulator': [
+            'Available boss selection is now linked to dungeon & boss selections'
+        ],
+        'Pet Simulator': [
+            'Fixed generate not working for 20th pet'
+        ]
+    },
     'v5.1716': {
         'Statistics': [
             'Reworked database & file handling and loading improved speed',
