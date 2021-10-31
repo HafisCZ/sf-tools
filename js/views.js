@@ -371,7 +371,7 @@ const FileTagPopup = new (class extends FloatingPopup {
         });
 
         this.$parent.find('[data-op="save"]').click(() => {
-            const tag = this.$newTags.val();
+            const tag = this.$newTags.val().trim();
             this.close();
             PopupController.open(LoaderPopup);
             DatabaseManager.setTag(this.timestamps, tag).then(this.callback);
