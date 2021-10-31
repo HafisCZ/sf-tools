@@ -406,7 +406,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
 
     _createModal () {
         return `
-            <div class="ui basic mini modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+            <div class="ui small modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
                 <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Create/Edit profile</h2>
                 <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
                     <div class="two fields">
@@ -419,11 +419,47 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
                             <input data-op="name" type="text">
                         </div>
                     </div>
+                    <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">Primary filter configuration</h3>
+                    <div class="two fields">
+                        <div class="field">
+                            <label>Index:</label>
+                            <div class="ui fluid search selection dropdown" data-op="primary-index">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Operation:</label>
+                            <select class="ui fluid search selection dropdown" data-op="primary-operator">
+                                <option value="equals">Equals</option>
+                                <option value="above">Above</option>
+                                <option value="below">Below</option>
+                                <option value="between">Between</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <label>Value 1:</label>
+                            <div class="ta-wrapper" style="height: initial;">
+                                <input class="ta-area" data-op="primary" type="text">
+                                <div data-op="primary-content" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label>Value 2:</label>
+                            <div class="ta-wrapper" style="height: initial;">
+                                <input class="ta-area" data-op="primary-2" type="text">
+                                <div data-op="primary-content-2" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">Secondary filter configuration</h3>
                     <div class="field">
                         <label>Secondary filter:</label>
                         <div class="ta-wrapper">
                             <input class="ta-area" data-op="secondary" type="text">
-                            <div class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
+                            <div data-op="secondary-content" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                         </div>
                     </div>
                 </div>
@@ -439,19 +475,77 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
         this.$id = this.$parent.find('[data-op="id"]');
         this.$name = this.$parent.find('[data-op="name"]');
 
+        // Secondary filter
         this.$secondary = this.$parent.find('[data-op="secondary"]');
+        this.$secondaryContent = this.$parent.find('[data-op="secondary-content"]');
+
         this.$secondary.on('change input', (e) => {
-            this.$parent.find('.ta-content').html(Expression.format($(e.currentTarget).val() || '', undefined, PROFILES_PROPS));
+            this.$secondaryContent.html(Expression.format($(e.currentTarget).val() || '', undefined, PROFILES_PROPS));
         });
+
+        // Primary filter
+        this.$primaryIndex = this.$parent.find('[data-op="primary-index"]');
+        this.$primaryOperator = this.$parent.find('[data-op="primary-operator"]');
+        this.$primary = this.$parent.find('[data-op="primary"]');
+        this.$primaryContent = this.$parent.find('[data-op="primary-content"]');
+        this.$primary2 = this.$parent.find('[data-op="primary-2"]');
+        this.$primaryContent2 = this.$parent.find('[data-op="primary-content-2"]');
+
+        this.$primary.on('change input', (e) => {
+            this.$primaryContent.html(Expression.format($(e.currentTarget).val() || ''));
+        });
+
+        this.$primary2.on('change input', (e) => {
+            this.$primaryContent2.html(Expression.format($(e.currentTarget).val() || ''));
+        });
+
+        this.$primaryIndex.dropdown({
+            values: ['none', ...PROFILES_INDEXES].map(v => {
+                return {
+                    name: v.charAt(0).toUpperCase() + v.slice(1),
+                    value: v,
+                    selected: v === 'none'
+                };
+            })
+        }).dropdown('setting', 'onChange', (value, text) => {
+            if (value === 'none') {
+                this.$primaryOperator.closest('.field').addClass('disabled');
+                this.$primary.val('').trigger('change').closest('.field').addClass('disabled');
+                this.$primary2.val('').trigger('change').closest('.field').addClass('disabled');
+            } else {
+                this.$primaryOperator.closest('.field').removeClass('disabled');
+                this.$primary.closest('.field').removeClass('disabled');
+                if (this.$primaryOperator.dropdown('get value') === 'between') {
+                    this.$primary2.closest('.field').removeClass('disabled');
+                }
+            }
+        }).dropdown('set selected', 'none');
+
+        this.$primaryOperator.dropdown('setting', 'onChange', (value, text) => {
+            if (value === 'between') {
+                this.$primary2.closest('.field').removeClass('disabled');
+            } else {
+                this.$primary2.closest('.field').addClass('disabled');
+            }
+        }).dropdown('set selected', 'equals');
 
         this.$parent.find('[data-op="cancel"]').click(() => {
             this.close();
         });
 
         this.$parent.find('[data-op="save"]').click(() => {
+            const primaryName = this.$primaryIndex.dropdown('get value');
+            const primaryMode = this.$primaryOperator.dropdown('get value');
+            const primaryValue = this.$primary.val();
+            const primaryValue2 = this.$primary2.val();
+
             ProfileManager.setProfile(this.id, Object.assign(this.profile || {}, {
                 name: this.$name.val(),
-                primary: null,
+                primary: primaryName === 'none' ? null : {
+                    name: primaryName,
+                    mode: primaryMode,
+                    value: primaryMode === 'between' ? [ primaryValue, primaryValue2 ] : [ primaryValue ]
+                },
                 secondary: this.$secondary.val()
             }));
             this.close();
@@ -470,12 +564,29 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
             const { name, primary, secondary } = this.profile;
             this.$id.val(id);
 
-            // TODO: primary filter
+            if (primary) {
+                const { mode, name, value } = primary;
+
+                this.$primaryIndex.dropdown('set selected', name);
+                this.$primaryOperator.dropdown('set selected', mode);
+                this.$primary.val(value[0] || '').trigger('change');
+                this.$primary2.val(value[1] || '').trigger('change');
+            } else {
+                this.$primaryIndex.dropdown('set selected', 'none');
+                this.$primaryOperator.dropdown('set selected', 'equals');
+                this.$primary.val('').trigger('change');
+                this.$primary2.val('').trigger('change');
+            }
+
             this.$secondary.val(secondary).trigger('change');
             this.$name.val(name);
         } else {
             this.$id.val(this.id);
-            this.$secondary.val('');
+            this.$primaryIndex.dropdown('set selected', 'none');
+            this.$primaryOperator.dropdown('set selected', 'equals');
+            this.$primary.val('').trigger('change');
+            this.$primary2.val('').trigger('change');
+            this.$secondary.val('').trigger('change');
             this.$name.val('');
         }
     }
