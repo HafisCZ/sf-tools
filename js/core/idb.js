@@ -174,6 +174,12 @@ class IndexedDBWrapper {
             };
         });
     }
+
+    all (store, index) {
+        return new Promise((resolve, reject) => _bindOnSuccessOnError(
+            this.store(store, index).getAll(), resolve, reject
+        ));
+    }
 }
 
 class MigrationUtils {
@@ -584,16 +590,18 @@ const DatabaseManager = new (class {
                 this.Database = database;
 
                 if (!profile.only_players) {
-                    let groups = await this.Database.where('groups');
+                    let groups = await this.Database.all('groups');
                     for (const group of groups) {
                         this._addGroup(group);
                     }
                 }
 
-                let players = DatabaseUtils.filterArray(profile) || (await this.Database.where(
-                    'players',
-                    ... DatabaseUtils.profileFilter(profile)
-                ));
+                const playerFilter = DatabaseUtils.profileFilter(profile);
+                let players = DatabaseUtils.filterArray(profile) || (_not_empty(playerFilter) ? (
+                    await this.Database.where('players', ... playerFilter)
+                ) : (
+                    await this.Database.all('players')
+                ))
 
                 if (profile.secondary) {
                     const filter = new Expression(profile.secondary);
@@ -614,7 +622,7 @@ const DatabaseManager = new (class {
                 }
 
                 if (!profile.only_players) {
-                    let trackers = await this.Database.where('trackers');
+                    let trackers = await this.Database.all('trackers');
                     for (const tracker of trackers) {
                         this.TrackedPlayers[tracker.identifier] = tracker;
                     }
