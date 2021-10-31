@@ -3522,7 +3522,7 @@ class ProfilesView extends View {
                             </tr>
                             <tr>
                                 <td>Secondary filter</td>
-                                <td>${ Expression.format(secondary || '', undefined, PROFILES_PROPS) }</td>
+                                <td>${ secondary ? Expression.format(secondary, undefined, PROFILES_PROPS) : '<b>None</b>' }</td>
                             </tr>
                         </table>
                     </div>
@@ -3569,7 +3569,11 @@ class ProfilesView extends View {
     showRules (rule) {
         if (rule) {
             const { name, mode, value } = rule;
-            return `<b>${name}</b> ${this.stringifyMode(mode)} ${value ? value.map(v => Expression.format(v)).join('<br/>') : ''}`;
+            if (mode == 'between') {
+                return `<b>${name}</b> between ${Expression.format(value[0])} and ${Expression.format(value[1])}`;
+            } else {
+                return `<b>${name}</b> ${this.stringifyMode(mode)} ${value ? value.map(v => Expression.format(v)).join('<br/>') : ''}`;
+            }
         } else {
             return '<b>None</b>';
         }
@@ -3579,7 +3583,6 @@ class ProfilesView extends View {
         return {
             'above': '>',
             'below': '<',
-            'between': '<>',
             'equals': '='
         }[v] || '??';
     }

@@ -601,7 +601,7 @@ const DatabaseManager = new (class {
                     await this.Database.where('players', ... playerFilter)
                 ) : (
                     await this.Database.all('players')
-                ))
+                ));
 
                 if (profile.secondary) {
                     const filter = new Expression(profile.secondary);
