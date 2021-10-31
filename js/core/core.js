@@ -112,6 +112,7 @@ const SiteOptions = new (class {
             terms_accepted: false,
             version_accepted: false,
             groups_hidden: false,
+            groups_empty: false,
             players_hidden: false,
             browse_hidden: false,
             groups_other: false,

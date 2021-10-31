@@ -1351,8 +1351,16 @@ class GroupsView extends View {
             this.show();
         });
 
+        this.$parent.find('[data-op="empty"]').checkbox(SiteOptions.groups_empty ? 'check' : 'uncheck').change((event) => {
+            SiteOptions.groups_empty = !SiteOptions.groups_empty;
+
+            this.empty = SiteOptions.groups_empty;
+            this.show();
+        });
+
         this.hidden = SiteOptions.groups_hidden;
         this.others = SiteOptions.groups_other;
+        this.empty = SiteOptions.groups_empty;
 
         this.$context = $('<div class="ui custom popup right center"></div>');
         this.$parent.prepend(this.$context);
@@ -1403,7 +1411,7 @@ class GroupsView extends View {
         var index = 0;
         var index2 = 0;
 
-        var groups = Object.values(DatabaseManager.Groups).filter(g => g.List.some(([, g]) => g.MembersPresent)).sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
+        var groups = Object.values(DatabaseManager.Groups).filter(g => this.empty || g.List.some(([, g]) => g.MembersPresent)).sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
 
         for (var i = 0, group; group = groups[i]; i++) {
             var hidden = DatabaseManager.Hidden.has(group.Latest.Identifier);

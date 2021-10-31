@@ -715,6 +715,12 @@ h3.file-selected {
     right: 3.7em;
 }
 
+.css-show-empty {
+    position: fixed;
+    bottom: 5em;
+    right: 3.9em;
+}
+
 .css-ol-show-other {
     position: fixed;
     bottom: 1em;
