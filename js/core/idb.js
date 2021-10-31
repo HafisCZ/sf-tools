@@ -583,6 +583,8 @@ const DatabaseManager = new (class {
         } else {
             const attemptMigration = await DatabaseUtils.migrateable(profile.slot);
             return DatabaseUtils.createSession(attemptMigration).then(async database => {
+                const beginTimestamp = Date.now();
+
                 this.Database = database;
 
                 if (!profile.only_players) {
@@ -629,6 +631,8 @@ const DatabaseManager = new (class {
                 await this.refreshTrackers();
 
                 this.Hidden = new Set(Preferences.get('hidden_identifiers', []));
+
+                Logger.log('PERFLOG', `Load done in ${Date.now() - beginTimestamp} ms`);
             });
         }
     }
