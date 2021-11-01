@@ -2218,6 +2218,24 @@ class FilesView extends View {
 
         this.timeArray = Object.entries(this.timeMap).sort((a, b) => parseInt(b[0]) - parseInt(a[0]));
 
+        const playerNameFrequency = {};
+        for (const name of Object.values(this.playerMap)) {
+            if (name in playerNameFrequency) {
+                playerNameFrequency[name]++;
+            } else {
+                playerNameFrequency[name] = 1;
+            }
+        }
+
+        const groupNameFrequency = {};
+        for (const name of Object.values(this.groupMap)) {
+            if (name in groupNameFrequency) {
+                groupNameFrequency[name]++;
+            } else {
+                groupNameFrequency[name] = 1;
+            }
+        }
+
         this.$filters.html(`
             <div class="field">
                 <label>Timestamp (<span data-op="unique-timestamp"></span> unique)</label>
@@ -2228,13 +2246,13 @@ class FilesView extends View {
             <div class="field">
                 <label>Player (<span data-op="unique-player"></span> unique)</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-player">
-                    ${ Object.entries(this.playerMap).map(([player, value]) => `<option value="${ player }">${ value }</option>`).join('') }
+                    ${ Object.entries(this.playerMap).map(([player, value]) => `<option value="${ player }">${ value }${ playerNameFrequency[value] > 1 ? ` - ${_pretty_prefix(player)}` : '' }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
                 <label>Group (<span data-op="unique-group"></span> unique)</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-group">
-                    ${ Object.entries(this.groupMap).map(([group, value]) => `<option value="${ group }">${ value }</option>`).join('') }
+                    ${ Object.entries(this.groupMap).map(([group, value]) => `<option value="${ group }">${ value }${ groupNameFrequency[value] > 1 ? ` - ${_pretty_prefix(group)}` : '' }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
