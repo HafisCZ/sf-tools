@@ -2009,7 +2009,7 @@ class FilesView extends View {
 
             let notice = ''
             if (sortedPlayers.length > 250) {
-                notice = `<tr style="height: 2em;"><td colspan="6" class="text-center" style="font-weight: bold; line-height: 2em;">Another ${sortedPlayers.length - 100} entries have been hidden to improve performance</td></tr>`
+                notice = `<tr style="height: 2em;"><td colspan="6" class="text-center" style="font-weight: bold; line-height: 2em;">Another ${sortedPlayers.length - 250} entries have been hidden to improve performance</td></tr>`
             }
 
             this.$results.html(sortedPlayers.slice(0, 250).map(player => `
