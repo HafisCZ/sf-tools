@@ -27,6 +27,18 @@ function copyText (text) {
     window.getSelection().removeAllRanges();
 }
 
+// text()
+(function () {
+    File.prototype.text = File.prototype.text || function () {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = (e) => reject(e);
+            reader.readAsText(this);
+        })
+    }
+})();
+
 function parseParams (text) {
     let keys = {};
     for (const key of text.split(/[\?\&]/).slice(1)) {
