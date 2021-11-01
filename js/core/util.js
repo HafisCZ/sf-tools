@@ -140,9 +140,9 @@ function _jsonify (text) {
 }
 
 function _pretty_prefix (prefix) {
-    let [serverName, ...serverDomain] = prefix.split('_');
-    let properName = serverName.charAt(0).toUpperCase() + serverName.slice(1);
-    let properDomain = serverDomain.join('.').toUpperCase();
+    const splitPrefix = prefix.split('_');
+    const properName = splitPrefix[0].charAt(0).toUpperCase() + splitPrefix[0].slice(1);
+    const properDomain = splitPrefix[1].toUpperCase();
 
     return `${properName} .${properDomain}`;
 }
