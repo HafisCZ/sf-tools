@@ -36,6 +36,20 @@ function copyText (text) {
             reader.onerror = (e) => reject(e);
             reader.readAsText(this);
         })
+    };
+
+    if (!Object.entries) {
+        Object.entries = function (obj) {
+            var ownProps = Object.keys(obj);
+            var i = ownProps.length;
+            var resArray = new Array(i);
+
+            while (i--) {
+                resArray[i] = [ownProps[i], obj[ownProps[i]]];
+            }
+
+            return resArray;
+        };
     }
 })();
 
