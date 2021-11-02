@@ -1197,12 +1197,7 @@
             });
 
             function showMassDungeonResults (bosses, results) {
-                bosses = bosses.map((dungeon, index) => {
-                    return {
-                        result: results[index],
-                        ... dungeon
-                    }
-                }).sort((b, a) => a.result - b.result);
+                bosses = bosses.map((dungeon, index) => Object.assign({ result: results[index] }, dungeon)).sort((b, a) => a.result - b.result);
 
                 $('#results-modal .content').html(`
                     <div class="ui two column grid">
