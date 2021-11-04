@@ -586,6 +586,7 @@ const DatabaseManager = new (class {
                 this.Hidden = new Set();
 
                 this._updateLists();
+                Logger.log('PERFLOG', 'Skipped load in temporary mode');
 
                 resolve();
             });
