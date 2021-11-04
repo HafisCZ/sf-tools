@@ -1882,27 +1882,16 @@ class FilesView extends View {
 
         this.$parent.find('[data-op="mark-all"]').click(() => this.markAll());
 
-        this.prepareCheckbox('always_prev', 'alwaysprev');
-        this.prepareCheckbox('obfuscated', 'obfuscated');
-        this.prepareCheckbox('insecure', 'insecure');
-        this.prepareCheckbox('advanced', 'advanced');
-        this.prepareCheckbox('terms_accepted', 'terms');
-        this.prepareCheckbox('hidden', 'hidden');
-
         this.$advancedLeft = this.$parent.find('[data-op="advanced-left"]');
         this.$advancedCenter = this.$parent.find('[data-op="advanced-center"]');
         this.$simpleCenter = this.$parent.find('[data-op="simple-center"]');
 
+        this.prepareCheckbox('advanced', 'advanced');
         SiteOptions.onChange('advanced', enabled => this.setLayout(enabled));
+
+        this.prepareCheckbox('hidden', 'hidden');
         SiteOptions.onChange('hidden', () => {
             window.location.href = window.location.href;
-        });
-        SiteOptions.onChange('terms_accepted', enabled => {
-            if (enabled) {
-                this.$parent.find(`[data-op="checkbox-terms"]`).checkbox('set checked');
-            } else {
-                PopupController.open(TermsAndConditionsPopup);
-            }
         });
 
         this.$tagFilter = this.$parent.find('[data-op="simple-tags"]');
@@ -3511,6 +3500,37 @@ class OnlineFilesView extends View {
     }
 }
 
+class OptionsView extends View {
+    constructor (parent) {
+        super(parent)
+
+        this.prepareCheckbox('always_prev', 'alwaysprev');
+        this.prepareCheckbox('obfuscated', 'obfuscated');
+        this.prepareCheckbox('insecure', 'insecure');
+        this.prepareCheckbox('terms_accepted', 'terms');
+
+        SiteOptions.onChange('terms_accepted', enabled => {
+            if (enabled) {
+                this.$parent.find(`[data-op="checkbox-terms"]`).checkbox('set checked');
+            } else {
+                PopupController.open(TermsAndConditionsPopup);
+            }
+        });
+    }
+
+    // Prepare checkbox
+    prepareCheckbox (property, name) {
+        this.$parent.find(`[data-op="checkbox-${ name }"]`).checkbox({
+            onChecked: () => { SiteOptions[property] = true },
+            onUnchecked: () => { SiteOptions[property] = false }
+        }).checkbox(SiteOptions[property] ? 'set checked' : 'set unchecked');
+    }
+
+    show () {
+
+    }
+}
+
 const PROFILES_PROPS = ['timestamp', 'origin', 'identifier', 'profile', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname'];
 const PROFILES_INDEXES = ['own', 'identifier', 'timestamp', 'group', 'prefix', 'profile', 'origin', 'tag'];
 
@@ -3649,6 +3669,7 @@ const UI = {
         UI.OnlineFiles = new OnlineFilesView('modal-onlinefile');
         UI.OnlineShareFile = new OnlineShareFileView('modal-share');
         UI.Profiles = new ProfilesView('view-profiles');
+        UI.Options = new OptionsView('view-options');
     },
     register: function (view, id) {
         const element = document.getElementById(id);
