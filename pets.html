@@ -753,21 +753,6 @@
 
             var useArmor = false;
 
-            $('#sim-save').click(() => {
-                localStorage['pets/0'] = JSON.stringify([
-                    petA.getData(),
-                    petB.getData()
-                ]);
-            });
-
-            $('#sim-load').click(() => {
-                if (localStorage['pets/0']) {
-                    var [ a, b ] = JSON.parse(localStorage['pets/0']);
-                    petA.loadData(a);
-                    petB.loadData(b);
-                }
-            });
-
             $('#sim-run').click(function () {
                 if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
                     toggleAll(true);
