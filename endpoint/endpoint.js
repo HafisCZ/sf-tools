@@ -111,7 +111,7 @@ const Endpoint = new ( class {
     }
 
     _setModeSelection () {
-        let selectionMode = window.localStorage['endpoint_mode'] || 'default';
+        let selectionMode = SharedPreferences.getRaw('endpoint_mode', 'default');
         switch (selectionMode) {
             case 'own': {
                 this.$modeOwn.checkbox('set checked');
@@ -126,9 +126,9 @@ const Endpoint = new ( class {
             }
         }
 
-        this.$modeDefault.checkbox({ onChecked: () => { window.localStorage['endpoint_mode'] = 'default' } });
-        this.$modeOwn.checkbox({ onChecked: () => { window.localStorage['endpoint_mode'] = 'own' } });
-        this.$modeAll.checkbox({ onChecked: () => { window.localStorage['endpoint_mode'] = 'all' } });
+        this.$modeDefault.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'default') });
+        this.$modeOwn.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'own') });
+        this.$modeAll.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'all') });
     }
 
     _showError (text, hard = false) {

@@ -394,10 +394,10 @@
     $.fn.captiveInputField = function (storageKey, defaultValue, validator = () => true) {
         return this.each(function () {
             let $this = $(this);
-            $this.val(storageKey in window.localStorage ? window.localStorage[storageKey] : defaultValue);
+            $this.val(SharedPreferences.getRaw(storageKey, defaultValue));
             $this.on('input change', () => {
                 if (validator($this.val())) {
-                    window.localStorage[storageKey] = $this.val();
+                    SharedPreferences.setRaw(storageKey, $this.val());
                 }
             });
         });

@@ -40,7 +40,7 @@ class PreferencesHandler {
 
         if (typeof currentValue === 'undefined') {
             try {
-                window.localStorage;
+                window.localStorage['test'];
                 currentValue = true;
             } catch (exception) {
                 currentValue = false;
@@ -71,8 +71,16 @@ class PreferencesHandler {
         this.storage[key] = JSON.stringify(object);
     }
 
+    setRaw (key, object) {
+        this.storage[key] = object;
+    }
+
     get (key, def) {
         return this.storage[key] ? JSON.parse(this.storage[key]) : def;
+    }
+
+    getRaw (key, def) {
+        return this.storage[key] || def;
     }
 
     exists (key) {
