@@ -238,6 +238,10 @@ body.dimmed .menu {
     padding-left: 0.25em;
 }
 
+.title-active {
+    color: orange !important;
+}
+
 .detail-timestamp {
     color: white;
     position: absolute;

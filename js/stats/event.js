@@ -3617,13 +3617,20 @@ class ProfilesView extends View {
 // UI object collection
 const UI = {
     current: null,
+    buttons: {},
     show: function (screen, ... arguments) {
         UI.current = screen;
-
         $('.ui.container').addClass('css-hidden');
-
         screen.$parent.removeClass('css-hidden');
         screen.show(... arguments);
+
+        const name = screen.constructor.name;
+        if (this.buttons[name]) {
+            for (const [, el] of Object.entries(this.buttons)) {
+                el.classList.remove('title-active');
+            }
+            this.buttons[name].classList.add('title-active');
+        }
     },
     initialize: function () {
         UI.Settings = new SettingsView('view-settings');
@@ -3645,8 +3652,11 @@ const UI = {
     },
     register: function (view, id) {
         const element = document.getElementById(id);
+        this.buttons[view.constructor.name] = element;
         if (element) {
-            element.addEventListener('click', () => UI.show(view));
+            element.addEventListener('click', () => {
+                UI.show(view);
+            });
         }
     }
 }
