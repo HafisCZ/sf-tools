@@ -250,3 +250,51 @@ const ProfileManager = new (class {
         return Object.entries(this.profiles);
     }
 })();
+
+/*
+    Sample action:
+
+    {
+        name: 'Action 1',
+        trigger: 'load',
+        mode: 'any',
+        test: 'timestamp < (now() - @7days)',
+        targets: ['player'],
+        action: 'tag',
+        args: ['Outdated']
+    }
+*/
+const Actions = new (class {
+    constructor () {
+        this.actions = Preferences.get('actions', {});
+    }
+
+    set (name, action) {
+        this.actions[name] = action;
+        this._save();
+    }
+
+    get (name) {
+        return this.actions[name];
+    }
+
+    remove (name) {
+        delete this.actions[name];
+        this._save();
+    }
+
+    getForTrigger (actTrigger) {
+        const act = [];
+        for (const action of Object.values(this.actions)) {
+            if (action.trigger == actTrigger) {
+                act.push(action);
+            }
+        }
+
+        return act;
+    }
+
+    _save () {
+        Preferences.set('actions', this.actions);
+    }
+})();
