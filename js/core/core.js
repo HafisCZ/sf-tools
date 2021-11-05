@@ -14,7 +14,8 @@ const Logger = new (class {
             'PERFLOG': 'ffffff',
             'ECLIENT': 'd142f5',
             'TRACKER': 'c8f542',
-            'MIGRATE': '7a8ccf'
+            'MIGRATE': '7a8ccf',
+            'ACTIONS': 'eb73c3'
         };
 
         this.log('VERSION', `Module: ${ MODULE_VERSION }, Core: ${ CORE_VERSION }, Table: ${ TABLE_VERSION }`);
@@ -253,15 +254,15 @@ const ProfileManager = new (class {
 
 /*
     Sample action:
-
     {
         name: 'Action 1',
-        trigger: 'load',
-        mode: 'any',
-        test: 'timestamp < (now() - @7days)',
-        targets: ['player'],
-        action: 'tag',
-        args: ['Outdated']
+        trigger: load | import, // when action should be triggered
+        temporary: true | false, // should apply in temporary mode too
+        mode: any | all | none, // how many players or guilds have to satisfy the condition
+        test: 'timestamp < (now() - @7days)', // condition
+        targets: player | group | file, // player or file - condition applies to player, otherwise to guild
+        action: 'tag', // what action does
+        args: ['Outdated'] // arguments for the action if necessary
     }
 */
 const Actions = new (class {
@@ -283,15 +284,74 @@ const Actions = new (class {
         this._save();
     }
 
-    getForTrigger (actTrigger) {
-        const act = [];
+    async apply (actTrigger, ... args) {
+        const pending = [];
+        const temporary = DatabaseManager.Profile.temporary;
+
         for (const action of Object.values(this.actions)) {
-            if (action.trigger == actTrigger) {
-                act.push(action);
+            if (action.trigger == actTrigger && (!temporary || action.temporary)) {
+                pending.push(action);
             }
         }
 
-        return act;
+        if (_not_empty(pending)) {
+            for (const action of pending) {
+                await this._applyAction(action, ... args);
+            }
+
+            Logger.log('ACTIONS', `${pending.length} action(s) for event ${actTrigger} applied`);
+        }
+    }
+
+    async _applyAction (actionObj, ... actionArgs) {
+        const { trigger, mode, target, test, action, args } = actionObj;
+        if (action === 'tag') {
+            if (trigger === 'import') {
+                const [players, groups] = actionArgs;
+                const timestamps = _uniq([players.map(o => o.timestamp), groups.map(o => o.timestamp)].flat());
+                for (const timestamp of timestamps) {
+                    if (this._applicable(mode, target, test, players, groups)) {
+                        await DatabaseManager.setTag([timestamp], args[0]);
+                    }
+                }
+            } else {
+                // LOAD
+            }
+        }
+    }
+
+    _applicable (mode, target, test, players, groups) {
+        if (target === 'player') {
+            return this._applicableTo(mode, test, players);
+        } else {
+            return this._applicableTo(mode, test, groups);
+        }
+    }
+
+    _applicableTo (mode, test, objs) {
+        const expr = new Expression(test);
+        if (mode === 'any') {
+            for (const obj of objs) {
+                if (expr.eval(undefined, undefined, undefined, new ExpressionScope().addSelf(obj))) {
+                    return true;
+                }
+            }
+            return false;
+        } else if (mode === 'all') {
+            for (const obj of objs) {
+                if (!expr.eval(undefined, undefined, undefined, new ExpressionScope().addSelf(obj))) {
+                    return false
+                }
+            }
+            return true;
+        } else if (mode === 'none') {
+            for (const obj of objs) {
+                if (expr.eval(undefined, undefined, undefined, new ExpressionScope().addSelf(obj))) {
+                    return false
+                }
+            }
+            return true;
+        }
     }
 
     _save () {

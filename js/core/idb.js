@@ -583,14 +583,17 @@ const DatabaseManager = new (class {
     // Load database
     async load (profile = DEFAULT_PROFILE) {
         this._reset();
+        this.Profile = profile;
 
         if (profile.temporary) {
-            return new Promise((resolve, reject) => {
+            return new Promise(async (resolve, reject) => {
                 this.Database = DatabaseUtils.createTemporarySession();
                 this.Hidden = new Set();
 
                 this._updateLists();
                 Logger.log('PERFLOG', 'Skipped load in temporary mode');
+
+                await Actions.apply('load');
 
                 resolve();
             });
@@ -649,6 +652,8 @@ const DatabaseManager = new (class {
                 this.Hidden = new Set(Preferences.get('hidden_identifiers', []));
 
                 Logger.log('PERFLOG', `Load done in ${Date.now() - beginTimestamp} ms`);
+
+                await Actions.apply('load');
             });
         }
     }
@@ -1005,6 +1010,8 @@ const DatabaseManager = new (class {
         for (const { identifier, timestamp } of migratedPlayers) {
             await this._track(identifier, timestamp);
         }
+
+        await Actions.apply('import', migratedPlayers, migratedGroups);
     }
 
     getTracker (identifier, tracker) {
