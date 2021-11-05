@@ -548,6 +548,10 @@ const DatabaseManager = new (class {
                 player.Group.ReadyDefense = group.States[gi] == 1 || group.States[gi] == 3;
                 player.Group.ReadyAttack = group.States[gi] > 1;
 
+                if (player.LastOnline < 6e11) {
+                    player.LastOnline = group.LastActives[gi];
+                }
+
                 if (group.Own) {
                     player.Group.Own = true;
                     player.Group.Pet = group.Pets[gi];
