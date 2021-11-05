@@ -570,6 +570,9 @@ class SFGroup {
                     this.Knights.splice(i, 1);
                 }
 
+                if (this.Roles[i] == GUILD_ROLE_INVITED) {
+                    this.MemberCount--;
+                }
                 this.Roles.splice(i, 1);
                 this.Treasures.splice(i, 1);
                 this.Instructors.splice(i, 1);
@@ -578,10 +581,6 @@ class SFGroup {
                 this.Names.splice(i, 1);
                 this.LastActives.splice(i, 1);
                 this.Members.splice(i--, 1);
-                
-                if (this.Roles[i] == GUILD_ROLE_INVITED) {
-                    this.MemberCount--;
-                }
             }
         }
 
