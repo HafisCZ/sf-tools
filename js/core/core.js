@@ -183,28 +183,32 @@ const SELF_PROFILE = {
     only_players: true
 };
 
+const DEFAULT_PROFILE_A = {
+    name: 'Own only',
+    primary: {
+        name: 'own',
+        mode: 'equals',
+        value: ['1']
+    },
+    secondary: null
+};
+
+const DEFAULT_PROFILE_B = {
+    name: 'Newer that 1 month',
+    primary: {
+        name: 'timestamp',
+        mode: 'above',
+        value: ['now() - 4 * @7days']
+    },
+    secondary: null
+};
+
 const ProfileManager = new (class {
     constructor () {
         this.profiles = Object.assign({
             'default': DEFAULT_PROFILE,
-            'own': {
-                name: 'Own only',
-                primary: {
-                    name: 'own',
-                    mode: 'equals',
-                    value: ['1']
-                },
-                secondary: null
-            },
-            'month_old': {
-                name: 'Newer that 1 month',
-                primary: {
-                    name: 'timestamp',
-                    mode: 'above',
-                    value: ['now() - 4 * @7days']
-                },
-                secondary: null
-            }
+            'own': DEFAULT_PROFILE_A,
+            'month_old': DEFAULT_PROFILE_B
         }, Preferences.get('db_profiles', {}));
     }
 
