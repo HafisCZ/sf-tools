@@ -202,7 +202,7 @@ class Expression {
                     }).join('') }\``;
                 } else if (extraIdentifiers && extraIdentifiers.includes(token)) {
                     value = SFormat.Reserved(token);
-                } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'difference', 'sort', 'var', 'tracker' ].includes(token) || root.functions.hasOwnProperty(token)) {
+                } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'difference', 'sort', 'var', 'tracker', 'some', 'all' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
                 } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index', 'table_timestamp', 'table_reference' ].includes(token) || root.variables.hasOwnProperty(token)) {
                     value = SFormat.Constant(token);
@@ -797,6 +797,22 @@ class Expression {
         }
     }
 
+    evalMappedArray (obj, arg, loop_index, mapper, segmented, player, reference, environment, scope, header) {
+        if (mapper) {
+            if (segmented) {
+                return mapper.ast.eval(obj[0], obj[1], environment, scope.copy().addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index }), header);
+            } else {
+                return mapper.ast.eval(player, reference, environment, scope.copy().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index }), header);
+            }
+        } else {
+            if (segmented) {
+                return this.evalInternal(obj[0], obj[1], environment, scope.copy().addSelf(obj[0]).add({ loop_index }), header, arg);
+            } else {
+                return this.evalInternal(player, reference, environment, scope.copy().addSelf(obj).add({ loop_index }), header, arg);
+            }
+        }
+    }
+
     // Evaluate a node (beta)
     evalInternal (player, reference, environment, scope, header, node) {
         if (typeof(node) == 'object') {
@@ -883,6 +899,19 @@ class Expression {
                         case 'filter': return array.filter((a, i) => values[i]);
                         case 'map': return values;
                     }
+                } else if (['some', 'all'].includes(node.op) && node.args.length == 2) {
+                    const inverted = node.op === 'some';
+
+                    const array = this.evalToArray(player, reference, environment, scope, header, node.args[0]);
+                    const mapper = environment.functions[node.args[1]];
+
+                    for (let i = 0; i < array.length; i++) {
+                        if (inverted == this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, player, reference, environment, scope, header)) {
+                            return inverted;
+                        }
+                    }
+
+                    return !inverted;
                 } else if (node.op == '{' || node.op == '[') {
                     // Simple object or array constructor
                     var obj = node.op == '{' ? {} : [];
