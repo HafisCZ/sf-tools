@@ -2238,8 +2238,8 @@ const SP_KEYWORD_MAPPING_0 = {
         statistics: false
     },
     'Guild Joined': {
-        expr: p => p.hasGuild() ? p.Group.Joined : undefined,
-        format: (p, c, e, x) => p.hasGuild() ? formatDate(x) : '',
+        expr: p => (p && p.hasGuild()) ? p.Group.Joined : undefined,
+        format: (p, c, e, x) => (p && p.hasGuild()) ? formatDate(x) : '',
         difference: false,
         statistics: false
     },
