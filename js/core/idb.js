@@ -342,8 +342,11 @@ const Exporter = new (class {
 class PlayaResponse {
     static fromText (text) {
         return _array_to_hash(text.split('&').filter(_not_empty), item => {
-            const [key, value] = item.split(':', 2);
-            return [this._normalizeKey(key), new PlayaResponse(value)];
+            const items = item.split(':');
+            const key = items[items.length - 2];
+            const val = items[items.length - 1];
+
+            return [this._normalizeKey(key), new PlayaResponse(val)];
         });
     }
 
@@ -1254,7 +1257,7 @@ const DatabaseManager = new (class {
                         // Optionals
                         data.groupname = _try(r.otherplayergroupname, 'string');
                         data.units = _try(r.otherplayerunitlevel, 'numbers');
-                        data.achievements = _try(r.otherplayerachievement, 'numbers');
+                        data.achievements = _try(r.otherplayerachievement, 'numbers') || _try(r.achievement, 'numbers');
                         data.fortressrank = _try(r.otherplayerfortressrank, 'number');
                         data.pets = _try(r.otherplayerpetbonus, 'numbers');
 
