@@ -795,6 +795,15 @@ const DatabaseManager = new (class {
         Preferences.set('hidden_identifiers', Array.from(this.Hidden));
     }
 
+    setTagSingle (identifier, timestamp, tag) {
+        return new Promise(async (resolve, reject) => {
+            const player = _dig(this.Players, identifier, timestamp, 'Data');
+            player.tag = tag;
+            await this.Database.set('players', player);
+            resolve();
+        });
+    }
+
     setTag (timestamps, tag) {
         return new Promise(async (resolve, reject) => {
             const { players } = this._getFile(null, timestamps);
