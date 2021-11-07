@@ -477,7 +477,7 @@ class TableInstance {
                     // Add name
                     let showOutdated = this.settings.getOutdatedStyle();
                     content += `
-                        <td class="border-right-thin clickable ${ !latest && showOutdated ? 'foreground-red' : '' }" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }">
+                        <td class="border-right-thin clickable ${ !latest && showOutdated ? 'foreground-red' : '' }" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
                             <span class="css-op-select-el"></span>
                             ${ SiteOptions.obfuscated ? '' : getEasterEgg(player.Identifier) }
                             ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
@@ -556,7 +556,7 @@ class TableInstance {
                 } else {
                     // Add name
                     content += `
-                        <td class="border-right-thin clickable" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }">
+                        <td class="border-right-thin clickable" ${ backgroundColor ? `style="background: ${ backgroundColor }"` : '' } data-id="${ player.Identifier }" data-ts="${ player.Timestamp }">
                             ${ SiteOptions.obfuscated ? '' : getEasterEgg(player.Identifier) }
                             ${ SiteOptions.obfuscated ? `player_${ index + 1 }` : player.Name }
                         </td>
@@ -1187,7 +1187,7 @@ class TableInstance {
 
     getCellContent ({ action, generators: { cell } }, player, compare) {
         if (action == 'show') {
-            return cell(player, compare).replace('{__ACTION__}', `data-id="${ player.Identifier }"`).replace('{__ACTION_OP__}', `<span class="css-op-select-el"></span>`);
+            return cell(player, compare).replace('{__ACTION__}', `data-id="${ player.Identifier }" data-ts="${ player.Timestamp }"`).replace('{__ACTION_OP__}', `<span class="css-op-select-el"></span>`);
         } else {
             return cell(player, compare);
         }

@@ -904,9 +904,9 @@ class BrowseView extends View {
                         let cnt = null;
 
                         if (sel.length) {
-                            cnt = sel.toArray().map(x => DatabaseManager.getPlayer($(x).attr('data-id')).Latest.toSimulatorModel());
+                            cnt = sel.toArray().map(x => DatabaseManager.getPlayer($(x).attr('data-id'), $(x).attr('data-ts')).toSimulatorModel());
                         } else {
-                            cnt = DatabaseManager.getPlayer(source.attr('data-id')).Latest.toSimulatorModel();
+                            cnt = DatabaseManager.getPlayer(source.attr('data-id'), source.attr('data-ts')).toSimulatorModel();
                         }
 
                         copyText(JSON.stringify(cnt));
@@ -915,7 +915,7 @@ class BrowseView extends View {
                 {
                     label: 'Copy with companions',
                     action: (source) => {
-                        copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
+                        copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id'), source.attr('data-ts')).toSimulatorShadowModel()));
                     }
                 },
                 {
