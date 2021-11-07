@@ -258,9 +258,8 @@ const ProfileManager = new (class {
         name: 'Action 1',
         trigger: load | import, // when action should be triggered
         temporary: true | false, // should apply in temporary mode too
-        mode: any | all | none, // how many players or guilds have to satisfy the condition
         test: 'timestamp < (now() - @7days)', // condition
-        targets: player | group | file, // player or file - condition applies to player, otherwise to guild
+        targets: player | group | file, // player, group and/or file
         action: 'tag', // what action does
         args: ['Outdated'] // arguments for the action if necessary
     }
@@ -295,6 +294,11 @@ const Actions = new (class {
         }
 
         if (_not_empty(pending)) {
+            if (actTrigger === 'load') {
+                const { players, groups } = DatabaseManager._getFile();
+                args = [ players, groups ];
+            }
+
             for (const action of pending) {
                 await this._applyAction(action, ... args);
             }
@@ -304,53 +308,25 @@ const Actions = new (class {
     }
 
     async _applyAction (actionObj, ... actionArgs) {
-        const { trigger, mode, target, test, action, args } = actionObj;
+        const { trigger, target, test, action, args } = actionObj;
+        const expr = new Expression(test);
+
         if (action === 'tag') {
-            if (trigger === 'import') {
-                const [players, groups] = actionArgs;
-                const timestamps = _uniq([players.map(o => o.timestamp), groups.map(o => o.timestamp)].flat());
-                for (const timestamp of timestamps) {
-                    if (this._applicable(mode, target, test, players, groups)) {
+            if (target === 'player') {
+                for (const player of actionArgs[0]) {
+                    if (expr.eval(undefined, undefined, undefined, new ExpressionScope().addSelf(player))) {
+                        await DatabaseManager.setTagFor(player.identifier, player.timestamp, args[0]);
+                    }
+                }
+            } else if (target === 'group') {
+                throw 'target not allowed';
+            } else if (target === 'file') {
+                for (const { timestamp, players, groups } of DatabaseManager._fileize(... actionArgs)) {
+                    if (expr.eval(undefined, undefined, undefined, new ExpressionScope().addSelf({ players, groups }))) {
                         await DatabaseManager.setTag([timestamp], args[0]);
                     }
                 }
-            } else {
-                // LOAD
             }
-        }
-    }
-
-    _applicable (mode, target, test, players, groups) {
-        if (target === 'player') {
-            return this._applicableTo(mode, test, players);
-        } else {
-            return this._applicableTo(mode, test, groups);
-        }
-    }
-
-    _applicableTo (mode, test, objs) {
-        const expr = new Expression(test);
-        if (mode === 'any') {
-            for (const obj of objs) {
-                if (expr.eval(undefined, undefined, undefined, new ExpressionScope().addSelf(obj))) {
-                    return true;
-                }
-            }
-            return false;
-        } else if (mode === 'all') {
-            for (const obj of objs) {
-                if (!expr.eval(undefined, undefined, undefined, new ExpressionScope().addSelf(obj))) {
-                    return false
-                }
-            }
-            return true;
-        } else if (mode === 'none') {
-            for (const obj of objs) {
-                if (expr.eval(undefined, undefined, undefined, new ExpressionScope().addSelf(obj))) {
-                    return false
-                }
-            }
-            return true;
         }
     }
 

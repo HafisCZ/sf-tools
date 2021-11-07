@@ -596,8 +596,6 @@ const DatabaseManager = new (class {
                 this._updateLists();
                 Logger.log('PERFLOG', 'Skipped load in temporary mode');
 
-                await Actions.apply('load');
-
                 resolve();
             });
         } else {
@@ -798,7 +796,7 @@ const DatabaseManager = new (class {
         Preferences.set('hidden_identifiers', Array.from(this.Hidden));
     }
 
-    setTagSingle (identifier, timestamp, tag) {
+    setTagFor (identifier, timestamp, tag) {
         return new Promise(async (resolve, reject) => {
             const player = _dig(this.Players, identifier, timestamp, 'Data');
             player.tag = tag;
@@ -949,6 +947,40 @@ const DatabaseManager = new (class {
         }
 
         return Object.values(groups);
+    }
+
+    _fileize (players, groups) {
+        const files = {};
+
+        for (const player of players) {
+            const ts = player.timestamp;
+            
+            if (!files[ts]) {
+                files[ts] = {
+                    timestamp: ts,
+                    players: [],
+                    groups: []
+                }
+            }
+
+            files[ts].players.push(player);
+        }
+
+        for (const group of groups) {
+            const ts = group.timestamp;
+
+            if (!files[ts]) {
+                files[ts] = {
+                    timestamp: ts,
+                    players: [],
+                    groups: []
+                }
+            }
+
+            files[ts].groups.push(group);
+        }
+
+        return Object.values(files);
     }
 
     _getFile (identifiers, timestamps, constraint = null) {
