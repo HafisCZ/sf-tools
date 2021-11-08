@@ -26,19 +26,19 @@ const ExpressionCache = new (class {
         Logger.log('PERFLOG', `${ this.hits } hits (${ this.calls - this.hits } missed) in ${ Date.now() - this.time } ms.`);
     }
 
-    set (p, c, n, v) {
-        if (p && c) {
-            this.cache[this.key(p, c, n)] = v;
+    set (s, n, v) {
+        if (s.player && s.reference) {
+            this.cache[this.key(s, n)] = v;
         }
     }
 
-    get (p, c, n) {
-        return this.cache[this.key(p, c, n)];
+    get (s, n) {
+        return this.cache[this.key(s, n)];
     }
 
-    has (p, c, n) {
+    has (s, n) {
         this.calls++;
-        if (p && c && (this.key(p, c, n) in this.cache)) {
+        if (s.player && s.reference && (this.key(s, n) in this.cache)) {
             this.hits++;
             return true;
         } else {
@@ -46,19 +46,20 @@ const ExpressionCache = new (class {
         }
     }
 
-    key (p, c, n) {
-        return `${ p.Identifier }.${ p.Timestamp }${ c.Timestamp }.${ n }`
+    key (s, n) {
+        return `${ s.env.env_id }.${ s.player.Identifier }.${ s.player.Timestamp }${ s.reference.Timestamp }.${ n }`
     }
 })();
 
 class ExpressionScope {
     copy () {
-        let _copy = new ExpressionScope();
+        let _copy = new ExpressionScope(this.env);
         _copy.self = [ ... this.self ];
         _copy.indirect = [ ... this.indirect ];
         _copy.tags = [ ... this.tags ];
-        _copy.pc = this.pc;
-        _copy.pr = this.pr;
+        _copy.player = this.player;
+        _copy.reference = this.reference;
+        _copy.header = this.header;
 
         return _copy;
     }
@@ -67,10 +68,15 @@ class ExpressionScope {
         return !(this.self.length + this.indirect.length);
     }
 
-    constructor () {
+    alwaysEval () {
+        return !this.empty() || !this.player || !this.reference;
+    }
+
+    constructor (env) {
         this.self = [];
         this.indirect = [];
         this.tags = [];
+        this.env = env || { functions: { }, variables: { }, constants: Constants.DEFAULT, lists: { }, env_id: RandomSHA() };
     }
 
     addSelf (obj) {
@@ -78,9 +84,19 @@ class ExpressionScope {
         return this;
     }
 
-    player (cur, ref) {
-        this.pc = cur;
-        this.pr = ref;
+    with (player, reference) {
+        this.player = player;
+        this.reference = reference;
+        return this;
+    }
+
+    environment (env) {
+        this.env = env;
+        return this;
+    }
+
+    via (header) {
+        this.header = header;
         return this;
     }
 
@@ -94,6 +110,10 @@ class ExpressionScope {
 
     getSelf (offset = 0) {
         return this.self[offset];
+    }
+
+    eval (expr) {
+        return expr.eval(this);
     }
 
     has (key) {
@@ -175,6 +195,12 @@ class Expression {
 
                 // Check if tree is cacheable or not
                 this.cacheable = this.cacheable && this.checkCacheableNode(this.root);
+
+                // Check if expression was resolved by post process and unwrap string if necessary
+                if (typeof this.root === 'number' || (typeof this.root === 'object' && this.root.raw)) {
+                    this.resolved = true;
+                    this.root = this.unwrap(this.root);
+                }
             } else {
                 this.empty = true;
             }
@@ -377,6 +403,14 @@ class Expression {
             return this.wrapString(token.slice(1, token.length - 1).replace(/\u2023/g, '\"').replace(/\u2043/g, '\''));
         } else {
             return cast ? this.wrapString(token) : token;
+        }
+    }
+
+    unwrap (obj) {
+        if (obj && obj.raw) {
+            return obj.args;
+        } else {
+            return obj;
         }
     }
 
@@ -754,9 +788,10 @@ class Expression {
             }
 
             if (node.op && SP_OPERATORS.hasOwnProperty(node.op.name) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.raw)).length == node.args.length) {
-                return node.op(... node.args.map(a => a.raw ? a.args : a));
-            } else if (node.op && SP_FUNCTIONS.hasOwnProperty(node.op) && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.raw)).length == node.args.length) {
-                let res = SP_FUNCTIONS[node.op](... node.args.map(a => a.raw ? a.args : a));
+                const res = node.op(... node.args.map(a => a.raw ? a.args : a));
+                return typeof res === 'string' ? this.wrapString(res) : res;
+            } else if (node.op && SP_FUNCTIONS.hasOwnProperty(node.op) && node.op != 'random' && node.op != 'now' && node.args && node.args.filter(a => !isNaN(a) || (a != undefined && a.raw)).length == node.args.length) {
+                const res = SP_FUNCTIONS[node.op](... node.args.map(a => a.raw ? a.args : a));
                 return typeof res === 'string' ? this.wrapString(res) : res;
             }
         } else if (typeof node === 'string' && node in tableVariables && !isNaN(tableVariables[node].ast.root)) {
@@ -776,32 +811,29 @@ class Expression {
         return node;
     }
 
-    scoped (scope = ExpressionScope.DEFAULT_SCOPE, environment, header) {
-        return this.eval(scope.pc, scope.pr, environment, scope, header);
-    }
-
     // Outside eval function (always call this from outside of the Expression class)
-    eval (player, reference = undefined, environment = { functions: { }, variables: { }, constants: Constants.DEFAULT, lists: { } }, scope = ExpressionScope.DEFAULT_SCOPE, header = undefined) {
+    eval (scope = ExpressionScope.DEFAULT_SCOPE) {
         this.subexpressions_cache_indexes = [];
         this.subexpressions_cache = [];
 
         let value = undefined;
-
-        if (!scope.empty() || !this.cacheable || !player || !reference) {
-            value = this.evalInternal(player, reference, environment, scope, header, this.root);
-        } else if (ExpressionCache.has(player, reference, this.rstr)) {
-            value = ExpressionCache.get(player, reference, this.rstr);
+        if (this.resolved) {
+            value = this.root;
+        } else if (scope.alwaysEval() || !this.cacheable) {
+            value = this.evalInternal(scope, this.root);
+        } else if (ExpressionCache.has(scope, this.rstr)) {
+            value = ExpressionCache.get(scope, this.rstr);
         } else {
-            value = this.evalInternal(player, reference, environment, scope, header, this.root);
-            ExpressionCache.set(player, reference, this.rstr, value);
+            value = this.evalInternal(scope, this.root);
+            ExpressionCache.set(scope, this.rstr, value);
         }
 
         return typeof value == 'number' && isNaN(value) ? undefined : value;
     }
 
     // Evaluate a node into array, used for array functions
-    evalToArray (player, reference, environment, scope, header, node) {
-        var generated = this.evalInternal(player, reference, environment, scope, header, node);
+    evalToArray (scope, node) {
+        var generated = this.evalInternal(scope, node);
         if (!generated || typeof(generated) != 'object') {
             return [];
         } else {
@@ -809,31 +841,30 @@ class Expression {
         }
     }
 
-    evalMappedArray (obj, arg, loop_index, mapper, segmented, player, reference, environment, scope, header) {
+    evalMappedArray (obj, arg, loop_index, mapper, segmented, scope) {
         if (mapper) {
             if (segmented) {
-                return mapper.ast.eval(obj[0], obj[1], environment, scope.copy().addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index }), header);
+                return scope.copy().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index }).eval(mapper.ast);
             } else {
-                return mapper.ast.eval(player, reference, environment, scope.copy().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index }), header);
+                return scope.copy().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index }).eval(mapper.ast);
             }
         } else {
             if (segmented) {
-                return this.evalInternal(obj[0], obj[1], environment, scope.copy().addSelf(obj[0]).add({ loop_index }), header, arg);
+                return this.evalInternal(scope.copy().with(obj[0], obj[1]).addSelf(obj[0]).add({ loop_index }), arg);
             } else {
-                return this.evalInternal(player, reference, environment, scope.copy().addSelf(obj).add({ loop_index }), header, arg);
+                return this.evalInternal(scope.copy().addSelf(obj).add({ loop_index }), arg);
             }
         }
     }
 
-    // Evaluate a node (beta)
-    evalInternal (player, reference, environment, scope, header, node) {
+    evalInternal (scope, node) {
         if (typeof(node) == 'object') {
             if (node.raw) {
                 return node.args;
             } else if (typeof(node.op) == 'string') {
                 if (node.op == 'format' && node.args.length > 0) {
-                    var str = this.evalInternal(player, reference, environment, scope, header, node.args[0]);
-                    var arg = node.args.slice(1).map(a => this.evalInternal(player, reference, environment, scope, header, a));
+                    var str = this.evalInternal(scope, node.args[0]);
+                    var arg = node.args.slice(1).map(a => this.evalInternal(scope, a));
 
                     for (key in arg) {
                         str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
@@ -842,22 +873,22 @@ class Expression {
                     return str;
                 } else if (node.op == 'sort' && node.args.length == 2) {
                     // Multiple array functions condensed
-                    var array = this.evalToArray(player, reference, environment, scope, header, node.args[0]);
-                    var mapper = environment.functions[node.args[1]];
+                    var array = this.evalToArray(scope, node.args[0]);
+                    var mapper = scope.env.functions[node.args[1]];
                     var values = [];
 
                     if (mapper) {
                         if (array.segmented) {
                             values = array.map((obj, i) => {
                                 return {
-                                    key: mapper.ast.eval(obj[0], obj[1], environment, scope.copy().addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index: i }), header),
+                                    key: scope.copy().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index: i }).eval(mapper.ast),
                                     val: obj
                                 };
                             });
                         } else {
                             values = array.map((obj, i) => {
                                 return {
-                                    key: mapper.ast.eval(player, reference, environment, scope.copy().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index: i }), header),
+                                    key: scope.copy().with(player, reference).addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index: i }).eval(mapper.ast),
                                     val: obj
                                 };
                             });
@@ -866,14 +897,14 @@ class Expression {
                         if (array.segmented) {
                             values = array.map((obj, i) => {
                                 return {
-                                    key: this.evalInternal(obj[0], obj[1], environment, scope.copy().addSelf(obj[0]).add({ loop_index: i }), header, node.args[1]),
+                                    key: this.evalInternal(scope.copy().with(obj[0], obj[1]).addSelf(obj[0]).add({ loop_index: i }), node.args[1]),
                                     val: obj
                                 };
                             });
                         } else {
                             values = array.map((obj, i) => {
                                 return {
-                                    key: this.evalInternal(player, reference, environment, scope.copy().addSelf(obj).add({ loop_index: i }), header, node.args[1]),
+                                    key: this.evalInternal(scope.copy().addSelf(obj).add({ loop_index: i }), node.args[1]),
                                     val: obj
                                 };
                             });
@@ -886,23 +917,12 @@ class Expression {
                     return values;
                 } else if (['each', 'filter', 'map'].includes(node.op) && node.args.length == 2) {
                     // Multiple array functions condensed
-                    var array = this.evalToArray(player, reference, environment, scope, header, node.args[0]);
-                    var mapper = environment.functions[node.args[1]];
-                    var values = [];
+                    var array = this.evalToArray(scope, node.args[0]);
+                    var mapper = scope.env.functions[node.args[1]];
+                    var values = new Array(array.length);
 
-                    // Does not allow 'this' in any scenario
-                    if (mapper) {
-                        if (array.segmented) {
-                            values = array.map((obj, i) => mapper.ast.eval(obj[0], obj[1], environment, scope.copy().addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index: i }), header));
-                        } else {
-                            values = array.map((obj, i) => mapper.ast.eval(player, reference, environment, scope.copy().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index: i }), header));
-                        }
-                    } else {
-                        if (array.segmented) {
-                            values = array.map((obj, i) => this.evalInternal(obj[0], obj[1], environment, scope.copy().addSelf(obj[0]).add({ loop_index: i }), header, node.args[1]));
-                        } else {
-                            values = array.map((obj, i) => this.evalInternal(player, reference, environment, scope.copy().addSelf(obj).add({ loop_index: i }), header, node.args[1]));
-                        }
+                    for (let i = 0; i < array.length; i++) {
+                        values[i] = this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope);
                     }
 
                     // Return correct result
@@ -914,11 +934,11 @@ class Expression {
                 } else if (['some', 'all'].includes(node.op) && node.args.length == 2) {
                     const inverted = node.op === 'some';
 
-                    const array = this.evalToArray(player, reference, environment, scope, header, node.args[0]);
-                    const mapper = environment.functions[node.args[1]];
+                    const array = this.evalToArray(scope, node.args[0]);
+                    const mapper = scope.env.functions[node.args[1]];
 
                     for (let i = 0; i < array.length; i++) {
-                        if (inverted == this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, player, reference, environment, scope, header)) {
+                        if (inverted == this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope)) {
                             return inverted;
                         }
                     }
@@ -929,7 +949,7 @@ class Expression {
                     var obj = node.op == '{' ? {} : [];
 
                     for (var { key, val } of node.args) {
-                        obj[this.evalInternal(player, reference, environment, scope, header, key)] = this.evalInternal(player, reference, environment, scope, header, val);
+                        obj[this.evalInternal(scope, key)] = this.evalInternal(scope, val);
                     }
 
                     return obj;
@@ -938,32 +958,32 @@ class Expression {
                     let branch1 = node.args[1];
                     let branch2 = node.args[2];
 
-                    if (this.evalInternal(player, reference, environment, scope, header, condition)) {
-                        return this.evalInternal(player, reference, environment, scope, header, branch1);
+                    if (this.evalInternal(scope, condition)) {
+                        return this.evalInternal(scope, branch1);
                     } else {
-                        return this.evalInternal(player, reference, environment, scope, header, branch2);
+                        return this.evalInternal(scope, branch2);
                     }
                 } else if (node.op == '||') {
                     let branch1 = node.args[0];
                     let branch2 = node.args[1];
 
-                    let resolved1 = this.evalInternal(player, reference, environment, scope, header, branch1);
+                    let resolved1 = this.evalInternal(scope, branch1);
                     if (resolved1) {
                         return resolved1;
                     } else {
-                        return this.evalInternal(player, reference, environment, scope, header, branch2);
+                        return this.evalInternal(scope, branch2);
                     }
-                } else if (environment.functions[node.op]) {
-                    var mapper = environment.functions[node.op];
+                } else if (scope.env.functions[node.op]) {
+                    var mapper = scope.env.functions[node.op];
                     var scope2 = {};
                     for (var i = 0; i < mapper.args.length; i++) {
-                        scope2[mapper.args[i]] = this.evalInternal(player, reference, environment, scope, header, node.args[i]);
+                        scope2[mapper.args[i]] = this.evalInternal(scope, node.args[i]);
                     }
 
-                    return mapper.ast.eval(player, reference, environment, scope.copy().add(scope2, mapper.ast.rstr), header);
+                    return scope.copy().add(scope2, mapper.ast.rstr).eval(mapper.ast);
                 } else if (node.op == 'difference' && node.args.length == 1) {
-                    var a = this.evalInternal(player, reference, environment, scope, header, node.args[0]);
-                    var b = this.evalInternal(reference, reference, environment, scope, header, node.args[0]);
+                    var a = this.evalInternal(scope, node.args[0]);
+                    var b = this.evalInternal(scope.copy().with(scope.reference, scope.reference), node.args[0]);
 
                     if (isNaN(a) || isNaN(b)) {
                         return undefined;
@@ -971,51 +991,51 @@ class Expression {
                         return a - b;
                     }
                 } else if (node.op == '[a') {
-                    var object = this.evalInternal(player, reference, environment, scope, header, node.args[0]);
+                    var object = this.evalInternal(scope, node.args[0]);
                     if (object) {
-                        return object[this.evalInternal(player, reference, environment, scope, header, node.args[1])];
+                        return object[this.evalInternal(scope, node.args[1])];
                     } else {
                         return undefined;
                     }
                 } else if (node.op == '(a') {
-                    var object = this.evalInternal(player, reference, environment, scope, header, node.args[0]);
-                    var func = this.evalInternal(player, reference, environment, scope, header, node.args[1]);
+                    var object = this.evalInternal(scope, node.args[0]);
+                    var func = this.evalInternal(scope, node.args[1]);
 
                     if (object != undefined && object[func]) {
-                        return object[func](... node.args[2].map(param => this.evalInternal(player, reference, environment, scope, header, param)));
+                        return object[func](... node.args[2].map(param => this.evalInternal(scope, param)));
                     } else {
                         return undefined;
                     }
                 } else if (node.op == 'var' && node.args.length == 1) {
-                    if (header && header.vars) {
-                        return header.vars[node.args[0]];
+                    if (scope.header && scope.header.vars) {
+                        return scope.header.vars[node.args[0]];
                     } else {
                         return undefined;
                     }
                 } else if (node.op == 'tracker' && node.args.length == 1) {
-                    if (player) {
-                        return DatabaseManager.getTracker(player.Identifier, node.args[0]);
+                    if (scope.player) {
+                        return DatabaseManager.getTracker(scope.player.Identifier, node.args[0]);
                     } else {
                         return undefined;
                     }
                 } else if (SP_KEYWORDS.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple call
-                    var obj = this.evalInternal(player, reference, environment, scope, header, node.args[0]);
-                    return obj && typeof obj === 'object' ? SP_KEYWORDS[node.op].expr(obj, null, environment) : undefined;
+                    var obj = this.evalInternal(scope, node.args[0]);
+                    return obj && typeof obj === 'object' ? SP_KEYWORDS[node.op].expr(obj, null, scope.env) : undefined;
                 } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node.op) && node.args.length == 1) {
                     // Simple indirect call
-                    var obj = this.evalInternal(player, reference, environment, scope, header, node.args[0]);
-                    return obj && typeof obj === 'object' ? SP_KEYWORDS_INDIRECT[node.op].expr(player, null, environment, obj) : undefined;
+                    var obj = this.evalInternal(scope, node.args[0]);
+                    return obj && typeof obj === 'object' ? SP_KEYWORDS_INDIRECT[node.op].expr(scope.player, null, scope.env, obj) : undefined;
                 } else if (SP_FUNCTIONS.hasOwnProperty(node.op)) {
                     // Predefined function
                     return SP_FUNCTIONS[node.op](
-                        ... node.args.map(arg => this.evalInternal(player, reference, environment, scope, header, arg))
+                        ... node.args.map(arg => this.evalInternal(scope, arg))
                     );
                 } else if (SP_ARRAY_FUNCTIONS.hasOwnProperty(node.op) && node.args.length > 0) {
                     // Predefined array functions (first argument is array type)
                     return SP_ARRAY_FUNCTIONS[node.op](
-                        this.evalToArray(player, reference, environment, scope, header, node.args[0]),
-                        ... node.args.slice(1).map(arg => this.evalInternal(player, reference, environment, scope, header, arg))
+                        this.evalToArray(scope, node.args[0]),
+                        ... node.args.slice(1).map(arg => this.evalInternal(scope, arg))
                     );
                 } else {
                     // Return undefined
@@ -1023,7 +1043,7 @@ class Expression {
                 }
             } else if (node.op) {
                 // Return processed node
-                var value = node.op(... node.args.map(arg => this.evalInternal(player, reference, environment, scope, header, arg)));
+                var value = node.op(... node.args.map(arg => this.evalInternal(scope, arg)));
                 if (value == NaN) {
                     return undefined;
                 } else {
@@ -1039,33 +1059,33 @@ class Expression {
                 return scope ? scope.getSelf(scopeValue[1].length) : undefined;
             } else if (node == 'player') {
                 // Return current player
-                return player;
+                return scope.player;
             } else if (node == 'reference') {
                 // Return reference player
-                return reference;
+                return scope.pr;
             } else if (node == 'database') {
                 // Return database
                 return DatabaseManager;
             } else if (node == 'entries') {
-                if (player) {
+                if (scope.player) {
                     return DatabaseManager.getPlayer(player.Identifier).List.map(([ t, e ]) => e);
                 } else {
                     return undefined;
                 }
             } else if (node == 'table_timestamp') {
-                return environment.timestamp;
+                return scope.env.timestamp;
             } else if (node == 'table_reference') {
-                return environment.reference;
+                return scope.env.reference;
             } else if (node == 'header') {
                 // Return current header
-                return header;
+                return scope.header;
             } else if (typeof node != 'undefined' && node.startsWith('~')) {
                 // Return sub expressions
                 let sub_index = parseInt(node.slice(1));
                 if (sub_index < this.subexpressions.length) {
                     if (!this.subexpressions_cache_indexes.includes(sub_index)) {
                         this.subexpressions_cache_indexes.push(sub_index);
-                        this.subexpressions_cache[sub_index] = this.evalInternal(player, reference, environment, scope, header, this.subexpressions[sub_index]);
+                        this.subexpressions_cache[sub_index] = this.evalInternal(scope, this.subexpressions[sub_index]);
                     }
                     return this.subexpressions_cache[sub_index];
                 } else {
@@ -1073,32 +1093,32 @@ class Expression {
                 }
             } else if (node == 'row_index') {
                 // Return row index
-                return environment && environment.row_indexes && player ? environment.row_indexes[`${ player.Identifier }_${ player.Timestamp }`] : undefined;
+                return scope.env.row_indexes && scope.player ? scope.env.row_indexes[`${ scope.player.Identifier }_${ scope.player.Timestamp }`] : undefined;
             } else if (SP_KEYWORDS_DEFAULT.hasOwnProperty(node)) {
                 return SP_KEYWORDS_DEFAULT[node];
-            } else if (player && SP_KEYWORDS.hasOwnProperty(node)) {
-                return SP_KEYWORDS[node].expr(player, reference, environment);
-            } else if (player && SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
-                return SP_KEYWORDS_INDIRECT[node].expr(player, reference, environment, scope.getSelf());
+            } else if (scope.player && SP_KEYWORDS.hasOwnProperty(node)) {
+                return SP_KEYWORDS[node].expr(scope.player, scope.reference, scope.env);
+            } else if (scope.player && SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
+                return SP_KEYWORDS_INDIRECT[node].expr(scope.player, scope.reference, scope.env, scope.getSelf());
             } else if (scope && scope.has(node)) {
                 return scope.get(node);
-            } else if (node in environment.variables) {
-                let variable = environment.variables[node];
+            } else if (node in scope.env.variables) {
+                let variable = scope.env.variables[node];
                 if (typeof variable.value != 'undefined') {
                     return variable.value;
-                } else if (ExpressionCache.has(player, reference, node)) {
-                    return ExpressionCache.get(player, reference, node);
+                } else if (ExpressionCache.has(scope, node)) {
+                    return ExpressionCache.get(scope, node);
                 } else {
-                    ExpressionCache.set(player, reference, node, undefined);
-                    let value = variable.ast.eval(player, reference, environment);
-                    ExpressionCache.set(player, reference, node, value);
+                    ExpressionCache.set(scope, node, undefined);
+                    let value = new ExpressionScope(scope.env).with(scope.player, scope.reference).via(scope.header).eval(variable.ast);
+                    ExpressionCache.set(scope, node, value);
                     return value;
                 }
-            } else if (environment.lists.hasOwnProperty(node)) {
-                return environment.lists[node];
-            } else if (environment.constants.exists(node)) {
+            } else if (scope.env.lists.hasOwnProperty(node)) {
+                return scope.env.lists[node];
+            } else if (scope.env.constants.exists(node)) {
                 // Return constant
-                return environment.constants.get(node);
+                return scope.env.constants.get(node);
             } else {
                 // Return enum or undefined if everything fails
                 return SP_ENUMS[node];

@@ -53,6 +53,89 @@ function copyText (text) {
     }
 })();
 
+class Constants {
+    constructor () {
+        this.Values = {
+            'green': '#00c851',
+            'orange': '#ffbb33',
+            'red': '#ff3547',
+            'blue': '#0064b4',
+            '15min': '900000',
+            '1hour': '3600000',
+            '12hours': '43200000',
+            '1day': '86400000',
+            '3days': '259200000',
+            '7days': '604800000',
+            '21days': '1814400000',
+            'mount10': '1',
+            'mount20': '2',
+            'mount30': '3',
+            'mount50': '4',
+            'none': '0',
+            'warrior': '1',
+            'mage': '2',
+            'scout': '3',
+            'assassin': '4',
+            'battlemage': '5',
+            'berserker': '6',
+            'demonhunter': '7',
+            'druid': '8',
+            'empty': '',
+            'tiny': '40',
+            'small': '60',
+            'normal': '100',
+            'large': '160',
+            'huge': '200',
+            'scrapbook': '2200',
+            'max': '-1',
+            'weapon': '1',
+            'shield': '2',
+            'breastplate': '3',
+            'shoes': '4',
+            'gloves': '5',
+            'helmet': '6',
+            'belt': '7',
+            'necklace': '8',
+            'ring': '9',
+            'talisman': '10'
+        }
+    }
+
+    get (key) {
+        if (typeof key == 'string' && key.length >= 2 && key[0] == '@') {
+            let rkey = key.slice(1);
+            if (this.Values.hasOwnProperty(rkey)) {
+                return this.Values[rkey];
+            } else {
+                return key;
+            }
+        } else {
+            return key;
+        }
+    }
+
+    exists (key) {
+        return typeof key == 'string' && key.length >= 2 && key[0] == '@' && this.Values.hasOwnProperty(key.slice(1));
+    }
+
+    addConstant (key, value) {
+        this.Values[key] = value;
+    }
+
+    /*
+        Old stuff
+    */
+    getValue (tag, key) {
+        return tag == '@' ? this.Values[key] : key;
+    }
+
+    isValid (tag, key) {
+        return tag == '@' && this.Values.hasOwnProperty(key);
+    }
+}
+
+Constants.DEFAULT = new Constants();
+
 function parseParams (text) {
     let keys = {};
     for (const key of text.split(/[\?\&]/).slice(1)) {
@@ -947,6 +1030,10 @@ function SHA1 (text) {
     }
 
     return (cvt_hex(H0) + cvt_hex(H1) /* + cvt_hex(H2) + cvt_hex(H3) + cvt_hex(H4) */ ).toLowerCase();
+}
+
+function RandomSHA () {
+    return SHA1(Math.random().toString()).slice(0, 8);
 }
 
 const SP_ENUMS = {

@@ -1089,14 +1089,14 @@ class BrowseView extends View {
                     var ast = new Expression(arg);
                     if (ast.isValid()) {
                         terms.push({
-                            test: (arg, player, timestamp, compare) => arg.scoped(new ExpressionScope().player(player, compare)),
+                            test: (arg, player, timestamp, compare) => new ExpressionScope().with(player, compare).eval(arg),
                             arg: ast
                         });
                     }
                 } else if (key == 'sr') {
                     var ast = new Expression(arg);
                     if (ast.isValid()) {
-                        this.autosort = (player, compare) => ast.scoped(new ExpressionScope().player(player, compare));
+                        this.autosort = (player, compare) => new ExpressionScope().with(player, compare).eval(ast);
                     }
                 } else if (key == 'f') {
                     perf = isNaN(arg) ? 1 : Math.max(1, Number(arg));
@@ -1631,7 +1631,7 @@ class PlayersView extends View {
                     var ast = new Expression(arg);
                     if (ast.isValid()) {
                         terms.push({
-                            test: (arg, player) => arg.scoped(new ExpressionScope().player(player, player).addSelf(player), this.settings),
+                            test: (arg, player) => new ExpressionScope().with(player, player).addSelf(player).eval(arg),
                             arg: ast
                         });
                     }
@@ -1729,8 +1729,6 @@ class PlayersView extends View {
 
     load () {
         this.$configure.settingsButton(SettingsManager.exists('me'));
-
-        this.settings = SettingsManager.get('me', 'me', PredefinedTemplates['Me Default']);
         this.$filter.trigger('change');
     }
 }
