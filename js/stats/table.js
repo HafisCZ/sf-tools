@@ -88,7 +88,11 @@ class GroupTableArray extends Array {
 }
 
 function getSafeExpr (obj, ...args) {
-    return obj instanceof Expression ? obj.eval(...args) : obj(...args);
+    if (obj instanceof Expression) {
+        return (args[3] || new ExpressionScope(args[2])).with(args[0], args[1]).via(args[4]).eval(obj);
+    } else {
+        return obj(... args);
+    }
 }
 
 // Table instance
@@ -340,7 +344,7 @@ class TableInstance {
         if (this.type == TableType.History) {
             this.array = array.map(([ timestamp, e ]) => {
                 let obj = DatabaseManager.getPlayer(e.Identifier, timestamp);
-                let disc = this.settings.discardRules.some(rule => rule.scoped(new ExpressionScope().player(obj, obj), this.settings));
+                let disc = this.settings.discardRules.some(rule => new ExpressionScope(this.settings).with(obj, obj).eval(rule));
                 ExpressionCache.reset();
 
                 return disc ? null : [ timestamp, obj ];
@@ -352,7 +356,7 @@ class TableInstance {
                 let p = DatabaseManager.getPlayer(player.Identifier, player.Timestamp);
                 let c = DatabaseManager.getPlayer(player.Identifier, compare.Timestamp);
 
-                let disc = this.settings.discardRules.some(rule => rule.scoped(new ExpressionScope().player(p, c), this.settings));
+                let disc = this.settings.discardRules.some(rule => new ExpressionScope(this.settings).with(p, c).eval(rule));
                 ExpressionCache.reset();
 
                 return disc ? null : obj;
@@ -1216,7 +1220,7 @@ class TableInstance {
             ${ join(entries, ({ name, ast, expression }) => `
                 <tr>
                     <td class="border-right-thin" colspan="${ leftSpan }">${ name }</td>
-                    ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.getArrayForStatistics(), expression ? expression : array => ast.scoped(new ExpressionScope().addSelf(array), this.settings)) : `<td colspan="${ span }"></td>`) }
+                    ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.getArrayForStatistics(), expression ? expression : array => new ExpressionScope(this.settings).addSelf(array).eval(ast)) : `<td colspan="${ span }"></td>`) }
                 </tr>
             `) }
         `;
