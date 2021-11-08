@@ -999,7 +999,7 @@ const SettingsCommands = [
         (root, expression) => {
             let ast = new Expression(expression, root);
             if (ast.isValid()) {
-                root.addAliasExpression((a, b) => ast.eval(undefined, undefined, a, undefined, b));
+                root.addAliasExpression((a, b) => ast.scoped(undefined, a, b));
             }
         },
         (root, expression) => SFormat.Keyword('expa ') + Expression.format(expression, root)
@@ -1298,7 +1298,7 @@ class Settings {
                 } else {
                     let condExpression = new Expression(cond);
                     if (condExpression.isValid()) {
-                        let result = condExpression.eval(undefined, undefined, settings, scope);
+                        let result = condExpression.scoped(scope, settings);
                         shouldDiscard = ruleMustBeTrue ? result : !result;
                         condition = true;
                     }
@@ -1312,7 +1312,7 @@ class Settings {
                         } else {
                             let condExpression = new Expression(cond);
                             if (condExpression.isValid()) {
-                                let result = condExpression.eval(undefined, undefined, settings, scope);
+                                let result = condExpression.scoped(scope, settings);
                                 shouldDiscard = !result;
                             }
                         }
@@ -1373,7 +1373,7 @@ class Settings {
 
                 let valuesExpression = new Expression(values);
                 if (valuesExpression.isValid()) {
-                    variableValues = valuesExpression.eval(undefined, undefined, settings, scope);
+                    variableValues = valuesExpression.scoped(scope, settings);
                     if (!variableValues) {
                         variableValues = [];
                     } else if (!Array.isArray(variableValues)) {
@@ -1731,7 +1731,7 @@ class Settings {
             rules: new RuleEvaluator(),
             get: function (player, compare, settings, value, extra = undefined, ignoreBase = false, header = undefined) {
                 // Get color from expression
-                let expressionColor = this.expr ? this.expr.eval(player, compare, settings, new ExpressionScope().addSelf(value).add(extra), header) : undefined;
+                let expressionColor = this.expr ? this.expr.scoped(new ExpressionScope().player(player, compare).addSelf(value).add(extra), settings, header) : undefined;
 
                 // Get color from color block
                 let blockColor = this.rules.get(value, ignoreBase || (typeof expressionColor !== 'undefined'));
@@ -1758,7 +1758,7 @@ class Settings {
                 // Get value from format expression
                 if (typeof output == 'undefined') {
                     if (this.format instanceof Expression) {
-                        output = this.format.eval(player, compare, settings, new ExpressionScope().addSelf(value).add(extra), header);
+                        output = this.format.scoped(new ExpressionScope().player(player, compare).addSelf(value).add(extra), settings, header);
                     } else if (typeof this.format == 'function') {
                         output = this.format(player, compare, settings, value, extra, header);
                     }
@@ -1791,14 +1791,14 @@ class Settings {
 
                 if (this.formatDifference === true) {
                     if (this.format instanceof Expression) {
-                        return this.format.eval(player, compare, settings, new ExpressionScope().addSelf(value).add(extra));
+                        return this.format.scoped(new ExpressionScope().player(player, compare).addSelf(value).add(extra), settings);
                     } else if (typeof this.format == 'function') {
                         return this.format(player, compare, settings, value, extra);
                     } else {
                         return nativeDifference;
                     }
                 } else if (this.formatDifference instanceof Expression) {
-                    return this.formatDifference.eval(player, compare, settings, new ExpressionScope().addSelf(value).add(extra));
+                    return this.formatDifference.scoped(new ExpressionScope().player(player, compare).addSelf(value).add(extra), settings);
                 } else if (typeof this.formatDifference == 'function') {
                     return this.formatDifference(settings, value);
                 } else {
@@ -1811,9 +1811,9 @@ class Settings {
                 if (this.formatStatistics === false) {
                     return nativeFormat;
                 } else if (this.formatStatistics) {
-                    return this.formatStatistics.eval(undefined, undefined, settings, new ExpressionScope().addSelf(value));
+                    return this.formatStatistics.scoped(new ExpressionScope().addSelf(value), settings);
                 } else if (this.format instanceof Expression) {
-                    return this.format.eval(undefined, undefined, settings, new ExpressionScope().addSelf(value));
+                    return this.format.scoped(new ExpressionScope().addSelf(value), settings);
                 } else if (typeof this.format == 'function') {
                     return this.format(undefined, undefined, settings, value);
                 } else {
@@ -2246,7 +2246,7 @@ class Settings {
             // Run only if it is a table variable
             if (variable.tableVariable) {
                 // Get value
-                let value = variable.ast.eval(undefined, undefined, this, new ExpressionScope().addSelf(scope));
+                let value = variable.ast.scoped(new ExpressionScope().addSelf(scope), this);
 
                 // Set value if valid
                 if (!isNaN(value) || typeof(value) == 'object' || typeof('value') == 'string') {
@@ -2259,7 +2259,7 @@ class Settings {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.ast.eval(array[0], undefined, this, new ExpressionScope().addSelf(array));
+            let currentValue = row.ast.scoped(new ExpressionScope().player(array[0]).addSelf(array), this);
 
             row.eval = {
                 value: currentValue
@@ -2332,8 +2332,8 @@ class Settings {
 
             if (variable.tableVariable) {
                 // Calculate values of table variable
-                let currentValue = variable.ast.eval(undefined, undefined, this, new ExpressionScope().addSelf(arrayCurrent));
-                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(undefined, undefined, this, new ExpressionScope().addSelf(arrayCompare));
+                let currentValue = variable.ast.scoped(new ExpressionScope().addSelf(arrayCurrent), this);
+                let compareValue = sameTimestamp ? currentValue : variable.ast.scoped(new ExpressionScope().addSelf(arrayCompare), this);
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -2352,8 +2352,8 @@ class Settings {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.ast.eval(undefined, undefined, this, new ExpressionScope().addSelf(arrayCurrent));
-            let compareValue = sameTimestamp ? currentValue : row.ast.eval(undefined, undefined, compareEnvironment, new ExpressionScope().addSelf(arrayCompare));
+            let currentValue = row.ast.scoped(new ExpressionScope().addSelf(arrayCurrent), this);
+            let compareValue = sameTimestamp ? currentValue : row.ast.scoped(new ExpressionScope().addSelf(arrayCompare), compareEnvironment);
 
             row.eval = {
                 value: currentValue,
@@ -2436,8 +2436,8 @@ class Settings {
 
             if (variable.tableVariable) {
                 // Calculate values of table variable
-                let currentValue = variable.ast.eval(ownPlayer, ownCompare, this, new ExpressionScope().addSelf(arrayCurrent));
-                let compareValue = sameTimestamp ? currentValue : variable.ast.eval(ownCompare, ownCompare, this, new ExpressionScope().addSelf(arrayCompare));
+                let currentValue = variable.ast.scoped(new ExpressionScope().player(ownPlayer, ownCompare).addSelf(arrayCurrent), this);
+                let compareValue = sameTimestamp ? currentValue : variable.ast.scoped(new ExpressionScope().player(ownCompare, ownCompare).addSelf(arrayCompare), this);
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -2456,8 +2456,8 @@ class Settings {
 
         // Evaluate custom rows
         for (let row of this.customRows) {
-            let currentValue = row.ast.eval(ownPlayer, ownCompare, this, new ExpressionScope().addSelf(arrayCurrent));
-            let compareValue = sameTimestamp ? currentValue : row.ast.eval(ownCompare, ownCompare, compareEnvironment, new ExpressionScope().addSelf(arrayCompare));
+            let currentValue = row.ast.scoped(new ExpressionScope().player(ownPlayer, ownCompare).addSelf(arrayCurrent), this);
+            let compareValue = sameTimestamp ? currentValue : row.ast.scoped(new ExpressionScope().player(ownCompare, ownCompare).addSelf(arrayCompare), compareEnvironment);
 
             row.eval = {
                 value: currentValue,

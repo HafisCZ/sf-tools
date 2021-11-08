@@ -1089,14 +1089,14 @@ class BrowseView extends View {
                     var ast = new Expression(arg);
                     if (ast.isValid()) {
                         terms.push({
-                            test: (arg, player, timestamp, compare) => arg.eval(player, compare),
+                            test: (arg, player, timestamp, compare) => arg.scoped(new ExpressionScope().player(player, compare)),
                             arg: ast
                         });
                     }
                 } else if (key == 'sr') {
                     var ast = new Expression(arg);
                     if (ast.isValid()) {
-                        this.autosort = (player, compare) => ast.eval(player, compare);
+                        this.autosort = (player, compare) => ast.scoped(new ExpressionScope().player(player, compare));
                     }
                 } else if (key == 'f') {
                     perf = isNaN(arg) ? 1 : Math.max(1, Number(arg));
@@ -1631,7 +1631,7 @@ class PlayersView extends View {
                     var ast = new Expression(arg);
                     if (ast.isValid()) {
                         terms.push({
-                            test: (arg, player) => arg.eval(player, player, this.settings, player),
+                            test: (arg, player) => arg.scoped(new ExpressionScope().player(player, player).addSelf(player), this.settings),
                             arg: ast
                         });
                     }

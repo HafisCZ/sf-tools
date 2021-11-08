@@ -57,6 +57,8 @@ class ExpressionScope {
         _copy.self = [ ... this.self ];
         _copy.indirect = [ ... this.indirect ];
         _copy.tags = [ ... this.tags ];
+        _copy.pc = this.pc;
+        _copy.pr = this.pr;
 
         return _copy;
     }
@@ -73,6 +75,12 @@ class ExpressionScope {
 
     addSelf (obj) {
         this.self.unshift(obj);
+        return this;
+    }
+
+    player (cur, ref) {
+        this.pc = cur;
+        this.pr = ref;
         return this;
     }
 
@@ -766,6 +774,10 @@ class Expression {
         }
 
         return node;
+    }
+
+    scoped (scope = ExpressionScope.DEFAULT_SCOPE, environment, header) {
+        return this.eval(scope.pc, scope.pr, environment, scope, header);
     }
 
     // Outside eval function (always call this from outside of the Expression class)

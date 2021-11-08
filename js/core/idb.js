@@ -312,7 +312,7 @@ class DatabaseUtils {
         if (filter) {
             let { name, mode, value } = filter;
             if (value) {
-                value = value.map(v => new Expression(v).eval());
+                value = value.map(v => new Expression(v).scoped());
             }
 
             let range = null;
@@ -624,7 +624,7 @@ const DatabaseManager = new (class {
                     for (const player of players) {
                         if (!player.hidden || SiteOptions.hidden) {
                             ExpressionCache.reset();
-                            if (filter.eval(undefined, undefined, undefined, new ExpressionScope().addSelf(player))) {
+                            if (filter.scoped(new ExpressionScope().addSelf(player))) {
                                 this._addPlayer(player);
                             }
                         }
@@ -954,7 +954,7 @@ const DatabaseManager = new (class {
 
         for (const player of players) {
             const ts = player.timestamp;
-            
+
             if (!files[ts]) {
                 files[ts] = {
                     timestamp: ts,
@@ -1116,10 +1116,10 @@ const DatabaseManager = new (class {
         let trackerChanged = false;
         for (const [ name, { ast, out } ] of this.TrackerConfigEntries) {
             const currentTracker = playerTracker[name];
-            if (ast.eval(player) && (_nil(currentTracker) || currentTracker.ts > timestamp)) {
+            if (ast.scoped(new ExpressionScope().player(player)) && (_nil(currentTracker) || currentTracker.ts > timestamp)) {
                 playerTracker[name] = {
                     ts: timestamp,
-                    out: out ? out.eval(player) : timestamp
+                    out: out ? out.scoped(new ExpressionScope().player(player)) : timestamp
                 }
                 trackerChanged = true;
             }

@@ -312,18 +312,19 @@ const Actions = new (class {
         const expr = new Expression(test);
 
         if (action === 'tag') {
+            const newTag = args[0];
             if (target === 'player') {
                 for (const player of actionArgs[0]) {
-                    if (expr.eval(undefined, undefined, undefined, new ExpressionScope().addSelf(player))) {
-                        await DatabaseManager.setTagFor(player.identifier, player.timestamp, args[0]);
+                    if (player.tag != newTag && expr.scoped(new ExpressionScope().addSelf(player))) {
+                        await DatabaseManager.setTagFor(player.identifier, player.timestamp, newTag);
                     }
                 }
             } else if (target === 'group') {
                 throw 'target not allowed';
             } else if (target === 'file') {
                 for (const { timestamp, players, groups } of DatabaseManager._fileize(... actionArgs)) {
-                    if (expr.eval(undefined, undefined, undefined, new ExpressionScope().addSelf({ players, groups }))) {
-                        await DatabaseManager.setTag([timestamp], args[0]);
+                    if (_any_true(players, p => p.tag != newTag) && expr.scoped(new ExpressionScope().addSelf({ players, groups }))) {
+                        await DatabaseManager.setTag([timestamp], newTag);
                     }
                 }
             }

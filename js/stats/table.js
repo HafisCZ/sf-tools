@@ -340,7 +340,7 @@ class TableInstance {
         if (this.type == TableType.History) {
             this.array = array.map(([ timestamp, e ]) => {
                 let obj = DatabaseManager.getPlayer(e.Identifier, timestamp);
-                let disc = this.settings.discardRules.some(rule => rule.eval(obj, obj, this.settings));
+                let disc = this.settings.discardRules.some(rule => rule.scoped(new ExpressionScope().player(obj, obj), this.settings));
                 ExpressionCache.reset();
 
                 return disc ? null : [ timestamp, obj ];
@@ -352,7 +352,7 @@ class TableInstance {
                 let p = DatabaseManager.getPlayer(player.Identifier, player.Timestamp);
                 let c = DatabaseManager.getPlayer(player.Identifier, compare.Timestamp);
 
-                let disc = this.settings.discardRules.some(rule => rule.eval(p, c, this.settings));
+                let disc = this.settings.discardRules.some(rule => rule.scoped(new ExpressionScope().player(p, c), this.settings));
                 ExpressionCache.reset();
 
                 return disc ? null : obj;
@@ -1216,7 +1216,7 @@ class TableInstance {
             ${ join(entries, ({ name, ast, expression }) => `
                 <tr>
                     <td class="border-right-thin" colspan="${ leftSpan }">${ name }</td>
-                    ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.getArrayForStatistics(), expression ? expression : array => ast.eval(undefined, undefined, this.settings, new ExpressionScope().addSelf(array))) : `<td colspan="${ span }"></td>`) }
+                    ${ join(this.rightFlat, ({ span, statistics, generators }) => statistics && generators.statistics ? generators.statistics(this.getArrayForStatistics(), expression ? expression : array => ast.scoped(new ExpressionScope().addSelf(array), this.settings)) : `<td colspan="${ span }"></td>`) }
                 </tr>
             `) }
         `;
