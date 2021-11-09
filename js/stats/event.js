@@ -3479,7 +3479,7 @@ class OnlineFilesView extends View {
 
         this.$parent.modal({
             onApprove: () => {
-                let code = this.$inputField.val();
+                let code = this.$inputField.val().trim();
                 if (code) {
                     this.$ok.addClass('loading');
                     $.ajax({
