@@ -96,7 +96,7 @@
                 test('scoped this', new Expression('this').eval(new ExpressionScope().addSelf(55)) == 55);
                 test('each this', new Expression('each([0, 1, 2], 3 * this)').eval() == 9);
                 test('each loop_index', new Expression('each([0, 1, 2], loop_index)').eval() == 3);
-                test('this traversal', new Expression('each([0, 1, 2], len(.this) * this)').eval() == 9);
+                test('this traversal', new Expression('each([0, 1, 2], len(loop_array) * this)').eval() == 9);
                 test('this traversal 2', new Expression('each(this, len(.this))').eval(new ExpressionScope().addSelf([0, 1, 2])) == 9);
                 test('constants', new Expression('@none').eval() == 0);
                 test('inverts', new Expression('!!!false'));
