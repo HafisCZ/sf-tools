@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Tests</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="res/favicon.png"/>
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+
+        <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="css/style_rv2.css"/>
+        <link rel="stylesheet" href="css/plugins.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/html2canvas.min.js"></script>
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/sentry.bundle.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/lang.js"></script>
+        <script src="js/changelog.js"></script>
+        <script src="js/core/util.js"></script>
+        <script src="js/core/playa.js"></script>
+        <script src="js/core/core.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/core/idb.js"></script>
+        <script src="js/sim/players.js"></script>
+        <script src="js/core/ast.js"></script>
+        <script src="js/stats/templates.js"></script>
+        <script src="js/stats/settings.js"></script>
+        <script src="js/stats/table.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        </div>
+
+        <div class="ui main container sf-container">
+            <table class="ui basic table" style="table-layout: fixed;">
+                <thead>
+                    <tr>
+                        <td style="width: 5%; text-align: center;">#</td>
+                        <td style="width: 10%; text-align: center;">Result</td>
+                        <td style="padding-left: 2em;">Name</td>
+                    </tr>
+                </thead>
+                <tbody id="test-list">
+
+                </tbody>
+            </table>
+        </div>
+
+        <script type="text/javascript">
+            window.addEventListener('load', function () {
+                let i = 0;
+                function test (name, op) {
+                    const success = typeof op === 'function' ? op() : op;
+                    $('#test-list').append(`
+                        <tr style="line-height: 0.75em;">
+                            <td style="width: 5%; text-align: center;">${ i += 1 }</td>
+                            <td style="width: 10%; font-weight: bold; text-align: center; ${ success ? 'background-color: #2d9150; color: white;' : 'background-color: #9e192b; color: white;' }">${ success ? 'OK' : 'Failed' }</td>
+                            <td style="padding-left: 2em;">${ name }</td>
+                        </tr>
+                    `);
+                }
+
+                test('always true', true);
+                test('cacheable', new Expression('1').cacheable);
+                test('not cacheable', new Expression('random()').cacheable);
+                test('simple math resolved', new Expression('15 + 5').resolved);
+                test('math resolved', new Expression('15 + 5 * 5 - 99').resolved);
+                test('string concat', new Expression('"Hello" + "World"').resolved);
+                test('string concat eval', new Expression('"Hello" + "World"').eval() == 'HelloWorld');
+                test('math eval', new Expression('2 * 5 + 10').eval() == 20);
+                test('condition eval', new Expression('10 > 5 ? 20 : 0').eval() == 20);
+                test('condition eval 2', new Expression('10 > 5 || false ? 20 : 0').eval() == 20);
+                test('condition eval 3', new Expression('false || 10 > 5 ? 20 : 0').eval() == 20);
+                test('condition eval 4', new Expression('false || !!false ? 0 : 20').eval() == 20);
+                test('broken expr', new Expression(' ? 20 : 0').tokens.length != 0);
+                test('or eval', new Expression('0 || 5').eval() == 5);
+                test('condition eval br left', new Expression('(5 > 0) && true ? 5 : 0').eval() == 5);
+                test('condition eval br right', new Expression('true && (5 > 0) ? 5 : 0').eval() == 5);
+                test('sub expr', new Expression('5;~0').eval() == 5);
+                test('array sum', new Expression('sum([0, 1, 2, 3, 4])').eval() == 10);
+                test('array each', new Expression('each([0, 1, 2, 3, 4], this)').eval() == 10);
+                test('sum', new Expression('sum(0, 1, 2, 3, 4)').eval() == 10);
+                test('sum sequence', new Expression('sum(makesequence(0, 4))').eval() == 10);
+                test('scoped', new Expression('value == 5').eval(new ExpressionScope().add({ value: 5 })));
+                test('undefined', new Expression('undefined').eval() === undefined);
+                test('scoped no this', new Expression('this').eval() === undefined);
+                test('scoped this', new Expression('this').eval(new ExpressionScope().addSelf(55)) == 55);
+                test('each this', new Expression('each([0, 1, 2], 3 * this)').eval() == 9);
+                test('each loop_index', new Expression('each([0, 1, 2], loop_index)').eval() == 3);
+                test('this traversal', new Expression('each([0, 1, 2], len(.this) * this)').eval() == 9);
+                test('this traversal 2', new Expression('each(this, len(.this))').eval(new ExpressionScope().addSelf([0, 1, 2])) == 9);
+                test('constants', new Expression('@none').eval() == 0);
+                test('inverts', new Expression('!!!false'));
+                test('condition eval 5', new Expression('1 - (0.5 * 2) == 0').eval());
+                test('condition eval 6', new Expression('-(0.5 * 2) + 1 == 0').eval());
+                test('null', new Expression('null').eval() == null);
+                test('empty', new Expression('').eval() === false);
+                test('all true', new Expression('all(true, 5 > 1)'));
+                test('array distinct', new Expression('sum(distinct([1, 1, 1, 2]))').eval() == 3);
+                test('array slice', new Expression('sum(slice([1, 1, 1, 2], 0, 3))').eval() == 3);
+                test('array join', new Expression('join([0, 1, 2], "-")').eval() == '0-1-2');
+                test('array at', new Expression('at([0, 1, 2], 1)').eval() == 1);
+                test('array index of', new Expression('indexof([0, 1, 2], 1)').eval() == 1);
+                test('average', new Expression('average()').eval() == 0);
+                test('average 2', new Expression('average(0, 1)').eval() == 0.5);
+                test('header', new Expression('Album Items').eval(new ExpressionScope().with({ Book: 1000 })) == 1000);
+                test('header this', new Expression('Album Items(this)').eval(new ExpressionScope().addSelf({ Book: 1000 })) == 1000);
+                test('object', new Expression('{ "key": 1 }["key"]').eval() == 1);
+                test('header local', new Expression('Album Items({ "Book": 1000 })').eval() == 1000);
+                test('nested header', new Expression('map([{ "Name": "name" }], Item Name(this)).0').eval() == 'name');
+                test('nested header auto', new Expression('map([{ "Name": "name" }], Item Name).0').eval() == 'name');
+                test('template string', new Expression('`Hello, {0}!`("world")').eval() == 'Hello, world!');
+                test('player direct', new Expression('player.Book').eval(new ExpressionScope().with({ Book: 1000 })) == 1000);
+                test('table timestamp', new Expression('table_timestamp').eval(new ExpressionScope({ timestamp: 1000 })) == 1000);
+                test('random not equal', new Expression('random() != random()').eval());
+            });
+        </script>
+    </body>
+</html>
