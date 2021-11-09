@@ -841,14 +841,6 @@ class Expression {
         }
     }
 
-    evalToSimpleArray (array) {
-        if (array.segmented) {
-            return array.map(v => v[0]);
-        } else {
-            return array;
-        }
-    }
-
     evalMappedArray (obj, arg, loop_index, mapper, segmented, scope) {
         if (mapper) {
             if (segmented) {
@@ -928,7 +920,7 @@ class Expression {
                     const array = this.evalToArray(scope, node.args[0]);
                     const mapper = scope.env.functions[node.args[1]];
                     const values = new Array(array.length);
-                    const scope2 = scope.copy().addSelf(this.evalToSimpleArray(array));
+                    const scope2 = scope.copy().addSelf(array);
 
                     for (let i = 0; i < array.length; i++) {
                         values[i] = this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope2);
@@ -944,7 +936,7 @@ class Expression {
                     const inverted = node.op === 'some';
                     const array = this.evalToArray(scope, node.args[0]);
                     const mapper = scope.env.functions[node.args[1]];
-                    const scope2 = scope.copy().addSelf(this.evalToSimpleArray(array));
+                    const scope2 = scope.copy().addSelf(array);
 
                     for (let i = 0; i < array.length; i++) {
                         if (inverted == this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope2)) {
