@@ -898,7 +898,8 @@ class Expression {
                     // Return correct result
                     switch (node.op) {
                         case 'each': {
-                            return values.reduce((a, b) => a + b, this.evalInternal(scope, node.args[2]) || 0);
+                            const def = typeof node.args[2] === 'undefined' ? 0 : this.evalInternal(scope, node.args[2]);
+                            return values.reduce((a, b) => a + b, def);
                         }
                         case 'filter': return array.filter((a, i) => values[i]);
                         case 'map': return values;

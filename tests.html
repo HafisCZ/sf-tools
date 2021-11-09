@@ -119,6 +119,9 @@
                 test('nested header', new Expression('map([{ "Name": "name" }], Item Name(this)).0').eval() == 'name');
                 test('nested header auto', new Expression('map([{ "Name": "name" }], Item Name).0').eval() == 'name');
                 test('template string', new Expression('`Hello, {0}!`("world")').eval() == 'Hello, world!');
+                test('each joins', new Expression('each(["hello", "world"], this, "")').eval() == 'helloworld');
+                test('each joins number', new Expression('each(["hello", "world"], this)').eval() == '0helloworld');
+                test('each joins boolean', new Expression('each([true, true, false], this)').eval() == 2);
                 test('player direct', new Expression('player.Book').eval(new ExpressionScope().with({ Book: 1000 })) == 1000);
                 test('table timestamp', new Expression('table_timestamp').eval(new ExpressionScope({ timestamp: 1000 })) == 1000);
                 test('random not equal', new Expression('random() != random()').eval());
