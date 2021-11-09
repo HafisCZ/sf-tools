@@ -56,7 +56,6 @@ class ExpressionScope {
         let _copy = new ExpressionScope(this.env);
         _copy.self = [ ... this.self ];
         _copy.indirect = [ ... this.indirect ];
-        _copy.tags = [ ... this.tags ];
         _copy.player = this.player;
         _copy.reference = this.reference;
         _copy.header = this.header;
@@ -75,7 +74,6 @@ class ExpressionScope {
     constructor (env) {
         this.self = [];
         this.indirect = [];
-        this.tags = [];
         this.env = env || { functions: { }, variables: { }, constants: Constants.DEFAULT, lists: { }, env_id: RandomSHA() };
     }
 
@@ -100,10 +98,9 @@ class ExpressionScope {
         return this;
     }
 
-    add (obj, tag = null) {
+    add (obj) {
         if (obj != undefined) {
             this.indirect.unshift(obj);
-            this.tags.unshift(tag);
         }
         return this;
     }
@@ -955,7 +952,7 @@ class Expression {
                         scope2[mapper.args[i]] = this.evalInternal(scope, node.args[i]);
                     }
 
-                    return scope.copy().add(scope2, mapper.ast.rstr).eval(mapper.ast);
+                    return scope.copy().add(scope2).eval(mapper.ast);
                 } else if (node.op == 'difference' && node.args.length == 1) {
                     var a = this.evalInternal(scope, node.args[0]);
                     var b = this.evalInternal(scope.copy().with(scope.reference, scope.reference), node.args[0]);
