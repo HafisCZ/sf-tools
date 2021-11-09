@@ -1071,13 +1071,13 @@ class Expression {
                 return scope.player;
             } else if (node == 'reference') {
                 // Return reference player
-                return scope.pr;
+                return scope.reference;
             } else if (node == 'database') {
                 // Return database
                 return DatabaseManager;
             } else if (node == 'entries') {
                 if (scope.player) {
-                    return DatabaseManager.getPlayer(player.Identifier).List.map(([ t, e ]) => e);
+                    return DatabaseManager.getPlayer(scope.player.Identifier).List.map(([ t, e ]) => e);
                 } else {
                     return undefined;
                 }
