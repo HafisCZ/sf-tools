@@ -872,12 +872,12 @@ class Expression {
                     // Multiple array functions condensed
                     const array = this.evalToArray(scope, node.args[0]);
                     const mapper = scope.env.functions[node.args[1]];
-                    const scope2 = scope.copy().addSelf(array);
+                    // const scope2 = scope.copy().addSelf(array);
                     let values = new Array(array.length);
 
                     for (let i = 0; i < array.length; i++) {
                         values[i] = {
-                            key: this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope2),
+                            key: this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope),
                             val: array[i]
                         };
                     }
@@ -891,10 +891,10 @@ class Expression {
                     const array = this.evalToArray(scope, node.args[0]);
                     const mapper = scope.env.functions[node.args[1]];
                     const values = new Array(array.length);
-                    const scope2 = scope.copy().addSelf(array);
+                    // const scope2 = scope.copy().addSelf(array);
 
                     for (let i = 0; i < array.length; i++) {
-                        values[i] = this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope2);
+                        values[i] = this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope);
                     }
 
                     // Return correct result
@@ -907,10 +907,10 @@ class Expression {
                     const inverted = node.op === 'some';
                     const array = this.evalToArray(scope, node.args[0]);
                     const mapper = scope.env.functions[node.args[1]];
-                    const scope2 = scope.copy().addSelf(array);
+                    // const scope2 = scope.copy().addSelf(array);
 
                     for (let i = 0; i < array.length; i++) {
-                        if (inverted == this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope2)) {
+                        if (inverted == this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope)) {
                             return inverted;
                         }
                     }
