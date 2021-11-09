@@ -873,42 +873,16 @@ class Expression {
                     return str;
                 } else if (node.op == 'sort' && node.args.length == 2) {
                     // Multiple array functions condensed
-                    var array = this.evalToArray(scope, node.args[0]);
-                    var mapper = scope.env.functions[node.args[1]];
-                    var values = [];
+                    const array = this.evalToArray(scope, node.args[0]);
+                    const mapper = scope.env.functions[node.args[1]];
+                    const scope2 = scope.copy().addSelf(array);
+                    let values = new Array(array.length);
 
-                    if (mapper) {
-                        if (array.segmented) {
-                            values = array.map((obj, i) => {
-                                return {
-                                    key: scope.copy().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index: i }).eval(mapper.ast),
-                                    val: obj
-                                };
-                            });
-                        } else {
-                            values = array.map((obj, i) => {
-                                return {
-                                    key: scope.copy().with(player, reference).addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index: i }).eval(mapper.ast),
-                                    val: obj
-                                };
-                            });
-                        }
-                    } else {
-                        if (array.segmented) {
-                            values = array.map((obj, i) => {
-                                return {
-                                    key: this.evalInternal(scope.copy().with(obj[0], obj[1]).addSelf(obj[0]).add({ loop_index: i }), node.args[1]),
-                                    val: obj
-                                };
-                            });
-                        } else {
-                            values = array.map((obj, i) => {
-                                return {
-                                    key: this.evalInternal(scope.copy().addSelf(obj).add({ loop_index: i }), node.args[1]),
-                                    val: obj
-                                };
-                            });
-                        }
+                    for (let i = 0; i < array.length; i++) {
+                        values[i] = {
+                            key: this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope2),
+                            val: array[i]
+                        };
                     }
 
                     values = values.sort((a, b) => b.key - a.key).map((a) => a.val);
