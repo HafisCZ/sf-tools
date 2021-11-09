@@ -62,8 +62,8 @@
                     const success = typeof op === 'function' ? op() : op;
                     $('#test-list').append(`
                         <tr style="line-height: 0.75em;">
-                            <td style="width: 5%; text-align: center;">${ i += 1 }</td>
-                            <td style="width: 10%; font-weight: bold; text-align: center; ${ success ? 'background-color: #2d9150; color: white;' : 'background-color: #9e192b; color: white;' }">${ success ? 'OK' : 'Failed' }</td>
+                            <td style="text-align: center;">${ i += 1 }</td>
+                            <td style="font-weight: bold; text-align: center; ${ success ? 'background-color: #2d9150; color: white;' : 'background-color: #9e192b; color: white;' }">${ success ? 'OK' : 'Failed' }</td>
                             <td style="padding-left: 2em;">${ name }</td>
                         </tr>
                     `);
@@ -123,6 +123,7 @@
                 test('table timestamp', new Expression('table_timestamp').eval(new ExpressionScope({ timestamp: 1000 })) == 1000);
                 test('random not equal', new Expression('random() != random()').eval());
                 test('sort numbers', new Expression('sort([0, 4, 7, 2, 5], -this).1').eval() == 2);
+                test('header difference', new Expression('difference(Level)').eval(new ExpressionScope().with({ Level: 200 }, { Level: 100 })) == 100);
             });
         </script>
     </body>
