@@ -235,7 +235,7 @@ class Expression {
                     value = SFormat.Reserved(token);
                 } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'difference', 'sort', 'var', 'tracker', 'some', 'all' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
-                } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index', 'table_timestamp', 'table_reference' ].includes(token) || root.variables.hasOwnProperty(token)) {
+                } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index', 'loop_array', 'table_timestamp', 'table_reference' ].includes(token) || root.variables.hasOwnProperty(token)) {
                     value = SFormat.Constant(token);
                 } else if (/(\.*)this/.test(token)) {
                     value = SFormat.Constant(token);
@@ -838,18 +838,18 @@ class Expression {
         }
     }
 
-    evalMappedArray (obj, arg, loop_index, mapper, segmented, scope) {
+    evalMappedArray (obj, arg, loop_index, loop_array, mapper, segmented, scope) {
         if (mapper) {
             if (segmented) {
-                return scope.copy().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index }).eval(mapper.ast);
+                return scope.copy().with(obj[0], obj[1]).addSelf(obj[0]).add(mapper.args.reduce((c, a, i) => { c[a] = obj[i]; return c; }, {})).add({ loop_index, loop_array }).eval(mapper.ast);
             } else {
-                return scope.copy().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index }).eval(mapper.ast);
+                return scope.copy().addSelf(obj).add(mapper.args.reduce((c, a) => { c[a] = obj; return c; }, {})).add({ loop_index, loop_array }).eval(mapper.ast);
             }
         } else {
             if (segmented) {
-                return this.evalInternal(scope.copy().with(obj[0], obj[1]).addSelf(obj[0]).add({ loop_index }), arg);
+                return this.evalInternal(scope.copy().with(obj[0], obj[1]).addSelf(obj[0]).add({ loop_index, loop_array }), arg);
             } else {
-                return this.evalInternal(scope.copy().addSelf(obj).add({ loop_index }), arg);
+                return this.evalInternal(scope.copy().addSelf(obj).add({ loop_index, loop_array }), arg);
             }
         }
     }
@@ -872,12 +872,11 @@ class Expression {
                     // Multiple array functions condensed
                     const array = this.evalToArray(scope, node.args[0]);
                     const mapper = scope.env.functions[node.args[1]];
-                    // const scope2 = scope.copy().addSelf(array);
                     let values = new Array(array.length);
 
                     for (let i = 0; i < array.length; i++) {
                         values[i] = {
-                            key: this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope),
+                            key: this.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope),
                             val: array[i]
                         };
                     }
@@ -891,10 +890,9 @@ class Expression {
                     const array = this.evalToArray(scope, node.args[0]);
                     const mapper = scope.env.functions[node.args[1]];
                     const values = new Array(array.length);
-                    // const scope2 = scope.copy().addSelf(array);
 
                     for (let i = 0; i < array.length; i++) {
-                        values[i] = this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope);
+                        values[i] = this.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope);
                     }
 
                     // Return correct result
@@ -907,10 +905,9 @@ class Expression {
                     const inverted = node.op === 'some';
                     const array = this.evalToArray(scope, node.args[0]);
                     const mapper = scope.env.functions[node.args[1]];
-                    // const scope2 = scope.copy().addSelf(array);
 
                     for (let i = 0; i < array.length; i++) {
-                        if (inverted == this.evalMappedArray(array[i], node.args[1], i, mapper, array.segmented, scope)) {
+                        if (inverted == this.evalMappedArray(array[i], node.args[1], i, array, mapper, array.segmented, scope)) {
                             return inverted;
                         }
                     }
