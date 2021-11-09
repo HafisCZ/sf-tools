@@ -122,6 +122,7 @@
                 test('player direct', new Expression('player.Book').eval(new ExpressionScope().with({ Book: 1000 })) == 1000);
                 test('table timestamp', new Expression('table_timestamp').eval(new ExpressionScope({ timestamp: 1000 })) == 1000);
                 test('random not equal', new Expression('random() != random()').eval());
+                test('sort numbers', new Expression('sort([0, 4, 7, 2, 5], -this).1').eval() == 2);
             });
         </script>
     </body>
