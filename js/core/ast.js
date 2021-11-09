@@ -1107,7 +1107,7 @@ class Expression {
                 return SP_KEYWORDS_DEFAULT[node];
             } else if (scope.player && SP_KEYWORDS.hasOwnProperty(node)) {
                 return SP_KEYWORDS[node].expr(scope.player, scope.reference, scope.env);
-            } else if (scope.player && SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
+            } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
                 return SP_KEYWORDS_INDIRECT[node].expr(scope.player, scope.reference, scope.env, scope.getSelf());
             } else if (scope && scope.has(node)) {
                 return scope.get(node);
@@ -3036,11 +3036,15 @@ const SP_KEYWORD_MAPPING_4 = {
     },
     'Item Attribute': {
         expr: (p, c, e, i) => {
-            switch (p.Primary.Type) {
-                case 1: return i.Strength.Value;
-                case 2: return i.Dexterity.Value;
-                case 3: return i.Intelligence.Value;
-                default: return 0;
+            if (p) {
+                switch (p.Primary.Type) {
+                    case 1: return i.Strength.Value;
+                    case 2: return i.Dexterity.Value;
+                    case 3: return i.Intelligence.Value;
+                    default: return 0;
+                }
+            } else {
+                return 0;
             }
         },
         format: (p, c, e, x) => x == 0 ? '' : x
@@ -3106,7 +3110,7 @@ const SP_KEYWORD_MAPPING_4 = {
     },
     'Item Slot': {
         expr: (p, c, e, i) => i.Slot,
-        format: (p, c, e, x) => x == 2 && p.Class == 4 ? ITEM_TYPES[1] : ITEM_TYPES[x],
+        format: (p, c, e, x) => x == 2 && p && p.Class == 4 ? ITEM_TYPES[1] : ITEM_TYPES[x],
         difference: false
     },
     'Potion Type': {
