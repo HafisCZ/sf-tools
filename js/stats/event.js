@@ -922,11 +922,9 @@ class BrowseView extends View {
                     label: 'Share',
                     action: (source) => {
                         let ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => $(el).attr('data-id'));
-                        if (ids.length > 0) {
-                            ids.push(source.attr('data-id'));
-                        }
+                        ids.push(source.attr('data-id'));
 
-                        DatabaseManager.export(ids).then(data => UI.OnlineShareFile.show(data));
+                        DatabaseManager.export(_uniq(ids)).then(data => UI.OnlineShareFile.show(data));
                     }
                 },
                 {
