@@ -885,7 +885,7 @@ class Expression {
                     values.segmented = array.segmented;
 
                     return values;
-                } else if (['each', 'filter', 'map'].includes(node.op) && node.args.length == 2) {
+                } else if (['each', 'filter', 'map'].includes(node.op) && (node.args.length == 2 || (node.op == 'each' && node.args.length == 3))) {
                     // Multiple array functions condensed
                     const array = this.evalToArray(scope, node.args[0]);
                     const mapper = scope.env.functions[node.args[1]];
@@ -897,7 +897,10 @@ class Expression {
 
                     // Return correct result
                     switch (node.op) {
-                        case 'each': return values.reduce((a, b) => a + b, 0);
+                        case 'each': {
+                            const def = this.evalInternal(scope, node.args[2]) || (typeof values[0] === 'number' ? 0 : '');
+                            return values.reduce((a, b) => a + b, def);
+                        }
                         case 'filter': return array.filter((a, i) => values[i]);
                         case 'map': return values;
                     }
