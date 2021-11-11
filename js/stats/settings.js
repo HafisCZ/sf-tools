@@ -712,6 +712,19 @@ const SettingsCommands = [
         (root, name, expression) => SFormat.Keyword('set ') + SFormat.Constant(name) + SFormat.Keyword(' with all as ') + Expression.format(expression, root),
     ).parseAlways(),
     /*
+        New syntax for table variable
+    */
+    new Command(
+        /^set \$(\w+[\w ]*) as (.+)$/,
+        (root, name, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addVariable(name, ast, true);
+            }
+        },
+        (root, name, expression) => SFormat.Keyword('set ') + SFormat.Global(`$${name}`) + SFormat.Keyword(' as ') + Expression.format(expression, root)
+    ).parseAlways(),
+    /*
         Function
     */
     new Command(

@@ -220,6 +220,7 @@ const SFormat = {
     Extras: string => `<span class="ta-extras"><span>${ escapeHTML(string) }</span></span>`,
     Macro: (string, noescape) => noescape ? `<span class="ta-macro">${ string }</span>` : `<span class="ta-macro">${ escapeHTML(string) }</span>`,
     Lambda: string => `<span class="ta-lambda">${ string }</span>`,
+    Global: string => `<span class="ta-global">${string}</span>`,
     Constant: string => `<span class="ta-constant">${ escapeHTML(string) }</span>`,
     Function: string => `<span class="ta-function">${ escapeHTML(string) }</span>`,
     Enum: string => `<span class="ta-enum">${ escapeHTML(string) }</span>`,

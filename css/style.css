@@ -662,6 +662,10 @@ h3.file-selected {
     color: #175e5a;
 }
 
+.ta-global {
+    color: #1f58cc;
+}
+
 .ta-function {
     text-shadow: -0.03ex 0 #175e5a, 0.03ex 0 #175e5a;
     color: #175e5a;
