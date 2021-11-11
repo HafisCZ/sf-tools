@@ -709,7 +709,7 @@ const SettingsCommands = [
                 root.addVariable(name, ast, true);
             }
         },
-        (root, name, expression) => SFormat.Keyword('set ') + SFormat.Constant(name) + SFormat.Keyword(' with all as ') + Expression.format(expression, root),
+        (root, name, expression) => SFormat.Keyword('set ') + SFormat.Global(name) + SFormat.Keyword(' with all as ') + Expression.format(expression, root),
     ).parseAlways(),
     /*
         New syntax for table variable
