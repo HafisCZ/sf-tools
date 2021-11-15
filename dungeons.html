@@ -523,859 +523,861 @@
         </div>
 
         <script type="text/javascript">
-            if (new Date().getMonth() == 3 && new Date().getDate() == 1) {
-                let randomString = orig => {
-                    let str = ''
-                    for (let i = 0; i < orig.length; i++) {
-                        if (/[a-z]/.test(orig[i])) {
-                            str += 'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26));
-                        } else if (/[A-Z]/.test(orig[i])) {
-                            str += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.charAt(Math.floor(Math.random() * 26));
-                        } else {
-                            str += orig[i];
+            window.addEventListener('load', function () {
+                if (new Date().getMonth() == 3 && new Date().getDate() == 1) {
+                    let randomString = orig => {
+                        let str = ''
+                        for (let i = 0; i < orig.length; i++) {
+                            if (/[a-z]/.test(orig[i])) {
+                                str += 'abcdefghijklmnopqrstuvwxyz'.charAt(Math.floor(Math.random() * 26));
+                            } else if (/[A-Z]/.test(orig[i])) {
+                                str += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.charAt(Math.floor(Math.random() * 26));
+                            } else {
+                                str += orig[i];
+                            }
+                        }
+                        return str;
+                    }
+
+                    for (let [k, v] of Object.entries(DUNGEON_DATA)) {
+                        v.name = randomString(v.name);
+                        for (let [k2, v2] of Object.entries(v.floors)) {
+                            delete v.floors[k2];
+                            v.floors[randomString(k2)] = v2;
                         }
                     }
-                    return str;
                 }
 
-                for (let [k, v] of Object.entries(DUNGEON_DATA)) {
-                    v.name = randomString(v.name);
-                    for (let [k2, v2] of Object.entries(v.floors)) {
-                        delete v.floors[k2];
-                        v.floors[randomString(k2)] = v2;
-                    }
-                }
-            }
-
-            function toggleAll (dis) {
-                if (dis) {
-                    PopupController.open(LoaderPopup);
-                } else {
-                    PopupController.close(LoaderPopup);
-                }
-            }
-
-            let ignoreChanges = false;
-            function withoutUpdate (func) {
-                ignoreChanges = true;
-                func();
-                ignoreChanges = false;
-            }
-
-            $('#sim-threads').captiveInputField('dungeon_sim/threads', 4, v => !isNaN(v) && v >= 1);
-            $('#sim-iterations').captiveInputField('dungeon_sim/iterations', 5000, v => !isNaN(v) && v >= 1);
-
-            const EditorController = new (class {
-                constructor () {
-                    this.fields = {
-                        name: new Field('[data-path="Name"]', ''),
-                        class: new Field('[data-path="Class"]', '1'),
-                        mask: new Field('[data-path="Mask"]', '0'),
-                        level: new Field('[data-path="Level"]', '', Field.isPlayerLevel),
-                        armor: new Field('[data-path="Armor"]', '', Field.isNumber),
-
-                        resistance_fire: new Field('[data-path="Runes.ResistanceFire"]', '', Field.isResistanceRune),
-                        resistance_cold: new Field('[data-path="Runes.ResistanceCold"]', '', Field.isResistanceRune),
-                        resistance_lightning: new Field('[data-path="Runes.ResistanceLightning"]', '', Field.isResistanceRune),
-
-                        portal_hp: new Field('[data-path="Dungeons.Player"]', '', Field.isDungeon),
-                        portal_damage: new Field('[data-path="Dungeons.Group"]', '', Field.isDungeon),
-
-                        runes_health: new Field('[data-path="Runes.Health"]', '', Field.isHealthRune),
-                        gladiator: new Field('[data-path="Fortress.Gladiator"]', '', Field.isGladiator),
-                        potion_life: new Field('[data-path="Potions.Life"]', '0'),
-                        enchantment: new Field('[data-path="Items.Hand.HasEnchantment"]', 'false'),
-                        shield: new Field('[data-path="BlockChance"]', '25'),
-
-                        str: new Field('[data-path="Strength.Total"]', '', Field.isNumber),
-                        dex: new Field('[data-path="Dexterity.Total"]', '', Field.isNumber),
-                        int: new Field('[data-path="Intelligence.Total"]', '', Field.isNumber),
-                        con: new Field('[data-path="Constitution.Total"]', '', Field.isNumber),
-                        lck: new Field('[data-path="Luck.Total"]', '', Field.isNumber),
-
-                        weapon1_min: new Field('[data-path="Items.Wpn1.DamageMin"]', '', Field.isWeaponDamage),
-                        weapon1_max: new Field('[data-path="Items.Wpn1.DamageMax"]', '', Field.isWeaponDamage),
-                        weapon1_enchantment: new Field('[data-path="Items.Wpn1.HasEnchantment"]', 'false'),
-                        weapon1_rune: new Field('[data-path="Items.Wpn1.AttributeTypes.2"]', '0'),
-                        weapon1_value: new Field('[data-path="Items.Wpn1.Attributes.2"]', '', Field.isDamageRune),
-
-                        weapon2_min: new Field('[data-path="Items.Wpn2.DamageMin"]', '', Field.isWeaponDamage),
-                        weapon2_max: new Field('[data-path="Items.Wpn2.DamageMax"]', '', Field.isWeaponDamage),
-                        weapon2_enchantment: new Field('[data-path="Items.Wpn2.HasEnchantment"]', 'false'),
-                        weapon2_rune: new Field('[data-path="Items.Wpn2.AttributeTypes.2"]', '0'),
-                        weapon2_value: new Field('[data-path="Items.Wpn2.Attributes.2"]', '', Field.isDamageRune)
-                    };
-
-                    this.fields['class'].$object.dropdown({
-                        preserveHTML: true,
-                        values: Object.entries(ClassMap).map((e) => {
-                            return {
-                                name: `<img class="ui centered image class-picture" src="res/class${ e[0] }.png"><span>${ e[1] }</span>`,
-                                value: e[0]
-                            };
-                        })
-                    }).dropdown('setting', 'onChange', (value, text) => {
-                        if (value == 4) {
-                            $('[data-optional="Weapon2"]').show();
-                        } else {
-                            $('[data-optional="Weapon2"]').hide();
-                        }
-
-                        this.fields['shield'].show(value == 1);
-                        this.fields['mask'].show(value == 8);
-                    }).dropdown('set selected', '1');
-
-                    this.fields['mask'].$object.dropdown({
-                        preserveHTML: true,
-                        values: [
-                            {
-                                name: 'None',
-                                value: 0
-                            },
-                            {
-                                name: '<img class="ui centered image class-picture" src="res/mask1.png"><span>Bear</span>',
-                                value: 1
-                            },
-                            {
-                                name: '<img class="ui centered image class-picture" src="res/mask2.png"><span>Cat</span>',
-                                value: 2
-                            }
-                        ]
-                    }).dropdown('set selected', '0');
-
-                    this.fields['potion_life'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'No',
-                                value: 0
-                            },
-                            {
-                                name: 'Yes',
-                                value: 25
-                            }
-                        ]
-                    }).dropdown('set selected', '0');
-
-                    this.fields['shield'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'No',
-                                value: 0
-                            },
-                            {
-                                name: 'Yes',
-                                value: 25
-                            }
-                        ]
-                    }).dropdown('set selected', '25');
-
-                    this.fields['weapon1_rune'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'None',
-                                value: 0
-                            },
-                            {
-                                name: 'Fire',
-                                value: 40
-                            },
-                            {
-                                name: 'Cold',
-                                value: 41
-                            },
-                            {
-                                name: 'Lightning',
-                                value: 42
-                            }
-                        ]
-                    }).dropdown('set selected', '0');
-
-                    this.fields['weapon2_rune'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'None',
-                                value: 0
-                            },
-                            {
-                                name: 'Fire',
-                                value: 40
-                            },
-                            {
-                                name: 'Cold',
-                                value: 41
-                            },
-                            {
-                                name: 'Lightning',
-                                value: 42
-                            }
-                        ]
-                    }).dropdown('set selected', '0');
-
-                    this.fields['enchantment'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'No',
-                                value: false
-                            },
-                            {
-                                name: 'Yes',
-                                value: true
-                            }
-                        ]
-                    }).dropdown('set selected', 'false');
-
-                    this.fields['weapon1_enchantment'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'No',
-                                value: false
-                            },
-                            {
-                                name: 'Yes',
-                                value: true
-                            }
-                        ]
-                    }).dropdown('set selected', 'false');
-
-                    this.fields['weapon2_enchantment'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'No',
-                                value: false
-                            },
-                            {
-                                name: 'Yes',
-                                value: true
-                            }
-                        ]
-                    }).dropdown('set selected', 'false');
-
-                    for (let field of Object.values(this.fields)) {
-                        field.setListener(() => this.changeListener());
-                    }
-
-                    this.enableListener = true;
-                }
-
-                changeListener () {
-                    if (this.valid() && this.enableListener) {
-                        saveEditor();
-                        settingsChanged();
-                    }
-                }
-
-                fill (object, index) {
-                    this.enableListener = false;
-
-                    if (object) {
-                        for (var [key, field] of Object.entries(this.fields)) {
-                            field.set(getObjectAt(object, field.path()));
-                        }
+                function toggleAll (dis) {
+                    if (dis) {
+                        PopupController.open(LoaderPopup);
                     } else {
+                        PopupController.close(LoaderPopup);
+                    }
+                }
+
+                let ignoreChanges = false;
+                function withoutUpdate (func) {
+                    ignoreChanges = true;
+                    func();
+                    ignoreChanges = false;
+                }
+
+                $('#sim-threads').captiveInputField('dungeon_sim/threads', 4, v => !isNaN(v) && v >= 1);
+                $('#sim-iterations').captiveInputField('dungeon_sim/iterations', 5000, v => !isNaN(v) && v >= 1);
+
+                const EditorController = new (class {
+                    constructor () {
+                        this.fields = {
+                            name: new Field('[data-path="Name"]', ''),
+                            class: new Field('[data-path="Class"]', '1'),
+                            mask: new Field('[data-path="Mask"]', '0'),
+                            level: new Field('[data-path="Level"]', '', Field.isPlayerLevel),
+                            armor: new Field('[data-path="Armor"]', '', Field.isNumber),
+
+                            resistance_fire: new Field('[data-path="Runes.ResistanceFire"]', '', Field.isResistanceRune),
+                            resistance_cold: new Field('[data-path="Runes.ResistanceCold"]', '', Field.isResistanceRune),
+                            resistance_lightning: new Field('[data-path="Runes.ResistanceLightning"]', '', Field.isResistanceRune),
+
+                            portal_hp: new Field('[data-path="Dungeons.Player"]', '', Field.isDungeon),
+                            portal_damage: new Field('[data-path="Dungeons.Group"]', '', Field.isDungeon),
+
+                            runes_health: new Field('[data-path="Runes.Health"]', '', Field.isHealthRune),
+                            gladiator: new Field('[data-path="Fortress.Gladiator"]', '', Field.isGladiator),
+                            potion_life: new Field('[data-path="Potions.Life"]', '0'),
+                            enchantment: new Field('[data-path="Items.Hand.HasEnchantment"]', 'false'),
+                            shield: new Field('[data-path="BlockChance"]', '25'),
+
+                            str: new Field('[data-path="Strength.Total"]', '', Field.isNumber),
+                            dex: new Field('[data-path="Dexterity.Total"]', '', Field.isNumber),
+                            int: new Field('[data-path="Intelligence.Total"]', '', Field.isNumber),
+                            con: new Field('[data-path="Constitution.Total"]', '', Field.isNumber),
+                            lck: new Field('[data-path="Luck.Total"]', '', Field.isNumber),
+
+                            weapon1_min: new Field('[data-path="Items.Wpn1.DamageMin"]', '', Field.isWeaponDamage),
+                            weapon1_max: new Field('[data-path="Items.Wpn1.DamageMax"]', '', Field.isWeaponDamage),
+                            weapon1_enchantment: new Field('[data-path="Items.Wpn1.HasEnchantment"]', 'false'),
+                            weapon1_rune: new Field('[data-path="Items.Wpn1.AttributeTypes.2"]', '0'),
+                            weapon1_value: new Field('[data-path="Items.Wpn1.Attributes.2"]', '', Field.isDamageRune),
+
+                            weapon2_min: new Field('[data-path="Items.Wpn2.DamageMin"]', '', Field.isWeaponDamage),
+                            weapon2_max: new Field('[data-path="Items.Wpn2.DamageMax"]', '', Field.isWeaponDamage),
+                            weapon2_enchantment: new Field('[data-path="Items.Wpn2.HasEnchantment"]', 'false'),
+                            weapon2_rune: new Field('[data-path="Items.Wpn2.AttributeTypes.2"]', '0'),
+                            weapon2_value: new Field('[data-path="Items.Wpn2.Attributes.2"]', '', Field.isDamageRune)
+                        };
+
+                        this.fields['class'].$object.dropdown({
+                            preserveHTML: true,
+                            values: Object.entries(ClassMap).map((e) => {
+                                return {
+                                    name: `<img class="ui centered image class-picture" src="res/class${ e[0] }.png"><span>${ e[1] }</span>`,
+                                    value: e[0]
+                                };
+                            })
+                        }).dropdown('setting', 'onChange', (value, text) => {
+                            if (value == 4) {
+                                $('[data-optional="Weapon2"]').show();
+                            } else {
+                                $('[data-optional="Weapon2"]').hide();
+                            }
+
+                            this.fields['shield'].show(value == 1);
+                            this.fields['mask'].show(value == 8);
+                        }).dropdown('set selected', '1');
+
+                        this.fields['mask'].$object.dropdown({
+                            preserveHTML: true,
+                            values: [
+                                {
+                                    name: 'None',
+                                    value: 0
+                                },
+                                {
+                                    name: '<img class="ui centered image class-picture" src="res/mask1.png"><span>Bear</span>',
+                                    value: 1
+                                },
+                                {
+                                    name: '<img class="ui centered image class-picture" src="res/mask2.png"><span>Cat</span>',
+                                    value: 2
+                                }
+                            ]
+                        }).dropdown('set selected', '0');
+
+                        this.fields['potion_life'].$object.dropdown({
+                            values: [
+                                {
+                                    name: 'No',
+                                    value: 0
+                                },
+                                {
+                                    name: 'Yes',
+                                    value: 25
+                                }
+                            ]
+                        }).dropdown('set selected', '0');
+
+                        this.fields['shield'].$object.dropdown({
+                            values: [
+                                {
+                                    name: 'No',
+                                    value: 0
+                                },
+                                {
+                                    name: 'Yes',
+                                    value: 25
+                                }
+                            ]
+                        }).dropdown('set selected', '25');
+
+                        this.fields['weapon1_rune'].$object.dropdown({
+                            values: [
+                                {
+                                    name: 'None',
+                                    value: 0
+                                },
+                                {
+                                    name: 'Fire',
+                                    value: 40
+                                },
+                                {
+                                    name: 'Cold',
+                                    value: 41
+                                },
+                                {
+                                    name: 'Lightning',
+                                    value: 42
+                                }
+                            ]
+                        }).dropdown('set selected', '0');
+
+                        this.fields['weapon2_rune'].$object.dropdown({
+                            values: [
+                                {
+                                    name: 'None',
+                                    value: 0
+                                },
+                                {
+                                    name: 'Fire',
+                                    value: 40
+                                },
+                                {
+                                    name: 'Cold',
+                                    value: 41
+                                },
+                                {
+                                    name: 'Lightning',
+                                    value: 42
+                                }
+                            ]
+                        }).dropdown('set selected', '0');
+
+                        this.fields['enchantment'].$object.dropdown({
+                            values: [
+                                {
+                                    name: 'No',
+                                    value: false
+                                },
+                                {
+                                    name: 'Yes',
+                                    value: true
+                                }
+                            ]
+                        }).dropdown('set selected', 'false');
+
+                        this.fields['weapon1_enchantment'].$object.dropdown({
+                            values: [
+                                {
+                                    name: 'No',
+                                    value: false
+                                },
+                                {
+                                    name: 'Yes',
+                                    value: true
+                                }
+                            ]
+                        }).dropdown('set selected', 'false');
+
+                        this.fields['weapon2_enchantment'].$object.dropdown({
+                            values: [
+                                {
+                                    name: 'No',
+                                    value: false
+                                },
+                                {
+                                    name: 'Yes',
+                                    value: true
+                                }
+                            ]
+                        }).dropdown('set selected', 'false');
+
+                        for (let field of Object.values(this.fields)) {
+                            field.setListener(() => this.changeListener());
+                        }
+
+                        this.enableListener = true;
+                    }
+
+                    changeListener () {
+                        if (this.valid() && this.enableListener) {
+                            saveEditor();
+                            settingsChanged();
+                        }
+                    }
+
+                    fill (object, index) {
+                        this.enableListener = false;
+
+                        if (object) {
+                            for (var [key, field] of Object.entries(this.fields)) {
+                                field.set(getObjectAt(object, field.path()));
+                            }
+                        } else {
+                            for (var [key, field] of Object.entries(this.fields)) {
+                                field.clear();
+                            }
+                        }
+
+                        if (index > 0) {
+                            this.fields['class'].set(index);
+                        }
+
+                        this.fields['class'].toggle(index == 0);
+                        this.fields['gladiator'].toggle(index == 0);
+                        this.fields['portal_hp'].toggle(index == 0);
+                        this.fields['portal_damage'].toggle(index == 0);
+                        this.fields['potion_life'].toggle(index == 0);
+                        this.fields['level'].toggle(index == 0);
+                        this.fields['shield'].show(object.Class == 1 && index == 0);
+                        this.fields['name'].set(['Player', 'Bert', 'Mark', 'Kunigunde'][index]);
+
+                        this.enableListener = true;
+                    }
+
+                    read () {
+                        var object = new SFPlayer();
                         for (var [key, field] of Object.entries(this.fields)) {
-                            field.clear();
-                        }
-                    }
-
-                    if (index > 0) {
-                        this.fields['class'].set(index);
-                    }
-
-                    this.fields['class'].toggle(index == 0);
-                    this.fields['gladiator'].toggle(index == 0);
-                    this.fields['portal_hp'].toggle(index == 0);
-                    this.fields['portal_damage'].toggle(index == 0);
-                    this.fields['potion_life'].toggle(index == 0);
-                    this.fields['level'].toggle(index == 0);
-                    this.fields['shield'].show(object.Class == 1 && index == 0);
-                    this.fields['name'].set(['Player', 'Bert', 'Mark', 'Kunigunde'][index]);
-
-                    this.enableListener = true;
-                }
-
-                read () {
-                    var object = new SFPlayer();
-                    for (var [key, field] of Object.entries(this.fields)) {
-                        setObjectAt(object, field.path(), field.get());
-                    }
-
-                    return object;
-                }
-
-                valid () {
-                    var ass = this.fields['class'].get() != 4;
-                    for (var [key, field] of Object.entries(this.fields)) {
-                        if (ass && ['weapon2_min', 'weapon2_max', 'weapon2_value'].includes(key)) {
-                            continue;
+                            setObjectAt(object, field.path(), field.get());
                         }
 
-                        if (!field.valid()) {
-                            return false;
-                        }
+                        return object;
                     }
 
-                    return true;
+                    valid () {
+                        var ass = this.fields['class'].get() != 4;
+                        for (var [key, field] of Object.entries(this.fields)) {
+                            if (ass && ['weapon2_min', 'weapon2_max', 'weapon2_value'].includes(key)) {
+                                continue;
+                            }
+
+                            if (!field.valid()) {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }
+
+                    genEmpty (defClass = 1) {
+                        var object = new SFPlayer();
+                        for (var [key, field] of Object.entries(this.fields)) {
+                            setObjectAt(object, field.path(), field.defaultValue);
+                        }
+
+                        object.Class = defClass;
+
+                        return object;
+                    }
+                })();
+
+                // On paste event handler
+                var players = [ EditorController.genEmpty(), EditorController.genEmpty(1), EditorController.genEmpty(2), EditorController.genEmpty(3) ];
+
+                var boss_current = null;
+                var boss = null;
+                var dungeon_current = null;
+                var dungeon = null;
+                var availableBosses = null;
+                var log = window.location.href.includes('log');
+
+                function settingsChanged () {
+                    $('#winchart').addClass('faded-out');
                 }
 
-                genEmpty (defClass = 1) {
-                    var object = new SFPlayer();
-                    for (var [key, field] of Object.entries(this.fields)) {
-                        setObjectAt(object, field.path(), field.defaultValue);
-                    }
-
-                    object.Class = defClass;
-
-                    return object;
-                }
-            })();
-
-            // On paste event handler
-            var players = [ EditorController.genEmpty(), EditorController.genEmpty(1), EditorController.genEmpty(2), EditorController.genEmpty(3) ];
-
-            var boss_current = null;
-            var boss = null;
-            var dungeon_current = null;
-            var dungeon = null;
-            var availableBosses = null;
-            var log = window.location.href.includes('log');
-
-            function settingsChanged () {
-                $('#winchart').addClass('faded-out');
-            }
-
-            function getBossData (data, name = '') {
-                return {
-                    ArmorAuto: data.armor ? 0 : (dungeon.auto_armor_multiplier || 1),
-                    Armor: data.armor,
-                    Class: data.class,
-                    Mask: 0,
-                    Name: name,
-                    Level: data.level,
-                    AutoHealth: data.health,
-                    Identifier: 999,
-                    Strength: { Total: data.str },
-                    Dexterity: { Total: data.dex },
-                    Intelligence: { Total: data.int },
-                    Constitution: { Total: data.con },
-                    Luck: { Total: data.lck },
-                    Dungeons: { Player: 0, Group: 0 },
-                    Fortress: { Gladiator: 0 },
-                    Potions: { Life: 0 },
-                    Runes: {
-                        Health: 0,
-                        ResistanceFire: data.runes && data.runes.res ? data.runes.res[0] : 0,
-                        ResistanceCold: data.runes && data.runes.res ? data.runes.res[1] : 0,
-                        ResistanceLightning: data.runes && data.runes.res ? data.runes.res[2] : 0,
-                    },
-                    Items: {
-                        Hand: { HasEnchantment: data.class == 6 },
-                        Wpn1: {
-                            AttributeTypes: { 2: data.runes ? data.runes.type : 0 },
-                            Attributes: { 2: data.runes ? data.runes.damage : 0 },
-                            DamageMax: data.max,
-                            DamageMin: data.min,
-                            HasEnchantment: false
-                        },
-                        Wpn2: {
-                            AttributeTypes: { 2: data.runes ? data.runes.type : 0 },
-                            Attributes: { 2: data.runes ? data.runes.damage : 0 },
-                            DamageMax: data.ass ? data.max : 0,
-                            DamageMin: data.ass ? data.min : 0,
-                            HasEnchantment: false
-                        }
-                    }
-                };
-            }
-
-            $('#dungeon-list').dropdown({
-                values: Object.entries(DUNGEON_DATA).map(([ id, dungeon ]) => {
+                function getBossData (data, name = '') {
                     return {
-                        name: dungeon.shadow ? `<span style="text-shadow:0px 0px 8px #390074;">${ dungeon.name }<span>` : dungeon.name,
-                        value: id,
-                        disabled: Object.keys(dungeon.floors).length == 0
+                        ArmorAuto: data.armor ? 0 : (dungeon.auto_armor_multiplier || 1),
+                        Armor: data.armor,
+                        Class: data.class,
+                        Mask: 0,
+                        Name: name,
+                        Level: data.level,
+                        AutoHealth: data.health,
+                        Identifier: 999,
+                        Strength: { Total: data.str },
+                        Dexterity: { Total: data.dex },
+                        Intelligence: { Total: data.int },
+                        Constitution: { Total: data.con },
+                        Luck: { Total: data.lck },
+                        Dungeons: { Player: 0, Group: 0 },
+                        Fortress: { Gladiator: 0 },
+                        Potions: { Life: 0 },
+                        Runes: {
+                            Health: 0,
+                            ResistanceFire: data.runes && data.runes.res ? data.runes.res[0] : 0,
+                            ResistanceCold: data.runes && data.runes.res ? data.runes.res[1] : 0,
+                            ResistanceLightning: data.runes && data.runes.res ? data.runes.res[2] : 0,
+                        },
+                        Items: {
+                            Hand: { HasEnchantment: data.class == 6 },
+                            Wpn1: {
+                                AttributeTypes: { 2: data.runes ? data.runes.type : 0 },
+                                Attributes: { 2: data.runes ? data.runes.damage : 0 },
+                                DamageMax: data.max,
+                                DamageMin: data.min,
+                                HasEnchantment: false
+                            },
+                            Wpn2: {
+                                AttributeTypes: { 2: data.runes ? data.runes.type : 0 },
+                                Attributes: { 2: data.runes ? data.runes.damage : 0 },
+                                DamageMax: data.ass ? data.max : 0,
+                                DamageMin: data.ass ? data.min : 0,
+                                HasEnchantment: false
+                            }
+                        }
                     };
-                })
-            }).dropdown('setting', 'onChange', (value, text) => {
-                dungeon_current = value;
-                dungeon = DUNGEON_DATA[value];
+                }
 
-                $('#boss-list').dropdown({
-                    values: Object.entries(dungeon.floors).map(([ name, _boss ]) => {
+                $('#dungeon-list').dropdown({
+                    values: Object.entries(DUNGEON_DATA).map(([ id, dungeon ]) => {
                         return {
-                            name: `<span${ dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
-                                       <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">
-                                           ${ _boss.pos }. ${ name }
-                                           ${ _boss.runes ? `
-                                               <span class="boss-rune">
-                                                   ${ _boss.runes.damage } ${ ['F', 'C', 'L'][ _boss.runes.type - 40 ] } / ${ (_boss.runes.res || ['?', '?', '?']).map((res, i) => `${ res } ${ [ 'F', 'C', 'L' ][i] }`).join('&nbsp; ') }
-                                               </span>
-                                           ` : '' }
-                                   <span>`,
-                            value: name
+                            name: dungeon.shadow ? `<span style="text-shadow:0px 0px 8px #390074;">${ dungeon.name }<span>` : dungeon.name,
+                            value: id,
+                            disabled: Object.keys(dungeon.floors).length == 0
                         };
                     })
                 }).dropdown('setting', 'onChange', (value, text) => {
-                    if (!ignoreChanges) {
-                        $('#available-list').dropdown('clear');
+                    dungeon_current = value;
+                    dungeon = DUNGEON_DATA[value];
+
+                    $('#boss-list').dropdown({
+                        values: Object.entries(dungeon.floors).map(([ name, _boss ]) => {
+                            return {
+                                name: `<span${ dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
+                                           <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">
+                                               ${ _boss.pos }. ${ name }
+                                               ${ _boss.runes ? `
+                                                   <span class="boss-rune">
+                                                       ${ _boss.runes.damage } ${ ['F', 'C', 'L'][ _boss.runes.type - 40 ] } / ${ (_boss.runes.res || ['?', '?', '?']).map((res, i) => `${ res } ${ [ 'F', 'C', 'L' ][i] }`).join('&nbsp; ') }
+                                                   </span>
+                                               ` : '' }
+                                       <span>`,
+                                value: name
+                            };
+                        })
+                    }).dropdown('setting', 'onChange', (value, text) => {
+                        if (!ignoreChanges) {
+                            $('#available-list').dropdown('clear');
+                        }
+
+                        settingsChanged();
+
+                        dungeon = DUNGEON_DATA[dungeon_current];
+                        boss = getBossData(dungeon.floors[value], value);
+                        boss_current = boss;
+                    }).dropdown('set selected', Object.keys(dungeon.floors)[0]);
+                    show();
+                }).dropdown('set selected', '1');
+
+                var selected = 0;
+
+                $(document.body).on('paste', function (event) {
+                    if (event.target.type != 'text') {
+                        try {
+                            showData(JSON.parse(event.originalEvent.clipboardData.getData('text')));
+                        } catch (e) {
+                            // Do nothing
+                        }
                     }
+                });
 
-                    settingsChanged();
+                $('#sim-editor input').on('paste', function (event) { event.stopPropagation(); });
 
-                    dungeon = DUNGEON_DATA[dungeon_current];
-                    boss = getBossData(dungeon.floors[value], value);
-                    boss_current = boss;
-                }).dropdown('set selected', Object.keys(dungeon.floors)[0]);
-                show();
-            }).dropdown('set selected', '1');
+                function loadEditor (data) {
+                    SFItem.forceCorrectRune(data.Items.Wpn1);
+                    SFItem.forceCorrectRune(data.Items.Wpn2);
 
-            var selected = 0;
+                    if (data.Class == 1 && typeof data.BlockChance == 'undefined') data.BlockChance = data.Items.Wpn2.DamageMin;
+                    if (data.Class != 4) data.Items.Wpn2 = SFItem.empty();
+                    if (data.Underworld) data.Fortress.Gladiator = data.Underworld.Gladiator;
 
-            $(document.body).on('paste', function (event) {
-                if (event.target.type != 'text') {
-                    try {
-                        showData(JSON.parse(event.originalEvent.clipboardData.getData('text')));
-                    } catch (e) {
-                        // Do nothing
-                    }
-                }
-            });
-
-            $('#sim-editor input').on('paste', function (event) { event.stopPropagation(); });
-
-            function loadEditor (data) {
-                SFItem.forceCorrectRune(data.Items.Wpn1);
-                SFItem.forceCorrectRune(data.Items.Wpn2);
-
-                if (data.Class == 1 && typeof data.BlockChance == 'undefined') data.BlockChance = data.Items.Wpn2.DamageMin;
-                if (data.Class != 4) data.Items.Wpn2 = SFItem.empty();
-                if (data.Underworld) data.Fortress.Gladiator = data.Underworld.Gladiator;
-
-                if (selected > 0) {
-                    for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
-                        var path = EditorController.fields[key].path();
-                        setObjectAt(data, path, getObjectAt(players[0], path));
-                    }
-                }
-
-                EditorController.fill(data, selected);
-            }
-
-            function saveEditor () {
-                if (EditorController.valid()) {
-                    var obj = EditorController.read();
-                    if (selected == 0) {
+                    if (selected > 0) {
                         for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
                             var path = EditorController.fields[key].path();
-
-                            setObjectAt(players[1], path, getObjectAt(obj, path));
-                            setObjectAt(players[2], path, getObjectAt(obj, path));
-                            setObjectAt(players[3], path, getObjectAt(obj, path));
+                            setObjectAt(data, path, getObjectAt(players[0], path));
                         }
                     }
 
-                    players[selected] = obj;
-                }
-            }
-
-            // Copy buttons
-            $('#sim-copyCurrent').click(() => copyText(JSON.stringify(EditorController.read())));
-
-            // Show fighters
-            function show () {
-                var content1 = '';
-
-                for (var i = 0; i < 4; i++) {
-                    content1 += `
-                        <div class="row selectable ${ selected == i ? 'selected' : 'nselected' }" data-index="${ i }">
-                            <div class="four wide text-center column">
-                                <img class="ui medium centered image" style="width: 50px; opacity: ${ i == 0 || dungeon.shadow ? '100' : '25' }%;" src="res/portrait${ i ? i : '' }.png">
-                            </div>
-                            <div class="eight wide column text-center">
-                                <b>${ ['You', 'Bert', 'Mark', 'Kunigunde'][i] }</b>
-                            </div>
-                            <div class="four wide column">
-                            </div>
-                        </div>
-                    `;
+                    EditorController.fill(data, selected);
                 }
 
-                $('#sim-players1').html(content1);
+                function saveEditor () {
+                    if (EditorController.valid()) {
+                        var obj = EditorController.read();
+                        if (selected == 0) {
+                            for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {
+                                var path = EditorController.fields[key].path();
 
-                $('[data-index]').click(function () {
-                    select(Number($(this).attr('data-index')));
+                                setObjectAt(players[1], path, getObjectAt(obj, path));
+                                setObjectAt(players[2], path, getObjectAt(obj, path));
+                                setObjectAt(players[3], path, getObjectAt(obj, path));
+                            }
+                        }
+
+                        players[selected] = obj;
+                    }
+                }
+
+                // Copy buttons
+                $('#sim-copyCurrent').click(() => copyText(JSON.stringify(EditorController.read())));
+
+                // Show fighters
+                function show () {
+                    var content1 = '';
+
+                    for (var i = 0; i < 4; i++) {
+                        content1 += `
+                            <div class="row selectable ${ selected == i ? 'selected' : 'nselected' }" data-index="${ i }">
+                                <div class="four wide text-center column">
+                                    <img class="ui medium centered image" style="width: 50px; opacity: ${ i == 0 || dungeon.shadow ? '100' : '25' }%;" src="res/portrait${ i ? i : '' }.png">
+                                </div>
+                                <div class="eight wide column text-center">
+                                    <b>${ ['You', 'Bert', 'Mark', 'Kunigunde'][i] }</b>
+                                </div>
+                                <div class="four wide column">
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    $('#sim-players1').html(content1);
+
+                    $('[data-index]').click(function () {
+                        select(Number($(this).attr('data-index')));
+                    });
+                }
+
+                function select (index) {
+                    selected = index;
+
+                    EditorController.fill(players[selected], selected);
+                    show();
+                }
+
+                select(0);
+
+                var chart = new Chart($('#winchart'), {
+                    type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,callback:function(value,index,values){return `${ value }%`}}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'black',tension:0},point:{radius:0}}}
                 });
-            }
 
-            function select (index) {
-                selected = index;
+                function showData (data) {
+                    let oldSelected = selected;
+                    if (Array.isArray(data)) {
+                        for (let i = 0; i < 4; i++) {
+                            selected = i;
+                            loadEditor(data[i]);
+                            saveEditor();
+                        }
 
-                EditorController.fill(players[selected], selected);
-                show();
-            }
+                        selected = oldSelected;
+                        loadEditor(data[selected]);
 
-            select(0);
-
-            var chart = new Chart($('#winchart'), {
-                type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,callback:function(value,index,values){return `${ value }%`}}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'black',tension:0},point:{radius:0}}}
-            });
-
-            function showData (data) {
-                let oldSelected = selected;
-                if (Array.isArray(data)) {
-                    for (let i = 0; i < 4; i++) {
-                        selected = i;
-                        loadEditor(data[i]);
+                        show();
+                    } else if (data.Class) {
+                        loadEditor(data);
                         saveEditor();
                     }
 
-                    selected = oldSelected;
-                    loadEditor(data[selected]);
-
-                    show();
-                } else if (data.Class) {
-                    loadEditor(data);
-                    saveEditor();
+                    settingsChanged();
                 }
 
-                settingsChanged();
-            }
-
-            var DUNGEON_ARR_TO_DID = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 21 ];
-            function getDungeonEnemyAt (dungeon, isShadow, enemyIndex) {
-                if (enemyIndex < 0) {
-                    return null;
-                } else {
-                    let id = dungeon + (isShadow ? 100 : 0);
-                    let dung = DUNGEON_DATA[id];
-                    let boss = Object.entries(dung.floors)[enemyIndex];
-                    if (boss) {
-                        return {
-                            id,
-                            dungeon: dung,
-                            name: boss[0],
-                            boss: boss[1]
-                        };
-                    } else {
+                var DUNGEON_ARR_TO_DID = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 21 ];
+                function getDungeonEnemyAt (dungeon, isShadow, enemyIndex) {
+                    if (enemyIndex < 0) {
                         return null;
-                    }
-                }
-            }
-
-            function getTwisterEnemyAt (enemyIndex) {
-                if (enemyIndex < 0) {
-                    return null;
-                } else {
-                    let boss = Object.entries(DUNGEON_DATA['100'].floors).find(x => x[1].pos == enemyIndex);
-                    if (boss) {
-                        return {
-                            dungeon: DUNGEON_DATA['100'],
-                            name: boss[0],
-                            boss: boss[1]
+                    } else {
+                        let id = dungeon + (isShadow ? 100 : 0);
+                        let dung = DUNGEON_DATA[id];
+                        let boss = Object.entries(dung.floors)[enemyIndex];
+                        if (boss) {
+                            return {
+                                id,
+                                dungeon: dung,
+                                name: boss[0],
+                                boss: boss[1]
+                            };
+                        } else {
+                            return null;
                         }
-                    } else {
-                        return null;
                     }
                 }
-            }
 
-            $('#load-stats').click(() => {
-                DatabaseManager.load(SELF_PROFILE).then(function () {
-                    $('#stats-list').empty();
-
-                    for (let player of Object.keys(DatabaseManager.Players).map(pid => DatabaseManager.getPlayer(pid).Latest).sort((a, b) => b.Timestamp - a.Timestamp)) {
-                        $('#stats-list').append($(`
-                            <div class="ui fluid button basic vertical animated gray" style="margin-bottom: 0.5em;">
-                                <div class="visible content">
-                                    <span style="color: black;">${ player.Name } @ ${ player.Prefix }<span>
-                                </div>
-                                <div class="hidden content">
-                                    <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }<span>
-                                </div>
-                            </div>
-                            `).click(() => {
-                                dungeon = DUNGEON_DATA[dungeon_current];
-                                boss = boss_current
-
-                                showData(player.toSimulatorShadowModel());
-
-                                let normalDungeons = player.Dungeons.Normal.concat(player.Dungeons.Extra.Normal);
-                                let shadowDungeons = player.Dungeons.Shadow.concat(player.Dungeons.Extra.Shadow);
-                                let tower = player.Dungeons.Tower;
-                                let youtube = player.Dungeons.Extra.Youtube;
-                                let twister = player.Dungeons.Twister;
-
-                                availableBosses = [
-                                    ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon - 2)),
-                                    getDungeonEnemyAt(15, false, player.Dungeons.Normal.Total < 90 ? -1 : tower),
-                                    getTwisterEnemyAt(twister - 1),
-                                    ... shadowDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], true, dungeon - 2)),
-                                    getDungeonEnemyAt(15, true, youtube - 2),
-                                ].filter(boss => boss);
-
-                                if (availableBosses.length) {
-                                    $('#available-list').parent('.field').removeClass('disabled');
-                                    $('#sim-run-all').removeClass('disabled');
-                                    $('#available-list').dropdown({
-                                        values: availableBosses.map(({ dungeon: _dungeon, boss: _boss, name }, index) => {
-                                            return {
-                                                name: `<span${ _dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
-                                                           <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">&nbsp;
-                                                               <span class="boss-dungeon-name">${ _dungeon.name }</span>
-                                                               <span class="boss-name">${ _boss.pos }. ${ name }</span>
-                                                               ${ _boss.runes ? `
-                                                                   <span class="boss-rune">
-                                                                       ${ _boss.runes.damage } ${ ['F', 'C', 'L'][ _boss.runes.type - 40 ] } / ${ (_boss.runes.res || ['?', '?', '?']).map((res, i) => `${ res } ${ [ 'F', 'C', 'L' ][i] }`).join('&nbsp; ') }
-                                                                   </span>
-                                                               ` : '' }
-                                                       <span>`,
-                                                value: index
-                                            };
-                                        })
-                                    }).dropdown('setting', 'onChange', (value, text) => {
-                                        if (!isNaN(value) && value && value.length > 0) {
-                                            settingsChanged();
-
-                                            let sel = availableBosses[value];
-
-                                            dungeon = sel.dungeon;
-                                            boss = getBossData(sel.boss, sel.name);
-
-                                            withoutUpdate(() => {
-                                                $('#dungeon-list').dropdown('set selected', sel.id);
-                                                $('#boss-list').dropdown('set selected', sel.name);
-                                            });
-                                        }
-                                    });
-                                } else {
-                                    $('#available-list').parent('.field').addClass('disabled');
-                                    $('#sim-run-all').addClass('disabled');
-                                }
+                function getTwisterEnemyAt (enemyIndex) {
+                    if (enemyIndex < 0) {
+                        return null;
+                    } else {
+                        let boss = Object.entries(DUNGEON_DATA['100'].floors).find(x => x[1].pos == enemyIndex);
+                        if (boss) {
+                            return {
+                                dungeon: DUNGEON_DATA['100'],
+                                name: boss[0],
+                                boss: boss[1]
                             }
-                        ));
+                        } else {
+                            return null;
+                        }
                     }
+                }
 
-                    $('#stats-list').append(
-                        $('<div class="ui two basic tiny gray buttons"></div>').append(
-                            $(`
-                                <div class="ui fluid button vertical">
+                $('#load-stats').click(() => {
+                    DatabaseManager.load(SELF_PROFILE).then(function () {
+                        $('#stats-list').empty();
+
+                        for (let player of Object.keys(DatabaseManager.Players).map(pid => DatabaseManager.getPlayer(pid).Latest).sort((a, b) => b.Timestamp - a.Timestamp)) {
+                            $('#stats-list').append($(`
+                                <div class="ui fluid button basic vertical animated gray" style="margin-bottom: 0.5em;">
                                     <div class="visible content">
-                                        <span style="color: gray;">Endpoint<span>
+                                        <span style="color: black;">${ player.Name } @ ${ player.Prefix }<span>
+                                    </div>
+                                    <div class="hidden content">
+                                        <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }<span>
                                     </div>
                                 </div>
-                            `).click(() => {
-                                Endpoint.start('endpoint/dungeons').then(() => {
-                                    $('#load-stats').trigger('click');
-                                });
-                            }),
-                            $(`
-                                <label class="ui fluid button vertical" for="button-upload">
-                                    <span style="color: gray;">HAR<span>
-                                </label>
-                                <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
-                            `).change((fileEvent) => {
-                                let pendingPromises = [];
-                                Array.from(fileEvent.target.files).forEach(file => {
-                                    pendingPromises.push(file.text().then(fileContent => {
-                                        return DatabaseManager.import(fileContent, file.lastModified, undefined, 'har/dungeons');
-                                    }));
-                                });
+                                `).click(() => {
+                                    dungeon = DUNGEON_DATA[dungeon_current];
+                                    boss = boss_current
 
-                                Promise.all(pendingPromises).then(() => {
-                                    $('#load-stats').trigger('click');
-                                });
-                            })
-                        )
-                    );
+                                    showData(player.toSimulatorShadowModel());
 
-                    PopupController.close(LoaderPopup);
-                }).catch(function () {
-                    PopupController.close(LoaderPopup);
-                    Logger.log('WARNING', 'Database could not be opened!');
-                    $('#stats-list').empty();
+                                    let normalDungeons = player.Dungeons.Normal.concat(player.Dungeons.Extra.Normal);
+                                    let shadowDungeons = player.Dungeons.Shadow.concat(player.Dungeons.Extra.Shadow);
+                                    let tower = player.Dungeons.Tower;
+                                    let youtube = player.Dungeons.Extra.Youtube;
+                                    let twister = player.Dungeons.Twister;
+
+                                    availableBosses = [
+                                        ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon - 2)),
+                                        getDungeonEnemyAt(15, false, player.Dungeons.Normal.Total < 90 ? -1 : tower),
+                                        getTwisterEnemyAt(twister - 1),
+                                        ... shadowDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], true, dungeon - 2)),
+                                        getDungeonEnemyAt(15, true, youtube - 2),
+                                    ].filter(boss => boss);
+
+                                    if (availableBosses.length) {
+                                        $('#available-list').parent('.field').removeClass('disabled');
+                                        $('#sim-run-all').removeClass('disabled');
+                                        $('#available-list').dropdown({
+                                            values: availableBosses.map(({ dungeon: _dungeon, boss: _boss, name }, index) => {
+                                                return {
+                                                    name: `<span${ _dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
+                                                               <img class="ui centered image boss-image" style="position: absolute; right: 0; height: 2.5em; top: 0; width: 2.5em;" src="res/class${ _boss.class }.png">&nbsp;
+                                                                   <span class="boss-dungeon-name">${ _dungeon.name }</span>
+                                                                   <span class="boss-name">${ _boss.pos }. ${ name }</span>
+                                                                   ${ _boss.runes ? `
+                                                                       <span class="boss-rune">
+                                                                           ${ _boss.runes.damage } ${ ['F', 'C', 'L'][ _boss.runes.type - 40 ] } / ${ (_boss.runes.res || ['?', '?', '?']).map((res, i) => `${ res } ${ [ 'F', 'C', 'L' ][i] }`).join('&nbsp; ') }
+                                                                       </span>
+                                                                   ` : '' }
+                                                           <span>`,
+                                                    value: index
+                                                };
+                                            })
+                                        }).dropdown('setting', 'onChange', (value, text) => {
+                                            if (!isNaN(value) && value && value.length > 0) {
+                                                settingsChanged();
+
+                                                let sel = availableBosses[value];
+
+                                                dungeon = sel.dungeon;
+                                                boss = getBossData(sel.boss, sel.name);
+
+                                                withoutUpdate(() => {
+                                                    $('#dungeon-list').dropdown('set selected', sel.id);
+                                                    $('#boss-list').dropdown('set selected', sel.name);
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        $('#available-list').parent('.field').addClass('disabled');
+                                        $('#sim-run-all').addClass('disabled');
+                                    }
+                                }
+                            ));
+                        }
+
+                        $('#stats-list').append(
+                            $('<div class="ui two basic tiny gray buttons"></div>').append(
+                                $(`
+                                    <div class="ui fluid button vertical">
+                                        <div class="visible content">
+                                            <span style="color: gray;">Endpoint<span>
+                                        </div>
+                                    </div>
+                                `).click(() => {
+                                    Endpoint.start('endpoint/dungeons').then(() => {
+                                        $('#load-stats').trigger('click');
+                                    });
+                                }),
+                                $(`
+                                    <label class="ui fluid button vertical" for="button-upload">
+                                        <span style="color: gray;">HAR<span>
+                                    </label>
+                                    <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
+                                `).change((fileEvent) => {
+                                    let pendingPromises = [];
+                                    Array.from(fileEvent.target.files).forEach(file => {
+                                        pendingPromises.push(file.text().then(fileContent => {
+                                            return DatabaseManager.import(fileContent, file.lastModified, undefined, 'har/dungeons');
+                                        }));
+                                    });
+
+                                    Promise.all(pendingPromises).then(() => {
+                                        $('#load-stats').trigger('click');
+                                    });
+                                })
+                            )
+                        );
+
+                        PopupController.close(LoaderPopup);
+                    }).catch(function () {
+                        PopupController.close(LoaderPopup);
+                        Logger.log('WARNING', 'Database could not be opened!');
+                        $('#stats-list').empty();
+                    });
                 });
-            });
 
-            function showMassDungeonResults (bosses, results) {
-                bosses = bosses.map((dungeon, index) => Object.assign({ result: results[index] }, dungeon)).sort((b, a) => a.result - b.result);
+                function showMassDungeonResults (bosses, results) {
+                    bosses = bosses.map((dungeon, index) => Object.assign({ result: results[index] }, dungeon)).sort((b, a) => a.result - b.result);
 
-                $('#results-modal .content').html(`
-                    <div class="ui two column grid">
-                        ${ bosses.map(({ boss, dungeon, name, result }) => {
-                            return `
-                                <div class="eleven wide column" style="position: relative;">
-                                    <span${ dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
-                                        <img class="ui centered image boss-image" style="position: absolute; left: 0; height: 2.5em; top: 0.5em; width: 2.5em;" src="res/class${ boss.class }.png">&nbsp;
-                                        <span style="position: absolute; left: 3.75em; top: 0.4em; font-size: 80%;">${ dungeon.name }</span>
-                                        <span style="position: absolute; left: 3em; top: 1.4em;">${ name }</span>
-                                    </span>
-                                </div>
-                                <div class="five wide column text-center">${ result == 0 ? 'Not possible' : `${ result.toFixed(2) }%` }</div>
-                            `;
-                        }).join('') }
-                    </div>
-                `);
-                $('#results-modal').modal('show');
-            }
-
-            function preparePlayerInstances (dungeon) {
-                let playerInstances = players.map(p => JSON.parse(JSON.stringify(p)));
-
-                if (dungeon.shadow) {
-                    let bert = playerInstances[1];
-
-                    let hp_a = (100 + bert.Dungeons.Player) / 100;
-                    let hp_b = (100 + bert.Potions.Life) / 100;
-                    let hp_c = (100 + bert.Runes.Health) / 100;
-                    let hp_d = 1.22;
-
-                    playerInstances[1].NoSkip = true;
-                    playerInstances[1].AutoHealth = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
+                    $('#results-modal .content').html(`
+                        <div class="ui two column grid">
+                            ${ bosses.map(({ boss, dungeon, name, result }) => {
+                                return `
+                                    <div class="eleven wide column" style="position: relative;">
+                                        <span${ dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
+                                            <img class="ui centered image boss-image" style="position: absolute; left: 0; height: 2.5em; top: 0.5em; width: 2.5em;" src="res/class${ boss.class }.png">&nbsp;
+                                            <span style="position: absolute; left: 3.75em; top: 0.4em; font-size: 80%;">${ dungeon.name }</span>
+                                            <span style="position: absolute; left: 3em; top: 1.4em;">${ name }</span>
+                                        </span>
+                                    </div>
+                                    <div class="five wide column text-center">${ result == 0 ? 'Not possible' : `${ result.toFixed(2) }%` }</div>
+                                `;
+                            }).join('') }
+                        </div>
+                    `);
+                    $('#results-modal').modal('show');
                 }
 
-                if (playerInstances[0].Class == 1 && playerInstances[0].BlockChance == '0') {
-                    playerInstances[0].NoSkip = true;
-                }
+                function preparePlayerInstances (dungeon) {
+                    let playerInstances = players.map(p => JSON.parse(JSON.stringify(p)));
 
-                if (dungeon.force_no_gladiator) {
+                    if (dungeon.shadow) {
+                        let bert = playerInstances[1];
+
+                        let hp_a = (100 + bert.Dungeons.Player) / 100;
+                        let hp_b = (100 + bert.Potions.Life) / 100;
+                        let hp_c = (100 + bert.Runes.Health) / 100;
+                        let hp_d = 1.22;
+
+                        playerInstances[1].NoSkip = true;
+                        playerInstances[1].AutoHealth = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
+                    }
+
+                    if (playerInstances[0].Class == 1 && playerInstances[0].BlockChance == '0') {
+                        playerInstances[0].NoSkip = true;
+                    }
+
+                    if (dungeon.force_no_gladiator) {
+                        for (let i = 0; i < 4; i++) {
+                            playerInstances[i].Fortress.Gladiator = 0;
+                        }
+                    }
+
                     for (let i = 0; i < 4; i++) {
-                        playerInstances[i].Fortress.Gladiator = 0;
+                        playerInstances[i].IsRealPlayer = true;
                     }
+
+                    return dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
                 }
 
-                for (let i = 0; i < 4; i++) {
-                    playerInstances[i].IsRealPlayer = true;
-                }
+                $('#sim-run-all').click(function () {
+                    if (availableBosses && availableBosses.length > 0 && EditorController.valid()) {
+                        toggleAll(true);
 
-                return dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
-            }
+                        let results = [];
+                        let resultsRemaining = availableBosses.length;
 
-            $('#sim-run-all').click(function () {
-                if (availableBosses && availableBosses.length > 0 && EditorController.valid()) {
-                    toggleAll(true);
+                        let maximumInstances = Math.max(1, Number($('#sim-threads').val()) || LOGICAL_PROCS);
+                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
 
-                    let results = [];
-                    let resultsRemaining = availableBosses.length;
+                        let pendingInstances = [];
 
-                    let maximumInstances = Math.max(1, Number($('#sim-threads').val()) || LOGICAL_PROCS);
-                    let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+                        for (let [index, { boss, dungeon, name }] of Object.entries(availableBosses)) {
+                            let worker = createWebWorker('js/sim/dungeons.js');
 
-                    let pendingInstances = [];
+                            worker.addEventListener('message', (message) => {
+                                if (message.data.command == 'finished') {
+                                    let { score, iterations } = message.data.results;
 
-                    for (let [index, { boss, dungeon, name }] of Object.entries(availableBosses)) {
-                        let worker = createWebWorker('js/sim/dungeons.js');
-
-                        worker.addEventListener('message', (message) => {
-                            if (message.data.command == 'finished') {
-                                let { score, iterations } = message.data.results;
-
-                                results[message.data.index] = 100 * score / iterations;
-                                if (--resultsRemaining <= 0) {
-                                    toggleAll();
-                                    showMassDungeonResults(availableBosses, results);
-                                } else if (pendingInstances.length > 0) {
-                                    let [ secWorker, args ] = pendingInstances.pop();
-                                    secWorker.postMessage(args);
+                                    results[message.data.index] = 100 * score / iterations;
+                                    if (--resultsRemaining <= 0) {
+                                        toggleAll();
+                                        showMassDungeonResults(availableBosses, results);
+                                    } else if (pendingInstances.length > 0) {
+                                        let [ secWorker, args ] = pendingInstances.pop();
+                                        secWorker.postMessage(args);
+                                    }
                                 }
-                            }
-                        }, false);
+                            }, false);
 
-                        pendingInstances.push([worker, {
-                            players: preparePlayerInstances(dungeon),
-                            boss: getBossData(boss),
-                            iterations: iterations,
-                            index: index
-                        }])
+                            pendingInstances.push([worker, {
+                                players: preparePlayerInstances(dungeon),
+                                boss: getBossData(boss),
+                                iterations: iterations,
+                                index: index
+                            }])
+                        }
+
+                        let currentInstances = Math.min(maximumInstances, pendingInstances.length);
+                        for (let i = 0; i < currentInstances; i++) {
+                            let [ worker, args ] = pendingInstances.pop();
+                            worker.postMessage(args);
+                        }
+                    }
+                });
+
+                $('#sim-run').click(function () {
+                    if (boss && EditorController.valid()) {
+                        toggleAll(true);
+
+                        let playerInstances = preparePlayerInstances(dungeon);
+                        let threads = Math.max(1, Number($('#sim-threads').val()) || 2);
+                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+
+                        let results = [];
+                        let totalScore = 0;
+                        let totalTries = 0;
+
+                        if (log) {
+                            threads = 1;
+                            iterations = 2000;
+                        }
+
+                        for (let i = 0; i < threads; i++) {
+                            let worker = createWebWorker('js/sim/dungeons.js');
+
+                            worker.addEventListener('message', (message) => {
+                                if (message.data.command == 'finished') {
+                                    let { score, iterations, healths } = message.data.results;
+                                    if (message.data.log.length) {
+                                        download('logs.json', new Blob([ JSON.stringify({
+                                            fights: message.data.log,
+                                            players: players,
+                                            boss: boss
+                                        }) ], {
+                                            type: 'application/json'
+                                        }));
+                                    }
+
+                                    if (threads * iterations > 1E7) {
+                                        results = results.concat(truncateHealths(_sort_asc(healths)));
+                                    } else {
+                                        results = results.concat(healths);
+                                    }
+
+                                    totalScore += score;
+                                    totalTries += iterations;
+
+                                    if (totalTries == threads * iterations) {
+                                        showGraph(dungeon, boss, totalScore, totalTries, truncateHealths(_sort_asc(results)));
+                                        $('#winchart').removeClass('faded-out');
+                                        toggleAll();
+                                    }
+                                }
+                            }, false);
+
+                            worker.postMessage({
+                                players: playerInstances,
+                                boss: boss,
+                                iterations: iterations,
+                                log: log
+                            });
+                        }
+                    }
+                });
+
+                function truncateHealths (healths) {
+                    let step = Math.max(1, Math.floor(healths.length / 5000));
+                    let alen = Math.ceil(healths.length / step);
+                    let arry = new Array(alen);
+                    for (let i = 0; i < alen; i++) {
+                        let slice = _slice_len(healths, i * step, step);
+                        arry[i] = Math.max(0, _sum(slice) / slice.length);
                     }
 
-                    let currentInstances = Math.min(maximumInstances, pendingInstances.length);
-                    for (let i = 0; i < currentInstances; i++) {
-                        let [ worker, args ] = pendingInstances.pop();
-                        worker.postMessage(args);
-                    }
+                    return arry;
+                }
+
+                function showGraph (dungeon, boss, score, tries, healths) {
+                    chart.options.title.text = [
+                        `${ dungeon.name }: ${ boss.Name }`,
+                        `Winrate: ${ (100 * score / tries).toFixed(2) }% (${ score } out of ${ tries })`
+                    ];
+                    chart.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
+                    chart.data.labels = healths.map((a, b) => b);
+                    chart.update(0);
                 }
             });
-
-            $('#sim-run').click(function () {
-                if (boss && EditorController.valid()) {
-                    toggleAll(true);
-
-                    let playerInstances = preparePlayerInstances(dungeon);
-                    let threads = Math.max(1, Number($('#sim-threads').val()) || 2);
-                    let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
-
-                    let results = [];
-                    let totalScore = 0;
-                    let totalTries = 0;
-
-                    if (log) {
-                        threads = 1;
-                        iterations = 2000;
-                    }
-
-                    for (let i = 0; i < threads; i++) {
-                        let worker = createWebWorker('js/sim/dungeons.js');
-
-                        worker.addEventListener('message', (message) => {
-                            if (message.data.command == 'finished') {
-                                let { score, iterations, healths } = message.data.results;
-                                if (message.data.log.length) {
-                                    download('logs.json', new Blob([ JSON.stringify({
-                                        fights: message.data.log,
-                                        players: players,
-                                        boss: boss
-                                    }) ], {
-                                        type: 'application/json'
-                                    }));
-                                }
-
-                                if (threads * iterations > 1E7) {
-                                    results = results.concat(truncateHealths(_sort_asc(healths)));
-                                } else {
-                                    results = results.concat(healths);
-                                }
-
-                                totalScore += score;
-                                totalTries += iterations;
-
-                                if (totalTries == threads * iterations) {
-                                    showGraph(dungeon, boss, totalScore, totalTries, truncateHealths(_sort_asc(results)));
-                                    $('#winchart').removeClass('faded-out');
-                                    toggleAll();
-                                }
-                            }
-                        }, false);
-
-                        worker.postMessage({
-                            players: playerInstances,
-                            boss: boss,
-                            iterations: iterations,
-                            log: log
-                        });
-                    }
-                }
-            });
-
-            function truncateHealths (healths) {
-                let step = Math.max(1, Math.floor(healths.length / 5000));
-                let alen = Math.ceil(healths.length / step);
-                let arry = new Array(alen);
-                for (let i = 0; i < alen; i++) {
-                    let slice = _slice_len(healths, i * step, step);
-                    arry[i] = Math.max(0, _sum(slice) / slice.length);
-                }
-
-                return arry;
-            }
-
-            function showGraph (dungeon, boss, score, tries, healths) {
-                chart.options.title.text = [
-                    `${ dungeon.name }: ${ boss.Name }`,
-                    `Winrate: ${ (100 * score / tries).toFixed(2) }% (${ score } out of ${ tries })`
-                ];
-                chart.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
-                chart.data.labels = healths.map((a, b) => b);
-                chart.update(0);
-            }
         </script>
     </body>
 </html>
