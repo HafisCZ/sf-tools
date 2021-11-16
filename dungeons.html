@@ -1069,6 +1069,7 @@
                         let boss = Object.entries(DUNGEON_DATA['100'].floors).find(x => x[1].pos == enemyIndex);
                         if (boss) {
                             return {
+                                id: 100,
                                 dungeon: DUNGEON_DATA['100'],
                                 name: boss[0],
                                 boss: boss[1]
