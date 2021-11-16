@@ -97,8 +97,8 @@
                                     <input type="text" disabled id="gold-gem">
                                 </div>
                                 <div class="field">
-                                    <label><span class="orange">&bull;</span> Hourly Gold Pit</label>
-                                    <input type="text" disabled id="gold-hourly">
+                                    <label><span class="orange">&bull;</span> Gold Pit capacity</label>
+                                    <input type="text" disabled id="gold-capacity">
                                 </div>
                                 <div class="field">
                                     <label><span class="green">&bull;</span> 10% Potion</label>
@@ -123,8 +123,8 @@
                                     <input type="text" disabled id="gold-gem2">
                                 </div>
                                 <div class="field">
-                                    <label><span class="orange">&bull;</span> Gold Pit time</label>
-                                    <input type="text" disabled id="gold-time">
+                                    <label><span class="orange">&bull;</span> Hourly Gold Pit</label>
+                                    <input type="text" disabled id="gold-hourly">
                                 </div>
                                 <div class="field">
                                     <label><span class="green">&bull;</span> 15% Potion</label>
@@ -149,8 +149,8 @@
                                     <input type="text" disabled id="gold-gem3">
                                 </div>
                                 <div class="field">
-                                    <label><span class="orange">&bull;</span> Gold Pit capacity</label>
-                                    <input type="text" disabled id="gold-capacity">
+                                    <label><span class="orange">&bull;</span> Gold Pit time</label>
+                                    <input type="text" disabled id="gold-time">
                                 </div>
                                 <div class="field">
                                     <label><span class="green">&bull;</span> 25% Potion</label>
@@ -163,17 +163,18 @@
                                     <input type="text" disabled id="gold-bar3">
                                 </div>
                                 <div class="field">
-
-                                </div>
-                                <div class="field">
-
-                                </div>
-                                <div class="field">
-
-                                </div>
-                                <div class="field">
                                     <label>Witch Potion</label>
                                     <input type="text" disabled id="gold-witchpot">
+                                </div>
+                                <div class="field">
+
+                                </div>
+                                <div class="field">
+
+                                </div>
+                                <div class="field">
+                                    <label><span class="orange">&bull;</span> Real Hourly Gold Pit</label>
+                                    <input type="text" disabled id="gold-hourly-real">
                                 </div>
                                 <div class="field">
                                     <label><span class="green">&bull;</span> Mushroom PoEL</label>
@@ -198,7 +199,8 @@
                                     <input type="text" disabled id="gold-twisterboss">
                                 </div>
                                 <div class="field">
-
+                                    <label><span class="orange">&bull;</span> Real Gold Pit time</label>
+                                    <input type="text" disabled id="gold-time-real">
                                 </div>
                                 <div class="field">
                                     <label><span class="green">&bull;</span> Gold PoEL</label>
@@ -423,6 +425,14 @@
                 return Math.ceil(value * 100) / 100;
             }
 
+            function formatValue(value, delimiter = ' ') {
+                return value >= 999 ? formatAsSpacedNumber(value, delimiter) : roundShort(value)
+            }
+
+            function formatTime(time) {
+                return Math.trunc(time) + ' hours ' + Math.trunc(60 * (time % 1)) + ' minutes';
+            }
+
             function getExperienceRequired (value) {
                 if (value >= 393) {
                     return 1500000000;
@@ -639,9 +649,8 @@
                     var goldmin = Math.min(10000000, 1 * (1 + ggold / 100 + tower / 100) * basegold / 11) * (1 + rgold / 100);
                     var goldmax = Math.min(10000000, 5 * (1 + ggold / 100 + tower / 100) * basegold / 11) * (1 + rgold / 100);
 
-                    $('#quest-goldmin').val(goldmin >= 999 ? formatAsSpacedNumber(goldmin, ' ') : roundShort(goldmin));
-                    $('#quest-goldmax').val(goldmax >= 999 ? formatAsSpacedNumber(goldmax, ' ') : roundShort(goldmax));
-
+                    $('#quest-goldmin').val(formatValue(goldmin));
+                    $('#quest-goldmax').val(formatValue(goldmax));
                     $('#quest-xpmin').val(formatAsSpacedNumber(xpmin, ' '));
                     $('#quest-xpmax').val(formatAsSpacedNumber(xpmax, ' '));
                 }
@@ -682,11 +691,13 @@
                     var scroll = Math.min(10E6, reward * 12.5 * (1 / 3));
 
                     var hourly = num * pit / 75;
+                    let hourly_real = hourly * (1 + Math.max(0, pit - 15) / 100);
                     var guard = Math.min(10E6, guard);
 
                     var capacity = Math.min(37E6, Math.min(20E6, dice * Math.min(pit, 15) * 8 * (pit / 100)) + Math.max(0, pit - 15) * 200000);
 
                     var time = capacity / hourly;
+                    let time_real = capacity / hourly_real;
 
                     var gem = num / 6;
                     gem = Math.min(10E6, gem * getMineMultiplier(mine));
@@ -723,40 +734,42 @@
 
                     reward = Math.min(10E6, reward);
 
-                    $('#gold-bar').val(goldbar1 >= 999 ? formatAsSpacedNumber(goldbar1, ' ') : roundShort(goldbar1));
-                    $('#gold-bar3').val(goldbar3 >= 999 ? formatAsSpacedNumber(goldbar3, ' ') : roundShort(goldbar3));
-                    $('#gold-towerboss').val(towerboss >= 999 ? formatAsSpacedNumber(towerboss, ' ') : roundShort(towerboss));
-                    $('#gold-twisterboss').val(twisterboss >= 999 ? formatAsSpacedNumber(twisterboss, ' ') : roundShort(twisterboss));
+                    $('#gold-bar').val(formatValue(goldbar1));
+                    $('#gold-bar3').val(formatValue(goldbar3));
+                    $('#gold-towerboss').val(formatValue(towerboss));
+                    $('#gold-twisterboss').val(formatValue(twisterboss));
 
-                    $('#gold-pot10').val(pot10 >= 999 ? formatAsSpacedNumber(pot10, ' ') : roundShort(pot10));
-                    $('#gold-pot15').val(pot15 >= 999 ? formatAsSpacedNumber(pot15, ' ') : roundShort(pot15));
-                    $('#gold-pot25').val(pot25 >= 999 ? formatAsSpacedNumber(pot25, ' ') : roundShort(pot25));
-                    $('#gold-pothp').val(pothp >= 999 ? formatAsSpacedNumber(pothp, ' ') : roundShort(pothp));
-                    $('#gold-pothp-gold').val(pothp_gold >= 999 ? formatAsSpacedNumber(pothp_gold, ' ') : roundShort(pothp_gold));
+                    $('#gold-pot10').val(formatValue(pot10));
+                    $('#gold-pot15').val(formatValue(pot15));
+                    $('#gold-pot25').val(formatValue(pot25));
+                    $('#gold-pothp').val(formatValue(pothp));
+                    $('#gold-pothp-gold').val(formatValue(pothp_gold));
 
-                    $('#gold-arena').val(arenagold >= 999 ? formatAsSpacedNumber(arenagold, ' ') : roundShort(arenagold));
+                    $('#gold-arena').val(formatValue(arenagold));
 
-                    $('#gold-scroll').val(scroll >= 999 ? formatAsSpacedNumber(scroll, ' ') : roundShort(scroll));
-                    $('#gold-witchpot').val(potwitch >= 999 ? formatAsSpacedNumber(potwitch, ' ') : roundShort(potwitch));
+                    $('#gold-scroll').val(formatValue(scroll));
+                    $('#gold-witchpot').val(formatValue(potwitch));
 
-                    $('#gold-hourglass1').val(hourglass1 >= 999 ? formatAsSpacedNumber(hourglass1, ' ') : roundShort(hourglass1));
-                    $('#gold-hourglass10').val(hourglass10 >= 999 ? formatAsSpacedNumber(hourglass10, ' ') : roundShort(hourglass10));
+                    $('#gold-hourglass1').val(formatValue(hourglass1));
+                    $('#gold-hourglass10').val(formatValue(hourglass10));
 
-                    $('#gold-guard').val(guard >= 999 ? formatAsSpacedNumber(guard, ' ') : roundShort(guard));
-                    $('#gold-reward').val(reward >= 999 ? formatAsSpacedNumber(reward, ' ') : roundShort(reward));
-                    $('#gold-reroll').val(reroll >= 999 ? formatAsSpacedNumber(reroll, ' ') : roundShort(reroll));
+                    $('#gold-guard').val(formatValue(guard));
+                    $('#gold-reward').val(formatValue(reward));
+                    $('#gold-reroll').val(formatValue(reroll));
 
-                    $('#gold-dice').val(dice >= 999 ? formatAsSpacedNumber(dice, ' ') : roundShort(dice));
-                    $('#gold-dice2').val(dice * 5 >= 999 ? formatAsSpacedNumber(dice * 5, ' ') : roundShort(dice * 5));
-                    $('#gold-dice3').val(dice * 25 >= 999 ? formatAsSpacedNumber(dice * 25, ' ') : roundShort(dice * 25));
+                    $('#gold-dice').val(formatValue(dice));
+                    $('#gold-dice2').val(formatValue(dice * 5));
+                    $('#gold-dice3').val(formatValue(dice * 25));
 
-                    $('#gold-gem').val(gem >= 999 ? formatAsSpacedNumber(gem, ' ') : roundShort(gem));
-                    $('#gold-gem2').val(gem2 >= 999 ? formatAsSpacedNumber(gem2, ' ') : roundShort(gem2));
-                    $('#gold-gem3').val(gem3 >= 999 ? formatAsSpacedNumber(gem3, ' ') : roundShort(gem3));
+                    $('#gold-gem').val(formatValue(gem));
+                    $('#gold-gem2').val(formatValue(gem2));
+                    $('#gold-gem3').val(formatValue(gem3));
 
-                    $('#gold-hourly').val(hourly >= 999 ? formatAsSpacedNumber(hourly, ' ') : roundShort(hourly));
+                    $('#gold-hourly').val(formatValue(hourly));
+                    $('#gold-hourly-real').val(formatValue(hourly_real));
+                    $('#gold-time').val(formatTime(time));
+                    $('#gold-time-real').val(formatTime(time_real));
                     $('#gold-capacity').val(formatAsSpacedNumber(capacity, ' '));
-                    $('#gold-time').val(Math.trunc(time) + ' hours ' + Math.trunc(60 * (time % 1)) + ' minutes');
                 }
             });
 
