@@ -127,6 +127,18 @@
                 test('random not equal', new Expression('random() != random()').eval());
                 test('sort numbers', new Expression('sort([0, 4, 7, 2, 5], -this).1').eval() == 2);
                 test('header difference', new Expression('difference(Level)').eval(new ExpressionScope().with({ Level: 200 }, { Level: 100 })) == 100);
+                test('array is empty', new Expression('[]').eval().join() == '');
+                test('array is not empty', new Expression('[0,1]').eval().join() == '0,1');
+                test('incomplete array is 0, 1, ', new Expression('[0, 1, ]').eval().join() == '0,1,');
+                test('incomplete array is , 0, 1', new Expression('[, 0, 1]').eval().join() == ',0,1');
+                test('object is empty', JSON.stringify(new Expression('{}').eval()) == '{}');
+                test('object is not empty', JSON.stringify(new Expression('{"key": "val"}').eval()) == '{"key":"val"}');
+                test('incomplete object is valid', JSON.stringify(new Expression('{"key": "val", }').eval()) == '{"key":"val"}');
+                test('incomplete object is valid', JSON.stringify(new Expression('{, "key": "val"}').eval()) == '{"key":"val"}');
+                test('incomplete object is valid', JSON.stringify(new Expression('{, "key": "val", }').eval()) == '{"key":"val"}');
+                test('object key is calculated', JSON.stringify(new Expression('{55 + 5: "val"}').eval()) == '{"60":"val"}');
+                test('object key is calculated with brackets', JSON.stringify(new Expression('{(55 + 5): "val"}').eval()) == '{"60":"val"}');
+                test('object value is calculated', JSON.stringify(new Expression('{"key": 55 + 5}').eval()) == '{"key":60}');
             });
         </script>
     </body>
