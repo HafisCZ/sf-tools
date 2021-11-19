@@ -446,58 +446,52 @@ class Expression {
         return /^\`.*\`$/.test(token) && follow == '(';
     }
 
+    evalRepeatedExpression (terminator, separator, generator, emptyGenerator) {
+        const args = [];
+
+        if (this.peek() == terminator) {
+            this.get();
+            return args;
+        }
+
+        do {
+            const pk = this.peek();
+            if (pk == separator || pk == terminator) {
+                if (emptyGenerator) {
+                    args.push(emptyGenerator(args.length));
+                }
+            } else {
+                args.push(generator(args.length));
+            }
+        } while (this.get() == separator);
+        return args;
+    }
+
     // Get global function
     getFunction () {
-        var name = this.get();
+        const name = this.get();
         this.get();
 
-        var args = [];
-
-        if (this.peek() == ')') {
-            this.get();
-            return {
-                op: name,
-                args: args
-            };
-        } else {
-            do {
-                args.push(this.evalExpression());
-            } while (this.get() == ',');
-
-            return {
-                op: name,
-                args: args
-            }
-        }
+        return {
+            op: name,
+            args: this.evalRepeatedExpression(')', ',', () => this.evalExpression(), () => 'undefined')
+        };
     }
 
     getTemplate () {
-        var val = this.get();
-        var args = [
-            {
-                raw: true,
-                args: val.slice(1, val.length - 1)
-            }
-        ];
-
+        const val = this.get();
         this.get();
 
-        if (this.peek() == ')') {
-            this.get();
-            return {
-                op: 'format',
-                args: args
-            };
-        } else {
-            do {
-                args.push(this.evalExpression());
-            } while (this.get() == ',');
-
-            return {
-                op: 'format',
-                args: args
-            }
-        }
+        return {
+            op: 'format',
+            args: [
+                {
+                    raw: true,
+                    args: val.slice(1, val.length - 1)
+                },
+                ... this.evalRepeatedExpression(')', ',', () => this.evalExpression(), () => 'undefined')
+            ]
+        };
     }
 
     // Is array
@@ -509,27 +503,20 @@ class Expression {
     getArray () {
         this.get();
 
-        var args = [];
-
-        if (this.peek() == ']') {
-            this.get();
-            return {
-                op: '[',
-                args: args
-            }
-        }
-
-        do {
-            args.push({
-                key: args.length,
-                val: this.evalExpression()
-            });
-        } while (this.get() == ',');
-
         return {
             op: '[',
-            args: args
-        }
+            args: this.evalRepeatedExpression(']', ',', (key) => {
+                return {
+                    key,
+                    val: this.evalExpression()
+                };
+            }, (key) => {
+                return {
+                    key,
+                    val: 'undefined'
+                };
+            })
+        };
     }
 
     // Is object
@@ -537,33 +524,24 @@ class Expression {
         return token == '{';
     }
 
+    getObjectItem () {
+        const key = this.peek(1) == ':' ? this.getString() : this.evalExpression();
+        this.get();
+
+        return {
+            key: key,
+            val: this.evalExpression()
+        };
+    }
+
     // Get array
     getObject () {
         this.get();
 
-        var args = [];
-
-        if (this.peek() == '}') {
-            this.get();
-            return {
-                op: '{',
-                args: args
-            }
-        }
-
-        do {
-            let key = this.peek(1) == ':' ? this.getString() : this.evalExpression();
-            this.get();
-            args.push({
-                key: key,
-                val: this.evalExpression()
-            });
-        } while (this.get() == ',');
-
         return {
             op: '{',
-            args: args
-        }
+            args: this.evalRepeatedExpression('}', ',', () => this.getObjectItem(), false)
+        };
     }
 
     // Is object access
