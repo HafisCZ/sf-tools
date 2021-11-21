@@ -3503,6 +3503,7 @@ class OptionsView extends View {
         this.prepareCheckbox('always_prev', 'alwaysprev');
         this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('insecure', 'insecure');
+        this.prepareCheckbox('display_empty_groups', 'empty-groups');
         this.prepareCheckbox('terms_accepted', 'terms');
 
         SiteOptions.onChange('terms_accepted', enabled => {

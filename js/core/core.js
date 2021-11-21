@@ -129,7 +129,8 @@ const SiteOptions = new (class {
             always_prev: false,
             migration_allowed: true,
             migration_accepted: false,
-            profile: 'default'
+            profile: 'default',
+            display_empty_groups: false
         };
 
         this.listeners = [];
