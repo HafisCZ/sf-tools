@@ -139,6 +139,10 @@
                 test('object key is calculated', JSON.stringify(new Expression('{55 + 5: "val"}').eval()) == '{"60":"val"}');
                 test('object key is calculated with brackets', JSON.stringify(new Expression('{(55 + 5): "val"}').eval()) == '{"60":"val"}');
                 test('object value is calculated', JSON.stringify(new Expression('{"key": 55 + 5}').eval()) == '{"key":60}');
+                test('power 2', new Expression('2 ^ 3').eval() == 8);
+                test('power 3', new Expression('2 ^ 2 ^ 2').eval() == 16);
+                test('operator precedence', new Expression('4 * 3 ^ 2').eval() == 36);
+                test('operator precedence 2', new Expression('0 ^ (5 - 5) + 4 * 3 ^ 2').eval() == 37);
             });
         </script>
     </body>

@@ -1,8 +1,8 @@
 const ExpressionRegExp = (function () {
     try {
-        return new RegExp("(\\'[^\\']*\\'|\\\"[^\\\"]*\\\"|\\~\\d+|\\`[^\\`]*\\`|\\;|\\$\\!|\\$|\\{|\\}|\\|\\||\\%|\\!\\=|\\!|\\&\\&|\\>\\=|\\<\\=|\\=\\=|\\(|\\)|\\+|\\-|\\/|\\*|\\>|\\<|\\?|\\:|\\.+this|(?<!\\.)\\d+(?:.\\d+)?e\\d+|(?<!\\.)\\d+\\.\\d+|\\.|\\[|\\]|\\,)");
+        return new RegExp("(\\'[^\\']*\\'|\\\"[^\\\"]*\\\"|\\~\\d+|\\`[^\\`]*\\`|\\;|\\$\\!|\\$|\\{|\\}|\\|\\||\\%|\\^|\\!\\=|\\!|\\&\\&|\\>\\=|\\<\\=|\\=\\=|\\(|\\)|\\+|\\-|\\/|\\*|\\>|\\<|\\?|\\:|\\.+this|(?<!\\.)\\d+(?:.\\d+)?e\\d+|(?<!\\.)\\d+\\.\\d+|\\.|\\[|\\]|\\,)");
     } catch (e) {
-        return new RegExp("(\\'[^\\']*\\'|\\\"[^\\\"]*\\\"|\\~\\d+|\\`[^\\`]*\\`|\\;|\\$\\!|\\$|\\{|\\}|\\|\\||\\%|\\!\\=|\\!|\\&\\&|\\>\\=|\\<\\=|\\=\\=|\\(|\\)|\\+|\\-|\\/|\\*|\\>|\\<|\\?|\\:|\\.+this|\\d+(?:.\\d+)?e\\d+|\\d+\\.\\d+|\\.|\\[|\\]|\\,)");
+        return new RegExp("(\\'[^\\']*\\'|\\\"[^\\\"]*\\\"|\\~\\d+|\\`[^\\`]*\\`|\\;|\\$\\!|\\$|\\{|\\}|\\|\\||\\%|\\^|\\!\\=|\\!|\\&\\&|\\>\\=|\\<\\=|\\=\\=|\\(|\\)|\\+|\\-|\\/|\\*|\\>|\\<|\\?|\\:|\\.+this|\\d+(?:.\\d+)?e\\d+|\\d+\\.\\d+|\\.|\\[|\\]|\\,)");
     }
 })();
 
@@ -631,7 +631,7 @@ class Expression {
 
     getHighPriority () {
         let node = this.getVal();
-        while (['*', '/', '%'].includes(this.peek())) {
+        while (this.peek() == '^') {
             node = {
                 op: SP_OPERATORS[this.get()],
                 args: [node, this.getVal()]
@@ -641,12 +641,24 @@ class Expression {
         return node;
     }
 
-    getLowPriority () {
+    getMediumPriority () {
         let node = this.getHighPriority();
-        while (['+', '-'].includes(this.peek())) {
+        while (['*', '/', '%'].includes(this.peek())) {
             node = {
                 op: SP_OPERATORS[this.get()],
                 args: [node, this.getHighPriority()]
+            }
+        }
+
+        return node;
+    }
+
+    getLowPriority () {
+        let node = this.getMediumPriority();
+        while (['+', '-'].includes(this.peek())) {
+            node = {
+                op: SP_OPERATORS[this.get()],
+                args: [node, this.getMediumPriority()]
             };
         }
 
@@ -1488,6 +1500,7 @@ const SP_OPERATORS = {
     '-': (a, b) => a - b,
     '>': (a, b) => a > b,
     '<': (a, b) => a < b,
+    '^': (a, b) => Math.pow(a, b),
     '==': (a, b) => a == b,
     '===': (a, b) => a === b,
     '!=': (a, b) => a != b,
