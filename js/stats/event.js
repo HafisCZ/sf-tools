@@ -74,13 +74,13 @@ class GroupDetailView extends View {
         let exportConstraints = player => player.group == this.identifier;
 
         this.$parent.find('[data-op="export"]').click(() => {
-            DatabaseManager.export(null, this.group.List.map(entry => entry[0]), exportConstraints).then(Exporter.json);
+            DatabaseManager.export(null, this.list.map(entry => entry[0]), exportConstraints).then(Exporter.json);
         });
         this.$parent.find('[data-op="export-l"]').click(() => {
-            DatabaseManager.export(null, [ _dig(this.group.List, 0, 0) ], exportConstraints).then(Exporter.json);
+            DatabaseManager.export(null, [ _dig(this.list, 0, 0) ], exportConstraints).then(Exporter.json);
         });
         this.$parent.find('[data-op="export-l5"]').click(() => {
-            DatabaseManager.export(null, this.group.List.slice(0, 5).map(entry => entry[0]), exportConstraints).then(Exporter.json);
+            DatabaseManager.export(null, this.list.slice(0, 5).map(entry => entry[0]), exportConstraints).then(Exporter.json);
         });
         this.$parent.find('[data-op="export-s"]').click(() => {
             DatabaseManager.export(null, [ this.timestamp ], exportConstraints).then(Exporter.json);
@@ -172,13 +172,15 @@ class GroupDetailView extends View {
 
         this.$name.html(`${this.group.Latest.Name} <span style="opacity: 50%; font-weight: initial; font-size: initial">${this.identifier}</span>`);
 
-        this.timestamp = this.group.LatestTimestamp;
-        this.reference = (SiteOptions.always_prev && this.group.List[1] ? this.group.List[1][0] : undefined) || this.group.LatestTimestamp;
-
         var listTimestamp = [];
         var listReference = [];
 
-        for (var [ timestamp, g ] of this.group.List) {
+        this.list = SiteOptions.groups_empty ? this.group.List : this.group.List.filter(([, g]) => g.MembersPresent);
+
+        this.timestamp = _dig(this.list, 0, 0);
+        this.reference = (SiteOptions.always_prev ? _dig(this.list, 1, 0) : undefined) || this.timestamp;
+
+        for (var [ timestamp, g ] of this.list) {
             listTimestamp.push({
                 name: formatDate(timestamp),
                 value: timestamp,
