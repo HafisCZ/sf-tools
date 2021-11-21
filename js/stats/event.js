@@ -1349,16 +1349,8 @@ class GroupsView extends View {
             this.show();
         });
 
-        this.$parent.find('[data-op="empty"]').checkbox(SiteOptions.groups_empty ? 'check' : 'uncheck').change((event) => {
-            SiteOptions.groups_empty = !SiteOptions.groups_empty;
-
-            this.empty = SiteOptions.groups_empty;
-            this.show();
-        });
-
         this.hidden = SiteOptions.groups_hidden;
         this.others = SiteOptions.groups_other;
-        this.empty = SiteOptions.groups_empty;
 
         this.$context = $('<div class="ui custom popup right center"></div>');
         this.$parent.prepend(this.$context);
@@ -1403,6 +1395,8 @@ class GroupsView extends View {
     }
 
     show () {
+        this.empty = SiteOptions.groups_empty;
+
         var content = '';
         var content2 = '';
 
@@ -3503,7 +3497,7 @@ class OptionsView extends View {
         this.prepareCheckbox('always_prev', 'alwaysprev');
         this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('insecure', 'insecure');
-        this.prepareCheckbox('display_empty_groups', 'empty-groups');
+        this.prepareCheckbox('groups_empty', 'empty-groups');
         this.prepareCheckbox('terms_accepted', 'terms');
 
         SiteOptions.onChange('terms_accepted', enabled => {

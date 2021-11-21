@@ -121,7 +121,6 @@ const SiteOptions = new (class {
             terms_accepted: false,
             version_accepted: false,
             groups_hidden: false,
-            groups_empty: false,
             players_hidden: false,
             browse_hidden: false,
             groups_other: false,
@@ -130,7 +129,7 @@ const SiteOptions = new (class {
             migration_allowed: true,
             migration_accepted: false,
             profile: 'default',
-            display_empty_groups: false
+            groups_empty: false
         };
 
         this.listeners = [];
