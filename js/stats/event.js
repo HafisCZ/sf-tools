@@ -1397,25 +1397,28 @@ class GroupsView extends View {
     }
 
     show () {
-        this.empty = SiteOptions.groups_empty;
-
         var content = '';
         var content2 = '';
 
         var index = 0;
         var index2 = 0;
 
-        var groups = Object.values(DatabaseManager.Groups).filter(g => this.empty || g.List.some(([, g]) => g.MembersPresent)).sort((a, b) => b.LatestTimestamp - a.LatestTimestamp);
+        const showEmpty = SiteOptions.groups_empty;
+        const comparer = showEmpty ? (a, b) => (b.LatestTimestamp - a.LatestTimestamp) : (a, b) => (b.LatestDisplayTimestamp - a.LatestDisplayTimestamp);
+        const groups = Object.values(DatabaseManager.Groups).filter(g => showEmpty || g.LatestDisplayTimestamp).sort(comparer);
+        const latestPlayer = showEmpty ? DatabaseManager.Latest : DatabaseManager.LatestPlayer;
 
         for (var i = 0, group; group = groups[i]; i++) {
-            var hidden = DatabaseManager.Hidden.has(group.Latest.Identifier);
+            const hidden = DatabaseManager.Hidden.has(group.Latest.Identifier);
+            const latest = showEmpty ? group.LatestTimestamp : group.LatestDisplayTimestamp;
+
             if (this.hidden || !hidden) {
                 if (group.Own) {
                     content += `
                         ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
                         <div class="column">
-                            <div class="ui segment clickable ${ DatabaseManager.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
-                                <span class="css-timestamp">${ formatDate(group.LatestTimestamp) }</span>
+                            <div class="ui segment clickable ${ latestPlayer != latest ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
+                                <span class="css-timestamp">${ formatDate(latest) }</span>
                                 <img class="ui medium centered image" src="res/group.png">
                                 <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
                                 <h3 class="ui margin-none-top centered header">${ group.Latest.Name }</h3>
@@ -1427,8 +1430,8 @@ class GroupsView extends View {
                     content2 += `
                         ${ index2 % 5 == 0 ? `${ index2 != 0 ? '</div>' : '' }<div class="row">` : '' }
                         <div class="column">
-                            <div class="ui segment clickable ${ DatabaseManager.Latest != group.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
-                                <span class="css-timestamp">${ formatDate(group.LatestTimestamp) }</span>
+                            <div class="ui segment clickable ${ latestPlayer != latest ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ group.Latest.Identifier }">
+                                <span class="css-timestamp">${ formatDate(latest) }</span>
                                 <img class="ui medium centered image" src="res/group.png">
                                 <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ group.Latest.Prefix }</h3>
                                 <h3 class="ui margin-none-top centered header">${ group.Latest.Name }</h3>
@@ -3512,7 +3515,7 @@ class OptionsView extends View {
             }
         });
 
-        SiteOptions.onChange('groups_empty', () => DatabaseManager.changed());
+        SiteOptions.onChange('groups_empty', () => DatabaseManager._updateLists());
     }
 
     // Prepare checkbox

@@ -457,10 +457,6 @@ const DatabaseManager = new (class {
         this[type][identifier][timestamp] = model;
     }
 
-    changed () {
-        this.LastChange = Date.now();
-    }
-
     // INTERNAL: Update internal player/group lists
     _updateLists () {
         this.Latest = 0;
@@ -505,6 +501,7 @@ const DatabaseManager = new (class {
 
         for (const [identifier, group] of Object.entries(this.Groups)) {
             group.LatestTimestamp = 0;
+            group.LatestDisplayTimestamp = 0;
             group.List = Object.entries(group).reduce((array, [ ts, obj ]) => {
                 if (!isNaN(ts)) {
                     const timestamp = Number(ts);
@@ -514,6 +511,9 @@ const DatabaseManager = new (class {
                     }
                     if (group.LatestTimestamp < timestamp) {
                         group.LatestTimestamp = timestamp;
+                    }
+                    if ((obj.MembersPresent || SiteOptions.groups_empty) && group.LatestDisplayTimestamp < timestamp) {
+                        group.LatestDisplayTimestamp = timestamp;
                     }
                 }
 
