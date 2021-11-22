@@ -6,14 +6,14 @@ function trail (c, n) {
 // Format date
 function formatDateOnly (date) {
     if (date == '' || date == undefined) return '';
-    date = new Date(Math.max(0, date));
+    date = new Date(Math.max(0, Math.min(1e15, date)));
     return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear();
 }
 
 // Format datetime
 function formatDate (date) {
     if (date == '' || date == undefined) return '';
-    date = new Date(Math.max(0, date));
+    date = new Date(Math.max(0, Math.min(1e15, date)));
     return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear() + ' ' + trail(date.getHours(), 2) + ':' + trail(date.getMinutes(), 2);
 }
 
