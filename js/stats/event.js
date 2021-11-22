@@ -1382,7 +1382,9 @@ class GroupsView extends View {
                 {
                     label: 'Share',
                     action: (source) => {
-                        DatabaseManager.export([ source.attr('data-id') ]).then(data => UI.OnlineShareFile.show(data));
+                        const group = source.attr('data-id');
+                        const members = DatabaseManager.Groups[group].List.reduce((memo, [, g]) => memo.concat(g.Members), []);
+                        DatabaseManager.export([ group, ... Array.from(new Set(members)) ]).then(data => UI.OnlineShareFile.show(data));
                     }
                 },
                 {
