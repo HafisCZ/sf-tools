@@ -1195,6 +1195,9 @@ const SP_FUNCTIONS = {
             return Math.pow(value, exp);
         }
     },
+    'exp': (value) => {
+        return Math.exp(value);
+    },
     'sqrt': (value) => {
         if (isNaN(value)) {
             return undefined;
