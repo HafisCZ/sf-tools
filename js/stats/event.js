@@ -2085,7 +2085,7 @@ class FilesView extends View {
             this.tagFilter = undefined;
         }
 
-        this.currentFiles = _array_to_hash(DatabaseManager.PlayerTimestamps, (ts) => [ts, {
+        this.currentFiles = _array_to_hash(SiteOptions.groups_empty ? _int_keys(DatabaseManager.Timestamps) : DatabaseManager.PlayerTimestamps, (ts) => [ts, {
             prettyDate: formatDate(ts),
             playerCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager._isPlayer(id)),
             groupCount: _len_where(DatabaseManager.Timestamps[ts], id => !DatabaseManager._isPlayer(id)),
@@ -2122,7 +2122,9 @@ class FilesView extends View {
         this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).filter(([, { tags: { tagList } }]) => {
             return typeof this.tagFilter === 'undefined' || tagList.includes(this.tagFilter) || (tagList.includes('undefined') && this.tagFilter === '');
         }).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags: { tagContent } }]) => {
-            const allHidden = !_any_true(DatabaseManager.Timestamps[timestamp], id => DatabaseManager.Players[id] && !_dig(DatabaseManager.Players, id, timestamp, 'Data', 'hidden'));
+            const players = Array.from(DatabaseManager.Timestamps[timestamp]).filter(id => DatabaseManager._isPlayer(id));
+            const allHidden = SiteOptions.hidden && players.length > 0 && _all_true(players, id => DatabaseManager.isHidden(id, timestamp));
+
             return `
                 <tr data-tr-timestamp="${timestamp}" ${allHidden ? 'style="color: gray;"' : ''}>
                     <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle ${ this.selectedFiles.includes(timestamp) ? '' : 'outline ' }icon"></i></td>
@@ -3509,6 +3511,8 @@ class OptionsView extends View {
                 PopupController.open(TermsAndConditionsPopup);
             }
         });
+
+        SiteOptions.onChange('groups_empty', () => DatabaseManager.changed());
     }
 
     // Prepare checkbox

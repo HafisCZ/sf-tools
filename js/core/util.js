@@ -29,6 +29,16 @@ function _any_true (arr, m) {
     return false;
 }
 
+function _all_true (arr, m) {
+    for (const a of arr) {
+        if (!m(a)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 function _push_unless_includes(arr, obj) {
     if (!_has(arr, obj)) {
         arr.push(obj);

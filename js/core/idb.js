@@ -457,6 +457,10 @@ const DatabaseManager = new (class {
         this[type][identifier][timestamp] = model;
     }
 
+    changed () {
+        this.LastChange = Date.now();
+    }
+
     // INTERNAL: Update internal player/group lists
     _updateLists () {
         this.Latest = 0;
@@ -677,6 +681,10 @@ const DatabaseManager = new (class {
         } else {
             return player;
         }
+    }
+
+    isHidden (id, ts) {
+        return _dig(this.Players, id, ts, 'Data', 'hidden');
     }
 
     // Get group
