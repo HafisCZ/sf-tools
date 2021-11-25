@@ -312,12 +312,12 @@ class DatabaseUtils {
         return slot ? `database_${slot}` : 'database';
     }
 
-    static filterArray (profile) {
-        return _dig(profile, 'primary', 'mode') === 'none' ? [] : undefined;
+    static filterArray (profile, type = 'primary') {
+        return _dig(profile, type, 'mode') === 'none' ? [] : undefined;
     }
 
-    static profileFilter (profile) {
-        let filter = profile.primary;
+    static profileFilter (profile, type = 'primary') {
+        let filter = profile[type];
         if (filter) {
             let { name, mode, value } = filter;
             if (value) {
@@ -620,10 +620,28 @@ const DatabaseManager = new (class {
                 this.Database = database;
 
                 if (!profile.only_players) {
-                    let groups = await this.Database.all('groups');
-                    for (const group of groups) {
-                        if (!this._isHidden(group, false) || SiteOptions.hidden) {
-                            this._addGroup(group);
+                    const groupFilter = DatabaseUtils.profileFilter(profile, 'primary_g');
+                    const groups = DatabaseUtils.filterArray(profile, 'primary_g') || (_not_empty(groupFilter) ? (
+                        await this.Database.where('groups', ... groupFilter)
+                    ) : (
+                        await this.Database.all('groups')
+                    ));
+
+                    if (profile.secondary_g) {
+                        const filter = new Expression(profile.secondary_g);
+                        for (const group of groups) {
+                            if (!this._isHidden(group, false) || SiteOptions.hidden) {
+                                ExpressionCache.reset();
+                                if (new ExpressionScope().addSelf(group).eval(filter)) {
+                                    this._addGroup(group);
+                                }
+                            }
+                        }
+                    } else {
+                        for (const group of groups) {
+                            if (!this._isHidden(group, false) || SiteOptions.hidden) {
+                                this._addGroup(group);
+                            }
                         }
                     }
                 }

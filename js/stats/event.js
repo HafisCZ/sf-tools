@@ -3545,7 +3545,7 @@ class ProfilesView extends View {
 
     show () {
         let content = '';
-        for (const [key, { name, primary, secondary }] of ProfileManager.getProfiles()) {
+        for (const [key, { name, primary, secondary, primary_g, secondary_g }] of ProfileManager.getProfiles()) {
             content += `
                 <div class="row" style="margin-top: 1em; border: 1px solid black; border-radius: .25em;">
                     <div class="four wide column">
@@ -3565,12 +3565,19 @@ class ProfilesView extends View {
                     <div class="twelve wide column">
                         <table class="ui table" style="table-layout: fixed;">
                             <tr>
-                                <td style="width: 20%;">Primary filter</td>
+                                <td style="width: 20%;"></td>
+                                <td style="width: 40%;">Players</td>
+                                <td style="width: 40%;">Groups</td>
+                            </tr>
+                            <tr>
+                                <td>Primary filter</td>
                                 <td>${ this.showRules(primary) }</td>
+                                <td>${ this.showRules(primary_g) }</td>
                             </tr>
                             <tr>
                                 <td>Secondary filter</td>
                                 <td>${ secondary ? Expression.format(secondary, undefined, PROFILES_PROPS) : '<b>None</b>' }</td>
+                                <td>${ secondary_g ? Expression.format(secondary_g, undefined, PROFILES_PROPS) : '<b>None</b>' }</td>
                             </tr>
                         </table>
                     </div>

@@ -171,7 +171,9 @@ const DEFAULT_PROFILE = {
     temporary: false,
     slot: 0,
     primary: null,
-    secondary: null
+    secondary: null,
+    primary_g: null,
+    secondary_g: null
 };
 
 const SELF_PROFILE = {
@@ -191,7 +193,13 @@ const DEFAULT_PROFILE_A = {
         mode: 'equals',
         value: ['1']
     },
-    secondary: null
+    secondary: null,
+    primary_g: {
+        name: 'own',
+        mode: 'equals',
+        value: ['1']
+    },
+    secondary_g: null
 };
 
 const DEFAULT_PROFILE_B = {
@@ -201,16 +209,22 @@ const DEFAULT_PROFILE_B = {
         mode: 'above',
         value: ['now() - 4 * @7days']
     },
-    secondary: null
+    secondary: null,
+    primary_g: {
+        name: 'timestamp',
+        mode: 'above',
+        value: ['now() - 4 * @7days']
+    },
+    secondary_g: null
 };
 
 const ProfileManager = new (class {
     constructor () {
-        this.profiles = Object.assign({
+        this.profiles = Object.assign(Preferences.get('db_profiles', {}), {
             'default': DEFAULT_PROFILE,
             'own': DEFAULT_PROFILE_A,
             'month_old': DEFAULT_PROFILE_B
-        }, Preferences.get('db_profiles', {}));
+        });
     }
 
     isEditable (key) {
