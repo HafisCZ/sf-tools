@@ -2128,10 +2128,10 @@ class FilesView extends View {
             return typeof this.tagFilter === 'undefined' || tagList.includes(this.tagFilter) || (tagList.includes('undefined') && this.tagFilter === '');
         }).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags: { tagContent } }]) => {
             const players = Array.from(DatabaseManager.Timestamps[timestamp]).filter(id => DatabaseManager._isPlayer(id));
-            const allHidden = SiteOptions.hidden && players.length > 0 && _all_true(players, id => DatabaseManager.isHidden(id, timestamp));
+            const hidden = _dig(DatabaseManager.Metadata, timestamp, 'hidden');
 
             return `
-                <tr data-tr-timestamp="${timestamp}" ${allHidden ? 'style="color: gray;"' : ''}>
+                <tr data-tr-timestamp="${timestamp}" ${hidden ? 'style="color: gray;"' : ''}>
                     <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle ${ this.selectedFiles.includes(timestamp) ? '' : 'outline ' }icon"></i></td>
                     <td class="text-center">${ prettyDate }</td>
                     <td class="text-center">${ playerCount }</td>

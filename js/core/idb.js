@@ -1,6 +1,6 @@
 const DATABASE_PARAMS_V5 = [
     'sftools',
-    4,
+    5,
     {
         players: {
             key: ['identifier', 'timestamp'],
@@ -28,6 +28,9 @@ const DATABASE_PARAMS_V5 = [
         },
         trackers: {
             key: 'identifier'
+        },
+        metadata: {
+            key: 'timestamp'
         }
     },
     [
@@ -49,6 +52,12 @@ const DATABASE_PARAMS_V5 = [
             shouldApply: version => version < 4,
             apply: transaction => {
                 transaction.objectStore('players').createIndex('tag', 'tag');
+            }
+        },
+        {
+            shouldApply: version => version < 5,
+            apply: (transaction, database) => {
+                database.createObjectStore('metadata', { keyPath: 'timestamp' });
             }
         }
     ]
@@ -129,7 +138,7 @@ class IndexedDBWrapper {
                     Logger.log('STORAGE', 'Updating database to new version');
                     for (const updater of this.updaters) {
                         if (updater.shouldApply(event.oldVersion)) {
-                            updater.apply(event.currentTarget.transaction);
+                            updater.apply(event.currentTarget.transaction, database);
                         }
                     }
                 }
@@ -393,6 +402,7 @@ const DatabaseManager = new (class {
         // Models
         this.Players = {};
         this.Groups = {};
+        this.Metadata = {};
 
         this.TrackerData = {}; // Metadata
         this.TrackedPlayers = {}; // Tracker results
@@ -612,8 +622,15 @@ const DatabaseManager = new (class {
                 if (!profile.only_players) {
                     let groups = await this.Database.all('groups');
                     for (const group of groups) {
-                        this._addGroup(group);
+                        if (!this._isHidden(group, false) || SiteOptions.hidden) {
+                            this._addGroup(group);
+                        }
                     }
+                }
+
+                const metadatas = await this.Database.all('metadata');
+                for (const metadata of metadatas) {
+                    this.Metadata[metadata.timestamp] = metadata;
                 }
 
                 const playerFilter = DatabaseUtils.profileFilter(profile);
@@ -626,7 +643,7 @@ const DatabaseManager = new (class {
                 if (profile.secondary) {
                     const filter = new Expression(profile.secondary);
                     for (const player of players) {
-                        if (!player.hidden || SiteOptions.hidden) {
+                        if (!this._isHidden(player) || SiteOptions.hidden) {
                             ExpressionCache.reset();
                             if (new ExpressionScope().addSelf(player).eval(filter)) {
                                 this._addPlayer(player);
@@ -635,7 +652,7 @@ const DatabaseManager = new (class {
                     }
                 } else {
                     for (const player of players) {
-                        if (!player.hidden || SiteOptions.hidden) {
+                        if (!this._isHidden(player) || SiteOptions.hidden) {
                             this._addPlayer(player);
                         }
                     }
@@ -648,9 +665,6 @@ const DatabaseManager = new (class {
                     }
                 }
 
-                if (attemptMigration) {
-                    await this._groupsCleanup();
-                }
                 this._updateLists();
                 await this.refreshTrackers();
 
@@ -661,6 +675,22 @@ const DatabaseManager = new (class {
                 await Actions.apply('load');
             });
         }
+    }
+
+    _isHidden (obj, allowDirect = true) {
+        return (allowDirect && _dig(obj, 'hidden')) || _dig(this.Metadata, obj.timestamp, 'hidden');
+    }
+
+    async _markHidden (timestamp, hidden) {
+        const metadata = Object.assign(this.Metadata[timestamp] || { timestamp }, { hidden });
+
+        this.Metadata[timestamp] = metadata;
+        await this.Database.set('metadata', metadata);
+    }
+
+    async _removeMetadata (timestamp) {
+        delete this.Metadata[timestamp];
+        await this.Database.remove('metadata', parseInt(timestamp));
     }
 
     // Check if player exists
@@ -749,6 +779,7 @@ const DatabaseManager = new (class {
                 for (const identifier of this.Timestamps[timestamp]) {
                     let isPlayer = this._isPlayer(identifier);
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+                    await this._removeMetadata(timestamp);
                     await this._unload(identifier, timestamp);
                 }
 
@@ -774,6 +805,22 @@ const DatabaseManager = new (class {
 
             resolve();
         });
+    }
+
+    async _migrateHiddenFiles () {
+        for (const [timestamp, identifiers] of Object.entries(this.Timestamps)) {
+            const players = Array.from(identifiers).filter(identifier => this._isPlayer(identifier));
+            if (_all_true(players, id => _dig(this.Players, id, timestamp, 'Data', 'hidden'))) {
+                for (const id of players) {
+                    const player = this.Players[id][timestamp].Data;
+                    delete player['hidden'];
+
+                    await this.Database.set('players', player);
+                }
+
+                await this._markHidden(timestamp, true);
+            }
+        }
     }
 
     removeIdentifiers (... identifiers) {
@@ -873,6 +920,10 @@ const DatabaseManager = new (class {
                     await this._addFile(null, file.players, file.groups, 'merge');
                 }
 
+                for (const timestamp of timestamps) {
+                    await this._removeMetadata(timestamp);
+                }
+
                 await this.removeTimestamps(... timestamps);
             }
 
@@ -899,23 +950,19 @@ const DatabaseManager = new (class {
     hideTimestamps (... timestamps) {
         return new Promise(async (resolve, reject) => {
             if (_not_empty(timestamps)) {
-                const sample = timestamps[0];
-                const shouldHide = _any_true(this.Timestamps[sample], id => this._isPlayer(id) && !_dig(this.Players, id, sample, 'Data', 'hidden'));
+                const shouldHide = !_all_true(timestamps, timestamp => _dig(this.Metadata, timestamp, 'hidden'));
+                for (const timestamp of timestamps) {
+                    await this._markHidden(timestamp, shouldHide);
+                }
 
-                for (const ts of timestamps) {
-                    for (const id of this.Timestamps[ts]) {
-                        if (this._isPlayer(id)) {
-                            const obj = _dig(this.Players, id, ts, 'Data');
-                            if ((obj.hidden = shouldHide) && !SiteOptions.hidden) {
-                                await this._unload(id, ts);
-                            }
-
-                            await this.Database.set('players', obj);
+                if (!SiteOptions.hidden) {
+                    for (const timestamp of timestamps) {
+                        for (const identifier of this.Timestamps[timestamp]) {
+                            await this._unload(identifier, timestamp);
                         }
                     }
                 }
 
-                await this._groupsCleanup();
                 this._updateLists();
             }
 
