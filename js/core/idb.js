@@ -825,20 +825,25 @@ const DatabaseManager = new (class {
         });
     }
 
-    async _migrateHiddenFiles () {
-        for (const [timestamp, identifiers] of Object.entries(this.Timestamps)) {
-            const players = Array.from(identifiers).filter(identifier => this._isPlayer(identifier));
-            if (_all_true(players, id => _dig(this.Players, id, timestamp, 'Data', 'hidden'))) {
-                for (const id of players) {
-                    const player = this.Players[id][timestamp].Data;
-                    delete player['hidden'];
+    migrateHiddenFiles () {
+        return new Promise(async (resolve, reject) => {
+            for (const [timestamp, identifiers] of Object.entries(this.Timestamps)) {
+                const players = Array.from(identifiers).filter(identifier => this._isPlayer(identifier));
+                if (_all_true(players, id => _dig(this.Players, id, timestamp, 'Data', 'hidden'))) {
+                    for (const id of players) {
+                        const player = this.Players[id][timestamp].Data;
+                        delete player['hidden'];
 
-                    await this.Database.set('players', player);
+                        await this.Database.set('players', player);
+                    }
+
+                    await this._markHidden(timestamp, true);
                 }
-
-                await this._markHidden(timestamp, true);
             }
-        }
+
+            this._updateLists();
+            resolve();
+        });
     }
 
     removeIdentifiers (... identifiers) {

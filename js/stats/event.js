@@ -1824,6 +1824,10 @@ class FilesView extends View {
         }
     }
 
+    hideMigrate () {
+        DatabaseManager.migrateHiddenFiles().then(() => this.show());
+    }
+
     // Import file via har
     importJson (fileEvent) {
         PopupController.open(LoaderPopup);
@@ -1872,6 +1876,7 @@ class FilesView extends View {
         this.$parent.find('[data-op="endpoint"]').click(() => this.importEndpoint());
         this.$parent.find('[data-op="shared"]').click(() => this.importCloud());
 
+        this.$migrateHidden = this.$parent.find('[data-op="hide-migrate"]').click(() => this.hideMigrate());
         this.$tags = this.$parent.find('[data-op="tags"]').click(() => this.tagSelected());
         this.$filters = this.$parent.find('[data-op="filters"]');
         this.$results = this.$parent.find('[data-op="files-search-results"]');
@@ -2331,6 +2336,7 @@ class FilesView extends View {
         PopupController.close(LoaderPopup);
 
         this.$tags.toggle(this.simple);
+        this.$migrateHidden.toggle(!this.simple && SiteOptions.hidden);
 
         // Set counters
         if (this.lastChange != DatabaseManager.LastChange || forceUpdate) {
