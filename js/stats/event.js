@@ -3533,8 +3533,10 @@ class OptionsView extends View {
     }
 }
 
-const PROFILES_PROPS = ['timestamp', 'origin', 'identifier', 'profile', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname'];
+const PROFILES_PROPS = ['timestamp', 'origin', 'identifier', 'profile', 'prefix', 'tag', 'version', 'own', 'name', 'identifier', 'group', 'groupname', 'save'];
 const PROFILES_INDEXES = ['own', 'identifier', 'timestamp', 'group', 'prefix', 'profile', 'origin', 'tag'];
+const PROFILES_GROUP_PROPS = ['timestamp', 'origin', 'identifier', 'profile', 'prefix', 'own', 'name', 'identifier', 'save'];
+const PROFILES_GROUP_INDEXES = ['own', 'identifier', 'timestamp', 'prefix', 'profile', 'origin'];
 
 class ProfilesView extends View {
     constructor (parent) {
@@ -3577,7 +3579,7 @@ class ProfilesView extends View {
                             <tr>
                                 <td>Secondary filter</td>
                                 <td>${ secondary ? Expression.format(secondary, undefined, PROFILES_PROPS) : '<b>None</b>' }</td>
-                                <td>${ secondary_g ? Expression.format(secondary_g, undefined, PROFILES_PROPS) : '<b>None</b>' }</td>
+                                <td>${ secondary_g ? Expression.format(secondary_g, undefined, PROFILES_GROUP_PROPS) : '<b>None</b>' }</td>
                             </tr>
                         </table>
                     </div>

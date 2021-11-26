@@ -544,7 +544,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
         this.$secondaryContentG = this.$parent.find('[data-op="secondary-content-g"]');
 
         this.$secondaryG.on('change input', (e) => {
-            this.$secondaryContentG.html(Expression.format($(e.currentTarget).val() || '', undefined, PROFILES_PROPS));
+            this.$secondaryContentG.html(Expression.format($(e.currentTarget).val() || '', undefined, PROFILES_GROUP_PROPS));
         });
 
         // Primary filter
@@ -609,7 +609,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
         });
 
         this.$primaryIndexG.dropdown({
-            values: ['none', ...PROFILES_INDEXES].map(v => {
+            values: ['none', ...PROFILES_GROUP_INDEXES].map(v => {
                 return {
                     name: v.charAt(0).toUpperCase() + v.slice(1),
                     value: v,
