@@ -1,4 +1,41 @@
 const CHANGELOG = {
+    'v5.1856': {
+        'Statistics': [
+            'Added filters for guilds to profiles',
+            'Added proper hiding for files',
+            'Added prefix to duplicate player names in advanced settings',
+            'Added option to show empty guilds',
+            'Added separate tab for site options',
+            'Added current tab highlighting',
+            'Added fallback for missing last active time',
+            'Added <code>loop_array</code> variable to loop functions',
+            'Added player, reference and properties as scope objects',
+            'Added default values to <code>each</code> function',
+            'Added short table variable syntax',
+            'Added pow operator (<code>^</code>)',
+            'Added <code>exp</code> function',
+            'Fixed player requirement for some headers',
+            'Fixed guild member count',
+            'Fixed direct sharing for guilds',
+            'Fixed copy for browse table',
+            'Fixed guild lookup for nonexisting players',
+            'Fixed achievements not importing for beta',
+            'Fixed compatibility issues',
+            'Fixed copy for older timestamps',
+            'Fixed share code not trimmed',
+            'Fixed incomplete arrays and objects in expressions'
+        ],
+        'Dungeons Simulator': [
+            'Fixed Twister quick selection'
+        ],
+        'Pet Simulator': [
+            'Changed armor toggle to include message about beta backend',
+            'Removed save & load feature'
+        ],
+        'Gold & Experience': [
+            'Added Enza\'s real gold pit values'
+        ]
+    },
     'v5.1785': {
         'Statistics': [
             'Added proper profiles & profile management',
