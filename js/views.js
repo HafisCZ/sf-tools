@@ -653,7 +653,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
             const primaryValue2G = this.$primary2G.val();
 
             ProfileManager.setProfile(this.id, Object.assign(this.profile || {}, {
-                name: this.$name.val(),
+                name: this.$name.val() || `Profile ${id}`,
                 primary: primaryName === 'none' ? null : {
                     name: primaryName,
                     mode: primaryMode,
@@ -713,7 +713,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
 
             this.$secondary.val(secondary).trigger('change');
             this.$secondaryG.val(secondary_g).trigger('change');
-            this.$name.val(name);
+            this.$name.val(name || `Profile ${id}`);
         } else {
             this.$id.val(this.id);
             this.$primaryIndex.dropdown('set selected', 'none');
