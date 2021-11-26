@@ -1067,7 +1067,8 @@ class Expression {
             } else if (scope.player && SP_KEYWORDS.hasOwnProperty(node)) {
                 return SP_KEYWORDS[node].expr(scope.player, scope.reference, scope.env);
             } else if (SP_KEYWORDS_INDIRECT.hasOwnProperty(node)) {
-                return SP_KEYWORDS_INDIRECT[node].expr(scope.player, scope.reference, scope.env, scope.getSelf());
+                const self = scope.getSelf();
+                return self && typeof self === 'object' ? SP_KEYWORDS_INDIRECT[node].expr(scope.player, scope.reference, scope.env, self) : undefined;
             } else if (scope && scope.has(node)) {
                 return scope.get(node);
             } else if (node in scope.env.variables) {
