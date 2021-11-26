@@ -257,12 +257,17 @@ const ProfileManager = new (class {
     }
 
     setProfile (name, profile) {
-        this.profiles[name] = profile;
+        this.profiles[name] = Object.assign(profile, { updated: Date.now() });
         Preferences.set('db_profiles', this.profiles);
     }
 
     getProfiles () {
-        return Object.entries(this.profiles);
+        return [
+            [ 'default', this.profiles['default'] ],
+            [ 'own', this.profiles['own'] ],
+            [ 'month_old', this.profiles['month_old'] ],
+            ..._sort_des(Object.entries(this.profiles).filter(([key, ]) => this.isEditable(key)), ([, val]) => val.updated || 0)
+        ];
     }
 })();
 
