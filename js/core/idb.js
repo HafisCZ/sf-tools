@@ -486,18 +486,15 @@ const DatabaseManager = new (class {
                 if (!isNaN(ts)) {
                     const timestamp = Number(ts);
                     array.push([ timestamp, obj ]);
-                    if (this.Latest < timestamp) {
-                        this.Latest = timestamp;
-                    }
-                    if (this.LatestPlayer < timestamp) {
-                        this.LatestPlayer = timestamp;
-                    }
-                    if (player.LatestTimestamp < timestamp) {
-                        player.LatestTimestamp = timestamp;
-                    }
+
+                    this.Latest = Math.max(this.Latest, timestamp);
+                    this.LatestPlayer = Math.max(this.LatestPlayer, timestamp);
+                    player.LatestTimestamp = Math.max(player.LatestTimestamp, timestamp);
+
                     if (obj.Data.group) {
                         this.GroupNames[obj.Data.group] = obj.Data.groupname;
                     }
+
                     playerTimestamps.add(timestamp);
                 }
 
@@ -507,10 +504,6 @@ const DatabaseManager = new (class {
             _sort_des(player.List, le => le[0]);
             player.Latest = this._loadPlayer(player[player.LatestTimestamp]);
             player.Own = player.List.find(x => x[1].Own) != undefined;
-
-            if (this.Latest < player.LatestTimestamp) {
-                this.Latest = player.LatestTimestamp;
-            }
         }
 
         for (const [identifier, group] of Object.entries(this.Groups)) {
@@ -520,14 +513,13 @@ const DatabaseManager = new (class {
                 if (!isNaN(ts)) {
                     const timestamp = Number(ts);
                     array.push([ timestamp, obj ]);
-                    if (this.Latest < timestamp) {
-                        this.Latest = timestamp;
-                    }
-                    if (group.LatestTimestamp < timestamp) {
-                        group.LatestTimestamp = timestamp;
-                    }
-                    if ((obj.MembersPresent || SiteOptions.groups_empty) && group.LatestDisplayTimestamp < timestamp) {
-                        group.LatestDisplayTimestamp = timestamp;
+
+                    this.Latest = Math.max(this.Latest, timestamp);
+                    group.LatestTimestamp = Math.max(group.LatestTimestamp, timestamp);
+
+                    group.MembersPresent = Array.from(this.Timestamps[timestamp]).filter(id => _dig(this.Players, id, timestamp, 'Data', 'group') == identifier).length
+                    if (obj.MembersPresent || SiteOptions.groups_empty) {
+                        group.LatestDisplayTimestamp = Math.max(group.LatestDisplayTimestamp, timestamp);
                     }
                 }
 
@@ -537,10 +529,6 @@ const DatabaseManager = new (class {
             _sort_des(group.List, le => le[0]);
             group.Latest = group[group.LatestTimestamp];
             group.Own = group.List.find(x => x[1].Own) != undefined;
-
-            if (this.Latest < group.LatestTimestamp) {
-                this.Latest = group.LatestTimestamp;
-            }
         }
 
         this.PlayerTimestamps = Array.from(playerTimestamps);
@@ -777,15 +765,6 @@ const DatabaseManager = new (class {
             delete this.Groups[identifier][timestamp];
             if (_empty(this.Identifiers[identifier])) {
                 delete this.Groups[identifier];
-            }
-        }
-    }
-
-    async _groupsCleanup () {
-        for (const identifier of Object.keys(this.Groups)) {
-            for (const timestamp of this.Identifiers[identifier]) {
-                const group = this.getGroup(identifier, timestamp);
-                group.MembersPresent = Array.from(this.Timestamps[timestamp]).filter(id => _dig(this.Players, id, timestamp, 'Data', 'group') == identifier).length;
             }
         }
     }
