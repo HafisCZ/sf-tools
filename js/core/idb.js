@@ -757,17 +757,16 @@ const DatabaseManager = new (class {
         return new Promise(async (resolve, reject) => {
             for (let { identifier, timestamp, group } of players) {
                 await this.Database.remove('players', [identifier, parseInt(timestamp)]);
-                await this._unload(identifier, timestamp);
+                this._unload(identifier, timestamp);
             }
 
-            await this._groupsCleanup();
             this._updateLists();
             resolve();
         });
     }
 
-    async _unload (identifier, timestamp) {
-        await this._removeFromPool(identifier, timestamp);
+    _unload (identifier, timestamp) {
+        this._removeFromPool(identifier, timestamp);
 
         if (this._isPlayer(identifier)) {
             delete this.Players[identifier][timestamp];
@@ -799,7 +798,7 @@ const DatabaseManager = new (class {
                     let isPlayer = this._isPlayer(identifier);
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
                     await this._removeMetadata(timestamp);
-                    await this._unload(identifier, timestamp);
+                    this._unload(identifier, timestamp);
                 }
 
                 delete this.Timestamps[timestamp];
@@ -811,19 +810,15 @@ const DatabaseManager = new (class {
     }
 
     _removeFromPool (identifier, timestamp) {
-        return new Promise((resolve, reject) => {
-            this.Timestamps[timestamp].delete(identifier);
-            if (this.Timestamps[timestamp].size == 0) {
-                delete this.Timestamps[timestamp];
-            }
+        this.Timestamps[timestamp].delete(identifier);
+        if (this.Timestamps[timestamp].size == 0) {
+            delete this.Timestamps[timestamp];
+        }
 
-            this.Identifiers[identifier].delete(parseInt(timestamp));
-            if (this.Identifiers[identifier].size == 0) {
-                delete this.Identifiers[identifier];
-            }
-
-            resolve();
-        });
+        this.Identifiers[identifier].delete(parseInt(timestamp));
+        if (this.Identifiers[identifier].size == 0) {
+            delete this.Identifiers[identifier];
+        }
     }
 
     migrateHiddenFiles () {
@@ -856,7 +851,7 @@ const DatabaseManager = new (class {
                 for (const timestamp of this.Identifiers[identifier]) {
                     let isPlayer = this._isPlayer(identifier);
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
-                    await this._removeFromPool(identifier, timestamp);
+                    this._removeFromPool(identifier, timestamp);
                 }
 
                 delete this.Identifiers[identifier];
@@ -959,13 +954,12 @@ const DatabaseManager = new (class {
         return new Promise(async (resolve, reject) => {
             for (const player of players) {
                 if ((player.hidden = !player.hidden) && !SiteOptions.hidden) {
-                    await this._unload(player.identifier, player.timestamp);
+                    this._unload(player.identifier, player.timestamp);
                 }
 
                 await this.Database.set('players', player);
             }
 
-            await this._groupsCleanup();
             this._updateLists();
             resolve();
         });
@@ -982,7 +976,7 @@ const DatabaseManager = new (class {
                 if (!SiteOptions.hidden) {
                     for (const timestamp of timestamps) {
                         for (const identifier of this.Timestamps[timestamp]) {
-                            await this._unload(identifier, timestamp);
+                            this._unload(identifier, timestamp);
                         }
                     }
                 }
