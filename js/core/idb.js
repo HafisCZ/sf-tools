@@ -767,23 +767,19 @@ const DatabaseManager = new (class {
     }
 
     async _unload (identifier, timestamp) {
-        return new Promise(async (resolve, reject) => {
-            await this._removeFromPool(identifier, timestamp);
+        await this._removeFromPool(identifier, timestamp);
 
-            if (this._isPlayer(identifier)) {
-                delete this.Players[identifier][timestamp];
-                if (_empty(this.Identifiers[identifier])) {
-                    delete this.Players[identifier];
-                }
-            } else {
-                delete this.Groups[identifier][timestamp];
-                if (_empty(this.Identifiers[identifier])) {
-                    delete this.Groups[identifier];
-                }
+        if (this._isPlayer(identifier)) {
+            delete this.Players[identifier][timestamp];
+            if (_empty(this.Identifiers[identifier])) {
+                delete this.Players[identifier];
             }
-
-            resolve();
-        });
+        } else {
+            delete this.Groups[identifier][timestamp];
+            if (_empty(this.Identifiers[identifier])) {
+                delete this.Groups[identifier];
+            }
+        }
     }
 
     async _groupsCleanup () {
