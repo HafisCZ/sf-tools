@@ -305,6 +305,10 @@ class DatabaseUtils {
             where (store, index, query) {
                 return Promise.resolve([]);
             }
+
+            close () {
+
+            }
         })();
     }
 
@@ -390,9 +394,9 @@ const DatabaseManager = new (class {
     }
 
     // INTERNAL: Reset all content
-    _reset () {
+    async _reset () {
         if (this.Database) {
-            this.Database.close();
+            await this.Database.close();
         }
 
         this.Database = null;
@@ -599,7 +603,8 @@ const DatabaseManager = new (class {
 
     // Load database
     async load (profile = DEFAULT_PROFILE) {
-        this._reset();
+        await this._reset();
+
         this.Profile = profile;
 
         if (profile.temporary) {
