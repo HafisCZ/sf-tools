@@ -705,7 +705,7 @@ const DatabaseManager = new (class {
     }
 
     async _markHidden (timestamp, hidden) {
-        const metadata = Object.assign(this.Metadata[timestamp] || { timestamp }, { hidden });
+        const metadata = Object.assign(this.Metadata[timestamp] || { }, { timestamp: parseInt(timestamp), hidden });
 
         this.Metadata[timestamp] = metadata;
         await this.Database.set('metadata', metadata);
