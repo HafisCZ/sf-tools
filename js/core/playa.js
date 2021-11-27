@@ -1,9 +1,9 @@
 class SFItem {
     static empty () {
-        return new SFItem(new Array(12).fill(0));
+        return new SFItem(new Array(12).fill(0), 0, [0, 0]);
     }
 
-    constructor (data, slot) {
+    constructor (data, slot, pos) {
         var dataType = new ComplexDataType(data);
         dataType.assert(12);
 
@@ -27,6 +27,7 @@ class SFItem {
 
         this.Data = data;
         this.Slot = slot;
+        this.Position = pos;
         this.GemType = socket >= 10 ? (1 + (socket % 10)) : 0;
         this.HasSocket = socket > 0;
         this.GemValue = socketPower;
@@ -88,9 +89,9 @@ class SFItem {
                     data[i + 4] = to + 20;
                 }
             }
-            return new SFItem(data);
+            return new SFItem(data, this.Slot, this.Position);
         } else {
-            return new SFItem(this.Data);
+            return new SFItem(this.Data, this.Slot, this.Position);
         }
     }
 
@@ -119,7 +120,7 @@ class SFItem {
     }
 
     clone () {
-        return new SFItem(this.Data);
+        return new SFItem(this.Data, this.Slot, this.Position);
     }
 
     getAttribute (id) {
@@ -504,8 +505,8 @@ class SFFighter {
         this.Gender = dataType.long();
         this.Class = dataType.long();
 
-        this.Wpn1 = new SFItem(dataType.sub(12), 1);
-        this.Wpn2 = new SFItem(dataType.sub(12), 2);
+        this.Wpn1 = new SFItem(dataType.sub(12), 1, [1, 1]);
+        this.Wpn2 = new SFItem(dataType.sub(12), 2, [1, 2]);
 
         this.Mask = this.Wpn1.Type == -11 ? 1 : (this.Wpn1.Type == -12 ? 2 : 0);
     }
@@ -1001,18 +1002,18 @@ class SFPlayer {
         }
     }
 
-    static loadEquipment (dataType) {
+    static loadEquipment (dataType, inventoryType) {
         return {
-            Head: new SFItem(dataType.sub(12), 6),
-            Body: new SFItem(dataType.sub(12), 3),
-            Hand: new SFItem(dataType.sub(12), 5),
-            Feet: new SFItem(dataType.sub(12), 4),
-            Neck: new SFItem(dataType.sub(12), 8),
-            Belt: new SFItem(dataType.sub(12), 7),
-            Ring: new SFItem(dataType.sub(12), 9),
-            Misc: new SFItem(dataType.sub(12), 10),
-            Wpn1: new SFItem(dataType.sub(12), 1),
-            Wpn2: new SFItem(dataType.sub(12), 2)
+            Head: new SFItem(dataType.sub(12), 6, [inventoryType, 1]),
+            Body: new SFItem(dataType.sub(12), 3, [inventoryType, 2]),
+            Hand: new SFItem(dataType.sub(12), 5, [inventoryType, 3]),
+            Feet: new SFItem(dataType.sub(12), 4, [inventoryType, 4]),
+            Neck: new SFItem(dataType.sub(12), 8, [inventoryType, 5]),
+            Belt: new SFItem(dataType.sub(12), 7, [inventoryType, 6]),
+            Ring: new SFItem(dataType.sub(12), 9, [inventoryType, 7]),
+            Misc: new SFItem(dataType.sub(12), 10, [inventoryType, 8]),
+            Wpn1: new SFItem(dataType.sub(12), 1, [inventoryType, 9]),
+            Wpn2: new SFItem(dataType.sub(12), 2, [inventoryType, 10])
         };
     }
 
@@ -1109,7 +1110,7 @@ class SFOtherPlayer extends SFPlayer {
         this.Action.Index = dataType.short();
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + data.offset;
-        this.Items = SFPlayer.loadEquipment(dataType);
+        this.Items = SFPlayer.loadEquipment(dataType, 1);
         this.Mount = dataType.short();
         this.Dungeons = {
             Normal: []
@@ -1285,7 +1286,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Action.Index = dataType.short();
         dataType.short(); // Skip
         this.Action.Finish = dataType.long() * 1000 + data.offset;
-        this.Items = SFPlayer.loadEquipment(dataType);
+        this.Items = SFPlayer.loadEquipment(dataType, 1);
         this.Inventory = {
             Backpack: [],
             Chest: [],
@@ -1296,7 +1297,7 @@ class SFOwnPlayer extends SFPlayer {
             Kunigunde: {}
         };
         for (var i = 0; i < 5; i++) {
-            var item = new SFItem(dataType.sub(12));
+            var item = new SFItem(dataType.sub(12), 0, [6, i + 1]);
             if (item.Type > 0) {
                 this.Inventory.Backpack.push(item);
             }
@@ -1313,14 +1314,14 @@ class SFOwnPlayer extends SFPlayer {
         this.Dungeons.Tower = dataType.short();
         dataType.skip(1);
         for (var i = 0; i < 6; i++) {
-            var item = new SFItem(dataType.sub(12));
+            var item = new SFItem(dataType.sub(12), 0, [7, i + 1]);
             if (item.Type > 0) {
                 this.Inventory.Shop.push(item);
             }
         }
         dataType.skip(1);
         for (var i = 0; i < 6; i++) {
-            var item = new SFItem(dataType.sub(12));
+            var item = new SFItem(dataType.sub(12), 0, [8, i + 1]);
             if (item.Type > 0) {
                 this.Inventory.Shop.push(item);
             }
@@ -1621,7 +1622,7 @@ class SFOwnPlayer extends SFPlayer {
         if (data.chest) {
             dataType = new ComplexDataType(data.chest);
             for (var i = 0; i < 45 && dataType.atLeast(12); i++) {
-                var item = new SFItem(dataType.sub(12));
+                var item = new SFItem(dataType.sub(12), 0, [6, i + 6]);
                 if (item.Type > 0) {
                     if (i >= 15) {
                         this.Inventory.Chest.push(item);
@@ -1633,7 +1634,7 @@ class SFOwnPlayer extends SFPlayer {
         }
 
         if (data.dummy) {
-            this.Inventory.Dummy = SFPlayer.loadEquipment(new ComplexDataType(data.dummy));
+            this.Inventory.Dummy = SFPlayer.loadEquipment(new ComplexDataType(data.dummy), 5);
         }
 
         dataType = new ComplexDataType(data.witch);
@@ -1713,15 +1714,15 @@ class SFOwnPlayer extends SFPlayer {
 
             dataType.skip(3);
             var bert = SFCompanion.fromTower(dataType);
-            this.Inventory.Bert = SFPlayer.loadEquipment(dataType);
+            this.Inventory.Bert = SFPlayer.loadEquipment(dataType, 2);
 
             dataType.skip(6);
             var mark = SFCompanion.fromTower(dataType);
-            this.Inventory.Mark = SFPlayer.loadEquipment(dataType);
+            this.Inventory.Mark = SFPlayer.loadEquipment(dataType, 3);
 
             dataType.skip(6);
             var kuni = SFCompanion.fromTower(dataType);
-            this.Inventory.Kunigunde = SFPlayer.loadEquipment(dataType);
+            this.Inventory.Kunigunde = SFPlayer.loadEquipment(dataType, 4);
 
             this.Companions = {
                 Bert: new SFCompanion(this, bert, this.Inventory.Bert, 1),

@@ -3086,6 +3086,14 @@ const SP_KEYWORD_MAPPING_4 = {
         expr: (p, c, e, i) => i.Size,
         format: (p, c, e, x) => x == 0 ? '' : x,
         difference: false
+    },
+    'Inventory Kind': {
+        expr: (p, c, e, i) => i.Position ? i.Position[0] : undefined,
+        difference: false
+    },
+    'Inventory Slot': {
+        expr: (p, c, e, i) => i.Position ? i.Position[1] : undefined,
+        difference: false
     }
 };
 
