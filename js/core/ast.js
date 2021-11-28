@@ -1374,6 +1374,13 @@ const SP_FUNCTIONS = {
             return 0;
         }
     },
+    'hsl': (h, s, l, a) => {
+        if (isNaN(h) || isNaN(s) || isNaN(l)) {
+            return undefined;
+        } else {
+            return getColorFromHSLA(h, s, l, a);
+        }
+    },
     // RGB
     'rgb': (r, g, b) => {
         if (isNaN(r) || isNaN(g) || isNaN(b)) {
