@@ -653,7 +653,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
             const primaryValue2G = this.$primary2G.val();
 
             ProfileManager.setProfile(this.id, Object.assign(this.profile || {}, {
-                name: this.$name.val() || `Profile ${id}`,
+                name: this.$name.val() || `Profile ${this.id}`,
                 primary: primaryName === 'none' ? null : {
                     name: primaryName,
                     mode: primaryMode,
