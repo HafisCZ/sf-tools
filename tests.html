@@ -143,6 +143,9 @@
                 test('power 3', new Expression('2 ^ 2 ^ 2').eval() == 16);
                 test('operator precedence', new Expression('4 * 3 ^ 2').eval() == 36);
                 test('operator precedence 2', new Expression('0 ^ (5 - 5) + 4 * 3 ^ 2').eval() == 37);
+                test('can invoke properties', new Expression('"Hello".length').eval() == 5);
+                test('can invoke methods', new Expression('"  Hello  ".trim()').eval() == 'Hello');
+                test('cannot invoke properties', new Expression('"Hello".length()').eval() == undefined);
             });
         </script>
     </body>
