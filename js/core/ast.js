@@ -969,7 +969,7 @@ class Expression {
                     var object = this.evalInternal(scope, node.args[0]);
                     var func = this.evalInternal(scope, node.args[1]);
 
-                    if (object != undefined && object[func]) {
+                    if (object != undefined && object[func] && typeof object[func] === 'function') {
                         return object[func](... node.args[2].map(param => this.evalInternal(scope, param)));
                     } else {
                         return undefined;
