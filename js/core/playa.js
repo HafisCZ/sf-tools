@@ -1470,7 +1470,11 @@ class SFOwnPlayer extends SFPlayer {
         this.CalendarType = dataType.long();
         this.Underworld = {
             TimeMachineMushrooms: dataType.long(),
-            Upgrade: {}
+            Upgrade: {
+                Building: 0,
+                Finish: -1,
+                Start: -1
+            }
         };
         dataType.skip(3);
         this.LegendaryDungeonTries = dataType.long();
