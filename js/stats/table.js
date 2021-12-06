@@ -512,7 +512,7 @@ class TableInstance {
                                 difference = (flip ? -1 : 1) * (value - getSafeExpr(expr, compare, compare, this.settings, undefined, header));
                             }
 
-                            obj[sortkey] = getSafeExpr(order, player, compare, this.settings, new ExpressionScope().addSelf(value).add({ difference: difference }));
+                            obj[sortkey] = getSafeExpr(order, player, compare, this.settings, new ExpressionScope(this.settings).with(player, compare).addSelf(value).add({ difference: difference }));
                         } else {
                             // Return native sorting function
                             obj[sortkey] = sort(player, compare);
@@ -590,7 +590,7 @@ class TableInstance {
                                 difference = (flip ? -1 : 1) * (value - getSafeExpr(expr, compare, compare, this.settings, undefined, header));
                             }
 
-                            obj[sortkey] = getSafeExpr(order, player, compare, this.settings, new ExpressionScope().addSelf(value).add({ difference: difference }));
+                            obj[sortkey] = getSafeExpr(order, player, compare, this.settings, new ExpressionScope(this.settings).with(player, compare).addSelf(value).add({ difference: difference }));
                         } else {
                             // Return native sorting function
                             obj[sortkey] = sort(player, compare);
