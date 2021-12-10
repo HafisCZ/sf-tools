@@ -587,12 +587,15 @@ function mergeSoft (a, b) {
     return a;
 }
 
-const GOLD_CURVE = [ 0, 25, 50, 75 ];
-function getGoldCurve (value) {
-    for (var i = GOLD_CURVE.length; i < 650; i++) {
-        GOLD_CURVE[i] = Math.min(Math.floor((GOLD_CURVE[i - 1] + Math.floor(GOLD_CURVE[Math.floor(i / 2)] / 3) + Math.floor(GOLD_CURVE[Math.floor(i / 3)] / 4)) / 5) * 5, 1E9);
+const GOLD_CURVE = (function (base, max, clamp) {
+    for (let i = base.length; i < max; i++) {
+        base[i] = Math.min(Math.floor((base[i - 1] + Math.floor(base[Math.floor(i / 2)] / 3) + Math.floor(base[Math.floor(i / 3)] / 4)) / 5) * 5, clamp);
     }
 
+    return base;
+})([0, 25, 50, 75], 650, 1E9);
+
+function getGoldCurve (value) {
     return GOLD_CURVE[value] == undefined ? 1E9 : GOLD_CURVE[value];
 }
 
@@ -1081,5 +1084,6 @@ const SP_ENUMS = {
     'RuneTypes': RUNETYPES,
     'UnderworldBuildings': UNDERWORLD_BUILDINGS,
     'ExperienceCurve': ExperienceRequired,
-    'ExperienceTotal': ExperienceTotal
+    'ExperienceTotal': ExperienceTotal,
+    'SoulsCurve': SoulsCurve
 };

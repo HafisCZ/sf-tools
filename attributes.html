@@ -348,6 +348,23 @@
                             </div>
                         </div>
                     </div>
+                    <div class="ui segment">
+                        <h3 class="ui header">Miscellaneous</h3>
+                        <div class="ui small form">
+                            <div class="six fields">
+                                <div class="field">
+                                    <label>Level</label>
+                                    <input type="text" id="misc-level">
+                                </div>
+                            </div>
+                            <div class="six fields">
+                                <div class="field">
+                                    <label>Souls (Level is enemy level)</label>
+                                    <input type="text" disabled id="misc-souls">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <br/>
                     <div class="ui segment">
                         <h3 class="ui header">Calculate price at</h3>
@@ -539,6 +556,22 @@
                     var cost = calculateAttributePrice(value - 1);
 
                     $('#priceat-price').val(cost >= 10 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost));
+                }
+            });
+
+            $('#misc-level').on('change input', function () {
+                if (validate($(this))) {
+                    let level = Math.max(1, Math.min(700, Number($(this).val())));
+
+                    let souls = SoulsCurve[level];
+                    let soulsGuess = (64972 * (level - 490)) + 1206536;
+                    if (typeof souls === "undefined") {
+                        souls = `${formatValue(soulsGuess)} approx.`;
+                    } else {
+                        souls = formatValue(souls);
+                    }
+
+                    $('#misc-souls').val(souls);
                 }
             });
 
