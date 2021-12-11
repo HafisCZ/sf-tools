@@ -356,10 +356,18 @@
                                     <label>Level</label>
                                     <input type="text" id="misc-level">
                                 </div>
+                                <div class="field">
+                                    <label><span class="blue">&bull;</span> Underworld Gate</label>
+                                    <input type="text" id="misc-gate">
+                                </div>
+                                <div class="field">
+                                    <label><span class="purple">&bull;</span> Torture Chamber</label>
+                                    <input type="text" id="misc-torture">
+                                </div>
                             </div>
                             <div class="six fields">
                                 <div class="field">
-                                    <label>Souls (Level is enemy level)</label>
+                                    <label><span class="blue">&bull;</span><span class="purple">&bull;</span> Souls (Level is enemy level)</label>
                                     <input type="text" disabled id="misc-souls">
                                 </div>
                             </div>
@@ -559,19 +567,29 @@
                 }
             });
 
-            $('#misc-level').on('change input', function () {
-                if (validate($(this))) {
-                    let level = Math.max(1, Math.min(700, Number($(this).val())));
+            function getValue (element, min, max) {
+                return Math.max(min, Math.min(max, Number($(element).val())));
+            }
 
-                    let souls = SoulsCurve[level];
-                    let soulsGuess = (64972 * (level - 490)) + 1206536;
-                    if (typeof souls === "undefined") {
-                        souls = `${formatValue(soulsGuess)} approx.`;
-                    } else {
-                        souls = formatValue(souls);
-                    }
+            function formatSouls (value1, value2, mult) {
+                if (typeof value1 === "undefined") {
+                    return `${formatValue(Math.trunc(value2 + mult))} approx.`;
+                } else {
+                    return formatValue(Math.trunc(value1 * mult));
+                }
+            }
 
-                    $('#misc-souls').val(souls);
+            $('#misc-level, #misc-gate, #misc-torture').on('change input', function () {
+                if (validate($('#misc-level'), $('#misc-gate'), $('#misc-torture'))) {
+                    const level = getValue('#misc-level', 1, 700);
+                    const gate = getValue('#misc-gate', 0, 15);
+                    const torture = getValue('#misc-torture', 0, 15);
+
+                    let soulsMultiplier = 1 + Math.max(0, gate - 5) * 0.2 + torture * 0.1;
+                    let souls = SoulsCurve[level] / 4.5;
+                    let soulsApprox = ((64972 * (level - 490)) + 1206536) / 4.5;
+
+                    $('#misc-souls').val(formatSouls(souls, soulsApprox, soulsMultiplier));
                 }
             });
 
