@@ -788,6 +788,27 @@ const DatabaseManager = new (class {
         });
     }
 
+    purge () {
+        return new Promise(async (resolve, reject) => {
+            for (const timestamp of Object.keys(this.Timestamps).filter(ts => this.Timestamps[ts])) {
+                for (const identifier of this.Timestamps[timestamp]) {
+                    let isPlayer = this._isPlayer(identifier);
+                    await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+                }
+                await this._removeMetadata(timestamp);
+            }
+
+            this.Players = {};
+            this.Groups = {};
+            this.Metadata = {};
+            this.Timestamps = {};
+            this.Identifiers = {};
+
+            this._updateLists();
+            resolve();
+        });
+    }
+
     _removeFromPool (identifier, timestamp) {
         this.Timestamps[timestamp].delete(identifier);
         if (this.Timestamps[timestamp].size == 0) {

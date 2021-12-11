@@ -1784,7 +1784,7 @@ class FilesView extends View {
     deleteAll () {
         UI.ConfirmDialog.show('Database wipe', 'Are you sure you want to delete all stored player data?', () => {
             PopupController.open(LoaderPopup);
-            DatabaseManager.removeTimestamps(... Object.keys(DatabaseManager.Timestamps)).then(() => this.show());
+            DatabaseManager.purge().then(() => this.show());
         }, true);
     }
 
