@@ -584,10 +584,11 @@
                     const level = getValue('#misc-level', 1, 700);
                     const gate = getValue('#misc-gate', 0, 15);
                     const torture = getValue('#misc-torture', 0, 15);
+                    const maximumMultiplier = 7.5;
 
-                    let soulsMultiplier = 1 + Math.max(0, gate - 5) * 0.2 + torture * 0.1;
-                    let souls = SoulsCurve[level] / 4.5;
-                    let soulsApprox = ((64972 * (level - 490)) + 1206536) / 4.5;
+                    let soulsMultiplier = (1 + 0.1 * torture) * (1 + 0.2 * Math.max(0, gate - 5));
+                    let souls = SoulsCurve[level] / maximumMultiplier;
+                    let soulsApprox = ((64972 * (level - 490)) + 1206536) / maximumMultiplier;
 
                     $('#misc-souls').val(formatSouls(souls, soulsApprox, soulsMultiplier));
                 }
