@@ -573,7 +573,7 @@
 
             function formatSouls (value1, value2, mult) {
                 if (typeof value1 === "undefined") {
-                    return `${formatValue(Math.trunc(value2 + mult))} approx.`;
+                    return `${formatValue(Math.trunc(value2 * mult))} approx.`;
                 } else {
                     return formatValue(Math.trunc(value1 * mult));
                 }
@@ -587,8 +587,8 @@
                     const maximumMultiplier = 7.5;
 
                     let soulsMultiplier = (1 + 0.1 * torture) * (1 + 0.2 * Math.max(0, gate - 5));
-                    let souls = SoulsCurve[level] / maximumMultiplier;
-                    let soulsApprox = ((64972 * (level - 490)) + 1206536) / maximumMultiplier;
+                    let souls = level < 542 ? (SoulsCurve[level] / maximumMultiplier) : undefined;
+                    let soulsApprox = (64972 * (level - 490) + 1206536) / maximumMultiplier;
 
                     $('#misc-souls').val(formatSouls(souls, soulsApprox, soulsMultiplier));
                 }
