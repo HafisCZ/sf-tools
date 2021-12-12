@@ -815,8 +815,8 @@ DUNGEON_DATA = {
             'Loki': { pos: 6, id: 1405, class: 4, level: 565, str: 39500, dex: 111000, int: 39500, con: 376000, lck: 71500, health: 951280000, runes: { type: 41, res: [40, 50, 50], damage: 60 }, min: 3955, max: 6779, ass: true, armor: 12500 },
             'Ymir': { pos: 7, id: 1406, class: 6, level: 600, str: 136500, dex: 39500, int: 39500, con: 417500, lck: 63000, health: 1120570112, runes: { type: 41, res: [50, 50, 10], damage: 60 }, min: 1683, max: 3807, armor: 12500 },
             'Midgard Serpent': { pos: 8, id: 1407, class: 3, level: 625, str: 63500, dex: 163000, int: 63500, con: 507500, lck: 93500, health: 1417955072, runes: { type: 42, res: [50, 50, 50], damage: 60 }, min: 2734, max: 4686, armor: 12500 },
-            'Fenris Wolf': { pos: 9, id: 1408, class: 6, level: 645, str: 182000, dex: 42000, int: 42000, con: 575000, lck: 100000, health: 1657149952, runes: { type: 42, res: [50, 50, 50], damage: 60 }, min: 1811, max: 4222, armor: 12500 },
-            'Surtr': { pos: 10, id: 1409, class: 6, level: 660, str: 229500, dex: 62500, int: 62500, con: 711000, lck: 137000, health: 2096028032, runes: { type: 40, res: [60, 60, 60], damage: 60 }, min: 1849, max: 4091, armor: 12500 }
+            'Fenris Wolf': { pos: 9, id: 1408, class: 6, level: 645, str: 182000, dex: 42000, int: 42000, con: 575000, lck: 100000, health: 1657149952, runes: { type: 42, res: [50, 50, 50], damage: 60 }, min: 1806, max: 4222, armor: 12500 },
+            'Surtr': { pos: 10, id: 1409, class: 6, level: 660, str: 229500, dex: 62500, int: 62500, con: 711000, lck: 137000, health: 2096028032, runes: { type: 40, res: [60, 60, 60], damage: 60 }, min: 1849, max: 4550, armor: 12500 }
         }
     },
     '120': {
