@@ -150,6 +150,10 @@ function _jsonify (text) {
 }
 
 function _pretty_prefix (prefix) {
+    if (_empty(prefix)) {
+        return '';
+    }
+    
     const splitPrefix = prefix.split('_');
     const properName = splitPrefix[0].charAt(0).toUpperCase() + splitPrefix[0].slice(1);
     const properDomain = splitPrefix[1].toUpperCase();
