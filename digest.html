@@ -199,7 +199,7 @@
             function extractFights (json) {
                 let raws = [];
                 for (let [key, value] of filterPlayaJSON(json)) {
-                    if (key !== 'text') {
+                    if (key !== 'text' || !(value.includes('ownplayersave') || value.includes('fightheader'))) {
                         continue;
                     }
 
