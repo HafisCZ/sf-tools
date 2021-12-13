@@ -1341,6 +1341,7 @@ const DatabaseManager = new (class {
                         data.scrapbook_legendary = _try(r.legendaries, 'string');
                         data.witch = _try(r.witch, 'numbers');
                         data.idle = _try(r.idle, 'numbers');
+                        data.calendar = _try(r.calenderinfo, 'numbers');
 
                         // Post-process
                         if (data.save[435]) {
