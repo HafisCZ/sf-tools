@@ -374,9 +374,9 @@ class TableInstance {
             this.settings.evalHistory(this.array.map(p => p[1]));
         } else if (!skipEvaluation) {
             if (this.type == TableType.Players) {
-                this.settings.evalPlayers(array, simulatorLimit, array.perf);
+                this.settings.evalPlayers(this.array, simulatorLimit, this.array.perf);
             } else {
-                this.settings.evalGuilds(array);
+                this.settings.evalGuilds(this.array);
             }
         }
 
