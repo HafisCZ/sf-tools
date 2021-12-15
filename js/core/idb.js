@@ -1,6 +1,6 @@
 const DATABASE_PARAMS_V5 = [
     'sftools',
-    5,
+    6,
     {
         players: {
             key: ['identifier', 'timestamp'],
@@ -60,6 +60,31 @@ const DATABASE_PARAMS_V5 = [
                 database.createObjectStore('metadata', { keyPath: 'timestamp' });
             }
         }
+    ],
+    [
+        {
+            shouldApply: version => version < 6,
+            apply: async (database) => {
+                const players = await database.all('players');
+                const metadata = _array_to_hash(await database.all('metadata'), entry => [ entry.timestamp, Object.assign(entry, { players: [] }) ]);
+
+                for (const { timestamp: dirty_timestamp, identifier } of players) {
+                    const timestamp = parseInt(dirty_timestamp);
+                    if (!metadata[timestamp]) {
+                        metadata[timestamp] = {
+                            timestamp,
+                            players: []
+                        };
+                    }
+
+                    metadata[timestamp].players.push(identifier);
+                }
+
+                for (const data of Object.values(metadata)) {
+                    await database.set('metadata', data);
+                }
+            }
+        }
     ]
 ];
 
@@ -101,11 +126,13 @@ class IndexedDBWrapper {
         });
     }
 
-    constructor (name, version, stores, updaters) {
+    constructor (name, version, stores, updaters, dataUpdaters) {
         this.name = name;
         this.version = version;
+        this.oldVersion = version;
         this.stores = stores;
         this.updaters = updaters;
+        this.dataUpdaters = dataUpdaters;
         this.database = null;
     }
 
@@ -142,9 +169,20 @@ class IndexedDBWrapper {
                         }
                     }
                 }
+
+                this.oldVersion = event.oldVersion;
             }
-        }).then(db => {
+        }).then(async (db) => {
             this.database = db;
+
+            if (this.version != this.oldVersion && Array.isArray(this.dataUpdaters)) {
+                for (const updater of this.dataUpdaters) {
+                    if (updater.shouldApply(this.oldVersion)) {
+                        await updater.apply(this);
+                    }
+                }
+            }
+
             return this;
         });
     }
