@@ -924,12 +924,15 @@ const DatabaseManager = new (class {
                 for (const timestamp of this.Identifiers[identifier]) {
                     let isPlayer = this._isPlayer(identifier);
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+
+                    this._removeMetadata(identifier, timestamp);
                     this._removeFromPool(identifier, timestamp);
                 }
 
                 delete this.Identifiers[identifier];
             }
 
+            await this._updateMetadata();
             this._updateLists();
             resolve();
         });
@@ -1195,6 +1198,8 @@ const DatabaseManager = new (class {
 
             await this.Database.set('players', player);
         }
+
+        await this._updateMetadata();
 
         this._updateLists();
         for (const { identifier, timestamp } of migratedPlayers) {
