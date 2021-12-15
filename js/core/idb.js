@@ -740,14 +740,26 @@ const DatabaseManager = new (class {
         await this.Database.set('metadata', metadata);
     }
 
-    _removeMetadata (identifier, timestamp) {
-        _remove(this.Metadata[timestamp].identifiers, identifier);
+    _addMetadata (identifier, dirty_timestamp) {
+        const timestamp = parseInt(dirty_timestamp);
 
-        this._metadataDelta.push(parseInt(timestamp));
+        if (!this.Metadata[timestamp]) {
+            this.Metadata[timestamp] = { timestamp, identifiers: [] }
+        }
+
+        _push_unless_includes(this.Metadata[timestamp].identifiers, identifier);
+        this._metadataDelta.push(timestamp);
+    }
+
+    _removeMetadata (identifier, dirty_timestamp) {
+        const timestamp = parseInt(dirty_timestamp);
+
+        _remove(this.Metadata[timestamp].identifiers, identifier);
+        this._metadataDelta.push(timestamp);
     }
 
     async _updateMetadata () {
-        for (const timestamp of this._metadataDelta) {
+        for (const timestamp of _uniq(this._metadataDelta)) {
             if (_empty(this.Metadata[timestamp].identifiers)) {
                 await this.Database.remove(timestamp);
             } else {
@@ -1172,11 +1184,15 @@ const DatabaseManager = new (class {
 
         for (let group of migratedGroups) {
             this._addGroup(group);
+            this._addMetadata(group.identifier, group.timestamp);
+
             await this.Database.set('groups', group);
         }
 
         for (let player of migratedPlayers) {
             this._addPlayer(player);
+            this._addMetadata(player.identifier, player.timestamp);
+
             await this.Database.set('players', player);
         }
 
