@@ -607,10 +607,13 @@ const DatabaseManager = new (class {
             });
         } else {
             const attemptMigration = await DatabaseUtils.migrateable(profile.slot);
-            return DatabaseUtils.createSession(attemptMigration).then(async database => {
-                const beginTimestamp = Date.now();
+            return new Promise(async (resolve, reject) => {
+                this.Database = await DatabaseUtils.createSession(attemptMigration);
+                if (!this.Database) {
+                    reject({ message: 'Database was not opened correctly' });
+                }
 
-                this.Database = database;
+                const beginTimestamp = Date.now();
 
                 if (!profile.only_players) {
                     const groupFilter = DatabaseUtils.profileFilter(profile, 'primary_g');
@@ -684,6 +687,7 @@ const DatabaseManager = new (class {
                 Logger.log('PERFLOG', `Load done in ${Date.now() - beginTimestamp} ms`);
 
                 await Actions.apply('load');
+                resolve();
             });
         }
     }
