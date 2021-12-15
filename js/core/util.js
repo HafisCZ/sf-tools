@@ -45,13 +45,6 @@ function _push_unless_includes(arr, obj) {
     }
 }
 
-function _remove_unless_includes(arr, obj) {
-    const index = arr.indexOf(obj);
-    if (index > -1) {
-        arr.splice(index, 1);
-    }
-}
-
 function _present (obj) {
     return obj !== null && typeof obj !== 'undefined';
 }
@@ -153,7 +146,7 @@ function _pretty_prefix (prefix) {
     if (_empty(prefix)) {
         return '';
     }
-    
+
     const splitPrefix = prefix.split('_');
     const properName = splitPrefix[0].charAt(0).toUpperCase() + splitPrefix[0].slice(1);
     const properDomain = splitPrefix[1].toUpperCase();

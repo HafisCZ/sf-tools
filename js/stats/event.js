@@ -2171,7 +2171,7 @@ class FilesView extends View {
                 if (_has(this.selectedFiles, timestamp)) {
                     for (const ts of toChange) {
                         $(`[data-timestamp="${ts}"] > i`).addClass('outline');
-                        _remove_unless_includes(this.selectedFiles, ts);
+                        _remove(this.selectedFiles, ts);
                     }
                 } else {
                     for (const ts of toChange) {
