@@ -457,6 +457,8 @@ const DatabaseManager = new (class {
         this.PlayerTimestamps = [];
         this.Prefixes = [];
         this.GroupNames = {};
+
+        this._metadataDelta = [];
     }
 
     // INTERNAL: Add player
@@ -732,15 +734,28 @@ const DatabaseManager = new (class {
     }
 
     async _markHidden (timestamp, hidden) {
-        const metadata = Object.assign(this.Metadata[timestamp] || { }, { timestamp: parseInt(timestamp), hidden });
+        const metadata = Object.assign(this.Metadata[timestamp], { timestamp: parseInt(timestamp), hidden });
 
         this.Metadata[timestamp] = metadata;
         await this.Database.set('metadata', metadata);
     }
 
-    async _removeMetadata (timestamp) {
-        delete this.Metadata[timestamp];
-        await this.Database.remove('metadata', parseInt(timestamp));
+    _removeMetadata (identifier, timestamp) {
+        _remove(this.Metadata[timestamp].identifiers, identifier);
+
+        this._metadataDelta.push(parseInt(timestamp));
+    }
+
+    async _updateMetadata () {
+        for (const timestamp of this._metadataDelta) {
+            if (_empty(this.Metadata[timestamp].identifiers)) {
+                await this.Database.remove(timestamp);
+            } else {
+                await this.Database.set(this.Metadata[timestamp]);
+            }
+        }
+
+        this._metadataDelta = [];
     }
 
     // Check if player exists
@@ -784,9 +799,11 @@ const DatabaseManager = new (class {
         return new Promise(async (resolve, reject) => {
             for (let { identifier, timestamp, group } of players) {
                 await this.Database.remove('players', [identifier, parseInt(timestamp)]);
+                this._removeMetadata(identifier, timestamp);
                 this._unload(identifier, timestamp);
             }
 
+            await this._updateMetadata();
             this._updateLists();
             resolve();
         });
@@ -815,13 +832,15 @@ const DatabaseManager = new (class {
                 for (const identifier of this.Timestamps[timestamp]) {
                     let isPlayer = this._isPlayer(identifier);
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
-                    await this._removeMetadata(timestamp);
+
+                    this._removeMetadata(identifier, timestamp);
                     this._unload(identifier, timestamp);
                 }
 
                 delete this.Timestamps[timestamp];
             }
 
+            await this._updateMetadata();
             this._updateLists();
             resolve();
         });
@@ -833,9 +852,12 @@ const DatabaseManager = new (class {
                 for (const identifier of this.Timestamps[timestamp]) {
                     let isPlayer = this._isPlayer(identifier);
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
+
+                    this._removeMetadata(identifier, timestamp);
                 }
-                await this._removeMetadata(timestamp);
             }
+
+            await this._updateMetadata();
 
             this.Players = {};
             this.Groups = {};
@@ -976,10 +998,6 @@ const DatabaseManager = new (class {
                     }
 
                     await this._addFile(null, file.players, file.groups, 'merge');
-                }
-
-                for (const timestamp of timestamps) {
-                    await this._removeMetadata(timestamp);
                 }
 
                 await this.removeTimestamps(... timestamps);
