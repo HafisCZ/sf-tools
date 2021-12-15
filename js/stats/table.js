@@ -371,12 +371,12 @@ class TableInstance {
 
         // Evaluate variables
         if (this.type == TableType.History) {
-            this.settings.evalHistory(this.array.map(p => p[1]));
+            this.settings.evalHistory(this.array.map(p => p[1]), array.map(p => p[1]));
         } else if (!skipEvaluation) {
             if (this.type == TableType.Players) {
-                this.settings.evalPlayers(this.array, simulatorLimit, this.array.perf);
+                this.settings.evalPlayers(this.array, array, simulatorLimit, this.array.perf);
             } else {
-                this.settings.evalGuilds(this.array);
+                this.settings.evalGuilds(this.array, array);
             }
         }
 

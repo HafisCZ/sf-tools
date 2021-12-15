@@ -2020,6 +2020,8 @@ class Settings {
             functions: this.functions,
             variables: this.variablesReference,
             lists: {},
+            array: [],
+            array_unfiltered: [],
             // Constants have to be propagated through the environment
             constants: this.constants,
             row_indexes: this.row_indexes,
@@ -2147,7 +2149,7 @@ class Settings {
         }
     }
 
-    evalHistory (array) {
+    evalHistory (array, array_unfiltered) {
         // Evaluate row indexes
         this.evalRowIndexes(array);
 
@@ -2166,6 +2168,9 @@ class Settings {
 
         // Mark scope as segmented as well
         scope.segmented = true;
+
+        this.array = array;
+        this.array_unfiltered = array_unfiltered;
 
         // Iterate over all variables
         for (let [ name, variable ] of Object.entries(this.variables)) {
@@ -2202,7 +2207,7 @@ class Settings {
         this.evalRules();
     }
 
-    evalPlayers (array, simulatorLimit, entryLimit) {
+    evalPlayers (array, array_unfiltered, simulatorLimit, entryLimit) {
         // Evaluate row indexes
         this.evalRowIndexes(array, true);
 
@@ -2227,6 +2232,8 @@ class Settings {
             })
         }
 
+        this.array = array;
+        this.array_unfiltered = array_unfiltered;
         this.timestamp = array.timestamp;
         this.reference = array.reference;
 
@@ -2297,7 +2304,7 @@ class Settings {
         this.evalRules();
     }
 
-    evalGuilds (array) {
+    evalGuilds (array, array_unfiltered) {
         // Evaluate row indexes
         this.evalRowIndexes(array, true);
 
@@ -2326,6 +2333,8 @@ class Settings {
             })
         }
 
+        this.array = array;
+        this.array_unfiltered = array_unfiltered;
         this.timestamp = array.timestamp;
         this.reference = array.reference;
 
