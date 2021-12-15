@@ -761,9 +761,11 @@ const DatabaseManager = new (class {
     async _updateMetadata () {
         for (const timestamp of _uniq(this._metadataDelta)) {
             if (_empty(this.Metadata[timestamp].identifiers)) {
-                await this.Database.remove(timestamp);
+                delete this.Metadata[timestamp];
+
+                await this.Database.remove('metadata', timestamp);
             } else {
-                await this.Database.set(this.Metadata[timestamp]);
+                await this.Database.set('metadata', this.Metadata[timestamp]);
             }
         }
 
