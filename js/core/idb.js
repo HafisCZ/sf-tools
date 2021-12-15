@@ -680,10 +680,7 @@ const DatabaseManager = new (class {
                     }
                 }
 
-                const metadatas = await this.Database.all('metadata');
-                for (const metadata of metadatas) {
-                    this.Metadata[metadata.timestamp] = metadata;
-                }
+                this.Metadata = _array_to_hash(await this.Database.all('metadata'), md => [ md.timestamp, md ]);
 
                 const playerFilter = DatabaseUtils.profileFilter(profile);
                 let players = DatabaseUtils.filterArray(profile) || (_not_empty(playerFilter) ? (
