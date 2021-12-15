@@ -66,18 +66,18 @@ const DATABASE_PARAMS_V5 = [
             shouldApply: version => version < 6,
             apply: async (database) => {
                 const players = await database.all('players');
-                const metadata = _array_to_hash(await database.all('metadata'), entry => [ entry.timestamp, Object.assign(entry, { players: [] }) ]);
+                const groups = await database.all('groups');
+                const entries = [].concat(players, groups);
 
-                for (const { timestamp: dirty_timestamp, identifier } of players) {
+                const metadata = _array_to_hash(await database.all('metadata'), entry => [ entry.timestamp, Object.assign(entry, { identifiers: [] }) ]);
+
+                for (const { timestamp: dirty_timestamp, identifier } of entries) {
                     const timestamp = parseInt(dirty_timestamp);
                     if (!metadata[timestamp]) {
-                        metadata[timestamp] = {
-                            timestamp,
-                            players: []
-                        };
+                        metadata[timestamp] = { timestamp, identifiers: [] };
                     }
 
-                    metadata[timestamp].players.push(identifier);
+                    metadata[timestamp].identifiers.push(identifier);
                 }
 
                 for (const data of Object.values(metadata)) {
