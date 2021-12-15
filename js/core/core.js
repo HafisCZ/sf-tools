@@ -281,6 +281,7 @@ const ProfileManager = new (class {
         targets: player | group | file, // player, group and/or file
         action: 'tag', // what action does
         args: ['Outdated'] // arguments for the action if necessary
+        origins: [] // origins for import
     }
 */
 const Actions = new (class {
@@ -322,12 +323,16 @@ const Actions = new (class {
                 await this._applyAction(action, ... args);
             }
 
-            Logger.log('ACTIONS', `${pending.length} action(s) for event ${actTrigger} applied`);
+            Logger.log('ACTIONS', `${pending.length} action(s) for event ${actTrigger} processed`);
         }
     }
 
     async _applyAction (actionObj, ... actionArgs) {
-        const { trigger, target, test, action, args } = actionObj;
+        const { trigger, target, test, action, args, origins } = actionObj;
+        if (_not_empty(origins) && _has(origins, actionArgs[2])) {
+            return;
+        }
+
         const expr = new Expression(test);
 
         if (action === 'tag') {

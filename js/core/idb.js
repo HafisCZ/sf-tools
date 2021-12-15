@@ -1207,7 +1207,7 @@ const DatabaseManager = new (class {
             await this._track(identifier, timestamp);
         }
 
-        await Actions.apply('import', migratedPlayers, migratedGroups);
+        await Actions.apply('import', migratedPlayers, migratedGroups, origin);
     }
 
     getTracker (identifier, tracker) {
