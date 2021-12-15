@@ -329,7 +329,7 @@ const Actions = new (class {
 
     async _applyAction (actionObj, ... actionArgs) {
         const { trigger, target, test, action, args, origins } = actionObj;
-        if (_not_empty(origins) && _has(origins, actionArgs[2])) {
+        if (_not_empty(origins) && !_has(origins, actionArgs[2])) {
             return;
         }
 
