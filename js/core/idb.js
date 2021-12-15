@@ -875,7 +875,6 @@ const DatabaseManager = new (class {
 
             this.Players = {};
             this.Groups = {};
-            this.Metadata = {};
             this.Timestamps = {};
             this.Identifiers = {};
 
