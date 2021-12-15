@@ -1825,6 +1825,7 @@ class FilesView extends View {
     }
 
     hideMigrate () {
+        PopupController.open(LoaderPopup);
         DatabaseManager.migrateHiddenFiles().then(() => this.show());
     }
 
