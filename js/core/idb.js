@@ -761,8 +761,10 @@ const DatabaseManager = new (class {
     _removeMetadata (identifier, dirty_timestamp) {
         const timestamp = parseInt(dirty_timestamp);
 
-        _remove(this.Metadata[timestamp].identifiers, identifier);
-        this._metadataDelta.push(timestamp);
+        if (this.Metadata[timestamp]) {
+            _remove(this.Metadata[timestamp].identifiers, identifier);
+            this._metadataDelta.push(timestamp);
+        }
     }
 
     async _updateMetadata () {
