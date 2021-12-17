@@ -304,18 +304,19 @@ const Endpoint = new ( class {
                 uncheckable: false
             }).first().checkbox('set checked', 'true').checkbox('set disabled');
 
-            $('.list .checkbox').slice(1).checkbox('setting', 'onChecked', () => {
-                var name = $(event.target).attr('for') || this.customTarget;
-                this.customTarget = null;
+            for (const checkbox of $('.list .checkbox').slice(1)) {
+                const name = $(checkbox).find('input').attr('name');
 
-                this._setDownloading(name);
-                this.endpoint.querry_single(name, (value) => {
-                    this._removeDownloading(name);
-                }, () => {
-                    this.$step3.hide();
-                    this._showError('Download failed', true);
-                });
-            });
+                $(checkbox).checkbox('setting', 'onChecked', () => {
+                    this._setDownloading(name);
+                    this.endpoint.querry_single(name, (value) => {
+                        this._removeDownloading(name);
+                    }, () => {
+                        this.$step3.hide();
+                        this._showError('Download failed', true);
+                    });
+                })
+            }
         }, () => {
             this.$step4.hide();
             this._showError('Wrong username or password');
