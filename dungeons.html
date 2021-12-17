@@ -1375,7 +1375,7 @@
                 function showGraph (dungeon, boss, score, tries, healths) {
                     chart.options.title.text = [
                         `${ dungeon.name }: ${ boss.Name }`,
-                        `Winrate: ${ (100 * score / tries).toFixed(2) }% (${ score } out of ${ tries })`
+                        `Winrate: ${ (100 * score / tries).toFixed(2) }% (${ formatAsSpacedNumber(score, ' ') } out of ${ formatAsSpacedNumber(tries, ' ') })`
                     ];
                     chart.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
                     chart.data.labels = healths.map((a, b) => b);
