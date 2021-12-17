@@ -54,9 +54,11 @@ function _nil (obj) {
 }
 
 function _remove (arr, obj) {
-    const index = arr.indexOf(obj);
-    if (index > -1) {
-        arr.splice(index, 1);
+    if (arr) {
+        const index = arr.indexOf(obj);
+        if (index > -1) {
+            arr.splice(index, 1);
+        }
     }
 }
 
