@@ -1081,6 +1081,7 @@
                 }
 
                 $('#load-stats').click(() => {
+                    PopupController.open(LoaderPopup);
                     DatabaseManager.load(SELF_PROFILE).then(function () {
                         $('#stats-list').empty();
 
