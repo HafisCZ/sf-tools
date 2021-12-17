@@ -474,6 +474,35 @@ class DungeonSimulator {
             healths.push(health);
         }
 
+        let healthsLength = healths.length;
+        let truncSteps = Math.max(1, Math.floor(healthsLength / 5000));
+        if (truncSteps > 1) {
+            let truncLength = Math.ceil(healthsLength / truncSteps);
+            let truncHealths = new Array(truncLength);
+
+            healths.sort((a, b) => a - b);
+
+            for (let i = 0; i < truncLength; i++) {
+                let sliceSum = 0;
+                let slices = 0;
+                for (let j = 0; j < truncSteps; j++) {
+                    let iterator = i * truncSteps + j;
+                    if (iterator >= healthsLength) {
+                        break;
+                    } else {
+                        slices++;
+                        sliceSum += healths[iterator];
+                    }
+                }
+
+                if (slices > 0) {
+                    truncHealths[i] = Math.max(0, sliceSum / slices);
+                }
+            }
+
+            healths = truncHealths;
+        }
+
         return {
             iterations: iterations,
             score: score,
