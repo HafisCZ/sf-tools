@@ -1333,17 +1333,22 @@
                                         }));
                                     }
 
-                                    if (threads * iterations > 1E7) {
-                                        results = results.concat(truncateHealths(_sort_asc(healths)));
-                                    } else {
-                                        results = results.concat(healths);
-                                    }
-
+                                    results.push(healths)
                                     totalScore += score;
                                     totalTries += iterations;
 
                                     if (totalTries == threads * iterations) {
-                                        showGraph(dungeon, boss, totalScore, totalTries, truncateHealths(_sort_asc(results)));
+                                        let finalResults = new Array(results[0].length);
+                                        for (let i = 0; i < results[0].length; i++) {
+                                            let healthsSum = 0;
+                                            for (let j = 0; j < threads; j++) {
+                                                healthsSum += results[j][i];
+                                            }
+
+                                            finalResults[i] = healthsSum / threads;
+                                        }
+
+                                        showGraph(dungeon, boss, totalScore, totalTries, _sort_asc(finalResults));
                                         $('#winchart').removeClass('faded-out');
                                         toggleAll();
                                     }
@@ -1359,18 +1364,6 @@
                         }
                     }
                 });
-
-                function truncateHealths (healths) {
-                    let step = Math.max(1, Math.floor(healths.length / 5000));
-                    let alen = Math.ceil(healths.length / step);
-                    let arry = new Array(alen);
-                    for (let i = 0; i < alen; i++) {
-                        let slice = _slice_len(healths, i * step, step);
-                        arry[i] = Math.max(0, _sum(slice) / slice.length);
-                    }
-
-                    return arry;
-                }
 
                 function showGraph (dungeon, boss, score, tries, healths) {
                     chart.options.title.text = [
