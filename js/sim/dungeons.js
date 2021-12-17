@@ -501,6 +501,8 @@ class DungeonSimulator {
             }
 
             healths = truncHealths;
+        } else {
+            healths.sort((a, b) => a - b);
         }
 
         return {
