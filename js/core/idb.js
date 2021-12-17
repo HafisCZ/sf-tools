@@ -293,17 +293,24 @@ class DatabaseUtils {
                 let migratedDatabase = await new IndexedDBWrapper(... DATABASE_PARAMS_V1).open();
                 let migratedFiles = await migratedDatabase.where('files');
 
-                for (let file of migratedFiles) {
+                for (const file of migratedFiles) {
                     const version = file.version;
                     const timestamp = file.timestamp;
+                    const players = file.players.map(p => MigrationUtils.migratePlayer(p, 'migration', timestamp, version));
+                    const groups = file.groups.map(g =>  MigrationUtils.migrateGroup(g, 'migration', timestamp));
 
-                    for (let player of file.players) {
-                        await database.set('players', MigrationUtils.migratePlayer(player, 'migration', timestamp, version));
+                    for (const player of players) {
+                        await database.set('players', player);
                     }
 
-                    for (let group of file.groups) {
-                        await database.set('groups', MigrationUtils.migrateGroup(group, 'migration', timestamp));
+                    for (const group of groups) {
+                        await database.set('groups', group);
                     }
+
+                    await database.set('metadata', {
+                        timestamp: parseInt(timestamp),
+                        identifiers: file.players.map(p => p.identifier).concat(file.groups.map(g => g.identifier))
+                    });
                 }
 
                 Logger.log('MIGRATE', `Migrating trackers`);
