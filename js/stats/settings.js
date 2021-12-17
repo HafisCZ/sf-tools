@@ -1,7 +1,8 @@
-const TableType = {
+const ScriptType = {
     History: 0,
     Players: 1,
-    Group: 2
+    Group: 2,
+    Tracker: 3
 }
 
 const ARG_MAP = {
@@ -109,9 +110,9 @@ class RuleEvaluator {
 }
 
 const FilterTypes = {
-    'Guild': TableType.Group,
-    'Player': TableType.History,
-    'Players': TableType.Players
+    'Guild': ScriptType.Group,
+    'Player': ScriptType.History,
+    'Players': ScriptType.Players
 };
 
 class Command {
@@ -1416,9 +1417,9 @@ class Settings {
 
         // Special constants for macros
         let constants = new Constants();
-        constants.addConstant('guild', TableType.Group);
-        constants.addConstant('player', TableType.History);
-        constants.addConstant('players', TableType.Players);
+        constants.addConstant('guild', ScriptType.Group);
+        constants.addConstant('player', ScriptType.History);
+        constants.addConstant('players', ScriptType.Players);
 
         // Generate initial settings
         let settings = Settings.handleMacroVariables(lines, constants);
@@ -2052,13 +2053,13 @@ class Settings {
         if (typeof this.globals.layout != 'undefined') {
             return this.globals.layout;
         } else {
-            if (this.type == TableType.Players) {
+            if (this.type == ScriptType.Players) {
                 return [
                     ... (hasStatistics ? [ 'statistics', hasRows ? '|' : '_' ] : []),
                     ... (hasRows ? (hasStatistics ? [ 'rows', '_' ] : [ 'rows', '|', '_' ]) : []),
                     'table'
                 ];
-            } else if (this.type == TableType.Group) {
+            } else if (this.type == ScriptType.Group) {
                 return [
                     'table',
                     ... (hasStatistics || hasRows || hasMembers ? [ '_' ] : []),
@@ -2663,7 +2664,7 @@ const SettingsManager = new (class {
     }
 
     tracker () {
-        return new Settings(this.get('tracker', '', ''));
+        return new Settings(this.get('tracker', '', ''), ScriptType.Tracker);
     }
 
     trackerConfig () {

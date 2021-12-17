@@ -23,7 +23,7 @@ class GroupDetailView extends View {
         super(parent);
 
         this.$table = this.$parent.find('[data-op="table"]');
-        this.table = new TableController(this.$table, TableType.Group);
+        this.table = new TableController(this.$table, ScriptType.Group);
 
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
@@ -707,7 +707,7 @@ class PlayerHistoryView extends View {
         super(parent);
 
         this.$table = this.$parent.find('[data-op="table"]');
-        this.table = new TableController(this.$table, TableType.History);
+        this.table = new TableController(this.$table, ScriptType.History);
 
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
@@ -844,8 +844,8 @@ class BrowseView extends View {
         this.$table = this.$parent.find('[data-op="table"]');
 
         // Tables
-        this.tableBase = new TableController(this.$table, TableType.Players);
-        this.tableQ = new TableController(this.$table, TableType.Players);
+        this.tableBase = new TableController(this.$table, ScriptType.Players);
+        this.tableQ = new TableController(this.$table, ScriptType.Players);
 
         // Keep track of what table is displayed and swap if necessary later
         this.table = this.tableBase;

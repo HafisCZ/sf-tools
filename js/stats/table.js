@@ -341,7 +341,7 @@ class TableInstance {
     setEntries (array, skipEvaluation = false, simulatorLimit = 0, manualSort = null) {
         let shouldUpdate = false;
 
-        if (this.type == TableType.History) {
+        if (this.type == ScriptType.History) {
             this.array = array.map(([ timestamp, e ]) => {
                 let obj = DatabaseManager.getPlayer(e.Identifier, timestamp);
                 let disc = this.settings.discardRules.some(rule => new ExpressionScope(this.settings).with(obj, obj).eval(rule));
@@ -349,7 +349,7 @@ class TableInstance {
 
                 return disc ? null : [ timestamp, obj ];
             }).filter(e => e);
-        } else if (this.type == TableType.Players) {
+        } else if (this.type == ScriptType.Players) {
             this.array = array.map(obj => {
                 let { player, compare } = obj;
 
@@ -370,22 +370,22 @@ class TableInstance {
         }
 
         // Evaluate variables
-        if (this.type == TableType.History) {
+        if (this.type == ScriptType.History) {
             this.settings.evalHistory(this.array.map(p => p[1]), array.map(p => p[1]));
         } else if (!skipEvaluation) {
-            if (this.type == TableType.Players) {
+            if (this.type == ScriptType.Players) {
                 this.settings.evalPlayers(this.array, array, simulatorLimit, this.array.perf);
             } else {
                 this.settings.evalGuilds(this.array, array);
             }
         }
 
-        if (!skipEvaluation || this.type == TableType.History) {
+        if (!skipEvaluation || this.type == ScriptType.History) {
             ExpressionCache.reset();
             this.clearCache();
         }
 
-        if (manualSort && this.type != TableType.History) {
+        if (manualSort && this.type != ScriptType.History) {
             this.array.sort((a, b) => manualSort(b.player, b.compare) - manualSort(a.player, a.compare)).forEach((entry, i) => entry.index = i);
         }
 
@@ -403,7 +403,7 @@ class TableInstance {
         let dividerStyle = this.getCellDividerStyle();
         let rowHeight = this.settings.getRowHeight();
 
-        if (this.type == TableType.History) {
+        if (this.type == ScriptType.History) {
             // Loop over all items of the array
             for (let i = 0; i < this.array.length; i++) {
                 // Get variables
@@ -445,7 +445,7 @@ class TableInstance {
                     content: content
                 })
             }
-        } else if (this.type == TableType.Players) {
+        } else if (this.type == ScriptType.Players) {
             // Whether timestamps match
             let noCompare = this.array.reference == this.array.timestamp;
 
@@ -532,7 +532,7 @@ class TableInstance {
                     })
                 });
             }
-        } else if (this.type == TableType.Group) {
+        } else if (this.type == ScriptType.Group) {
             // Whether timestamps match
             let noCompare = this.array.reference == this.array.timestamp;
 
@@ -1363,7 +1363,7 @@ class TableController {
             ExpressionCache.start();
 
             this.table.setEntries(... this.entries);
-            if (this.type != TableType.History) {
+            if (this.type != ScriptType.History) {
                 this.table.sort();
             }
 
@@ -1371,7 +1371,7 @@ class TableController {
         }
 
         // Reset sorting
-        if (sorting != null && this.type != TableType.History) {
+        if (sorting != null && this.type != ScriptType.History) {
             this.table.sorting = sorting;
             this.table.sort();
         }
