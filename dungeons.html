@@ -1201,11 +1201,11 @@
                 });
 
                 function showMassDungeonResults (bosses, results) {
-                    bosses = bosses.map((dungeon, index) => Object.assign({ result: results[index] }, dungeon)).sort((b, a) => a.result - b.result);
+                    bosses = bosses.map((dungeon, index) => Object.assign(_dig(results, index), dungeon)).sort((b, a) => a.score - b.score);
 
                     $('#results-modal .content').html(`
                         <div class="ui two column grid">
-                            ${ bosses.map(({ boss, dungeon, name, result }) => {
+                            ${ bosses.map(({ boss, dungeon, name, score, healths }) => {
                                 return `
                                     <div class="eleven wide column" style="position: relative;">
                                         <span${ dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
@@ -1214,7 +1214,7 @@
                                             <span style="position: absolute; left: 3em; top: 1.4em;">${ name }</span>
                                         </span>
                                     </div>
-                                    <div class="five wide column text-center">${ result == 0 ? 'Not possible' : `${ result.toFixed(2) }%` }</div>
+                                    <div class="five wide column text-center">${ score == 0 ? 'Not possible' : `${ score.toFixed(2) }%` }</div>
                                 `;
                             }).join('') }
                         </div>
@@ -1271,9 +1271,13 @@
 
                             worker.addEventListener('message', (message) => {
                                 if (message.data.command == 'finished') {
-                                    let { score, iterations } = message.data.results;
+                                    let { score, iterations, healths } = message.data.results;
 
-                                    results[message.data.index] = 100 * score / iterations;
+                                    results[message.data.index] = {
+                                        score: 100 * score / iterations,
+                                        healths: healths
+                                    };
+
                                     if (--resultsRemaining <= 0) {
                                         toggleAll();
                                         showMassDungeonResults(availableBosses, results);
