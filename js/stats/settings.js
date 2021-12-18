@@ -692,6 +692,32 @@ const SettingsCommands = [
         (root, name, value) => SFormat.Keyword('var ') + SFormat.Constant(name) + ' ' + SFormat.Normal(value)
     ).copyable(),
     /*
+        Embedded table
+    */
+    new Command(
+        /^embed (.+) as (\w+)$/,
+        (root, expression, name) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.embedBlock(name, ast);
+            }
+        },
+        (root, expression, name) => SFormat.Keyword('embed ') + Expression.format(expression, root) + SFormat.Keyword(' as ') + SFormat.Normal(name)
+    ).copyable(),
+    new Command(
+        /^embed as (\w+)$/,
+        (root, name) => root.embedBlock(name, null),
+        (root, expression, name) => SFormat.Keyword('embed as ') + SFormat.Normal(name)
+    ).copyable(),
+    /*
+        Embedded table end
+    */
+    new Command(
+        /^embed end$/,
+        (root) => root.embedClose(),
+        (root) => SFormat.Keyword('embed end')
+    ).copyable(),
+    /*
         Layout
     */
     new Command(
@@ -1190,6 +1216,7 @@ class Settings {
         this.header = null;
         this.definition = null;
         this.row = null;
+        this.embed = null;
 
         // Parse settings
         for (let line of Settings.handleMacros(string, type)) {
@@ -1588,7 +1615,7 @@ class Settings {
 
         // Push header
         obj = this.header;
-        if (obj && this.category) {
+        if (obj && (this.embed || this.category)) {
             let name = obj.name;
 
             // Get mapping if exists
@@ -1635,7 +1662,7 @@ class Settings {
                 }
 
                 // Push
-                this.category.headers.push(obj);
+                (this.embed || this.category).headers.push(obj);
             }
 
             this.header = null;
@@ -1821,7 +1848,7 @@ class Settings {
 
     // Add alias
     addAlias (name) {
-        let object = (this.definition || this.header);
+        let object = (this.definition || this.header || this.embed);
         if (object) {
             object.alias = name;
         }
@@ -1829,7 +1856,7 @@ class Settings {
 
     // Add custom style
     addStyle (name, value) {
-        let object = (this.row || this.definition || this.header || this.sharedCategory || this.shared);
+        let object = (this.row || this.definition || this.header || this.embed || this.sharedCategory || this.shared);
         if (object) {
             if (!object.style) {
                 object.style = new CellStyle();
@@ -1841,21 +1868,21 @@ class Settings {
 
     // Add color expression to the header
     addColorExpression (expression) {
-        let object = (this.row || this.definition || this.header);
+        let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
             object.color.expr = expression;
         }
     }
 
     addAliasExpression (expression) {
-        let object = (this.row || this.definition || this.header || this.category);
+        let object = (this.row || this.definition || this.header || this.embed || this.category);
         if (object) {
             object['expa'] = expression;
         }
     }
 
     addGlobOrder (index, order) {
-        let object = this.header;
+        let object = (this.header || this.embed);
         if (object) {
             object['glob_order'] = {
                 ord: order,
@@ -1866,14 +1893,14 @@ class Settings {
 
     // Add format expression to the header
     addFormatExpression (expression) {
-        let object = (this.row || this.definition || this.header);
+        let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
             object.value.format = expression;
         }
     }
 
     addBreaklineRule (value) {
-        let object = (this.row || this.definition || this.header);
+        let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
             object.value.breakline = value;
         }
@@ -1881,21 +1908,21 @@ class Settings {
 
     // Add format extra expression to the header
     addFormatExtraExpression (expression) {
-        let object = (this.row || this.definition || this.header);
+        let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
             object.value.extra = expression;
         }
     }
 
     addFormatStatisticsExpression (expression) {
-        let object = (this.row || this.definition || this.header);
+        let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
             object.value.formatStatistics = expression;
         }
     }
 
     addFormatDifferenceExpression (expression) {
-        let object = (this.row || this.definition || this.header);
+        let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
             object.value.formatDifference = expression;
         }
@@ -1903,7 +1930,7 @@ class Settings {
 
     // Add color rule to the header
     addColorRule (condition, referenceValue, value) {
-        let object = (this.row || this.definition || this.header);
+        let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
             object.color.rules.addRule(condition, referenceValue, value);
         }
@@ -1911,7 +1938,7 @@ class Settings {
 
     // Add value rule to the header
     addValueRule (condition, referenceValue, value) {
-        let object = (this.row || this.definition || this.header);
+        let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
             object.value.rules.addRule(condition, referenceValue, value);
         }
@@ -1940,7 +1967,7 @@ class Settings {
 
     // Add shared variable
     addShared (name, value) {
-        let object = (this.row || this.definition || this.header || this.sharedCategory || this.shared);
+        let object = (this.row || this.definition || this.header || this.embed || this.sharedCategory || this.shared);
         if (object) {
             object[name] = value;
         }
@@ -1950,7 +1977,7 @@ class Settings {
 
     // Add extension
     addExtension (... names) {
-        let object = (this.row || this.definition || this.header || this.sharedCategory || this.shared);
+        let object = (this.row || this.definition || this.header || this.embed || this.sharedCategory || this.shared);
         if (object) {
             if (!object.extensions) {
                 object.extensions = [];
@@ -1967,7 +1994,7 @@ class Settings {
 
     // Add local variable
     addLocal (name, value) {
-        let object = (this.row || this.definition || this.header);
+        let object = (this.row || this.definition || this.header || this.embed);
         if (object) {
             object[name] = value;
         }
@@ -1975,20 +2002,44 @@ class Settings {
 
     // Add action
     addAction (value) {
-        let object = this.header;
+        let object = (this.header || this.embed);
         if (object) {
             object['action'] = value;
         }
     }
 
     addHeaderVariable (name, value) {
-        let object = (this.row || this.definition || this.header || this.sharedCategory || this.shared);
+        let object = (this.row || this.definition || this.header || this.embed || this.sharedCategory || this.shared);
         if (object) {
             if (!object.vars) {
                 object.vars = {};
             }
 
             object.vars[name] = value;
+        }
+    }
+
+    embedBlock (name, ast) {
+        this.push();
+
+        this.embed = {
+            embedded: true,
+            name,
+            ast,
+            headers: [],
+            value: this.getValueBlock(),
+            color: this.getColorBlock()
+        }
+    }
+
+    embedClose () {
+        if (this.embed) {
+            this.push();
+
+            if (this.category) {
+                this.category.headers.push(this.embed);
+                this.embed = null;
+            }
         }
     }
 

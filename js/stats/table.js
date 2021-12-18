@@ -171,7 +171,76 @@ class TableInstance {
                     }
                 }
 
-                if (header.grouped) {
+                if (header.embedded) {
+                    group.add(header, (player, compare) => {
+                        let values = header.ast ? new ExpressionScope(this.settings).with(player, compare).via(header).eval(header.ast) : null;
+                        if (values && !Array.isArray(values)) {
+                            if (typeof values === 'object') {
+                                values = Object.values(values);
+                            } else {
+                                values = [values];
+                            }
+                        }
+
+                        let generators = header.headers.map(embedHeader => {
+                            return {
+                                name: () => {
+                                    let name = embedHeader.alias || embedHeader.name || '';
+
+                                    return this.getCell(
+                                        embedHeader,
+                                        name,
+                                        '',
+                                        false,
+                                        Math.max(100, name.length * 12)
+                                    );
+                                },
+                                get: (value) => {
+                                    let val = getSafeExpr(
+                                        embedHeader.expr,
+                                        player,
+                                        compare,
+                                        this.settings,
+                                        new ExpressionScope(this.settings).with(player, compare).addSelf(value).via(embedHeader),
+                                        embedHeader
+                                    );
+
+                                    if (val == undefined) {
+                                        return this.getEmptyCell(embedHeader, false);
+                                    } else {
+                                        let cmp = embedHeader.difference ? getSafeExpr(
+                                            embedHeader.expr,
+                                            compare,
+                                            compare,
+                                            this.settings.getCompareEnvironment(),
+                                            new ExpressionScope(this.settings.getCompareEnvironment()).with(compare, compare).addSelf(value).via(embedHeader),
+                                            embedHeader
+                                        ) : undefined;
+
+                                        return this.getCell(
+                                            embedHeader,
+                                            this.getCellDisplayValue(embedHeader, val, cmp, player, compare),
+                                            this.getCellColor(embedHeader, val, player, compare),
+                                            false
+                                        );
+                                    }
+                                }
+                            };
+                        });
+
+                        let entries = generators.map(({ name, get }) => {
+                            return `<tr>${ name() }${ values.map(v => get(v)).join('') }</tr>`;
+                        }).join('');
+
+                        return `
+                            <td>
+                                <table style="width: 100%; border-spacing: 0; border-collapse: collapse;">
+                                    ${entries}
+                                </table>
+                            </td>
+                        `;
+                    }, null, (player, compare) => 0 /* TODO: Implement native sorting */, showBorder);
+                } else if (header.grouped) {
                     // Create grouped header
                     let callWidth = header.width || 100;
                     group.add(header, (player, compare) => {
