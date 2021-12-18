@@ -3510,6 +3510,13 @@ class OptionsView extends View {
     constructor (parent) {
         super(parent)
 
+        this.$dropdownTab = this.$parent.find('[data-op="dropdown-tab"]');
+        this.$dropdownTab.dropdown();
+        this.$dropdownTab.dropdown('set selected', SiteOptions.tab);
+        this.$dropdownTab.dropdown('setting', 'onChange', (value, text) => {
+            SiteOptions.tab = value;
+        });
+
         this.prepareCheckbox('always_prev', 'alwaysprev');
         this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('insecure', 'insecure');
