@@ -1,4 +1,34 @@
 const CHANGELOG = {
+    'v5.1922': {
+        'Statistics': [
+            'Improved file metadata',
+            'Added missing loaders',
+            'Added inventory slot information to items',
+            'Added option to hide files where all players were hidden individually',
+            'Added <code>hsl(a)</code> function',
+            'Added calendar data',
+            'Added error if database did not load properly',
+            'Added <code>table_array</code> and <code>table_array_unfiltered</code> variables',
+            'Fixed underworld upgrades when player has yet to unlock underworld',
+            'Fixed custom order',
+            'Fixed issue when removing all files',
+            'Fixed discarded players appearing in table variables',
+            'Fixed endpoint player picker'
+        ],
+        'Dungeon Simulator': [
+            'Added health chart into sim-all results',
+            'Added missing loaders'
+        ],
+        'Pet Simulator': [
+            'Added missing loaders'
+        ],
+        'Boss Viewer': [
+            'Fixed loading of HAR files for chrome'
+        ],
+        'Gold & Experience': [
+            'Added MajkG\'s souls curve'
+        ]
+    },
     'v5.1856': {
         'Statistics': [
             'Added filters for guilds to profiles',
