@@ -515,9 +515,12 @@
             </div>
         </div>
 
-        <div id="results-modal" class="ui mini modal" style="max-height: 94vh; overflow-y: auto;">
+        <div id="results-modal" class="ui mini modal">
           <div class="header">Results</div>
-          <div class="content">
+          <div style="padding-left: 1em; padding-right: 1em; border-bottom: 1px solid rgba(34,36,38,.15)">
+              <canvas id="list-winchart" style="width: 100%;"></canvas>
+          </div>
+          <div class="content" style="max-height: 70vh; overflow-y: auto;">
 
           </div>
         </div>
@@ -1016,8 +1019,12 @@
 
                 select(0);
 
-                var chart = new Chart($('#winchart'), {
+                const chart = new Chart($('#winchart'), {
                     type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,callback:function(value,index,values){return `${ value }%`}}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'black',tension:0},point:{radius:0}}}
+                });
+
+                const chartList = new Chart($('#list-winchart'), {
+                    type:'line',data:{datasets:[{fill:!1,borderWidth:1.5,data:[]}]},options:{title:{display:!0},legend:{display:!1},scales:{yAxes:[{display:!0,ticks:{min:0,max:100,padding:10,stepSize:20,display:!1}}],xAxes:[{display:!1}]},tooltips:{enabled:!1},animation:{duration:0},events:[],hover:{animationDuration:0,},showTooltips:!1,responsiveAnimationDuration:0,elements:{line:{borderColor:'black',tension:0},point:{radius:0}}}
                 });
 
                 function showData (data) {
@@ -1205,20 +1212,28 @@
 
                     $('#results-modal .content').html(`
                         <div class="ui two column grid">
-                            ${ bosses.map(({ boss, dungeon, name, score, healths }) => {
+                            ${ bosses.map(({ boss, dungeon, name, score, healths }, index) => {
                                 return `
-                                    <div class="eleven wide column" style="position: relative;">
-                                        <span${ dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
-                                            <img class="ui centered image boss-image" style="position: absolute; left: 0; height: 2.5em; top: 0.5em; width: 2.5em;" src="res/class${ boss.class }.png">&nbsp;
-                                            <span style="position: absolute; left: 3.75em; top: 0.4em; font-size: 80%;">${ dungeon.name }</span>
-                                            <span style="position: absolute; left: 3em; top: 1.4em;">${ name }</span>
-                                        </span>
+                                    <div class="row" data-id="${index}" style="padding: 0;">
+                                        <div class="eleven wide column" style="position: relative; padding-top: 1rem; padding-bottom: 1rem;">
+                                            <span${ dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
+                                                <img class="ui centered image boss-image" style="position: absolute; left: 0; height: 2.5em; top: 0.5em; width: 2.5em;" src="res/class${ boss.class }.png">&nbsp;
+                                                <span style="position: absolute; left: 3.75em; top: 0.4em; font-size: 80%;">${ dungeon.name }</span>
+                                                <span style="position: absolute; left: 3em; top: 1.4em;">${ name }</span>
+                                            </span>
+                                        </div>
+                                        <div class="five wide column text-center" style="padding-top: 1rem; padding-bottom: 1rem;">${ score == 0 ? 'Not possible' : `${ score.toFixed(2) }%` }</div>
                                     </div>
-                                    <div class="five wide column text-center">${ score == 0 ? 'Not possible' : `${ score.toFixed(2) }%` }</div>
                                 `;
                             }).join('') }
                         </div>
                     `);
+                    $('#results-modal .content .row').mouseenter((event) => {
+                        let index = event.currentTarget.dataset.id;
+                        let { boss, dungeon, name, score, healths, iterations } = bosses[index];
+                        showGraph(chartList, dungeon, { Name: name }, score, iterations, healths);
+                    });
+                    $('#results-modal .content .row').first().trigger('mouseenter');
                     $('#results-modal').modal('show');
                 }
 
@@ -1275,7 +1290,8 @@
 
                                     results[message.data.index] = {
                                         score: 100 * score / iterations,
-                                        healths: healths
+                                        healths,
+                                        iterations
                                     };
 
                                     if (--resultsRemaining <= 0) {
@@ -1292,7 +1308,8 @@
                                 players: preparePlayerInstances(dungeon),
                                 boss: getBossData(boss),
                                 iterations: iterations,
-                                index: index
+                                index: index,
+                                hpcap: 500
                             }])
                         }
 
@@ -1352,7 +1369,7 @@
                                             finalResults[i] = healthsSum / threads;
                                         }
 
-                                        showGraph(dungeon, boss, totalScore, totalTries, _sort_asc(finalResults));
+                                        showGraph(chart, dungeon, boss, totalScore, totalTries, _sort_asc(finalResults));
                                         $('#winchart').removeClass('faded-out');
                                         toggleAll();
                                     }
@@ -1369,14 +1386,14 @@
                     }
                 });
 
-                function showGraph (dungeon, boss, score, tries, healths) {
-                    chart.options.title.text = [
-                        `${ dungeon.name }: ${ boss.Name }`,
+                function showGraph (graph, dungeon, boss, score, tries, healths) {
+                    graph.options.title.text = [
+                        `${ dungeon.shadow ? 'Shadow ' : '' }${ dungeon.name }: ${ boss.Name }`,
                         `Winrate: ${ (100 * score / tries).toFixed(2) }% (${ formatAsSpacedNumber(score, ' ') } out of ${ formatAsSpacedNumber(tries, ' ') })`
                     ];
-                    chart.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
-                    chart.data.labels = healths.map((a, b) => b);
-                    chart.update(0);
+                    graph.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
+                    graph.data.labels = healths.map((a, b) => b);
+                    graph.update(0);
                 }
             });
         </script>
