@@ -750,8 +750,15 @@
                     UI.register(UI.ChangeLogs, 'show-changelog');
                     UI.register(UI.Profiles, 'show-profile');
                     UI.register(UI.Options, 'show-options');
+
                     PopupController.close(LoaderPopup);
-                    UI.show(UI.Groups);
+
+                    UI.show({
+                        'players': UI.Players,
+                        'groups': UI.Groups,
+                        'browse': UI.Browse,
+                        'files': UI.Files
+                    }[SiteOptions.tab || 'groups']);
                 }).catch(function (e) {
                     PopupController.close(LoaderPopup);
                     PopupController.open(ErrorPopup, `<h4 class="ui white header text-center">Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.</h4><br>${e.message}`);
