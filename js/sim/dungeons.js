@@ -443,6 +443,7 @@ self.addEventListener('message', function (message) {
     let players = message.data.players;
     let boss = message.data.boss;
     let index = message.data.index;
+    let hpcap = message.data.hpcap || 5000;
     let iterations = message.data.iterations || 100000;
     if (message.data.log || false) {
         FIGHT_DUMP_ENABLED = true;
@@ -451,7 +452,7 @@ self.addEventListener('message', function (message) {
     if (players && boss) {
         self.postMessage({
             command: 'finished',
-            results: new DungeonSimulator().simulate(players, boss, iterations),
+            results: new DungeonSimulator().simulate(players, boss, iterations, hpcap),
             log: FIGHT_DUMP_OUTPUT,
             index: index
         });
@@ -461,7 +462,7 @@ self.addEventListener('message', function (message) {
 });
 
 class DungeonSimulator {
-    simulate (players, boss, iterations) {
+    simulate (players, boss, iterations, hpcap) {
         this.cache(players, boss);
 
         let score = 0;
@@ -475,7 +476,7 @@ class DungeonSimulator {
         }
 
         let healthsLength = healths.length;
-        let truncSteps = Math.max(1, Math.floor(healthsLength / 5000));
+        let truncSteps = Math.max(1, Math.floor(healthsLength / hpcap));
         if (truncSteps > 1) {
             let truncLength = Math.ceil(healthsLength / truncSteps);
             let truncHealths = new Array(truncLength);
