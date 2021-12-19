@@ -722,7 +722,7 @@ const SettingsCommands = [
     */
     new Command(
         /^embed end$/,
-        (root) => root.embedClose(),
+        (root) => root.pushEmbed(),
         (root) => SFormat.Keyword('embed end')
     ).copyable(),
     /*
@@ -1242,7 +1242,8 @@ class Settings {
             }
         }
 
-        // Push last category
+        // Push last embed && category
+        this.pushEmbed();
         this.pushCategory();
     }
 
@@ -2047,12 +2048,27 @@ class Settings {
         }
     }
 
-    embedClose () {
-        if (this.embed) {
+    pushEmbed () {
+        let obj = this.embed;
+        if (obj) {
             this.push();
 
+            if (!obj.clean) {
+                this.merge(obj, this.sharedCategory);
+                this.merge(obj, this.shared);
+            } else {
+                this.merge(obj, {
+                    visible: true,
+                    statistics_color: true
+                });
+            }
+
+            if (obj.background) {
+                obj.color.rules.addRule('db', 0, obj.background);
+            }
+
             if (this.category) {
-                this.category.headers.push(this.embed);
+                this.category.headers.push(obj);
                 this.embed = null;
             }
         }
