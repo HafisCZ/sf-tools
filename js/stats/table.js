@@ -234,13 +234,7 @@ class TableInstance {
                             return `<tr>${ name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
                         }).join('');
 
-                        return `
-                            <td>
-                                <table style="width: 100%; border-spacing: 0; border-collapse: collapse;">
-                                    ${entries}
-                                </table>
-                            </td>
-                        `;
+                        return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare));
                     }, null, (player, compare) => 0 /* TODO: Implement native sorting */, showBorder);
                 } else if (header.grouped) {
                     // Create grouped header
@@ -1556,5 +1550,13 @@ const CellGenerator = {
     // Small text,
     Small: function (c) {
         return `<span>${ c }</span>`;
+    },
+    // Embed table
+    EmbedTable: function (c, b) {
+        return `<td style="padding: 0;">
+            <table style="width: 100%; border-spacing: 0; border-collapse: collapse; ${ b ? `background:${ b };` : '' }">
+                ${c}
+            </table>
+        </td>`
     }
 }
