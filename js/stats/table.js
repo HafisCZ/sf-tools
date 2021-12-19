@@ -183,6 +183,7 @@ class TableInstance {
                             values = Array.isArray(value) ? value : [value];
                         }
 
+                        let allBlank = _all_true(header.headers, h => !(h.alias || h.name));
                         let generators = header.headers.map((embedHeader) => {
                             return {
                                 name: () => {
@@ -231,7 +232,7 @@ class TableInstance {
                         });
 
                         let entries = generators.map(({ name, get }) => {
-                            return `<tr>${ name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
+                            return `<tr>${ allBlank ? '' : name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
                         }).join('');
 
                         return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare));
