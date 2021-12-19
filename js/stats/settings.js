@@ -692,30 +692,20 @@ const SettingsCommands = [
         (root, name, value) => SFormat.Keyword('var ') + SFormat.Constant(name) + ' ' + SFormat.Normal(value)
     ).copyable(),
     /*
-        Embedded table
-    */
-    new Command(
-        /^embed (.+) as (\w+)$/,
-        (root, expression, name) => {
-            let ast = new Expression(expression, root);
-            if (ast.isValid()) {
-                root.embedBlock(name, ast);
-            }
-        },
-        (root, expression, name) => SFormat.Keyword('embed ') + Expression.format(expression, root) + SFormat.Keyword(' as ') + SFormat.Normal(name)
-    ).copyable(),
-    new Command(
-        /^embed as (\w+)$/,
-        (root, name) => root.embedBlock(name, null),
-        (root, expression, name) => SFormat.Keyword('embed as ') + SFormat.Normal(name)
-    ).copyable(),
-    /*
         Embedded table end
     */
     new Command(
         /^embed end$/,
         (root) => root.embedClose(),
         (root) => SFormat.Keyword('embed end')
+    ).copyable(),
+    /*
+        Embedded table
+    */
+    new Command(
+        /^embed(?: (.+))?$/,
+        (root, name) => root.embedBlock(name || ''),
+        (root, name) => SFormat.Keyword('embed') + (name ? (' ' + SFormat.Normal(name)) : '')
     ).copyable(),
     /*
         Layout
@@ -2019,13 +2009,12 @@ class Settings {
         }
     }
 
-    embedBlock (name, ast) {
+    embedBlock (name) {
         this.push();
 
         this.embed = {
-            embedded: true,
             name,
-            ast,
+            embedded: true,
             headers: [],
             value: this.getValueBlock(),
             color: this.getColorBlock()

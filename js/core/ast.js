@@ -233,7 +233,7 @@ class Expression {
                     }).join('') }\``;
                 } else if (extraIdentifiers && extraIdentifiers.includes(token)) {
                     value = SFormat.Reserved(token);
-                } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'difference', 'sort', 'var', 'tracker', 'some', 'all' ].includes(token) || root.functions.hasOwnProperty(token)) {
+                } else if (SP_FUNCTIONS.hasOwnProperty(token) || SP_ARRAY_FUNCTIONS.hasOwnProperty(token) || ['each', 'map', 'filter', 'format', 'difference', 'array', 'sort', 'var', 'tracker', 'some', 'all' ].includes(token) || root.functions.hasOwnProperty(token)) {
                     value = SFormat.Function(token);
                 } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index', 'loop_array', 'table_timestamp', 'table_reference', 'table_array', 'table_array_unfiltered' ].includes(token)) {
                     value = SFormat.Constant(token);
@@ -958,6 +958,8 @@ class Expression {
                     } else {
                         return a - b;
                     }
+                } else if (node.op == 'array' && node.args.length == 1) {
+                    return this.evalToArray(scope, node.args[0]);
                 } else if (node.op == '[a') {
                     var object = this.evalInternal(scope, node.args[0]);
                     if (object) {
@@ -1107,9 +1109,6 @@ const SP_ARRAY_FUNCTIONS = {
         let values = Array.from(new Set(array));
         values.segmented = array.segmented;
         return values;
-    },
-    'array': (array) => {
-        return array;
     },
     'slice': (array, from, to) => {
         let values = array.slice(from, to);

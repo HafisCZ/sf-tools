@@ -173,13 +173,10 @@ class TableInstance {
 
                 if (header.embedded) {
                     group.add(header, (player, compare) => {
-                        let values = header.ast ? new ExpressionScope(this.settings).with(player, compare).via(header).eval(header.ast) : null;
-                        if (values && !Array.isArray(values)) {
-                            if (typeof values === 'object') {
-                                values = Object.values(values);
-                            } else {
-                                values = [values];
-                            }
+                        let values = [null];
+                        if (header.expr) {
+                            let value = new ExpressionScope(this.settings).with(player, compare).via(header).eval(header.expr);
+                            values = Array.isArray(value) ? value : [value];
                         }
 
                         let generators = header.headers.map(embedHeader => {
