@@ -172,6 +172,10 @@ class TableInstance {
                 }
 
                 if (header.embedded) {
+                    if (header.columns && !header.width) {
+                        header.width = _sum(header.columns);
+                    }
+
                     group.add(header, (player, compare) => {
                         let values = [null];
                         if (header.expr) {
@@ -179,7 +183,7 @@ class TableInstance {
                             values = Array.isArray(value) ? value : [value];
                         }
 
-                        let generators = header.headers.map(embedHeader => {
+                        let generators = header.headers.map((embedHeader) => {
                             return {
                                 name: () => {
                                     let name = embedHeader.alias || embedHeader.name || '';
@@ -189,10 +193,10 @@ class TableInstance {
                                         name,
                                         '',
                                         false,
-                                        Math.max(100, name.length * 12)
+                                         _dig(header, 'columns', 0) || Math.max(100, name.length * 12)
                                     );
                                 },
-                                get: (value) => {
+                                get: (value, i) => {
                                     let val = getSafeExpr(
                                         embedHeader.expr,
                                         player,
@@ -203,7 +207,7 @@ class TableInstance {
                                     );
 
                                     if (val == undefined) {
-                                        return this.getEmptyCell(embedHeader, false);
+                                        return this.getEmptyCell(embedHeader, false, undefined, _dig(header, 'columns', i + 1));
                                     } else {
                                         let cmp = embedHeader.difference ? getSafeExpr(
                                             embedHeader.expr,
@@ -218,7 +222,8 @@ class TableInstance {
                                             embedHeader,
                                             this.getCellDisplayValue(embedHeader, val, cmp, player, compare),
                                             this.getCellColor(embedHeader, val, player, compare),
-                                            false
+                                            false,
+                                            _dig(header, 'columns', i + 1)
                                         );
                                     }
                                 }
@@ -226,7 +231,7 @@ class TableInstance {
                         });
 
                         let entries = generators.map(({ name, get }) => {
-                            return `<tr>${ name() }${ values.map(v => get(v)).join('') }</tr>`;
+                            return `<tr>${ name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
                         }).join('');
 
                         return `
@@ -778,7 +783,7 @@ class TableInstance {
         );
     }
 
-    getEmptyCell ({ ndef, ndefc, style }, border = undefined, span = 0) {
+    getEmptyCell ({ ndef, ndefc, style }, border = undefined, span = 0, cellWidth = undefined) {
         if (span) {
             return CellGenerator.PlainSpan(
                 span,
@@ -794,7 +799,8 @@ class TableInstance {
                 border,
                 undefined,
                 ndefc,
-                style ? style.cssText : undefined
+                style ? style.cssText : undefined,
+                cellWidth
             );
         }
     }
@@ -1532,8 +1538,8 @@ const CellGenerator = {
         return `<td class="${ al ? al : '' }" colspan="${ w }" style="${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ c }</td>`;
     },
     // Plain cell
-    Plain: function (c, bo, al, bg, style) {
-        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' }" style="${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
+    Plain: function (c, bo, al, bg, style, cellWidth) {
+        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' }" style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
     },
     // Plain cell
     PlainSpan: function (s, c, bo, al, bg, style) {

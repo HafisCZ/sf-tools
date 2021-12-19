@@ -319,7 +319,7 @@ const SettingsCommands = [
     new Command(
         /^columns (@?\w+[\w ]*(?:,\s*@?\w+[\w ]*)*)$/,
         (root, parts) => {
-            let values = parts.split(',').map(p => root.constants.get(p.trim())).map(v => isNaN(v) ? 0 : v);
+            let values = parts.split(',').map(p => root.constants.get(p.trim())).map(v => isNaN(v) ? 0 : parseInt(v));
             if (values.length > 0) {
                 root.addLocal('columns', values);
             }
