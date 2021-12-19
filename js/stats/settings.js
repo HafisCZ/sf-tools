@@ -314,6 +314,34 @@ const SettingsCommands = [
         }
     ).copyable(),
     /*
+        Embed width configuration
+    */
+    new Command(
+        /^columns (@?\w+[\w ]*(?:,\s*@?\w+[\w ]*)*)$/,
+        (root, parts) => {
+            let values = parts.split(',').map(p => root.constants.get(p.trim())).map(v => isNaN(v) ? 0 : v);
+            if (values.length > 0) {
+                root.addLocal('columns', values);
+            }
+        },
+        (root, parts) => {
+            let prefix = SFormat.Keyword('columns ');
+            let content = [];
+            for (let part of parts.split(',')) {
+                const value = root.constants.get(part.trim());
+                if (isNaN(value)) {
+                    content.push(SFormat.Error(part));
+                } else if (part.trim()[0] == '@') {
+                    content.push(SFormat.Constant(part));
+                } else {
+                    content.push(SFormat.Normal(part));
+                }
+            }
+
+            return prefix + content.join(',');
+        }
+    ).copyable(),
+    /*
         Not defined value
     */
     new Command(
@@ -686,9 +714,7 @@ const SettingsCommands = [
     */
     new Command(
         /^var (\w+) (.+)$/,
-        (root, name, value) => {
-            root.addHeaderVariable(name, value);
-        },
+        (root, name, value) => root.addHeaderVariable(name, value),
         (root, name, value) => SFormat.Keyword('var ') + SFormat.Constant(name) + ' ' + SFormat.Normal(value)
     ).copyable(),
     /*
