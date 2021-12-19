@@ -1553,8 +1553,9 @@ const CellGenerator = {
     },
     // Embed table
     EmbedTable: function (c, b) {
-        return `<td style="padding: 0;">
-            <table style="width: 100%; border-spacing: 0; border-collapse: collapse; ${ b ? `background:${ b };` : '' }">
+        let bg = b ? `background:${ b };` : '';
+        return `<td style="padding: 0; ${ bg }">
+            <table style="width: 100%; border-spacing: 0; border-collapse: collapse; ${ bg }">
                 ${c}
             </table>
         </td>`
