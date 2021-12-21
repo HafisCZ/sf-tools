@@ -433,6 +433,40 @@ class PlayaResponse {
     }
 };
 
+class ModelRegistry {
+    add (major, minor) {
+        if (!this[major]) {
+            this[major] = new Set();
+        }
+        this[major].add(minor);
+    }
+
+    remove (major, minor) {
+        if (this[major]) {
+            this[major].delete(minor);
+            if (!this[major].size) {
+                delete this[major];
+            }
+        }
+    }
+
+    array (major) {
+        if (this[major]) {
+            return Array.from(this[major]);
+        } else {
+            return [];
+        }
+    }
+
+    entries () {
+        return Object.entries(this);
+    }
+
+    keys () {
+        return Object.keys(this);
+    }
+}
+
 const DatabaseManager = new (class {
     constructor () {
         this._reset();
@@ -459,8 +493,8 @@ const DatabaseManager = new (class {
         this.TrackerConfigEntries = [];
 
         // Pools
-        this.Identifiers = Object.create(null);
-        this.Timestamps = Object.create(null);
+        this.Identifiers = new ModelRegistry();
+        this.Timestamps = new ModelRegistry();
         this.PlayerTimestamps = [];
         this.Prefixes = [];
         this.GroupNames = {};
@@ -504,16 +538,12 @@ const DatabaseManager = new (class {
 
     // INTERNAL: Add model
     _registerModel (type, identifier, timestamp, model) {
-        if (!this.Identifiers[identifier]) {
-            this.Identifiers[identifier] = new Set();
+        this.Identifiers.add(identifier, timestamp);
+        this.Timestamps.add(timestamp, identifier);
+
+        if (!this[type][identifier]) {
             this[type][identifier] = {};
         }
-        this.Identifiers[identifier].add(timestamp);
-
-        if (!this.Timestamps[timestamp]) {
-            this.Timestamps[timestamp] = new Set();
-        }
-        this.Timestamps[timestamp].add(identifier);
 
         this[type][identifier][timestamp] = model;
     }
@@ -564,7 +594,7 @@ const DatabaseManager = new (class {
                     this.Latest = Math.max(this.Latest, timestamp);
                     group.LatestTimestamp = Math.max(group.LatestTimestamp, timestamp);
 
-                    group.MembersPresent = Array.from(this.Timestamps[timestamp]).filter(id => _dig(this.Players, id, timestamp, 'Data', 'group') == identifier).length
+                    group.MembersPresent = this.Timestamps.array(timestamp).filter(id => _dig(this.Players, id, timestamp, 'Data', 'group') == identifier).length
                     if (obj.MembersPresent || SiteOptions.groups_empty) {
                         group.LatestDisplayTimestamp = Math.max(group.LatestDisplayTimestamp, timestamp);
                     }
@@ -579,7 +609,7 @@ const DatabaseManager = new (class {
         }
 
         this.PlayerTimestamps = Array.from(playerTimestamps);
-        this.Prefixes = Array.from(new Set(Object.keys(this.Identifiers).filter(id => this._isPlayer(id)).map(identifier => this.Players[identifier].Latest.Data.prefix)));
+        this.Prefixes = _uniq(this.Identifiers.keys().filter(id => this._isPlayer(id)).map(identifier => this.Players[identifier].Latest.Data.prefix));
     }
 
     // INTERNAL: Load player from proxy
@@ -859,8 +889,6 @@ const DatabaseManager = new (class {
                     this._removeMetadata(identifier, timestamp);
                     this._unload(identifier, timestamp);
                 }
-
-                delete this.Timestamps[timestamp];
             }
 
             await this._updateMetadata();
@@ -884,8 +912,8 @@ const DatabaseManager = new (class {
 
             this.Players = {};
             this.Groups = {};
-            this.Timestamps = {};
-            this.Identifiers = {};
+            this.Timestamps = new ModelRegistry();
+            this.Identifiers = new ModelRegistry();
 
             this._updateLists();
             resolve();
@@ -893,20 +921,13 @@ const DatabaseManager = new (class {
     }
 
     _removeFromPool (identifier, timestamp) {
-        this.Timestamps[timestamp].delete(identifier);
-        if (this.Timestamps[timestamp].size == 0) {
-            delete this.Timestamps[timestamp];
-        }
-
-        this.Identifiers[identifier].delete(parseInt(timestamp));
-        if (this.Identifiers[identifier].size == 0) {
-            delete this.Identifiers[identifier];
-        }
+        this.Timestamps.remove(timestamp, identifier);
+        this.Identifiers.remove(identifier, timestamp);
     }
 
     migrateHiddenFiles () {
         return new Promise(async (resolve, reject) => {
-            for (const [timestamp, identifiers] of Object.entries(this.Timestamps)) {
+            for (const [timestamp, identifiers] of this.Timestamps.entries()) {
                 const players = Array.from(identifiers).filter(identifier => this._isPlayer(identifier));
                 if (_all_true(players, id => _dig(this.Players, id, timestamp, 'Data', 'hidden'))) {
                     for (const id of players) {
@@ -938,8 +959,6 @@ const DatabaseManager = new (class {
                     this._removeMetadata(identifier, timestamp);
                     this._removeFromPool(identifier, timestamp);
                 }
-
-                delete this.Identifiers[identifier];
             }
 
             await this._updateMetadata();

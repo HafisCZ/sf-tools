@@ -2133,7 +2133,7 @@ class FilesView extends View {
         this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).filter(([, { tags: { tagList } }]) => {
             return typeof this.tagFilter === 'undefined' || tagList.includes(this.tagFilter) || (tagList.includes('undefined') && this.tagFilter === '');
         }).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags: { tagContent } }]) => {
-            const players = Array.from(DatabaseManager.Timestamps[timestamp]).filter(id => DatabaseManager._isPlayer(id));
+            const players = DatabaseManager.Timestamps.array(timestamp).filter(id => DatabaseManager._isPlayer(id));
             const hidden = _dig(DatabaseManager.Metadata, timestamp, 'hidden');
 
             return `
