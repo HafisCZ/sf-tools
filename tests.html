@@ -146,6 +146,7 @@
                 test('can invoke properties', new Expression('"Hello".length').eval() == 5);
                 test('can invoke methods', new Expression('"  Hello  ".trim()').eval() == 'Hello');
                 test('cannot invoke properties', new Expression('"Hello".length()').eval() == undefined);
+                test('can traverse self', new Expression('this + .this + ..this').eval(new ExpressionScope().addSelf(1).addSelf(2).addSelf(3)) == 6);
             });
         </script>
     </body>
