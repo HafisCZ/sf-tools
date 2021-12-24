@@ -1,22 +1,3 @@
-// View
-class View {
-    constructor (parent) {
-        this.$parent = $(`#${ parent }`);
-    }
-
-    show () {
-
-    }
-
-    load () {
-
-    }
-
-    refresh () {
-
-    }
-}
-
 // Group Detail View
 class GroupDetailView extends View {
     constructor (parent) {
@@ -3656,53 +3637,5 @@ class ProfilesView extends View {
             'below': '<',
             'equals': '='
         }[v] || '??';
-    }
-}
-
-// UI object collection
-const UI = {
-    current: null,
-    buttons: {},
-    show: function (screen, ... arguments) {
-        UI.current = screen;
-        $('.ui.container').addClass('css-hidden');
-        screen.$parent.removeClass('css-hidden');
-        screen.show(... arguments);
-
-        const name = screen.constructor.name;
-        if (this.buttons[name]) {
-            for (const [, el] of Object.entries(this.buttons)) {
-                el.classList.remove('title-active');
-            }
-            this.buttons[name].classList.add('title-active');
-        }
-    },
-    initialize: function () {
-        UI.Settings = new SettingsView('view-settings');
-        UI.SettingsFloat = new SettingsFloatView('modal-settings');
-        UI.Files = new FilesView('view-files');
-        UI.Players = new PlayersView('view-players');
-        UI.Groups = new GroupsView('view-groups');
-        UI.Browse = new BrowseView('view-browse');
-        UI.PlayerHistory = new PlayerHistoryView('view-history');
-        UI.PlayerDetail = new PlayerDetailFloatView('modal-playerdetail');
-        UI.GroupDetail = new GroupDetailView('view-groupdetail');
-        UI.ChangeLogs = new ChangeLogsView('view-changelog');
-        UI.ConfirmDialog = new ConfirmDialogView('modal-confirm');
-        UI.Templates = new TemplatesView('modal-templates');
-        UI.OnlineTemplates = new OnlineTemplatesView('modal-onlinetemplates');
-        UI.OnlineFiles = new OnlineFilesView('modal-onlinefile');
-        UI.OnlineShareFile = new OnlineShareFileView('modal-share');
-        UI.Profiles = new ProfilesView('view-profiles');
-        UI.Options = new OptionsView('view-options');
-    },
-    register: function (view, id) {
-        const element = document.getElementById(id);
-        this.buttons[view.constructor.name] = element;
-        if (element) {
-            element.addEventListener('click', () => {
-                UI.show(view);
-            });
-        }
     }
 }

@@ -38,6 +38,7 @@
 
         <script src="endpoint/endpoint.js"></script>
 
+        <script src="js/core/ui.js"></script>
         <script src="js/stats/event.js"></script>
         <script src="js/views.js"></script>
 
@@ -754,7 +755,26 @@
 
                 PopupController.open(LoaderPopup);
                 DatabaseManager.load(profile).then(function () {
-                    UI.initialize();
+                    UI.init({
+                        Settings: new SettingsView('view-settings'),
+                        SettingsFloat: new SettingsFloatView('modal-settings'),
+                        Files: new FilesView('view-files'),
+                        Players: new PlayersView('view-players'),
+                        Groups: new GroupsView('view-groups'),
+                        Browse: new BrowseView('view-browse'),
+                        PlayerHistory: new PlayerHistoryView('view-history'),
+                        PlayerDetail: new PlayerDetailFloatView('modal-playerdetail'),
+                        GroupDetail: new GroupDetailView('view-groupdetail'),
+                        ChangeLogs: new ChangeLogsView('view-changelog'),
+                        ConfirmDialog: new ConfirmDialogView('modal-confirm'),
+                        Templates: new TemplatesView('modal-templates'),
+                        OnlineTemplates: new OnlineTemplatesView('modal-onlinetemplates'),
+                        OnlineFiles: new OnlineFilesView('modal-onlinefile'),
+                        OnlineShareFile: new OnlineShareFileView('modal-share'),
+                        Profiles: new ProfilesView('view-profiles'),
+                        Options: new OptionsView('view-options')
+                    });
+
                     UI.register(UI.Players, 'show-players');
                     UI.register(UI.Groups, 'show-groups');
                     UI.register(UI.Browse, 'show-browse');
