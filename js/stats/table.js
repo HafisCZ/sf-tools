@@ -221,8 +221,8 @@ class TableInstance {
 
                                         return this.getCell(
                                             embedHeader,
-                                            this.getCellDisplayValue(embedHeader, val, cmp, player, compare),
-                                            this.getCellColor(embedHeader, val, player, compare),
+                                            this.getCellDisplayValue(embedHeader, val, cmp, player, compare, undefined, value),
+                                            this.getCellColor(embedHeader, val, player, compare, undefined, false, value),
                                             false,
                                             _dig(header, 'columns', i + 1)
                                         );
@@ -823,9 +823,9 @@ class TableInstance {
         }
     }
 
-    getCellDisplayValue (header, val, cmp, player = undefined, compare = undefined, extra = undefined) {
+    getCellDisplayValue (header, val, cmp, player = undefined, compare = undefined, extra = undefined, altSelf = undefined) {
         let { difference, ex_difference, flip, value, brackets } = header;
-        let displayValue = value.get(player, compare, this.settings, val, extra, header);
+        let displayValue = value.get(player, compare, this.settings, val, extra, header, altSelf);
         if (!difference || isNaN(cmp)) {
             return displayValue;
         } else {
@@ -852,8 +852,8 @@ class TableInstance {
         }
     }
 
-    getCellColor (header, val, player = undefined, compare = undefined, extra = undefined, ignoreBase = false) {
-        return header.color.get(player, compare, this.settings, val, extra, ignoreBase, header);
+    getCellColor (header, val, player = undefined, compare = undefined, extra = undefined, ignoreBase = false, altSelf = undefined) {
+        return header.color.get(player, compare, this.settings, val, extra, ignoreBase, header, altSelf);
     }
 
     getDivider (leftSpan, bottomSpacer, topSpacer) {

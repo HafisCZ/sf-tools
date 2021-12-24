@@ -1705,9 +1705,9 @@ class Settings {
         return {
             expr: undefined,
             rules: new RuleEvaluator(),
-            get: function (player, compare, settings, value, extra = undefined, ignoreBase = false, header = undefined) {
+            get: function (player, compare, settings, value, extra = undefined, ignoreBase = false, header = undefined, alternateSelf = undefined) {
                 // Get color from expression
-                let expressionColor = this.expr ? new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra).via(header).eval(this.expr) : undefined;
+                let expressionColor = this.expr ? new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header).eval(this.expr) : undefined;
 
                 // Get color from color block
                 let blockColor = this.rules.get(value, ignoreBase || (typeof expressionColor !== 'undefined'));
@@ -1727,14 +1727,14 @@ class Settings {
             formatDifference: undefined,
             formatStatistics: undefined,
             rules: new RuleEvaluator(),
-            get: function (player, compare, settings, value, extra = undefined, header = undefined) {
+            get: function (player, compare, settings, value, extra = undefined, header = undefined, alternateSelf = undefined) {
                 // Get value from value block
                 let output = this.rules.get(value);
 
                 // Get value from format expression
                 if (typeof output == 'undefined') {
                     if (this.format instanceof Expression) {
-                        output = new ExpressionScope(settings).with(player, compare).addSelf(value).add(extra).via(header).eval(this.format);
+                        output = new ExpressionScope(settings).with(player, compare).addSelf(alternateSelf).addSelf(value).add(extra).via(header).eval(this.format);
                     } else if (typeof this.format == 'function') {
                         output = this.format(player, compare, settings, value, extra, header);
                     }
