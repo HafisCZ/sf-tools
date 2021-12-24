@@ -18,6 +18,7 @@
         <script src="js/core/core.js"></script>
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
+        <script src="js/core/ui.js"></script>
 
         <style>
             .orange {
@@ -42,12 +43,15 @@
     <body>
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+            <a class="item" id="show-attributes">Gold & Experience</a>
+            <a class="item" id="show-fortress">Fortress</a>
+            <a class="item" id="show-underworld">Underworld</a>
             <div class="right menu">
                 <a class="item" href="index.html"><i class="small reply icon"></i><span class="css-small">Go back</span></a>
             </div>
         </div>
 
-        <div class="ui main container">
+        <div class="ui main container" id="tab-gold-experience">
             <div class="ui grid">
                 <div class="sixteen wide column">
                     <div class="ui segment">
@@ -433,7 +437,172 @@
             </div>
         </div>
 
+        <div class="ui main container" id="tab-fortress">
+            Under construction :)
+        </div>
+
+        <div class="ui main container" id="tab-underworld">
+            <div class="ui segment">
+                <h3 class="ui header">Character values</h3>
+                <div class="ui small form">
+                    <div class="fix fields">
+                        <div class="field">
+                            <label>Labourer's Quarters</label>
+                            <input type="text" id="fortress-lq">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui segment">
+                <h3 class="ui header">Heart of Darkness</h3>
+                <table class="ui red single very compact line table text-center">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Level</th>
+                            <th style="width: 25%;">Gold</th>
+                            <th style="width: 25%;">Souls</th>
+                            <th style="width: 40%;">Build Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>0</td>
+                        <td data-lq="1"></td>
+                      </tr>
+                      <tr>
+                        <td>2</td>
+                        <td>2 000</td>
+                        <td>616</td>
+                        <td data-lq="2"></td>
+                      </tr>
+                      <tr>
+                        <td>3</td>
+                        <td>3 000</td>
+                        <td>1 650</td>
+                        <td data-lq="3"></td>
+                      </tr>
+                      <tr>
+                        <td>4</td>
+                        <td>4 000</td>
+                        <td>4 220</td>
+                        <td data-lq="4"></td>
+                      </tr>
+                      <tr>
+                        <td>5</td>
+                        <td>5 000</td>
+                        <td>11 000</td>
+                        <td data-lq="5"></td>
+                      </tr>
+                      <tr>
+                        <td>6</td>
+                        <td>6 000</td>
+                        <td>25 080</td>
+                        <td data-lq="6"></td>
+                      </tr>
+                      <tr>
+                        <td>7</td>
+                        <td>7 000</td>
+                        <td>45 930</td>
+                        <td data-lq="7"></td>
+                      </tr>
+                      <tr>
+                        <td>8</td>
+                        <td>8 000</td>
+                        <td>84 150</td>
+                        <td data-lq="8"></td>
+                      </tr>
+                      <tr>
+                        <td>9</td>
+                        <td>9 000</td>
+                        <td>198 000</td>
+                        <td data-lq="9"></td>
+                      </tr>
+                      <tr>
+                        <td>10</td>
+                        <td>10 000</td>
+                        <td>439 550</td>
+                        <td data-lq="10"></td>
+                      </tr>
+                      <tr>
+                        <td>11</td>
+                        <td>11 000</td>
+                        <td>902 850</td>
+                        <td data-lq="11"></td>
+                      </tr>
+                      <tr>
+                        <td>12</td>
+                        <td>12 000</td>
+                        <td>2 043 300</td>
+                        <td data-lq="12"></td>
+                      </tr>
+                      <tr>
+                        <td>13</td>
+                        <td>13 000</td>
+                        <td>4 118 400</td>
+                        <td data-lq="13"></td>
+                      </tr>
+                      <tr>
+                        <td>14</td>
+                        <td>14 000</td>
+                        <td>7 722 000</td>
+                        <td data-lq="14"></td>
+                      </tr>
+                      <tr>
+                        <td>15</td>
+                        <td>15 000</td>
+                        <td>16 632 000</td>
+                        <td data-lq="15"></td>
+                      </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            WORK IN PROGRESS!
+        </div>
+
         <script type="text/javascript">
+            UI.init({
+                GoldExperience: new View('tab-gold-experience'),
+                Fortress: new View('tab-fortress'),
+                Underworld: new View('tab-underworld')
+            });
+            UI.register(UI.GoldExperience, 'show-attributes');
+            UI.register(UI.Fortress, 'show-fortress');
+            UI.register(UI.Underworld, 'show-underworld');
+            UI.show(UI.GoldExperience);
+
+            $('#fortress-lq').on('change input', function () {
+                if (validate($('#fortress-lq'))) {
+                    let lq = getValue('#fortress-lq', 0, 15);
+
+                    const TICKS_PER_HOUR = 60 * 60 * 1000;
+
+                    $('[data-lq]').each((_, el) => {
+                        let duration = buildTime(parseInt(el.dataset.lq), lq);
+                        el.innerText = formatFancyTime(duration);
+                    });
+                }
+            });
+
+            function formatFancyTime (duration) {
+                let days = Math.trunc(duration / (1000 * 60 * 60 * 24));
+                let hours = Math.trunc((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.trunc((duration % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.trunc((duration % (1000 * 60)) / 1000);
+
+                let str = [];
+                if (days > 0) str.push(`${days}d`);
+                if (hours > 0) str.push(`${hours}h`);
+                if (minutes > 0) str.push(`${minutes}m`);
+                if (seconds > 0) str.push(`${seconds}s`);
+
+                return str.slice(0, 2).join(' ');
+            }
+
+            $('#fortress-lq').trigger('input');
+
             function validate (... elements) {
                 return elements.reduce((errors, element) => {
                     if (isNaN($(element).val()) || $(element).val() < 0) {
@@ -526,6 +695,34 @@
                     case 18: return 10.8;
                     case 19: return 11.2;
                 }
+            }
+
+            const UnderworldBuildings = {
+                Heart: 0,
+                UnderworldGate: 1,
+                GoldPit: 2,
+                Extractor: 3,
+                GoblinPit: 4,
+                TortureChamber: 5,
+                GladiatorTower: 6,
+                TrollBlock: 7,
+                TimeMachine: 8,
+                Kepper: 9
+            }
+
+            const FortressBuildings = {
+                Fortress: 0,
+                LaborersQuarters: 1,
+                WoodcutterHut: 2,
+                Quarry: 3,
+                GemMine: 4,
+                Academy: 5,
+                ArcheryGuild: 6,
+                Barracks: 7,
+                MagesTower: 8,
+                Treasury: 9,
+                Smithy: 10,
+                Fortifications: 11
             }
 
             // Heart of Darkness
