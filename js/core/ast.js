@@ -1504,6 +1504,9 @@ const SP_FUNCTIONS = {
         } else {
             return !!value;
         }
+    },
+    'img': (src, width, height) => {
+        return `<img src="${src}"${typeof width != 'undefined' ? ` width="${width}"` : ''}${typeof height != 'undefined' ? ` height="${height}"` : ''}/>`;
     }
 }
 
