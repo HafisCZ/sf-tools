@@ -243,7 +243,7 @@ class TableInstance {
                             return `<tr>${ allBlank ? '' : name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
                         }).join('');
 
-                        return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare));
+                        return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare), showBorder);
                     }, null, (player, compare) => 0 /* TODO: Implement native sorting */, showBorder);
                 } else if (header.grouped) {
                     // Create grouped header
@@ -1561,9 +1561,9 @@ const CellGenerator = {
         return `<span>${ c }</span>`;
     },
     // Embed table
-    EmbedTable: function (c, b) {
+    EmbedTable: function (c, b, bo) {
         let bg = b ? `background:${ b };` : '';
-        return `<td style="padding: 0; vertical-align: top; ${ bg }">
+        return `<td style="padding: 0; vertical-align: top; ${ bg }" class="${bo ? 'border-right-thin' : ''}">
             <table style="width: 100%; border-spacing: 0; border-collapse: collapse; ${ bg }">
                 ${c}
             </table>
