@@ -19,10 +19,12 @@ const ARG_MAP = {
     'below': 'b',
     'equal': 'e',
     'default': 'd',
+    'none': 0,
     'left': 1,
     'right': 2,
     'both': 3,
-    'none': 0
+    'top': 4,
+    'bottom': 5
 };
 
 const ARG_MAP_SERVER = {
@@ -1004,7 +1006,7 @@ const SettingsCommands = [
         Cell border
     */
     new Command(
-        /^border (none|left|right|both)$/,
+        /^border (none|left|right|both|top|bottom)$/,
         (root, value) => root.addShared('border', ARG_MAP[value]),
         (root, value) => SFormat.Keyword('border ') + SFormat.Constant(value)
     ).copyable(),

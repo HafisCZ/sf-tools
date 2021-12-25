@@ -428,6 +428,14 @@ input:disabled {
     border-right: 1px solid black !important;
 }
 
+.border-top-thin {
+    border-top: 1px solid black !important;
+}
+
+.border-bottom-thin {
+    border-bottom: 1px solid black !important;
+}
+
 .border-right-false {
     border-right: 1px solid transparent !important;
 }

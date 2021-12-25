@@ -201,7 +201,7 @@ class TableInstance {
                                         embedHeader,
                                         name,
                                         '',
-                                        false,
+                                        embedHeader.border,
                                          _dig(header, 'columns', 0) || Math.max(100, name.length * 12)
                                     );
                                 },
@@ -231,7 +231,7 @@ class TableInstance {
                                             embedHeader,
                                             this.getCellDisplayValue(embedHeader, val, cmp, player, compare, undefined, value),
                                             this.getCellColor(embedHeader, val, player, compare, undefined, false, value),
-                                            false,
+                                            embedHeader.border,
                                             _dig(header, 'columns', i + 1)
                                         );
                                     }
@@ -1529,12 +1529,40 @@ class TableController {
     }
 }
 
+function getCSSBorderClass (border) {
+    if (typeof border === 'number') {
+        switch (border) {
+            case 4: return 'border-top-thin';
+            case 5: return 'border-bottom-thin';
+            default: return '';
+        }
+    } else if (border) {
+        return 'border-right-thin';
+    } else {
+        return '';
+    }
+
+    if (typeof bo === 'object') {
+        if (bo.top) {
+            return 'border-top-thin';
+        } else if (bo.bottom) {
+            return 'border-bottom-thin';
+        } else {
+            return '';
+        }
+    } else {
+        return bo ? 'border-right-thin' : '';
+    }
+}
+
 // Cell generators
 const CellGenerator = {
     // Simple cell
     Cell: function (c, b, f, bo, al, pad, style, cellWidth, hasAction) {
         let color = getCSSColorFromBackground(f);
-        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' } ${ hasAction ? 'clickable' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ hasAction ? '{__ACTION_OP__}' : '' }${ c }</td>`;
+        let border = getCSSBorderClass(bo);
+
+        return `<td class="${ border } ${ al ? al : '' } ${ hasAction ? 'clickable' : '' }" ${ hasAction ? '{__ACTION__}' : '' } style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ color ? `color:${ color };` : '' }${ b ? `background:${ b };` : '' }${ pad ? `padding-left: ${ pad } !important;` : '' }${ style || '' }">${ hasAction ? '{__ACTION_OP__}' : '' }${ c }</td>`;
     },
     // Wide cell
     WideCell: function (c, b, w, al, pad, style) {
@@ -1542,11 +1570,15 @@ const CellGenerator = {
     },
     // Plain cell
     Plain: function (c, bo, al, bg, style, cellWidth) {
-        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' }" style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
+        let border = getCSSBorderClass(bo);
+
+        return `<td class="${ border } ${ al ? al : '' }" style="${ cellWidth ? `width: ${ cellWidth }px;` : '' } ${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
     },
     // Plain cell
     PlainSpan: function (s, c, bo, al, bg, style) {
-        return `<td class="${ bo ? 'border-right-thin' : '' } ${ al ? al : '' }" colspan="${ s }"  style="${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
+        let border = getCSSBorderClass(bo);
+
+        return `<td class="${ border } ${ al ? al : '' }" colspan="${ s }"  style="${ bg ? `background: ${ bg };` : '' }${ style || '' }">${ c }</td>`;
     },
     // Difference
     Difference: function (d, b, c) {
