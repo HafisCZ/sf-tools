@@ -183,11 +183,19 @@ class TableInstance {
                             values = Array.isArray(value) ? value : [value];
                         }
 
-                        let allBlank = _all_true(header.headers, h => !(h.alias || h.name));
+                        let allBlank = _all_true(header.headers, h => !(h.expa || h.alias || h.name));
                         let generators = header.headers.map((embedHeader) => {
                             return {
                                 name: () => {
-                                    let name = embedHeader.alias || embedHeader.name || '';
+                                    let expa_eval = undefined;
+                                    if (embedHeader.expa) {
+                                        expa_eval = embedHeader.expa(this.settings, category);
+                                        if (expa_eval != undefined) {
+                                            expa_eval = String(expa_eval);
+                                        }
+                                    }
+
+                                    let name = expa_eval || embedHeader.alias || embedHeader.name || '';
 
                                     return this.getCell(
                                         embedHeader,
