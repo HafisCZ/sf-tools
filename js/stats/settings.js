@@ -731,9 +731,14 @@ const SettingsCommands = [
         Embedded table
     */
     new Command(
-        /^embed(?: (.+))?$/,
-        (root, name) => root.embedBlock(name || ''),
-        (root, name) => SFormat.Keyword('embed') + (name ? (' ' + SFormat.Normal(name)) : '')
+        /^((?:\w+)(?:\,\w+)*:|)embed(?: (.+))?$/,
+        (root, extensions, name) => {
+            root.embedBlock(name || '');
+            if (extensions) {
+                root.addExtension(... extensions.slice(0, -1).split(','));
+            }
+        },
+        (root, extensions, name) => (extensions ? SFormat.Constant(extensions) : '') + SFormat.Keyword('embed') + (name ? (' ' + SFormat.Normal(name)) : '')
     ).copyable(),
     /*
         Layout
@@ -1398,7 +1403,7 @@ class Settings {
 
                         output.push(loopLine);
 
-                        if (/^(?:\w+(?:\,\w+)*:|)(?:header|show|category)(?: .+)?$/.test(loopLine)) {
+                        if (/^(?:\w+(?:\,\w+)*:|)(?:header|embed|show|category)(?: .+)?$/.test(loopLine)) {
                             output.push(... varArray);
                         }
                     }
@@ -2054,6 +2059,10 @@ class Settings {
         let obj = this.embed;
         if (obj) {
             this.push();
+
+            for (let definitionName of obj.extensions || []) {
+                this.mergeDefinition(obj, definitionName);
+            }
 
             if (!obj.clean) {
                 this.merge(obj, this.sharedCategory);
