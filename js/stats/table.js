@@ -239,11 +239,12 @@ class TableInstance {
                             };
                         });
 
+                        let rowHeight = header.row_height ? ` style="height: ${header.row_height}px;"` : '';
                         let entries = generators.map(({ name, get }) => {
-                            return `<tr>${ allBlank ? '' : name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
+                            return `<tr${rowHeight}>${ allBlank ? '' : name() }${ values.map((v, i) => get(v, i)).join('') }</tr>`;
                         }).join('');
 
-                        return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare), showBorder);
+                        return CellGenerator.EmbedTable(entries, this.getCellColor(header, values, player, compare), showBorder, header.font);
                     }, null, (player, compare) => 0 /* TODO: Implement native sorting */, showBorder);
                 } else if (header.grouped) {
                     // Create grouped header
@@ -1593,10 +1594,11 @@ const CellGenerator = {
         return `<span>${ c }</span>`;
     },
     // Embed table
-    EmbedTable: function (c, b, bo) {
+    EmbedTable: function (c, b, bo, f) {
         let bg = b ? `background:${ b };` : '';
+        let fr = f ? `font: ${f};` : '';
         return `<td style="padding: 0; vertical-align: top; ${ bg }" class="${bo ? 'border-right-thin' : ''}">
-            <table style="width: 100%; border-spacing: 0; border-collapse: collapse; ${ bg }">
+            <table style="width: 100%; border-spacing: 0; border-collapse: collapse; ${ bg } ${fr}">
                 ${c}
             </table>
         </td>`

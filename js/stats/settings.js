@@ -844,7 +844,7 @@ const SettingsCommands = [
         /^row height (\d+)$/,
         (root, value) => {
             if (value > 0) {
-                root.addGlobal('row_height', Number(value));
+                root.addGlobalEmbedable('row_height', Number(value));
             }
         },
         (root, value) => SFormat.Keyword('row height ') + (value > 0 ? SFormat.Normal(value) : SFormat.Error(value))
@@ -857,7 +857,7 @@ const SettingsCommands = [
         (root, font) => {
             let value = getCSSFont(font);
             if (value) {
-                root.addGlobal('font', value);
+                root.addGlobalEmbedable('font', value);
             }
         },
         (root, font) => SFormat.Keyword('font ') + (getCSSFont(font) ? SFormat.Normal(font) : SFormat.Error(font))
@@ -1987,6 +1987,10 @@ class Settings {
     // Add global
     addGlobal (name, value) {
         this.globals[name] = value;
+    }
+
+    addGlobalEmbedable (name, value) {
+        (this.embed || this.globals)[name] = value;
     }
 
     // Add shared variable
