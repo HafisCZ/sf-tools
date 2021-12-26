@@ -1990,7 +1990,7 @@ class Settings {
     }
 
     addGlobalEmbedable (name, value) {
-        (this.embed || this.globals)[name] = value;
+        (this.embed || this.definition || this.globals)[name] = value;
     }
 
     // Add shared variable
