@@ -349,6 +349,104 @@ const FileEditPopup = new (class extends FloatingPopup {
     }
 })();
 
+const SaveOnlineTemplatePopup = new (class extends FloatingPopup {
+    _createModal () {
+        return `
+            <div class="ui basic mini modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Import template</h2>
+                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
+                    <div class="ui inverted active dimmer">
+                      <div class="ui indeterminate text loader">Preparing Files</div>
+                    </div>
+                    <div class="two fields">
+                        <div class="field">
+                            <label>Author:</label>
+                            <input data-op="author" type="text" disabled>
+                        </div>
+                        <div class="field">
+                            <label>Created/Updated:</label>
+                            <input data-op="date" type="text" disabled>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>Name:</label>
+                        <input data-op="name" type="text" placeholder="Template name">
+                    </div>
+                </div>
+                <div data-op="error" style="display: none;">
+                    <h3 class="ui header text-center" style="color: orange; margin-top: 4.25em; margin-bottom: 4.275em;">The requested template is not available!</h3>
+                </div>
+                <div class="ui three fluid buttons">
+                    <button class="ui black fluid button disabled" data-op="cancel">Cancel</button>
+                    <button class="ui fluid button disabled" style="background-color: orange; color: black;" data-op="save">Save</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$name = this.$parent.find('[data-op="name"]');
+        this.$date = this.$parent.find('[data-op="date"]');
+        this.$author = this.$parent.find('[data-op="author"]');
+        this.$form = this.$parent.find('.ui.form');
+        this.$error = this.$parent.find('[data-op="error"]');
+
+        this.$loader = this.$parent.find('.ui.dimmer');
+        this.$cancel = this.$parent.find('[data-op="cancel"]').click(() => {
+            this.close();
+        });
+
+        this.$save = this.$parent.find('[data-op="save"]').click(() => {
+            let name = this.$name.val().trim();
+            if (name.length) {
+                Templates.save(name, this.data.content);
+
+                if (UI.current.refreshTemplateDropdown) {
+                    UI.current.refreshTemplateDropdown();
+                }
+
+                this.close();
+            } else {
+                this.$name.parent('.field').addClass('error').transition('shake');
+            }
+        });
+    }
+
+    setReady () {
+        this.$loader.removeClass('active');
+        this.$cancel.removeClass('disabled');
+        this.$save.removeClass('disabled');
+    }
+
+    setUnavailable () {
+        this.$form.hide();
+        this.$error.show();
+        this.$cancel.removeClass('disabled');
+    }
+
+    _applyArguments (code) {
+        $.ajax({
+            url: `https://sftools-api.herokuapp.com/scripts?key=${code.trim()}`,
+            type: 'GET'
+        }).done((message) => {
+            if (message.success) {
+                let { description, author, date } = message;
+
+                this.data = message;
+                this.$date.val(formatDate(new Date(date)));
+                this.$name.val(description);
+                this.$author.val(author);
+
+                this.setReady();
+            } else {
+                this.setUnavailable();
+            }
+        }).fail(() => {
+            this.setUnavailable();
+        });
+    }
+})();
+
 const FileTagPopup = new (class extends FloatingPopup {
     constructor () {
         super(0);

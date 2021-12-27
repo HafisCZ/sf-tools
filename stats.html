@@ -733,6 +733,7 @@
                 let param_temporary = params['temp'] == -1;
                 let param_profile = params['profile'];
                 let param_slot = params['slot'];
+                let param_template = params['template'];
 
                 if (param_temporary) {
                     $('.css-temporary').removeClass('css-hidden');
@@ -792,6 +793,10 @@
                         'browse': UI.Browse,
                         'files': UI.Files
                     }[SiteOptions.tab] || UI.Groups);
+
+                    if (param_template) {
+                        PopupController.open(SaveOnlineTemplatePopup, param_template);
+                    }
                 }).catch(function (e) {
                     PopupController.close(LoaderPopup);
                     PopupController.open(ErrorPopup, `<h4 class="ui white header text-center">Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.</h4><br>${e.message}`);

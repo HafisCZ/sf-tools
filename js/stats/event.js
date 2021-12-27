@@ -1165,7 +1165,7 @@ class BrowseView extends View {
 
         if (!(code in this.settingsRepo)) {
             this.settingsRepo[code] = $.ajax({
-                url: `https://sftools-api.herokuapp.com/scripts?key=${ code }`,
+                url: `https://sftools-api.herokuapp.com/scripts?key=${code.trim()}`,
                 type: 'GET',
                 async: false
             }).responseJSON.content;
@@ -3175,12 +3175,12 @@ class TemplatesView extends View {
 
             if (this.tmp.online) {
                 // Unpublish first if online
-                let key = this.tmp.online.key;
-                let secret = this.tmp.online.secret;
+                let key = this.tmp.online.key.trim();
+                let secret = this.tmp.online.secret.trim();
 
                 // Remove online template
                 $.ajax({
-                    url: `https://sftools-api.herokuapp.com/scripts/delete?key=${ key }&secret=${ secret }`,
+                    url: `https://sftools-api.herokuapp.com/scripts/delete?key=${key}&secret=${ secret }`,
                     type: 'GET'
                 }).done(obj => {
                     if (obj.success) {
@@ -3325,10 +3325,10 @@ class OnlineTemplatesView extends View {
         this.$input = this.$parent.find('[data-op="private-value"]');
 
         this.$parent.find('[data-op="private"]').click(() => {
-            var cur = this.$input.val();
+            var cur = this.$input.val().trim();
             if (cur) {
                 $.ajax({
-                    url: `https://sftools-api.herokuapp.com/scripts?key=${ cur }`,
+                    url: `https://sftools-api.herokuapp.com/scripts?key=${cur}`,
                     type: 'GET'
                 }).done((message) => {
                     if (message.success) {
