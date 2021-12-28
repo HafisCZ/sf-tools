@@ -438,22 +438,126 @@
         </div>
 
         <div class="ui main container" id="tab-fortress">
-            Under construction :)
-        </div>
-
-        <div class="ui main container" id="tab-underworld">
-            <div class="ui segment">
+            <div class="ui blue segment" style="position: fixed; right: 2em; top: 5.5em;">
                 <h3 class="ui header">Character values</h3>
                 <div class="ui small form">
-                    <div class="fix fields">
-                        <div class="field">
-                            <label>Labourer's Quarters</label>
-                            <input type="text" id="fortress-lq">
-                        </div>
+                    <div class="field">
+                        <label>Labourer's Quarters</label>
+                        <input type="text" id="fortress-lq">
                     </div>
                 </div>
             </div>
-            <div class="ui segment">
+            <div class="ui basic segment">
+                <h3 class="ui header">Fortress</h3>
+                <table class="ui red single very compact line table text-center">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Level</th>
+                            <th style="width: 15%;">Build Time</th>
+                            <th style="width: 15%;">Gold</th>
+                            <th style="width: 15%;">Wood</th>
+                            <th style="width: 15%;">Stone</th>
+                            <th style="width: 15%;">Wood Capacity</th>
+                            <th style="width: 15%;">Stone Capacity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fortress-fortress"></tbody>
+                </table>
+            </div>
+            <div class="ui basic segment">
+                <h3 class="ui header">Laborers' Quarters</h3>
+                <table class="ui red single very compact line table text-center">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Level</th>
+                            <th style="width: 10%;">Build Time</th>
+                            <th style="width: 10%;">Fortress</th>
+                            <th style="width: 10%;">Gold</th>
+                            <th style="width: 10%;">Wood</th>
+                            <th style="width: 10%;">Stone</th>
+                            <th style="width: 10%;">Reduction</th>
+                            <th style="width: 30%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="fortress-quarters"></tbody>
+                </table>
+            </div>
+            <div class="ui basic segment">
+                <h3 class="ui header">Woodcutter's Hut</h3>
+                <table class="ui red single very compact line table text-center">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Level</th>
+                            <th style="width: 10%;">Build Time</th>
+                            <th style="width: 10%;">Fortress</th>
+                            <th style="width: 10%;">Gold</th>
+                            <th style="width: 10%;">Wood</th>
+                            <th style="width: 10%;">Stone</th>
+                            <th style="width: 10%;">Hourly</th>
+                            <th style="width: 10%;">Capacity</th>
+                            <th style="width: 10%;">Full in</th>
+                            <th style="width: 10%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="fortress-woodcutter"></tbody>
+                </table>
+            </div>
+            <div class="ui basic segment">
+                <h3 class="ui header">Quarry</h3>
+                <table class="ui red single very compact line table text-center">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Level</th>
+                            <th style="width: 10%;">Build Time</th>
+                            <th style="width: 10%;">Fortress</th>
+                            <th style="width: 10%;">Gold</th>
+                            <th style="width: 10%;">Wood</th>
+                            <th style="width: 10%;">Stone</th>
+                            <th style="width: 10%;">Hourly</th>
+                            <th style="width: 10%;">Capacity</th>
+                            <th style="width: 10%;">Full in</th>
+                            <th style="width: 10%;"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="fortress-quarry"></tbody>
+                </table>
+            </div>
+            <div class="ui basic segment">
+                <h3 class="ui header">Gem Mine</h3>
+                <table class="ui red single very compact line table text-center">
+                    <thead>
+                        <tr>
+                            <th style="width: 10%;">Level</th>
+                            <th style="width: 10%;">Build Time</th>
+                            <th style="width: 10%;">Fortress</th>
+                            <th style="width: 10%;">Gold</th>
+                            <th style="width: 10%;">Wood</th>
+                            <th style="width: 10%;">Stone</th>
+                            <th style="width: 10%;">Gem Gold</th>
+                            <th style="width: 10%;">Gem Wood</th>
+                            <th style="width: 10%;">Gem Stone</th>
+                            <th style="width: 10%;">Gem Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fortress-gemmine"></tbody>
+                </table>
+            </div>
+
+
+
+        </div>
+
+        <div class="ui main container" id="tab-underworld">
+            <div class="ui blue segment" style="position: fixed; right: 2em; top: 5.5em;">
+                <h3 class="ui header">Character values</h3>
+                <div class="ui small form">
+                    <div class="field">
+                        <label>Labourer's Quarters</label>
+                        <input type="text" id="fortress-lq-uw">
+                    </div>
+                </div>
+            </div>
+            <div class="ui basic segment">
                 <h3 class="ui header">Heart of Darkness</h3>
                 <table class="ui red single very compact line table text-center">
                     <thead>
@@ -468,7 +572,7 @@
                     <tbody id="underworld-heart"></tbody>
                 </table>
             </div>
-            <div class="ui segment">
+            <div class="ui basic segment">
                 <h3 class="ui header">Underworld Gate</h3>
                 <table class="ui red single very compact line table text-center">
                     <thead>
@@ -485,7 +589,7 @@
                     <tbody id="underworld-gate"></tbody>
                 </table>
             </div>
-            <div class="ui segment">
+            <div class="ui basic segment">
                 <h3 class="ui header">Gold Pit</h3>
                 <table class="ui red single very compact line table text-center">
                     <thead>
@@ -494,13 +598,13 @@
                             <th style="width: 15%;">Build Time</th>
                             <th style="width: 15%;">Gold</th>
                             <th style="width: 15%;">Souls</th>
-                            <th style="width: 35%;"></th>
+                            <th style="width: 45%;"></th>
                         </tr>
                     </thead>
                     <tbody id="underworld-goldpit"></tbody>
                 </table>
             </div>
-            <div class="ui segment">
+            <div class="ui basic segment">
                 <h3 class="ui header">Soul Extractor</h3>
                 <table class="ui red single very compact line table text-center">
                     <thead>
@@ -511,13 +615,13 @@
                             <th style="width: 15%;">Souls</th>
                             <th style="width: 15%;">Hourly</th>
                             <th style="width: 15%;">Capacity</th>
-                            <th style="width: 15%;"></th>
+                            <th style="width: 15%;">Full in</th>
                         </tr>
                     </thead>
                     <tbody id="underworld-extractor"></tbody>
                 </table>
             </div>
-            <div class="ui segment">
+            <div class="ui basic segment">
                 <h3 class="ui header">Goblin Pit</h3>
                 <table class="ui red single very compact line table text-center">
                     <thead>
@@ -533,7 +637,7 @@
                     <tbody id="underworld-goblinpit"></tbody>
                 </table>
             </div>
-            <div class="ui segment">
+            <div class="ui basic segment">
                 <h3 class="ui header">Torture Chamber</h3>
                 <table class="ui red single very compact line table text-center">
                     <thead>
@@ -549,7 +653,7 @@
                     <tbody id="underworld-torture"></tbody>
                 </table>
             </div>
-            <div class="ui segment">
+            <div class="ui basic segment">
                 <h3 class="ui header">Gladiator Trainer</h3>
                 <table class="ui red single very compact line table text-center">
                     <thead>
@@ -565,7 +669,7 @@
                     <tbody id="underworld-gladiator"></tbody>
                 </table>
             </div>
-            <div class="ui segment">
+            <div class="ui basic segment">
                 <h3 class="ui header">Troll Block</h3>
                 <table class="ui red single very compact line table text-center">
                     <thead>
@@ -581,7 +685,7 @@
                     <tbody id="underworld-trolls"></tbody>
                 </table>
             </div>
-            <div class="ui segment">
+            <div class="ui basic segment">
                 <h3 class="ui header">Time Machine</h3>
                 <table class="ui red single very compact line table text-center">
                     <thead>
@@ -598,7 +702,7 @@
                     <tbody id="underworld-timemachine"></tbody>
                 </table>
             </div>
-            <div class="ui segment">
+            <div class="ui basic segment">
                 <h3 class="ui header">Keeper</h3>
                 <table class="ui red single very compact line table text-center">
                     <thead>
@@ -607,7 +711,7 @@
                             <th style="width: 15%;">Build Time</th>
                             <th style="width: 15%;">Gold</th>
                             <th style="width: 15%;">Souls</th>
-                            <th style="width: 35%;"></th>
+                            <th style="width: 45%;"></th>
                         </tr>
                     </thead>
                     <tbody id="underworld-keeper"></tbody>
@@ -626,16 +730,33 @@
             UI.register(UI.Underworld, 'show-underworld');
             UI.show(UI.GoldExperience);
 
+            function updateTimers (lq) {
+                $('[data-lq]').each((_, el) => {
+                    let duration = buildTime(parseInt(el.dataset.lq), lq);
+                    el.innerText = formatFancyTime(duration);
+                });
+
+                $('[data-lg]').each((_, el) => {
+                    let duration = parseInt(el.dataset.lg) * (1 - lq * 0.05);
+                    el.innerText = formatFancyTime(duration);
+                });
+            }
+
             $('#fortress-lq').on('change input', function () {
                 if (validate($('#fortress-lq'))) {
+                    $('#fortress-lq-uw').val($('#fortress-lq').val());
+
                     let lq = getValue('#fortress-lq', 0, 15);
+                    updateTimers(lq);
+                }
+            });
 
-                    const TICKS_PER_HOUR = 60 * 60 * 1000;
+            $('#fortress-lq-uw').on('change input', function () {
+                if (validate($('#fortress-lq-uw'))) {
+                    $('#fortress-lq').val($('#fortress-lq-uw').val());
 
-                    $('[data-lq]').each((_, el) => {
-                        let duration = buildTime(parseInt(el.dataset.lq), lq);
-                        el.innerText = formatFancyTime(duration);
-                    });
+                    let lq = getValue('#fortress-lq-uw', 0, 15);
+                    updateTimers(lq);
                 }
             });
 
@@ -663,6 +784,7 @@
                 $(`#${table}`).html(content);
             }
 
+            // Underworld
             (function () {
                 const HEART = [
                     0, 616, 1650, 4220, 11000, 25080, 45930, 84150, 198000, 439550, 902850, 2043300, 4118400, 7722000, 16632000
@@ -670,7 +792,7 @@
                 generateTable('underworld-heart', HEART, [
                     (level, souls) => level == 1 ? 0 : formatAsSpacedNumber(level * 1000),
                     (level, souls) => formatAsSpacedNumber(souls),
-                    () => '<td></td>'
+                    () => ''
                 ]);
 
                 const GATE = [
@@ -681,7 +803,7 @@
                     (level, souls) => formatAsSpacedNumber(souls),
                     (level, souls) => Math.min(5, level),
                     (level, souls) => `${100 + Math.max(0, (level - 5) * 20)} %`,
-                    () => '<td></td>'
+                    () => ''
                 ]);
 
                 const GOLD_PIT = [
@@ -690,7 +812,7 @@
                 generateTable('underworld-goldpit', GOLD_PIT, [
                     (level, souls) => formatAsSpacedNumber(level > 15 ? 10E6 : (level * 1000)),
                     (level, souls) => formatAsSpacedNumber(souls),
-                    () => '<td></td>'
+                    () => ''
                 ], `
                     <tr><td>...</td><td>...</td><td>...</td><td>...</td><td></td></tr>
                     <tr><td>100</td><td data-lq="100"></td><td>10 000 000</td><td>162 518 400</td><td></td></tr>
@@ -706,7 +828,7 @@
                     (level, souls, hourly, storage) => formatAsSpacedNumber(souls),
                     (level, souls, hourly, storage) => formatAsSpacedNumber(hourly),
                     (level, souls, hourly, storage) => formatAsSpacedNumber(storage),
-                    () => '<td></td>'
+                    (level, souls, hourly, storage) => formatFancyTime(60000 * storage / hourly)
                 ]);
 
                 const GOBLIN_PIT = [
@@ -718,7 +840,7 @@
                     (level, souls, goblins) => formatAsSpacedNumber(level * 400),
                     (level, souls, goblins) => formatAsSpacedNumber(souls),
                     (level, souls, goblins) => goblins,
-                    () => '<td></td>'
+                    () => ''
                 ]);
 
                 const TROLL_BLOCK = [
@@ -730,7 +852,7 @@
                     (level, souls, trolls) => formatAsSpacedNumber(level * 990),
                     (level, souls, trolls) => formatAsSpacedNumber(souls),
                     (level, souls, trolls) => trolls,
-                    () => '<td></td>'
+                    () => ''
                 ]);
 
                 const TORTURE_CHAMBER = [
@@ -740,7 +862,7 @@
                     (level, souls) => formatAsSpacedNumber(level * 660),
                     (level, souls) => formatAsSpacedNumber(souls),
                     (level, souls) => `${100 + (level * 10)} %`,
-                    () => '<td></td>'
+                    () => ''
                 ]);
 
                 const KEEPER = [
@@ -749,7 +871,7 @@
                 generateTable('underworld-keeper', KEEPER, [
                     (level, souls) => formatAsSpacedNumber(level * 1500),
                     (level, souls) => formatAsSpacedNumber(souls),
-                    () => '<td></td>'
+                    () => ''
                 ]);
 
                 const GLADIATOR_TRAINER = [
@@ -759,7 +881,7 @@
                     (level, souls) => formatAsSpacedNumber(level * 700),
                     (level, souls) => formatAsSpacedNumber(souls),
                     (level, souls) => `${100 + (level * 5)} %`,
-                    () => '<td></td>'
+                    () => ''
                 ]);
 
                 const TIME_MACHINE = [
@@ -774,7 +896,104 @@
                 ]);
             })();
 
-            $('#underworld-heart').html();
+            // Fortress
+            (function () {
+                const FORTRESS = [
+                    [0, 0, 900, 300], [150, 50, 1760, 560], [440, 140, 3300, 1000],
+                    [1100, 333, 6000, 1920], [2500, 800, 12000, 4000], [6000, 2000, 23000, 7600],
+                    [13417, 4433, 40800, 13920], [27200, 9280, 76500, 25500], [57375, 19125, 184800, 60000],
+                    [154000, 50000, 414000, 133200], [379500, 122100, 830400, 273600], [830400, 273600, 1872000, 619200],
+                    [1872000, 619200, 3744000, 1248000], [3744000, 1248000, 7200000, 2340000], [7200000, 2340000, 15120000, 5040000],
+                    [15120000, 5040000, 27350000, 9000000], [27350000, 9000000, 50000000, 17500000], [50000000, 17500000, 90000000, 30000000],
+                    [90000000, 30000000, 165000000, 54000000], [165000000, 54000000, 300000000, 100000000]
+                ]
+                generateTable('fortress-fortress', FORTRESS, [
+                    (level, wood, stone, mwood, mstone) => formatAsSpacedNumber(level * 100),
+                    (level, wood, stone, mwood, mstone) => formatAsSpacedNumber(wood),
+                    (level, wood, stone, mwood, mstone) => formatAsSpacedNumber(stone),
+                    (level, wood, stone, mwood, mstone) => formatAsSpacedNumber(mwood),
+                    (level, wood, stone, mwood, mstone) => formatAsSpacedNumber(mstone)
+                ]);
+
+                const QUARTERS = [
+                    [35, 12], [138, 46], [406, 129], [1015, 308], [2308, 738],
+                    [5538, 1849], [12385, 4092], [25108, 8566], [52962, 17654], [142154, 46154],
+                    [350308, 112708], [766523, 252554], [1872000, 619200], [3744000, 1248000], [7200000, 2340000]
+                ];
+                generateTable('fortress-quarters', QUARTERS, [
+                    (level, wood, stone) => level,
+                    (level, wood, stone) => formatAsSpacedNumber(level * 50),
+                    (level, wood, stone) => formatAsSpacedNumber(wood),
+                    (level, wood, stone) => formatAsSpacedNumber(stone),
+                    (level, wood, stone) => `${level * 5} %`,
+                    () => ''
+                ]);
+
+                const WOODCUTTER = [
+                    [0, 0, 375, 150], [30, 20, 605, 220], [88, 56, 990, 330], [220, 133, 1625, 500],
+                    [500, 320, 2625, 750], [1200, 800, 4312, 1150], [2683, 1773, 6800, 1700],
+                    [5440, 3712, 12750, 2550], [11475, 7650, 23100, 3850], [30800, 20000, 46000, 5750],
+                    [75900, 48840, 86500, 8650], [166080, 109440, 156000, 13000], [405600, 268320, 312000, 19500],
+                    [873600, 582400, 600000, 30000], [1800000, 1170000, 1080000, 45000], [3780000, 2520000, 1687500, 67500],
+                    [6837500, 4500000, 2600000, 100000], [12500000, 8750000, 4050000, 150000],
+                    [22500000, 15000000, 6300000, 225000], [41250000, 27000000, 10500000, 350000]
+                ];
+                generateTable('fortress-woodcutter', WOODCUTTER, [
+                    (level, wood, stone, cap, hourly) => level,
+                    (level, wood, stone, cap, hourly) => formatAsSpacedNumber(level * 20),
+                    (level, wood, stone, cap, hourly) => formatAsSpacedNumber(wood),
+                    (level, wood, stone, cap, hourly) => formatAsSpacedNumber(stone),
+                    (level, wood, stone, cap, hourly) => formatAsSpacedNumber(cap),
+                    (level, wood, stone, cap, hourly) => formatAsSpacedNumber(hourly),
+                    (level, wood, stone, cap, hourly) => formatFancyTime(60000 * cap / hourly),
+                    () => ''
+                ]);
+
+                const QUARRY = [
+                    [22, 0, 125, 50], [90, 16, 192, 70], [264, 45, 300, 100],
+                    [660, 107, 520, 160], [1500, 256, 875, 250], [3600, 640, 1425, 380],
+                    [8050, 1419, 2320, 580], [16320, 2970, 4250, 850], [34425, 6120, 7500, 1250],
+                    [92400, 16000, 14800, 1850], [227700, 39072, 28500, 2850], [498240, 87552, 51600, 4300],
+                    [1216800, 214656, 104000, 6500], [2620800, 465920, 195000, 9750], [5400000, 936000, 360000, 15000],
+                    [11340000, 2016000, 562500, 22500], [20512500, 3600000, 858000, 33000], [37500000, 7000000, 1350000, 50000],
+                    [67500000, 12000000, 2100000, 75000], [123750000, 21600000, 3450000, 115000]
+                ];
+                generateTable('fortress-quarry', QUARRY, [
+                    (level, wood, stone, cap, hourly) => level,
+                    (level, wood, stone, cap, hourly) => formatAsSpacedNumber(level * 30),
+                    (level, wood, stone, cap, hourly) => formatAsSpacedNumber(wood),
+                    (level, wood, stone, cap, hourly) => formatAsSpacedNumber(stone),
+                    (level, wood, stone, cap, hourly) => formatAsSpacedNumber(cap),
+                    (level, wood, stone, cap, hourly) => formatAsSpacedNumber(hourly),
+                    (level, wood, stone, cap, hourly) => formatFancyTime(60000 * cap / hourly),
+                    () => ''
+                ]);
+
+                const GEMTIME = [60, 120, 180, 240, 360, 480, 600, 720, 840, 960, 1080, 1200, 1440, 1680, 1920, 1800, 1680, 1560, 1530, 1500];
+                const GEMMINE = [
+                    [50, 17, 2, 1], [200, 67, 10, 3], [587, 187, 29, 9], [1467, 444, 73, 22],
+                    [3333, 1067, 167, 53], [8000, 2667, 400, 133], [17889, 5911, 894, 296],
+                    [36267, 12373, 1813, 619], [76500, 25500, 3825, 1275], [184800, 60000, 9240, 3000],
+                    [414000, 133200, 20700, 6660], [830400, 273600, 41520, 13680], [1872000, 619200, 93600, 30960],
+                    [3744000, 1248000, 187200, 62400], [7200000, 2340000, 360000, 117000],
+                    [15120000, 5040000, 756000, 252000], [27350000, 9000000, 1367500, 450000],
+                    [50000000, 17500000, 2500000, 875000], [90000000, 30000000, 4500000, 1500000],
+                    [165000000, 54000000, 4500000, 1500000], [300000000, 100000000, 4500000, 1500000]
+                ];
+                generateTable('fortress-gemmine', GEMMINE, [
+                    (level, wood, stone, gwood, gstone) => Math.min(20, Math.max(3, level)),
+                    (level) => formatAsSpacedNumber(level > 20 ? 10E6 : (level * 150)),
+                    (level, wood) => formatAsSpacedNumber(wood),
+                    (level, wood, stone) => formatAsSpacedNumber(stone),
+                    (level) => formatAsSpacedNumber(Math.min(3000, level * 150)),
+                    (level, wood, stone, gwood) => formatAsSpacedNumber(gwood),
+                    (level, wood, stone, gwood, gstone) => formatAsSpacedNumber(gstone),
+                    (level) => `<span data-lg="${GEMTIME[Math.min(19, level - 1)] * 60000}"></span>`
+                ], `
+                    <tr><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td></tr>
+                    <tr><td>100</td><td data-lq="100"></td><td>20</td><td>10 000 000</td><td>300 000 000</td><td>100 000 000</td><td>3 000</td><td>4 500 000</td><td>1 500 000</td><td><span data-lg="90000000"></span></td></tr>
+                `);
+            })();
 
             function formatFancyTime (duration) {
                 let days = Math.trunc(duration / (1000 * 60 * 60 * 24));
