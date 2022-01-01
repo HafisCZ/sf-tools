@@ -2393,7 +2393,7 @@ class SettingsView extends View {
             y: -0.25
         });
 
-        this.editor = new ScriptEditor(this.$parent, val => {
+        this.editor = new ScriptEditor(this.$parent, EditorType.DEFAULT, val => {
             this.$settingsList.settings_selectionlist('set unsaved', this.settings && val !== this.settings.content);
             if (!this.settings || val == this.settings.code) {
                 this.$save.addClass('disabled');

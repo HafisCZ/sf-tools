@@ -5,6 +5,11 @@ const ScriptType = {
     Tracker: 3
 }
 
+const EditorType = {
+    DEFAULT: 0,
+    ACTIONS: 1
+}
+
 const ARG_MAP = {
     'off': 0,
     'on': 1,
@@ -126,6 +131,7 @@ class Command {
         this.canParseAlways = false;
         this.canParse = true;
         this.canCopy = false;
+        this.type = 0;
     }
 
     isValid (string) {
@@ -156,6 +162,11 @@ class Command {
 
     copyable () {
         this.canCopy = true;
+        return this;
+    }
+
+    specialType (type) {
+        this.type = type;
         return this;
     }
 }
@@ -1202,7 +1213,7 @@ SettingsCommands.MACRO_VARIABLE = SettingsCommands[7];
 
 class Settings {
     // Contructor
-    constructor (string, type) {
+    constructor (string, type, scriptType = 0) {
         this.code = string;
         this.type = type;
         this.env_id = RandomSHA();
@@ -1254,7 +1265,7 @@ class Settings {
         // Parse settings
         for (let line of Settings.handleMacros(string, type)) {
             let command = SettingsCommands.find(command => command.isValid(line));
-            if (command && command.canParse) {
+            if (command && command.canParse && command.type == scriptType) {
                 command.parse(this, line);
             }
         }
@@ -2618,14 +2629,14 @@ class Settings {
         Old shit
     */
 
-    static parseConstants(string) {
+    static parseConstants(string, type) {
         let settings = new Settings('');
 
         for (var line of Settings.handleMacros(string)) {
             let trimmed = Settings.stripComments(line)[0].trim();
 
             for (let command of SettingsCommands) {
-                if (command.canParse && command.canParseAlways && command.isValid(trimmed)) {
+                if (command.canParse && command.canParseAlways && command.type == type && command.isValid(trimmed)) {
                     command.parse(settings, trimmed);
                     break;
                 }
@@ -2661,8 +2672,8 @@ class Settings {
     }
 
     // Format code
-    static format (string) {
-        var settings = Settings.parseConstants(string);
+    static format (string, type = 0) {
+        var settings = Settings.parseConstants(string, type);
         var content = '';
 
         SettingsHighlightCache.setCurrent(settings);
@@ -2679,7 +2690,7 @@ class Settings {
 
                 if (trimmed) {
                     let command = SettingsCommands.find(command => command.isValid(trimmed));
-                    if (command) {
+                    if (command && command.type == type) {
                         currentContent += command.format(settings, trimmed);
                     } else {
                         currentContent += SFormat.Error(trimmed);
@@ -3046,8 +3057,9 @@ const Templates = new (class {
 })();
 
 class ScriptEditor {
-    constructor (parent, changeCallback) {
+    constructor (parent, editorType, changeCallback) {
         this.changeCallback = changeCallback;
+        this.editorType = editorType;
 
         this.$parent = parent;
         this.$area = this.$parent.find('textarea');
@@ -3084,7 +3096,7 @@ class ScriptEditor {
 
             let scrollTransform = this.$mask.css('transform');
             this.$mask.remove();
-            this.$mask = $maskClone.clone().html(Settings.format(val)).css('transform', scrollTransform).appendTo(this.$wrapper);
+            this.$mask = $maskClone.clone().html(Settings.format(val, this.editorType)).css('transform', scrollTransform).appendTo(this.$wrapper);
 
             if (typeof this.changeCallback === 'function') {
                 this.changeCallback(val);
