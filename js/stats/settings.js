@@ -983,6 +983,16 @@ const SettingsCommands = [
         (root, name, value) => root.addConstant(name, value),
         (root, name, value) => SFormat.Keyword('const ') + SFormat.Constant(name) + ' ' + SFormat.Normal(value),
     ).parseAlways(),
+    new Command(
+        /^constexpr (\w+) (.+)$/,
+        (root, name, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addConstant(name, ast.eval());
+            }
+        },
+        (root, name, expression) => SFormat.Keyword('constexpr ') + SFormat.Constant(name) + ' ' + Expression.format(expression, root),
+    ).parseAlways(),
     /*
         Cell style
     */
