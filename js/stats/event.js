@@ -2350,7 +2350,7 @@ class SettingsView extends View {
         this.$parent.find('[data-op="browse"]').click(() => UI.OnlineTemplates.show());
         this.$parent.find('[data-op="templates"]').click(() => UI.Templates.show(this.settings.parent));
 
-        this.$parent.find('[data-op="copy"]').click(() => copyText(this.$area.val()));
+        this.$parent.find('[data-op="copy"]').click(() => copyText(this.editor.content));
         this.$parent.find('[data-op="prev"]').click(() => this.history(1));
         this.$parent.find('[data-op="next"]').click(() => this.history(-1));
 
@@ -2374,7 +2374,7 @@ class SettingsView extends View {
             }),
             onSave: value => {
                 if (value) {
-                    Templates.save(value, this.$area.val());
+                    Templates.save(value, this.editor.content);
 
                     this.settings.parent = value;
                     this.$settingsList.settings_selectionlist('set unsaved', true);
@@ -2393,121 +2393,12 @@ class SettingsView extends View {
             y: -0.25
         });
 
-        // Area
-        this.$area = this.$parent.find('textarea');
-        this.$wrapper = this.$parent.find('.ta-wrapper');
-        var $b = this.$parent.find('.ta-content');
-
-        // CSS
-        $b.css('top', this.$area.css('padding-top'));
-        $b.css('left', this.$area.css('padding-left'));
-        $b.css('font', this.$area.css('font'));
-        $b.css('font-family', this.$area.css('font-family'));
-        $b.css('line-height', this.$area.css('line-height'));
-
-        var $b_o = $b.clone();
-
-        // Input handling
-        this.$area.on('input', (event) => {
-            var val = $(event.currentTarget).val();
-            if (this.pasted) {
-                val = val.replace(/\t/g, ' ');
-
-                var ob = this.$area.get(0);
-
-                var ob1 = ob.selectionStart;
-                var ob2 = ob.selectionEnd;
-                var ob3 = ob.selectionDirection;
-
-                ob.value = val;
-
-                ob.selectionStart = ob1;
-                ob.selectionEnd = ob2;
-                ob.selectionDirection = ob3;
-
-                this.pasted = false;
-            }
-
-            // Set content
-            let scrollTransform = $b.css('transform');
-            $b.remove();
-            $b = $b_o.clone().html(Settings.format(val)).css('transform', scrollTransform).appendTo(this.$wrapper);
-
-            // Update
+        this.editor = new ScriptEditor(this.$parent, val => {
             this.$settingsList.settings_selectionlist('set unsaved', this.settings && val !== this.settings.content);
             if (!this.settings || val == this.settings.code) {
                 this.$save.addClass('disabled');
             } else {
                 this.$save.removeClass('disabled');
-            }
-        }).trigger('input');
-
-        // Scroll handling
-        this.$area.on('scroll', function () {
-            var sy = $(this).scrollTop();
-            var sx = $(this).scrollLeft();
-            $b.css('transform', `translate(${ -sx }px, ${ -sy }px)`);
-        });
-
-        this.$area.keydown((e) => {
-            if (e.key == 'Tab') {
-                e.preventDefault();
-
-                let a = this.$area.get(0);
-                let v = this.$area.val();
-                let s = a.selectionStart;
-                let d = a.selectionEnd;
-
-                if (s == d) {
-                    this.$area.val(v.substring(0, s) + '  ' + v.substring(s));
-                    a.selectionStart = s + 2;
-                    a.selectionEnd = d + 2;
-                } else {
-                    let o = 0, oo = 0, i;
-                    for (i = d - 1; i > s; i--) {
-                        if (v[i] == '\n') {
-                            v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
-                            oo++;
-                        }
-                    }
-
-                    while (i >= 0) {
-                        if (v[i] == '\n') {
-                            v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
-                            o++;
-                            break;
-                        } else {
-                            i--;
-                        }
-                    }
-
-                    this.$area.val(v);
-                    a.selectionStart = s + o * 2;
-                    a.selectionEnd = d + (oo + o) * 2;
-                }
-
-                this.$area.trigger('input');
-            }
-        });
-
-        // Paste handling
-        this.$area.on('paste', () => {
-            this.pasted = true;
-        });
-
-        this.$area.on('dragover dragenter', e => {
-            e.preventDefault();
-            e.stopPropagation();
-        }).on('drop', e => {
-            if (e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files.length && e.originalEvent.dataTransfer.files[0].type == 'text/plain') {
-                e.preventDefault();
-                e.stopPropagation();
-
-                let r = new FileReader();
-                r.readAsText(e.originalEvent.dataTransfer.files[0], 'UTF-8');
-                r.onload = f => {
-                    this.$area.val(f.target.result).trigger('input');
-                }
             }
         });
 
@@ -2567,7 +2458,7 @@ class SettingsView extends View {
         this.history();
 
         // Reset scrolling
-        this.$area.scrollTop(0).trigger('scroll');
+        this.editor.scrollTop();
     }
 
     updateSettings () {
@@ -2625,7 +2516,7 @@ class SettingsView extends View {
 
     saveApplyTemplate () {
         if (this.settings.parent) {
-            Templates.save(this.settings.parent, this.$area.val());
+            Templates.save(this.settings.parent, this.editor.content);
         }
 
         this.save();
@@ -2633,7 +2524,7 @@ class SettingsView extends View {
     }
 
     save () {
-        let code = this.$area.val();
+        let code = this.editor.content;
         if (code !== this.settings.content) {
             // Add into history
             SettingsManager.addHistory(this.settings.content, this.settings.name);
@@ -2676,14 +2567,12 @@ class SettingsView extends View {
             items: templates,
             onClick: value => {
                 if (PredefinedTemplates[value]) {
-                    this.$area.val(PredefinedTemplates[value]);
+                    this.editor.content = PredefinedTemplates[value];
                     this.settings.parent = '';
                 } else {
-                    this.$area.val(Templates.get(value));
+                    this.editor.content = Templates.get(value);
                     this.settings.parent = value;
                 }
-
-                this.$area.trigger('input');
             }
         });
     }
@@ -2700,12 +2589,10 @@ class SettingsView extends View {
         }
 
         if (this.index > 0) {
-            this.$area.val(history[this.index - 1].content);
+            this.editor.content = history[this.index - 1].content;
         } else {
-            this.$area.val(this.settings.content);
+            this.editor.content = this.settings.content;
         }
-
-        this.$area.trigger('input');
     }
 }
 

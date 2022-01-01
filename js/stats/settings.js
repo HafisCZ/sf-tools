@@ -3044,3 +3044,131 @@ const Templates = new (class {
         return name in this.templates ? this.templates[name].content : '';
     }
 })();
+
+class ScriptEditor {
+    constructor (parent, changeCallback) {
+        this.changeCallback = changeCallback;
+
+        this.$parent = parent;
+        this.$area = this.$parent.find('textarea');
+        this.$wrapper = this.$parent.find('.ta-wrapper');
+        this.$mask = this.$parent.find('.ta-content');
+
+        this.$mask.css('top', this.$area.css('padding-top'));
+        this.$mask.css('left', this.$area.css('padding-left'));
+        this.$mask.css('font', this.$area.css('font'));
+        this.$mask.css('font-family', this.$area.css('font-family'));
+        this.$mask.css('line-height', this.$area.css('line-height'));
+
+        let $maskClone = this.$mask.clone();
+
+        this.$area.on('input', (event) => {
+            var val = $(event.currentTarget).val();
+            if (this.pasted) {
+                val = val.replace(/\t/g, ' ');
+
+                var ob = this.$area.get(0);
+
+                var ob1 = ob.selectionStart;
+                var ob2 = ob.selectionEnd;
+                var ob3 = ob.selectionDirection;
+
+                ob.value = val;
+
+                ob.selectionStart = ob1;
+                ob.selectionEnd = ob2;
+                ob.selectionDirection = ob3;
+
+                this.pasted = false;
+            }
+
+            let scrollTransform = this.$mask.css('transform');
+            this.$mask.remove();
+            this.$mask = $maskClone.clone().html(Settings.format(val)).css('transform', scrollTransform).appendTo(this.$wrapper);
+
+            if (typeof this.changeCallback === 'function') {
+                this.changeCallback(val);
+            }
+        }).trigger('input');
+
+        this.$area.on('scroll', (event) => {
+            var sy = $(event.currentTarget).scrollTop();
+            var sx = $(event.currentTarget).scrollLeft();
+            this.$mask.css('transform', `translate(${ -sx }px, ${ -sy }px)`);
+        });
+
+        this.$area.keydown((e) => {
+            if (e.key == 'Tab') {
+                e.preventDefault();
+
+                let a = this.$area.get(0);
+                let v = this.$area.val();
+                let s = a.selectionStart;
+                let d = a.selectionEnd;
+
+                if (s == d) {
+                    this.$area.val(v.substring(0, s) + '  ' + v.substring(s));
+                    a.selectionStart = s + 2;
+                    a.selectionEnd = d + 2;
+                } else {
+                    let o = 0, oo = 0, i;
+                    for (i = d - 1; i > s; i--) {
+                        if (v[i] == '\n') {
+                            v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
+                            oo++;
+                        }
+                    }
+
+                    while (i >= 0) {
+                        if (v[i] == '\n') {
+                            v = v.substring(0, i + 1) + '  ' + v.substring(i + 1);
+                            o++;
+                            break;
+                        } else {
+                            i--;
+                        }
+                    }
+
+                    this.$area.val(v);
+                    a.selectionStart = s + o * 2;
+                    a.selectionEnd = d + (oo + o) * 2;
+                }
+
+                this.$area.trigger('input');
+            }
+        });
+
+        this.$area.on('paste', () => {
+            this.pasted = true;
+        });
+
+        this.$area.on('dragover dragenter', e => {
+            e.preventDefault();
+            e.stopPropagation();
+        }).on('drop', e => {
+            if (_dig(e, 'originalEvent', 'dataTransfer', 'files', 0, 'type') == 'text/plain') {
+                e.preventDefault();
+                e.stopPropagation();
+
+                let r = new FileReader();
+                r.readAsText(e.originalEvent.dataTransfer.files[0], 'UTF-8');
+                r.onload = f => {
+                    this.$area.val(f.target.result).trigger('input');
+                }
+            }
+        });
+    }
+
+    get content () {
+        return this.$area.val();
+    }
+
+    set content (val) {
+        this.$area.val(val);
+        this.$area.trigger('input');
+    }
+
+    scrollTop () {
+        this.$area.scrollTop(0).trigger('scroll');
+    }
+}
