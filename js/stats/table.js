@@ -14,11 +14,7 @@ class HeaderGroup {
 
     add (settings, cellGenerator, statisticsGenerator, sort, border, span = 1) {
         let { expa_eval, alias, name } = settings;
-        let header = {
-            // Header
-            ... settings,
-
-            // Own properties
+        let header = Object.assign(settings || {}, {
             name: expa_eval != undefined ? expa_eval : (alias != undefined ? alias : name),
             generators: {
                 cell: cellGenerator,
@@ -28,7 +24,7 @@ class HeaderGroup {
             sortkey: SHA1(`${ this.sortkey }.${ name }.${ this.headers.length }`),
             span: span,
             bordered: border
-        };
+        });
 
         // Set approximate sizes
         if (typeof header.width == 'undefined') {
