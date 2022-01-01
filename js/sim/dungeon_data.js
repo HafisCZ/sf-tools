@@ -854,18 +854,17 @@ DUNGEON_DATA = {
     '200': {
         name: 'Tavern',
         shadow: false,
-        force_no_gladiator: true,
         floors: {
 
 
 
 
-            'Strider': { pos: 5, id: 0, class: 3, level: 570, str: 10000, dex: 250000, int: 10000, con: 200000, lck: 30000, health: 1000000000, runes: { type: 42, res: [75, 75, 75], damage: 60 }, min: 1022, max: 2858 },
+            'Strider': { pos: 5, id: 0, class: 3, level: 570, str: 10000, dex: 250000, int: 10000, con: 200000, lck: 30000, health: 1000000000, runes: { type: 42, res: [75, 75, 75], damage: 60 }, min: 1022, max: 2858, gladiator: 15 },
 
 
 
 
-            'ice bug fix': { pos: 10, id: 0, class: 7, level: 700, str: 51000, dex: 435000, int: 51000, con: 443000, lck: 70000, health: 1900000000, runes: { type: 41, res: [75, 75, 75], damage: 60 }, min: 1170, max: 3480, armor: 100000 }
+            'ice bug fix': { pos: 10, id: 0, class: 7, level: 700, str: 51000, dex: 435000, int: 51000, con: 443000, lck: 70000, health: 1900000000, runes: { type: 41, res: [75, 75, 75], damage: 60 }, min: 1170, max: 3480, armor: 100000, gladiator: 30 }
         }
     }
 };

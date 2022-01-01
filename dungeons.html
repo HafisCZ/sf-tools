@@ -863,7 +863,7 @@
                         Constitution: { Total: data.con },
                         Luck: { Total: data.lck },
                         Dungeons: { Player: 0, Group: 0 },
-                        Fortress: { Gladiator: 0 },
+                        Fortress: { Gladiator: data.gladiator || 0 },
                         Potions: { Life: 0 },
                         Runes: {
                             Health: 0,
@@ -1254,12 +1254,6 @@
 
                     if (playerInstances[0].Class == 1 && playerInstances[0].BlockChance == '0') {
                         playerInstances[0].NoSkip = true;
-                    }
-
-                    if (dungeon.force_no_gladiator) {
-                        for (let i = 0; i < 4; i++) {
-                            playerInstances[i].Fortress.Gladiator = 0;
-                        }
                     }
 
                     for (let i = 0; i < 4; i++) {
