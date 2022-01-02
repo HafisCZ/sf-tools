@@ -3400,6 +3400,21 @@ class OptionsView extends View {
         });
 
         SiteOptions.onChange('groups_empty', () => DatabaseManager._updateLists());
+
+        this.editor = new ScriptEditor(this.$parent, EditorType.ACTIONS);
+        
+        this.$parent.find('[data-op="save"]').click(() => {
+            Actions.setScript(this.editor.content);
+        });
+
+        this.$parent.find('[data-op="remove"]').click(() => {
+            Actions.removeScript();
+            this.editor.content = Actions.getScript();
+        });
+
+        this.$parent.find('[data-op="reset"]').click(() => {
+            this.editor.content = Actions.getScript();
+        });
     }
 
     // Prepare checkbox
@@ -3411,7 +3426,7 @@ class OptionsView extends View {
     }
 
     show () {
-
+        this.editor.content = Actions.getScript();
     }
 }
 

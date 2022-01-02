@@ -272,91 +272,83 @@ const ProfileManager = new (class {
     }
 })();
 
-/*
-    Sample action:
-    {
-        name: 'Action 1',
-        trigger: load | import, // when action should be triggered
-        temporary: true | false, // should apply in temporary mode too
-        test: 'timestamp < (now() - @7days)', // condition
-        targets: player | group | file, // player, group and/or file
-        action: 'tag', // what action does
-        args: ['Outdated'] // arguments for the action if necessary
-        origins: [] // origins for import
-    }
-*/
+const ACTION_PROPS = ['players', 'groups', 'origin'];
+
 const Actions = new (class {
-    constructor () {
-        this.actions = Preferences.get('actions', {});
+    init () {
+        this.defaultScript = ('PredefinedTemplates' in window) ? PredefinedTemplates['Actions'] : '';
+
+        this._loadScript();
+        this._executeScript();
     }
 
-    set (name, action) {
-        this.actions[name] = action;
-        this._save();
+    _loadScript () {
+        this.script = Preferences.get('actions_script', this.defaultScript);
     }
 
-    get (name) {
-        return this.actions[name];
+    _saveScript () {
+        Preferences.set('actions_script', this.script);
     }
 
-    remove (name) {
-        delete this.actions[name];
-        this._save();
+    _executeScript () {
+        this.actions = new Settings(this.script || '', null, EditorType.ACTIONS).actions;
     }
 
-    async apply (actTrigger, ... args) {
-        const pending = [];
-        const temporary = DatabaseManager.Profile.temporary;
+    getScript () {
+        return this.script;
+    }
 
-        for (const action of Object.values(this.actions)) {
-            if (action.trigger == actTrigger && (!temporary || action.temporary)) {
-                pending.push(action);
+    resetScript () {
+        Preferences.remove('actions_script');
+        this._loadScript();
+    }
+
+    setScript (script) {
+        this.script = script;
+        Preferences.set('actions_script', script);
+    }
+
+    async apply (playerData, groupData, origin) {
+        if (_not_empty(this.actions)) {
+            let players = playerData.map(({identifier, timestamp}) => DatabaseManager.getPlayer(identifier, timestamp));
+            let groups = groupData.map(({identifier, timestamp}) => DatabaseManager.getGroup(identifier, timestamp));
+
+            for (const action of this.actions) {
+                Logger.log('ACTIONS', `Applying action ${action.action}`)
+                await this._applyAction(action, players, groups, origin);
             }
         }
-
-        if (_not_empty(pending)) {
-            if (actTrigger === 'load') {
-                const { players, groups } = DatabaseManager._getFile();
-                args = [ players, groups ];
-            }
-
-            for (const action of pending) {
-                await this._applyAction(action, ... args);
-            }
-
-            Logger.log('ACTIONS', `${pending.length} action(s) for event ${actTrigger} processed`);
-        }
     }
 
-    async _applyAction (actionObj, ... actionArgs) {
-        const { trigger, target, test, action, args, origins } = actionObj;
-        if (_not_empty(origins) && !_has(origins, actionArgs[2])) {
-            return;
-        }
+    async _applyAction ({ action, type, args }, players, groups, origin) {
+        if (action == 'tag') {
+            const [tagExpr, conditionExpr] = args;
 
-        const expr = new Expression(test);
-
-        if (action === 'tag') {
-            const newTag = args[0];
-            if (target === 'player') {
-                for (const player of actionArgs[0]) {
-                    if (player.tag != newTag && new ExpressionScope().addSelf(player).eval(expr)) {
-                        await DatabaseManager.setTagFor(player.identifier, player.timestamp, newTag);
+            if (type == 'player') {
+                for (const player of players) {
+                    let scope = new ExpressionScope().with(player, player).add({ origin });
+                    if (scope.eval(conditionExpr)) {
+                        let tag = scope.eval(tagExpr);
+                        if (player.Data.tag != tag) {
+                            await DatabaseManager.setTagFor(player.Identifier, player.Timestamp, tag);
+                        }
                     }
                 }
-            } else if (target === 'group') {
-                throw 'target not allowed';
-            } else if (target === 'file') {
-                for (const { timestamp, players, groups } of DatabaseManager._fileize(... actionArgs)) {
-                    if (_any_true(players, p => p.tag != newTag) && new ExpressionScope().addSelf({ players, groups }).eval(expr)) {
-                        await DatabaseManager.setTag([timestamp], newTag);
+            } else if (type == 'file') {
+                let scope = new ExpressionScope().add({ players, groups, origin });
+                if (scope.eval(conditionExpr)) {
+                    const tag = scope.eval(tagExpr);
+                    for (const { Identifier: id, Timestamp: ts, Data: data } of players) {
+                        if (data.tag != tag) {
+                            await DatabaseManager.setTagFor(id, ts, tag);
+                        }
                     }
                 }
+            } else {
+                throw 'Invalid action';
             }
+        } else {
+            throw 'Invalid action';
         }
-    }
-
-    _save () {
-        Preferences.set('actions', this.actions);
     }
 })();

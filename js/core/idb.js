@@ -670,6 +670,8 @@ const DatabaseManager = new (class {
     async load (profile = DEFAULT_PROFILE) {
         await this._reset();
 
+        Actions.init();
+
         this.Profile = profile;
 
         if (profile.temporary) {
@@ -760,7 +762,6 @@ const DatabaseManager = new (class {
 
                 Logger.log('PERFLOG', `Load done in ${Date.now() - beginTimestamp} ms`);
 
-                await Actions.apply('load');
                 resolve();
             });
         }
@@ -1235,7 +1236,7 @@ const DatabaseManager = new (class {
             await this._track(identifier, timestamp);
         }
 
-        await Actions.apply('import', migratedPlayers, migratedGroups, origin);
+        await Actions.apply(migratedPlayers, migratedGroups, origin);
     }
 
     getTracker (identifier, tracker) {

@@ -1177,6 +1177,20 @@ const SettingsCommands = [
         (root) => SFormat.Keyword('push')
     ).parseAlways(),
     /*
+        Tag action
+    */
+    new Command(
+        /^tag (player|file) as (.+) if (.+)$/,
+        (root, type, tag, expr) => {
+            let ast1 = new Expression(tag);
+            let ast2 = new Expression(expr);
+            if (ast1.isValid() && ast2.isValid()) {
+                root.addActionEntry('tag', type, ast1, ast2);
+            }
+        },
+        (root, type, tag, expr) => SFormat.Keyword('tag ') + SFormat.Constant(type) + SFormat.Keyword(' as ') + Expression.format(tag, undefined, ACTION_PROPS) + SFormat.Keyword(' if ') + Expression.format(expr, undefined, ACTION_PROPS)
+    ).specialType(EditorType.ACTIONS),
+    /*
         Tracker
     */
     new Command(
@@ -1242,6 +1256,7 @@ class Settings {
 
         // Other things
         this.customDefinitions = {};
+        this.actions = [];
 
         // Settings
         this.globals = {};
@@ -1561,6 +1576,14 @@ class Settings {
             out: out,
             hash: ast.rstr + (out ? out.rstr : '0000000000000000')
         };
+    }
+
+    addActionEntry (action, type, ...args) {
+        this.actions.push({
+            action,
+            type,
+            args
+        });
     }
 
     // Merge mapping to object

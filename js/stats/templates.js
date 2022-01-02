@@ -353,5 +353,9 @@ color default @green
 # track Level100 when Level >= 100
 
 # Saves the level at which the character was when reaching tower 100
-# track LevelAtTower100 as Level when Tower == 100`
+# track LevelAtTower100 as Level when Tower == 100`,
+'Actions': `# Example - Tag every player above level 600 with tag Legend:
+# tag player as 'Legend' if Level > 600
+# Example - Tag file as Legendary if it includes your own character:,
+# tag file as 'Legendary' if some(players, Own)`
 };
