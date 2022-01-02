@@ -1963,6 +1963,7 @@ class FilesView extends View {
         let origins = this.$filter_origin.dropdown('get value');
         let type = parseInt(this.$filter_type.dropdown('get value'));
         let hidden = this.$filter_hidden.dropdown('get value');
+        let tags = this.$filter_tags.dropdown('get value');
 
         DatabaseManager.export(null, null, data => (
             (!prefixes || prefixes.length == 0 || prefixes.includes(data.prefix)) &&
@@ -1970,6 +1971,7 @@ class FilesView extends View {
             (player_identifiers.length == 0 || player_identifiers.includes(data.identifier)) &&
             (timestamps.length == 0 || timestamps.includes(data.timestamp)) &&
             (origins.length == 0 || origins.includes(`${data.origin}`)) &&
+            (tags.length == 0 || tags.includes(`${data.tag}`)) &&
             (!type || data.own != type - 1) &&
             (!SiteOptions.hidden || hidden.length == 0 || (SiteOptions.hidden && (data.hidden && hidden.includes('yes')) || (!data.hidden && hidden.includes('no'))))
         )).then(({ players }) => {
@@ -1991,8 +1993,9 @@ class FilesView extends View {
                     <td class="text-center">${ this.timeMap[player.timestamp] }</td>
                     <td class="text-center">${ this.prefixMap[player.prefix] }</td>
                     <td>${ player.name }</td>
-                    <td class="text-center">${ this.groupMap[player.group] || '' }</td>
+                    <td>${ this.groupMap[player.group] || '' }</td>
                     <td class="text-center">${ player.origin || '' }</td>
+                    <td>${ player.tag ? `<div class="ui horizontal label" style="background-color: ${_strToHSL(player.tag)}; color: white;">${player.tag}</div>` : '' }</td>
                 </tr>
             `).join('') + notice);
 
@@ -2192,6 +2195,7 @@ class FilesView extends View {
         this.prefixMap = _array_to_hash(DatabaseManager.Prefixes, (prefix) => [prefix, _pretty_prefix(prefix)]);
 
         this.timeArray = Object.entries(this.timeMap).sort((a, b) => parseInt(b[0]) - parseInt(a[0]));
+        this.tagsArray = Object.keys(DatabaseManager.findUsedTags()).filter(tag => tag !== 'undefined');
 
         const playerNameFrequency = {};
         for (const name of Object.values(this.playerMap)) {
@@ -2234,6 +2238,13 @@ class FilesView extends View {
                 <label>Prefix (<span data-op="unique-prefix"></span> unique)</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-prefix">
                     ${ Object.entries(this.prefixMap).map(([prefix, value]) => `<option value="${ prefix }">${ value }</option>`).join('') }
+                </select>
+            </div>
+            <div class="field">
+                <label>Tags (<span data-op="unique-tags"></span> unique)</label>
+                <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-tags">
+                    <option value="undefined">None</option>
+                    ${ this.tagsArray.map((tag) => `<option value="${ tag }">${ tag }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
@@ -2297,6 +2308,11 @@ class FilesView extends View {
             placeholder: 'Any'
         });
 
+        this.$filter_tags = this.$parent.find('[data-op="files-search-tags"]').dropdown({
+            onChange: this.updateSearchResults.bind(this),
+            placeholder: 'Any'
+        });
+
         this.$filter_type = this.$parent.find('[data-op="files-search-type"]').dropdown({
             onChange: this.updateSearchResults.bind(this)
         });
@@ -2305,6 +2321,7 @@ class FilesView extends View {
         this.$parent.find('[data-op="unique-player"]').html(Object.keys(this.playerMap).length);
         this.$parent.find('[data-op="unique-group"]').html(Object.keys(this.groupMap).length - 1);
         this.$parent.find('[data-op="unique-prefix"]').html(Object.keys(this.prefixMap).length);
+        this.$parent.find('[data-op="unique-tags"]').html(this.tagsArray.length);
 
         this.updateSearchResults();
     }
