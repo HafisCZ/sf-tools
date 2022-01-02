@@ -276,7 +276,7 @@ const ACTION_PROPS = ['players', 'groups', 'origin'];
 
 const Actions = new (class {
     init () {
-        this.defaultScript = ('PredefinedTemplates' in window) ? PredefinedTemplates['Actions'] : '';
+        this.defaultScript = typeof PredefinedTemplates === 'object' ? PredefinedTemplates['Actions'] : '';
 
         this._loadScript();
         this._executeScript();
