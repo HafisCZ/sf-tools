@@ -300,12 +300,16 @@ const Actions = new (class {
 
     resetScript () {
         Preferences.remove('actions_script');
+
         this._loadScript();
+        this._executeScript();
     }
 
     setScript (script) {
         this.script = script;
-        Preferences.set('actions_script', script);
+        
+        this._saveScript();
+        this._executeScript();
     }
 
     async apply (playerData, groupData, origin) {
