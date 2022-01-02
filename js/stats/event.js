@@ -3401,19 +3401,30 @@ class OptionsView extends View {
 
         SiteOptions.onChange('groups_empty', () => DatabaseManager._updateLists());
 
-        this.editor = new ScriptEditor(this.$parent, EditorType.ACTIONS);
-        
-        this.$parent.find('[data-op="save"]').click(() => {
+        this.$save = this.$parent.find('[data-op="save"]').click(() => {
             Actions.setScript(this.editor.content);
+
+            this.$save.addClass('disabled');
+            this.$reset.addClass('disabled');
+        });
+
+        this.$reset = this.$parent.find('[data-op="reset"]').click(() => {
+            this.editor.content = Actions.getScript();
         });
 
         this.$parent.find('[data-op="remove"]').click(() => {
-            Actions.removeScript();
+            Actions.resetScript();
             this.editor.content = Actions.getScript();
         });
 
-        this.$parent.find('[data-op="reset"]').click(() => {
-            this.editor.content = Actions.getScript();
+        this.editor = new ScriptEditor(this.$parent, EditorType.ACTIONS, val => {
+            if (val === Actions.getScript()) {
+                this.$save.addClass('disabled');
+                this.$reset.addClass('disabled');
+            } else {
+                this.$save.removeClass('disabled');
+                this.$reset.removeClass('disabled');
+            }
         });
     }
 
