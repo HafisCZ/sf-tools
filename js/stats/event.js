@@ -2933,8 +2933,7 @@ class TemplatesView extends View {
     }
 
     openTemplate () {
-        // Fill $area and hide
-        this.getCurrentView().$area.val(this.tmp.content).trigger('input');
+        this.getCurrentView().editor.content = this.tmp.content;
         this.hide();
     }
 
@@ -3095,7 +3094,7 @@ class TemplatesView extends View {
 
     show (template = null) {
         // Refresh stuff
-        this.currentContent = this.getCurrentView().$area.val();
+        this.currentContent = this.getCurrentView().editor.content;
         this.refreshList();
 
         // Open modal
@@ -3220,9 +3219,9 @@ class OnlineTemplatesView extends View {
                 }).done((message) => {
                     if (message.success) {
                         if (UI.current == UI.Settings) {
-                            UI.Settings.$area.val(message.content).trigger('input');
+                            UI.Settings.editor.content = message.content;
                         } else {
-                            UI.SettingsFloat.$area.val(message.content).trigger('input');
+                            UI.SettingsFloat.editor.content = message.content;
                         }
 
                         this.hide();
@@ -3300,9 +3299,9 @@ class OnlineTemplatesView extends View {
                 }).done((message) => {
                     if (message.success) {
                         if (UI.current == UI.Settings) {
-                            UI.Settings.$area.val(message.content).trigger('input');
+                            UI.Settings.editor.content = message.content;
                         } else {
-                            UI.SettingsFloat.$area.val(message.content).trigger('input');
+                            UI.SettingsFloat.editor.content = message.content;
                         }
 
                         this.hide();
