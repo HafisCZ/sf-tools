@@ -356,6 +356,6 @@ color default @green
 # track LevelAtTower100 as Level when Tower == 100`,
 'Actions': `# Example - Tag every player above level 600 with tag Legend:
 # tag player as 'Legend' if Level > 600
-# Example - Tag file as Legendary if it includes your own character:,
+# Example - Tag file as Legendary if it includes your own character:
 # tag file as 'Legendary' if some(players, Own)`
 };
