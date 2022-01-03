@@ -65,7 +65,7 @@ const yellow ffffc1
 const blue b0deff
 const air e1f2fb
 const pink ffcfdf
-const navy 424874
+const navy 6886C5
 const darkgreen 889e81
 const beige E2C2B9
 
