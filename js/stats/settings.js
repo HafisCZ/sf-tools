@@ -210,7 +210,7 @@ const SettingsCommands = [
     new Command(
         /^loop (\w+(?:\s*\,\s*\w+)*) for (.+)$/,
         null,
-        (root, name, array) => SFormat.Macro(SFormat.Keyword('loop ') + SFormat.Constant(name) + SFormat.Keyword(' for ') + Expression.format(array), true)
+        (root, name, array) => SFormat.Macro(SFormat.Keyword('loop ') + SFormat.Constant(name) + SFormat.Keyword(' for ') + Expression.format(array, root), true)
     ).parseNever(),
     /*
         End loop or condition
