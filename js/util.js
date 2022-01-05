@@ -638,6 +638,8 @@ function getCSSColor (color) {
         return toCSSColor(COLOR_MAP[color]);
     } else if (/^\#([\da-fA-F]{8}|[\da-fA-F]{6}|[\da-fA-F]{3,4})$/.test(color)) {
         return toCSSColor(color);
+    } else if (/^[\\]+?\#([\da-fA-F]{8}|[\da-fA-F]{6}|[\da-fA-F]{3,4})$/.test(color)) {
+        return toCSSColor(color.substring(color.lastIndexOf('#')));
     } else if (/^([\da-fA-F]{8}|[\da-fA-F]{6}|[\da-fA-F]{3,4})$/.test(color)) {
         return toCSSColor('#' + color);
     } else {
