@@ -2684,7 +2684,20 @@ class Settings {
         return settings;
     }
 
-    static stripComments (line) {
+    static checkEscapeTrail (line, index) {
+        if (line[index - 1] != '\\') {
+            return false;
+        } else {
+            let escape = true;
+            for (let i = index - 2; i >= 0 && line[i] == '\\'; i--) {
+                escape = !escape;
+            }
+
+            return escape;
+        }
+    }
+
+    static stripComments (line, escape = true) {
         let comment;
         let commentIndex = -1;
 
@@ -2695,7 +2708,7 @@ class Settings {
                 else {
                     ignored = ignored ? false : line[i];
                 }
-            } else if (line[i] == '#' && !ignored) {
+            } else if (!Settings.checkEscapeTrail(line, i) && line[i] == '#' && !ignored) {
                 commentIndex = i;
                 break;
             }
@@ -2704,6 +2717,15 @@ class Settings {
         if (commentIndex != -1) {
             comment = line.slice(commentIndex);
             line = line.slice(0, commentIndex);
+
+            if (escape) {
+                line = line.replaceAll(/\\(\\|#)/g, (_, capture) => {
+                    commentIndex -= 1;
+                    return capture;
+                });
+            }
+        } else if (escape) {
+            line = line.replaceAll(/\\(\\|#)/g, (_, capture) => capture);
         }
 
         return [ line, comment, commentIndex ];
@@ -2720,7 +2742,7 @@ class Settings {
             if (SettingsHighlightCache.has(line)) {
                 content += SettingsHighlightCache.get(line);
             } else {
-                let [ commandLine, comment, commentIndex ] = Settings.stripComments(line);
+                let [ commandLine, comment, commentIndex ] = Settings.stripComments(line, false);
                 let [ , prefix, trimmed, suffix ] = commandLine.match(/^(\s*)(\S(?:.*\S)?)?(\s*)$/);
 
                 let currentContent = '';
