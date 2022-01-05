@@ -247,6 +247,27 @@ const SettingsCommands = [
         (root, name, expression) => SFormat.Macro('mset') + SFormat.Keyword(' ') + SFormat.Constant(name) + SFormat.Keyword(' as ') + Expression.format(expression, root),
     ).parseAlways(),
     /*
+        Constant
+    */
+    new Command(
+        /^const (\w+) (.+)$/,
+        (root, name, value) => root.addConstant(name, value),
+        (root, name, value) => SFormat.Keyword('const ') + SFormat.Constant(name) + ' ' + SFormat.Normal(value),
+    ).parseAlways(),
+    /*
+        Constant Expression
+    */
+    new Command(
+        /^constexpr (\w+) (.+)$/,
+        (root, name, expression) => {
+            let ast = new Expression(expression);
+            if (ast.isValid()) {
+                root.addConstant(name, new ExpressionScope(root).eval(ast));
+            }
+        },
+        (root, name, expression) => SFormat.Keyword('constexpr ') + SFormat.Constant(name) + ' ' + Expression.format(expression, root),
+    ).parseAlways(),
+    /*
         Server column
     */
     new Command(
@@ -987,24 +1008,6 @@ const SettingsCommands = [
         (root, value) => SFormat.Keyword('extra ') + SFormat.Normal(value)
     ).copyable(),
     /*
-        Constant
-    */
-    new Command(
-        /^const (\w+) (.+)$/,
-        (root, name, value) => root.addConstant(name, value),
-        (root, name, value) => SFormat.Keyword('const ') + SFormat.Constant(name) + ' ' + SFormat.Normal(value),
-    ).parseAlways(),
-    new Command(
-        /^constexpr (\w+) (.+)$/,
-        (root, name, expression) => {
-            let ast = new Expression(expression);
-            if (ast.isValid()) {
-                root.addConstant(name, new ExpressionScope(root).eval(ast));
-            }
-        },
-        (root, name, expression) => SFormat.Keyword('constexpr ') + SFormat.Constant(name) + ' ' + Expression.format(expression, root),
-    ).parseAlways(),
-    /*
         Cell style
     */
     new Command(
@@ -1224,6 +1227,8 @@ SettingsCommands.MACRO_LOOP = SettingsCommands[4];
 SettingsCommands.MACRO_END = SettingsCommands[5];
 SettingsCommands.MACRO_FUNCTION = SettingsCommands[6];
 SettingsCommands.MACRO_VARIABLE = SettingsCommands[7];
+SettingsCommands.MACRO_CONST = SettingsCommands[8];
+SettingsCommands.MACRO_CONSTEXPR = SettingsCommands[9];
 
 class Settings {
     // Contructor
@@ -1486,6 +1491,16 @@ class Settings {
                             ast: ast,
                             tableVariable: false
                         };
+                    }
+                } else if (SettingsCommands.MACRO_CONST.isValid(line)) {
+                    let [name, value] = SettingsCommands.MACRO_CONST.parseAsMacro(line);
+                    settings.constants.addConstant(name, value);
+                } else if (SettingsCommands.MACRO_CONSTEXPR.isValid(line)) {
+                    let [name, expression] = SettingsCommands.MACRO_CONSTEXPR.parseAsMacro(line);
+
+                    let ast = new Expression(expression);
+                    if (ast.isValid()) {
+                        settings.constants.addConstant(name, new ExpressionScope(settings).eval(ast));
                     }
                 }
             }
