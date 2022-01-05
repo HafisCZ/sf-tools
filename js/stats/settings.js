@@ -997,9 +997,9 @@ const SettingsCommands = [
     new Command(
         /^constexpr (\w+) (.+)$/,
         (root, name, expression) => {
-            let ast = new Expression(expression, root);
+            let ast = new Expression(expression);
             if (ast.isValid()) {
-                root.addConstant(name, ast.eval());
+                root.addConstant(name, new ExpressionScope(root).eval(ast));
             }
         },
         (root, name, expression) => SFormat.Keyword('constexpr ') + SFormat.Constant(name) + ' ' + Expression.format(expression, root),
