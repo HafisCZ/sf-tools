@@ -2080,43 +2080,48 @@ class FilesView extends View {
             this.tagFilter = undefined;
         }
 
-        this.currentFiles = _array_to_hash(SiteOptions.groups_empty ? _int_keys(DatabaseManager.Timestamps) : DatabaseManager.PlayerTimestamps, (ts) => [ts, {
-            prettyDate: formatDate(ts),
-            playerCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager._isPlayer(id)),
-            groupCount: _len_where(DatabaseManager.Timestamps[ts], id => !DatabaseManager._isPlayer(id)),
-            version: DatabaseManager.findDataFieldFor(ts, 'version'),
-            origin: DatabaseManager.findDataFieldFor(ts, 'origin'),
-            tags: (() => {
-                const tagMap = DatabaseManager.findUsedTags([ts]);
-                const tagEntries = _sort_des(Object.entries(tagMap), ([, a]) => a);
+        let currentFilesAll = (SiteOptions.groups_empty ? _int_keys(DatabaseManager.Timestamps) : DatabaseManager.PlayerTimestamps).map((ts) => {
+            return {
+                timestamp: ts,
+                prettyDate: formatDate(ts),
+                playerCount: _len_where(DatabaseManager.Timestamps[ts], id => DatabaseManager._isPlayer(id)),
+                groupCount: _len_where(DatabaseManager.Timestamps[ts], id => !DatabaseManager._isPlayer(id)),
+                version: DatabaseManager.findDataFieldFor(ts, 'version'),
+                origin: DatabaseManager.findDataFieldFor(ts, 'origin'),
+                tags: (() => {
+                    const tagMap = DatabaseManager.findUsedTags([ts]);
+                    const tagEntries = _sort_des(Object.entries(tagMap), ([, a]) => a);
 
-                let tagContent = '';
-                for (const [name, count] of tagEntries) {
-                    const countText = tagEntries.length > 1 ? ` (${count})` : '';
+                    let tagContent = '';
+                    for (const [name, count] of tagEntries) {
+                        const countText = tagEntries.length > 1 ? ` (${count})` : '';
 
-                    if (name === 'undefined') {
-                        if (tagEntries.length > 1) {
+                        if (name === 'undefined') {
+                            if (tagEntries.length > 1) {
+                                tagContent += `
+                                    <div class="ui gray horizontal label">None${countText}</div>
+                                `;
+                            }
+                        } else {
                             tagContent += `
-                                <div class="ui gray horizontal label">None${countText}</div>
+                                <div class="ui horizontal label" style="background-color: ${_strToHSL(name)}; color: white;">${name}${countText}</div>
                             `;
                         }
-                    } else {
-                        tagContent += `
-                            <div class="ui horizontal label" style="background-color: ${_strToHSL(name)}; color: white;">${name}${countText}</div>
-                        `;
                     }
-                }
 
-                return {
-                    tagList: Object.keys(tagMap),
-                    tagContent
-                };
-            })()
-        }]);
-
-        this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).filter(([, { tags: { tagList } }]) => {
+                    return {
+                        tagList: Object.keys(tagMap),
+                        tagContent
+                    };
+                })()
+            }
+        }).filter(({ tags: { tagList } }) => {
             return typeof this.tagFilter === 'undefined' || tagList.includes(this.tagFilter) || (tagList.includes('undefined') && this.tagFilter === '');
-        }).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags: { tagContent } }]) => {
+        });
+
+        this.currentFiles = _array_to_hash(currentFilesAll, file => [file.timestamp, file]);
+
+        this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags: { tagContent } }]) => {
             const players = DatabaseManager.Timestamps.array(timestamp).filter(id => DatabaseManager._isPlayer(id));
             const hidden = _dig(DatabaseManager.Metadata, timestamp, 'hidden');
 
