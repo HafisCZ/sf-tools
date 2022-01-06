@@ -1206,7 +1206,7 @@
                     (level) => formatAsSpacedNumber(level > 20 ? 10E6 : (level * 15)),
                     (level, wood) => formatAsSpacedNumber(wood),
                     (level, wood, stone) => formatAsSpacedNumber(stone),
-                    (level) => formatAsSpacedNumber(Math.min(3000, level * 15)),
+                    (level) => formatAsSpacedNumber(Math.min(3000, level * 150)),
                     (level, wood, stone, gwood) => formatAsSpacedNumber(gwood),
                     (level, wood, stone, gwood, gstone) => formatAsSpacedNumber(gstone),
                     (level) => `<span data-lg="${GEMTIME[Math.min(19, level - 1)] * 60000}"></span>`
