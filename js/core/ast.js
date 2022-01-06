@@ -114,12 +114,12 @@ class ExpressionScope {
     }
 
     has (key) {
-        if (this.self.length && typeof this.self[0] === 'object' && key in this.self[0]) {
+        if (this.self.length && typeof this.self[0] === 'object' && this.self[0] !== null && key in this.self[0]) {
             return true;
         }
 
         for (let i = 0; i < this.indirect.length; i++) {
-            if (typeof this.indirect[i] === 'object' && key in this.indirect[i]) {
+            if (typeof this.indirect[i] === 'object' && this.indirect[i] !== null && key in this.indirect[i]) {
                 return true;
             }
         }
@@ -128,12 +128,12 @@ class ExpressionScope {
     }
 
     get (key) {
-        if (this.self.length && typeof this.self[0] === 'object' && key in this.self[0]) {
+        if (this.self.length && typeof this.self[0] === 'object' && this.self[0] !== null && key in this.self[0]) {
             return this.self[0][key];
         }
 
         for (let i = 0; i < this.indirect.length; i++) {
-            if (typeof this.indirect[i] === 'object' && key in this.indirect[i]) {
+            if (typeof this.indirect[i] === 'object' && this.indirect[0] !== null && key in this.indirect[i]) {
                 return this.indirect[i][key];
             }
         }
