@@ -1731,7 +1731,10 @@ class Settings {
             // Push header if possible
             if (obj.expr) {
                 if (!obj.clean) {
-                    this.merge(obj, this.sharedCategory);
+                    if (this.category) {
+                        this.merge(obj, this.sharedCategory);
+                    }
+
                     this.merge(obj, this.shared);
                 } else {
                     this.merge(obj, {
@@ -2120,7 +2123,7 @@ class Settings {
 
     pushEmbed () {
         let obj = this.embed;
-        if (obj) {
+        if (obj && this.category) {
             this.push();
 
             for (let definitionName of obj.extensions || []) {
