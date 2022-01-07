@@ -474,11 +474,10 @@
 
                     this.fields['class'].$object.dropdown({
                         preserveHTML: true,
-                        values: Object.entries(ClassMap).map((e) => {
+                        values: Object.entries(CLASS_MAP).map((e) => {
                             return {
                                 name: `<img class="ui centered image class-picture" src="res/class${ e[0] }.png"><span>${ e[1] }</span>`,
-                                value: e[0],
-                                disabled: !hasImplementation(e[0])
+                                value: e[0]
                             };
                         })
                     }).dropdown('setting', 'onChange', (value, text) => {

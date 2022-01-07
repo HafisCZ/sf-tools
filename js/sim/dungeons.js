@@ -32,17 +32,6 @@ const BERSERKER = 6;
 const DEMONHUNTER = 7;
 const DRUID = 8;
 
-const ClassMap = {
-    1: 'Warrior',
-    2: 'Mage',
-    3: 'Scout',
-    4: 'Assassin',
-    5: 'Battle Mage',
-    6: 'Berserker',
-    7: 'Demon Hunter',
-    8: 'Druid'
-};
-
 class FighterModel {
     static create (index, player) {
         switch (player.Class) {

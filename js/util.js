@@ -558,6 +558,17 @@ const COLOR_MAP = {
     'yellowgreen': '#9acd32'
 };
 
+const CLASS_MAP = {
+    1: 'Warrior',
+    2: 'Mage',
+    3: 'Scout',
+    4: 'Assassin',
+    5: 'Battle Mage',
+    6: 'Berserker',
+    7: 'Demon Hunter',
+    8: 'Druid'
+};
+
 function getColorFromName (name) {
     if (name in COLOR_MAP) {
         return COLOR_MAP[name];
