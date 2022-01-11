@@ -1454,16 +1454,27 @@
                 }
             }
 
+            function ceilTo (value, step = 1) {
+                return Math.ceil(value / step) * step;
+            }
+
             function buildTime (level, lq, uw = false) {
                 let mult = 1 - 0.05 * lq;
                 if (uw ? (level > 15) : (level > 20)) {
-                    return 5184000000 * mult;
+                    return 51840 * mult * 100 * 1000;
                 } else {
-                    return [
+                    let time = [
                         900, 1895, 3960, 8460, 18000, 28800, 41100, 66420,
                         144000, 313200, 691200, 1152000, 1728000, 2221200,
                         2880000, 3801600, 4147200, 4492800, 4838400, 5184000
-                    ][level - 1] * 1000 * mult;
+                    ][level - 1];
+
+                    let step = 1;
+                    if (time > 3600) {
+                        step = 100;
+                    }
+
+                    return ceilTo(time * mult, step) * 1000;
                 }
             }
 
