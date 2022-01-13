@@ -542,6 +542,40 @@ class DungeonSimulator {
         };
     }
 
+    setRandomInitialFighter () {
+        let aBersi = this.a.Player.Class == BERSERKER;
+        let aFirst = this.a.AttackFirst;
+        let bBersi = this.b.Player.Class == BERSERKER;
+        let bFirst = this.b.AttackFirst;
+
+        let aRoll = (aFirst ? 1 : 0) + (aBersi ? 1 : 0);
+        let bRoll = (bFirst ? 1 : 0) + (bBersi ? 1 : 0);
+
+        if (aRoll == bRoll) {
+            if (getRandom(50)) {
+                this.swap();
+            }
+        } else if (aBersi && bBersi) {
+            if (getRandom((bFirst ? 2 : 1) * 100 / 3)) {
+                this.swap();
+            }
+        } else if (aBersi || bBersi) {
+            if (Math.abs(bRoll - aRoll) == 2) {
+                if (bRoll) {
+                    this.swap();
+                }
+            } else if (getRandom(bRoll > aRoll ? 75 : 25)) {
+                this.swap();
+            }
+        } else if (bFirst) {
+            this.swap();
+        }
+    }
+
+    swap () {
+        [this.a, this.b] = [this.b, this.a];
+    }
+
     fight () {
         this.turn = 0;
 
@@ -560,9 +594,7 @@ class DungeonSimulator {
             }
         }
 
-        if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
-            [this.a, this.b] = [this.b, this.a];
-        }
+        this.setRandomInitialFighter();
 
         while (this.a.Health > 0 && this.b.Health > 0) {
             var damage = this.attack(this.a, this.b);

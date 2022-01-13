@@ -481,14 +481,6 @@ self.addEventListener('message', function (message) {
             results: result,
             time: Date.now() - ts
         });
-    } else if (mode == SimulatorType.Dungeon) {
-        var result = new DungeonSimulator().simulate(player, players, iterations);
-
-        self.postMessage({
-            command: 'finished',
-            results: result,
-            time: Date.now() - ts
-        });
     }
 
     self.close();
@@ -576,6 +568,40 @@ class GuildSimulator {
         return (this.la.length > 0 ? this.la[0].Index : this.lb[0].Index) == 0;
     }
 
+    setRandomInitialFighter () {
+        let aBersi = this.a.Player.Class == BERSERKER;
+        let aFirst = this.a.AttackFirst;
+        let bBersi = this.b.Player.Class == BERSERKER;
+        let bFirst = this.b.AttackFirst;
+
+        let aRoll = (aFirst ? 1 : 0) + (aBersi ? 1 : 0);
+        let bRoll = (bFirst ? 1 : 0) + (bBersi ? 1 : 0);
+
+        if (aRoll == bRoll) {
+            if (getRandom(50)) {
+                this.swap();
+            }
+        } else if (aBersi && bBersi) {
+            if (getRandom((bFirst ? 2 : 1) * 100 / 3)) {
+                this.swap();
+            }
+        } else if (aBersi || bBersi) {
+            if (Math.abs(bRoll - aRoll) == 2) {
+                if (bRoll) {
+                    this.swap();
+                }
+            } else if (getRandom(bRoll > aRoll ? 75 : 25)) {
+                this.swap();
+            }
+        } else if (bFirst) {
+            this.swap();
+        }
+    }
+
+    swap () {
+        [this.a, this.b] = [this.b, this.a];
+    }
+
     // Fighter battle
     fight () {
         // Turn counter
@@ -592,10 +618,7 @@ class GuildSimulator {
             }
         }
 
-        // Decide who starts first
-        if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
-            [this.a, this.b] = [this.b, this.a];
-        }
+        this.setRandomInitialFighter();
 
         // Simulation
         while (this.a.Health > 0 && this.b.Health > 0) {
@@ -859,6 +882,40 @@ class FightSimulator {
         this.bs = this.cb.onFightStart(this.ca);
     }
 
+    setRandomInitialFighter () {
+        let aBersi = this.a.Player.Class == BERSERKER;
+        let aFirst = this.a.AttackFirst;
+        let bBersi = this.b.Player.Class == BERSERKER;
+        let bFirst = this.b.AttackFirst;
+
+        let aRoll = (aFirst ? 1 : 0) + (aBersi ? 1 : 0);
+        let bRoll = (bFirst ? 1 : 0) + (bBersi ? 1 : 0);
+
+        if (aRoll == bRoll) {
+            if (getRandom(50)) {
+                this.swap();
+            }
+        } else if (aBersi && bBersi) {
+            if (getRandom((bFirst ? 2 : 1) * 100 / 3)) {
+                this.swap();
+            }
+        } else if (aBersi || bBersi) {
+            if (Math.abs(bRoll - aRoll) == 2) {
+                if (bRoll) {
+                    this.swap();
+                }
+            } else if (getRandom(bRoll > aRoll ? 75 : 25)) {
+                this.swap();
+            }
+        } else if (bFirst) {
+            this.swap();
+        }
+    }
+
+    swap () {
+        [this.a, this.b] = [this.b, this.a];
+    }
+
     // Fight
     fight () {
         // Create fighters
@@ -962,10 +1019,7 @@ class FightSimulator {
             }
         }
 
-        // Decide who starts first
-        if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
-            [this.a, this.b] = [this.b, this.a];
-        }
+        this.setRandomInitialFighter();
 
         // Simulation
         while (this.a.Health > 0 && this.b.Health > 0) {
@@ -1104,174 +1158,6 @@ class FightSimulator {
                 attacker: source.Player.ID || source.Index,
                 target: target.Player.ID || target.Index
             });
-        }
-
-        return damage;
-    }
-}
-
-class DungeonSimulator {
-    simulate (players, bosses, iterations = 10000) {
-        let score = 0;
-        this.cache(players, bosses);
-
-        for (let i = 0; i < iterations; i++) {
-            score += this.battle();
-        }
-
-        return 100 * score / iterations;
-    }
-
-    cache (players, bosses) {
-        this.ga = players.map(a => {
-            let aa = FighterModel.create(0, a);
-            aa.MaximumHealth = aa.getHealth();
-            return aa;
-        });
-
-        this.gb = bosses.map(b => {
-            let bb = FighterModel.create(1, b);
-            bb.MaximumHealth = bb.getHealth();
-            return bb;
-        });
-    }
-
-    battle () {
-        this.la = [ ... this.ga ];
-        this.lb = [ ... this.gb ];
-
-        // Reset health
-        for (let p of this.la) {
-            p.Health = p.MaximumHealth;
-        }
-
-        for (let p of this.lb) {
-            p.Health = p.MaximumHealth;
-        }
-
-        // Go through all players
-        while (this.la.length > 0 && this.lb.length > 0) {
-            this.a = this.la[0];
-            this.b = this.lb[0];
-
-            this.a.initialize(this.b);
-            this.b.initialize(this.a);
-
-            this.as = this.a.onFightStart(this.b);
-            this.bs = this.b.onFightStart(this.a);
-
-            if (this.fight() == 0) {
-                this.la.shift();
-            } else {
-                this.lb.shift();
-            }
-        }
-
-        // Return fight result
-        return (this.la.length > 0 ? this.la[0].Index : this.lb[0].Index) == 0;
-    }
-
-    // Fighter battle
-    fight () {
-        // Turn counter
-        this.turn = 0;
-
-        // Apply special damage
-        if (this.as !== false || this.bs !== false) {
-            this.turn++;
-
-            if (this.as > 0) {
-                this.b.Health -= this.as;
-            } else if (this.bs > 0) {
-                this.a.Health -= this.bs;
-            }
-        }
-
-        // Decide who starts first
-        if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
-            [this.a, this.b] = [this.b, this.a];
-        }
-
-        // Simulation
-        while (this.a.Health > 0 && this.b.Health > 0) {
-            var damage = this.attack(this.a, this.b);
-            if (this.a.DamageDealt) {
-                this.a.onDamageDealt(this.b, damage);
-            }
-
-            if (this.b.DamageTaken) {
-                if (this.b.onDamageTaken(this.a, damage) == 0) {
-                    break;
-                }
-            } else {
-                this.b.Health -= damage;
-                if (this.b.Health <= 0) {
-                    break;
-                }
-            }
-
-            if (this.a.Weapon2) {
-                var damage2 = this.attack(this.a, this.b, this.a.Weapon2);
-                if (this.a.DamageDealt) {
-                    this.a.onDamageDealt(this.b, damage2);
-                }
-
-                if (this.b.DamageTaken) {
-                    if (this.b.onDamageTaken(this.a, damage2) == 0) {
-                        break;
-                    }
-                } else {
-                    this.b.Health -= damage2;
-                    if (this.b.Health <= 0) {
-                        break;
-                    }
-                }
-            }
-
-            if (this.a.RoundEnded) {
-                this.a.onRoundEnded(() => {
-                    this.turn++;
-
-                    var damage3 = this.attack(this.a, this.b);
-                    if (this.a.DamageDealt) {
-                        this.a.onDamageDealt(this.b, damage3);
-                    }
-
-                    if (this.b.DamageTaken) {
-                        return this.b.onDamageTaken(this.a, damage3) > 0;
-                    } else {
-                        this.b.Health -= damage3;
-                        return this.b.Health >= 0
-                    }
-                });
-            }
-
-            [this.a, this.b] = [this.b, this.a];
-
-            if (this.turn > 100) break;
-        }
-
-        // Winner
-        return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
-    }
-
-    attack (source, target, weapon = source.Weapon1) {
-        var turn = this.turn++;
-        var rage = 1 + turn / 6;
-
-        var damage = 0;
-        var skipped = getRandom(target.SkipChance);
-        var critical = false;
-
-        if (!skipped) {
-            damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
-
-            critical = getRandom(source.CriticalChance);
-            if (critical) {
-                damage *= source.Critical;
-            }
-
-            damage = Math.ceil(damage);
         }
 
         return damage;
