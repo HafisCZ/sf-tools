@@ -327,16 +327,18 @@ const NumberLabels = [
     [1E6, 'M']
 ];
 
-function formatAsNamedNumber(n) {
+function formatAsNamedNumber(rn) {
+    let p = rn < 0 ? "-" : "";
+    let n = Math.abs(rn);
     if (n < NumberLabels[NumberLabels.length - 1][0]) {
-        return n.toString().split('').map((char, i, array) => ((array.length - 1 - i) % 3 == 2) && i != 0 ? (' ' + char) : char).join('');
+        return p + n.toString().split('').map((char, i, array) => ((array.length - 1 - i) % 3 == 2) && i != 0 ? (' ' + char) : char).join('');
     } else if (n > NumberLabels[0][0]) {
-        return n.toExponential(3).replace('+', '');
+        return p + n.toExponential(3).replace('+', '');
     } else {
         for (let i = 0, unit; unit = NumberLabels[i]; i++) {
             if (n >= unit[0]) {
                 var num = n / unit[0];
-                return (num.toString().includes('.') && num.toString().split('.')[1].length > 3 ? num.toFixed(3) : num).toString().split('e')[0] + ' ' + unit[1];
+                return p + (num.toString().includes('.') && num.toString().split('.')[1].length > 3 ? num.toFixed(3) : num).toString().split('e')[0] + ' ' + unit[1];
             }
         }
     }
