@@ -821,61 +821,80 @@
 
             $(document.body).on('paste', function (event) {
                 try {
-                    var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
-                    if (Array.isArray(data)) {
-                        if (!modeInsert) {
-                            players = [];
-                        }
-
-                        for (var d of data) {
-                            if (d.Class) {
-                                SFItem.forceCorrectRune(d.Items.Wpn1);
-                                SFItem.forceCorrectRune(d.Items.Wpn2);
-
-                                if (d.Class != 4) {
-                                    d.Items.Wpn2 = SFItem.empty();
-                                }
-
-                                players.push({
-                                    player: mergeSoft(new SFPlayer(), d),
-                                    score: null,
-                                    index: iterator++
-                                });
-                            } else {
-                                var obj = d.own ? new SFOwnPlayer(d) : new SFOtherPlayer(d);
-
-                                SFItem.forceCorrectRune(obj.Items.Wpn1);
-                                SFItem.forceCorrectRune(obj.Items.Wpn2);
-
-                                if (obj.Class != 4) {
-                                    obj.Items.Wpn2 = SFItem.empty();
-                                }
-
-                                players.push({
-                                    player: mergeSoft(new SFPlayer(), obj),
-                                    score: null,
-                                    index: iterator++
-                                });
-                            }
-                        }
-
-                        showPlayers();
-                    } else if (data.Class || data.save) {
-                        var obj = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
-
-                        SFItem.forceCorrectRune(obj.Items.Wpn1);
-                        SFItem.forceCorrectRune(obj.Items.Wpn2);
-
-                        if (obj.Class != 4) {
-                            obj.Items.Wpn2 = SFItem.empty();
-                        }
-
-                        EditorController.fill(obj);
-                    }
+                    insertExternalData(JSON.parse(event.originalEvent.clipboardData.getData('text')));
                 } catch (e) {
                     console.info(e);
                 }
+            }).on('dragover dragenter', e => {
+                e.preventDefault();
+                e.stopPropagation();
+            }).on('drop', e => {
+                if (_dig(e, 'originalEvent', 'dataTransfer', 'files', 0, 'type') == 'text/plain') {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    try {
+                        let r = new FileReader();
+                        r.readAsText(e.originalEvent.dataTransfer.files[0], 'UTF-8');
+                        r.onload = f => insertExternalData(JSON.parse(f.target.result));
+                    } catch (ex) {
+                        console.info(ex);
+                    }
+                }
             });
+
+            function insertExternalData (data) {
+                if (Array.isArray(data)) {
+                    if (!modeInsert) {
+                        players = [];
+                    }
+
+                    for (var d of data) {
+                        if (d.Class) {
+                            SFItem.forceCorrectRune(d.Items.Wpn1);
+                            SFItem.forceCorrectRune(d.Items.Wpn2);
+
+                            if (d.Class != 4) {
+                                d.Items.Wpn2 = SFItem.empty();
+                            }
+
+                            players.push({
+                                player: mergeSoft(new SFPlayer(), d),
+                                score: null,
+                                index: iterator++
+                            });
+                        } else {
+                            var obj = d.own ? new SFOwnPlayer(d) : new SFOtherPlayer(d);
+
+                            SFItem.forceCorrectRune(obj.Items.Wpn1);
+                            SFItem.forceCorrectRune(obj.Items.Wpn2);
+
+                            if (obj.Class != 4) {
+                                obj.Items.Wpn2 = SFItem.empty();
+                            }
+
+                            players.push({
+                                player: mergeSoft(new SFPlayer(), obj),
+                                score: null,
+                                index: iterator++
+                            });
+                        }
+                    }
+
+                    showPlayers();
+                } else if (data.Class || data.save) {
+                    var obj = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
+
+                    SFItem.forceCorrectRune(obj.Items.Wpn1);
+                    SFItem.forceCorrectRune(obj.Items.Wpn2);
+
+                    if (obj.Class != 4) {
+                        obj.Items.Wpn2 = SFItem.empty();
+                    }
+
+                    EditorController.fill(obj);
+                }
+            }
 
             $('#sim-threads').captiveInputField('player_sim/threads', 4, v => !isNaN(v) && v >= 1);
             $('#sim-iterations').captiveInputField('player_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
