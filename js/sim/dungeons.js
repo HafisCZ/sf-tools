@@ -543,37 +543,27 @@ class DungeonSimulator {
     }
 
     setRandomInitialFighter () {
-        let aBersi = this.a.Player.Class == BERSERKER;
-        let aFirst = this.a.AttackFirst;
-        let bBersi = this.b.Player.Class == BERSERKER;
-        let bFirst = this.b.AttackFirst;
-
-        let aRoll = (aFirst ? 1 : 0) + (aBersi ? 1 : 0);
-        let bRoll = (bFirst ? 1 : 0) + (bBersi ? 1 : 0);
-
-        if (aRoll == bRoll) {
-            if (getRandom(50)) {
-                this.swap();
-            }
-        } else if (aBersi && bBersi) {
-            if (getRandom((bFirst ? 2 : 1) * 100 / 3)) {
-                this.swap();
-            }
-        } else if (aBersi || bBersi) {
-            if (Math.abs(bRoll - aRoll) == 2) {
-                if (bRoll) {
-                    this.swap();
-                }
-            } else if (getRandom(bRoll > aRoll ? 75 : 25)) {
-                this.swap();
-            }
-        } else if (bFirst) {
-            this.swap();
+        if (this.a.AttackFirst == this.b.AttackFirst ? getRandom(50) : this.b.AttackFirst) {
+            [this.a, this.b] = [this.b, this.a];
         }
     }
 
-    swap () {
-        [this.a, this.b] = [this.b, this.a];
+    forwardToBersekerAttack () {
+        // Thanks to rafa97sam for testing and coding this part that broke me
+        if (this.b.Player.Class == BERSERKER && getRandom(50)) {
+            let turnIncrease = 1;
+
+            if (this.a.Player.Class == BERSERKER) {
+                while (getRandom(50)) {
+                    turnIncrease += 1;
+                    [this.a, this.b] = [this.b, this.a];
+                }
+            }
+
+            this.turn += turnIncrease;
+
+            [this.a, this.b] = [this.b, this.a];
+        }
     }
 
     fight () {
@@ -595,6 +585,7 @@ class DungeonSimulator {
         }
 
         this.setRandomInitialFighter();
+        this.forwardToBersekerAttack();
 
         while (this.a.Health > 0 && this.b.Health > 0) {
             var damage = this.attack(this.a, this.b);
@@ -656,8 +647,6 @@ class DungeonSimulator {
             }
 
             [this.a, this.b] = [this.b, this.a];
-
-            if (this.turn > 200) break;
         }
 
         // Winner
