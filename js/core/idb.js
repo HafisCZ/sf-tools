@@ -400,11 +400,14 @@ const Exporter = new (class {
 class PlayaResponse {
     static fromText (text) {
         return _array_to_hash(text.split('&').filter(_not_empty), item => {
-            const items = item.split(':');
-            const key = items[items.length - 2];
-            const val = items[items.length - 1];
+            const [key, ...val] = item.split(':');
 
-            return [this._normalizeKey(key), new PlayaResponse(val)];
+            const normalizedKey = this._normalizeKey(key);
+            if (normalizedKey === 'otherplayerachievement' && val[0].startsWith('achievement')) {
+                val.splice(0, 1);
+            }
+
+            return [normalizedKey, new PlayaResponse(val.join(':'))];
         });
     }
 
