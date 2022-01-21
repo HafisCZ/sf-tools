@@ -411,10 +411,10 @@ DUNGEON_DATA = {
             'Thor': { pos: 4, id: 1403, class: 1, level: 305, str: 15000, dex: 3500, int: 3500, con: 58500, lck: 8000, health: 101351256, runes: { type: 42, res: [15, 25, 60], damage: 30 }, min: 1067, max: 1829 },
             'Odin': { pos: 5, id: 1404, class: 1, level: 330, str: 12500, dex: 6000, int: 6000, con: 73500, lck: 9000, health: 137445008, runes: { type: 40, res: [60, 30, 30], damage: 40 }, min: 1155, max: 1979 },
             'Loki': { pos: 6, id: 1405, class: 4, level: 360, str: 6500, dex: 18500, int: 6500, con: 83500, lck: 11500, health: 135938000, runes: { type: 41, res: [40, 50, 50], damage: 45 }, min: 2524, max: 4319, ass: true },
-            'Ymir': { pos: 7, id: 1406, class: 6, level: 390, str: 22500, dex: 6500, int: 6500, con: 81500, lck: 10500, health: 143440000, runes: { type: 41, res: [50, 50, 10], damage: 45 }, min: 1092, max: 2173 },
+            'Ymir': { pos: 7, id: 1406, class: 6, level: 390, str: 22500, dex: 6500, int: 6500, con: 81500, lck: 10500, health: 143440000, runes: { type: 41, res: [50, 50, 10], damage: 45 }, min: 1092, max: 2080 },
             'Midgard Serpent': { pos: 8, id: 1407, class: 3, level: 420, str: 10500, dex: 22500, int: 10500, con: 112500, lck: 15500, health: 212850000, runes: { type: 42, res: [50, 50, 50], damage: 50 }, min: 1837, max: 3148 },
-            'Fenris Wolf': { pos: 9, id: 1408, class: 6, level: 455, str: 29500, dex: 7000, int: 7000, con: 115000, lck: 16000, health: 235290000, runes: { type: 42, res: [50, 50, 50], damage: 55 }, min: 1274, max: 2518 },
-            'Surtr': { pos: 10, id: 1409, class: 6, level: 500, str: 38500, dex: 10500, int: 10500, con: 158000, lck: 23000, health: 354552000, runes: { type: 40, res: [60, 50, 50], damage: 60 }, min: 1400, max: 2771 }
+            'Fenris Wolf': { pos: 9, id: 1408, class: 6, level: 455, str: 29500, dex: 7000, int: 7000, con: 115000, lck: 16000, health: 235290000, runes: { type: 42, res: [50, 50, 50], damage: 55 }, min: 1296, max: 2441 },
+            'Surtr': { pos: 10, id: 1409, class: 6, level: 500, str: 38500, dex: 10500, int: 10500, con: 158000, lck: 23000, health: 354552000, runes: { type: 40, res: [60, 50, 50], damage: 60 }, min: 1413, max: 2699 }
         }
     },
     '20': {
@@ -735,18 +735,18 @@ DUNGEON_DATA = {
             'Paul Terra': { pos: 6, id: 1325, class: 2, level: 366, str: 4500, dex: 4500, int: 215000, con: 172000, lck: 12400, health: 206000000, min: 9015, max: 11236 },
             'Spieletrend': { pos: 7, id: 1326, class: 2, level: 399, str: 5000, dex: 5000, int: 240000, con: 206000, lck: 15000, health: 248000000, min: 10125, max: 13498 },
             'Fatty Pillow': { pos: 8, id: 1327, class: 5, level: 444, str: 290000, dex: 6000, int: 6000, con: 248000, lck: 18000, health: 300000000, min: 5001, max: 6499 },
-            'Gimper': { pos: 9, id: 1328, class: 6, level: 488, str: 350000, dex: 7000, int: 7000, con: 300000, lck: 21500, health: 360000000, min: 4400, max: 7300 },
+            'Gimper': { pos: 9, id: 1328, class: 6, level: 488, str: 350000, dex: 7000, int: 7000, con: 300000, lck: 21500, health: 360000000, min: 4465, max: 6102 },
             'Unge': { pos: 10, id: 1329, class: 4, level: 555, str: 10000, dex: 400000, int: 10000, con: 360000, lck: 24000, health: 430000000, min: 12001, max: 15998 },
             'KeysJore': { pos: 11, id: 1330, class: 2, level: 557, str: 10100, dex: 10100, int: 404000, con: 361800, lck: 24240, health: 403768800, min: 13636, max: 18177 },
             'Aypierre': { pos: 12, id: 1331, class: 3, level: 559, str: 10200, dex: 408040, int: 10200, con: 363600, lck: 24480, health: 814464000, min: 7653, max: 10198 },
             'Mandzio': { pos: 13, id: 1332, class: 5, level: 561, str: 412120, dex: 10300, int: 10300, con: 365410, lck: 24720, health: 1026802112, min: 6182, max: 8241 },
             'Boruciak': { pos: 14, id: 1333, class: 1, level: 563, str: 416240, dex: 10400, int: 10400, con: 367230, lck: 24960, health: 1035588608, min: 6244, max: 8322 },
-            'Fifqo': { pos: 15, id: 1334, class: 6, level: 565, str: 420400, dex: 10500, int: 10500, con: 369060, lck: 25210, health: 835551872, min: 5049, max: 8566 },
+            'Fifqo': { pos: 15, id: 1334, class: 6, level: 565, str: 420400, dex: 10500, int: 10500, con: 369060, lck: 25210, health: 835551872, min: 5110, max: 7507 },
             'Zsoze': { pos: 16, id: 1335, class: 2, level: 567, str: 10600, dex: 10600, int: 424600, con: 370900, lck: 25460, health: 421342400, min: 14335, max: 19104 },
             'ZeboPL': { pos: 17, id: 1336, class: 1, level: 569, str: 428840, dex: 10700, int: 10700, con: 372750, lck: 25710, health: 1062337472, min: 6432, max: 8569 },
             'Dhalucard': { pos: 18, id: 1337, class: 2, level: 571, str: 10800, dex: 10800, int: 433120, con: 374610, lck: 25960, health: 428553856, min: 14620, max: 19487 },
             'Earliboy': { pos: 19, id: 1338, class: 7, level: 573, str: 10900, dex: 437450, int: 10900, con: 376480, lck: 26220, health: 864398080, min: 8201, max: 10935 },
-            'Skate702': { pos: 20, id: 1339, class: 6, level: 575, str: 441820, dex: 11000, int: 11000, con: 378360, lck: 26480, health: 871741440, min: 5301, max: 8760 }
+            'Skate702': { pos: 20, id: 1339, class: 6, level: 575, str: 441820, dex: 11000, int: 11000, con: 378360, lck: 26480, health: 871741440, min: 5315, max: 7685 }
         }
     },
     '116': {
@@ -813,10 +813,10 @@ DUNGEON_DATA = {
             'Thor': { pos: 4, id: 1403, class: 1, level: 485, str: 90000, dex: 19000, int: 18500, con: 265000, lck: 48500, health: 721462528, runes: { type: 42, res: [15, 25, 60], damage: 60 }, min: 1697, max: 2909 },
             'Odin': { pos: 5, id: 1404, class: 1, level: 525, str: 76500, dex: 37000, int: 37000, con: 330500, lck: 53500, health: 972496256, runes: { type: 40, res: [60, 30, 30], damage: 60 }, min: 1837, max: 3149 },
             'Loki': { pos: 6, id: 1405, class: 4, level: 565, str: 39500, dex: 111000, int: 39500, con: 376000, lck: 71500, health: 951280000, runes: { type: 41, res: [40, 50, 50], damage: 60 }, min: 3955, max: 6779, ass: true, armor: 12500 },
-            'Ymir': { pos: 7, id: 1406, class: 6, level: 600, str: 136500, dex: 39500, int: 39500, con: 417500, lck: 63000, health: 1120570112, runes: { type: 41, res: [50, 50, 10], damage: 60 }, min: 1683, max: 3807, armor: 12500 },
+            'Ymir': { pos: 7, id: 1406, class: 6, level: 600, str: 136500, dex: 39500, int: 39500, con: 417500, lck: 63000, health: 1120570112, runes: { type: 41, res: [50, 50, 10], damage: 60 }, min: 1692, max: 3703, armor: 12500 },
             'Midgard Serpent': { pos: 8, id: 1407, class: 3, level: 625, str: 63500, dex: 163000, int: 63500, con: 507500, lck: 93500, health: 1417955072, runes: { type: 42, res: [50, 50, 50], damage: 60 }, min: 2734, max: 4686, armor: 12500 },
-            'Fenris Wolf': { pos: 9, id: 1408, class: 6, level: 645, str: 182000, dex: 42000, int: 42000, con: 575000, lck: 100000, health: 1657149952, runes: { type: 42, res: [50, 50, 50], damage: 60 }, min: 1806, max: 4222, armor: 12500 },
-            'Surtr': { pos: 10, id: 1409, class: 6, level: 660, str: 229500, dex: 62500, int: 62500, con: 711000, lck: 137000, health: 2096028032, runes: { type: 40, res: [60, 60, 60], damage: 60 }, min: 1849, max: 4550, armor: 12500 }
+            'Fenris Wolf': { pos: 9, id: 1408, class: 6, level: 645, str: 182000, dex: 42000, int: 42000, con: 575000, lck: 100000, health: 1657149952, runes: { type: 42, res: [50, 50, 50], damage: 60 }, min: 1847, max: 3877, armor: 12500 },
+            'Surtr': { pos: 10, id: 1409, class: 6, level: 660, str: 229500, dex: 62500, int: 62500, con: 711000, lck: 137000, health: 2096028032, runes: { type: 40, res: [60, 60, 60], damage: 60 }, min: 1852, max: 3899, armor: 12500 }
         }
     },
     '120': {
