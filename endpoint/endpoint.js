@@ -44,7 +44,7 @@ class EndpointController {
         this.window.login(server, username, password);
     }
 
-    login_querry_all (server, username, password, callback, error, progress) {
+    login_querry_many (server, username, password, filter, callback, error, progress) {
         // Bind error callbacks
         this.window.error['login'] = error;
         this.window.error['querry'] = error;
@@ -54,8 +54,8 @@ class EndpointController {
         this.window.callback['querry'] = callback;
         this.window.callback['login'] = (text) => {
             // Querry all
-            Logger.log('ECLIENT', `Querry all`);
-            this.window.querry_all();
+            Logger.log('ECLIENT', `Querry many`);
+            this.window.querry_many(filter(text));
         }
 
         // Login
@@ -117,8 +117,13 @@ const Endpoint = new ( class {
                 this.$modeOwn.checkbox('set checked');
                 break;
             }
-            case 'all': {
-                this.$modeAll.checkbox('set checked');
+            case 'all':
+            case 'all_members': {
+                this.$modeAllMembers.checkbox('set checked');
+                break;
+            }
+            case 'all_friends': {
+                this.$modeAllFriends.checkbox('set checked');
                 break;
             }
             default: {
@@ -128,7 +133,8 @@ const Endpoint = new ( class {
 
         this.$modeDefault.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'default') });
         this.$modeOwn.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'own') });
-        this.$modeAll.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'all') });
+        this.$modeAllMembers.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'all_members') });
+        this.$modeAllFriends.checkbox({ onChecked: () => SharedPreferences.setRaw('endpoint_mode', 'all_friends') });
     }
 
     _showError (text, hard = false) {
@@ -183,7 +189,8 @@ const Endpoint = new ( class {
 
         this.$modeDefault = this.$parent.find('[data-op="modeDefault"]').checkbox();
         this.$modeOwn = this.$parent.find('[data-op="modeOwn"]').checkbox();
-        this.$modeAll = this.$parent.find('[data-op="modeAll"]').checkbox();
+        this.$modeAllMembers = this.$parent.find('[data-op="modeAllMembers"]').checkbox();
+        this.$modeAllFriends = this.$parent.find('[data-op="modeAllFriends"]').checkbox();
         this._setModeSelection();
 
         this.$iframe = this.$parent.find('[data-op="iframe"]');
@@ -211,7 +218,8 @@ const Endpoint = new ( class {
             var server = '';
 
             var own = this.$modeOwn.checkbox('is checked');
-            var all = this.$modeAll.checkbox('is checked');
+            var all_members = this.$modeAllMembers.checkbox('is checked');
+            var all_friends = this.$modeAllFriends.checkbox('is checked');
 
             if (/^(.{3,})@(.+\.sfgame\..+)$/.test(username)) {
                 [, username, server, ] = username.split(/^(.{3,})@(.+\.sfgame\..+)$/);
@@ -228,8 +236,10 @@ const Endpoint = new ( class {
 
                     if (own) {
                         this._funcLoginSingle(server, username, password);
-                    } else if (all) {
-                        this._funcLoginAll(server, username, password);
+                    } else if (all_members) {
+                        this._funcLoginAll(server, username, password, 'members');
+                    } else if (all_friends) {
+                        this._funcLoginAll(server, username, password, 'friends');
                     } else {
                         this._funcLogin(server, username, password);
                     }
@@ -242,8 +252,10 @@ const Endpoint = new ( class {
 
                         if (own) {
                             this._funcLoginSingle(server, username, password);
-                        } else if (all) {
-                            this._funcLoginAll(server, username, password);
+                        } else if (all_members) {
+                            this._funcLoginAll(server, username, password, 'members');
+                        } else if (all_friends) {
+                            this._funcLoginAll(server, username, password, 'friends');
                         } else {
                             this._funcLogin(server, username, password);
                         }
@@ -264,8 +276,11 @@ const Endpoint = new ( class {
         });
     };
 
-    _funcLoginAll (server, username, password) {
-        this.endpoint.login_querry_all(server, username, password, (text) => {
+    _funcLoginAll (server, username, password, kind = 'members') {
+        this.endpoint.login_querry_many(server, username, password, (text) => {
+            const [members, friends] = text.split(';');
+            return kind == 'members' ? members : friends;
+        }, (text) => {
             DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).then(() => {
                 this._funcShutdown();
             });
@@ -287,10 +302,23 @@ const Endpoint = new ( class {
             this.$step4.hide();
             this.$step3.show();
 
-            var content = '';
-            for (var name of text.split(',')) {
+            let content = '';
+            let [members, friends] = text.split(';');
+
+            for (var name of members.split(',')) {
                 content += `
-                    <div class="item">
+                    <div class="item item-member">
+                        <div class="ui checkbox">
+                            <input type="checkbox" name="${ name }">
+                            <label for="${ name }" style="color: white; font-size: 110%;">${ name }</label>
+                        </div>
+                    </div>
+                `;
+            }
+
+            for (var name of friends.split(',').slice(1)) {
+                content += `
+                    <div class="item item-friend">
                         <div class="ui checkbox">
                             <input type="checkbox" name="${ name }">
                             <label for="${ name }" style="color: white; font-size: 110%;">${ name }</label>
@@ -350,21 +378,27 @@ const Endpoint = new ( class {
                             </div>
                             <div class="grouped fields">
                                 <div class="field">
-                                    <div class="ui radio checkbox" data-op="modeDefault">
-                                        <input type="radio" name="endpointMode" checked="checked">
-                                        <label style="color: white;">Capture own + selected characters</label>
-                                    </div>
-                                </div>
-                                <div class="field">
                                     <div class="ui radio checkbox" data-op="modeOwn">
                                         <input type="radio" name="endpointMode">
                                         <label style="color: white;">Capture own character</label>
                                     </div>
                                 </div>
                                 <div class="field">
-                                    <div class="ui radio checkbox" data-op="modeAll">
+                                    <div class="ui radio checkbox" data-op="modeDefault">
+                                        <input type="radio" name="endpointMode" checked="checked">
+                                        <label style="color: white;">Capture own + selected characters</label>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="ui radio checkbox" data-op="modeAllMembers">
                                         <input type="radio" name="endpointMode">
-                                        <label style="color: white;">Capture all characters</label>
+                                        <label style="color: white;">Capture own + guild characters</label>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <div class="ui radio checkbox" data-op="modeAllFriends">
+                                        <input type="radio" name="endpointMode">
+                                        <label style="color: white;">Capture own + friend characters</label>
                                     </div>
                                 </div>
                             </div>

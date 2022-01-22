@@ -15,13 +15,13 @@
 
             function load (callback) {
                 createUnityInstance(document.querySelector("#upixel"), {
-                    dataUrl: "build/ba7f2d7ccdeb7ccb728fad7e6a6e4099.data",
-                    frameworkUrl: "build/da91bbedf4acdea480b7705f445ccfb4.js",
-                    codeUrl: "build/cc0d4acede1fdb5353cc133d0946a163.wasm",
+                    dataUrl: "build/c7288b93b0b46226f87cb5fd6488173e.data",
+                    frameworkUrl: "build/3c8d3c8fb4bfe19afc17314ce8012b6e.js",
+                    codeUrl: "build/d932a4d3b1598a7f4090040ad4b60a2e.wasm",
                     streamingAssetsUrl: "StreamingAssets",
                     companyName: "mar21",
                     productName: "Endpoint",
-                    productVersion: "8.1",
+                    productVersion: "9.0",
               }).then(unityInstance => {
                   unity = unityInstance;
                   callback();
@@ -37,7 +37,7 @@
                     server: server,
                     username: username,
                     password: password,
-                    version: '100000000000'
+                    version: '110000000000'
                 }));
             }
 
@@ -45,8 +45,8 @@
                 unity.SendMessage('Controller', 'QuerrySingle', id);
             }
 
-            function querry_all () {
-                unity.SendMessage('Controller', 'QuerryAll');
+            function querry_many (ids) {
+                unity.SendMessage('Controller', 'QuerryMany', ids);
             }
 
             function querry_collect () {
