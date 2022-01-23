@@ -435,6 +435,9 @@ class DemonHunterModel extends FighterModel {
     }
 }
 
+FIGHT_DUMP_ENABLED = false;
+FIGHT_DUMP_OUTPUT = [];
+
 // WebWorker hooks
 self.addEventListener('message', function (message) {
     var ts = Date.now();
@@ -444,33 +447,35 @@ self.addEventListener('message', function (message) {
     var players = message.data.players;
     var mode = message.data.mode;
     var iterations = message.data.iterations || 100000;
-    var logs = message.data.dev ? [] : null;
+    if (message.data.dev || false) {
+        FIGHT_DUMP_ENABLED = true;
+    }
 
     var tracking = message.data.tracking || 0;
 
     // Sim type decision
     if (mode == SimulatorType.PlayerAll) {
-        new FightSimulator().simulateMultiple(player, players, iterations, logs);
+        new FightSimulator().simulateMultiple(player, players, iterations);
         self.postMessage({
             command: 'finished',
             results: player,
-            logs: logs,
+            logs: FIGHT_DUMP_OUTPUT,
             time: Date.now() - ts
         });
     } else if (mode == SimulatorType.PlayerOne) {
-        new FightSimulator().simulateSingle(player, players, iterations, logs);
+        new FightSimulator().simulateSingle(player, players, iteration);
         self.postMessage({
             command: 'finished',
             results: players,
-            logs: logs,
+            logs: FIGHT_DUMP_OUTPUT,
             time: Date.now() - ts
         });
     } else if (mode == SimulatorType.PlayerTournament) {
-        new FightSimulator().simulateTournament(player, players, iterations, logs);
+        new FightSimulator().simulateTournament(player, players, iterations);
         self.postMessage({
             command: 'finished',
             results: player,
-            logs: logs,
+            logs: FIGHT_DUMP_OUTPUT,
             time: Date.now() - ts
         });
     } else if (mode == SimulatorType.Guild) {
@@ -901,8 +906,137 @@ class FightSimulator {
         this.a = this.ca;
         this.b = this.cb;
 
-        if (this.logs) {
-            this.log = {
+        if (FIGHT_DUMP_ENABLED) this.log(0);
+
+        this.a.Health = this.a.TotalHealth;
+        this.b.Health = this.b.TotalHealth;
+
+        // Turn counter
+        this.turn = 0;
+
+        // Apply special damage
+        if (this.as !== false || this.bs !== false) {
+            this.turn++;
+
+            if (this.as > 0) {
+                this.b.Health -= this.as;
+
+                if (FIGHT_DUMP_ENABLED) this.log(1);
+            } else if (this.bs > 0) {
+                this.a.Health -= this.bs;
+
+                if (FIGHT_DUMP_ENABLED) this.log(2);
+            } else {
+                if (FIGHT_DUMP_ENABLED) this.log(3);
+            }
+        }
+
+        this.setRandomInitialFighter();
+        this.forwardToBersekerAttack();
+
+        // Simulation
+        while (this.a.Health > 0 && this.b.Health > 0) {
+            var damage = this.attack(this.a, this.b);
+            if (this.a.DamageDealt) {
+                this.a.onDamageDealt(this.b, damage);
+            }
+
+            if (this.b.DamageTaken) {
+                var alive = this.b.onDamageTaken(this.a, damage);
+
+                if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
+
+                if (alive == 0) {
+                    break;
+                }
+            } else {
+                this.b.Health -= damage;
+                if (this.b.Health <= 0) {
+                    break;
+                }
+            }
+
+            if (this.a.Weapon2) {
+                var damage2 = this.attack(this.a, this.b, this.a.Weapon2, 1);
+                if (this.a.DamageDealt) {
+                    this.a.onDamageDealt(this.b, damage2);
+                }
+
+                if (this.b.DamageTaken) {
+                    var alive = this.b.onDamageTaken(this.a, damage2);
+
+                    if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
+
+                    if (alive == 0) {
+                        break;
+                    }
+                } else {
+                    this.b.Health -= damage2;
+                    if (this.b.Health <= 0) {
+                        break;
+                    }
+                }
+            }
+
+            if (this.a.RoundEnded) {
+                this.a.onRoundEnded(() => {
+                    this.turn++;
+
+                    var damage3 = this.attack(this.a, this.b, this.a.Weapon1, 2);
+                    if (this.a.DamageDealt) {
+                        this.a.onDamageDealt(this.b, damage3);
+                    }
+
+                    if (this.b.DamageTaken) {
+                        var alive = this.b.onDamageTaken(this.a, damage3);
+
+                        if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
+
+                        return alive > 0;
+                    } else {
+                        this.b.Health -= damage3;
+                        return this.b.Health >= 0
+                    }
+                });
+            }
+
+            [this.a, this.b] = [this.b, this.a];
+        }
+
+        // Winner
+        return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
+    }
+
+    // Attack
+    attack (source, target, weapon = source.Weapon1, extra = 0) {
+        // Rage
+        var turn = this.turn++;
+        var rage = 1 + turn / 6;
+
+        // Test for skip
+        var damage = 0;
+        var skipped = getRandom(target.SkipChance);
+        var critical = false;
+
+        if (!skipped) {
+            damage = rage * (Math.random() * (weapon.Max - weapon.Min) + weapon.Min);
+
+            critical = getRandom(source.CriticalChance);
+            if (critical) {
+                damage *= source.Critical;
+            }
+
+            damage = Math.ceil(damage);
+        }
+
+        if (FIGHT_DUMP_ENABLED) this.log(4, source, target, weapon, damage, skipped, critical, extra);
+
+        return damage;
+    }
+
+    log (stage, ... args) {
+        if (stage == 0) {
+            this.log_obj = {
                 targetA: {
                     ID: this.a.Player.ID || this.a.Index,
                     Name: this.a.Player.Name,
@@ -942,192 +1076,40 @@ class FightSimulator {
                 rounds: []
             };
 
-            this.logs.push(this.log);
-        }
-
-        this.a.Health = this.a.TotalHealth;
-        this.b.Health = this.b.TotalHealth;
-
-        // Turn counter
-        this.turn = 0;
-
-        // Apply special damage
-        if (this.as !== false || this.bs !== false) {
-            this.turn++;
-
-            if (this.as > 0) {
-                this.b.Health -= this.as;
-
-                if (this.log) {
-                    this.log.rounds.push({
-                        attackCrit: false,
-                        attackType: 15,
-                        attackMissed: false,
-                        attackDamage: this.as,
-                        attackSecondary: false,
-                        attacker: this.a.Player.ID || this.a.Index,
-                        target: this.b.Player.ID || this.b.Index
-                    });
-                }
-            } else if (this.bs > 0) {
-                this.a.Health -= this.bs;
-
-                if (this.log) {
-                    this.log.rounds.push({
-                        attackCrit: false,
-                        attackType: 15,
-                        attackMissed: false,
-                        attackSecondary: false,
-                        attackDamage: this.bs,
-                        attacker: this.b.Player.ID || this.b.Index,
-                        target: this.a.Player.ID || this.a.Index
-                    });
-                }
-            } else {
-                if (this.log) {
-                    this.log.rounds.push({
-                        attackCrit: false,
-                        attackType: 16,
-                        attackMissed: true,
-                        attackSecondary: false,
-                        attackDamage: 0,
-                        attacker: this.a.Player.ID || this.a.Index,
-                        target: this.b.Player.ID || this.b.Index
-                    });
-                }
-            }
-        }
-
-        this.setRandomInitialFighter();
-        this.forwardToBersekerAttack();
-
-        // Simulation
-        while (this.a.Health > 0 && this.b.Health > 0) {
-            var damage = this.attack(this.a, this.b);
-            if (this.a.DamageDealt) {
-                this.a.onDamageDealt(this.b, damage);
-            }
-
-            if (this.b.DamageTaken) {
-                var alive = this.b.onDamageTaken(this.a, damage);
-
-                if (alive == 2 && this.log) {
-                    this.log.rounds.push({
-                        attackCrit: false,
-                        attackType: 100,
-                        attackMissed: false,
-                        attackDamage: 0,
-                        attackSecondary: false,
-                        attacker: this.a.Player.ID || this.a.Index,
-                        target: this.b.Player.ID || this.b.Index
-                    });
-                }
-
-                if (alive == 0) {
-                    break;
-                }
-            } else {
-                this.b.Health -= damage;
-                if (this.b.Health <= 0) {
-                    break;
-                }
-            }
-
-            if (this.a.Weapon2) {
-                var damage2 = this.attack(this.a, this.b, this.a.Weapon2, 1);
-                if (this.a.DamageDealt) {
-                    this.a.onDamageDealt(this.b, damage2);
-                }
-
-                if (this.b.DamageTaken) {
-                    var alive = this.b.onDamageTaken(this.a, damage2);
-
-                    if (alive == 2 && this.log) {
-                        this.log.rounds.push({
-                            attackCrit: false,
-                            attackType: 100,
-                            attackMissed: false,
-                            attackDamage: 0,
-                            attackSecondary: false,
-                            attacker: this.a.Player.ID || this.a.Index,
-                            target: this.b.Player.ID || this.b.Index
-                        });
-                    }
-
-                    if (alive == 0) {
-                        break;
-                    }
-                } else {
-                    this.b.Health -= damage2;
-                    if (this.b.Health <= 0) {
-                        break;
-                    }
-                }
-            }
-
-            if (this.a.RoundEnded) {
-                this.a.onRoundEnded(() => {
-                    this.turn++;
-
-                    var damage3 = this.attack(this.a, this.b, this.a.Weapon1, 2);
-                    if (this.a.DamageDealt) {
-                        this.a.onDamageDealt(this.b, damage3);
-                    }
-
-                    if (this.b.DamageTaken) {
-                        var alive = this.b.onDamageTaken(this.a, damage3);
-
-                        if (alive == 2 && this.log) {
-                            this.log.rounds.push({
-                                attackCrit: false,
-                                attackType: 100,
-                                attackMissed: false,
-                                attackDamage: 0,
-                                attackSecondary: false,
-                                attacker: this.a.Player.ID || this.a.Index,
-                                target: this.b.Player.ID || this.b.Index
-                            });
-                        }
-
-                        return alive > 0;
-                    } else {
-                        this.b.Health -= damage3;
-                        return this.b.Health >= 0
-                    }
-                });
-            }
-
-            [this.a, this.b] = [this.b, this.a];
-        }
-
-        // Winner
-        return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
-    }
-
-    // Attack
-    attack (source, target, weapon = source.Weapon1, extra = 0) {
-        // Rage
-        var turn = this.turn++;
-        var rage = 1 + turn / 6;
-
-        // Test for skip
-        var damage = 0;
-        var skipped = getRandom(target.SkipChance);
-        var critical = false;
-
-        if (!skipped) {
-            damage = rage * (Math.random() * (weapon.Max - weapon.Min) + weapon.Min);
-
-            critical = getRandom(source.CriticalChance);
-            if (critical) {
-                damage *= source.Critical;
-            }
-
-            damage = Math.ceil(damage);
-        }
-
-        if (this.log) {
-            this.log.rounds.push({
+            FIGHT_DUMP_OUTPUT.push(this.log_obj);
+        } else if (stage == 1) {
+            this.log_obj.rounds.push({
+                attackCrit: false,
+                attackType: 15,
+                attackMissed: false,
+                attackDamage: this.as,
+                attackSecondary: false,
+                attacker: this.a.Player.ID || this.a.Index,
+                target: this.b.Player.ID || this.b.Index
+            });
+        } else if (stage == 2) {
+            this.log_obj.rounds.push({
+                attackCrit: false,
+                attackType: 15,
+                attackMissed: false,
+                attackSecondary: false,
+                attackDamage: this.bs,
+                attacker: this.b.Player.ID || this.b.Index,
+                target: this.a.Player.ID || this.a.Index
+            });
+        } else if (stage == 3) {
+            this.log_obj.rounds.push({
+                attackCrit: false,
+                attackType: 16,
+                attackMissed: true,
+                attackSecondary: false,
+                attackDamage: 0,
+                attacker: this.a.Player.ID || this.a.Index,
+                target: this.b.Player.ID || this.b.Index
+            });
+        } else if (stage == 4) {
+            let [ source, target, weapon, damage, skipped, critical, extra ] = args;
+            this.log_obj.rounds.push({
                 attackCrit: critical,
                 attackType: (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + 10 * extra,
                 attackMissed: skipped,
@@ -1136,8 +1118,16 @@ class FightSimulator {
                 attacker: source.Player.ID || source.Index,
                 target: target.Player.ID || target.Index
             });
+        } else if (stage == 5) {
+            this.log_obj.rounds.push({
+                attackCrit: false,
+                attackType: 100,
+                attackMissed: false,
+                attackDamage: 0,
+                attackSecondary: false,
+                attacker: this.a.Player.ID || this.a.Index,
+                target: this.b.Player.ID || this.b.Index
+            });
         }
-
-        return damage;
     }
 }
