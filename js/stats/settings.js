@@ -2814,6 +2814,14 @@ const SettingsManager = new (class {
         if (!this.settings) {
             // Initialize if needed
             this.settings = Preferences.get('settings', { });
+
+            if (typeof this.settings === 'string') {
+                Preferences.set('settingsStringRaw', this.settings);
+
+                this.settings = {};
+                Preferences.set('settings', {});
+            }
+
             this.keys = Object.keys(this.settings);
 
             /*
