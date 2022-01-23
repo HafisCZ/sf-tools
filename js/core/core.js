@@ -1,7 +1,7 @@
 // Version stuff
-const MODULE_VERSION = 'v5.1922';
-const TABLE_VERSION = 'v9';
-const CORE_VERSION = 'v3.1';
+const MODULE_VERSION = 'v5.2000';
+const TABLE_VERSION = 'v10';
+const CORE_VERSION = 'v3.2';
 
 const Logger = new (class {
     constructor () {
@@ -307,7 +307,7 @@ const Actions = new (class {
 
     setScript (script) {
         this.script = script;
-        
+
         this._saveScript();
         this._executeScript();
     }

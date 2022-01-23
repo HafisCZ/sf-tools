@@ -1,4 +1,44 @@
 const CHANGELOG = {
+    'v5.2000': {
+        'Statistics': [
+            'Added auto tagging action',
+            'Added embedded tables',
+            'Added default tab setting',
+            'Added tag filter to advanced file list',
+            'Added shortcut function <code>img</code> for images',
+            'Added popup for adding templates via url',
+            'Added <code>constexpr</code> constants that use expressions',
+            'Added backslash escape for # comments',
+            'Added new default player template (@dracs)',
+            'Fixed constants inside macros',
+            'Fixed spaces in share codes',
+            'Fixed compatibility issues',
+            'Fixed missing item translations',
+            'Fixed select all for simple file list',
+            'Fixed negative named numbers',
+            'Fixed broken achievements',
+            'Fixed script editor default font size',
+            'Fixed loops without ending tags'
+        ],
+        'Endpoint': [
+            'Added option to save friend characters'
+        ],
+        'All Simulators': [
+            'Berserkers now have chance to evade first attack'
+        ],
+        'Dungeon Simulator': [
+            'Adjusted weapon damages for berserker enemies'
+        ],
+        'Fight Simulator': [
+            'Added option to drag & drop file instead of copy & pasting',
+            'Fixed undefined prefix when switching to IHOF mode',
+            'Fixed assassin\'s second attack missing from debug logs'
+        ],
+        'Gold & Experience': [
+            'Added fortress tab',
+            'Added underworld tab'
+        ]
+    },
     'v5.1922': {
         'Statistics': [
             'Improved file metadata',
