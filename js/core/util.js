@@ -86,6 +86,14 @@ function _int_keys(hash) {
     return Object.keys(hash).map(v => parseInt(v));
 }
 
+function _safe_int(val) {
+    if (isNaN(val)) {
+        return undefined;
+    } else {
+        return parseInt(val);
+    }
+}
+
 function _sort_asc (array, map) {
     if (map) {
         return array.sort((a, b) => map(a) - map(b));

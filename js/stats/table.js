@@ -47,8 +47,8 @@ class PlayersTableArray extends Array {
         super();
 
         this.perf = perf;
-        this.timestamp = ts;
-        this.reference = rs;
+        this.timestamp = _safe_int(ts);
+        this.reference = _safe_int(rs);
     }
 
     add (player, compare, latest, hidden) {
@@ -69,8 +69,8 @@ class GroupTableArray extends Array {
 
         this.joined = joined;
         this.kicked = kicked;
-        this.timestamp = ts;
-        this.reference = rs;
+        this.timestamp = _safe_int(ts);
+        this.reference = _safe_int(rs);
         this.missing = missing;
     }
 
