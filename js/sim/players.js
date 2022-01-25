@@ -463,7 +463,7 @@ self.addEventListener('message', function (message) {
             time: Date.now() - ts
         });
     } else if (mode == SimulatorType.PlayerOne) {
-        new FightSimulator().simulateSingle(player, players, iteration);
+        new FightSimulator().simulateSingle(player, players, iterations);
         self.postMessage({
             command: 'finished',
             results: players,
