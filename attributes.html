@@ -1049,7 +1049,7 @@
                     (level, souls, hourly, storage) => formatAsSpacedNumber(souls),
                     (level, souls, hourly, storage) => formatAsSpacedNumber(hourly),
                     (level, souls, hourly, storage) => formatAsSpacedNumber(storage),
-                    (level, souls, hourly, storage) => formatFancyTime(60000 * storage / hourly)
+                    (level, souls, hourly, storage) => formatFancyTime(3600000 * storage / hourly)
                 ]);
 
                 const GOBLIN_PIT = [
@@ -1166,7 +1166,7 @@
                     (level, wood, stone, cap, hourly) => formatAsSpacedNumber(stone),
                     (level, wood, stone, cap, hourly) => formatAsSpacedNumber(hourly),
                     (level, wood, stone, cap, hourly) => formatAsSpacedNumber(cap),
-                    (level, wood, stone, cap, hourly) => formatFancyTime(60000 * cap / hourly),
+                    (level, wood, stone, cap, hourly) => formatFancyTime(3600000 * cap / hourly),
                     () => ''
                 ]);
 
@@ -1186,7 +1186,7 @@
                     (level, wood, stone, cap, hourly) => formatAsSpacedNumber(stone),
                     (level, wood, stone, cap, hourly) => formatAsSpacedNumber(hourly),
                     (level, wood, stone, cap, hourly) => formatAsSpacedNumber(cap),
-                    (level, wood, stone, cap, hourly) => formatFancyTime(60000 * cap / hourly),
+                    (level, wood, stone, cap, hourly) => formatFancyTime(3600000 * cap / hourly),
                     () => ''
                 ]);
 
