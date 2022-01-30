@@ -339,7 +339,8 @@ const Actions = new (class {
                     }
                 }
             } else if (type == 'file') {
-                let scope = new ExpressionScope().add({ players, groups, origin });
+                let mappedPlayers = Object.assign(players.map(p => [p, p]), { segmented: true });
+                let scope = new ExpressionScope().add({ players: mappedPlayers, groups, origin });
                 if (scope.eval(conditionExpr)) {
                     const tag = scope.eval(tagExpr);
                     for (const { Identifier: id, Timestamp: ts, Data: data } of players) {
