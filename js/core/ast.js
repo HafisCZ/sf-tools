@@ -2499,6 +2499,11 @@ const SP_KEYWORD_MAPPING_0 = {
         format: (p, c, e, x) => MASK_TYPES[x],
         difference: false,
         statistics: false
+    },
+    'Tag': {
+        expr: p => p.Data.tag,
+        difference: false,
+        statistics: false
     }
 };
 
