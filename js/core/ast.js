@@ -2586,6 +2586,11 @@ const SP_KEYWORD_MAPPING_2 = {
     'Stone': {
         expr: p => p.Fortress.Stone
     },
+    'Used Beers': {
+        expr: p => p.UsedBeers,
+        statistics: false,
+        difference: false
+    },
     'Scrapbook Items': {
         expr: p => p.Scrapbook
     },

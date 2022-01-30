@@ -1356,7 +1356,11 @@ class SFOwnPlayer extends SFPlayer {
         this.Damage.Avg = (this.Damage.Min + this.Damage.Max) / 2;
         dataType.skip(1); // skip
         this.MountExpire = dataType.long() * 1000 + data.offset,
-        dataType.skip(28); // skip
+        dataType.skip(3);
+        this.ThirstReroll = dataType.long() * 1000 + data.offset;
+        this.ThirstLeft = dataType.long();
+        this.UsedBeers = dataType.long();
+        dataType.skip(22); // skip
         this.Dungeons.Normal[0] = dataType.long();
         this.Dungeons.Normal[1] = dataType.long();
         this.Dungeons.Normal[2] = dataType.long();
