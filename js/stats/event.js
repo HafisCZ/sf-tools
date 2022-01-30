@@ -965,6 +965,7 @@ class BrowseView extends View {
             'g': 'Guild name',
             's': 'Server',
             'e': 'Custom expression',
+            '#': 'Show only players with specified tags',
             'l': 'Show only latest',
             'f': 'Show only first or first n entries',
             'r': 'Force recalculation of global variables',
@@ -976,7 +977,7 @@ class BrowseView extends View {
             'qc': 'Show only selected categories',
             't': 'Show online template directly'
         }).change((event) => {
-            var filter = $(event.currentTarget).val().split(/(?:\s|\b)(c|p|g|s|e|l|f|r|x|h|o|sr|q|qc|t):/);
+            var filter = $(event.currentTarget).val().split(/(?:\s|\b|^)(c|p|g|s|e|l|f|r|x|h|o|sr|q|qc|t|#):/);
 
             var terms = [
                 {
@@ -1060,6 +1061,13 @@ class BrowseView extends View {
                         },
                         arg: arg.toLowerCase().split('|').map(rarg => rarg.trim())
                     });
+                } else if (key == '#') {
+                    terms.push({
+                        test: (arg, player) => {
+                            return player.Data.tag && arg.some(rarg => player.Data.tag == rarg);
+                        },
+                        arg: arg.split('|').map(rarg => rarg.trim())
+                    })
                 } else if (key == 'l') {
                     terms.push({
                         test: (arg, player, timestamp) => player.Timestamp == timestamp,
