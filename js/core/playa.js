@@ -1783,6 +1783,10 @@ class SFCompanion extends SFPlayer {
         this.Constitution = comp.Constitution;
         this.Luck = comp.Luck;
 
+        this.evaluateCompanionCommon(player);
+    }
+
+    evaluateCompanionCommon(player) {
         this.Primary = this.getPrimaryAttribute();
 
         this.addCalculatedAttributes(this.Strength, player.Pets.Water);
