@@ -1709,7 +1709,7 @@ class SFOwnPlayer extends SFPlayer {
                 Finish: dataType.long() * 1000 + data.offset,
                 Start: dataType.long() * 1000 + data.offset
             };
-            dataType.skip(1);
+            dataType.skip(2);
             this.Underworld.TimeMachineThirst = dataType.long();
             this.Underworld.TimeMachineMax = dataType.long();
             this.Underworld.TimeMachineDaily = dataType.long();
