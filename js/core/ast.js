@@ -2813,6 +2813,10 @@ const SP_KEYWORD_MAPPING_2 = {
         statistics: false
     },
     'Time Machine Daily': {
+        expr: p => p.Underworld && p.Underworld.TimeMachineDaily ? Math.trunc(p.Underworld.TimeMachineDaily * 0.25) : undefined,
+        statistics: false
+    },
+    'Time Machine Daily Max': {
         expr: p => p.Underworld ? p.Underworld.TimeMachineDaily : undefined,
         statistics: false
     },
