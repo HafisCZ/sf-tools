@@ -513,6 +513,7 @@ class TableInstance {
 
                 // Create new entry and push it to the list
                 this.entries.push({
+                    player: player,
                     content: content
                 })
             }
@@ -570,6 +571,7 @@ class TableInstance {
 
                 // Create new entry and push it to the list
                 this.entries.push({
+                    player: player,
                     content: content,
                     sorting: this.flat.reduce((obj, header) => {
                         let { order, sortkey, flip, expr, sort } = header;
@@ -648,6 +650,7 @@ class TableInstance {
 
                 // Create new entry and push it to the list
                 this.entries.push({
+                    player: player,
                     content: content,
                     sorting: this.flat.reduce((obj, header) => {
                         let { order, sortkey, flip, expr, sort } = header;
@@ -1391,6 +1394,10 @@ class TableController {
 
     getArray () {
         return this.table ? this.table.array : [];
+    }
+
+    getInternalEntries () {
+        return this.table ? this.table.entries : [];
     }
 
     clearSorting () {

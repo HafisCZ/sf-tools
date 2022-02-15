@@ -930,8 +930,8 @@ class BrowseView extends View {
 
         // Copy 2
         this.$parent.find('[data-op="copy-sim"]').click(() => {
-            var array = this.table.getArray();
-            var slice = array.perf || this.table.getEntryLimit();
+            var array = this.table.getInternalEntries();
+            var slice = this.table.getArray().perf || this.table.getEntryLimit();
             if (slice) {
                 array = array.slice(0, slice);
             }
