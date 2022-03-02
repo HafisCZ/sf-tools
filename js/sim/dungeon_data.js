@@ -746,7 +746,8 @@ DUNGEON_DATA = {
             'ZeboPL': { pos: 17, id: 1336, class: 1, level: 569, str: 428840, dex: 10700, int: 10700, con: 372750, lck: 25710, health: 1062337472, min: 6432, max: 8569 },
             'Dhalucard': { pos: 18, id: 1337, class: 2, level: 571, str: 10800, dex: 10800, int: 433120, con: 374610, lck: 25960, health: 428553856, min: 14620, max: 19487 },
             'Earliboy': { pos: 19, id: 1338, class: 7, level: 573, str: 10900, dex: 437450, int: 10900, con: 376480, lck: 26220, health: 864398080, min: 8201, max: 10935 },
-            'Skate702': { pos: 20, id: 1339, class: 6, level: 575, str: 441820, dex: 11000, int: 11000, con: 378360, lck: 26480, health: 871741440, min: 5315, max: 7685 }
+            'Skate702': { pos: 20, id: 1339, class: 6, level: 575, str: 441820, dex: 11000, int: 11000, con: 378360, lck: 26480, health: 871741440, min: 5315, max: 7685 },
+            'Dorzer': { pos: 21, id: 1340, class: 2, level: 580, str: 12000, dex: 12000, int: 450000, con: 380000, lck: 27000, health: 450000000, min: 15000, max: 20000, armor: 30000 }
         }
     },
     '116': {
