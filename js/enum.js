@@ -182,6 +182,7 @@ const FIGHT_TYPES = {
     PetsDefend: 15,
     Underworld: 16,
     GuildPet: 17,
+    Hellevator: 18,
     FortRevenge: 109
 };
 

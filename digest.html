@@ -255,7 +255,7 @@
                         msg[key] = val.split(/[/,]/g).map(v => isNaN(v) ? v : Number(v));
                     }
 
-                    if (![4, 5, 12].includes(msg['fighters'][0])) {
+                    if (![4, 5, 12, 18].includes(msg['fighters'][0])) {
                         continue;
                     }
 
