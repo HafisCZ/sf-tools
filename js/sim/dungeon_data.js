@@ -701,10 +701,10 @@ DUNGEON_DATA = {
         shadow: true,
         floors: {
             // TODO: Check all of these again
-            'Robert Drunkatheon': { pos: 1, id: 600, class: 1, level: 464, str: 9040, dex: 3173, int: 3135, con: 47416, lck: 2110, health: 110242200, min: 5039, max: 8797 },
-            'Lefty Lennister': { pos: 2, id: 601, class: 1, level: 468, str: 9126, dex: 3202, int: 3166, con: 47938, lck: 2120, health: 112414608, min: 5030, max: 9944 },
-            'Petyr the Pimp': { pos: 3, id: 602, class: 2, level: 472, str: 4576, dex: 4634, int: 18651, con: 95656, lck: 6636, health: 90490576, min: 11385, max: 22701 },
-            'Holundor': { pos: 4, id: 603, class: 1, level: 476, str: 18592, dex: 6524, int: 6454, con: 97944, lck: 4284, health: 233596448, min: 5101, max: 10170 },
+            'Robert Drunkatheon': { pos: 1, id: 600, class: 1, level: 464, str: 9040, dex: 3173, int: 3135, con: 47416, lck: 2110, health: 110242200, min: 4966, max: 9792, armor: 18000 },
+            'Lefty Lennister': { pos: 2, id: 601, class: 1, level: 468, str: 9126, dex: 3202, int: 3166, con: 47938, lck: 2120, health: 112414608, min: 5030, max: 9944, armor: 50000 },
+            'Petyr the Pimp': { pos: 3, id: 602, class: 2, level: 472, str: 4576, dex: 4634, int: 18651, con: 95656, lck: 6636, health: 90490576, min: 11355, max: 22703, armor: 40000 },
+            'Holundor': { pos: 4, id: 603, class: 1, level: 476, str: 18592, dex: 6524, int: 6454, con: 97944, lck: 4284, health: 233596448, min: 5090, max: 10175, armor: 48000 },
             'Drogo the Threatening': { pos: 5, id: 604, class: 1, level: 480, str: 18761, dex: 6582, int: 6514, con: 98962, lck: 4306, health: 238003616, min: 5133, max: 10259 },
             'The Ginger Slowworm': { pos: 6, id: 605, class: 2, level: 484, str: 7945, dex: 8026, int: 32266, con: 167706, lck: 11446, health: 162674816, min: 11672, max: 23265 },
             'Queen Mother': { pos: 7, id: 606, class: 3, level: 488, str: 8625, dex: 34344, int: 8586, con: 182798, lck: 12301, health: 357552896, min: 6520, max: 13024 },
@@ -715,7 +715,7 @@ DUNGEON_DATA = {
             'Brygitte': { pos: 12, id: 611, class: 2, level: 508, str: 13425, dex: 13546, int: 54428, con: 284718, lck: 19279, health: 289842912, min: 12223, max: 24428 },
             'Snowman and Shadow Wolf': { pos: 13, id: 612, class: 1, level: 512, str: 54533, dex: 19122, int: 18973, con: 290763, lck: 12109, health: 745807104, min: 5652, max: 10901 },
             'The Woman in Red': { pos: 14, id: 613, class: 3, level: 516, str: 13838, dex: 55118, int: 13779, con: 294118, lck: 19707, health: 608236032, min: 6901, max: 13768 },
-            'Boyish Brienne': { pos: 15, id: 614, class: 1, level: 520, str: 66837, dex: 23434, int: 23261, con: 356928, lck: 14768, health: 929797440, min: 6105, max: 10998 },
+            'Boyish Brienne': { pos: 15, id: 614, class: 1, level: 520, str: 66837, dex: 23434, int: 23261, con: 356928, lck: 14768, health: 929797440, min: 5563, max: 11110, armor: 50000 },
             'Ramsay the Degrader': { pos: 16, id: 615, class: 1, level: 524, str: 67527, dex: 23675, int: 23504, con: 360872, lck: 14886, health: 947289024, min: 5860, max: 10685 },
             'Faceless': { pos: 17, id: 616, class: 2, level: 528, str: 16985, dex: 17120, int: 68752, con: 361823, lck: 24319, health: 382808736, min: 14601, max: 23926 },
             'Vicious Gnome': { pos: 18, id: 617, class: 2, level: 532, str: 20016, dex: 20171, int: 80997, con: 426706, lck: 28643, health: 454868608, min: 14576, max: 24519 },
