@@ -737,11 +737,12 @@
                         <tr>
                             <th style="width: 10%;">Level</th>
                             <th style="width: 15%;">Build Time</th>
-                            <th style="width: 15%;">Gold</th>
-                            <th style="width: 15%;">Souls</th>
-                            <th style="width: 15%;">Hourly</th>
-                            <th style="width: 15%;">Capacity</th>
-                            <th style="width: 15%;">Full in</th>
+                            <th style="width: 13%;">Gold</th>
+                            <th style="width: 13%;">Souls</th>
+                            <th style="width: 12%;">Hourly</th>
+                            <th style="width: 12%;">Capacity</th>
+                            <th style="width: 12%;">Full in</th>
+                            <th style="width: 13%;">Storage</th>
                         </tr>
                     </thead>
                     <tbody id="underworld-extractor"></tbody>
@@ -1040,16 +1041,17 @@
                 ], undefined, false, true);
 
                 const EXTRACTOR = [
-                    [0, 165, 412], [462, 231, 635], [1235, 330, 990], [3165, 528, 1716], [8250, 825, 2887],
-                    [18810, 1254, 4702], [40190, 1914, 7656], [84150, 2805, 14025], [198000, 4125, 24750], [439550, 6105, 48840],
-                    [902850, 9405, 94050], [2043300, 14190, 170280], [4118400, 21450, 343200], [7722000, 32175, 643500], [16632000, 49500, 1188000]
+                    [0, 165, 412, 3804], [462, 231, 635, 10890], [1235, 330, 990, 27456], [3165, 528, 1716, 60648], [8250, 825, 2887, 122252],
+                    [18810, 1254, 4702, 237336], [40190, 1914, 7656, 504900], [84150, 2805, 14025, 1014750], [198000, 4125, 24750, 2246640], [439550, 6105, 48840, 4796550],
+                    [902850, 9405, 94050, 9535680], [2043300, 14190, 170280, 20935200], [4118400, 21450, 343200, 42471000], [7722000, 32175, 643500, 84348000], [16632000, 49500, 1188000, 162518400]
                 ];
                 generateTable('underworld-extractor', EXTRACTOR, [
                     (level, souls, hourly, storage) => formatAsSpacedNumber(level * 250),
                     (level, souls, hourly, storage) => formatAsSpacedNumber(souls),
                     (level, souls, hourly, storage) => formatAsSpacedNumber(hourly),
                     (level, souls, hourly, storage) => formatAsSpacedNumber(storage),
-                    (level, souls, hourly, storage) => formatFancyTime(3600000 * storage / hourly)
+                    (level, souls, hourly, storage) => formatFancyTime(3600000 * storage / hourly),
+                    (level, souls, hourly, storage, capacity) => formatAsSpacedNumber(capacity)
                 ]);
 
                 const GOBLIN_PIT = [
