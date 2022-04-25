@@ -281,8 +281,8 @@ class FighterModel {
         return this.Health > 0 ? 1 : 0;
     }
 
-    onRoundEnded (action) {
-
+    skipNextRound () {
+        return false;
     }
 }
 
@@ -390,7 +390,7 @@ class BerserkerModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
 
-        this.RoundEnded = true;
+        this.SkipNext = true;
     }
 
     getDamageRange (weapon, target) {
@@ -402,8 +402,8 @@ class BerserkerModel extends FighterModel {
         }
     }
 
-    onRoundEnded (action) {
-        while (getRandom(50) && action());
+    skipNextRound () {
+        return getRandom(50);
     }
 }
 
@@ -626,24 +626,8 @@ class DungeonSimulator {
                 }
             }
 
-            if (this.a.RoundEnded) {
-                this.a.onRoundEnded(() => {
-                    this.turn++;
-
-                    var damage3 = this.attack(this.a, this.b, this.a.Weapon1, true);
-                    if (this.a.DamageDealt) {
-                        this.a.onDamageDealt(this.b, damage3);
-                    }
-
-                    if (this.b.DamageTaken) {
-                        let alive = this.b.onDamageTaken(this.a, damage3);
-                        if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
-                        return alive > 0;
-                    } else {
-                        this.b.Health -= damage3;
-                        return this.b.Health >= 0
-                    }
-                });
+            if (this.a.SkipNext) {
+                while (this.a.skipNextRound() && this.skipAndAttack());
             }
 
             [this.a, this.b] = [this.b, this.a];
@@ -651,6 +635,24 @@ class DungeonSimulator {
 
         // Winner
         return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
+    }
+
+    skipAndAttack () {
+        this.turn++;
+
+        var damage3 = this.attack(this.a, this.b, this.a.Weapon1, true);
+        if (this.a.DamageDealt) {
+            this.a.onDamageDealt(this.b, damage3);
+        }
+
+        if (this.b.DamageTaken) {
+            let alive = this.b.onDamageTaken(this.a, damage3);
+            if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
+            return alive > 0;
+        } else {
+            this.b.Health -= damage3;
+            return this.b.Health >= 0
+        }
     }
 
     attack (source, target, weapon = source.Weapon1, extra = false) {
