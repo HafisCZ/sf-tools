@@ -198,7 +198,7 @@
                                         <input type="text" disabled class="text-center" data-op="Crits">
                                     </div>
                                     <div class="field">
-                                        <label>Hits Evaded</label>
+                                        <label>Hits Blocked/Evaded</label>
                                         <input type="text" disabled class="text-center" data-op="Skips">
                                     </div>
                                 </div>
@@ -302,7 +302,7 @@
                                         <input type="text" disabled class="text-center" data-op="Crits">
                                     </div>
                                     <div class="field">
-                                        <label>Hits Evaded</label>
+                                        <label>Hits Blocked/Evaded</label>
                                         <input type="text" disabled class="text-center" data-op="Skips">
                                     </div>
                                 </div>
@@ -924,7 +924,7 @@
                             continue;
                         } else {
                             if (r.attackMissed) {
-                                r.attacker.Stats.Skips++;
+                                r.target.Stats.Skips++;
                             } else {
                                 r.attacker.Stats.Hits++;
 
