@@ -258,7 +258,7 @@
                             <div class="two fields">
                                 <div class="field">
                                     <label>Player Count</label>
-                                    <input class="text-center" type="text" data-path="PlayerCount" placeholder="25 - 50">
+                                    <input class="text-center" type="text" data-path="PlayerCount" placeholder="10 - 50">
                                 </div>
                                 <div class="field">
                                     <label>Level</label>
@@ -347,7 +347,7 @@
                     constructor () {
                         this.fields = {
                             players: new Field('[data-path="PlayerCount"]', '', Field.isHydraPlayerCount),
-                            level: new Field('[data-path="Level"]', '', Field.isPlayerLevel),
+                            level: new Field('[data-path="Level"]', '', Field.isHydraPetLevel),
                             str: new Field('[data-path="Main"]', '', Field.isNonZero),
                             dex: new Field('[data-path="Side1"]', '', Field.isNonZero),
                             int: new Field('[data-path="Side2"]', '', Field.isNonZero),
