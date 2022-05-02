@@ -571,6 +571,10 @@ class Field {
         return Field.isNumber(val) && val <= 15;
     }
 
+    static isHydraPlayerCount (val) {
+        return Field.isNumber(val) && val >= 25 && val <= 50;
+    }
+
     static isNonZero (val) {
         return !isNaN(val) && val > 0;
     }

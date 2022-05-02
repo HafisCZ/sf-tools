@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Guild Hydra Simulator</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="res/favicon.png"/>
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/sentry.bundle.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/lang.js"></script>
+
+        <script src="js/core/util.js"></script>
+        <script src="js/core/playa.js"></script>
+        <script src="js/core/core.js"></script>
+        <script src="js/plugins.js"></script>
+        <script src="js/core/idb.js"></script>
+        <script src="js/core/ast.js"></script>
+        <script src="js/stats/settings.js"></script>
+        <script src="endpoint/endpoint.js"></script>
+
+        <script src="js/changelog.js"></script>
+        <script src="js/sim/hydra_data.js"></script>
+        <script src="js/views.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+
+        <script type="text/javascript">
+            LOGICAL_PROCS = (navigator || {}).hardwareConcurrency || 4;
+        </script>
+
+        <style>
+            .bordered .fields:last-of-type {
+                margin-bottom: 0;
+            }
+
+            .bordered {
+                padding: 0.5em;
+                margin-bottom: 0.5em;
+            }
+
+            .bordered-simple {
+                margin-bottom: 0.35em;
+                padding-top: 0.5em !important;
+                padding-bottom: 0.5em !important;
+                margin-right: 1em;
+                margin-left: 1em;
+            }
+
+            .form.white label {
+                color: white !important;
+            }
+
+            .bnone {
+                border: 1px solid transparent;
+            }
+
+            .bone {
+                border: 1px solid orange;
+            }
+
+            .btwo {
+                border: 1px solid purple;
+            }
+
+            .bthree {
+                border: 1px solid blue;
+            }
+
+            .bfour {
+                border: 1px solid red;
+            }
+
+            .bfive {
+                border: 1px solid green;
+            }
+
+            .bsix {
+                border: 1px solid pink;
+            }
+
+            .spaced {
+                margin-top: 2em !important;
+            }
+
+            .selectable {
+                -moz-user-select: -moz-none;
+                -khtml-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                padding-bottom: 0.25em !important;
+                padding-top: 0.25em !important;
+                height: 4em;
+            }
+
+            .selectable div {
+                padding: 0 !important;
+            }
+
+            .selectable-header div {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
+            .selected {
+                background-color: rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+            }
+
+            .nselected {
+                cursor: pointer;
+            }
+
+            .inactive {
+                opacity: 50%;
+            }
+
+            .class-picture {
+                 margin-left: -0.75em !important;
+                 margin-right: 0.5em !important;
+            }
+
+            .class-none {
+                margin-left: 1.75em;
+            }
+
+            .footer {
+                position: fixed;
+                left: 1em;
+                bottom: 1em;
+            }
+
+            .footer-right {
+                position: fixed;
+                right: 1em;
+                bottom: 1em;
+            }
+
+            .statistics-module {
+                position: absolute;
+                left: 2em;
+                top: 5em;
+                width: 15em;
+                z-index: 99;
+            }
+
+            body {
+                overflow-y: hidden !important;
+            }
+
+            .text .boss-image {
+                top: -0.75em !important;
+                right: -0.75em !important;
+            }
+
+            .boss-rune {
+                font-size: 70%;
+                margin-left: 0.25em;
+                position: absolute;
+                right: 3.5em;
+                bottom: 0;
+            }
+
+            div.text .boss-rune {
+                bottom: -1.1em;
+                right: 2.5em;
+            }
+
+            #boss-list .text, #available-list .text {
+                width: 100%;
+            }
+
+            #boss-list .menu, #available-list .menu {
+                overflow-y: scroll;
+            }
+
+            #load-stats {
+                margin-bottom: 0.5em;
+            }
+
+            #stats-list > div {
+                font-size: 90%;
+            }
+
+            #available-list .boss-dungeon-name {
+                font-size: 80%;
+                position: absolute;
+                top: -0.75em;
+            }
+
+            #available-list .boss-name {
+                font-size: 90%;
+                position: absolute;
+                top: 0.5em;
+            }
+
+            #available-list .menu .boss-dungeon-name {
+                top: 0.25em;
+            }
+
+            #available-list .menu .boss-name {
+                top: 1.5em;
+            }
+
+            #available-list .boss-rune {
+                font-size: 70%;
+                position: absolute;
+                right: 3.5em;
+                top: -0.85em;
+            }
+
+            #available-list .menu .boss-rune {
+                top: 0.35em;
+            }
+
+            #winchart.faded-out {
+                opacity: 0.5 !important;
+            }
+
+            .ui.dimmer {
+                overflow-y: hidden !important;
+            }
+
+            body.dimmed {
+                margin-right: 0 !important;
+            }
+        </style>
+    </head>
+    <body class="margin-none-bottom">
+        <div class="ui fixed borderless huge menu css-menu" style="z-index: 3;">
+            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        </div>
+
+        <div class="paste-target" onpaste="console.log">
+            Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator
+        </div>
+
+        <div class="footer">
+            <span style="font-size: 90%;">Based on <a target="_blank" href="https://github.com/Timhot3p/GuildPet">Timhot3p's GuildPet</a> project.</span>
+        </div>
+
+        <div class="ui main container">
+            <div class="ui two columns grid">
+                <!-- Player edit field -->
+                <div class="column">
+                    <div class="ui form" id="sim-editor">
+                        <div class="bordered bone">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Player Count</label>
+                                    <input class="text-center" type="text" data-path="PlayerCount" placeholder="25 - 50">
+                                </div>
+                                <div class="field">
+                                    <label>Level</label>
+                                    <input class="text-center" type="text" data-path="Level" placeholder="1 - 700">
+                                </div>
+                            </div>
+                            <div class="five fields">
+                                <div class="field">
+                                    <label>Strength</label>
+                                    <input class="text-center" type="text" data-path="Strength">
+                                </div>
+                                <div class="field">
+                                    <label>Dexterity</label>
+                                    <input class="text-center" type="text" data-path="Dexterity">
+                                </div>
+                                <div class="field">
+                                    <label>Intelligence</label>
+                                    <input class="text-center" type="text" data-path="Intelligence">
+                                </div>
+                                <div class="field">
+                                    <label>Constitution</label>
+                                    <input class="text-center" type="text" data-path="Constitution">
+                                </div>
+                                <div class="field">
+                                    <label>Luck</label>
+                                    <input class="text-center" type="text" data-path="Luck">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bfive">
+                            <div class="field">
+                                <label>Hydra</label>
+                                <div class="ui search selection compact dropdown" data-path="Hydra">
+                                    <div class="text"></div>
+                                    <i class="dropdown icon"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui grid">
+                        <div class="row">
+                            <div class="three wide column text-center" style="align-self: center;">
+                                Iterations:
+                            </div>
+                            <div class="five wide column">
+                                <div class="ui small form">
+                                    <div class="field" data-position="bottom center" data-tooltip="Amount of iterations per pet class.">
+                                        <input class="text-center fluid" type="text" id="sim-iterations" value="10000">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="eight wide column">
+                                <button class="ui fluid button" type="submit" id="sim-run">Simulate</button>
+                            </div>
+                        </div>
+                        <div class="row padding-none">
+                            <div class="sixteen wide column">
+                                <hr/>
+                            </div>
+                        </div>
+                        <div class="row" style="padding-left: 1em; padding-right: 1em">
+                            <div id="results" class="column" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+                                <!-- Results -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            window.addEventListener('load', function () {
+                function toggleAll (dis) {
+                    if (dis) {
+                        PopupController.open(LoaderPopup);
+                    } else {
+                        PopupController.close(LoaderPopup);
+                    }
+                }
+
+                $('#sim-iterations').captiveInputField('hydra_sim/iterations', 10000, v => !isNaN(v) && v >= 1);
+
+                const EditorController = new (class {
+                    constructor () {
+                        this.fields = {
+                            players: new Field('[data-path="PlayerCount"]', '', Field.isHydraPlayerCount),
+                            level: new Field('[data-path="Level"]', '', Field.isPlayerLevel),
+                            str: new Field('[data-path="Strength"]', '', Field.isNonZero),
+                            dex: new Field('[data-path="Dexterity"]', '', Field.isNonZero),
+                            int: new Field('[data-path="Intelligence"]', '', Field.isNonZero),
+                            con: new Field('[data-path="Constitution"]', '', Field.isNonZero),
+                            lck: new Field('[data-path="Luck"]', '', Field.isNonZero),
+                            hydra: new Field('[data-path="Hydra"]', '1')
+                        };
+
+                        this.fields['hydra'].$object.dropdown({
+                            preserveHTML: true,
+                            values: Object.entries(HYDRA_MAP).map(([id, {class: klass, name}]) => {
+                                return {
+                                    name: `<img class="ui centered image class-picture" src="res/class${klass}.png"><span>${name}</span>`,
+                                    value: id
+                                };
+                            })
+                        }).dropdown('set selected', '1');
+
+                        for (let field of Object.values(this.fields)) {
+                            field.setListener(() => clearResults());
+                        }
+                    }
+
+                    fill (object) {
+                        if (object) {
+                            for (var [key, field] of Object.entries(this.fields)) {
+                                field.set(getObjectAt(object, field.path()));
+                            }
+                        } else {
+                            for (var [key, field] of Object.entries(this.fields)) {
+                                field.clear();
+                            }
+                        }
+                    }
+
+                    read () {
+                        let object = {};
+                        for (var [key, field] of Object.entries(this.fields)) {
+                            setObjectAt(object, field.path(), field.get());
+                        }
+
+                        return object;
+                    }
+
+                    valid () {
+                        for (var [key, field] of Object.entries(this.fields)) {
+                            if (!field.valid()) {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }
+
+                    genEmpty () {
+                        let object = {};
+                        for (var [key, field] of Object.entries(this.fields)) {
+                            setObjectAt(object, field.path(), field.defaultValue);
+                        }
+
+                        return object;
+                    }
+                })();
+
+                function getHydraData () {
+                    let obj = HYDRA_MAP[EditorController.read().Hydra];
+
+                    return {
+                        Armor: obj.armor,
+                        Level: obj.level,
+                        Class: obj.class,
+                        Strength: obj.str,
+                        Dexterity: obj.dex,
+                        Intelligence: obj.int,
+                        Constitution: obj.con,
+                        Luck: obj.lck,
+                        DamageMin: obj.min,
+                        DamageMax: obj.max,
+                        Health: obj.health,
+                        Mask: obj.mask,
+                        Identifier: 999
+                    }
+                }
+
+                function getPlayerData (klass) {
+                    let obj = EditorController.read();
+
+                    return {
+                        Armor: null, // automatic
+                        Level: obj.level,
+                        Class: klass,
+                        Strength: obj.Strength,
+                        Dexterity: obj.Dexterity,
+                        Intelligence: obj.Intelligence,
+                        Constitution: obj.Constitution,
+                        Luck: obj.Luck,
+                        DamageMin: null, // automatic
+                        DamageMax: null, // automatic
+                        Health: null, // automatic
+                        Mask: null, // automatic
+                        Identifier: 0,
+                        Attacks: obj.PlayerCount
+                    }
+                }
+
+                $(document.body).on('paste', function (event) {
+                    if (event.target.type != 'text') {
+                        try {
+                            const players = JSON.parse(event.originalEvent.clipboardData.getData('text'));
+                            if (Array.isArray(players)) {
+                                const sortedPlayers = _sort_asc(players, p => p.Level);
+                                const hydraPlayers = _slice_len(sortedPlayers, 0, 25);
+
+                                const data = {
+                                    PlayerCount: players.length,
+                                    Level: Math.trunc(_sum(hydraPlayers.map(p => p.Level)) / 25)
+                                }
+
+                                for (const att of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
+                                    data[att] = Math.trunc(_sum(hydraPlayers.map(p => _dig(p, att, 'Total'))) / 10);
+                                }
+
+                                EditorController.fill(data);
+                            }
+                        } catch (e) {
+                            // Do nothing
+                        }
+                    }
+                });
+
+                $('#sim-editor input').on('paste', function (event) { event.stopPropagation(); });
+
+                $('#sim-run').click(function () {
+                    if (EditorController.valid()) {
+                        toggleAll(true);
+
+                        const iterations = Math.max(1, Number($('#sim-iterations').val()) || 10000);
+
+                        const hydra = getHydraData();
+                        const pets = [1, 2, 3].map(klass => getPlayerData(klass));
+
+                        const results = [];
+                        let finishedSimulations = 0;
+
+                        showResults(pets.map(pet => {
+                            return {
+                                hydra: hydra,
+                                pet: pet,
+                                iterations: iterations,
+                                score: Math.trunc(Math.random() * iterations),
+                                avg_health: Math.ceil(hydra.Health * Math.random()),
+                                avg_fights: Math.ceil(pet.Attacks * Math.random())
+                            }
+                        }));
+
+                        for (let i = 0; i < pets.length; i++) {
+                            const worker = createWebWorker('js/sim/hydra.js');
+
+                            worker.addEventListener('message', message => {
+                                if (message.data.command == 'finished') {
+                                    results[i] = message.data.results;
+                                    finishedSimulations++;
+
+                                    if (finishedSimulations == pets.length) {
+                                        showResults(results);
+                                    }
+                                }
+                            }, false);
+
+                            worker.postMessage({
+                                iterations: iterations,
+                                hydra: hydra,
+                                pet: pets[i]
+                            });
+                        }
+                    }
+                });
+
+                function showResults (results) {
+                    let content = '';
+
+                    for (let i = 0; i < results.length; i++) {
+                        const { iterations, score, pet, hydra, avg_health, avg_fights } = results[i];
+
+                        content += `
+                            <div style="flex: 1 1 32%; margin: 0.5em;">
+                                <h3 class="ui centered header" style="margin-top: 0em;">
+                                    <img class="ui centered image" style="width: 4em; margin-top: -1em; margin-bottom: -0.66em; margin-left: -0.66em;" src="res/class${pet.Class}.png">
+                                    <span>${(100 * score / iterations).toFixed(2)}%</span>
+                                </h3>
+                                <hr/>
+                                <div>~ ${Math.trunc(100 * Math.max(0, avg_health / hydra.Health))}% HP left</div>
+                                <div>~ ${Math.ceil(avg_fights)} fights</div>
+                            </div>
+                        `;
+                    }
+
+                    $('#results').html(content);
+                }
+
+                function clearResults () {
+                    const $simButton = $('#sim-run');
+                    if (EditorController.valid()) {
+                        $simButton.removeClass('disabled');
+                    } else {
+                        $simButton.addClass('disabled');
+                    }
+
+                    $('#results').html('');
+                }
+
+                let config = EditorController.genEmpty();
+                clearResults();
+            });
+        </script>
+    </body>
+</html>

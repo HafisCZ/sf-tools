@@ -1,0 +1,22 @@
+const HYDRA_MAP = {
+    1: { name: 'Head 1', level: 325, class: 1, min: 1118, max: 1891, str: 52800, dex: 6720, int: 6720, con: 126000, lck: 21600, health: 200000000, armor: 50000 },
+    2: { name: 'Head 2', level: 350, class: 1 },
+    3: { name: 'Head 3', level: 370, class: 2 },
+    4: { name: 'Head 4', level: 395, class: 3 },
+    5: { name: 'Head 5', level: 420, class: 3 },
+    6: { name: 'Head 6', level: 440, class: 1 },
+    7: { name: 'Head 7', level: 460, class: 3 },
+    8: { name: 'Head 8', level: 480, class: 2 },
+    9: { name: 'Head 9', level: 500, class: 5 },
+    10: { name: 'Head 10', level: 525, class: 3 },
+    11: { name: 'Head 11', level: 550, class: 5 },
+    12: { name: 'Head 12', level: 575, class: 1 },
+    13: { name: 'Head 13', level: 600, class: 4 },
+    14: { name: 'Head 14', level: 610, class: 2 },
+    15: { name: 'Head 15', level: 620, class: 1 },
+    16: { name: 'Head 16', level: 625, class: 1 },
+    17: { name: 'Head 17', level: 630, class: 1 },
+    18: { name: 'Head 18', level: 640, class: 5 },
+    19: { name: 'Head 19', level: 650, class: 1 },
+    20: { name: 'Head 20', level: 660, class: 1 }
+}
