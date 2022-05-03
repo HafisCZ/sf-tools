@@ -470,7 +470,7 @@
                         try {
                             const players = JSON.parse(event.originalEvent.clipboardData.getData('text'));
                             if (Array.isArray(players)) {
-                                const sortedPlayers = _sort_asc(players, p => p.Level);
+                                const sortedPlayers = _sort_asc(players, p => _dig(p, ATT_MAP['Main'][p.Class], 'Total'));
                                 const hydraPlayers = _slice_len(sortedPlayers, 0, 25);
 
                                 const data = {
@@ -505,19 +505,8 @@
                         const hydra = getHydraData();
                         const pets = [1, 2, 3].map(klass => getPlayerData(klass));
 
-                        const results = [];
+                        let results = [];
                         let finishedSimulations = 0;
-
-                        showResults(pets.map(pet => {
-                            return {
-                                hydra: hydra,
-                                pet: pet,
-                                iterations: iterations,
-                                score: Math.trunc(Math.random() * iterations),
-                                avg_health: Math.ceil(hydra.Health * Math.random()),
-                                avg_fights: Math.ceil(pet.Attacks * Math.random())
-                            }
-                        }));
 
                         for (let i = 0; i < pets.length; i++) {
                             const worker = createWebWorker('js/sim/hydra.js');
