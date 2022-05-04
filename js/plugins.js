@@ -576,7 +576,7 @@ class Field {
     }
 
     static isHydraPetLevel (val) {
-        Field.isNonZero(val) && val <= 600;
+        return Field.isNonZero(val) && val <= 600;
     }
 
     static isNonZero (val) {
