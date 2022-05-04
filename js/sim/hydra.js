@@ -430,9 +430,6 @@ class HydraSimulator {
 
         this.as = this.ca.onFightStart(this.cb);
         this.bs = this.cb.onFightStart(this.ca);
-
-        this.a = this.ca;
-        this.b = this.cb;
     }
 
     battle () {
@@ -479,6 +476,9 @@ class HydraSimulator {
     }
 
     fight () {
+        this.a = this.ca;
+        this.b = this.cb;
+
         this.turn = 0;
 
         // Special damage
