@@ -155,7 +155,8 @@
             }
 
             body {
-                overflow-y: hidden !important;
+                overflow-y: auto !important;
+                margin-bottom: 4em;
             }
 
             .text .boss-image {
@@ -176,57 +177,6 @@
                 right: 2.5em;
             }
 
-            #boss-list .text, #available-list .text {
-                width: 100%;
-            }
-
-            #boss-list .menu, #available-list .menu {
-                overflow-y: scroll;
-            }
-
-            #load-stats {
-                margin-bottom: 0.5em;
-            }
-
-            #stats-list > div {
-                font-size: 90%;
-            }
-
-            #available-list .boss-dungeon-name {
-                font-size: 80%;
-                position: absolute;
-                top: -0.75em;
-            }
-
-            #available-list .boss-name {
-                font-size: 90%;
-                position: absolute;
-                top: 0.5em;
-            }
-
-            #available-list .menu .boss-dungeon-name {
-                top: 0.25em;
-            }
-
-            #available-list .menu .boss-name {
-                top: 1.5em;
-            }
-
-            #available-list .boss-rune {
-                font-size: 70%;
-                position: absolute;
-                right: 3.5em;
-                top: -0.85em;
-            }
-
-            #available-list .menu .boss-rune {
-                top: 0.35em;
-            }
-
-            #winchart.faded-out {
-                opacity: 0.5 !important;
-            }
-
             .ui.dimmer {
                 overflow-y: hidden !important;
             }
@@ -236,7 +186,7 @@
             }
         </style>
     </head>
-    <body class="margin-none-bottom">
+    <body>
         <div class="ui fixed borderless huge menu css-menu" style="z-index: 3;">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
@@ -250,7 +200,7 @@
         </div>
 
         <div class="ui main container">
-            <div class="ui two columns grid">
+            <div class="ui two columns stackable grid">
                 <!-- Player edit field -->
                 <div class="column">
                     <div class="ui form" id="sim-editor">
