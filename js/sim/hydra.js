@@ -436,7 +436,7 @@ class HydraSimulator {
     }
 
     battle () {
-        this.ca.Attacks = 0;
+        this.ca.Attacks = 1;
         this.cb.Health = this.cb.TotalHealth;
 
         do {
@@ -445,7 +445,7 @@ class HydraSimulator {
             if (!this.fight()) {
                 this.ca.Attacks++;
             }
-        } while (this.ca.Attacks < this.ca.MaxAttacks && this.cb.Health > 0);
+        } while (this.ca.Attacks <= this.ca.MaxAttacks && this.cb.Health > 0);
 
         return {
             win: this.cb.Health <= 0,
