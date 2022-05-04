@@ -183,7 +183,7 @@ class FighterModel {
                 return 2.5;
             case MAGE:
             case DRUID:
-                return 5;
+                return 4.5;
             default:
                 return 0;
         }
