@@ -85,7 +85,7 @@ class FighterModel {
             return 0;
         } else {
             let max = this.getMaximumDamageReduction();
-            let armor = this.Player.Armor || (maximumReduction * this.Player.Level);
+            let armor = this.Player.Armor || (max * this.Player.Level);
 
             if (this.Player.Class == BATTLEMAGE) {
                 return Math.min(max, armor / source.Player.Level + 40);
