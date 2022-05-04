@@ -39,6 +39,7 @@ class FighterModel {
     constructor (index, player) {
         this.Index = index;
         this.Player = player;
+        this.MaxAttacks = player.Attacks || 1;
     }
 
     // Defense Attribute
@@ -47,14 +48,14 @@ class FighterModel {
             case WARRIOR:
             case BERSERKER:
             case BATTLEMAGE:
-                return this.Player.Strength.Total / 2;
+                return this.Player.Strength / 2;
             case SCOUT:
             case DEMONHUNTER:
             case ASSASSIN:
-                return this.Player.Dexterity.Total / 2;
+                return this.Player.Dexterity / 2;
             case MAGE:
             case DRUID:
-                return this.Player.Intelligence.Total / 2;
+                return this.Player.Intelligence / 2;
             default:
                 return 0;
         }
@@ -66,14 +67,14 @@ class FighterModel {
             case WARRIOR:
             case BERSERKER:
             case BATTLEMAGE:
-                return this.Player.Strength.Total;
+                return this.Player.Strength;
             case SCOUT:
             case DEMONHUNTER:
             case ASSASSIN:
-                return this.Player.Dexterity.Total;
+                return this.Player.Dexterity;
             case MAGE:
             case DRUID:
-                return this.Player.Intelligence.Total;
+                return this.Player.Intelligence;
             default:
                 return 0;
         }
@@ -119,7 +120,7 @@ class FighterModel {
 
     // Block Chance
     getBlockChance (source) {
-        if (source.Player.Class == MAGE || this.Player.NoSkip) {
+        if (source.Player.Class == MAGE) {
             return 0;
         } else {
             switch (this.Player.Class) {
@@ -158,7 +159,7 @@ class FighterModel {
 
     // Critical Chance
     getCriticalChance (target) {
-        return Math.min(50, this.Player.Luck.Total * 2.5 / target.Player.Level);
+        return Math.min(50, this.Player.Luck * 2.5 / target.Player.Level);
     }
 
     // Health
@@ -216,8 +217,6 @@ class FighterModel {
         this.SkipChance = this.getBlockChance(target);
         this.CriticalChance = this.getCriticalChance(target);
         this.TotalHealth = this.getHealth();
-
-        this.MaxAttacks = this.Player.Attacks || 1;
 
         this.Damage1 = this.getDamageRange(this.Player.DamageMin, this.Player.DamageMax, target);
     }
@@ -375,7 +374,7 @@ class DemonHunterModel extends FighterModel {
 
     onDeath (source) {
         if (source.Player.Class != MAGE && source.Player.Class != DRUID && getRandom(25)) {
-            this.Health = this.getHealth();
+            this.Health = this.TotalHealth;
 
             return true;
         }
@@ -417,31 +416,31 @@ class HydraSimulator {
             hydra,
             iterations,
             score,
-            avg_health,
-            avg_fights
+            avg_health: avg_health / iterations,
+            avg_fights: avg_fights / iterations
         }
     }
 
     cache (pet, hydra) {
         this.ca = FighterModel.create(0, pet);
         this.cb = FighterModel.create(1, hydra);
+
+        this.ca.initialize(this.cb);
+        this.cb.initialize(this.ca);
+
+        this.as = this.ca.onFightStart(this.cb);
+        this.bs = this.cb.onFightStart(this.ca);
+
+        this.a = this.ca;
+        this.b = this.cb;
     }
 
     battle () {
-        this.a = this.ca;
-        this.b = this.cb;
-
-        this.a.Attacks = 0;
-        this.b.Health = this.b.getHealth();
+        this.ca.Attacks = 0;
+        this.cb.Health = this.cb.TotalHealth;
 
         do {
-            this.ca.Health = this.ca.getHealth();
-
-            this.a.initialize(this.b);
-            this.b.initialize(this.a);
-
-            this.as = this.a.onFightStart(this.b);
-            this.bs = this.b.onFightStart(this.a);
+            this.ca.Health = this.ca.TotalHealth;
 
             if (!this.fight()) {
                 this.ca.Attacks++;
