@@ -167,7 +167,7 @@ class FighterModel {
         if (this.Player.Health) {
             return this.Player.Health;
         } else {
-            return (this.getHealthMultiplier() * (this.Player.Level + 1)) % Math.pow(2, 32);
+            return (this.getHealthMultiplier() * (this.Player.Level + 1) * this.Player.Constitution) % Math.pow(2, 32);
         }
     }
 
