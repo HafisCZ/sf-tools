@@ -229,10 +229,6 @@ class FighterModel {
 
     }
 
-    onDamageDealt (target, damage) {
-
-    }
-
     onDamageTaken (source, damage) {
         this.Health -= damage;
         if (this.Health < 0) {
@@ -497,9 +493,6 @@ class HydraSimulator {
 
         while (this.a.Health > 0 && this.b.Health > 0) {
             var damage = this.attack(this.a, this.b);
-            if (this.a.DamageDealt) {
-                this.a.onDamageDealt(this.b, damage);
-            }
 
             if (this.b.DamageTaken) {
                 let alive = this.b.onDamageTaken(this.a, damage);
@@ -515,9 +508,6 @@ class HydraSimulator {
 
             if (this.a.Damage2) {
                 var damage2 = this.attack(this.a, this.b, this.a.Damage2);
-                if (this.a.DamageDealt) {
-                    this.a.onDamageDealt(this.b, damage2);
-                }
 
                 if (this.b.DamageTaken) {
                     let alive = this.b.onDamageTaken(this.a, damage2);
@@ -547,9 +537,6 @@ class HydraSimulator {
         this.turn++;
 
         var damage3 = this.attack(this.a, this.b, this.a.Damage1);
-        if (this.a.DamageDealt) {
-            this.a.onDamageDealt(this.b, damage3);
-        }
 
         if (this.b.DamageTaken) {
             let alive = this.b.onDamageTaken(this.a, damage3);
