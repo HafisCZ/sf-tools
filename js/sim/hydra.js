@@ -447,7 +447,7 @@ class HydraSimulator {
         return {
             win: this.cb.Health <= 0,
             health: Math.max(0, this.cb.Health),
-            fights: this.ca.Attacks
+            fights: Math.min(this.ca.Attacks, this.ca.MaxAttacks)
         }
     }
 
