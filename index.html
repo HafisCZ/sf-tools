@@ -101,6 +101,15 @@
                 opacity: 0.5;
             }
 
+            .wip::before {
+                content: 'WIP';
+                position: absolute;
+                left: calc(50% - 1em);
+                top: 4em;
+                color: orange;
+                font-weight: bold;
+            }
+
             .footer {
                 color: white;
                 opacity: 0.6;
@@ -217,6 +226,10 @@
 
             .divider {
                 margin-bottom: 0.75em;
+            }
+
+            #sf-menu {
+                padding-bottom: 4em;
             }
         </style>
     </head>
@@ -376,6 +389,14 @@
                         <div class="dvselection">
                             <div class="dvdescription" data-loca="index.dungeons.desc"></div>
                             <div class="dvheader twoline" data-loca="index.dungeons.title"></div>
+                        </div>
+                    </a>
+                </div>
+                <div class="column">
+                    <a href="hydra.html">
+                        <div class="dvselection wip">
+                            <div class="dvdescription" data-loca="index.hydra.desc"></div>
+                            <div class="dvheader twoline" data-loca="index.hydra.title"></div>
                         </div>
                     </a>
                 </div>

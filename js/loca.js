@@ -70,6 +70,10 @@
                 smith: {
                     title: 'Blacksmith Upgrades',
                     desc: 'What it costs and what gets lost'
+                },
+                hydra: {
+                    title: 'Hydra Simulator',
+                    desc: 'Simulate which guild pet class is best against current hydra.'
                 }
             },
             temporary: 'Temporary'
