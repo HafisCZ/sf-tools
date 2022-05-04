@@ -312,15 +312,15 @@ class AssassinModel extends FighterModel {
     getDamageRange (min, max, target) {
         var range = super.getDamageRange(min, max, target);
         return {
-            Max: Math.ceil(range.Max * 2),
-            Min: Math.ceil(range.Min * 2)
+            Max: Math.ceil(range.Max),
+            Min: Math.ceil(range.Min)
         }
     }
 
     initialize (target) {
         super.initialize(target);
 
-        // Do no damage on second hit but double on first
+        // Do no damage on second hit
         this.Damage2 = { Min: 0, Max: 0 }
     }
 }
