@@ -217,7 +217,7 @@ class FighterModel {
         this.CriticalChance = this.getCriticalChance(target);
         this.TotalHealth = this.getHealth();
 
-        this.MaxAttacks = this.Player.Attacks;
+        this.MaxAttacks = this.Player.Attacks || 1;
 
         this.Damage1 = this.getDamageRange(this.Player.DamageMin, this.Player.DamageMax, target);
     }
@@ -424,17 +424,18 @@ class HydraSimulator {
 
     cache (pet, hydra) {
         this.ca = FighterModel.create(0, pet);
-
         this.cb = FighterModel.create(1, hydra);
-        this.cb.Health = this.cb.getHealth();
     }
 
     battle () {
         this.a = this.ca;
         this.b = this.cb;
 
+        this.a.Attacks = 0;
+        this.b.Health = this.b.getHealth();
+
         do {
-            this.ca = this.ca.getHealth();
+            this.ca.Health = this.ca.getHealth();
 
             this.a.initialize(this.b);
             this.b.initialize(this.a);
