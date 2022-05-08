@@ -693,6 +693,7 @@ const DatabaseManager = new (class {
                 this.Database = await DatabaseUtils.createSession(attemptMigration);
                 if (!this.Database) {
                     reject({ message: 'Database was not opened correctly' });
+                    return false;
                 }
 
                 const beginTimestamp = Date.now();
