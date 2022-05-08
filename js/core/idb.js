@@ -669,6 +669,93 @@ const DatabaseManager = new (class {
         }
     }
 
+    async _loadTemporary () {
+        this.Database = DatabaseUtils.createTemporarySession();
+        this.Hidden = new Set();
+
+        this._updateLists();
+        Logger.log('PERFLOG', 'Skipped load in temporary mode');
+    }
+
+    async _loadDatabase (profile) {
+        const attemptMigration = await DatabaseUtils.migrateable(profile.slot);
+
+        this.Database = await DatabaseUtils.createSession(attemptMigration);
+        if (!this.Database) {
+            throw 'Database was not opened correctly';
+        }
+
+        const beginTimestamp = Date.now();
+
+        if (!profile.only_players) {
+            const groupFilter = DatabaseUtils.profileFilter(profile, 'primary_g');
+            const groups = DatabaseUtils.filterArray(profile, 'primary_g') || (_not_empty(groupFilter) ? (
+                await this.Database.where('groups', ... groupFilter)
+            ) : (
+                await this.Database.all('groups')
+            ));
+
+            if (profile.secondary_g) {
+                const filter = new Expression(profile.secondary_g);
+                for (const group of groups) {
+                    if (!this._isHidden(group, false) || SiteOptions.hidden) {
+                        ExpressionCache.reset();
+                        if (new ExpressionScope().addSelf(group).eval(filter)) {
+                            this._addGroup(group);
+                        }
+                    }
+                }
+            } else {
+                for (const group of groups) {
+                    if (!this._isHidden(group, false) || SiteOptions.hidden) {
+                        this._addGroup(group);
+                    }
+                }
+            }
+        }
+
+        this.Metadata = _array_to_hash(await this.Database.all('metadata'), md => [ md.timestamp, md ]);
+
+        const playerFilter = DatabaseUtils.profileFilter(profile);
+        let players = DatabaseUtils.filterArray(profile) || (_not_empty(playerFilter) ? (
+            await this.Database.where('players', ... playerFilter)
+        ) : (
+            await this.Database.all('players')
+        ));
+
+        if (profile.secondary) {
+            const filter = new Expression(profile.secondary);
+            for (const player of players) {
+                if (!this._isHidden(player) || SiteOptions.hidden) {
+                    ExpressionCache.reset();
+                    if (new ExpressionScope().addSelf(player).eval(filter)) {
+                        this._addPlayer(player);
+                    }
+                }
+            }
+        } else {
+            for (const player of players) {
+                if (!this._isHidden(player) || SiteOptions.hidden) {
+                    this._addPlayer(player);
+                }
+            }
+        }
+
+        if (!profile.only_players) {
+            let trackers = await this.Database.all('trackers');
+            for (const tracker of trackers) {
+                this.TrackedPlayers[tracker.identifier] = tracker;
+            }
+        }
+
+        this._updateLists();
+        await this.refreshTrackers();
+
+        this.Hidden = new Set(Preferences.get('hidden_identifiers', []));
+
+        Logger.log('PERFLOG', `Load done in ${Date.now() - beginTimestamp} ms`);
+    }
+
     // Load database
     async load (profile = DEFAULT_PROFILE) {
         await this._reset();
@@ -678,96 +765,9 @@ const DatabaseManager = new (class {
         this.Profile = profile;
 
         if (profile.temporary) {
-            return new Promise(async (resolve, reject) => {
-                this.Database = DatabaseUtils.createTemporarySession();
-                this.Hidden = new Set();
-
-                this._updateLists();
-                Logger.log('PERFLOG', 'Skipped load in temporary mode');
-
-                resolve();
-            });
+            return this._loadTemporary();
         } else {
-            const attemptMigration = await DatabaseUtils.migrateable(profile.slot);
-            return new Promise(async (resolve, reject) => {
-                this.Database = await DatabaseUtils.createSession(attemptMigration);
-                if (!this.Database) {
-                    reject({ message: 'Database was not opened correctly' });
-                    return false;
-                }
-
-                const beginTimestamp = Date.now();
-
-                if (!profile.only_players) {
-                    const groupFilter = DatabaseUtils.profileFilter(profile, 'primary_g');
-                    const groups = DatabaseUtils.filterArray(profile, 'primary_g') || (_not_empty(groupFilter) ? (
-                        await this.Database.where('groups', ... groupFilter)
-                    ) : (
-                        await this.Database.all('groups')
-                    ));
-
-                    if (profile.secondary_g) {
-                        const filter = new Expression(profile.secondary_g);
-                        for (const group of groups) {
-                            if (!this._isHidden(group, false) || SiteOptions.hidden) {
-                                ExpressionCache.reset();
-                                if (new ExpressionScope().addSelf(group).eval(filter)) {
-                                    this._addGroup(group);
-                                }
-                            }
-                        }
-                    } else {
-                        for (const group of groups) {
-                            if (!this._isHidden(group, false) || SiteOptions.hidden) {
-                                this._addGroup(group);
-                            }
-                        }
-                    }
-                }
-
-                this.Metadata = _array_to_hash(await this.Database.all('metadata'), md => [ md.timestamp, md ]);
-
-                const playerFilter = DatabaseUtils.profileFilter(profile);
-                let players = DatabaseUtils.filterArray(profile) || (_not_empty(playerFilter) ? (
-                    await this.Database.where('players', ... playerFilter)
-                ) : (
-                    await this.Database.all('players')
-                ));
-
-                if (profile.secondary) {
-                    const filter = new Expression(profile.secondary);
-                    for (const player of players) {
-                        if (!this._isHidden(player) || SiteOptions.hidden) {
-                            ExpressionCache.reset();
-                            if (new ExpressionScope().addSelf(player).eval(filter)) {
-                                this._addPlayer(player);
-                            }
-                        }
-                    }
-                } else {
-                    for (const player of players) {
-                        if (!this._isHidden(player) || SiteOptions.hidden) {
-                            this._addPlayer(player);
-                        }
-                    }
-                }
-
-                if (!profile.only_players) {
-                    let trackers = await this.Database.all('trackers');
-                    for (const tracker of trackers) {
-                        this.TrackedPlayers[tracker.identifier] = tracker;
-                    }
-                }
-
-                this._updateLists();
-                await this.refreshTrackers();
-
-                this.Hidden = new Set(Preferences.get('hidden_identifiers', []));
-
-                Logger.log('PERFLOG', `Load done in ${Date.now() - beginTimestamp} ms`);
-
-                resolve();
-            });
+            return this._loadDatabase(profile);
         }
     }
 
