@@ -420,7 +420,7 @@
                         try {
                             const players = JSON.parse(event.originalEvent.clipboardData.getData('text'));
                             if (Array.isArray(players)) {
-                                const sortedPlayers = _sort_asc(players, p => _dig(p, ATT_MAP['Main'][p.Class], 'Total'));
+                                const sortedPlayers = _sort_des(players, p => _dig(p, ATT_MAP['Main'][p.Class], 'Total'));
                                 const hydraPlayers = _slice_len(sortedPlayers, 0, 25);
 
                                 const data = {
