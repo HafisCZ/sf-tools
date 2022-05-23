@@ -568,7 +568,8 @@ const CLASS_MAP = {
     5: 'Battle Mage',
     6: 'Berserker',
     7: 'Demon Hunter',
-    8: 'Druid'
+    8: 'Druid',
+    9: 'Demon Hunter (beta)'
 };
 
 function getColorFromName (name) {
