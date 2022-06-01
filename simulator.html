@@ -341,6 +341,13 @@
                                     <input class="text-center" type="text" data-path="Armor" placeholder="Armor points">
                                 </div>
                                 <div class="field">
+                                    <label>Shield</label>
+                                    <div class="ui selection compact dropdown" data-path="BlockChance">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
+                                    </div>
+                                </div>
+                                <div class="field">
                                     <label>Fire</label>
                                     <input class="text-center" type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
                                 </div>
@@ -531,6 +538,7 @@
                         gladiator: new Field('[data-path="Fortress.Gladiator"]', '', Field.isGladiator),
                         potion_life: new Field('[data-path="Potions.Life"]', '0'),
                         enchantment: new Field('[data-path="Items.Hand.HasEnchantment"]', 'false'),
+                        shield: new Field('[data-path="BlockChance"]', '25'),
 
                         str: new Field('[data-path="Strength.Total"]', '', Field.isNumber),
                         dex: new Field('[data-path="Dexterity.Total"]', '', Field.isNumber),
@@ -566,6 +574,7 @@
                             $('[data-optional="Weapon2"]').hide();
                         }
 
+                        this.fields['shield'].show(value == 1);
                         this.fields['mask'].show(value == 8);
                     }).dropdown('set selected', '1');
 
@@ -599,6 +608,19 @@
                             }
                         ]
                     }).dropdown('set selected', '0');
+
+                    this.fields['shield'].$object.dropdown({
+                        values: [
+                            {
+                                name: 'No',
+                                value: 0
+                            },
+                            {
+                                name: 'Yes',
+                                value: 25
+                            }
+                        ]
+                    }).dropdown('set selected', '25');
 
                     this.fields['weapon1_rune'].$object.dropdown({
                         values: [
@@ -854,6 +876,7 @@
                             SFItem.forceCorrectRune(d.Items.Wpn1);
                             SFItem.forceCorrectRune(d.Items.Wpn2);
 
+                            if (d.Class == 1 && typeof d.BlockChance == 'undefined') d.BlockChance = d.Items.Wpn2.DamageMin;
                             if (d.Class != 4) {
                                 d.Items.Wpn2 = SFItem.empty();
                             }
@@ -869,6 +892,7 @@
                             SFItem.forceCorrectRune(obj.Items.Wpn1);
                             SFItem.forceCorrectRune(obj.Items.Wpn2);
 
+                            if (obj.Class == 1 && typeof obj.BlockChance == 'undefined') obj.BlockChance = obj.Items.Wpn2.DamageMin;
                             if (obj.Class != 4) {
                                 obj.Items.Wpn2 = SFItem.empty();
                             }
@@ -888,6 +912,7 @@
                     SFItem.forceCorrectRune(obj.Items.Wpn1);
                     SFItem.forceCorrectRune(obj.Items.Wpn2);
 
+                    if (obj.Class == 1 && typeof obj.BlockChance == 'undefined') obj.BlockChance = obj.Items.Wpn2.DamageMin;
                     if (obj.Class != 4) {
                         obj.Items.Wpn2 = SFItem.empty();
                     }
@@ -907,6 +932,9 @@
                     for (var i = 0; i < players.length; i++) {
                         players[i].score = null;
                         players[i].player.IHOFMode = modeIhof;
+                        if (players[i].player.Class == 1 && players[i].player.BlockChance == '0') {
+                            players[i].player.NoSkip = true;
+                        }
                     }
 
                     showPlayers();
@@ -1016,7 +1044,14 @@
             });
 
             $('#sim-copyall').click(function () {
-                copyText(JSON.stringify(players.map(p => toSimulatorModel(p.player))));
+                copyText(JSON.stringify(players.map(p => {
+                    let m = toSimulatorModel(p.player);
+                    if (p.player.Class == 1 && typeof p.player.BlockChance != 'undefined') {
+                        m.BlockChance = p.player.BlockChance;
+                    }
+
+                    return m;
+                })));
             });
 
             $('#sim-add').click(function () {
