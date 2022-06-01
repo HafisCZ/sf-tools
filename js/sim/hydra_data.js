@@ -14,8 +14,8 @@ const HYDRA_MAP = {
     13: { name: 'Thirteen-headed Hydra', level: 600, class: 4, min: 4030, max: 6764, str: 34306, dex: 123563, int: 34306, con: 399001, lck: 80786, health: 19000000000, armor: 25000 },
     14: { name: 'Fourteen-headed Hydra', level: 610, class: 2, min: 4609, max: 7769, str: 39832, dex: 39832, int: 136753, con: 417645, lck: 63190, health: 10000000000, armor: 10000 },
     15: { name: 'Fifteen-headed Hydra', level: 620, class: 1, min: 2084, max: 3520, str: 137144, dex: 39634, int: 39634, con: 447741, lck: 86381, health: 28000000000, armor: 50000 },
-    16: { name: 'Sixteen-headed Hydra', level: 625, class: 1, min: 2133, max: 3554, str: 153224, dex: 15470, int: 48265, con: 489105, lck: 88120, health: 30000000000, armor: 50000 },
-    17: { name: 'Seventeen-headed Hydra', level: 630, class: 1, min: 2178, max: 3625, str: 163224, dex: 64781, int: 63721, con: 507599, lck: 93780, health: 32000000000, armor: 50000 },
+    16: { name: 'Sixteen-headed Hydra (low accuracy)', level: 625, class: 1, min: 2133, max: 3554, str: 153224, dex: 15470, int: 48265, con: 489105, lck: 88120, health: 30000000000, armor: 50000 },
+    17: { name: 'Seventeen-headed Hydra (low accuracy)', level: 630, class: 1, min: 2178, max: 3625, str: 163224, dex: 64781, int: 63721, con: 507599, lck: 93780, health: 32000000000, armor: 50000 },
     18: { name: 'Eighteen-headed Hydra', level: 640, class: 5, min: 2212, max: 3727, str: 182015, dex: 41927, int: 41927, con: 575061, lck: 99832, health: 37000000000, armor: 10000 },
     19: { name: 'Nineteen-headed Hydra', level: 650, class: 1, min: 2251, max: 3798, str: 195334, dex: 50000, int: 50000, con: 651487, lck: 117563, health: 43000000000, armor: 50000 },
     20: { name: 'Countless-headed Hydra', level: 660, class: 1, min: 2268, max: 3834, str: 229388, dex: 62835, int: 62835, con: 711394, lck: 137813, health: 48000000000, armor: 50000 }
