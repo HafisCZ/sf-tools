@@ -201,6 +201,10 @@
                                         <label>Hits Blocked/Evaded</label>
                                         <input type="text" disabled class="text-center" data-op="Skips">
                                     </div>
+                                    <div class="field" data-op="RevivesField">
+                                        <label>Revives</label>
+                                        <input type="text" disabled class="text-center" data-op="Revives">
+                                    </div>
                                 </div>
                             </div>
                             <div class="column" id="fi-fighterB">
@@ -304,6 +308,10 @@
                                     <div class="field">
                                         <label>Hits Blocked/Evaded</label>
                                         <input type="text" disabled class="text-center" data-op="Skips">
+                                    </div>
+                                    <div class="field" data-op="RevivesField">
+                                        <label>Revives</label>
+                                        <input type="text" disabled class="text-center" data-op="Revives">
                                     </div>
                                 </div>
                             </div>
@@ -833,9 +841,16 @@
                     $parent.find('[data-op="CurrentHealth"]').parent('div').hide();
                 }
 
+                if (f.Class == 7) {
+                    $parent.find('[data-op="RevivesField"]').show();
+                } else {
+                    $parent.find('[data-op="RevivesField"]').hide();
+                }
+
                 $parent.find('[data-op="Hits"]').val(f.Stats.Hits);
                 $parent.find('[data-op="Crits"]').val(f.Stats.Crits);
                 $parent.find('[data-op="Skips"]').val(f.Stats.Skips);
+                $parent.find('[data-op="Revives"]').val(f.Stats.Revives);
 
                 $parent.find('[data-op="copy"]').off('click').on('click', () => {
                     let multipliers = reverseHealthMultipliers(f.Level, getHPMultiplier(f.Class, f.Mask), f.Constitution, f.MaximumLife);
@@ -916,12 +931,14 @@
                     var fight = fightData[fightIndex];
 
                     // Hit statistics
-                    fight.fighterA.Stats = { Hits: 0, Crits: 0, Skips: 0 };
-                    fight.fighterB.Stats = { Hits: 0, Crits: 0, Skips: 0 };
+                    fight.fighterA.Stats = { Hits: 0, Crits: 0, Skips: 0, Revives: 0 };
+                    fight.fighterB.Stats = { Hits: 0, Crits: 0, Skips: 0, Revives: 0 };
 
                     for (var r of fight.rounds) {
                         if (r.attackType == 15 || r.attackType == 16) {
                             continue;
+                        } else if (r.attackType == 100) {
+                            r.target.Stats.Revives++;
                         } else {
                             if (r.attackMissed) {
                                 r.target.Stats.Skips++;
