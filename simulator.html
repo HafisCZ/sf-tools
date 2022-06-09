@@ -950,7 +950,7 @@
 
                     for (var i = 0; i < players.length; i++) {
                         players[i].score = null;
-                        players[i].player.IHOFMode = modeIhof;
+                        players[i].player.ForceGladiator = 15;
                         if (players[i].player.Class == 1 && players[i].player.BlockChance == '0') {
                             players[i].player.NoSkip = true;
                         }
