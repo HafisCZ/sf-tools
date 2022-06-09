@@ -945,7 +945,7 @@
             }
 
             // Run simulation
-            $('#sim-run').click(function () {
+            $('#sim-run').click(async function () {
                 if (players1.length > 0 && players2.length > 0) {
                     $('#sim-results').val('');
 
@@ -960,7 +960,7 @@
                     var chance = 0;
 
                     for (var i = 0; i < threads; i++) {
-                        var worker = createWebWorker('js/sim/players.js');
+                        var worker = await createSimulatorWorker('players');
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {

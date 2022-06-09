@@ -168,12 +168,38 @@ function decodeScrapbook (data) {
     }
 }
 
-function createWebWorker (location) {
+// Loads file contents using ajax
+function fetchContent (location, useHosted = false) {
+    return $.ajax({
+        method: 'GET',
+        url: `${useHosted ? 'https://sftools.mar21.eu' : ''}/${location}`,
+        dataType: 'text'
+    });
+}
+
+// Creates a worker for pet simulators
+async function createPetWorker () {
+    let location = 'js/sim/pets.js';
+
     if (document.location.protocol == 'file:') {
-        return new Worker(URL.createObjectURL(new Blob([ $.ajax({ method: 'GET', url: 'https://sftools.mar21.eu/' + location, dataType: 'text', async: false }).responseText ], { type: 'text/javascript' })));
+        let blob = new Blob([
+            await fetchContent(location, true)
+        ], { type: 'text/javascript' });
+
+        return new Worker(URL.createObjectURL(blob));
     } else {
         return new Worker(location);
     }
+}
+
+// Creates worker for normal simulators (they require base.js)
+async function createSimulatorWorker (type) {
+    let localEnv = document.location.protocol == 'file:';
+    let blob = new Blob([
+        await fetchContent('js/sim/base.js', localEnv) + await fetchContent(`js/sim/${type}.js`, localEnv)
+    ], { type: 'text/javascript' });
+
+    return new Worker(URL.createObjectURL(blob));
 }
 
 // Helper function

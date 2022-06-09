@@ -944,7 +944,7 @@
             $('#sim-iterations').captiveInputField('player_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
 
             // Run simulation
-            $('#sim-run').click(function () {
+            $('#sim-run').click(async function () {
                 if (players.length > 1 && (mode != 1 || (mode == 1 && players.find(p => p.index == yourself)))) {
                     UILogger.clear();
 
@@ -986,7 +986,7 @@
 
                     for (var i = 0; i < players.length; i += blockSize) {
                         var block = players.slice(i, i + blockSize);
-                        var worker = createWebWorker('js/sim/players.js');
+                        var worker = await createSimulatorWorker('players');
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
