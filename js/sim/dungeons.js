@@ -82,7 +82,7 @@ class DungeonSimulator {
     }
 
     reset (player) {
-        player.Health = player.TotalHealth;
+        player.Health = player.getHealth();
         player.DeathTriggers = 0;
     }
 
