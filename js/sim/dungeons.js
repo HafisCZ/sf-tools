@@ -10,7 +10,6 @@ const RUNE_FIRE_DAMAGE = 40;
 const RUNE_COLD_DAMAGE = 41;
 const RUNE_LIGHTNING_DAMAGE = 42;
 
-// SFGAME classes
 const WARRIOR = 1;
 const MAGE = 2;
 const SCOUT = 3;
@@ -40,6 +39,8 @@ class FighterModel {
                 return new MageModel(index, player);
             case DRUID:
                 return new DruidModel(index, player);
+            case BARD:
+                return new BardModel(index, player);
             default:
                 return null;
         }
