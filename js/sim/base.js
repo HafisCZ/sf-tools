@@ -163,12 +163,12 @@ class FighterModel {
 
     // Critical Multiplier
     getCriticalMultiplier (weapon, weapon2, target) {
-        let baseMultiplier = ((weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment) ? 1.05 : 1;
+        let baseMultiplier = (weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment)) ? 1.05 : 1;
 
         let multiplier = 0.05 * Math.max(0, this.Player.Fortress.Gladiator - target.Player.Fortress.Gladiator);
         if (this.Player.ForceGladiator === true) {
             multiplier = 0.05 * this.Player.Fortress.Gladiator;
-        } else {
+        } else if (this.Player.ForceGladiator) {
             multiplier = 0.05 * this.Player.ForceGladiator;
         }
 
@@ -195,7 +195,7 @@ class FighterModel {
             case WARRIOR:
             case ASSASSIN:
             case BATTLEMAGE:
-            case BERSERKER;
+            case BERSERKER:
                 return 2;
             case SCOUT:
             case DEMONHUNTER:
@@ -204,6 +204,8 @@ class FighterModel {
             case DRUID:
             case BARD:
                 return 4.5;
+            default:
+                return 0;
         }
     }
 
@@ -251,17 +253,17 @@ class FighterModel {
     // Initialize model
     initialize (target) {
         // Round modifiers
-        this.AttackFirst = this.Player.Items.Hand.HasEnchantment;
+        this.AttackFirst = this.Player.Items.Hand.HasEnchantment || false;
         this.SkipChance = this.getBlockChance(target);
         this.CriticalChance = this.getCriticalChance(target);
         this.TotalHealth = this.getHealth();
 
         // Weapon
-        var weapon = this.Player.Items.Wpn1;
-        var weapon2 = this.Player.Items.Wpn2;
+        let weapon1 = this.Player.Items.Wpn1;
+        let weapon2 = this.Player.Items.Wpn2;
 
-        this.Weapon1 = this.getDamageRange(weapon, target);
-        this.Critical = this.getCriticalMultiplier(weapon, weapon2, target);
+        this.Weapon1 = this.getDamageRange(weapon1, target);
+        this.Critical = this.getCriticalMultiplier(weapon1, weapon2, target);
     }
 
     onFightStart (target) {
