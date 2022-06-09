@@ -31,6 +31,8 @@ class FighterModel {
                 return new MageModel(index, player);
             case DRUID:
                 return new DruidModel(index, player);
+            case BARD:
+                return new BardModel(index, player);
             default:
                 return null;
         }
