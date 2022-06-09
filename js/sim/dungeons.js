@@ -6,21 +6,9 @@ function getRandom (success) {
     return success > 0 && (Math.random() * 100 < success);
 }
 
-// Rune / Rune table
-const RUNE = {
-    GOLD: 31,
-    EPIC_FIND: 32,
-    ITEM_QUALITY: 33,
-    XP: 34,
-    HEALTH: 35,
-    FIRE_RESISTANCE: 36,
-    COLD_RESISTANCE: 37,
-    LIGHTNING_RESISTANCE: 38,
-    TOTAL_RESITANCE: 39,
-    FIRE_DAMAGE: 40,
-    COLD_DAMAGE: 41,
-    LIGHTNING_DAMAGE: 42
-};
+const RUNE_FIRE_DAMAGE = 40;
+const RUNE_COLD_DAMAGE = 41;
+const RUNE_LIGHTNING_DAMAGE = 42;
 
 // SFGAME classes
 const WARRIOR = 1;
@@ -225,9 +213,9 @@ class FighterModel {
     getDamageRange (weapon, target, secondary = false) {
         let mp = 1 - target.getDamageReduction(this) / 100;
 
-        let mf = (1 - target.Player.Runes.ResistanceFire / 100) * (getRuneValue(weapon, RUNE.FIRE_DAMAGE) / 100);
-        let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE.COLD_DAMAGE) / 100);
-        let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE.LIGHTNING_DAMAGE) / 100);
+        let mf = (1 - target.Player.Runes.ResistanceFire / 100) * (getRuneValue(weapon, RUNE_FIRE_DAMAGE) / 100);
+        let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE_COLD_DAMAGE) / 100);
+        let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE_LIGHTNING_DAMAGE) / 100);
 
         let m = (1 + this.Player.Dungeons.Group / 100) * mp * (1 + mf + mc + ml);
 
