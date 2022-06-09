@@ -293,6 +293,13 @@
                                     </div>
                                 </div>
                                 <div class="field">
+                                    <label>Instrument</label>
+                                    <div class="ui selection compact dropdown" data-path="Instrument">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
+                                    </div>
+                                </div>
+                                <div class="field">
                                     <label>Level</label>
                                     <input class="text-center" type="text" data-path="Level" placeholder="1 - 700">
                                 </div>
@@ -670,6 +677,7 @@
                             name: new Field('[data-path="Name"]', ''),
                             class: new Field('[data-path="Class"]', '1'),
                             mask: new Field('[data-path="Mask"]', '0'),
+                            instrument: new Field('[data-path="Instrument"]', '0'),
                             level: new Field('[data-path="Level"]', '', Field.isPlayerLevel),
                             armor: new Field('[data-path="Armor"]', '', Field.isNumber),
 
@@ -722,6 +730,7 @@
 
                             this.fields['shield'].show(value == 1);
                             this.fields['mask'].show(value == 8);
+                            this.fields['instrument'].show(value == 9);
                         }).dropdown('set selected', '1');
 
                         this.fields['mask'].$object.dropdown({
@@ -740,6 +749,16 @@
                                     value: 2
                                 }
                             ]
+                        }).dropdown('set selected', '0');
+
+                        this.fields['instrument'].$object.dropdown({
+                            preserveHTML: true,
+                            values: INSTRUMENT_TYPES.map((name, index) => {
+                                return {
+                                    name: `<img class="ui centered image class-picture" src="res/instrument${index + 1}.png"><span>${name}</span>`,
+                                    value: index
+                                }
+                            })
                         }).dropdown('set selected', '0');
 
                         this.fields['potion_life'].$object.dropdown({
@@ -948,6 +967,7 @@
                         Armor: data.armor,
                         Class: data.class,
                         Mask: 0,
+                        Instrument: 0,
                         Name: name,
                         Level: data.level,
                         AutoHealth: data.health,

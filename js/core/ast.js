@@ -2500,6 +2500,12 @@ const SP_KEYWORD_MAPPING_0 = {
         difference: false,
         statistics: false
     },
+    'Instrument': {
+        expr: p => p.Instrument,
+        format: (p, c, e, x) => INSTRUMENT_TYPES[x],
+        difference: false,
+        statistics: false
+    },
     'Tag': {
         expr: p => p.Data.tag,
         difference: false,

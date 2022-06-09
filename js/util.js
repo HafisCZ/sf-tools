@@ -80,6 +80,7 @@ class Constants {
             'berserker': 6,
             'demonhunter': 7,
             'druid': 8,
+            'bard': 9,
             'empty': '',
             'tiny': 40,
             'small': 60,
@@ -558,18 +559,6 @@ const COLOR_MAP = {
     'whitesmoke': '#f5f5f5',
     'yellow': '#ffff00',
     'yellowgreen': '#9acd32'
-};
-
-const CLASS_MAP = {
-    1: 'Warrior',
-    2: 'Mage',
-    3: 'Scout',
-    4: 'Assassin',
-    5: 'Battle Mage',
-    6: 'Berserker',
-    7: 'Demon Hunter',
-    8: 'Druid',
-    9: 'Demon Hunter (beta)'
 };
 
 function getColorFromName (name) {
