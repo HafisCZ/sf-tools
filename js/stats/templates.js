@@ -78,8 +78,8 @@ category
   header Class # Compact class header
   alias @empty
   width @tiny
-  format this == @druid ? [ 'D', 'BD', 'CD' ][Mask] : [ '', 'W', 'M', 'S', 'A', 'BM', 'B', 'DH' ][this]
-  expc this == @druid ? dualcolor(50, [ @navy, @blue, @darkgreen ][Mask], @navy) : [ '', @blue, @green, @darkgreen, @yellow, @pink, @orange, @purple, @navy ][this]
+  format this == @druid ? [ 'D', 'BD', 'CD' ][Mask] : (this == @bard ? [ 'RH', 'RG', 'RF' ][Instrument] : [ '', 'W', 'M', 'S', 'A', 'BM', 'B', 'DH' ][this])
+  expc this == @druid ? dualcolor(50, [ @navy, @blue, @darkgreen ][Mask], @navy) : [ '', @blue, @green, @darkgreen, @yellow, @pink, @orange, @purple, @navy, @beige ][this]
   border right
 
   header Level
