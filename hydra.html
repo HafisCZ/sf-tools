@@ -369,11 +369,21 @@
                         Armor: obj.armor,
                         Level: obj.level,
                         Class: obj.class,
-                        Strength: obj.str,
-                        Dexterity: obj.dex,
-                        Intelligence: obj.int,
-                        Constitution: obj.con,
-                        Luck: obj.lck,
+                        Strength: {
+                            Total: obj.str
+                        },
+                        Dexterity: {
+                            Total: obj.dex
+                        },
+                        Intelligence: {
+                            Total: obj.int
+                        },
+                        Constitution: {
+                            Total: obj.con
+                        },
+                        Luck: {
+                            Total: obj.lck
+                        },
                         DamageMin: obj.min,
                         DamageMax: obj.max,
                         Health: obj.health,
@@ -397,11 +407,21 @@
                         Armor: null, // automatic
                         Level: obj.Level,
                         Class: klass,
-                        Strength: getAtttributeFromMS('Strength', klass, obj),
-                        Dexterity: getAtttributeFromMS('Dexterity', klass, obj),
-                        Intelligence: getAtttributeFromMS('Intelligence', klass, obj),
-                        Constitution: obj.Constitution,
-                        Luck: obj.Luck,
+                        Strength: {
+                            Total: getAtttributeFromMS('Strength', klass, obj)
+                        },
+                        Dexterity: {
+                            Total: getAtttributeFromMS('Dexterity', klass, obj)
+                        },
+                        Intelligence: {
+                            Total: getAtttributeFromMS('Intelligence', klass, obj)
+                        },
+                        Constitution: {
+                            Total: obj.Constitution
+                        },
+                        Luck: {
+                            Total: obj.Luck
+                        },
                         DamageMin: null, // automatic
                         DamageMax: null, // automatic
                         Health: null, // automatic

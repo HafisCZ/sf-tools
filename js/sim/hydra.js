@@ -1,30 +1,27 @@
 // Override some methods
-FighterModel.prototype.constructor = function (index, player) {
-    this.Index = index;
-    this.Player = player;
-    this.MaxAttacks = player.Attacks || 1;
-}
-
 FighterModel.prototype.getCriticalChance = function (target) {
-    return Math.min(50, this.Player.Luck * 2.5 / target.Player.Level);
+    return Math.min(50, this.Player.Luck.Total * 2.5 / target.Player.Level);
 }
 
 FighterModel.prototype.getHealth = function () {
     if (this.Player.Health) {
         return this.Player.Health;
     } else {
-        return (this.getHealthMultiplier() * (this.Player.Level + 1) * this.Player.Constitution) % Math.pow(2, 32);
+        return (this.getHealthMultiplier() * (this.Player.Level + 1) * this.Player.Constitution.Total) % Math.pow(2, 32);
     }
 }
 
 FighterModel.prototype.getFixedDamage = function () {
-    return Math.trunc((this.Player.Level + 1) * this.getDamageMultiplier())
+    return Math.trunc((this.Player.Level + 1) * this.getDamageMultiplier());
 }
 
-FighterModel.prototype.getDamageRange = function (min, max, target) {
+FighterModel.prototype.getDamageRange = function (weapon, target) {
+    let min = weapon.DamageMin;
+    let max = weapon.DamageMax;
+
     let mp = 1 - target.getDamageReduction(this) / 100;
-    let aa = this.getPrimaryAttribute();
-    let ad = target.getDefenseAtribute(this);
+    let aa = this.getAttribute(this);
+    let ad = target.getAttribute(this) / 2;
 
     let dm = mp * (1 + Math.max(aa / 2, aa - ad) / 10);
 
@@ -44,7 +41,9 @@ FighterModel.prototype.initialize = function (target) {
     this.CriticalChance = this.getCriticalChance(target);
     this.TotalHealth = this.getHealth();
 
-    this.Damage1 = this.getDamageRange(this.Player.DamageMin, this.Player.DamageMax, target);
+    this.MaxAttacks = this.Player.Attacks || 1;
+
+    this.Damage1 = this.getDamageRange(this.Player, target);
 }
 
 // WebWorker hooks
