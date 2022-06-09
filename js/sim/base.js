@@ -163,7 +163,16 @@ class FighterModel {
 
     // Critical Multiplier
     getCriticalMultiplier (weapon, weapon2, target) {
-        return 2 * (1 + 0.05 * (this.Player.ForceGladiator ? this.Player.Fortress.Gladiator : Math.max(0, this.Player.Fortress.Gladiator - target.Player.Fortress.Gladiator))) * (weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment) ? 1.05 : 1);
+        let baseMultiplier = ((weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment) ? 1.05 : 1;
+
+        let multiplier = 0.05 * Math.max(0, this.Player.Fortress.Gladiator - target.Player.Fortress.Gladiator);
+        if (this.Player.ForceGladiator === true) {
+            multiplier = 0.05 * this.Player.Fortress.Gladiator;
+        } else {
+            multiplier = 0.05 * this.Player.ForceGladiator;
+        }
+
+        return 2 * baseMultiplier * (1 + multiplier);
     }
 
     // Health
