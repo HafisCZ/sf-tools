@@ -95,17 +95,12 @@ class HydraSimulator {
         this.bs = this.cb.onFightStart(this.ca);
     }
 
-    reset (player) {
-        player.Health = player.TotalHealth;
-        player.DeathTriggers = 0;
-    }
-
     battle () {
         this.ca.Attacks = 1;
-        this.reset(this.cb);
+        this.cb.reset();
 
         do {
-            this.reset(this.ca);
+            this.ca.reset();
 
             if (!this.fight()) {
                 this.ca.Attacks++;
