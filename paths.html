@@ -907,7 +907,7 @@
 
                     this.items = $('[data-op="items"] .pet-item').toArray().map((el, i) => new ControllerItem(i, $(el), this));
 
-                    this.$run = $('[data-op="run"]').click(() => {
+                    this.$run = $('[data-op="run"]').click(async () => {
                         $('[data-op="food"]').val('');
 
                         for (var i = 0; i < 19; i++) {
@@ -919,7 +919,7 @@
 
                         freeze();
 
-                        var worker = createWebWorker('js/sim/pets.js');
+                        var worker = await createPetWorker();
 
                         worker.addEventListener('message', (message) => {
                             if (message.data.command == 'finished') {

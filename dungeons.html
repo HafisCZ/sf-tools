@@ -1401,7 +1401,7 @@
                     return dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];
                 }
 
-                $('#sim-run-all').click(function () {
+                $('#sim-run-all').click(async function () {
                     if (availableBosses && availableBosses.length > 0 && EditorController.valid()) {
                         toggleAll(true);
 
@@ -1414,7 +1414,7 @@
                         let pendingInstances = [];
 
                         for (let [index, { boss, dungeon, name }] of Object.entries(availableBosses)) {
-                            let worker = createWebWorker('js/sim/dungeons.js');
+                            let worker = await createSimulatorWorker('dungeons');
 
                             worker.addEventListener('message', (message) => {
                                 if (message.data.command == 'finished') {
@@ -1453,7 +1453,7 @@
                     }
                 });
 
-                $('#sim-run').click(function () {
+                $('#sim-run').click(async function () {
                     if (boss && EditorController.valid()) {
                         toggleAll(true);
 
@@ -1471,7 +1471,7 @@
                         }
 
                         for (let i = 0; i < threads; i++) {
-                            let worker = createWebWorker('js/sim/dungeons.js');
+                            let worker = await createSimulatorWorker('dungeons');
 
                             worker.addEventListener('message', (message) => {
                                 if (message.data.command == 'finished') {

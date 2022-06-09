@@ -767,9 +767,9 @@
             });
 
             function simulateFight (a, b) {
-                return new Promise((resolve, reject) => {
+                return new Promise(async (resolve, reject) => {
                     if (a && b && (a.Level > 0 || a.Boss) && (b.Level > 0 || b.Boss)) {
-                        let worker = createWebWorker('js/sim/pets.js');
+                        let worker = await createPetWorker();
 
                         worker.addEventListener('message', (message) => {
                             if (message.data.command == 'finished') {
@@ -802,7 +802,7 @@
                 }
             }
 
-            $('#sim-generate1').click(function () {
+            $('#sim-generate1').click(async function () {
                 if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
                     $('#sim-result').html('');
 
@@ -814,7 +814,7 @@
                     if (a && b && !a.Boss && b.Boss) {
                         toggleAll(true);
 
-                        var worker = createWebWorker('js/sim/pets.js');
+                        var worker = await createPetWorker();
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
@@ -832,7 +832,7 @@
                 }
             });
 
-            $('#sim-generate5').click(function () {
+            $('#sim-generate5').click(async function () {
                 if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
                     $('#sim-result').html('');
                     clearMaps();
@@ -858,7 +858,7 @@
                         var maps_finished = 0;
 
                         for (var i = 0; i < count; i++) {
-                            var worker = createWebWorker('js/sim/pets.js');
+                            var worker = await createPetWorker();
 
                             worker.addEventListener('message', function (message) {
                                 if (message.data.command == 'finished') {
@@ -886,7 +886,7 @@
                 }
             });
 
-            $('#sim-generate10').click(function () {
+            $('#sim-generate10').click(async function () {
                 if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
                     $('#sim-result').html('');
                     clearMaps();
@@ -912,7 +912,7 @@
                         var maps_finished = 0;
 
                         for (var i = 0; i < count; i++) {
-                            var worker = createWebWorker('js/sim/pets.js');
+                            var worker = await createPetWorker();
 
                             worker.addEventListener('message', function (message) {
                                 if (message.data.command == 'finished') {

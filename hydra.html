@@ -448,7 +448,7 @@
 
                 $('#sim-editor input').on('paste', function (event) { event.stopPropagation(); });
 
-                $('#sim-run').click(function () {
+                $('#sim-run').click(async function () {
                     if (EditorController.valid()) {
                         toggleAll(true);
 
@@ -461,7 +461,7 @@
                         let finishedSimulations = 0;
 
                         for (let i = 0; i < pets.length; i++) {
-                            const worker = createWebWorker('js/sim/hydra.js');
+                            const worker = await createSimulatorWorker('hydra');
 
                             worker.addEventListener('message', message => {
                                 if (message.data.command == 'finished') {
