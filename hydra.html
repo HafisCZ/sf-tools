@@ -377,7 +377,8 @@
                         DamageMin: obj.min,
                         DamageMax: obj.max,
                         Health: obj.health,
-                        Mask: obj.mask
+                        Mask: obj.mask,
+                        Instrument: obj.instrument
                     }
                 }
 
@@ -405,14 +406,15 @@
                         DamageMax: null, // automatic
                         Health: null, // automatic
                         Mask: null,
+                        Instrument: null,
                         Attacks: obj.PlayerCount
                     }
                 }
 
                 const ATT_MAP = {
-                    'Main': [ 'Strength', 'Intelligence', 'Dexterity', 'Dexterity', 'Strength', 'Strength', 'Dexterity', 'Intelligence' ],
-                    'Side1': [ 'Dexterity', 'Strength', 'Strength', 'Strength', 'Dexterity', 'Dexterity', 'Strength', 'Strength' ],
-                    'Side2': [ 'Intelligence', 'Dexterity', 'Intelligence', 'Intelligence', 'Intelligence', 'Intelligence', 'Intelligence', 'Dexterity' ]
+                    'Main': [ 'Strength', 'Intelligence', 'Dexterity', 'Dexterity', 'Strength', 'Strength', 'Dexterity', 'Intelligence', 'Intelligence' ],
+                    'Side1': [ 'Dexterity', 'Strength', 'Strength', 'Strength', 'Dexterity', 'Dexterity', 'Strength', 'Strength', 'Strength' ],
+                    'Side2': [ 'Intelligence', 'Dexterity', 'Intelligence', 'Intelligence', 'Intelligence', 'Intelligence', 'Intelligence', 'Dexterity', 'Dexterity' ]
                 };
 
                 $(document.body).on('paste', function (event) {

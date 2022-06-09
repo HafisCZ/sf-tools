@@ -509,6 +509,7 @@ class SFFighter {
         this.Wpn2 = new SFItem(dataType.sub(12), 2, [1, 2]);
 
         this.Mask = this.Wpn1.Type == -11 ? 1 : (this.Wpn1.Type == -12 ? 2 : 0);
+        this.Instrument = 0;
     }
 
     getMonsterID () {
@@ -1933,6 +1934,7 @@ function toSimulatorModel (p) {
         Armor: p.Armor,
         Class: p.Class,
         Mask: p.Mask,
+        Instrument: p.Instrument,
         Name: p.Name,
         Level: p.Level,
         Identifier: p.Identifier,

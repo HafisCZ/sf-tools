@@ -10,7 +10,7 @@ const BATTLEMAGE = 5;
 const BERSERKER = 6;
 const DEMONHUNTER = 7;
 const DRUID = 8;
-const DEMONHUNTER_BETA = 9;
+const BARD = 9;
 
 class FighterModel {
     static create (index, player) {
@@ -31,8 +31,6 @@ class FighterModel {
                 return new MageModel(index, player);
             case DRUID:
                 return new DruidModel(index, player);
-            case DEMONHUNTER_BETA:
-                return new DemonHunterBetaModel(index, player);
             default:
                 return null;
         }
@@ -54,7 +52,6 @@ class FighterModel {
                 return this.Player.Strength / 2;
             case SCOUT:
             case DEMONHUNTER:
-            case DEMONHUNTER_BETA:
             case ASSASSIN:
                 return this.Player.Dexterity / 2;
             case MAGE:
@@ -74,7 +71,6 @@ class FighterModel {
                 return this.Player.Strength;
             case SCOUT:
             case DEMONHUNTER:
-            case DEMONHUNTER_BETA:
             case ASSASSIN:
                 return this.Player.Dexterity;
             case MAGE:
@@ -109,7 +105,6 @@ class FighterModel {
             case WARRIOR:
             case BATTLEMAGE:
             case DEMONHUNTER:
-            case DEMONHUNTER_BETA:
                 return 50;
             case SCOUT:
             case ASSASSIN:
@@ -150,7 +145,6 @@ class FighterModel {
             case BATTLEMAGE:
                 return 5;
             case DEMONHUNTER:
-            case DEMONHUNTER_BETA:
             case SCOUT:
             case ASSASSIN:
             case BERSERKER:
@@ -186,7 +180,6 @@ class FighterModel {
             case BERSERKER:
                 return 2;
             case DEMONHUNTER:
-            case DEMONHUNTER_BETA:
             case SCOUT:
                 return 2.5;
             case MAGE:
@@ -337,7 +330,7 @@ class BattlemageModel extends FighterModel {
     onFightStart (target) {
         if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE) {
             return 0;
-        } else if (target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER || target.Player.Class == DEMONHUNTER_BETA || target.Player.Class == DRUID) {
+        } else if (target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER || target.Player.Class == DRUID) {
             return Math.ceil(target.TotalHealth / 3);
         } else if (target.Player.Class == WARRIOR) {
             return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 4));
@@ -384,23 +377,6 @@ class DemonHunterModel extends FighterModel {
         }
 
         return false;
-    }
-}
-
-class DemonHunterBetaModel extends FighterModel {
-    constructor (i, p) {
-        super(i, p);
-        this.DamageTaken = true;
-    }
-
-    onDeath (source) {
-        if (source.Player.Class != MAGE && getRandom(400 / 9)) {
-            this.Health = Math.trunc(0.9 * this.getHealth());
-
-            return true;
-        } else {
-            return false;
-        }
     }
 }
 
@@ -453,12 +429,17 @@ class HydraSimulator {
         this.bs = this.cb.onFightStart(this.ca);
     }
 
+    reset (player) {
+        player.Health = player.TotalHealth;
+        player.DeathTriggers = 0;
+    }
+
     battle () {
         this.ca.Attacks = 1;
-        this.cb.Health = this.cb.TotalHealth;
+        this.reset(this.cb);
 
         do {
-            this.ca.Health = this.ca.TotalHealth;
+            this.reset(this.ca);
 
             if (!this.fight()) {
                 this.ca.Attacks++;
