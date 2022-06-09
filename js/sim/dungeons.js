@@ -91,8 +91,8 @@ class DungeonSimulator {
         this.lb = [ this.cache_boss ];
 
         // Reset health
-        for (let p of this.la) this.reset(p);
-        for (let p of this.lb) this.reset(p);
+        for (let p of this.la) p.reset();
+        for (let p of this.lb) p.reset();
 
         // Run fight
         while (this.la.length > 0 && this.lb.length > 0) {

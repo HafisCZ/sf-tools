@@ -266,6 +266,13 @@ class FighterModel {
         this.Critical = this.getCriticalMultiplier(weapon1, weapon2, target);
     }
 
+    reset () {
+        this.Health = this.TotalHealth || this.getHealth();
+
+        // Trigger counters
+        this.TriggersDeath = 0;
+    }
+
     onFightStart (target) {
         return false;
     }
@@ -280,11 +287,13 @@ class FighterModel {
 
     onDamageTaken (source, damage) {
         this.Health -= damage;
-        if (this.Health < 0) {
-            return this.onDeath(source) ? 2 : (this.Health > 0 ? 1 : 0);
-        }
+        if (this.Health < 0 && this.onDeath(source)) {
+            this.TriggersDeath++;
 
-        return this.Health > 0 ? 1 : 0;
+            return 2;
+        } else {
+            return this.Health > 0 ? 1 : 0;
+        }
     }
 
     skipNextRound () {
@@ -421,7 +430,7 @@ class DemonHunterModel extends FighterModel {
 
     onDeath (source) {
         if (source.Player.Class != MAGE && source.Player.Class != DRUID && getRandom(25)) {
-            this.Health = this.TotalHealth;
+            this.Health = this.TotalHealth * Math.min(0.1, 0.9 - this.DeathTriggers * 0.1);
 
             return true;
         }

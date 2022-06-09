@@ -476,11 +476,6 @@ class FightSimulator {
         }
     }
 
-    reset (player) {
-        player.Health = player.TotalHealth;
-        player.DeathTriggers = 0;
-    }
-
     // Fight
     fight () {
         // Create fighters
@@ -489,8 +484,8 @@ class FightSimulator {
 
         if (FIGHT_DUMP_ENABLED) this.log(0);
 
-        this.reset(this.a);
-        this.reset(this.b);
+        this.a.reset();
+        this.b.reset();
 
         // Turn counter
         this.turn = 0;
