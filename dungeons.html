@@ -394,11 +394,8 @@
                                     <input class="text-center" type="text" data-path="Armor" placeholder="Armor points">
                                 </div>
                                 <div class="field">
-                                    <label>Shield</label>
-                                    <div class="ui selection compact dropdown" data-path="BlockChance">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
+                                    <label>Block %</label>
+                                    <input class="text-center" type="text" data-path="BlockChance" placeholder="0 - 25">
                                 </div>
                                 <div class="field">
                                     <label>Fire</label>
@@ -773,19 +770,6 @@
                                 }
                             ]
                         }).dropdown('set selected', '0');
-
-                        this.fields['shield'].$object.dropdown({
-                            values: [
-                                {
-                                    name: 'No',
-                                    value: 0
-                                },
-                                {
-                                    name: 'Yes',
-                                    value: 25
-                                }
-                            ]
-                        }).dropdown('set selected', '25');
 
                         this.fields['weapon1_rune'].$object.dropdown({
                             values: [
@@ -1387,12 +1371,8 @@
                         let hp_c = (100 + bert.Runes.Health) / 100;
                         let hp_d = 1.22;
 
-                        playerInstances[1].NoSkip = true;
+                        playerInstances[1].BlockChance = 0;
                         playerInstances[1].ForceHealth = Math.trunc(Math.floor(bert.Constitution.Total * 5 * (bert.Level + 1) * hp_a) * hp_b * hp_c * hp_d);
-                    }
-
-                    if (playerInstances[0].Class == 1 && playerInstances[0].BlockChance == '0') {
-                        playerInstances[0].NoSkip = true;
                     }
 
                     return dungeon.shadow ? [ ... playerInstances.slice(1, 4), playerInstances[0] ] : [ playerInstances[0] ];

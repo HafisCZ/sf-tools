@@ -348,11 +348,8 @@
                                     <input class="text-center" type="text" data-path="Armor" placeholder="Armor points">
                                 </div>
                                 <div class="field">
-                                    <label>Shield</label>
-                                    <div class="ui selection compact dropdown" data-path="BlockChance">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
+                                    <label>Block %</label>
+                                    <input class="text-center" type="text" data-path="BlockChance" placeholder="0 - 25">
                                 </div>
                                 <div class="field">
                                     <label>Fire</label>
@@ -627,19 +624,6 @@
                             }
                         ]
                     }).dropdown('set selected', '0');
-
-                    this.fields['shield'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'No',
-                                value: 0
-                            },
-                            {
-                                name: 'Yes',
-                                value: 25
-                            }
-                        ]
-                    }).dropdown('set selected', '25');
 
                     this.fields['weapon1_rune'].$object.dropdown({
                         values: [
@@ -951,9 +935,6 @@
                     for (var i = 0; i < players.length; i++) {
                         players[i].score = null;
                         players[i].player.ForceGladiator = 15;
-                        if (players[i].player.Class == 1 && players[i].player.BlockChance == '0') {
-                            players[i].player.NoSkip = true;
-                        }
                     }
 
                     showPlayers();

@@ -563,6 +563,10 @@ class Field {
         return Field.isNumber(val) && val <= 75;
     }
 
+    static isBlockChance (val) {
+        return Field.isNumber(val) && val <= 25;
+    }
+
     static isDungeon (val) {
         return Field.isNumber(val) && val <= 50;
     }
