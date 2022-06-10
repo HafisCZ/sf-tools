@@ -119,7 +119,7 @@ class FighterModel {
 
     // Block Chance
     getBlockChance (source) {
-        if (source.Player.Class == MAGE || this.Player.NoSkip) {
+        if (source.Player.Class == MAGE) {
             return 0;
         } else {
             switch (this.Player.Class) {
@@ -127,7 +127,7 @@ class FighterModel {
                 case ASSASSIN:
                     return 50;
                 case WARRIOR:
-                    return 25;
+                    return typeof this.Player.BlockChance !== 'undefined' ? this.Player.BlockChance : 25;
                 case DRUID:
                     return this.Player.Mask == 1 ? 25 : (this.Player.Mask == 2 ? 50 : 0);
                 default:

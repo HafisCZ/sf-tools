@@ -276,6 +276,10 @@
                                     <input class="text-center" type="text" data-path="Armor" placeholder="Armor points">
                                 </div>
                                 <div class="field">
+                                    <label>Block %</label>
+                                    <input class="text-center" type="text" data-path="BlockChance" placeholder="0 - 25">
+                                </div>
+                                <div class="field">
                                     <label>Fire</label>
                                     <input class="text-center" type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
                                 </div>
@@ -460,6 +464,7 @@
                         gladiator: new Field('[data-path="Fortress.Gladiator"]', '', Field.isGladiator),
                         potion_life: new Field('[data-path="Potions.Life"]', '0'),
                         enchantment: new Field('[data-path="Items.Hand.HasEnchantment"]', 'false'),
+                        shield: new Field('[data-path="BlockChance"]', Field.isBlockChance),
 
                         str: new Field('[data-path="Strength.Total"]', '', Field.isNumber),
                         dex: new Field('[data-path="Dexterity.Total"]', '', Field.isNumber),
@@ -495,6 +500,7 @@
                             $('[data-optional="Weapon2"]').hide();
                         }
 
+                        this.fields['shield'].show(value == 1);
                         this.fields['mask'].show(value == 8);
                         this.fields['instrument'].show(value == 9);
                     }).dropdown('set selected', '1');
@@ -715,6 +721,7 @@
                                 SFItem.forceCorrectRune(d.Items.Wpn1);
                                 SFItem.forceCorrectRune(d.Items.Wpn2);
 
+                                if (d.Class == 1 && typeof d.BlockChance == 'undefined') d.BlockChance = d.Items.Wpn2.DamageMin;
                                 if (d.Class != 4) {
                                     d.Items.Wpn2 = SFItem.empty();
                                 }
@@ -729,6 +736,7 @@
                                 SFItem.forceCorrectRune(obj.Items.Wpn1);
                                 SFItem.forceCorrectRune(obj.Items.Wpn2);
 
+                                if (obj.Class == 1 && typeof obj.BlockChance == 'undefined') obj.BlockChance = obj.Items.Wpn2.DamageMin;
                                 if (obj.Class != 4) {
                                     obj.Items.Wpn2 = SFItem.empty();
                                 }
@@ -747,6 +755,7 @@
                         SFItem.forceCorrectRune(obj.Items.Wpn1);
                         SFItem.forceCorrectRune(obj.Items.Wpn2);
 
+                        if (obj.Class == 1 && typeof obj.BlockChance == 'undefined') obj.BlockChance = obj.Items.Wpn2.DamageMin;
                         if (obj.Class != 4) {
                             obj.Items.Wpn2 = SFItem.empty();
                         }
@@ -780,13 +789,19 @@
                 copyText(JSON.stringify(EditorController.read()));
             });
 
-            $('#sim-copyall1').click(function () {
-                copyText(JSON.stringify(players1.map(p => toSimulatorModel(p.player))));
-            });
+            function copyPlayers (players) {
+                copyText(JSON.stringify(players.map(p => {
+                    let m = toSimulatorModel(p.player);
+                    if (p.player.Class == 1 && typeof p.player.BlockChance != 'undefined') {
+                        m.BlockChance = p.player.BlockChance;
+                    }
 
-            $('#sim-copyall2').click(function () {
-                copyText(JSON.stringify(players2.map(p => toSimulatorModel(p.player))));
-            });
+                    return m;
+                })));
+            }
+
+            $('#sim-copyall1').click(() => copyPlayers(players1));
+            $('#sim-copyall2').click(() => copyPlayers(players2));
 
             $('#sim-add1').click(function () {
                 if (EditorController.valid()) {
