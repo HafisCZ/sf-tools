@@ -24,6 +24,7 @@
         <script src="js/plugins.js"></script>
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
+        <script src="js/sim/editor.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
 
@@ -226,183 +227,7 @@
                 <!-- Player edit field -->
                 <div class="column">
                     <div class="ui form" id="sim-editor">
-                        <div class="bordered bone">
-                            <div class="field">
-                                <label>Name</label>
-                                <input class="text-center" type="text" data-path="Name" placeholder="Player name">
-                            </div>
-                            <div class="two fields">
-                                <div class="field">
-                                    <label>Class</label>
-                                    <div class="ui selection compact dropdown" data-path="Class">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label>Mask</label>
-                                    <div class="ui selection compact dropdown" data-path="Mask">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label>Instrument</label>
-                                    <div class="ui selection compact dropdown" data-path="Instrument">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label>Level</label>
-                                    <input class="text-center" type="text" data-path="Level" placeholder="1 - 700">
-                                </div>
-                            </div>
-                            <div class="five fields">
-                                <div class="field">
-                                    <label>Str</label>
-                                    <input class="text-center" type="text" data-path="Strength.Total">
-                                </div>
-                                <div class="field">
-                                    <label>Dex</label>
-                                    <input class="text-center" type="text" data-path="Dexterity.Total">
-                                </div>
-                                <div class="field">
-                                    <label>Int</label>
-                                    <input class="text-center" type="text" data-path="Intelligence.Total">
-                                </div>
-                                <div class="field">
-                                    <label>Con</label>
-                                    <input class="text-center" type="text" data-path="Constitution.Total">
-                                </div>
-                                <div class="field">
-                                    <label>Lck</label>
-                                    <input class="text-center" type="text" data-path="Luck.Total">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bordered btwo">
-                            <div class="five fields">
-                                <div class="field">
-                                    <label>Min</label>
-                                    <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin" placeholder="Item Min">
-                                </div>
-                                <div class="field">
-                                    <label>Max</label>
-                                    <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax" placeholder="Item Max">
-                                </div>
-                                <div class="field">
-                                    <label>Crit</label>
-                                    <div class="ui selection compact dropdown" data-path="Items.Wpn1.HasEnchantment">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label>Rune</label>
-                                    <div class="ui selection compact dropdown" data-path="Items.Wpn1.AttributeTypes.2">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label><br/></label>
-                                    <input class="text-center" type="text" data-path="Items.Wpn1.Attributes.2" placeholder="0 - 60">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bordered bthree" data-optional="Weapon2">
-                            <div class="five fields">
-                                <div class="field">
-                                    <label>Min</label>
-                                    <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin" placeholder="Item Min">
-                                </div>
-                                <div class="field">
-                                    <label>Max</label>
-                                    <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax" placeholder="Item Max">
-                                </div>
-                                <div class="field">
-                                    <label>Crit</label>
-                                    <div class="ui selection compact dropdown" data-path="Items.Wpn2.HasEnchantment">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label>Rune</label>
-                                    <div class="ui selection compact dropdown" data-path="Items.Wpn2.AttributeTypes.2">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label><br/></label>
-                                    <input class="text-center" type="text" data-path="Items.Wpn2.Attributes.2" placeholder="0 - 60">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bordered bfour">
-                            <div class="four fields">
-                                <div class="field">
-                                    <label>Armor</label>
-                                    <input class="text-center" type="text" data-path="Armor" placeholder="Armor points">
-                                </div>
-                                <div class="field">
-                                    <label>Block %</label>
-                                    <input class="text-center" type="text" data-path="BlockChance" placeholder="0 - 25">
-                                </div>
-                                <div class="field">
-                                    <label>Fire</label>
-                                    <input class="text-center" type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
-                                </div>
-                                <div class="field">
-                                    <label>Cold</label>
-                                    <input class="text-center" type="text" data-path="Runes.ResistanceCold" placeholder="0 - 75">
-                                </div>
-                                <div class="field">
-                                    <label>Lightning</label>
-                                    <input class="text-center" type="text" data-path="Runes.ResistanceLightning" placeholder="0 - 75">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bordered bfive">
-                            <div class="three fields">
-                                <div class="field">
-                                    <label>Portal Health</label>
-                                    <input class="text-center" type="text" data-path="Dungeons.Player" placeholder="0 - 50">
-                                </div>
-                                <div class="field">
-                                    <label>Rune Health</label>
-                                    <input class="text-center" type="text" data-path="Runes.Health" placeholder="0 - 15">
-                                </div>
-                                <div class="field">
-                                    <label>Life Potion</label>
-                                    <div class="ui selection compact dropdown" data-path="Potions.Life">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bordered bsix">
-                            <div class="three fields">
-                                <div class="field">
-                                    <label>Portal Damage</label>
-                                    <input class="text-center" type="text" data-path="Dungeons.Group" placeholder="0 - 50">
-                                </div>
-                                <div class="field">
-                                    <label>Gladiator (0 - 15)</label>
-                                    <input class="text-center" type="text" data-path="Fortress.Gladiator" placeholder="0 - 15">
-                                </div>
-                                <div class="field">
-                                    <label>Shadow of the Cowboy</label>
-                                    <div class="ui selection compact dropdown" data-path="Items.Hand.HasEnchantment">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
                 <!-- Player list -->
@@ -522,244 +347,7 @@
                 }
             }
 
-            const EditorController = new (class {
-                constructor () {
-                    this.fields = {
-                        name: new Field('[data-path="Name"]', ''),
-                        class: new Field('[data-path="Class"]', '1'),
-                        mask: new Field('[data-path="Mask"]', '0'),
-                        instrument: new Field('[data-path="Instrument"]', '0'),
-                        level: new Field('[data-path="Level"]', '', Field.isPlayerLevel),
-                        armor: new Field('[data-path="Armor"]', '', Field.isNumber),
-
-                        resistance_fire: new Field('[data-path="Runes.ResistanceFire"]', '', Field.isResistanceRune),
-                        resistance_cold: new Field('[data-path="Runes.ResistanceCold"]', '', Field.isResistanceRune),
-                        resistance_lightning: new Field('[data-path="Runes.ResistanceLightning"]', '', Field.isResistanceRune),
-
-                        portal_hp: new Field('[data-path="Dungeons.Player"]', '', Field.isDungeon),
-                        portal_damage: new Field('[data-path="Dungeons.Group"]', '', Field.isDungeon),
-
-                        runes_health: new Field('[data-path="Runes.Health"]', '', Field.isHealthRune),
-                        gladiator: new Field('[data-path="Fortress.Gladiator"]', '', Field.isGladiator),
-                        potion_life: new Field('[data-path="Potions.Life"]', '0'),
-                        enchantment: new Field('[data-path="Items.Hand.HasEnchantment"]', 'false'),
-                        shield: new Field('[data-path="BlockChance"]', '25'),
-
-                        str: new Field('[data-path="Strength.Total"]', '', Field.isNumber),
-                        dex: new Field('[data-path="Dexterity.Total"]', '', Field.isNumber),
-                        int: new Field('[data-path="Intelligence.Total"]', '', Field.isNumber),
-                        con: new Field('[data-path="Constitution.Total"]', '', Field.isNumber),
-                        lck: new Field('[data-path="Luck.Total"]', '', Field.isNumber),
-
-                        weapon1_min: new Field('[data-path="Items.Wpn1.DamageMin"]', '', Field.isNumber),
-                        weapon1_max: new Field('[data-path="Items.Wpn1.DamageMax"]', '', Field.isNumber),
-                        weapon1_enchantment: new Field('[data-path="Items.Wpn1.HasEnchantment"]', 'false'),
-                        weapon1_rune: new Field('[data-path="Items.Wpn1.AttributeTypes.2"]', '0'),
-                        weapon1_value: new Field('[data-path="Items.Wpn1.Attributes.2"]', '', Field.isDamageRune),
-
-                        weapon2_min: new Field('[data-path="Items.Wpn2.DamageMin"]', '', Field.isNumber),
-                        weapon2_max: new Field('[data-path="Items.Wpn2.DamageMax"]', '', Field.isNumber),
-                        weapon2_enchantment: new Field('[data-path="Items.Wpn2.HasEnchantment"]', 'false'),
-                        weapon2_rune: new Field('[data-path="Items.Wpn2.AttributeTypes.2"]', '0'),
-                        weapon2_value: new Field('[data-path="Items.Wpn2.Attributes.2"]', '', Field.isDamageRune)
-                    };
-
-                    this.fields['class'].$object.dropdown({
-                        preserveHTML: true,
-                        values: Object.entries(CLASS_MAP).map((e) => {
-                            return {
-                                name: `<img class="ui centered image class-picture" src="res/class${ e[0] }.png"><span>${ e[1] }</span>`,
-                                value: e[0]
-                            };
-                        })
-                    }).dropdown('setting', 'onChange', (value, text) => {
-                        if (value == 4) {
-                            $('[data-optional="Weapon2"]').show();
-                        } else {
-                            $('[data-optional="Weapon2"]').hide();
-                        }
-
-                        this.fields['shield'].show(value == 1);
-                        this.fields['mask'].show(value == 8);
-                        this.fields['instrument'].show(value == 9);
-                    }).dropdown('set selected', '1');
-
-                    this.fields['mask'].$object.dropdown({
-                        preserveHTML: true,
-                        values: [
-                            {
-                                name: 'None',
-                                value: 0
-                            },
-                            {
-                                name: '<img class="ui centered image class-picture" src="res/mask1.png"><span>Bear</span>',
-                                value: 1
-                            },
-                            {
-                                name: '<img class="ui centered image class-picture" src="res/mask2.png"><span>Cat</span>',
-                                value: 2
-                            }
-                        ]
-                    }).dropdown('set selected', '0');
-
-                    this.fields['instrument'].$object.dropdown({
-                        preserveHTML: true,
-                        values: INSTRUMENT_TYPES.map((name, index) => {
-                            return {
-                                name: `<img class="ui centered image class-picture" src="res/instrument${index}.png"><span>${name}</span>`,
-                                value: index
-                            }
-                        })
-                    }).dropdown('set selected', '0');
-
-                    this.fields['potion_life'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'No',
-                                value: 0
-                            },
-                            {
-                                name: 'Yes',
-                                value: 25
-                            }
-                        ]
-                    }).dropdown('set selected', '0');
-
-                    this.fields['weapon1_rune'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'None',
-                                value: 0
-                            },
-                            {
-                                name: 'Fire',
-                                value: 40
-                            },
-                            {
-                                name: 'Cold',
-                                value: 41
-                            },
-                            {
-                                name: 'Lightning',
-                                value: 42
-                            }
-                        ]
-                    }).dropdown('set selected', '0');
-
-                    this.fields['weapon2_rune'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'None',
-                                value: 0
-                            },
-                            {
-                                name: 'Fire',
-                                value: 40
-                            },
-                            {
-                                name: 'Cold',
-                                value: 41
-                            },
-                            {
-                                name: 'Lightning',
-                                value: 42
-                            }
-                        ]
-                    }).dropdown('set selected', '0');
-
-                    this.fields['enchantment'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'No',
-                                value: false
-                            },
-                            {
-                                name: 'Yes',
-                                value: true
-                            }
-                        ]
-                    }).dropdown('set selected', 'false');
-
-                    this.fields['weapon1_enchantment'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'No',
-                                value: false
-                            },
-                            {
-                                name: 'Yes',
-                                value: true
-                            }
-                        ]
-                    }).dropdown('set selected', 'false');
-
-                    this.fields['weapon2_enchantment'].$object.dropdown({
-                        values: [
-                            {
-                                name: 'No',
-                                value: false
-                            },
-                            {
-                                name: 'Yes',
-                                value: true
-                            }
-                        ]
-                    }).dropdown('set selected', 'false');
-                }
-
-                fill (object) {
-                    if (object) {
-                        for (var [key, field] of Object.entries(this.fields)) {
-                            field.set(getObjectAt(object, field.path()));
-                        }
-                    } else {
-                        for (var [key, field] of Object.entries(this.fields)) {
-                            field.clear();
-                        }
-                    }
-                }
-
-                clear () {
-                    for (var [key, field] of Object.entries(this.fields)) {
-                        field.clear();
-                    }
-                }
-
-                read () {
-                    var object = new SFPlayer();
-                    for (var [key, field] of Object.entries(this.fields)) {
-                        setObjectAt(object, field.path(), field.get());
-                    }
-
-                    return object;
-                }
-
-                valid () {
-                    var ass = this.fields['class'].get() != 4;
-                    for (var [key, field] of Object.entries(this.fields)) {
-                        if (ass && ['weapon2_min', 'weapon2_max', 'weapon2_value'].includes(key)) {
-                            continue;
-                        }
-
-                        if (!field.valid()) {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }
-
-                empty () {
-                    var object = new SFPlayer();
-                    for (var [key, field] of Object.entries(this.fields)) {
-                        setObjectAt(object, field.path(), field.defaultValue);
-                    }
-
-                    return object;
-                }
-            })();
-
-            EditorController.clear();
+            let editor = new Editor($('#sim-editor'));
 
             const UILogger = new (class {
                 constructor ($root) {
@@ -920,7 +508,7 @@
                         obj.Items.Wpn2 = SFItem.empty();
                     }
 
-                    EditorController.fill(obj);
+                    editor.fill(obj);
                 }
             }
 
@@ -1024,11 +612,11 @@
             });
 
             $('#sim-save').click(function () {
-                if (EditorController.valid()) {
+                if (editor.valid()) {
                     if (selected != -1) {
                         var index = players.findIndex(p => p.index == selected);
                         if (index != -1) {
-                            players[index].player = EditorController.read();
+                            players[index].player = editor.read();
                             players[index].score = null;
                         }
 
@@ -1040,7 +628,7 @@
             });
 
             $('#sim-copy').click(function () {
-                copyText(JSON.stringify(EditorController.read()));
+                copyText(JSON.stringify(editor.read()));
             });
 
             $('#sim-copyall').click(function () {
@@ -1055,8 +643,8 @@
             });
 
             $('#sim-add').click(function () {
-                if (EditorController.valid()) {
-                    var player = EditorController.read();
+                if (editor.valid()) {
+                    var player = editor.read();
                     if (player.Name == '') {
                         player.Name = `Player ${ players.length + 1 }`;
                     }
@@ -1068,7 +656,7 @@
                         index: selected
                     });
 
-                    EditorController.clear();
+                    editor.clear();
 
                     showPlayers();
                 }
@@ -1209,7 +797,7 @@
 
                 $('[data-index]').click(function () {
                     selected = Number($(this).attr('data-index'));
-                    EditorController.fill(players.find(p => p.index == selected).player);
+                    editor.fill(players.find(p => p.index == selected).player);
 
                     showPlayers();
                 });
@@ -1226,7 +814,7 @@
 
                     var ss = players.findIndex(p => p.index == selected);
                     if (ss == -1) {
-                        EditorController.clear();
+                        editor.clear();
                     }
 
                     selected = ss;
