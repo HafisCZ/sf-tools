@@ -1759,6 +1759,7 @@ class SFCompanion extends SFPlayer {
         this.Pets = player.Pets;
         this.Dungeons = player.Dungeons;
         this.Achievements = player.Achievements;
+        this.Fortress = player.Fortress;
         this.Underworld = player.Underworld;
 
         this.Items = items;
