@@ -24,7 +24,7 @@ self.addEventListener('message', function (message) {
     self.close();
 });
 
-class DungeonSimulator {
+class DungeonSimulator extends SimulatorBase {
     simulate (players, boss, iterations, hpcap) {
         this.cache(players, boss);
 
