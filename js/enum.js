@@ -51,7 +51,7 @@ const MASK_TYPES = [
 
 const INSTRUMENT_TYPES = [
     'Harp',
-    'Guitar',
+    'Lute',
     'Flute'
 ];
 
