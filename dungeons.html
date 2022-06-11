@@ -646,7 +646,6 @@
 
                     if (data.Class == 1 && typeof data.BlockChance == 'undefined') data.BlockChance = data.Items.Wpn2.DamageMin;
                     if (data.Class != 4) data.Items.Wpn2 = SFItem.empty();
-                    if (data.Underworld) data.Fortress.Gladiator = data.Underworld.Gladiator;
 
                     if (selected > 0) {
                         for (var key of ['gladiator', 'level', 'portal_hp', 'portal_damage', 'potion_life']) {

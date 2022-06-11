@@ -2761,11 +2761,11 @@ const SP_KEYWORD_MAPPING_2 = {
         statistics: false
     },
     'Gladiator Trainer': {
-        expr: p => p.Underworld ? p.Underworld.Gladiator : undefined,
+        expr: p => p.Fortress.Gladiator,
         statistics: false
     },
     'Gladiator': {
-        expr: p => p.Underworld ? p.Underworld.Gladiator : undefined,
+        expr: p => p.Fortress.Gladiator,
         statistics: false
     },
     'Troll Block': {
