@@ -1,17 +1,6 @@
 FIGHT_DUMP_ENABLED = false;
 FIGHT_DUMP_OUTPUT = [];
 
-const SimulatorType = {
-    Pet: 1,
-    PetMap: 2,
-    PlayerAll: 3,
-    PlayerOne: 4,
-    PlayerTournament: 5,
-    Guild: 6,
-    Dungeon: 7,
-    PetPath: 8
-}
-
 // WebWorker hooks
 self.addEventListener('message', function (message) {
     var ts = Date.now();
@@ -28,7 +17,7 @@ self.addEventListener('message', function (message) {
     var tracking = message.data.tracking || 0;
 
     // Sim type decision
-    if (mode == SimulatorType.PlayerAll) {
+    if (mode == 'players_all') {
         new FightSimulator().simulateMultiple(player, players, iterations);
         self.postMessage({
             command: 'finished',
@@ -36,7 +25,7 @@ self.addEventListener('message', function (message) {
             logs: FIGHT_DUMP_OUTPUT,
             time: Date.now() - ts
         });
-    } else if (mode == SimulatorType.PlayerOne) {
+    } else if (mode == 'players_one') {
         new FightSimulator().simulateSingle(player, players, iterations);
         self.postMessage({
             command: 'finished',
@@ -44,7 +33,7 @@ self.addEventListener('message', function (message) {
             logs: FIGHT_DUMP_OUTPUT,
             time: Date.now() - ts
         });
-    } else if (mode == SimulatorType.PlayerTournament) {
+    } else if (mode == 'players_tournament') {
         new FightSimulator().simulateTournament(player, players, iterations);
         self.postMessage({
             command: 'finished',
@@ -52,7 +41,7 @@ self.addEventListener('message', function (message) {
             logs: FIGHT_DUMP_OUTPUT,
             time: Date.now() - ts
         });
-    } else if (mode == SimulatorType.Guild) {
+    } else if (mode == 'guilds') {
         var result = new GuildSimulator().simulate(player, players, iterations);
 
         self.postMessage({
