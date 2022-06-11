@@ -208,8 +208,7 @@ class FightSimulator extends SimulatorBase {
     }
 
     // Fight 1vAl only
-    simulateMultiple (player, players, iterations, logs) {
-        this.logs = logs;
+    simulateMultiple (player, players, iterations) {
         var scores = [];
         for (var i = 0; i < player.length; i++) {
             var score = 0;
@@ -254,8 +253,7 @@ class FightSimulator extends SimulatorBase {
     }
 
     // Tournament only
-    simulateTournament (player, players, iterations, logs) {
-        this.logs = logs;
+    simulateTournament (player, players, iterations) {
         for (var i = 0; i < player.length; i++) {
             player[i].score = {
                 avg: 0,
@@ -279,8 +277,7 @@ class FightSimulator extends SimulatorBase {
     }
 
     // Fight 1v1s only
-    simulateSingle (player, players, iterations, logs) {
-        this.logs = logs;
+    simulateSingle (player, players, iterations) {
         var scores = [];
         for (var i = 0; i < players.length; i++) {
             if (player.player == players[i].player) {
