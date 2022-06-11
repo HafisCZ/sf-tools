@@ -324,6 +324,10 @@ class FighterModel {
     skipNextRound () {
         return false;
     }
+
+    updateEffects () {
+
+    }
 }
 
 class WarriorModel extends FighterModel {
@@ -467,9 +471,92 @@ class DemonHunterModel extends FighterModel {
 class BardModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
+
+        this.Effect = 4;
+        this.DamageTaken = p.Instrument == INSTRUMENT_FLUTE;
+
+        this.HealMultiplier = 0;
+        this.DamageMultiplier = 0;
+        this.IncomingDamageMultiplier = 0;
+
+        this.EffectRounds = 0;
+        this.EffectRoundsRemaining = 0;
     }
 
-    // TODO
+    reset () {
+        super.reset();
+
+        this.HealMultiplier = 0;
+        this.DamageMultiplier = 0;
+        this.IncomingDamageMultiplier = 0;
+
+        this.EffectRounds = 0;
+        this.EffectRoundsRemaining = 0;
+    }
+
+    onDamageTaken (source, damage) {
+        let state = super.onDamageTaken(source, damage);
+        if (state == 1 && this.HealMultiplier) {
+            this.Health += this.HealMultiplier * this.TotalHealth;
+        }
+
+        return state;
+    }
+
+    rollEffectLevel () {
+        let roll = Math.random() * 100;
+
+        return roll < 25 ? 0 : (roll < 75 ? 1 : 2);
+    }
+
+    rollEffectRounds (level) {
+        let rounds = Math.min(1, level);
+
+        if (this.Player.Constitution.Total >= this.Player.Intelligence.Total / 2) {
+            rounds++;
+        }
+
+        if (this.Player.Constitution.Total >= 3 * this.Player.Intelligence.Total / 4) {
+            rounds++;
+        }
+
+        return rounds;
+    }
+
+    rollEffect (target) {
+        let level = this.rollEffectLevel();
+
+        this.EffectRoundsRemaining = this.rollEffectRounds(level);
+
+        if (this.Player.Instrument == INSTRUMENT_HARP) {
+            if (target.Player.Class != MAGE) {
+                let multiplier = 1 / this.DamageReduction * (1 - [ 30, 40, 50 ][level] / 100);
+
+                this.IncomingDamageMultiplier = multiplier;
+            }
+        } else if (this.Player.Instrument == INSTRUMENT_LUTE) {
+            let multiplier = 1 + [ 20, 25, 30 ][level] / 100;
+
+            this.DamageMultiplier = multiplier;
+        } else /* INSTRUMENT_FLUTE */ {
+            let multiplier = [ 5, 10, 15 ][level] / 100;
+
+            this.HealMultiplier = multiplier;
+        }
+    }
+
+    updateEffects (target) {
+        if (--this.EffectRoundsRemaining <= 0) {
+            this.HealMultiplier = 0;
+            this.DamageMultiplier = 0;
+            this.IncomingDamageMultiplier = 0;
+        }
+
+        if (--this.EffectRounds <= 0) {
+            this.EffectRounds = this.Effect;
+            this.rollEffect(target);
+        }
+    }
 }
 
 // Shared class between all simulators in order to make updates simple
@@ -594,6 +681,10 @@ class SimulatorBase {
     }
 
     attack (source, target, weapon = source.Weapon1, extra = 0) {
+        if (source.Effect) {
+            source.updateEffects(target);
+        }
+
         var turn = this.turn++;
         var rage = 1 + turn / 6;
 
@@ -603,6 +694,14 @@ class SimulatorBase {
 
         if (!skipped) {
             damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
+            if (source.DamageMultiplier) {
+                damage *= source.DamageMultiplier;
+            }
+
+            if (target.IncomingDamageMultiplier) {
+                damage *= target.IncomingDamageMultiplier;
+            }
+
             if (critical = getRandom(source.CriticalChance)) {
                 damage *= source.Critical;
             }
