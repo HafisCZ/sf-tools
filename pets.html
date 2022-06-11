@@ -865,6 +865,8 @@
                     $('#stats-list').empty();
 
                     for (let player of Object.keys(DatabaseManager.Players).map(pid => DatabaseManager.getPlayer(pid).Latest).sort((a, b) => b.Timestamp - a.Timestamp).filter(p => p.Pets && p.Pets.TotalLevel)) {
+                        let hasDungeonsLeft = player.Pets.Dungeons.some(pet => pet < 20);
+
                         $('#stats-list').append($(`
                             <div class="ui fluid button basic vertical animated gray" style="margin-bottom: 0.5em;">
                                 <div class="visible content">
@@ -873,7 +875,7 @@
                                 <div class="hidden content">
                                     <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }<span>
                                 </div>
-                                <div style="position: absolute; right: 0.25em; top: 32.5%;" data-player-id="${ player.Identifier }">
+                                <div style="position: absolute; right: 0.25em; top: 32.5%; ${hasDungeonsLeft ? '' : 'display: none;'}" data-player-id="${ player.Identifier }">
                                     <i class="expand icon"></i>
                                 </div>
                             </div>
