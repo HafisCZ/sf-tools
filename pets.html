@@ -748,11 +748,10 @@
             var petA = new PetController($('#sim-a'), 0);
             var petB = new PetController($('#sim-b'), 1);
 
+            var useArmor = false;
             var useArmorCheckbox = $('#useArmor').checkbox('uncheck').change((event) => {
                 useArmor = $(event.currentTarget).checkbox('is checked');
             });
-
-            var useArmor = false;
 
             $('#sim-run').click(function () {
                 if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
@@ -802,37 +801,7 @@
                 }
             }
 
-            $('#sim-generate1').click(async function () {
-                if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
-                    $('#sim-result').html('');
-
-                    clearMaps();
-
-                    var a = petA.getData();
-                    var b = petB.getData();
-
-                    if (a && b && !a.Boss && b.Boss) {
-                        toggleAll(true);
-
-                        var worker = await createPetWorker();
-
-                        worker.addEventListener('message', function (message) {
-                            if (message.data.command == 'finished') {
-                                addMap(message.data.results, `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b.Type] } ${ b.Pet + 1 } - ${ NAME_MONSTER[800 + b.Type * 20 + b.Pet] }`);
-                                toggleAll();
-                            }
-                        }, false);
-
-                        worker.postMessage({
-                            mode: SimulatorType.PetMap,
-                            players: [a, b],
-                            useArmor: useArmor
-                        });
-                    }
-                }
-            });
-
-            $('#sim-generate5').click(async function () {
+            async function generatePetMap (mapCount) {
                 if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
                     $('#sim-result').html('');
                     clearMaps();
@@ -846,7 +815,7 @@
                         toggleAll(true);
 
                         var count = 0;
-                        for (var i = temp.Pet; i < Math.min(20, temp.Pet + 5); i++) {
+                        for (var i = temp.Pet; i < Math.min(20, temp.Pet + mapCount); i++) {
                             var bs = petB.getData();
                             bs.Pet = i;
                             b.push(bs);
@@ -884,61 +853,11 @@
                         }
                     }
                 }
-            });
+            }
 
-            $('#sim-generate10').click(async function () {
-                if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
-                    $('#sim-result').html('');
-                    clearMaps();
-
-                    var a = petA.getData();
-                    var b = [];
-
-                    var temp = petB.getData();
-
-                    if (a && temp && !a.Boss && temp.Boss) {
-                        toggleAll(true);
-
-                        var count = 0;
-                        for (var i = temp.Pet; i < Math.min(20, temp.Pet + 10); i++) {
-                            var bs = petB.getData();
-                            bs.Pet = i;
-                            b.push(bs);
-
-                            count++;
-                        }
-
-                        var maps = [];
-                        var maps_finished = 0;
-
-                        for (var i = 0; i < count; i++) {
-                            var worker = await createPetWorker();
-
-                            worker.addEventListener('message', function (message) {
-                                if (message.data.command == 'finished') {
-                                    maps[message.data.tracking] = message.data.results;
-                                    maps_finished++;
-
-                                    if (maps_finished == count) {
-                                        toggleAll();
-
-                                        for (var j = 0; j < maps.length; j++) {
-                                            addMap(maps[j], `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b[j].Type] } ${ b[j].Pet + 1 } - ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
-                                        }
-                                    }
-                                }
-                            }, false);
-
-                            worker.postMessage({
-                                mode: SimulatorType.PetMap,
-                                players: [a, b[i]],
-                                tracking: i,
-                                useArmor: useArmor
-                            });
-                        }
-                    }
-                }
-            });
+            $('#sim-generate1').click(() => generatePetMap(1));
+            $('#sim-generate5').click(() => generatePetMap(5));
+            $('#sim-generate10').click(() => generatePetMap(10));
 
             $('#load-stats').click(() => {
                 toggleAll(true);
