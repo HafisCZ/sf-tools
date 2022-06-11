@@ -1953,7 +1953,7 @@ function toSimulatorModel (p) {
             Gladiator: (p.Fortress ? p.Fortress.Gladiator : 0) || 0
         },
         Underworld: {
-            Gladiator: p.Underworld ? p.Underworld.Gladiator : 0
+            Gladiator: (p.Underworld ? p.Underworld.Gladiator : 0) || 0
         },
         Intelligence: {
             Total: p.Intelligence.Total
