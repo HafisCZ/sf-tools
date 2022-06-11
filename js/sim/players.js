@@ -146,72 +146,6 @@ class GuildSimulator extends SimulatorBase {
         // Return fight result
         return (this.la.length > 0 ? this.la[0].Index : this.lb[0].Index) == 0;
     }
-
-    // Fighter battle
-    fight () {
-        // Turn counter
-        this.turn = 0;
-
-        // Apply special damage
-        if (this.as !== false || this.bs !== false) {
-            this.turn++;
-
-            if (this.as > 0) {
-                this.b.Health -= this.as;
-            } else if (this.bs > 0) {
-                this.a.Health -= this.bs;
-            }
-        }
-
-        this.setRandomInitialFighter();
-        this.forwardToBersekerAttack();
-
-        // Simulation
-        while (this.a.Health > 0 && this.b.Health > 0) {
-            var damage = this.attack(this.a, this.b);
-            if (this.a.DamageDealt) {
-                this.a.onDamageDealt(this.b, damage);
-            }
-
-            if (this.b.DamageTaken) {
-                if (this.b.onDamageTaken(this.a, damage) == 0) {
-                    break;
-                }
-            } else {
-                this.b.Health -= damage;
-                if (this.b.Health <= 0) {
-                    break;
-                }
-            }
-
-            if (this.a.Weapon2) {
-                var damage2 = this.attack(this.a, this.b, this.a.Weapon2);
-                if (this.a.DamageDealt) {
-                    this.a.onDamageDealt(this.b, damage2);
-                }
-
-                if (this.b.DamageTaken) {
-                    if (this.b.onDamageTaken(this.a, damage2) == 0) {
-                        break;
-                    }
-                } else {
-                    this.b.Health -= damage2;
-                    if (this.b.Health <= 0) {
-                        break;
-                    }
-                }
-            }
-
-            if (this.a.SkipNext) {
-                while (this.a.skipNextRound() && this.skipAndAttack());
-            }
-
-            [this.a, this.b] = [this.b, this.a];
-        }
-
-        // Winner
-        return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
-    }
 }
 
 class FightSimulator extends SimulatorBase {
@@ -390,9 +324,7 @@ class FightSimulator extends SimulatorBase {
         this.bs = this.cb.onFightStart(this.ca);
     }
 
-    // Fight
     fight () {
-        // Create fighters
         this.a = this.ca;
         this.b = this.cb;
 
@@ -401,81 +333,6 @@ class FightSimulator extends SimulatorBase {
         this.a.reset();
         this.b.reset();
 
-        // Turn counter
-        this.turn = 0;
-
-        // Apply special damage
-        if (this.as !== false || this.bs !== false) {
-            this.turn++;
-
-            if (this.as > 0) {
-                this.b.Health -= this.as;
-
-                if (FIGHT_DUMP_ENABLED) this.log(1);
-            } else if (this.bs > 0) {
-                this.a.Health -= this.bs;
-
-                if (FIGHT_DUMP_ENABLED) this.log(2);
-            } else {
-                if (FIGHT_DUMP_ENABLED) this.log(3);
-            }
-        }
-
-        this.setRandomInitialFighter();
-        this.forwardToBersekerAttack();
-
-        // Simulation
-        while (this.a.Health > 0 && this.b.Health > 0) {
-            var damage = this.attack(this.a, this.b);
-            if (this.a.DamageDealt) {
-                this.a.onDamageDealt(this.b, damage);
-            }
-
-            if (this.b.DamageTaken) {
-                var alive = this.b.onDamageTaken(this.a, damage);
-
-                if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
-
-                if (alive == 0) {
-                    break;
-                }
-            } else {
-                this.b.Health -= damage;
-                if (this.b.Health <= 0) {
-                    break;
-                }
-            }
-
-            if (this.a.Weapon2) {
-                var damage2 = this.attack(this.a, this.b, this.a.Weapon2, 1);
-                if (this.a.DamageDealt) {
-                    this.a.onDamageDealt(this.b, damage2);
-                }
-
-                if (this.b.DamageTaken) {
-                    var alive = this.b.onDamageTaken(this.a, damage2);
-
-                    if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
-
-                    if (alive == 0) {
-                        break;
-                    }
-                } else {
-                    this.b.Health -= damage2;
-                    if (this.b.Health <= 0) {
-                        break;
-                    }
-                }
-            }
-
-            if (this.a.SkipNext) {
-                while (this.a.skipNextRound() && this.skipAndAttack());
-            }
-
-            [this.a, this.b] = [this.b, this.a];
-        }
-
-        // Winner
-        return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
+        super.fight();
     }
 }

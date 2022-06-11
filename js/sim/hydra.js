@@ -107,6 +107,9 @@ class HydraSimulator extends SimulatorBase {
         do {
             this.ca.reset();
 
+            this.a = this.ca;
+            this.b = this.cb;
+
             if (!this.fight()) {
                 this.ca.Attacks++;
             }
@@ -117,67 +120,5 @@ class HydraSimulator extends SimulatorBase {
             health: Math.max(0, this.cb.Health),
             fights: Math.min(this.ca.Attacks, this.ca.MaxAttacks)
         }
-    }
-
-    fight () {
-        this.a = this.ca;
-        this.b = this.cb;
-
-        this.turn = 0;
-
-        // Special damage
-        if (this.as !== false || this.bs !== false) {
-            this.turn++;
-
-            if (this.as > 0) {
-                this.b.Health -= this.as;
-            } else if (this.bs > 0) {
-                this.a.Health -= this.bs;
-            }
-        }
-
-        this.setRandomInitialFighter();
-        this.forwardToBersekerAttack();
-
-        while (this.a.Health > 0 && this.b.Health > 0) {
-            var damage = this.attack(this.a, this.b);
-
-            if (this.b.DamageTaken) {
-                let alive = this.b.onDamageTaken(this.a, damage);
-                if (alive == 0) {
-                    break;
-                }
-            } else {
-                this.b.Health -= damage;
-                if (this.b.Health <= 0) {
-                    break;
-                }
-            }
-
-            if (this.a.Damage2) {
-                var damage2 = this.attack(this.a, this.b, this.a.Damage2);
-
-                if (this.b.DamageTaken) {
-                    let alive = this.b.onDamageTaken(this.a, damage2);
-                    if (alive == 0) {
-                        break;
-                    }
-                } else {
-                    this.b.Health -= damage2;
-                    if (this.b.Health <= 0) {
-                        break;
-                    }
-                }
-            }
-
-            if (this.a.SkipNext) {
-                while (this.a.skipNextRound() && this.skipAndAttack());
-            }
-
-            [this.a, this.b] = [this.b, this.a];
-        }
-
-        // Winner
-        return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
     }
 }
