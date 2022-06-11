@@ -1691,7 +1691,7 @@ class SFOwnPlayer extends SFPlayer {
             this.Underworld.Extractor = dataType.long();
             this.Underworld.GoblinPit = dataType.long();
             this.Underworld.Torture = dataType.long();
-            this.Underworld.Gladiator = dataType.long();
+            this.Fortress.Gladiator = dataType.long();
             this.Underworld.TrollBlock = dataType.long();
             this.Underworld.TimeMachine = dataType.long();
             this.Underworld.Keeper = dataType.long();
@@ -1950,10 +1950,7 @@ function toSimulatorModel (p) {
             Group: p.Dungeons.Group
         },
         Fortress: {
-            Gladiator: (p.Fortress ? p.Fortress.Gladiator : 0) || 0
-        },
-        Underworld: {
-            Gladiator: (p.Underworld ? p.Underworld.Gladiator : 0) || 0
+            Gladiator: p.Fortress.Gladiator || 0,
         },
         Intelligence: {
             Total: p.Intelligence.Total
