@@ -319,6 +319,6 @@ class FightSimulator extends SimulatorBase {
         this.a.reset();
         this.b.reset();
 
-        super.fight();
+        return super.fight();
     }
 }
