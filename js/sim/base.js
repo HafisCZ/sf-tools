@@ -23,6 +23,16 @@ function getRuneValue (item, rune) {
     return item.AttributeTypes[2] == rune ? item.Attributes[2] : 0;
 }
 
+// Masks
+const MASK_NONE = 0;
+const MASK_BEAR = 1;
+const MASK_CAT = 2;
+
+// Instruments
+const INSTRUMENT_HARP = 0;
+const INSTRUMENT_LUTE = 1;
+const INSTRUMENT_FLUTE = 2;
+
 // Fighter models
 class FighterModel {
     static create (index, player) {
@@ -89,7 +99,7 @@ class FighterModel {
         } else {
             if (this.Player.Class == BATTLEMAGE) {
                 return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level + 40);
-            } else if (this.Player.Class == DRUID && this.Player.Mask == 1) {
+            } else if (this.Player.Class == DRUID && this.Player.Mask == MASK_BEAR) {
                 return Math.min(this.getMaximumDamageReduction(), 2 * this.Player.Armor / source.Player.Level);
             } else {
                 return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level);
@@ -107,11 +117,16 @@ class FighterModel {
             case SCOUT:
             case ASSASSIN:
             case BERSERKER:
+            case BARD:
                 return 25;
             case MAGE:
                 return 10;
             case DRUID:
-                return this.Player.Mask == 1 ? 50 : (this.Player.Mask == 2 ? 25 : 0);
+                switch (this.Player.Mask) {
+                    case MASK_BEAR: return 50;
+                    case MASK_CAT: return 25;
+                    default: 0;
+                }
             default:
                 return 0;
         }
@@ -129,7 +144,11 @@ class FighterModel {
                 case WARRIOR:
                     return typeof this.Player.BlockChance !== 'undefined' ? this.Player.BlockChance : 25;
                 case DRUID:
-                    return this.Player.Mask == 1 ? 25 : (this.Player.Mask == 2 ? 50 : 0);
+                switch (this.Player.Mask) {
+                    case MASK_BEAR: return 25;
+                    case MASK_CAT: return 50;
+                    default: 0;
+                }
                 default:
                     return 0;
             }
@@ -147,10 +166,16 @@ class FighterModel {
             case ASSASSIN:
             case BERSERKER:
                 return 4;
+            case BARD:
+                return 3;
             case MAGE:
                 return 2;
             case DRUID:
-                return this.Player.Mask == 1 ? 5 : (this.Player.Mask == 2 ? 4 : 2);
+                switch (this.Player.Mask) {
+                    case MASK_BEAR: return 5;
+                    case MASK_CAT: return 4;
+                    default: 2;
+                }
             default:
                 return 0;
         }
@@ -333,12 +358,12 @@ class DruidModel extends FighterModel {
     getDamageRange (weapon, target) {
         var range = super.getDamageRange(weapon, target);
 
-        if (this.Player.Mask == 1) {
+        if (this.Player.Mask == MASK_BEAR) {
             return {
                 Max: Math.ceil((1 + 1 / 3) * range.Max / 3),
                 Min: Math.ceil((1 + 1 / 3) * range.Min / 3)
             }
-        } else if (this.Player.Mask == 2) {
+        } else if (this.Player.Mask == MASK_CAT) {
             return {
                 Max: Math.ceil((1 + 2 / 3) * range.Max / 3),
                 Min: Math.ceil((1 + 2 / 3) * range.Min / 3)
