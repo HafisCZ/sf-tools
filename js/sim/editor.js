@@ -53,6 +53,14 @@ class Field {
         }
     }
 
+    editable (val) {
+        if (val) {
+            this.$object.removeAttr('disabled');
+        } else {
+            this.$object.attr('disabled', 'disabled');
+        }
+    }
+
     toggle (val) {
         if (val) {
             this.$object.parent('.field').removeClass('disabled');
@@ -150,7 +158,7 @@ class Editor {
     constructor ($parent, callback) {
         this._html($parent);
         this._bind();
-        
+
         this._changeCallback = callback;
         this.clear();
     }
