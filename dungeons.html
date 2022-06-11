@@ -494,6 +494,12 @@
                 $('#sim-iterations').captiveInputField('dungeon_sim/iterations', 5000, v => !isNaN(v) && v >= 1);
 
                 let editor = new (class extends Editor {
+                    constructor ($parent, callback) {
+                        super($parent, callback);
+
+                        this.fields['name'].editable(false);
+                    }
+
                     fill (object, index) {
                         this.pauseListener();
 
