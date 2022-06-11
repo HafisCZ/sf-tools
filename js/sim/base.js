@@ -229,13 +229,11 @@ class FighterModel {
 
     // Get damage range
     getDamageRange (weapon, target, secondary = false) {
-        let mp = 1 - target.getDamageReduction(this) / 100;
-
         let mf = (1 - target.Player.Runes.ResistanceFire / 100) * (getRuneValue(weapon, RUNE_FIRE_DAMAGE) / 100);
         let mc = (1 - target.Player.Runes.ResistanceCold / 100) * (getRuneValue(weapon, RUNE_COLD_DAMAGE) / 100);
         let ml = (1 - target.Player.Runes.ResistanceLightning / 100) * (getRuneValue(weapon, RUNE_LIGHTNING_DAMAGE) / 100);
 
-        let m = (1 + this.Player.Dungeons.Group / 100) * mp * (1 + mf + mc + ml);
+        let m = (1 + this.Player.Dungeons.Group / 100) * target.DamageReduction * (1 + mf + mc + ml);
 
         let aa = this.getAttribute(this);
         let ad = target.getAttribute(this) / 2;
@@ -257,6 +255,8 @@ class FighterModel {
         this.SkipChance = this.getBlockChance(target);
         this.CriticalChance = this.getCriticalChance(target);
         this.TotalHealth = this.getHealth();
+
+        target.DamageReduction = 1 - target.getDamageReduction(this) / 100;
 
         // Weapon
         let weapon1 = this.Player.Items.Wpn1;

@@ -47,6 +47,8 @@ FighterModel.prototype.initialize = function (target) {
 
     this.MaxAttacks = this.Player.Attacks || 1;
 
+    target.DamageReduction = 1 - target.getDamageReduction(this) / 100;
+
     this.Weapon1 = this.getDamageRange(this.Player, target);
     this.Critical = 2;
 }
