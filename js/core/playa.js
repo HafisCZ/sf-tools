@@ -535,9 +535,10 @@ class SFGroup {
         this.Timestamp = data.timestamp;
 
         this.MembersPresent = 0;
-        // this.MemberCount = data.save[3];
+
         this.Honor = data.save[13];
         this.Pet = data.save[378];
+        this.Hydra = data.save[379];
 
         var dataType = new ComplexDataType(data.save.slice(4, 8));
         dataType.short();
