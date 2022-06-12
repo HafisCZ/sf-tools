@@ -772,6 +772,9 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
         if (player.Class == 8 && item.Class == 3 && item.Type > 1) {
             // Druid equipment -> Intelligence into Dexterity
             item = item.morph(3, 2);
+        } else if (player.Class == 9 && item.Class == 3 && item.Type > 1) {
+            // Bard equipment -> Intelligence into Dexterity
+            item = item.morph(3, 2);
         }
 
         player = player.Companions.Kunigunde;
@@ -786,6 +789,9 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
         item = item.morph(1, 2);
     } else if (player.Class == 8 && item.Class == 3 && item.Type > 1) {
         // Druid equipment -> Dexterity to Intelligence
+        item = item.morph(2, 3);
+    } else if (player.Class == 9 && item.Class == 3 && item.Type > 1) {
+        // Bard equipment -> Dexterity to Intelligence
         item = item.morph(2, 3);
     }
 

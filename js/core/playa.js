@@ -1827,6 +1827,9 @@ class SFCompanion extends SFPlayer {
             } else if (player.Class == 8 && this.Class == 3 && item.Class == 3 && item.Type > 1) {
                 // When player is Druid and it's Scout equipment -> Intelligence into Dexterity
                 this.Items[key] = item.morph(3, 2);
+            } else if (player.Class == 9 && this.Class == 3 && item.Class == 3 && item.Type > 1) {
+                // When player is Bard and it's Scout equipment -> Intelligence into Dexterity
+                this.Items[key] = item.morph(3, 2);
             }
         }
 
