@@ -7,6 +7,7 @@
                 tester: 'Testers',
                 cwm: 'Chief Wiki Manager',
                 others: 'Other mentions',
+                toggle: 'Toggle credits',
                 stats: {
                     title: 'Statistics',
                     desc: 'Track progress of yourself and your guild'
