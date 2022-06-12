@@ -324,10 +324,6 @@ class FighterModel {
     skipNextRound () {
         return false;
     }
-
-    updateEffects () {
-
-    }
 }
 
 class WarriorModel extends FighterModel {
@@ -472,15 +468,15 @@ class BardModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
 
-        this.Effect = 4;
+        this.Effect = 8;
         this.DamageTaken = p.Instrument == INSTRUMENT_FLUTE;
 
         this.HealMultiplier = 0;
         this.DamageMultiplier = 0;
         this.IncomingDamageMultiplier = 0;
 
-        this.EffectRounds = 0;
-        this.EffectRoundsRemaining = 0;
+        this.EffectRounds = 8;
+        this.EffectRoundsCap = 0;
     }
 
     reset () {
@@ -490,8 +486,8 @@ class BardModel extends FighterModel {
         this.DamageMultiplier = 0;
         this.IncomingDamageMultiplier = 0;
 
-        this.EffectRounds = 0;
-        this.EffectRoundsRemaining = 0;
+        this.EffectRounds = 8;
+        this.EffectRoundsCap = 0;
     }
 
     onDamageTaken (source, damage) {
@@ -526,7 +522,7 @@ class BardModel extends FighterModel {
     rollEffect (target) {
         let level = this.rollEffectLevel();
 
-        this.EffectRoundsRemaining = this.rollEffectRounds(level);
+        this.EffectRoundsCap = this.rollEffectRounds(level) * 2;
 
         if (this.Player.Instrument == INSTRUMENT_HARP) {
             if (target.Player.Class != MAGE) {
@@ -545,15 +541,28 @@ class BardModel extends FighterModel {
         }
     }
 
-    updateEffects (target) {
-        if (--this.EffectRoundsRemaining <= 0) {
+    updateEffectsAsTarget (skipAttack = false) {
+        this.EffectRounds += skipAttack ? 2 : 1;
+
+        if (this.EffectRounds > this.EffectRoundsCap) {
+            this.HealMultiplier = 0;
+            this.DamageMultiplier = 0;
+            this.IncomingDamageMultiplier = 0;
+        }
+    }
+
+    updateEffectsAsAttacker (target) {
+        this.EffectRounds++;
+
+        if (this.EffectRounds > this.EffectRoundsCap) {
             this.HealMultiplier = 0;
             this.DamageMultiplier = 0;
             this.IncomingDamageMultiplier = 0;
         }
 
-        if (--this.EffectRounds <= 0) {
-            this.EffectRounds = this.Effect;
+        if (this.EffectRounds > this.Effect) {
+            this.EffectRounds = 0;
+
             this.rollEffect(target);
         }
     }
@@ -587,6 +596,10 @@ class SimulatorBase {
 
     skipAndAttack () {
         this.turn++;
+
+        if (this.b.Effect) {
+            this.b.updateEffectsAsTarget(true);
+        }
 
         var damage3 = this.attack(this.a, this.b, this.a.Weapon1, 2);
         if (this.a.DamageDealt) {
@@ -627,6 +640,14 @@ class SimulatorBase {
         this.forwardToBersekerAttack();
 
         while (this.a.Health > 0 && this.b.Health > 0) {
+            if (this.a.Effect) {
+                this.a.updateEffectsAsAttacker(this.b);
+            }
+
+            if (this.b.Effect) {
+                this.b.updateEffectsAsTarget();
+            }
+
             var damage = this.attack(this.a, this.b);
             if (this.a.DamageDealt) {
                 this.a.onDamageDealt(this.b, damage);
@@ -681,10 +702,6 @@ class SimulatorBase {
     }
 
     attack (source, target, weapon = source.Weapon1, extra = 0) {
-        if (source.Effect) {
-            source.updateEffects(target);
-        }
-
         var turn = this.turn++;
         var rage = 1 + turn / 6;
 
