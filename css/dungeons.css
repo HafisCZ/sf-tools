@@ -1,0 +1,201 @@
+.bordered .fields:last-of-type {
+    margin-bottom: 0;
+}
+
+.bordered {
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.bordered-simple {
+    margin-bottom: 0.35em;
+    padding-top: 0.5em !important;
+    padding-bottom: 0.5em !important;
+    margin-right: 1em;
+    margin-left: 1em;
+}
+
+.form.white label {
+    color: white !important;
+}
+
+.bnone {
+    border: 1px solid transparent;
+}
+
+.bone {
+    border: 1px solid orange;
+}
+
+.btwo {
+    border: 1px solid purple;
+}
+
+.bthree {
+    border: 1px solid blue;
+}
+
+.bfour {
+    border: 1px solid red;
+}
+
+.bfive {
+    border: 1px solid green;
+}
+
+.bsix {
+    border: 1px solid pink;
+}
+
+.spaced {
+    margin-top: 2em !important;
+}
+
+.selectable {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding-bottom: 0.25em !important;
+    padding-top: 0.25em !important;
+    height: 4em;
+}
+
+.selectable div {
+    padding: 0 !important;
+}
+
+.selectable-header div {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.selected {
+    background-color: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.nselected {
+    cursor: pointer;
+}
+
+.inactive {
+    opacity: 50%;
+}
+
+#sim-players1 {
+    align-content: flex-start;
+    padding-bottom: 0.75em;
+}
+
+.class-picture {
+     margin-left: -0.75em !important;
+     margin-right: 0.5em !important;
+}
+
+.class-none {
+    margin-left: 1.75em;
+}
+
+.footer {
+    position: fixed;
+    left: 1em;
+    bottom: 1em;
+}
+
+.footer-right {
+    position: fixed;
+    right: 1em;
+    bottom: 1em;
+}
+
+.statistics-module {
+    position: absolute;
+    left: 2em;
+    top: 5em;
+    width: 15em;
+    z-index: 99;
+}
+
+body {
+    overflow-y: auto !important;
+    margin-bottom: 6em;
+}
+
+.text .boss-image {
+    top: -0.75em !important;
+    right: -0.75em !important;
+}
+
+.boss-rune {
+    font-size: 70%;
+    margin-left: 0.25em;
+    position: absolute;
+    right: 3.5em;
+    bottom: 0;
+}
+
+div.text .boss-rune {
+    bottom: -1.1em;
+    right: 2.5em;
+}
+
+#boss-list .text, #available-list .text {
+    width: 100%;
+}
+
+#boss-list .menu, #available-list .menu {
+    overflow-y: scroll;
+}
+
+#load-stats {
+    margin-bottom: 0.5em;
+}
+
+#stats-list > div {
+    font-size: 90%;
+}
+
+#available-list .boss-dungeon-name {
+    font-size: 80%;
+    position: absolute;
+    top: -0.75em;
+}
+
+#available-list .boss-name {
+    font-size: 90%;
+    position: absolute;
+    top: 0.5em;
+}
+
+#available-list .menu .boss-dungeon-name {
+    top: 0.25em;
+}
+
+#available-list .menu .boss-name {
+    top: 1.5em;
+}
+
+#available-list .boss-rune {
+    font-size: 70%;
+    position: absolute;
+    right: 3.5em;
+    top: -0.85em;
+}
+
+#available-list .menu .boss-rune {
+    top: 0.35em;
+}
+
+#winchart.faded-out {
+    opacity: 0.5 !important;
+}
+
+.ui.dimmer {
+    overflow-y: hidden !important;
+}
+
+body.dimmed {
+    margin-right: 0 !important;
+}
