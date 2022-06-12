@@ -857,13 +857,17 @@ class Expression {
             } else if (typeof(node.op) == 'string') {
                 if (node.op == 'format' && node.args.length > 0) {
                     var str = this.evalInternal(scope, node.args[0]);
-                    var arg = node.args.slice(1).map(a => this.evalInternal(scope, a));
+                    if (typeof str === 'string') {
+                        var arg = node.args.slice(1).map(a => this.evalInternal(scope, a));
 
-                    for (key in arg) {
-                        str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
+                        for (key in arg) {
+                            str = str.replace(new RegExp(`\\{\\s*${ key }\\s*\\}`, 'gi'), arg[key]);
+                        }
+
+                        return str;
+                    } else {
+                        return undefined;
                     }
-
-                    return str;
                 } else if (node.op == 'sort' && node.args.length == 2) {
                     // Multiple array functions condensed
                     const array = this.evalToArray(scope, node.args[0]);
