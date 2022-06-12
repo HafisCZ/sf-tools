@@ -9,6 +9,9 @@
 
         <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
         <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="css/pets.css"/>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -31,123 +34,6 @@
         <script src="js/sim/pets.js"></script>
         <script src="js/views.js"></script>
 
-        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
-
-        <style>
-            .bordered .fields:last-of-type {
-                margin-bottom: 0;
-            }
-
-            .bordered {
-                padding: 0.5em;
-                margin-bottom: 0.5em;
-            }
-
-            .bnone {
-                border: 1px solid transparent;
-            }
-
-            .bone {
-                border: 1px solid orange;
-            }
-
-            .btwo {
-                border: 1px solid purple;
-            }
-
-            .bthree {
-                border: 1px solid blue;
-            }
-
-            .bfour {
-                border: 1px solid red;
-            }
-
-            .pet-25 {
-                background-color: #99ffb4;
-            }
-
-            .pet-10 {
-                background-color: #daff99;
-            }
-
-            .pet-5 {
-                background-color: #fdff99;
-            }
-
-            .pet-1 {
-                background-color: #ffdd99;
-            }
-
-            .pet-0 {
-                background-color: #ffad99;
-            }
-
-            .fixed-header thead tr {
-                display: block;
-                margin-right: 17px;
-            }
-
-            .fixed-header tbody {
-                overflow: auto;
-                display: block;
-                height: 69vh;
-                width: 100%;
-            }
-
-            table.map-map {
-                font-size: 90% !important;
-            }
-
-            .map-parent {
-                position: relative;
-            }
-
-            .map-save {
-                position: absolute;
-                right: -4em;
-                top: 4.4em;
-            }
-
-            .map-map td:not(.spanned) {
-                width: 5.2em;
-            }
-
-            .map-map td.spanned {
-                width: 88.4em;
-            }
-
-            body {
-                padding-bottom: 2em;
-            }
-
-            .pet-picture {
-                 width: 2em !important;
-                 height: 2em !important;
-                 margin-left: -0.75em !important;
-                 margin-right: 0.5em !important;
-            }
-
-            .menu .pet-name {
-                display: inline-block;
-                width: 5em;
-            }
-
-            .dropdown [data-pet-id] {
-                font-size: 100%;
-            }
-
-            [data-pet-id] {
-                font-size: 95%;
-            }
-
-            .menu [data-pet-id]::after {
-                content: attr(data-pet-id);
-                position: absolute;
-                right: 0px;
-                transform: scale(0.8);
-            }
-        </style>
     </head>
     <body class="margin-none-bottom">
         <div class="statistics-module" id="stats-module">
