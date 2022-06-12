@@ -287,11 +287,12 @@
                     'Side2': [ 'Intelligence', 'Dexterity', 'Intelligence', 'Intelligence', 'Intelligence', 'Intelligence', 'Intelligence', 'Dexterity', 'Dexterity' ]
                 };
 
-                function playersToData (players) {
+                function playersToData (players, hydra) {
                     let sortedPlayers = _sort_des(players, p => _dig(p, ATT_MAP['Main'][p.Class - 1], 'Total'));
                     let hydraPlayers = _slice_len(sortedPlayers, 0, 25);
 
                     let data = {
+                        Hydra: hydra || EditorController.fields['hydra'].get(),
                         PlayerCount: players.length,
                         Level: Math.trunc(_sum(hydraPlayers.map(p => p.Level)) / 25)
                     }
