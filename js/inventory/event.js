@@ -691,6 +691,21 @@ function getRealGemValue (player, item, type) {
     }
 }
 
+function getHealthMultiplier (c) {
+    switch (c) {
+        case 1:
+        case 5:
+            return 5;
+        case 2:
+        case 8:
+            return 2;
+        case 9:
+            return 3;
+        default:
+            return 4;
+    }
+}
+
 function getMaxReduction (c) {
     switch (c) {
         case 1:
@@ -740,7 +755,7 @@ function getComparisonBase (player, char) {
 
     var mult = (1 + player.Potions.Life / 100);
     var mult2 = (1 + player.Dungeons.Player / 100 + (char == 1 ? 0.33 : 0));
-    var mult3 = (player.Class == 1 || player.Class == 5 ? 5 : (player.Class == 2 || player.Class == 8 ? 2 : 4));
+    var mult3 = getHealthMultiplier(player.Class);
     var mult4 = player.Level + 1;
     ref.Hel = Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(ref.Con * mult4) * mult3) * mult2) * mult) * (1 + player.Runes.Health / 100));
 
