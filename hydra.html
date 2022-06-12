@@ -364,6 +364,9 @@
                     for (let i = 0; i < results.length; i++) {
                         const { iterations, score, pet, hydra, avg_health, avg_fights } = results[i];
 
+                        let averageHealth = Math.trunc(100 * Math.max(0, avg_health / hydra.Health));
+                        let averageFights = Math.ceil(avg_fights);
+
                         content += `
                             <div style="flex: 1 1 32%; margin: 0.5em; ${score == 0 ? 'opacity: 60%' : ''}">
                                 <h3 class="ui centered header" style="margin-top: 0em;">
@@ -371,8 +374,8 @@
                                     <span>${(100 * score / iterations).toFixed(2)}%</span>
                                 </h3>
                                 <hr/>
-                                <div style="padding-left: 0.25em; padding-right: 0.25em;"><span style="font-size: 80%;">&Delta;</span> ${Math.trunc(100 * Math.max(0, avg_health / hydra.Health))}% HP left</div>
-                                <div style="padding-left: 0.25em; padding-right: 0.25em;"><span style="font-size: 80%;">&Delta;</span> ${Math.ceil(avg_fights)} fights</div>
+                                <div style="padding-left: 0.25em; padding-right: 0.25em;"><span style="font-size: 80%;">&Delta;</span> ${averageHealth}% HP left</div>
+                                <div style="padding-left: 0.25em; padding-right: 0.25em;"><span style="font-size: 80%;">&Delta;</span> ${averageFights} fight${averageFights > 1 ? 's' : ''}</div>
                             </div>
                         `;
                     }
