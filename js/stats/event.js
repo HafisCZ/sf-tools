@@ -2386,7 +2386,15 @@ class SettingsView extends View {
 
         this.$parent.find('[data-op="close"]').click(() => this.hide());
         this.$save = this.$parent.find('[data-op="save"]').click(() => this.save());
-        this.$delete = this.$parent.find('[data-op="delete"]').click(() => confirm('Are you sure you want to remove currently applied settings?') ? this.remove() : null);
+        this.$delete = this.$parent.find('[data-op="delete"]').click(() => {
+            PopupController.open(
+                ConfirmationPopup,
+                'Remove settings',
+                'Are you sure you want to permanently remove currently applied settings?',
+                () => this.remove(),
+                null
+            );
+        });
 
         this.$parent.find('[data-op="save-apply-template"]').click(() => this.saveApplyTemplate());
 
