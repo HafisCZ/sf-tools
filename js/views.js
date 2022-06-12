@@ -11,7 +11,7 @@ class FloatingPopup {
                 if (!this._hasParent()) {
                     const modal = $(this._createModal()).addClass('active');
                     const container = $(`
-                        <div style="display: none; z-index: 999; position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, ${this.opacity})">
+                        <div style="display: none; z-index: 99999; position: fixed; width: 100vw; height: 100vh; left: 0; top: 0; display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, ${this.opacity})">
                         </div>
                     `);
 
@@ -977,6 +977,50 @@ const ActionCreatePopup = new (class extends FloatingPopup {
 
     _applyArguments (callback, id) {
 
+    }
+})();
+
+const ConfirmationPopup = new (class extends FloatingPopup {
+    constructor () {
+        super(0);
+    }
+
+    _createModal () {
+        return `
+            <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;" data-op="title"></h2>
+                <div class="text-center" style="color: black; text-align: justify; margin-top: 1em; margin-bottom: 2em;" data-op="text">
+                    ...
+                </div>
+                <div class="ui three fluid buttons">
+                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">Ok</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$parent.find('[data-op="cancel"]').click(() => {
+            if (this.cancelCallback) this.cancelCallback();
+            this.close();
+        });
+
+        this.$parent.find('[data-op="ok"]').click(() => {
+            if (this.okCallback) this.okCallback();
+            this.close();
+        });
+
+        this.$title = this.$parent.find('[data-op="title"]');
+        this.$text = this.$parent.find('[data-op="text"]');
+    }
+
+    _applyArguments (title, text, okCallback, cancelCallback) {
+        this.$title.html(title);
+        this.$text.html(text);
+
+        this.okCallback = okCallback;
+        this.cancelCallback = cancelCallback;
     }
 })();
 
