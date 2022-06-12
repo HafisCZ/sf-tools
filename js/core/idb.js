@@ -597,7 +597,7 @@ const DatabaseManager = new (class {
                     this.Latest = Math.max(this.Latest, timestamp);
                     group.LatestTimestamp = Math.max(group.LatestTimestamp, timestamp);
 
-                    group.MembersPresent = this.Timestamps.array(timestamp).filter(id => _dig(this.Players, id, timestamp, 'Data', 'group') == identifier).length
+                    obj.MembersPresent = this.Timestamps.array(timestamp).filter(id => _dig(this.Players, id, timestamp, 'Data', 'group') == identifier).length
                     if (obj.MembersPresent || SiteOptions.groups_empty) {
                         group.LatestDisplayTimestamp = Math.max(group.LatestDisplayTimestamp, timestamp);
                     }
