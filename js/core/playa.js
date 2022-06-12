@@ -642,13 +642,62 @@ class SFPlayer {
             return this.Strength;
         } else if (this.Class == 3 || this.Class == 4 || this.Class == 7) {
             return this.Dexterity;
-        } else {
+        } else /* 2, 9 */ {
             return this.Intelligence;
         }
     }
 
+    getHealthMultiplier () {
+        switch (this.Class) {
+            case 1:
+            case 5:
+                return 5;
+            case 7:
+            case 3:
+            case 4:
+            case 6:
+                return 4;
+            case 9:
+                return 3;
+            case 2:
+                return 2;
+            case 8:
+                switch (this.Mask) {
+                    case 1: return 5;
+                    case 2: return 4;
+                    default: 2;
+                }
+            default:
+                return 0;
+        }
+    }
+
+    getMaximumDamageReduction () {
+        switch (this.Class) {
+            case 1:
+            case 5:
+            case 7:
+                return 50;
+            case 3:
+            case 4:
+            case 6:
+            case 9:
+                return 25;
+            case 2:
+                return 10;
+            case 8:
+                switch (this.Mask) {
+                    case 1: return 50;
+                    case 2: return 25;
+                    default: 0;
+                }
+            default:
+                return 0;
+        }
+    }
+
     getHealth () {
-        let ma = ((this.Class == 1 || this.Class == 5 || (this.Class == 8 && this.Mask == 1)) ? 5 : ((this.Class == 2 || (this.Class == 8 && this.Mask == 0)) ? 2 : 4));
+        let ma = this.getHealthMultiplier();
         let mb = (100 + this.Dungeons.Player) / 100;
         let mc = this.Potions.Life ? 1.25 : 1;
         let md = (100 + this.Runes.Health) / 100;

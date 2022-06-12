@@ -691,35 +691,6 @@ function getRealGemValue (player, item, type) {
     }
 }
 
-function getHealthMultiplier (c) {
-    switch (c) {
-        case 1:
-        case 5:
-            return 5;
-        case 2:
-        case 8:
-            return 2;
-        case 9:
-            return 3;
-        default:
-            return 4;
-    }
-}
-
-function getMaxReduction (c) {
-    switch (c) {
-        case 1:
-        case 7:
-            return 50;
-        case 2:
-        case 5:
-        case 8:
-            return 10;
-        default:
-            return 25;
-    }
-}
-
 function getComparisonBase (player, char) {
     var ref = {};
 
@@ -755,7 +726,7 @@ function getComparisonBase (player, char) {
 
     var mult = (1 + player.Potions.Life / 100);
     var mult2 = (1 + player.Dungeons.Player / 100 + (char == 1 ? 0.33 : 0));
-    var mult3 = getHealthMultiplier(player.Class);
+    var mult3 = player.getHealthMultiplier();
     var mult4 = player.Level + 1;
     ref.Hel = Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(ref.Con * mult4) * mult3) * mult2) * mult) * (1 + player.Runes.Health / 100));
 
@@ -764,7 +735,7 @@ function getComparisonBase (player, char) {
     ref.Vax = player.Damage.Max;
     ref.Vag = Math.ceil((player.Damage.Min + player.Damage.Max) / 2);
 
-    ref.Red = Math.ceil(Math.min(666, player.Armor / getMaxReduction(player.Class)));
+    ref.Red = Math.ceil(Math.min(666, player.Armor / player.getMaximumDamageReduction()));
     ref.Cri = Math.ceil(Math.min(666, player.Luck.Total / 20));
 
     var dm = (1 + player.Primary.Total / 10) * (1 + player.Dungeons.Group / 100) * (1 + player.Runes.Damage / 100);
@@ -874,7 +845,7 @@ function getComparison (basis, player, char, base, item, nogem, noupgrade) {
         out.Arm = player.Armor + item.Armor - base.Armor;
     }
 
-    out.Red = Math.ceil(Math.min(666, out.Arm / getMaxReduction(player.Class)));
+    out.Red = Math.ceil(Math.min(666, out.Arm / player.getMaximumDamageReduction()));
     out.Cri = Math.ceil(Math.min(666, out.Lck / 20));
 
     if (item.Type == 1) {
