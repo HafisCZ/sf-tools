@@ -2502,7 +2502,7 @@ const SP_KEYWORD_MAPPING_0 = {
     },
     'Instrument': {
         expr: p => p.Instrument,
-        format: (p, c, e, x) => INSTRUMENT_TYPES[x],
+        format: (p, c, e, x) => p.Class == 9 ? INSTRUMENT_TYPES[x] : 'None',
         difference: false,
         statistics: false
     },
