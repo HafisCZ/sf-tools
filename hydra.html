@@ -291,28 +291,32 @@
                     'Side2': [ 'Intelligence', 'Dexterity', 'Intelligence', 'Intelligence', 'Intelligence', 'Intelligence', 'Intelligence', 'Dexterity', 'Dexterity' ]
                 };
 
+                function playersToData (players) {
+                    let sortedPlayers = _sort_des(players, p => _dig(p, ATT_MAP['Main'][p.Class - 1], 'Total'));
+                    let hydraPlayers = _slice_len(sortedPlayers, 0, 25);
+
+                    let data = {
+                        PlayerCount: players.length,
+                        Level: Math.trunc(_sum(hydraPlayers.map(p => p.Level)) / 25)
+                    }
+
+                    for (const att of ['Constitution', 'Luck']) {
+                        data[att] = Math.trunc(_sum(hydraPlayers.map(p => _dig(p, att, 'Total'))) / 10);
+                    }
+
+                    for (const att of ['Main', 'Side1', 'Side2']) {
+                        data[att] = Math.trunc(_sum(hydraPlayers.map(p => _dig(p, ATT_MAP[att][p.Class - 1], 'Total'))) / 10);
+                    }
+
+                    return data;
+                }
+
                 $(document.body).on('paste', function (event) {
                     if (event.target.type != 'text') {
                         try {
                             const players = JSON.parse(event.originalEvent.clipboardData.getData('text'));
                             if (Array.isArray(players)) {
-                                const sortedPlayers = _sort_des(players, p => _dig(p, ATT_MAP['Main'][p.Class - 1], 'Total'));
-                                const hydraPlayers = _slice_len(sortedPlayers, 0, 25);
-
-                                const data = {
-                                    PlayerCount: players.length,
-                                    Level: Math.trunc(_sum(hydraPlayers.map(p => p.Level)) / 25)
-                                }
-
-                                for (const att of ['Constitution', 'Luck']) {
-                                    data[att] = Math.trunc(_sum(hydraPlayers.map(p => _dig(p, att, 'Total'))) / 10);
-                                }
-
-                                for (const att of ['Main', 'Side1', 'Side2']) {
-                                    data[att] = Math.trunc(_sum(hydraPlayers.map(p => _dig(p, ATT_MAP[att][p.Class - 1], 'Total'))) / 10);
-                                }
-
-                                EditorController.fill(data);
+                                EditorController.fill(playersToData(players));
                             }
                         } catch (e) {
                             // Do nothing
