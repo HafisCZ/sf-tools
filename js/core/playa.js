@@ -1197,6 +1197,7 @@ class SFOtherPlayer extends SFPlayer {
         this.Dungeons.Shadow = dataType.byteArray(14);
         dataType.skip(1);
         this.Mask = dataType.long();
+        this.Instrument = this.Mask;
         dataType.clear(); // skip
 
         dataType = new ComplexDataType(data.pets);
@@ -1469,6 +1470,7 @@ class SFOwnPlayer extends SFPlayer {
         dataType.short();
         dataType.skip(4);
         this.Mask = dataType.long();
+        this.Instrument = this.Mask;
         this.Dungeons.Extra.Normal[3] = dataType.short();
         this.Dungeons.Extra.Shadow[3] = dataType.short();
         dataType.skip(2);
