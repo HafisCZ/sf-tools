@@ -1161,6 +1161,11 @@
                                 attackType,
                                 targetHealthLeft
                             ] = msg['r'].slice(i * 3, i * 3 + 3);
+
+                            if (attackType > 100) {
+                                continue;
+                            }
+
                             rounds.push({
                                 attacker: attackerID == fighterA.ID ? fighterA : fighterB,
                                 target: attackerID == fighterA.ID ? fighterB : fighterA,
