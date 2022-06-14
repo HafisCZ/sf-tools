@@ -1011,7 +1011,6 @@ const ConfirmationPopup = new (class extends FloatingPopup {
     }
 
     _updateButton (delayLeft) {
-        console.log(delayLeft)
         if (delayLeft > 0) {
             this.$okButton.addClass('disabled');
             this.$okButton.text(`Wait ${delayLeft} seconds ...`);
