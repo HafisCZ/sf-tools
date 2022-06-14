@@ -472,9 +472,7 @@ class BardModel extends FighterModel {
         this.DamageTaken = p.Instrument == INSTRUMENT_FLUTE;
 
         this.resetEffects();
-
-        this.EffectRounds = BARD_EFFECT_ROUNDS;
-        this.EffectRoundsCap = 0;
+        this.resetTimers();
     }
 
     resetEffects () {
@@ -483,13 +481,20 @@ class BardModel extends FighterModel {
         this.IncomingDamageMultiplier = 0;
     }
 
+    resetTimers () {
+        this.EffectRounds = BARD_EFFECT_ROUNDS;
+        if (this.Player.Instrument == INSTRUMENT_FLUTE) {
+            this.EffectRounds--;
+        }
+
+        this.EffectRoundsCap = 0;
+    }
+
     reset () {
         super.reset();
 
         this.resetEffects();
-
-        this.EffectRounds = BARD_EFFECT_ROUNDS;
-        this.EffectRoundsCap = 0;
+        this.resetTimers();
     }
 
     onDamageTaken (source, damage) {
