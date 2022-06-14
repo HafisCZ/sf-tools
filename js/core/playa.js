@@ -658,9 +658,8 @@ class SFPlayer {
             case 4:
             case 6:
                 return 4;
-            case 9:
-                return 3;
             case 2:
+            case 9:
                 return 2;
             case 8:
                 switch (this.Mask) {
