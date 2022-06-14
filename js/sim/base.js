@@ -526,16 +526,16 @@ class BardModel extends FighterModel {
 
         if (this.Player.Instrument == INSTRUMENT_HARP) {
             if (target.Player.Class != MAGE) {
-                let multiplier = 1 / this.DamageReduction * (1 - [ 30, 40, 50 ][level] / 100);
+                let multiplier = 1 / this.DamageReduction * (1 - [ 40, 55, 75 ][level] / 100);
 
                 this.IncomingDamageMultiplier = multiplier;
             }
         } else if (this.Player.Instrument == INSTRUMENT_LUTE) {
-            let multiplier = 1 + [ 20, 25, 30 ][level] / 100;
+            let multiplier = 1 + [ 20, 40, 60 ][level] / 100;
 
             this.DamageMultiplier = multiplier;
         } else /* INSTRUMENT_FLUTE */ {
-            let multiplier = [ 5, 10, 15 ][level] / 100;
+            let multiplier = [ 5, 7.5, 10 ][level] / 100;
 
             this.HealMultiplier = multiplier;
         }
