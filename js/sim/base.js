@@ -462,29 +462,33 @@ class DemonHunterModel extends FighterModel {
     }
 }
 
+const BARD_EFFECT_ROUNDS = 8;
+
 class BardModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
 
-        this.Effect = 8;
+        this.BeforeAttack = true;
         this.DamageTaken = p.Instrument == INSTRUMENT_FLUTE;
 
+        this.resetEffects();
+
+        this.EffectRounds = BARD_EFFECT_ROUNDS;
+        this.EffectRoundsCap = 0;
+    }
+
+    resetEffects () {
         this.HealMultiplier = 0;
         this.DamageMultiplier = 0;
         this.IncomingDamageMultiplier = 0;
-
-        this.EffectRounds = 8;
-        this.EffectRoundsCap = 0;
     }
 
     reset () {
         super.reset();
 
-        this.HealMultiplier = 0;
-        this.DamageMultiplier = 0;
-        this.IncomingDamageMultiplier = 0;
+        this.resetEffects();
 
-        this.EffectRounds = 8;
+        this.EffectRounds = BARD_EFFECT_ROUNDS;
         this.EffectRoundsCap = 0;
     }
 
@@ -524,7 +528,7 @@ class BardModel extends FighterModel {
 
         if (this.Player.Instrument == INSTRUMENT_HARP) {
             let multiplier = 1 / this.DamageReduction * this.getDamageReduction(target, [ 40, 55, 75 ][level])
-            
+
             this.IncomingDamageMultiplier = multiplier;
         } else if (this.Player.Instrument == INSTRUMENT_LUTE) {
             let multiplier = 1 + [ 20, 40, 60 ][level] / 100;
@@ -537,28 +541,15 @@ class BardModel extends FighterModel {
         }
     }
 
-    updateEffectsAsTarget (skipAttack = false) {
+    onBeforeAttack (target, skipAttack = false) {
         this.EffectRounds += skipAttack ? 2 : 1;
 
         if (this.EffectRounds > this.EffectRoundsCap) {
-            this.HealMultiplier = 0;
-            this.DamageMultiplier = 0;
-            this.IncomingDamageMultiplier = 0;
-        }
-    }
-
-    updateEffectsAsAttacker (target) {
-        this.EffectRounds++;
-
-        if (this.EffectRounds > this.EffectRoundsCap) {
-            this.HealMultiplier = 0;
-            this.DamageMultiplier = 0;
-            this.IncomingDamageMultiplier = 0;
+            this.resetEffects();
         }
 
-        if (this.EffectRounds > this.Effect) {
+        if (this != target && this.EffectRounds > BARD_EFFECT_ROUNDS) {
             this.EffectRounds = 0;
-
             this.rollEffect(target);
         }
     }
@@ -593,8 +584,8 @@ class SimulatorBase {
     skipAndAttack () {
         this.turn++;
 
-        if (this.b.Effect) {
-            this.b.updateEffectsAsTarget(true);
+        if (this.b.BeforeAttack) {
+            this.b.onBeforeAttack(this.b, true);
         }
 
         var damage3 = this.attack(this.a, this.b, this.a.Weapon1, 2);
@@ -636,13 +627,8 @@ class SimulatorBase {
         this.forwardToBersekerAttack();
 
         while (this.a.Health > 0 && this.b.Health > 0) {
-            if (this.a.Effect) {
-                this.a.updateEffectsAsAttacker(this.b);
-            }
-
-            if (this.b.Effect) {
-                this.b.updateEffectsAsTarget();
-            }
+            if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
+            if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
 
             var damage = this.attack(this.a, this.b);
             if (this.a.DamageDealt) {
