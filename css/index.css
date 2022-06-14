@@ -40,6 +40,10 @@ h2 {
     filter: brightness(130%);
 }
 
+.bright {
+    filter: brightness(130%);
+}
+
 h3 {
     text-align: left;
     color: white;
