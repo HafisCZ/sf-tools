@@ -461,6 +461,14 @@ class ModelRegistry {
         }
     }
 
+    empty (major) {
+        if (this[major]) {
+            return this[major].size == 0;
+        } else {
+            return true;
+        }
+    }
+
     entries () {
         return Object.entries(this);
     }
@@ -872,12 +880,12 @@ const DatabaseManager = new (class {
 
         if (this._isPlayer(identifier)) {
             delete this.Players[identifier][timestamp];
-            if (_empty(this.Identifiers[identifier])) {
+            if (this.Identifiers.empty(identifier)) {
                 delete this.Players[identifier];
             }
         } else {
             delete this.Groups[identifier][timestamp];
-            if (_empty(this.Identifiers[identifier])) {
+            if (this.Identifiers.empty(identifier)) {
                 delete this.Groups[identifier];
             }
         }
@@ -886,8 +894,8 @@ const DatabaseManager = new (class {
     // Remove one or more timestamps
     removeTimestamps (... timestamps) {
         return new Promise(async (resolve, reject) => {
-            for (const timestamp of timestamps.filter(timestamp => this.Timestamps[timestamp])) {
-                for (const identifier of this.Timestamps[timestamp]) {
+            for (const timestamp of timestamps) {
+                for (const identifier of this.Timestamps.array(timestamp)) {
                     let isPlayer = this._isPlayer(identifier);
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
@@ -904,8 +912,8 @@ const DatabaseManager = new (class {
 
     purge () {
         return new Promise(async (resolve, reject) => {
-            for (const timestamp of Object.keys(this.Timestamps).filter(ts => this.Timestamps[ts])) {
-                for (const identifier of this.Timestamps[timestamp]) {
+            for (const [timestamp, identifiers] of this.Timestamps.entries()) {
+                for (const identifier of Array.from(identifiers)) {
                     let isPlayer = this._isPlayer(identifier);
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
@@ -953,11 +961,11 @@ const DatabaseManager = new (class {
 
     removeIdentifiers (... identifiers) {
         return new Promise(async (resolve, reject) => {
-            for (const identifier of identifiers.filter(identifier => this.Identifiers[identifier])) {
+            for (const identifier of identifiers) {
                 delete this.Players[identifier];
                 delete this.Groups[identifier];
 
-                for (const timestamp of this.Identifiers[identifier]) {
+                for (const timestamp of this.Identifiers.array(identifier)) {
                     let isPlayer = this._isPlayer(identifier);
                     await this.Database.remove(isPlayer ? 'players' : 'groups', [identifier, parseInt(timestamp)]);
 
@@ -1081,7 +1089,7 @@ const DatabaseManager = new (class {
 
                 if (!SiteOptions.hidden) {
                     for (const timestamp of timestamps) {
-                        for (const identifier of this.Timestamps[timestamp]) {
+                        for (const identifier of this.Timestamps.array(timestamp)) {
                             this._unload(identifier, timestamp);
                         }
                     }
@@ -1167,25 +1175,27 @@ const DatabaseManager = new (class {
         let groups = [];
 
         if (!_present(identifiers)) {
-            identifiers = Object.keys(this.Identifiers);
+            identifiers = this.Identifiers.keys();
         }
 
         if (!_present(timestamps)) {
-            timestamps = Object.keys(this.Timestamps);
+            timestamps = this.Timestamps.keys();
         }
 
         for (let timestamp of timestamps) {
-            if (!_present(this.Timestamps[timestamp]) || this.Timestamps[timestamp].size == 0) {
+            let timestampIdentifiers = this.Timestamps.array(timestamp);
+
+            if (!_present(timestampIdentifiers) || timestampIdentifiers.size == 0) {
                 continue;
             }
 
-            for (let identifier of this.Timestamps[timestamp]) {
+            for (let identifier of timestampIdentifiers) {
                 if (!identifiers.includes(identifier)) {
                     continue;
                 }
 
                 let isPlayer = this._isPlayer(identifier);
-                let data = (isPlayer ? this.Players[identifier][timestamp] : this.Groups[identifier][timestamp]).Data;
+                let data = _dig(this, isPlayer ? 'Players' : 'Groups', identifier, timestamp, 'Data');
 
                 if (!_present(constraint) || constraint(data)) {
                     (isPlayer ? players : groups).push(data);
@@ -1339,7 +1349,7 @@ const DatabaseManager = new (class {
     }
 
     findDataFieldFor (timestamp, field) {
-        for (const identifier of this.Timestamps[timestamp]) {
+        for (const identifier of this.Timestamps.array(timestamp)) {
             const value = _dig(this.Players, identifier, timestamp, 'Data', field);
             if (value) {
                 return value;
