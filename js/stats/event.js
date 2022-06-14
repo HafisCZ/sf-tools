@@ -1771,10 +1771,10 @@ class FilesView extends View {
 
     // Delete all
     deleteAll () {
-        UI.ConfirmDialog.show('Database wipe', 'Are you sure you want to delete all stored player data?', () => {
+        PopupController.open(ConfirmationPopup, 'Delete all', 'Are you sure you want to delete all stored player data?', () => {
             PopupController.open(LoaderPopup);
             DatabaseManager.purge().then(() => this.show());
-        }, true);
+        }, () => {}, true, 2)
     }
 
     // Delete selected
@@ -2685,74 +2685,6 @@ class SettingsFloatView extends SettingsView {
         SettingsManager.remove(this.settings.name);
         this.hide();
         UI.current.load();
-    }
-}
-
-class ConfirmDialogView extends View {
-    constructor (parent) {
-        super(parent);
-
-        this.$no = this.$parent.find('[data-op="no"]').click(() => {
-            this.hide();
-        });
-
-        this.$yes = this.$parent.find('[data-op="yes"]').click(() => {
-            this.accept();
-        });
-
-        this.$title = this.$parent.find('[data-op="title"]');
-        this.$content = this.$parent.find('[data-op="content"]');
-    }
-
-    accept () {
-        if (this.commitAction) {
-            this.commitAction();
-        }
-        this.hide();
-    }
-
-    show (title, content, action, delayedYes = false) {
-        this.$title.text(title);
-        this.$content.text(content);
-        this.commitAction = action;
-
-        if (delayedYes) {
-            this.$yes.addClass('disabled').text('Wait 2 seconds ...');
-
-            if (this.timeoutOn) {
-                clearTimeout(this.timeout);
-                clearTimeout(this.timeout2);
-                this.timeoutOn = false;
-            }
-
-            this.timeout = setTimeout(() => {
-                this.$yes.removeClass('disabled').text('OK');
-                this.timeoutOn = false;
-            }, 2000);
-
-            this.timeout2 = setTimeout(() => {
-                this.$yes.text('Wait 1 second ...');
-            }, 1000);
-
-            this.timeoutOn = true;
-        } else {
-            if (this.timeoutOn) {
-                clearTimeout(this.timeout);
-                clearTimeout(this.timeout2);
-                this.timeoutOn = false;
-            }
-
-            this.$yes.removeClass('disabled').text('OK');
-        }
-
-        this.$parent.modal({
-            centered: true,
-            transition: 'fade'
-        }).modal('show');
-    }
-
-    hide () {
-        this.$parent.modal('hide');
     }
 }
 

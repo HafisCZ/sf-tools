@@ -981,10 +981,6 @@ const ActionCreatePopup = new (class extends FloatingPopup {
 })();
 
 const ConfirmationPopup = new (class extends FloatingPopup {
-    constructor () {
-        super(0);
-    }
-
     _createModal () {
         return `
             <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
@@ -1000,27 +996,70 @@ const ConfirmationPopup = new (class extends FloatingPopup {
         `;
     }
 
-    _createBindings () {
-        this.$parent.find('[data-op="cancel"]').click(() => {
-            if (this.cancelCallback) this.cancelCallback();
-            this.close();
-        });
+    _callAndClose (callback) {
+        if (callback) callback();
 
-        this.$parent.find('[data-op="ok"]').click(() => {
-            if (this.okCallback) this.okCallback();
-            this.close();
-        });
+        this._closeTimer();
+        this.close();
+    }
+
+    _closeTimer () {
+        if (this.delayTimer) {
+            clearInterval(this.delayTimer);
+            this.delayTimer = null;
+        }
+    }
+
+    _updateButton (delayLeft) {
+        console.log(delayLeft)
+        if (delayLeft > 0) {
+            this.$okButton.addClass('disabled');
+            this.$okButton.text(`Wait ${delayLeft} seconds ...`);
+        } else {
+            this.$okButton.removeClass('disabled');
+            this.$okButton.text('Ok');
+        }
+    }
+
+    _unblockButton () {
+        this.$okButton.removeClass('disabled');
+        this.$okButton.text('Ok');
+    }
+
+    _blockButton () {
+        this.$okButton.addClass('disabled');
+    }
+
+    _createBindings () {
+        this.$cancelButton = this.$parent.find('[data-op="cancel"]');
+        this.$okButton = this.$parent.find('[data-op="ok"]');
 
         this.$title = this.$parent.find('[data-op="title"]');
         this.$text = this.$parent.find('[data-op="text"]');
+
+        this.$cancelButton.click(() => this._callAndClose(this.cancelCallback));
+        this.$okButton.click(() => this._callAndClose(this.okCallback));
     }
 
-    _applyArguments (title, text, okCallback, cancelCallback) {
+    _applyArguments (title, text, okCallback, cancelCallback, darkBackground = false, delay = 0) {
         this.$title.html(title);
         this.$text.html(text);
 
         this.okCallback = okCallback;
         this.cancelCallback = cancelCallback;
+
+        this.$parent.css('background', `rgba(0, 0, 0, ${darkBackground ? 0.85 : 0})`);
+
+        this._updateButton(delay);
+        if (delay > 0) {
+            this.delayTimer = setInterval(() => {
+                if (--delay <= 0) {
+                    this._closeTimer();
+                }
+
+                this._updateButton(delay);
+            }, 1000);
+        }
     }
 })();
 
