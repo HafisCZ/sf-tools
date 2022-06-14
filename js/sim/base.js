@@ -165,9 +165,8 @@ class FighterModel {
             case ASSASSIN:
             case BERSERKER:
                 return 4;
-            case BARD:
-                return 3;
             case MAGE:
+            case BARD:
                 return 2;
             case DRUID:
                 switch (this.Player.Mask) {
