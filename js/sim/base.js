@@ -86,11 +86,10 @@ class FighterModel {
     }
 
     // Damage Reduction
-    getDamageReduction (source) {
+    getDamageReduction (source, maximumReduction = this.getMaximumDamageReduction()) {
         if (source.Player.Class == MAGE) {
             return 0;
         } else if (this.Player.ForceArmor) {
-            let maximumReduction = this.getMaximumDamageReduction();
             if (this.Player.ForceArmor === true) {
                 return maximumReduction;
             } else {
@@ -98,11 +97,11 @@ class FighterModel {
             }
         } else {
             if (this.Player.Class == BATTLEMAGE) {
-                return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level + 40);
+                return Math.min(maximumReduction, this.Player.Armor / source.Player.Level + 40);
             } else if (this.Player.Class == DRUID && this.Player.Mask == MASK_BEAR) {
-                return Math.min(this.getMaximumDamageReduction(), 2 * this.Player.Armor / source.Player.Level);
+                return Math.min(maximumReduction, 2 * this.Player.Armor / source.Player.Level);
             } else {
-                return Math.min(this.getMaximumDamageReduction(), this.Player.Armor / source.Player.Level);
+                return Math.min(maximumReduction, this.Player.Armor / source.Player.Level);
             }
         }
     }
@@ -525,11 +524,9 @@ class BardModel extends FighterModel {
         this.EffectRoundsCap = this.rollEffectRounds(level) * 2;
 
         if (this.Player.Instrument == INSTRUMENT_HARP) {
-            if (target.Player.Class != MAGE) {
-                let multiplier = 1 / this.DamageReduction * (1 - [ 40, 55, 75 ][level] / 100);
-
-                this.IncomingDamageMultiplier = multiplier;
-            }
+            let multiplier = 1 / this.DamageReduction * this.getDamageReduction(target, [ 40, 55, 75 ][level])
+            
+            this.IncomingDamageMultiplier = multiplier;
         } else if (this.Player.Instrument == INSTRUMENT_LUTE) {
             let multiplier = 1 + [ 20, 40, 60 ][level] / 100;
 
