@@ -293,7 +293,7 @@ class FighterModel {
         this.Health = this.TotalHealth || this.getHealth();
 
         // Trigger counters
-        this.TriggersDeath = 0;
+        this.DeathTriggers = 0;
     }
 
     onFightStart (target) {
@@ -311,7 +311,7 @@ class FighterModel {
     onDamageTaken (source, damage) {
         this.Health -= damage;
         if (this.Health < 0 && this.onDeath(source)) {
-            this.TriggersDeath++;
+            this.DeathTriggers++;
 
             return 2;
         } else {
@@ -455,7 +455,7 @@ class DemonHunterModel extends FighterModel {
 
     onDeath (source) {
         let reviveChance = DH_REVIVE_CHANCE - 2 * this.DeathTriggers;
-        
+
         if (source.Player.Class != MAGE && getRandom(reviveChance)) {
             this.Health = this.TotalHealth * Math.max(0.1, 0.9 - this.DeathTriggers * 0.1);
 

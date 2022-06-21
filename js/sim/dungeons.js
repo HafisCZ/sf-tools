@@ -81,11 +81,6 @@ class DungeonSimulator extends SimulatorBase {
         this.cache_boss = FighterModel.create(1, boss);
     }
 
-    reset (player) {
-        player.Health = player.getHealth();
-        player.DeathTriggers = 0;
-    }
-
     battle () {
         this.la = [ ... this.cache_players ];
         this.lb = [ this.cache_boss ];
