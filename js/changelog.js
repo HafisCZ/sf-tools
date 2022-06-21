@@ -1,4 +1,28 @@
 const CHANGELOG = {
+    'v5.2134': {
+        'Statistics': [
+            'Added support for Bard class',
+            'Added <code>Hydra</code> field to groups',
+            'Reworked several dialogs',
+            'Fixed tracking of deleted players',
+            'Fixed counting of present guild members',
+            'Fixed crash when trying to format non-string value'
+        ],
+        'Inventory Manager': [
+            'Added support for Bard class'
+        ],
+        'All Simulators': [
+            'Added support for Bard class',
+            'Added support for reworked Demon Hunter class',
+            'Reworked UI & simulator code'
+        ],
+        'Hydra Simulator': [
+            'Added Endpoint integration'
+        ],
+        'Pet Simulator': [
+            'Fixed Sim All button showing when no dungeons are left'
+        ]
+    },
     'v5.2000': {
         'Statistics': [
             'Added auto tagging action',
