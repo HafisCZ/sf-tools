@@ -445,6 +445,8 @@ class BerserkerModel extends FighterModel {
     }
 }
 
+const DH_REVIVE_CHANCE = 400 / 9;
+
 class DemonHunterModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
@@ -452,7 +454,9 @@ class DemonHunterModel extends FighterModel {
     }
 
     onDeath (source) {
-        if (source.Player.Class != MAGE && source.Player.Class != DRUID && getRandom(400 / 9)) {
+        let reviveChance = DH_REVIVE_CHANCE - 2 * this.DeathTriggers;
+        
+        if (source.Player.Class != MAGE && getRandom(reviveChance)) {
             this.Health = this.TotalHealth * Math.max(0.1, 0.9 - this.DeathTriggers * 0.1);
 
             return true;
