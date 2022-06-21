@@ -14,6 +14,7 @@ const CHANGELOG = {
         'All Simulators': [
             'Added support for Bard class',
             'Added support for reworked Demon Hunter class',
+            'Added editable block chance for warriors (please adjust your saved presets)',
             'Reworked UI & simulator code'
         ],
         'Hydra Simulator': [
