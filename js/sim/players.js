@@ -135,6 +135,13 @@ class GuildSimulator extends SimulatorBase {
         // Return fight result
         return (this.la.length > 0 ? this.la[0].Index : this.lb[0].Index) == 0;
     }
+
+    fight () {
+        this.a.DeathTriggers = 0;
+        this.b.DeathTriggers = 0;
+
+        return super.fight();
+    }
 }
 
 class FightSimulator extends SimulatorBase {
