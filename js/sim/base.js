@@ -452,7 +452,7 @@ class DemonHunterModel extends FighterModel {
     }
 
     onDeath (source) {
-        if (source.Player.Class != MAGE && source.Player.Class != DRUID && getRandom(25)) {
+        if (source.Player.Class != MAGE && source.Player.Class != DRUID && getRandom(400 / 9)) {
             this.Health = this.TotalHealth * Math.max(0.1, 0.9 - this.DeathTriggers * 0.1);
 
             return true;
