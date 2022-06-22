@@ -3,8 +3,8 @@ FIGHT_DUMP_OUTPUT = [];
 
 // Override some methods
 FighterModel.prototype.getHealth = function () {
-    if (this.Player.Health) {
-        return this.Player.Health;
+    if (this.Player.ForceHealth) {
+        return this.Player.ForceHealth;
     } else {
         return (this.getHealthMultiplier() * (this.Player.Level + 1) * this.Player.Constitution.Total) % Math.pow(2, 32);
     }

@@ -243,7 +243,7 @@
                         },
                         DamageMin: obj.min,
                         DamageMax: obj.max,
-                        Health: obj.health,
+                        ForceHealth: obj.health,
                         Mask: obj.mask,
                         Instrument: obj.instrument
                     }
@@ -281,7 +281,7 @@
                         },
                         DamageMin: null, // automatic
                         DamageMax: null, // automatic
-                        Health: null, // automatic
+                        ForceHealth: null, // automatic
                         Mask: null,
                         Instrument: null,
                         Attacks: obj.PlayerCount
@@ -442,7 +442,7 @@
                     for (let i = 0; i < results.length; i++) {
                         const { iterations, score, pet, hydra, avg_health, avg_fights } = results[i];
 
-                        let averageHealth = Math.trunc(100 * Math.max(0, avg_health / hydra.Health));
+                        let averageHealth = Math.trunc(100 * Math.max(0, avg_health / hydra.ForceHealth));
                         let averageFights = Math.ceil(avg_fights);
 
                         content += `
