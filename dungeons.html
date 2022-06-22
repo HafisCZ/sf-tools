@@ -375,8 +375,8 @@
                             Wpn2: {
                                 AttributeTypes: { 2: data.runes ? data.runes.type : 0 },
                                 Attributes: { 2: data.runes ? data.runes.damage : 0 },
-                                DamageMax: data.ass ? data.max : 0,
-                                DamageMin: data.ass ? data.min : 0,
+                                DamageMax: data.broken ? 0 : data.max,
+                                DamageMin: data.broken ? 0 : data.min,
                                 HasEnchantment: false
                             }
                         }
