@@ -2,10 +2,6 @@ FIGHT_DUMP_ENABLED = false;
 FIGHT_DUMP_OUTPUT = [];
 
 // Override some methods
-FighterModel.prototype.getCriticalChance = function (target) {
-    return Math.min(50, this.Player.Luck.Total * 2.5 / target.Player.Level);
-}
-
 FighterModel.prototype.getHealth = function () {
     if (this.Player.Health) {
         return this.Player.Health;
