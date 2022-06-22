@@ -261,7 +261,7 @@
                     let obj = EditorController.read();
 
                     return {
-                        Armor: null, // automatic
+                        Armor: null,
                         Level: obj.Level,
                         Class: klass,
                         Strength: {
@@ -282,6 +282,7 @@
                         DamageMin: null, // automatic
                         DamageMax: null, // automatic
                         ForceHealth: null, // automatic
+                        ForceArmor: 1,
                         Mask: null,
                         Instrument: null,
                         Attacks: obj.PlayerCount
