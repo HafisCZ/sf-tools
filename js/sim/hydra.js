@@ -18,11 +18,10 @@ FighterModel.prototype.getDamageRange = function (weapon, target) {
     let min = weapon.DamageMin;
     let max = weapon.DamageMax;
 
-    let mp = 1 - target.getDamageReduction(this) / 100;
     let aa = this.getAttribute(this);
     let ad = target.getAttribute(this) / 2;
 
-    let dm = mp * (1 + Math.max(aa / 2, aa - ad) / 10);
+    let dm = target.DamageReduction * (1 + Math.max(aa / 2, aa - ad) / 10);
 
     if (!min || !max) {
         min = max = this.getFixedDamage();
