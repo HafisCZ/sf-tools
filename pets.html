@@ -862,7 +862,7 @@
                     'Shadow', 'Light', 'Earth', 'Fire', 'Water'
                 ][currentType];
 
-                let gladiator = _try(player.Underworld, 'Gladiator') || 0;
+                let gladiator = _try(player.Fortress, 'Gladiator') || 0;
                 let pack = player.Pets[`${currentName}Count`];
                 let petLevels = player.Pets[`${currentName}Levels`];
                 let at100 = _len_where(petLevels, l => _between(l, 99, 200));
