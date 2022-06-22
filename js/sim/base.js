@@ -536,7 +536,7 @@ class BardModel extends FighterModel {
         this.EffectRoundsCap = this.rollEffectRounds(level) * 2;
 
         if (this.Player.Instrument == INSTRUMENT_HARP) {
-            let multiplier = 1 / this.DamageReduction * this.getDamageReduction(target, [ 40, 55, 75 ][level])
+            let multiplier = 1 / this.DamageReduction * (1 - this.getDamageReduction(target, [ 40, 55, 75 ][level]) / 100);
 
             this.IncomingDamageMultiplier = multiplier;
         } else if (this.Player.Instrument == INSTRUMENT_LUTE) {
