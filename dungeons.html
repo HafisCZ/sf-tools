@@ -176,7 +176,7 @@
                         <label>Enable cheats</label>
                     </div>
                 </div>
-                <div class="field"><b>General</b></div>
+                <div class="field"><h3 class="ui white header">General</h3></div>
                 <div class="field">
                     <div class="ui checkbox">
                         <input type="checkbox" class="hidden" data-cheat="enchantments">
@@ -195,7 +195,7 @@
                         <label>Maximum pets</label>
                     </div>
                 </div>
-                <div class="field"><b>Potions</b> (up to 3)</div>
+                <div class="field"><h3 class="ui white header">Potions (max 3)</h3></div>
                 <div class="two fields">
                     <div class="field">
                         <div class="ui checkbox">
@@ -236,6 +236,19 @@
                             <input type="checkbox" class="hidden" data-cheat="life">
                             <label>Eternal Life</label>
                         </div>
+                    </div>
+                </div>
+                <div class="field"><h3 class="ui white header">Change class</h3></div>
+                <div class="field">
+                    <div class="ui checkbox">
+                        <input type="checkbox" class="hidden" data-cheat="class_active">
+                        <label>Active</label>
+                    </div>
+                </div>
+                <div class="field" style="margin-right: 1em;">
+                    <div class="ui selection compact dropdown" data-cheat="class">
+                        <div class="text"></div>
+                        <i class="dropdown icon"></i>
                     </div>
                 </div>
             </div>
@@ -896,8 +909,18 @@
                     graph.update(0);
                 }
 
+                $('[data-cheat="class"]').dropdown({
+                    preserveHTML: true,
+                    values: Object.entries(CLASS_MAP).map((e) => {
+                        return {
+                            name: `<img class="ui centered image class-picture" src="res/class${ e[0] }.png"><span>${ e[1] }</span>`,
+                            value: e[0]
+                        };
+                    })
+                }).dropdown('set selected', '1');
+
                 function applyCheats (player) {
-                    let cheats = _array_to_hash($('[data-cheat]').toArray(), el => [el.dataset.cheat, el.checked]);
+                    let cheats = _array_to_hash($('[data-cheat]').toArray(), el => [el.dataset.cheat, el.tagName == 'DIV' ? parseInt($(el).dropdown('get value')) : el.checked]);
 
                     if (cheats.pets) {
                         player.Pets = {
@@ -963,6 +986,50 @@
                                 }
 
                                 companion.Potions = player.Potions;
+                                companion.evaluateCompanionCommon(player);
+                            }
+                        }
+                    }
+
+                    if (cheats.class_active) {
+                        const swapAttributes = function (obj, type, fromClass, toClass) {
+                            let attributes = _array_to_hash(['Main', 'Side1', 'Side2'], kind => [kind, _dig(obj, MAIN_ATTRIBUTE_MAP[kind][fromClass - 1], type)]);
+                            for (let kind of ['Main', 'Side1', 'Side2']) {
+                                obj[MAIN_ATTRIBUTE_MAP[kind][toClass - 1]][type] = attributes[kind];
+                            }
+                        }
+
+                        const scaleValue = function (value, mapping, fromClass, toClass) {
+                            return Math.ceil(value / (mapping[fromClass - 1]) * (mapping[toClass - 1]));
+                        }
+
+                        swapAttributes(player, 'Base', player.Class, cheats.class);
+                        swapAttributes(player, 'Total', player.Class, cheats.class);
+
+                        player.Armor = scaleValue(player.Armor, [50, 25, 10, 25, 10, 25, 50, 25, 25], player.Class, cheats.class);
+                        player.Items.Wpn1.DamageMin = scaleValue(player.Items.Wpn1.DamageMin, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5], player.Class, cheats.class);
+                        player.Items.Wpn1.DamageMax = scaleValue(player.Items.Wpn1.DamageMax, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5], player.Class, cheats.class);
+
+                        if (cheats.class == 1 /* WARRIOR */) {
+                            player.Items.Wpn2.DamageMin = 25;
+                        } else if (cheats.class == 4 /* ASSASSIN */) {
+                            player.Items.Wpn2 = player.Items.Wpn1;
+                        } else if (cheats.class == 8 /* DRUID */) {
+                            player.Mask = 2;
+                        } else if (cheats.class == 9 /* BARD */) {
+                            player.Instrument = 0;
+                        }
+
+                        player.Class = cheats.class;
+
+                        if (player.Companions) {
+                            for (let kind of ['Bert', 'Mark', 'Kunigunde']) {
+                                let companion = player.Companions[kind];
+
+                                for (let type of ['Strength', 'Dexterity', 'Intelligence']) {
+                                    companion[type].Base = player[type].Base;
+                                }
+
                                 companion.evaluateCompanionCommon(player);
                             }
                         }
