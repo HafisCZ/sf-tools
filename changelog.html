@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Changelog</title>
+
+        <meta charset="utf-8">
+        <meta name="description" content="Collection of tools for Shakes & Fidget">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="res/favicon.png"/>
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="css/changelog.css"/>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/semantic.min.js"></script>
+
+        <script src="js/loca.js"></script>
+        <script src="js/core/core.js"></script>
+        <script src="js/changelog.js"></script>
+        <script src="js/views.js"></script>
+    </head>
+    <body>
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        </div>
+
+        <div class="ui main container">
+            <div class="ui grid version-list">
+
+            </div>
+        </div>
+
+        <script>
+            window.addEventListener('load', function () {
+                function getChangelogEntry (version) {
+                    const entries = CHANGELOG[version];
+
+                    if (Array.isArray(entries)) {
+                        const content = entries.map(entry => `<li>${entry}</li>`).join('');
+                        return `
+                            <div class="row">
+                                <div class="two wide column"></div>
+                                <div class="one wide column">
+                                    <h3 class="ui header">${ version }</h3>
+                                </div>
+                                <div class="thirteen wide column">
+                                    <ul class="simple-list">
+                                        ${content}
+                                    </ul>
+                                </div>
+                            </div>
+                        `;
+                    } else if (entries) {
+                        let content = ''
+                        for (const [ category, changes ] of Object.entries(entries)) {
+                            const entries = changes.map(entry => `<li>${entry}</li>`).join('')
+                            content += `
+                                <h3 class="ui header" style="color: white !important; margin-left: 1.5em; margin-bottom: 0em; margin-top: ${content.length == 0 ? '0' : '1'}em !important;">${category}</h3>
+                                <ul>
+                                    ${entries}
+                                </ul>
+                            `;
+                        }
+                        return `
+                            <div class="row">
+                                <div class="two wide column"></div>
+                                <div class="one wide column">
+                                    <h3 class="ui header">${version}</h3>
+                                </div>
+                                <div class="thirteen wide column">
+                                    ${content}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="row">
+                                <div class="two wide column"></div>
+                                <div class="one wide column">
+                                    <h3 class="ui header">${ version }</h3>
+                                </div>
+                                <div class="thirteen wide column">
+                                    <ul>
+                                        Changes are yet to be announced
+                                    </ul>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                $('.version-list').html(Object.keys(CHANGELOG).map(version => getChangelogEntry(version)).join(''));
+            });
+        </script>
+    </body>
+</html>
