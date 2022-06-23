@@ -487,10 +487,6 @@ class BardModel extends FighterModel {
 
     resetTimers () {
         this.EffectRounds = BARD_EFFECT_ROUNDS;
-        if (this.Player.Instrument == INSTRUMENT_FLUTE) {
-            this.EffectRounds--;
-        }
-
         this.EffectRoundsCap = 0;
     }
 
