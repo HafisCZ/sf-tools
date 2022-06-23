@@ -1021,18 +1021,6 @@
                         }
 
                         player.Class = cheats.class;
-
-                        if (player.Companions) {
-                            for (let kind of ['Bert', 'Mark', 'Kunigunde']) {
-                                let companion = player.Companions[kind];
-
-                                for (let type of ['Strength', 'Dexterity', 'Intelligence']) {
-                                    companion[type].Base = player[type].Base;
-                                }
-
-                                companion.evaluateCompanionCommon(player);
-                            }
-                        }
                     }
 
                     if (cheats.runes) {
