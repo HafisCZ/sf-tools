@@ -239,12 +239,6 @@
                     </div>
                 </div>
                 <div class="field"><h3 class="ui white header">Change class</h3></div>
-                <div class="field">
-                    <div class="ui checkbox">
-                        <input type="checkbox" class="hidden" data-cheat="class_active">
-                        <label>Active</label>
-                    </div>
-                </div>
                 <div class="field" style="margin-right: 1em;">
                     <div class="ui selection compact dropdown" data-cheat="class">
                         <div class="text"></div>
@@ -911,13 +905,19 @@
 
                 $('[data-cheat="class"]').dropdown({
                     preserveHTML: true,
-                    values: Object.entries(CLASS_MAP).map((e) => {
-                        return {
-                            name: `<img class="ui centered image class-picture" src="res/class${ e[0] }.png"><span>${ e[1] }</span>`,
-                            value: e[0]
-                        };
-                    })
-                }).dropdown('set selected', '1');
+                    values: [
+                        {
+                            name: 'Keep original',
+                            value: 0
+                        },
+                        ... Object.entries(CLASS_MAP).map((e) => {
+                            return {
+                                name: `<img class="ui centered image class-picture" src="res/class${ e[0] }.png"><span>${ e[1] }</span>`,
+                                value: e[0]
+                            };
+                        })
+                    ]
+                }).dropdown('set selected', '0');
 
                 function applyCheats (player) {
                     let cheats = _array_to_hash($('[data-cheat]').toArray(), el => [el.dataset.cheat, el.tagName == 'DIV' ? parseInt($(el).dropdown('get value')) : el.checked]);
@@ -991,7 +991,7 @@
                         }
                     }
 
-                    if (cheats.class_active) {
+                    if (cheats.class) {
                         const swapAttributes = function (obj, type, fromClass, toClass) {
                             let attributes = _array_to_hash(['Main', 'Side1', 'Side2'], kind => [kind, _dig(obj, MAIN_ATTRIBUTE_MAP[kind][fromClass - 1], type)]);
                             for (let kind of ['Main', 'Side1', 'Side2']) {
