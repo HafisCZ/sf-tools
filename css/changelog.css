@@ -35,3 +35,12 @@ body {
 .version-list .simple-list li:first-child {
     margin-top: 0;
 }
+
+.version-list h3[id]::before {
+    content: '';
+    display: block;
+    height: 5em;
+    margin-top: -5em;
+    visibility: hidden;
+    pointer-events: none;
+}
