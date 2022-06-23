@@ -124,7 +124,7 @@ class FighterModel {
                 switch (this.Player.Mask) {
                     case MASK_BEAR: return 50;
                     case MASK_CAT: return 25;
-                    default: 0;
+                    default: 10;
                 }
             default:
                 return 0;
