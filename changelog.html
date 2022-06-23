@@ -35,24 +35,30 @@
 
         <script>
             window.addEventListener('load', function () {
+                function getEntryTemplate (version, content) {
+                    return `
+                        <div class="row">
+                            <div class="two wide column"></div>
+                            <div class="one wide column">
+                                <h3 class="ui header">${ version }</h3>
+                            </div>
+                            <div class="thirteen wide column">
+                                ${content}
+                            </div>
+                        </div>
+                    `;
+                }
+
                 function getChangelogEntry (version) {
                     const entries = CHANGELOG[version];
 
                     if (Array.isArray(entries)) {
-                        const content = entries.map(entry => `<li>${entry}</li>`).join('');
-                        return `
-                            <div class="row">
-                                <div class="two wide column"></div>
-                                <div class="one wide column">
-                                    <h3 class="ui header">${ version }</h3>
-                                </div>
-                                <div class="thirteen wide column">
-                                    <ul class="simple-list">
-                                        ${content}
-                                    </ul>
-                                </div>
-                            </div>
-                        `;
+                        return getEntryTemplate(
+                            version,
+                            `<ul class="simple-list">
+                                ${entries.map(entry => `<li>${entry}</li>`).join('')}
+                            </ul>`
+                        );
                     } else if (entries) {
                         let content = ''
                         for (const [ category, changes ] of Object.entries(entries)) {
@@ -64,31 +70,16 @@
                                 </ul>
                             `;
                         }
-                        return `
-                            <div class="row">
-                                <div class="two wide column"></div>
-                                <div class="one wide column">
-                                    <h3 class="ui header">${version}</h3>
-                                </div>
-                                <div class="thirteen wide column">
-                                    ${content}
-                                </div>
-                            </div>
-                        `;
+
+                        return getEntryTemplate(
+                            version,
+                            content
+                        )
                     } else {
-                        return `
-                            <div class="row">
-                                <div class="two wide column"></div>
-                                <div class="one wide column">
-                                    <h3 class="ui header">${ version }</h3>
-                                </div>
-                                <div class="thirteen wide column">
-                                    <ul>
-                                        Changes are yet to be announced
-                                    </ul>
-                                </div>
-                            </div>
-                        `;
+                        return getEntryTemplate(
+                            version,
+                            '<ul>Changes are yet to be announced</ul>'
+                        )
                     }
                 }
 
