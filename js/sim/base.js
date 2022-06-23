@@ -308,7 +308,7 @@ class FighterModel {
 
     }
 
-    onDamageTaken (source, damage) {
+    onDamageTaken (source, damage, secondary = false) {
         this.Health -= damage;
         if (this.Health < 0 && this.onDeath(source)) {
             this.DeathTriggers++;
@@ -466,7 +466,7 @@ class DemonHunterModel extends FighterModel {
     }
 }
 
-const BARD_EFFECT_ROUNDS = 8;
+const BARD_EFFECT_ROUNDS = 4;
 
 class BardModel extends FighterModel {
     constructor (i, p) {
@@ -486,8 +486,8 @@ class BardModel extends FighterModel {
     }
 
     resetTimers () {
-        this.EffectRounds = BARD_EFFECT_ROUNDS;
-        this.EffectRoundsCap = 0;
+        this.EffectReset = 0;
+        this.EffectCounter = BARD_EFFECT_ROUNDS;
     }
 
     reset () {
@@ -495,15 +495,6 @@ class BardModel extends FighterModel {
 
         this.resetEffects();
         this.resetTimers();
-    }
-
-    onDamageTaken (source, damage) {
-        let state = super.onDamageTaken(source, damage);
-        if (state == 1 && this.HealMultiplier) {
-            this.Health += this.HealMultiplier * this.TotalHealth;
-        }
-
-        return state;
     }
 
     rollEffectLevel () {
@@ -529,7 +520,8 @@ class BardModel extends FighterModel {
     rollEffect (target) {
         let level = this.rollEffectLevel();
 
-        this.EffectRoundsCap = this.rollEffectRounds(level) * 2;
+        this.EffectReset = this.rollEffectRounds(level);
+        this.EffectCounter = 0;
 
         if (this.Player.Instrument == INSTRUMENT_HARP) {
             let multiplier = 1 / this.DamageReduction * (1 - this.getDamageReduction(target, [ 40, 55, 75 ][level]) / 100);
@@ -546,15 +538,39 @@ class BardModel extends FighterModel {
         }
     }
 
-    onBeforeAttack (target, skipAttack = false) {
-        this.EffectRounds += skipAttack ? 2 : 1;
-
-        if (this.EffectRounds > this.EffectRoundsCap) {
-            this.resetEffects();
+    onDamageTaken (source, damage, secondary = false) {
+        let state = super.onDamageTaken(source, damage, secondary);
+        if (state == 1 && this.HealMultiplier && (source.Player.Class != ASSASSIN || secondary)) {
+            this.Health += this.HealMultiplier * this.TotalHealth;
         }
 
-        if (this != target && this.EffectRounds > BARD_EFFECT_ROUNDS) {
-            this.EffectRounds = 0;
+        return state;
+    }
+
+    onBeforeAttack (target) {
+        let shouldCount = this == target;
+        let shouldRoll = this == target;
+
+        // Set up exceptions
+        if (this.Player.Instrument == INSTRUMENT_HARP) {
+            shouldRoll = true;
+        } else if (this.Player.Instrument == INSTRUMENT_LUTE) {
+            shouldCount = this != target;
+            shouldRoll = this != target;
+        } else /* INSTRUMENT_FLUTE */ {
+            shouldRoll = true;
+        }
+
+        if (shouldCount) {
+            this.EffectCounter += 1;
+
+            if (this.EffectCounter >= this.EffectReset) {
+                this.resetEffects();
+            }
+        }
+
+        if (shouldRoll && this.EffectCounter >= BARD_EFFECT_ROUNDS) {
+            this.EffectCounter = 0;
             this.rollEffect(target);
         }
     }
@@ -589,9 +605,8 @@ class SimulatorBase {
     skipAndAttack () {
         this.turn++;
 
-        if (this.b.BeforeAttack) {
-            this.b.onBeforeAttack(this.b, true);
-        }
+        if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
+        if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
 
         var damage3 = this.attack(this.a, this.b, this.a.Weapon1, 2);
         if (this.a.DamageDealt) {
@@ -656,13 +671,16 @@ class SimulatorBase {
             }
 
             if (this.a.Weapon2) {
+                if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
+                if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
+
                 var damage2 = this.attack(this.a, this.b, this.a.Weapon2, 1);
                 if (this.a.DamageDealt) {
                     this.a.onDamageDealt(this.b, damage2);
                 }
 
                 if (this.b.DamageTaken) {
-                    let alive = this.b.onDamageTaken(this.a, damage2);
+                    let alive = this.b.onDamageTaken(this.a, damage2, true);
 
                     if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
 
