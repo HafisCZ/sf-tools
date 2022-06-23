@@ -56,17 +56,8 @@
             <a class="item" id="show-options"><i class="small cog icon"></i>Settings</a>
             <div class="right menu" id="show-right-menu">
                 <a class="item" href="stats.html?temp" target="_blank"><i class="small user secret icon"></i>Temporary session</a>
-                <a class="item" id="show-changelog"><i class="small sticky note icon"></i>Changelog</a>
+                <a class="item" href="changelog.html" target="_blank"><i class="small sticky note icon"></i>Changelog</a>
                 <a class="item" id="show-profile"><i class="small wrench icon"></i>Profile</a>
-            </div>
-        </div>
-
-        <!-- ChangeLogView -->
-        <div id="view-changelog" class="ui main container css-hidden">
-            <div class="ui basic segment" style="padding: 0; padding-top: 1em;">
-                <div class="ui grid" data-op="list">
-
-                </div>
             </div>
         </div>
 
@@ -759,7 +750,6 @@
                         PlayerHistory: new PlayerHistoryView('view-history'),
                         PlayerDetail: new PlayerDetailFloatView('modal-playerdetail'),
                         GroupDetail: new GroupDetailView('view-groupdetail'),
-                        ChangeLogs: new ChangeLogsView('view-changelog'),
                         Templates: new TemplatesView('modal-templates'),
                         OnlineTemplates: new OnlineTemplatesView('modal-onlinetemplates'),
                         OnlineFiles: new OnlineFilesView('modal-onlinefile'),
@@ -773,7 +763,6 @@
                     UI.register(UI.Browse, 'show-browse');
                     UI.register(UI.Files, 'show-files');
                     UI.register(UI.Settings, 'show-settings');
-                    UI.register(UI.ChangeLogs, 'show-changelog');
                     UI.register(UI.Profiles, 'show-profile');
                     UI.register(UI.Options, 'show-options');
 
