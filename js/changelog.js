@@ -1,5 +1,8 @@
 const CHANGELOG = {
     'v5.XXXX': {
+        'Statistics': [
+            'Marked headers as private (due to new BE)'
+        ],
         'Dungeon Simulator': [
             'Added option to save image of Simulate All results',
             'Added class swap to cheat menu'
