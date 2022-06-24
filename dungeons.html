@@ -15,8 +15,9 @@
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
-        <script src="vendor/js/sentry.bundle.min.js"></script>
         <script src="vendor/js/chart.min.js"></script>
+        <script src="vendor/js/html2canvas.min.js"></script>
+        <script src="vendor/js/sentry.bundle.min.js"></script>
 
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
@@ -158,6 +159,7 @@
 
         <div id="results-modal" class="ui mini modal">
             <div class="header">Results</div>
+            <button id="save-screenshot" class="ui small basic icon button" style="position: absolute; right: .75em; top: 1em;" data-position="bottom center" data-tooltip="Save as image"><i class="download icon"></i></button>
             <div style="padding-left: 1em; padding-right: 1em; border-bottom: 1px solid rgba(34,36,38,.15)">
                 <canvas id="list-winchart" style="width: 100%;"></canvas>
             </div>
@@ -894,6 +896,18 @@
                     graph.data.labels = healths.map((a, b) => b);
                     graph.update(0);
                 }
+
+                $('#save-screenshot').click(function () {
+                    let $target = $('#results-modal .content');
+
+                    html2canvas($target.get(0), {
+                        logging: false
+                    }).then(canvas => {
+                        canvas.toBlob(blob => {
+                            window.download(`dungeons_${formatDate(Date.now())}.png`, blob);
+                        });
+                    });
+                });
 
                 $('[data-cheat="class"]').dropdown({
                     preserveHTML: true,
