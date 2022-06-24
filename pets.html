@@ -121,12 +121,12 @@
                             </div>
                             <div class="three fields">
                                 <div class="field">
-                                    <label>Pack</label>
-                                    <input class="text-center" data-path="Pack" placeholder="Pets you caught">
+                                    <label>At 100 - 149</label>
+                                    <input class="text-center" data-path="At100" placeholder="Pets at 100 - 149">
                                 </div>
                                 <div class="field">
-                                    <label>At 100 - 199</label>
-                                    <input class="text-center" data-path="At100" placeholder="Pets at 100 - 199">
+                                    <label>At 150 - 199</label>
+                                    <input class="text-center" data-path="At150" placeholder="Pets at 150 - 199">
                                 </div>
                                 <div class="field">
                                     <label>At 200</label>
@@ -134,6 +134,10 @@
                                 </div>
                             </div>
                             <div class="three fields">
+                                <div class="field">
+                                    <label>Pack</label>
+                                    <input class="text-center" data-path="Pack" placeholder="Pets you caught">
+                                </div>
                                 <div class="field">
                                     <label>Gladiator</label>
                                     <div class="ui search selection compact dropdown" data-path="Gladiator">
@@ -228,12 +232,12 @@
                             </div>
                             <div class="three fields">
                                 <div class="field">
-                                    <label>Pack</label>
-                                    <input class="text-center" data-path="Pack" placeholder="Pets you caught">
+                                    <label>At 100 - 149</label>
+                                    <input class="text-center" data-path="At100" placeholder="Pets at 100 - 149">
                                 </div>
                                 <div class="field">
-                                    <label>At 100 - 199</label>
-                                    <input class="text-center" data-path="At100" placeholder="Pets at 100 - 199">
+                                    <label>At 150 - 199</label>
+                                    <input class="text-center" data-path="At150" placeholder="Pets at 150 - 199">
                                 </div>
                                 <div class="field">
                                     <label>At 200</label>
@@ -241,6 +245,10 @@
                                 </div>
                             </div>
                             <div class="three fields">
+                                <div class="field">
+                                    <label>Pack</label>
+                                    <input class="text-center" data-path="Pack" placeholder="Pets you caught">
+                                </div>
                                 <div class="field">
                                     <label>Gladiator</label>
                                     <div class="ui search selection compact dropdown" data-path="Gladiator">
@@ -406,6 +414,7 @@
                     this.Level = 0;
                     this.Pack = 0;
                     this.At100 = 0;
+                    this.At150 = 0;
                     this.At200 = 0;
                     this.Index = index;
 
@@ -427,6 +436,13 @@
                     this.$at100 = $root.find('[data-path="At100"]').val('').on('input', event => {
                         var $e = $(event.currentTarget);
                         this.At100 = validate($e) ? Number($e.val()) : 0;
+
+                        this.refresh();
+                    });
+
+                    this.$at150 = $root.find('[data-path="At150"]').val('').on('input', event => {
+                        var $e = $(event.currentTarget);
+                        this.At150 = validate($e) ? Number($e.val()) : 0;
 
                         this.refresh();
                     });
@@ -522,12 +538,14 @@
                         this.$level.parent('.field').addClass('disabled');
                         this.$pack.parent('.field').addClass('disabled');
                         this.$at100.parent('.field').addClass('disabled');
+                        this.$at150.parent('.field').addClass('disabled');
                         this.$at200.parent('.field').addClass('disabled');
                         this.$gladiator.parent('.field').addClass('disabled');
                     } else {
                         this.$level.parent('.field').removeClass('disabled');
                         this.$pack.parent('.field').removeClass('disabled');
                         this.$at100.parent('.field').removeClass('disabled');
+                        this.$at150.parent('.field').removeClass('disabled');
                         this.$at200.parent('.field').removeClass('disabled');
                         this.$gladiator.parent('.field').removeClass('disabled');
                     }
@@ -576,6 +594,7 @@
                         Level: this.Level,
                         Pack: this.Pack,
                         At100: this.At100,
+                        At150: this.At150,
                         At200: this.At200,
                         Index: this.Index
                     };
@@ -585,6 +604,7 @@
                     if (!data) return;
 
                     this.$at100.val(data.At100).trigger('input');
+                    this.$at150.val(data.At150).trigger('input');
                     this.$at200.val(data.At200).trigger('input');
                     this.$pack.val(data.Pack).trigger('input');
                     this.$level.val(data.Level).trigger('input');
@@ -716,7 +736,7 @@
                                         toggleAll();
 
                                         for (var j = 0; j < maps.length; j++) {
-                                            addMap(maps[j], `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b[j].Type] } ${ b[j].Pet + 1 } - ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
+                                            addMap(maps[j], `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b[j].Type] } ${ b[j].Pet + 1 } - ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
                                         }
                                     }
                                 }
@@ -865,7 +885,8 @@
                 let gladiator = _try(player.Fortress, 'Gladiator') || 0;
                 let pack = player.Pets[`${currentName}Count`];
                 let petLevels = player.Pets[`${currentName}Levels`];
-                let at100 = _len_where(petLevels, l => _between(l, 99, 200));
+                let at100 = _len_where(petLevels, l => _between(l, 100 - 1, 150));
+                let at150 = _len_where(petLevels, l => _between(l, 150 - 1, 200));
                 let at200 = _len_where(petLevels, l => l == 200);
 
                 let pets = petLevels.map((level, i) => {
@@ -877,6 +898,7 @@
                         Level: level,
                         Pack: pack,
                         At100: at100,
+                        At150: at150,
                         At200: at200,
                         Index: 0
                     }
@@ -897,6 +919,7 @@
                         Level: 0,
                         Pack: 0,
                         At100: 0,
+                        At150: 0,
                         At200: 0,
                         Index: 1
                     };

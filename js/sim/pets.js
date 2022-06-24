@@ -163,6 +163,7 @@ self.addEventListener('message', function (message) {
                         Pet: pet.Pet,
                         Level: level,
                         At100: at100,
+                        At150: 0,
                         At200: 0,
                         Pack: fight.Pack,
                         Gladiator: fight.Gladiator
@@ -328,12 +329,12 @@ class PetModel {
         return (this.Class == source.Class ? this.Attribute : this.DefenseAttribute) / 2;
     }
 
-    static getBonus (pack, at100, at200) {
-        return 5 * Math.trunc(pack + at200 + at100 / 2);
+    static getBonus (pack, at100, at150, at200) {
+        return 5 * Math.trunc(pack + at200 + at150 * 0.75 + at100 * 0.5);
     }
 
-    static fromPet (boss, index, type, pet, level, pack, at100, at200, gladiator) {
-        return new PetModel(boss, index, type, pet, level, 5 * Math.trunc(pack + at100 / 2 + at200), gladiator);
+    static fromPet (boss, index, type, pet, level, pack, at100, at150, at200, gladiator) {
+        return new PetModel(boss, index, type, pet, level, PetModel.getBonus(pack, at100, at150, at200), gladiator);
     }
 
     static fromHabitat (boss, index, type, pet) {
@@ -344,7 +345,7 @@ class PetModel {
         if (obj.Boss) {
             return PetModel.fromHabitat(obj.Boss, obj.Index, obj.Type, obj.Pet);
         } else {
-            return PetModel.fromPet(obj.Boss, obj.Index, obj.Type, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At200, obj.Gladiator);
+            return PetModel.fromPet(obj.Boss, obj.Index, obj.Type, obj.Pet, obj.Level, obj.Pack, obj.At100, obj.At150, obj.At200, obj.Gladiator);
         }
     }
 }
