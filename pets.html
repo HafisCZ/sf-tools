@@ -33,7 +33,7 @@
         <script src="js/changelog.js"></script>
         <script src="js/sim/pets.js"></script>
         <script src="js/views.js"></script>
-
+        <script src="js/sim/editor.js"></script>
     </head>
     <body class="margin-none-bottom">
         <div class="statistics-module" id="stats-module">
@@ -107,7 +107,7 @@
                                     <div class="two fields">
                                         <div class="field">
                                             <label>Habitat</label>
-                                            <div class="ui selection compact dropdown" data-path="Habitat">
+                                            <div class="ui selection compact dropdown" data-path="Boss">
                                                 <div class="text"></div>
                                                 <i class="dropdown icon"></i>
                                             </div>
@@ -151,45 +151,45 @@
                             <div class="two fields">
                                 <div class="field">
                                     <label>Class</label>
-                                    <input class="text-center" disabled data-dpath="Class">
+                                    <input class="text-center" disabled data-path="Class">
                                 </div>
                                 <div class="field">
                                     <label>Health</label>
-                                    <input class="text-center" disabled data-dpath="TotalHealth">
+                                    <input class="text-center" disabled data-path="Health">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label>Attribute</label>
-                                    <input class="text-center" disabled data-dpath="Attribute">
+                                    <input class="text-center" disabled data-path="Attribute">
                                 </div>
                                 <div class="field">
                                     <label>Defense</label>
-                                    <input class="text-center" disabled data-dpath="DefenseAttribute">
+                                    <input class="text-center" disabled data-path="Defense">
                                 </div>
                                 <div class="field">
                                     <label>Luck</label>
-                                    <input class="text-center" disabled data-dpath="LuckAttribute">
+                                    <input class="text-center" disabled data-path="Luck">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label>Skip Chance</label>
-                                    <input class="text-center" disabled data-dpath="SkipChance">
+                                    <input class="text-center" disabled data-path="Skip">
                                 </div>
                                 <div class="field">
                                     <label>Critical Chance</label>
-                                    <input class="text-center" disabled data-dpath="CriticalChance">
+                                    <input class="text-center" disabled data-path="Chance">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label>Damage</label>
-                                    <input class="text-center" disabled data-dpath="Damage">
+                                    <input class="text-center" disabled data-path="Damage">
                                 </div>
                                 <div class="field">
                                     <label>Critical</label>
-                                    <input class="text-center" disabled data-dpath="Critical">
+                                    <input class="text-center" disabled data-path="Critical">
                                 </div>
                             </div>
                         </div>
@@ -218,7 +218,7 @@
                                     <div class="two fields">
                                         <div class="field">
                                             <label>Habitat</label>
-                                            <div class="ui selection compact dropdown" data-path="Habitat">
+                                            <div class="ui selection compact dropdown" data-path="Boss">
                                                 <div class="text"></div>
                                                 <i class="dropdown icon"></i>
                                             </div>
@@ -262,45 +262,45 @@
                             <div class="two fields">
                                 <div class="field">
                                     <label>Class</label>
-                                    <input class="text-center" disabled data-dpath="Class">
+                                    <input class="text-center" disabled data-path="Class">
                                 </div>
                                 <div class="field">
                                     <label>Health</label>
-                                    <input class="text-center" disabled data-dpath="TotalHealth">
+                                    <input class="text-center" disabled data-path="Health">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label>Attribute</label>
-                                    <input class="text-center" disabled data-dpath="Attribute">
+                                    <input class="text-center" disabled data-path="Attribute">
                                 </div>
                                 <div class="field">
                                     <label>Defense</label>
-                                    <input class="text-center" disabled data-dpath="DefenseAttribute">
+                                    <input class="text-center" disabled data-path="Defense">
                                 </div>
                                 <div class="field">
                                     <label>Luck</label>
-                                    <input class="text-center" disabled data-dpath="LuckAttribute">
+                                    <input class="text-center" disabled data-path="Luck">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label>Skip Chance</label>
-                                    <input class="text-center" disabled data-dpath="SkipChance">
+                                    <input class="text-center" disabled data-path="Skip">
                                 </div>
                                 <div class="field">
                                     <label>Critical Chance</label>
-                                    <input class="text-center" disabled data-dpath="CriticalChance">
+                                    <input class="text-center" disabled data-path="Chance">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
                                     <label>Damage</label>
-                                    <input class="text-center" disabled data-dpath="Damage">
+                                    <input class="text-center" disabled data-path="Damage">
                                 </div>
                                 <div class="field">
                                     <label>Critical</label>
-                                    <input class="text-center" disabled data-dpath="Critical">
+                                    <input class="text-center" disabled data-path="Critical">
                                 </div>
                             </div>
                         </div>
@@ -364,98 +364,36 @@
                 });
             }
 
-            function validateBulk ($parent) {
-                return $parent.find('[data-path]').toArray().reduce((errors, element) => {
-                    if (isNaN($(element).val())) {
-                        $(element).parent('.field').addClass('error');
-                        return errors + 1;
-                    } else {
-                        $(element).parent('.field').removeClass('error');
-                        return errors;
-                    }
-                }, 0) == 0;
-            }
-
-            function validate ($element) {
-                if (isNaN($element.val())) {
-                    $element.parent('.field').addClass('error');
-                    return false;
-                } else {
-                    $element.parent('.field').removeClass('error');
-                    return true;
-                }
-            }
-
-            function toggleAll (dis) {
-                if (dis) {
-                    PopupController.open(LoaderPopup);
-                } else {
-                    PopupController.close(LoaderPopup);
-                }
-            }
-
-            const PET_TYPE_NAMES = [
-                'Shadow',
-                'Light',
-                'Earth',
-                'Fire',
-                'Water'
-            ];
+            const IGNORED_FIELDS = ['class', 'health', 'attribute', 'defense', 'luck', 'skip', 'damage', 'chance', 'critical'];
+            const NON_BOSS_FIELDS = ['level', 'at100', 'at150', 'at200', 'pack', 'gladiator'];
 
             class PetController {
-                constructor ($root, index) {
-                    this.$root = $root;
-
-                    // Variables
-                    this.Gladiator = 0;
-                    this.Pet = 0;
-                    this.Type = 0;
-                    this.Boss = 0;
-                    this.Level = 0;
-                    this.Pack = 0;
-                    this.At100 = 0;
-                    this.At150 = 0;
-                    this.At200 = 0;
+                constructor (root, index) {
                     this.Index = index;
 
-                    // Elements
-                    this.$level = $root.find('[data-path="Level"]').val('').on('input', event => {
-                        var $e = $(event.currentTarget);
-                        this.Level = validate($e) ? Number($e.val()) : 0;
+                    this.fields = {
+                        type: new Field(`${root} [data-path="Type"]`, '0'),
+                        pet: new Field(`${root} [data-path="Pet"]`, '0'),
+                        boss: new Field(`${root} [data-path="Boss"]`, '0'),
+                        level: new Field(`${root} [data-path="Level"]`, '', Field.isPetLevel),
+                        at100: new Field(`${root} [data-path="At100"]`, '', Field.isPetCount),
+                        at150: new Field(`${root} [data-path="At150"]`, '', Field.isPetCount),
+                        at200: new Field(`${root} [data-path="At200"]`, '', Field.isPetCount),
+                        pack: new Field(`${root} [data-path="Pack"]`, '', Field.isPetCount),
+                        gladiator: new Field(`${root} [data-path="Gladiator"]`, '0'),
 
-                        this.refresh();
-                    });
+                        class: new Field(`${root} [data-path="Class"]`, '?'),
+                        health: new Field(`${root} [data-path="Health"]`, '?'),
+                        attribute: new Field(`${root} [data-path="Attribute"]`, '?'),
+                        defense: new Field(`${root} [data-path="Defense"]`, '?'),
+                        luck: new Field(`${root} [data-path="Luck"]`, '?'),
+                        skip: new Field(`${root} [data-path="Skip"]`, '?'),
+                        damage: new Field(`${root} [data-path="Damage"]`, '?'),
+                        chance: new Field(`${root} [data-path="Chance"]`, '?'),
+                        critical: new Field(`${root} [data-path="Critical"]`, '?')
+                    };
 
-                    this.$pack = $root.find('[data-path="Pack"]').val('').on('input', event => {
-                        var $e = $(event.currentTarget);
-                        this.Pack = validate($e) ? Number($e.val()) : 0;
-
-                        this.refresh();
-                    });
-
-                    this.$at100 = $root.find('[data-path="At100"]').val('').on('input', event => {
-                        var $e = $(event.currentTarget);
-                        this.At100 = validate($e) ? Number($e.val()) : 0;
-
-                        this.refresh();
-                    });
-
-                    this.$at150 = $root.find('[data-path="At150"]').val('').on('input', event => {
-                        var $e = $(event.currentTarget);
-                        this.At150 = validate($e) ? Number($e.val()) : 0;
-
-                        this.refresh();
-                    });
-
-                    this.$at200 = $root.find('[data-path="At200"]').val('').on('input', event => {
-                        var $e = $(event.currentTarget);
-                        this.At200 = validate($e) ? Number($e.val()) : 0;
-
-                        this.refresh();
-                    });
-
-                    // Gladiator
-                    this.$gladiator = $root.find('[data-path="Gladiator"]').dropdown({
+                    this.fields['gladiator'].$object.dropdown({
                         values: [
                             { name: 'None', value: 0 },
                             ... [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ].map(gladiator => {
@@ -465,166 +403,155 @@
                                 }
                             })
                         ]
-                    }).dropdown('set selected', '0').dropdown('setting', 'onChange', (value, text) => {
-                        this.Gladiator = Number(value);
+                    }).dropdown('set selected', '0');
 
-                        this.refresh();
-                    });
-
-                    // Habitat
-                    this.$habitat = $root.find('[data-path="Habitat"]').dropdown({
+                    this.fields['boss'].$object.dropdown({
                         values: [
                             { name: 'No', value: 0 },
                             { name: 'Yes', value: 1 }
                         ]
-                    }).dropdown('set selected', '0').dropdown('setting', 'onChange', (value, text) => {
-                        this.setHabitat(Number(value));
+                    }).dropdown('setting', 'onChange', (value, text) => {
+                        for (let name of NON_BOSS_FIELDS) {
+                            this.fields[name].toggle(value == 0);
+                        }
+                    }).dropdown('set selected', '0');
 
-                        this.refresh();
-                    });
-
-                    // Pets
-                    this.$pet = $root.find('[data-path="Pet"]').dropdown({
+                    this.fields['pet'].$object.dropdown({
                         fullTextSearch: true,
                         preserveHTML: true,
                         values: new Array(100).fill(0).map((_ , i) => {
                             return {
-                                name: `<img class="ui centered image pet-picture" src="res/pets/monster${ 800 + i }.png"><span class="pet-name" data-pet-id="${ (i % 20) + 1 }">${ NAME_MONSTER[800 + i] }</span>`,
+                                name: `<img class="ui centered image pet-picture" src="res/pets/monster${ 800 + i }.png"><span class="pet-name">${ NAME_MONSTER[800 + i] }</span>`,
                                 value: i
                             };
                         })
-                    }).dropdown('set selected', '0').dropdown('setting', 'onChange', (value, text) => {
-                        this.Pet = Number(value) % 20;
-                        this.refresh();
-                    });
-
-                    // Types
-                    this.$type = $root.find('[data-path="Type"]').dropdown({
-                        values: [
-                            { name: 'Shadow', value: 0 },
-                            { name: 'Light', value: 1 },
-                            { name: 'Earth', value: 2 },
-                            { name: 'Fire', value: 3 },
-                            { name: 'Water', value: 4 }
-                        ]
-                    }).dropdown('setting', 'onChange', (value, text) => {
-                        this.setType(Number(value));
-
-                        this.refresh();
                     }).dropdown('set selected', '0');
-                }
 
-                setType (type) {
-                    this.Type = type;
-                    this.Pet = 0;
+                    this.fields['type'].$object.dropdown({
+                        values: PET_TYPE_NAMES.map((name, index) => {
+                            return {
+                                name: name,
+                                value: index
+                            }
+                        })
+                    }).dropdown('set selected', '0');
 
-                    this.$pet.dropdown('set selected', (this.Type * 20).toString());
-                    this.$pet.find('.item').each((i, e) => {
-                        var $e = $(e);
-                        var id = Number($e.attr('data-value'));
+                    this.$debugDisplay = $(`${root} [data-debug]`);
+                    this.$debugDisplay.hide();
 
-                        if (Math.trunc(id / 20) == type) {
-                            $e.removeClass('css-hidden');
-                        } else {
-                            $e.addClass('css-hidden');
+                    for (let [name, field] of Object.entries(this.fields)) {
+                        if (!IGNORED_FIELDS.includes(name)) {
+                            field.setListener(() => this.changeListener(name));
+                            field.triggerAlways = true;
                         }
-                    });
-                }
-
-                setHabitat (habitat) {
-                    this.Boss = habitat;
-
-                    if (habitat) {
-                        this.$level.parent('.field').addClass('disabled');
-                        this.$pack.parent('.field').addClass('disabled');
-                        this.$at100.parent('.field').addClass('disabled');
-                        this.$at150.parent('.field').addClass('disabled');
-                        this.$at200.parent('.field').addClass('disabled');
-                        this.$gladiator.parent('.field').addClass('disabled');
-                    } else {
-                        this.$level.parent('.field').removeClass('disabled');
-                        this.$pack.parent('.field').removeClass('disabled');
-                        this.$at100.parent('.field').removeClass('disabled');
-                        this.$at150.parent('.field').removeClass('disabled');
-                        this.$at200.parent('.field').removeClass('disabled');
-                        this.$gladiator.parent('.field').removeClass('disabled');
                     }
                 }
 
-                refresh () {
-                    if (validateBulk(this.$root)) {
-                        if (this.Level > 0 || this.Boss) {
-                            models[this.Index] = PetModel.fromObject(this);
-                            this.$root.find('[data-debug]').show();
-                        } else {
-                            models[this.Index] = undefined;
-                            this.$root.find('[data-debug]').hide();
+                fill (object) {
+                    if (object) {
+                        for (var [key, field] of Object.entries(this.fields)) {
+                            if (IGNORED_FIELDS.includes(key)) {
+                                field.clear();
+                            } else if (key == 'pet') {
+                                field.set(object.Type * 20 + object.Pet);
+                            } else {
+                                field.set(getObjectAt(object, field.path()));
+                            }
                         }
                     } else {
+                        for (var [key, field] of Object.entries(this.fields)) {
+                            field.clear();
+                        }
+                    }
+                }
+
+                read () {
+                    let object = {
+                        Index: this.Index
+                    };
+                    
+                    for (let [key, field] of Object.entries(this.fields)) {
+                        if (IGNORED_FIELDS.includes(key)) {
+                            continue;
+                        } else if (key == 'pet') {
+                            setObjectAt(object, field.path(), field.get() % 20);
+                        } else {
+                            setObjectAt(object, field.path(), field.get());
+                        }
+                    }
+
+                    return object;
+                }
+
+                valid () {
+                    let isBoss = this.fields['boss'].get() == 1;
+                    for (let [key, field] of Object.entries(this.fields)) {
+                        let isIgnoredField = IGNORED_FIELDS.includes(key);
+                        let isBossIgnoredField = isBoss && NON_BOSS_FIELDS.includes(key);
+
+                        if (!isIgnoredField && !isBossIgnoredField && !field.valid()) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+
+                changeListener (name) {
+                    if (IGNORED_FIELDS.includes(name) || this._ignoreChanges) return;
+
+                    if (name == 'type') {
+                        let type = this.fields['type'].get();
+
+                        this.fields['pet'].set(type * 20);
+                        this.fields['pet'].$object.find('.item').each((i, e) => {
+                            let $e = $(e);
+                            let id = parseInt($e.attr('data-value'));
+
+                            if (Math.trunc(id / 20) == type) {
+                                $e.removeClass('css-hidden');
+                            } else {
+                                $e.addClass('css-hidden');
+                            }
+                        });
+                    }
+
+                    if (this.valid()) {
+                        models[this.Index] = PetModel.fromObject(this.read());
+                        this.$debugDisplay.show();
+                    } else {
                         models[this.Index] = undefined;
-                        this.$root.find('[data-debug]').hide();
+                        this.$debugDisplay.hide();
                     }
 
                     refreshModels();
                 }
 
                 fillDebugInformation (model, initialized) {
-                    this.$root.find('[data-dpath="Class"]').val(PLAYER_CLASS[model.Class]);
-                    this.$root.find('[data-dpath="TotalHealth"]').val(formatAsSpacedNumber(model.TotalHealth, ' '));
-                    this.$root.find('[data-dpath="Attribute"]').val(formatAsSpacedNumber(model.Attribute, ' '));
-                    this.$root.find('[data-dpath="DefenseAttribute"]').val(formatAsSpacedNumber(model.DefenseAttribute, ' '));
-                    this.$root.find('[data-dpath="LuckAttribute"]').val(formatAsSpacedNumber(model.LuckAttribute, ' '));
+                    this.fields['class'].set(PLAYER_CLASS[model.Class]);
+                    this.fields['health'].set(formatAsSpacedNumber(model.TotalHealth, ' '));
+                    this.fields['attribute'].set(formatAsSpacedNumber(model.Attribute, ' '));
+                    this.fields['defense'].set(formatAsSpacedNumber(model.DefenseAttribute, ' '));
+                    this.fields['luck'].set(formatAsSpacedNumber(model.LuckAttribute, ' '));
 
                     if (initialized) {
-                        this.$root.find('[data-dpath="SkipChance"]').val(model.SkipChance > 0 ? `${ model.SkipChance.toFixed(2) }%` : 'None');
-                        this.$root.find('[data-dpath="Damage"]').val(formatAsSpacedNumber(model.Damage, ' '));
-                        this.$root.find('[data-dpath="CriticalChance"]').val(model.CriticalChance > 0 ? `${ model.CriticalChance.toFixed(2) }%` : 'None');
-                        this.$root.find('[data-dpath="Critical"]').val(`${ Math.round(100 * model.Critical) }%`);
+                        this.fields['skip'].set(model.SkipChance > 0 ? `${ model.SkipChance.toFixed(2) }%` : 'None');
+                        this.fields['damage'].set(formatAsSpacedNumber(model.Damage, ' '));
+                        this.fields['chance'].set(model.CriticalChance > 0 ? `${ model.CriticalChance.toFixed(2) }%` : 'None');
+                        this.fields['critical'].set(`${ Math.round(100 * model.Critical) }%`);
                     } else {
-                        this.$root.find('[data-dpath="SkipChance"], [data-dpath="CriticalChance"], [data-dpath="Damage"], [data-dpath="Critical"]').val('?');
+                        for (let name of ['skip', 'damage', 'chance', 'critical']) {
+                            this.fields[name].clear();
+                        }
                     }
-                }
-
-                getData () {
-                    return {
-                        Gladiator: this.Gladiator,
-                        Pet: this.Pet,
-                        Type: this.Type,
-                        Boss: this.Boss,
-                        Level: this.Level,
-                        Pack: this.Pack,
-                        At100: this.At100,
-                        At150: this.At150,
-                        At200: this.At200,
-                        Index: this.Index
-                    };
-                }
-
-                loadData (data) {
-                    if (!data) return;
-
-                    this.$at100.val(data.At100).trigger('input');
-                    this.$at150.val(data.At150).trigger('input');
-                    this.$at200.val(data.At200).trigger('input');
-                    this.$pack.val(data.Pack).trigger('input');
-                    this.$level.val(data.Level).trigger('input');
-
-                    this.$gladiator.dropdown('set selected', data.Gladiator.toString());
-                    this.$type.dropdown('set selected', data.Type.toString());
-                    this.$pet.dropdown('set selected', (data.Type * 20 + data.Pet).toString());
-                    this.$habitat.dropdown('set selected', data.Boss.toString());
                 }
             };
 
             function refreshModels () {
-                var [a, b] = models;
-                var ab = false;
-
+                let [a, b] = models;
                 if (a && b) {
                     a.initialize(b);
                     b.initialize(a);
-
-                    ab = true;
 
                     petA.fillDebugInformation(a, true);
                     petB.fillDebugInformation(b, true);
@@ -634,7 +561,7 @@
                     petB.fillDebugInformation(b, false);
                 }
 
-                if (petA && petB && petA.Boss == 0 && petB.Boss == 1) {
+                if (petA.valid() && petB.valid() && petA.fields['boss'].get() == 0 && petB.fields['boss'].get() == 1) {
                     $('#sim-generate').removeClass('disabled');
                 } else {
                     $('#sim-generate').addClass('disabled');
@@ -643,8 +570,14 @@
 
             var models = [ undefined, undefined ];
 
-            var petA = new PetController($('#sim-a'), 0);
-            var petB = new PetController($('#sim-b'), 1);
+            var petA = new PetController('#sim-a', 0);
+            var petB = new PetController('#sim-b', 1);
+
+            petA.fill();
+            petA.valid();
+
+            petB.fill();
+            petB.valid();
 
             var useArmor = false;
             var useArmorCheckbox = $('#useArmor').checkbox('uncheck').change((event) => {
@@ -652,9 +585,9 @@
             });
 
             $('#sim-run').click(function () {
-                if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
+                if (petA.valid() && petB.valid()) {
                     LoaderPopup.toggle(true);
-                    simulateFight(petA.getData(), petB.getData()).then(([chance, a, b]) => {
+                    simulateFight(petA.read(), petB.read()).then(([chance, a, b]) => {
                         $('#sim-result').html(chance.toFixed(chance < 0.01 ? 5 : 2) + '%');
                         LoaderPopup.toggle(false);
                     }).catch(() => {
@@ -700,21 +633,21 @@
             }
 
             async function generatePetMap (mapCount) {
-                if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
+                if (petA.valid() && petB.valid()) {
                     $('#sim-result').html('');
                     clearMaps();
 
-                    var a = petA.getData();
+                    var a = petA.read();
                     var b = [];
 
-                    var temp = petB.getData();
+                    var temp = petB.read();
 
                     if (a && temp && !a.Boss && temp.Boss) {
                         LoaderPopup.toggle(true);
 
                         var count = 0;
                         for (var i = temp.Pet; i < Math.min(20, temp.Pet + mapCount); i++) {
-                            var bs = petB.getData();
+                            var bs = petB.read();
                             bs.Pet = i;
                             b.push(bs);
 
@@ -778,9 +711,9 @@
                                 </div>
                             </div>
                             `).click(() => {
-                                let [playerPet, bossPet] = getPetsFor(player, petA.Type);
-                                petA.loadData(playerPet);
-                                petB.loadData(bossPet);
+                                let [playerPet, bossPet] = getPetsFor(player, petA.fields['type'].get());
+                                petA.fill(playerPet);
+                                petB.fill(bossPet);
                             }
                         ));
 

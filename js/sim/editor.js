@@ -5,7 +5,7 @@ class Field {
         this.validator = validator;
         this.isDropdown = this.$object.hasClass('dropdown');
         this.$object.on('change input', () => {
-            if (this.valid()) {
+            if (this.triggerAlways || this.valid()) {
                 this.triggerListener();
             }
         });
@@ -131,6 +131,14 @@ class Field {
 
     static isBlockChance (val) {
         return Field.isNumber(val) && val <= 25;
+    }
+
+    static isPetCount (val) {
+        return Field.isNumber(val) && val <= 20;
+    }
+
+    static isPetLevel (val) {
+        return Field.isNonZero(val) && val <= 200;
     }
 
     static isDungeon (val) {
