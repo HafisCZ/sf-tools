@@ -898,10 +898,17 @@
                 }
 
                 $('#save-screenshot').click(function () {
-                    let $target = $('#results-modal .content');
+                    let target = document.querySelector('#results-modal .content');
 
-                    html2canvas($target.get(0), {
-                        logging: false
+                    target.style['overflow-y'] = '';
+                    target.style['max-height'] = '';
+
+                    html2canvas(target, {
+                        logging: false,
+                        onclone: doc => {
+                            target.style['overflow-y'] = 'auto';
+                            target.style['max-height'] = '70vh';
+                        }
                     }).then(canvas => {
                         canvas.toBlob(blob => {
                             window.download(`dungeons_${formatDate(Date.now())}.png`, blob);
