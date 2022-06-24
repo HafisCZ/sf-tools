@@ -140,14 +140,6 @@
 
         <script type="text/javascript">
             window.addEventListener('load', function () {
-                function toggleAll (dis) {
-                    if (dis) {
-                        PopupController.open(LoaderPopup);
-                    } else {
-                        PopupController.close(LoaderPopup);
-                    }
-                }
-
                 $('#sim-iterations').captiveInputField('hydra_sim/iterations', 10000, v => !isNaN(v) && v >= 1);
 
                 const EditorController = new (class {
@@ -326,7 +318,7 @@
                 $('#sim-editor input').on('paste', function (event) { event.stopPropagation(); });
 
                 $('#load-stats').click(() => {
-                    toggleAll(true);
+                    LoaderPopup.toggle(true);
                     DatabaseManager.load(DEFAULT_PROFILE).then(function () {
                         $('#stats-list').empty();
 
@@ -371,7 +363,7 @@
                                     </label>
                                     <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
                                 `).change((fileEvent) => {
-                                    toggleAll(true);
+                                    LoaderPopup.toggle(true);
 
                                     let pendingPromises = [];
                                     Array.from(fileEvent.target.files).forEach(file => {
@@ -387,9 +379,9 @@
                             )
                         );
 
-                        toggleAll();
+                        LoaderPopup.toggle(false);
                     }).catch(function () {
-                        toggleAll();
+                        LoaderPopup.toggle(false);
                         Logger.log('WARNING', 'Database could not be opened!');
                         $('#stats-list').empty();
                     });
@@ -397,7 +389,7 @@
 
                 $('#sim-run').click(async function () {
                     if (EditorController.valid()) {
-                        toggleAll(true);
+                        LoaderPopup.toggle(true);
 
                         const iterations = Math.max(1, Number($('#sim-iterations').val()) || 10000);
 
@@ -416,7 +408,7 @@
                                     finishedSimulations++;
 
                                     if (finishedSimulations == pets.length) {
-                                        toggleAll(false);
+                                        LoaderPopup.toggle(false);
                                         showResults(results);
                                     }
                                 }

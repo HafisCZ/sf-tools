@@ -738,7 +738,7 @@
                     profile['slot'] = param_slot;
                 }
 
-                PopupController.open(LoaderPopup);
+                LoaderPopup.toggle(true);
                 DatabaseManager.load(profile).then(function () {
                     UI.init({
                         Settings: new SettingsView('view-settings'),
@@ -766,7 +766,7 @@
                     UI.register(UI.Profiles, 'show-profile');
                     UI.register(UI.Options, 'show-options');
 
-                    PopupController.close(LoaderPopup);
+                    LoaderPopup.toggle(false);
 
                     UI.show({
                         'players': UI.Players,
@@ -779,7 +779,7 @@
                         PopupController.open(SaveOnlineTemplatePopup, param_template);
                     }
                 }).catch(function (e) {
-                    PopupController.close(LoaderPopup);
+                    LoaderPopup.toggle(false);
                     PopupController.open(ErrorPopup, `<h4 class="ui white header text-center">Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.</h4><br>${e.message}`);
                     Logger.error(e, 'Database could not be opened!');
                 });

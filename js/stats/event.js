@@ -1772,14 +1772,14 @@ class FilesView extends View {
     // Delete all
     deleteAll () {
         PopupController.open(ConfirmationPopup, 'Delete all', 'Are you sure you want to delete all stored player data?', () => {
-            PopupController.open(LoaderPopup);
+            LoaderPopup.toggle(true);
             DatabaseManager.purge().then(() => this.show());
         }, () => {}, true, 2)
     }
 
     // Delete selected
     deleteSelected () {
-        PopupController.open(LoaderPopup);
+        LoaderPopup.toggle(true);
         if (this.simple) {
             DatabaseManager.removeTimestamps(... this.selectedFiles).then(() => this.show());
         } else {
@@ -1791,13 +1791,13 @@ class FilesView extends View {
     mergeSelected () {
         if (this.simple) {
             if (this.selectedFiles.length > 1) {
-                PopupController.open(LoaderPopup);
+                LoaderPopup.toggle(true);
                 DatabaseManager.merge(this.selectedFiles).then(() => this.show());
             }
         } else {
             const timestamps = _uniq(Object.values(this.selectedPlayers).map(player => player.timestamp));
             if (timestamps.length > 1) {
-                PopupController.open(LoaderPopup);
+                LoaderPopup.toggle(true);
                 DatabaseManager.merge(timestamps).then(() => this.show());
             }
         }
@@ -1805,7 +1805,7 @@ class FilesView extends View {
 
     // Hide selected
     hideSelected () {
-        PopupController.open(LoaderPopup);
+        LoaderPopup.toggle(true);
         if (this.simple) {
             DatabaseManager.hideTimestamps(... this.selectedFiles).then(() => this.show());
         } else {
@@ -1814,13 +1814,13 @@ class FilesView extends View {
     }
 
     hideMigrate () {
-        PopupController.open(LoaderPopup);
+        LoaderPopup.toggle(true);
         DatabaseManager.migrateHiddenFiles().then(() => this.show());
     }
 
     // Import file via har
     importJson (fileEvent) {
-        PopupController.open(LoaderPopup);
+        LoaderPopup.toggle(true);
 
         let pendingPromises = [];
         Array.from(fileEvent.currentTarget.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified).catch((exception) => {
@@ -2345,7 +2345,7 @@ class FilesView extends View {
         this.lastSelectedTimestamp = null;
         this.lastSelectedPlayer = null;
 
-        PopupController.close(LoaderPopup);
+        LoaderPopup.toggle(false);
 
         this.$tags.toggle(this.simple);
         this.$migrateHidden.toggle(!this.simple && SiteOptions.hidden);

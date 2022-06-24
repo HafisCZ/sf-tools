@@ -257,14 +257,6 @@
         </div>
 
         <script type="text/javascript">
-            function toggleAll (dis) {
-                if (dis) {
-                    PopupController.open(LoaderPopup);
-                } else {
-                    PopupController.close(LoaderPopup);
-                }
-            }
-
             $('#sim-threads').captiveInputField('guild_sim/threads', 4, v => !isNaN(v) && v >= 1);
 
             let editor = new Editor($('#sim-editor'));
@@ -551,7 +543,7 @@
                 if (players1.length > 0 && players2.length > 0) {
                     $('#sim-results').val('');
 
-                    toggleAll(true);
+                    LoaderPopup.toggle(true);
 
                     for (let p of players1) p.player.ForceGladiator = true;
                     for (let p of players2) p.player.ForceGladiator = true;
@@ -570,7 +562,7 @@
                                 chance += message.data.results;
 
                                 if (finished == threads) {
-                                    toggleAll();
+                                    LoaderPopup.toggle(false);
                                     $('#sim-results').val((chance / threads).toFixed(2) + '%');
                                 }
                             }

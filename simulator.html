@@ -341,14 +341,6 @@
         </div>
 
         <script type="text/javascript">
-            function toggleAll (dis) {
-                if (dis) {
-                    PopupController.open(LoaderPopup);
-                } else {
-                    PopupController.close(LoaderPopup);
-                }
-            }
-
             let editor = new Editor($('#sim-editor'));
 
             const UILogger = new (class {
@@ -530,7 +522,7 @@
                     }
 
                     showPlayers();
-                    toggleAll(true);
+                    LoaderPopup.toggle(true);
 
                     let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
                     let blockSize = Math.ceil(players.length / blocks);
@@ -572,7 +564,7 @@
                                 UILogger.append(`THREAD FINISHED IN <b>${ message.data.time / 1000 }</b> SECONDS`);
 
                                 if (results.length == players.length) {
-                                    toggleAll();
+                                    LoaderPopup.toggle(false);
 
                                     players = results;
                                     setSort('avg', 0);

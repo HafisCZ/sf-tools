@@ -280,14 +280,6 @@
                     }
                 }
 
-                function toggleAll (dis) {
-                    if (dis) {
-                        PopupController.open(LoaderPopup);
-                    } else {
-                        PopupController.close(LoaderPopup);
-                    }
-                }
-
                 let ignoreChanges = false;
                 function withoutUpdate (func) {
                     ignoreChanges = true;
@@ -596,7 +588,7 @@
                 });
 
                 $('#load-stats').click(() => {
-                    toggleAll(true);
+                    LoaderPopup.toggle(true);
                     DatabaseManager.load(SELF_PROFILE).then(function () {
                         $('#stats-list').empty();
 
@@ -704,7 +696,7 @@
                                     </label>
                                     <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
                                 `).change((fileEvent) => {
-                                    toggleAll(true);
+                                    LoaderPopup.toggle(true);
 
                                     let pendingPromises = [];
                                     Array.from(fileEvent.target.files).forEach(file => {
@@ -720,9 +712,9 @@
                             )
                         );
 
-                        toggleAll();
+                        LoaderPopup.toggle(false);
                     }).catch(function () {
-                        toggleAll();
+                        LoaderPopup.toggle(false);
                         Logger.log('WARNING', 'Database could not be opened!');
                         $('#stats-list').empty();
                     });
@@ -778,7 +770,7 @@
 
                 $('#sim-run-all').click(async function () {
                     if (availableBosses && availableBosses.length > 0 && editor.valid()) {
-                        toggleAll(true);
+                        LoaderPopup.toggle(true);
 
                         let results = [];
                         let resultsRemaining = availableBosses.length;
@@ -802,7 +794,7 @@
                                     };
 
                                     if (--resultsRemaining <= 0) {
-                                        toggleAll();
+                                        LoaderPopup.toggle(false);
                                         showMassDungeonResults(availableBosses, results);
                                     } else if (pendingInstances.length > 0) {
                                         let [ secWorker, args ] = pendingInstances.pop();
@@ -830,7 +822,7 @@
 
                 $('#sim-run').click(async function () {
                     if (boss && editor.valid()) {
-                        toggleAll(true);
+                        LoaderPopup.toggle(true);
 
                         let playerInstances = preparePlayerInstances(dungeon);
                         let threads = Math.max(1, Number($('#sim-threads').val()) || 2);
@@ -878,7 +870,7 @@
 
                                         showGraph(chart, dungeon, boss, totalScore, totalTries, _sort_asc(finalResults));
                                         $('#winchart').removeClass('faded-out');
-                                        toggleAll();
+                                        LoaderPopup.toggle(false);
                                     }
                                 }
                             }, false);

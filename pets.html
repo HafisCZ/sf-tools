@@ -653,12 +653,12 @@
 
             $('#sim-run').click(function () {
                 if (validateBulk(petA.$root) && validateBulk(petB.$root)) {
-                    toggleAll(true);
+                    LoaderPopup.toggle(true);
                     simulateFight(petA.getData(), petB.getData()).then(([chance, a, b]) => {
                         $('#sim-result').html(chance.toFixed(chance < 0.01 ? 5 : 2) + '%');
-                        toggleAll();
+                        LoaderPopup.toggle(false);
                     }).catch(() => {
-                        toggleAll();
+                        LoaderPopup.toggle(false);
                     });
                 }
             });
@@ -710,7 +710,7 @@
                     var temp = petB.getData();
 
                     if (a && temp && !a.Boss && temp.Boss) {
-                        toggleAll(true);
+                        LoaderPopup.toggle(true);
 
                         var count = 0;
                         for (var i = temp.Pet; i < Math.min(20, temp.Pet + mapCount); i++) {
@@ -733,7 +733,7 @@
                                     maps_finished++;
 
                                     if (maps_finished == count) {
-                                        toggleAll();
+                                        LoaderPopup.toggle(false);
 
                                         for (var j = 0; j < maps.length; j++) {
                                             addMap(maps[j], `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b[j].Type] } ${ b[j].Pet + 1 } - ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
@@ -758,7 +758,7 @@
             $('#sim-generate10').click(() => generatePetMap(10));
 
             $('#load-stats').click(() => {
-                toggleAll(true);
+                LoaderPopup.toggle(true);
                 DatabaseManager.load(SELF_PROFILE).then(function () {
                     $('#stats-list').empty();
 
@@ -786,7 +786,7 @@
 
                         $(`div[data-player-id="${ player.Identifier }"]`).click((event) => {
                             event.stopPropagation();
-                            toggleAll(true);
+                            LoaderPopup.toggle(true);
 
                             let petFights = [];
                             let results = [];
@@ -805,7 +805,7 @@
                             }
 
                             Promise.all(petFights).then(() => {
-                                toggleAll();
+                                LoaderPopup.toggle(false);
                                 _sort_des(results, i => i.chance);
 
                                 $('#results-modal .content').html(`
@@ -857,7 +857,7 @@
                                 </label>
                                 <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
                             `).change((fileEvent) => {
-                                toggleAll(true);
+                                LoaderPopup.toggle(true);
 
                                 let pendingPromises = [];
                                 Array.from(fileEvent.target.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified, undefined, 'har/pets'))));
@@ -868,9 +868,9 @@
                         )
                     );
 
-                    toggleAll();
+                    LoaderPopup.toggle(false);
                 }).catch(function () {
-                    toggleAll();
+                    LoaderPopup.toggle(false);
                     Logger.log('WARNING', 'Database could not be opened!');
                     $('#stats-list').empty();
                 });

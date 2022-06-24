@@ -229,6 +229,10 @@ const LoaderPopup = new (class extends FloatingPopup {
             </div>
         `;
     }
+
+    toggle (open) {
+        PopupController[open ? 'open' : 'close'](LoaderPopup);
+    }
 })();
 
 // Non-blocking popup about an exception that occured
@@ -331,7 +335,7 @@ const FileEditPopup = new (class extends FloatingPopup {
             const newTimestamp = Math.trunc(parseOwnDate(this.$timestamp.val()) / 60000);
             if (newTimestamp && newTimestamp != this.truncatedTimestamp) {
                 this.close();
-                PopupController.open(LoaderPopup);
+                LoaderPopup.toggle(true);
                 DatabaseManager.rebase(this.sourceTimestamp, newTimestamp * 60000).then(this.callback);
             } else {
                 this.close();
@@ -485,7 +489,7 @@ const FileTagPopup = new (class extends FloatingPopup {
         this.$parent.find('[data-op="save"]').click(() => {
             const tag = this.$newTags.val().trim();
             this.close();
-            PopupController.open(LoaderPopup);
+            LoaderPopup.toggle(true);
             DatabaseManager.setTag(this.timestamps, tag).then(this.callback);
         });
     }
