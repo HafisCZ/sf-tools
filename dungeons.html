@@ -911,7 +911,7 @@
                         }
                     }).then(canvas => {
                         canvas.toBlob(blob => {
-                            window.download(`dungeons_${formatDate(Date.now())}.png`, blob);
+                            window.download(`dungeons_${Date.now()}.png`, blob);
                         });
                     });
                 });
