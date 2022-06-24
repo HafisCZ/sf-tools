@@ -40,7 +40,7 @@
                         <div class="row">
                             <div class="two wide column"></div>
                             <div class="one wide column">
-                                <h3 class="ui header" id="${version}"><a href="#${version}" style="color: var(--color);">${ version }</a></h3>
+                                <h3 class="ui version header" id="${version}"><a href="#${version}" style="color: var(--color);">${ version }</a></h3>
                             </div>
                             <div class="thirteen wide column">
                                 ${content}
@@ -64,7 +64,7 @@
                         for (const [ category, changes ] of Object.entries(entries)) {
                             const entries = changes.map(entry => `<li>${entry}</li>`).join('')
                             content += `
-                                <h3 class="ui header" style="color: white !important; margin-left: 1.5em; margin-bottom: 0em; margin-top: ${content.length == 0 ? '0' : '1'}em !important;">${category}</h3>
+                                <h3 class="ui header" style="color: white !important; margin-left: 1.5em; margin-bottom: 0em; margin-top: ${content.length == 0 ? '0.15' : '1'}em !important;">${category}</h3>
                                 <ul>
                                     ${entries}
                                 </ul>
@@ -78,7 +78,7 @@
                     } else {
                         return getEntryTemplate(
                             version,
-                            '<ul>Changes are yet to be announced</ul>'
+                            '<ul class="empty-list">Changes are yet to be announced</ul>'
                         )
                     }
                 }
