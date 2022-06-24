@@ -397,17 +397,23 @@
             });
 
             $('#save-screenshot').click(function () {
-                html2canvas($('.screenshot-target').get(0), {
+                let $target = $('.screenshot-target');
+                let $hiddenRows = $('.screenshot-target .css-small-row');
+
+                $hiddenRows.hide();
+                $target.css('margin-right', '-2rem').css('padding-right', '1rem');
+
+                html2canvas($target.get(0), {
                     logging: false,
-                    onclone: (doc) => {
-                        $(doc).find('.row').first().remove();
-                        $(doc).find('.row').first().remove();
-                        $(doc).find('#save-screenshot').remove();
-                        $(doc).find('i').remove();
-                        $(doc).find('.row.selected').removeClass('selected');
+                    ignoreElements: element => element.tagName == 'I' || element.id == 'save-screenshot',
+                    onclone: doc => {
+                        $hiddenRows.show();
+                        $target.css('margin-right', '').css('padding-right', '');
+
+                        $(doc).find('.selected').removeClass('selected');
                     }
-                }).then((canvas) => {
-                    canvas.toBlob((blob) => {
+                }).then(canvas => {
+                    canvas.toBlob(blob => {
                         window.download(`simulator_${Date.now()}.png`, blob);
                     });
                 });
