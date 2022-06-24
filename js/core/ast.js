@@ -2268,20 +2268,6 @@ const SP_KEYWORD_MAPPING_0 = {
         difference: false,
         statistics: false
     },
-    'Last Active': {
-        expr: p => p.LastOnline,
-        format: (p, c, e, x) => formatDate(x),
-        width: 160,
-        difference: false,
-        statistics: false
-    },
-    'Inactive Time': {
-        expr: p => p.Timestamp - p.LastOnline,
-        format: (p, c, e, x) => formatDuration(x),
-        flip: true,
-        difference: false,
-        statistics: false
-    },
     'Timestamp': {
         expr: p => p.Timestamp,
         format: (p, c, e, x) => formatDate(x),
@@ -2293,90 +2279,6 @@ const SP_KEYWORD_MAPPING_0 = {
         format: (p, c, e, x) => (p && p.hasGuild()) ? formatDate(x) : '',
         difference: false,
         statistics: false
-    },
-    '1 Catacombs': {
-        expr: p => Math.max(0, p.Dungeons.Normal[0] - 2)
-    },
-    '2 Mines': {
-        expr: p => Math.max(0, p.Dungeons.Normal[1] - 2)
-    },
-    '3 Ruins': {
-        expr: p => Math.max(0, p.Dungeons.Normal[2] - 2)
-    },
-    '4 Grotto': {
-        expr: p => Math.max(0, p.Dungeons.Normal[3] - 2)
-    },
-    '5 Altar': {
-        expr: p => Math.max(0, p.Dungeons.Normal[4] - 2)
-    },
-    '6 Tree': {
-        expr: p => Math.max(0, p.Dungeons.Normal[5] - 2)
-    },
-    '7 Magma': {
-        expr: p => Math.max(0, p.Dungeons.Normal[6] - 2)
-    },
-    '8 Temple': {
-        expr: p => Math.max(0, p.Dungeons.Normal[7] - 2)
-    },
-    '9 Pyramid': {
-        expr: p => Math.max(0, p.Dungeons.Normal[8] - 2)
-    },
-    '10 Fortress': {
-        expr: p => Math.max(0, p.Dungeons.Normal[9] - 2)
-    },
-    '11 Circus': {
-        expr: p => Math.max(0, p.Dungeons.Normal[10] - 2)
-    },
-    '12 Hell': {
-        expr: p => Math.max(0, p.Dungeons.Normal[11] - 2)
-    },
-    '13 Floor': {
-        expr: p => Math.max(0, p.Dungeons.Normal[12] - 2)
-    },
-    '14 Easteros': {
-        expr: p => Math.max(0, p.Dungeons.Normal[13] - 2)
-    },
-    'S1 Catacombs': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[0] - 2)
-    },
-    'S2 Mines': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[1] - 2)
-    },
-    'S3 Ruins': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[2] - 2)
-    },
-    'S4 Grotto': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[3] - 2)
-    },
-    'S5 Altar': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[4] - 2)
-    },
-    'S6 Tree': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[5] - 2)
-    },
-    'S7 Magma': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[6] - 2)
-    },
-    'S8 Temple': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[7] - 2)
-    },
-    'S9 Pyramid': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[8] - 2)
-    },
-    'S10 Fortress': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[9] - 2)
-    },
-    'S11 Circus': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[10] - 2)
-    },
-    'S12 Hell': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[11] - 2)
-    },
-    'S13 Floor': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[12] - 2)
-    },
-    'S14 Easteros': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[13] - 2)
     },
     'Achievements': {
         expr: p => p.Achievements.Owned
@@ -2546,6 +2448,20 @@ const SP_SPECIAL_CONDITIONS = {
 
 // Protected
 const SP_KEYWORD_MAPPING_1 = {
+    'Last Active': {
+        expr: p => p.LastOnline,
+        format: (p, c, e, x) => formatDate(x),
+        width: 160,
+        difference: false,
+        statistics: false
+    },
+    'Inactive Time': {
+        expr: p => p.Timestamp - p.LastOnline,
+        format: (p, c, e, x) => formatDuration(x),
+        flip: true,
+        difference: false,
+        statistics: false
+    },
     'Knights': {
         expr: p => p.Fortress.Knights
     },
@@ -2683,6 +2599,49 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Metal,
         statistics: false
     },
+
+    '1 Catacombs': {
+        expr: p => Math.max(0, p.Dungeons.Normal[0] - 2)
+    },
+    '2 Mines': {
+        expr: p => Math.max(0, p.Dungeons.Normal[1] - 2)
+    },
+    '3 Ruins': {
+        expr: p => Math.max(0, p.Dungeons.Normal[2] - 2)
+    },
+    '4 Grotto': {
+        expr: p => Math.max(0, p.Dungeons.Normal[3] - 2)
+    },
+    '5 Altar': {
+        expr: p => Math.max(0, p.Dungeons.Normal[4] - 2)
+    },
+    '6 Tree': {
+        expr: p => Math.max(0, p.Dungeons.Normal[5] - 2)
+    },
+    '7 Magma': {
+        expr: p => Math.max(0, p.Dungeons.Normal[6] - 2)
+    },
+    '8 Temple': {
+        expr: p => Math.max(0, p.Dungeons.Normal[7] - 2)
+    },
+    '9 Pyramid': {
+        expr: p => Math.max(0, p.Dungeons.Normal[8] - 2)
+    },
+    '10 Fortress': {
+        expr: p => Math.max(0, p.Dungeons.Normal[9] - 2)
+    },
+    '11 Circus': {
+        expr: p => Math.max(0, p.Dungeons.Normal[10] - 2)
+    },
+    '12 Hell': {
+        expr: p => Math.max(0, p.Dungeons.Normal[11] - 2)
+    },
+    '13 Floor': {
+        expr: p => Math.max(0, p.Dungeons.Normal[12] - 2)
+    },
+    '14 Easteros': {
+        expr: p => Math.max(0, p.Dungeons.Normal[13] - 2)
+    },
     '15 Academy': {
         expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[0] - 2) : undefined
     },
@@ -2697,6 +2656,48 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     '19 Birthday': {
         expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[4] - 2) : undefined
+    },
+    'S1 Catacombs': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[0] - 2)
+    },
+    'S2 Mines': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[1] - 2)
+    },
+    'S3 Ruins': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[2] - 2)
+    },
+    'S4 Grotto': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[3] - 2)
+    },
+    'S5 Altar': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[4] - 2)
+    },
+    'S6 Tree': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[5] - 2)
+    },
+    'S7 Magma': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[6] - 2)
+    },
+    'S8 Temple': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[7] - 2)
+    },
+    'S9 Pyramid': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[8] - 2)
+    },
+    'S10 Fortress': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[9] - 2)
+    },
+    'S11 Circus': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[10] - 2)
+    },
+    'S12 Hell': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[11] - 2)
+    },
+    'S13 Floor': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[12] - 2)
+    },
+    'S14 Easteros': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[13] - 2)
     },
     'S15 Academy': {
         expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[0] - 2) : undefined
