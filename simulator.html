@@ -12,6 +12,7 @@
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
+        <script src="vendor/js/html2canvas.min.js"></script>
 
         <script src="js/enum.js"></script>
         <script src="js/util.js"></script>
@@ -234,7 +235,7 @@
                 </div>
                 <!-- Player list -->
                 <div class="column">
-                    <div class="ui grid">
+                    <div class="ui grid screenshot-target">
                         <div class="css-small-row row css-smaller-pad">
                             <div class="four wide column">
                                 <button class="ui fluid small button" type="submit" id="sim-add"><i class="small arrow right icon"></i> Add</button>
@@ -320,7 +321,7 @@
 
                             </div>
                             <div class="one wide column">
-
+                                <button id="save-screenshot" class="ui small basic icon button" style="position: absolute; right: .75em; top: -0.50em;" data-position="bottom center" data-tooltip="Save as image"><i class="download icon"></i></button>
                             </div>
                         </div>
                         <div class="row padding-none">
@@ -393,6 +394,23 @@
                 } else {
                     this.style.setProperty('background', '');
                 }
+            });
+
+            $('#save-screenshot').click(function () {
+                html2canvas($('.screenshot-target').get(0), {
+                    logging: false,
+                    onclone: (doc) => {
+                        $(doc).find('.row').first().remove();
+                        $(doc).find('.row').first().remove();
+                        $(doc).find('#save-screenshot').remove();
+                        $(doc).find('i').remove();
+                        $(doc).find('.row.selected').removeClass('selected');
+                    }
+                }).then((canvas) => {
+                    canvas.toBlob((blob) => {
+                        window.download(`simulator_${Date.now()}.png`, blob);
+                    });
+                });
             });
 
             var mode = 0;
