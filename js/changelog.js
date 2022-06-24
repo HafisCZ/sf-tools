@@ -1,4 +1,22 @@
 const CHANGELOG = {
+    'v5.XXXX': {
+        'Dungeon Simulator': [
+            'Added option to save image of Simulate All results',
+            'Added class swap to cheat menu'
+        ],
+        'Fight Simulator': [
+            'Added option to save image of fight results'
+        ],
+        'Pet Simulator': [
+            'Reworked UI',
+            'Fixed missing input for pets between 150 - 199',
+            'Fixed position of New BE checkbox for small screens',
+        ],
+        'All Simulators': [
+            'Reworked Bard simulation',
+            'Fixed Druid damage reduction when having no mask'
+        ]
+    },
     'v5.2134': {
         'Statistics': [
             'Added support for Bard class',
