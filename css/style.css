@@ -79,6 +79,12 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
     font-size: 85%;
 }
 
+@media only screen and (max-width: 992px) {
+    .paste-target {
+        display: none;
+    }
+}
+
 .paste-target {
     position: absolute;
     right: 2em;
