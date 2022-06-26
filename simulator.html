@@ -345,7 +345,7 @@
 
             function buildSimulatorLadder (array) {
                 return new Promise(async (resolve, reject) => {
-                    Toast.info('Preparing ladder', `<code><b>Players:</b> ${array.length}</code>`);
+                    Toast.info('Preparing ladder', `<b>Players:</b> ${array.length}`);
 
                     let worker = await createSimulatorWorker('players');
 
@@ -396,7 +396,7 @@
                         ladder = await buildSimulatorLadder([ ...players ]);
                     }
 
-                    Toast.info('Starting simulation', `<code><b>Block size:</b> ${blockSize}<br/><b>Iterations:</b> ${iterations}<br/><b>Thread cnt:</b> ${blocks}</code>`)
+                    Toast.info('Starting simulation', `<b>Block size:</b> ${blockSize}<br/><b>Iterations:</b> ${iterations}<br/><b>Thread cnt:</b> ${blocks}`)
 
                     let blocksFinished = 0;
                     for (var i = 0; i < players.length; i += blockSize) {
@@ -411,7 +411,7 @@
                                     logs.push(... message.data.logs);
                                 }
 
-                                Toast.info(`Simulation thread ${blocksFinished += 1} / ${blocks} finished`, `<code><b>Time:</b> ${message.data.time / 1000} seconds</code>`)
+                                Toast.info(`Simulation thread ${blocksFinished += 1} / ${blocks} finished`, `<b>Time:</b> ${message.data.time / 1000} seconds`)
 
                                 if (results.length == players.length) {
                                     LoaderPopup.toggle(false);

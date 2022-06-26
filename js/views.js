@@ -95,7 +95,7 @@ const Toast = new (class {
                     ${icon ? `<i data-op="icon" class="${icon} icon" style="color: orange; line-height: 1rem; margin-right: 0.5rem;"></i>` : ''}${title}
                 </div>
                 <div style="padding: 0.75rem; word-wrap: break-word; background-color: rgba(255, 255, 255, 0.85); border-bottom-left-radius: calc(0.375rem - 1px); border-bottom-right-radius: calc(0.375rem - 1px); border: 1px solid rgba(0, 0, 0, 0.175);">
-                    ${message}
+                    <code>${message}</code>
                 </div>
             </div>
         `).appendTo(this.$parent);
