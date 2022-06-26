@@ -243,10 +243,7 @@
                             <div class="four wide column">
                                 <button class="ui fluid small button" type="submit" id="sim-save">Save</button>
                             </div>
-                            <div class="two wide column">
-                                <button class="ui small basic icon fluid button" data-position="bottom center" data-tooltip="DANGEROUS: Enable fight data dump" id="sim-debug"><i class="file code outline icon"></i></button>
-                            </div>
-                            <div class="two wide column">
+                            <div class="four wide column">
                                 <button class="ui tiny basic icon fluid button" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="sim-insert"><i class="paste icon"></i></button>
                             </div>
                             <div class="four wide column">
@@ -376,15 +373,7 @@
                 showPlayers();
             });
 
-            var modeDump = false;
-            $('#sim-debug').click(function () {
-                modeDump = !modeDump;
-                if (modeDump) {
-                    this.style.setProperty('background', '#eb8034', 'important');
-                } else {
-                    this.style.setProperty('background', '');
-                }
-            });
+            var modeDump = window.location.href.includes('log');
 
             var modeInsert = false;
             $('#sim-insert').click(function () {
