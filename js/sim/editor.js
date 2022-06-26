@@ -262,11 +262,11 @@ class Editor {
             enchantment: new Field('[data-path="Items.Hand.HasEnchantment"]', 'false'),
             shield: new Field('[data-path="BlockChance"]', '25'),
 
-            str: new Field('[data-path="Strength.Total"]', '', Field.isNumber),
-            dex: new Field('[data-path="Dexterity.Total"]', '', Field.isNumber),
-            int: new Field('[data-path="Intelligence.Total"]', '', Field.isNumber),
-            con: new Field('[data-path="Constitution.Total"]', '', Field.isNumber),
-            lck: new Field('[data-path="Luck.Total"]', '', Field.isNumber),
+            str: new Field('[data-path="Strength.Total"]', '', Field.isNonZero),
+            dex: new Field('[data-path="Dexterity.Total"]', '', Field.isNonZero),
+            int: new Field('[data-path="Intelligence.Total"]', '', Field.isNonZero),
+            con: new Field('[data-path="Constitution.Total"]', '', Field.isNonZero),
+            lck: new Field('[data-path="Luck.Total"]', '', Field.isNonZero),
 
             weapon1_min: new Field('[data-path="Items.Wpn1.DamageMin"]', '', Field.isNumber),
             weapon1_max: new Field('[data-path="Items.Wpn1.DamageMax"]', '', Field.isNumber),
