@@ -74,6 +74,10 @@ const Toast = new (class {
         this._queue('exclamation triangle', title, message);
     }
 
+    error (title, message) {
+        this._queue('red exclamation circle', title, message);
+    }
+
     _queue (icon, title, message) {
         this.promise = this.promise.then(() => this._show(icon, title, message));
     }
