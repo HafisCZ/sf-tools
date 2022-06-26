@@ -110,7 +110,7 @@ const Toast = new (class {
             }
 
             this.$title.text(title);
-            this.$message.text(message);
+            this.$message.html(message);
 
             this.$container.transition('fade');
 
