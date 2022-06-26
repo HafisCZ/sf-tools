@@ -62,66 +62,44 @@ class FloatingPopup {
 }
 
 const Toast = new (class {
-    constructor () {
-        this.promise = Promise.resolve();
-    }
-
     info (title, message) {
-        this._queue(null, title, message);
+        this._show(null, title, message);
     }
 
     warn (title, message) {
-        this._queue('exclamation triangle', title, message);
+        this._show('exclamation triangle', title, message);
     }
 
     error (title, message) {
-        this._queue('red exclamation circle', title, message);
+        this._show('red exclamation circle', title, message);
     }
 
-    _queue (icon, title, message) {
-        this.promise = this.promise.then(() => this._show(icon, title, message));
+    _mount () {
+        if (this.$parent) {
+            return;
+        } else {
+            this.$parent = $('<div style="position: fixed; left: 1rem; bottom: 1rem; pointer-events: none; z-index: 99998;"></div>').appendTo(document.body);
+        }
     }
 
     _show (icon, title, message) {
-        return new Promise((resolve, reject) => {
-            if (typeof this.$container === 'undefined') {
-                this.$container = $(`
-                    <div class="ui transition hidden" style="z-index: 99998; width: 350px; max-width: 100%; font-size: 1rem; pointer-events: none; background-clip: padding-box; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); border-radius: 0.375rem; position: fixed; left: 2rem; bottom: 2rem;">
-                        <div style="display: flex; align-items: center; padding: 0.5rem 0.75rem; color: white; border-top-left-radius: calc(0.375rem - 1px); border-top-right-radius: calc(0.375rem - 1px); font-weight: bold; background-color: #212121; border: 1px solid #212121;">
-                            <i data-op="icon" class="exclamation triangle icon" style="color: orange; line-height: 1rem; margin-right: 0.5rem;"></i> <span data-op="title"></span>
-                        </div>
-                        <div style="padding: 0.75rem; word-wrap: break-word; background-color: rgba(255, 255, 255, 0.85); border-bottom-left-radius: calc(0.375rem - 1px); border-bottom-right-radius: calc(0.375rem - 1px); border: 1px solid rgba(0, 0, 0, 0.175);" data-op="message">
+        this._mount();
 
-                        </div>
-                    </div>
-                `);
+        let $toast = $(`
+            <div class="ui transition hidden" style="margin-top: 1rem; width: 350px; max-width: 100%; font-size: 1rem; pointer-events: none; background-clip: padding-box; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); border-radius: 0.375rem;">
+                <div style="display: flex; align-items: center; padding: 0.5rem 0.75rem; color: white; border-top-left-radius: calc(0.375rem - 1px); border-top-right-radius: calc(0.375rem - 1px); font-weight: bold; background-color: #212121; border: 1px solid #212121;">
+                    ${icon ? `<i data-op="icon" class="${icon} icon" style="color: orange; line-height: 1rem; margin-right: 0.5rem;"></i>` : ''}${title}
+                </div>
+                <div style="padding: 0.75rem; word-wrap: break-word; background-color: rgba(255, 255, 255, 0.85); border-bottom-left-radius: calc(0.375rem - 1px); border-bottom-right-radius: calc(0.375rem - 1px); border: 1px solid rgba(0, 0, 0, 0.175);">
+                    ${message}
+                </div>
+            </div>
+        `).appendTo(this.$parent);
 
-                this.$container.appendTo(document.body);
-
-                this.$icon = this.$container.find('[data-op="icon"]');
-                this.$title = this.$container.find('[data-op="title"]');
-                this.$message = this.$container.find('[data-op="message"]');
-            }
-
-            if (icon) {
-                this.$icon.removeClass().addClass(`${icon} icon`).show();
-            } else {
-                this.$icon.hide();
-            }
-
-            this.$title.text(title);
-            this.$message.html(message);
-
-            this.$container.transition('fade');
-
-            setTimeout(() => {
-                this.$container.transition('fade');
-
-                setTimeout(() => {
-                    resolve();
-                }, 500);
-            }, 4000);
-        });
+        $toast.transition('fade');
+        setTimeout(() => {
+            $toast.transition('fade', 500, () => $toast.remove());
+        }, 3000);
     }
 })();
 
