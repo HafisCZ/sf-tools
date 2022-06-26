@@ -1,14 +1,18 @@
 const CHANGELOG = {
     'v5.XXXX': {
         'Statistics': [
-            'Marked headers as private (due to new BE)'
+            'Fixed visibility of some headers (due to new BE)',
+            'Fixed Bard missing instrument in player detail'
         ],
         'Dungeon Simulator': [
             'Added option to save image of Simulate All results',
             'Added class swap to cheat menu'
         ],
         'Fight Simulator': [
-            'Added option to save image of fight results'
+            'Added new toast messages informing user about simulation progress',
+            'Added option to save image of fight results',
+            'Added new <code>log</code> query argument',
+            'Fixed Tournamed mode freezing UI when starting simulation'
         ],
         'Pet Simulator': [
             'Reworked UI',
@@ -17,7 +21,13 @@ const CHANGELOG = {
         ],
         'All Simulators': [
             'Reworked Bard simulation',
-            'Fixed Druid damage reduction when having no mask'
+            'Added warning when importing incompatible HAR file',
+            'Fixed paste target appearing in mobile view',
+            'Fixed Druid damage reduction when having no mask',
+            'Fixed attribute fields allowing zeroes'
+        ],
+        'All Tools': [
+            'Removed <code>Go back</code> buttons'
         ]
     },
     'v5.2134': {
