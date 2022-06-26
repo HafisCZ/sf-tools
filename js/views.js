@@ -61,9 +61,68 @@ class FloatingPopup {
     }
 }
 
+const Toast = new (class {
+    constructor () {
+        this.promise = Promise.resolve();
+    }
+
+    info (title, message) {
+        this._queue(null, title, message);
+    }
+
+    warn (title, message) {
+        this._queue('exclamation triangle', title, message);
+    }
+
+    _queue (icon, title, message) {
+        this.promise = this.promise.then(() => this._show(icon, title, message));
+    }
+
+    _show (icon, title, message) {
+        return new Promise((resolve, reject) => {
+            if (typeof this.$container === 'undefined') {
+                this.$container = $(`
+                    <div class="ui transition hidden" style="z-index: 99998; width: 350px; max-width: 100%; font-size: 1rem; pointer-events: none; background-clip: padding-box; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); border-radius: 0.375rem; position: fixed; left: 2rem; bottom: 2rem;">
+                        <div style="display: flex; align-items: center; padding: 0.5rem 0.75rem; color: white; border-top-left-radius: calc(0.375rem - 1px); border-top-right-radius: calc(0.375rem - 1px); font-weight: bold; background-color: #212121; border: 1px solid #212121;">
+                            <i data-op="icon" class="exclamation triangle icon" style="color: orange; line-height: 1rem; margin-right: 0.5rem;"></i> <span data-op="title"></span>
+                        </div>
+                        <div style="padding: 0.75rem; word-wrap: break-word; background-color: rgba(255, 255, 255, 0.85); border-bottom-left-radius: calc(0.375rem - 1px); border-bottom-right-radius: calc(0.375rem - 1px); border: 1px solid rgba(0, 0, 0, 0.175);" data-op="message">
+
+                        </div>
+                    </div>
+                `);
+
+                this.$container.appendTo(document.body);
+
+                this.$icon = this.$container.find('[data-op="icon"]');
+                this.$title = this.$container.find('[data-op="title"]');
+                this.$message = this.$container.find('[data-op="message"]');
+            }
+
+            if (icon) {
+                this.$icon.removeClass().addClass(`${icon} icon`).show();
+            } else {
+                this.$icon.hide();
+            }
+
+            this.$title.text(title);
+            this.$message.text(message);
+
+            this.$container.transition('fade');
+
+            setTimeout(() => {
+                this.$container.transition('fade');
+
+                setTimeout(() => {
+                    resolve();
+                }, 500);
+            }, 4000);
+        });
+    }
+})();
+
 const PopupController = new (class {
     constructor () {
-        this.queue = [];
         this.promise = Promise.resolve();
     }
 
