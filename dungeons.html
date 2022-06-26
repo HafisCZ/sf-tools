@@ -584,7 +584,7 @@
 
                 StatisticsIntegration.configure(
                     SELF_PROFILE,
-                    'Poll saved players',
+                    'Poll saved characters',
                     'dungeons',
                     function ($statsList) {
                         for (let player of Object.keys(DatabaseManager.Players).map(pid => DatabaseManager.getPlayer(pid).Latest).sort((a, b) => b.Timestamp - a.Timestamp)) {
