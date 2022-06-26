@@ -176,6 +176,7 @@ class IndexedDBWrapper {
             this.database = db;
 
             if (this.version != this.oldVersion && Array.isArray(this.dataUpdaters)) {
+                Toast.info('A database update is in progress', 'Please do not exit the page until loading stops. This may take a while depending on the size of your database.');
                 for (const updater of this.dataUpdaters) {
                     if (updater.shouldApply(this.oldVersion)) {
                         await updater.apply(this);
