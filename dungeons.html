@@ -589,7 +589,7 @@
                     function ($statsList) {
                         for (let player of Object.keys(DatabaseManager.Players).map(pid => DatabaseManager.getPlayer(pid).Latest).sort((a, b) => b.Timestamp - a.Timestamp)) {
                             $statsList.append($(`
-                                <div class="ui fluid button basic vertical animated gray" style="margin-bottom: 0.5em;">
+                                <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
                                     <div class="visible content">
                                         <span style="color: black;">${ player.Name } @ ${ player.Prefix }<span>
                                     </div>

@@ -480,40 +480,42 @@ const StatisticsIntegration = new (class {
                 callback($statsList);
 
                 $statsList.append(
-                    $('<div class="ui two basic tiny gray buttons"></div>').append(
-                        $(`
-                            <div class="ui fluid button vertical">
-                                <div class="visible content">
-                                    <span style="color: gray;">Endpoint<span>
+                    $('<div style="margin-top: 0.5em;"></div>').append(
+                        $('<div class="ui two basic tiny gray buttons"></div>').append(
+                            $(`
+                                <div class="ui fluid button vertical">
+                                    <div class="visible content">
+                                        <span style="color: gray;">Endpoint<span>
+                                    </div>
                                 </div>
-                            </div>
-                        `).click(() => {
-                            Endpoint.start(createOrigin('endpoint')).then(() => {
-                                $statsLoad.trigger('click');
-                            });
-                        }),
-                        $(`
-                            <label class="ui fluid button vertical" for="button-upload">
-                                <span style="color: gray;">HAR<span>
-                            </label>
-                            <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
-                        `).change((fileEvent) => {
-                            LoaderPopup.toggle(true);
+                            `).click(() => {
+                                Endpoint.start(createOrigin('endpoint')).then(() => {
+                                    $statsLoad.trigger('click');
+                                });
+                            }),
+                            $(`
+                                <label class="ui fluid button vertical" for="button-upload">
+                                    <span style="color: gray;">HAR<span>
+                                </label>
+                                <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
+                            `).change((fileEvent) => {
+                                LoaderPopup.toggle(true);
 
-                            let pendingPromises = [];
-                            Array.from(fileEvent.target.files).forEach(file => {
-                                pendingPromises.push(file.text().then(fileContent => {
-                                    return DatabaseManager.import(fileContent, file.lastModified, undefined, createOrigin('har'));
-                                }).catch(function (e) {
-                                    Toast.warn('An error has occured while importing file', e.message);
-                                    Logger.log('WARNING', e.message);
-                                }));
-                            });
+                                let pendingPromises = [];
+                                Array.from(fileEvent.target.files).forEach(file => {
+                                    pendingPromises.push(file.text().then(fileContent => {
+                                        return DatabaseManager.import(fileContent, file.lastModified, undefined, createOrigin('har'));
+                                    }).catch(function (e) {
+                                        Toast.warn('An error has occured while importing file', e.message);
+                                        Logger.log('WARNING', e.message);
+                                    }));
+                                });
 
-                            Promise.all(pendingPromises).then(() => {
-                                $statsLoad.trigger('click');
-                            });
-                        })
+                                Promise.all(pendingPromises).then(() => {
+                                    $statsLoad.trigger('click');
+                                });
+                            })
+                        )
                     )
                 );
 

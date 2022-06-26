@@ -334,7 +334,7 @@
                         let groups = Object.values(DatabaseManager.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MemberCount == gi.MembersPresent)[0])
                         for (let group of _compact(groups).sort((a, b) => b.Timestamp - a.Timestamp)) {
                             $statsList.append($(`
-                                <div class="ui fluid button basic vertical animated gray" style="margin-bottom: 0.5em;">
+                                <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
                                     <div class="visible content">
                                         <span style="color: black;">${ group.Name } @ ${ group.Prefix }<span>
                                     </div>
