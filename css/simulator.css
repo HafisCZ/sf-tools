@@ -1,0 +1,155 @@
+.bordered .fields:last-of-type {
+    margin-bottom: 0;
+}
+
+.bordered {
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.bordered-simple {
+    margin-bottom: 0.35em;
+    padding-top: 0.5em !important;
+    padding-bottom: 0.5em !important;
+    margin-right: 1em;
+    margin-left: 1em;
+}
+
+.player-index {
+    position: absolute;
+    font-size: 90%;
+    opacity: 50%;
+    left: -0em;
+    top: 1.5em;
+}
+
+.bnone {
+    border: 1px solid transparent;
+}
+
+.bone {
+    border: 1px solid orange;
+}
+
+.btwo {
+    border: 1px solid purple;
+}
+
+.bthree {
+    border: 1px solid blue;
+}
+
+.bfour {
+    border: 1px solid red;
+}
+
+.bfive {
+    border: 1px solid green;
+}
+
+.bsix {
+    border: 1px solid pink;
+}
+
+.spaced {
+    margin-top: 2em !important;
+}
+
+.sim-player-name-ihof {
+    position: relative;
+}
+
+.sim-player-name span {
+    display: none;
+}
+
+.sim-player-name-ihof b {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
+.sim-player-name-ihof span {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.selectable {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding-bottom: 0.25em !important;
+    padding-top: 0.25em !important;
+}
+
+.selectable div {
+    padding: 0 !important;
+}
+
+.selectable-header div {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.selected {
+    background-color: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.nselected {
+    cursor: pointer;
+}
+
+[data-sort-style] {
+    position: relative;
+    margin-top: -15px;
+    padding-top: 15px;
+    margin-bottom: -15px;
+    padding-bottom: 15px;
+    margin-right: -10px;
+    padding-right: 10px;
+    margin-left: -10px;
+    padding-left: 10px;
+}
+
+[data-sort-style="1"]::before {
+    content: "\f0de";
+    font-family: Icons;
+    position: absolute;
+    left: 1px;
+    top: -3px;
+    transform: scale(0.7);
+}
+
+[data-sort-style="2"]::before {
+    content: "\f0dd";
+    font-family: Icons;
+    position: absolute;
+    left: 1px;
+    bottom: 0px;
+    transform: scale(0.7);
+}
+
+.debug-container {
+    position: absolute;
+    top: 5em;
+    left: 1em;
+    font-size: 80%;
+}
+
+.class-picture {
+     margin-left: -0.75em !important;
+     margin-right: 0.5em !important;
+}
+
+.class-none {
+    margin-left: 1.75em;
+}
+
+.css-smaller-pad > .column {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+}
