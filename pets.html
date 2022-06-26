@@ -469,7 +469,7 @@
                     let object = {
                         Index: this.Index
                     };
-                    
+
                     for (let [key, field] of Object.entries(this.fields)) {
                         if (IGNORED_FIELDS.includes(key)) {
                             continue;
@@ -793,7 +793,14 @@
                                 LoaderPopup.toggle(true);
 
                                 let pendingPromises = [];
-                                Array.from(fileEvent.target.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified, undefined, 'har/pets'))));
+                                Array.from(fileEvent.target.files).forEach(file => {
+                                    pendingPromises.push(file.text().then(fileContent => {
+                                        return DatabaseManager.import(fileContent, file.lastModified, undefined, 'har/dungeons');
+                                    }).catch(function (e) {
+                                        Toast.warn('An error has occured while importing file', e.message)
+                                    }));
+                                });
+
                                 Promise.all(pendingPromises).then(() => {
                                     $('#load-stats').trigger('click');
                                 });

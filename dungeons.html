@@ -704,6 +704,8 @@
                                     Array.from(fileEvent.target.files).forEach(file => {
                                         pendingPromises.push(file.text().then(fileContent => {
                                             return DatabaseManager.import(fileContent, file.lastModified, undefined, 'har/dungeons');
+                                        }).catch(function (e) {
+                                            Toast.warn('An error has occured while importing file', e.message)
                                         }));
                                     });
 
