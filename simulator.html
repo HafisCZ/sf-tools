@@ -80,30 +80,18 @@
                             <div class="four wide column">
                                 <button class="ui fluid small button" type="submit" id="sim-save">Save</button>
                             </div>
-                            <div class="four wide column">
-                                <button class="ui tiny basic icon fluid button" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="sim-insert"><i class="paste icon"></i></button>
+                            <div class="one wide column"></div>
+                            <div class="two wide column">
+                                <button class="ui small basic icon fluid button" style="margin-left: -1.5em; width: calc(100% + 1.5em);" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="sim-insert"><i class="paste icon"></i></button>
                             </div>
-                            <div class="four wide column">
-                                <div class="ui tiny basic icon fluid two buttons">
+                            <div class="five wide column">
+                                <div class="ui small basic icon fluid two buttons">
                                     <button class="ui button" data-position="bottom center" data-tooltip="Copy current" id="sim-copy"><i class="outline copy icon"></i> 1</button>
                                     <button class="ui button" data-position="bottom center" data-tooltip="Copy everyone" id="sim-copyall"><i class="copy icon"></i> All</button>
                                 </div>
                             </div>
                         </div>
                         <div class="css-small-row row css-smaller-pad">
-                            <div class="five wide column">
-                                <div class="ui small form">
-                                    <div class="two fields">
-                                        <div class="field" data-position="bottom center" data-tooltip="Simulator threads. Keep this number BELOW your processor core count!">
-                                            <input class="text-center fluid" type="text" id="sim-threads" value="4">
-                                        </div>
-                                        <div class="field" data-position="bottom center" data-tooltip="Amount of iterations per thread.">
-                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
-                                            <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="four wide column">
                                 <div class="ui small form">
                                     <div class="field">
@@ -116,6 +104,19 @@
                             </div>
                             <div class="two wide column">
                                 <button class="ui small basic icon fluid button" data-position="bottom center" data-tooltip="IHOF Mode: Gladiator is set to 15 and is not reduced!" id="sim-ihof">IHOF</button>
+                            </div>
+                            <div class="five wide column">
+                                <div class="ui small form">
+                                    <div class="two fields">
+                                        <div class="field" data-position="bottom center" data-tooltip="Simulator threads. Keep this number BELOW your processor core count!">
+                                            <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                        </div>
+                                        <div class="field" data-position="bottom center" data-tooltip="Amount of iterations per thread.">
+                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="five wide column">
                                 <button class="ui fluid small button" type="submit" id="sim-run">Simulate</button>
