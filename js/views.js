@@ -62,6 +62,10 @@ class FloatingPopup {
 }
 
 const Toast = new (class {
+    constructor () {
+        this.toasts = [];
+    }
+
     info (title, message) {
         this._show(null, title, message);
     }
@@ -86,7 +90,7 @@ const Toast = new (class {
         this._mount();
 
         let $toast = $(`
-            <div class="ui transition hidden" style="margin-top: 1rem; width: 350px; max-width: 100%; font-size: 1rem; pointer-events: none; background-clip: padding-box; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); border-radius: 0.375rem;">
+            <div data-toast="${SHA1(Math.random().toString())}" class="ui transition hidden" style="margin-top: 1rem; width: 350px; max-width: 100%; font-size: 1rem; pointer-events: none; background-clip: padding-box; box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15); border-radius: 0.375rem;">
                 <div style="display: flex; align-items: center; padding: 0.5rem 0.75rem; color: white; border-top-left-radius: calc(0.375rem - 1px); border-top-right-radius: calc(0.375rem - 1px); font-weight: bold; background-color: #212121; border: 1px solid #212121;">
                     ${icon ? `<i data-op="icon" class="${icon} icon" style="color: orange; line-height: 1rem; margin-right: 0.5rem;"></i>` : ''}${title}
                 </div>
@@ -97,9 +101,26 @@ const Toast = new (class {
         `).appendTo(this.$parent);
 
         $toast.transition('fade');
-        setTimeout(() => {
-            $toast.transition('fade', 500, () => $toast.remove());
-        }, 3000);
+        setTimeout(() => this._destroy($toast), 3000);
+
+        // Add toast to the queue
+        this.toasts.unshift($toast);
+
+        // Check and remove last toast if there is more than 5
+        if (this.toasts.length > 5) {
+            this._destroy(this.toasts.pop());
+        }
+    }
+
+    _destroy ($toast) {
+        $toast.transition('fade', 500, () => {
+            let toastId = $toast.data('toast');
+            if (this.toasts[this.toasts.length - 1].data('toast') == toastId) {
+                this.toasts.pop();
+            }
+
+            $toast.remove();
+        });
     }
 })();
 
