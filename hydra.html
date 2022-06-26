@@ -41,13 +41,6 @@
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
 
-        <div class="statistics-module" id="stats-module">
-            <div class="ui fluid basic gray button" id="load-stats"><i class="sync alternate icon"></i>Poll saved guilds</div>
-            <div id="stats-list">
-                <!-- LIST -->
-            </div>
-        </div>
-
         <div class="paste-target" onpaste="console.log">
             Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator
         </div>
@@ -317,14 +310,14 @@
 
                 $('#sim-editor input').on('paste', function (event) { event.stopPropagation(); });
 
-                $('#load-stats').click(() => {
-                    LoaderPopup.toggle(true);
-                    DatabaseManager.load(DEFAULT_PROFILE).then(function () {
-                        $('#stats-list').empty();
-
+                StatisticsIntegration.configure(
+                    DEFAULT_PROFILE,
+                    'Poll saved guilds',
+                    'dungeons',
+                    function ($statsList) {
                         let groups = Object.values(DatabaseManager.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MemberCount == gi.MembersPresent)[0])
                         for (let group of _compact(groups).sort((a, b) => b.Timestamp - a.Timestamp)) {
-                            $('#stats-list').append($(`
+                            $statsList.append($(`
                                 <div class="ui fluid button basic vertical animated gray" style="margin-bottom: 0.5em;">
                                     <div class="visible content">
                                         <span style="color: black;">${ group.Name } @ ${ group.Prefix }<span>
@@ -343,51 +336,8 @@
                                 }
                             ));
                         }
-
-                        $('#stats-list').append(
-                            $('<div class="ui two basic tiny gray buttons"></div>').append(
-                                $(`
-                                    <div class="ui fluid button vertical">
-                                        <div class="visible content">
-                                            <span style="color: gray;">Endpoint<span>
-                                        </div>
-                                    </div>
-                                `).click(() => {
-                                    Endpoint.start('endpoint/dungeons').then(() => {
-                                        $('#load-stats').trigger('click');
-                                    });
-                                }),
-                                $(`
-                                    <label class="ui fluid button vertical" for="button-upload">
-                                        <span style="color: gray;">HAR<span>
-                                    </label>
-                                    <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
-                                `).change((fileEvent) => {
-                                    LoaderPopup.toggle(true);
-
-                                    let pendingPromises = [];
-                                    Array.from(fileEvent.target.files).forEach(file => {
-                                        pendingPromises.push(file.text().then(fileContent => {
-                                            return DatabaseManager.import(fileContent, file.lastModified, undefined, 'har/dungeons');
-                                        }).catch(function (e) {
-                                            Toast.warn('An error has occured while importing file', e.message)
-                                        }));
-                                    });
-
-                                    Promise.all(pendingPromises).then(() => {
-                                        $('#load-stats').trigger('click');
-                                    });
-                                })
-                            )
-                        );
-
-                        LoaderPopup.toggle(false);
-                    }).catch(function () {
-                        LoaderPopup.toggle(false);
-                        Logger.log('WARNING', 'Database could not be opened!');
-                        $('#stats-list').empty();
-                    });
-                });
+                    }
+                );
 
                 $('#sim-run').click(async function () {
                     if (EditorController.valid()) {

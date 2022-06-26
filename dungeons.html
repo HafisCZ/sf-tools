@@ -56,13 +56,6 @@
             In that case save the fight in a HAR file and send to mar21#4673 in <a target="_blank" href="https://discord.gg/XWfSwe3">S&F Tavern</a>.</span>
         </div>
 
-        <div class="statistics-module" id="stats-module">
-            <div class="ui fluid basic gray button" id="load-stats"><i class="sync alternate icon"></i>Poll saved characters</div>
-            <div id="stats-list">
-                <!-- LIST -->
-            </div>
-        </div>
-
         <div class="paste-target" onpaste="console.log">
             Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator
         </div>
@@ -589,13 +582,13 @@
                     }
                 });
 
-                $('#load-stats').click(() => {
-                    LoaderPopup.toggle(true);
-                    DatabaseManager.load(SELF_PROFILE).then(function () {
-                        $('#stats-list').empty();
-
+                StatisticsIntegration.configure(
+                    SELF_PROFILE,
+                    'Poll saved players',
+                    'dungeons',
+                    function ($statsList) {
                         for (let player of Object.keys(DatabaseManager.Players).map(pid => DatabaseManager.getPlayer(pid).Latest).sort((a, b) => b.Timestamp - a.Timestamp)) {
-                            $('#stats-list').append($(`
+                            $statsList.append($(`
                                 <div class="ui fluid button basic vertical animated gray" style="margin-bottom: 0.5em;">
                                     <div class="visible content">
                                         <span style="color: black;">${ player.Name } @ ${ player.Prefix }<span>
@@ -678,51 +671,8 @@
                                 }
                             ));
                         }
-
-                        $('#stats-list').append(
-                            $('<div class="ui two basic tiny gray buttons"></div>').append(
-                                $(`
-                                    <div class="ui fluid button vertical">
-                                        <div class="visible content">
-                                            <span style="color: gray;">Endpoint<span>
-                                        </div>
-                                    </div>
-                                `).click(() => {
-                                    Endpoint.start('endpoint/dungeons').then(() => {
-                                        $('#load-stats').trigger('click');
-                                    });
-                                }),
-                                $(`
-                                    <label class="ui fluid button vertical" for="button-upload">
-                                        <span style="color: gray;">HAR<span>
-                                    </label>
-                                    <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
-                                `).change((fileEvent) => {
-                                    LoaderPopup.toggle(true);
-
-                                    let pendingPromises = [];
-                                    Array.from(fileEvent.target.files).forEach(file => {
-                                        pendingPromises.push(file.text().then(fileContent => {
-                                            return DatabaseManager.import(fileContent, file.lastModified, undefined, 'har/dungeons');
-                                        }).catch(function (e) {
-                                            Toast.warn('An error has occured while importing file', e.message)
-                                        }));
-                                    });
-
-                                    Promise.all(pendingPromises).then(() => {
-                                        $('#load-stats').trigger('click');
-                                    });
-                                })
-                            )
-                        );
-
-                        LoaderPopup.toggle(false);
-                    }).catch(function () {
-                        LoaderPopup.toggle(false);
-                        Logger.log('WARNING', 'Database could not be opened!');
-                        $('#stats-list').empty();
-                    });
-                });
+                    }
+                )
 
                 function showMassDungeonResults (bosses, results) {
                     bosses = bosses.map((dungeon, index) => Object.assign(_dig(results, index), dungeon)).sort((b, a) => a.score - b.score);

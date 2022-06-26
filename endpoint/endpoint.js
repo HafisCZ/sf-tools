@@ -462,3 +462,66 @@ const Endpoint = new ( class {
         `).appendTo($('body').first());
     }
 })();
+
+const StatisticsIntegration = new (class {
+    configure (profile, pollLabel, origin, callback) {
+        let $statsModule = $(`<div class="statistics-module" id="stats-module"></div>`).appendTo($(document.body));
+        let $statsLoad = $(`<div class="ui fluid basic gray button" id="load-stats"><i class="sync alternate icon"></i>${pollLabel}</div>`).appendTo($statsModule);
+        let $statsList = $(`<div id="stats-list"></div>`).appendTo($statsModule);
+
+        $statsLoad.click(() => {
+            LoaderPopup.toggle(true);
+            DatabaseManager.load(profile).then(function () {
+                $statsList.empty();
+                callback($statsList);
+
+                $statsList.append(
+                    $('<div class="ui two basic tiny gray buttons"></div>').append(
+                        $(`
+                            <div class="ui fluid button vertical">
+                                <div class="visible content">
+                                    <span style="color: gray;">Endpoint<span>
+                                </div>
+                            </div>
+                        `).click(() => {
+                            Endpoint.start(`endpoint/${origin}`).then(() => {
+                                $statsLoad.trigger('click');
+                            });
+                        }),
+                        $(`
+                            <label class="ui fluid button vertical" for="button-upload">
+                                <span style="color: gray;">HAR<span>
+                            </label>
+                            <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
+                        `).change((fileEvent) => {
+                            LoaderPopup.toggle(true);
+
+                            let pendingPromises = [];
+                            Array.from(fileEvent.target.files).forEach(file => {
+                                pendingPromises.push(file.text().then(fileContent => {
+                                    return DatabaseManager.import(fileContent, file.lastModified, undefined, `har/${origin}`);
+                                }).catch(function (e) {
+                                    Toast.warn('An error has occured while importing file', e.message);
+                                    Logger.log('WARNING', e.message);
+                                }));
+                            });
+
+                            Promise.all(pendingPromises).then(() => {
+                                $statsLoad.trigger('click');
+                            });
+                        })
+                    )
+                );
+
+                LoaderPopup.toggle(false);
+            }).catch(function () {
+                LoaderPopup.toggle(false);
+
+                Toast.error('Database could not be opened', 'Please verify that you are not in incognito mode and your browser supports Indexed DB');
+                Logger.log('WARNING', 'Database could not be opened!');
+
+                $statsList.empty();
+            });
+        });
+    }
+})();

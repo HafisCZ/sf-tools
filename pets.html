@@ -36,13 +36,6 @@
         <script src="js/sim/editor.js"></script>
     </head>
     <body class="margin-none-bottom">
-        <div class="statistics-module" id="stats-module">
-            <div class="ui fluid basic gray button" id="load-stats"><i class="sync alternate icon"></i>Poll saved characters</div>
-            <div id="stats-list">
-                <!-- LIST -->
-            </div>
-        </div>
-
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
             <div class="right menu">
@@ -690,15 +683,15 @@
             $('#sim-generate5').click(() => generatePetMap(5));
             $('#sim-generate10').click(() => generatePetMap(10));
 
-            $('#load-stats').click(() => {
-                LoaderPopup.toggle(true);
-                DatabaseManager.load(SELF_PROFILE).then(function () {
-                    $('#stats-list').empty();
-
+            StatisticsIntegration.configure(
+                SELF_PROFILE,
+                'Poll saved players',
+                'pets',
+                function ($statsList) {
                     for (let player of Object.keys(DatabaseManager.Players).map(pid => DatabaseManager.getPlayer(pid).Latest).sort((a, b) => b.Timestamp - a.Timestamp).filter(p => p.Pets && p.Pets.TotalLevel)) {
                         let hasDungeonsLeft = player.Pets.Dungeons.some(pet => pet < 20);
 
-                        $('#stats-list').append($(`
+                        $statsList.append($(`
                             <div class="ui fluid button basic vertical animated gray" style="margin-bottom: 0.5em;">
                                 <div class="visible content">
                                     <span style="color: black;">${ player.Name } @ ${ player.Prefix }<span>
@@ -770,51 +763,8 @@
                             });
                         });
                     }
-
-                    $('#stats-list').append(
-                        $('<div class="ui two basic tiny gray buttons"></div>').append(
-                            $(`
-                                <div class="ui fluid button vertical">
-                                    <div class="visible content">
-                                        <span style="color: gray;">Endpoint<span>
-                                    </div>
-                                </div>
-                            `).click(() => {
-                                Endpoint.start('endpoint/pets').then(() => {
-                                    $('#load-stats').trigger('click');
-                                });
-                            }),
-                            $(`
-                                <label class="ui fluid button vertical" for="button-upload">
-                                    <span style="color: gray;">HAR<span>
-                                </label>
-                                <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
-                            `).change((fileEvent) => {
-                                LoaderPopup.toggle(true);
-
-                                let pendingPromises = [];
-                                Array.from(fileEvent.target.files).forEach(file => {
-                                    pendingPromises.push(file.text().then(fileContent => {
-                                        return DatabaseManager.import(fileContent, file.lastModified, undefined, 'har/dungeons');
-                                    }).catch(function (e) {
-                                        Toast.warn('An error has occured while importing file', e.message)
-                                    }));
-                                });
-
-                                Promise.all(pendingPromises).then(() => {
-                                    $('#load-stats').trigger('click');
-                                });
-                            })
-                        )
-                    );
-
-                    LoaderPopup.toggle(false);
-                }).catch(function () {
-                    LoaderPopup.toggle(false);
-                    Logger.log('WARNING', 'Database could not be opened!');
-                    $('#stats-list').empty();
-                });
-            });
+                }
+            );
 
             function getPetsFor (player, type) {
                 let currentType = type;
