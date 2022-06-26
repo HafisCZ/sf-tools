@@ -187,6 +187,10 @@ const SELF_PROFILE = {
     only_players: true
 };
 
+const HYDRA_PROFILE = {
+    block_preload: true
+}
+
 const DEFAULT_PROFILE_A = {
     name: 'Own only',
     primary: {
