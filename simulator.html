@@ -344,6 +344,34 @@
             $('#sim-threads').captiveInputField('player_sim/threads', 4, v => !isNaN(v) && v >= 1);
             $('#sim-iterations').captiveInputField('player_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
 
+            function buildSimulatorLadder (array) {
+                return new Promise(async (resolve, reject) => {
+                    Toast.info('Preparing ladder', `<code><b>Players:</b> ${array.length}</code>`);
+
+                    let worker = await createSimulatorWorker('players');
+
+                    worker.addEventListener('message', function (message) {
+                        if (message.data.command == 'finished') {
+                            resolve(message.data.results);
+                        }
+                    }, false);
+
+                    worker.postMessage({
+                        mode: 'players_all',
+                        player: array,
+                        players: array,
+                        iterations: 100
+                    });
+                }).then((list) => {
+                    _sort_asc(list, p => p.score.avg);
+                    for (let p of list) {
+                        p.score = null;
+                    }
+
+                    return list;
+                });
+            }
+
             // Run simulation
             $('#sim-run').click(async function () {
                 if (players.length > 1 && (mode != 1 || (mode == 1 && players.find(p => p.index == yourself)))) {
@@ -366,16 +394,7 @@
                     var logs = [];
 
                     if (mode == 2) {
-                        Toast.info('Preparing ladder', `<code><b>Players:</b> ${players.length}</code>`);
-
-                        ladder = [ ... players ];
-                        new FightSimulator().simulateMultiple(ladder, ladder, 100);
-
-                        ladder.sort((a, b) => a.score.avg - b.score.avg);
-
-                        for (var i = 0; i < ladder.length; i++) {
-                            ladder[i].score = null;
-                        }
+                        ladder = await buildSimulatorLadder([ ...players ]);
                     }
 
                     Toast.info('Starting simulation', `<code><b>Block size:</b> ${blockSize}<br/><b>Iterations:</b> ${iterations}<br/><b>Thread cnt:</b> ${blocks}</code>`)
