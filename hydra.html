@@ -226,8 +226,16 @@
                         Luck: {
                             Total: obj.lck
                         },
-                        DamageMin: obj.min,
-                        DamageMax: obj.max,
+                        Items: {
+                            Wpn1: {
+                                DamageMin: obj.min,
+                                DamageMax: obj.max
+                            },
+                            Wpn2: {
+                                DamageMin: obj.min,
+                                DamageMax: obj.max
+                            }
+                        },
                         ForceHealth: obj.health,
                         Mask: obj.mask,
                         Instrument: obj.instrument
@@ -264,8 +272,16 @@
                         Luck: {
                             Total: obj.Luck
                         },
-                        DamageMin: null, // automatic
-                        DamageMax: null, // automatic
+                        Items: {
+                            Wpn1: {
+                                DamageMin: null, // automatic
+                                DamageMax: null, // automatic
+                            },
+                            Wpn2: {
+                                DamageMin: null, // automatic
+                                DamageMax: null  // automatic
+                            }
+                        },
                         ForceHealth: null, // automatic
                         ForceArmor: 1,
                         Mask: null,

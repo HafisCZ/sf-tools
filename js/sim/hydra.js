@@ -44,7 +44,7 @@ FighterModel.prototype.initialize = function (target) {
 
     target.DamageReduction = 1 - target.getDamageReduction(this) / 100;
 
-    this.Weapon1 = this.getDamageRange(this.Player, target);
+    this.Weapon1 = this.getDamageRange(this.Player.Items.Wpn1, target);
     this.Critical = 2;
 }
 
