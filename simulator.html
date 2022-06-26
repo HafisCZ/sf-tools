@@ -40,12 +40,6 @@
             </div>
         </div>
 
-        <div class="debug-container">
-            <div class="debug">
-
-            </div>
-        </div>
-
         <div class="paste-target" onpaste="console.log">
             Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator
         </div>
@@ -183,21 +177,6 @@
 
         <script type="text/javascript">
             let editor = new Editor($('#sim-editor'));
-
-            const UILogger = new (class {
-                constructor ($root) {
-                    this.$root = $root;
-                }
-
-                clear () {
-                    this.$root.html('');
-                }
-
-                append (line) {
-                    this.$root.append(`${ line }</br>`);
-                }
-            })($('.debug'));
-
             var selected = -1;
             var yourself = -1;
 
@@ -368,8 +347,6 @@
             // Run simulation
             $('#sim-run').click(async function () {
                 if (players.length > 1 && (mode != 1 || (mode == 1 && players.find(p => p.index == yourself)))) {
-                    UILogger.clear();
-
                     for (var i = 0; i < players.length; i++) {
                         players[i].score = null;
                         if (modeIhof) {
@@ -389,7 +366,7 @@
                     var logs = [];
 
                     if (mode == 2) {
-                        UILogger.append(`GENERATING LADDER`);
+                        Toast.info('Preparing ladder', `<code><b>Players:</b> ${players.length}</code>`);
 
                         ladder = [ ... players ];
                         new FightSimulator().simulateMultiple(ladder, ladder, 100);
@@ -401,10 +378,9 @@
                         }
                     }
 
-                    UILogger.append(`BLOCK SIZE: <b>${ blockSize }</b>`);
-                    UILogger.append(`ITERATIONS: <b><b>${ iterations }</b>`);
-                    UILogger.append(`<b><br/>STARTING ${ blocks } THREADS</b>`);
+                    Toast.info('Starting simulation', `<code><b>Block size:</b> ${blockSize}<br/><b>Iterations:</b> ${iterations}<br/><b>Thread cnt:</b> ${blocks}</code>`)
 
+                    let blocksFinished = 0;
                     for (var i = 0; i < players.length; i += blockSize) {
                         var block = players.slice(i, i + blockSize);
                         var worker = await createSimulatorWorker('players');
@@ -417,7 +393,7 @@
                                     logs.push(... message.data.logs);
                                 }
 
-                                UILogger.append(`THREAD FINISHED IN <b>${ message.data.time / 1000 }</b> SECONDS`);
+                                Toast.info(`Simulation thread ${blocksFinished += 1} / ${blocks} finished`, `<code><b>Time:</b> ${message.data.time / 1000} seconds</code>`)
 
                                 if (results.length == players.length) {
                                     LoaderPopup.toggle(false);
