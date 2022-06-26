@@ -469,6 +469,10 @@ const StatisticsIntegration = new (class {
         let $statsLoad = $(`<div class="ui fluid basic gray button" id="load-stats"><i class="sync alternate icon"></i>${pollLabel}</div>`).appendTo($statsModule);
         let $statsList = $(`<div id="stats-list"></div>`).appendTo($statsModule);
 
+        const createOrigin = (method) => {
+            return `${method}${origin ? `/${origin}` : ''}`;
+        }
+
         $statsLoad.click(() => {
             LoaderPopup.toggle(true);
             DatabaseManager.load(profile).then(function () {
@@ -484,7 +488,7 @@ const StatisticsIntegration = new (class {
                                 </div>
                             </div>
                         `).click(() => {
-                            Endpoint.start(`endpoint/${origin}`).then(() => {
+                            Endpoint.start(createOrigin('endpoint')).then(() => {
                                 $statsLoad.trigger('click');
                             });
                         }),
@@ -499,7 +503,7 @@ const StatisticsIntegration = new (class {
                             let pendingPromises = [];
                             Array.from(fileEvent.target.files).forEach(file => {
                                 pendingPromises.push(file.text().then(fileContent => {
-                                    return DatabaseManager.import(fileContent, file.lastModified, undefined, `har/${origin}`);
+                                    return DatabaseManager.import(fileContent, file.lastModified, undefined, createOrigin('har'));
                                 }).catch(function (e) {
                                     Toast.warn('An error has occured while importing file', e.message);
                                     Logger.log('WARNING', e.message);
