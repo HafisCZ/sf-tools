@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Underworld Simulator</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="res/favicon.png"/>
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="css/underworld.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/semantic.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/lang.js"></script>
+
+        <script src="js/plugins.js"></script>
+
+        <script src="js/core/util.js"></script>
+        <script src="js/core/playa.js"></script>
+        <script src="js/core/core.js"></script>
+        <script src="js/core/idb.js"></script>
+        <script src="js/core/ast.js"></script>
+        <script src="js/stats/settings.js"></script>
+        <script src="js/changelog.js"></script>
+        <script src="js/views.js"></script>
+        <script src="js/sim/editor.js"></script>
+
+        <script src="endpoint/endpoint.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body class="margin-none-bottom">
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        </div>
+
+        <div class="paste-target" onpaste="console.log">
+            Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator
+        </div>
+
+        <div class="ui main container">
+            <div class="ui two columns grid">
+                <!-- Player edit field -->
+                <div class="column">
+                    <div class="ui form" id="player-editor">
+
+                    </div>
+                    <div class="ui form" id="underworld-editor">
+                        <div class="bordered bthree">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Goblin Pit</label>
+                                    <input class="text-center" data-path="GoblinPit" placeholder="0 - 15">
+                                </div>
+                                <div class="field">
+                                    <label>Goblin Upgrades</label>
+                                    <input class="text-center" data-path="GoblinUpgrades">
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Troll Block</label>
+                                    <input class="text-center" data-path="TrollBlock" placeholder="0 - 15">
+                                </div>
+                                <div class="field">
+                                    <label>Troll Upgrades</label>
+                                    <input class="text-center" data-path="TrollUpgrades">
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label>Keeper</label>
+                                    <input class="text-center" data-path="Keeper" placeholder="0 - 15">
+                                </div>
+                                <div class="field">
+                                    <label>Keeper Upgrades</label>
+                                    <input class="text-center" data-path="KeeperUpgrades">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Player list -->
+                <div class="column">
+                    <div class="ui grid">
+                        <div class="row">
+                            <div class="four wide column">
+                                <button class="ui fluid small button" type="submit" id="add-player">Add</button>
+                            </div>
+                            <div class="four wide column">
+                                <button class="ui fluid small button" type="submit" id="save-player">Save</button>
+                            </div>
+                            <div class="eight wide column">
+
+                            </div>
+                        </div>
+                        <div class="css-small-row row">
+                            <div class="six wide column">
+                                <div class="ui small basic icon fluid three buttons">
+                                    <button class="ui button" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="paste-mode"><i class="paste icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy current" id="copy-current"><i class="outline copy icon"></i> 1</button>
+                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy everyone" id="copy-all"><i class="copy icon"></i> All</button>
+                                </div>
+                            </div>
+                            <div class="five wide column">
+                                <div class="ui small form">
+                                    <div class="two fields">
+                                        <div class="field" data-position="bottom center" data-tooltip="Simulator threads. Keep this number BELOW your processor core count!">
+                                            <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                        </div>
+                                        <div class="field" data-position="bottom center" data-tooltip="Amount of iterations per thread.">
+                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="five wide column">
+                                <button class="ui fluid small button" type="submit" id="simulate">Simulate</button>
+                            </div>
+                        </div>
+                        <div class="row clickable selectable-header">
+                            <div class="three wide text-center column">
+                                Class
+                            </div>
+                            <div class="two wide column">
+                                Level
+                            </div>
+                            <div class="six wide column">
+                                Name
+                            </div>
+                            <div class="four wide text-center column">
+                                Win %
+                            </div>
+                            <div class="one wide column">
+
+                            </div>
+                        </div>
+                        <div class="row padding-none">
+                            <div class="sixteen wide column">
+                                <hr/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="sixteen wide column">
+                                <div class="ui middle aligned grid" id="sim-players">
+
+                                </div>
+                            </div>
+                        <div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            window.addEventListener('load', function () {
+                // Handle simulate button validation
+                let $simulateButton = $('#simulate');
+                function updateSimulateButton () {
+                    let underworldValid = underworldEditor.valid() && ['goblin', 'troll', 'keeper'].reduce((memo, name) => memo + underworldEditor.fields[name].get(), 0) > 0;
+                    let playersValid = playerList.length > 0;
+
+                    if (underworldValid && playersValid) {
+                        $simulateButton.removeClass('disabled');
+                    } else {
+                        $simulateButton.addClass('disabled');
+                    }
+                }
+
+                // Handle save button
+                let $saveButton = $('#save-player');
+                function updateSaveButton () {
+                    $saveButton.toggle(playerCurrentIndex != -1)
+                }
+
+                // List of players
+                let playerList = [];
+                let playerIndex = 0;
+
+                // Tracks currently selected player
+                let playerCurrentIndex = -1;
+                updateSaveButton();
+
+                // Editor configuration
+                let playerEditor = new Editor('#player-editor');
+                let underworldEditor = new (class {
+                    constructor (mount) {
+                        this.fields = {
+                            goblin: new Field(`${mount} [data-path="GoblinPit"]`, '0', Field.isUnderworldBuilding),
+                            goblin_upgrades: new Field(`${mount} [data-path="GoblinUpgrades"]`, '0', Field.isNumber),
+                            troll: new Field(`${mount} [data-path="TrollBlock"]`, '0', Field.isUnderworldBuilding),
+                            troll_upgrades: new Field(`${mount} [data-path="TrollUpgrades"]`, '0', Field.isNumber),
+                            keeper: new Field(`${mount} [data-path="Keeper"]`, '0', Field.isUnderworldBuilding),
+                            keeper_upgrades: new Field(`${mount} [data-path="KeeperUpgrades"]`, '0', Field.isNumber),
+                        }
+
+                        for (let field of Object.values(this.fields)) {
+                            field.setListener(() => this.onChangeLister());
+                            field.triggerAlways = true;
+                        }
+                    }
+
+                    fill (data) {
+                        if (data) {
+                            for (let field of Object.values(this.fields)) {
+                                field.set(getObjectAt(data, field.path()));
+                            }
+                        } else {
+                            for (let field of Object.values(this.fields)) {
+                                field.clear();
+                            }
+                        }
+                    }
+
+                    read () {
+                        let data = {};
+                        for (let field of Object.values(this.fields)) {
+                            setObjectAt(data, field.path(), field.get());
+                        }
+
+                        return data;
+                    }
+
+                    valid () {
+                        return Object.values(this.fields).every(field => field.valid())
+                    }
+
+                    onChangeLister () {
+                        updateSimulateButton();
+                    }
+                })('#underworld-editor');
+
+                // Reset editor content
+                underworldEditor.valid();
+                underworldEditor.onChangeLister();
+
+                // Integration
+                StatisticsIntegration.configure(
+                    SELF_PROFILE,
+                    'Poll saved characters',
+                    'dungeons',
+                    function ($statsList) {
+                        for (let player of Object.keys(DatabaseManager.Players).map(pid => DatabaseManager.getPlayer(pid).Latest).sort((a, b) => b.Timestamp - a.Timestamp).filter(p => typeof p.Underworld.GoblinPit !== 'undefined')) {
+                            $statsList.append($(`
+                                <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
+                                    <div class="visible content">
+                                        <span style="color: black;">${ player.Name } @ ${ player.Prefix }<span>
+                                    </div>
+                                    <div class="hidden content">
+                                        <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }<span>
+                                    </div>
+                                </div>
+                                `).click(() => {
+                                    underworldEditor.fill(player.Underworld);
+
+                                    playerCurrentIndex = -1;
+                                    updateSaveButton();
+
+                                    updatePlayerList();
+                                })
+                            );
+                        }
+                    }
+                );
+
+                // Captive inputs
+                $('#sim-threads').captiveInputField('underworld_sim/threads', 4, v => !isNaN(v) && v >= 1);
+                $('#sim-iterations').captiveInputField('underworld_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
+
+                // Prevent paste inside inputs from trying to load data
+                $('#player-editor input, #underworld-editor input').on('paste', function (event) {
+                    event.stopPropagation();
+                });
+
+                // Paste mode toggle button
+                let pasteMode = false;
+                $('#paste-mode').toggleButton(active => pasteMode = active);
+
+                // Paste handler
+                $(document.body).on('paste', function (event) {
+                    try {
+                        let pasteData = event.originalEvent.clipboardData.getData('text');
+                        let pasteJson = JSON.parse(pasteData);
+
+                        handlePaste(pasteJson);
+                    } catch (e) {
+                        console.info(e);
+                    }
+                }).on('dragover dragenter', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }).on('drop', function (event) {
+                    // Handle drag & drop in case we want to paste data via preset file
+                    if (_dig(event, 'originalEvent', 'dataTransfer', 'files', 0, 'type') == 'text/plain') {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        try {
+                            let pasteData = event.originalEvent.dataTransfer.files[0].text();
+                            let pasteJson = JSON.parse(pasteData);
+
+                            handlePaste(pasteJson);
+                        } catch (e) {
+                            console.info(e);
+                        }
+                    }
+                });
+
+                // Paste handler
+                function preparePlayerData (data) {
+                    let object = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
+
+                    SFItem.forceCorrectRune(object.Items.Wpn1);
+                    SFItem.forceCorrectRune(object.Items.Wpn2);
+
+                    if (object.Class == 1 && typeof object.BlockChance == 'undefined') {
+                        object.BlockChance = object.Items.Wpn2.DamageMin;
+                    }
+
+                    if (object.Class != 4) {
+                        object.Items.Wpn2 = SFItem.empty();
+                    }
+
+                    return object;
+                }
+
+                function handlePaste (data) {
+                    if (Array.isArray(data)) {
+                        if (pasteMode == false) {
+                            playerList = [];
+                            playerIndex = 0;
+
+                            playerCurrentIndex = -1;
+                            updateSaveButton();
+                        }
+
+                        for (let entry of data) {
+                            playerList.push({
+                                player: mergeSoft(new SFPlayer(), preparePlayerData(entry)),
+                                score: null,
+                                index: playerIndex++
+                            })
+                        }
+
+                        updatePlayerList();
+                    } else if (data.Class || data.save) {
+                        playerEditor.fill(preparePlayerData(data));
+                    }
+                }
+
+                // Copy methods
+                $('#copy-current').click(function () {
+                    copyText(JSON.stringify(playerEditor.read()));
+                });
+
+                $('#copy-all').click(function () {
+                    copyText(JSON.stringify(playerList.map(({ player }) => {
+                        let model = toSimulatorModel(player);
+                        if (player.Class == 1 && typeof player.BlockChance != 'undefined') {
+                            model.BlockChance = player.BlockChance;
+                        }
+
+                        return model;
+                    })));
+                })
+
+                // Add methods
+                function addPlayer () {
+                    let player = playerEditor.read();
+                    if (player.Name == '') {
+                        player.Name = `Player ${playerList.length + 1}`;
+                    }
+
+                    playerList.push({
+                        player: player,
+                        score: null,
+                        index: playerIndex++
+                    })
+
+                    playerCurrentIndex = -1;
+                    updateSaveButton();
+
+                    playerEditor.clear();
+                }
+
+                $('#add-player').click(function () {
+                    if (playerEditor.valid()) {
+                        addPlayer();
+                        updatePlayerList();
+                    }
+                })
+
+                // Save methods
+                $saveButton.click(function () {
+                    if (playerEditor.valid()) {
+                        if (playerCurrentIndex != -1) {
+                            let index = playerList.findIndex(entry => entry.index == playerCurrentIndex);
+                            if (index != -1) {
+                                playerList[index].player = playerEditor.read();
+                                playerList[index].score = null;
+                            }
+                        } else {
+                            addPlayer();
+                        }
+
+                        updatePlayerList();
+                    }
+                })
+
+                // Display methods
+                function updatePlayerList () {
+                    updateSimulateButton();
+
+                    if (playerList.every(entry => typeof entry.score === 'number')) {
+                        _sort_des(playerList, entry => entry.score);
+                    }
+
+                    let content = ''
+                    for (let i = 0; i < playerList.length; i++) {
+                        let {player, index, score} = playerList[i];
+
+                        content += `
+                            <div class="row selectable ${ index == playerCurrentIndex ? 'selected' : 'nselected' }" data-index="${ index }">
+                                <div class="player-index">${ i + 1 }</div>
+                                <div class="three wide text-center column">
+                                    <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
+                                    ${ player.Class == 8 && player.Mask > 0 ? `<img class="ui image" src="res/mask${ player.Mask }.png" style="position: absolute; right: 0.75em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
+                                    ${ player.Class == 9 ? `<img class="ui image" src="res/instrument${ player.Instrument }.png" style="position: absolute; right: 0.75em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
+                                </div>
+                                <div class="two wide column">
+                                    <b>${ player.Level }</b>
+                                </div>
+                                <div class="six wide column">
+                                    <b>${ player.Name }</b>
+                                </div>
+                                <div class="four wide text-center column">
+                                    ${ typeof score === 'number' ? `${ score.toFixed(2) }%` : '' }
+                                </div>
+                                <div class="one wide text-center column">
+                                    <i class="trash right aligned alternate glow outline icon" data-trash="${ index }"></i>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    $('#sim-players').html(content);
+
+                    $('[data-index]').click(function () {
+                        playerCurrentIndex = parseInt(this.dataset.index);
+                        updateSaveButton();
+
+                        playerEditor.fill(playerList.find(entry => entry.index == playerCurrentIndex).player);
+
+                        updatePlayerList();
+                    })
+
+                    $('[data-trash]').click(function () {
+                        let index = parseInt(this.dataset.trash);
+                        if (index == playerCurrentIndex) {
+                            playerEditor.clear();
+
+                            playerCurrentIndex = -1;
+                            updateSaveButton();
+                        }
+
+                        let listIndex = playerList.findIndex(entry => entry.index == index);
+                        if (listIndex != -1) {
+                            playerList.splice(listIndex, 1);
+                        }
+
+                        updatePlayerList();
+                    });
+                }
+
+                // Simulator handling
+                function getUnitCount (building, values) {
+                    if (building == 0) {
+                        return 0;
+                    } else if (building - 1 > values.length) {
+                        return values[values.length - 1];
+                    } else {
+                        return values[building - 1];
+                    }
+                }
+
+                function getUnitLevel (building, upgrades) {
+                    let baseLevel = [12, 15, 20, 30, 40, 55, 70, 85, 100, 120, 140, 165, 190, 220, 250][building - 1];
+
+                    return baseLevel + upgrades;
+                }
+
+                function createUnits (building, upgrades, counts, attributeMultiplier) {
+                    let units = [];
+
+                    let count = getUnitCount(building, counts);
+                    let level = getUnitLevel(building, upgrades);
+
+                    for (let i = 0; i < count; i++) {
+                        let cappedLevel = Math.min(600, level);
+
+                        let attribute = Math.round((level > 500 ? (408.5 * Math.max(0, level - 500) + KeeperCurve[500]) : KeeperCurve[level]) * attributeMultiplier);
+                        let luck = Math.min(49815, Math.ceil(attribute / 2));
+
+                        let damage = (cappedLevel + 1) * 2;
+
+                        units.push({
+                            Level: cappedLevel,
+                            Class: 1,
+                            NoBaseDamage: true, // Keep damage even if too low
+                            ForceArmor: 1, // Calculate armor for level
+                            BlockChance: 0, // No shield
+                            Potions: {
+                                Life: 0
+                            },
+                            Strength: {
+                                Total: attribute
+                            },
+                            Dexterity: {
+                                Total: attribute
+                            },
+                            Intelligence: {
+                                Total: attribute
+                            },
+                            Constitution: {
+                                Total: attribute
+                            },
+                            Luck: {
+                                Total: luck
+                            },
+                            Dungeons: {
+                                Player: 0,
+                                Group: 0
+                            },
+                            Runes: {
+                                Health: 0,
+                                ResistanceFire: 0,
+                                ResistanceCold: 0,
+                                ResistanceLightning: 0
+                            },
+                            Fortress: {
+                                Gladiator: 0
+                            },
+                            Items: {
+                                Hand: {},
+                                Wpn1: {
+                                    AttributeTypes: { 2: 0 },
+                                    Attributes: { 2: 0 },
+                                    DamageMax: damage,
+                                    DamageMin: damage,
+                                    HasEnchantment: false
+                                }
+                            }
+                        });
+                    }
+
+                    return units;
+                }
+
+                function prepareUnits () {
+                    let data = underworldEditor.read();
+
+                    let goblins = createUnits(data.GoblinPit, data.GoblinUpgrades, [1, 2, 3, 4, 5], 1 / Math.sqrt(5));
+                    let trolls = createUnits(data.TrollBlock, data.TrollUpgrades, [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4], 0.5);
+                    let keepers = createUnits(data.Keeper, data.KeeperUpgrades, [1], 1);
+
+                    return [...goblins, ...trolls, ...keepers];
+                }
+
+                $('#simulate').click(async function () {
+                    // Ensure input is valid
+                    let underworldValid = underworldEditor.valid() && ['goblin', 'troll', 'keeper'].reduce((memo, name) => memo + underworldEditor.fields[name].get(), 0) > 0;
+                    let playersValid = playerList.length > 0;
+
+                    if (underworldValid && playersValid) {
+                        // Reset score for every player
+                        for (let entry of playerList) {
+                            entry.score = null;
+                        }
+
+                        updatePlayerList();
+                        LoaderPopup.toggle(true);
+
+                        // Set up threads & iterations
+                        let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
+                        let blockSize = Math.ceil(playerList.length / blocks);
+                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
+
+                        Toast.info('Starting simulation', `<b>Block size:</b> ${blockSize}<br/><b>Iterations:</b> ${iterations}<br/><b>Thread cnt:</b> ${blocks}`);
+
+                        let resultList = [];
+                        let blocksFinished = 0;
+
+                        for (let i = 0; i < playerList.length; i+= blockSize) {
+                            let block = playerList.slice(i, i + blockSize);
+
+                            let worker = await createSimulatorWorker('underworld');
+                            worker.addEventListener('message', function (message) {
+                                if (message.data.command == 'finished') {
+                                    resultList.push(... message.data.results);
+
+                                    Toast.info(`Simulation thread ${blocksFinished += 1} / ${blocks} finished`, `<b>Time:</b> ${message.data.time / 1000} seconds`);
+
+                                    if (playerList.length == resultList.length) {
+                                        playerList = resultList;
+                                        updatePlayerList();
+
+                                        LoaderPopup.toggle(false);
+                                    }
+                                }
+                            }, false);
+
+                            worker.postMessage({
+                                units: prepareUnits(),
+                                players: block,
+                                iterations: iterations
+                            });
+                        }
+                    }
+                })
+            });
+        </script>
+    </body>
+</html>
