@@ -141,10 +141,6 @@ div.text .boss-rune {
     overflow-y: scroll;
 }
 
-#load-stats {
-    margin-bottom: 0.5em;
-}
-
 #available-list .boss-dungeon-name {
     font-size: 80%;
     position: absolute;
