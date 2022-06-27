@@ -82,6 +82,7 @@ table.map-map {
 }
 
 body {
+    overflow-y: auto !important;
     padding-bottom: 2em;
 }
 
