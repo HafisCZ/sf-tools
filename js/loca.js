@@ -56,6 +56,10 @@
                     title: 'Dungeon Simulator',
                     desc: 'Simulate the probable outcome of a dungeon battle'
                 },
+                underworld: {
+                    title: 'Underworld',
+                    desc: 'Simulate the probably outcome of an underworld battle'
+                },
                 fights: {
                     title: 'Fight viewer',
                     desc: 'Display all PVP fights stored within archive file'
