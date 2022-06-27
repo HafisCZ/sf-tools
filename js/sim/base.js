@@ -89,12 +89,8 @@ class FighterModel {
     getDamageReduction (source, maximumReduction = this.getMaximumDamageReduction()) {
         if (source.Player.Class == MAGE) {
             return 0;
-        } else if (this.Player.ForceArmor) {
-            if (this.Player.ForceArmor === true) {
-                return maximumReduction;
-            } else {
-                return Math.min(maximumReduction, this.Player.ForceArmor * maximumReduction * this.Player.Level / source.Player.Level);
-            }
+        } else if (typeof this.Player.ForceArmor !== 'undefined') {
+            return Math.min(maximumReduction, this.Player.ForceArmor * maximumReduction * this.Player.Level / source.Player.Level);
         } else {
             if (this.Player.Class == BATTLEMAGE) {
                 return Math.min(maximumReduction, this.Player.Armor / source.Player.Level + 40);
