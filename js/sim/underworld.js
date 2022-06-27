@@ -34,8 +34,16 @@ class UnderworldSimulator extends SimulatorBase {
     }
 
     cache (units, player) {
-        this.units = units.map(unit => FighterModel.create(0, unit));
+        this.units = units.map(unit => {
+            let model = FighterModel.create(0, unit);
+            model.AttackFirst = false;
+
+            return model;
+        });
+
+
         this.player = FighterModel.create(1, player);
+        this.player.AttackFirst = false;
     }
 
     battle () {
