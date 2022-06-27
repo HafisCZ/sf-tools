@@ -165,6 +165,22 @@
         });
     };
 
+    $.fn.toggleButton = function (callback) {
+        return this.each(function () {
+            this.isActive = false;
+            this.addEventListener('click', () => {
+                this.isActive = !this.isActive;
+                callback(this.isActive);
+
+                if (this.isActive) {
+                    this.style.setProperty('background', '#21ba45', 'important');
+                } else {
+                    this.style.setProperty('background', '');
+                }
+            });
+        });
+    }
+
     $.fn.settingsButton = function (enabled) {
         return this.each(function () {
             if (enabled) {
