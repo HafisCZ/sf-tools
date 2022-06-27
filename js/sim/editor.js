@@ -117,7 +117,7 @@ class Field {
         return Field.isNonZero(val) && val <= 700;
     }
 
-    static isGladiator (val) {
+    static isUnderworldBuilding (val) {
         return Field.isNumber(val) && val <= 15;
     }
 
@@ -164,7 +164,7 @@ class Field {
 
 class Editor {
     constructor ($parent, callback) {
-        this._html($parent);
+        this._html(typeof $parent === 'string' ? $($parent) : $parent);
         this._bind();
 
         this._changeCallback = callback;
@@ -257,7 +257,7 @@ class Editor {
             portal_damage: new Field('[data-path="Dungeons.Group"]', '', Field.isDungeon),
 
             runes_health: new Field('[data-path="Runes.Health"]', '', Field.isHealthRune),
-            gladiator: new Field('[data-path="Fortress.Gladiator"]', '', Field.isGladiator),
+            gladiator: new Field('[data-path="Fortress.Gladiator"]', '', Field.isUnderworldBuilding),
             potion_life: new Field('[data-path="Potions.Life"]', '0'),
             enchantment: new Field('[data-path="Items.Hand.HasEnchantment"]', 'false'),
             shield: new Field('[data-path="BlockChance"]', '25'),
