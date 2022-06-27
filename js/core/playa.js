@@ -1735,6 +1735,10 @@ class SFOwnPlayer extends SFPlayer {
             this.Dungeons.Extra.Normal[0] = data.tower[150];
             this.Dungeons.Extra.Shadow[0] = data.tower[298];
 
+            this.Underworld.GoblinUpgrades = data.tower[146];
+            this.Underworld.TrollUpgrades = data.tower[294];
+            this.Underworld.KeeperUpgrades = data.tower[442];
+
             dataType = new ComplexDataType(data.tower.slice(448));
             this.Underworld.Heart = dataType.long();
             this.Underworld.Gate = dataType.long();

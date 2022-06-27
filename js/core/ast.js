@@ -2761,6 +2761,10 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Underworld ? p.Underworld.GoblinPit : undefined,
         statistics: false
     },
+    'Goblin Upgrades': {
+        expr: p => p.Underworld ? p.Underworld.GoblinUpgrades : undefined,
+        statistics: false
+    },
     'Torture Chamber': {
         expr: p => p.Underworld ? p.Underworld.Torture : undefined,
         statistics: false
@@ -2777,6 +2781,10 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Underworld ? p.Underworld.TrollBlock : undefined,
         statistics: false
     },
+    'Troll Upgrades': {
+        expr: p => p.Underworld ? p.Underworld.TrollUpgrades : undefined,
+        statistics: false
+    },
     'Time Machine': {
         expr: p => p.Underworld ? p.Underworld.TimeMachine : undefined,
         statistics: false
@@ -2787,6 +2795,10 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'Keeper': {
         expr: p => p.Underworld ? p.Underworld.Keeper : undefined,
+        statistics: false
+    },
+    'Keeper Upgrades': {
+        expr: p => p.Underworld ? p.Underworld.KeeperUpgrades : undefined,
         statistics: false
     },
     'Souls': {
