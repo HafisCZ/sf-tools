@@ -85,6 +85,10 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
     }
 }
 
+#stats-list > div {
+    font-size: 90%;
+}
+
 .paste-target {
     position: absolute;
     right: 2em;

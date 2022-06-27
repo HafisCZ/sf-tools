@@ -145,10 +145,6 @@ div.text .boss-rune {
     margin-bottom: 0.5em;
 }
 
-#stats-list > div {
-    font-size: 90%;
-}
-
 #available-list .boss-dungeon-name {
     font-size: 80%;
     position: absolute;
