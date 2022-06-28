@@ -17,7 +17,9 @@ const CHANGELOG = {
             'Added new toast messages informing user about simulation progress',
             'Added option to save image of fight results',
             'Added new <code>log</code> query argument',
-            'Fixed Tournamed mode freezing UI when starting simulation'
+            'Added option to poll saved characters',
+            'Fixed Tournamed mode freezing UI when starting simulation',
+            'Fixed drag & drop'
         ],
         'Pet Simulator': [
             'Reworked UI',
@@ -26,11 +28,13 @@ const CHANGELOG = {
         ],
         'Hydra Simulator': [
             'Fixed thirteen-headed hydra',
-            'Fixed poor performance when using Poll'
+            'Fixed poor performance when using Poll',
+            'Fixed drag & drop'
         ],
         'All Simulators': [
             'Reworked Bard simulation',
             'Reworked major parts of the UI',
+            'Added smart class changer (scales all values automatically)',
             'Added warning when importing incompatible HAR file',
             'Fixed paste target appearing in mobile view',
             'Fixed Druid damage reduction when having no mask',

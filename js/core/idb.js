@@ -230,9 +230,9 @@ class IndexedDBWrapper {
         });
     }
 
-    all (store, index) {
+    all (store, index, query) {
         return new Promise((resolve, reject) => _bindOnSuccessOnError(
-            this.store(store, index).getAll(), resolve, reject
+            this.store(store, index).getAll(query), resolve, reject
         ));
     }
 }
@@ -706,7 +706,7 @@ const DatabaseManager = new (class {
         if (!profile.only_players) {
             const groupFilter = DatabaseUtils.profileFilter(profile, 'primary_g');
             const groups = DatabaseUtils.filterArray(profile, 'primary_g') || (_not_empty(groupFilter) ? (
-                await this.Database.where('groups', ... groupFilter)
+                await this.Database.all('groups', ... groupFilter)
             ) : (
                 await this.Database.all('groups')
             ));
@@ -734,7 +734,7 @@ const DatabaseManager = new (class {
 
         const playerFilter = DatabaseUtils.profileFilter(profile);
         let players = DatabaseUtils.filterArray(profile) || (_not_empty(playerFilter) ? (
-            await this.Database.where('players', ... playerFilter)
+            await this.Database.all('players', ... playerFilter)
         ) : (
             await this.Database.all('players')
         ));
