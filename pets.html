@@ -706,7 +706,7 @@
                                 </div>
                             </div>
                             `).click(() => {
-                                let [playerPet, bossPet] = getPetsFor(player, petA.fields['type'].get());
+                                let [playerPet, bossPet] = getPetsFor(player, petA.fields['type'].get(), null);
                                 petA.fill(playerPet);
                                 petB.fill(bossPet);
                             }
@@ -720,21 +720,34 @@
                             let results = [];
 
                             for (let type = 0; type < 5; type++) {
-                                let [pet1, pet2] = getPetsFor(player, type);
-                                if (pet2) {
-                                    petFights.push(simulateFight(pet1, pet2).then(([chance, a, b]) => {
-                                        results.push({
-                                            chance,
-                                            player: a,
-                                            boss: b
-                                        });
-                                    }));
+                                for (let klass = 1; klass <= 3; klass++) {
+                                    let [pet1, pet2] = getPetsFor(player, type, klass);
+                                    if (pet2) {
+                                        petFights.push(simulateFight(pet1, pet2).then(([chance, a, b]) => {
+                                            results.push({
+                                                chance,
+                                                player: a,
+                                                boss: b
+                                            });
+                                        }));
+                                    }
                                 }
                             }
 
                             Promise.all(petFights).then(() => {
                                 LoaderPopup.toggle(false);
                                 _sort_des(results, i => i.chance);
+
+                                let resultClasses = [0, 0, 0, 0, 0];
+                                results = results.filter(({ player }) => {
+                                    resultClasses[player.Type]++;
+
+                                    if (resultClasses[player.Type] == 1) {
+                                        return true;
+                                    } else {
+                                        return false;
+                                    }
+                                });
 
                                 $('#results-modal .content').html(`
                                     <div class="ui three column grid">
@@ -768,7 +781,7 @@
                 }
             );
 
-            function getPetsFor (player, type) {
+            function getPetsFor (player, type, petClass) {
                 let currentType = type;
                 let currentName = [
                     'Shadow', 'Light', 'Earth', 'Fire', 'Water'
@@ -796,11 +809,10 @@
                     }
                 });
 
-                let bestPet = pets.filter(data => data.Level).map(data => PetModel.fromObject(data)).sort((a, b) => b.Attribute - a.Attribute)[0];
-
-                let pet1 = pets[bestPet.Pet];
+                let pet1 = null;
                 let pet2 = null;
 
+                // Boss
                 let dungeonPet = player.Pets.Dungeons[currentType];
                 if (dungeonPet < 20) {
                     pet2 = {
@@ -815,6 +827,13 @@
                         At200: 0,
                         Index: 1
                     };
+                }
+
+                let petModels = _sort_des(pets.filter(data => data.Level).map(data => PetModel.fromObject(data)), model => model.TotalHealth);
+                let bestPet = petModels.find(model => model.Class == petClass) || petModels[0];
+                if (bestPet) {
+                    pet1 = pets[bestPet.Pet];
+                    pet1.Class = bestPet.Class;
                 }
 
                 return [pet1, pet2];
