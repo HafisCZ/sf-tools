@@ -423,8 +423,85 @@ class Editor {
             ]
         }).dropdown('set selected', 'false');
 
+        // Morph
+        this.morph = new (class extends Field {
+            show (val) {
+                if (val) {
+                    this.$object.parent('div').addClass('icon right action');
+                    this.$object.show();
+                } else {
+                    this.$object.hide();
+                    this.$object.parent('div').removeClass('icon right action');
+                }
+            }
+        })('div.morph', '');
+        this.morph.$object.dropdown({
+            preserveHTML: true,
+            action: 'hide',
+            values: [
+                {
+                    name: 'Smart class change',
+                    disabled: true
+                },
+                ...Object.entries(CLASS_MAP).map((e) => {
+                    return {
+                        name: `<img class="ui centered image class-picture" src="res/class${ e[0] }.png"><span>${ e[1] }</span>`,
+                        value: e[0]
+                    };
+                })
+            ]
+        }).dropdown('setting', 'onChange', (value) => {
+            this._morph(parseInt(value));
+        });
+
         for (let field of Object.values(this.fields)) {
             field.setListener(() => this._changeListener());
+        }
+    }
+
+    _morph (newClass) {
+        let oldClass = this.fields['class'].get();
+
+        if (this.valid() && oldClass != newClass) {
+            // Helper methods
+            const swapAttributes = function (obj, type) {
+                let attributes = _array_to_hash(['Main', 'Side1', 'Side2'], kind => [kind, _dig(obj, MAIN_ATTRIBUTE_MAP[kind][oldClass - 1], type)]);
+                for (let kind of ['Main', 'Side1', 'Side2']) {
+                    obj[MAIN_ATTRIBUTE_MAP[kind][newClass - 1]][type] = attributes[kind];
+                }
+            }
+
+            const scaleValue = function (value, mapping) {
+                return Math.ceil(value / (mapping[oldClass - 1]) * (mapping[newClass - 1]));
+            }
+
+            // Convert data
+            let data = this.read();
+
+            swapAttributes(data, 'Base');
+            swapAttributes(data, 'Total');
+
+            data.Armor = scaleValue(data.Armor, [50, 25, 10, 25, 10, 25, 50, 25, 25]);
+            data.Items.Wpn1.DamageMin = scaleValue(data.Items.Wpn1.DamageMin, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5]);
+            data.Items.Wpn1.DamageMax = scaleValue(data.Items.Wpn1.DamageMax, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5]);
+
+            if (newClass == 1 /* WARRIOR */) {
+                data.BlockChance = 25;
+                data.Items.Wpn2.DamageMin = 25;
+            } else if (newClass == 4 /* ASSASSIN */) {
+                data.Items.Wpn2 = data.Items.Wpn1;
+            } else if (newClass == 8 /* DRUID */) {
+                data.Mask = 2;
+            } else if (newClass == 9 /* BARD */) {
+                data.Instrument = 0;
+            }
+
+            data.Class = newClass;
+
+            // Fill data back in
+            this.fill(data);
+        } else {
+            Toast.warn('Class change failed', 'Please ensure your data is valid and you are not trying to convert into current class.');
         }
     }
 
@@ -433,7 +510,12 @@ class Editor {
             <div class="bordered bone">
                 <div class="field">
                     <label>Name</label>
-                    <input class="text-center" type="text" data-path="Name">
+                    <div class="ui icon right action input">
+                        <input class="text-center" type="text" data-path="Name">
+                        <div class="ui icon top right pointing basic dropdown button morph">
+                            <i class="exchange link icon"></i>
+                        </div>
+                    </div>
                 </div>
                 <div class="two fields">
                     <div class="field">
