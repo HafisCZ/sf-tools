@@ -244,83 +244,77 @@
                 event.stopPropagation();
             });
 
+            // Paste handler
             $(document.body).on('paste', function (event) {
                 try {
-                    insertExternalData(JSON.parse(event.originalEvent.clipboardData.getData('text')));
+                    let pasteData = event.originalEvent.clipboardData.getData('text');
+                    let pasteJson = JSON.parse(pasteData);
+
+                    handlePaste(pasteJson);
                 } catch (e) {
                     console.info(e);
                 }
-            }).on('dragover dragenter', e => {
-                e.preventDefault();
-                e.stopPropagation();
-            }).on('drop', e => {
-                if (_dig(e, 'originalEvent', 'dataTransfer', 'files', 0, 'type') == 'text/plain') {
-                    e.preventDefault();
-                    e.stopPropagation();
+            }).on('dragover dragenter', function (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }).on('drop', function (event) {
+                // Handle drag & drop in case we want to paste data via preset file
+                if (_dig(event, 'originalEvent', 'dataTransfer', 'files', 0, 'type') == 'text/plain') {
+                    event.preventDefault();
+                    event.stopPropagation();
 
                     try {
-                        let r = new FileReader();
-                        r.readAsText(e.originalEvent.dataTransfer.files[0], 'UTF-8');
-                        r.onload = f => insertExternalData(JSON.parse(f.target.result));
-                    } catch (ex) {
-                        console.info(ex);
+                        let pasteData = event.originalEvent.dataTransfer.files[0].text();
+                        let pasteJson = JSON.parse(pasteData);
+
+                        handlePaste(pasteJson);
+                    } catch (e) {
+                        console.info(e);
                     }
                 }
             });
 
-            function insertExternalData (data) {
+            // Paste handler
+            function preparePlayerData (data) {
+                let object = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
+
+                SFItem.forceCorrectRune(object.Items.Wpn1);
+                SFItem.forceCorrectRune(object.Items.Wpn2);
+
+                if (object.Class == 1 && typeof object.BlockChance == 'undefined') {
+                    object.BlockChance = object.Items.Wpn2.DamageMin;
+                }
+
+                if (object.Class != 4) {
+                    object.Items.Wpn2 = SFItem.empty();
+                }
+
+                return object;
+            }
+
+            function handlePaste (data) {
                 if (Array.isArray(data)) {
                     if (pasteMode == false) {
                         players = [];
+
+                        iterator = 0;
+                        selected = -1;
+                        yourself = -1;
+
+                        editor.clear();
                     }
 
-                    for (var d of data) {
-                        if (d.Class) {
-                            SFItem.forceCorrectRune(d.Items.Wpn1);
-                            SFItem.forceCorrectRune(d.Items.Wpn2);
-
-                            if (d.Class == 1 && typeof d.BlockChance == 'undefined') d.BlockChance = d.Items.Wpn2.DamageMin;
-                            if (d.Class != 4) {
-                                d.Items.Wpn2 = SFItem.empty();
-                            }
-
-                            players.push({
-                                player: mergeSoft(new SFPlayer(), d),
-                                score: null,
-                                index: iterator++
-                            });
-                        } else {
-                            var obj = d.own ? new SFOwnPlayer(d) : new SFOtherPlayer(d);
-
-                            SFItem.forceCorrectRune(obj.Items.Wpn1);
-                            SFItem.forceCorrectRune(obj.Items.Wpn2);
-
-                            if (obj.Class == 1 && typeof obj.BlockChance == 'undefined') obj.BlockChance = obj.Items.Wpn2.DamageMin;
-                            if (obj.Class != 4) {
-                                obj.Items.Wpn2 = SFItem.empty();
-                            }
-
-                            players.push({
-                                player: mergeSoft(new SFPlayer(), obj),
-                                score: null,
-                                index: iterator++
-                            });
-                        }
+                    for (let entry of data) {
+                        players.push({
+                            player: mergeSoft(new SFPlayer(), preparePlayerData(entry)),
+                            score: null,
+                            index: iterator++
+                        })
                     }
 
                     showPlayers();
                 } else if (data.Class || data.save) {
-                    var obj = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
-
-                    SFItem.forceCorrectRune(obj.Items.Wpn1);
-                    SFItem.forceCorrectRune(obj.Items.Wpn2);
-
-                    if (obj.Class == 1 && typeof obj.BlockChance == 'undefined') obj.BlockChance = obj.Items.Wpn2.DamageMin;
-                    if (obj.Class != 4) {
-                        obj.Items.Wpn2 = SFItem.empty();
-                    }
-
-                    editor.fill(obj);
+                    editor.fill(preparePlayerData(data));
                 }
             }
 
