@@ -481,7 +481,7 @@ class Editor {
             swapAttributes(data, 'Base');
             swapAttributes(data, 'Total');
 
-            data.Armor = scaleValue(data.Armor, [50, 25, 10, 25, 10, 25, 50, 25, 25]);
+            data.Armor = scaleValue(data.Armor, [50, 10, 25, 25, 10, 25, 50, 25, 25]);
             data.Items.Wpn1.DamageMin = scaleValue(data.Items.Wpn1.DamageMin, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5]);
             data.Items.Wpn1.DamageMax = scaleValue(data.Items.Wpn1.DamageMax, [2, 4.5, 2.5, 2, 2, 2, 2.5, 4.5, 4.5]);
 
