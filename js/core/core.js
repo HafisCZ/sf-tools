@@ -187,6 +187,11 @@ const SELF_PROFILE = {
     only_players: true
 };
 
+const FIGHT_SIMULATOR_PROFILE = {
+    only_players: true,
+    block_preload: true
+}
+
 const HYDRA_PROFILE = {
     block_preload: true
 }

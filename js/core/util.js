@@ -172,6 +172,15 @@ function _array_to_hash (array, processor, base = {}) {
     }, base);
 }
 
+function _group_by (array, processor) {
+    let groups = {};
+    for (const object of array) {
+        (groups[processor(object)] ||= []).push(object);
+    }
+
+    return groups;
+}
+
 function _empty (obj) {
     if (obj instanceof Set) {
         return obj.size == 0;
