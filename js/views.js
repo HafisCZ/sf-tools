@@ -115,7 +115,7 @@ const Toast = new (class {
     _destroy ($toast) {
         $toast.transition('fade', 500, () => {
             let toastId = $toast.data('toast');
-            if (this.toasts[this.toasts.length - 1].data('toast') == toastId) {
+            if (this.toasts.length > 0 && this.toasts[this.toasts.length - 1].data('toast') == toastId) {
                 this.toasts.pop();
             }
 
