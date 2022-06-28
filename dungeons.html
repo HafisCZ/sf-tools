@@ -315,6 +315,13 @@
 
                         this.resumeListener();
                     }
+
+                    _morph (newClass) {
+                        super._morph(newClass);
+
+                        saveEditor();
+                        settingsChanged();
+                    }
                 })($('#sim-editor'), () => {
                     saveEditor();
                     settingsChanged();
