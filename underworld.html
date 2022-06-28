@@ -96,7 +96,7 @@
                                 <button class="ui fluid small button" type="submit" id="save-player">Save</button>
                             </div>
                             <div class="eight wide column">
-
+                                <button class="ui small basic icon right floated button" data-position="bottom center" data-tooltip="Allow underworld units to use shield" id="shield-mode"><i class="shield alternate icon"></i></button>
                             </div>
                         </div>
                         <div class="css-small-row row">
@@ -281,6 +281,10 @@
                 // Paste mode toggle button
                 let pasteMode = false;
                 $('#paste-mode').toggleButton(active => pasteMode = active);
+
+                // Shield mode toggle button
+                let shieldMode = false;
+                $('#shield-mode').toggleButton(active => shieldMode = active);
 
                 // Paste handler
                 $(document.body).on('paste', function (event) {
@@ -514,7 +518,7 @@
                             Class: 1,
                             NoBaseDamage: true, // Keep damage even if too low
                             ForceArmor: 1, // Calculate armor for level
-                            BlockChance: 0, // No shield
+                            BlockChance: shieldMode ? 25 : 0,
                             Potions: {
                                 Life: 0
                             },
