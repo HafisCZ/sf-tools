@@ -485,8 +485,8 @@
 
                     LoaderPopup.toggle(true);
 
-                    for (let p of players1) p.player.ForceGladiator = true;
-                    for (let p of players2) p.player.ForceGladiator = true;
+                    for (let p of players1) p.player.NoGladiatorReduction = true;
+                    for (let p of players2) p.player.NoGladiatorReduction = true;
 
                     var threads = Number($('#sim-threads').val()) || 4;
 

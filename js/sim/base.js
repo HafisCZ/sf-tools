@@ -187,14 +187,17 @@ class FighterModel {
     getCriticalMultiplier (weapon, weapon2, target) {
         let baseMultiplier = (weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment)) ? 1.05 : 1;
 
-        let multiplier = 0.05 * Math.max(0, this.Player.Fortress.Gladiator - target.Player.Fortress.Gladiator);
-        if (this.Player.ForceGladiator === true) {
-            multiplier = 0.05 * this.Player.Fortress.Gladiator;
-        } else if (this.Player.ForceGladiator) {
-            multiplier = 0.05 * this.Player.ForceGladiator;
+        let ownGladiator = this.Player.Fortress.Gladiator;
+        if (typeof this.Player.ForceGladiator === 'number') {
+            ownGladiator = this.Player.ForceGladiator;
         }
 
-        return 2 * baseMultiplier * (1 + multiplier);
+        let reducingGladiator = target.Player.Fortress.Gladiator;
+        if (this.Player.NoGladiatorReduction) {
+            reducingGladiator = 0;
+        }
+
+        return 2 * baseMultiplier * (1 + 0.05 * Math.max(0, ownGladiator - reducingGladiator));
     }
 
     // Health

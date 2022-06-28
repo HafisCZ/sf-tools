@@ -81,7 +81,7 @@
                             <div class="four wide column">
                                 <button class="ui fluid small button" type="submit" id="save-player">Save</button>
                             </div>
-                            <div class="six wide column">
+                            <div class="five wide column">
                                 <div class="ui small form">
                                     <div class="field">
                                         <div class="ui fluid selection compact dropdown" id="sim-mode">
@@ -91,8 +91,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="two wide column">
-                                <button class="ui small basic icon fluid button" data-position="bottom center" data-tooltip="IHOF Mode: Gladiator is set to 15 and is not reduced!" id="ihof-mode"><i class="trophy icon"></i></button>
+                            <div class="three wide column">
+                                <div class="ui small basic icon fluid two buttons">
+                                    <button class="ui button" data-position="bottom center" data-tooltip="Gladiator will be set to 15 regardless of your settings" id="gladiator-mode"><i class="bolt icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-tooltip="IHOF Mode: Gladiator is not reduced!" id="ihof-mode"><i class="trophy icon"></i></button>
+                                </div>
                             </div>
                         </div>
                         <div class="css-small-row row">
@@ -184,12 +187,15 @@
             var iterator = 0;
 
             let ihofMode = false;
-            $('#ihof-mode').toggleButton(active => {
+            $('#ihof-mode').captiveToggleButton('player_sim/ihof', active => {
                 ihofMode = active;
-
-                $('.sim-player-name, .sim-player-name-ihof').toggleClass('sim-player-name').toggleClass('sim-player-name-ihof');
                 showPlayers();
-            });
+            })
+
+            let gladiatorMode = false;
+            $('#gladiator-mode').captiveToggleButton('player_sim/gladiator', active => {
+                gladiatorMode = active;
+            })
 
             var modeDump = window.location.href.includes('log');
 
@@ -360,8 +366,13 @@
                 if (players.length > 1 && (mode != 1 || (mode == 1 && players.find(p => p.index == yourself)))) {
                     for (var i = 0; i < players.length; i++) {
                         players[i].score = null;
-                        if (ihofMode) {
+
+                        if (gladiatorMode) {
                             players[i].player.ForceGladiator = 15;
+                        }
+
+                        if (ihofMode) {
+                            players[i].player.NoGladiatorReduction = true;
                         }
                     }
 

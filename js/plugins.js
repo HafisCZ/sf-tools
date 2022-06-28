@@ -181,6 +181,30 @@
         });
     }
 
+    $.fn.captiveToggleButton = function (storageKey, callback) {
+        return this.each(function () {
+            this.isActive = false;
+
+            this.addEventListener('click', () => {
+                this.isActive = !this.isActive;
+
+                SharedPreferences.setRaw(storageKey, this.isActive);
+
+                callback(this.isActive);
+
+                if (this.isActive) {
+                    this.style.setProperty('background', '#21ba45', 'important');
+                } else {
+                    this.style.setProperty('background', '');
+                }
+            });
+
+            if (SharedPreferences.getRaw(storageKey, 'false') == 'true') {
+                this.click();
+            }
+        });
+    }
+
     $.fn.settingsButton = function (enabled) {
         return this.each(function () {
             if (enabled) {
