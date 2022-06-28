@@ -523,7 +523,7 @@ const DatabaseManager = new (class {
             Own: data.own,
             Name: data.name,
             Prefix: _pretty_prefix(data.prefix),
-            Class: data.class,
+            Class: data.class || ((data.own ? data.save[29] : data.save[20]) % 65536),
             Group: data.group
         }, {
             get: function (target, prop) {
@@ -1462,6 +1462,7 @@ const DatabaseManager = new (class {
                         data.name = r.ownplayername.string;
                         data.save = r.ownplayersave.numbers;
                         data.identifier = data.prefix + '_p' + data.save[1];
+                        data.class = data.save[29] % 65536;
 
                         // Optionals
                         data.groupname = _try(r.owngroupname, 'string');
@@ -1493,6 +1494,7 @@ const DatabaseManager = new (class {
                         data.name = r.otherplayername.string;
                         data.save = r.otherplayer.numbers;
                         data.identifier = data.prefix + '_p' + data.save[0];
+                        data.class = data.save[20] % 65536;
 
                         // Optionals
                         data.groupname = _try(r.otherplayergroupname, 'string');
