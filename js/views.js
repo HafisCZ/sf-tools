@@ -106,8 +106,8 @@ const Toast = new (class {
         // Add toast to the queue
         this.toasts.unshift($toast);
 
-        // Check and remove last toast if there is more than 5
-        if (this.toasts.length > 5) {
+        // Check and remove last toast if there is more than fit on the screen
+        if (this.$parent.height() > window.innerHeight - 100) {
             this._destroy(this.toasts.pop());
         }
     }
