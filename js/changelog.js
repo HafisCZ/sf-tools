@@ -1,5 +1,5 @@
 const CHANGELOG = {
-    'v5.XXXX': {
+    'v5.2250': {
         'Statistics': [
             'Added toast message when database is being updated',
             'Fixed visibility of some headers (due to new BE)',
@@ -18,6 +18,7 @@ const CHANGELOG = {
             'Added option to save image of fight results',
             'Added new <code>log</code> query argument',
             'Added option to poll saved characters',
+            'Split IHOF button into two IHOF & force gladiator 15 buttons',
             'Fixed Tournamed mode freezing UI when starting simulation',
             'Fixed drag & drop'
         ],
