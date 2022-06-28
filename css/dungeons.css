@@ -1,54 +1,5 @@
-.bordered .fields:last-of-type {
-    margin-bottom: 0;
-}
-
-.bordered {
-    padding: 0.5em;
-    margin-bottom: 0.5em;
-}
-
-.bordered-simple {
-    margin-bottom: 0.35em;
-    padding-top: 0.5em !important;
-    padding-bottom: 0.5em !important;
-    margin-right: 1em;
-    margin-left: 1em;
-}
-
 .form.white label {
     color: white !important;
-}
-
-.bnone {
-    border: 1px solid transparent;
-}
-
-.bone {
-    border: 1px solid orange;
-}
-
-.btwo {
-    border: 1px solid purple;
-}
-
-.bthree {
-    border: 1px solid blue;
-}
-
-.bfour {
-    border: 1px solid red;
-}
-
-.bfive {
-    border: 1px solid green;
-}
-
-.bsix {
-    border: 1px solid pink;
-}
-
-.spaced {
-    margin-top: 2em !important;
 }
 
 .selectable {
@@ -89,24 +40,9 @@
     padding-bottom: 0.75em;
 }
 
-.class-picture {
-     margin-left: -0.75em !important;
-     margin-right: 0.5em !important;
-}
-
-.class-none {
-    margin-left: 1.75em;
-}
-
 .footer {
     position: fixed;
     left: 1em;
-    bottom: 1em;
-}
-
-.footer-right {
-    position: fixed;
-    right: 1em;
     bottom: 1em;
 }
 
@@ -174,12 +110,4 @@ div.text .boss-rune {
 
 #winchart.faded-out {
     opacity: 0.5 !important;
-}
-
-.ui.dimmer {
-    overflow-y: hidden !important;
-}
-
-body.dimmed {
-    margin-right: 0 !important;
 }
