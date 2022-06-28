@@ -675,7 +675,6 @@ class SFPlayer {
     getMaximumDamageReduction () {
         switch (this.Class) {
             case 1:
-            case 5:
             case 7:
                 return 50;
             case 3:
@@ -684,6 +683,7 @@ class SFPlayer {
             case 9:
                 return 25;
             case 2:
+            case 5:
                 return 10;
             case 8:
                 switch (this.Mask) {

@@ -90,16 +90,13 @@ class FighterModel {
         if (source.Player.Class == MAGE) {
             return 0;
         } else if (this.Player.ForceArmor) {
-            let multiplier = this.Player.ForceArmor * this.Player.Level / source.Player.Level
-            
-            if (this.Player.Class == BATTLEMAGE) {
-                return Math.min(10, 10 * multiplier) + 40;
-            } else {
-                return Math.min(maximumReduction, maximumReduction * multiplier);
-            }
+            let multiplier = this.Player.ForceArmor * this.Player.Level / source.Player.Level;
+            let reductionBonus = this.Player.Class == BATTLEMAGE ? 40 : 0;
+
+            return Math.min(maximumReduction, maximumReduction * multiplier);
         } else {
             if (this.Player.Class == BATTLEMAGE) {
-                return Math.min(maximumReduction, this.Player.Armor / source.Player.Level + 40);
+                return Math.min(maximumReduction, this.Player.Armor / source.Player.Level) + 40;
             } else if (this.Player.Class == DRUID && this.Player.Mask == MASK_BEAR) {
                 return Math.min(maximumReduction, 2 * this.Player.Armor / source.Player.Level);
             } else {
@@ -112,7 +109,6 @@ class FighterModel {
     getMaximumDamageReduction () {
         switch (this.Player.Class) {
             case WARRIOR:
-            case BATTLEMAGE:
             case DEMONHUNTER:
                 return 50;
             case SCOUT:
@@ -121,6 +117,7 @@ class FighterModel {
             case BARD:
                 return 25;
             case MAGE:
+            case BATTLEMAGE:
                 return 10;
             case DRUID:
                 switch (this.Player.Mask) {
