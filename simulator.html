@@ -68,7 +68,7 @@
                 <!-- Player list -->
                 <div class="column">
                     <div class="ui grid screenshot-target">
-                        <div class="row css-smaller-pad">
+                        <div class="row">
                             <div class="four wide column">
                                 <button class="ui fluid small button" type="submit" id="add-player"><i class="small arrow right icon"></i> Add</button>
                             </div>
@@ -89,7 +89,7 @@
                                 <button class="ui small basic icon fluid button" data-position="bottom center" data-tooltip="IHOF Mode: Gladiator is set to 15 and is not reduced!" id="ihof-mode"><i class="trophy icon"></i></button>
                             </div>
                         </div>
-                        <div class="css-small-row row css-smaller-pad">
+                        <div class="css-small-row row">
                             <div class="six wide column">
                                 <div class="ui small basic icon fluid three buttons">
                                     <button class="ui button" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="paste-mode"><i class="paste icon"></i></button>
@@ -192,7 +192,7 @@
 
             $('#save-screenshot').click(function () {
                 let $target = $('.screenshot-target');
-                let $hiddenRows = $('.screenshot-target .css-small-row');
+                let $hiddenRows = $('.screenshot-target .row').slice(0, 2);
 
                 $hiddenRows.hide();
                 $target.css('margin-right', '-2rem').css('padding-right', '1rem');
