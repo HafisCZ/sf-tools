@@ -3,8 +3,3 @@
     left: 1em;
     bottom: 1em;
 }
-
-body {
-    overflow-y: auto !important;
-    margin-bottom: 4em;
-}

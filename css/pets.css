@@ -1,32 +1,3 @@
-.bordered .fields:last-of-type {
-    margin-bottom: 0;
-}
-
-.bordered {
-    padding: 0.5em;
-    margin-bottom: 0.5em;
-}
-
-.bnone {
-    border: 1px solid transparent;
-}
-
-.bone {
-    border: 1px solid orange;
-}
-
-.btwo {
-    border: 1px solid purple;
-}
-
-.bthree {
-    border: 1px solid blue;
-}
-
-.bfour {
-    border: 1px solid red;
-}
-
 .pet-25 {
     background-color: #99ffb4;
 }
@@ -79,11 +50,6 @@ table.map-map {
 
 .map-map td.spanned {
     width: 88.4em;
-}
-
-body {
-    overflow-y: auto !important;
-    padding-bottom: 2em;
 }
 
 .pet-picture {

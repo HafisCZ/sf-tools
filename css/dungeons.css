@@ -46,11 +46,6 @@
     bottom: 1em;
 }
 
-body {
-    overflow-y: auto !important;
-    margin-bottom: 6em;
-}
-
 .text .boss-image {
     top: -0.75em !important;
     right: -0.75em !important;
