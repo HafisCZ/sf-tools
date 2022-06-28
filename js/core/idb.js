@@ -852,6 +852,10 @@ const DatabaseManager = new (class {
         }
     }
 
+    getLatestPlayers () {
+        return Object.values(this.Players).map(player => player.Latest);
+    }
+
     isHidden (id, ts) {
         return _dig(this.Players, id, ts, 'Data', 'hidden');
     }

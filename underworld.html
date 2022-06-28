@@ -247,7 +247,11 @@
                     'Poll saved characters',
                     'dungeons',
                     function ($statsList) {
-                        for (let player of Object.keys(DatabaseManager.Players).map(pid => DatabaseManager.getPlayer(pid).Latest).sort((a, b) => b.Timestamp - a.Timestamp).filter(p => typeof p.Underworld.GoblinPit !== 'undefined')) {
+                        function hasUnderworld ({ Underworld: uw }) {
+                            return typeof uw.GoblinPit !== 'undefined' && (uw.GoblinPit > 0 || uw.TrollBlock > 0 || uw.Keeper > 0);
+                        }
+
+                        for (let player of _sort_des(DatabaseManager.getLatestPlayers(), p => p.Timestamp).filter(hasUnderworld)) {
                             $statsList.append($(`
                                 <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
                                     <div class="visible content">

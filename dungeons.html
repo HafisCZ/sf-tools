@@ -590,7 +590,7 @@
                     'Poll saved characters',
                     'dungeons',
                     function ($statsList) {
-                        for (let player of Object.keys(DatabaseManager.Players).map(pid => DatabaseManager.getPlayer(pid).Latest).sort((a, b) => b.Timestamp - a.Timestamp)) {
+                        for (let player of _sort_des(DatabaseManager.getLatestPlayers(), p => p.Timestamp)) {
                             $statsList.append($(`
                                 <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
                                     <div class="visible content">
