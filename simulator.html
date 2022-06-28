@@ -671,7 +671,7 @@
                                         <input type="text" name="search" placeholder="Search player...">
                                     </div>
                                     ${
-                                        _sort_des(players, p => p.Timestamp).map(player => {
+                                        players.sort((a, b) => b.Own - a.Own || b.Timestamp - a.Timestamp).map(player => {
                                             return `
                                                 <div class="item" data-value="${player.Identifier}">
                                                     <img class="ui centered image class-picture" src="res/class${ player.Class }.png"><span>${ player.Level } - ${ player.Name }</span>
