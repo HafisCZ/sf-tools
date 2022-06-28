@@ -366,14 +366,8 @@
                 if (players.length > 1 && (mode != 1 || (mode == 1 && players.find(p => p.index == yourself)))) {
                     for (var i = 0; i < players.length; i++) {
                         players[i].score = null;
-
-                        if (gladiatorMode) {
-                            players[i].player.ForceGladiator = 15;
-                        }
-
-                        if (ihofMode) {
-                            players[i].player.NoGladiatorReduction = true;
-                        }
+                        players[i].player.ForceGladiator = gladiatorMode ? 15 : undefined;
+                        players[i].player.NoGladiatorReduction = ihofMode;
                     }
 
                     showPlayers();
