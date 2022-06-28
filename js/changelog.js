@@ -1,12 +1,17 @@
 const CHANGELOG = {
     'v5.XXXX': {
         'Statistics': [
+            'Added toast message when database is being updated',
             'Fixed visibility of some headers (due to new BE)',
             'Fixed Bard missing instrument in player detail'
         ],
+        'Underworld Simulator': [
+            'Added new simulator'
+        ],
         'Dungeon Simulator': [
             'Added option to save image of Simulate All results',
-            'Added class swap to cheat menu'
+            'Added class swap to cheat menu',
+            'Fixed armor calculation for Battlemage bosses'
         ],
         'Fight Simulator': [
             'Added new toast messages informing user about simulation progress',
@@ -19,12 +24,18 @@ const CHANGELOG = {
             'Fixed missing input for pets between 150 - 199',
             'Fixed position of New BE checkbox for small screens',
         ],
+        'Hydra Simulator': [
+            'Fixed thirteen-headed hydra',
+            'Fixed poor performance when using Poll'
+        ],
         'All Simulators': [
             'Reworked Bard simulation',
+            'Reworked major parts of the UI',
             'Added warning when importing incompatible HAR file',
             'Fixed paste target appearing in mobile view',
             'Fixed Druid damage reduction when having no mask',
-            'Fixed attribute fields allowing zeroes'
+            'Fixed attribute fields allowing zeroes',
+            'Removed 2 billion HP limit'
         ],
         'All Tools': [
             'Removed <code>Go back</code> buttons'
