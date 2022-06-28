@@ -101,7 +101,7 @@ const Toast = new (class {
         `).appendTo(this.$parent);
 
         $toast.transition('fade');
-        setTimeout(() => this._destroy($toast), 3000);
+        setTimeout(() => this._destroy($toast), 6000);
 
         // Add toast to the queue
         this.toasts.unshift($toast);
