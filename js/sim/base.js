@@ -188,11 +188,13 @@ class FighterModel {
         let baseMultiplier = (weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment)) ? 1.05 : 1;
 
         let ownGladiator = this.Player.Fortress.Gladiator;
+        let reducingGladiator = target.Player.Fortress.Gladiator;
+
         if (typeof this.Player.ForceGladiator === 'number') {
             ownGladiator = this.Player.ForceGladiator;
+            reducingGladiator = this.Player.ForceGladiator;
         }
 
-        let reducingGladiator = target.Player.Fortress.Gladiator;
         if (this.Player.NoGladiatorReduction) {
             reducingGladiator = 0;
         }
