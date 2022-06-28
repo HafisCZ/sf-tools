@@ -422,7 +422,7 @@
                     updateSimulateButton();
 
                     if (playerList.every(entry => typeof entry.score === 'number')) {
-                        _sort_des(playerList, entry => entry.score);
+                        _sort_des(playerList, entry => entry.player.Level + 1000 * entry.score);
                     }
 
                     let content = ''
