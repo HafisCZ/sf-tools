@@ -520,11 +520,11 @@ const StatisticsIntegration = new (class {
                 );
 
                 LoaderPopup.toggle(false);
-            }).catch(function () {
+            }).catch(function (e) {
                 LoaderPopup.toggle(false);
 
                 Toast.error('Database could not be opened', 'Please verify that you are not in incognito mode and your browser supports Indexed DB');
-                Logger.log('WARNING', 'Database could not be opened!');
+                Logger.log('WARNING', `Database could not be opened! Reason: ${e.message}`);
 
                 $statsList.empty();
             });
