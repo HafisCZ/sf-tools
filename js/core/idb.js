@@ -522,7 +522,7 @@ const DatabaseManager = new (class {
             Timestamp: data.timestamp,
             Own: data.own,
             Name: data.name,
-            Prefix: data.prefix.replace(/\_/g, ' '),
+            Prefix: _pretty_prefix(data.prefix),
             Class: data.class,
             Group: data.group
         }, {
