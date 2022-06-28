@@ -722,7 +722,7 @@
                             for (let type = 0; type < 5; type++) {
                                 for (let klass = 1; klass <= 3; klass++) {
                                     let [pet1, pet2] = getPetsFor(player, type, klass);
-                                    if (pet2) {
+                                    if (pet1 && pet2) {
                                         petFights.push(simulateFight(pet1, pet2).then(([chance, a, b]) => {
                                             results.push({
                                                 chance,
@@ -733,6 +733,8 @@
                                     }
                                 }
                             }
+
+                            Toast.info('Starting simulation', `<b>Matches:</b> ${petFights.length}`);
 
                             Promise.all(petFights).then(() => {
                                 LoaderPopup.toggle(false);
@@ -830,7 +832,11 @@
                 }
 
                 let petModels = _sort_des(pets.filter(data => data.Level).map(data => PetModel.fromObject(data)), model => model.TotalHealth);
-                let bestPet = petModels.find(model => model.Class == petClass) || petModels[0];
+                let bestPet = petModels.find(model => model.Class == petClass);
+                if (petClass == null) {
+                    bestPet ||= petModels[0];
+                }
+
                 if (bestPet) {
                     pet1 = pets[bestPet.Pet];
                     pet1.Class = bestPet.Class;
