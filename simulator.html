@@ -441,6 +441,24 @@
                 }
             });
 
+            function addPlayer () {
+                let player = editor.read();
+                if (player.Name == '') {
+                   player.Name = `Player ${ players.length + 1 }`;
+                }
+
+                selected = iterator++;
+                players.push({
+                   player: player,
+                   score: null,
+                   index: selected
+                });
+
+                editor.clear();
+
+                showPlayers();
+            }
+
             function insertPlayer (player) {
                 players.push({
                     player: player,
