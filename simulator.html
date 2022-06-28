@@ -67,26 +67,14 @@
                 <!-- Player list -->
                 <div class="column">
                     <div class="ui grid screenshot-target">
-                        <div class="css-small-row row css-smaller-pad">
+                        <div class="row css-smaller-pad">
                             <div class="four wide column">
-                                <button class="ui fluid small button" type="submit" id="sim-add"><i class="small arrow right icon"></i> Add</button>
+                                <button class="ui fluid small button" type="submit" id="add-player"><i class="small arrow right icon"></i> Add</button>
                             </div>
                             <div class="four wide column">
-                                <button class="ui fluid small button" type="submit" id="sim-save">Save</button>
+                                <button class="ui fluid small button" type="submit" id="save-player">Save</button>
                             </div>
-                            <div class="one wide column"></div>
-                            <div class="two wide column">
-                                <button class="ui small basic icon fluid button" style="margin-left: -1.5em; width: calc(100% + 1.5em);" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="sim-insert"><i class="paste icon"></i></button>
-                            </div>
-                            <div class="five wide column">
-                                <div class="ui small basic icon fluid two buttons">
-                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy current" id="sim-copy"><i class="outline copy icon"></i> 1</button>
-                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy everyone" id="sim-copyall"><i class="copy icon"></i> All</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="css-small-row row css-smaller-pad">
-                            <div class="four wide column">
+                            <div class="six wide column">
                                 <div class="ui small form">
                                     <div class="field">
                                         <div class="ui fluid selection compact dropdown" id="sim-mode">
@@ -97,7 +85,16 @@
                                 </div>
                             </div>
                             <div class="two wide column">
-                                <button class="ui small basic icon fluid button" data-position="bottom center" data-tooltip="IHOF Mode: Gladiator is set to 15 and is not reduced!" id="sim-ihof">IHOF</button>
+                                <button class="ui small basic icon fluid button" data-position="bottom center" data-tooltip="IHOF Mode: Gladiator is set to 15 and is not reduced!" id="ihof-mode"><i class="trophy icon"></i></button>
+                            </div>
+                        </div>
+                        <div class="css-small-row row css-smaller-pad">
+                            <div class="six wide column">
+                                <div class="ui small basic icon fluid three buttons">
+                                    <button class="ui button" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="paste-mode"><i class="paste icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy current" id="copy-current"><i class="outline copy icon"></i> 1</button>
+                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy everyone" id="copy-all"><i class="copy icon"></i> All</button>
+                                </div>
                             </div>
                             <div class="five wide column">
                                 <div class="ui small form">
@@ -113,7 +110,7 @@
                                 </div>
                             </div>
                             <div class="five wide column">
-                                <button class="ui fluid small button" type="submit" id="sim-run">Simulate</button>
+                                <button class="ui fluid small button" type="submit" id="simulate">Simulate</button>
                             </div>
                         </div>
                         <div class="row clickable selectable-header">
@@ -179,29 +176,18 @@
             var players = [];
             var iterator = 0;
 
-            var modeIhof = false;
-            $('#sim-ihof').click(function () {
-                modeIhof = !modeIhof;
-                if (modeIhof) {
-                    this.style.setProperty('background', '#21ba45', 'important');
-                } else {
-                    this.style.setProperty('background', '');
-                }
+            let ihofMode = false;
+            $('#ihof-mode').toggleButton(active => {
+                ihofMode = active;
+
                 $('.sim-player-name, .sim-player-name-ihof').toggleClass('sim-player-name').toggleClass('sim-player-name-ihof');
                 showPlayers();
             });
 
             var modeDump = window.location.href.includes('log');
 
-            var modeInsert = false;
-            $('#sim-insert').click(function () {
-                modeInsert = !modeInsert;
-                if (modeInsert) {
-                    this.style.setProperty('background', '#21ba45', 'important');
-                } else {
-                    this.style.setProperty('background', '');
-                }
-            });
+            let pasteMode = false;
+            $('#paste-mode').toggleButton(active => pasteMode = active);
 
             $('#save-screenshot').click(function () {
                 let $target = $('.screenshot-target');
@@ -283,7 +269,7 @@
 
             function insertExternalData (data) {
                 if (Array.isArray(data)) {
-                    if (!modeInsert) {
+                    if (pasteMode == false) {
                         players = [];
                     }
 
@@ -369,11 +355,11 @@
             }
 
             // Run simulation
-            $('#sim-run').click(async function () {
+            $('#simulate').click(async function () {
                 if (players.length > 1 && (mode != 1 || (mode == 1 && players.find(p => p.index == yourself)))) {
                     for (var i = 0; i < players.length; i++) {
                         players[i].score = null;
-                        if (modeIhof) {
+                        if (ihofMode) {
                             players[i].player.ForceGladiator = 15;
                         }
                     }
@@ -454,7 +440,7 @@
                 }
             });
 
-            $('#sim-save').click(function () {
+            $('#save-player').click(function () {
                 if (editor.valid()) {
                     if (selected != -1) {
                         var index = players.findIndex(p => p.index == selected);
@@ -465,16 +451,16 @@
 
                         showPlayers();
                     } else {
-                        $('#sim-add').trigger('click');
+                        $('#add-player').trigger('click');
                     }
                 }
             });
 
-            $('#sim-copy').click(function () {
+            $('#copy-current').click(function () {
                 copyText(JSON.stringify(editor.read()));
             });
 
-            $('#sim-copyall').click(function () {
+            $('#copy-all').click(function () {
                 copyText(JSON.stringify(players.map(p => {
                     let m = toSimulatorModel(p.player);
                     if (p.player.Class == 1 && typeof p.player.BlockChance != 'undefined') {
@@ -485,7 +471,7 @@
                 })));
             });
 
-            $('#sim-add').click(function () {
+            $('#add-player').click(function () {
                 if (editor.valid()) {
                     var player = editor.read();
                     if (player.Name == '') {
@@ -613,7 +599,7 @@
                                 <b>${ player.Level }</b>
                             </div>
                             <div class="one wide column"></div>
-                            <div class="four wide column sim-player-name${ modeIhof && player.Prefix ? '-ihof' : '' }">
+                            <div class="four wide column sim-player-name${ ihofMode && player.Prefix ? '-ihof' : '' }">
                                 <b>${ player.Name }</b>
                                 <span>${ player.Prefix }</span>
                             </div>
