@@ -33,9 +33,8 @@ h1 {
     border-bottom: 1px solid transparent;
 }
 
-h2 {
+#sf-about h2 {
     text-align: left;
-    color: white;
     margin-top: 0;
     filter: brightness(130%);
 }
