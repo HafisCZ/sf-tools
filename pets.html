@@ -833,8 +833,8 @@
 
                 let petModels = _sort_des(pets.filter(data => data.Level).map(data => PetModel.fromObject(data)), model => model.TotalHealth);
                 let bestPet = petModels.find(model => model.Class == petClass);
-                if (petClass == null) {
-                    bestPet ||= petModels[0];
+                if (petClass == null && !bestPet) {
+                    bestPet = petModels[0];
                 }
 
                 if (bestPet) {

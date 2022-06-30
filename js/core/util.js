@@ -175,7 +175,12 @@ function _array_to_hash (array, processor, base = {}) {
 function _group_by (array, processor) {
     let groups = {};
     for (const object of array) {
-        (groups[processor(object)] ||= []).push(object);
+        let key = processor(object);
+        if (groups[key]) {
+            groups[key].push(object);
+        } else {
+            groups[key] = [object];
+        }
     }
 
     return groups;
