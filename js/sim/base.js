@@ -93,7 +93,7 @@ class FighterModel {
             let multiplier = this.Player.ForceArmor * this.Player.Level / source.Player.Level;
             let reductionBonus = this.Player.Class == BATTLEMAGE ? 40 : 0;
 
-            return Math.min(maximumReduction, maximumReduction * multiplier);
+            return Math.min(maximumReduction, maximumReduction * multiplier) + reductionBonus;
         } else {
             if (this.Player.Class == BATTLEMAGE) {
                 return Math.min(maximumReduction, this.Player.Armor / source.Player.Level) + 40;
