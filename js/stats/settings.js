@@ -2573,6 +2573,15 @@ class Settings {
         this.evalRules();
     }
 
+    fetchSimulatorPlayer ({ Identifier: identifier, Timestamp: timestamp }) {
+        let player = DatabaseManager.getPlayer(identifier, timestamp).toSimulatorModel();
+        player.ForceGladiator = 15;
+
+        return {
+            player
+        };
+    }
+
     evalSimulator (array, cycles = 0, limit = array.length) {
         if (cycles) {
             // Check whether timestamps match
@@ -2588,11 +2597,7 @@ class Settings {
             // Simulate
             if (sameTimestamp) {
                 // Create arrays
-                arrayCurrent = array.map(({ player: { Identifier: identifier, Timestamp: timestamp } }) => {
-                    return {
-                        player: DatabaseManager.getPlayer(identifier, timestamp).toSimulatorModel()
-                    };
-                });
+                arrayCurrent = array.map(({ player }) => this.fetchSimulatorPlayer(player));
 
                 // Set target
                 let targetCurrent = this.globals.simulator_target ? arrayCurrent.find(({ player }) => player.Identifier == this.globals.simulator_target) : null;
@@ -2608,17 +2613,8 @@ class Settings {
                 new FightSimulator().simulate(arrayCurrent, cycles, targetCurrent, this.globals.simulator_target_source);
             } else {
                 // Create arrays
-                arrayCurrent = array.map(({ player: { Identifier: identifier, Timestamp: timestamp } }) => {
-                    return {
-                        player: DatabaseManager.getPlayer(identifier, timestamp).toSimulatorModel()
-                    };
-                });
-
-                arrayCompare = array.map(({ compare: { Identifier: identifier, Timestamp: timestamp } }) => {
-                    return {
-                        player: DatabaseManager.getPlayer(identifier, timestamp).toSimulatorModel()
-                    };
-                });
+                arrayCurrent = array.map(({ player }) => this.fetchSimulatorPlayer(player));
+                arrayCompare = array.map(({ compare }) => this.fetchSimulatorPlayer(compare));
 
                 // Set targets
                 let targetCurrent = this.globals.simulator_target ? arrayCurrent.find(({ player }) => player.Identifier == this.globals.simulator_target) : null;
