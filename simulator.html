@@ -179,6 +179,8 @@
         </div>
 
         <script type="text/javascript">
+            let simulatorMode = 'players_all';
+
             let editor = new Editor($('#sim-editor'));
             var selected = -1;
             var yourself = -1;
@@ -225,32 +227,38 @@
                 });
             });
 
-            var mode = 0;
             $('#sim-mode').dropdown({
                 values: [
                     {
                         name: 'All vs All',
-                        value: 0
+                        value: 'all'
                     },
                     {
                         name: 'One vs All',
-                        value: 1
+                        value: 'attack'
+                    },
+                    {
+                        name: 'All vs One',
+                        value: 'defend'
                     },
                     {
                         name: 'Tournament',
-                        value: 2
+                        value: 'tournament'
                     }
                 ]
             }).dropdown('setting', 'onChange', (value, text) => {
-                mode = Number(value);
+                if ((simulatorMode != 'attack' && simulatorMode != 'defend') || (value != 'attack' && value != 'defend')) {
+                    yourself = -1;
+                }
+                
+                simulatorMode = value;
 
                 for (var p of players) {
                     p.score = null;
                 }
 
-                yourself = -1;
                 clearSort();
-            }).dropdown('set selected', '0')
+            }).dropdown('set selected', 'all')
 
             $('#sim-editor input').on('paste', function (event) {
                 event.stopPropagation();
@@ -346,7 +354,7 @@
                     }, false);
 
                     worker.postMessage({
-                        mode: 'players_all',
+                        mode: 'all',
                         player: array,
                         players: array,
                         iterations: 100
@@ -361,9 +369,13 @@
                 });
             }
 
+            function canSimulate () {
+                return players.length > 1 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
+            }
+
             // Run simulation
             $('#simulate').click(async function () {
-                if (players.length > 1 && (mode != 1 || (mode == 1 && players.find(p => p.index == yourself)))) {
+                if (canSimulate()) {
                     for (var i = 0; i < players.length; i++) {
                         players[i].score = null;
                         players[i].player.ForceGladiator = gladiatorMode ? 15 : undefined;
@@ -381,7 +393,7 @@
                     var ladder = [];
                     var logs = [];
 
-                    if (mode == 2) {
+                    if (simulatorMode == 'tournament') {
                         ladder = await buildSimulatorLadder([ ...players ]);
                     }
 
@@ -417,25 +429,33 @@
                             }
                         }, false);
 
-                        if (mode == 0) {
+                        if (simulatorMode == 'all') {
                             worker.postMessage({
-                                mode: 'players_all',
+                                mode: 'all',
                                 player: block,
                                 players: players,
                                 iterations: iterations,
                                 dev: modeDump
                             });
-                        } else if (mode == 1) {
+                        } else if (simulatorMode == 'attack') {
                             worker.postMessage({
-                                mode: 'players_one',
+                                mode: 'attack',
                                 player: players.find(p => p.index == yourself),
                                 players: block,
                                 iterations: iterations,
                                 dev: modeDump
                             });
-                        } else if (mode == 2) {
+                        } else if (simulatorMode == 'defend') {
                             worker.postMessage({
-                                mode: 'players_tournament',
+                                mode: 'defend',
+                                player: players.find(p => p.index == yourself),
+                                players: block,
+                                iterations: iterations,
+                                dev: modeDump
+                            });
+                        } else if (simulatorMode == 'tournament') {
+                            worker.postMessage({
+                                mode: 'tournament',
                                 player: block,
                                 players: ladder,
                                 iterations: iterations,
@@ -580,15 +600,15 @@
 
                 var content = '';
 
-                if (mode == 1 && yourself == -1) {
+                if ((simulatorMode == 'attack' || simulatorMode == 'defend') && yourself == -1) {
                     if (players.length) {
                         yourself = players[0].index;
                     }
                 }
 
-                if (mode > 0) {
+                if (simulatorMode != 'all') {
                     $('[data-sort="min"]').hide();
-                    if (mode == 1) {
+                    if (simulatorMode == 'attack' || simulatorMode == 'defend') {
                         $('[data-sort="max"]').hide();
                     } else {
                         $('[data-sort="max"]').show();
@@ -598,7 +618,7 @@
                     $('[data-sort="max"]').show();
                 }
 
-                if (mode == 2) {
+                if (simulatorMode == 'tournament') {
                     $('[data-sort="max"]').text('Ladder');
                 } else {
                     $('[data-sort="max"]').text('Max %');
@@ -610,7 +630,7 @@
                     var index = players[i].index;
 
                     content += `
-                        <div class="row selectable ${ index == selected ? 'selected' : 'nselected' } ${ mode == 1 && index == yourself ? 'btwo' : 'bnone' }" data-index="${ index }">
+                        <div class="row selectable ${ index == selected ? 'selected' : 'nselected' } ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself ? 'btwo' : 'bnone' }" data-index="${ index }">
                             <div class="player-index">${ i + 1 }</div>
                             <div class="two wide text-center column">
                                 <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
@@ -626,16 +646,16 @@
                                 <span>${ player.Prefix }</span>
                             </div>
                             <div class="two wide text-center column">
-                                ${ score ? (mode == 2 ? `${ score.avg } pt` : (mode == 1 && index == yourself ? '' : `${ score.avg.toFixed(2) }%`)) : '' }
+                                ${ score ? (simulatorMode == 'tournament' ? `${ score.avg } pt` : ((simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself ? '' : `${ score.avg.toFixed(2) }%`)) : '' }
                             </div>
                             <div class="two wide text-center column">
                                 ${ score && score.min != undefined ? `${ score.min.toFixed(2) }%` : '' }
                             </div>
                             <div class="two wide text-center column">
-                                ${ score && score.max != undefined ? (mode == 2 ? `${ score.max }` : `${ score.max.toFixed(2) }%`) : '' }
+                                ${ score && score.max != undefined ? (simulatorMode == 'tournament' ? `${ score.max }` : `${ score.max.toFixed(2) }%`) : '' }
                             </div>
                             <div class="one wide text-center column">
-                                ${ mode == 1 && index != yourself ? `<i class="user circle icon glow-y" data-index-crown="${ i }"></i>` : ''}
+                                ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index != yourself ? `<i class="user circle icon glow-y" data-index-crown="${ i }"></i>` : ''}
                             </div>
                             <div class="one wide text-center column">
                                 <i class="trash right aligned alternate glow outline icon" data-index-trash="${ i }"></i>

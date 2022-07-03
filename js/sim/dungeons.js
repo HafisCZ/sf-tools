@@ -8,7 +8,7 @@ self.addEventListener('message', function (message) {
     let index = message.data.index;
     let hpcap = message.data.hpcap || 5000;
     let iterations = message.data.iterations || 100000;
-    if (message.data.log || false) {
+    if (message.data.log) {
         FIGHT_DUMP_ENABLED = true;
     }
 

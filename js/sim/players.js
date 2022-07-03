@@ -10,14 +10,12 @@ self.addEventListener('message', function (message) {
     var players = message.data.players;
     var mode = message.data.mode;
     var iterations = message.data.iterations || 100000;
-    if (message.data.dev || false) {
+    if (message.data.dev) {
         FIGHT_DUMP_ENABLED = true;
     }
 
-    var tracking = message.data.tracking || 0;
-
     // Sim type decision
-    if (mode == 'players_all') {
+    if (mode == 'all') {
         new FightSimulator().simulateMultiple(player, players, iterations);
         self.postMessage({
             command: 'finished',
@@ -25,15 +23,23 @@ self.addEventListener('message', function (message) {
             logs: FIGHT_DUMP_OUTPUT,
             time: Date.now() - ts
         });
-    } else if (mode == 'players_one') {
-        new FightSimulator().simulateSingle(player, players, iterations);
+    } else if (mode == 'attack') {
+        new FightSimulator().simulateSingle(player, players, iterations, false);
         self.postMessage({
             command: 'finished',
             results: players,
             logs: FIGHT_DUMP_OUTPUT,
             time: Date.now() - ts
         });
-    } else if (mode == 'players_tournament') {
+    } else if (mode == 'defend') {
+        new FightSimulator().simulateSingle(player, players, iterations, true);
+        self.postMessage({
+            command: 'finished',
+            results: players,
+            logs: FIGHT_DUMP_OUTPUT,
+            time: Date.now() - ts
+        });
+    } else if (mode == 'tournament') {
         new FightSimulator().simulateTournament(player, players, iterations);
         self.postMessage({
             command: 'finished',
@@ -284,7 +290,7 @@ class FightSimulator extends SimulatorBase {
     }
 
     // Fight 1v1s only
-    simulateSingle (player, players, iterations) {
+    simulateSingle (player, players, iterations, invert) {
         var scores = [];
         for (var i = 0; i < players.length; i++) {
             if (player.player == players[i].player) {
@@ -294,8 +300,13 @@ class FightSimulator extends SimulatorBase {
             } else {
                 var score = 0;
                 this.cache(player.player, players[i].player);
+
                 for (var j = 0; j < iterations; j++) {
                     score += this.fight();
+                }
+
+                if (invert) {
+                    score = iterations - score;
                 }
 
                 players[i].score = {
