@@ -9,6 +9,8 @@
 
         <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
         <link rel="stylesheet" href="css/style.css"/>
+        <!-- underworld.css is shared -->
+        <link rel="stylesheet" href="css/underworld.css"/>
         <link rel="stylesheet" href="css/editor.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
@@ -18,156 +20,113 @@
         <script src="js/util.js"></script>
         <script src="js/lang.js"></script>
 
+        <script src="js/plugins.js"></script>
+
         <script src="js/core/util.js"></script>
         <script src="js/core/playa.js"></script>
         <script src="js/core/core.js"></script>
-        <script src="js/plugins.js"></script>
+        <script src="js/core/idb.js"></script>
+        <script src="js/core/ast.js"></script>
+        <script src="js/stats/settings.js"></script>
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
         <script src="js/editor.js"></script>
 
+        <script src="endpoint/endpoint.js"></script>
+
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
-
-        <style>
-            .player-index {
-                position: absolute;
-                font-size: 90%;
-                opacity: 50%;
-                left: 0em;
-                top: 1.5em;
-            }
-
-            .selectable {
-                -moz-user-select: -moz-none;
-                -khtml-user-select: none;
-                -webkit-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-                padding-bottom: 0.25em !important;
-                padding-top: 0.25em !important;
-                height: 4em;
-            }
-
-            .selectable div {
-                padding: 0 !important;
-            }
-
-            .selectable-header div {
-                padding-left: 0 !important;
-                padding-right: 0 !important;
-            }
-
-            .selected {
-                background-color: rgba(0, 0, 0, 0.1);
-                cursor: pointer;
-            }
-
-            .nselected {
-                cursor: pointer;
-            }
-
-            .inactive {
-                opacity: 50%;
-            }
-
-            #sim-players1, #sim-players2 {
-                min-height: 30em;
-                align-content: flex-start;
-            }
-        </style>
     </head>
     <body class="margin-none-bottom">
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
 
+        <div class="paste-target" onpaste="console.log">
+            Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator
+        </div>
+
         <div class="ui main container">
-            <!-- Header -->
             <div class="ui five columns middle aligned grid">
-                <div class="five wide column"></div>
-                <div class="six wide column">
-                    <h1 class="ui centered header">Guild Battle Simulator</h1>
+                <div class="two wide column">
+
                 </div>
-                <div class="five wide column"></div>
+                <div class="four wide column">
+
+                </div>
+                <div class="four wide column">
+                    <h1 class="ui centered header">Guild Simulator</h1>
+                </div>
+                <div class="four wide column">
+
+                </div>
+                <div class="two wide wide column">
+
+                </div>
             </div>
             <div class="ui two columns grid">
                 <!-- Player edit field -->
                 <div class="column">
-                    <div class="ui form" id="sim-editor">
+                    <div class="ui form" id="player-editor">
 
                     </div>
                 </div>
                 <!-- Player list -->
                 <div class="column">
                     <div class="ui grid">
-                        <div class="css-small-row row">
+                        <div class="row">
                             <div class="four wide column">
-                                <button class="ui fluid basic icon button" data-position="bottom center" data-tooltip="Copy current" id="sim-copy"><i class="outline copy icon"></i> 1</button>
+                                <button class="ui fluid small button" type="submit" id="add-player">Add</button>
                             </div>
-                            <div class="twelve wide column">
-                                Right click on a player to mark him as inactive<br/>(Reduces health to 50%)
+                            <div class="four wide column">
+                                <button class="ui fluid small button" type="submit" id="save-player">Save</button>
+                            </div>
+                            <div class="eight wide column">
+                                <button class="ui small basic icon right floated button" data-position="bottom center" data-tooltip="Gladiator will be set to 15 regardless of your settings" id="gladiator-mode"><i class="bolt icon"></i></button>
                             </div>
                         </div>
                         <div class="css-small-row row">
                             <div class="four wide column">
-                                <button class="ui fluid button" type="submit" id="sim-save">Save</button>
+                                <div class="ui small basic icon fluid two buttons">
+                                    <button class="ui button" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="paste-mode"><i class="paste icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy everyone" id="copy-all"><i class="copy icon"></i> All</button>
+                                </div>
                             </div>
-                            <div class="four wide column">
+                            <div class="seven wide column">
                                 <div class="ui small form">
-                                    <div class="field" data-tooltip="Amount of threads. Using more threads will improve the accuracy. Each thread equals to 5000 iterations.">
-                                        <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                    <div class="two fields">
+                                        <div class="field" data-position="bottom center" data-tooltip="Simulator threads. Keep this number BELOW your processor core count!">
+                                            <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                        </div>
+                                        <div class="field" data-position="bottom center" data-tooltip="Amount of iterations per thread.">
+                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="four wide column">
-                                <button class="ui fluid button" type="submit" id="sim-run">Simulate</button>
+                            <div class="five wide column">
+                                <button class="ui fluid small button" type="submit" id="simulate">Simulate</button>
                             </div>
-                            <div class="four wide column">
-                                <div class="ui small form">
-                                    <input class="text-center fluid" disabled type="text" id="sim-results" value="">
+                        </div>
+                        <div class="css-small-row row">
+                            <div class="sixteen wide column">
+                                <div class="ui basic fluid two buttons">
+                                    <div class="ui button" data-guild="0">Guild A</div>
+                                    <div class="ui button" data-guild="1">Guild B</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row middle aligned">
-                            <div class="two wide column">
-                                <button class="ui tiny basic icon button" type="submit" id="sim-add1" data-position="bottom center" data-tooltip="Add to guild A"><i class="arrow right icon"></i></button>
-                            </div>
-                            <div class="four wide column">
-                                <h3 class="ui text-center header">Guild A</h3>
-                            </div>
-                            <div class="two wide column">
-                                <button class="ui tiny basic icon button" data-position="bottom center" data-tooltip="Copy" id="sim-copyall1"><i class="copy icon"></i></button>
-                            </div>
-                            <div class="two wide column">
-                                <button class="ui tiny basic icon button" type="submit" id="sim-add2" data-position="bottom center" data-tooltip="Add to guild B"><i class="arrow right icon"></i></button>
-                            </div>
-                            <div class="four wide column">
-                                <h3 class="ui text-center header">Guild B</h3>
-                            </div>
-                            <div class="two wide column">
-                                <button class="ui tiny basic icon button" data-position="bottom center" data-tooltip="Copy" id="sim-copyall2"><i class="copy icon"></i></button>
-                            </div>
-                        </div>
-                        <div class="row padding-none">
-                            <div class="two wide text-center column">
-                                Class
-                            </div>
-                            <div class="two wide column">
-                                Level
-                            </div>
-                            <div class="three wide column">
-                                Name
-                            </div>
-                            <div class="one wide column">
+                        <div class="css-small-row row results" style="display: none;">
 
-                            </div>
-                            <div class="two wide text-center column">
+                        </div>
+                        <div class="row selectable-header">
+                            <div class="three wide text-center column">
                                 Class
                             </div>
                             <div class="two wide column">
                                 Level
                             </div>
-                            <div class="three wide column">
+                            <div class="ten wide column">
                                 Name
                             </div>
                             <div class="one wide column">
@@ -180,13 +139,8 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="eight wide column">
-                                <div class="ui middle aligned grid" id="sim-players1">
-
-                                </div>
-                            </div>
-                            <div class="eight wide column">
-                                <div class="ui middle aligned grid" id="sim-players2">
+                            <div class="sixteen wide column">
+                                <div class="ui middle aligned grid" id="sim-players">
 
                                 </div>
                             </div>
@@ -197,325 +151,366 @@
         </div>
 
         <script type="text/javascript">
-            $('#sim-threads').captiveInputField('guild_sim/threads', 4, v => !isNaN(v) && v >= 1);
-
-            let editor = new Editor($('#sim-editor'));
-
-            $('#sim-editor input').on('paste', function (event) {
-                event.stopPropagation();
-            });
-
-            var players1 = [];
-            var players2 = [];
-
-            var selected = -1;
-            var iterator = 0;
-
-            var pasteTarget = 0;
-
-            $(document.body).on('paste', event => handlePasteEvent(event, pasteTarget));
-
-            $('#sim-players1').on('click', () => {
-                pasteTarget = 0;
-            });
-
-            $('#sim-players2').on('click', () => {
-                pasteTarget = 1;
-            });
-
-            function handlePasteEvent (event, id) {
-                try {
-                    var data = JSON.parse(event.originalEvent.clipboardData.getData('text'));
-                    if (Array.isArray(data)) {
-                        if (id == 0) {
-                            players1 = [];
-                        } else {
-                            players2 = [];
-                        }
-
-                        var players = id == 0 ? players1 : players2;
-
-                        for (var d of data) {
-                            if (d.Class) {
-                                SFItem.forceCorrectRune(d.Items.Wpn1);
-                                SFItem.forceCorrectRune(d.Items.Wpn2);
-
-                                if (d.Class == 1 && typeof d.BlockChance == 'undefined') d.BlockChance = d.Items.Wpn2.DamageMin;
-                                if (d.Class != 4) {
-                                    d.Items.Wpn2 = SFItem.empty();
-                                }
-
-                                players.push({
-                                    player: mergeSoft(new SFPlayer(), d),
-                                    index: iterator++
-                                });
-                            } else {
-                                var obj = d.own ? new SFOwnPlayer(d) : new SFOtherPlayer(d);
-
-                                SFItem.forceCorrectRune(obj.Items.Wpn1);
-                                SFItem.forceCorrectRune(obj.Items.Wpn2);
-
-                                if (obj.Class == 1 && typeof obj.BlockChance == 'undefined') obj.BlockChance = obj.Items.Wpn2.DamageMin;
-                                if (obj.Class != 4) {
-                                    obj.Items.Wpn2 = SFItem.empty();
-                                }
-
-                                players.push({
-                                    player: mergeSoft(new SFPlayer(), obj),
-                                    index: iterator++
-                                });
-                            }
-                        }
-
-                        show();
-                    } else if (data.Class || data.save) {
-                        var obj = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
-
-                        SFItem.forceCorrectRune(obj.Items.Wpn1);
-                        SFItem.forceCorrectRune(obj.Items.Wpn2);
-
-                        if (obj.Class == 1 && typeof obj.BlockChance == 'undefined') obj.BlockChance = obj.Items.Wpn2.DamageMin;
-                        if (obj.Class != 4) {
-                            obj.Items.Wpn2 = SFItem.empty();
-                        }
-
-                        editor.fill(obj);
-                    }
-                } catch (e) {
-                    console.info(e);
-                }
-            }
-
-            $('#sim-save').click(function () {
-                if (editor.valid()) {
-                    if (selected != -1) {
-                        var index = players1.findIndex(p => p.index == selected);
-                        if (index != -1) {
-                            players1[index].player = editor.read();
-                        } else {
-                            index = players2.findIndex(p => p.index == selected);
-                            if (index != -1) {
-                                players2[index].player = editor.read();
-                            }
-                        }
-
-                        show();
-                    }
-                }
-            });
-
-            $('#sim-copy').click(function () {
-                copyText(JSON.stringify(editor.read()));
-            });
-
-            function copyPlayers (players) {
-                copyText(JSON.stringify(players.map(p => {
-                    let m = toSimulatorModel(p.player);
-                    if (p.player.Class == 1 && typeof p.player.BlockChance != 'undefined') {
-                        m.BlockChance = p.player.BlockChance;
-                    }
-
-                    return m;
-                })));
-            }
-
-            $('#sim-copyall1').click(() => copyPlayers(players1));
-            $('#sim-copyall2').click(() => copyPlayers(players2));
-
-            $('#sim-add1').click(function () {
-                if (editor.valid()) {
-                    var player = editor.read();
-
-                    if (player.Name == '') {
-                        player.Name = `Player ${ players1.length + 1 }`;
-                    }
-
-                    selected = iterator++;
-
-                    players1.push({
-                        player: player,
-                        index: selected
-                    });
-
-                    editor.clear();
-                    show();
-                }
-            });
-
-            $('#sim-add2').click(function () {
-                if (editor.valid()) {
-                    var player = editor.read();
-
-                    if (player.Name == '') {
-                        player.Name = `Player ${ players2.length + 1 }`;
-                    }
-
-                    selected = iterator++;
-
-                    players2.push({
-                        player: player,
-                        index: selected
-                    });
-
-                    editor.clear();
-                    show();
-                }
-            });
-
-            function show () {
-                players1.sort((a, b) => b.player.Level - a.player.Level);
-                players2.sort((a, b) => b.player.Level - a.player.Level);
-
-                var content1 = '';
-                var content2 = '';
-
-                for (var i = 0; i < players1.length; i++) {
-                    var player = players1[i].player;
-                    var index = players1[i].index;
-
-                    content1 += `
-                        <div class="row selectable ${ index == selected ? 'selected' : 'nselected' }" data-index="${ index }">
-                            <div class="player-index">${ i + 1 }</div>
-                            <div class="four wide text-center column">
-                                <img class="ui medium centered image ${ players1[i].Inactive ? 'inactive' : '' }" style="width: 50px;" src="res/class${ player.Class }.png">
-                                ${ player.Class == 8 && player.Mask > 0 ? `<img class="ui image ${ players1[i].Inactive ? 'inactive' : '' }" src="res/mask${ player.Mask }.png" style="position: absolute; right: 0.75em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
-                                ${ player.Class == 9 ? `<img class="ui image ${ players1[i].Inactive ? 'inactive' : '' }" src="res/instrument${ player.Instrument }.png" style="position: absolute; right: 0.75em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
-                            </div>
-                            <div class="three wide text-center column">
-                                <b>${ player.Level }</b>
-                            </div>
-                            <div class="one wide column"></div>
-                            <div class="six wide column">
-                                <b>${ player.Name }</b>
-                            </div>
-                            <div class="two wide text-center column">
-                                <i class="trash right aligned alternate glow outline icon" data-index-trash="${ index }"></i>
-                            </div>
-                        </div>
-                    `;
+            window.addEventListener('load', function () {
+                function validateLists () {
+                    return playerList[0].length > 0 && playerList[1].length > 0;
                 }
 
-                for (var i = 0; i < players2.length; i++) {
-                    var player = players2[i].player;
-                    var index = players2[i].index;
-
-                    content2 += `
-                        <div class="row selectable ${ index == selected ? 'selected' : 'nselected' }" data-index="${ index }">
-                            <div class="player-index">${ i + 1 }</div>
-                            <div class="four wide text-center column">
-                                <img class="ui medium centered image ${ players2[i].Inactive ? 'inactive' : '' }" style="width: 50px;" src="res/class${ player.Class }.png">
-                                ${ player.Class == 8 && player.Mask > 0 ? `<img class="ui image ${ players2[i].Inactive ? 'inactive' : '' }" src="res/mask${ player.Mask }.png" style="position: absolute; right: 0.75em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
-                                ${ player.Class == 9 && player.Instrument > 0 ? `<img class="ui image ${ players2[i].Inactive ? 'inactive' : '' }" src="res/instrument${ player.Instrument }.png" style="position: absolute; right: 0.75em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
-                            </div>
-                            <div class="three wide text-center column">
-                                <b>${ player.Level }</b>
-                            </div>
-                            <div class="one wide column"></div>
-                            <div class="six wide column">
-                                <b>${ player.Name }</b>
-                            </div>
-                            <div class="two wide text-center column">
-                                <i class="trash right aligned alternate glow outline icon" data-index-trash="${ index }"></i>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                $('#sim-players1').html(content1);
-                $('#sim-players2').html(content2);
-
-                $('[data-index]').click(function () {
-                    selected = Number($(this).attr('data-index'));
-
-                    var obj = players1.find(p => p.index == selected);
-                    if (obj) {
-                        editor.fill(obj.player);
-                        show();
+                // Handle simulate button validation
+                let $simulateButton = $('#simulate');
+                function updateSimulateButton () {
+                    if (validateLists()) {
+                        $simulateButton.removeClass('disabled');
                     } else {
-                        obj = players2.find(p => p.index == selected);
-                        if (obj) {
-                            editor.fill(obj.player);
-                            show();
-                        }
+                        $simulateButton.addClass('disabled');
                     }
+                }
+
+                // Handle save button
+                let $saveButton = $('#save-player');
+                function updateSaveButton () {
+                    $saveButton.toggle(playerCurrentIndex != -1)
+                }
+
+                // List of players
+                let playerList = [[], []];
+                let playerIndex = 0;
+
+                // Tracks currently selected player
+                let playerCurrentIndex = -1;
+                updateSaveButton();
+
+                // Editor configuration
+                let playerEditor = new Editor('#player-editor');
+
+                let currentList = 0;
+                $('[data-guild]').click(({ currentTarget }) => {
+                    currentList = parseInt(currentTarget.dataset.guild);
+
+                    document.querySelector(`[data-guild]:not([data-guild="${currentList}"])`).classList.remove('active-guild');
+                    currentTarget.classList.add('active-guild');
+
+                    playerEditor.clear();
+                    playerCurrentIndex = -1;
+
+                    updateSaveButton();
+                    updatePlayerList();
+                }).first().click();
+
+                // Captive inputs
+                $('#sim-threads').captiveInputField('guild_sim/threads', 4, v => !isNaN(v) && v >= 1);
+                $('#sim-iterations').captiveInputField('guild_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
+
+                // Prevent paste inside inputs from trying to load data
+                $('#player-editor input').on('paste', function (event) {
+                    event.stopPropagation();
                 });
 
-                $('[data-index]').contextmenu(function () {
+                // Paste mode toggle button
+                let pasteMode = false;
+                $('#paste-mode').toggleButton(active => pasteMode = active);
+
+                // Gladiator mode toggle button
+                let gladiatorMode = false;
+                $('#gladiator-mode').captiveToggleButton('guild_sim/gladiator', active => {
+                    gladiatorMode = active;
+                })
+
+                // Paste handler
+                $(document.body).on('paste', function (event) {
+                    try {
+                        let pasteData = event.originalEvent.clipboardData.getData('text');
+                        let pasteJson = JSON.parse(pasteData);
+
+                        handlePaste(pasteJson);
+                    } catch (e) {
+                        console.info(e);
+                    }
+                }).on('dragover dragenter', function (event) {
                     event.preventDefault();
+                    event.stopPropagation();
+                }).on('drop', async function (event) {
+                    // Handle drag & drop in case we want to paste data via preset file
+                    if (_dig(event, 'originalEvent', 'dataTransfer', 'files', 0, 'type') == 'text/plain') {
+                        event.preventDefault();
+                        event.stopPropagation();
 
-                    var sel = Number($(this).attr('data-index'));
+                        try {
+                            let pasteData = await event.originalEvent.dataTransfer.files[0].text();
+                            let pasteJson = JSON.parse(pasteData);
 
-                    var obj = players1.find(p => p.index == sel);
-                    if (!obj) {
-                        obj = players2.find(p => p.index == sel);
-                    }
-
-                    if (obj) {
-                        obj.Inactive = !obj.Inactive;
-                        show();
-                    }
-                });
-
-                $('[data-index-trash]').click(function () {
-                    var sel = Number($(this).attr('data-index-trash'));
-
-                    if (sel == selected) {
-                        selected = -1;
-                        editor.clear();
-                    }
-
-                    var obj = players1.findIndex(p => p.index == sel);
-                    if (obj >= 0) {
-                        players1.splice(obj, 1);
-                    } else {
-                        obj = players2.findIndex(p => p.index == sel);
-                        if (obj >= 0) {
-                            players2.splice(obj, 1);
+                            handlePaste(pasteJson);
+                        } catch (e) {
+                            console.info(e);
                         }
                     }
-
-                    show();
                 });
-            }
 
-            // Run simulation
-            $('#sim-run').click(async function () {
-                if (players1.length > 0 && players2.length > 0) {
-                    $('#sim-results').val('');
+                // Paste handler
+                function preparePlayerData (data) {
+                    let object = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
 
-                    LoaderPopup.toggle(true);
+                    SFItem.forceCorrectRune(object.Items.Wpn1);
+                    SFItem.forceCorrectRune(object.Items.Wpn2);
 
-                    for (let p of players1) p.player.NoGladiatorReduction = true;
-                    for (let p of players2) p.player.NoGladiatorReduction = true;
+                    if (object.Class == 1 && typeof object.BlockChance == 'undefined') {
+                        object.BlockChance = object.Items.Wpn2.DamageMin;
+                    }
 
-                    var threads = Number($('#sim-threads').val()) || 4;
+                    if (object.Class != 4) {
+                        object.Items.Wpn2 = SFItem.empty();
+                    }
 
-                    var finished = 0;
-                    var chance = 0;
+                    return object;
+                }
 
-                    for (var i = 0; i < threads; i++) {
-                        var worker = await createSimulatorWorker('players');
+                function handlePaste (data) {
+                    if (Array.isArray(data)) {
+                        if (pasteMode == false) {
+                            playerList[currentList] = [];
 
-                        worker.addEventListener('message', function (message) {
-                            if (message.data.command == 'finished') {
-                                finished += 1;
-                                chance += message.data.results;
+                            playerEditor.clear();
 
-                                if (finished == threads) {
-                                    LoaderPopup.toggle(false);
-                                    $('#sim-results').val((chance / threads).toFixed(2) + '%');
-                                }
-                            }
-                        }, false);
+                            playerCurrentIndex = -1;
+                            updateSaveButton();
+                        }
 
-                        worker.postMessage({
-                            mode: 'guilds',
-                            player: players1,
-                            players: players2,
-                            iterations: 5000
-                        });
+                        for (let entry of data) {
+                            playerList[currentList].push({
+                                player: mergeSoft(new SFPlayer(), preparePlayerData(entry)),
+                                inactive: false,
+                                index: playerIndex++
+                            })
+                        }
+
+                        updatePlayerList();
+                    } else if (data.Class || data.save) {
+                        playerEditor.fill(preparePlayerData(data));
                     }
                 }
+
+                $('#copy-all').click(function () {
+                    copyText(JSON.stringify(playerList[currentList].map(({ player }) => {
+                        let model = toSimulatorModel(player);
+                        if (player.Class == 1 && typeof player.BlockChance != 'undefined') {
+                            model.BlockChance = player.BlockChance;
+                        }
+
+                        return model;
+                    })));
+                })
+
+                // Add methods
+                function addPlayer () {
+                    let player = playerEditor.read();
+                    if (player.Name == '') {
+                        player.Name = `Player ${playerList[currentList].length + 1}`;
+                    }
+
+                    playerList[currentList].unshift({
+                        player: player,
+                        inactive: false,
+                        index: playerIndex++
+                    })
+
+                    playerCurrentIndex = -1;
+                    updateSaveButton();
+
+                    playerEditor.clear();
+                }
+
+                $('#add-player').click(function () {
+                    if (playerEditor.valid()) {
+                        addPlayer();
+                        updatePlayerList();
+                    }
+                })
+
+                // Save methods
+                $saveButton.click(function () {
+                    if (playerEditor.valid()) {
+                        if (playerCurrentIndex != -1) {
+                            let index = playerList[currentList].findIndex(entry => entry.index == playerCurrentIndex);
+                            if (index != -1) {
+                                playerList[currentList][index].player = playerEditor.read()
+                            }
+                        } else {
+                            addPlayer();
+                        }
+
+                        updatePlayerList();
+                    }
+                })
+
+                // Display methods
+                function updatePlayerList () {
+                    updateSimulateButton();
+
+                    let content = ''
+                    for (let i = 0; i < playerList[currentList].length; i++) {
+                        let {player, index, inactive} = playerList[currentList][i];
+
+                        content += `
+                            <div class="row selectable ${ index == playerCurrentIndex ? 'selected' : 'nselected' } ${ inactive ? 'inactive' : '' }" data-index="${ index }">
+                                <div class="player-index">${ i + 1 }</div>
+                                <div class="three wide text-center column">
+                                    <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
+                                    ${ player.Class == 8 && player.Mask > 0 ? `<img class="ui image" src="res/mask${ player.Mask }.png" style="position: absolute; right: 2em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
+                                    ${ player.Class == 9 ? `<img class="ui image" src="res/instrument${ player.Instrument }.png" style="position: absolute; right: 2em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
+                                </div>
+                                <div class="two wide column">
+                                    <b>${ player.Level }</b>
+                                </div>
+                                <div class="nine wide column">
+                                    <b>${ player.Name }${ inactive ? ' (Inactive)' : '' }</b>
+                                </div>
+                                <div class="one wide text-center column">
+                                    <i class="calendar times outline right aligned glow-y icon" data-inactive="${ index }"></i>
+                                </div>
+                                <div class="one wide text-center column">
+                                    <i class="trash right aligned alternate glow outline icon" data-trash="${ index }"></i>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    $('#sim-players').html(content);
+
+                    $('[data-index]').click(function () {
+                        playerCurrentIndex = parseInt(this.dataset.index);
+                        updateSaveButton();
+
+                        playerEditor.fill(playerList[currentList].find(entry => entry.index == playerCurrentIndex).player);
+
+                        updatePlayerList();
+                    })
+
+                    $('[data-inactive]').click(function () {
+                        let index = parseInt(this.dataset.inactive);
+
+                        let listIndex = playerList[currentList].findIndex(entry => entry.index == index);
+                        if (listIndex != -1) {
+                            playerList[currentList][listIndex].inactive = !playerList[currentList][listIndex].inactive;
+                        }
+
+                        updatePlayerList();
+
+                        return false;
+                    })
+
+                    $('[data-trash]').click(function () {
+                        let index = parseInt(this.dataset.trash);
+                        if (index == playerCurrentIndex) {
+                            playerEditor.clear();
+
+                            playerCurrentIndex = -1;
+                            updateSaveButton();
+                        }
+
+                        let listIndex = playerList[currentList].findIndex(entry => entry.index == index);
+                        if (listIndex != -1) {
+                            playerList[currentList].splice(listIndex, 1);
+                        }
+
+                        updatePlayerList();
+
+                        return false;
+                    });
+                }
+
+                function displayResults (results, iterations) {
+                    let score = 100 * _msum(results, r => r.score) / iterations;
+
+                    $('div.row.results').html(`
+                        <div class="sixteen wide column" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
+                            <div style="flex: 1 1 50%; margin: 0.5em;">
+                                <h3 class="ui centered header" style="margin-top: 0em;">
+                                    <span>${score.toFixed(2)}%</span>
+                                </h3>
+                            </div>
+                            <div style="flex: 1 1 50%; margin: 0.5em;">
+                                <h3 class="ui centered header" style="margin-top: 0em;">
+                                    <span>${(100 - score).toFixed(2)}%</span>
+                                </h3>
+                            </div>
+                        </div>
+                    `).show();
+                }
+
+                StatisticsIntegration.configure(
+                    HYDRA_PROFILE,
+                    'Poll saved guilds',
+                    'dungeons',
+                    function ($statsList) {
+                        let groups = Object.values(DatabaseManager.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MemberCount == gi.MembersPresent)[0])
+                        for (let group of _compact(groups).sort((a, b) => b.Timestamp - a.Timestamp)) {
+                            $statsList.append($(`
+                                <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
+                                    <div class="visible content">
+                                        <span style="color: black;">${ group.Name } @ ${ group.Prefix }<span>
+                                    </div>
+                                    <div class="hidden content">
+                                        <span style="color: black;">${ formatDate(group.Timestamp) }<span>
+                                    </div>
+                                </div>
+                                `).click(() => {
+                                    playerEditor.clear();
+                                    playerCurrentIndex = -1;
+                                    updateSaveButton();
+
+                                    playerList[currentList] = group.Members.map(memberId => {
+                                        return {
+                                            player: DatabaseManager.getPlayer(memberId, group.Timestamp).toSimulatorModel(),
+                                            inactive: false,
+                                            index: playerIndex++
+                                        };
+                                    })
+
+                                    updatePlayerList();
+                                }
+                            ));
+                        }
+                    }
+                );
+
+                $('#simulate').click(async function () {
+                    if (validateLists()) {
+                        LoaderPopup.toggle(true);
+
+                        for (let player of playerList[0]) player.ForceGladiator = gladiatorMode ? 15 : undefined;
+                        for (let player of playerList[1]) player.ForceGladiator = gladiatorMode ? 15 : undefined;
+
+                        // Set up threads & iterations
+                        let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
+                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
+
+                        Toast.info('Starting simulation', `<b>Iterations:</b> ${iterations}<br/><b>Thread cnt:</b> ${blocks}`);
+
+                        let blocksResults = [];
+
+                        for (let i = 0; i < blocks; i++) {
+                            let worker = await createSimulatorWorker('guilds');
+
+                            worker.addEventListener('message', function ({ data: { results, time }}) {
+                                blocksResults.push(results);
+
+                                Toast.info(`Simulation thread ${blocksResults.length} / ${blocks} finished`, `<b>Time:</b> ${time / 1000} seconds`);
+
+                                if (blocksResults.length == blocks) {
+                                    displayResults(blocksResults, blocks * iterations);
+
+                                    LoaderPopup.toggle(false);
+                                }
+                            }, false);
+
+                            worker.postMessage({
+                                guildA: playerList[0],
+                                guildB: playerList[1],
+                                iterations: iterations
+                            })
+                        }
+                    }
+                })
             });
         </script>
     </body>

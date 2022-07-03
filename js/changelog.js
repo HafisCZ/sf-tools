@@ -7,7 +7,11 @@ const CHANGELOG = {
             'Added best pets for each class to simulate all'
         ],
         'Fight Simulator': [
-            'Added inverse of One vs. All mode'
+            'Added inverse of One vs. All mode',
+            'Set adding new players to be at the top of the player list'
+        ],
+        'Guild Simulator': [
+            'Reworked simulator'
         ]
     },
     'v5.2250': {

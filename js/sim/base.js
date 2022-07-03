@@ -212,8 +212,9 @@ class FighterModel {
             var c = 1 + this.Player.Runes.Health / 100;
             var d = this.Player.Level + 1;
             var e = this.getHealthMultiplier();
+            var f = (typeof this.Player.ForceHealthMultiplier === 'undefined' ? 1 : this.Player.ForceHealthMultiplier);
 
-            return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(this.Player.Constitution.Total * a) * b) * c) * d) * e);
+            return Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(Math.ceil(this.Player.Constitution.Total * a) * b) * c) * d) * e) * f);
         }
     }
 

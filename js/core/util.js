@@ -140,6 +140,10 @@ function _sum (array, base = 0) {
     return array.reduce((m, v) => m + v, base);
 }
 
+function _msum(array, map, base = 0) {
+    return array.reduce((m, v) => m + map(v), base);
+}
+
 function _slice_len (array, begin, len) {
     return array.slice(begin, begin + len);
 }
