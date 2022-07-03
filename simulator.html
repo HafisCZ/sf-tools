@@ -473,7 +473,7 @@
                 }
 
                 selected = iterator++;
-                players.push({
+                players.unshift({
                    player: player,
                    score: null,
                    index: selected
@@ -485,11 +485,11 @@
             }
 
             function insertPlayer (player) {
-                players.push({
+                players.unshift({
                     player: player,
                     score: null,
                     index: selected = iterator++
-                });
+                })
 
                 editor.clear();
 
