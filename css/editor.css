@@ -44,6 +44,10 @@ div.morph .menu {
     width: 12rem;
 }
 
+div.right.action div.buttons {
+    border-radius: 0 .28571429rem .28571429rem 0;
+}
+
 div.morph div.disabled.item {
     opacity: 1 !important;
     font-weight: bold !important;

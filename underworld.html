@@ -101,14 +101,13 @@
                             </div>
                         </div>
                         <div class="css-small-row row">
-                            <div class="six wide column">
-                                <div class="ui small basic icon fluid three buttons">
+                            <div class="four wide column">
+                                <div class="ui small basic icon fluid two buttons">
                                     <button class="ui button" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="paste-mode"><i class="paste icon"></i></button>
-                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy current" id="copy-current"><i class="outline copy icon"></i> 1</button>
                                     <button class="ui button" data-position="bottom center" data-tooltip="Copy everyone" id="copy-all"><i class="copy icon"></i> All</button>
                                 </div>
                             </div>
-                            <div class="five wide column">
+                            <div class="seven wide column">
                                 <div class="ui small form">
                                     <div class="two fields">
                                         <div class="field" data-position="bottom center" data-tooltip="Simulator threads. Keep this number BELOW your processor core count!">
@@ -364,11 +363,6 @@
                         playerEditor.fill(preparePlayerData(data));
                     }
                 }
-
-                // Copy methods
-                $('#copy-current').click(function () {
-                    copyText(JSON.stringify(playerEditor.read()));
-                });
 
                 $('#copy-all').click(function () {
                     copyText(JSON.stringify(playerList.map(({ player }) => {

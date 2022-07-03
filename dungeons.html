@@ -73,10 +73,7 @@
                 <div class="column">
                     <div class="ui grid">
                         <div class="row">
-                            <div class="three wide column">
-                                <button class="ui fluid basic icon button" data-position="bottom center" data-tooltip="Copy current" id="sim-copyCurrent"><i class="outline copy icon"></i> 1</button>
-                            </div>
-                            <div class="five wide column">
+                            <div class="six wide column">
                                 <div class="ui small form">
                                     <div class="two fields">
                                         <div class="field" data-position="bottom center" data-tooltip="Simulator threads. Keep this number BELOW your processor core count!">
@@ -89,10 +86,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="six wide column">
+                            <div class="five wide column">
                                 <button class="ui fluid button" type="submit" id="sim-run">Simulate</button>
                             </div>
-                            <div class="two wide column" style="padding-left: 0;">
+                            <div class="five wide column" style="padding-left: 0;">
                                 <button class="ui fluid button disabled" type="submit" id="sim-run-all">All</button>
                             </div>
                         </div>
@@ -475,9 +472,6 @@
                         players[selected] = obj;
                     }
                 }
-
-                // Copy buttons
-                $('#sim-copyCurrent').click(() => copyText(JSON.stringify(editor.read())));
 
                 // Show fighters
                 function show () {

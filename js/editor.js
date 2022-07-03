@@ -425,15 +425,18 @@ class Editor {
             ]
         }).dropdown('set selected', 'false');
 
+        // Copy
+        $('div.copy-current').click(() => copyText(JSON.stringify(this.read())));
+
         // Morph
         this.morph = new (class extends Field {
             show (val) {
                 if (val) {
-                    this.$object.parent('div').addClass('icon right action');
+                    this.$object.parent().find('.copy-current').css('border-left', '');
                     this.$object.show();
                 } else {
                     this.$object.hide();
-                    this.$object.parent('div').removeClass('icon right action');
+                    this.$object.parent().find('.copy-current').css('border-left', 'none');
                 }
             }
         })('div.morph', '');
@@ -515,8 +518,13 @@ class Editor {
                     <div class="ui icon right action input">
                         <input class="text-center" type="text" data-path="Name">
                         <input type="hidden" data-path="Prefix">
-                        <div class="ui icon top right pointing basic dropdown button morph">
-                            <i class="exchange link icon"></i>
+                        <div class="ui icon basic buttons">
+                            <div class="ui top right pointing dropdown button morph">
+                                <i class="exchange link icon"></i>
+                            </div>
+                            <div class="ui button copy-current" data-position="right center" data-tooltip="Copy">
+                                <i class="outline copy link icon"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
