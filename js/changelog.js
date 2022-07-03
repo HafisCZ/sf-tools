@@ -1,11 +1,13 @@
 const CHANGELOG = {
     'v5.XXXX': {
         'Statistics': [
-            'Fixed gladiator for built-in simulator',
-            'Fixed browser freezing when running built-in simulator'
+            'Fixed gladiator for built-in simulator'
         ],
         'Pet Simulator': [
             'Added best pets for each class to simulate all'
+        ],
+        'Fight Simulator': [
+            'Added inverse of One vs. All mode'
         ]
     },
     'v5.2250': {
