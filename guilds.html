@@ -278,7 +278,7 @@
                         for (let entry of data) {
                             playerList[currentList].push({
                                 player: mergeSoft(new SFPlayer(), preparePlayerData(entry)),
-                                inactive: false,
+                                inactive: 0,
                                 index: playerIndex++
                             })
                         }
@@ -309,7 +309,7 @@
 
                     playerList[currentList].unshift({
                         player: player,
-                        inactive: false,
+                        inactive: 0,
                         index: playerIndex++
                     })
 
@@ -351,7 +351,7 @@
                         let {player, index, inactive} = playerList[currentList][i];
 
                         content += `
-                            <div class="row selectable ${ index == playerCurrentIndex ? 'selected' : 'nselected' } ${ inactive ? 'inactive' : '' }" data-index="${ index }">
+                            <div class="row selectable ${ index == playerCurrentIndex ? 'selected' : 'nselected' } ${ inactive > 0 ? 'inactive' : '' }" data-index="${ index }">
                                 <div class="player-index">${ i + 1 }</div>
                                 <div class="three wide text-center column">
                                     <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
@@ -362,7 +362,7 @@
                                     <b>${ player.Level }</b>
                                 </div>
                                 <div class="nine wide column">
-                                    <b>${ player.Name }${ inactive ? ' (Inactive)' : '' }</b>
+                                    <b>${ player.Name }${ inactive == 2 ? ' (Inactive 21+ days)' : (inactive == 1 ? ' (Inactive)' : '') }</b>
                                 </div>
                                 <div class="one wide text-center column">
                                     <i class="calendar times outline right aligned glow-y icon" data-inactive="${ index }"></i>
@@ -390,7 +390,18 @@
 
                         let listIndex = playerList[currentList].findIndex(entry => entry.index == index);
                         if (listIndex != -1) {
-                            playerList[currentList][listIndex].inactive = !playerList[currentList][listIndex].inactive;
+                            playerList[currentList][listIndex].inactive = ++playerList[currentList][listIndex].inactive % 3;
+                        }
+
+                        updatePlayerList();
+
+                        return false;
+                    }).contextmenu(function () {
+                        let index = parseInt(this.dataset.inactive);
+
+                        let listIndex = playerList[currentList].findIndex(entry => entry.index == index);
+                        if (listIndex != -1) {
+                            playerList[currentList][listIndex].inactive = 0;
                         }
 
                         updatePlayerList();
@@ -461,7 +472,7 @@
                                     playerList[currentList] = group.Members.map(memberId => {
                                         return {
                                             player: DatabaseManager.getPlayer(memberId, group.Timestamp).toSimulatorModel(),
-                                            inactive: false,
+                                            inactive: 0,
                                             index: playerIndex++
                                         };
                                     })

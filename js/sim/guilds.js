@@ -40,9 +40,12 @@ class GuildSimulator extends SimulatorBase {
     cache (guild, index) {
         return guild.map(({ player, inactive }) => {
             let model = FighterModel.create(index, player);
-            if (inactive) {
+            if (inactive == 1) {
                 // Inactive players have their HP reduced by 50%
                 model.Player.ForceHealthMultiplier = 0.5;
+            } else if (inactive == 2) {
+                // Inactive players beyond 21 days have their HP reduced by 90%
+                model.Player.ForceHealthMultiplier = 0.1;
             }
 
             return model;
