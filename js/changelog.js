@@ -1,4 +1,13 @@
 const CHANGELOG = {
+    'v5.XXXX': {
+        'Statistics': [
+            'Fixed gladiator for built-in simulator',
+            'Fixed browser freezing when running built-in simulator'
+        ],
+        'Pet Simulator': [
+            'Added best pets for each class to simulate all'
+        ]
+    },
     'v5.2250': {
         'Statistics': [
             'Added toast message when database is being updated',

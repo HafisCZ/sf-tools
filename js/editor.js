@@ -243,6 +243,8 @@ class Editor {
     _bind () {
         this.fields = {
             name: new Field('[data-path="Name"]', ''),
+            prefix: new Field('[data-path="Prefix"]', ''),
+
             class: new Field('[data-path="Class"]', '1'),
             mask: new Field('[data-path="Mask"]', '0'),
             instrument: new Field('[data-path="Instrument"]', '0'),
@@ -512,6 +514,7 @@ class Editor {
                     <label>Name</label>
                     <div class="ui icon right action input">
                         <input class="text-center" type="text" data-path="Name">
+                        <input type="hidden" data-path="Prefix">
                         <div class="ui icon top right pointing basic dropdown button morph">
                             <i class="exchange link icon"></i>
                         </div>
