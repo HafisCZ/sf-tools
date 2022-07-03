@@ -1,7 +1,7 @@
 // Version stuff
 const MODULE_VERSION = 'v5.2250';
 const TABLE_VERSION = 'v10';
-const CORE_VERSION = 'v3.4';
+const CORE_VERSION = 'v3.5';
 
 const Logger = new (class {
     constructor () {
@@ -14,7 +14,6 @@ const Logger = new (class {
             'PERFLOG': 'ffffff',
             'ECLIENT': 'd142f5',
             'TRACKER': 'c8f542',
-            'MIGRATE': '7a8ccf',
             'ACTIONS': 'eb73c3'
         };
 

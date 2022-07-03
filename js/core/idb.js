@@ -88,19 +88,6 @@ const DATABASE_PARAMS_V5 = [
     ]
 ];
 
-const DATABASE_PARAMS_V1 = [
-    'database',
-    2,
-    {
-        files: {
-            key: 'timestamp'
-        },
-        profiles: {
-            key: 'identifier'
-        }
-    }
-];
-
 function _bindOnSuccessOnError (event, resolve, reject) {
     if (resolve) event.onsuccess = () => resolve(event.result);
     if (reject) event.onerror = () => reject(event.error);
@@ -276,62 +263,8 @@ class MigrationUtils {
 }
 
 class DatabaseUtils {
-    static async migrateable (slot) {
-        DATABASE_PARAMS_V1[0] = DatabaseUtils.getNameFromSlot(slot);
-        return IndexedDBWrapper.exists(... DATABASE_PARAMS_V1);
-    }
-
-    static async createSession(attemptMigration = false) {
-        let database = await new IndexedDBWrapper(... DATABASE_PARAMS_V5).open();
-
-        if (attemptMigration) {
-            LoaderPopup.toggle(false);
-            await PopupController.open(PendingMigrationPopup);
-            LoaderPopup.toggle(true);
-            if (SiteOptions.migration_allowed) {
-                Logger.log('MIGRATE', `Migrating files`);
-
-                let migratedDatabase = await new IndexedDBWrapper(... DATABASE_PARAMS_V1).open();
-                let migratedFiles = await migratedDatabase.where('files');
-
-                for (const file of migratedFiles) {
-                    const version = file.version;
-                    const timestamp = file.timestamp;
-                    const players = file.players.map(p => MigrationUtils.migratePlayer(p, 'migration', timestamp, version));
-                    const groups = file.groups.map(g =>  MigrationUtils.migrateGroup(g, 'migration', timestamp));
-
-                    for (const player of players) {
-                        await database.set('players', player);
-                    }
-
-                    for (const group of groups) {
-                        await database.set('groups', group);
-                    }
-
-                    await database.set('metadata', {
-                        timestamp: parseInt(timestamp),
-                        identifiers: file.players.map(p => p.identifier).concat(file.groups.map(g => g.identifier))
-                    });
-                }
-
-                Logger.log('MIGRATE', `Migrating trackers`);
-                let migratedTrackers = await migratedDatabase.where('profiles');
-                for (let tracker of migratedTrackers) {
-                    await database.set('trackers', tracker);
-                }
-
-                Logger.log('MIGRATE', `Cleaning up database`);
-
-                await migratedDatabase.close();
-                if (SiteOptions.migration_accepted) {
-                    await IndexedDBWrapper.delete(DATABASE_PARAMS_V1[0]);
-                }
-
-                Logger.log('MIGRATE', `All migrations finished`);
-            }
-        }
-
-        return database;
+    static async createSession() {
+        return new IndexedDBWrapper(... DATABASE_PARAMS_V5).open();
     }
 
     static createTemporarySession () {
@@ -694,9 +627,7 @@ const DatabaseManager = new (class {
     }
 
     async _loadDatabase (profile) {
-        const attemptMigration = await DatabaseUtils.migrateable(profile.slot);
-
-        this.Database = await DatabaseUtils.createSession(attemptMigration);
+        this.Database = await DatabaseUtils.createSession();
         if (!this.Database) {
             throw 'Database was not opened correctly';
         }
