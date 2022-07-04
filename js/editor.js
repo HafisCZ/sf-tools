@@ -268,7 +268,7 @@ class Editor {
             dex: new Field('[data-path="Dexterity.Total"]', '', Field.isNonZero),
             int: new Field('[data-path="Intelligence.Total"]', '', Field.isNonZero),
             con: new Field('[data-path="Constitution.Total"]', '', Field.isNonZero),
-            lck: new Field('[data-path="Luck.Total"]', '', Field.isNonZero),
+            lck: new Field('[data-path="Luck.Total"]', '', Field.isNumber),
 
             weapon1_min: new Field('[data-path="Items.Wpn1.DamageMin"]', '', Field.isNumber),
             weapon1_max: new Field('[data-path="Items.Wpn1.DamageMax"]', '', Field.isNumber),
