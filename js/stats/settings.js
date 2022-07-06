@@ -44,6 +44,7 @@ const ARG_FORMATTERS = {
     'date': (p, c, e, x) => isNaN(x) ? undefined : formatDateOnly(x),
     'bool': (p, c, e, x) => x ? 'Yes' : 'No',
     'datetime': (p, c, e, x) => isNaN(x) ? undefined : formatDate(x),
+    'time': (p, c, e, x) => isNaN(x) ? undefined : formatTime(x),
     'duration': (p, c, e, x) => isNaN(x) ? undefined : formatDuration(x),
     'default': (p, c, e, x) => typeof(x) == 'string' ? x : (isNaN(x) ? undefined : (Number.isInteger(x) ? x : x.toFixed(2)))
 }

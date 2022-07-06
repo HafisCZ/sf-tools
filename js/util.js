@@ -17,6 +17,12 @@ function formatDate (date) {
     return trail(date.getDate(), 2) + '.' + trail(date.getMonth() + 1, 2) + '.' + date.getFullYear() + ' ' + trail(date.getHours(), 2) + ':' + trail(date.getMinutes(), 2);
 }
 
+function formatTime (date) {
+    if (date == '' || date == undefined) return '';
+    date = new Date(Math.max(0, Math.min(1e15, date)));
+    return trail(date.getHours(), 2) + ':' + trail(date.getMinutes(), 2);
+}
+
 function copyText (text) {
     const element = document.createElement('textarea');
     element.value = text;

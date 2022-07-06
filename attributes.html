@@ -1359,10 +1359,6 @@
                 return value >= 999 ? formatAsSpacedNumber(value, delimiter) : roundShort(value)
             }
 
-            function formatTime(time) {
-                return Math.trunc(time) + ' hours ' + Math.trunc(60 * (time % 1)) + ' minutes';
-            }
-
             function getExperienceRequired (value) {
                 if (value >= 393) {
                     return 1500000000;

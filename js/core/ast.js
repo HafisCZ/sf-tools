@@ -1233,6 +1233,13 @@ const SP_FUNCTIONS = {
             return formatDate(value);
         }
     },
+    'time': (value) => {
+        if (isNaN(value) || value < 0) {
+            return undefined;
+        } else {
+            return formatTime(value);
+        }
+    },
     // Duration string
     'duration': (value) => {
         if (isNaN(value)) {
