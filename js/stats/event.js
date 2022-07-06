@@ -1389,6 +1389,11 @@ class GroupsView extends View {
     }
 
     show () {
+        let identifiers = Object.keys(DatabaseManager.Groups);
+        if (identifiers.length == 1) {
+            return UI.show(UI.GroupDetail, identifiers[0]);
+        }
+        
         var content = '';
         var content2 = '';
 
@@ -1656,7 +1661,12 @@ class PlayersView extends View {
     }
 
     show () {
-        this.load();
+        let identitifiers = Object.keys(DatabaseManager.Players);
+        if (identitifiers.length == 1) {
+            UI.show(UI.PlayerHistory, identitifiers[0]);
+        } else {
+            this.load();
+        }
     }
 
     refresh () {
