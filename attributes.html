@@ -37,8 +37,12 @@
                 color: purple;
             }
 
-            #floating-opts {
-                position: fixed;
+            .opaque-rows-inverted tr:nth-child(odd) {
+                background-color: #7d7d7d3f;
+            }
+
+            .floating-menu {
+                position: fixed !important;
                 right: 2em;
                 top: 5em;
                 z-index: 99;
@@ -53,6 +57,7 @@
             <a class="item" id="show-attributes">Gold & Experience</a>
             <a class="item" id="show-fortress">Fortress</a>
             <a class="item" id="show-underworld">Underworld</a>
+            <a class="item" id="show-gold-table">Gold Table</a>
         </div>
 
         <div class="ui main container" id="tab-gold-experience">
@@ -379,9 +384,8 @@
                             </div>
                         </div>
                     </div>
-                    <br/>
                     <div class="ui segment">
-                        <h3 class="ui header">Calculate price at</h3>
+                        <h3 class="ui header">Calculate attribute price at</h3>
                         <div class="ui small form">
                             <div class="two fields">
                                 <div class="field">
@@ -396,7 +400,7 @@
                         </div>
                     </div>
                     <div class="ui segment">
-                        <h3 class="ui header">Calculate price between</h3>
+                        <h3 class="ui header">Calculate attribute price between</h3>
                         <div class="ui small form">
                             <div class="three fields">
                                 <div class="field">
@@ -415,31 +419,33 @@
                         </div>
                     </div>
                 </div>
-                <div class="sixteen wide column">
-                    <button class="ui right floated button small" id="copy-table-col" style="margin-bottom: 0.5em; margin-top: -1em; margin-left: 1em;">Copy table (comma)</button>
-                    <button class="ui right floated button small" id="copy-table" style="margin-bottom: 0.5em; margin-top: -1em;">Copy table</button>
-                    <table class="ui celled structured table table-group" id="data-table">
-                        <thead>
-                            <tr>
-                                <td width="150">Attribute / Level</td>
-                                <td width="150">Attribute Price</td>
-                                <td width="150">Gold Curve</td>
-                                <td width="150">Griffin</td>
-                                <td width="150">Guard Duty / Dice (3)</td>
-                            </tr>
-                            <tr>
-                                <td colspan="5" class="border-bottom-thick"></td>
-                            </tr>
-                        </thead>
-                        <tbody id="attribute-prices" class="opaque-rows" style="text-align: center;">
-
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
 
-        <div class="ui blue segment" id="floating-opts">
+        <div class="ui main container" id="tab-gold-table">
+            <div class="ui basic segment">
+                <div class="ui two basic small buttons">
+                    <div class="ui button" id="copy-table"><i class="outline copy link icon"></i> Copy table</div>
+                    <div class="ui button" id="copy-table-col"><i class="outline copy link icon"></i> Copy table (use comma as decimal separator)</div>
+                </div>
+                <table class="ui red single very compact line table text-center" id="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Attribute / Level</th>
+                            <th style="width: 20%;">Attribute Price</th>
+                            <th style="width: 20%;">Gold Curve</th>
+                            <th style="width: 20%;">Griffin</th>
+                            <th style="width: 20%;">Guard Duty / Dice (3)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attribute-prices" class="opaque-rows-inverted">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="ui blue segment floating-menu" id="floating-opts">
             <h3 class="ui header">Character values</h3>
             <div class="ui small form">
                 <div class="field">
@@ -868,13 +874,17 @@
             }
 
             UI.init({
-                GoldExperience: new Tab('tab-gold-experience'),
+                GoldExperience: new Tab('tab-gold-experience', false),
                 Fortress: new Tab('tab-fortress', true),
-                Underworld: new Tab('tab-underworld', true)
+                Underworld: new Tab('tab-underworld', true),
+                GoldTable: new Tab('tab-gold-table', false)
             });
+
             UI.register(UI.GoldExperience, 'show-attributes');
             UI.register(UI.Fortress, 'show-fortress');
             UI.register(UI.Underworld, 'show-underworld');
+            UI.register(UI.GoldTable, 'show-gold-table');
+
             UI.show(UI.GoldExperience);
 
             function updateTimers (lq) {
