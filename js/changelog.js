@@ -1,6 +1,8 @@
 const CHANGELOG = {
     'v5.XXXX': {
         'Statistics': [
+            'Added <code>time</code> format function',
+            'Fixed selection screen appearing for players and guilds when only one exists',
             'Fixed gladiator for built-in simulator'
         ],
         'Pet Simulator': [
@@ -12,6 +14,12 @@ const CHANGELOG = {
         ],
         'Guild Simulator': [
             'Reworked simulator'
+        ],
+        'All Simulators': [
+            'Added support for drag & drop of HAR files'
+        ],
+        'Gold & Experience': [
+            'Moved gold table into separate tab'
         ]
     },
     'v5.2250': {

@@ -231,15 +231,17 @@
                     event.stopPropagation();
                 }).on('drop', async function (event) {
                     // Handle drag & drop in case we want to paste data via preset file
-                    if (_dig(event, 'originalEvent', 'dataTransfer', 'files', 0, 'type') == 'text/plain') {
+                    let contentType = _dig(event, 'originalEvent', 'dataTransfer', 'files', 0, 'type');
+                    if (contentType == 'text/plain' || contentType == '') {
                         event.preventDefault();
                         event.stopPropagation();
 
                         try {
                             let pasteData = await event.originalEvent.dataTransfer.files[0].text();
                             let pasteJson = JSON.parse(pasteData);
+                            let pasteImpl = contentType == 'text/plain' ? pasteJson : DatabaseManager._import_har(pasteJson).players;
 
-                            handlePaste(pasteJson);
+                            handlePaste(pasteImpl);
                         } catch (e) {
                             console.info(e);
                         }
