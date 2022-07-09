@@ -1316,6 +1316,130 @@ const DatabaseManager = new (class {
         return tags;
     }
 
+    _import_har (json, timestamp, offset = -3600000) {
+        let raws = [];
+        let groups = [];
+        let players = [];
+        let currentVersion = undefined;
+
+        for (var [key, val, url, ts] of filterPlayaJSON(json)) {
+            if (ts) {
+                timestamp = ts.getTime();
+                offset = ts.getTimezoneOffset() * 60 * 1000;
+            }
+
+            if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername'))) {
+                var url = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
+                if (url.length > 2) {
+                    raws.push([val, url[1] + '_' + url[2]]);
+                }
+            }
+        }
+
+        for (let [text, prefix] of raws) {
+            const r = PlayaResponse.fromText(text);
+            if ((r.owngroupsave && r.owngrouprank && r.owngroupname && r.owngroupmember) || (r.othergroup && r.othergrouprank && r.othergroupname && r.othergroupmember)) {
+                const data = {
+                    prefix: prefix,
+                    timestamp: timestamp,
+                    offset: offset
+                };
+
+                if (r.owngroupsave && r.owngroupname) {
+                    data.own = true;
+                    data.name = r.owngroupname.string;
+                    data.rank = r.owngrouprank.number;
+                    data.knights = r.owngroupknights.numbers;
+                    data.save = r.owngroupsave.numbers;
+                    data.names = r.owngroupmember.strings;
+                } else {
+                    data.own = false;
+                    data.name = r.othergroupname.string;
+                    data.rank = r.othergrouprank.number;
+                    data.knights = undefined;
+                    data.save = r.othergroup.numbers;
+                    data.names = r.othergroupmember.strings;
+                }
+
+                data.identifier = data.prefix + '_g' + data.save[0]
+
+                if (!groups.find(g => g.identifier === data.identifier)) {
+                    groups.push(data);
+                }
+            }
+
+            if (r.otherplayername || r.ownplayername) {
+                const data = {
+                    prefix: prefix,
+                    timestamp: timestamp,
+                    offset: offset
+                };
+
+                if (r.ownplayername) {
+                    data.own = true;
+                    data.name = r.ownplayername.string;
+                    data.save = r.ownplayersave.numbers;
+                    data.identifier = data.prefix + '_p' + data.save[1];
+                    data.class = data.save[29] % 65536;
+
+                    // Optionals
+                    data.groupname = _try(r.owngroupname, 'string');
+                    data.units = _try(r.unitlevel, 'numbers');
+                    data.achievements = _try(r.achievement, 'numbers');
+                    data.pets = _try(r.ownpets, 'numbers');
+                    data.tower = _try(r.owntower, 'numbers');
+                    data.chest = _try(r.fortresschest, 'numbers');
+                    data.dummy = _try(r.dummies, 'numbers');
+                    data.scrapbook = _try(r.scrapbook, 'string');
+                    data.scrapbook_legendary = _try(r.legendaries, 'string');
+                    data.witch = _try(r.witch, 'numbers');
+                    data.idle = _try(r.idle, 'numbers');
+                    data.calendar = _try(r.calenderinfo, 'numbers');
+
+                    // Post-process
+                    if (data.save[435]) {
+                        data.group = `${data.prefix}_g${data.save[435]}`
+                    }
+
+                    for (const i of [4, 503, 504, 505, 561]) {
+                        data.save[i] = 0;
+                    }
+
+                    // Save version
+                    currentVersion = r.serverversion.number;
+                } else {
+                    data.own = false;
+                    data.name = r.otherplayername.string;
+                    data.save = r.otherplayer.numbers;
+                    data.identifier = data.prefix + '_p' + data.save[0];
+                    data.class = data.save[20] % 65536;
+
+                    // Optionals
+                    data.groupname = _try(r.otherplayergroupname, 'string');
+                    data.units = _try(r.otherplayerunitlevel, 'numbers');
+                    data.achievements = _try(r.otherplayerachievement, 'numbers') || _try(r.achievement, 'numbers');
+                    data.fortressrank = _try(r.otherplayerfortressrank, 'number');
+                    data.pets = _try(r.otherplayerpetbonus, 'numbers');
+
+                    // Post-process
+                    if (data.save[161]) {
+                        data.group = `${data.prefix}_g${data.save[161]}`
+                    }
+                }
+
+                if (!players.find(p => p.identifier === data.identifier)) {
+                    players.push(data);
+                }
+            }
+        }
+
+        for (const player of players) {
+            player.version = currentVersion;
+        }
+
+        return { players, groups };
+    }
+
     async _import (json, timestamp, offset = -3600000, origin = null) {
         if (Array.isArray(json)) {
             // Archive, Share
@@ -1330,126 +1454,7 @@ const DatabaseManager = new (class {
             await this._addFile(null, json.players, json.groups, origin);
         } else {
             // HAR, Endpoint
-            let raws = [];
-            let groups = [];
-            let players = [];
-            let currentVersion = undefined;
-
-            for (var [key, val, url, ts] of filterPlayaJSON(json)) {
-                if (ts) {
-                    timestamp = ts.getTime();
-                    offset = ts.getTimezoneOffset() * 60 * 1000;
-                }
-
-                if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername'))) {
-                    var url = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
-                    if (url.length > 2) {
-                        raws.push([val, url[1] + '_' + url[2]]);
-                    }
-                }
-            }
-
-            for (let [text, prefix] of raws) {
-                const r = PlayaResponse.fromText(text);
-                if ((r.owngroupsave && r.owngrouprank && r.owngroupname && r.owngroupmember) || (r.othergroup && r.othergrouprank && r.othergroupname && r.othergroupmember)) {
-                    const data = {
-                        prefix: prefix,
-                        timestamp: timestamp,
-                        offset: offset
-                    };
-
-                    if (r.owngroupsave && r.owngroupname) {
-                        data.own = true;
-                        data.name = r.owngroupname.string;
-                        data.rank = r.owngrouprank.number;
-                        data.knights = r.owngroupknights.numbers;
-                        data.save = r.owngroupsave.numbers;
-                        data.names = r.owngroupmember.strings;
-                    } else {
-                        data.own = false;
-                        data.name = r.othergroupname.string;
-                        data.rank = r.othergrouprank.number;
-                        data.knights = undefined;
-                        data.save = r.othergroup.numbers;
-                        data.names = r.othergroupmember.strings;
-                    }
-
-                    data.identifier = data.prefix + '_g' + data.save[0]
-
-                    if (!groups.find(g => g.identifier === data.identifier)) {
-                        groups.push(data);
-                    }
-                }
-
-                if (r.otherplayername || r.ownplayername) {
-                    const data = {
-                        prefix: prefix,
-                        timestamp: timestamp,
-                        offset: offset
-                    };
-
-                    if (r.ownplayername) {
-                        data.own = true;
-                        data.name = r.ownplayername.string;
-                        data.save = r.ownplayersave.numbers;
-                        data.identifier = data.prefix + '_p' + data.save[1];
-                        data.class = data.save[29] % 65536;
-
-                        // Optionals
-                        data.groupname = _try(r.owngroupname, 'string');
-                        data.units = _try(r.unitlevel, 'numbers');
-                        data.achievements = _try(r.achievement, 'numbers');
-                        data.pets = _try(r.ownpets, 'numbers');
-                        data.tower = _try(r.owntower, 'numbers');
-                        data.chest = _try(r.fortresschest, 'numbers');
-                        data.dummy = _try(r.dummies, 'numbers');
-                        data.scrapbook = _try(r.scrapbook, 'string');
-                        data.scrapbook_legendary = _try(r.legendaries, 'string');
-                        data.witch = _try(r.witch, 'numbers');
-                        data.idle = _try(r.idle, 'numbers');
-                        data.calendar = _try(r.calenderinfo, 'numbers');
-
-                        // Post-process
-                        if (data.save[435]) {
-                            data.group = `${data.prefix}_g${data.save[435]}`
-                        }
-
-                        for (const i of [4, 503, 504, 505, 561]) {
-                            data.save[i] = 0;
-                        }
-
-                        // Save version
-                        currentVersion = r.serverversion.number;
-                    } else {
-                        data.own = false;
-                        data.name = r.otherplayername.string;
-                        data.save = r.otherplayer.numbers;
-                        data.identifier = data.prefix + '_p' + data.save[0];
-                        data.class = data.save[20] % 65536;
-
-                        // Optionals
-                        data.groupname = _try(r.otherplayergroupname, 'string');
-                        data.units = _try(r.otherplayerunitlevel, 'numbers');
-                        data.achievements = _try(r.otherplayerachievement, 'numbers') || _try(r.achievement, 'numbers');
-                        data.fortressrank = _try(r.otherplayerfortressrank, 'number');
-                        data.pets = _try(r.otherplayerpetbonus, 'numbers');
-
-                        // Post-process
-                        if (data.save[161]) {
-                            data.group = `${data.prefix}_g${data.save[161]}`
-                        }
-                    }
-
-                    if (!players.find(p => p.identifier === data.identifier)) {
-                        players.push(data);
-                    }
-                }
-            }
-
-            for (const player of players) {
-                player.version = currentVersion;
-            }
-
+            let { players, groups } = this._import_har(json, timestamp, offset);
             await this._addFile(null, players, groups, origin);
         }
     }
