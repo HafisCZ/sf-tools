@@ -238,7 +238,9 @@ class Expression {
                 } else if (['undefined', 'null', 'player', 'reference', 'joined', 'kicked', 'true', 'false', 'index', 'database', 'row_index', 'classes', 'header', 'entries', 'loop_index', 'loop_array', 'table_timestamp', 'table_reference', 'table_array', 'table_array_unfiltered' ].includes(token)) {
                     value = SFormat.Constant(token);
                 } else if (root.variables.hasOwnProperty(token)) {
-                    if (root.variables[token].tableVariable) {
+                    if (root.variables[token].tableVariable == 'unfiltered') {
+                        value = SFormat.UnfilteredGlobal(token);
+                    } else if (root.variables[token].tableVariable) {
                         value = SFormat.Global(token);
                     } else {
                         value = SFormat.Constant(token);

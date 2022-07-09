@@ -818,7 +818,7 @@ const SettingsCommands = [
                 root.addVariable(name, ast, 'unfiltered');
             }
         },
-        (root, name, expression) => SFormat.Keyword('set ') + SFormat.Global(`$$${name}`) + SFormat.Keyword(' as ') + Expression.format(expression, root)
+        (root, name, expression) => SFormat.Keyword('set ') + SFormat.UnfilteredGlobal(`$$${name}`) + SFormat.Keyword(' as ') + Expression.format(expression, root)
     ).parseAlways(),
     /*
         Function
