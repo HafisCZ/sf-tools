@@ -457,7 +457,10 @@ const DatabaseManager = new (class {
             Name: data.name,
             Prefix: _pretty_prefix(data.prefix),
             Class: data.class || ((data.own ? data.save[29] : data.save[20]) % 65536),
-            Group: data.group
+            Group: {
+                Identifier: data.group,
+                Name: data.groupname
+            }
         }, {
             get: function (target, prop) {
                 if (prop == 'Data' || prop == 'Identifier' || prop == 'Timestamp' || prop == 'Own' || prop == 'Name' || prop == 'Prefix' || prop == 'Class' || prop == 'Group') {
