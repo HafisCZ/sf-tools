@@ -428,7 +428,7 @@
                     <div class="ui button" id="copy-table"><i class="outline copy link icon"></i> Copy table</div>
                     <div class="ui button" id="copy-table-col"><i class="outline copy link icon"></i> Copy table (use comma as decimal separator)</div>
                 </div>
-                <table class="ui red single very compact line table text-center" id="data-table">
+                <table class="ui red single very compact line table text-center" id="data-gold-table">
                     <thead>
                         <tr>
                             <th style="width: 20%;">Attribute / Level</th>
@@ -438,12 +438,33 @@
                             <th style="width: 20%;">Guard Duty / Dice (3)</th>
                         </tr>
                     </thead>
-                    <tbody id="attribute-prices" class="opaque-rows-inverted">
+                    <tbody class="opaque-rows-inverted">
 
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <div class="ui main container" id="tab-gold-table">
+            <div class="ui basic segment">
+
+                <table class="ui red single very compact line table text-center" id="data-rune-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 20%;">Attribute / Level</th>
+                            <th style="width: 20%;">Attribute Price</th>
+                            <th style="width: 20%;">Gold Curve</th>
+                            <th style="width: 20%;">Griffin</th>
+                            <th style="width: 20%;">Guard Duty / Dice (3)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="opaque-rows-inverted">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
 
         <div class="ui blue segment floating-menu" id="floating-opts">
             <h3 class="ui header">Character values</h3>
@@ -1463,34 +1484,6 @@
                 }
             }
 
-            var text = '';
-
-            for (var i = 0; i < 3155; i++) {
-                var cost = calculateAttributePrice(i);
-
-                if (i < 632) {
-                    var curve = getGoldCurve(i + 1);
-
-                    var num = Math.trunc(curve / 10);
-                    num = num * 12 / 100;
-                    var griff = Math.min(10E6, num);
-
-                    text += `<tr>
-                        <td>${ i + 1 }</td>
-                        <td>${ cost >= 999 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost) }</td>
-                        <td>${ curve / 100 >= 999 ? formatAsSpacedNumber(curve / 100, ' ') : roundShort(curve / 100) }</td>
-                        <td>${ griff >= 999 ? formatAsSpacedNumber(griff, ' ') : roundShort(griff) }</td>
-                        <td>${ num / 3 >= 999 ? formatAsSpacedNumber(num / 3, ' ') :roundShort(num / 3) }</td>
-                    </tr>`;
-                } else {
-                    text += `<tr><td>${ i + 1 }</td><td>${ cost >= 999 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost) }</td></tr>`;
-                }
-            }
-
-            text += `<tr><td>3156 and above</td><td>${ formatAsSpacedNumber(10e6, ' ') }</td></tr>`;
-
-            $('#attribute-prices').html(text);
-
             $('#priceat-attribute').on('change input', function () {
                 if (validate($(this))) {
                     var value = Number($(this).val());
@@ -1745,31 +1738,63 @@
                 }
             });
 
-            $('#copy-table').click(() => {
-                var range = document.createRange();
-                range.selectNode($('#data-table').get(0));
-                window.getSelection().removeAllRanges();
-                window.getSelection().addRange(range);
-                document.execCommand('copy');
-                window.getSelection().removeAllRanges();
+            (function () {
+                var text = '';
+
+                for (var i = 0; i < 3155; i++) {
+                    var cost = calculateAttributePrice(i);
+
+                    if (i < 632) {
+                        var curve = getGoldCurve(i + 1);
+
+                        var num = Math.trunc(curve / 10);
+                        num = num * 12 / 100;
+                        var griff = Math.min(10E6, num);
+
+                        text += `<tr>
+                            <td>${ i + 1 }</td>
+                            <td>${ cost >= 999 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost) }</td>
+                            <td>${ curve / 100 >= 999 ? formatAsSpacedNumber(curve / 100, ' ') : roundShort(curve / 100) }</td>
+                            <td>${ griff >= 999 ? formatAsSpacedNumber(griff, ' ') : roundShort(griff) }</td>
+                            <td>${ num / 3 >= 999 ? formatAsSpacedNumber(num / 3, ' ') :roundShort(num / 3) }</td>
+                        </tr>`;
+                    } else {
+                        text += `<tr>
+                            <td>${ i + 1 }</td>
+                            <td>${ cost >= 999 ? formatAsSpacedNumber(cost, ' ') : roundShort(cost) }</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>`;
+                    }
+                }
+
+                text += `<tr>
+                    <td>3156+</td>
+                    <td>${ formatAsSpacedNumber(10e6, ' ') }</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>`;
+
+                $('#data-gold-table tbody').html(text);
+            })();
+
+            $('#copy-table').click(function () {
+                copyGrid(
+                    $('#data-gold-table th').toArray().map(th => th.innerText),
+                    $('#data-gold-table tbody tr').toArray().map(tr => Array.from(tr.querySelectorAll('td')).map(td => td.innerText)),
+                    text => text.replaceAll(' ', '')
+                )
             });
 
-            $('#copy-table-col').click(() => {
-                $('#data-table').find('td').each(function (i, o) {
-                    $(o).html($(o).html().replace('.', ','));
-                });
-
-                var range = document.createRange();
-                range.selectNode($('#data-table').get(0));
-                window.getSelection().removeAllRanges();
-                window.getSelection().addRange(range);
-                document.execCommand('copy');
-                window.getSelection().removeAllRanges();
-
-                $('#data-table').find('td').each(function (i, o) {
-                    $(o).html($(o).html().replace(',', '.'));
-                });
-            });
+            $('#copy-table-col').click(function () {
+                copyGrid(
+                    $('#data-gold-table th').toArray().map(th => th.innerText),
+                    $('#data-gold-table tbody tr').toArray().map(tr => Array.from(tr.querySelectorAll('td')).map(td => td.innerText)),
+                    text => text.replaceAll(' ', '').replaceAll('.', ',')
+                )
+            })
         </script>
     </body>
 </html>
