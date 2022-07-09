@@ -1586,22 +1586,22 @@ const SP_KEYWORD_MAPPING_0 = {
         statistics: false
     },
     'Guild ID': {
-        expr: p => p.Group ? p.Group.ID : '',
+        expr: p => _dig(p, 'Group', 'ID'),
         difference: false,
         statistics: false
     },
     'Guild Identifier': {
-        expr: p => p.Group ? p.Group.Identifier : '',
+        expr: p => _dig(p, 'Group', 'Identifier'),
         difference: false,
         statistics: false
     },
     'Guild Rank': {
-        expr: p => p.Group ? p.Group.Rank : '',
+        expr: p => _dig(p, 'Group', 'Rank'),
         difference: false,
         statistics: false
     },
     'Role': {
-        expr: p => p.Group.Role,
+        expr: p => _dig(p, 'Group', 'Role'),
         flip: true,
         format: (p, c, e, x) => p.hasGuild() ? GROUP_ROLES[p.Group.Role] : '',
         difference: false,
@@ -1611,7 +1611,7 @@ const SP_KEYWORD_MAPPING_0 = {
         expr: p => p.Level
     },
     'Guild': {
-        expr: p => p.Group.Name || '',
+        expr: p => _dig(p, 'Group', 'Name'),
         difference: false,
         statistics: false
     },
