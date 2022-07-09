@@ -1,8 +1,8 @@
 const ExpressionRegExp = (function () {
     try {
-        return new RegExp("(\\'[^\\']*\\'|\\\"[^\\\"]*\\\"|\\~\\d+|\\`[^\\`]*\\`|\\;|\\$\\!|\\$|\\{|\\}|\\|\\||\\%|\\^|\\!\\=|\\!|\\&\\&|\\>\\=|\\<\\=|\\=\\=|\\(|\\)|\\+|\\-|\\/|\\*|\\>|\\<|\\?|\\:|\\.+this|(?<!\\.)\\d+(?:.\\d+)?e\\d+|(?<!\\.)\\d+\\.\\d+|\\.|\\[|\\]|\\,)");
+        return new RegExp("(\\'[^\\']*\\'|\\\"[^\\\"]*\\\"|\\~\\d+|\\`[^\\`]*\\`|\\;|\\$\\$|\\$\\!|\\$|\\{|\\}|\\|\\||\\%|\\^|\\!\\=|\\!|\\&\\&|\\>\\=|\\<\\=|\\=\\=|\\(|\\)|\\+|\\-|\\/|\\*|\\>|\\<|\\?|\\:|\\.+this|(?<!\\.)\\d+(?:.\\d+)?e\\d+|(?<!\\.)\\d+\\.\\d+|\\.|\\[|\\]|\\,)");
     } catch (e) {
-        return new RegExp("(\\'[^\\']*\\'|\\\"[^\\\"]*\\\"|\\~\\d+|\\`[^\\`]*\\`|\\;|\\$\\!|\\$|\\{|\\}|\\|\\||\\%|\\^|\\!\\=|\\!|\\&\\&|\\>\\=|\\<\\=|\\=\\=|\\(|\\)|\\+|\\-|\\/|\\*|\\>|\\<|\\?|\\:|\\.+this|\\d+(?:.\\d+)?e\\d+|\\d+\\.\\d+|\\.|\\[|\\]|\\,)");
+        return new RegExp("(\\'[^\\']*\\'|\\\"[^\\\"]*\\\"|\\~\\d+|\\`[^\\`]*\\`|\\;|\\$\\$|\\$\\!|\\$|\\{|\\}|\\|\\||\\%|\\^|\\!\\=|\\!|\\&\\&|\\>\\=|\\<\\=|\\=\\=|\\(|\\)|\\+|\\-|\\/|\\*|\\>|\\<|\\?|\\:|\\.+this|\\d+(?:.\\d+)?e\\d+|\\d+\\.\\d+|\\.|\\[|\\]|\\,)");
     }
 })();
 
@@ -263,7 +263,7 @@ class Expression {
                     value = SFormat.Enum(token);
                 } else if (SP_ENUMS.hasOwnProperty(token)) {
                     value = SFormat.Enum(token);
-                } else if (token == '$' || token == '$!') {
+                } else if (token == '$' || token == '$!' || token == '$$') {
                     value = SFormat.Keyword(token);
                     nextName = true;
                 } else if (nextName) {
@@ -296,7 +296,7 @@ class Expression {
         let brackets = 0;
         let index = null;
         let manualName = null;
-        let local = false;
+        let table = true;
 
         // Iterate over all tokens
         for (let i = 0; i < this.tokens.length; i++) {
@@ -309,13 +309,26 @@ class Expression {
                     // Save current index and skip next bracket
                     index = i++;
                     brackets++;
-                    local = false;
+                    table = true;
                 } else if (this.tokens[i + 2] == '{') {
                     // Save current index and skip next bracket
                     index = i++;
                     brackets++;
                     manualName = this.tokens[i++];
-                    local = false;
+                    table = true;
+                }
+            } else if (token == '$$') {
+                if (this.tokens[i + 1] == '{') {
+                    // Save current index and skip next bracket
+                    index = i++;
+                    brackets++;
+                    table = 'unfiltered';
+                } else if (this.tokens[i + 2] == '{') {
+                    // Save current index and skip next bracket
+                    index = i++;
+                    brackets++;
+                    manualName = this.tokens[i++];
+                    table = 'unfiltered';
                 }
             } else if (token == '$!') {
                 if (this.tokens[i + 2] == '{') {
@@ -323,7 +336,7 @@ class Expression {
                     index = i++;
                     brackets++;
                     manualName = this.tokens[i++];
-                    local = true;
+                    table = false;
                 }
             } else if (index != null) {
                 // If there is a variable
@@ -339,13 +352,14 @@ class Expression {
                             start: index,
                             length: i - index + 1,
                             name: manualName,
-                            local: local
+                            table: table
                         });
 
                         // Reset temporary vars
                         index = null;
                         manualName = null;
                         brackets = 0;
+                        table = true;
                     }
                 }
             }
@@ -364,8 +378,8 @@ class Expression {
 
             // Get placeholder name
             let name = variable.name;
-            if (!(name || name in tableVariables)) {
-                name = `__${ expression.rstr }`;
+            if (!name) {
+                name = `__${expression.rstr}__${variable.table}`;
             }
 
             // Add variable name to the token list
@@ -374,7 +388,7 @@ class Expression {
             // Add variable to settings
             tableVariables[name] = {
                 ast: expression,
-                tableVariable: !variable.local
+                tableVariable: variable.table
             };
         }
     }

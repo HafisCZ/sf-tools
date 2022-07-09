@@ -808,6 +808,19 @@ const SettingsCommands = [
         (root, name, expression) => SFormat.Keyword('set ') + SFormat.Global(`$${name}`) + SFormat.Keyword(' as ') + Expression.format(expression, root)
     ).parseAlways(),
     /*
+        New syntax for unfiltered table variable
+    */
+    new Command(
+        /^set \$\$(\w+[\w ]*) as (.+)$/,
+        (root, name, expression) => {
+            let ast = new Expression(expression, root);
+            if (ast.isValid()) {
+                root.addVariable(name, ast, 'unfiltered');
+            }
+        },
+        (root, name, expression) => SFormat.Keyword('set ') + SFormat.Global(`$$${name}`) + SFormat.Keyword(' as ') + Expression.format(expression, root)
+    ).parseAlways(),
+    /*
         Function
     */
     new Command(
@@ -2314,7 +2327,19 @@ class Settings {
         }
     }
 
-    evalHistory (array, array_unfiltered) {
+    createSegmentedArray (array, mapper) {
+        let segmentedArray = array.map((entry, index, arr) => {
+            let obj = mapper(entry, index, arr);
+            obj.segmented = true;
+            return obj;
+        });
+
+        segmentedArray.segmented = true;
+
+        return segmentedArray;
+    }
+
+    evalHistory (array, unfilteredArray) {
         // Evaluate row indexes
         this.evalRowIndexes(array);
 
@@ -2322,20 +2347,11 @@ class Settings {
         array = [ ... array ];
 
         // Get shared scope
-        let scope = array.map((player, index) => {
-            // Create segmented entry
-            let entry = [ player, array[index + 1] || player ];
-            entry.segmented = true;
-
-            // Return entry
-            return entry;
-        });
-
-        // Mark scope as segmented as well
-        scope.segmented = true;
+        let scope = this.createSegmentedArray(array, (player, index, arr) => [player, arr[index + 1] || player]);
+        let unfilteredScope = this.createSegmentedArray(unfilteredArray, (player, index, arr) => [player, arr[index + 1] || player]);
 
         this.array = array;
-        this.array_unfiltered = array_unfiltered;
+        this.array_unfiltered = unfilteredArray;
 
         // Iterate over all variables
         for (let [ name, variable ] of Object.entries(this.variables)) {
@@ -2348,7 +2364,7 @@ class Settings {
             // Run only if it is a table variable
             if (variable.tableVariable) {
                 // Get value
-                let value = new ExpressionScope(this).addSelf(scope).eval(variable.ast);
+                let value = new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredScope : scope).eval(variable.ast);
 
                 // Set value if valid
                 if (!isNaN(value) || typeof(value) == 'object' || typeof('value') == 'string') {
@@ -2372,7 +2388,7 @@ class Settings {
         this.evalRules();
     }
 
-    evalPlayers (array, array_unfiltered, simulatorLimit, entryLimit) {
+    evalPlayers (array, unfilteredArray, simulatorLimit, entryLimit) {
         // Evaluate row indexes
         this.evalRowIndexes(array, true);
 
@@ -2398,33 +2414,18 @@ class Settings {
         }
 
         this.array = array;
-        this.array_unfiltered = array_unfiltered;
+        this.array_unfiltered = unfilteredArray;
         this.timestamp = array.timestamp;
         this.reference = array.reference;
 
         // Run simulator if needed
         this.evalSimulator(array, simulatorLimit, entryLimit);
 
-        // Purify array
-        array = [ ... array ];
-
         // Get segmented lists
-        let arrayCurrent = array.map(entry => {
-            let obj = [ entry.player, entry.compare ];
-            obj.segmented = true;
-
-            return obj;
-        });
-
-        let arrayCompare = array.map(entry => {
-            let obj = [ entry.compare, entry.compare ];
-            obj.segmented = true;
-
-            return obj;
-        });
-
-        arrayCurrent.segmented = true;
-        arrayCompare.segmented = true;
+        let arrayCurrent = this.createSegmentedArray(array, entry => [entry.player, entry.compare]);
+        let arrayCompare = this.createSegmentedArray(array, entry => [entry.compare, entry.compare]);
+        let unfilteredArrayCurrent = this.createSegmentedArray(unfilteredArray, entry => [entry.player, entry.compare]);
+        let unfilteredArrayCompare = this.createSegmentedArray(unfilteredArray, entry => [entry.compare, entry.compare]);
 
         // Evaluate variables
         for (let [ name, variable ] of Object.entries(this.variables)) {
@@ -2436,8 +2437,8 @@ class Settings {
 
             if (variable.tableVariable) {
                 // Calculate values of table variable
-                let currentValue = new ExpressionScope(this).addSelf(arrayCurrent).eval(variable.ast);
-                let compareValue = sameTimestamp ? currentValue : new ExpressionScope(this).addSelf(arrayCompare).eval(variable.ast);
+                let currentValue = new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCurrent : arrayCurrent).eval(variable.ast);
+                let compareValue = sameTimestamp ? currentValue : new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCompare : arrayCompare).eval(variable.ast);
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
@@ -2469,7 +2470,7 @@ class Settings {
         this.evalRules();
     }
 
-    evalGuilds (array, array_unfiltered) {
+    evalGuilds (array, unfilteredArray) {
         // Evaluate row indexes
         this.evalRowIndexes(array, true);
 
@@ -2499,33 +2500,18 @@ class Settings {
         }
 
         this.array = array;
-        this.array_unfiltered = array_unfiltered;
+        this.array_unfiltered = unfilteredArray;
         this.timestamp = array.timestamp;
         this.reference = array.reference;
 
         // Run simulator if needed
         this.evalSimulator(array, simulatorLimit, entryLimit);
 
-        // Purify array
-        array = [ ... array ];
-
         // Get segmented lists
-        let arrayCurrent = array.map(entry => {
-            let obj = [ entry.player, entry.compare ];
-            obj.segmented = true;
-
-            return obj;
-        });
-
-        let arrayCompare = array.map(entry => {
-            let obj = [ entry.compare, entry.compare ];
-            obj.segmented = true;
-
-            return obj;
-        });
-
-        arrayCurrent.segmented = true;
-        arrayCompare.segmented = true;
+        let arrayCurrent = this.createSegmentedArray(array, entry => [entry.player, entry.compare]);
+        let arrayCompare = this.createSegmentedArray(array, entry => [entry.compare, entry.compare]);
+        let unfilteredArrayCurrent = this.createSegmentedArray(unfilteredArray, entry => [entry.player, entry.compare]);
+        let unfilteredArrayCompare = this.createSegmentedArray(unfilteredArray, entry => [entry.compare, entry.compare]);
 
         // Get own player
         let ownEntry = array.find(entry => entry.player.Own) || array[0];
@@ -2542,8 +2528,9 @@ class Settings {
 
             if (variable.tableVariable) {
                 // Calculate values of table variable
-                let currentValue = new ExpressionScope(this).with(ownPlayer, ownCompare).addSelf(arrayCurrent).eval(variable.ast);
-                let compareValue = sameTimestamp ? currentValue : new ExpressionScope(this).with(ownCompare, ownCompare).addSelf(arrayCompare).eval(variable.ast);
+                let currentValue = new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCurrent : arrayCurrent).eval(variable.ast);
+                let compareValue = sameTimestamp ? currentValue : new ExpressionScope(this).addSelf(variable.tableVariable == 'unfiltered' ? unfilteredArrayCompare : arrayCompare).eval(variable.ast);
+
 
                 // Set values if valid
                 if (!isNaN(currentValue) || typeof currentValue == 'object' || typeof currentValue == 'string') {
