@@ -1001,31 +1001,6 @@
                         });
                     }
 
-                    if (potions.length || cheats.pets) {
-                        for (let type of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
-                            player[type].Bonus = undefined;
-                        }
-
-                        if (player.Potions.some(p => p.Type == 6 && p.Size > 0)) {
-                            player.Potions.Life = 25;
-                        }
-
-                        player.evaluateCommon();
-
-                        if (player.Companions) {
-                            for (let kind of ['Bert', 'Mark', 'Kunigunde']) {
-                                let companion = player.Companions[kind];
-
-                                for (let type of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
-                                    companion[type].Bonus = undefined;
-                                }
-
-                                companion.Potions = player.Potions;
-                                companion.evaluateCompanionCommon(player);
-                            }
-                        }
-                    }
-
                     if (cheats.class) {
                         const swapAttributes = function (obj, type, fromClass, toClass) {
                             let attributes = _array_to_hash(['Main', 'Side1', 'Side2'], kind => [kind, _dig(obj, MAIN_ATTRIBUTE_MAP[kind][fromClass - 1], type)]);
@@ -1056,6 +1031,31 @@
                         }
 
                         player.Class = cheats.class;
+                    }
+
+                    if (potions.length || cheats.pets) {
+                        for (let type of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
+                            player[type].Bonus = undefined;
+                        }
+
+                        if (player.Potions.some(p => p.Type == 6 && p.Size > 0)) {
+                            player.Potions.Life = 25;
+                        }
+
+                        player.evaluateCommon();
+
+                        if (player.Companions) {
+                            for (let kind of ['Bert', 'Mark', 'Kunigunde']) {
+                                let companion = player.Companions[kind];
+
+                                for (let type of ['Strength', 'Dexterity', 'Intelligence', 'Constitution', 'Luck']) {
+                                    companion[type].Bonus = undefined;
+                                }
+
+                                companion.Potions = player.Potions;
+                                companion.evaluateCompanionCommon(player);
+                            }
+                        }
                     }
 
                     if (cheats.runes) {
