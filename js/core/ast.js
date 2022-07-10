@@ -771,6 +771,8 @@ class Expression {
                 return false;
             } else if (node.op == '[a' && node.args && node.args[0] == 'header') {
                 return false;
+            } else if (node.op == 'random' || node.op == 'now') {
+                return false;
             } else {
                 if (node.args && !node.raw) {
                     for (let arg of node.args) {
