@@ -9,6 +9,9 @@ const CHANGELOG = {
         'Pet Simulator': [
             'Added best pets for each class to simulate all'
         ],
+        'Dungeon Simulator': [
+            'Added option to simulate all remaining enemies in a dungeon'
+        ],
         'Fight Simulator': [
             'Added inverse of One vs. All mode',
             'Set adding new players to be at the top of the player list'

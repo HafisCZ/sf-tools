@@ -86,11 +86,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="five wide column">
-                                <button class="ui fluid button" type="submit" id="sim-run">Simulate</button>
-                            </div>
-                            <div class="five wide column" style="padding-left: 0;">
-                                <button class="ui fluid button disabled" type="submit" id="sim-run-all">All</button>
+                            <div class="ten wide column">
+                                <div style="display: flex; flex-direction: row;">
+                                    <button class="ui fluid button" type="submit" id="sim-run">Simulate</button>
+                                    <button class="ui fluid button" type="submit" id="sim-run-dungeon">Remaining</button>
+                                    <button class="ui fluid button disabled" type="submit" id="sim-run-all">All</button>
+                                </div>
                             </div>
                         </div>
                         <div class="row padding-none">
@@ -678,8 +679,11 @@
                     }
                 )
 
-                function showMassDungeonResults (bosses, results) {
-                    bosses = bosses.map((dungeon, index) => Object.assign(_dig(results, index), dungeon)).sort((b, a) => a.score - b.score);
+                function showMassDungeonResults (bosses, results, sort = true) {
+                    bosses = bosses.map((dungeon, index) => Object.assign(_dig(results, index), dungeon));
+                    if (sort) {
+                        bosses.sort((b, a) => a.score - b.score);
+                    }
 
                     $('#results-modal .content').html(`
                         <div class="ui two column grid">
@@ -777,6 +781,68 @@
                         }
                     }
                 });
+
+                $('#sim-run-dungeon').click(async function () {
+                    if (editor.valid()) {
+                        LoaderPopup.toggle(true);
+
+                        let bossQueue = [];
+                        for (let [name, bossData] of Object.entries(dungeon.floors)) {
+                            if (bossQueue.length > 0 || name === boss.Name) {
+                                bossQueue.push({
+                                    dungeon,
+                                    name,
+                                    boss: bossData
+                                })
+                            }
+                        }
+
+                        let resultsRemaining = bossQueue.length;
+
+                        let maximumInstances = Math.max(1, Number($('#sim-threads').val()) || LOGICAL_PROCS);
+                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+
+                        let results = [];
+                        let pendingInstances = [];
+                        for (let [index, { name, boss, dungeon }] of Object.entries(bossQueue)) {
+                            let worker = await createSimulatorWorker('dungeons');
+
+                            worker.addEventListener('message', (message) => {
+                                if (message.data.command == 'finished') {
+                                    let { score, iterations, healths } = message.data.results;
+
+                                    results[message.data.index] = {
+                                        score,
+                                        healths,
+                                        iterations
+                                    };
+
+                                    if (--resultsRemaining <= 0) {
+                                        LoaderPopup.toggle(false);
+                                        showMassDungeonResults(bossQueue, results, false);
+                                    } else if (pendingInstances.length > 0) {
+                                        let [ secWorker, args ] = pendingInstances.pop();
+                                        secWorker.postMessage(args);
+                                    }
+                                }
+                            }, false);
+
+                            pendingInstances.push([worker, {
+                                players: preparePlayerInstances(dungeon),
+                                boss: getBossData(boss),
+                                iterations: iterations,
+                                index: index,
+                                hpcap: 500
+                            }])
+                        }
+
+                        let currentInstances = Math.min(maximumInstances, pendingInstances.length);
+                        for (let i = 0; i < currentInstances; i++) {
+                            let [ worker, args ] = pendingInstances.pop();
+                            worker.postMessage(args);
+                        }
+                    }
+                })
 
                 $('#sim-run').click(async function () {
                     if (boss && editor.valid()) {
