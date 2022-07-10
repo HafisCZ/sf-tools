@@ -42,19 +42,44 @@
         <script src="js/core/ui.js"></script>
         <script src="js/stats/event.js"></script>
         <script src="js/views.js"></script>
+
+        <style>
+            .col-5 {
+                width: 5%;
+            }
+
+            .col-10 {
+                width: 10%;
+            }
+
+            .col-15 {
+                width: 15%;
+            }
+
+            .failure {
+                background-color: #9e192b !important;
+                color: white !important;
+            }
+
+            .success {
+                background-color: #2d9150 !important;
+                color: white !important;
+            }
+        </style>
     </head>
     <body>
         <div class="ui fixed borderless huge menu css-menu">
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
 
-        <div class="ui main container sf-container">
-            <table class="ui basic table" style="table-layout: fixed;">
+        <div class="ui main container" style="margin-bottom: 5em;">
+            <table class="ui basic very compact line fixed table">
                 <thead>
                     <tr>
-                        <td style="width: 5%; text-align: center;">#</td>
-                        <td style="width: 10%; text-align: center;">Result</td>
-                        <td style="padding-left: 2em;">Name</td>
+                        <th class="text-center col-5">#</th>
+                        <th class="text-center col-10">Result</th>
+                        <th class="text-center col-15">Category</th>
+                        <th>Name</th>
                     </tr>
                 </thead>
                 <tbody id="test-list">
@@ -65,96 +90,173 @@
 
         <script type="text/javascript">
             window.addEventListener('load', function () {
-                let i = 0;
-                function test (name, op) {
-                    const success = typeof op === 'function' ? op() : op;
-                    $('#test-list').append(`
-                        <tr style="line-height: 0.75em;">
-                            <td style="text-align: center;">${ i += 1 }</td>
-                            <td style="font-weight: bold; text-align: center; ${ success ? 'background-color: #2d9150; color: white;' : 'background-color: #9e192b; color: white;' }">${ success ? 'OK' : 'Failed' }</td>
-                            <td style="padding-left: 2em;">${ name }</td>
-                        </tr>
-                    `);
-                }
+                const TE = new (class {
+                    constructor (parent) {
+                        this.parent = parent;
+                        this.tests = [];
+                    }
 
-                test('always true', true);
-                test('cacheable', new Expression('1').cacheable);
-                test('not cacheable', new Expression('random()').cacheable);
-                test('simple math resolved', new Expression('15 + 5').resolved);
-                test('math resolved', new Expression('15 + 5 * 5 - 99').resolved);
-                test('string concat', new Expression('"Hello" + "World"').resolved);
-                test('string concat eval', new Expression('"Hello" + "World"').eval() == 'HelloWorld');
-                test('math eval', new Expression('2 * 5 + 10').eval() == 20);
-                test('condition eval', new Expression('10 > 5 ? 20 : 0').eval() == 20);
-                test('condition eval 2', new Expression('10 > 5 || false ? 20 : 0').eval() == 20);
-                test('condition eval 3', new Expression('false || 10 > 5 ? 20 : 0').eval() == 20);
-                test('condition eval 4', new Expression('false || !!false ? 0 : 20').eval() == 20);
-                test('broken expr', new Expression(' ? 20 : 0').tokens.length != 0);
-                test('or eval', new Expression('0 || 5').eval() == 5);
-                test('condition eval br left', new Expression('(5 > 0) && true ? 5 : 0').eval() == 5);
-                test('condition eval br right', new Expression('true && (5 > 0) ? 5 : 0').eval() == 5);
-                test('sub expr', new Expression('5;~0').eval() == 5);
-                test('array sum', new Expression('sum([0, 1, 2, 3, 4])').eval() == 10);
-                test('array each', new Expression('each([0, 1, 2, 3, 4], this)').eval() == 10);
-                test('sum', new Expression('sum(0, 1, 2, 3, 4)').eval() == 10);
-                test('sum sequence', new Expression('sum(makesequence(0, 4))').eval() == 10);
-                test('scoped', new Expression('value == 5').eval(new ExpressionScope().add({ value: 5 })));
-                test('undefined', new Expression('undefined').eval() === undefined);
-                test('scoped no this', new Expression('this').eval() === undefined);
-                test('scoped this', new Expression('this').eval(new ExpressionScope().addSelf(55)) == 55);
-                test('each this', new Expression('each([0, 1, 2], 3 * this)').eval() == 9);
-                test('each loop_index', new Expression('each([0, 1, 2], loop_index)').eval() == 3);
-                test('this traversal', new Expression('each([0, 1, 2], len(loop_array) * this)').eval() == 9);
-                test('this traversal 2', new Expression('each(this, len(.this))').eval(new ExpressionScope().addSelf([0, 1, 2])) == 9);
-                test('constants', new Expression('@none').eval() == 0);
-                test('inverts', new Expression('!!!false'));
-                test('condition eval 5', new Expression('1 - (0.5 * 2) == 0').eval());
-                test('condition eval 6', new Expression('-(0.5 * 2) + 1 == 0').eval());
-                test('null', new Expression('null').eval() == null);
-                test('empty', new Expression('').eval() === false);
-                test('all true', new Expression('all(true, 5 > 1)'));
-                test('array distinct', new Expression('sum(distinct([1, 1, 1, 2]))').eval() == 3);
-                test('array slice', new Expression('sum(slice([1, 1, 1, 2], 0, 3))').eval() == 3);
-                test('array join', new Expression('join([0, 1, 2], "-")').eval() == '0-1-2');
-                test('array at', new Expression('at([0, 1, 2], 1)').eval() == 1);
-                test('array index of', new Expression('indexof([0, 1, 2], 1)').eval() == 1);
-                test('average', new Expression('average()').eval() == 0);
-                test('average 2', new Expression('average(0, 1)').eval() == 0.5);
-                test('header', new Expression('Album Items').eval(new ExpressionScope().with({ Book: 1000 })) == 1000);
-                test('header this', new Expression('Album Items(this)').eval(new ExpressionScope().addSelf({ Book: 1000 })) == 1000);
-                test('object', new Expression('{ "key": 1 }["key"]').eval() == 1);
-                test('header local', new Expression('Album Items({ "Book": 1000 })').eval() == 1000);
-                test('nested header', new Expression('map([{ "Name": "name" }], Item Name(this)).0').eval() == 'name');
-                test('nested header auto', new Expression('map([{ "Name": "name" }], Item Name).0').eval() == 'name');
-                test('template string', new Expression('`Hello, {0}!`("world")').eval() == 'Hello, world!');
-                test('each joins', new Expression('each(["hello", "world"], this, "")').eval() == 'helloworld');
-                test('each joins number', new Expression('each(["hello", "world"], this)').eval() == '0helloworld');
-                test('each joins boolean', new Expression('each([true, true, false], this)').eval() == 2);
-                test('player direct', new Expression('player.Book').eval(new ExpressionScope().with({ Book: 1000 })) == 1000);
-                test('table timestamp', new Expression('table_timestamp').eval(new ExpressionScope({ timestamp: 1000 })) == 1000);
-                test('random not equal', new Expression('random() != random()').eval());
-                test('sort numbers', new Expression('sort([0, 4, 7, 2, 5], -this).1').eval() == 2);
-                test('header difference', new Expression('difference(Level)').eval(new ExpressionScope().with({ Level: 200 }, { Level: 100 })) == 100);
-                test('array is empty', new Expression('[]').eval().join() == '');
-                test('array is not empty', new Expression('[0,1]').eval().join() == '0,1');
-                test('incomplete array is 0, 1, ', new Expression('[0, 1, ]').eval().join() == '0,1,');
-                test('incomplete array is , 0, 1', new Expression('[, 0, 1]').eval().join() == ',0,1');
-                test('object is empty', JSON.stringify(new Expression('{}').eval()) == '{}');
-                test('object is not empty', JSON.stringify(new Expression('{"key": "val"}').eval()) == '{"key":"val"}');
-                test('incomplete object is valid', JSON.stringify(new Expression('{"key": "val", }').eval()) == '{"key":"val"}');
-                test('incomplete object is valid', JSON.stringify(new Expression('{, "key": "val"}').eval()) == '{"key":"val"}');
-                test('incomplete object is valid', JSON.stringify(new Expression('{, "key": "val", }').eval()) == '{"key":"val"}');
-                test('object key is calculated', JSON.stringify(new Expression('{55 + 5: "val"}').eval()) == '{"60":"val"}');
-                test('object key is calculated with brackets', JSON.stringify(new Expression('{(55 + 5): "val"}').eval()) == '{"60":"val"}');
-                test('object value is calculated', JSON.stringify(new Expression('{"key": 55 + 5}').eval()) == '{"key":60}');
-                test('power 2', new Expression('2 ^ 3').eval() == 8);
-                test('power 3', new Expression('2 ^ 2 ^ 2').eval() == 16);
-                test('operator precedence', new Expression('4 * 3 ^ 2').eval() == 36);
-                test('operator precedence 2', new Expression('0 ^ (5 - 5) + 4 * 3 ^ 2').eval() == 37);
-                test('can invoke properties', new Expression('"Hello".length').eval() == 5);
-                test('can invoke methods', new Expression('"  Hello  ".trim()').eval() == 'Hello');
-                test('cannot invoke properties', new Expression('"Hello".length()').eval() == undefined);
-                test('can traverse self', new Expression('this + .this + ..this').eval(new ExpressionScope().addSelf(1).addSelf(2).addSelf(3)) == 6);
+                    execute () {
+                        let safeValue = (value) => {
+                            if (typeof value === 'string') {
+                                return `\`${value}\``;
+                            } else {
+                                return value;
+                            }
+                        }
+
+                        for (let test of this.tests) {
+                            try {
+                                let value = test.test();
+
+                                if (!eval(`${safeValue(value)} ${test.operator} ${safeValue(test.value)}`)) {
+                                    throw `Got ${value} but expected value ${test.operator} ${test.value}`;
+                                }
+
+                                test.error = false;
+                            } catch (e) {
+                                test.error = typeof e === 'object' ? e.message : e;
+                            }
+                        }
+
+                        let html = ''
+                        for (let { index, name, category, error } of _sort_des(this.tests, test => test.error ? 1 : 0)) {
+                            html += `
+                                <tr>
+                                    <td class="text-center">${index}</td>
+                                    <td class="text-center ${error ? 'failure' : 'success'}"><b>${error ? 'Failed' : 'OK'}</b></td>
+                                    <td class="text-center">${category}</td>
+                                    <td>${name}${error ? `&nbsp;&nbsp;-&nbsp;&nbsp;<span style="color: red;">${error}</span>` : ''}</td>
+                                </tr>
+                            `;
+                        }
+
+                        this.parent.innerHTML = html;
+                    }
+
+                    category (name) {
+                        this.currentCategory = name;
+                    }
+
+                    expect (name, test) {
+                        this.tests.push({
+                            index: this.tests.length + 1,
+                            name,
+                            test,
+                            category: this.currentCategory || '',
+                            operator: '===',
+                            value: undefined
+                        });
+
+                        return this;
+                    }
+
+                    equals (value) {
+                        this.tests[this.tests.length - 1].value = value;
+                        this.tests[this.tests.length - 1].operator = '===';
+                    }
+
+                    notEquals (value) {
+                        this.tests[this.tests.length - 1].value = value;
+                        this.tests[this.tests.length - 1].operator = '!==';
+                    }
+                })(document.getElementById('test-list'));
+
+                /*
+                    Tests
+                */
+                TE.category('checks')
+                TE.expect('true', () => true).equals(true);
+                TE.expect('false', () => false).equals(false);
+
+                TE.category('expr/cache');
+                TE.expect('cacheable', () => new Expression('1').cacheable).equals(true);
+                TE.expect('not cacheable', () => new Expression('random()').cacheable).equals(false);
+
+                TE.category('expr/postprocess');
+                TE.expect('simple math resolved', () => new Expression('15 + 5').resolved).equals(true);
+                TE.expect('math resolved', () => new Expression('15 + 5 * 5 - 99').resolved).equals(true);
+                TE.expect('string concat', () => new Expression('"Hello" + "World"').resolved).equals(true);
+
+                TE.category('expr/eval');
+                TE.expect('string concat eval', () => new Expression('"Hello" + "World"').eval()).equals('HelloWorld');
+                TE.expect('math eval', () => new Expression('2 * 5 + 10').eval()).equals(20);
+                TE.expect('condition eval', () => new Expression('10 > 5 ? 20 : 0').eval()).equals(20);
+                TE.expect('condition eval 2', () => new Expression('10 > 5 || false ? 20 : 0').eval()).equals(20);
+                TE.expect('condition eval 3', () => new Expression('false || 10 > 5 ? 20 : 0').eval()).equals(20);
+                TE.expect('condition eval 4', () => new Expression('false || !!false ? 0 : 20').eval()).equals(20);
+                TE.expect('broken expr', () => new Expression(' ? 20 : 0').tokens.length).notEquals(0);
+                TE.expect('or eval', () => new Expression('0 || 5').eval()).equals(5);
+                TE.expect('condition eval br left', () => new Expression('(5 > 0) && true ? 5 : 0').eval()).equals(5);
+                TE.expect('condition eval br right', () => new Expression('true && (5 > 0) ? 5 : 0').eval()).equals(5);
+                TE.expect('sub expr', () => new Expression('5;~0').eval()).equals(5);
+                TE.expect('array sum', () => new Expression('sum([0, 1, 2, 3, 4])').eval()).equals(10);
+                TE.expect('array each', () => new Expression('each([0, 1, 2, 3, 4], this)').eval()).equals(10);
+                TE.expect('sum', () => new Expression('sum(0, 1, 2, 3, 4)').eval()).equals(10);
+                TE.expect('sum sequence', () => new Expression('sum(makesequence(0, 4))').eval()).equals(10);
+                TE.expect('undefined', () => new Expression('undefined').eval()).equals(undefined);
+                TE.expect('each this', () => new Expression('each([0, 1, 2], 3 * this)').eval()).equals(9);
+                TE.expect('each loop_index', () => new Expression('each([0, 1, 2], loop_index)').eval()).equals(3);
+                TE.expect('this traversal', () => new Expression('each([0, 1, 2], len(loop_array) * this)').eval()).equals(9);
+                TE.expect('constants', () => new Expression('@none').eval()).equals(0);
+                TE.expect('inverts', () => new Expression('!!!false')).equals(true);
+                TE.expect('condition eval 5', () => new Expression('1 - (0.5 * 2) == 0').eval()).equals(true);
+                TE.expect('condition eval 6', () => new Expression('-(0.5 * 2) + 1 == 0').eval()).equals(true);
+                TE.expect('null', () => new Expression('null').eval()).equals(null);
+                TE.expect('empty', () => new Expression('').eval()).equals(false);
+                TE.expect('all true', () => new Expression('all(true, 5 > 1)').eval()).equals(true);
+                TE.expect('array distinct', () => new Expression('sum(distinct([1, 1, 1, 2]))').eval()).equals(3);
+                TE.expect('array slice', () => new Expression('sum(slice([1, 1, 1, 2], 0, 3))').eval()).equals(3);
+                TE.expect('array join', () => new Expression('join([0, 1, 2], "-")').eval()).equals('0-1-2');
+                TE.expect('array at', () => new Expression('at([0, 1, 2], 1)').eval()).equals(1);
+                TE.expect('array index of', () => new Expression('indexof([0, 1, 2], 1)').eval()).equals(1);
+                TE.expect('average', () => new Expression('average()').eval()).equals(0);
+                TE.expect('average 2', () => new Expression('average(0, 1)').eval()).equals(0.5);
+                TE.expect('object', () => new Expression('{ "key": 1 }["key"]').eval()).equals(1);
+                TE.expect('header local', () => new Expression('Album Items({ "Book": 1000 })').eval()).equals(1000);
+                TE.expect('nested header', () => new Expression('map([{ "Name": "name" }], Item Name(this)).0').eval()).equals('name');
+                TE.expect('nested header auto', () => new Expression('map([{ "Name": "name" }], Item Name).0').eval()).equals('name');
+                TE.expect('template string', () => new Expression('`Hello, {0}!`("world")').eval()).equals('Hello, world!');
+                TE.expect('each joins', () => new Expression('each(["hello", "world"], this, "")').eval()).equals('helloworld');
+                TE.expect('each joins number', () => new Expression('each(["hello", "world"], this)').eval()).equals('0helloworld');
+                TE.expect('each joins boolean', () => new Expression('each([true, true, false], this)').eval()).equals(2);
+                TE.expect('power 2', () => new Expression('2 ^ 3').eval()).equals(8);
+                TE.expect('power 3', () => new Expression('2 ^ 2 ^ 2').eval()).equals(16);
+                TE.expect('operator precedence', () => new Expression('4 * 3 ^ 2').eval()).equals(36);
+                TE.expect('operator precedence 2', () => new Expression('0 ^ (5 - 5) + 4 * 3 ^ 2').eval()).equals(37);
+                TE.expect('can invoke properties', () => new Expression('"Hello".length').eval()).equals(5);
+                TE.expect('can invoke methods', () => new Expression('"  Hello  ".trim()').eval()).equals('Hello');
+                TE.expect('cannot invoke properties', () => new Expression('"Hello".length()').eval()).equals(undefined);
+                TE.expect('random not equal', () => new Expression('random() != random()').eval()).equals(true);
+                TE.expect('sort numbers', () => new Expression('sort([0, 4, 7, 2, 5], -this).1').eval()).equals(2);
+                TE.expect('array is empty', () => new Expression('[]').eval().join()).equals('');
+                TE.expect('array is not empty', () => new Expression('[0,1]').eval().join()).equals('0,1');
+                TE.expect('incomplete array is 0, 1, ', () => new Expression('[0, 1, ]').eval().join()).equals('0,1,');
+                TE.expect('incomplete array is , 0, 1', () => new Expression('[, 0, 1]').eval().join()).equals(',0,1');
+
+                TE.category('expr/eval/scope');
+                TE.expect('scoped', () => new Expression('value == 5').eval(new ExpressionScope().add({ value: 5 }))).equals(true);
+                TE.expect('scoped no this', () => new Expression('this').eval()).equals(undefined);
+                TE.expect('scoped this', () => new Expression('this').eval(new ExpressionScope().addSelf(55))).equals(55);
+                TE.expect('this traversal 2', () => new Expression('each(this, len(.this))').eval(new ExpressionScope().addSelf([0, 1, 2]))).equals(9);
+                TE.expect('header', () => new Expression('Album Items').eval(new ExpressionScope().with({ Book: 1000 }))).equals(1000);
+                TE.expect('header this', () => new Expression('Album Items(this)').eval(new ExpressionScope().addSelf({ Book: 1000 }))).equals(1000);
+                TE.expect('player direct', () => new Expression('player.Book').eval(new ExpressionScope().with({ Book: 1000 }))).equals(1000);
+                TE.expect('table timestamp', () => new Expression('table_timestamp').eval(new ExpressionScope({ timestamp: 1000 }))).equals(1000);
+                TE.expect('header difference', () => new Expression('difference(Level)').eval(new ExpressionScope().with({ Level: 200 }, { Level: 100 }))).equals(100);
+                TE.expect('can traverse self', () => new Expression('this + .this + ..this').eval(new ExpressionScope().addSelf(1).addSelf(2).addSelf(3))).equals(6);
+
+                TE.category('expr/eval/object');
+                TE.expect('object is empty', () => JSON.stringify(new Expression('{}').eval())).equals('{}');
+                TE.expect('object is not empty', () => JSON.stringify(new Expression('{"key": "val"}').eval())).equals('{"key":"val"}');
+                TE.expect('incomplete object is valid', () => JSON.stringify(new Expression('{"key": "val", }').eval())).equals('{"key":"val"}');
+                TE.expect('incomplete object is valid', () => JSON.stringify(new Expression('{, "key": "val"}').eval())).equals('{"key":"val"}');
+                TE.expect('incomplete object is valid', () => JSON.stringify(new Expression('{, "key": "val", }').eval())).equals('{"key":"val"}');
+                TE.expect('object key is calculated', () => JSON.stringify(new Expression('{55 + 5: "val"}').eval())).equals('{"60":"val"}');
+                TE.expect('object key is calculated with brackets', () => JSON.stringify(new Expression('{(55 + 5): "val"}').eval())).equals('{"60":"val"}');
+                TE.expect('object value is calculated', () => JSON.stringify(new Expression('{"key": 55 + 5}').eval())).equals('{"key":60}');
+
+                TE.execute();
             });
         </script>
     </body>
