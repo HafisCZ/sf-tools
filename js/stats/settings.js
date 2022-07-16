@@ -1207,6 +1207,16 @@ const SettingsCommands = [
         },
         (root, type, tag, expr) => SFormat.Keyword('tag ') + SFormat.Constant(type) + SFormat.Keyword(' as ') + Expression.format(tag, undefined, ACTION_PROPS) + SFormat.Keyword(' if ') + Expression.format(expr, undefined, ACTION_PROPS)
     ).specialType(EditorType.ACTIONS),
+    new Command(
+        /^remove player if (.+)$/,
+        (root, expr) => {
+            let ast1 = new Expression(expr);
+            if (ast1.isValid()) {
+                root.addActionEntry('remove', 'player', ast1);
+            }
+        },
+        (root, expr) => SFormat.Keyword('remove ') + SFormat.Constant('player') + SFormat.Keyword(' if ') + Expression.format(expr, undefined, ACTION_PROPS)
+    ).specialType(EditorType.ACTIONS),
     /*
         Tracker
     */

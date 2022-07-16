@@ -360,6 +360,23 @@ const Actions = new (class {
             } else {
                 throw 'Invalid action';
             }
+        } else if (action == 'remove') {
+            const [conditionExpr] = args;
+
+            if (type == 'player') {
+                let playersToRemove = [];
+
+                for (const player of players) {
+                    let scope = new ExpressionScope().with(player, player).add({ origin });
+                    if (scope.eval(conditionExpr)) {
+                        playersToRemove.push(player.Data);
+                    }
+                }
+
+                await DatabaseManager.remove(playersToRemove);
+            } else {
+                throw 'Invalid action';
+            }
         } else {
             throw 'Invalid action';
         }
