@@ -2507,6 +2507,9 @@ class Settings {
         // Run simulator if needed
         this.evalSimulator(array, simulatorLimit, entryLimit);
 
+        array = [ ... array ];
+        unfilteredArray = [ ... unfilteredArray ];
+
         // Get segmented lists
         let arrayCurrent = this.createSegmentedArray(array, entry => [entry.player, entry.compare]);
         let arrayCompare = this.createSegmentedArray(array, entry => [entry.compare, entry.compare]);
