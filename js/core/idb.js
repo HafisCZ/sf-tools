@@ -809,7 +809,7 @@ const DatabaseManager = new (class {
 
     remove (players) {
         return new Promise(async (resolve, reject) => {
-            for (let { identifier, timestamp, group } of players) {
+            for (let { identifier, timestamp } of players) {
                 await this.Database.remove('players', [identifier, parseInt(timestamp)]);
                 this._removeMetadata(identifier, timestamp);
                 this._unload(identifier, timestamp);
