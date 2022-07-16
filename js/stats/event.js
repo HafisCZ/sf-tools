@@ -1393,7 +1393,7 @@ class GroupsView extends View {
         if (identifiers.length == 1) {
             return UI.show(UI.GroupDetail, identifiers[0]);
         }
-        
+
         var content = '';
         var content2 = '';
 
@@ -1885,7 +1885,6 @@ class FilesView extends View {
 
         this.$parent.find('[data-op="mark-all"]').click(() => this.markAll());
 
-        this.$advancedLeft = this.$parent.find('[data-op="advanced-left"]');
         this.$advancedCenter = this.$parent.find('[data-op="advanced-center"]');
         this.$simpleCenter = this.$parent.find('[data-op="simple-center"]');
 
@@ -1903,7 +1902,6 @@ class FilesView extends View {
     }
 
     setLayout (advanced, supressUpdate = false) {
-        this.$advancedLeft.toggle(advanced);
         this.$advancedCenter.toggle(advanced);
         this.$simpleCenter.toggle(!advanced);
         this.simple = !advanced;
@@ -2062,43 +2060,7 @@ class FilesView extends View {
         });
     }
 
-    updateFileList () {
-        let currentTags = Object.keys(DatabaseManager.findUsedTags(undefined));
-        if (currentTags.length > 1 || (currentTags.length == 1 && currentTags[0] !== 'undefined')) {
-            let content = `
-                <div data-tag="*" class="ui basic tiny button">All</div>
-                <div data-tag="" class="ui basic black tiny button">None</div>
-            `;
-            for (const name of currentTags) {
-                if (name !== 'undefined') {
-                    content += `
-                        <div data-tag="${name}" class="ui basic tiny button" style="background-color: ${_strToHSL(name)}; color: white;">${name}</div>
-                    `;
-                }
-            }
-
-            this.$tagFilter.html(content);
-            this.$tagFilter.show();
-            if (this.tagFilter !== '' && this.tagFilter !== undefined && !currentTags.includes(this.tagFilter)) {
-                this.tagFilter = undefined;
-            }
-
-            document.querySelector(`[data-tag="${ typeof this.tagFilter === 'undefined' ? '*' : this.tagFilter }"]`).classList.remove('basic');
-
-            this.$parent.find('[data-tag]').click((event) => {
-                const tag = event.currentTarget.dataset.tag;
-                const tagToFilter = tag === '*' ? undefined : tag;
-
-                if (tagToFilter !== this.tagFilter) {
-                    this.tagFilter = tagToFilter;
-                    this.show(true);
-                }
-            });
-        } else {
-            this.$tagFilter.hide();
-            this.tagFilter = undefined;
-        }
-
+    updateFileSearchResults () {
         let currentFilesAll = (SiteOptions.groups_empty ? _int_keys(DatabaseManager.Timestamps) : DatabaseManager.PlayerTimestamps).map((ts) => {
             return {
                 timestamp: ts,
@@ -2138,15 +2100,32 @@ class FilesView extends View {
             return typeof this.tagFilter === 'undefined' || tagList.includes(this.tagFilter) || (tagList.includes('undefined') && this.tagFilter === '');
         });
 
+        if (_present(this.expressionFilter) && this.expressionFilter.isValid()) {
+            currentFilesAll = currentFilesAll.filter(({ tags: { tagList }, timestamp, version, origin }) => {
+                let file = DatabaseManager._getFile(null, [ timestamp ]);
+
+                return this.expressionFilter.eval(new ExpressionScope().addSelf(
+                    Object.assign(
+                        DatabaseManager._getFile(null, [ timestamp ]),
+                        {
+                            timestamp,
+                            version,
+                            origin,
+                            tags: tagList
+                        }
+                    )
+                ));
+            });
+        }
+
         this.currentFiles = _array_to_hash(currentFilesAll, file => [file.timestamp, file]);
 
         this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags: { tagContent } }]) => {
-            const players = DatabaseManager.Timestamps.array(timestamp).filter(id => DatabaseManager._isPlayer(id));
             const hidden = _dig(DatabaseManager.Metadata, timestamp, 'hidden');
 
             return `
                 <tr data-tr-timestamp="${timestamp}" ${hidden ? 'style="color: gray;"' : ''}>
-                    <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle ${ this.selectedFiles.includes(timestamp) ? '' : 'outline ' }icon"></i></td>
+                    <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle ${ this.selectedFiles.includes(parseInt(timestamp)) ? '' : 'outline ' }icon"></i></td>
                     <td class="text-center">${ prettyDate }</td>
                     <td class="text-center">${ playerCount }</td>
                     <td class="text-center">${ groupCount }</td>
@@ -2204,6 +2183,91 @@ class FilesView extends View {
             const timestamp = parseInt(event.currentTarget.dataset.edit);
             PopupController.open(FileEditPopup, timestamp, () => this.show());
         });
+    }
+
+    updateTagFilterButtons (parent, filter) {
+        let selector = `[data-tag="${ typeof this.tagFilter === 'undefined' ? '*' : this.tagFilter }"]`;
+
+        this.$tagFilter.find('[data-tag]').addClass('basic');
+        this.$tagFilter.find(selector).removeClass('basic');
+    }
+
+    updateFileList () {
+        // Tag filters
+        let currentTags = Object.keys(DatabaseManager.findUsedTags(undefined));
+        if (currentTags.length > 1 || (currentTags.length == 1 && currentTags[0] !== 'undefined')) {
+            let content = `
+                <div data-tag="*" class="ui basic tiny button">All</div>
+                <div data-tag="" class="ui basic black tiny button">None</div>
+            `;
+
+            for (const name of currentTags) {
+                if (name !== 'undefined') {
+                    content += `
+                        <div data-tag="${name}" class="ui basic tiny button" style="background-color: ${_strToHSL(name)}; color: white;">${name}</div>
+                    `;
+                }
+            }
+
+            this.$tagFilter.html(content);
+            this.$tagFilter.show();
+
+            if (this.tagFilter !== '' && this.tagFilter !== undefined && !currentTags.includes(this.tagFilter)) {
+                this.tagFilter = undefined;
+            }
+
+            this.updateTagFilterButtons();
+
+            this.$parent.find('[data-tag]').click((event) => {
+                const tag = event.currentTarget.dataset.tag;
+                const tagToFilter = tag === '*' ? undefined : tag;
+
+                if (tagToFilter !== this.tagFilter) {
+                    this.tagFilter = tagToFilter;
+
+                    this.updateTagFilterButtons();
+                    this.updateFileSearchResults();
+                }
+            });
+        } else {
+            this.$tagFilter.hide();
+            this.tagFilter = undefined;
+        }
+
+        // Expression filter
+        this.$filters.html(`
+            <div class="field">
+                <label>Expression</label>
+                <div class="ta-wrapper">
+                    <input class="ta-area" type="text" placeholder="Your expression">
+                    <div class="ta-content" style="width: 100%; margin-top: -2.3em; margin-left: 1em;"></div>
+                </div>
+            </div>
+        `);
+
+        let $field = this.$filters.find('.ta-area');
+        let $parent = $field.closest('.field');
+
+        $field.on('input change', (event) => {
+            let content = event.currentTarget.value;
+
+            this.expressionFilter = new Expression(content);
+            this.$filters.find('.ta-content').html(
+                Expression.format(
+                    content,
+                    undefined,
+                    ['timestamp', 'players', 'groups', 'version', 'origin', 'tags']
+                )
+            );
+
+            if (this.expressionFilter.empty || this.expressionFilter.isValid()) {
+                $parent.removeClass('error');
+            } else {
+                $parent.addClass('error');
+            }
+
+            this.updateFileSearchResults();
+        }).val(this.expressionFilter ? this.expressionFilter.string : '').trigger('input');
     }
 
     updateLists () {

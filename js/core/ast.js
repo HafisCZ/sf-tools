@@ -146,6 +146,7 @@ ExpressionScope.DEFAULT_SCOPE = new ExpressionScope();
 
 class Expression {
     constructor (string, settings = null) {
+        this.string = string;
         this.tokens = string.replace(/\\\"/g, '\u2023').replace(/\\\'/g, '\u2043').split(ExpressionRegExp).map(token => token.trim()).filter(token => token.length);
         this.root = false;
 
