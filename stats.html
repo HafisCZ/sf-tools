@@ -293,23 +293,13 @@
 
         <!-- PlayersView -->
         <div id="view-players" class="ui main container css-hidden sf-container">
-            <div class="ui basic segment margin-none-bottom padding-none-bottom">
-                <div class="ui grid">
-                    <div class="three wide left aligned column"></div>
-                    <div class="ten wide middle aligned column">
-                        <div class="ui fluid icon input pl-searchbar css-searchbar-fix">
-                            <input class="prompt" type="text" placeholder="Filter players by server, class, guild and/or username" data-op="filter">
-                        </div>
-                    </div>
-                    <div class="three wide column">
-                        <div class="ui small basic icon right floated buttons">
-                            <button class="ui button" data-position="bottom center" data-tooltip="Custom settings" data-op="configure"><i class="cog icon"></i></button>
-                        </div>
-                    </div>
-                </div>
+            <div class="ui fluid icon input pl-searchbar css-searchbar-fix" style="margin-bottom: 1.5rem;">
+                <input class="prompt" type="text" placeholder="Filter players by server, class, guild and/or username" data-op="filter">
             </div>
-            <div class="ui five column grid" data-op="list"></div>
-            <div class="ui five column grid margin-large-top" data-op="list-secondary"></div>
+            <div>
+                <div class="ui five column grid" data-op="list"></div>
+                <div data-op="dynamic-loader"></div>
+            </div>
             <div class="css-ol-show-other">
                 <div class="ui checkbox" data-op="others">
                     <input type="checkbox">

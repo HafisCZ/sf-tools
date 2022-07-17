@@ -1461,8 +1461,8 @@ class PlayersView extends View {
         super(parent);
 
         this.$list = this.$parent.find('[data-op="list"]');
-        this.$list2 = this.$parent.find('[data-op="list-secondary"]');
 
+        // Global filters
         this.$parent.find('[data-op="hidden"]').checkbox(SiteOptions.players_hidden ? 'check' : 'uncheck').change((event) => {
             SiteOptions.players_hidden = !SiteOptions.players_hidden;
 
@@ -1480,13 +1480,15 @@ class PlayersView extends View {
         this.hidden = SiteOptions.players_hidden;
         this.others = SiteOptions.players_other;
 
-        this.$context = $('<div class="ui custom popup right center"></div>');
-        this.$parent.prepend(this.$context);
+        this.observerCallback = null;
+        new IntersectionObserver(() => {
+            if (this.observerCallback) {
+                this.observerCallback();
+            }
+        }, { threshold: 1.0 }).observe(this.$parent.find('[data-op="dynamic-loader"]').get(0));
 
-        this.$configure = this.$parent.find('[data-op="configure"]').click(() => {
-            UI.SettingsFloat.show('me', 'me', PredefinedTemplates['Me Default']);
-        });
-
+        // Context menu
+        this.$context = $('<div class="ui custom popup right center"></div>').prependTo(this.$parent);
         this.$context.context('create', {
             items: [
                 {
@@ -1556,9 +1558,8 @@ class PlayersView extends View {
                 }
             ];
 
-            this.shidden = false;
-            this.sother = false;
-            this.nosep = false;
+            this.hidden_override = false;
+            this.other_override = false;
 
             for (var i = 1; i < filter.length; i += 2) {
                 var key = filter[i];
@@ -1630,11 +1631,12 @@ class PlayersView extends View {
                         });
                     }
                 } else if (key == 'a') {
-                    this.nosep = true;
+                    this.hidden_override = true;
+                    this.other_override = true;
                 } else if (key == 'h') {
-                    this.shidden = true;
+                    this.hidden_override = true;
                 } else if (key == 'o') {
-                    this.sother = true;
+                    this.other_override = true;
                 }
             }
 
@@ -1642,7 +1644,7 @@ class PlayersView extends View {
 
             for (var player of Object.values(DatabaseManager.Players)) {
                 var hidden = DatabaseManager.Hidden.has(player.Latest.Identifier);
-                if (this.hidden || !hidden || this.shidden) {
+                if (this.hidden || !hidden || this.hidden_override) {
                     var matches = true;
                     for (var term of terms) {
                         matches &= term.test(term.arg, player.Latest, player.LatestTimestamp);
@@ -1670,64 +1672,53 @@ class PlayersView extends View {
     }
 
     refresh () {
-        // Configuration indicator
-        var players = this.entries;
+        let rows = [];
 
-        var content = '';
-        var content2 = '';
+        let filteredEntries = this.entries.filter(player => {
+            let visible = !DatabaseManager.Hidden.has(player.Latest.Identifier);
 
-        var index = 0;
-        var index2 = 0;
+            return visible || this.hidden || this.hidden_override;
+        })
 
-        for (var i = 0, player; player = players[i]; i++) {
-            var hidden = DatabaseManager.Hidden.has(player.Latest.Identifier);
-            if (this.hidden || !hidden || this.shidden) {
-                if (player.Own || this.nosep) {
-                    content += `
-                        ${ index % 5 == 0 ? `${ index != 0 ? '</div>' : '' }<div class="row">` : '' }
-                        <div class="column">
-                            <div class="ui segment clickable ${ DatabaseManager.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ player.Latest.Identifier }">
-                                <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
-                                <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
-                                <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
-                                <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
-                            </div>
-                        </div>
-                    `;
-                    index++;
-                } else if (this.others || this.sother) {
-                    content2 += `
-                        ${ index2 % 5 == 0 ? `${ index2 != 0 ? '</div>' : '' }<div class="row">` : '' }
-                        <div class="column">
-                            <div class="ui segment clickable ${ DatabaseManager.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ hidden ? 'css-entry-hidden' : '' }" data-id="${ player.Latest.Identifier }">
-                                <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
-                                <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
-                                <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
-                                <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
-                            </div>
-                        </div>
-                    `;
-                    index2++;
-                }
+        for (let i = 0; i < filteredEntries.length; i += 5) {
+            rows.push(`
+                <div class="row">
+                    ${
+                        filteredEntries.slice(i, i + 5).map((player) => `
+                                <div class="column">
+                                    <div class="ui segment clickable ${ DatabaseManager.Latest != player.LatestTimestamp ? 'border-red' : ''} ${ DatabaseManager.Hidden.has(player.Latest.Identifier) ? 'css-entry-hidden' : '' }" data-id="${ player.Latest.Identifier }">
+                                        <span class="css-timestamp">${ formatDate(player.LatestTimestamp) }</span>
+                                        <img class="ui medium centered image" src="res/class${ player.Latest.Class }.png">
+                                        <h3 class="ui margin-medium-top margin-none-bottom centered muted header">${ player.Latest.Prefix }</h3>
+                                        <h3 class="ui margin-none-top centered header">${ player.Latest.Name }</h3>
+                                    </div>
+                                </div>
+                        `).join('')
+                    }
+                </div>
+            `);
+        }
+
+        this.observerCallback = () => {
+            let $fields = $(rows.splice(0, 4).join('')).appendTo(this.$list).find('[data-id]');
+            $fields.click(function () {
+                UI.show(UI.PlayerHistory, $(this).data('id'));
+            })
+
+            this.$context.context('bind', $fields);
+
+            if (rows.length == 0) {
+                this.observerCallback = null;
             }
         }
 
-        // Add endings
-        content += '</div>';
-        content2 += '</div>';
+        this.$list.html('');
 
-        this.$list.html(index == 0 ? content2 : content);
-        this.$list2.html(index == 0 ? '' : content2);
-
-        this.$parent.find('[data-id]').click(function () {
-            UI.show(UI.PlayerHistory, $(this).attr('data-id'));
-        });
-
-        this.$context.context('bind', this.$parent.find('[data-id]'));
+        // Trigger callback once
+        this.observerCallback();
     }
 
     load () {
-        this.$configure.settingsButton(SettingsManager.exists('me'));
         this.$filter.trigger('change');
     }
 }
