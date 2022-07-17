@@ -1952,16 +1952,24 @@ class FilesView extends View {
                 }
             }
 
+            let visibleEntries = this.$results.find('tr[data-tr-mark]').map(function () {
+                return $(this).data("tr-mark");
+            }).toArray();
+
             let noneToMark = _empty(playersToMark);
             if (noneToMark && !_empty(playersToIgnore)) {
                 for (let uuid of playersToIgnore) {
                     delete this.selectedPlayers[uuid];
-                    $(`[data-mark="${uuid}"] > i`).addClass('outline');
+                    if (visibleEntries.includes(uuid)) {
+                        this.$results.find(`[data-mark="${uuid}"] > i`).addClass('outline');
+                    }
                 }
             } else if (!noneToMark) {
                 for (let uuid of playersToMark) {
                     this.selectedPlayers[uuid] = this.currentPlayers[uuid];
-                    $(`[data-mark="${uuid}"] > i`).removeClass('outline');
+                    if (visibleEntries.includes(uuid)) {
+                        this.$results.find(`[data-mark="${uuid}"] > i`).removeClass('outline');
+                    }
                 }
             }
         }
@@ -2007,7 +2015,7 @@ class FilesView extends View {
             const entries = players.sort((a, b) => b.timestamp - a.timestamp).map(player => {
                 return `
                     <tr data-tr-mark="${_uuid(player)}" ${player.hidden ? 'style="color: gray;"' : ''}>
-                        <td class="selectable clickable text-center" data-mark="${_uuid(player)}"><i class="circle ${ this.selectedPlayers[_uuid(player)] ? '' : 'outline ' }icon"></i></td>
+                        <td class="selectable clickable text-center" data-mark="${_uuid(player)}"><i class="circle outline icon"></i></td>
                         <td class="text-center">${ this.timeMap[player.timestamp] }</td>
                         <td class="text-center">${ this.prefixMap[player.prefix] }</td>
                         <td>${ player.name }</td>
@@ -2061,12 +2069,18 @@ class FilesView extends View {
 
                     this.lastSelectedPlayer = uuid;
                     this.updateSelectedCounter();
+                }).each((index, element) => {
+                    if (this.selectedPlayers[element.dataset.mark]) {
+                        element.children[0].classList.remove('outline');
+                    }
                 });
 
                 if (entries.length == 0) {
                     this.resultsListObserverCallback = null;
                 }
             }
+
+            this.resultsListObserverCallback();
         });
     }
 
