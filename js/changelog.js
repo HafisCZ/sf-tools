@@ -4,7 +4,8 @@ const CHANGELOG = {
             'Added <code>time</code> format function',
             'Added <code>$$</code> prefix for unfiltered table variables',
             'Fixed selection screen appearing for players and guilds when only one exists',
-            'Fixed gladiator for built-in simulator'
+            'Fixed gladiator for built-in simulator',
+            'Fixed low performance when using advanced file list with too many players'
         ],
         'Pet Simulator': [
             'Added best pets for each class to simulate all'

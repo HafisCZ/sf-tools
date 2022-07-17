@@ -1888,6 +1888,13 @@ class FilesView extends View {
         this.$advancedCenter = this.$parent.find('[data-op="advanced-center"]');
         this.$simpleCenter = this.$parent.find('[data-op="simple-center"]');
 
+        this.resultsListObserverCallback = null;
+        new IntersectionObserver(() => {
+            if (this.resultsListObserverCallback) {
+                this.resultsListObserverCallback();
+            }
+        }, { threshold: 1.0 }).observe(this.$advancedCenter.find('[data-op="dynamic-loader"]').get(0));
+
         this.prepareCheckbox('advanced', 'advanced');
         SiteOptions.onChange('advanced', enabled => this.setLayout(enabled));
 
@@ -1997,66 +2004,69 @@ class FilesView extends View {
                 return memo;
             }, {});
 
-            const sortedPlayers = players.sort((a, b) => b.timestamp - a.timestamp);
-
-            let notice = ''
-            if (sortedPlayers.length > 250) {
-                notice = `<tr style="height: 2em;"><td colspan="6" class="text-center" style="font-weight: bold; line-height: 2em;">Another ${sortedPlayers.length - 250} entries have been hidden to improve performance</td></tr>`
-            }
-
-            this.$results.html(sortedPlayers.slice(0, 250).map(player => `
-                <tr data-tr-mark="${_uuid(player)}" ${player.hidden ? 'style="color: gray;"' : ''}>
-                    <td class="selectable clickable text-center" data-mark="${_uuid(player)}"><i class="circle ${ this.selectedPlayers[_uuid(player)] ? '' : 'outline ' }icon"></i></td>
-                    <td class="text-center">${ this.timeMap[player.timestamp] }</td>
-                    <td class="text-center">${ this.prefixMap[player.prefix] }</td>
-                    <td>${ player.name }</td>
-                    <td>${ this.groupMap[player.group] || '' }</td>
-                    <td class="text-center">${ player.origin || '' }</td>
-                    <td>${ player.tag ? `<div class="ui horizontal label" style="background-color: ${_strToHSL(player.tag)}; color: white;">${player.tag}</div>` : '' }</td>
-                </tr>
-            `).join('') + notice);
-
-            this.$parent.find('[data-mark]').click((event) => {
-                let uuid = event.currentTarget.dataset.mark;
-
-                if (event.shiftKey && this.lastSelectedPlayer && this.lastSelectedPlayer != uuid) {
-                    // Elements
-                    const $startSelector = $(`tr[data-tr-mark="${this.lastSelectedPlayer}"]`);
-                    const $endSelector = $(`tr[data-tr-mark="${uuid}"]`);
-                    // Element indexes
-                    const startSelectorIndex = $startSelector.index();
-                    const endSelectorIndex = $endSelector.index();
-                    const selectDown = startSelectorIndex < endSelectorIndex;
-                    const elementArray = selectDown ? $startSelector.nextUntil($endSelector) : $endSelector.nextUntil($startSelector);
-                    // Get list of timestamps to be changed
-                    const toChange = [ uuid, this.lastSelectedPlayer ];
-                    for (const obj of elementArray.toArray()) {
-                        toChange.push(obj.dataset.trMark);
-                    }
-
-                    // Change all timestamps
-                    if (uuid in this.selectedPlayers) {
-                        for (const mark of toChange) {
-                            $(`[data-mark="${mark}"] > i`).addClass('outline');
-                            delete this.selectedPlayers[mark];
-                        }
-                    } else {
-                        for (const mark of toChange) {
-                            $(`[data-mark="${mark}"] > i`).removeClass('outline');
-                            this.selectedPlayers[mark] = this.currentPlayers[mark];
-                        }
-                    }
-                } else {
-                    if ($(`[data-mark="${uuid}"] > i`).toggleClass('outline').hasClass('outline')) {
-                        delete this.selectedPlayers[uuid];
-                    } else {
-                        this.selectedPlayers[uuid] = this.currentPlayers[uuid];
-                    }
-                }
-
-                this.lastSelectedPlayer = uuid;
-                this.updateSelectedCounter();
+            const entries = players.sort((a, b) => b.timestamp - a.timestamp).map(player => {
+                return `
+                    <tr data-tr-mark="${_uuid(player)}" ${player.hidden ? 'style="color: gray;"' : ''}>
+                        <td class="selectable clickable text-center" data-mark="${_uuid(player)}"><i class="circle ${ this.selectedPlayers[_uuid(player)] ? '' : 'outline ' }icon"></i></td>
+                        <td class="text-center">${ this.timeMap[player.timestamp] }</td>
+                        <td class="text-center">${ this.prefixMap[player.prefix] }</td>
+                        <td>${ player.name }</td>
+                        <td>${ this.groupMap[player.group] || '' }</td>
+                        <td class="text-center">${ player.origin || '' }</td>
+                        <td>${ player.tag ? `<div class="ui horizontal label" style="background-color: ${_strToHSL(player.tag)}; color: white;">${player.tag}</div>` : '' }</td>
+                    </tr>
+                `
             });
+
+            this.$results.empty();
+
+            this.resultsListObserverCallback = () => {
+                $(entries.splice(0, 25).join('')).appendTo(this.$results).find('[data-mark]').click((event) => {
+                    let uuid = event.currentTarget.dataset.mark;
+
+                    if (event.shiftKey && this.lastSelectedPlayer && this.lastSelectedPlayer != uuid) {
+                        // Elements
+                        const $startSelector = $(`tr[data-tr-mark="${this.lastSelectedPlayer}"]`);
+                        const $endSelector = $(`tr[data-tr-mark="${uuid}"]`);
+                        // Element indexes
+                        const startSelectorIndex = $startSelector.index();
+                        const endSelectorIndex = $endSelector.index();
+                        const selectDown = startSelectorIndex < endSelectorIndex;
+                        const elementArray = selectDown ? $startSelector.nextUntil($endSelector) : $endSelector.nextUntil($startSelector);
+                        // Get list of timestamps to be changed
+                        const toChange = [ uuid, this.lastSelectedPlayer ];
+                        for (const obj of elementArray.toArray()) {
+                            toChange.push(obj.dataset.trMark);
+                        }
+
+                        // Change all timestamps
+                        if (uuid in this.selectedPlayers) {
+                            for (const mark of toChange) {
+                                $(`[data-mark="${mark}"] > i`).addClass('outline');
+                                delete this.selectedPlayers[mark];
+                            }
+                        } else {
+                            for (const mark of toChange) {
+                                $(`[data-mark="${mark}"] > i`).removeClass('outline');
+                                this.selectedPlayers[mark] = this.currentPlayers[mark];
+                            }
+                        }
+                    } else {
+                        if ($(`[data-mark="${uuid}"] > i`).toggleClass('outline').hasClass('outline')) {
+                            delete this.selectedPlayers[uuid];
+                        } else {
+                            this.selectedPlayers[uuid] = this.currentPlayers[uuid];
+                        }
+                    }
+
+                    this.lastSelectedPlayer = uuid;
+                    this.updateSelectedCounter();
+                });
+
+                if (entries.length == 0) {
+                    this.resultsListObserverCallback = null;
+                }
+            }
         });
     }
 
