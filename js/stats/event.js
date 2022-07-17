@@ -1712,7 +1712,7 @@ class PlayersView extends View {
             }
         }
 
-        this.$list.html('');
+        this.$list.empty();
 
         // Trigger callback once
         this.observerCallback();
@@ -1885,6 +1885,13 @@ class FilesView extends View {
                 this.resultsListObserverCallback();
             }
         }, { threshold: 1.0 }).observe(this.$advancedCenter.find('[data-op="dynamic-loader"]').get(0));
+
+        this.resultsSimpleListObserverCallback = null;
+        new IntersectionObserver(() => {
+            if (this.resultsSimpleListObserverCallback) {
+                this.resultsSimpleListObserverCallback();
+            }
+        }, { threshold: 1.0 }).observe(this.$simpleCenter.find('[data-op="dynamic-loader"]').get(0));
 
         this.prepareCheckbox('advanced', 'advanced');
         SiteOptions.onChange('advanced', enabled => this.setLayout(enabled));
@@ -2134,13 +2141,14 @@ class FilesView extends View {
         }
 
         this.currentFiles = _array_to_hash(currentFilesAll, file => [file.timestamp, file]);
+        this.$resultsSimple.empty();
 
-        this.$resultsSimple.html(_sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags: { tagContent } }]) => {
+        const entries = _sort_des(Object.entries(this.currentFiles), v => v[0]).map(([timestamp, { prettyDate, playerCount, groupCount, version, origin, tags: { tagContent } }]) => {
             const hidden = _dig(DatabaseManager.Metadata, timestamp, 'hidden');
 
             return `
                 <tr data-tr-timestamp="${timestamp}" ${hidden ? 'style="color: gray;"' : ''}>
-                    <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle ${ this.selectedFiles.includes(parseInt(timestamp)) ? '' : 'outline ' }icon"></i></td>
+                    <td class="selectable clickable text-center" data-timestamp="${timestamp}"><i class="circle outline icon"></i></td>
                     <td class="text-center">${ prettyDate }</td>
                     <td class="text-center">${ playerCount }</td>
                     <td class="text-center">${ groupCount }</td>
@@ -2150,54 +2158,68 @@ class FilesView extends View {
                     <td class="clickable text-center" data-edit="${timestamp}"><i class="wrench icon"></i></td>
                 </tr>
             `;
-        }).join(''));
+        });
 
-        this.$parent.find('[data-timestamp]').click((event) => {
-            const timestamp = parseInt(event.currentTarget.dataset.timestamp);
+        this.resultsSimpleListObserverCallback = () => {
+            let $entries = $(entries.splice(0, 25).join('')).appendTo(this.$resultsSimple);
 
-            if (event.shiftKey && this.lastSelectedTimestamp && this.lastSelectedTimestamp != timestamp) {
-                // Elements
-                const $startSelector = $(`tr[data-tr-timestamp="${this.lastSelectedTimestamp}"]`);
-                const $endSelector = $(`tr[data-tr-timestamp="${timestamp}"]`);
-                // Element indexes
-                const startSelectorIndex = $startSelector.index();
-                const endSelectorIndex = $endSelector.index();
-                const selectDown = startSelectorIndex < endSelectorIndex;
-                const elementArray = selectDown ? $startSelector.nextUntil($endSelector) : $endSelector.nextUntil($startSelector);
-                // Get list of timestamps to be changed
-                const toChange = [ timestamp, this.lastSelectedTimestamp ];
-                for (const obj of elementArray.toArray()) {
-                    toChange.push(parseInt(obj.dataset.trTimestamp));
-                }
+            $entries.find('[data-timestamp]').click((event) => {
+                const timestamp = parseInt(event.currentTarget.dataset.timestamp);
 
-                // Change all timestamps
-                if (_has(this.selectedFiles, timestamp)) {
-                    for (const ts of toChange) {
-                        $(`[data-timestamp="${ts}"] > i`).addClass('outline');
-                        _remove(this.selectedFiles, ts);
+                if (event.shiftKey && this.lastSelectedTimestamp && this.lastSelectedTimestamp != timestamp) {
+                    // Elements
+                    const $startSelector = $(`tr[data-tr-timestamp="${this.lastSelectedTimestamp}"]`);
+                    const $endSelector = $(`tr[data-tr-timestamp="${timestamp}"]`);
+                    // Element indexes
+                    const startSelectorIndex = $startSelector.index();
+                    const endSelectorIndex = $endSelector.index();
+                    const selectDown = startSelectorIndex < endSelectorIndex;
+                    const elementArray = selectDown ? $startSelector.nextUntil($endSelector) : $endSelector.nextUntil($startSelector);
+                    // Get list of timestamps to be changed
+                    const toChange = [ timestamp, this.lastSelectedTimestamp ];
+                    for (const obj of elementArray.toArray()) {
+                        toChange.push(parseInt(obj.dataset.trTimestamp));
+                    }
+
+                    // Change all timestamps
+                    if (_has(this.selectedFiles, timestamp)) {
+                        for (const ts of toChange) {
+                            $(`[data-timestamp="${ts}"] > i`).addClass('outline');
+                            _remove(this.selectedFiles, ts);
+                        }
+                    } else {
+                        for (const ts of toChange) {
+                            $(`[data-timestamp="${ts}"] > i`).removeClass('outline');
+                            _push_unless_includes(this.selectedFiles, ts);
+                        }
                     }
                 } else {
-                    for (const ts of toChange) {
-                        $(`[data-timestamp="${ts}"] > i`).removeClass('outline');
-                        _push_unless_includes(this.selectedFiles, ts);
+                    if ($(`[data-timestamp="${timestamp}"] > i`).toggleClass('outline').hasClass('outline')) {
+                        _remove(this.selectedFiles, timestamp);
+                    } else {
+                        this.selectedFiles.push(timestamp);
                     }
                 }
-            } else {
-                if ($(`[data-timestamp="${timestamp}"] > i`).toggleClass('outline').hasClass('outline')) {
-                    _remove(this.selectedFiles, timestamp);
-                } else {
-                    this.selectedFiles.push(timestamp);
+
+                this.lastSelectedTimestamp = timestamp;
+                this.updateSelectedCounter();
+            }).each((index, element) => {
+                if (this.selectedFiles.includes(parseInt(element.dataset.timestamp))) {
+                    element.children[0].classList.remove('outline');
                 }
+            });
+
+            $entries.find('[data-edit]').click((event) => {
+                const timestamp = parseInt(event.currentTarget.dataset.edit);
+                PopupController.open(FileEditPopup, timestamp, () => this.show());
+            });
+
+            if (entries.length == 0) {
+                this.resultsSimpleListObserverCallback = null;
             }
+        }
 
-            this.lastSelectedTimestamp = timestamp;
-            this.updateSelectedCounter();
-        });
-
-        this.$parent.find('[data-edit]').click((event) => {
-            const timestamp = parseInt(event.currentTarget.dataset.edit);
-            PopupController.open(FileEditPopup, timestamp, () => this.show());
-        });
+        this.resultsSimpleListObserverCallback();
     }
 
     updateTagFilterButtons (parent, filter) {
