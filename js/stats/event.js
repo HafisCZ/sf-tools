@@ -2221,14 +2221,14 @@ class FilesView extends View {
         let currentTags = Object.keys(DatabaseManager.findUsedTags(undefined));
         if (currentTags.length > 1 || (currentTags.length == 1 && currentTags[0] !== 'undefined')) {
             let content = `
-                <div data-tag="*" class="ui basic tiny button">All</div>
-                <div data-tag="" class="ui basic black tiny button">None</div>
+                <div data-tag="*" class="ui basic tiny button" style="margin-bottom: 0.5rem;">All</div>
+                <div data-tag="" class="ui basic black tiny button" style="margin-bottom: 0.5rem;">None</div>
             `;
 
             for (const name of currentTags) {
                 if (name !== 'undefined') {
                     content += `
-                        <div data-tag="${name}" class="ui basic tiny button" style="background-color: ${_strToHSL(name)}; color: white;">${name}</div>
+                        <div data-tag="${name}" class="ui basic tiny button" style="background-color: ${_strToHSL(name)}; color: white; margin-bottom: 0.5rem">${name}</div>
                     `;
                 }
             }
