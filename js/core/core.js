@@ -234,10 +234,14 @@ const ProfileManager = new (class {
             'own': DEFAULT_PROFILE_A,
             'month_old': DEFAULT_PROFILE_B
         });
+
+        for (const [key, profile] of Object.entries(this.profiles)) {
+            profile.key = key
+        }
     }
 
     isEditable (key) {
-        return !['default', 'own', 'month_old'].includes(key) && SiteOptions.profile != key;
+        return !this.isDefault(key) && UI.profile.key != key;
     }
 
     getDefaultProfile () {
@@ -253,7 +257,7 @@ const ProfileManager = new (class {
     }
 
     getActiveProfileName () {
-        return SiteOptions.profile || 'default';
+        return _dig(UI, 'profile', 'key') || SiteOptions.profile || 'default';
     }
 
     setActiveProfile (name) {
@@ -270,12 +274,16 @@ const ProfileManager = new (class {
         Preferences.set('db_profiles', this.profiles);
     }
 
+    isDefault(name) {
+        return ['default', 'own', 'month_old'].includes(name);
+    }
+
     getProfiles () {
         return [
             [ 'default', this.profiles['default'] ],
             [ 'own', this.profiles['own'] ],
             [ 'month_old', this.profiles['month_old'] ],
-            ..._sort_des(Object.entries(this.profiles).filter(([key, ]) => this.isEditable(key)), ([, val]) => val.updated || 0)
+            ..._sort_des(Object.entries(this.profiles).filter(([key, ]) => !this.isDefault(key)), ([, val]) => val.updated || 0)
         ];
     }
 })();
