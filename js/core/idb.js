@@ -1,5 +1,5 @@
-const DATABASE_PARAMS_V5 = [
-    'sftools',
+const DATABASE_NAME = 'sftools';
+const DATABASE_PARAMS = [
     6,
     {
         players: {
@@ -263,8 +263,8 @@ class MigrationUtils {
 }
 
 class DatabaseUtils {
-    static async createSession() {
-        return new IndexedDBWrapper(... DATABASE_PARAMS_V5).open();
+    static async createSession(slot) {
+        return new IndexedDBWrapper(`${DATABASE_NAME}${slot ? `_${slot}` : ''}`, ... DATABASE_PARAMS).open();
     }
 
     static createTemporarySession () {
@@ -289,10 +289,6 @@ class DatabaseUtils {
 
             }
         })();
-    }
-
-    static getNameFromSlot (slot = 0) {
-        return slot ? `database_${slot}` : 'database';
     }
 
     static filterArray (profile, type = 'primary') {
@@ -630,7 +626,7 @@ const DatabaseManager = new (class {
     }
 
     async _loadDatabase (profile) {
-        this.Database = await DatabaseUtils.createSession();
+        this.Database = await DatabaseUtils.createSession(profile.slot);
         if (!this.Database) {
             throw 'Database was not opened correctly';
         }

@@ -3464,12 +3464,15 @@ class ProfilesView extends View {
 
     show () {
         let content = '';
-        for (const [key, { name, primary, secondary, primary_g, secondary_g }] of ProfileManager.getProfiles()) {
+        for (const [key, profile] of ProfileManager.getProfiles()) {
+            const { name, primary, secondary, primary_g, secondary_g } = profile;
+
             content += `
                 <div class="row" style="margin-top: 1em; border: 1px solid black; border-radius: .25em;">
                     <div class="four wide column">
                         <h3 class="ui ${ key == ProfileManager.getActiveProfileName() ? 'orange' : '' } header">
                             <span data-key="${key}" class="clickable">${name}</span><br/>
+                            ${ profile.slot ? `<span style="font-size: 90%;">Slot ${profile.slot}</span><br>` : '' }
                             <span style="font-size: 90%;">(${key})</span>
                         </h3>
                         ${

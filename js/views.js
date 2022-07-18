@@ -545,9 +545,16 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
                             <label>ID:</label>
                             <input class="text-center" data-op="id" type="text" disabled>
                         </div>
-                        <div class="twelve wide field">
+                        <div class="eight wide field">
                             <label>Name:</label>
                             <input data-op="name" type="text">
+                        </div>
+                        <div class="four wide field">
+                            <label>Slot:</label>
+                            <div class="ui fluid selection dropdown" data-op="slot">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
                         </div>
                     </div>
                     <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">Primary filter configuration</h3>
@@ -648,6 +655,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
     _createBindings () {
         this.$id = this.$parent.find('[data-op="id"]');
         this.$name = this.$parent.find('[data-op="name"]');
+        this.$slot = this.$parent.find('[data-op="slot"]');
 
         // Secondary filter
         this.$secondary = this.$parent.find('[data-op="secondary"]');
@@ -710,6 +718,19 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
             }
         }).dropdown('set selected', 'equals');
 
+        this.$slot.dropdown({
+            values: [
+                {
+                    name: 'Default',
+                    value: ''
+                },
+                ... [1, 2, 3, 4, 5].map((i) => ({
+                    name: i,
+                    value: i
+                }))
+            ]
+        }).dropdown('set selected', '');
+
         this.$primaryIndexG = this.$parent.find('[data-op="primary-index-g"]');
         this.$primaryOperatorG = this.$parent.find('[data-op="primary-operator-g"]');
         this.$primaryG = this.$parent.find('[data-op="primary-g"]');
@@ -760,6 +781,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
         });
 
         this.$parent.find('[data-op="save"]').click(() => {
+            const slot = this.$slot.dropdown('get value');
             const primaryName = this.$primaryIndex.dropdown('get value');
             const primaryNameG = this.$primaryIndexG.dropdown('get value');
             const primaryMode = this.$primaryOperator.dropdown('get value');
@@ -771,6 +793,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
 
             ProfileManager.setProfile(this.id, Object.assign(this.profile || {}, {
                 name: this.$name.val() || `Profile ${this.id}`,
+                slot: slot,
                 primary: primaryName === 'none' ? null : {
                     name: primaryName,
                     mode: primaryMode,
@@ -799,6 +822,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
 
             const { name, primary, secondary, primary_g, secondary_g } = this.profile;
             this.$id.val(id);
+            this.$slot.dropdown('set selected', this.profile.slot || '');
 
             if (primary) {
                 const { mode, name, value } = primary;
@@ -833,6 +857,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
             this.$name.val(name || `Profile ${id}`);
         } else {
             this.$id.val(this.id);
+            this.$slot.dropdown('set selected', '');
             this.$primaryIndex.dropdown('set selected', 'none');
             this.$primaryIndexG.dropdown('set selected', 'none');
             this.$primaryOperator.dropdown('set selected', 'equals');
