@@ -1926,16 +1926,22 @@ class FilesView extends View {
                 }
             }
 
+            let visibleEntries = _array_to_hash(this.$resultsSimple.find('td[data-timestamp]').toArray(), (el) => [el.dataset.timestamp, el.children[0]]);
+
             let noneToMark = _empty(filesToMark);
             if (noneToMark && !_empty(filesToIgnore)) {
                 for (let timestamp of filesToIgnore) {
                     _remove(this.selectedFiles, timestamp);
-                    $(`[data-timestamp="${timestamp}"] > i`).addClass('outline');
+                    if (visibleEntries[timestamp]) {
+                        visibleEntries[timestamp].classList.add('outline');
+                    }
                 }
             } else if (!noneToMark) {
                 for (let timestamp of filesToMark) {
                     this.selectedFiles.push(timestamp);
-                    $(`[data-timestamp="${timestamp}"] > i`).removeClass('outline');
+                    if (visibleEntries[timestamp]) {
+                        visibleEntries[timestamp].classList.remove('outline');
+                    }
                 }
             }
         } else {
@@ -1950,23 +1956,21 @@ class FilesView extends View {
                 }
             }
 
-            let visibleEntries = this.$results.find('tr[data-tr-mark]').map(function () {
-                return $(this).data("tr-mark");
-            }).toArray();
+            let visibleEntries = _array_to_hash(this.$results.find('td[data-mark]').toArray(), (el) => [el.dataset.mark, el.children[0]]);
 
             let noneToMark = _empty(playersToMark);
             if (noneToMark && !_empty(playersToIgnore)) {
                 for (let uuid of playersToIgnore) {
                     delete this.selectedPlayers[uuid];
-                    if (visibleEntries.includes(uuid)) {
-                        this.$results.find(`[data-mark="${uuid}"] > i`).addClass('outline');
+                    if (visibleEntries[uuid]) {
+                        visibleEntries[uuid].classList.add('outline');
                     }
                 }
             } else if (!noneToMark) {
                 for (let uuid of playersToMark) {
                     this.selectedPlayers[uuid] = this.currentPlayers[uuid];
-                    if (visibleEntries.includes(uuid)) {
-                        this.$results.find(`[data-mark="${uuid}"] > i`).removeClass('outline');
+                    if (visibleEntries[uuid]) {
+                        visibleEntries[uuid].classList.remove('outline');
                     }
                 }
             }
