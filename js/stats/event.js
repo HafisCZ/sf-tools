@@ -1559,7 +1559,7 @@ class PlayersView extends View {
             ];
 
             this.hidden_override = false;
-            this.other_override = false;
+            this.others_override = false;
 
             for (var i = 1; i < filter.length; i += 2) {
                 var key = filter[i];
@@ -1632,11 +1632,11 @@ class PlayersView extends View {
                     }
                 } else if (key == 'a') {
                     this.hidden_override = true;
-                    this.other_override = true;
+                    this.others_override = true;
                 } else if (key == 'h') {
                     this.hidden_override = true;
                 } else if (key == 'o') {
-                    this.other_override = true;
+                    this.others_override = true;
                 }
             }
 
@@ -1676,8 +1676,9 @@ class PlayersView extends View {
 
         let filteredEntries = this.entries.filter(player => {
             let visible = !DatabaseManager.Hidden.has(player.Latest.Identifier);
+            let own = player.Own;
 
-            return visible || this.hidden || this.hidden_override;
+            return (visible || this.hidden || this.hidden_override) && (own || this.others || this.others_override);
         })
 
         for (let i = 0; i < filteredEntries.length; i += 5) {
