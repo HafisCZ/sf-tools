@@ -240,8 +240,16 @@ const ProfileManager = new (class {
         }
     }
 
+    uiProfile () {
+        if (typeof UI !== 'undefined') {
+            return _dig(UI, 'profile', 'key');
+        } else {
+            return undefined;
+        }
+    }
+
     isEditable (key) {
-        return !this.isDefault(key) && UI.profile.key != key;
+        return !this.isDefault(key) && this.uiProfile() != key;
     }
 
     getDefaultProfile () {
@@ -257,7 +265,7 @@ const ProfileManager = new (class {
     }
 
     getActiveProfileName () {
-        return _dig(UI, 'profile', 'key') || SiteOptions.profile || 'default';
+        return this.uiProfile() || SiteOptions.profile || 'default';
     }
 
     setActiveProfile (name) {
