@@ -224,6 +224,7 @@ const Endpoint = new ( class {
             if (/^(.{3,})@(.+\.sfgame\..+)$/.test(username)) {
                 [, username, server, ] = username.split(/^(.{3,})@(.+\.sfgame\..+)$/);
             } else {
+                Toast.warn('Your user name or password is not valid', 'Please ensure that it is in correct format (username@url)')
                 return;
             }
 
