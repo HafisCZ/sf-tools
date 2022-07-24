@@ -32,6 +32,8 @@ const UI = new (class {
     show (screen, ... args) {
         this.current = screen;
 
+        window.scrollTo(0, 0);
+
         $('.ui.container').addClass('css-hidden');
         screen.$parent.removeClass('css-hidden');
 
