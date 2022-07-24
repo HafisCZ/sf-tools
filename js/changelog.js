@@ -2,6 +2,7 @@ const CHANGELOG = {
     'v5.XXXX': {
         'Statistics': [
             'Reworked player list',
+            'Added database slots to profiles',
             'Added <code>time</code> format function',
             'Added <code>$$</code> prefix for unfiltered table variables',
             'Fixed selection screen appearing for players and guilds when only one exists',
