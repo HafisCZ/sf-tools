@@ -997,7 +997,6 @@ class TableInstance {
         return {
             width: tableWidth,
             content: `
-                <thead></thead>
                 <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
                     ${ join(layout, (block, i, array) => {
                         // Counters
@@ -1116,7 +1115,6 @@ class TableInstance {
         return {
             width: tableWidth,
             content: `
-                <thead></thead>
                 <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
                     ${ join(layout, (block, i, array) => {
                         // Counters
@@ -1242,7 +1240,6 @@ class TableInstance {
         return {
             width: tableWidth,
             content: `
-                <thead></thead>
                 <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
                     ${ join(layout, (block, i, array) => {
                         // Counters
