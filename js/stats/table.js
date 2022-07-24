@@ -1521,10 +1521,24 @@ class TableController {
 
         onInject($(entries.splice(0, 50).join('')).insertBefore(this.injectorElement));
 
-        this.$table.empty().append($body).css('width', `${ width }px`).css('left', `max(0px, calc(50vw - 9px - ${ width / 2 }px))`);
+        // Check table content for unwanted tags
+        if (!SiteOptions.insecure && $body.find('script, iframe, img[onerror]').toArray().length) {
+            // Show error
+            this.$table.html(`
+                <div>
+                    <b style="font-weight: 1000;">Error in the system:</b>
+                    <br/>
+                    <br/>
+                    This table was not displayed because it contains HTML tags that are prohibited.<br/>
+                    Please remove them from your settings and try again.
+                </div>
+            `).css('width', `50vw`).css('left', `25vw`);
+        } else {
+            this.$table.empty().append($body).css('width', `${ width }px`).css('left', `max(0px, calc(50vw - 9px - ${ width / 2 }px))`);
 
-        if (entries.length > 0) {
-            this.prepareInjector(entries, onInject);
+            if (entries.length > 0) {
+                this.prepareInjector(entries, onInject);
+            }
         }
 
         // Bind sorting
