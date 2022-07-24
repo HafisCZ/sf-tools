@@ -3143,7 +3143,7 @@ class TemplatesView extends View {
         this.$unpublish.addClass('disabled');
 
         // Reset buttons
-        this.$delete.addClass('basic');
+        this.$delete.addClass('basic disabled');
         clearTimeout(this.deleteTimeout);
 
         this.$update.addClass('disabled basic');
@@ -3165,6 +3165,8 @@ class TemplatesView extends View {
 
         this.$delete.addClass('basic');
         this.$update.addClass('basic');
+
+        this.$delete.removeClass('disabled');
 
         let tmp = this.tmp = Templates.all()[name];
 

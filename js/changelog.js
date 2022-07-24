@@ -7,7 +7,8 @@ const CHANGELOG = {
             'Added <code>$$</code> prefix for unfiltered table variables',
             'Fixed selection screen appearing for players and guilds when only one exists',
             'Fixed gladiator for built-in simulator',
-            'Fixed low performance in files tab with too many files/players'
+            'Fixed low performance in files tab with too many files/players',
+            'Fixed template delete button staying active with no templates'
         ],
         'Pet Simulator': [
             'Added best pets for each class to simulate all'
