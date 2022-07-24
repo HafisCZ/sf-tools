@@ -1429,7 +1429,7 @@ class TableController {
     }
 
     forceInject () {
-        if (this.injectorEntries.length > 0) {
+        if (this.injectorEntries && this.injectorEntries.length > 0) {
             this.inject(10000);
         }
     }
