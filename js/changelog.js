@@ -8,7 +8,8 @@ const CHANGELOG = {
             'Fixed selection screen appearing for players and guilds when only one exists',
             'Fixed gladiator for built-in simulator',
             'Fixed low performance in files tab with too many files/players',
-            'Fixed template delete button staying active with no templates'
+            'Fixed template delete button staying active with no templates',
+            'Fixed low performance in players tab'
         ],
         'Pet Simulator': [
             'Added best pets for each class to simulate all'

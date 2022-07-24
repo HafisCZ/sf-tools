@@ -296,12 +296,12 @@ class GroupDetailView extends View {
     refresh () {
         this.table.refresh(() => {
             this.$table.find('tbody').append($('<tr data-cloneext style="height: 2em;"></tr>'));
-
-            this.$parent.find('[data-id]').click((event) => {
+        }, (block) => {
+            let blockClickable = block.find('[data-id]').click((event) => {
                 UI.PlayerDetail.show(event.currentTarget.dataset.id, this.timestamp, this.reference);
             });
 
-            this.$context.context('bind', this.$parent.find('[data-id]'));
+            this.$context.context('bind', blockClickable);
         });
     }
 }
@@ -693,6 +693,8 @@ class PlayerHistoryView extends View {
 
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
+            this.table.forceInject();
+
             var range = document.createRange();
             range.selectNode(this.$table.get(0));
 
@@ -705,6 +707,8 @@ class PlayerHistoryView extends View {
 
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
+            this.table.forceInject();
+
             downloadScreenshot(this.$table, `${ this.player.Name }_${ Date.now() }.png`);
         });
 
@@ -835,6 +839,8 @@ class BrowseView extends View {
 
         // Copy
         this.$parent.find('[data-op="copy"]').click(() => {
+            this.table.forceInject();
+
             var range = document.createRange();
             range.selectNode(this.$table.get(0));
 
@@ -855,6 +861,8 @@ class BrowseView extends View {
 
         // Save
         this.$parent.find('[data-op="save"]').click(() => {
+            this.table.forceInject();
+
             downloadScreenshot(this.$table, `players.${ this.timestamp }.png`);
         });
 
@@ -1303,8 +1311,8 @@ class BrowseView extends View {
     }
 
     refresh () {
-        this.table.refresh(() => {
-            this.$parent.find('[data-id]').click((event) => {
+        this.table.refresh(undefined, (block) => {
+            let blockClickable = block.find('[data-id]').click((event) => {
                 if (event.ctrlKey) {
                     $(event.currentTarget).toggleClass('css-op-select');
                 } else {
@@ -1314,7 +1322,7 @@ class BrowseView extends View {
                 event.preventDefault();
             });
 
-            this.$context.context('bind', this.$parent.find('[data-id]'));
+            this.$context.context('bind', blockClickable);
         });
     }
 }

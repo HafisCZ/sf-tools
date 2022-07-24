@@ -888,6 +888,14 @@ class TableInstance {
         `;
     }
 
+    getInjector (leftSpan) {
+        return `
+            <tr data-entry-injector>
+                <td colspan="${ this.rightFlatSpan + leftSpan }" style="height: 8px;"></td>
+            </tr>
+        `;
+    }
+
     getRow (leftSpan, row, val, cmp = undefined, player = undefined, compare = undefined, extra = undefined, ignoreBase = false) {
         return `
             <tr>
@@ -911,6 +919,7 @@ class TableInstance {
 
         let leftSpan = (this.leftFlatSpan || 1) + (indexStyle ? 1 : 0);
         let spacer = this.getSpacer(leftSpan);
+        let injector = this.getInjector(leftSpan);
         let divider = this.cache.divider = this.getDivider(leftSpan, false, false);
 
         // Get rows
@@ -988,7 +997,7 @@ class TableInstance {
                 ${ headerTitle }
                 ${ this.getHeaderBlock(false) }
             </tr>
-            ${ join(this.entries, (e, ei, ea) => e.content) }
+            ${ injector }
         `;
 
         let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, false);
@@ -996,25 +1005,24 @@ class TableInstance {
         // Create table Content
         return {
             width: tableWidth,
-            content: `
-                <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
-                    ${ join(layout, (block, i, array) => {
-                        // Counters
-                        let first = i == 0;
-                        let last = i == array.length - 1;
-                        let prev = array[i - 1];
-                        let next = array[i + 1];
+            style: [ this.settings.getFontStyle() ],
+            class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ],
+            entries: this.entries.map(e => e.content),
+            content: join(layout, (block, i, array) => {
+                // Counters
+                let first = i == 0;
+                let last = i == array.length - 1;
+                let prev = array[i - 1];
+                let next = array[i + 1];
 
-                        if (block == '|') {
-                            return divider;
-                        } else if (block == '_') {
-                            return spacer;
-                        } else {
-                            return this.cache[block];
-                        }
-                    }) }
-                </tbody>
-            `
+                if (block == '|') {
+                    return divider;
+                } else if (block == '_') {
+                    return spacer;
+                } else {
+                    return this.cache[block];
+                }
+            })
         };
     }
 
@@ -1029,6 +1037,7 @@ class TableInstance {
 
         let leftSpan = (this.leftFlatSpan || (1 + (serverWidth ? 1 : 0))) + (indexStyle ? 1 : 0);
         let spacer = this.getSpacer(leftSpan);
+        let injector = this.getInjector(leftSpan);
         let divider = this.cache.divider = this.getDivider(leftSpan, false, false);
 
         // Get rows
@@ -1107,32 +1116,32 @@ class TableInstance {
                 ${ headerTitle }
                 ${ this.getHeaderBlock(true) }
             </tr>
-            ${ join(this.entries, (e, ei, ea) => e.content.replace('{__INDEX__}', ei + 1), 0, this.array.perf || this.settings.getEntryLimit()) }
+            ${ injector }
         `;
 
         let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, false);
+        let forcedLimit = this.array.perf || this.settings.getEntryLimit();
 
         return {
             width: tableWidth,
-            content: `
-                <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
-                    ${ join(layout, (block, i, array) => {
-                        // Counters
-                        let first = i == 0;
-                        let last = i == array.length - 1;
-                        let prev = array[i - 1];
-                        let next = array[i + 1];
+            style: [ this.settings.getFontStyle() ],
+            class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ],
+            entries: (forcedLimit ? this.entries.slice(0, forcedLimit) : this.entries).map((e, ei) => e.content.replace('{__INDEX__}', ei + 1)),
+            content: join(layout, (block, i, array) => {
+                // Counters
+                let first = i == 0;
+                let last = i == array.length - 1;
+                let prev = array[i - 1];
+                let next = array[i + 1];
 
-                        if (block == '|') {
-                            return divider;
-                        } else if (block == '_') {
-                            return spacer;
-                        } else {
-                            return this.cache[block];
-                        }
-                    }) }
-                </tbody>
-            `,
+                if (block == '|') {
+                    return divider;
+                } else if (block == '_') {
+                    return spacer;
+                } else {
+                    return this.cache[block];
+                }
+            })
         };
     }
 
@@ -1146,6 +1155,7 @@ class TableInstance {
 
         let leftSpan = (this.leftFlatSpan || 1) + (indexStyle ? 1 : 0);
         let spacer = this.getSpacer(leftSpan);
+        let injector = this.getInjector(leftSpan);
         let divider = this.cache.divider = this.getDivider(leftSpan, false, false);
 
         // Get rows
@@ -1231,7 +1241,7 @@ class TableInstance {
                 ${ headerTitle }
                 ${ this.getHeaderBlock(true) }
             </tr>
-            ${ join(this.entries, (e, ei, ea) => e.content.replace('{__INDEX__}', ei + 1)) }
+            ${ injector }
             ${ this.entries.missing.length ? `<tr class="css-b-bold">${ CellGenerator.WideCell(CellGenerator.Small(`Player data is missing for following members:<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.rightFlatSpan + leftSpan, 'center') }</tr>` : '' }
         `;
 
@@ -1239,25 +1249,24 @@ class TableInstance {
 
         return {
             width: tableWidth,
-            content: `
-                <tbody style="${ this.settings.getFontStyle() }" class="${ this.settings.getOpaqueStyle() } ${ this.settings.getRowStyle() }">
-                    ${ join(layout, (block, i, array) => {
-                        // Counters
-                        let first = i == 0;
-                        let last = i == array.length - 1;
-                        let prev = array[i - 1];
-                        let next = array[i + 1];
+            style: [ this.settings.getFontStyle() ],
+            class: [ this.settings.getOpaqueStyle(), this.settings.getRowStyle() ],
+            entries: this.entries.map((e, ei) => e.content.replace('{__INDEX__}', ei + 1)),
+            content: join(layout, (block, i, array) => {
+                // Counters
+                let first = i == 0;
+                let last = i == array.length - 1;
+                let prev = array[i - 1];
+                let next = array[i + 1];
 
-                        if (block == '|') {
-                            return divider;
-                        } else if (block == '_') {
-                            return spacer;
-                        } else {
-                            return this.cache[block];
-                        }
-                    }) }
-                </tbody>
-            `,
+                if (block == '|') {
+                    return divider;
+                } else if (block == '_') {
+                    return spacer;
+                } else {
+                    return this.cache[block];
+                }
+            })
         };
     }
 
@@ -1405,7 +1414,45 @@ class TableController {
         this.categories = categories;
     }
 
-    refresh (onChange = () => { /* Do nothing */ }) {
+    prepareInjector (entries, callback) {
+        if (this.injectorObserver) {
+            this.injectorObserver.disconnect();
+        }
+
+        this.injectorCallback = callback;
+        this.injectorEntries = entries;
+        this.injectorBlockSize = 25;
+        this.injectorCounter = 0;
+
+        this.injectorObserver = new IntersectionObserver(() => this.inject(), { threshold: 0.9 });
+        this.injectorObserver.observe(this.injectorElement.get(0));
+    }
+
+    forceInject () {
+        if (this.injectorEntries.length > 0) {
+            this.inject(10000);
+        }
+    }
+
+    inject (size = this.injectorBlockSize) {
+        if (this.injectorCounter++ > 0) {
+            let timestamp = Date.now();
+
+            let blockSize = Math.min(this.injectorEntries.length, size);
+            let entries = $(this.injectorEntries.splice(0, size).join(''));
+            this.injectorCallback(entries);
+
+            this.injectorElement.before(entries);
+
+            if (this.injectorEntries.length == 0) {
+                this.injectorObserver.disconnect();
+            }
+
+            Logger.log('TAB_GEN', `Block of size ${blockSize} injected in ${ Date.now() - timestamp }ms!`);
+        }
+    }
+
+    refresh (onChange = () => { /* Do nothing */ }, onInject = () => { /* Do nothing */ }) {
         if (this.categories) {
             this.schanged = true;
             this.echanged = true;
@@ -1462,24 +1509,22 @@ class TableController {
         this.echanged = this.schanged = false;
 
         // Get table content
-        let { content, width } = this.table.createTable();
-        let $tableContent = $(content);
+        let { content, entries, style, class: klass, width } = this.table.createTable();
 
-        // Check table content for unwanted tags
-        if (!SiteOptions.insecure && $tableContent.find('script, iframe, img[onerror]').toArray().length) {
-            // Show error
-            this.$table.html(`
-                <div>
-                    <b style="font-weight: 1000;">Error in the system:</b>
-                    <br/>
-                    <br/>
-                    This table was not displayed because it contains HTML tags that are prohibited.<br/>
-                    Please remove them from your settings and try again.
-                </div>
-            `).css('width', `50vw`).css('left', `25vw`);
-        } else {
-            // Setup table element if table is valid
-            this.$table.empty().append($tableContent).css('width', `${ width }px`).css('left', `max(0px, calc(50vw - 9px - ${ width / 2 }px))`);
+        let $body = $(`
+            <tbody style="${style.join(' ')}" class="${klass.join(' ')}">
+                ${content}
+            </tbody>
+        `);
+
+        this.injectorElement = $body.find('[data-entry-injector]');
+
+        onInject($(entries.splice(0, 50).join('')).insertBefore(this.injectorElement));
+
+        this.$table.empty().append($body).css('width', `${ width }px`).css('left', `max(0px, calc(50vw - 9px - ${ width / 2 }px))`);
+
+        if (entries.length > 0) {
+            this.prepareInjector(entries, onInject);
         }
 
         // Bind sorting
@@ -1494,7 +1539,7 @@ class TableController {
             this.table.setSorting(sortKey);
 
             // Redraw table
-            this.refresh(onChange);
+            this.refresh(onChange, onInject);
         }).contextmenu(event => {
             event.preventDefault();
 
@@ -1509,10 +1554,10 @@ class TableController {
                 }
 
                 // Redraw table
-                this.refresh(onChange);
+                this.refresh(onChange, onInject);
             } else if (this.table.global_sorting) {
                 this.table.setDefaultSorting();
-                this.refresh(onChange);
+                this.refresh(onChange, onInject);
             }
         }).mousedown(event => {
             event.preventDefault();
