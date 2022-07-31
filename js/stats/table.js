@@ -1538,6 +1538,8 @@ class TableController {
 
             if (entries.length > 0) {
                 this.prepareInjector(entries, onInject);
+            } else {
+                this.injectorElement.remove();
             }
         }
 
