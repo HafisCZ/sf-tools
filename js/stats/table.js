@@ -1512,6 +1512,7 @@ class TableController {
         let { content, entries, style, class: klass, width } = this.table.createTable();
 
         let $body = $(`
+            <thead></thead>
             <tbody style="${style.join(' ')}" class="${klass.join(' ')}">
                 ${content}
             </tbody>
