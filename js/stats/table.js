@@ -1519,7 +1519,7 @@ class TableController {
 
         this.injectorElement = $body.find('[data-entry-injector]');
 
-        onInject($(entries.splice(0, 50).join('')).insertBefore(this.injectorElement));
+        onInject($(entries.splice(0, SiteOptions.load_rows || 50).join('')).insertBefore(this.injectorElement));
 
         // Check table content for unwanted tags
         if (!SiteOptions.insecure && $body.find('script, iframe, img[onerror]').toArray().length) {

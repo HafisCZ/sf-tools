@@ -3405,6 +3405,13 @@ class OptionsView extends View {
             SiteOptions.tab = value;
         });
 
+        this.$dropdownPreloadRows = this.$parent.find('[data-op="dropdown-load-rows"]');
+        this.$dropdownPreloadRows.dropdown();
+        this.$dropdownPreloadRows.dropdown('set selected', SiteOptions.load_rows);
+        this.$dropdownPreloadRows.dropdown('setting', 'onChange', (value, text) => {
+            SiteOptions.load_rows = parseInt(value) || 50;
+        });
+
         this.prepareCheckbox('always_prev', 'alwaysprev');
         this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('insecure', 'insecure');
