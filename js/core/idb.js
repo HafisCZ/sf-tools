@@ -664,9 +664,9 @@ const DatabaseManager = new (class {
 
         const playerFilter = DatabaseUtils.profileFilter(profile);
         let players = DatabaseUtils.filterArray(profile) || (_not_empty(playerFilter) ? (
-            await this.Database.all('players', ... playerFilter)
+            await this.Database.where('players', ... playerFilter)
         ) : (
-            await this.Database.all('players')
+            await this.Database.where('players')
         ));
 
         if (profile.secondary) {
