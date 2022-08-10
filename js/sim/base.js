@@ -505,7 +505,7 @@ class BardModel extends FighterModel {
     initialize (target) {
         const targetMage = target.Player.Class == MAGE;
 
-        this.DamageTaken = !targetMage && p.Instrument == INSTRUMENT_FLUTE;
+        this.DamageTaken = !targetMage && this.Player.Instrument == INSTRUMENT_FLUTE;
         this.BeforeAttack = !targetMage;
 
         super.initialize(target);
