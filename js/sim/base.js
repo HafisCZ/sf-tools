@@ -478,7 +478,7 @@ class BardModel extends FighterModel {
         super(i, p);
 
         this.BeforeAttack = true;
-        this.DamageTaken = p.Instrument == INSTRUMENT_FLUTE;
+        this.DamageTaken = false;
 
         this.resetEffects();
         this.resetTimers();
@@ -500,6 +500,15 @@ class BardModel extends FighterModel {
 
         this.resetEffects();
         this.resetTimers();
+    }
+
+    initialize (target) {
+        const targetMage = target.Player.Class == MAGE;
+
+        this.DamageTaken = !targetMage && p.Instrument == INSTRUMENT_FLUTE;
+        this.BeforeAttack = !targetMage;
+
+        super.initialize(target);
     }
 
     rollEffectLevel () {
