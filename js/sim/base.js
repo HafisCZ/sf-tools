@@ -728,6 +728,10 @@ class SimulatorBase {
         var skipped = getRandom(target.SkipChance);
         var critical = false;
 
+        if (source.DamageMultiplier && critical && skipped) {
+            skipped = false;
+        }
+
         if (!skipped) {
             damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
             if (source.DamageMultiplier) {
