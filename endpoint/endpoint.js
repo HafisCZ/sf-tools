@@ -206,7 +206,10 @@ const Endpoint = new ( class {
             this.$step4.show();
             this.$step3.hide();
             this.endpoint.querry_collect((text) => {
-                DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).then(() => {
+                DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
+                    Toast.error('An error has occured while importing file', e.message);
+                    Logger.error(e, 'Error occured while trying to import a file!');
+                }).then(() => {
                     this._funcShutdown();
                 });
             });
@@ -268,7 +271,10 @@ const Endpoint = new ( class {
 
     _funcLoginSingle (server, username, password) {
         this.endpoint.login_querry_only(server, username, password, (text) => {
-            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).then(() => {
+            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
+                Toast.error('An error has occured while importing file', e.message);
+                Logger.error(e, 'Error occured while trying to import a file!');
+            }).then(() => {
                 this._funcShutdown();
             });
         }, () => {
@@ -282,7 +288,10 @@ const Endpoint = new ( class {
             const [members, friends] = text.split(';');
             return kind == 'members' ? members : friends;
         }, (text) => {
-            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).then(() => {
+            DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
+                Toast.error('An error has occured while importing file', e.message);
+                Logger.error(e, 'Error occured while trying to import a file!');
+            }).then(() => {
                 this._funcShutdown();
             });
         }, () => {
@@ -507,8 +516,8 @@ const StatisticsIntegration = new (class {
                                     pendingPromises.push(file.text().then(fileContent => {
                                         return DatabaseManager.import(fileContent, file.lastModified, undefined, createOrigin('har'));
                                     }).catch(function (e) {
-                                        Toast.warn('An error has occured while importing file', e.message);
-                                        Logger.log('WARNING', e.message);
+                                        Toast.error('An error has occured while importing file', e.message);
+                                        Logger.error(e, 'Error occured while trying to import a file!');
                                     }));
                                 });
 

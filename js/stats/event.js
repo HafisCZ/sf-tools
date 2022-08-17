@@ -1834,10 +1834,14 @@ class FilesView extends View {
         LoaderPopup.toggle(true);
 
         let pendingPromises = [];
-        Array.from(fileEvent.currentTarget.files).forEach(file => pendingPromises.push(file.text().then(fileContent => DatabaseManager.import(fileContent, file.lastModified).catch((exception) => {
-            PopupController.open(WarningPopup, exception);
-            Logger.error(exception, 'Error occured while trying to import a file!');
-        }))));
+        Array.from(fileEvent.currentTarget.files).forEach(file => {
+            pendingPromises.push(file.text().then(fileContent => {
+                return DatabaseManager.import(fileContent, file.lastModified).catch((e) => {
+                    Toast.error('An error has occured while importing file', e.message);
+                    Logger.error(e, 'Error occured while trying to import a file!');
+                })
+            }))
+        });
 
         Promise.all(pendingPromises).then(() => this.show());
     }
