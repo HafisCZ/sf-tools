@@ -503,8 +503,12 @@ class BardModel extends FighterModel {
     }
 
     resetTimers () {
+        // How many notes were casted
         this.EffectReset = 0;
+        // How many notes were consumed
         this.EffectCounter = BARD_EFFECT_ROUNDS;
+        // How many rounds passed since cast
+        this.RoundCounter = BARD_EFFECT_ROUNDS;
     }
 
     reset () {
@@ -548,6 +552,7 @@ class BardModel extends FighterModel {
 
         this.EffectReset = this.rollEffectRounds(level);
         this.EffectCounter = 0;
+        this.RoundCounter = 0;
 
         if (this.Player.Instrument == INSTRUMENT_HARP) {
             let multiplier = 1 / this.DamageReduction * (1 - this.getDamageReduction(target, [ 40, 55, 75 ][level]) / 100);
@@ -586,9 +591,13 @@ class BardModel extends FighterModel {
     }
 
     onBeforeAttack (target, attackType) {
-        if (this != target && this.EffectCounter >= BARD_EFFECT_ROUNDS) {
-            this.EffectCounter = 0;
-            this.rollEffect(target);
+        // When this player attacks
+        if (this != target) {
+            this.RoundCounter += 1;
+
+            if (this.RoundCounter >= BARD_EFFECT_ROUNDS) {
+                this.rollEffect(target);
+            }
         }
     }
 }
