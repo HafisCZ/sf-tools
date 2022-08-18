@@ -322,10 +322,6 @@ class FighterModel {
 
     }
 
-    onDamageDealt (target, damage) {
-
-    }
-
     onDamageTaken (source, damage, attackType = ATTACK_PRIMARY) {
         this.Health -= damage;
         if (this.Health < 0 && this.onDeath(source)) {
@@ -630,9 +626,6 @@ class SimulatorBase {
         if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b, ATTACK_SPECIAL);
 
         var damage3 = this.attack(this.a, this.b, this.a.Weapon1, ATTACK_SPECIAL);
-        if (this.a.DamageDealt) {
-            this.a.onDamageDealt(this.b, damage3);
-        }
 
         if (this.b.DamageTaken) {
             var alive = this.b.onDamageTaken(this.a, damage3);
@@ -672,9 +665,6 @@ class SimulatorBase {
             if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b, ATTACK_PRIMARY);
 
             var damage = this.attack(this.a, this.b);
-            if (this.a.DamageDealt) {
-                this.a.onDamageDealt(this.b, damage);
-            }
 
             if (this.b.DamageTaken) {
                 let alive = this.b.onDamageTaken(this.a, damage);
@@ -696,9 +686,6 @@ class SimulatorBase {
                 if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b, ATTACK_SECONDARY);
 
                 var damage2 = this.attack(this.a, this.b, this.a.Weapon2, ATTACK_SECONDARY);
-                if (this.a.DamageDealt) {
-                    this.a.onDamageDealt(this.b, damage2);
-                }
 
                 if (this.b.DamageTaken) {
                     let alive = this.b.onDamageTaken(this.a, damage2, ATTACK_SECONDARY);
