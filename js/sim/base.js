@@ -31,6 +31,11 @@ const STATE_DEAD = 0;
 const STATE_ALIVE = 1;
 const STATE_SPECIAL = 2;
 
+// Attacks
+const ATTACK_PRIMARY = 0;
+const ATTACK_SECONDARY = 1;
+const ATTACK_SPECIAL = 2;
+
 // Masks
 const MASK_NONE = 0;
 const MASK_BEAR = 1;
@@ -321,7 +326,7 @@ class FighterModel {
 
     }
 
-    onDamageTaken (source, damage, secondary = false) {
+    onDamageTaken (source, damage, attackType = ATTACK_PRIMARY) {
         this.Health -= damage;
         if (this.Health < 0 && this.onDeath(source)) {
             this.DeathTriggers++;
@@ -563,9 +568,9 @@ class BardModel extends FighterModel {
         }
     }
 
-    onDamageTaken (source, damage, secondary = false) {
-        let state = super.onDamageTaken(source, damage, secondary);
-        if (state == STATE_ALIVE && (source.Player.Class != ASSASSIN || secondary)) {
+    onDamageTaken (source, damage, attackType = ATTACK_PRIMARY) {
+        let state = super.onDamageTaken(source, damage, attackType);
+        if (state == STATE_ALIVE && (source.Player.Class != ASSASSIN || attackType == ATTACK_SPECIAL)) {
             if (this.HealMultiplier) {
                 this.Health = Math.max(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
             }
@@ -584,7 +589,7 @@ class BardModel extends FighterModel {
         }
     }
 
-    onBeforeAttack (target, secondary = false) {
+    onBeforeAttack (target, attackType) {
         if (this != target && this.EffectCounter >= BARD_EFFECT_ROUNDS) {
             this.EffectCounter = 0;
             this.rollEffect(target);
@@ -621,10 +626,10 @@ class SimulatorBase {
     skipAndAttack () {
         this.turn++;
 
-        if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
-        if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
+        if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b, ATTACK_SPECIAL);
+        if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b, ATTACK_SPECIAL);
 
-        var damage3 = this.attack(this.a, this.b, this.a.Weapon1, 2);
+        var damage3 = this.attack(this.a, this.b, this.a.Weapon1, ATTACK_SPECIAL);
         if (this.a.DamageDealt) {
             this.a.onDamageDealt(this.b, damage3);
         }
@@ -663,8 +668,8 @@ class SimulatorBase {
         this.forwardToBersekerAttack();
 
         while (this.a.Health > 0 && this.b.Health > 0) {
-            if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
-            if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
+            if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b, ATTACK_PRIMARY);
+            if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b, ATTACK_PRIMARY);
 
             var damage = this.attack(this.a, this.b);
             if (this.a.DamageDealt) {
@@ -687,16 +692,16 @@ class SimulatorBase {
             }
 
             if (this.a.Weapon2) {
-                if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b, true);
-                if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b, true);
+                if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b, ATTACK_SECONDARY);
+                if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b, ATTACK_SECONDARY);
 
-                var damage2 = this.attack(this.a, this.b, this.a.Weapon2, 1);
+                var damage2 = this.attack(this.a, this.b, this.a.Weapon2, ATTACK_SECONDARY);
                 if (this.a.DamageDealt) {
                     this.a.onDamageDealt(this.b, damage2);
                 }
 
                 if (this.b.DamageTaken) {
-                    let alive = this.b.onDamageTaken(this.a, damage2, true);
+                    let alive = this.b.onDamageTaken(this.a, damage2, ATTACK_SECONDARY);
 
                     if (FIGHT_DUMP_ENABLED && alive == STATE_SPECIAL) this.log(5);
 
@@ -722,7 +727,7 @@ class SimulatorBase {
         return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
     }
 
-    attack (source, target, weapon = source.Weapon1, extra = 0) {
+    attack (source, target, weapon = source.Weapon1, attackType = ATTACK_PRIMARY) {
         var turn = this.turn++;
         var rage = 1 + turn / 6;
 
@@ -764,7 +769,7 @@ class SimulatorBase {
             }
         }
 
-        if (FIGHT_DUMP_ENABLED) this.log(4, source, target, weapon, damage, skipped, critical, extra);
+        if (FIGHT_DUMP_ENABLED) this.log(4, source, target, weapon, damage, skipped, critical, attackType);
 
         return damage;
     }
