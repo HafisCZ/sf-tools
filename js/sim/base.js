@@ -571,7 +571,7 @@ class BardModel extends FighterModel {
 
     onDamageTaken (source, damage, attackType = ATTACK_PRIMARY) {
         let state = super.onDamageTaken(source, damage, attackType);
-        if (state == STATE_ALIVE && (source.Player.Class != ASSASSIN || attackType == ATTACK_SPECIAL)) {
+        if (state == STATE_ALIVE && (source.Player.Class != ASSASSIN || attackType == ATTACK_SECONDARY)) {
             if (this.HealMultiplier) {
                 this.Health = Math.max(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
             }
