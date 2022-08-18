@@ -563,35 +563,24 @@ class BardModel extends FighterModel {
     onDamageTaken (source, damage, secondary = false) {
         let state = super.onDamageTaken(source, damage, secondary);
         if (state == STATE_ALIVE && this.HealMultiplier && (source.Player.Class != ASSASSIN || secondary)) {
-            this.Health = Math.max(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth)
+            this.Health = Math.max(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
+
+            this.consumeMultiplier();
         }
 
         return state;
     }
 
+    consumeMultiplier () {
+        this.EffectCounter += 1;
+
+        if (this.EffectCounter >= this.EffectReset) {
+            this.resetEffects();
+        }
+    }
+
     onBeforeAttack (target) {
-        let shouldCount = this == target;
-        let shouldRoll = this == target;
-
-        // Set up exceptions
-        if (this.Player.Instrument == INSTRUMENT_HARP) {
-            shouldRoll = true;
-        } else if (this.Player.Instrument == INSTRUMENT_LUTE) {
-            shouldCount = this != target;
-            shouldRoll = this != target;
-        } else /* INSTRUMENT_FLUTE */ {
-            shouldRoll = true;
-        }
-
-        if (shouldCount) {
-            this.EffectCounter += 1;
-
-            if (this.EffectCounter >= this.EffectReset) {
-                this.resetEffects();
-            }
-        }
-
-        if (shouldRoll && this.EffectCounter >= BARD_EFFECT_ROUNDS) {
+        if (this != target && this.EffectCounter >= BARD_EFFECT_ROUNDS) {
             this.EffectCounter = 0;
             this.rollEffect(target);
         }
@@ -744,10 +733,14 @@ class SimulatorBase {
             damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
             if (source.DamageMultiplier) {
                 damage *= source.DamageMultiplier;
+
+                source.consumeMultiplier();
             }
 
             if (target.IncomingDamageMultiplier) {
                 damage *= target.IncomingDamageMultiplier;
+
+                target.consumeMultiplier();
             }
 
             if (critical = getRandom(source.CriticalChance)) {
@@ -755,6 +748,11 @@ class SimulatorBase {
             }
 
             damage = Math.ceil(damage);
+        } else {
+            // We must consume multiplier even if we missed
+            if (source.DamageMultiplier) {
+                source.consumeMultiplier();
+            }
         }
 
         if (FIGHT_DUMP_ENABLED) this.log(4, source, target, weapon, damage, skipped, critical, extra);
