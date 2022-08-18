@@ -318,19 +318,10 @@ class FighterModel {
         return false;
     }
 
-    onDeath (source) {
-
-    }
-
     onDamageTaken (source, damage, attackType = ATTACK_PRIMARY) {
         this.Health -= damage;
-        if (this.Health < 0 && this.onDeath(source)) {
-            this.DeathTriggers++;
 
-            return STATE_SPECIAL;
-        } else {
-            return this.Health > 0 ? STATE_ALIVE : STATE_DEAD;
-        }
+        return this.Health > 0 ? STATE_ALIVE : STATE_DEAD;
     }
 
     skipNextRound () {
@@ -470,16 +461,22 @@ class DemonHunterModel extends FighterModel {
         this.DamageTaken = true;
     }
 
-    onDeath (source) {
-        let reviveChance = DH_REVIVE_CHANCE - DH_REVIVE_CHANCE_DECAY * this.DeathTriggers;
+    onDamageTaken (source, damage, attackType = ATTACK_PRIMARY) {
+        let state = super.onDamageTaken(source, damage, attackType);
 
-        if (source.Player.Class != MAGE && source.Player.Class != BARD && getRandom(reviveChance)) {
-            this.Health = this.TotalHealth * Math.max(DH_REVIVE_HP_DECAY, DH_REVIVE_HP - this.DeathTriggers * DH_REVIVE_HP_DECAY);
+        if (state == STATE_DEAD) {
+            let reviveChance = DH_REVIVE_CHANCE - DH_REVIVE_CHANCE_DECAY * this.DeathTriggers;
 
-            return true;
+            if (source.Player.Class != MAGE && source.Player.Class != BARD && getRandom(reviveChance)) {
+                this.Health = this.TotalHealth * Math.max(DH_REVIVE_HP_DECAY, DH_REVIVE_HP - this.DeathTriggers * DH_REVIVE_HP_DECAY);
+                this.DeathTriggers += 1;
+
+                // Return special state if revive was a success
+                return STATE_SPECIAL;
+            }
         }
 
-        return false;
+        return state;
     }
 }
 
@@ -488,9 +485,6 @@ const BARD_EFFECT_ROUNDS = 4;
 class BardModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
-
-        this.BeforeAttack = true;
-        this.DamageTaken = false;
 
         this.resetEffects();
         this.resetTimers();
@@ -519,12 +513,9 @@ class BardModel extends FighterModel {
     }
 
     initialize (target) {
-        const targetMage = target.Player.Class == MAGE;
-
-        this.DamageTaken = !targetMage && this.Player.Instrument == INSTRUMENT_FLUTE;
-        this.BeforeAttack = !targetMage;
-
         super.initialize(target);
+
+        this.BeforeAttack = target.Player.Class != MAGE;
     }
 
     rollEffectLevel () {
@@ -569,19 +560,6 @@ class BardModel extends FighterModel {
         }
     }
 
-    onDamageTaken (source, damage, attackType = ATTACK_PRIMARY) {
-        let state = super.onDamageTaken(source, damage, attackType);
-        if (state == STATE_ALIVE && (source.Player.Class != ASSASSIN || attackType == ATTACK_SECONDARY)) {
-            if (this.HealMultiplier) {
-                this.Health = Math.max(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
-            }
-
-            this.consumeMultiplier();
-        }
-
-        return state;
-    }
-
     consumeMultiplier () {
         this.EffectCounter += 1;
 
@@ -593,6 +571,12 @@ class BardModel extends FighterModel {
     onBeforeAttack (target, attackType) {
         // When this player attacks
         if (this != target) {
+            if (this.HealMultiplier) {
+                this.Health = Math.max(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
+
+                this.consumeMultiplier();
+            }
+
             this.RoundCounter += 1;
 
             if (this.RoundCounter >= BARD_EFFECT_ROUNDS) {
