@@ -565,8 +565,10 @@ class BardModel extends FighterModel {
 
     onDamageTaken (source, damage, secondary = false) {
         let state = super.onDamageTaken(source, damage, secondary);
-        if (state == STATE_ALIVE && this.HealMultiplier && (source.Player.Class != ASSASSIN || secondary)) {
-            this.Health = Math.max(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
+        if (state == STATE_ALIVE && (source.Player.Class != ASSASSIN || secondary)) {
+            if (this.HealMultiplier) {
+                this.Health = Math.max(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
+            }
 
             this.consumeMultiplier();
         }
@@ -736,13 +738,17 @@ class SimulatorBase {
             damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
             if (source.DamageMultiplier) {
                 damage *= source.DamageMultiplier;
-
-                source.consumeMultiplier();
             }
 
             if (target.IncomingDamageMultiplier) {
                 damage *= target.IncomingDamageMultiplier;
+            }
 
+            if (source.BeforeAttack) {
+                source.consumeMultiplier();
+            }
+
+            if (target.BeforeAttack) {
                 target.consumeMultiplier();
             }
 
