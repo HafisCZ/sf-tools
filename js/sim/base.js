@@ -87,7 +87,7 @@ class FighterModel {
 
     // Damage Reduction
     getDamageReduction (source, maximumReduction = this.getMaximumDamageReduction()) {
-        if (source.Player.Class == MAGE) {
+        if (source.Player.Class == MAGE || source.Player.Class == BARD) {
             return 0;
         } else if (this.Player.ForceArmor) {
             let multiplier = this.Player.ForceArmor * this.Player.Level / source.Player.Level;
