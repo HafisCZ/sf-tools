@@ -584,7 +584,7 @@ class BardModel extends FighterModel {
         }
     }
 
-    onBeforeAttack (target) {
+    onBeforeAttack (target, secondary = false) {
         if (this != target && this.EffectCounter >= BARD_EFFECT_ROUNDS) {
             this.EffectCounter = 0;
             this.rollEffect(target);
@@ -687,8 +687,8 @@ class SimulatorBase {
             }
 
             if (this.a.Weapon2) {
-                if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b);
-                if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b);
+                if (this.a.BeforeAttack) this.a.onBeforeAttack(this.b, true);
+                if (this.b.BeforeAttack) this.b.onBeforeAttack(this.b, true);
 
                 var damage2 = this.attack(this.a, this.b, this.a.Weapon2, 1);
                 if (this.a.DamageDealt) {
