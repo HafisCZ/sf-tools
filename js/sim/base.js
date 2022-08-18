@@ -23,6 +23,11 @@ function getRuneValue (item, rune) {
     return item.AttributeTypes[2] == rune ? item.Attributes[2] : 0;
 }
 
+// States
+const STATE_DEAD = 0;
+const STATE_ALIVE = 1;
+const STATE_SPECIAL = 2;
+
 // Masks
 const MASK_NONE = 0;
 const MASK_BEAR = 1;
@@ -318,9 +323,9 @@ class FighterModel {
         if (this.Health < 0 && this.onDeath(source)) {
             this.DeathTriggers++;
 
-            return 2;
+            return STATE_SPECIAL;
         } else {
-            return this.Health > 0 ? 1 : 0;
+            return this.Health > 0 ? STATE_ALIVE : STATE_DEAD;
         }
     }
 
@@ -557,7 +562,7 @@ class BardModel extends FighterModel {
 
     onDamageTaken (source, damage, secondary = false) {
         let state = super.onDamageTaken(source, damage, secondary);
-        if (state == 1 && this.HealMultiplier && (source.Player.Class != ASSASSIN || secondary)) {
+        if (state == STATE_ALIVE && this.HealMultiplier && (source.Player.Class != ASSASSIN || secondary)) {
             this.Health = Math.max(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth)
         }
 
@@ -633,9 +638,9 @@ class SimulatorBase {
         if (this.b.DamageTaken) {
             var alive = this.b.onDamageTaken(this.a, damage3);
 
-            if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
+            if (FIGHT_DUMP_ENABLED && alive == STATE_SPECIAL) this.log(5);
 
-            return alive > 0;
+            return alive != STATE_DEAD;
         } else {
             this.b.Health -= damage3;
             return this.b.Health >= 0
@@ -675,9 +680,9 @@ class SimulatorBase {
             if (this.b.DamageTaken) {
                 let alive = this.b.onDamageTaken(this.a, damage);
 
-                if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
+                if (FIGHT_DUMP_ENABLED && alive == STATE_SPECIAL) this.log(5);
 
-                if (alive == 0) {
+                if (alive == STATE_DEAD) {
                     break;
                 }
             } else {
@@ -699,9 +704,9 @@ class SimulatorBase {
                 if (this.b.DamageTaken) {
                     let alive = this.b.onDamageTaken(this.a, damage2, true);
 
-                    if (FIGHT_DUMP_ENABLED && alive == 2) this.log(5);
+                    if (FIGHT_DUMP_ENABLED && alive == STATE_SPECIAL) this.log(5);
 
-                    if (alive == 0) {
+                    if (alive == STATE_DEAD) {
                         break;
                     }
                 } else {
