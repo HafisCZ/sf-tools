@@ -5,6 +5,7 @@ const CHANGELOG = {
             'Added database slots to profiles',
             'Added <code>time</code> format function',
             'Added <code>$$</code> prefix for unfiltered table variables',
+            'Added toast message when import via Endpoint fails',
             'Fixed selection screen appearing for players and guilds when only one exists',
             'Fixed gladiator for built-in simulator',
             'Fixed low performance in files tab with too many files/players',
@@ -25,7 +26,8 @@ const CHANGELOG = {
             'Reworked simulator'
         ],
         'All Simulators': [
-            'Added support for drag & drop of HAR files'
+            'Added support for drag & drop of HAR files',
+            'Fixed Bard simulation'
         ],
         'Gold & Experience': [
             'Moved gold table into separate tab'
