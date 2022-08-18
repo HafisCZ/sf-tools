@@ -1,3 +1,6 @@
+FIGHT_DUMP_ENABLED = false;
+FIGHT_DUMP_OUTPUT = [];
+
 // Returns true if random chance occured
 function getRandom (success) {
     return success > 0 && (Math.random() * 100 < success);

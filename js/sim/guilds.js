@@ -1,6 +1,3 @@
-FIGHT_DUMP_ENABLED = false;
-FIGHT_DUMP_OUTPUT = [];
-
 self.addEventListener('message', function ({ data: { guildA, guildB, iterations }}) {
     let timestamp = Date.now();
 

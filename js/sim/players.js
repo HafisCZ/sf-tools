@@ -1,6 +1,3 @@
-FIGHT_DUMP_ENABLED = false;
-FIGHT_DUMP_OUTPUT = [];
-
 // WebWorker hooks
 self.addEventListener('message', function (message) {
     var ts = Date.now();

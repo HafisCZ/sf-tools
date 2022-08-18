@@ -1,6 +1,3 @@
-FIGHT_DUMP_ENABLED = false;
-FIGHT_DUMP_OUTPUT = [];
-
 // Override some methods
 FighterModel.prototype.getHealth = function () {
     if (this.Player.ForceHealth) {
