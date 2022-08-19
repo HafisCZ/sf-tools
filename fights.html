@@ -1012,7 +1012,7 @@
                         let level = attackType % 10;
 
                         displayType = `${INSTRUMENT_TYPES[attacker.Instrument]} Lvl ${level}`;
-                        displayDamage = `${notes} notes`
+                        displayDamage = `${notes} note${notes > 1 ? 's' : ''}`
                     } else {
                         displayType = ATTACK_TYPES[attackType];
                     }
