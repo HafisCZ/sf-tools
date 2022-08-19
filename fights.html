@@ -1178,38 +1178,41 @@
                         var winner = msg['winnerid'][0] == fighterA.ID ? fighterA : fighterB;
 
                         // Looping though all rounds
-                        var rounds = [];
-                        for (var i = 0; i < msg['r'].length / 3; i++) {
-                            var [
-                                attackerID,
-                                attackType,
-                                targetHealthLeft
-                            ] = msg['r'].slice(i * 3, i * 3 + 3);
+                        let slices = [];
+                        for (let i = 0; i < msg['r'].length / 3; i++) {
+                            slices.push(msg['r'].slice(i * 3, i * 3 + 3));
+                        }
 
+                        let rounds = [];
+                        for (let [attackerID, attackType, targetHealthLeft] of slices) {
                             rounds.push({
+                                attackType,
+                                targetHealthLeft,
                                 attacker: attackerID == fighterA.ID ? fighterA : fighterB,
                                 target: attackerID == fighterA.ID ? fighterB : fighterA,
-                                attackType: attackType,
                                 attackSecondary: attackType <= 100 && (attackType >= 10 && attackType <= 14),
                                 attackCrit: attackType <= 100 && (attackType % 10 == 1),
                                 attackMissed: attackType <= 100 && ((attackType % 10 == 3) || (attackType % 10 == 4)),
-                                targetHealthLeft: targetHealthLeft
+                                attackDamage: 0
                             });
                         }
 
-                        for (var i = 0, round; round = rounds[i]; i++) {
-                            round.attackDamage = (() => {
-                                for (var j = i - 1; j >= 0; j--) {
-                                    if (rounds[j].attacker == round.attacker) {
-                                        return rounds[j].targetHealthLeft;
-                                    }
+                        let findPlayerHealth = (i) => {
+                            let currentRound = rounds[i];
+                            for (let j = i - 1, round; round = rounds[j]; j--) {
+                                if (round.attacker == currentRound.attacker && round.attackType < 100) {
+                                    return round.targetHealthLeft;
                                 }
+                            }
 
-                                return round.target.Life;
-                            })() - round.targetHealthLeft;
+                            return currentRound.target.Life;
+                        }
 
-                            if (round.attackType >= 100) {
-                                round.attackDamage = 0;
+                        for (let i = 0, round; round = rounds[i]; i++) {
+                            if (round.attackType < 100) {
+                                round.attackDamage = findPlayerHealth(i) - round.targetHealthLeft;
+                            } else {
+                                round.attackDamage = round.targetHealthLeft;
                             }
                         }
 
