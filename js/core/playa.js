@@ -509,7 +509,7 @@ class SFFighter {
         this.Wpn2 = new SFItem(dataType.sub(12), 2, [1, 2]);
 
         this.Mask = this.Wpn1.Type == -11 ? 1 : (this.Wpn1.Type == -12 ? 2 : 0);
-        this.Instrument = 0;
+        this.Instrument = this.Mask;
     }
 
     getMonsterID () {
@@ -1246,8 +1246,7 @@ class SFOtherPlayer extends SFPlayer {
         this.Dungeons.Shadow = dataType.byteArray(14);
         dataType.skip(1);
         this.Mask = dataType.long();
-        this.Instrument = this.Mask;
-        dataType.clear(); // skip
+        this.Instrument = dataType.long() - 1;
 
         dataType = new ComplexDataType(data.pets);
         dataType.skip(1); // skip
@@ -1519,7 +1518,6 @@ class SFOwnPlayer extends SFPlayer {
         dataType.short();
         dataType.skip(4);
         this.Mask = dataType.long();
-        this.Instrument = this.Mask;
         this.Dungeons.Extra.Normal[3] = dataType.short();
         this.Dungeons.Extra.Shadow[3] = dataType.short();
         dataType.skip(2);
@@ -1562,9 +1560,11 @@ class SFOwnPlayer extends SFPlayer {
             ],
             TotalPoints: dataType.long()
         }
-        dataType.skip(3)
+        dataType.skip(3);
         this.Dungeons.Extra.Normal[4] = dataType.short();
         this.Dungeons.Extra.Shadow[4] = dataType.short();
+        dataType.skip(11);
+        this.Instrument = dataType.long() - 1;
 
         if (data.idle) {
             this.Idle = {
