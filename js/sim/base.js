@@ -572,7 +572,7 @@ class BardModel extends FighterModel {
         // When this player attacks
         if (this != target) {
             if (this.HealMultiplier) {
-                this.Health = Math.max(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
+                this.Health = Math.min(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
 
                 this.consumeMultiplier();
             }
