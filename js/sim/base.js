@@ -751,6 +751,8 @@ class SimulatorBase {
                 targetA: {
                     ID: this.a.Player.ID || this.a.Index,
                     Name: this.a.Player.Name,
+                    Mask: this.a.Player.Mask,
+                    Instrument: this.a.Player.Instrument,
                     Level: this.a.Player.Level,
                     MaximumLife: this.a.TotalHealth,
                     Life: this.a.TotalHealth,
@@ -769,6 +771,8 @@ class SimulatorBase {
                 targetB: {
                     ID: this.b.Player.ID || this.b.Index,
                     Name: this.b.Player.Name,
+                    Mask: this.b.Player.Mask,
+                    Instrument: this.b.Player.Instrument,
                     Level: this.b.Player.Level,
                     MaximumLife: this.b.TotalHealth,
                     Life: this.b.TotalHealth,
