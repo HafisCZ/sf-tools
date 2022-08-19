@@ -723,17 +723,13 @@ class SimulatorBase {
             damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
             if (source.DamageMultiplier) {
                 damage *= source.DamageMultiplier;
+
+                source.consumeMultiplier();
             }
 
             if (target.IncomingDamageMultiplier) {
                 damage *= target.IncomingDamageMultiplier;
-            }
 
-            if (source.BeforeAttack) {
-                source.consumeMultiplier();
-            }
-
-            if (target.BeforeAttack) {
                 target.consumeMultiplier();
             }
 
@@ -742,11 +738,6 @@ class SimulatorBase {
             }
 
             damage = Math.ceil(damage);
-        } else {
-            // We must consume multiplier even if we missed
-            if (source.DamageMultiplier) {
-                source.consumeMultiplier();
-            }
         }
 
         if (FIGHT_DUMP_ENABLED) this.log(4, source, target, weapon, damage, skipped, critical, attackType);
