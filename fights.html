@@ -1244,6 +1244,8 @@
                             for (let j = i - 1, round; round = rounds[j]; j--) {
                                 if (round.attacker == currentRound.attacker && round.attackType < 100) {
                                     return round.targetHealthLeft;
+                                } else if (round.target == currentRound.attacker && round.attackType > 100 && round.attacker.Instrument == 2) {
+                                    return round.targetHealthLeft;
                                 }
                             }
 
