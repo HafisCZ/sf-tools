@@ -949,54 +949,89 @@
                 });
             }
 
+            function generateCounters ({ fighterA, fighterB, rounds }) {
+                fighterA.Stats = { Hits: 0, Crits: 0, Skips: 0, Revives: 0, Spells: 0 };
+                fighterB.Stats = { Hits: 0, Crits: 0, Skips: 0, Revives: 0, Spells: 0 };
+
+                for (var r of rounds) {
+                    if (r.attackType == 15 || r.attackType == 16) {
+                        continue;
+                    } else if (r.attackType == 100) {
+                        r.target.Stats.Revives++;
+                    } else if (r.attackType > 100) {
+                        r.attacker.Stats.Spells++;
+                    } else {
+                        if (r.attackMissed) {
+                            r.target.Stats.Skips++;
+                        } else {
+                            r.attacker.Stats.Hits++;
+
+                            if (r.attackCrit) {
+                                r.attacker.Stats.Crits++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            function generateRow (i, { attacker, target, attackCrit, attackType }, displayType, displayDamage) {
+                return `
+                    <div class="sixteen wide column">
+                        <div class="ui basic segment${i % 2 ? ' undertone' : ''}">
+                            <div class="ui grid">
+                                <div class="one wide column"></div>
+                                <div class="one wide column">${i + 1}</div>
+                                <div class="three wide column text-right"><b>${attacker.Name}</b></div>
+                                <div class="one wide column text-center">></div>
+                                <div class="three wide column"><b>${target.Name}</b></div>
+                                <div class="one wide column"></div>
+                                <div class="two wide column text-center${attackCrit ? ' foreground-red' : '' }${ attackType >= 100 ? ' text-purple' : '' }">${displayType}</div>
+                                <div class="three wide column text-right${attackCrit ? ' foreground-red text-bold' : '' }">${displayDamage}</div>
+                                <div class="one wide column"></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function generateRows ({ rounds }) {
+                let entries = [];
+
+                for (let i = 0, round; round = rounds[i]; i++) {
+                    let { attacker, attackType, attackDamage } = round;
+
+                    let displayType = '';
+                    let displayDamage = '';
+
+                    if (attackType < 100 && attackDamage > 0) {
+                        displayDamage = formatAsSpacedNumber(attackDamage, ' ');
+                    }
+
+                    if (attackType > 100) {
+                        let notes = Math.trunc((attackType % 100) / 10);
+                        let level = attackType % 10;
+
+                        displayType = `${INSTRUMENT_TYPES[attacker.Instrument]} Lvl ${level}`;
+                        displayDamage = `${notes} notes`
+                    } else {
+                        displayType = ATTACK_TYPES[attackType];
+                    }
+
+                    entries.push(generateRow(i, round, displayType, displayDamage));
+                }
+
+                $rounds.html(entries.join(''))
+            }
+
             function updateFight () {
                 if (fightIndex >= 0) {
                     var fight = fightData[fightIndex];
 
-                    // Hit statistics
-                    fight.fighterA.Stats = { Hits: 0, Crits: 0, Skips: 0, Revives: 0, Spells: 0 };
-                    fight.fighterB.Stats = { Hits: 0, Crits: 0, Skips: 0, Revives: 0, Spells: 0 };
-
-                    for (var r of fight.rounds) {
-                        if (r.attackType == 15 || r.attackType == 16) {
-                            continue;
-                        } else if (r.attackType == 100) {
-                            r.target.Stats.Revives++;
-                        } else if (r.attackType > 100) {
-                            r.attacker.Stats.Spells++;
-                        } else {
-                            if (r.attackMissed) {
-                                r.target.Stats.Skips++;
-                            } else {
-                                r.attacker.Stats.Hits++;
-
-                                if (r.attackCrit) {
-                                    r.attacker.Stats.Crits++;
-                                }
-                            }
-                        }
-                    }
+                    generateCounters(fight);
+                    generateRows(fight);
 
                     fillFighter($fighterA, fight.fighterA, fight.winner.ID == fight.fighterA.ID, fight.fighterB);
                     fillFighter($fighterB, fight.fighterB, fight.winner.ID == fight.fighterB.ID, fight.fighterA);
-
-                    $rounds.html(fight.rounds.map((round, i) => `
-                        <div class="sixteen wide column">
-                            <div class="ui basic segment ${ i % 2 ? 'undertone' : '' }">
-                                <div class="ui grid">
-                                    <div class="one wide column"></div>
-                                    <div class="one wide column">${ i + 1 }</div>
-                                    <div class="three wide column text-right"><b>${ round.attacker.Name }</b></div>
-                                    <div class="one wide column text-center">></div>
-                                    <div class="three wide column"><b>${ round.target.Name }</b></div>
-                                    <div class="one wide column"></div>
-                                    <div class="two wide column text-center ${ round.attackCrit ? 'foreground-red' : '' } ${ round.attackType >= 100 ? 'text-purple' : '' }">${ ATTACK_TYPES[round.attackType] || round.attackType }</div>
-                                    <div class="three wide column text-right ${ round.attackCrit ? 'foreground-red text-bold' : '' }">${ round.attackDamage ? formatAsSpacedNumber(round.attackDamage, ' ') : '' }</div>
-                                    <div class="one wide column"></div>
-                                </div>
-                            </div>
-                        </div>
-                    `).join(''));
 
                     $fighterA.find('[data-op="Armor"]').val(0).off('input').on('input', () => {
                         var n = $fighterA.find('[data-op="Armor"]').val();
