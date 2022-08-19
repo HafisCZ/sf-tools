@@ -553,7 +553,7 @@ class BardModel extends FighterModel {
             let multiplier = 1 + [ 20, 40, 60 ][level] / 100;
 
             this.DamageMultiplier = multiplier;
-        } else /* INSTRUMENT_FLUTE */ {
+        } else if (this.Player.Instrument == INSTRUMENT_FLUTE) {
             let multiplier = [ 5, 7.5, 10 ][level] / 100;
 
             this.HealMultiplier = multiplier;
