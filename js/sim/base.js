@@ -467,7 +467,7 @@ class DemonHunterModel extends FighterModel {
         if (state == STATE_DEAD) {
             let reviveChance = DH_REVIVE_CHANCE - DH_REVIVE_CHANCE_DECAY * this.DeathTriggers;
 
-            if (source.Player.Class != MAGE && source.Player.Class != BARD && getRandom(reviveChance)) {
+            if (source.Player.Class != MAGE && getRandom(reviveChance)) {
                 this.Health = this.TotalHealth * Math.max(DH_REVIVE_HP_DECAY, DH_REVIVE_HP - this.DeathTriggers * DH_REVIVE_HP_DECAY);
                 this.DeathTriggers += 1;
 
