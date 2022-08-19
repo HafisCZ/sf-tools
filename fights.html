@@ -1135,31 +1135,37 @@
                 }));
             }
 
-            function importHAR (json) {
-                var raws = [];
-                for (var [k, v] of filterPlayaJSON(json)) {
+            function findFightsInJSON (json) {
+                let fights = [];
+                for (let [k, v] of filterPlayaJSON(json)) {
                     if (k == 'text' && v.includes('fightheader')) {
-                        var cr = [];
-                        for (var [kb, vb] of parsePlayaResponse(v)) {
+                        let cr = [];
+                        for (let [kb, vb] of parsePlayaResponse(v)) {
                             if (kb.includes('.fighters')) {
                                 cr.push(['fighters', vb].join(':'));
                             } else if (kb.includes('.r')) {
                                 cr.push(['r', vb].join(':'));
                             } else if (kb.includes('winnerid')) {
                                 cr.push(['winnerid', vb].join(':'));
-                                raws.push(cr.join('&'));
+                                fights.push(cr.join('&'));
                                 cr = [];
                             }
                         }
                     }
                 }
 
-                for (var raw of raws) {
-                    var msg = {};
-                    for (var [k, v] of parsePlayaResponse(raw)) {
+                return fights.map(rawFight => {
+                    let msg = {};
+                    for (var [k, v] of parsePlayaResponse(rawFight)) {
                         msg[k] = v.split(/[/,]/g).map(d => isNaN(d) ? d : Number(d));
                     }
 
+                    return msg;
+                });
+            }
+
+            function importHAR (json) {
+                for (let msg of findFightsInJSON(json)) {
                     if (msg['fighters'] && msg['winnerid'] && msg['r'] && Object.values(FIGHT_TYPES).includes(msg['fighters'][0])) {
                         var fightType = msg['fighters'][0];
 
