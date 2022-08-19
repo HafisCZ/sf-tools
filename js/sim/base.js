@@ -417,7 +417,7 @@ class BattlemageModel extends FighterModel {
     onFightStart (target) {
         if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE) {
             return 0;
-        } else if (target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER || target.Player.Class == DRUID) {
+        } else if (target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER || target.Player.Class == DRUID || target.Player.Class == BARD) {
             return Math.ceil(target.TotalHealth / 3);
         } else if (target.Player.Class == WARRIOR) {
             return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 4));
