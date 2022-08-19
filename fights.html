@@ -725,6 +725,7 @@
                         return p.Strength;
                     case 2:
                     case 8:
+                    case 9:
                         return p.Intelligence;
                     default:
                         return p.Dexterity;
@@ -732,12 +733,12 @@
             }
 
             function getTargetResistance (p, t, tarmor) {
-                if (p.Class == 2) {
+                if (p.Class == 2 || p.Class == 9) {
                     return 0;
                 } else if (t.Class == 8) {
                     return Math.min([ 10, 50, 25 ][ t.Mask ], tarmor / p.Level);
                 } else {
-                    return Math.min([ 50, 10, 25, 25, 50, 25, 50 ][ t.Class - 1 ], tarmor / p.Level + (t.Class == 5 ? 40 : 0));
+                    return Math.min([ 50, 10, 25, 25, 50, 25, 50, 0 /* ABOVE */, 25 ][ t.Class - 1 ], tarmor / p.Level + (t.Class == 5 ? 40 : 0));
                 }
             }
 
@@ -752,6 +753,7 @@
                     case 6:
                         return 4;
                     case 2:
+                    case 9:
                         return 2;
                     case 8:
                         return mask == 1 ? 5 : (mask == 2 ? 4 : 2);
