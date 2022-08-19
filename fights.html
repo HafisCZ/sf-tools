@@ -880,6 +880,7 @@
                         Armor: Number($parent.find('[data-op="Armor"]').val()),
                         Class: f.Class,
                         Mask: f.Mask,
+                        Instrument: f.Instrument,
                         Name: f.Name,
                         Level: f.Level,
                         Identifier: f.Identifier,
@@ -1237,6 +1238,8 @@
                     a.Constitution,
                     a.Luck,
                     a.MaximumLife,
+                    a.Mask,
+                    a.Instrument,
                     a.Wpn1,
                     a.Wpn2
                 ]) + JSON.stringify([
@@ -1249,6 +1252,8 @@
                     b.Constitution,
                     b.Luck,
                     b.MaximumLife,
+                    b.Mask,
+                    b.Instrument,
                     b.Wpn1,
                     b.Wpn2
                 ]));
