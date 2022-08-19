@@ -670,7 +670,7 @@ class BardModel extends FighterModel {
             if (this.HealMultiplier) {
                 this.Health = Math.min(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
 
-                this.consumeMultiplier(target);
+                this.consumeMultiplier();
             }
 
             this.RoundCounter += 1;
