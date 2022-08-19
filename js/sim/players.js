@@ -8,7 +8,7 @@ self.addEventListener('message', function (message) {
     var mode = message.data.mode;
     var iterations = message.data.iterations || 100000;
     if (message.data.dev) {
-        FIGHT_DUMP_ENABLED = true;
+        FIGHT_LOG_ENABLED = true;
     }
 
     // Sim type decision
@@ -17,7 +17,7 @@ self.addEventListener('message', function (message) {
         self.postMessage({
             command: 'finished',
             results: player,
-            logs: FIGHT_DUMP_OUTPUT,
+            logs: FIGHT_LOG.dump(),
             time: Date.now() - ts
         });
     } else if (mode == 'attack') {
@@ -25,7 +25,7 @@ self.addEventListener('message', function (message) {
         self.postMessage({
             command: 'finished',
             results: players,
-            logs: FIGHT_DUMP_OUTPUT,
+            logs: FIGHT_LOG.dump(),
             time: Date.now() - ts
         });
     } else if (mode == 'defend') {
@@ -33,7 +33,7 @@ self.addEventListener('message', function (message) {
         self.postMessage({
             command: 'finished',
             results: players,
-            logs: FIGHT_DUMP_OUTPUT,
+            logs: FIGHT_LOG.dump(),
             time: Date.now() - ts
         });
     } else if (mode == 'tournament') {
@@ -41,7 +41,7 @@ self.addEventListener('message', function (message) {
         self.postMessage({
             command: 'finished',
             results: player,
-            logs: FIGHT_DUMP_OUTPUT,
+            logs: FIGHT_LOG.dump(),
             time: Date.now() - ts
         });
     }
@@ -231,7 +231,9 @@ class FightSimulator extends SimulatorBase {
         this.a = this.ca;
         this.b = this.cb;
 
-        if (FIGHT_DUMP_ENABLED) this.log(0);
+        if (FIGHT_LOG_ENABLED) {
+            FIGHT_LOG.logInit(this.a, this.b);
+        }
 
         this.a.reset();
         this.b.reset();

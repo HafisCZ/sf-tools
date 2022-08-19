@@ -6,14 +6,14 @@ self.addEventListener('message', function (message) {
     let hpcap = message.data.hpcap || 5000;
     let iterations = message.data.iterations || 100000;
     if (message.data.log) {
-        FIGHT_DUMP_ENABLED = true;
+        FIGHT_LOG_ENABLED = true;
     }
 
     if (players && boss) {
         self.postMessage({
             command: 'finished',
             results: new DungeonSimulator().simulate(players, boss, iterations, hpcap),
-            log: FIGHT_DUMP_OUTPUT,
+            log: FIGHT_LOG.dump(),
             index: index
         });
     }
@@ -97,7 +97,9 @@ class DungeonSimulator extends SimulatorBase {
             this.as = this.a.onFightStart(this.b);
             this.bs = this.b.onFightStart(this.a);
 
-            if (FIGHT_DUMP_ENABLED) this.log(0);
+            if (FIGHT_LOG_ENABLED) {
+                FIGHT_LOG.logInit(this.a, this.b);
+            }
 
             if (this.fight() == 0) {
                 this.la.shift();

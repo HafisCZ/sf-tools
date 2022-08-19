@@ -1,5 +1,90 @@
-FIGHT_DUMP_ENABLED = false;
-FIGHT_DUMP_OUTPUT = [];
+FIGHT_LOG_ENABLED = false;
+FIGHT_LOG = new (class {
+    constructor () {
+        this.allLogs = [];
+    }
+
+    _newRound (attacker, target, type, damage) {
+        this.lastLog.rounds.push({
+            attacker: attacker.Player.ID || attacker.Index,
+            target: target.Player.ID || target.Index,
+            attackDamage: damage,
+            attackType: type,
+            attackSecondary: type <= 100 && (type >= 10 && type <= 14),
+            attackCrit: type <= 100 && (type % 10 == 1),
+            attackMissed: type <= 100 && ((type % 10 == 3) || (type % 10 == 4))
+        })
+    }
+
+    dump () {
+        return this.allLogs;
+    }
+
+    logInit (playerA, playerB) {
+        this.playerA = playerA;
+        this.playerB = playerB;
+
+        this.lastLog = {
+            targetA: {
+                ID: playerA.Player.ID || playerA.Index, Name: playerA.Player.Name, Mask: playerA.Player.Mask,
+                Instrument: playerA.Player.Instrument, Level: playerA.Player.Level,
+                MaximumLife: playerA.TotalHealth, Life: playerA.TotalHealth, Strength: playerA.Player.Strength.Total,
+                Dexterity: playerA.Player.Dexterity.Total, Intelligence: playerA.Player.Intelligence.Total,
+                Constitution: playerA.Player.Constitution.Total, Luck: playerA.Player.Luck.Total, Face: playerA.Player.Face,
+                Race: playerA.Player.Race, Gender: playerA.Player.Gender, Class: playerA.Player.Class,
+                Wpn1: playerA.Player.Items.Wpn1, Wpn2: playerA.Player.Items.Wpn2
+            },
+            targetB: {
+                ID: playerB.Player.ID || playerB.Index, Name: playerB.Player.Name, Mask: playerB.Player.Mask,
+                Instrument: playerB.Player.Instrument, Level: playerB.Player.Level,
+                MaximumLife: playerB.TotalHealth, Life: playerB.TotalHealth, Strength: playerB.Player.Strength.Total,
+                Dexterity: playerB.Player.Dexterity.Total, Intelligence: playerB.Player.Intelligence.Total,
+                Constitution: playerB.Player.Constitution.Total, Luck: playerB.Player.Luck.Total, Face: playerB.Player.Face,
+                Race: playerB.Player.Race, Gender: playerB.Player.Gender, Class: playerB.Player.Class,
+                Wpn1: playerB.Player.Items.Wpn1, Wpn2: playerB.Player.Items.Wpn2
+            },
+            rounds: []
+        }
+
+        this.allLogs.push(this.lastLog)
+    }
+
+    logAttack (source, target, type, damage) {
+        this._newRound(
+            source,
+            target,
+            type,
+            damage
+        )
+    }
+
+    logFireball (source, target, damage) {
+        this._newRound(
+            source,
+            target,
+            damage == 0 ? 16 : 15,
+            damage
+        )
+    }
+
+    logRevive (source, target) {
+        this._newRound(
+            source,
+            target,
+            100,
+            0
+        )
+    }
+
+    logSpell (source, level, notes) {
+        this._newRound(
+            source,
+            source == this.playerA ? this.playerB : this.playerA,
+            200 + 10 * notes + level,
+            0
+        )
+    }
+})();
 
 // Returns true if random chance occured
 function getRandom (success) {
@@ -29,7 +114,6 @@ function getRuneValue (item, rune) {
 // States
 const STATE_DEAD = 0;
 const STATE_ALIVE = 1;
-const STATE_SPECIAL = 2;
 
 // Attacks
 const ATTACK_PRIMARY = 0;
@@ -471,8 +555,11 @@ class DemonHunterModel extends FighterModel {
                 this.Health = this.TotalHealth * Math.max(DH_REVIVE_HP_DECAY, DH_REVIVE_HP - this.DeathTriggers * DH_REVIVE_HP_DECAY);
                 this.DeathTriggers += 1;
 
-                // Return special state if revive was a success
-                return STATE_SPECIAL;
+                if (FIGHT_LOG_ENABLED) {
+                    FIGHT_LOG.logRevive(this, source);
+                }
+
+                return STATE_ALIVE;
             }
         }
 
@@ -541,6 +628,7 @@ class BardModel extends FighterModel {
     rollEffect (target) {
         let level = this.rollEffectLevel();
 
+        this.EffectLevel = level;
         this.EffectReset = this.rollEffectRounds(level);
         this.EffectCounter = 0;
         this.RoundCounter = this.Player.Instrument == INSTRUMENT_FLUTE ? 0 : 1;
@@ -558,10 +646,18 @@ class BardModel extends FighterModel {
 
             this.HealMultiplier = multiplier;
         }
+
+        if (FIGHT_LOG_ENABLED) {
+            FIGHT_LOG.logSpell(this, this.EffectLevel, this.EffectReset);
+        }
     }
 
     consumeMultiplier () {
         this.EffectCounter += 1;
+
+        if (FIGHT_LOG_ENABLED) {
+            FIGHT_LOG.logSpell(this, this.EffectLevel, this.EffectReset - this.EffectCounter + 1);
+        }
 
         if (this.EffectCounter >= this.EffectReset) {
             this.resetEffects();
@@ -574,7 +670,7 @@ class BardModel extends FighterModel {
             if (this.HealMultiplier) {
                 this.Health = Math.min(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
 
-                this.consumeMultiplier();
+                this.consumeMultiplier(target);
             }
 
             this.RoundCounter += 1;
@@ -621,11 +717,7 @@ class SimulatorBase {
         var damage3 = this.attack(this.a, this.b, this.a.Weapon1, ATTACK_SPECIAL);
 
         if (this.b.DamageTaken) {
-            var alive = this.b.onDamageTaken(this.a, damage3);
-
-            if (FIGHT_DUMP_ENABLED && alive == STATE_SPECIAL) this.log(5);
-
-            return alive != STATE_DEAD;
+            return this.b.onDamageTaken(this.a, damage3) != STATE_DEAD;
         } else {
             this.b.Health -= damage3;
             return this.b.Health >= 0
@@ -641,12 +733,19 @@ class SimulatorBase {
 
             if (this.as > 0) {
                 this.b.Health -= this.as;
-                if (FIGHT_DUMP_ENABLED) this.log(1);
+
+                if (FIGHT_LOG_ENABLED) {
+                    FIGHT_LOG.logFireball(this.a, this.b, this.as);
+                }
             } else if (this.bs > 0) {
                 this.a.Health -= this.bs;
-                if (FIGHT_DUMP_ENABLED) this.log(2);
-            } else {
-                if (FIGHT_DUMP_ENABLED) this.log(3);
+
+                if (FIGHT_LOG_ENABLED) {
+                    FIGHT_LOG.logFireball(this.b, this.a, this.bs);
+                }
+            } else if (FIGHT_LOG_ENABLED) {
+                // Report fireball blocked
+                FIGHT_LOG.logFireball(this.a, this.b, 0);
             }
         }
 
@@ -660,11 +759,7 @@ class SimulatorBase {
             var damage = this.attack(this.a, this.b);
 
             if (this.b.DamageTaken) {
-                let alive = this.b.onDamageTaken(this.a, damage);
-
-                if (FIGHT_DUMP_ENABLED && alive == STATE_SPECIAL) this.log(5);
-
-                if (alive == STATE_DEAD) {
+                if (this.b.onDamageTaken(this.a, damage) == STATE_DEAD) {
                     break;
                 }
             } else {
@@ -681,11 +776,7 @@ class SimulatorBase {
                 var damage2 = this.attack(this.a, this.b, this.a.Weapon2, ATTACK_SECONDARY);
 
                 if (this.b.DamageTaken) {
-                    let alive = this.b.onDamageTaken(this.a, damage2, ATTACK_SECONDARY);
-
-                    if (FIGHT_DUMP_ENABLED && alive == STATE_SPECIAL) this.log(5);
-
-                    if (alive == STATE_DEAD) {
+                    if (this.b.onDamageTaken(this.a, damage2, ATTACK_SECONDARY) == STATE_DEAD) {
                         break;
                     }
                 } else {
@@ -743,109 +834,15 @@ class SimulatorBase {
             source.consumeMultiplier();
         }
 
-        if (FIGHT_DUMP_ENABLED) this.log(4, source, target, weapon, damage, skipped, critical, attackType);
+        if (FIGHT_LOG_ENABLED) {
+            FIGHT_LOG.logAttack(
+                source,
+                target,
+                (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + attackType * 10,
+                damage
+            )
+        }
 
         return damage;
-    }
-
-    log (stage, ... args) {
-        if (stage == 0) {
-            this.log_obj = {
-                targetA: {
-                    ID: this.a.Player.ID || this.a.Index,
-                    Name: this.a.Player.Name,
-                    Mask: this.a.Player.Mask,
-                    Instrument: this.a.Player.Instrument,
-                    Level: this.a.Player.Level,
-                    MaximumLife: this.a.TotalHealth,
-                    Life: this.a.TotalHealth,
-                    Strength: this.a.Player.Strength.Total,
-                    Dexterity: this.a.Player.Dexterity.Total,
-                    Intelligence: this.a.Player.Intelligence.Total,
-                    Constitution: this.a.Player.Constitution.Total,
-                    Luck: this.a.Player.Luck.Total,
-                    Face: this.a.Player.Face,
-                    Race: this.a.Player.Race,
-                    Gender: this.a.Player.Gender,
-                    Class: this.a.Player.Class,
-                    Wpn1: this.a.Player.Items.Wpn1,
-                    Wpn2: this.a.Player.Items.Wpn2
-                },
-                targetB: {
-                    ID: this.b.Player.ID || this.b.Index,
-                    Name: this.b.Player.Name,
-                    Mask: this.b.Player.Mask,
-                    Instrument: this.b.Player.Instrument,
-                    Level: this.b.Player.Level,
-                    MaximumLife: this.b.TotalHealth,
-                    Life: this.b.TotalHealth,
-                    Strength: this.b.Player.Strength.Total,
-                    Dexterity: this.b.Player.Dexterity.Total,
-                    Intelligence: this.b.Player.Intelligence.Total,
-                    Constitution: this.b.Player.Constitution.Total,
-                    Luck: this.b.Player.Luck.Total,
-                    Face: this.b.Player.Face,
-                    Race: this.b.Player.Race,
-                    Gender: this.b.Player.Gender,
-                    Class: this.b.Player.Class,
-                    Wpn1: this.b.Player.Items.Wpn1,
-                    Wpn2: this.b.Player.Items.Wpn2
-                },
-                rounds: []
-            };
-
-            FIGHT_DUMP_OUTPUT.push(this.log_obj);
-        } else if (stage == 1) {
-            this.log_obj.rounds.push({
-                attackCrit: false,
-                attackType: 15,
-                attackMissed: false,
-                attackDamage: this.as,
-                attackSecondary: false,
-                attacker: this.a.Player.ID || this.a.Index,
-                target: this.b.Player.ID || this.b.Index
-            });
-        } else if (stage == 2) {
-            this.log_obj.rounds.push({
-                attackCrit: false,
-                attackType: 15,
-                attackMissed: false,
-                attackSecondary: false,
-                attackDamage: this.bs,
-                attacker: this.b.Player.ID || this.b.Index,
-                target: this.a.Player.ID || this.a.Index
-            });
-        } else if (stage == 3) {
-            this.log_obj.rounds.push({
-                attackCrit: false,
-                attackType: 16,
-                attackMissed: true,
-                attackSecondary: false,
-                attackDamage: 0,
-                attacker: this.a.Player.ID || this.a.Index,
-                target: this.b.Player.ID || this.b.Index
-            });
-        } else if (stage == 4) {
-            let [ source, target, weapon, damage, skipped, critical, extra ] = args;
-            this.log_obj.rounds.push({
-                attackCrit: critical,
-                attackType: (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + (extra ? 20 : 0),
-                attackMissed: skipped,
-                attackDamage: damage,
-                attackSecondary: weapon != source.Weapon1,
-                attacker: source.Player.ID || source.Index,
-                target: target.Player.ID || target.Index
-            });
-        } else if (stage == 5) {
-            this.log_obj.rounds.push({
-                attackCrit: false,
-                attackType: 100,
-                attackMissed: false,
-                attackDamage: 0,
-                attackSecondary: false,
-                attacker: this.a.Player.ID || this.a.Index,
-                target: this.b.Player.ID || this.b.Index
-            });
-        }
     }
 }
