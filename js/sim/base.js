@@ -543,7 +543,7 @@ class BardModel extends FighterModel {
 
         this.EffectReset = this.rollEffectRounds(level);
         this.EffectCounter = 0;
-        this.RoundCounter = 0;
+        this.RoundCounter = this.Player.Instrument == INSTRUMENT_FLUTE ? 0 : 1;
 
         if (this.Player.Instrument == INSTRUMENT_HARP) {
             let multiplier = 1 / this.DamageReduction * (1 - this.getDamageReduction(target, [ 40, 55, 75 ][level]) / 100);
@@ -579,7 +579,7 @@ class BardModel extends FighterModel {
 
             this.RoundCounter += 1;
 
-            if (this.RoundCounter >= BARD_EFFECT_ROUNDS) {
+            if (this.RoundCounter > BARD_EFFECT_ROUNDS) {
                 this.rollEffect(target);
             }
         }
@@ -738,6 +738,9 @@ class SimulatorBase {
             }
 
             damage = Math.ceil(damage);
+        } else if (source.DamageMultiplier) {
+            // If attack is dodged, we still need to consume the spell
+            source.consumeMultiplier();
         }
 
         if (FIGHT_DUMP_ENABLED) this.log(4, source, target, weapon, damage, skipped, critical, attackType);
