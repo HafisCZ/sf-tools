@@ -781,11 +781,11 @@
                     }[SiteOptions.tab] || UI.Groups);
 
                     if (param_template) {
-                        PopupController.open(SaveOnlineScriptDialog, param_template);
+                        DialogController.open(SaveOnlineScriptDialog, param_template);
                     }
                 }).catch(function (e) {
                     Loader.toggle(false);
-                    PopupController.open(ErrorDialog, `<h4 class="ui white header text-center">Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.</h4><br>${e.message}`);
+                    DialogController.open(ErrorDialog, `<h4 class="ui white header text-center">Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.</h4><br>${e.message}`);
                     Logger.error(e, 'Database could not be opened!');
                 });
             });
