@@ -488,7 +488,7 @@
 
                 $('#simulate').click(async function () {
                     if (validateLists()) {
-                        LoaderPopup.toggle(true);
+                        Loader.toggle(true);
 
                         for (let player of playerList[0]) player.ForceGladiator = gladiatorMode ? 15 : undefined;
                         for (let player of playerList[1]) player.ForceGladiator = gladiatorMode ? 15 : undefined;
@@ -512,7 +512,7 @@
                                 if (blocksResults.length == blocks) {
                                     displayResults(blocksResults, blocks * iterations);
 
-                                    LoaderPopup.toggle(false);
+                                    Loader.toggle(false);
                                 }
                             }, false);
 

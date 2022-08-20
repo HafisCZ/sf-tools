@@ -214,10 +214,10 @@
         <script type="text/javascript">
             $('#show-compare, #show-crystal').hide();
 
-            LoaderPopup.toggle(true);
+            Loader.toggle(true);
             DatabaseManager.load(SELF_PROFILE).then(function () {
                 UI.initialize();
-                LoaderPopup.toggle(false);
+                Loader.toggle(false);
 
                 var id = window.location.href.match(/^.*\?id=(.*)$/);
                 if (id && DatabaseManager.Players[id[1]]) {
@@ -227,8 +227,8 @@
                     UI.show(UI.PlayerSelect);
                 }
             }).catch(function (e) {
-                LoaderPopup.toggle(false);
-                PopupController.open(ErrorPopup, `<h4 class="ui white header text-center">Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.</h4><br>${e.message}`);
+                Loader.toggle(false);
+                DialogController.open(ErrorDialog, `<h4 class="ui white header text-center">Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.</h4><br>${e.message}`);
                 Logger.error(e, 'Database could not be opened!');
             });
         </script>

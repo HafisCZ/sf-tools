@@ -498,7 +498,7 @@
                         }
 
                         updatePlayerList();
-                        LoaderPopup.toggle(true);
+                        Loader.toggle(true);
 
                         // Set up threads & iterations
                         let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
@@ -524,7 +524,7 @@
                                         playerList = resultList;
                                         updatePlayerList();
 
-                                        LoaderPopup.toggle(false);
+                                        Loader.toggle(false);
                                     }
                                 }
                             }, false);

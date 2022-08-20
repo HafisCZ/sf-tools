@@ -358,7 +358,7 @@
 
                 $('#sim-run').click(async function () {
                     if (EditorController.valid()) {
-                        LoaderPopup.toggle(true);
+                        Loader.toggle(true);
 
                         const iterations = Math.max(1, Number($('#sim-iterations').val()) || 10000);
 
@@ -377,7 +377,7 @@
                                     finishedSimulations++;
 
                                     if (finishedSimulations == pets.length) {
-                                        LoaderPopup.toggle(false);
+                                        Loader.toggle(false);
                                         showResults(results);
                                     }
                                 }

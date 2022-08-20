@@ -577,12 +577,12 @@
 
             $('#sim-run').click(function () {
                 if (petA.valid() && petB.valid()) {
-                    LoaderPopup.toggle(true);
+                    Loader.toggle(true);
                     simulateFight(petA.read(), petB.read()).then(([chance, a, b]) => {
                         $('#sim-result').html(chance.toFixed(chance < 0.01 ? 5 : 2) + '%');
-                        LoaderPopup.toggle(false);
+                        Loader.toggle(false);
                     }).catch(() => {
-                        LoaderPopup.toggle(false);
+                        Loader.toggle(false);
                     });
                 }
             });
@@ -634,7 +634,7 @@
                     var temp = petB.read();
 
                     if (a && temp && !a.Boss && temp.Boss) {
-                        LoaderPopup.toggle(true);
+                        Loader.toggle(true);
 
                         var count = 0;
                         for (var i = temp.Pet; i < Math.min(20, temp.Pet + mapCount); i++) {
@@ -657,7 +657,7 @@
                                     maps_finished++;
 
                                     if (maps_finished == count) {
-                                        LoaderPopup.toggle(false);
+                                        Loader.toggle(false);
 
                                         for (var j = 0; j < maps.length; j++) {
                                             addMap(maps[j], `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b[j].Type] } ${ b[j].Pet + 1 } - ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
@@ -714,7 +714,7 @@
 
                         $(`div[data-player-id="${ player.Identifier }"]`).click((event) => {
                             event.stopPropagation();
-                            LoaderPopup.toggle(true);
+                            Loader.toggle(true);
 
                             let petFights = [];
                             let results = [];
@@ -737,7 +737,7 @@
                             Toast.info('Starting simulation', `<b>Matches:</b> ${petFights.length}`);
 
                             Promise.all(petFights).then(() => {
-                                LoaderPopup.toggle(false);
+                                Loader.toggle(false);
                                 _sort_des(results, i => i.chance);
 
                                 let resultClasses = [0, 0, 0, 0, 0];

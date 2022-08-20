@@ -732,7 +732,7 @@
 
                 $('#sim-run-all').click(async function () {
                     if (availableBosses && availableBosses.length > 0 && editor.valid()) {
-                        LoaderPopup.toggle(true);
+                        Loader.toggle(true);
 
                         let results = [];
                         let resultsRemaining = availableBosses.length;
@@ -756,7 +756,7 @@
                                     };
 
                                     if (--resultsRemaining <= 0) {
-                                        LoaderPopup.toggle(false);
+                                        Loader.toggle(false);
                                         showMassDungeonResults(availableBosses, results);
                                     } else if (pendingInstances.length > 0) {
                                         let [ secWorker, args ] = pendingInstances.pop();
@@ -784,7 +784,7 @@
 
                 $('#sim-run-dungeon').click(async function () {
                     if (editor.valid()) {
-                        LoaderPopup.toggle(true);
+                        Loader.toggle(true);
 
                         let bossQueue = [];
                         for (let [name, bossData] of Object.entries(dungeon.floors)) {
@@ -818,7 +818,7 @@
                                     };
 
                                     if (--resultsRemaining <= 0) {
-                                        LoaderPopup.toggle(false);
+                                        Loader.toggle(false);
                                         showMassDungeonResults(bossQueue, results, false);
                                     } else if (pendingInstances.length > 0) {
                                         let [ secWorker, args ] = pendingInstances.pop();
@@ -846,7 +846,7 @@
 
                 $('#sim-run').click(async function () {
                     if (boss && editor.valid()) {
-                        LoaderPopup.toggle(true);
+                        Loader.toggle(true);
 
                         let playerInstances = preparePlayerInstances(dungeon);
                         let threads = Math.max(1, Number($('#sim-threads').val()) || 2);
@@ -894,7 +894,7 @@
 
                                         showGraph(chart, dungeon, boss, totalScore, totalTries, _sort_asc(finalResults));
                                         $('#winchart').removeClass('faded-out');
-                                        LoaderPopup.toggle(false);
+                                        Loader.toggle(false);
                                     }
                                 }
                             }, false);

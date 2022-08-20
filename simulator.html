@@ -384,7 +384,7 @@
                     }
 
                     showPlayers();
-                    LoaderPopup.toggle(true);
+                    Loader.toggle(true);
 
                     let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
                     let blockSize = Math.ceil(players.length / blocks);
@@ -416,7 +416,7 @@
                                 Toast.info(`Simulation thread ${blocksFinished += 1} / ${blocks} finished`, `<b>Time:</b> ${message.data.time / 1000} seconds`)
 
                                 if (results.length == players.length) {
-                                    LoaderPopup.toggle(false);
+                                    Loader.toggle(false);
 
                                     players = results;
                                     setSort('avg', 0);

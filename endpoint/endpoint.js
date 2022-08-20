@@ -484,7 +484,7 @@ const StatisticsIntegration = new (class {
         }
 
         $statsLoad.click(() => {
-            LoaderPopup.toggle(true);
+            Loader.toggle(true);
             DatabaseManager.load(profile).then(function () {
                 $statsList.empty();
                 callback($statsList);
@@ -509,7 +509,7 @@ const StatisticsIntegration = new (class {
                                 </label>
                                 <input type="file" multiple data-op="upload" accept=".har,.json" class="css-hidden" id="button-upload">
                             `).change((fileEvent) => {
-                                LoaderPopup.toggle(true);
+                                Loader.toggle(true);
 
                                 let pendingPromises = [];
                                 Array.from(fileEvent.target.files).forEach(file => {
@@ -529,9 +529,9 @@ const StatisticsIntegration = new (class {
                     )
                 );
 
-                LoaderPopup.toggle(false);
+                Loader.toggle(false);
             }).catch(function (e) {
-                LoaderPopup.toggle(false);
+                Loader.toggle(false);
 
                 Toast.error('Database could not be opened', 'Please verify that you are not in incognito mode and your browser supports Indexed DB');
                 Logger.error(e, `Database could not be opened! Reason: ${e.message}`);

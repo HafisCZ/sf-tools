@@ -1,4 +1,4 @@
-class FloatingPopup {
+class Dialog {
     constructor (opacity = 0.85) {
         this.opacity = opacity;
     }
@@ -124,7 +124,7 @@ const Toast = new (class {
     }
 })();
 
-const PopupController = new (class {
+const DialogController = new (class {
     constructor () {
         this.promise = Promise.resolve();
     }
@@ -139,7 +139,7 @@ const PopupController = new (class {
     }
 })();
 
-const TermsAndConditionsPopup = new (class extends FloatingPopup {
+const TermsAndConditionsDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="ui basic tiny modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
@@ -186,7 +186,7 @@ const TermsAndConditionsPopup = new (class extends FloatingPopup {
     }
 })();
 
-const ChangeLogPopup = new (class extends FloatingPopup {
+const ChangeLogDialog = new (class extends Dialog {
     _createModal () {
         const release = MODULE_VERSION;
         const entries = CHANGELOG[release];
@@ -232,7 +232,7 @@ const ChangeLogPopup = new (class extends FloatingPopup {
     }
 })();
 
-const LoaderPopup = new (class extends FloatingPopup {
+const Loader = new (class extends Dialog {
     constructor () {
         super(0);
     }
@@ -246,12 +246,12 @@ const LoaderPopup = new (class extends FloatingPopup {
     }
 
     toggle (open) {
-        PopupController[open ? 'open' : 'close'](LoaderPopup);
+        DialogController[open ? 'open' : 'close'](Loader);
     }
 })();
 
 // Non-blocking popup about an exception that occured
-const WarningPopup = new (class extends FloatingPopup {
+const WarningDialog = new (class extends Dialog {
     constructor () {
         super(0);
     }
@@ -279,7 +279,7 @@ const WarningPopup = new (class extends FloatingPopup {
 })();
 
 // Blocking popup about an exception that occured and is blocking execution
-const ErrorPopup = new (class extends FloatingPopup {
+const ErrorDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="ui basic tiny modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
@@ -318,7 +318,7 @@ const ErrorPopup = new (class extends FloatingPopup {
     }
 })();
 
-const FileEditPopup = new (class extends FloatingPopup {
+const FileEditDialog = new (class extends Dialog {
     constructor () {
         super(0);
     }
@@ -350,7 +350,7 @@ const FileEditPopup = new (class extends FloatingPopup {
             const newTimestamp = Math.trunc(parseOwnDate(this.$timestamp.val()) / 60000);
             if (newTimestamp && newTimestamp != this.truncatedTimestamp) {
                 this.close();
-                LoaderPopup.toggle(true);
+                Loader.toggle(true);
                 DatabaseManager.rebase(this.sourceTimestamp, newTimestamp * 60000).then(this.callback);
             } else {
                 this.close();
@@ -368,7 +368,7 @@ const FileEditPopup = new (class extends FloatingPopup {
     }
 })();
 
-const SaveOnlineTemplatePopup = new (class extends FloatingPopup {
+const SaveOnlineScriptDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="ui basic mini modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
@@ -466,7 +466,7 @@ const SaveOnlineTemplatePopup = new (class extends FloatingPopup {
     }
 })();
 
-const FileTagPopup = new (class extends FloatingPopup {
+const EditFileTagDialog = new (class extends Dialog {
     constructor () {
         super(0);
     }
@@ -504,7 +504,7 @@ const FileTagPopup = new (class extends FloatingPopup {
         this.$parent.find('[data-op="save"]').click(() => {
             const tag = this.$newTags.val().trim();
             this.close();
-            LoaderPopup.toggle(true);
+            Loader.toggle(true);
             DatabaseManager.setTag(this.timestamps, tag).then(this.callback);
         });
     }
@@ -529,7 +529,7 @@ const FileTagPopup = new (class extends FloatingPopup {
     }
 })();
 
-const ProfileCreatePopup = new (class extends FloatingPopup {
+const ProfileCreateDialog = new (class extends Dialog {
 
     constructor () {
         super(0);
@@ -873,158 +873,7 @@ const ProfileCreatePopup = new (class extends FloatingPopup {
     }
 })();
 
-const ActionCreatePopup = new (class extends FloatingPopup {
-    constructor () {
-        super(0);
-    }
-
-    _createModal () {
-        return `
-            <div class="ui small modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
-                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Create/Edit action</h2>
-                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
-                    <div class="two fields">
-                        <div class="four wide field">
-                            <label>ID:</label>
-                            <input class="text-center" data-op="id" type="text" disabled>
-                        </div>
-                        <div class="twelve wide field">
-                            <label>Name:</label>
-                            <input data-op="name" type="text">
-                        </div>
-                    </div>
-                    <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">Configuration</h3>
-                    <div class="two fields">
-                        <div class="field">
-                            <label>Action:</label>
-                            <select class="ui fluid search selection dropdown" data-op="action">
-                                <option value="tag">Tag</option>
-                                <option value="rebase" disabled>Update timestamp</option>
-                                <option value="remove" disabled>Remove</option>
-                                <option value="merge" disabled>Merge</option>
-                                <option value="duplicate" disabled>Duplicate</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Trigger on:</label>
-                            <select class="ui fluid search selection dropdown" data-op="trigger">
-                                <option value="import">Import</option>
-                                <option value="load" disabled>Load</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="two fields">
-                        <div class="field"></div>
-                        <div class="grouped fields" style="padding-left: 1.5em;">
-                            <div class="field">
-                                <div class="ui checkbox">
-                                    <input type="checkbox" name="import-har">
-                                    <label>HAR</label>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui checkbox">
-                                    <input type="checkbox" name="import-endpoint">
-                                    <label>Endpoint</label>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui checkbox">
-                                    <input type="checkbox" name="import-merge">
-                                    <label>Merge</label>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui checkbox">
-                                    <input type="checkbox" name="import-shared">
-                                    <label>Shared</label>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui checkbox">
-                                    <input type="checkbox" name="import-dungeons-har">
-                                    <label>Dungeons - HAR</label>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui checkbox">
-                                    <input type="checkbox" name="import-dungeons-endpoint">
-                                    <label>Dungeons - Endpoint</label>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui checkbox">
-                                    <input type="checkbox" name="import-pets-har">
-                                    <label>Pets - HAR</label>
-                                </div>
-                            </div>
-                            <div class="field">
-                                <div class="ui checkbox">
-                                    <input type="checkbox" name="import-pets-endpoint">
-                                    <label>Pets - Endpoint</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="two fields">
-                        <div class="field">
-                            <label>Apply to:</label>
-                            <select class="ui fluid search selection dropdown" data-op="target">
-                                <option value="file">File</option>
-                                <option value="player">Player</option>
-                                <option value="group">Group</option>
-                            </select>
-                        </div>
-                        <div class="field">
-                            <label>Allow in temporary mode:</label>
-                            <select class="ui fluid search selection dropdown" data-op="temporary">
-                                <option value="0">No</option>
-                                <option value="1">Yes</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <label>If:</label>
-                        <div class="ta-wrapper" style="height: initial;">
-                            <input class="ta-area" data-op="condition" type="text" placeholder="AST expression">
-                            <div data-op="condition-content" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
-                        </div>
-                    </div>
-                    <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">Arguments</h3>
-                    <div class="field">
-                        <div class="ta-wrapper" style="height: initial;">
-                            <input class="ta-area" data-op="arguments" type="text" placeholder="AST expression (array)">
-                            <div data-op="arguments-content" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="ui three fluid buttons">
-                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
-                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">Save</button>
-                </div>
-            </div>
-        `;
-    }
-
-    _createBindings () {
-        this.$parent.find('.dropdown').dropdown();
-
-        this.$parent.find('[data-op="cancel"]').click(() => {
-            this.close();
-        });
-
-        this.$parent.find('[data-op="save"]').click(() => {
-            this.close();
-            this.callback();
-        });
-    }
-
-    _applyArguments (callback, id) {
-
-    }
-})();
-
-const ConfirmationPopup = new (class extends FloatingPopup {
+const ConfirmDialog = new (class extends Dialog {
     _createModal () {
         return `
             <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
@@ -1110,11 +959,11 @@ const ConfirmationPopup = new (class extends FloatingPopup {
 window.addEventListener('load', function() {
     if (PreferencesHandler._isAccessible()) {
         if (!SiteOptions.terms_accepted) {
-            PopupController.open(TermsAndConditionsPopup);
+            DialogController.open(TermsAndConditionsDialog);
         }
 
         if (SiteOptions.version_accepted != MODULE_VERSION) {
-            PopupController.open(ChangeLogPopup);
+            DialogController.open(ChangeLogDialog);
         }
     }
 });

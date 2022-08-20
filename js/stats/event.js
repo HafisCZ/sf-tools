@@ -1761,7 +1761,7 @@ class FilesView extends View {
 
     tagSelected () {
         if (this.simple && _not_empty(this.selectedFiles)) {
-            PopupController.open(FileTagPopup, this.selectedFiles, () => this.show());
+            DialogController.open(EditFileTagDialog, this.selectedFiles, () => this.show());
         }
     }
 
@@ -1782,15 +1782,15 @@ class FilesView extends View {
 
     // Delete all
     deleteAll () {
-        PopupController.open(ConfirmationPopup, 'Delete all', 'Are you sure you want to delete all stored player data?', () => {
-            LoaderPopup.toggle(true);
+        DialogController.open(ConfirmDialog, 'Delete all', 'Are you sure you want to delete all stored player data?', () => {
+            Loader.toggle(true);
             DatabaseManager.purge().then(() => this.show());
         }, () => {}, true, 2)
     }
 
     // Delete selected
     deleteSelected () {
-        LoaderPopup.toggle(true);
+        Loader.toggle(true);
         if (this.simple) {
             DatabaseManager.removeTimestamps(... this.selectedFiles).then(() => this.show());
         } else {
@@ -1802,13 +1802,13 @@ class FilesView extends View {
     mergeSelected () {
         if (this.simple) {
             if (this.selectedFiles.length > 1) {
-                LoaderPopup.toggle(true);
+                Loader.toggle(true);
                 DatabaseManager.merge(this.selectedFiles).then(() => this.show());
             }
         } else {
             const timestamps = _uniq(Object.values(this.selectedPlayers).map(player => player.timestamp));
             if (timestamps.length > 1) {
-                LoaderPopup.toggle(true);
+                Loader.toggle(true);
                 DatabaseManager.merge(timestamps).then(() => this.show());
             }
         }
@@ -1816,7 +1816,7 @@ class FilesView extends View {
 
     // Hide selected
     hideSelected () {
-        LoaderPopup.toggle(true);
+        Loader.toggle(true);
         if (this.simple) {
             DatabaseManager.hideTimestamps(... this.selectedFiles).then(() => this.show());
         } else {
@@ -1825,13 +1825,13 @@ class FilesView extends View {
     }
 
     hideMigrate () {
-        LoaderPopup.toggle(true);
+        Loader.toggle(true);
         DatabaseManager.migrateHiddenFiles().then(() => this.show());
     }
 
     // Import file via har
     importJson (fileEvent) {
-        LoaderPopup.toggle(true);
+        Loader.toggle(true);
 
         let pendingPromises = [];
         Array.from(fileEvent.currentTarget.files).forEach(file => {
@@ -2228,7 +2228,7 @@ class FilesView extends View {
 
             $entries.find('[data-edit]').click((event) => {
                 const timestamp = parseInt(event.currentTarget.dataset.edit);
-                PopupController.open(FileEditPopup, timestamp, () => this.show());
+                DialogController.open(FileEditDialog, timestamp, () => this.show());
             });
 
             if (entries.length == 0) {
@@ -2474,7 +2474,7 @@ class FilesView extends View {
         this.lastSelectedTimestamp = null;
         this.lastSelectedPlayer = null;
 
-        LoaderPopup.toggle(false);
+        Loader.toggle(false);
 
         this.$tags.toggle(this.simple);
         this.$migrateHidden.toggle(!this.simple && SiteOptions.hidden);
@@ -2516,8 +2516,8 @@ class SettingsView extends View {
         this.$parent.find('[data-op="close"]').click(() => this.hide());
         this.$save = this.$parent.find('[data-op="save"]').click(() => this.save());
         this.$delete = this.$parent.find('[data-op="delete"]').click(() => {
-            PopupController.open(
-                ConfirmationPopup,
+            DialogController.open(
+                ConfirmDialog,
                 'Remove settings',
                 'Are you sure you want to permanently remove currently applied settings?',
                 () => this.remove(),
@@ -3426,7 +3426,7 @@ class OptionsView extends View {
             if (enabled) {
                 this.$parent.find(`[data-op="checkbox-terms"]`).checkbox('set checked');
             } else {
-                PopupController.open(TermsAndConditionsPopup);
+                DialogController.open(TermsAndConditionsDialog);
             }
         });
 
@@ -3552,7 +3552,7 @@ class ProfilesView extends View {
 
         this.$parent.find('[data-edit]').click((event) => {
             const key = event.currentTarget.dataset.edit;
-            PopupController.open(ProfileCreatePopup, () => this.show(), key);
+            DialogController.open(ProfileCreateDialog, () => this.show(), key);
         });
 
         this.$parent.find('[data-op="create"]').click(() => {
@@ -3562,7 +3562,7 @@ class ProfilesView extends View {
     }
 
     addProfile () {
-        PopupController.open(ProfileCreatePopup, () => this.show());
+        DialogController.open(ProfileCreateDialog, () => this.show());
     }
 
     showRules (rule) {
