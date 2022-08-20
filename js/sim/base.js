@@ -647,7 +647,7 @@ class BardModel extends FighterModel {
             this.HealMultiplier = multiplier;
         }
 
-        if (FIGHT_LOG_ENABLED) {
+        if (FIGHT_LOG_ENABLED && this.Player.Instrument != INSTRUMENT_LUTE) {
             FIGHT_LOG.logSpell(this, this.EffectLevel, this.EffectReset);
         }
     }
