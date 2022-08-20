@@ -2526,24 +2526,17 @@ class SettingsView extends View {
         });
 
         this.$parent.find('[data-op="save-apply-template"]').click(() => this.saveApplyTemplate());
+        this.$parent.find('[data-op="save-template"]').click(() => {
+            DialogController.open(
+                TemplateSaveDialog,
+                _dig(this, 'settings', 'parent'),
+                (name) => {
+                    Templates.save(name, this.editor.content);
 
-        /*
-            Save as template dialog
-        */
-        this.$templatePopup = this.$parent.find('[data-op="save-popup"]').templatePopup('create', {
-            trigger: this.$parent.find('[data-op="save-template"]'),
-            getValues: () => Templates.getKeys().map(key => {
-                return {
-                    name: key,
-                    value: key,
-                    selected: this.settings && key == this.settings.parent
-                }
-            }),
-            onSave: value => {
-                if (value) {
-                    Templates.save(value, this.editor.content);
+                    if (this.settings) {
+                        this.settings.parent = name;
+                    }
 
-                    this.settings.parent = value;
                     this.$settingsList.settings_selectionlist('set unsaved', true);
 
                     if (UI.current.refreshTemplateDropdown) {
@@ -2552,13 +2545,8 @@ class SettingsView extends View {
 
                     this.updateTemplates();
                 }
-            }
-        });
-
-        this.$templatePopup.templatePopup('pos', {
-            x: 0,
-            y: -0.25
-        });
+            )
+        })
 
         this.editor = new ScriptEditor(this.$parent, EditorType.DEFAULT, val => {
             this.$settingsList.settings_selectionlist('set unsaved', this.settings && val !== this.settings.content);
@@ -2767,11 +2755,6 @@ class SettingsView extends View {
 class SettingsFloatView extends SettingsView {
     constructor (parent) {
         super(parent);
-
-        this.$templatePopup.templatePopup('pos', {
-            x: -2.75,
-            y: -5.25
-        });
     }
 
     show (identifier) {

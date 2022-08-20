@@ -873,6 +873,71 @@ const ProfileCreateDialog = new (class extends Dialog {
     }
 })();
 
+const TemplateSaveDialog = new (class extends Dialog {
+    _createModal () {
+        return `
+            <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Save template</h2>
+                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
+                    <div class="field">
+                        <label>Select existing template:</label>
+                        <div class="ui search selection compact dropdown" data-op="dropdown">
+                            <div class="text"></div>
+                            <i class="dropdown icon"></i>
+                        </div>
+                    </div>
+                    <div class="field text-center"><label>or</label></div>
+                    <div class="field">
+                        <label>Create new template:</label>
+                        <input type="text" placeholder="Template name" data-op="input">
+                    </div>
+                </div>
+                <div class="ui two fluid buttons">
+                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">Save</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$parent.find('[data-op="cancel"]').click(() => {
+            this.close();
+        });
+
+        this.$parent.find('[data-op="save"]').click(() => {
+            this.callback(this._getName());
+            this.close();
+        });
+
+        this.$dropdown = this.$parent.find('[data-op="dropdown"]');
+        this.$input = this.$parent.find('[data-op="input"]');
+    }
+
+    _getName () {
+        let inputText = this.$input.val();
+        let dropdownText = this.$dropdown.dropdown('get value');
+
+        return inputText.trim() || dropdownText.trim() || `New template (${formatDate(Date.now())})`;
+    }
+
+    _applyArguments (parentName, callback) {
+        this.callback = callback;
+
+        this.$input.val('');
+        this.$dropdown.dropdown({
+            values: Templates.getKeys().map(key => {
+                return {
+                    name: key,
+                    value: key
+                }
+            })
+        }).dropdown('setting', 'onChange', () => {
+            this.$input.val('');
+        }).dropdown('set selected', parentName || '');
+    }
+})();
+
 const ConfirmDialog = new (class extends Dialog {
     _createModal () {
         return `
