@@ -1022,7 +1022,7 @@ const ATTACK_TYPES = {
     100: 'Revive'
 };
 
-const ACHIEVEMENTS_COUNT = 92;
+const ACHIEVEMENTS_COUNT = 93;
 const ACHIEVEMENTS = [
     'Globetrotter',
     'The Count',
@@ -1106,6 +1106,7 @@ const ACHIEVEMENTS = [
     'Loki',
     'Zeus',
     'Hades',
+    'Door Opener',
     'Five of a Kind',
     'Capacious Pockets',
     'Birth of a Legend',
@@ -1113,7 +1114,9 @@ const ACHIEVEMENTS = [
     'Second Wardrobe',
     '100-Timer',
     'A Thousand Points Plan',
-    'Ten Grand'
+    'Ten Grand',
+    'Tavern Brawler',
+    'Closing Time'
 ];
 
 const UNDERWORLD_BUILDINGS = [
