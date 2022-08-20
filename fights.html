@@ -1257,9 +1257,24 @@
                             return currentRound.target.Life;
                         }
 
+                        let findOwnPlayerHealth = (i) => {
+                            let currentRound = rounds[i];
+                            for (let j = i - 1, round; round = rounds[j]; j--) {
+                                if (round.target == currentRound.attacker && round.attackType < 100) {
+                                    return round.targetHealthLeft;
+                                } else if (round.attacker == currentRound.attacker && round.attackType > 100) {
+                                    return round.targetHealthLeft;
+                                }
+                            }
+
+                            return currentRound.attacker.Life;
+                        }
+
                         for (let i = 0, round; round = rounds[i]; i++) {
                             if (round.attackType < 100) {
                                 round.attackDamage = findPlayerHealth(i) - round.targetHealthLeft;
+                            } else if (round.attackType > 100 && round.attacker.Instrument == 2) {
+                                round.attackDamage = round.targetHealthLeft - findOwnPlayerHealth(i);
                             } else {
                                 round.attackDamage = round.targetHealthLeft;
                             }
