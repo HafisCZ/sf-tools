@@ -814,8 +814,6 @@ class SimulatorBase {
             damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
             if (source.DamageMultiplier) {
                 damage *= source.DamageMultiplier;
-
-                source.consumeMultiplier();
             }
 
             if (target.IncomingDamageMultiplier) {
@@ -829,9 +827,6 @@ class SimulatorBase {
             }
 
             damage = Math.ceil(damage);
-        } else if (source.DamageMultiplier) {
-            // If attack is dodged, we still need to consume the spell
-            source.consumeMultiplier();
         }
 
         if (FIGHT_LOG_ENABLED) {
@@ -841,6 +836,10 @@ class SimulatorBase {
                 (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + attackType * 10,
                 damage
             )
+        }
+
+        if (source.DamageMultiplier) {
+            source.consumeMultiplier();
         }
 
         return damage;
