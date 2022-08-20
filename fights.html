@@ -988,7 +988,7 @@
                                 <div class="three wide column"><b>${target.Name}</b></div>
                                 <div class="one wide column"></div>
                                 <div class="two wide column text-center${attackCrit ? ' foreground-red' : '' }${ attackType >= 100 ? ' text-purple' : '' }">${displayType}</div>
-                                <div class="three wide column text-right${attackCrit ? ' foreground-red text-bold' : '' }">${displayDamage}</div>
+                                <div class="three wide column text-right${attackCrit ? ' foreground-red text-bold' : '' }${ attackType >= 100 ? ' text-purple' : '' }">${displayDamage}</div>
                                 <div class="one wide column"></div>
                             </div>
                         </div>
@@ -1013,8 +1013,11 @@
                         let notes = Math.trunc((attackType % 100) / 10);
                         let level = attackType % 10;
 
-                        displayType = `${INSTRUMENT_TYPES[attacker.Instrument]} Lvl ${level}`;
-                        displayDamage = `${notes} note${notes > 1 ? 's' : ''}`
+                        displayType = `${INSTRUMENT_TYPES[attacker.Instrument]} Lvl ${level} - ${notes}n`;
+
+                        if (attacker.Instrument == 2 && attackDamage > 0) {
+                            displayDamage = `+ ${formatAsSpacedNumber(attackDamage, ' ')}`;
+                        }
                     } else {
                         displayType = ATTACK_TYPES[attackType];
                     }
