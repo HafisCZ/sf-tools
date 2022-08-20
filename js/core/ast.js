@@ -2908,6 +2908,18 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Fortress.MaxStone,
         statistics: false
     },
+    'Stashed Wood': {
+        expr: p => p.Fortress.SecretWood
+    },
+    'Stashed Stone': {
+        expr: p => p.Fortress.SecretStone
+    },
+    'Stashed Wood Capacity': {
+        expr: p => p.Fortress.SecretWoodLimit
+    },
+    'Stashed Stone Capacity': {
+        expr: p => p.Fortress.SecretStoneLimit
+    },
     'Sacrifices': {
         expr: p => p.Idle ? p.Idle.Sacrifices : undefined,
         statistics: false

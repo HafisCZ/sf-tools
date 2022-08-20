@@ -1563,7 +1563,11 @@ class SFOwnPlayer extends SFPlayer {
         dataType.skip(3);
         this.Dungeons.Extra.Normal[4] = dataType.short();
         this.Dungeons.Extra.Shadow[4] = dataType.short();
-        dataType.skip(11);
+        dataType.skip(7);
+        this.Fortress.SecretWood = dataType.long();
+        this.Fortress.SecretWoodLimit = dataType.long();
+        this.Fortress.SecretStone = dataType.long();
+        this.Fortress.SecretStoneLimit = dataType.long();
         this.Instrument = dataType.long() - 1;
 
         if (data.idle) {
