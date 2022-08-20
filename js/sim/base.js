@@ -76,12 +76,12 @@ FIGHT_LOG = new (class {
         )
     }
 
-    logSpell (source, level, notes) {
+    logSpell (source, level, notes, damage = 0) {
         this._newRound(
             source,
             source == this.playerA ? this.playerB : this.playerA,
             200 + 10 * notes + level,
-            0
+            damage
         )
     }
 })();
@@ -656,7 +656,12 @@ class BardModel extends FighterModel {
         this.EffectCounter += 1;
 
         if (FIGHT_LOG_ENABLED) {
-            FIGHT_LOG.logSpell(this, this.EffectLevel, this.EffectReset - this.EffectCounter + 1);
+            FIGHT_LOG.logSpell(
+                this,
+                this.EffectLevel,
+                this.EffectReset - this.EffectCounter + 1,
+                this.Player.Instrument == INSTRUMENT_FLUTE ? this.LastHealthDelta : 0
+            );
         }
 
         if (this.EffectCounter >= this.EffectReset) {
@@ -668,7 +673,11 @@ class BardModel extends FighterModel {
         // When this player attacks
         if (this != target) {
             if (this.HealMultiplier) {
-                this.Health = Math.min(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
+                let oldHealth = this.Health;
+                let newHealth = Math.min(this.TotalHealth, this.Health + this.HealMultiplier * this.TotalHealth);
+
+                this.Health = newHealth;
+                this.LastHealthDelta = newHealth - oldHealth;
 
                 this.consumeMultiplier();
             }
