@@ -240,3 +240,19 @@ function _binary_to_string(bin) {
 
   return String.fromCharCode(...new Uint16Array(bytes.buffer));
 }
+
+function _fast_max(arr) {
+    let m = arr[0];
+    for (let i of arr) {
+        if (i > m) m = i;
+    }
+    return m;
+}
+
+function _fast_min(arr) {
+    let m = arr[0];
+    for (let i of arr) {
+        if (i < m) m = i;
+    }
+    return m;
+}

@@ -23,6 +23,8 @@
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
 
+        <script src="js/sim/base.js"></script>
+
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
 
         <style>
@@ -706,7 +708,7 @@
                     })
                 });
 
-                damageData = getDamages();
+                damageData = getDamages(fightData);
                 fightIndex = fightData.length ? 0 : -1;
 
                 if (fightIndex >= 0) {
@@ -770,7 +772,7 @@
                     $name.addClass('foreground-red').removeClass('foreground-green');
                 }
 
-                var id = getID(f, o);
+                var id = getFighterId(f, o);
                 var id2 = id + '_2';
 
                 $parent.find('[data-op="Level"]').val(f.Level);
@@ -1078,9 +1080,9 @@
             function updateDamage () {
                 var fight = fightData[fightIndex];
 
-                var idA = getID(fight.fighterA, fight.fighterB);
+                var idA = getFighterId(fight.fighterA, fight.fighterB);
                 var idA2 = idA + '_2';
-                var idB = getID(fight.fighterB, fight.fighterA);
+                var idB = getFighterId(fight.fighterB, fight.fighterA);
                 var idB2 = idB + '_2';
 
                 var ca = 2 * (1 + 0.05 * enchant1) * (1 + 0.05 * glad1);
@@ -1290,8 +1292,8 @@
                 }
             }
 
-            function getID (a, b) {
-                return SHA1(JSON.stringify([
+            function getFighterId (a, b, secondary = false) {
+                let key = SHA1(JSON.stringify([
                     a.ID,
                     a.Name,
                     a.Class,
@@ -1320,95 +1322,76 @@
                     b.Wpn1,
                     b.Wpn2
                 ]));
+
+                if (secondary) {
+                    key += '_2';
+                }
+
+                return key;
             }
 
-            function getDamages () {
-                var ranges = {};
+            function getDamages (fights) {
+                let damages = {};
 
-                for (var fight of fightData) {
-                    var rounds = fight.rounds;
-                    var offset = 0;
+                for (let { rounds } of fights) {
+                    let offset = 0;
 
-                    for (var i = 0; i < rounds.length; i++) {
-                        var round = rounds[i];
+                    for (let i = 0, round; round = rounds[i]; i++) {
+                        let { attacker, target, attackType, attackDamage, attackCrit, attackMissed } = round;
 
-                        if (round.attackType >= 100) {
+                        let key = getFighterId(attacker, target, attackType >= 10 && attackType <= 14);
+                        if (typeof damages[key] === 'undefined') {
+                            damages[key] = [];
+                        }
+
+                        if (attackType >= 100) {
                             offset--;
+
+                            if (attacker.Class == BARD && attacker.Instrument == INSTRUMENT_LUTE) {
+                                let spellLevel = attackType % 10 - 1;
+                                let spellBonus = 1 + INSTRUMENT_LUTE_VALUES[spellLevel] / 100;
+
+                                let lastIndex = damages[key].length - 1;
+                                damages[key][lastIndex].damage = Math.trunc(damages[key][lastIndex].damage / spellBonus);
+                            }
                         } else {
-                            if (round.attackType >= 20) {
+                            if (attackType >= 20) {
                                 offset++;
                             }
 
-                            if (round.attackType % 10 == 0 || round.attackType % 10 == 1) {
-                                var id = getID(round.attacker, round.target) + (round.attackType >= 10 && round.attackType <= 14 ? '_2' : '');
-                                var rage = 1 + (i + offset) / 6;
-                                var damage = Math.trunc(round.attackDamage / rage);
-
-                                if (!ranges[id]) {
-                                    ranges[id] = { };
-                                }
-
-                                if (round.attackCrit) {
-                                    if (!ranges[id].crit) {
-                                        ranges[id].crit = {
-                                            min: damage,
-                                            max: damage
-                                        }
-                                    } else {
-                                        ranges[id].crit.min = Math.min(damage, ranges[id].crit.min);
-                                        ranges[id].crit.max = Math.max(damage, ranges[id].crit.max);
-                                    }
-                                } else {
-                                    if (!ranges[id].normal) {
-                                        ranges[id].normal = {
-                                            min: damage,
-                                            max: damage
-                                        }
-                                    } else {
-                                        ranges[id].normal.min = Math.min(damage, ranges[id].normal.min);
-                                        ranges[id].normal.max = Math.max(damage, ranges[id].normal.max);
-                                    }
-                                }
+                            if (attackType % 10 <= 4) {
+                                damages[key].push({
+                                    damage: Math.trunc(attackDamage / (1 + (i + offset) / 6)),
+                                    isCrit: attackCrit,
+                                    isMiss: attackMissed
+                                });
                             }
                         }
                     }
                 }
 
+                let ranges = {};
+                for (let [key, dmg] of Object.entries(damages)) {
+                    ranges[key] = {};
+
+                    let allNormalHits = dmg.filter(d => !d.isMiss && !d.isCrit).map(d => d.damage);
+                    if (allNormalHits.length > 0) {
+                        ranges[key].normal = {
+                            min: _fast_min(allNormalHits),
+                            max: _fast_max(allNormalHits)
+                        }
+                    }
+
+                    let allCriticalHits = dmg.filter(d => !d.isMiss && d.isCrit).map(d => d.damage);
+                    if (allCriticalHits.length > 0) {
+                        ranges[key].crit = {
+                            min: _fast_min(allCriticalHits),
+                            max: _fast_max(allCriticalHits)
+                        }
+                    }
+                }
+
                 return ranges;
-            }
-
-            function getBaseDamage ({ Class, Level }, secondary = false) {
-                let min = 1;
-                let max = 2;
-
-                if (Level > 10) {
-                    let num = Level - 10;
-
-                    if (Class == 1 || Class == 5 || Class == 6) {
-                        num = 2.0 * (1 + num)
-                    } else if (Class == 3 || Class == 4 || Class == 7) {
-                        num = 2.5 * (1 + num)
-                    } else {
-                        num = 4.5 * (1 + num)
-                    }
-
-                    num = Math.trunc(num)
-                    min = num - num / 3
-                    max = num + num / 3
-
-                    if (secondary) {
-                        min = Math.trunc(min * 0.1);
-                        max = Math.trunc(max * 0.1);
-                    } else {
-                        min = Math.trunc(min * 0.7);
-                        max = Math.trunc(max * 0.7);
-                    }
-                }
-
-                return {
-                    Min: Math.max(1, min),
-                    Max: Math.max(2, max)
-                }
             }
         </script>
     </body>
