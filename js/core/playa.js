@@ -1246,7 +1246,7 @@ class SFOtherPlayer extends SFPlayer {
         this.Dungeons.Shadow = dataType.byteArray(14);
         dataType.skip(1);
         this.Mask = dataType.long();
-        this.Instrument = dataType.long() - 1;
+        this.Instrument = Math.max(0, dataType.long() - 1);
 
         dataType = new ComplexDataType(data.pets);
         dataType.skip(1); // skip
@@ -1568,7 +1568,7 @@ class SFOwnPlayer extends SFPlayer {
         this.Fortress.SecretWoodLimit = dataType.long();
         this.Fortress.SecretStone = dataType.long();
         this.Fortress.SecretStoneLimit = dataType.long();
-        this.Instrument = dataType.long() - 1;
+        this.Instrument = Math.max(0, dataType.long() - 1);
 
         if (data.idle) {
             this.Idle = {
