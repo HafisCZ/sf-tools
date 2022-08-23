@@ -569,6 +569,10 @@ class DemonHunterModel extends FighterModel {
 
 const BARD_EFFECT_ROUNDS = 4;
 
+const INSTRUMENT_HARP_VALUES = [ 40, 55, 75 ];
+const INSTRUMENT_LUTE_VALUES = [ 20, 40, 60 ];
+const INSTRUMENT_FLUTE_VALUES = [ 5, 7.5, 10 ];
+
 class BardModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
@@ -634,15 +638,15 @@ class BardModel extends FighterModel {
         this.EffectRound = 0;
 
         if (this.Player.Instrument == INSTRUMENT_HARP) {
-            let multiplier = 1 / this.DamageReduction * (1 - this.getDamageReduction(target, [ 40, 55, 75 ][level]) / 100);
+            let multiplier = 1 / this.DamageReduction * (1 - this.getDamageReduction(target, INSTRUMENT_HARP_VALUES[level]) / 100);
 
             this.IncomingDamageMultiplier = multiplier;
         } else if (this.Player.Instrument == INSTRUMENT_LUTE) {
-            let multiplier = 1 + [ 20, 40, 60 ][level] / 100;
+            let multiplier = 1 + INSTRUMENT_LUTE_VALUES[level] / 100;
 
             this.DamageMultiplier = multiplier;
         } else if (this.Player.Instrument == INSTRUMENT_FLUTE) {
-            let multiplier = [ 5, 7.5, 10 ][level] / 100;
+            let multiplier = INSTRUMENT_FLUTE_VALUES[level] / 100;
 
             this.HealMultiplier = multiplier;
         }
