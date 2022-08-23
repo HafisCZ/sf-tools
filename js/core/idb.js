@@ -264,6 +264,8 @@ class MigrationUtils {
 
 class DatabaseUtils {
     static async createSession(slot) {
+        await DatabaseUtils.requestPersistentStorage();
+
         return new IndexedDBWrapper(`${DATABASE_NAME}${slot ? `_${slot}` : ''}`, ... DATABASE_PARAMS).open();
     }
 
@@ -317,6 +319,19 @@ class DatabaseUtils {
             return [name, range];
         } else {
             return [];
+        }
+    }
+
+    static async requestPersistentStorage () {
+        if (!SiteOptions.persisted && _dig(window, 'navigator', 'storage', 'persist')) {
+            return window.navigator.storage.persist().then((persistent) => {
+                if (persistent) {
+                    SiteOptions.persisted = true;
+                    Toast.info('Storage', 'Persistent mode');
+                } else {
+                    Toast.warn('Storage', 'Default mode');
+                }
+            });
         }
     }
 }

@@ -130,7 +130,8 @@ const SiteOptions = new (class {
             profile: 'default',
             groups_empty: false,
             tab: 'groups',
-            load_rows: 50
+            load_rows: 50,
+            persisted: false
         };
 
         this.listeners = [];
