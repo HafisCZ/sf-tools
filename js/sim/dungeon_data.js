@@ -20,11 +20,11 @@ DUNGEON_DATA = {
         shadow: false,
         floors: {
             'Water Glompf': { pos: 1, id: 0, class: 3, level: 20, str: 101, dex: 264, int: 101, con: 174, lck: 119, health: 14616, min: 35, max: 58 },
-            'Yeti': { pos: 2, id: 0, class: 1, level: 24, str: 317, dex: 126, int: 117, con: 238, lck: 130, health: 29750, min: 35, max: 58 },
-            'Skeleton': { pos: 3, id: 0, class: 1, level: 28, str: 393, dex: 138, int: 125, con: 284, lck: 152, health: 41180, min: 40, max: 67 },
+            'Yeti': { pos: 2, id: 0, class: 1, level: 24, str: 317, dex: 126, int: 117, con: 238, lck: 130, health: 29750, min: 33, max: 58 },
+            'Skeleton': { pos: 3, id: 0, class: 1, level: 28, str: 393, dex: 138, int: 125, con: 284, lck: 152, health: 41180, min: 40, max: 68 },
             'Ugly Gremlin': { pos: 4, id: 0, class: 3, level: 34, str: 143, dex: 554, int: 144, con: 303, lck: 216, health: 42420, min: 64, max: 98 },
-            'Stone Giant': { pos: 5, id: 0, class: 1, level: 38, str: 592, dex: 178, int: 162, con: 398, lck: 195, health: 77610, min: 59, max: 89 },
-            'Fire Elemental': { pos: 6, id: 0, class: 2, level: 44, str: 191, dex: 190, int: 780, con: 411, lck: 259, health: 36990, min: 146, max: 240 },
+            'Stone Giant': { pos: 5, id: 0, class: 1, level: 38, str: 592, dex: 178, int: 162, con: 398, lck: 195, health: 77610, min: 58, max: 89 },
+            'Fire Elemental': { pos: 6, id: 0, class: 2, level: 44, str: 191, dex: 190, int: 780, con: 411, lck: 259, health: 36990, min: 143, max: 241 },
             'Stone Troll': { pos: 7, id: 0, class: 1, level: 48, str: 744, dex: 243, int: 230, con: 563, lck: 246, health: 137935, min: 69, max: 122 },
             'Redlight Succubus': { pos: 8, id: 0, class: 3, level: 56, str: 250, dex: 960, int: 240, con: 680, lck: 345, health: 155040, min: 92, max: 160 },
             'Abhorrent Demon': { pos: 9, id: 0, class: 3, level: 66, str: 300, dex: 1160, int: 290, con: 880, lck: 420, health: 235840, min: 102, max: 175 },
@@ -39,7 +39,7 @@ DUNGEON_DATA = {
             'Dusty Bat': { pos: 2, id: 0, class: 3, level: 36, str: 141, dex: 602, int: 149, con: 344, lck: 230, health: 50912, min: 60, max: 108 },
             'Terror Tarantula': { pos: 3, id: 0, class: 3, level: 42, str: 205, dex: 726, int: 224, con: 403, lck: 247, health: 69316, min: 71, max: 124 },
             'Rowdy Robber': { pos: 4, id: 0, class: 1, level: 46, str: 768, dex: 215, int: 183, con: 539, lck: 249, health: 126665, min: 66, max: 115 },
-            'Dirty Rotten Scoundrel': { pos: 5, id: 0, class: 1, level: 54, str: 920, dex: 265, int: 240, con: 640, lck: 260, health: 176000, min: 70, max: 127 },
+            'Dirty Rotten Scoundrel': { pos: 5, id: 0, class: 1, level: 54, str: 920, dex: 265, int: 240, con: 640, lck: 260, health: 176000, min: 69, max: 127 },
             'Grim Wolf': { pos: 6, id: 0, class: 3, level: 60, str: 270, dex: 1040, int: 260, con: 760, lck: 375, health: 185440, min: 97, max: 165 },
             'Bad Bandit': { pos: 7, id: 0, class: 1, level: 64, str: 1120, dex: 340, int: 315, con: 840, lck: 310, health: 273000, min: 79, max: 137 },
             'Beastie': { pos: 8, id: 0, class: 3, level: 76, str: 350, dex: 1360, int: 340, con: 1080, lck: 495, health: 332640, min: 112, max: 190 },
@@ -52,7 +52,7 @@ DUNGEON_DATA = {
         shadow: false,
         floors: {
             'Wind Elemental': { pos: 1, id: 0, class: 3, level: 52, str: 230, dex: 880, int: 220, con: 601, lck: 315, health: 127412, min: 88, max: 154 },
-            'Pirate Dark Beard': { pos: 2, id: 0, class: 3, level: 58, str: 260, dex: 1000, int: 250, con: 720, lck: 360, health: 169920, min: 94, max: 161 },
+            'Pirate Dark Beard': { pos: 2, id: 0, class: 3, level: 58, str: 260, dex: 1000, int: 250, con: 720, lck: 360, health: 169920, min: 94, max: 163 },
             'Rowdy Robber': { pos: 3, id: 0, class: 1, level: 62, str: 1080, dex: 325, int: 300, con: 800, lck: 300, health: 252000, min: 77, max: 135 },
             'Shadow Alligator': { pos: 4, id: 0, class: 1, level: 68, str: 1200, dex: 370, int: 345, con: 920, lck: 330, health: 317400, min: 83, max: 141 },
             'Sturdy Swashbuckler': { pos: 5, id: 0, class: 1, level: 74, str: 1320, dex: 415, int: 390, con: 1040, lck: 360, health: 390000, min: 89, max: 147 },
@@ -60,21 +60,21 @@ DUNGEON_DATA = {
             'Cutthroat': { pos: 7, id: 0, class: 1, level: 84, str: 1520, dex: 490, int: 465, con: 1240, lck: 410, health: 527000, min: 99, max: 157 },
             'Pirate Blood Nose': { pos: 8, id: 0, class: 1, level: 96, str: 1760, dex: 580, int: 555, con: 1480, lck: 470, health: 717800, min: 111, max: 169 },
             'Octopus': { pos: 9, id: 0, class: 3, level: 102, str: 480, dex: 1880, int: 470, con: 1600, lck: 690, health: 659200, min: 138, max: 229 },
-            'Pirate Leader': { pos: 10, id: 0, class: 3, level: 110, str: 520, dex: 2040, int: 510, con: 1760, lck: 750, health: 781440, min: 147, max: 241 }
+            'Pirate Leader': { pos: 10, id: 0, class: 3, level: 110, str: 520, dex: 2040, int: 510, con: 1760, lck: 750, health: 781440, min: 146, max: 241 }
         }
     },
     '5': {
         name: 'The Emerald Scale Altar',
         shadow: false,
         floors: {
-            'Rattling Cobra': { pos: 1, id: 0, class: 3, level: 72, str: 330, dex: 1280, int: 320, con: 1000, lck: 465, health: 292000, min: 108, max: 183 },
+            'Rattling Cobra': { pos: 1, id: 0, class: 3, level: 72, str: 330, dex: 1280, int: 320, con: 1000, lck: 465, health: 292000, min: 108, max: 184 },
             'Slashing Saurus': { pos: 2, id: 0, class: 3, level: 78, str: 360, dex: 1400, int: 350, con: 1120, lck: 510, health: 353920, min: 114, max: 193 },
-            'Roaring Raptor': { pos: 3, id: 0, class: 3, level: 80, str: 370, dex: 1440, int: 360, con: 1160, lck: 525, health: 375840, min: 117, max: 196 },
+            'Roaring Raptor': { pos: 3, id: 0, class: 3, level: 80, str: 370, dex: 1440, int: 360, con: 1160, lck: 525, health: 375840, min: 116, max: 196 },
             'Swamp Warrior': { pos: 4, id: 0, class: 3, level: 88, str: 410, dex: 1600, int: 400, con: 1320, lck: 585, health: 469920, min: 125, max: 208 },
             'Green Rex': { pos: 5, id: 0, class: 1, level: 94, str: 1720, dex: 565, int: 540, con: 1440, lck: 460, health: 684000, min: 109, max: 167 },
             'Saurus Rogue': { pos: 6, id: 0, class: 3, level: 100, str: 470, dex: 1840, int: 460, con: 1560, lck: 675, health: 630240, min: 136, max: 226 },
             'Swamp Dragon': { pos: 7, id: 0, class: 1, level: 108, str: 2000, dex: 670, int: 645, con: 1720, lck: 530, health: 937400, min: 123, max: 181 },
-            'Swamp Gorgon': { pos: 8, id: 0, class: 2, level: 114, str: 520, dex: 540, int: 2200, con: 1760, lck: 775, health: 404800, min: 287, max: 431 },
+            'Swamp Gorgon': { pos: 8, id: 0, class: 2, level: 114, str: 520, dex: 540, int: 2200, con: 1760, lck: 775, health: 404800, min: 287, max: 432 },
             'Toxic Dragon': { pos: 9, id: 0, class: 1, level: 122, str: 2280, dex: 775, int: 750, con: 2000, lck: 600, health: 1230000, min: 137, max: 195 },
             'King Saurus': { pos: 10, id: 0, class: 3, level: 130, str: 620, dex: 2440, int: 610, con: 2160, lck: 900, health: 1131840, min: 166, max: 271 }
         }
