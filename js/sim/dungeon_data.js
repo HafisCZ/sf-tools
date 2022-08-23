@@ -3,10 +3,10 @@ DUNGEON_DATA = {
         name: 'Desecrated Catacombs',
         shadow: false,
         floors: {
-            'Ghost': { pos: 1, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 77, lck: 47, health: 1694, min: 29, max: 51 },
+            'Ghost': { pos: 1, id: 0, class: 2, level: 10, str: 48, dex: 52, int: 104, con: 77, lck: 47, health: 1694, min: 29, max: 52 },
             'Skeleton': { pos: 2, id: 0, class: 1, level: 12, str: 120, dex: 68, int: 59, con: 101, lck: 51, health: 6565, min: 13, max: 28 },
-            'Undead': { pos: 3, id: 0, class: 1, level: 14, str: 149, dex: 78, int: 69, con: 124, lck: 65, health: 9300, min: 17, max: 33 },
-            'Devious Vampire': { pos: 4, id: 0, class: 3, level: 16, str: 84, dex: 195, int: 83, con: 131, lck: 94, health: 8908, min: 27, max: 47 },
+            'Undead': { pos: 3, id: 0, class: 1, level: 14, str: 149, dex: 78, int: 69, con: 124, lck: 65, health: 9300, min: 17, max: 34 },
+            'Devious Vampire': { pos: 4, id: 0, class: 3, level: 16, str: 84, dex: 195, int: 83, con: 131, lck: 94, health: 8908, min: 26, max: 47 },
             'Night Ghoul': { pos: 5, id: 0, class: 1, level: 18, str: 214, dex: 101, int: 89, con: 169, lck: 93, health: 16055, min: 25, max: 43 },
             'Banshee': { pos: 6, id: 0, class: 2, level: 22, str: 97, dex: 99, int: 303, con: 198, lck: 137, health: 9108, min: 71, max: 116 },
             'Skeleton Soldier': { pos: 7, id: 0, class: 1, level: 26, str: 359, dex: 135, int: 122, con: 260, lck: 142, health: 35100, min: 33, max: 63 },
