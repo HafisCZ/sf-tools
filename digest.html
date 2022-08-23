@@ -610,8 +610,8 @@
                     array = [
                         p.ID,
                         p.Class,
-                        p.Mask,
-                        p.Instrument,
+                        p.Mask || 0,
+                        p.Instrument || 0,
                         p.Strength.Total,
                         p.Dexterity.Total,
                         p.Intelligence.Total,
