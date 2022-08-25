@@ -17,7 +17,13 @@
         "mask2": "Cat",
         "instrument0": "Harp",
         "instrument1": "Lute",
-        "instrument2": "Flute"
+        "instrument2": "Flute",
+        "strength": "Strength",
+        "dexterity": "Dexterity",
+        "intelligence": "Intelligence",
+        "constitution": "Constitution",
+        "luck": "Luck",
+        "life_potion": "Eternal Life"
     },
     "index": {
         "admin": "Someone with a lot of free time",
@@ -103,17 +109,41 @@
         "title": "404",
         "text": "Not sure what you're looking for but it does not exist"
     },
+    "dungeons": {
+        "simulate": "Simulate",
+        "simulate_remaining": "Remaining",
+        "simulate_all": "All",
+        "player": "Player",
+        "enemy": "Enemy",
+        "yourself": "You",
+        "bert": "Bert",
+        "mark": "Mark",
+        "kunigunde": "Kunigunde",
+        "open": "Currently open dungeons",
+        "graph": {
+            "y": "Boss HP Left",
+            "x": "- Distribution for selected amount of tries -"
+        },
+        "results": "Results",
+        "cheats": {
+            "title": "Cheat Menu",
+            "subtitle": "Select which cheats to apply and poll your character",
+            "enable": "Enable cheats",
+            "general": "General",
+            "enchantments": "All enchantments",
+            "runes": "Maximum runes",
+            "pets": "Maximum pets",
+            "potions": "Potions (max 3)",
+            "class": "Change class",
+            "keep_original": "Keep original"
+        }
+    },
     "editor": {
         "name": "Name",
         "class": "Class",
         "level": "Level",
         "mask": "Mask",
         "instrument": "Instrument",
-        "strength": "Strength",
-        "dexterity": "Dexterity",
-        "intelligence": "Intelligence",
-        "constitution": "Constitution",
-        "luck": "Luck",
         "armor": "Armor",
         "min": "Min",
         "max": "Max",

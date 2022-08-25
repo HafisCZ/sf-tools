@@ -557,23 +557,23 @@ class Editor {
                 </div>
                 <div class="five fields">
                     <div class="field">
-                        <label data-intl="editor.strength"></label>
+                        <label data-intl="general.strength"></label>
                         <input class="text-center" type="text" data-path="Strength.Total">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.dexterity"></label>
+                        <label data-intl="general.dexterity"></label>
                         <input class="text-center" type="text" data-path="Dexterity.Total">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.intelligence"></label>
+                        <label data-intl="general.intelligence"></label>
                         <input class="text-center" type="text" data-path="Intelligence.Total">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.constitution"></label>
+                        <label data-intl="general.constitution"></label>
                         <input class="text-center" type="text" data-path="Constitution.Total">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.luck"></label>
+                        <label data-intl="general.luck"></label>
                         <input class="text-center" type="text" data-path="Luck.Total">
                     </div>
                 </div>
