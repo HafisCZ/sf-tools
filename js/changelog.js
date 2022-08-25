@@ -6,6 +6,8 @@ const CHANGELOG = {
             'Added <code>time</code> format function',
             'Added <code>$$</code> prefix for unfiltered table variables',
             'Added toast message when import via Endpoint fails',
+            'Added <code>Stashed Wood</code> and <code>Stashed Stone</code> headers for secret stash',
+            'Added new dialog for saving templates',
             'Fixed selection screen appearing for players and guilds when only one exists',
             'Fixed gladiator for built-in simulator',
             'Fixed low performance in files tab with too many files/players',
@@ -16,7 +18,8 @@ const CHANGELOG = {
             'Added best pets for each class to simulate all'
         ],
         'Dungeon Simulator': [
-            'Added option to simulate all remaining enemies in a dungeon'
+            'Added option to simulate all remaining enemies in a dungeon',
+            'Adjusted values of several dungeons'
         ],
         'Fight Simulator': [
             'Added inverse of One vs. All mode',
@@ -26,11 +29,19 @@ const CHANGELOG = {
             'Reworked simulator'
         ],
         'All Simulators': [
+            'Added translations',
             'Added support for drag & drop of HAR files',
+            'Added new class graphics',
             'Fixed Bard simulation'
         ],
         'Gold & Experience': [
             'Moved gold table into separate tab'
+        ],
+        'Fight Viewer': [
+            'Added support for Bard'
+        ],
+        'Boss Viewer': [
+            'Added support for character data deltas'
         ]
     },
     'v5.2250': {
