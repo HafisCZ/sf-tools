@@ -1023,7 +1023,6 @@ h3.file-selected {
 
     display: flex;
     flex-direction: column;
-    align-content: left;
 }
 
 .nobr {
@@ -1036,7 +1035,6 @@ h3.file-selected {
 
     display: flex;
     flex-direction: column;
-    align-content: left;
 }
 
 .css-inventory-comparison {
@@ -1045,7 +1043,6 @@ h3.file-selected {
 
     display: flex;
     flex-direction: column;
-    align-content: left;
 }
 
 .css-inventory-comparison .item {
@@ -1108,7 +1105,6 @@ h3.file-selected {
     padding-left: .5em;
     display: flex;
     flex-direction: column;
-    align-content: left;
 }
 
 .css-inventory-segment:not(.css-basis-segment) {
@@ -1126,7 +1122,6 @@ h3.file-selected {
     width: 100%;
     display: flex;
     flex-direction: column;
-    align-content: left;
 }
 
 .css-inventory-item-sub3 {
