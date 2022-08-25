@@ -91,6 +91,30 @@ h3 {
     font-weight: bold;
 }
 
+.locale-picker {
+    position: absolute;
+    top: 2em;
+    right: 2em;
+}
+
+.locale-picker img {
+    width: 3em !important;
+    border: 1px solid gray;
+}
+
+.locale-picker .menu {
+    border: none !important;
+    box-shadow: none !important;
+    background: none !important;
+    margin-top: 0.25em !important;
+}
+
+.locale-picker .ui.dropdown .menu > .item {
+    padding: 0 !important;
+    height: 2em;
+    margin-top: 1em;
+}
+
 .footer {
     color: white;
     opacity: 0.6;
