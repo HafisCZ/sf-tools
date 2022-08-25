@@ -241,6 +241,12 @@ function _binary_to_string(bin) {
   return String.fromCharCode(...new Uint16Array(bytes.buffer));
 }
 
+function * _each_block(arr, size) {
+    for (let i = 0; i < arr.length / size; i++) {
+        yield arr.slice(i * size, i * size + size);
+    }
+}
+
 function _fast_max(arr) {
     let m = arr[0];
     for (let i of arr) {
