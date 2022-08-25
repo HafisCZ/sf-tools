@@ -176,6 +176,20 @@ const Site = new (class {
         });
     }
 
+    locales () {
+        return ['en'];
+    }
+
+    getLocale () {
+        return SiteOptions.locale || 'en';
+    }
+
+    setLocale (locale) {
+        SiteOptions.locale = locale;
+
+        window.location.href = window.location.href;
+    }
+
     run () {
         this.resolve();
     }

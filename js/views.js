@@ -1021,33 +1021,42 @@ const ConfirmDialog = new (class extends Dialog {
 })();
 
 const Localization = new (class {
-    constructor () {
-        this.locales = ['en'];
-
-        this.translations = {};
-        this.localEnv = window.document.location.protocol === 'file:';
+    async _fetchTranslation (locale, noServer = false) {
+        if (Site.locales().includes(locale)) {
+            let file = await fetch(`${noServer ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json`);
+            return await file.json();
+        } else {
+            return null;
+        }
     }
 
-    async setLocale (locale) {
-        if (this.locale === locale) return;
+    _registerObserver () {
+        this.observer = new MutationObserver((mutations, observer) => {
+            for (let { addedNodes } of mutations) {
+                addedNodes.forEach(element => {
+                    if (element.nodeType === 1) {
+                        this.translate(element);
+                    }
+                });
+            }
+        });
 
-        this.locale = locale;
-        this.translation = await this.fetchTranslation(locale);
+        this.observer.observe(window.document, {
+            subtree: true,
+            childList: true
+        });
+    }
+
+    async translatePage () {
+        let locale = Site.getLocale();
+
+        this.translation = await this._fetchTranslation(
+            locale,
+            window.document.location.protocol === 'file:'
+        )
 
         this.translate();
-
-        if (typeof this.observer === 'undefined') {
-            this.registerMutationObserver();
-        }
-    }
-
-    async fetchTranslation (locale) {
-        if (typeof this.translations[locale] === 'undefined' && this.locales.includes(locale)) {
-            let file = await fetch(`${this.localEnv ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json`);
-            this.translations[locale] = await file.json();
-        }
-
-        return this.translations[locale];
+        this._registerObserver();
     }
 
     findTranslation (key) {
@@ -1073,28 +1082,11 @@ const Localization = new (class {
         let key = node.getAttribute('data-intl');
         node.innerText = this.findTranslation(key) || key;
     }
-
-    registerMutationObserver () {
-        this.observer = new MutationObserver((mutations, observer) => {
-            for (let { addedNodes } of mutations) {
-                addedNodes.forEach(element => {
-                    if (element.nodeType === 1) {
-                        this.translate(element);
-                    }
-                });
-            }
-        });
-
-        this.observer.observe(window.document, {
-            subtree: true,
-            childList: true
-        });
-    }
 })();
 
 // Automatically open Terms and Conditions if not accepted yet
 window.addEventListener('load', async function () {
-    await Localization.setLocale(SiteOptions.locale || 'en');
+    await Localization.translatePage();
 
     if (PreferencesHandler._isAccessible()) {
         if (!SiteOptions.terms_accepted) {
