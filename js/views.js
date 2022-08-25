@@ -1034,7 +1034,9 @@ const Localization = new (class {
 
         this.translate();
 
-        this.registerMutationObserver();
+        if (typeof this.observer === 'undefined') {
+            this.registerMutationObserver();
+        }
     }
 
     async fetchTranslation (locale) {
