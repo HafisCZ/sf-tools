@@ -594,17 +594,18 @@ DUNGEON_DATA = {
     '108': {
         name: 'The Frost Blood Temple',
         shadow: true,
+        verified: true,
         floors: {
-            'Yeti': { pos: 1, id: 0, class: 1, level: 312, str: 5861, dex: 2009, int: 1950, con: 28600, lck: 1536, health: 44759000, min: 3349, max: 6676, armor: 6690 },
-            'Black Phantom': { pos: 2, id: 0, class: 3, level: 314, str: 1502, dex: 5921, int: 1480, con: 29112, lck: 2186, health: 36681120, min: 4206, max: 8394, armor: 3700 },
-            'Dragon of Cold': { pos: 3, id: 0, class: 1, level: 316, str: 5991, dex: 2082, int: 2031, con: 29794, lck: 1559, health: 47223488, min: 3383, max: 6762, armor: 7950 },
-            'Unholy Monk': { pos: 4, id: 0, class: 3, level: 318, str: 1529, dex: 6037, int: 1509, con: 30107, lck: 2234, health: 38416532, min: 4281, max: 8477, armor: 5480 },
-            'Hell Alien': { pos: 5, id: 0, class: 3, level: 320, str: 1541, dex: 6087, int: 1521, con: 30476, lck: 2253, health: 39131184, min: 4296, max: 8558, armor: 4860 },
-            'The Extraterrestrial': { pos: 6, id: 0, class: 2, level: 322, str: 1514, dex: 1552, int: 6286, con: 29936, lck: 2261, health: 19338656, min: 7752, max: 15436, armor: 3400 },
-            'Dragon of Madness': { pos: 7, id: 0, class: 1, level: 324, str: 6178, dex: 2166, int: 2119, con: 31080, lck: 1601, health: 50505000, min: 3493, max: 6862, armor: 9620 },
-            'Twilight Alien': { pos: 8, id: 0, class: 3, level: 326, str: 1575, dex: 6230, int: 1557, con: 31476, lck: 2309, health: 41170608, min: 4384, max: 8685, armor: 5130 },
-            'Out of State Alien': { pos: 9, id: 0, class: 2, level: 328, str: 1551, dex: 1586, int: 6418, con: 31009, lck: 2313, health: 20403922, min: 7945, max: 15282, armor: 3400 },
-            'Killing Machine': { pos: 10, id: 0, class: 2, level: 330, str: 1567, dex: 1600, int: 6468, con: 31581, lck: 2326, health: 20906622, min: 7958, max: 15736, armor: 3300 }
+            'Yeti': { pos: 1, id: 0, class: 1, level: 312, str: 5861, dex: 2009, int: 1950, con: 28600, lck: 1536, health: 44759000, min: 3343, max: 6676, armor: 6643 },
+            'Black Phantom': { pos: 2, id: 0, class: 3, level: 314, str: 1502, dex: 5921, int: 1480, con: 29112, lck: 2186, health: 36681120, min: 4202, max: 8396, armor: 3542 },
+            'Dragon of Cold': { pos: 3, id: 0, class: 1, level: 316, str: 5991, dex: 2082, int: 2031, con: 29794, lck: 1559, health: 47223488, min: 3383, max: 6762, armor: 7791 },
+            'Unholy Monk': { pos: 4, id: 0, class: 3, level: 318, str: 1529, dex: 6037, int: 1509, con: 30107, lck: 2234, health: 38416532, min: 4253, max: 8490, armor: 4043 },
+            'Hell Alien': { pos: 5, id: 0, class: 3, level: 320, str: 1541, dex: 6087, int: 1521, con: 30476, lck: 2253, health: 39131184, min: 4281, max: 8558, armor: 4260 },
+            'The Extraterrestrial': { pos: 6, id: 0, class: 2, level: 322, str: 1514, dex: 1552, int: 6286, con: 29936, lck: 2261, health: 19338656, min: 7752, max: 15493, armor: 1859 },
+            'Dragon of Madness': { pos: 7, id: 0, class: 1, level: 324, str: 6178, dex: 2166, int: 2119, con: 31080, lck: 1601, health: 50505000, min: 3468, max: 6932, armor: 8626 },
+            'Twilight Alien': { pos: 8, id: 0, class: 3, level: 326, str: 1575, dex: 6230, int: 1557, con: 31476, lck: 2309, health: 41170608, min: 4374, max: 8717, armor: 4584 },
+            'Out of State Alien': { pos: 9, id: 0, class: 2, level: 328, str: 1551, dex: 1586, int: 6418, con: 31009, lck: 2313, health: 20403922, min: 7923, max: 15777, armor: 1876 },
+            'Killing Machine': { pos: 10, id: 0, class: 2, level: 330, str: 1567, dex: 1600, int: 6468, con: 31581, lck: 2326, health: 20906622, min: 7962, max: 15873, armor: 2119 }
         }
     },
     '109': {
