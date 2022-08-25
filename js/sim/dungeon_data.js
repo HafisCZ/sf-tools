@@ -578,17 +578,18 @@ DUNGEON_DATA = {
     '107': {
         name: 'The Magma Stream',
         shadow: true,
+        verified: true,
         floors: {
-            'Fire Scorpion': { pos: 1, id: 0, class: 3, level: 292, str: 1381, dex: 5422, int: 1355, con: 25806, lck: 1994, health: 30244632, min: 3909, max: 7797, armor: 3370 },
-            'Fire Basilisk': { pos: 2, id: 0, class: 3, level: 294, str: 1393, dex: 5474, int: 1368, con: 26202, lck: 2014, health: 30918360, min: 3935, max: 7862, armor: 3240 },
-            'Lava Blob': { pos: 3, id: 0, class: 2, level: 296, str: 1356, dex: 1406, int: 5722, con: 25504, lck: 2022, health: 15149376, min: 7172, max: 14252, armor: 1660 },
-            'Lava Giant': { pos: 4, id: 0, class: 1, level: 298, str: 5581, dex: 1903, int: 1844, con: 27054, lck: 1466, health: 40445728, min: 3243, max: 6370, armor: 9270 },
-            'Dragon of Darkness': { pos: 5, id: 0, class: 1, level: 300, str: 5641, dex: 1936, int: 1880, con: 27577, lck: 1477, health: 41503384, min: 3221, max: 6400, armor: 7200 },
-            'Hell Cyclops': { pos: 6, id: 0, class: 1, level: 302, str: 5689, dex: 1958, int: 1903, con: 27924, lck: 1488, health: 42304860, min: 3235, max: 6456, armor: 7240 },
-            'Fire Elemental': { pos: 7, id: 0, class: 2, level: 304, str: 1412, dex: 1455, int: 5908, con: 27313, lck: 2108, health: 16660930, min: 7428, max: 14625, armor: 1660 },
-            'Lava Giant ': { pos: 8, id: 0, class: 1, level: 306, str: 5784, dex: 2001, int: 1949, con: 28584, lck: 1509, health: 43876440, min: 3277, max: 6510, armor: 8500 },
-            'Giant Dragon': { pos: 9, id: 0, class: 1, level: 308, str: 5827, dex: 2018, int: 1966, con: 28842, lck: 1519, health: 44560888, min: 3303, max: 6574, armor: 7550 },
-            'Ghost of the Volcano': { pos: 10, id: 0, class: 1, level: 310, str: 5908, dex: 2069, int: 2024, con: 29684, lck: 1531, health: 46158620, min: 3335, max: 6612, armor: 8740 }
+            'Fire Scorpion': { pos: 1, id: 0, class: 3, level: 292, str: 1381, dex: 5422, int: 1355, con: 25806, lck: 1994, health: 30244632, min: 3908, max: 7812, armor: 2804 },
+            'Fire Basilisk': { pos: 2, id: 0, class: 3, level: 294, str: 1393, dex: 5474, int: 1368, con: 26202, lck: 2014, health: 30918360, min: 3935, max: 7864, armor: 2913 },
+            'Lava Blob': { pos: 3, id: 0, class: 2, level: 296, str: 1356, dex: 1406, int: 5722, con: 25504, lck: 2022, health: 15149376, min: 7161, max: 14254, armor: 1205 },
+            'Lava Giant': { pos: 4, id: 0, class: 1, level: 298, str: 5581, dex: 1903, int: 1844, con: 27054, lck: 1466, health: 40445728, min: 3190, max: 6377, armor: 6308 },
+            'Dragon of Darkness': { pos: 5, id: 0, class: 1, level: 300, str: 5641, dex: 1936, int: 1880, con: 27577, lck: 1477, health: 41503384, min: 3213, max: 6419, armor: 6708 },
+            'Hell Cyclops': { pos: 6, id: 0, class: 1, level: 302, str: 5689, dex: 1958, int: 1903, con: 27924, lck: 1488, health: 42304860, min: 3235, max: 6460, armor: 6903 },
+            'Fire Elemental': { pos: 7, id: 0, class: 2, level: 304, str: 1412, dex: 1455, int: 5908, con: 27313, lck: 2108, health: 16660930, min: 7333, max: 14626, armor: 1430 },
+            'Lava Giant ': { pos: 8, id: 0, class: 1, level: 306, str: 5784, dex: 2001, int: 1949, con: 28584, lck: 1509, health: 43876440, min: 3277, max: 6544, armor: 7303 },
+            'Giant Dragon': { pos: 9, id: 0, class: 1, level: 308, str: 5827, dex: 2018, int: 1966, con: 28842, lck: 1519, health: 44560888, min: 3297, max: 6588, armor: 7418 },
+            'Ghost of the Volcano': { pos: 10, id: 0, class: 1, level: 310, str: 5908, dex: 2069, int: 2024, con: 29684, lck: 1531, health: 46158620, min: 3317, max: 6624, armor: 8504 }
         }
     },
     '108': {
