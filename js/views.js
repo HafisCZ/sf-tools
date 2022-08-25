@@ -1072,8 +1072,8 @@ const Localization = new (class {
         this.observer = new MutationObserver((mutations, observer) => {
             for (let { addedNodes } of mutations) {
                 addedNodes.forEach(element => {
-                    if (element.nodeType === 1 && element.getAttribute('data-intl')) {
-                        this.translateElement(element);
+                    if (element.nodeType === 1) {
+                        this.translate(element);
                     }
                 });
             }
