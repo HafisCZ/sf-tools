@@ -611,16 +611,17 @@ DUNGEON_DATA = {
     '109': {
         name: 'The Pyramids of Madness',
         shadow: true,
+        verified: true,
         floors: {
-            'Cave Cyclops': { pos: 1, id: 0, class: 1, level: 332, str: 6290, dex: 2184, int: 2129, con: 31229, lck: 1638, health: 51996284, min: 3552, max: 7099, armor: 8000 },
-            'Sandstorm': { pos: 2, id: 0, class: 2, level: 334, str: 1562, dex: 1605, int: 6508, con: 30613, lck: 2333, health: 20510710, min: 8566, max: 15913, armor: 1750 },
-            'Hell Alien': { pos: 3, id: 0, class: 3, level: 336, str: 1617, dex: 6384, int: 1596, con: 31878, lck: 2362, health: 42971544, min: 4493, max: 8986, armor: 4180 },
-            'Bigfoot': { pos: 4, id: 0, class: 1, level: 338, str: 6426, dex: 2242, int: 2190, con: 32126, lck: 1669, health: 54453568, min: 3650, max: 7201, armor: 8800 },
-            'Ghost': { pos: 5, id: 0, class: 2, level: 340, str: 1597, dex: 1638, int: 6636, con: 31537, lck: 2386, health: 21508234, min: 8539, max: 16240, armor: 3080 },
-            'Timmy Suprino': { pos: 6, id: 0, class: 1, level: 342, str: 6525, dex: 2289, int: 2240, con: 32862, lck: 1690, health: 56358328, min: 3695, max: 7304, armor: 9600 },
-            'Demoralizing Demon': { pos: 7, id: 0, class: 3, level: 344, str: 1661, dex: 6567, int: 1641, con: 33110, lck: 2433, health: 45691800, min: 4700, max: 9176, armor: 5270 },
-            'Pink Monster Rabbit': { pos: 8, id: 0, class: 3, level: 346, str: 1671, dex: 6608, int: 1652, con: 33352, lck: 2449, health: 46292576, min: 4665, max: 9231, armor: 5200 },
-            'Banshee': { pos: 9, id: 0, class: 2, level: 348, str: 1648, dex: 1685, int: 6813, con: 33038, lck: 2454, health: 23060524, min: 8482, max: 16548, armor: 3000 }
+            'Cave Cyclops': { pos: 1, id: 0, class: 1, level: 332, str: 6290, dex: 2184, int: 2129, con: 31229, lck: 1638, health: 51996284, min: 3552, max: 7099, armor: 7621 },
+            'Sandstorm': { pos: 2, id: 0, class: 2, level: 334, str: 1562, dex: 1605, int: 6508, con: 30613, lck: 2333, health: 20510710, min: 8052, max: 16062, armor: 1605 },
+            'Hell Alien': { pos: 3, id: 0, class: 3, level: 336, str: 1617, dex: 6384, int: 1596, con: 31878, lck: 2362, health: 42971544, min: 4493, max: 8978, armor: 4029 },
+            'Bigfoot': { pos: 4, id: 0, class: 1, level: 338, str: 6426, dex: 2242, int: 2190, con: 32126, lck: 1669, health: 54453568, min: 3618, max: 7226, armor: 8113 },
+            'Ghost': { pos: 5, id: 0, class: 2, level: 340, str: 1597, dex: 1638, int: 6636, con: 31537, lck: 2386, health: 21508234, min: 8187, max: 16361, armor: 1662 },
+            'Timmy Suprino': { pos: 6, id: 0, class: 1, level: 342, str: 6525, dex: 2289, int: 2240, con: 32862, lck: 1690, health: 56358328, min: 3659, max: 7313, armor: 8711 },
+            'Demoralizing Demon': { pos: 7, id: 0, class: 3, level: 344, str: 1661, dex: 6567, int: 1641, con: 33110, lck: 2433, health: 45691800, min: 4600, max: 9187, armor: 4427 },
+            'Pink Monster Rabbit': { pos: 8, id: 0, class: 3, level: 346, str: 1671, dex: 6608, int: 1652, con: 33352, lck: 2449, health: 46292576, min: 4636, max: 9250, armor: 4462 },
+            'Banshee': { pos: 9, id: 0, class: 2, level: 348, str: 1648, dex: 1685, int: 6813, con: 33038, lck: 2454, health: 23060524, min: 8377, max: 16743, armor: 1932 }
         }
     },
     '110': {
