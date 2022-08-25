@@ -1020,8 +1020,51 @@ const ConfirmDialog = new (class extends Dialog {
     }
 })();
 
+const Localization = new (class {
+    constructor () {
+        this.translations = {};
+        this.localEnv = window.document.location.protocol === 'file:';
+    }
+
+    async setLocale (locale) {
+        if (this.locale === locale) return;
+
+        this.locale = locale;
+        this.translation = await this.fetchTranslation(locale);
+        this.translate();
+    }
+
+    async fetchTranslation (locale) {
+        if (typeof this.translations[locale] === 'undefined') {
+            let file = await fetch(`${this.localEnv ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json`);
+            this.translations[locale] = await file.json();
+        }
+
+        return this.translations[locale];
+    }
+
+    findTranslation (key) {
+        let pth = key.split('.');
+        let obj = this.translation;
+
+        for (let i = 0; obj && i < pth.length; i++) {
+            obj = obj[pth[i]];
+        }
+
+        return obj;
+    }
+
+    translate (node = window.document) {
+        node.querySelectorAll('[data-intl]').forEach((element) => {
+            let key = element.getAttribute('data-intl');
+
+            element.innerText = this.findTranslation(key) || key;
+        })
+    }
+})();
+
 // Automatically open Terms and Conditions if not accepted yet
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
     if (PreferencesHandler._isAccessible()) {
         if (!SiteOptions.terms_accepted) {
             DialogController.open(TermsAndConditionsDialog);
@@ -1031,4 +1074,8 @@ window.addEventListener('load', function() {
             DialogController.open(ChangeLogDialog);
         }
     }
+});
+
+window.addEventListener('DOMContentLoaded', function () {
+    Localization.setLocale(SiteOptions.locale || 'en');
 });
