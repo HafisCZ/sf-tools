@@ -1031,7 +1031,10 @@ const Localization = new (class {
 
         this.locale = locale;
         this.translation = await this.fetchTranslation(locale);
+
         this.translate();
+
+        this.registerMutationObserver();
     }
 
     async fetchTranslation (locale) {
@@ -1055,11 +1058,29 @@ const Localization = new (class {
     }
 
     translate (node = window.document) {
-        node.querySelectorAll('[data-intl]').forEach((element) => {
-            let key = element.getAttribute('data-intl');
+        node.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
+    }
 
-            element.innerText = this.findTranslation(key) || key;
-        })
+    translateElement (node) {
+        let key = node.getAttribute('data-intl');
+        node.innerText = this.findTranslation(key) || key;
+    }
+
+    registerMutationObserver () {
+        this.observer = new MutationObserver((mutations, observer) => {
+            for (let { addedNodes } of mutations) {
+                addedNodes.forEach(element => {
+                    if (element.nodeType === 1 && element.getAttribute('data-intl')) {
+                        this.translateElement(element);
+                    }
+                });
+            }
+        });
+
+        this.observer.observe(window.document, {
+            subtree: true,
+            childList: true
+        });
     }
 })();
 
