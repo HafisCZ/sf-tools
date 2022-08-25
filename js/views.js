@@ -1022,6 +1022,8 @@ const ConfirmDialog = new (class extends Dialog {
 
 const Localization = new (class {
     constructor () {
+        this.locales = ['en'];
+
         this.translations = {};
         this.localEnv = window.document.location.protocol === 'file:';
     }
@@ -1040,7 +1042,7 @@ const Localization = new (class {
     }
 
     async fetchTranslation (locale) {
-        if (typeof this.translations[locale] === 'undefined') {
+        if (typeof this.translations[locale] === 'undefined' && this.locales.includes(locale)) {
             let file = await fetch(`${this.localEnv ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json`);
             this.translations[locale] = await file.json();
         }
