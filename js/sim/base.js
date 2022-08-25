@@ -343,7 +343,7 @@ class FighterModel {
             let mul = secondary ? 0.1 : 0.7;
 
             min = Math.ceil(mul * num * 2 / 3);
-            max = Math.floor(mul * num * 4 / 3);
+            max = Math.round(mul * num * 4 / 3);
         }
 
         return {
