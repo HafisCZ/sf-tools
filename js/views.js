@@ -1070,10 +1070,6 @@ const Localization = new (class {
         return obj;
     }
 
-    l (key) {
-        return this.findTranslation(key)
-    }
-
     translate (node = window.document) {
         node.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
     }
@@ -1083,6 +1079,8 @@ const Localization = new (class {
         node.innerText = this.findTranslation(key) || key;
     }
 })();
+
+window.intl = Localization.findTranslation.bind(Localization);
 
 // Automatically open Terms and Conditions if not accepted yet
 window.addEventListener('load', async function () {

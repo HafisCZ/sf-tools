@@ -280,7 +280,7 @@
                 $('#sim-threads').captiveInputField('dungeon_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('dungeon_sim/iterations', 5000, v => !isNaN(v) && v >= 1);
 
-                let helperNames = ['player', 'bert', 'mark', 'kunigunde'].map(k => Localization.l(`dungeons.${k}`));
+                let helperNames = ['player', 'bert', 'mark', 'kunigunde'].map(k => intl(`dungeons.${k}`));
 
                 let editor = new (class extends Editor {
                     constructor ($parent, callback) {
@@ -940,7 +940,7 @@
                     preserveHTML: true,
                     values: [
                         {
-                            name: '<span data-intl="dungeons.cheats.keep_original"></span>',
+                            name: `<span data-intl="dungeons.cheats.keep_original">${intl('dungeons.cheats.keep_original')}</span>`,
                             value: 0
                         },
                         ... Object.keys(CLASS_MAP).map((e) => {
