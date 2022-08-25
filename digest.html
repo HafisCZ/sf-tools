@@ -199,6 +199,8 @@
 
             function extractFights (json) {
                 let raws = [];
+                let player = null;
+
                 for (let [key, value] of filterPlayaJSON(json)) {
                     if (key !== 'text' || !(value.includes('ownplayersave') || value.includes('fightheader'))) {
                         continue;
@@ -223,26 +225,49 @@
                          let tower = _try(r.owntower, 'numbers') || [];
 
                          if (name) {
-                             let player = new SFOwnPlayer({
+                             player = new SFOwnPlayer({
                                  prefix: '',
                                  name: name,
                                  save: save,
                                  tower: tower
                              });
 
-                             let pool = [ addHashToPlayer(player) ];
+                             let pool = [ player ];
                              if (player.Companions) {
-                                 pool.push(
-                                     addHashToPlayer(player.Companions.Bert),
-                                     addHashToPlayer(player.Companions.Mark),
-                                     addHashToPlayer(player.Companions.Kunigunde)
-                                 );
+                                 pool.push(player.Companions.Bert, player.Companions.Mark, player.Companions.Kunigunde);
                              }
 
-                             for (const p of pool) {
+                             for (let p of pool) {
+                                 p.Name = player.Name;
+                                 addHashToPlayer(p);
                                  players[p.Hash] = p;
                              }
                          }
+                    } else if (r['#ownplayersave'] && player) {
+                        let data = player.Data;
+
+                        let save = data.save;
+                        for (let [index, value] of _each_block(r['#ownplayersave'].numbers, 2)) {
+                            save[index] = value;
+                        }
+
+                        player = new SFOwnPlayer({
+                            prefix: '',
+                            name: data.name,
+                            save: save,
+                            tower: _try(r.owntower, 'numbers') || data.tower
+                        });
+
+                        let pool = [ player ];
+                        if (player.Companions) {
+                            pool.push(player.Companions.Bert, player.Companions.Mark, player.Companions.Kunigunde);
+                        }
+
+                        for (let p of pool) {
+                            p.Name = player.Name;
+                            addHashToPlayer(p);
+                            players[p.Hash] = p;
+                        }
                     }
                 }
 
@@ -589,24 +614,33 @@
                 return p;
             }
 
-            function getItemHash (i) {
-                if (i.AttributeTypes[0] == 0) {
+            function getItemHash (item, model = null, secondary = false) {
+                if (item.AttributeTypes[0] == 0) {
                     return '';
-                }
+                } else {
+                    let array = [
+                        item.DamageMin, item.DamageMax,
+                        item.Enchantment,
+                        item.RuneType, item.RuneValue,
+                        item.GemType, item.GemValue
+                    ];
 
-                return SHA1(JSON.stringify([
-                    i.DamageMin, i.DamageMax,
-                    i.Enchantment,
-                    i.RuneType, i.RuneValue,
-                    //i.AttributeTypes,
-                    //i.Attributes,
-                    i.GemType, i.GemValue
-                ]));
+                    if (model) {
+                        // Fix weapon damage
+                        let baseDamage = getBaseDamage(model, secondary);
+                        array[0] = Math.max(baseDamage.Min, array[0]);
+                        array[1] = Math.max(baseDamage.Max, array[1]);
+                    }
+
+                    return SHA1(JSON.stringify(array));
+                }
             }
 
             function getHash (p) {
                 let array = [];
                 if (p instanceof SFPlayer) {
+                    let model = p instanceof SFCompanion ? p : null;
+
                     array = [
                         p.ID,
                         p.Class,
@@ -617,8 +651,8 @@
                         p.Intelligence.Total,
                         p.Constitution.Total,
                         p.Luck.Total,
-                        getItemHash(p.Items.Wpn1),
-                        p.Class == 4 ? getItemHash(p.Items.Wpn2) : ''
+                        getItemHash(p.Items.Wpn1, model),
+                        p.Class == 4 ? getItemHash(p.Items.Wpn2, model, true) : ''
                     ];
                 } else if (p instanceof SFFighter) {
                     array = [
