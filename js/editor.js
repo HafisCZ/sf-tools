@@ -285,10 +285,10 @@ class Editor {
 
         this.fields['class'].$object.dropdown({
             preserveHTML: true,
-            values: Object.entries(CLASS_MAP).map((e) => {
+            values: Object.keys(CLASS_MAP).map((e) => {
                 return {
-                    name: `<img class="ui centered image class-picture" src="res/class${ e[0] }.png"><span>${ e[1] }</span>`,
-                    value: e[0]
+                    name: `<img class="ui centered image class-picture" src="res/class${e}.png"><span data-intl="general.class${e}"></span>`,
+                    value: e
                 };
             })
         }).dropdown('setting', 'onChange', (value, text) => {
@@ -307,15 +307,15 @@ class Editor {
             preserveHTML: true,
             values: [
                 {
-                    name: 'None',
+                    name: '<span data-intl="general.none"></span>',
                     value: 0
                 },
                 {
-                    name: '<img class="ui centered image class-picture" src="res/mask1.png"><span>Bear</span>',
+                    name: '<img class="ui centered image class-picture" src="res/mask1.png"><span data-intl="general.mask1"></span>',
                     value: 1
                 },
                 {
-                    name: '<img class="ui centered image class-picture" src="res/mask2.png"><span>Cat</span>',
+                    name: '<img class="ui centered image class-picture" src="res/mask2.png"><span data-intl="general.mask2"></span>',
                     value: 2
                 }
             ]
@@ -325,7 +325,7 @@ class Editor {
             preserveHTML: true,
             values: INSTRUMENT_TYPES.map((name, index) => {
                 return {
-                    name: `<img class="ui centered image class-picture" src="res/instrument${index}.png"><span>${name}</span>`,
+                    name: `<img class="ui centered image class-picture" src="res/instrument${index}.png"><span data-intl="general.instrument${index}"></span>`,
                     value: index
                 }
             })
@@ -334,11 +334,11 @@ class Editor {
         this.fields['potion_life'].$object.dropdown({
             values: [
                 {
-                    name: 'No',
+                    name: '<span data-intl="general.no"></span>',
                     value: 0
                 },
                 {
-                    name: 'Yes',
+                    name: '<span data-intl="general.yes"></span>',
                     value: 25
                 }
             ]
@@ -347,19 +347,19 @@ class Editor {
         this.fields['weapon1_rune'].$object.dropdown({
             values: [
                 {
-                    name: 'None',
+                    name: '<span data-intl="general.none"></span>',
                     value: 0
                 },
                 {
-                    name: 'Fire',
+                    name: '<span data-intl="editor.fire"></span>',
                     value: 40
                 },
                 {
-                    name: 'Cold',
+                    name: '<span data-intl="editor.cold"></span>',
                     value: 41
                 },
                 {
-                    name: 'Lightning',
+                    name: '<span data-intl="editor.lightning"></span>',
                     value: 42
                 }
             ]
@@ -368,19 +368,19 @@ class Editor {
         this.fields['weapon2_rune'].$object.dropdown({
             values: [
                 {
-                    name: 'None',
+                    name: '<span data-intl="general.none"></span>',
                     value: 0
                 },
                 {
-                    name: 'Fire',
+                    name: '<span data-intl="editor.fire"></span>',
                     value: 40
                 },
                 {
-                    name: 'Cold',
+                    name: '<span data-intl="editor.cold"></span>',
                     value: 41
                 },
                 {
-                    name: 'Lightning',
+                    name: '<span data-intl="editor.lightning"></span>',
                     value: 42
                 }
             ]
@@ -389,11 +389,11 @@ class Editor {
         this.fields['enchantment'].$object.dropdown({
             values: [
                 {
-                    name: 'No',
+                    name: '<span data-intl="general.no"></span>',
                     value: false
                 },
                 {
-                    name: 'Yes',
+                    name: '<span data-intl="general.yes"></span>',
                     value: true
                 }
             ]
@@ -402,11 +402,11 @@ class Editor {
         this.fields['weapon1_enchantment'].$object.dropdown({
             values: [
                 {
-                    name: 'No',
+                    name: '<span data-intl="general.no"></span>',
                     value: false
                 },
                 {
-                    name: 'Yes',
+                    name: '<span data-intl="general.yes"></span>',
                     value: true
                 }
             ]
@@ -415,11 +415,11 @@ class Editor {
         this.fields['weapon2_enchantment'].$object.dropdown({
             values: [
                 {
-                    name: 'No',
+                    name: '<span data-intl="general.no"></span>',
                     value: false
                 },
                 {
-                    name: 'Yes',
+                    name: '<span data-intl="general.yes"></span>',
                     value: true
                 }
             ]
@@ -445,13 +445,13 @@ class Editor {
             action: 'hide',
             values: [
                 {
-                    name: 'Smart class change',
+                    name: '<span data-intl="editor.smart_change"></span>',
                     disabled: true
                 },
-                ...Object.entries(CLASS_MAP).map((e) => {
+                ...Object.keys(CLASS_MAP).map((e) => {
                     return {
-                        name: `<img class="ui centered image class-picture" src="res/class${ e[0] }.png"><span>${ e[1] }</span>`,
-                        value: e[0]
+                        name: `<img class="ui centered image class-picture" src="res/class${e}.png"><span data-intl="general.class${e}"></span>`,
+                        value: e
                     };
                 })
             ]
@@ -514,7 +514,7 @@ class Editor {
         $parent.html(`
             <div class="bordered bone">
                 <div class="field">
-                    <label>Name</label>
+                    <label data-intl="editor.name"></label>
                     <div class="ui icon right action input">
                         <input class="text-center" type="text" data-path="Name">
                         <input type="hidden" data-path="Prefix">
@@ -530,50 +530,50 @@ class Editor {
                 </div>
                 <div class="two fields">
                     <div class="field">
-                        <label>Class</label>
+                        <label data-intl="editor.class"></label>
                         <div class="ui search selection compact dropdown" data-path="Class">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
-                        <label>Mask</label>
+                        <label data-intl="editor.mask"></label>
                         <div class="ui selection compact dropdown" data-path="Mask">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
-                        <label>Instrument</label>
+                        <label data-intl="editor.instrument"></label>
                         <div class="ui selection compact dropdown" data-path="Instrument">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
-                        <label>Level</label>
+                        <label data-intl="editor.level"></label>
                         <input class="text-center" type="text" data-path="Level" placeholder="1 - 700">
                     </div>
                 </div>
                 <div class="five fields">
                     <div class="field">
-                        <label>Strength</label>
+                        <label data-intl="editor.strength"></label>
                         <input class="text-center" type="text" data-path="Strength.Total">
                     </div>
                     <div class="field">
-                        <label>Dexterity</label>
+                        <label data-intl="editor.dexterity"></label>
                         <input class="text-center" type="text" data-path="Dexterity.Total">
                     </div>
                     <div class="field">
-                        <label>Intelligence</label>
+                        <label data-intl="editor.intelligence"></label>
                         <input class="text-center" type="text" data-path="Intelligence.Total">
                     </div>
                     <div class="field">
-                        <label>Constitution</label>
+                        <label data-intl="editor.constitution"></label>
                         <input class="text-center" type="text" data-path="Constitution.Total">
                     </div>
                     <div class="field">
-                        <label>Luck</label>
+                        <label data-intl="editor.luck"></label>
                         <input class="text-center" type="text" data-path="Luck.Total">
                     </div>
                 </div>
@@ -581,22 +581,22 @@ class Editor {
             <div class="bordered btwo">
                 <div class="five fields">
                     <div class="field">
-                        <label>Min</label>
+                        <label data-intl="editor.min"></label>
                         <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin" placeholder="Item Min">
                     </div>
                     <div class="field">
-                        <label>Max</label>
+                        <label data-intl="editor.max"></label>
                         <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax" placeholder="Item Max">
                     </div>
                     <div class="field">
-                        <label>Crit</label>
+                        <label data-intl="editor.weapon_enchant"></label>
                         <div class="ui selection compact dropdown" data-path="Items.Wpn1.HasEnchantment">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
-                        <label>Rune</label>
+                        <label data-intl="editor.rune"></label>
                         <div class="ui selection compact dropdown" data-path="Items.Wpn1.AttributeTypes.2">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
@@ -611,22 +611,22 @@ class Editor {
             <div class="bordered bthree" data-optional="Weapon2">
                 <div class="five fields">
                     <div class="field">
-                        <label>Min</label>
+                        <label data-intl="editor.min"></label>
                         <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin" placeholder="Item Min">
                     </div>
                     <div class="field">
-                        <label>Max</label>
+                        <label data-intl="editor.max"></label>
                         <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax" placeholder="Item Max">
                     </div>
                     <div class="field">
-                        <label>Crit</label>
+                        <label data-intl="editor.weapon_enchant"></label>
                         <div class="ui selection compact dropdown" data-path="Items.Wpn2.HasEnchantment">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
-                        <label>Rune</label>
+                        <label data-intl="editor.rune"></label>
                         <div class="ui selection compact dropdown" data-path="Items.Wpn2.AttributeTypes.2">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
@@ -641,23 +641,23 @@ class Editor {
             <div class="bordered bfour">
                 <div class="four fields">
                     <div class="field">
-                        <label>Armor</label>
+                        <label data-intl="editor.armor"></label>
                         <input class="text-center" type="text" data-path="Armor" placeholder="Armor points">
                     </div>
                     <div class="field">
-                        <label>Block %</label>
+                        <label data-intl="editor.block"></label>
                         <input class="text-center" type="text" data-path="BlockChance" placeholder="0 - 25">
                     </div>
                     <div class="field">
-                        <label>Fire</label>
+                        <label data-intl="editor.fire"></label>
                         <input class="text-center" type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
                     </div>
                     <div class="field">
-                        <label>Cold</label>
+                        <label data-intl="editor.cold"></label>
                         <input class="text-center" type="text" data-path="Runes.ResistanceCold" placeholder="0 - 75">
                     </div>
                     <div class="field">
-                        <label>Lightning</label>
+                        <label data-intl="editor.lightning"></label>
                         <input class="text-center" type="text" data-path="Runes.ResistanceLightning" placeholder="0 - 75">
                     </div>
                 </div>
@@ -665,15 +665,15 @@ class Editor {
             <div class="bordered bfive">
                 <div class="three fields">
                     <div class="field">
-                        <label>Portal Health</label>
+                        <label data-intl="editor.portal_health"></label>
                         <input class="text-center" type="text" data-path="Dungeons.Player" placeholder="0 - 50">
                     </div>
                     <div class="field">
-                        <label>Rune Health</label>
+                        <label data-intl="editor.rune_health"></label>
                         <input class="text-center" type="text" data-path="Runes.Health" placeholder="0 - 15">
                     </div>
                     <div class="field">
-                        <label>Life Potion</label>
+                        <label data-intl="editor.life_potion"></label>
                         <div class="ui selection compact dropdown" data-path="Potions.Life">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
@@ -684,15 +684,15 @@ class Editor {
             <div class="bordered bsix">
                 <div class="three fields">
                     <div class="field">
-                        <label>Portal Damage</label>
+                        <label data-intl="editor.portal_damage"></label>
                         <input class="text-center" type="text" data-path="Dungeons.Group" placeholder="0 - 50">
                     </div>
                     <div class="field">
-                        <label>Gladiator (0 - 15)</label>
+                        <label data-intl="editor.gladiator"></label>
                         <input class="text-center" type="text" data-path="Fortress.Gladiator" placeholder="0 - 15">
                     </div>
                     <div class="field">
-                        <label>Shadow of the Cowboy</label>
+                        <label data-intl="editor.hand_enchant"></label>
                         <div class="ui selection compact dropdown" data-path="Items.Hand.HasEnchantment">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>

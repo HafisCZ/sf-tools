@@ -1,5 +1,24 @@
 {
     "temporary": "Temporary",
+    "general": {
+        "no": "No",
+        "yes": "Yes",
+        "none": "None",
+        "class1": "Warrior",
+        "class2": "Mage",
+        "class3": "Scout",
+        "class4": "Assassin",
+        "class5": "Battle Mage",
+        "class6": "Berserker",
+        "class7": "Demon Hunter",
+        "class8": "Druid",
+        "class9": "Bard",
+        "mask1": "Bear",
+        "mask2": "Cat",
+        "instrument0": "Harp",
+        "instrument1": "Lute",
+        "instrument2": "Flute"
+    },
     "index": {
         "admin": "Someone with a lot of free time",
         "helper": "Helpers - Research, Testing, Feedback, etc.",
@@ -83,5 +102,33 @@
     "404": {
         "title": "404",
         "text": "Not sure what you're looking for but it does not exist"
+    },
+    "editor": {
+        "name": "Name",
+        "class": "Class",
+        "level": "Level",
+        "mask": "Mask",
+        "instrument": "Instrument",
+        "strength": "Strength",
+        "dexterity": "Dexterity",
+        "intelligence": "Intelligence",
+        "constitution": "Constitution",
+        "luck": "Luck",
+        "armor": "Armor",
+        "min": "Min",
+        "max": "Max",
+        "weapon_enchant": "Crit",
+        "rune": "Rune",
+        "portal_damage": "Portal Damage",
+        "portal_health": "Portal Health",
+        "rune_health": "Rune Health",
+        "block": "Block %",
+        "fire": "Fire",
+        "cold": "Cold",
+        "lightning": "Lightning",
+        "gladiator": "Gladiator (0 - 15)",
+        "life_potion": "Life Potion",
+        "hand_enchant": "Shadow of the Cowboy",
+        "smart_change": "Smart class change"
     }
 }
