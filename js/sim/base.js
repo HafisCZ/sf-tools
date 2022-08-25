@@ -339,11 +339,11 @@ class FighterModel {
         let max = 2;
 
         if (this.Player.Level > 10 && !this.Player.NoBaseDamage) {
-            let num = Math.trunc((this.Player.Level - 9) * this.getDamageMultiplier());
+            let num = (this.Player.Level - 9) * this.getDamageMultiplier();
             let mul = secondary ? 0.1 : 0.7;
 
-            min = Math.trunc(mul * num * 2 / 3);
-            max = Math.trunc(mul * num * 4 / 3);
+            min = Math.ceil(mul * num * 2 / 3);
+            max = Math.floor(mul * num * 4 / 3);
         }
 
         return {
