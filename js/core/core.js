@@ -169,6 +169,22 @@ const SiteOptions = new (class {
     }
 })();
 
+const Site = new (class {
+    constructor () {
+        this.promise = new Promise((resolve) => {
+            this.resolve = resolve;
+        });
+    }
+
+    run () {
+        this.resolve();
+    }
+
+    ready (callback) {
+        this.promise.then(callback);
+    }
+})();
+
 const DEFAULT_PROFILE = {
     name: 'Default',
     temporary: false,

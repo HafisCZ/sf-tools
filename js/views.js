@@ -1059,6 +1059,10 @@ const Localization = new (class {
         return obj;
     }
 
+    l (key) {
+        return this.findTranslation(key)
+    }
+
     translate (node = window.document) {
         node.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
     }
@@ -1087,7 +1091,9 @@ const Localization = new (class {
 })();
 
 // Automatically open Terms and Conditions if not accepted yet
-window.addEventListener('load', function () {
+window.addEventListener('load', async function () {
+    await Localization.setLocale(SiteOptions.locale || 'en');
+
     if (PreferencesHandler._isAccessible()) {
         if (!SiteOptions.terms_accepted) {
             DialogController.open(TermsAndConditionsDialog);
@@ -1097,8 +1103,6 @@ window.addEventListener('load', function () {
             DialogController.open(ChangeLogDialog);
         }
     }
-});
 
-window.addEventListener('DOMContentLoaded', function () {
-    Localization.setLocale(SiteOptions.locale || 'en');
+    Site.run();
 });
