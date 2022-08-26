@@ -1,5 +1,4 @@
 {
-    "temporary": "Temporary",
     "general": {
         "no": "No",
         "yes": "Yes",
@@ -41,7 +40,8 @@
         },
         "temp": {
             "title": "Playground",
-            "desc": "Create temporary instance of Statistics"
+            "desc": "Create temporary instance of Statistics",
+            "temporary": "Temporary"
         },
         "wiki": {
             "title": "Wiki",

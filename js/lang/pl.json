@@ -1,5 +1,4 @@
 {
-    "temporary": "Temporary",
     "general": {
         "no": "No",
         "yes": "Yes",
@@ -41,7 +40,8 @@
         },
         "temp": {
             "title": "Plac zabaw",
-            "desc": "Stwórz tymczasową instancje statystyk"
+            "desc": "Stwórz tymczasową instancje statystyk",
+            "temporary": "Temporary"
         },
         "wiki": {
             "title": "Wiki",
