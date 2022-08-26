@@ -1071,12 +1071,22 @@ const Localization = new (class {
     }
 
     translate (node = window.document) {
-        node.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
+        if (node.querySelector('[data-intl]')) {
+            node.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
+        }
     }
 
     translateElement (node) {
         let key = node.getAttribute('data-intl');
-        node.innerText = this.findTranslation(key) || key;
+        let val = this.findTranslation(key);
+
+        node.removeAttribute('data-intl');
+
+        if (val && key.endsWith('#')) {
+            node.innerHTML = val;
+        } else {
+            node.innerText = val || key;
+        }
     }
 })();
 
