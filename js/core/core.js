@@ -177,7 +177,7 @@ const Site = new (class {
     }
 
     locales () {
-        return ['en'];
+        return ['en', 'pl'];
     }
 
     getLocale () {

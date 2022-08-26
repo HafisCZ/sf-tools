@@ -1,0 +1,164 @@
+{
+    "temporary": "Temporary",
+    "general": {
+        "no": "No",
+        "yes": "Yes",
+        "none": "None",
+        "class1": "Wojownik",
+        "class2": "Mag",
+        "class3": "Zwiadowca",
+        "class4": "Zabójca",
+        "class5": "Paladyn",
+        "class6": "Berserker",
+        "class7": "Łowca Demonów",
+        "class8": "Druid",
+        "class9": "Bard",
+        "mask1": "Niedźwiedź",
+        "mask2": "Kot",
+        "instrument0": "Harfa",
+        "instrument1": "Lutnia",
+        "instrument2": "Flet",
+        "strength": "Siła",
+        "dexterity": "Zręczność",
+        "intelligence": "Inteligencja",
+        "constitution": "Wytrzymałość",
+        "luck": "Szczęście",
+        "life_potion": "Eliksir żywotności"
+    },
+    "index": {
+        "admin": "Osoba z dużą ilością czasu",
+        "helper": "Pomocnicy - Research, Testowanie, Opinie, itd.",
+        "tester": "Testerzy",
+        "cwm": "Główny Wiki Manager",
+        "others": "Inne",
+        "toggle": "Toggle credits",
+        "stats": {
+            "title": "Statystyki",
+            "desc": "Śledź postępy swoje i gildii"
+        },
+        "temp": {
+            "title": "Plac zabaw",
+            "desc": "Stwórz tymczasową instancje statystyk"
+        },
+        "wiki": {
+            "title": "Wiki",
+            "desc": "Jak działać z tabelami i wiele więcej"
+        },
+        "runes": {
+            "title": "Bonusy Run",
+            "desc": "Tabela run Zorago"
+        },
+        "inventory": {
+            "title": "Manager Ekwipunku",
+            "desc": "Porównaj przedmioty, obliczaj ulepszenia & inne"
+        },
+        "idle": {
+            "title": "Arena Manager",
+            "desc": "Sprawdź produkcję swojego Managera Areny"
+        },
+        "calendar": {
+            "title": "Kalendarz Pupili",
+            "desc": "Sprawdź, kiedy możesz złapać pupile"
+        },
+        "compare": {
+            "title": "Porównanie przedmiotów",
+            "desc": "Zobacz, co zmienia się po założeniu nowego przedmiotu"
+        },
+        "players": {
+            "title": "Symulator Walk",
+            "desc": "Przesymuluj prawdopodobny wynik walki graczy"
+        },
+        "guild": {
+            "title": "Symulator Gildii",
+            "desc": "Przesymuluj prawdopodobny wynik walki gildii"
+        },
+        "pets": {
+            "title": "Symulator Pupili",
+            "desc": "Przesymuluj prawdopodobny wynik walki pupili"
+        },
+        "dungeons": {
+            "title": "Symulator Lochów",
+            "desc": "Przesymuluj prawdopodobny wynik walki w lochu"
+        },
+        "underworld": {
+            "title": "Podziemie",
+            "desc": "Przesymuluj prawdopodobny wynik walki w podziemiu"
+        },
+        "fights": {
+            "title": "Podgląd walki",
+            "desc": "Wyświetl wszystkie walki PvP zapisane w archiwum"
+        },
+        "digest": {
+            "title": "Podgląd bossa",
+            "desc": "Wyświetl wszystkie walki PvE zapisane w archiwum"
+        },
+        "atts": {
+            "title": "Złoto & Doświadczenie",
+            "desc": "Wykresy & kalkulatory"
+        },
+        "smith": {
+            "title": "Ulepszenia kowala",
+            "desc": "Ile to kosztuje i co sie traci"
+        },
+        "hydra": {
+            "title": "Symulator hydry",
+            "desc": "Przesymuluj, aby dowiedzieć się jaka jest najefektywniejsza klasa przeciwko obecnej głowie hydry."
+        }
+    },
+    "404": {
+        "title": "404",
+        "text": "Nie wiem czego szukasz, ale tutaj tego nie ma"
+    },
+    "dungeons": {
+        "simulate": "Symuluj",
+        "simulate_remaining": "Pozostałe",
+        "simulate_all": "Wszystkie",
+        "player": "Gracz",
+        "enemy": "Przeciwnik",
+        "yourself": "Ty",
+        "bert": "Barbar",
+        "mark": "Mariusz",
+        "kunigunde": "Kunegunda",
+        "open": "Obecnie dostępne lochy",
+        "graph": {
+            "y": "Pozostałe HP Bossa",
+            "x": "- Dystrybucja dla wybranej ilości prób -"
+        },
+        "results": "Wyniki",
+        "cheats": {
+            "title": "Cheat Menu",
+            "subtitle": "Wybierz cheaty i załaduj postać",
+            "enable": "Włącz cheaty",
+            "general": "General",
+            "enchantments": "Wszystkie czary",
+            "runes": "Maksymalne runy",
+            "pets": "Maksymakne pety",
+            "potions": "Eliksiry (max 3)",
+            "class": "Zmiana klasy",
+            "keep_original": "Zatrzymaj pierwotną"
+        }
+    },
+    "editor": {
+        "name": "Nazwa",
+        "class": "Klasa",
+        "level": "Level",
+        "mask": "Masja",
+        "instrument": "Instrument",
+        "armor": "Pancerz",
+        "min": "Min",
+        "max": "Max",
+        "weapon_enchant": "Crit",
+        "rune": "Runa",
+        "portal_damage": "Obrażenia Portalu",
+        "portal_health": "Życie Portalu",
+        "rune_health": "Punkty Życia(runa)",
+        "block": "Blok %",
+        "fire": "Ogień",
+        "cold": "Zimno",
+        "lightning": "Błyskawice",
+        "gladiator": "Gladiator (0 - 15)",
+        "life_potion": "Eliksir żywotności",
+        "hand_enchant": "Cień Kowboja",
+        "smart_change": "Sprytna Zmiana Klasy"
+    }
+}
