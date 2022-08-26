@@ -52,14 +52,7 @@
             </div>
         </div>
 
-        <div class="footer">
-            <b>Notice:</b> <span style="font-size: 90%;">The sim should be very accurate, but sometimes you might win a fight in-game that the sim shows as impossible.<br/>
-            In that case save the fight in a HAR file and send to mar21#4673 in <a target="_blank" href="https://discord.gg/XWfSwe3">S&F Tavern</a>.</span>
-        </div>
-
-        <div class="paste-target" onpaste="console.log">
-            Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator
-        </div>
+        <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
 
         <div class="ui main container">
             <div class="ui two columns stackable grid">
@@ -76,10 +69,10 @@
                             <div class="six wide column">
                                 <div class="ui small form">
                                     <div class="two fields">
-                                        <div class="field" data-position="bottom center" data-tooltip="Simulator threads. Keep this number BELOW your processor core count!">
+                                        <div class="field" data-position="bottom center">
                                             <input class="text-center fluid" type="text" id="sim-threads" value="2">
                                         </div>
-                                        <div class="field" data-position="bottom center" data-tooltip="Amount of iterations per thread.">
+                                        <div class="field" data-position="bottom center">
                                             <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
                                             <input class="text-center fluid" type="text" id="sim-iterations" value="5000">
                                         </div>
@@ -147,7 +140,7 @@
 
         <div id="results-modal" class="ui mini modal">
             <div class="header" data-intl="dungeons.results"></div>
-            <button id="save-screenshot" class="ui small basic icon button" style="position: absolute; right: .75em; top: 1em;" data-position="bottom center" data-tooltip="Save as image"><i class="download icon"></i></button>
+            <button id="save-screenshot" class="ui small basic icon button" style="position: absolute; right: .75em; top: 1em;" data-position="bottom center"><i class="download icon"></i></button>
             <div style="padding-left: 1em; padding-right: 1em; border-bottom: 1px solid rgba(34,36,38,.15)">
                 <canvas id="list-winchart" style="width: 100%;"></canvas>
             </div>
@@ -276,6 +269,10 @@
                     func();
                     ignoreChanges = false;
                 }
+
+                $('#sim-threads').closest('.field').attr('data-tooltip', intl('simulator.threads'));
+                $('#sim-iterations').closest('.field').attr('data-tooltip', intl('simulator.iterations'));
+                $('#save-screenshot').attr('data-tooltip', intl('simulator.save_image'));
 
                 $('#sim-threads').captiveInputField('dungeon_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('dungeon_sim/iterations', 5000, v => !isNaN(v) && v >= 1);

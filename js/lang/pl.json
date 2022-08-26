@@ -141,6 +141,12 @@
             "keep_original": "Zatrzymaj pierwotną"
         }
     },
+    "simulator": {
+        "paste_target#": "Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator",
+        "threads": "Simulator threads. Keep this number BELOW your processor core count!",
+        "iterations": "Amount of iterations per thread.",
+        "save_image": "Save as image"
+    },
     "editor": {
         "name": "Nazwa",
         "class": "Klasa",
@@ -162,6 +168,7 @@
         "gladiator": "Gladiator (0 - 15)",
         "life_potion": "Eliksir żywotności",
         "hand_enchant": "Cień Kowboja",
-        "smart_change": "Sprytna Zmiana Klasy"
+        "smart_change": "Sprytna Zmiana Klasy",
+        "copy": "Copy"
     }
 }

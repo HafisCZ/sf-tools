@@ -426,7 +426,7 @@ class Editor {
         }).dropdown('set selected', 'false');
 
         // Copy
-        $('div.copy-current').click(() => copyText(JSON.stringify(this.read())));
+        $('div.copy-current').click(() => copyText(JSON.stringify(this.read()))).attr('data-tooltip', intl('editor.copy'));
 
         // Morph
         this.morph = new (class extends Field {
@@ -522,7 +522,7 @@ class Editor {
                             <div class="ui top right pointing dropdown button morph">
                                 <i class="exchange link icon"></i>
                             </div>
-                            <div class="ui button copy-current" data-position="right center" data-tooltip="Copy">
+                            <div class="ui button copy-current" data-position="right center">
                                 <i class="outline copy link icon"></i>
                             </div>
                         </div>
