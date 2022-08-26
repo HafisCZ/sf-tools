@@ -26,12 +26,15 @@
         "life_potion": "Eliksir żywotności"
     },
     "index": {
-        "admin": "Osoba z dużą ilością czasu",
-        "helper": "Pomocnicy - Research, Testowanie, Opinie, itd.",
-        "tester": "Testerzy",
-        "cwm": "Główny Wiki Manager",
-        "others": "Inne",
         "toggle": "Toggle credits",
+        "roles": {
+            "admin": "Osoba z dużą ilością czasu",
+            "helper": "Pomocnicy - Research, Testowanie, Opinie, itd.",
+            "tester": "Testerzy",
+            "wiki": "Główny Wiki Manager",
+            "translator": "Translators",
+            "mention": "Inne"
+        },
         "stats": {
             "title": "Statystyki",
             "desc": "Śledź postępy swoje i gildii"

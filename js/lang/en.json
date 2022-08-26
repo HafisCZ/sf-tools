@@ -26,12 +26,15 @@
         "life_potion": "Eternal Life"
     },
     "index": {
-        "admin": "Someone with a lot of free time",
-        "helper": "Helpers - Research, Testing, Feedback, etc.",
-        "tester": "Testers",
-        "cwm": "Chief Wiki Manager",
-        "others": "Other mentions",
         "toggle": "Toggle credits",
+        "roles": {
+            "admin": "Someone with a lot of free time",
+            "helper": "Helpers - Research, Testing, Feedback, etc.",
+            "tester": "Testers",
+            "wiki": "Chief Wiki Manager",
+            "translator": "Translators",
+            "mention": "Other mentions"
+        },
         "stats": {
             "title": "Statistics",
             "desc": "Track progress of yourself and your guild"
