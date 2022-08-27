@@ -1,0 +1,174 @@
+{
+    "general": {
+        "no": "No",
+        "yes": "Si",
+        "none": "Nessuno",
+        "class1": "Guerriero",
+        "class2": "Mago",
+        "class3": "Esploratore",
+        "class4": "Assassino",
+        "class5": "Mago Guerriero",
+        "class6": "Berserker",
+        "class7": "Cacciatore di Demoni",
+        "class8": "Druido",
+        "class9": "Bardo",
+        "mask1": "Orso",
+        "mask2": "Gatto",
+        "instrument0": "Arpa",
+        "instrument1": "Liuto",
+        "instrument2": "Flauto",
+        "strength": "Forza",
+        "dexterity": "Destrezza",
+        "intelligence": "Intelligenza",
+        "constitution": "Costituzione",
+        "luck": "Fortuna",
+        "life_potion": "Pozione della Vita Eterna"
+    },
+    "index": {
+        "toggle": "Toggle crediti",
+        "roles": {
+            "admin": "Qualcuno con molto tempo libero",
+            "helper": "Aiutanti - Ricerca, Test, Feedback, ecc.",
+            "tester": "Tester",
+            "wiki": "Amministratore wiki",
+            "translator": "Traduttori",
+            "mention": "Altre menzioni"
+        },
+        "stats": {
+            "title": "Statistiche",
+            "desc": "Traccia i progressi tuoi e della tua gilda"
+        },
+        "temp": {
+            "title": "Playground",
+            "desc": "Crea delle istanze temporanee del modulo Statistiche",
+            "temporary": "Temporaneo"
+        },
+        "wiki": {
+            "title": "Wiki",
+            "desc": "Come fare magie con le tabelle e molto altro"
+        },
+        "runes": {
+            "title": "Bonus Rune",
+            "desc": "Tabella dei bonus delle rune (by Zorago)"
+        },
+        "inventory": {
+            "title": "Manager zaino",
+            "desc": "Confronta oggetti, calcola miglioramenti e altro"
+        },
+        "idle": {
+            "title": "Gestore Arena",
+            "desc": "Controlla la produzione del tuo Gestore Arena"
+        },
+        "calendar": {
+            "title": "Calendario Famigli",
+            "desc": "Controlla quando puoi catturare i famigli"
+        },
+        "compare": {
+            "title": "Confronto Oggetti",
+            "desc": "Controlla cosa cambia indossando un  nuovo oggetto"
+        },
+        "players": {
+            "title": "Simulatore Scontro",
+            "desc": "Simula il probabile esito di uno scontro PVP"
+        },
+        "guild": {
+            "title": "Simulatore Gilda",
+            "desc": "Simula il probabile esito di una battaglia di gilda"
+        },
+        "pets": {
+            "title": "Simulatore Famigli",
+            "desc": "Simula il probabile esito di uno scontro con i famigli"
+        },
+        "dungeons": {
+            "title": "Simulatore Dungeon",
+            "desc": "Simula il probabile esito di uno scontro nei dungeon"
+        },
+        "underworld": {
+            "title": "Mondo Sotterraneo",
+            "desc": "Simula il probabile esito di uno scontro nel mondo sotterraneo"
+        },
+        "fights": {
+            "title": "Visualizzatore scontri",
+            "desc": "Mostra tutti gli scontri PVP salvati in un file archivio"
+        },
+        "digest": {
+            "title": "Visualizzatore Boss",
+            "desc": "Mostra tutti gli scontri PVE salvati in un file archivio"
+        },
+        "atts": {
+            "title": "Oro & Esperienza",
+            "desc": "Grafici & Calcolatori"
+        },
+        "smith": {
+            "title": "Miglioramenti Fabbro",
+            "desc": "Quanto costano e quante risorse si perdono"
+        },
+        "hydra": {
+            "title": "Simulatore Idra",
+            "desc": "Simula le battaglie con l'idra per trovare quale classe famiglio sia meglio"
+        }
+    },
+    "404": {
+        "title": "404",
+        "text": "Non so cosa stai cercando ma non esiste"
+    },
+    "dungeons": {
+        "simulate": "Simula",
+        "simulate_remaining": "Restanti",
+        "simulate_all": "Tutti",
+        "player": "Player",
+        "enemy": "Nemico",
+        "yourself": "Tu",
+        "bert": "Bertram",
+        "mark": "Mark",
+        "kunigunde": "Cunegonda",
+        "open": "Dungeon aperti",
+        "graph": {
+            "y": "HP Boss restanti",
+            "x": "- Distribuzione per l'ammontare dei tentativi selezionati -"
+        },
+        "results": "Risultati",
+        "cheats": {
+            "title": "Menu Cheat",
+            "subtitle": "Seleziona quali modificatori applicare, poi effettua il polling del tuo personaggio",
+            "enable": "Attiva modificatori",
+            "general": "Generale",
+            "enchantments": "Tutti gli incantamenti",
+            "runes": "Rune al massimo",
+            "pets": "Famigli al massimo",
+            "potions": "Pozioni (max 3)",
+            "class": "Cambia classe",
+            "keep_original": "Mantieni l'originale"
+        }
+    },
+    "simulator": {
+        "paste_target#": "Clicca qui e premi <b>CTRL&nbsp;+&nbsp;V</b> per incollare nel simulatore",
+        "threads": "Thread di simulazione. Mantieni questo numero SOTTO al numero dei core del tuo processore!",
+        "iterations": "Numero di iterazioni per thread.",
+        "save_image": "Salva come immagine"
+    },
+    "editor": {
+        "name": "Nome",
+        "class": "Classe",
+        "level": "Livello",
+        "mask": "Maschera",
+        "instrument": "Strumento",
+        "armor": "Armatura",
+        "min": "Min",
+        "max": "Max",
+        "weapon_enchant": "Crit",
+        "rune": "Runa",
+        "portal_damage": "Bonus danni portale",
+        "portal_health": "Bonus vita portale",
+        "rune_health": "Rune punti vita",
+        "block": "% Parata",
+        "fire": "Fuoco",
+        "cold": "Freddo",
+        "lightning": "Fulmine",
+        "gladiator": "Gladiatore (0 - 15)",
+        "life_potion": "Pozione della Vita",
+        "hand_enchant": "Ombra del Cowboy",
+        "smart_change": "Cambio classe intelligente",
+        "copy": "Copia"
+    }
+}
