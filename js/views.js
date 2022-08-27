@@ -3,6 +3,14 @@ class Dialog {
         this.opacity = opacity;
     }
 
+    _intl_key () {
+        return '';
+    }
+
+    intl (key) {
+        return intl(`dialog.${this._intl_key()}.${key}`);
+    }
+
     open (...args) {
         return new Promise((resolve, reject) => {
             if (this.shouldOpen) {
@@ -256,14 +264,18 @@ const WarningDialog = new (class extends Dialog {
         super(0);
     }
 
+    _intl_key () {
+        return 'warning';
+    }
+
     _createModal () {
         return `
             <div class="ui basic tiny modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
-                <h2 class="ui centered header" style="padding-bottom: 0.5em; padding-top: 0;"><i class="exclamation triangle icon" style="color: orange; font-size: 1em; line-height: 0.75em;"></i> An issue has occured!</h2>
+                <h2 class="ui centered header" style="padding-bottom: 0.5em; padding-top: 0;"><i class="exclamation triangle icon" style="color: orange; font-size: 1em; line-height: 0.75em;"></i> ${this.intl('title')}</h2>
                 <div class="text-center" style="text-align: justify; margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;" data-op="text">
                     ...
                 </div>
-                <button class="ui black fluid button" data-op="continue">Continue</button>
+                <button class="ui black fluid button" data-op="continue">${this.intl('continue')}</button>
             </div>
         `;
     }
@@ -280,22 +292,25 @@ const WarningDialog = new (class extends Dialog {
 
 // Blocking popup about an exception that occured and is blocking execution
 const ErrorDialog = new (class extends Dialog {
+    _intl_key () {
+        return 'error';
+    }
+
     _createModal () {
         return `
             <div class="ui basic tiny modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
-                <h2 class="ui centered header" style="padding-bottom: 0.5em; padding-top: 0;"><i class="times circle icon" style="color: red; font-size: 1em; line-height: 0.75em;"></i> A fatal error has occured!</h2>
+                <h2 class="ui centered header" style="padding-bottom: 0.5em; padding-top: 0;"><i class="times circle icon" style="color: red; font-size: 1em; line-height: 0.75em;"></i> ${this.intl('title')}</h2>
                 <div class="text-center" style="text-align: justify; margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;" data-op="text">
                     ...
                 </div>
                 <div style="margin-top: 2em;">
                     <div class="text-center" style="text-align: justify; margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
-                        <h4 class="ui white header">This error might have also been caused by your current profile.<br>
-                        Click the revert button below to revert back to default profile.</h4>
+                        <h4 class="ui white header">${this.intl('notice#')}</h4>
                     </div>
                 </div>
                 <div class="ui two buttons">
-                    <button class="ui red fluid button" data-op="continue">Click here or refresh the page</button>
-                    <button class="ui red fluid button" data-op="continue-default">Revert back to default profile</button>
+                    <button class="ui red fluid button" data-op="continue">${this.intl('refresh')}</button>
+                    <button class="ui red fluid button" data-op="continue-default">${this.intl('.revert')}</button>
                 </div>
             </div>
         `;
@@ -323,19 +338,23 @@ const FileEditDialog = new (class extends Dialog {
         super(0);
     }
 
+    _intl_key () {
+        return 'file_edit';
+    }
+
     _createModal () {
         return `
             <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
-                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Edit file</h2>
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h2>
                 <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
                     <div class="field">
-                        <label>Timestamp</label>
+                        <label>${this.intl('timestamp')}</label>
                         <input data-op="timestamp" type="text">
                     </div>
                 </div>
                 <div class="ui three fluid buttons">
-                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
-                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">Save</button>
+                    <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">${this.intl('save')}</button>
                 </div>
             </div>
         `;
@@ -369,35 +388,39 @@ const FileEditDialog = new (class extends Dialog {
 })();
 
 const SaveOnlineScriptDialog = new (class extends Dialog {
+    _intl_key () {
+        return 'save_online_script';
+    }
+
     _createModal () {
         return `
             <div class="ui basic mini modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
-                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Import template</h2>
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h2>
                 <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
                     <div class="ui inverted active dimmer">
-                      <div class="ui indeterminate text loader">Preparing Files</div>
+                      <div class="ui indeterminate text loader">${this.intl('loader')}</div>
                     </div>
                     <div class="two fields">
                         <div class="field">
-                            <label>Author:</label>
+                            <label>${this.intl('author')}:</label>
                             <input data-op="author" type="text" disabled>
                         </div>
                         <div class="field">
-                            <label>Created/Updated:</label>
+                            <label>${this.intl('created_updated')}:</label>
                             <input data-op="date" type="text" disabled>
                         </div>
                     </div>
                     <div class="field">
-                        <label>Name:</label>
-                        <input data-op="name" type="text" placeholder="Template name">
+                        <label>${this.intl('name')}:</label>
+                        <input data-op="name" type="text" placeholder="${this.intl('name_placeholder')}">
                     </div>
                 </div>
                 <div data-op="error" style="display: none;">
-                    <h3 class="ui header text-center" style="color: orange; margin-top: 4.25em; margin-bottom: 4.275em;">The requested template is not available!</h3>
+                    <h3 class="ui header text-center" style="color: orange; margin-top: 4.25em; margin-bottom: 4.275em;">${this.intl('error')}</h3>
                 </div>
                 <div class="ui three fluid buttons">
-                    <button class="ui black fluid button disabled" data-op="cancel">Cancel</button>
-                    <button class="ui fluid button disabled" style="background-color: orange; color: black;" data-op="save">Save</button>
+                    <button class="ui black fluid button disabled" data-op="cancel">${this.intl('cancel')}</button>
+                    <button class="ui fluid button disabled" style="background-color: orange; color: black;" data-op="save">${this.intl('save')}</button>
                 </div>
             </div>
         `;
@@ -471,23 +494,27 @@ const EditFileTagDialog = new (class extends Dialog {
         super(0);
     }
 
+    _intl_key () {
+        return 'edit_file_tag';
+    }
+
     _createModal () {
         return `
             <div class="ui basic mini modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
-                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Edit tags</h2>
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h2>
                 <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
                     <div class="field">
-                        <label>Current tags:</label>
-                        <input data-op="old-tags" type="text" placeholder="None" disabled>
+                        <label>${this.intl('current')}:</label>
+                        <input data-op="old-tags" type="text" placeholder="${this.intl('none')}" disabled>
                     </div>
                     <div class="field">
-                        <label>Replacement tag:</label>
-                        <input data-op="new-tags" type="text" placeholder="None">
+                        <label>${this.intl('replacement')}:</label>
+                        <input data-op="new-tags" type="text" placeholder="${this.intl('none')}">
                     </div>
                 </div>
                 <div class="ui three fluid buttons">
-                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
-                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">Save</button>
+                    <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">${this.intl('save')}</button>
                 </div>
             </div>
         `;
@@ -522,7 +549,7 @@ const EditFileTagDialog = new (class extends Dialog {
                 this.$oldTags.val(tag);
             }
         } else {
-            this.$oldTags.val(tags.map(([key, count]) => `${key === 'undefined' ? 'None' : key} (${count})`).join(', '));
+            this.$oldTags.val(tags.map(([key, count]) => `${key === 'undefined' ? this.intl('none') : key} (${count})`).join(', '));
         }
 
         this.$newTags.val('');
@@ -530,123 +557,126 @@ const EditFileTagDialog = new (class extends Dialog {
 })();
 
 const ProfileCreateDialog = new (class extends Dialog {
-
     constructor () {
         super(0);
+    }
+
+    _intl_key () {
+        return 'profile_create';
     }
 
     _createModal () {
         return `
             <div class="ui small modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
-                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Create/Edit profile</h2>
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h2>
                 <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
                     <div class="two fields">
                         <div class="four wide field">
-                            <label>ID:</label>
+                            <label>${this.intl('id')}:</label>
                             <input class="text-center" data-op="id" type="text" disabled>
                         </div>
                         <div class="eight wide field">
-                            <label>Name:</label>
+                            <label>${this.intl('name')}:</label>
                             <input data-op="name" type="text">
                         </div>
                         <div class="four wide field">
-                            <label>Slot:</label>
+                            <label>${this.intl('slot')}:</label>
                             <div class="ui fluid selection dropdown" data-op="slot">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                     </div>
-                    <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">Primary filter configuration</h3>
+                    <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">${this.intl('player.primary')}</h3>
                     <div class="two fields">
                         <div class="field">
-                            <label>Index:</label>
+                            <label>${this.intl('index')}:</label>
                             <div class="ui fluid search selection dropdown" data-op="primary-index">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
-                            <label>Operation:</label>
+                            <label>${this.intl('operation')}:</label>
                             <select class="ui fluid search selection dropdown" data-op="primary-operator">
-                                <option value="equals">Equals</option>
-                                <option value="above">Above</option>
-                                <option value="below">Below</option>
-                                <option value="between">Between</option>
+                                <option value="equals">${this.intl('equals')}</option>
+                                <option value="above">${this.intl('above')}</option>
+                                <option value="below">${this.intl('below')}</option>
+                                <option value="between">${this.intl('between')}</option>
                             </select>
                         </div>
                     </div>
                     <div class="two fields">
                         <div class="field">
-                            <label>Value 1:</label>
+                            <label>${this.intl('value')} 1:</label>
                             <div class="ta-wrapper" style="height: initial;">
-                                <input class="ta-area" data-op="primary" type="text" placeholder="Primary AST expression">
+                                <input class="ta-area" data-op="primary" type="text" placeholder="${this.intl('ast.primary')}">
                                 <div data-op="primary-content" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                             </div>
                         </div>
                         <div class="field">
-                            <label>Value 2:</label>
+                            <label>${this.intl('value')} 2:</label>
                             <div class="ta-wrapper" style="height: initial;">
-                                <input class="ta-area" data-op="primary-2" type="text" placeholder="Primary AST expression (optional)">
+                                <input class="ta-area" data-op="primary-2" type="text" placeholder="${this.intl('ast.primary')} (${this.intl('ast.optional')})">
                                 <div data-op="primary-content-2" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                             </div>
                         </div>
                     </div>
-                    <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">Secondary filter configuration</h3>
+                    <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">${this.intl('player.secondary')}</h3>
                     <div class="field">
-                        <label>Secondary filter:</label>
+                        <label>${this.intl('secondary')}:</label>
                         <div class="ta-wrapper">
-                            <input class="ta-area" data-op="secondary" type="text" placeholder="Secondary AST expression">
+                            <input class="ta-area" data-op="secondary" type="text" placeholder="${this.intl('ast.secondary')}">
                             <div data-op="secondary-content" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                         </div>
                     </div>
-                    <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">Primary group filter configuration</h3>
+                    <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">${this.intl('group.primary')}</h3>
                     <div class="two fields">
                         <div class="field">
-                            <label>Index:</label>
+                            <label>${this.intl('index')}:</label>
                             <div class="ui fluid search selection dropdown" data-op="primary-index-g">
                                 <div class="text"></div>
                                 <i class="dropdown icon"></i>
                             </div>
                         </div>
                         <div class="field">
-                            <label>Operation:</label>
+                            <label>${this.intl('operation')}:</label>
                             <select class="ui fluid search selection dropdown" data-op="primary-operator-g">
-                                <option value="equals">Equals</option>
-                                <option value="above">Above</option>
-                                <option value="below">Below</option>
-                                <option value="between">Between</option>
+                                <option value="equals">${this.intl('equals')}</option>
+                                <option value="above">${this.intl('above')}</option>
+                                <option value="below">${this.intl('below')}</option>
+                                <option value="between">${this.intl('between')}</option>
                             </select>
                         </div>
                     </div>
                     <div class="two fields">
                         <div class="field">
-                            <label>Value 1:</label>
+                            <label>${this.intl('value')} 1:</label>
                             <div class="ta-wrapper" style="height: initial;">
-                                <input class="ta-area" data-op="primary-g" type="text" placeholder="Primary AST expression">
+                                <input class="ta-area" data-op="primary-g" type="text" placeholder="${this.intl('ast.primary')}">
                                 <div data-op="primary-content-g" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                             </div>
                         </div>
                         <div class="field">
-                            <label>Value 2:</label>
+                            <label>${this.intl('value')} 2:</label>
                             <div class="ta-wrapper" style="height: initial;">
-                                <input class="ta-area" data-op="primary-2-g" type="text" placeholder="Primary AST expression (optional)">
+                                <input class="ta-area" data-op="primary-2-g" type="text" placeholder="${this.intl('ast.primary')} (${this.intl('ast.optional')})">
                                 <div data-op="primary-content-2-g" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                             </div>
                         </div>
                     </div>
-                    <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">Secondary group filter configuration</h3>
+                    <h3 class="ui header" style="margin-bottom: 0.5em; margin-top: 0;">${this.intl('group.secondary')}</h3>
                     <div class="field">
-                        <label>Secondary filter:</label>
+                        <label>${this.intl('secondary')}:</label>
                         <div class="ta-wrapper">
-                            <input class="ta-area" data-op="secondary-g" type="text" placeholder="Secondary AST expression">
+                            <input class="ta-area" data-op="secondary-g" type="text" placeholder="${this.intl('ast.secondary')}">
                             <div data-op="secondary-content-g" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                         </div>
                     </div>
                 </div>
                 <div class="ui three fluid buttons">
-                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
-                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">Save</button>
+                    <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">${this.intl('save')}</button>
                 </div>
             </div>
         `;
@@ -691,7 +721,7 @@ const ProfileCreateDialog = new (class extends Dialog {
         this.$primaryIndex.dropdown({
             values: ['none', ...PROFILES_INDEXES].map(v => {
                 return {
-                    name: v.charAt(0).toUpperCase() + v.slice(1),
+                    name: v === 'none' ? this.intl('none') : v.charAt(0).toUpperCase() + v.slice(1),
                     value: v,
                     selected: v === 'none'
                 };
@@ -721,7 +751,7 @@ const ProfileCreateDialog = new (class extends Dialog {
         this.$slot.dropdown({
             values: [
                 {
-                    name: 'Default',
+                    name: this.intl('default'),
                     value: ''
                 },
                 ... [1, 2, 3, 4, 5].map((i) => ({
@@ -749,7 +779,7 @@ const ProfileCreateDialog = new (class extends Dialog {
         this.$primaryIndexG.dropdown({
             values: ['none', ...PROFILES_GROUP_INDEXES].map(v => {
                 return {
-                    name: v.charAt(0).toUpperCase() + v.slice(1),
+                    name: v === 'none' ? this.intl('none') : v.charAt(0).toUpperCase() + v.slice(1),
                     value: v,
                     selected: v === 'none'
                 };
@@ -792,7 +822,7 @@ const ProfileCreateDialog = new (class extends Dialog {
             const primaryValue2G = this.$primary2G.val();
 
             ProfileManager.setProfile(this.id, Object.assign(this.profile || {}, {
-                name: this.$name.val() || `Profile ${this.id}`,
+                name: this.$name.val() || `${this.intl('profile')} ${this.id}`,
                 slot: slot,
                 primary: primaryName === 'none' ? null : {
                     name: primaryName,
@@ -854,7 +884,7 @@ const ProfileCreateDialog = new (class extends Dialog {
 
             this.$secondary.val(secondary).trigger('change');
             this.$secondaryG.val(secondary_g).trigger('change');
-            this.$name.val(name || `Profile ${id}`);
+            this.$name.val(name || `${this.intl('profile')} ${id}`);
         } else {
             this.$id.val(this.id);
             this.$slot.dropdown('set selected', '');
@@ -874,27 +904,31 @@ const ProfileCreateDialog = new (class extends Dialog {
 })();
 
 const TemplateSaveDialog = new (class extends Dialog {
+    _intl_key () {
+        return 'template_save';
+    }
+
     _createModal () {
         return `
             <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
-                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">Save template</h2>
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h2>
                 <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
                     <div class="field">
-                        <label>Select existing template:</label>
+                        <label>${this.intl('select_existing')}:</label>
                         <div class="ui search selection compact dropdown" data-op="dropdown">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
-                    <div class="field text-center"><label>or</label></div>
+                    <div class="field text-center"><label>${this.intl('or')}</label></div>
                     <div class="field">
-                        <label>Create new template:</label>
-                        <input type="text" placeholder="Template name" data-op="input">
+                        <label>${this.intl('select_new')}:</label>
+                        <input type="text" placeholder="${this.intl('name')}" data-op="input">
                     </div>
                 </div>
                 <div class="ui two fluid buttons">
-                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
-                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">Save</button>
+                    <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="save">${this.intl('save')}</button>
                 </div>
             </div>
         `;
@@ -939,6 +973,10 @@ const TemplateSaveDialog = new (class extends Dialog {
 })();
 
 const ConfirmDialog = new (class extends Dialog {
+    _intl_key () {
+        return 'confirm';
+    }
+
     _createModal () {
         return `
             <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
@@ -947,8 +985,8 @@ const ConfirmDialog = new (class extends Dialog {
                     ...
                 </div>
                 <div class="ui three fluid buttons">
-                    <button class="ui black fluid button" data-op="cancel">Cancel</button>
-                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">Ok</button>
+                    <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">${this.intl('Ok')}</button>
                 </div>
             </div>
         `;
@@ -971,16 +1009,16 @@ const ConfirmDialog = new (class extends Dialog {
     _updateButton (delayLeft) {
         if (delayLeft > 0) {
             this.$okButton.addClass('disabled');
-            this.$okButton.text(`Wait ${delayLeft} seconds ...`);
+            this.$okButton.text(this.intl('wait_n_seconds').replace('%1', delayLeft));
         } else {
             this.$okButton.removeClass('disabled');
-            this.$okButton.text('Ok');
+            this.$okButton.text(this.intl('ok'));
         }
     }
 
     _unblockButton () {
         this.$okButton.removeClass('disabled');
-        this.$okButton.text('Ok');
+        this.$okButton.text(this.intl('ok'));
     }
 
     _blockButton () {
@@ -1021,13 +1059,25 @@ const ConfirmDialog = new (class extends Dialog {
 })();
 
 const Localization = new (class {
-    async _fetchTranslation (locale, noServer = false) {
+    async _fetchTranslation (locale) {
         if (Object.keys(this.locales()).includes(locale)) {
-            let file = await fetch(`${noServer ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json?v=${LOCALES_VERSION}`);
-            return await file.json();
+            let start = Date.now();
+
+            let file = await fetch(this._translationUrl(locale));
+            let data = await file.json();
+
+            Logger.log('IN_FTCH', `Found ${locale} in ${Date.now() - start} ms`);
+
+            return data;
         } else {
-            return null;
+            return {};
         }
+    }
+
+    _translationUrl (locale) {
+        let noServer = window.document.location.protocol === 'file:';
+
+        return `${noServer ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json?v=${LOCALES_VERSION}`;
     }
 
     _registerObserver () {
@@ -1050,10 +1100,13 @@ const Localization = new (class {
     async translatePage () {
         let locale = this.getLocale();
 
-        this.translation = await this._fetchTranslation(
-            locale,
-            window.document.location.protocol === 'file:'
-        )
+        this.translation = await this._fetchTranslation(locale);
+        if (locale !== 'en') {
+            let baseTranslation = await this._fetchTranslation('en');
+            this._verifyTranslation(this.translation, baseTranslation);
+
+            this.translation = Object.assign(baseTranslation, this.translation);
+        }
 
         this.translate();
         this._registerObserver();
@@ -1065,6 +1118,10 @@ const Localization = new (class {
 
         for (let i = 0; obj && i < pth.length; i++) {
             obj = obj[pth[i]];
+        }
+
+        if (!obj) {
+            Logger.log('IN_WARN', `Translation key ${key} not found!`);
         }
 
         return obj;
@@ -1110,7 +1167,7 @@ const Localization = new (class {
     }
 })();
 
-window.intl = Localization.findTranslation.bind(Localization);
+window.intl = (key) => Localization.findTranslation(key) || key;
 
 // Automatically open Terms and Conditions if not accepted yet
 window.addEventListener('load', async function () {

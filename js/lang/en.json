@@ -167,6 +167,89 @@
         "copy": "Copy",
         "none": "None"
     },
+    "dialog": {
+        "warning": {
+            "title": "An issue has occured!",
+            "continue": "Continue"
+        },
+        "error": {
+            "title": "A fatal error has occured!",
+            "notice#": "This error might have also been caused by your current profile.<br>Click the revert button below to revert back to default profile.",
+            "refresh": "Click here or refresh the page",
+            "revert": "Revert back to default profile"
+        },
+        "file_edit": {
+            "title": "Edit file",
+            "timestamp": "Timestamp",
+            "cancel": "Cancel",
+            "save": "Save"
+        },
+        "save_online_script": {
+            "title": "Import template",
+            "loader": "Preparing Files",
+            "author": "Author",
+            "created_updated": "Created/Updated",
+            "name": "Name",
+            "name_placeholder": "Template name",
+            "error": "The requested template is not available!",
+            "cancel": "Cancel",
+            "save": "Save"
+        },
+        "edit_file_tag": {
+            "title": "Edit tags",
+            "current": "Current tags",
+            "replacement": "Replacement tag",
+            "none": "None",
+            "cancel": "Cancel",
+            "save": "Save"
+        },
+        "profile_create": {
+            "title": "Create/Edit profile",
+            "id": "ID",
+            "name": "Name",
+            "slot": "Slot",
+            "index": "Index",
+            "operation": "Operation",
+            "equals": "Equals",
+            "above": "Above",
+            "below": "Below",
+            "between": "Between",
+            "value": "Value",
+            "secondary": "Secondary filter",
+            "cancel": "Cancel",
+            "save": "Save",
+            "default": "Default",
+            "profile": "Profile",
+            "none": "None",
+            "ast": {
+                "primary": "Primary AST expression",
+                "secondary": "Secondary AST expression",
+                "optional": "optional"
+            },
+            "player": {
+                "primary": "Primary filter configuration",
+                "secondary": "Secondary filter configuration"
+            },
+            "group": {
+                "primary": "Priamry group filter configuration",
+                "secondary": "Secondary group filter configuration"
+            }
+        },
+        "template_save": {
+            "title": "Save template",
+            "select_existing": "Select existing template",
+            "select_new": "Create new template",
+            "or": "or",
+            "name": "Template name",
+            "cancel": "Cancel",
+            "save": "Save"
+        },
+        "confirm": {
+            "cancel": "Cancel",
+            "ok": "Ok",
+            "wait_n_seconds": "Wait %1 seconds ..."
+        }
+    },
     "dungeon_enemies": {
         "shadow": "Shadow",
         "1": {
