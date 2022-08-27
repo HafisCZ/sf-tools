@@ -368,7 +368,7 @@ class Editor {
         this.fields['weapon2_rune'].$object.dropdown({
             values: [
                 {
-                    name: '<span data-intl="general.none"></span>',
+                    name: '<span data-intl="editor.none"></span>',
                     value: 0
                 },
                 {
