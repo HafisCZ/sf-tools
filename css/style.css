@@ -99,8 +99,9 @@ tr[data-tr-timestamp], tr[data-tr-mark] {
     height: 8.5em;
     text-align: center;
     padding: 0.5em;
-    padding-top: 1em;
     pointer-events: none;
+    display: flex;
+    flex-direction: column;
 }
 
 .checkbox-war label {
