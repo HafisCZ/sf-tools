@@ -247,17 +247,10 @@
             <a id="about" data-intl="index.toggle"></a>
         </div>
         <script>
-            const LOCALE_NAMES = {
-                'en': 'English',
-                'pt': 'Português',
-                'pl': 'Polski',
-                'it': 'Italiano'
-            };
-
-            $('.locale-picker').append($(`<div class="ui dropdown"><img src="res/flags/${Site.getLocale()}.svg"></div>`).dropdown({
+            $('.locale-picker').append($(`<div class="ui dropdown"><img src="res/flags/${Localization.getLocale()}.svg"></div>`).dropdown({
                 transition: 'none',
-                values: Site.locales().map(value => ({ name: `<div data-inverted="" data-tooltip="${LOCALE_NAMES[value]}" data-position="left center"><img src="res/flags/${value}.svg"></div>`, value })),
-                action: (text, value, element) => Site.setLocale(value)
+                values: Object.entries(Localization.locales()).map(([value, name]) => ({ name: `<div data-inverted="" data-tooltip="${name}" data-position="left center"><img src="res/flags/${value}.svg"></div>`, value })),
+                action: (text, value, element) => Localization.setLocale(value)
             }))
 
             const VERSION_MAJOR = 5;

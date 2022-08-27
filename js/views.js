@@ -1022,7 +1022,7 @@ const ConfirmDialog = new (class extends Dialog {
 
 const Localization = new (class {
     async _fetchTranslation (locale, noServer = false) {
-        if (Site.locales().includes(locale)) {
+        if (Object.keys(this.locales()).includes(locale)) {
             let file = await fetch(`${noServer ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json?v=${LOCALES_VERSION}`);
             return await file.json();
         } else {
@@ -1048,7 +1048,7 @@ const Localization = new (class {
     }
 
     async translatePage () {
-        let locale = Site.getLocale();
+        let locale = this.getLocale();
 
         this.translation = await this._fetchTranslation(
             locale,
@@ -1087,6 +1087,25 @@ const Localization = new (class {
         } else {
             node.innerText = val || key;
         }
+    }
+
+    locales () {
+        return {
+            'en': 'English',
+            'pt': 'Português',
+            'pl': 'Polski',
+            'it': 'Italiano'
+        };
+    }
+
+    getLocale () {
+        return SiteOptions.locale || 'en';
+    }
+
+    setLocale (locale) {
+        SiteOptions.locale = locale;
+
+        window.location.href = window.location.href;
     }
 })();
 
