@@ -38,7 +38,7 @@
             "desc": "Track progress of yourself and your guild"
         },
         "temp": {
-            "title": "Playground",
+            "title": "Statistics",
             "desc": "Create temporary instance of Statistics",
             "temporary": "Temporary"
         },
