@@ -1102,10 +1102,7 @@ const Localization = new (class {
 
         this.translation = await this._fetchTranslation(locale);
         if (locale !== 'en') {
-            let baseTranslation = await this._fetchTranslation('en');
-            this._verifyTranslation(this.translation, baseTranslation);
-
-            this.translation = Object.assign(baseTranslation, this.translation);
+            this.translation = Object.assign(await this._fetchTranslation('en'), this.translation);
         }
 
         this.translate();
