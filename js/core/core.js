@@ -2,7 +2,7 @@
 const MODULE_VERSION = 'v5.2250';
 const TABLE_VERSION = 'v10';
 const CORE_VERSION = 'v3.5';
-const LOCALES_VERSION = 'v3';
+const LOCALES_VERSION = 'v4';
 
 const Logger = new (class {
     constructor () {
