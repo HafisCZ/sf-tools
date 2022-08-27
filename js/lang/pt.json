@@ -1,0 +1,170 @@
+{
+    "general": {
+        "no": "Não",
+        "yes": "Sim",
+        "none": "Nenhuma",
+        "class1": "Guerreiro",
+        "class2": "Feiticeiro",
+        "class3": "Explorador",
+        "class4": "Assassino",
+        "class5": "Mago de Batalha",
+        "class6": "Guerreiro Nórdico",
+        "class7": "Caçador de Demónios",
+        "class8": "Druida",
+        "class9": "Bardo",
+        "mask1": "Urso",
+        "mask2": "Gato",
+        "instrument0": "Harpa",
+        "instrument1": "Alaúde",
+        "instrument2": "Flauta",
+        "strength": "Força",
+        "dexterity": "Reflexos",
+        "intelligence": "Inteligência",
+        "constitution": "Resistência",
+        "luck": "Sorte",
+        "life_potion": "Vida Eterna"
+    },
+    "index": {
+        "toggle": "Créditos",
+        "roles": {
+            "admin": "Alguém com muito tempo livre",
+            "helper": "Ajudantes - Pesquisa, Testing, Feedback, etc.",
+            "tester": "Testers",
+            "wiki": "Chefe Wiki Manager",
+            "translator": "Tradutores",
+            "mention": "Outras menções "
+        },
+        "stats": {
+            "title": "Estatísticas",
+            "desc": "Acompanha o teu progresso e da tua clã"
+        },
+        "temp": {
+            "title": "Playground",
+            "desc": "Cria uma instância temporária de Estatística",
+            "temporary": "Temporário"
+        },
+        "wiki": {
+            "title": "Wiki",
+            "desc": "Como fazer magia com tabelas e muito mais!"
+        },
+        "runes": {
+            "title": "Bónus de runas",
+            "desc": "Tabela de bónus de runas do Zorago"
+        },
+        "inventory": {
+            "title": "Inventório",
+            "desc": "Compara items, calcula upgrades & muito mais!"
+        },
+        "idle": {
+            "title": "Arena Manager",
+            "desc": "Acompanha a produção da tua Arena Manager"
+        },
+        "calendar": {
+            "title": "Calendário de Pets",
+            "desc": "Verifica quando e como podes encontrar pets"
+        },
+        "players": {
+            "title": "Simulador de Combate",
+            "desc": "Simula os resultados de um combate PvP"
+        },
+        "guild": {
+            "title": "Simulador da Clã",
+            "desc": "Simula os resultados de um combate de clã"
+        },
+        "pets": {
+            "title": "Simulador de Pets",
+            "desc": "Simula os resultados de um combate de pets"
+        },
+        "dungeons": {
+            "title": "Simulador de Masmorras",
+            "desc": "Simula os resultados de um combate nas masmorras"
+        },
+        "underworld": {
+            "title": "Submundo",
+            "desc": "Simula os resultados de um combate no submundo"
+        },
+        "fights": {
+            "title": "Ver Combates",
+            "desc": "Visualiza todos os combates que estão no arquivo"
+        },
+        "digest": {
+            "title": "Ver Combates nas Masmorras",
+            "desc": "Visualiza todos os combates nas masmorras que estão no arquivo"
+        },
+        "atts": {
+            "title": "Ouro & Experiência",
+            "desc": "Curvas & calculação"
+        },
+        "smith": {
+            "title": "Forja",
+            "desc": "Como funciona e quanto custa o melhoramento de atributos na forja"
+        },
+        "hydra": {
+            "title": "Simulador de Hidra",
+            "desc": "Simula qual a classe de pets é melhor contra a hidra."
+        }
+    },
+    "404": {
+        "title": "404",
+        "text": "Não tenho a certeza do que estás a procura mas não existe aqui :("
+    },
+    "dungeons": {
+        "simulate": "Simula",
+        "simulate_remaining": "Restantes",
+        "simulate_all": "Todos",
+        "player": "Jogador",
+        "enemy": "Inimigo",
+        "yourself": "Tu",
+        "bert": "Berto",
+        "mark": "Marco",
+        "kunigunde": "Segismundo",
+        "open": "Masmorras disponíveis",
+        "graph": {
+            "y": "HP do Boss Restante",
+            "x": "- Distribuição para o número de tentativas -"
+        },
+        "results": "Resultados",
+        "cheats": {
+            "title": "Cheat Menu",
+            "subtitle": "Seleciona quais os cheats para aplicar e importa a tua personagem",
+            "enable": "Permitir cheats",
+            "general": "Geral",
+            "enchantments": "Todos os encantamentos",
+            "runes": "Runas no valor máximo",
+            "pets": "Pets no nível máximo",
+            "potions": "Poções (máx 3)",
+            "class": "Mudar classe",
+            "keep_original": "Manter original"
+        }
+    },
+    "simulator": {
+        "paste_target#": "Clica aqui e pressiona <b>CTRL&nbsp;+&nbsp;V</b> para copiar para o simulador",
+        "threads": "Simulador threads. Mantém este número ABAIXO do teu processador core count!",
+        "iterations": "Quantidade de tentativas por thread.",
+        "save_image": "Salvar como imagem"
+    },
+    "editor": {
+        "name": "Nome",
+        "class": "Classe",
+        "level": "Nível",
+        "mask": "Máscara",
+        "instrument": "Instrumento",
+        "armor": "Armadura",
+        "min": "Mín",
+        "max": "Máx",
+        "weapon_enchant": "Crítico",
+        "rune": "Runa",
+        "portal_damage": "Danos - Bónus do Portal",
+        "portal_health": "Vida - Bónus do Portal",
+        "rune_health": "Bónus de Runas",
+        "block": "Bloquear %",
+        "fire": "Fogo",
+        "cold": "Frio",
+        "lightning": "Raios",
+        "gladiator": "Gladiador (0 - 15)",
+        "life_potion": "Poção de Vida Eterna",
+        "hand_enchant": "Sombra do Cowboy",
+        "smart_change": "Mudar de Classe",
+        "copy": "Copiar"
+    }
+}
