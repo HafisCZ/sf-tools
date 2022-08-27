@@ -23,6 +23,7 @@
     </head>
     <body>
         <img src="res/drvcs.png" style="position: fixed; left: 2em; bottom: 0em;" width="300"/>
+        <div class="ui fixed borderless huge menu css-menu" style="background-color: #141414; box-shadow: none; border: none;"></div>
         <div class="ui main container">
             <h1> SFTools </h1>
             <div class="ui one columns stackable grid" style="display: none; margin-top: 1.5em; margin-bottom: 3.5em;" id="sf-about">
@@ -233,9 +234,6 @@
                 </div>
             </div>
         </div>
-        <div class="locale-picker">
-
-        </div>
         <div class="footer">
             <div class="footer-repo">
 
@@ -251,12 +249,6 @@
             <a id="about" data-intl="index.toggle"></a>
         </div>
         <script>
-            $('.locale-picker').append($(`<div class="ui dropdown"><img src="res/flags/${Localization.getLocale()}.svg"></div>`).dropdown({
-                transition: 'none',
-                values: Object.entries(Localization.locales()).map(([value, name]) => ({ name: `<div data-inverted="" data-tooltip="${name}" data-position="left center"><img src="res/flags/${value}.svg"></div>`, value })),
-                action: (text, value, element) => Localization.setLocale(value)
-            }))
-
             const VERSION_MAJOR = 5;
 
             const months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];

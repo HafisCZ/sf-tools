@@ -1100,6 +1100,15 @@ const Localization = new (class {
     async translatePage () {
         let locale = this.getLocale();
 
+        let picker = $(`<div class="locale-picker"></div>`);
+        let dropdown = $(`<div class="ui dropdown"><img src="res/flags/${locale}.svg"></div>`).dropdown({
+            transition: 'none',
+            values: Object.entries(this.locales()).map(([value, name]) => ({ name: `<div data-inverted="" data-tooltip="${name}" data-position="left center"><img src="res/flags/${value}.svg"></div>`, value })),
+            action: (text, value, element) => this.setLocale(value)
+        }).appendTo(picker);
+
+        $('.css-menu').append(picker);
+
         this.translation = await this._fetchTranslation(locale);
         if (locale !== 'en') {
             this.translation = Object.assign(await this._fetchTranslation('en'), this.translation);
