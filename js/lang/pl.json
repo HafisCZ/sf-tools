@@ -62,10 +62,6 @@
             "title": "Kalendarz Pupili",
             "desc": "Sprawdź, kiedy możesz złapać pupile"
         },
-        "compare": {
-            "title": "Porównanie przedmiotów",
-            "desc": "Zobacz, co zmienia się po założeniu nowego przedmiotu"
-        },
         "players": {
             "title": "Symulator Walk",
             "desc": "Przesymuluj prawdopodobny wynik walki graczy"

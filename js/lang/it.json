@@ -62,10 +62,6 @@
             "title": "Calendario Famigli",
             "desc": "Controlla quando puoi catturare i famigli"
         },
-        "compare": {
-            "title": "Confronto Oggetti",
-            "desc": "Controlla cosa cambia indossando un  nuovo oggetto"
-        },
         "players": {
             "title": "Simulatore Scontro",
             "desc": "Simula il probabile esito di uno scontro PVP"

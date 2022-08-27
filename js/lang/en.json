@@ -62,10 +62,6 @@
             "title": "Pet Calendar",
             "desc": "Look at when you can catch pets"
         },
-        "compare": {
-            "title": "Item Comparison",
-            "desc": "Look at what changes if you equip the new item"
-        },
         "players": {
             "title": "Fight Simulator",
             "desc": "Simulate the probable outcome of a PvP battle"
