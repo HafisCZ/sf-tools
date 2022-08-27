@@ -2,7 +2,6 @@
     "general": {
         "no": "No",
         "yes": "Yes",
-        "none": "None",
         "class1": "Warrior",
         "class2": "Mage",
         "class3": "Scout",
@@ -169,6 +168,7 @@
         "life_potion": "Life Potion",
         "hand_enchant": "Shadow of the Cowboy",
         "smart_change": "Smart class change",
-        "copy": "Copy"
+        "copy": "Copy",
+        "none": "None"
     }
 }

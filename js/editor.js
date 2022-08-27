@@ -307,7 +307,7 @@ class Editor {
             preserveHTML: true,
             values: [
                 {
-                    name: '<span data-intl="general.none"></span>',
+                    name: '<span data-intl="editor.none"></span>',
                     value: 0
                 },
                 {
@@ -347,7 +347,7 @@ class Editor {
         this.fields['weapon1_rune'].$object.dropdown({
             values: [
                 {
-                    name: '<span data-intl="general.none"></span>',
+                    name: '<span data-intl="editor.none"></span>',
                     value: 0
                 },
                 {

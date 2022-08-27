@@ -2,7 +2,6 @@
     "general": {
         "no": "No",
         "yes": "Si",
-        "none": "Nessuno",
         "class1": "Guerriero",
         "class2": "Mago",
         "class3": "Esploratore",
@@ -169,6 +168,7 @@
         "life_potion": "Pozione della Vita",
         "hand_enchant": "Ombra del Cowboy",
         "smart_change": "Cambio classe intelligente",
-        "copy": "Copia"
+        "copy": "Copia",
+        "none": "Nessuno"
     }
 }

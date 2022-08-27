@@ -2,7 +2,6 @@
     "general": {
         "no": "No",
         "yes": "Yes",
-        "none": "None",
         "class1": "Wojownik",
         "class2": "Mag",
         "class3": "Zwiadowca",
@@ -169,6 +168,7 @@
         "life_potion": "Eliksir żywotności",
         "hand_enchant": "Cień Kowboja",
         "smart_change": "Sprytna Zmiana Klasy",
-        "copy": "Copy"
+        "copy": "Copy",
+        "none": "None"
     }
 }

@@ -2,7 +2,6 @@
     "general": {
         "no": "Não",
         "yes": "Sim",
-        "none": "Nenhuma",
         "class1": "Guerreiro",
         "class2": "Feiticeiro",
         "class3": "Explorador",
@@ -165,6 +164,7 @@
         "life_potion": "Poção de Vida Eterna",
         "hand_enchant": "Sombra do Cowboy",
         "smart_change": "Mudar de Classe",
-        "copy": "Copiar"
+        "copy": "Copiar",
+        "none": "Nenhuma"
     }
 }
