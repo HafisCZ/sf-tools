@@ -1149,7 +1149,8 @@ const Localization = new (class {
             'pt': 'Português',
             'pl': 'Polski',
             'it': 'Italiano',
-            'cs': 'Česky'
+            'cs': 'Česky',
+            'pg': 'Pig Latin'
         };
     }
 
