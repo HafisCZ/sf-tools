@@ -1023,7 +1023,7 @@ const ConfirmDialog = new (class extends Dialog {
 const Localization = new (class {
     async _fetchTranslation (locale, noServer = false) {
         if (Site.locales().includes(locale)) {
-            let file = await fetch(`${noServer ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json?v=${Site.localesVersion()}`);
+            let file = await fetch(`${noServer ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json?v=${LOCALES_VERSION}`);
             return await file.json();
         } else {
             return null;

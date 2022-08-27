@@ -181,10 +181,6 @@ const Site = new (class {
         return ['en', 'pt', 'pl', 'it'];
     }
 
-    localesVersion () {
-        return LOCALES_VERSION;
-    }
-
     getLocale () {
         return SiteOptions.locale || 'en';
     }
