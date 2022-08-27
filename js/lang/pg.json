@@ -167,6 +167,89 @@
         "copy": "Opycay",
         "none": "Onenay"
     },
+    "dialog": {
+        "warning": {
+            "title": "Anway issueway ashay occuredway!",
+            "continue": "Ontinuecay"
+        },
+        "error": {
+            "title": "Away atalfay errorway ashay occuredway!",
+            "notice#": "Isthay errorway ightmay avehay alsoway eenbay ausedcay ybay ouryay urrentcay ofilepray.<br>Ickclay ethay evertray uttonbay elowbay otay evertray ackbay otay efaultday ofilepray.",
+            "refresh": "Ickclay erehay orway efreshray ethay agepay",
+            "revert": "Evertray ackbay otay efaultday ofilepray"
+        },
+        "file_edit": {
+            "title": "Editway ilefay",
+            "timestamp": "Imestamptay",
+            "cancel": "Ancelcay",
+            "save": "Avesay"
+        },
+        "save_online_script": {
+            "title": "Importway emplatetay",
+            "loader": "Eparingpray Ilesfay",
+            "author": "Authorway",
+            "created_updated": "Eatedcray/Updatedway",
+            "name": "Amenay",
+            "name_placeholder": "Emplatetay amenay",
+            "error": "Ethay equestedray emplatetay isway otnay availableway!",
+            "cancel": "Ancelcay",
+            "save": "Avesay"
+        },
+        "edit_file_tag": {
+            "title": "Editway agstay",
+            "current": "Urrentcay agstay",
+            "replacement": "Eplacementray agtay",
+            "none": "Onenay",
+            "cancel": "Ancelcay",
+            "save": "Avesay"
+        },
+        "profile_create": {
+            "title": "Eatecray/Editway ofilepray",
+            "id": "IDWAY",
+            "name": "Amenay",
+            "slot": "Otslay",
+            "index": "Indexway",
+            "operation": "Operationway",
+            "equals": "Equalsway",
+            "above": "Aboveway",
+            "below": "Elowbay",
+            "between": "Etweenbay",
+            "value": "Aluevay",
+            "secondary": "Econdarysay ilterfay",
+            "cancel": "Ancelcay",
+            "save": "Avesay",
+            "default": "Efaultday",
+            "profile": "Ofilepray",
+            "none": "Onenay",
+            "ast": {
+                "primary": "Imarypray ASTWAY expressionway",
+                "secondary": "Econdarysay ASTWAY expressionway",
+                "optional": "optionalway"
+            },
+            "player": {
+                "primary": "Imarypray ilterfay onfigurationcay",
+                "secondary": "Econdarysay ilterfay onfigurationcay"
+            },
+            "group": {
+                "primary": "Iamrypray oupgray ilterfay onfigurationcay",
+                "secondary": "Econdarysay oupgray ilterfay onfigurationcay"
+            }
+        },
+        "template_save": {
+            "title": "Avesay emplatetay",
+            "select_existing": "Electsay existingway emplatetay",
+            "select_new": "Eatecray ewnay emplatetay",
+            "or": "orway",
+            "name": "Emplatetay amenay",
+            "cancel": "Ancelcay",
+            "save": "Avesay"
+        },
+        "confirm": {
+            "cancel": "Ancelcay",
+            "ok": "Okway",
+            "wait_n_seconds": "Aitway %1 econdssay ..."
+        }
+    },
     "dungeon_enemies": {
         "shadow": "Adowshay",
         "1": {
