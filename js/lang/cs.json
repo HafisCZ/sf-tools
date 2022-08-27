@@ -1,0 +1,170 @@
+{
+    "general": {
+        "no": "Ne",
+        "yes": "Ano",
+        "class1": "Válečník",
+        "class2": "Kouzelník",
+        "class3": "Průzkumník",
+        "class4": "Nájemný vrah",
+        "class5": "Bojový Mág",
+        "class6": "Berserk",
+        "class7": "Lovec démonů",
+        "class8": "Druid",
+        "class9": "Bard",
+        "mask1": "Medvěd",
+        "mask2": "Kočka",
+        "instrument0": "Harfa",
+        "instrument1": "Loutna",
+        "instrument2": "Flétna",
+        "strength": "Síla",
+        "dexterity": "Obratnost",
+        "intelligence": "Inteligence",
+        "constitution": "Výdrž",
+        "luck": "Štěstí",
+        "life_potion": "Lektvar nesmrtelnosti"
+    },
+    "index": {
+        "toggle": "Zobrazit autory",
+        "roles": {
+            "admin": "Někdo se spoustou volného času",
+            "helper": "Pomocníci - Výzkum, Testování, Feedback, atp.",
+            "tester": "Testeři",
+            "wiki": "Vedoucí Wiki",
+            "translator": "Překladači",
+            "mention": "Ostatní zmínky"
+        },
+        "stats": {
+            "title": "Statistiky",
+            "desc": "Sleduj vývoj sebe a svého cechu"
+        },
+        "temp": {
+            "title": "Statistiky",
+            "desc": "Vytvoř dočasnou instanci statistik",
+            "temporary": "Dočasné"
+        },
+        "wiki": {
+            "title": "Wiki",
+            "desc": "Jak čarovat s tabulkami a mnohem více"
+        },
+        "runes": {
+            "title": "Bonusy run",
+            "desc": "Tabulka bonusů run od Zorago"
+        },
+        "inventory": {
+            "title": "Manažer inventáře",
+            "desc": "Porovnej předměty, vypočti vylepšení a další"
+        },
+        "idle": {
+            "title": "Manažer arény",
+            "desc": "Vypočti produkci run"
+        },
+        "calendar": {
+            "title": "Kalendář mažlíčků",
+            "desc": "Zjisti kdy můžeš chytnout vybrané mazlíčky"
+        },
+        "players": {
+            "title": "Simulátor soubojů",
+            "desc": "Zjisti jakou máš šanci na poražení ostatních hráčů"
+        },
+        "guild": {
+            "title": "Simulátor cechovních soubojů",
+            "desc": "Zjisti jakou máš šanci na poražení ostatních cechů"
+        },
+        "pets": {
+            "title": "Simulátor mazlíčků",
+            "desc": "Zjisti jakou máš šanci na poražení podzemí mažlíčků"
+        },
+        "dungeons": {
+            "title": "Simulátor podzemí",
+            "desc": "Zjisti jakou máš šanci na poražení podzemí"
+        },
+        "underworld": {
+            "title": "Podsvětí",
+            "desc": "Zjisti jakou máš šanci na poražení hráčů ve svém podsvětí"
+        },
+        "fights": {
+            "title": "Prohlížeč soubojů",
+            "desc": "Zobraz všechny souboje v archivu"
+        },
+        "digest": {
+            "title": "Prohlížeč podzemí",
+            "desc": "Zobraz všechny souboje podzemí v archivu"
+        },
+        "atts": {
+            "title": "Zlato & Zkušenosti",
+            "desc": "Křivky & výpočty"
+        },
+        "smith": {
+            "title": "Vylepšení u kováře",
+            "desc": "Kolik vylepšení stojí a kolik materiálu ztratíš"
+        },
+        "hydra": {
+            "title": "Simulator hydry",
+            "desc": "Zjisti jaká třída cechovního mazlíčka je nejlepší pro tvou hydru."
+        }
+    },
+    "404": {
+        "title": "404",
+        "text": "Co hledáte neexistuje"
+    },
+    "dungeons": {
+        "simulate": "Simulovat",
+        "simulate_remaining": "Zbývající",
+        "simulate_all": "Všechny",
+        "player": "Hráč",
+        "enemy": "Nepřítel",
+        "yourself": "Ty",
+        "bert": "Bert",
+        "mark": "Marek",
+        "kunigunde": "Kunigunda",
+        "open": "Dostupná podzemí",
+        "graph": {
+            "y": "Zbývající HP nepřítele",
+            "x": "- Distribuce pro vybraný počet pokusů -"
+        },
+        "results": "Výsledky",
+        "cheats": {
+            "title": "Cheat Menu",
+            "subtitle": "Vyber které cheaty chceš aplikovat a načti svou postavu",
+            "enable": "Aktivovat cheaty",
+            "general": "Obecné",
+            "enchantments": "Všechna okouzlení",
+            "runes": "Maximální runy",
+            "pets": "Maximální mazlíčci",
+            "potions": "Lektvary (max 3)",
+            "class": "Zmenit třídu",
+            "keep_original": "Ponechat originální"
+        }
+    },
+    "simulator": {
+        "paste_target#": "Klikni zde a zmáčkni <b>CTRL&nbsp;+&nbsp;V</b> pro vložení dat do simulátoru",
+        "threads": "Vlákna simulátoru. Ponechej toto číslo POD tvým počtem jader procesoru!",
+        "iterations": "Počet iterací na vlákno.",
+        "save_image": "Uložit jako obrázek"
+    },
+    "editor": {
+        "name": "Jméno",
+        "class": "Třída",
+        "level": "Level",
+        "mask": "Maska",
+        "instrument": "Instrument",
+        "armor": "Brnění",
+        "min": "Min",
+        "max": "Max",
+        "weapon_enchant": "Krit",
+        "rune": "Runa",
+        "portal_damage": "Poškození z portálu",
+        "portal_health": "Život z portálu",
+        "rune_health": "Život z run",
+        "block": "Blok %",
+        "fire": "Oheň",
+        "cold": "Chlad",
+        "lightning": "Blesk",
+        "gladiator": "Gladiátor (0 - 15)",
+        "life_potion": "Lektvar nesmrtelnosti",
+        "hand_enchant": "Kovbojův stín",
+        "smart_change": "Chytrá změna třídy",
+        "copy": "Kopírovat",
+        "none": "Žádná"
+    }
+}

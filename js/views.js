@@ -1094,7 +1094,8 @@ const Localization = new (class {
             'en': 'English',
             'pt': 'Português',
             'pl': 'Polski',
-            'it': 'Italiano'
+            'it': 'Italiano',
+            'cs': 'Česky'
         };
     }
 
