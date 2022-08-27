@@ -1146,8 +1146,10 @@ const Localization = new (class {
     locales () {
         return {
             'en': 'English',
-            'pt': 'Português',
+            'de': 'Deutsch',
             'pl': 'Polski',
+            'pt': 'Português',
+            'ch': 'Schwyzerdüütsch',
             'it': 'Italiano',
             'cs': 'Česky',
             'pg': 'Pig Latin'
