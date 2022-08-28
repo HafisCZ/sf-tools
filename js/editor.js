@@ -240,6 +240,10 @@ class Editor {
         }
     }
 
+    intl (key) {
+        return intl(`editor.${key}`);
+    }
+
     _bind () {
         this.fields = {
             name: new Field('[data-path="Name"]', ''),
@@ -287,7 +291,7 @@ class Editor {
             preserveHTML: true,
             values: Object.keys(CLASS_MAP).map((e) => {
                 return {
-                    name: `<img class="ui centered image class-picture" src="res/class${e}.png"><span data-intl="general.class${e}"></span>`,
+                    name: `<img class="ui centered image class-picture" src="res/class${e}.png">${intl(`general.class${e}`)}`,
                     value: e
                 };
             })
@@ -307,15 +311,15 @@ class Editor {
             preserveHTML: true,
             values: [
                 {
-                    name: '<span data-intl="editor.none"></span>',
+                    name: this.intl('none'),
                     value: 0
                 },
                 {
-                    name: '<img class="ui centered image class-picture" src="res/mask1.png"><span data-intl="general.mask1"></span>',
+                    name: `<img class="ui centered image class-picture" src="res/mask1.png">${intl('general.mask1')}</span>`,
                     value: 1
                 },
                 {
-                    name: '<img class="ui centered image class-picture" src="res/mask2.png"><span data-intl="general.mask2"></span>',
+                    name: `<img class="ui centered image class-picture" src="res/mask2.png">${intl('general.mask2')}</span>`,
                     value: 2
                 }
             ]
@@ -325,7 +329,7 @@ class Editor {
             preserveHTML: true,
             values: INSTRUMENT_TYPES.map((name, index) => {
                 return {
-                    name: `<img class="ui centered image class-picture" src="res/instrument${index}.png"><span data-intl="general.instrument${index}"></span>`,
+                    name: `<img class="ui centered image class-picture" src="res/instrument${index}.png">${intl(`general.instrument${index}`)}`,
                     value: index
                 }
             })
@@ -334,11 +338,11 @@ class Editor {
         this.fields['potion_life'].$object.dropdown({
             values: [
                 {
-                    name: '<span data-intl="general.no"></span>',
+                    name: intl('general.no'),
                     value: 0
                 },
                 {
-                    name: '<span data-intl="general.yes"></span>',
+                    name: intl('general.yes'),
                     value: 25
                 }
             ]
@@ -347,19 +351,19 @@ class Editor {
         this.fields['weapon1_rune'].$object.dropdown({
             values: [
                 {
-                    name: '<span data-intl="editor.none"></span>',
+                    name: this.intl('none'),
                     value: 0
                 },
                 {
-                    name: '<span data-intl="editor.fire"></span>',
+                    name: this.intl('fire'),
                     value: 40
                 },
                 {
-                    name: '<span data-intl="editor.cold"></span>',
+                    name: this.intl('cold'),
                     value: 41
                 },
                 {
-                    name: '<span data-intl="editor.lightning"></span>',
+                    name: this.intl('lightning'),
                     value: 42
                 }
             ]
@@ -368,19 +372,19 @@ class Editor {
         this.fields['weapon2_rune'].$object.dropdown({
             values: [
                 {
-                    name: '<span data-intl="editor.none"></span>',
+                    name: this.intl('none'),
                     value: 0
                 },
                 {
-                    name: '<span data-intl="editor.fire"></span>',
+                    name: this.intl('fire'),
                     value: 40
                 },
                 {
-                    name: '<span data-intl="editor.cold"></span>',
+                    name: this.intl('cold'),
                     value: 41
                 },
                 {
-                    name: '<span data-intl="editor.lightning"></span>',
+                    name: this.intl('lightning'),
                     value: 42
                 }
             ]
@@ -389,11 +393,11 @@ class Editor {
         this.fields['enchantment'].$object.dropdown({
             values: [
                 {
-                    name: '<span data-intl="general.no"></span>',
+                    name: intl('general.no'),
                     value: false
                 },
                 {
-                    name: '<span data-intl="general.yes"></span>',
+                    name: intl('general.yes'),
                     value: true
                 }
             ]
@@ -402,11 +406,11 @@ class Editor {
         this.fields['weapon1_enchantment'].$object.dropdown({
             values: [
                 {
-                    name: '<span data-intl="general.no"></span>',
+                    name: intl('general.no'),
                     value: false
                 },
                 {
-                    name: '<span data-intl="general.yes"></span>',
+                    name: intl('general.yes'),
                     value: true
                 }
             ]
@@ -415,18 +419,18 @@ class Editor {
         this.fields['weapon2_enchantment'].$object.dropdown({
             values: [
                 {
-                    name: '<span data-intl="general.no"></span>',
+                    name: intl('general.no'),
                     value: false
                 },
                 {
-                    name: '<span data-intl="general.yes"></span>',
+                    name: intl('general.yes'),
                     value: true
                 }
             ]
         }).dropdown('set selected', 'false');
 
         // Copy
-        $('div.copy-current').click(() => copyText(JSON.stringify(this.read()))).attr('data-tooltip', intl('editor.copy'));
+        $('div.copy-current').click(() => copyText(JSON.stringify(this.read())));
 
         // Morph
         this.morph = new (class extends Field {
@@ -445,12 +449,12 @@ class Editor {
             action: 'hide',
             values: [
                 {
-                    name: '<span data-intl="editor.smart_change"></span>',
+                    name: this.intl('smart_change'),
                     disabled: true
                 },
                 ...Object.keys(CLASS_MAP).map((e) => {
                     return {
-                        name: `<img class="ui centered image class-picture" src="res/class${e}.png"><span data-intl="general.class${e}"></span>`,
+                        name: `<img class="ui centered image class-picture" src="res/class${e}.png">${intl(`general.class${e}`)}`,
                         value: e
                     };
                 })
@@ -514,7 +518,7 @@ class Editor {
         $parent.html(`
             <div class="bordered bone">
                 <div class="field">
-                    <label data-intl="editor.name"></label>
+                    <label>${this.intl('name')}</label>
                     <div class="ui icon right action input">
                         <input class="text-center" type="text" data-path="Name">
                         <input type="hidden" data-path="Prefix">
@@ -522,7 +526,7 @@ class Editor {
                             <div class="ui top right pointing dropdown button morph">
                                 <i class="exchange link icon"></i>
                             </div>
-                            <div class="ui button copy-current" data-position="right center">
+                            <div class="ui button copy-current" data-position="right center" data-tooltip="${this.intl('copy')}">
                                 <i class="outline copy link icon"></i>
                             </div>
                         </div>
@@ -530,50 +534,50 @@ class Editor {
                 </div>
                 <div class="two fields">
                     <div class="field">
-                        <label data-intl="editor.class"></label>
+                        <label>${this.intl('class')}</label>
                         <div class="ui search selection compact dropdown" data-path="Class">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
-                        <label data-intl="editor.mask"></label>
+                        <label>${this.intl('mask')}</label>
                         <div class="ui selection compact dropdown" data-path="Mask">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
-                        <label data-intl="editor.instrument"></label>
+                        <label>${this.intl('instrument')}</label>
                         <div class="ui selection compact dropdown" data-path="Instrument">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
-                        <label data-intl="editor.level"></label>
+                        <label>${this.intl('level')}</label>
                         <input class="text-center" type="text" data-path="Level" placeholder="1 - 700">
                     </div>
                 </div>
                 <div class="five fields">
                     <div class="field">
-                        <label data-intl="general.strength"></label>
+                        <label>${intl('general.strength')}</label>
                         <input class="text-center" type="text" data-path="Strength.Total">
                     </div>
                     <div class="field">
-                        <label data-intl="general.dexterity"></label>
+                        <label>${intl('general.dexterity')}</label>
                         <input class="text-center" type="text" data-path="Dexterity.Total">
                     </div>
                     <div class="field">
-                        <label data-intl="general.intelligence"></label>
+                        <label>${intl('general.intelligence')}</label>
                         <input class="text-center" type="text" data-path="Intelligence.Total">
                     </div>
                     <div class="field">
-                        <label data-intl="general.constitution"></label>
+                        <label>${intl('general.constitution')}</label>
                         <input class="text-center" type="text" data-path="Constitution.Total">
                     </div>
                     <div class="field">
-                        <label data-intl="general.luck"></label>
+                        <label>${intl('general.luck')}</label>
                         <input class="text-center" type="text" data-path="Luck.Total">
                     </div>
                 </div>
@@ -581,22 +585,22 @@ class Editor {
             <div class="bordered btwo">
                 <div class="five fields">
                     <div class="field">
-                        <label data-intl="editor.min"></label>
-                        <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin" placeholder="Item Min">
+                        <label>${this.intl('min')}</label>
+                        <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin" placeholder="${this.intl('min_placeholder')}">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.max"></label>
-                        <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax" placeholder="Item Max">
+                        <label>${this.intl('max')}</label>
+                        <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax" placeholder="${this.intl('max_placeholder')}">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.weapon_enchant"></label>
+                        <label>${this.intl('weapon_enchant')}</label>
                         <div class="ui selection compact dropdown" data-path="Items.Wpn1.HasEnchantment">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
-                        <label data-intl="editor.rune"></label>
+                        <label>${this.intl('rune')}</label>
                         <div class="ui selection compact dropdown" data-path="Items.Wpn1.AttributeTypes.2">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
@@ -611,22 +615,22 @@ class Editor {
             <div class="bordered bthree" data-optional="Weapon2">
                 <div class="five fields">
                     <div class="field">
-                        <label data-intl="editor.min"></label>
-                        <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin" placeholder="Item Min">
+                        <label>${this.intl('min')}</label>
+                        <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin" placeholder="${this.intl('min_placeholder')}">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.max"></label>
-                        <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax" placeholder="Item Max">
+                        <label>${this.intl('max')}</label>
+                        <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax" placeholder="${this.intl('max_placeholder')}">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.weapon_enchant"></label>
+                        <label>${this.intl('weapon_enchant')}</label>
                         <div class="ui selection compact dropdown" data-path="Items.Wpn2.HasEnchantment">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
                         </div>
                     </div>
                     <div class="field">
-                        <label data-intl="editor.rune"></label>
+                        <label>${this.intl('rune')}</label>
                         <div class="ui selection compact dropdown" data-path="Items.Wpn2.AttributeTypes.2">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
@@ -641,23 +645,23 @@ class Editor {
             <div class="bordered bfour">
                 <div class="four fields">
                     <div class="field">
-                        <label data-intl="editor.armor"></label>
-                        <input class="text-center" type="text" data-path="Armor" placeholder="Armor points">
+                        <label>${this.intl('armor')}</label>
+                        <input class="text-center" type="text" data-path="Armor" placeholder="${this.intl('armor_placeholder')}">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.block"></label>
+                        <label>${this.intl('block')}</label>
                         <input class="text-center" type="text" data-path="BlockChance" placeholder="0 - 25">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.fire"></label>
+                        <label>${this.intl('fire')}</label>
                         <input class="text-center" type="text" data-path="Runes.ResistanceFire" placeholder="0 - 75">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.cold"></label>
+                        <label>${this.intl('cold')}</label>
                         <input class="text-center" type="text" data-path="Runes.ResistanceCold" placeholder="0 - 75">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.lightning"></label>
+                        <label>${this.intl('lightning')}</label>
                         <input class="text-center" type="text" data-path="Runes.ResistanceLightning" placeholder="0 - 75">
                     </div>
                 </div>
@@ -665,15 +669,15 @@ class Editor {
             <div class="bordered bfive">
                 <div class="three fields">
                     <div class="field">
-                        <label data-intl="editor.portal_health"></label>
+                        <label>${this.intl('portal_health')}</label>
                         <input class="text-center" type="text" data-path="Dungeons.Player" placeholder="0 - 50">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.rune_health"></label>
+                        <label>${this.intl('rune_health')}</label>
                         <input class="text-center" type="text" data-path="Runes.Health" placeholder="0 - 15">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.life_potion"></label>
+                        <label>${this.intl('life_potion')}</label>
                         <div class="ui selection compact dropdown" data-path="Potions.Life">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
@@ -684,15 +688,15 @@ class Editor {
             <div class="bordered bsix">
                 <div class="three fields">
                     <div class="field">
-                        <label data-intl="editor.portal_damage"></label>
+                        <label>${this.intl('portal_damage')}</label>
                         <input class="text-center" type="text" data-path="Dungeons.Group" placeholder="0 - 50">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.gladiator"></label>
+                        <label>${this.intl('gladiator')}</label>
                         <input class="text-center" type="text" data-path="Fortress.Gladiator" placeholder="0 - 15">
                     </div>
                     <div class="field">
-                        <label data-intl="editor.hand_enchant"></label>
+                        <label>${this.intl('hand_enchant')}</label>
                         <div class="ui selection compact dropdown" data-path="Items.Hand.HasEnchantment">
                             <div class="text"></div>
                             <i class="dropdown icon"></i>
