@@ -387,7 +387,7 @@
                 }
 
                 $('#dungeon-list').dropdown({
-                    values: Object.entries(DUNGEON_DATA).map(([ id, dungeon ]) => {
+                    values: _sort_asc(Object.entries(DUNGEON_DATA), ([id, dungeon]) => dungeon.pos).map(([ id, dungeon ]) => {
                         return {
                             name: dungeon.shadow ? `<span style="text-shadow:0px 0px 8px #390074;">${dungeon.name}<span>` : dungeon.name,
                             value: id,
@@ -539,7 +539,8 @@
                     settingsChanged();
                 }
 
-                var DUNGEON_ARR_TO_DID = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 21 ];
+                const DUNGEON_ARR_TO_DID = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 21 ];
+
                 function getDungeonEnemyAt (dungeon, isShadow, enemyIndex) {
                     if (enemyIndex < 0) {
                         return null;
@@ -559,15 +560,22 @@
                     }
                 }
 
-                function getTwisterEnemyAt (enemyIndex) {
+                function getSpecialDungeonEnemyAt (dungeon, enemyIndex, soft = false) {
                     if (enemyIndex < 0) {
                         return null;
                     } else {
-                        let boss = Object.entries(DUNGEON_DATA['100'].floors).find(x => x[1].pos == enemyIndex);
+                        let floors = DUNGEON_DATA[dungeon].floors;
+                        let boss = null;
+                        if (soft) {
+                            boss = Object.entries(floors).find(x => x[1].pos == enemyIndex);
+                        } else {
+                            boss = Object.entries(floors)[enemyIndex];
+                        }
+
                         if (boss) {
                             return {
-                                id: 100,
-                                dungeon: DUNGEON_DATA['100'],
+                                id: dungeon,
+                                dungeon: DUNGEON_DATA[dungeon],
                                 boss: boss[1]
                             }
                         } else {
@@ -628,10 +636,10 @@
 
                                     availableBosses = [
                                         ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon - 2)),
-                                        getDungeonEnemyAt(15, false, player.Dungeons.Normal.Total < 90 ? -1 : tower),
-                                        getTwisterEnemyAt(twister - 1),
+                                        getSpecialDungeonEnemyAt(201, player.Dungeons.Normal.Total < 90 ? -1 : tower),
+                                        getSpecialDungeonEnemyAt(203, twister - 1, true),
                                         ... shadowDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], true, dungeon - 2)),
-                                        getDungeonEnemyAt(15, true, youtube - 2),
+                                        getSpecialDungeonEnemyAt(202, youtube - 2),
                                     ].filter(boss => boss);
 
                                     if (availableBosses.length) {
