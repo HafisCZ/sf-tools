@@ -24,21 +24,21 @@
         "life_potion": "Pozione della Vita Eterna"
     },
     "index": {
-        "toggle": "Toggle crediti",
+        "toggle": "Crediti",
         "roles": {
             "admin": "Qualcuno con molto tempo libero",
-            "helper": "Aiutanti - Ricerca, Test, Feedback, ecc.",
+            "helper": "Collaboratori - Ricerca, Test, Feedback, ecc.",
             "tester": "Tester",
             "wiki": "Amministratore wiki",
             "translator": "Traduttori",
-            "mention": "Altre menzioni"
+            "mention": "Menzioni speciali"
         },
         "stats": {
             "title": "Statistiche",
             "desc": "Traccia i progressi tuoi e della tua gilda"
         },
         "temp": {
-            "title": "Statistiche",
+            "title": "Playground",
             "desc": "Crea delle istanze temporanee del modulo Statistiche",
             "temporary": "Temporaneo"
         },
@@ -51,7 +51,7 @@
             "desc": "Tabella dei bonus delle rune (by Zorago)"
         },
         "inventory": {
-            "title": "Manager zaino",
+            "title": "Gestore zaino",
             "desc": "Confronta oggetti, calcola miglioramenti e altro"
         },
         "idle": {
@@ -83,24 +83,24 @@
             "desc": "Simula il probabile esito di uno scontro nel mondo sotterraneo"
         },
         "fights": {
-            "title": "Visualizzatore scontri",
-            "desc": "Mostra tutti gli scontri PVP salvati in un file archivio"
+            "title": "Visualizza scontri",
+            "desc": "Mostra tutti gli scontri PVP salvati in un file HAR"
         },
         "digest": {
-            "title": "Visualizzatore Boss",
-            "desc": "Mostra tutti gli scontri PVE salvati in un file archivio"
+            "title": "Visualizza Boss",
+            "desc": "Mostra tutti gli scontri PVE salvati in un file HAR"
         },
         "atts": {
             "title": "Oro & Esperienza",
-            "desc": "Grafici & Calcolatori"
+            "desc": "Grafici e calcolatori"
         },
         "smith": {
-            "title": "Miglioramenti Fabbro",
-            "desc": "Quanto costano e quante risorse si perdono"
+            "title": "Fabbro",
+            "desc": "Quanto costano i miglioramenti e quante risorse si perdono"
         },
         "hydra": {
             "title": "Simulatore Idra",
-            "desc": "Simula le battaglie con l'idra per trovare quale classe famiglio sia meglio"
+            "desc": "Simula le battaglie con l'idra per trovare la classe famiglio migliore"
         }
     },
     "404": {
@@ -111,7 +111,7 @@
         "simulate": "Simula",
         "simulate_remaining": "Restanti",
         "simulate_all": "Tutti",
-        "player": "Player",
+        "player": "Giocatore",
         "enemy": "Nemico",
         "yourself": "Tu",
         "bert": "Bertram",
@@ -119,16 +119,16 @@
         "kunigunde": "Cunegonda",
         "open": "Dungeon aperti",
         "graph": {
-            "y": "HP Boss restanti",
+            "y": "HP boss residui",
             "x": "- Distribuzione per l'ammontare dei tentativi selezionati -"
         },
         "results": "Risultati",
         "cheats": {
-            "title": "Menu Cheat",
+            "title": "Menu modificatori",
             "subtitle": "Seleziona quali modificatori applicare, poi effettua il polling del tuo personaggio",
             "enable": "Attiva modificatori",
             "general": "Generale",
-            "enchantments": "Tutti gli incantamenti",
+            "enchantments": "Tutti gli incantesimi",
             "runes": "Rune al massimo",
             "pets": "Famigli al massimo",
             "potions": "Pozioni (max 3)",
@@ -151,7 +151,7 @@
         "armor": "Armatura",
         "min": "Min",
         "max": "Max",
-        "weapon_enchant": "Crit",
+        "weapon_enchant": "Critico",
         "rune": "Runa",
         "portal_damage": "Bonus danni portale",
         "portal_health": "Bonus vita portale",
@@ -165,6 +165,6 @@
         "hand_enchant": "Ombra del Cowboy",
         "smart_change": "Cambio classe intelligente",
         "copy": "Copia",
-        "none": "Nessuno"
+        "none": "Nessuna"
     }
 }
