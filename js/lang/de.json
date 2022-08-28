@@ -40,7 +40,7 @@
         "temp": {
             "title": "Statistik",
             "desc": "Erstelle eine temporäre Version der Statistik",
-            "temporary": "Temporär"
+            "temporary": "Temporäre"
         },
         "wiki": {
             "title": "Wiki",
@@ -83,11 +83,11 @@
             "desc": "Simuliere den wahrscheinlichen Ausgang eines Unterweltkampfes"
         },
         "fights": {
-            "title": "Kampfbetrachter",
+            "title": "Kampf Betrachter",
             "desc": "Zeigt alle PvP-Kämpfe an die in einer Archivdatei gespeichert sind."
         },
         "digest": {
-            "title": "Bossbetrachter",
+            "title": "Boss Betrachter",
             "desc": "Zeigt alle PvE-Kämpfe an die in einer Archivdatei gespeichert sind."
         },
         "atts": {
@@ -140,7 +140,7 @@
         "paste_target#": "Clicke hier und drücke <b>STRG&nbsp;+&nbsp;V</b> um in den Simulator zu kopieren",
         "threads": "Simuliere threads. Schauen Sie das diese Nummer kleiner ist, als die Anzahl Prozessorkerne die Sie besitzen!",
         "iterations": "Anzahl Wiederholungen pro thread.",
-        "save_image": "Speichere als Bild"
+        "save_image": "Speichern als Bild"
     },
     "editor": {
         "name": "Name",
@@ -157,9 +157,9 @@
         "portal_health": "Portal Lebensenergie",
         "rune_health": "Runen Lebensenergie",
         "block": "Block %",
-        "fire": "Feuer",
-        "cold": "Eis",
-        "lightning": "Blitz",
+        "fire": "Feuer Rune",
+        "cold": "Eis Rune",
+        "lightning": "Blitz Rune",
         "gladiator": "Gladiator (0 - 15)",
         "life_potion": "Lebensenergie Trank",
         "hand_enchant": "Schatten des Cowboys",

@@ -5,8 +5,8 @@
         "class1": "Chriegr",
         "class2": "Magier",
         "class3": "Kundschaftr",
-        "class4": "Assassin",
-        "class5": "Kampfmagir",
+        "class4": "Assassine",
+        "class5": "Kampfmagier",
         "class6": "Berserkr",
         "class7": "Dämonejägr",
         "class8": "Druid",
@@ -26,7 +26,7 @@
     "index": {
         "toggle": "Credits umschaute",
         "roles": {
-            "admin": "Öpper mit viu Freizit",
+            "admin": "Öpper mit viu zviu Freizit",
             "helper": "Häufer - Rechersche, Teste, Feedback, etc.",
             "tester": "Testr",
             "wiki": "Chef Wiki Managr",
@@ -35,12 +35,12 @@
         },
         "stats": {
             "title": "Statistik",
-            "desc": "Vrvoug r Fortschritt vo dir u dinere Giude"
+            "desc": "Vrvoug dr Fortschritt vo dir u dinere Giude"
         },
         "temp": {
             "title": "Statistik",
             "desc": "Macht e temporäri Version vor Statistik",
-            "temporary": "Temporär"
+            "temporary": "Temporäri"
         },
         "wiki": {
             "title": "Wiki",
@@ -48,7 +48,7 @@
         },
         "runes": {
             "title": "Rune Boni",
-            "desc": "Zorago's Rune Boni Tabeue"
+            "desc": "Zorago's Rune Boni Tabäue"
         },
         "inventory": {
             "title": "Inventar Managr",
@@ -83,16 +83,16 @@
             "desc": "Simulier dr wahrschinlech Usgang vom ne Ungerwäutkampf"
         },
         "fights": {
-            "title": "Kampfbetrachtr",
+            "title": "Kampfaluege",
             "desc": "Zeigt aui PvP-Kämpf ah wo inere Archivdatei gspicheret si."
         },
         "digest": {
-            "title": "Bossbetrachtr",
+            "title": "Bossaluege",
             "desc": "Zeigt aui PvE-Kämpf ah wo inere Archivdatei gspicheret si."
         },
         "atts": {
             "title": "Gold & Erfahrig",
-            "desc": "Churve & Berächner"
+            "desc": "Churve & Berächnige"
         },
         "smith": {
             "title": "Schmid Upgrades",
@@ -137,17 +137,17 @@
         }
     },
     "simulator": {
-        "paste_target#": "Click hie u drück <b>STRG&nbsp;+&nbsp;V</b> um i de Simulator z'kopiere",
-        "threads": "Simulier threads. Lueg das die Zau chliner isch aus d'Ahzau a Prozessorkärn wo Sie bsitze!",
+        "paste_target#": "Click hie u drück <b>STRG&nbsp;+&nbsp;V</b> um hie ine z'kopiere",
+        "threads": "Simulier threads. Lueg das die Zau chliner isch aus d'Ahzau a Prozessorkärn wod hesch!",
         "iterations": "Ahzau Widrholige pro thread.",
         "save_image": "Spichere aus Biud"
     },
     "editor": {
         "name": "Name",
         "class": "Klass",
-        "level": "Level",
+        "level": "Levl",
         "mask": "Maske",
-        "instrument": "Instrument",
+        "instrument": "Instrumänt",
         "armor": "Rüstig",
         "min": "Min",
         "max": "Max",
@@ -157,14 +157,14 @@
         "portal_health": "Portau Läbensenergie",
         "rune_health": "Rune Läbensenergie",
         "block": "Block %",
-        "fire": "Füür",
-        "cold": "Iis",
-        "lightning": "Blitz",
+        "fire": "Füür Rune",
+        "cold": "Iis Rune",
+        "lightning": "Blitz Rune",
         "gladiator": "Gladiator (0 - 15)",
-        "life_potion": "Läbensenergie Trank",
+        "life_potion": "Gsöff vo ewigm Läbe",
         "hand_enchant": "Schatte vom Cowboy",
         "smart_change": "Klassewächsu",
         "copy": "Kopiere",
-        "none": "Nüt"
+        "none": "Keni"
     }
 }

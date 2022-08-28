@@ -66,41 +66,25 @@
         <script type="text/javascript">
             Site.ready(async function () {
                 let translationBase = await Localization._fetchTranslation('en');
-                let translationNew = null;
-
-                let table = $('#language-table');
-
-                function renderTranslation (value, ... parents) {
-                    if (_dig(translationNew, ... parents)) {
-                        return;
-                    }
-
-                    let row = $(`
-                        <tr>
-                            <td class="text-center">${parents.join('.')}</td>
-                            <td>${value}</td>
-                        </tr>
-                    `);
-
-                    table.append(row);
-                }
-
-                function renderObject (obj, ... parents) {
-                    for (let [key, value] of Object.entries(obj)) {
-                        if (typeof value === 'object') {
-                            renderObject(value, ... parents, key);
-                        } else {
-                            renderTranslation(value, ... parents, key);
-                        }
-                    }
-                }
 
                 async function setCurrentLanguage (key) {
-                    translationNew = await Localization._fetchTranslation(key);
+                    let translationNew = await Localization._fetchTranslation(key);
+                    let translationMss = '';
 
-                    table.empty();
+                    for (let [key, value] of Object.entries(translationBase)) {
+                        if (key in translationNew) {
+                            continue;
+                        } else {
+                            translationMss += `
+                                <tr>
+                                    <td class="text-center">${key}</td>
+                                    <td>${value}</td>
+                                </tr>
+                            `;
+                        }
+                    }
 
-                    renderObject(translationBase);
+                    $('#language-table').html(translationMss);
                 }
 
                 let languageSelector = $('#language-selector').dropdown({

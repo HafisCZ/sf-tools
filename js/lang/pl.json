@@ -1,7 +1,7 @@
 {
     "general": {
-        "no": "No",
-        "yes": "Yes",
+        "no": "Nie",
+        "yes": "Tak",
         "class1": "Wojownik",
         "class2": "Mag",
         "class3": "Zwiadowca",
@@ -30,7 +30,7 @@
             "helper": "Pomocnicy - Research, Testowanie, Opinie, itd.",
             "tester": "Testerzy",
             "wiki": "Główny Wiki Manager",
-            "translator": "Translators",
+            "translator": "Tłumacze",
             "mention": "Inne"
         },
         "stats": {
@@ -40,14 +40,14 @@
         "temp": {
             "title": "Statystyki",
             "desc": "Stwórz tymczasową instancje statystyk",
-            "temporary": "Temporary"
+            "temporary": "Tymczasowe"
         },
         "wiki": {
             "title": "Wiki",
             "desc": "Jak działać z tabelami i wiele więcej"
         },
         "runes": {
-            "title": "Bonusy Run",
+            "title": "Tabela Run",
             "desc": "Tabela run Zorago"
         },
         "inventory": {
@@ -55,7 +55,7 @@
             "desc": "Porównaj przedmioty, obliczaj ulepszenia & inne"
         },
         "idle": {
-            "title": "Arena Manager",
+            "title": "Manager Areny",
             "desc": "Sprawdź produkcję swojego Managera Areny"
         },
         "calendar": {
@@ -133,20 +133,20 @@
             "pets": "Maksymakne pety",
             "potions": "Eliksiry (max 3)",
             "class": "Zmiana klasy",
-            "keep_original": "Zatrzymaj pierwotną"
+            "keep_original": "Zachowaj pierwotną"
         }
     },
     "simulator": {
-        "paste_target#": "Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator",
-        "threads": "Simulator threads. Keep this number BELOW your processor core count!",
-        "iterations": "Amount of iterations per thread.",
-        "save_image": "Save as image"
+        "paste_target#": "Kliknij tutaj i wcisnij <b>CTRL&nbsp;+&nbsp;V</b>, aby wkleić do symulatora",
+        "threads": "Wątki symulacjii. Utrzymaj liczbę PONIŻEJ ilości rdzeni procesora!",
+        "iterations": "Liczba iteracji na wątek.",
+        "save_image": "Zapisz jako obraz"
     },
     "editor": {
         "name": "Nazwa",
         "class": "Klasa",
         "level": "Level",
-        "mask": "Masja",
+        "mask": "Maska",
         "instrument": "Instrument",
         "armor": "Pancerz",
         "min": "Min",
@@ -164,11 +164,11 @@
         "life_potion": "Eliksir żywotności",
         "hand_enchant": "Cień Kowboja",
         "smart_change": "Sprytna Zmiana Klasy",
-        "copy": "Copy",
-        "none": "None"
+        "copy": "Kopiuj",
+        "none": "Brak"
     },
     "dungeon_enemies": {
-        "shadow": "Shadow",
+        "shadow": "Mrok",
         "1": {
             "name": "Zbezczeszczone Katakumby",
             "1": "Zjawa",
@@ -456,7 +456,7 @@
             "10": "Fenomenalny Fidget"
         },
         "201": {
-            "namename": "Wieża",
+            "name": "Wieża",
             "1": "Człowiek-piernik",
             "2": "Zielony Dzwoneczek",
             "3": "Ołowiany Weteran",

@@ -178,559 +178,561 @@
         </div>
 
         <script type="text/javascript">
-            let simulatorMode = 'players_all';
+            Site.ready(function () {
+                let simulatorMode = 'players_all';
 
-            let editor = new Editor($('#sim-editor'));
-            var selected = -1;
-            var yourself = -1;
+                let editor = new Editor($('#sim-editor'));
+                var selected = -1;
+                var yourself = -1;
 
-            var players = [];
-            var iterator = 0;
+                var players = [];
+                var iterator = 0;
 
-            let ihofMode = false;
-            $('#ihof-mode').captiveToggleButton('player_sim/ihof', active => {
-                ihofMode = active;
-                showPlayers();
-            })
+                let ihofMode = false;
+                $('#ihof-mode').captiveToggleButton('player_sim/ihof', active => {
+                    ihofMode = active;
+                    showPlayers();
+                })
 
-            let gladiatorMode = false;
-            $('#gladiator-mode').captiveToggleButton('player_sim/gladiator', active => {
-                gladiatorMode = active;
-            })
+                let gladiatorMode = false;
+                $('#gladiator-mode').captiveToggleButton('player_sim/gladiator', active => {
+                    gladiatorMode = active;
+                })
 
-            var modeDump = window.location.href.includes('log');
+                var modeDump = window.location.href.includes('log');
 
-            let pasteMode = false;
-            $('#paste-mode').toggleButton(active => pasteMode = active);
+                let pasteMode = false;
+                $('#paste-mode').toggleButton(active => pasteMode = active);
 
-            $('#save-screenshot').click(function () {
-                let $target = $('.screenshot-target');
-                let $hiddenRows = $('.screenshot-target .row').slice(0, 2);
+                $('#save-screenshot').click(function () {
+                    let $target = $('.screenshot-target');
+                    let $hiddenRows = $('.screenshot-target .row').slice(0, 2);
 
-                $hiddenRows.hide();
-                $target.css('margin-right', '-2rem').css('padding-right', '1rem');
+                    $hiddenRows.hide();
+                    $target.css('margin-right', '-2rem').css('padding-right', '1rem');
 
-                html2canvas($target.get(0), {
-                    logging: false,
-                    ignoreElements: element => element.tagName == 'I' || element.id == 'save-screenshot',
-                    onclone: doc => {
-                        $hiddenRows.show();
-                        $target.css('margin-right', '').css('padding-right', '');
+                    html2canvas($target.get(0), {
+                        logging: false,
+                        ignoreElements: element => element.tagName == 'I' || element.id == 'save-screenshot',
+                        onclone: doc => {
+                            $hiddenRows.show();
+                            $target.css('margin-right', '').css('padding-right', '');
 
-                        $(doc).find('.selected').removeClass('selected');
-                    }
-                }).then(canvas => {
-                    canvas.toBlob(blob => {
-                        window.download(`simulator_${Date.now()}.png`, blob);
+                            $(doc).find('.selected').removeClass('selected');
+                        }
+                    }).then(canvas => {
+                        canvas.toBlob(blob => {
+                            window.download(`simulator_${Date.now()}.png`, blob);
+                        });
                     });
                 });
-            });
 
-            $('#sim-mode').dropdown({
-                values: [
-                    {
-                        name: 'All vs All',
-                        value: 'all'
-                    },
-                    {
-                        name: 'One vs All',
-                        value: 'attack'
-                    },
-                    {
-                        name: 'All vs One',
-                        value: 'defend'
-                    },
-                    {
-                        name: 'Tournament',
-                        value: 'tournament'
-                    }
-                ]
-            }).dropdown('setting', 'onChange', (value, text) => {
-                if ((simulatorMode != 'attack' && simulatorMode != 'defend') || (value != 'attack' && value != 'defend')) {
-                    yourself = -1;
-                }
-
-                simulatorMode = value;
-
-                for (var p of players) {
-                    p.score = null;
-                }
-
-                clearSort();
-            }).dropdown('set selected', 'all')
-
-            $('#sim-editor input').on('paste', function (event) {
-                event.stopPropagation();
-            });
-
-            // Paste handler
-            $(document.body).on('paste', function (event) {
-                try {
-                    let pasteData = event.originalEvent.clipboardData.getData('text');
-                    let pasteJson = JSON.parse(pasteData);
-
-                    handlePaste(pasteJson);
-                } catch (e) {
-                    console.info(e);
-                }
-            }).on('dragover dragenter', function (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }).on('drop', async function (event) {
-                // Handle drag & drop in case we want to paste data via preset file
-                let contentType = _dig(event, 'originalEvent', 'dataTransfer', 'files', 0, 'type');
-                if (contentType == 'text/plain' || contentType == '') {
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    try {
-                        let pasteData = await event.originalEvent.dataTransfer.files[0].text();
-                        let pasteJson = JSON.parse(pasteData);
-                        let pasteImpl = contentType == 'text/plain' ? pasteJson : DatabaseManager._import_har(pasteJson).players;
-
-                        handlePaste(pasteImpl);
-                    } catch (e) {
-                        console.info(e);
-                    }
-                }
-            });
-
-            // Paste handler
-            function preparePlayerData (data) {
-                let object = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
-
-                SFItem.forceCorrectRune(object.Items.Wpn1);
-                SFItem.forceCorrectRune(object.Items.Wpn2);
-
-                if (object.Class == 1 && typeof object.BlockChance == 'undefined') {
-                    object.BlockChance = object.Items.Wpn2.DamageMin;
-                }
-
-                if (object.Class != 4) {
-                    object.Items.Wpn2 = SFItem.empty();
-                }
-
-                return object;
-            }
-
-            function handlePaste (data) {
-                if (Array.isArray(data)) {
-                    if (pasteMode == false) {
-                        players = [];
-
-                        iterator = 0;
-                        selected = -1;
-                        yourself = -1;
-
-                        editor.clear();
-                    }
-
-                    for (let entry of data) {
-                        players.push({
-                            player: mergeSoft(new SFPlayer(), preparePlayerData(entry)),
-                            score: null,
-                            index: iterator++
-                        })
-                    }
-
-                    showPlayers();
-                } else if (data.Class || data.save) {
-                    editor.fill(preparePlayerData(data));
-                }
-            }
-
-            $('#sim-threads').captiveInputField('player_sim/threads', 4, v => !isNaN(v) && v >= 1);
-            $('#sim-iterations').captiveInputField('player_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
-
-            function buildSimulatorLadder (array) {
-                return new Promise(async (resolve, reject) => {
-                    Toast.info('Preparing ladder', `<b>Players:</b> ${array.length}`);
-
-                    let worker = await createSimulatorWorker('players');
-
-                    worker.addEventListener('message', function (message) {
-                        if (message.data.command == 'finished') {
-                            resolve(message.data.results);
+                $('#sim-mode').dropdown({
+                    values: [
+                        {
+                            name: 'All vs All',
+                            value: 'all'
+                        },
+                        {
+                            name: 'One vs All',
+                            value: 'attack'
+                        },
+                        {
+                            name: 'All vs One',
+                            value: 'defend'
+                        },
+                        {
+                            name: 'Tournament',
+                            value: 'tournament'
                         }
-                    }, false);
+                    ]
+                }).dropdown('setting', 'onChange', (value, text) => {
+                    if ((simulatorMode != 'attack' && simulatorMode != 'defend') || (value != 'attack' && value != 'defend')) {
+                        yourself = -1;
+                    }
 
-                    worker.postMessage({
-                        mode: 'all',
-                        player: array,
-                        players: array,
-                        iterations: 100
-                    });
-                }).then((list) => {
-                    _sort_asc(list, p => p.score.avg);
-                    for (let p of list) {
+                    simulatorMode = value;
+
+                    for (var p of players) {
                         p.score = null;
                     }
 
-                    return list;
+                    clearSort();
+                }).dropdown('set selected', 'all')
+
+                $('#sim-editor input').on('paste', function (event) {
+                    event.stopPropagation();
                 });
-            }
 
-            function canSimulate () {
-                return players.length > 1 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
-            }
+                // Paste handler
+                $(document.body).on('paste', function (event) {
+                    try {
+                        let pasteData = event.originalEvent.clipboardData.getData('text');
+                        let pasteJson = JSON.parse(pasteData);
 
-            // Run simulation
-            $('#simulate').click(async function () {
-                if (canSimulate()) {
-                    for (var i = 0; i < players.length; i++) {
-                        players[i].score = null;
-                        players[i].player.ForceGladiator = gladiatorMode ? 15 : undefined;
-                        players[i].player.NoGladiatorReduction = ihofMode;
+                        handlePaste(pasteJson);
+                    } catch (e) {
+                        console.info(e);
                     }
+                }).on('dragover dragenter', function (event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }).on('drop', async function (event) {
+                    // Handle drag & drop in case we want to paste data via preset file
+                    let contentType = _dig(event, 'originalEvent', 'dataTransfer', 'files', 0, 'type');
+                    if (contentType == 'text/plain' || contentType == '') {
+                        event.preventDefault();
+                        event.stopPropagation();
 
-                    showPlayers();
-                    Loader.toggle(true);
+                        try {
+                            let pasteData = await event.originalEvent.dataTransfer.files[0].text();
+                            let pasteJson = JSON.parse(pasteData);
+                            let pasteImpl = contentType == 'text/plain' ? pasteJson : DatabaseManager._import_har(pasteJson).players;
 
-                    let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
-                    let blockSize = Math.ceil(players.length / blocks);
-                    let iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
-
-                    var results = [];
-                    var ladder = [];
-                    var logs = [];
-
-                    if (simulatorMode == 'tournament') {
-                        ladder = await buildSimulatorLadder([ ...players ]);
-                    }
-
-                    Toast.info('Starting simulation', `<b>Block size:</b> ${blockSize}<br/><b>Iterations:</b> ${iterations}<br/><b>Thread cnt:</b> ${blocks}`)
-
-                    let blocksFinished = 0;
-                    for (var i = 0; i < players.length; i += blockSize) {
-                        var block = players.slice(i, i + blockSize);
-                        var worker = await createSimulatorWorker('players');
-
-                        worker.addEventListener('message', function (message) {
-                            if (message.data.command == 'finished') {
-                                results.push(... message.data.results);
-
-                                if (modeDump) {
-                                    logs.push(... message.data.logs);
-                                }
-
-                                Toast.info(`Simulation thread ${blocksFinished += 1} / ${blocks} finished`, `<b>Time:</b> ${message.data.time / 1000} seconds`)
-
-                                if (results.length == players.length) {
-                                    Loader.toggle(false);
-
-                                    players = results;
-                                    setSort('avg', 0);
-
-                                    if (modeDump) {
-                                        download('logs.json', new Blob([ JSON.stringify(logs) ], {
-                                            type: 'application/json'
-                                        }));
-                                    }
-                                }
-                            }
-                        }, false);
-
-                        if (simulatorMode == 'all') {
-                            worker.postMessage({
-                                mode: 'all',
-                                player: block,
-                                players: players,
-                                iterations: iterations,
-                                dev: modeDump
-                            });
-                        } else if (simulatorMode == 'attack') {
-                            worker.postMessage({
-                                mode: 'attack',
-                                player: players.find(p => p.index == yourself),
-                                players: block,
-                                iterations: iterations,
-                                dev: modeDump
-                            });
-                        } else if (simulatorMode == 'defend') {
-                            worker.postMessage({
-                                mode: 'defend',
-                                player: players.find(p => p.index == yourself),
-                                players: block,
-                                iterations: iterations,
-                                dev: modeDump
-                            });
-                        } else if (simulatorMode == 'tournament') {
-                            worker.postMessage({
-                                mode: 'tournament',
-                                player: block,
-                                players: ladder,
-                                iterations: iterations,
-                                dev: modeDump
-                            });
+                            handlePaste(pasteImpl);
+                        } catch (e) {
+                            console.info(e);
                         }
                     }
-                }
-            });
-
-            function addPlayer () {
-                let player = editor.read();
-                if (player.Name == '') {
-                   player.Name = `Player ${ players.length + 1 }`;
-                }
-
-                selected = iterator++;
-                players.unshift({
-                   player: player,
-                   score: null,
-                   index: selected
                 });
 
-                editor.clear();
+                // Paste handler
+                function preparePlayerData (data) {
+                    let object = data.Class ? data : (data.own ? new SFOwnPlayer(data) : new SFOtherPlayer(data));
 
-                showPlayers();
-            }
+                    SFItem.forceCorrectRune(object.Items.Wpn1);
+                    SFItem.forceCorrectRune(object.Items.Wpn2);
 
-            function insertPlayer (player) {
-                players.unshift({
-                    player: player,
-                    score: null,
-                    index: selected = iterator++
-                })
+                    if (object.Class == 1 && typeof object.BlockChance == 'undefined') {
+                        object.BlockChance = object.Items.Wpn2.DamageMin;
+                    }
 
-                editor.clear();
+                    if (object.Class != 4) {
+                        object.Items.Wpn2 = SFItem.empty();
+                    }
 
-                showPlayers();
-            }
+                    return object;
+                }
 
-            $('#save-player').click(function () {
-                if (editor.valid()) {
-                    if (selected != -1) {
-                        var index = players.findIndex(p => p.index == selected);
-                        if (index != -1) {
-                            players[index].player = editor.read();
-                            players[index].score = null;
+                function handlePaste (data) {
+                    if (Array.isArray(data)) {
+                        if (pasteMode == false) {
+                            players = [];
+
+                            iterator = 0;
+                            selected = -1;
+                            yourself = -1;
+
+                            editor.clear();
+                        }
+
+                        for (let entry of data) {
+                            players.push({
+                                player: mergeSoft(new SFPlayer(), preparePlayerData(entry)),
+                                score: null,
+                                index: iterator++
+                            })
                         }
 
                         showPlayers();
-                    } else {
+                    } else if (data.Class || data.save) {
+                        editor.fill(preparePlayerData(data));
+                    }
+                }
+
+                $('#sim-threads').captiveInputField('player_sim/threads', 4, v => !isNaN(v) && v >= 1);
+                $('#sim-iterations').captiveInputField('player_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
+
+                function buildSimulatorLadder (array) {
+                    return new Promise(async (resolve, reject) => {
+                        Toast.info('Preparing ladder', `<b>Players:</b> ${array.length}`);
+
+                        let worker = await createSimulatorWorker('players');
+
+                        worker.addEventListener('message', function (message) {
+                            if (message.data.command == 'finished') {
+                                resolve(message.data.results);
+                            }
+                        }, false);
+
+                        worker.postMessage({
+                            mode: 'all',
+                            player: array,
+                            players: array,
+                            iterations: 100
+                        });
+                    }).then((list) => {
+                        _sort_asc(list, p => p.score.avg);
+                        for (let p of list) {
+                            p.score = null;
+                        }
+
+                        return list;
+                    });
+                }
+
+                function canSimulate () {
+                    return players.length > 1 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
+                }
+
+                // Run simulation
+                $('#simulate').click(async function () {
+                    if (canSimulate()) {
+                        for (var i = 0; i < players.length; i++) {
+                            players[i].score = null;
+                            players[i].player.ForceGladiator = gladiatorMode ? 15 : undefined;
+                            players[i].player.NoGladiatorReduction = ihofMode;
+                        }
+
+                        showPlayers();
+                        Loader.toggle(true);
+
+                        let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
+                        let blockSize = Math.ceil(players.length / blocks);
+                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
+
+                        var results = [];
+                        var ladder = [];
+                        var logs = [];
+
+                        if (simulatorMode == 'tournament') {
+                            ladder = await buildSimulatorLadder([ ...players ]);
+                        }
+
+                        Toast.info('Starting simulation', `<b>Block size:</b> ${blockSize}<br/><b>Iterations:</b> ${iterations}<br/><b>Thread cnt:</b> ${blocks}`)
+
+                        let blocksFinished = 0;
+                        for (var i = 0; i < players.length; i += blockSize) {
+                            var block = players.slice(i, i + blockSize);
+                            var worker = await createSimulatorWorker('players');
+
+                            worker.addEventListener('message', function (message) {
+                                if (message.data.command == 'finished') {
+                                    results.push(... message.data.results);
+
+                                    if (modeDump) {
+                                        logs.push(... message.data.logs);
+                                    }
+
+                                    Toast.info(`Simulation thread ${blocksFinished += 1} / ${blocks} finished`, `<b>Time:</b> ${message.data.time / 1000} seconds`)
+
+                                    if (results.length == players.length) {
+                                        Loader.toggle(false);
+
+                                        players = results;
+                                        setSort('avg', 0);
+
+                                        if (modeDump) {
+                                            download('logs.json', new Blob([ JSON.stringify(logs) ], {
+                                                type: 'application/json'
+                                            }));
+                                        }
+                                    }
+                                }
+                            }, false);
+
+                            if (simulatorMode == 'all') {
+                                worker.postMessage({
+                                    mode: 'all',
+                                    player: block,
+                                    players: players,
+                                    iterations: iterations,
+                                    dev: modeDump
+                                });
+                            } else if (simulatorMode == 'attack') {
+                                worker.postMessage({
+                                    mode: 'attack',
+                                    player: players.find(p => p.index == yourself),
+                                    players: block,
+                                    iterations: iterations,
+                                    dev: modeDump
+                                });
+                            } else if (simulatorMode == 'defend') {
+                                worker.postMessage({
+                                    mode: 'defend',
+                                    player: players.find(p => p.index == yourself),
+                                    players: block,
+                                    iterations: iterations,
+                                    dev: modeDump
+                                });
+                            } else if (simulatorMode == 'tournament') {
+                                worker.postMessage({
+                                    mode: 'tournament',
+                                    player: block,
+                                    players: ladder,
+                                    iterations: iterations,
+                                    dev: modeDump
+                                });
+                            }
+                        }
+                    }
+                });
+
+                function addPlayer () {
+                    let player = editor.read();
+                    if (player.Name == '') {
+                       player.Name = `Player ${ players.length + 1 }`;
+                    }
+
+                    selected = iterator++;
+                    players.unshift({
+                       player: player,
+                       score: null,
+                       index: selected
+                    });
+
+                    editor.clear();
+
+                    showPlayers();
+                }
+
+                function insertPlayer (player) {
+                    players.unshift({
+                        player: player,
+                        score: null,
+                        index: selected = iterator++
+                    })
+
+                    editor.clear();
+
+                    showPlayers();
+                }
+
+                $('#save-player').click(function () {
+                    if (editor.valid()) {
+                        if (selected != -1) {
+                            var index = players.findIndex(p => p.index == selected);
+                            if (index != -1) {
+                                players[index].player = editor.read();
+                                players[index].score = null;
+                            }
+
+                            showPlayers();
+                        } else {
+                            addPlayer();
+                        }
+                    }
+                });
+
+                $('#copy-all').click(function () {
+                    copyText(JSON.stringify(players.map(p => {
+                        let m = toSimulatorModel(p.player);
+                        if (p.player.Class == 1 && typeof p.player.BlockChance != 'undefined') {
+                            m.BlockChance = p.player.BlockChance;
+                        }
+
+                        return m;
+                    })));
+                });
+
+                $('#add-player').click(function () {
+                    if (editor.valid()) {
                         addPlayer();
                     }
-                }
-            });
+                });
 
-            $('#copy-all').click(function () {
-                copyText(JSON.stringify(players.map(p => {
-                    let m = toSimulatorModel(p.player);
-                    if (p.player.Class == 1 && typeof p.player.BlockChance != 'undefined') {
-                        m.BlockChance = p.player.BlockChance;
-                    }
+                var sort = '';
+                var order = 0;
 
-                    return m;
-                })));
-            });
+                $('[data-sort]').click(function () {
+                    setSort($(this).attr('data-sort'));
+                });
 
-            $('#add-player').click(function () {
-                if (editor.valid()) {
-                    addPlayer();
-                }
-            });
-
-            var sort = '';
-            var order = 0;
-
-            $('[data-sort]').click(function () {
-                setSort($(this).attr('data-sort'));
-            });
-
-            function setSort (key, ord) {
-                if (ord == undefined) {
-                    if (sort == key) {
-                        order = (order + 1) % 2;
+                function setSort (key, ord) {
+                    if (ord == undefined) {
+                        if (sort == key) {
+                            order = (order + 1) % 2;
+                        } else {
+                            sort = key;
+                            order = 0;
+                        }
                     } else {
                         sort = key;
-                        order = 0;
+                        order = ord;
                     }
-                } else {
-                    sort = key;
-                    order = ord;
+
+                    showPlayers();
                 }
 
-                showPlayers();
-            }
+                function clearSort () {
+                    sort = '';
+                    order = 0;
 
-            function clearSort () {
-                sort = '';
-                order = 0;
-
-                showPlayers();
-            }
-
-            function showPlayers () {
-                if (order == 0) {
-                    if (sort == 'class') {
-                        players.sort((a, b) => a.player.Class - b.player.Class);
-                    } else if (sort == 'level') {
-                        players.sort((a, b) => b.player.Level - a.player.Level);
-                    } else if (sort == 'name') {
-                        players.sort((a, b) => a.player.Name.localeCompare(b.player.Name));
-                    } else if (sort == 'avg') {
-                        players.sort((a, b) => b.score && a.score && (b.score.avg - a.score.avg));
-                    } else if (sort == 'min') {
-                        players.sort((a, b) => b.score && a.score && (b.score.min - a.score.min));
-                    } else if (sort == 'max') {
-                        players.sort((a, b) => b.score && a.score && (b.score.max - a.score.max));
-                    }
-                } else {
-                    if (sort == 'class') {
-                        players.sort((b, a) => a.player.Class - b.player.Class);
-                    } else if (sort == 'level') {
-                        players.sort((b, a) => b.player.Level - a.player.Level);
-                    } else if (sort == 'name') {
-                        players.sort((b, a) => a.player.Name.localeCompare(b.player.Name));
-                    } else if (sort == 'avg') {
-                        players.sort((b, a) => b.score && a.score && (b.score.avg - a.score.avg));
-                    } else if (sort == 'min') {
-                        players.sort((b, a) => b.score && a.score && (b.score.min - a.score.min));
-                    } else if (sort == 'max') {
-                        players.sort((b, a) => b.score && a.score && (b.score.max - a.score.max));
-                    }
+                    showPlayers();
                 }
 
-                $('[data-sort]').each(function () {
-                    $(this).attr('data-sort-style', $(this).attr('data-sort') == sort ? (order + 1) : 0);
-                });
-
-                var content = '';
-
-                if ((simulatorMode == 'attack' || simulatorMode == 'defend') && yourself == -1) {
-                    if (players.length) {
-                        yourself = players[0].index;
-                    }
-                }
-
-                if (simulatorMode != 'all') {
-                    $('[data-sort="min"]').hide();
-                    if (simulatorMode == 'attack' || simulatorMode == 'defend') {
-                        $('[data-sort="max"]').hide();
+                function showPlayers () {
+                    if (order == 0) {
+                        if (sort == 'class') {
+                            players.sort((a, b) => a.player.Class - b.player.Class);
+                        } else if (sort == 'level') {
+                            players.sort((a, b) => b.player.Level - a.player.Level);
+                        } else if (sort == 'name') {
+                            players.sort((a, b) => a.player.Name.localeCompare(b.player.Name));
+                        } else if (sort == 'avg') {
+                            players.sort((a, b) => b.score && a.score && (b.score.avg - a.score.avg));
+                        } else if (sort == 'min') {
+                            players.sort((a, b) => b.score && a.score && (b.score.min - a.score.min));
+                        } else if (sort == 'max') {
+                            players.sort((a, b) => b.score && a.score && (b.score.max - a.score.max));
+                        }
                     } else {
+                        if (sort == 'class') {
+                            players.sort((b, a) => a.player.Class - b.player.Class);
+                        } else if (sort == 'level') {
+                            players.sort((b, a) => b.player.Level - a.player.Level);
+                        } else if (sort == 'name') {
+                            players.sort((b, a) => a.player.Name.localeCompare(b.player.Name));
+                        } else if (sort == 'avg') {
+                            players.sort((b, a) => b.score && a.score && (b.score.avg - a.score.avg));
+                        } else if (sort == 'min') {
+                            players.sort((b, a) => b.score && a.score && (b.score.min - a.score.min));
+                        } else if (sort == 'max') {
+                            players.sort((b, a) => b.score && a.score && (b.score.max - a.score.max));
+                        }
+                    }
+
+                    $('[data-sort]').each(function () {
+                        $(this).attr('data-sort-style', $(this).attr('data-sort') == sort ? (order + 1) : 0);
+                    });
+
+                    var content = '';
+
+                    if ((simulatorMode == 'attack' || simulatorMode == 'defend') && yourself == -1) {
+                        if (players.length) {
+                            yourself = players[0].index;
+                        }
+                    }
+
+                    if (simulatorMode != 'all') {
+                        $('[data-sort="min"]').hide();
+                        if (simulatorMode == 'attack' || simulatorMode == 'defend') {
+                            $('[data-sort="max"]').hide();
+                        } else {
+                            $('[data-sort="max"]').show();
+                        }
+                    } else {
+                        $('[data-sort="min"]').show();
                         $('[data-sort="max"]').show();
                     }
-                } else {
-                    $('[data-sort="min"]').show();
-                    $('[data-sort="max"]').show();
-                }
 
-                if (simulatorMode == 'tournament') {
-                    $('[data-sort="max"]').text('Ladder');
-                } else {
-                    $('[data-sort="max"]').text('Max %');
-                }
-
-                for (var i = 0; i < players.length; i++) {
-                    var player = players[i].player;
-                    var score = players[i].score;
-                    var index = players[i].index;
-
-                    content += `
-                        <div class="row selectable ${ index == selected ? 'selected' : 'nselected' } ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself ? 'btwo' : 'bnone' }" data-index="${ index }">
-                            <div class="player-index">${ i + 1 }</div>
-                            <div class="two wide text-center column">
-                                <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
-                                ${ player.Class == 8 && player.Mask > 0 ? `<img class="ui image" src="res/mask${ player.Mask }.png" style="position: absolute; right: 0.75em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
-                                ${ player.Class == 9 ? `<img class="ui image" src="res/instrument${ player.Instrument }.png" style="position: absolute; right: 0.75em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
-                            </div>
-                            <div class="one wide text-center column">
-                                <b>${ player.Level }</b>
-                            </div>
-                            <div class="one wide column"></div>
-                            <div class="four wide column sim-player-name${ ihofMode && player.Prefix ? '-ihof' : '' }">
-                                <b>${ player.Name }</b>
-                                <span>${ player.Prefix }</span>
-                            </div>
-                            <div class="two wide text-center column">
-                                ${ score ? (simulatorMode == 'tournament' ? `${ score.avg } pt` : ((simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself ? '' : `${ score.avg.toFixed(2) }%`)) : '' }
-                            </div>
-                            <div class="two wide text-center column">
-                                ${ score && score.min != undefined ? `${ score.min.toFixed(2) }%` : '' }
-                            </div>
-                            <div class="two wide text-center column">
-                                ${ score && score.max != undefined ? (simulatorMode == 'tournament' ? `${ score.max }` : `${ score.max.toFixed(2) }%`) : '' }
-                            </div>
-                            <div class="one wide text-center column">
-                                ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index != yourself ? `<i class="user circle icon glow-y" data-index-crown="${ i }"></i>` : ''}
-                            </div>
-                            <div class="one wide text-center column">
-                                <i class="trash right aligned alternate glow outline icon" data-index-trash="${ i }"></i>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                $('#sim-players').html(content);
-
-                $('[data-index]').click(function () {
-                    selected = Number($(this).attr('data-index'));
-                    editor.fill(players.find(p => p.index == selected).player);
-
-                    showPlayers();
-                });
-
-                $('[data-index-crown]').click(function () {
-                    yourself = players[Number($(this).attr('data-index-crown'))].index;
-
-                    showPlayers();
-                });
-
-                $('[data-index-trash]').click(function () {
-                    var sel = Number($(this).attr('data-index-trash'));
-                    players.splice(sel, 1);
-
-                    var ss = players.findIndex(p => p.index == selected);
-                    if (ss == -1) {
-                        editor.clear();
+                    if (simulatorMode == 'tournament') {
+                        $('[data-sort="max"]').text('Ladder');
+                    } else {
+                        $('[data-sort="max"]').text('Max %');
                     }
 
-                    selected = ss;
+                    for (var i = 0; i < players.length; i++) {
+                        var player = players[i].player;
+                        var score = players[i].score;
+                        var index = players[i].index;
 
-                    var sx = players.findIndex(p => p.index == yourself);
-                    if (sx == -1) {
-                        yourself = -1;
-                    }
-
-                    showPlayers();
-                });
-            }
-
-            StatisticsIntegration.configure(
-                FIGHT_SIMULATOR_PROFILE,
-                'Poll saved characters',
-                'dungeons',
-                function ($statsList) {
-                    for (let [prefix, players] of Object.entries(_group_by(DatabaseManager.getLatestPlayers(), p => p.Prefix))) {
-                        $statsList.append($(`
-                            <div class="ui fluid basic gray left pointing scrolling dropdown button text-center" style="margin-top: 0.5em;">
-                                <span style="color: black;">${prefix}</span>
-                                <div class="menu" style="overflow-y: scroll; width: 20rem !important;">
-                                    <div class="ui left search icon input">
-                                        <i class="search icon"></i>
-                                        <input type="text" name="search" placeholder="Search player...">
-                                    </div>
-                                    ${
-                                        players.sort((a, b) => b.Own - a.Own || b.Timestamp - a.Timestamp).map(player => {
-                                            return `
-                                                <div class="item" data-value="${player.Identifier}">
-                                                    <img class="ui centered image class-picture" src="res/class${ player.Class }.png"><span>${ player.Level } - ${ player.Name }</span>
-                                                </div>
-                                            `;
-                                        }).join('')
-                                    }
+                        content += `
+                            <div class="row selectable ${ index == selected ? 'selected' : 'nselected' } ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself ? 'btwo' : 'bnone' }" data-index="${ index }">
+                                <div class="player-index">${ i + 1 }</div>
+                                <div class="two wide text-center column">
+                                    <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
+                                    ${ player.Class == 8 && player.Mask > 0 ? `<img class="ui image" src="res/mask${ player.Mask }.png" style="position: absolute; right: 0.75em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
+                                    ${ player.Class == 9 ? `<img class="ui image" src="res/instrument${ player.Instrument }.png" style="position: absolute; right: 0.75em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
+                                </div>
+                                <div class="one wide text-center column">
+                                    <b>${ player.Level }</b>
+                                </div>
+                                <div class="one wide column"></div>
+                                <div class="four wide column sim-player-name${ ihofMode && player.Prefix ? '-ihof' : '' }">
+                                    <b>${ player.Name }</b>
+                                    <span>${ player.Prefix }</span>
+                                </div>
+                                <div class="two wide text-center column">
+                                    ${ score ? (simulatorMode == 'tournament' ? `${ score.avg } pt` : ((simulatorMode == 'attack' || simulatorMode == 'defend') && index == yourself ? '' : `${ score.avg.toFixed(2) }%`)) : '' }
+                                </div>
+                                <div class="two wide text-center column">
+                                    ${ score && score.min != undefined ? `${ score.min.toFixed(2) }%` : '' }
+                                </div>
+                                <div class="two wide text-center column">
+                                    ${ score && score.max != undefined ? (simulatorMode == 'tournament' ? `${ score.max }` : `${ score.max.toFixed(2) }%`) : '' }
+                                </div>
+                                <div class="one wide text-center column">
+                                    ${ (simulatorMode == 'attack' || simulatorMode == 'defend') && index != yourself ? `<i class="user circle icon glow-y" data-index-crown="${ i }"></i>` : ''}
+                                </div>
+                                <div class="one wide text-center column">
+                                    <i class="trash right aligned alternate glow outline icon" data-index-trash="${ i }"></i>
                                 </div>
                             </div>
-                        `).dropdown({
-                            match: 'text',
-                            fullTextSearch: true,
-                            action: function (_, identifier) {
-                                insertPlayer(DatabaseManager.getPlayer(identifier).Latest);
-                            }
-                        }));
+                        `;
                     }
+
+                    $('#sim-players').html(content);
+
+                    $('[data-index]').click(function () {
+                        selected = Number($(this).attr('data-index'));
+                        editor.fill(players.find(p => p.index == selected).player);
+
+                        showPlayers();
+                    });
+
+                    $('[data-index-crown]').click(function () {
+                        yourself = players[Number($(this).attr('data-index-crown'))].index;
+
+                        showPlayers();
+                    });
+
+                    $('[data-index-trash]').click(function () {
+                        var sel = Number($(this).attr('data-index-trash'));
+                        players.splice(sel, 1);
+
+                        var ss = players.findIndex(p => p.index == selected);
+                        if (ss == -1) {
+                            editor.clear();
+                        }
+
+                        selected = ss;
+
+                        var sx = players.findIndex(p => p.index == yourself);
+                        if (sx == -1) {
+                            yourself = -1;
+                        }
+
+                        showPlayers();
+                    });
                 }
-            );
+
+                StatisticsIntegration.configure(
+                    FIGHT_SIMULATOR_PROFILE,
+                    'Poll saved characters',
+                    'dungeons',
+                    function ($statsList) {
+                        for (let [prefix, players] of Object.entries(_group_by(DatabaseManager.getLatestPlayers(), p => p.Prefix))) {
+                            $statsList.append($(`
+                                <div class="ui fluid basic gray left pointing scrolling dropdown button text-center" style="margin-top: 0.5em;">
+                                    <span style="color: black;">${prefix}</span>
+                                    <div class="menu" style="overflow-y: scroll; width: 20rem !important;">
+                                        <div class="ui left search icon input">
+                                            <i class="search icon"></i>
+                                            <input type="text" name="search" placeholder="Search player...">
+                                        </div>
+                                        ${
+                                            players.sort((a, b) => b.Own - a.Own || b.Timestamp - a.Timestamp).map(player => {
+                                                return `
+                                                    <div class="item" data-value="${player.Identifier}">
+                                                        <img class="ui centered image class-picture" src="res/class${ player.Class }.png"><span>${ player.Level } - ${ player.Name }</span>
+                                                    </div>
+                                                `;
+                                            }).join('')
+                                        }
+                                    </div>
+                                </div>
+                            `).dropdown({
+                                match: 'text',
+                                fullTextSearch: true,
+                                action: function (_, identifier) {
+                                    insertPlayer(DatabaseManager.getPlayer(identifier).Latest);
+                                }
+                            }));
+                        }
+                    }
+                );
+            });
         </script>
     </body>
 </html>
