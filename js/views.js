@@ -1059,6 +1059,18 @@ const ConfirmDialog = new (class extends Dialog {
 })();
 
 const Localization = new (class {
+    _generateTranslation (base, object, ... path) {
+        for (let [key, value] of Object.entries(object)) {
+            if (typeof value === 'object') {
+                this._generateTranslation(base, value, ... path, key);
+            } else {
+                base[`${path.join('.')}.${key}`] = value;
+            }
+        }
+
+        return base;
+    }
+
     async _fetchTranslation (locale) {
         if (Object.keys(this.locales()).includes(locale)) {
             let start = Date.now();
@@ -1068,7 +1080,7 @@ const Localization = new (class {
 
             Logger.log('IN_FTCH', `Found ${locale} in ${Date.now() - start} ms`);
 
-            return data;
+            return this._generateTranslation({}, data);
         } else {
             return {};
         }
@@ -1119,13 +1131,7 @@ const Localization = new (class {
     }
 
     findTranslation (key) {
-        let pth = key.split('.');
-        let obj = this.translation;
-
-        for (let i = 0; obj && i < pth.length; i++) {
-            obj = obj[pth[i]];
-        }
-
+        let obj = this.translation[key];
         if (!obj) {
             Logger.log('IN_WARN', `Translation key ${key} not found!`);
         }
