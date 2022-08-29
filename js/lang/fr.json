@@ -108,32 +108,32 @@
         "text": "Il semblerai que cette page n'existe pas, veulliez verifier votre recherche"
     },
     "dungeons": {
-        "simulate": "Simulate",
-        "simulate_remaining": "Remaining",
-        "simulate_all": "All",
-        "player": "Player",
-        "enemy": "Enemy",
-        "yourself": "You",
-        "bert": "Bert",
-        "mark": "Mark",
-        "kunigunde": "Kunigunde",
-        "open": "Currently open dungeons",
+        "simulate": "Simuler",
+        "simulate_remaining": "Simuler les Étages restants",
+        "simulate_all": "Tous",
+        "player": "Joueur",
+        "enemy": "Ennemis",
+        "yourself": "Vous",
+        "bert": "Bébert",
+        "mark": "Marc",
+        "kunigunde": "Diane",
+        "open": "Donjons actuellements ouverts",
         "graph": {
-            "y": "Boss HP Left",
-            "x": "- Distribution for selected amount of tries -"
+            "y": "PV Restants",
+            "x": "- Distribution pour le nombre d'essaies sélectionnés -"
         },
-        "results": "Results",
+        "results": "Résultas",
         "cheats": {
-            "title": "Cheat Menu",
-            "subtitle": "Select which cheats to apply and poll your character",
-            "enable": "Enable cheats",
+            "title": "Menu de Cheat",
+            "subtitle": "Sélectionnez les cheats à appliquer et rechargez votre personnage",
+            "enable": "Activer les Cheats",
             "general": "General",
-            "enchantments": "All enchantments",
-            "runes": "Maximum runes",
-            "pets": "Maximum pets",
+            "enchantments": "Tous les Enchantments",
+            "runes": "Runes Maximales",
+            "pets": "Familiers Maximum",
             "potions": "Potions (max 3)",
-            "class": "Change class",
-            "keep_original": "Keep original"
+            "class": "Changer la classe",
+            "keep_original": "Garder l'original"
         }
     },
     "simulator": {
