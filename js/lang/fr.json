@@ -105,7 +105,7 @@
     },
     "404": {
         "title": "404",
-        "text": "Not sure what you're looking for but it does not exist"
+        "text": "Il semblerai que cette page n'existe pas, veulliez verifier votre recherche"
     },
     "dungeons": {
         "simulate": "Simulate",
