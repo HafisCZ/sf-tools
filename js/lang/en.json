@@ -107,6 +107,151 @@
         "title": "404",
         "text": "Not sure what you're looking for but it does not exist"
     },
+    "stats": {
+        "topbar": {
+            "temporary_flag": "Temporary",
+            "players": "Players",
+            "guilds": "Guilds",
+            "browse": "Browse",
+            "scripts": "Scripts",
+            "files": "Files",
+            "settings": "Settings",
+            "temporary": "Temporary session",
+            "changelog": "Changelog",
+            "profile": "Profile"
+        },
+        "files": {
+            "titles": {
+                "filters": "Filters",
+                "io": "Import / Export"
+            },
+            "timestamp": "Timestamp",
+            "timestamps": "Timestamps",
+            "prefix": "Prefix",
+            "name": "Name",
+            "group": "Group",
+            "groups": "Groups",
+            "origin": "Origin",
+            "tag": "Tag",
+            "tags": "Tags",
+            "players": "Players",
+            "version": "Version",
+            "import": {
+                "file": "Import from File",
+                "shared": "Import Shared",
+                "game": "Import from Game"
+            },
+            "export": {
+                "all": "Export all",
+                "selected": "Export selected"
+            },
+            "selected": {
+                "text": "items(s) selected",
+                "no": "No"
+            },
+            "hide": "Hide",
+            "merge": {
+                "selected": "Export selected"
+            },
+            "delete": {
+                "all": "Delete all",
+                "selected": "Delete selected"
+            },
+            "options": {
+                "title": "File options",
+                "advanced": "Show advanced file list",
+                "hidden": "Show hidden players"
+            }
+        },
+        "scripts": {
+            "settings": "Settings",
+            "templates": "Templates",
+            "sidebar": {
+                "wiki": "Wiki",
+                "scripts": "Scripts",
+                "templates": "Templates",
+                "save": "Save",
+                "copy": "Copy",
+                "undo": "Undo",
+                "redo": "Redo",
+                "close": "Close",
+                "apply": "Apply",
+                "remove": "Remove",
+                "save_apply": "Save & Apply"
+            }
+        },
+        "players": {
+            "other": "Show other players",
+            "hidden": "Show hidden"
+        },
+        "guilds": {
+            "other": "Show other guilds",
+            "hidden": "Show hidden"
+        },
+        "browse": {
+            "hidden": "Show hidden"
+        },
+        "fast_export": {
+            "title": "Export options",
+            "all": "All",
+            "latest": "Latest",
+            "latest5": "Latest 5",
+            "selected": "Selected",
+            "selected_both": "Selected & Reference"
+        },
+        "share": {
+            "title": "File sharing",
+            "options": "Options",
+            "code": "Your code",
+            "get": "Get code",
+            "ok": "Ok",
+            "expire": "The code will automatically expire after 2 days.",
+            "single_use": "Single use only",
+            "single_use_notice": "Please consider keeping this option enabled unless you plan to share the file with multiple people."
+        },
+        "online_templates": {
+            "title": "Public scripts",
+            "description": "Description",
+            "author": "Author",
+            "created_on": "Created on",
+            "loading": "Fetching scripts"
+        },
+        "templates": {
+            "title": "Templates",
+            "loading": "Commiting changes",
+            "form": {
+                "changed_on": "Changed on",
+                "version": "Tool Version",
+                "compatibility": "Compatibility",
+                "published_on": "Published on",
+                "code": "Code",
+                "publish": "Publish",
+                "update": "Update",
+                "remove": "Remove"
+            }
+        },
+        "online_file": {
+            "title": "File sharing",
+            "prompt": "Enter your code:",
+            "invalid": "Invalid or expired code!",
+            "cancel": "Cancel",
+            "ok": "Ok"
+        },
+        "group": {
+            "compared_to": "compared to"
+        },
+        "settings": {
+            "title": "Global configuration",
+            "always_prev": "Compare previous (guilds)",
+            "empty_groups": "Show empty groups",
+            "obfuscated": "Hide player names",
+            "insecure": "Allow unsecure html tags",
+            "terms": "Accept Terms of Service",
+            "tab": "Default tab",
+            "preload": "Preload rows",
+            "actions": "Actions"
+        }
+    },
     "dungeons": {
         "simulate": "Simulate",
         "simulate_remaining": "Remaining",
@@ -204,7 +349,12 @@
             "title": "Database could not be opened",
             "message": "Please verify that you are not in incognito mode and your browser supports Indexed DB"
         },
-        "import_error": "An error has occured while importing file"
+        "import_error": "An error has occured while importing file",
+        "fatal_error#": "Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.",
+        "update_info": {
+            "title": "A database update is in progress",
+            "message": "Please do not exit the page until loading stops. This may take a while depending on the size of your database."
+        }
     },
     "dialog": {
         "warning": {
