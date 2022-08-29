@@ -24,83 +24,83 @@
         "life_potion": "Vie Éternelle"
     },
     "index": {
-        "toggle": "Toggle credits",
+        "toggle": "Afficher les crédits",
         "roles": {
-            "admin": "Someone with a lot of free time",
-            "helper": "Helpers - Research, Testing, Feedback, etc.",
+            "admin": "Quelqu'un avec beacoup de temps libre",
+            "helper": "Helpers - Recherche, Tests, Retours, etc...",
             "tester": "Testers",
-            "wiki": "Chief Wiki Manager",
-            "translator": "Translators",
-            "mention": "Other mentions"
+            "wiki": "Chef/Manager du Wiki",
+            "translator": "Traducteurs",
+            "mention": "Autres Mentions"
         },
         "stats": {
-            "title": "Statistics",
-            "desc": "Track progress of yourself and your guild"
+            "title": "Statistiques",
+            "desc": "Suiviez vos progrès et ceux de votre guilde"
         },
         "temp": {
-            "title": "Statistics",
-            "desc": "Create temporary instance of Statistics",
-            "temporary": "Temporary"
+            "title": "Statistiques",
+            "desc": "Créez des instances temporaires de vos statistiques",
+            "temporary": "Temporaire"
         },
         "wiki": {
             "title": "Wiki",
-            "desc": "How to do magic with tables and much more"
+            "desc": "Comment dominer le monde avec les tableaux et bien d'autre..."
         },
         "runes": {
-            "title": "Rune Bonuses",
-            "desc": "Zorago's rune bonus table"
+            "title": "Bonus des Runes",
+            "desc": "Tableau des bonus des runes (fait par Zorago)"
         },
         "inventory": {
-            "title": "Inventory Manager",
-            "desc": "Compare items, calculate upgrades & more"
+            "title": "Gestionnaire d'inventaire",
+            "desc": "Comparez vos objets, calculez les résultas d'améliorations etc..."
         },
         "idle": {
-            "title": "Arena Manager",
-            "desc": "Check the production of your Arena Manager"
+            "title": "Manager d'Arène",
+            "desc": "Pleins d'outils pour le Manager d'Arène"
         },
         "calendar": {
-            "title": "Pet Calendar",
-            "desc": "Look at when you can catch pets"
+            "title": "Calendrier des Familiers",
+            "desc": "Planifier quand vous pourrez attraper les familiers"
         },
         "players": {
-            "title": "Fight Simulator",
-            "desc": "Simulate the probable outcome of a PvP battle"
+            "title": "Simulateur d'Arène",
+            "desc": "Simulez les probabilités des résultats d'un combat en PvP"
         },
         "guild": {
-            "title": "Guild Simulator",
-            "desc": "Simulate the probable outcome of a guild battle"
+            "title": "Simulateur de Combat de Guilde",
+            "desc": "Simulez les probabilités des résultats d'un combat de guilde"
         },
         "pets": {
-            "title": "Pet Simulator",
-            "desc": "Simulate the probable outcome of a pet battle"
+            "title": "Simulateur de Combat de Familiers",
+            "desc": "Simulez les probabilités des résultats d'un combat de familiers"
         },
         "dungeons": {
-            "title": "Dungeon Simulator",
-            "desc": "Simulate the probable outcome of a dungeon battle"
+            "title": "Simulateur de Combat de Donjon",
+            "desc": "Simulez les probabilités des résultats d'un combat en donjon"
         },
         "underworld": {
-            "title": "Underworld",
-            "desc": "Simulate the probably outcome of an underworld battle"
+            "title": "Enfers",
+            "desc": "Simulez les probabilités des résultats d'un combats dans les Enfers"
         },
         "fights": {
-            "title": "Fight viewer",
-            "desc": "Display all PVP fights stored within archive file"
+            "title": "Visionneuse de Combats PvP",
+            "desc": "Affiche tous les combats PvP stocker dans un fichier d'archives"
         },
         "digest": {
-            "title": "Boss viewer",
-            "desc": "Display all PVE fights stored within archive file"
+            "title": "Visionneuse de Combats PvE",
+            "desc": "Affiche tous les combats PvE stocker dans un fichier d'archives"
         },
         "atts": {
-            "title": "Gold & Experience",
-            "desc": "Curves & calculators"
+            "title": "Or & Expérience",
+            "desc": "Courbes & calculateurs"
         },
         "smith": {
-            "title": "Blacksmith Upgrades",
-            "desc": "What it costs and what gets lost"
+            "title": "Améliorations du Forgeron",
+            "desc": "Combien ça coûte, combien on perd"
         },
         "hydra": {
-            "title": "Hydra Simulator",
-            "desc": "Simulate which guild pet class is best against current hydra."
+            "title": "Simulateur de l'Hydre",
+            "desc": "Simulez quelle classe de familiers est la meilleure contre l'hydre actuelle"
         }
     },
     "404": {
