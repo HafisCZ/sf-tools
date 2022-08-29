@@ -1092,23 +1092,6 @@ const Localization = new (class {
         return `${noServer ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json?v=${LOCALES_VERSION}`;
     }
 
-    _registerObserver () {
-        this.observer = new MutationObserver((mutations, observer) => {
-            for (let { addedNodes } of mutations) {
-                addedNodes.forEach(element => {
-                    if (element.nodeType === 1) {
-                        this.translate(element);
-                    }
-                });
-            }
-        });
-
-        this.observer.observe(window.document, {
-            subtree: true,
-            childList: true
-        });
-    }
-
     async translatePage () {
         let locale = this.getLocale();
 
@@ -1126,8 +1109,8 @@ const Localization = new (class {
             this.translation = Object.assign(await this._fetchTranslation('en'), this.translation);
         }
 
-        this.translate();
-        this._registerObserver();
+        window.document.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
+        window.document.querySelectorAll('[data-intl-tooltip]').forEach(element => this.translateTooltip(element));
     }
 
     findTranslation (key) {
@@ -1139,10 +1122,12 @@ const Localization = new (class {
         return obj;
     }
 
-    translate (node = window.document) {
-        if (node.querySelector('[data-intl]')) {
-            node.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
-        }
+    translateTooltip (node) {
+        let key = node.getAttribute('data-intl-tooltip');
+        let val = this.findTranslation(key);
+
+        node.removeAttribute('data-intl-tooltip');
+        node.setAttribute('data-tooltip', val || key);
     }
 
     translateElement (node) {
