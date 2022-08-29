@@ -310,7 +310,7 @@ const ErrorDialog = new (class extends Dialog {
                 </div>
                 <div class="ui two buttons">
                     <button class="ui red fluid button" data-op="continue">${this.intl('refresh')}</button>
-                    <button class="ui red fluid button" data-op="continue-default">${this.intl('.revert')}</button>
+                    <button class="ui red fluid button" data-op="continue-default">${this.intl('revert')}</button>
                 </div>
             </div>
         `;
