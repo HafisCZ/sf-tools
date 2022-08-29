@@ -160,10 +160,10 @@
                         </div>
                         <div class="sf-margin top-05">
                             <div class="ui fluid two buttons">
-                                <label class="fluid ui secondary basic button sf-margin top-05" data-op="hide" data-tooltip="Works independently in simple & advanced mode!">
-                                    <i class="small eye slash outline outline icon"></i> <span data-intl="stats.files.hide"></span>
+                                <label class="fluid ui secondary basic button sf-margin top-05" data-op="hide" data-intl-tooltip="stats.files.hide.tooltip">
+                                    <i class="small eye slash outline outline icon"></i> <span data-intl="stats.files.hide.label"></span>
                                 </label>
-                                <button class="ui compact secondary icon button" style="flex: 0 0 3.5em; border-radius: 0 .28571429rem .28571429rem 0;" data-op="hide-migrate" data-tooltip="Mark files with all hidden players as hidden">
+                                <button class="ui compact secondary icon button" style="flex: 0 0 3.5em; border-radius: 0 .28571429rem .28571429rem 0;" data-op="hide-migrate" data-intl-tooltip="stats.files.hide.migrate">
                                     <i class="expand icon"></i>
                                 </button>
                                 <label class="fluid ui secondary basic button sf-margin top-05" data-op="tags">
@@ -341,9 +341,9 @@
                     </div>
                     <div class="three wide column">
                         <div class="ui small basic icon right floated buttons">
-                            <button class="ui button" data-position="bottom center" data-tooltip="Save as image" data-op="save"><i class="download icon"></i></button>
-                            <button class="ui button" data-position="bottom center" data-tooltip="Copy table" data-op="copy"><i class="copy icon"></i></button>
-                            <button class="ui button" data-position="bottom center" data-tooltip="Copy table for fight simulator" data-op="copy-sim"><i class="copy outline icon"></i></button>
+                            <button class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.image" data-op="save"><i class="download icon"></i></button>
+                            <button class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.basic" data-op="copy"><i class="copy icon"></i></button>
+                            <button class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.fight" data-op="copy-sim"><i class="copy outline icon"></i></button>
                             <div class="ui top left pointing dropdown button" data-op="configure">
                                 <i class="cog icon"></i>
                                 <div class="menu" style="overflow-y: scroll; max-height: 50vh;"></div>
@@ -374,8 +374,8 @@
                     </div>
                     <div class="three wide column">
                         <div class="ui small basic icon right floated buttons">
-                            <button class="ui button" data-position="bottom center" data-tooltip="Save as image" data-op="save"><i class="download icon"></i></button>
-                            <button class="ui button" data-position="bottom center" data-tooltip="Share" data-op="share"><i class="cloud upload icon"></i></button>
+                            <button class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.image" data-op="save"><i class="download icon"></i></button>
+                            <button class="ui button" data-position="bottom center" data-intl-tooltip="stats.fast_export.label" data-op="share"><i class="cloud upload icon"></i></button>
                             <div class="ui icon top left pointing dropdown button" data-op="export-dropdown">
                                 <i class="file archive icon"></i>
                                 <div class="menu">
@@ -385,7 +385,7 @@
                                     <div class="item" data-op="export-l5" data-intl="stats.fast_export.latest5"></div>
                                 </div>
                             </div>
-                            <button class="ui button" data-position="bottom center" data-tooltip="Copy table" data-op="copy"><i class="copy icon"></i></button>
+                            <button class="ui button" data-position="bottom center" data-intl-tooltip="stats.copy.basic" data-op="copy"><i class="copy icon"></i></button>
                             <div class="ui top left pointing dropdown button" data-op="configure">
                                 <i class="cog icon"></i>
                                 <div class="menu" style="overflow-y: scroll; max-height: 50vh;"></div>
@@ -522,21 +522,19 @@
                                     <div class="seven wide field">
                                         <label><br/></label>
                                         <div class="ui buttons">
-                                            <button class="ui basic secondary button" data-tooltip="Publish template" data-op="publish"><i class="globe icon"></i><span data-intl="stats.templates.form.publish"></span></button>
-                                            <button class="ui icon red basic button" data-tooltip="Unpublish template" data-op="unpublish"><i class="trash icon"></i></button>
+                                            <button class="ui basic secondary button" data-intl-tooltip="stats.templates.form.publish_tooltip" data-op="publish"><i class="globe icon"></i><span data-intl="stats.templates.form.publish"></span></button>
+                                            <button class="ui icon red basic button" data-intl-tooltip="stats.templates.form.unpublish_tooltip" data-op="unpublish"><i class="trash icon"></i></button>
                                         </div>
                                     </div>
                                 </div>
                                 <br/>
                                 <div class="fields" style="margin-top: 5em;">
                                     <div class="seven wide field">
-                                        <button class="ui fluid basic secondary button" data-tooltip="Update template with current script" data-op="update"><i class="recycle icon"></i><span data-intl="stats.templates.form.update"></span></button>
+                                        <button class="ui fluid basic secondary button" data-intl-tooltip="stats.templates.form.update_tooltip" data-op="update"><i class="recycle icon"></i><span data-intl="stats.templates.form.update"></span></button>
                                     </div>
-                                    <div class="two wide field">
-
-                                    </div>
+                                    <div class="two wide field"></div>
                                     <div class="seven wide field">
-                                        <button class="ui fluid red basic button" data-tooltip="Remove template" data-op="delete"><i class="trash icon"></i><span data-intl="stats.templates.form.remove"></span></button>
+                                        <button class="ui fluid red basic button" data-intl-tooltip="stats.templates.form.remove_tooltip" data-op="delete"><i class="trash icon"></i><span data-intl="stats.templates.form.remove"></span></button>
                                     </div>
                                 </div>
                             </div>
@@ -583,8 +581,8 @@
                     </div>
                     <div class="eight wide column">
                         <div class="ui small basic icon right floated buttons">
-                            <button class="ui button" data-tooltip="Save as image" data-op="save"><i class="download icon"></i></button>
-                            <button class="ui button" data-tooltip="Share" data-op="share"><i class="cloud upload icon"></i></button>
+                            <button class="ui button" data-intl-tooltip="stats.copy.image" data-op="save"><i class="download icon"></i></button>
+                            <button class="ui button" data-intl-tooltip="stats.fast_export.label" data-op="share"><i class="cloud upload icon"></i></button>
                             <div class="ui icon top left pointing dropdown button" data-op="export-dropdown">
                                 <i class="file archive icon"></i>
                                 <div class="menu">
@@ -596,8 +594,8 @@
                                     <div class="item" data-op="export-sr" data-intl="stats.fast_export.selected_both"></div>
                                 </div>
                             </div>
-                            <button class="ui button" data-tooltip="Copy table" data-op="copy"><i class="copy icon"></i></button>
-                            <button class="ui button" data-tooltip="Copy table for fight simulator" data-op="copy-sim"><i class="copy outline icon"></i></button>
+                            <button class="ui button" data-intl-tooltip="stats.copy.basic" data-op="copy"><i class="copy icon"></i></button>
+                            <button class="ui button" data-intl-tooltip="stats.copy.fight" data-op="copy-sim"><i class="copy outline icon"></i></button>
                             <div class="ui top left pointing dropdown button" data-op="configure">
                                 <i class="cog icon"></i>
                                 <div class="menu" style="overflow-y: scroll; max-height: 50vh;"></div>
@@ -678,12 +676,12 @@
                     <div class="ui segment">
                         <div class="ui grid">
                             <div class="five wide column"></div>
-                            <div class="six wide column"><h3 class="ui centered header" data-intl="stats.settings.actions"></h3></div>
+                            <div class="six wide column"><h3 class="ui centered header" data-intl="stats.settings.actions.title"></h3></div>
                             <div class="five wide column">
                                 <div class="ui small basic icon right floated buttons" style="margin-top: -0.5rem; margin-bottom: 0.5rem;">
-                                  <button class="ui button" data-op="remove" data-tooltip="Reset actions" data-position="bottom center"><i class="trash icon" style="color: orange;"></i></button>
-                                  <button class="ui button" data-op="reset" data-tooltip="Ignore changes" data-position="bottom center"><i class="black undo icon"></i></button>
-                                  <button class="ui button" data-op="save" data-tooltip="Save actions" data-position="bottom center"><i class="black save icon"></i></button>
+                                  <button class="ui button" data-op="remove" data-intl-tooltip="stats.settings.actions.reset" data-position="bottom center"><i class="trash icon" style="color: orange;"></i></button>
+                                  <button class="ui button" data-op="reset" data-intl-tooltip="stats.settings.actions.ignore" data-position="bottom center"><i class="black undo icon"></i></button>
+                                  <button class="ui button" data-op="save" data-intl-tooltip="stats.settings.actions.save" data-position="bottom center"><i class="black save icon"></i></button>
                                 </div>
                             </div>
                         </div>

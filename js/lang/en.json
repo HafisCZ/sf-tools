@@ -149,7 +149,11 @@
                 "text": "items(s) selected",
                 "no": "No"
             },
-            "hide": "Hide",
+            "hide": {
+                "label": "Hide",
+                "tooltip": "Works independently in simple & advanced mode!",
+                "migrate": "Mark files with all hidden players as hidden"
+            },
             "merge": {
                 "selected": "Export selected"
             },
@@ -162,6 +166,11 @@
                 "advanced": "Show advanced file list",
                 "hidden": "Show hidden players"
             }
+        },
+        "copy": {
+            "image": "Save as image",
+            "basic": "Copy table",
+            "fight": "Copy table for fight simulator"
         },
         "scripts": {
             "settings": "Settings",
@@ -192,6 +201,7 @@
             "hidden": "Show hidden"
         },
         "fast_export": {
+            "label": "Share",
             "title": "Export options",
             "all": "All",
             "latest": "Latest",
@@ -226,8 +236,12 @@
                 "published_on": "Published on",
                 "code": "Code",
                 "publish": "Publish",
+                "publish_tooltip": "Publish template",
+                "unpublish_tooltip": "Unpublish template",
                 "update": "Update",
-                "remove": "Remove"
+                "update_tooltip": "Update template with current script",
+                "remove": "Remove",
+                "remove_tooltip": "Remove template"
             }
         },
         "online_file": {
@@ -249,7 +263,12 @@
             "terms": "Accept Terms of Service",
             "tab": "Default tab",
             "preload": "Preload rows",
-            "actions": "Actions"
+            "actions": {
+                "title": "Actions",
+                "reset": "Reset actions",
+                "ignore": "Ignore changes",
+                "save": "Save actions"
+            }
         }
     },
     "dungeons": {
