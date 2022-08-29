@@ -596,17 +596,17 @@
 
                 StatisticsIntegration.configure(
                     SELF_PROFILE,
-                    'Poll saved characters',
+                    intl('dungeons.poll'),
                     'dungeons',
                     function ($statsList) {
                         for (let player of _sort_des(DatabaseManager.getLatestPlayers(), p => p.Timestamp)) {
                             $statsList.append($(`
                                 <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
                                     <div class="visible content">
-                                        <span style="color: black;">${ player.Name } @ ${ player.Prefix }</span>
+                                        <span style="color: black;">${player.Name} @ ${player.Prefix}</span>
                                     </div>
                                     <div class="hidden content">
-                                        <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }</span>
+                                        <span style="color: black;">${intl('editor.level')} ${player.Level} ${intl(`general.class${player.Class}`)}</span>
                                     </div>
                                 </div>
                                 `).click(() => {

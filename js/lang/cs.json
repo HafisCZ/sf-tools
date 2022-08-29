@@ -145,7 +145,7 @@
     "editor": {
         "name": "Jméno",
         "class": "Třída",
-        "level": "Level",
+        "level": "Úroveň",
         "mask": "Maska",
         "instrument": "Instrument",
         "armor": "Brnění",

@@ -118,6 +118,7 @@
         "mark": "Mark",
         "kunigunde": "Kunigunde",
         "open": "Currently open dungeons",
+        "poll": "Poll saved characters",
         "graph": {
             "y": "Boss HP Left",
             "x": "- Distribution for selected amount of tries -"
