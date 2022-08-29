@@ -137,10 +137,10 @@
         }
     },
     "simulator": {
-        "paste_target#": "Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator",
-        "threads": "Simulator threads. Keep this number BELOW your processor core count!",
-        "iterations": "Amount of iterations per thread.",
-        "save_image": "Save as image"
+        "paste_target#": "Cliquez ici et appuyez sur <b>CTRL&nbsp;+&nbsp;V</b> pour copier dans le Simulateur",
+        "threads": "Threads pour la simulation. Gardez ce nombre EN DESSOUS du nombrede cœurs de votre proccesseur",
+        "iterations": "Nombre d'iterations par thread.",
+        "save_image": "Sauvegarder comme Image"
     },
     "editor": {
         "name": "Name",
