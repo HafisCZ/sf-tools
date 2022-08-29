@@ -1164,9 +1164,10 @@ const Localization = new (class {
             'de': 'Deutsch',
             'pl': 'Polski',
             'pt': 'Português',
-            'ch': 'Schwyzerdüütsch',
-            'it': 'Italiano',
             'cs': 'Česky',
+            'it': 'Italiano',
+            'es': 'Español',
+            'ch': 'Schwyzerdüütsch',
             'pg': 'Pig Latin'
         };
     }
