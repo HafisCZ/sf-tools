@@ -1,16 +1,19 @@
 .ui.menu.fixed {
     background-color: #212121;
+    height: 50px;
+    box-shadow: none;
+    border: none;
 }
 
 .locale-picker {
     position: absolute !important;
     right: 0;
-    padding: 0.4rem;
+    margin: 9px;
+    height: 30px;
 }
 
 .locale-picker img {
-    width: 3.94rem !important;
-    clip-path: circle();
+    height: 30px!important;
 }
 
 .locale-picker .ui.dropdown .menu {
@@ -18,7 +21,6 @@
     box-shadow: none !important;
     background: none !important;
     margin-top: 0.5em !important;
-    left: -1.375rem !important;
 }
 
 .ui.menu .locale-picker .ui.dropdown .menu > .item {
@@ -26,7 +28,6 @@
     height: 2em;
     margin: 0;
     margin-bottom: 0.5rem;
-    margin-left: 1.25rem;
 }
 
 .statistics-module {
@@ -862,7 +863,7 @@ h3.file-selected {
 }
 
 .ui.menu.css-menu {
-    padding-right: 3.5rem;
+    padding-right: 4rem;
 }
 
 .ui.menu.css-menu .item {
