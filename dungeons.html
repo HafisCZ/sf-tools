@@ -948,12 +948,12 @@
                     preserveHTML: true,
                     values: [
                         {
-                            name: `<span data-intl="dungeons.cheats.keep_original">${intl('dungeons.cheats.keep_original')}</span>`,
+                            name: intl('dungeons.cheats.keep_original'),
                             value: 0
                         },
                         ... Object.keys(CLASS_MAP).map((e) => {
                             return {
-                                name: `<img class="ui centered image class-picture" src="res/class${e}.png"><span data-intl="general.class${e}"></span>`,
+                                name: `<img class="ui centered image class-picture" src="res/class${e}.png">${intl(`general.class${e}`)}`,
                                 value: e
                             };
                         })

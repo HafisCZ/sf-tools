@@ -170,6 +170,41 @@
         "copy": "Copy",
         "none": "None"
     },
+    "endpoint": {
+        "username": "Username",
+        "password": "Password",
+        "mode": {
+            "own": "Capture own character",
+            "default": "Capture own + selected characters",
+            "guild": "Capture own + guild characters",
+            "friends": "Capture own + friend characters"
+        },
+        "cancel": "Cancel",
+        "continue": "Continue",
+        "step2": {
+            "title": "Loading Endpoint"
+        },
+        "step3": {
+            "title": "Select players to be imported"
+        },
+        "step4": {
+            "title": "Contacting the server for information",
+            "message": "Fetching data"
+        },
+        "user_error": {
+            "title": "Your user name or password is not valid",
+            "message": "Please ensure that it is in correct format (username@url)"
+        },
+        "credentials_error": "Wrong username or password",
+        "download_error": "Download failed"
+    },
+    "database": {
+        "open_error": {
+            "title": "Database could not be opened",
+            "message": "Please verify that you are not in incognito mode and your browser supports Indexed DB"
+        },
+        "import_error": "An error has occured while importing file"
+    },
     "dialog": {
         "warning": {
             "title": "An issue has occured!",
