@@ -21,8 +21,8 @@
         "intelligence": "Intelligenza",
         "constitution": "Costituzione",
         "luck": "Fortuna",
-        "life_potion": "Pozione della Vita Eterna"
-	"potion1": "Forza",
+        "life_potion": "Pozione della Vita Eterna",
+	    "potion1": "Forza",
         "potion2": "Destrezza",
         "potion3": "Intelligenza",
         "potion4": "Costituzione",
@@ -474,8 +474,8 @@
         "smart_change": "Cambio classe intelligente",
         "copy": "Copia",
         "none": "Nessuna"
-    }
-"endpoint": {
+    },
+    "endpoint": {
         "username": "Username",
         "password": "Password",
         "mode": {
