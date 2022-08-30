@@ -36,14 +36,6 @@ const PLAYER_CLASS_SEARCH = [
     'bard'
 ];
 
-const PET_TYPE_NAMES = [
-    'Shadow',
-    'Light',
-    'Earth',
-    'Fire',
-    'Water'
-];
-
 const MAIN_ATTRIBUTE_MAP = {
     'Main': [ 'Strength', 'Intelligence', 'Dexterity', 'Dexterity', 'Strength', 'Strength', 'Dexterity', 'Intelligence', 'Intelligence' ],
     'Side1': [ 'Dexterity', 'Strength', 'Strength', 'Strength', 'Dexterity', 'Dexterity', 'Strength', 'Strength', 'Strength' ],
