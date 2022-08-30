@@ -1,5 +1,5 @@
 const CHANGELOG = {
-    'v5.XXXX': {
+    'v5.2469': {
         'Statistics': [
             'Reworked player list',
             'Added translations',
@@ -16,7 +16,8 @@ const CHANGELOG = {
             'Fixed low performance in players tab'
         ],
         'Pet Simulator': [
-            'Added best pets for each class to simulate all'
+            'Added best pets for each class to simulate all',
+            'Added translations'
         ],
         'Dungeon Simulator': [
             'Added option to simulate all remaining enemies in a dungeon',
