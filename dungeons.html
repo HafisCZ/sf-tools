@@ -69,10 +69,10 @@
                             <div class="six wide column">
                                 <div class="ui small form">
                                     <div class="two fields">
-                                        <div class="field" data-position="bottom center">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads">
                                             <input class="text-center fluid" type="text" id="sim-threads" value="2">
                                         </div>
-                                        <div class="field" data-position="bottom center">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations">
                                             <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
                                             <input class="text-center fluid" type="text" id="sim-iterations" value="5000">
                                         </div>
@@ -140,7 +140,7 @@
 
         <div id="results-modal" class="ui mini modal">
             <div class="header" data-intl="dungeons.results"></div>
-            <button id="save-screenshot" class="ui small basic icon button" style="position: absolute; right: .75em; top: 1em;" data-position="bottom center"><i class="download icon"></i></button>
+            <button id="save-screenshot" class="ui small basic icon button" style="position: absolute; right: .75em; top: 1em;" data-position="bottom center" data-intl-tooltip="simulator.save_image"><i class="download icon"></i></button>
             <div style="padding-left: 1em; padding-right: 1em; border-bottom: 1px solid rgba(34,36,38,.15)">
                 <canvas id="list-winchart" style="width: 100%;"></canvas>
             </div>
@@ -275,10 +275,6 @@
                     func();
                     ignoreChanges = false;
                 }
-
-                $('#sim-threads').closest('.field').attr('data-tooltip', intl('simulator.threads'));
-                $('#sim-iterations').closest('.field').attr('data-tooltip', intl('simulator.iterations'));
-                $('#save-screenshot').attr('data-tooltip', intl('simulator.save_image'));
 
                 $('#sim-threads').captiveInputField('dungeon_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('dungeon_sim/iterations', 5000, v => !isNaN(v) && v >= 1);
@@ -486,7 +482,7 @@
                                     <img class="ui medium centered image" style="width: 50px; opacity: ${ i == 0 || dungeon.shadow ? '100' : '25' }%;" src="res/portrait${ i ? i : '' }.png">
                                 </div>
                                 <div class="eight wide column text-center">
-                                    <b data-intl="dungeons.${['yourself', 'bert', 'mark', 'kunigunde'][i]}"></b>
+                                    <b>${intl(`dungeons.${['yourself', 'bert', 'mark', 'kunigunde'][i]}`)}</b>
                                 </div>
                                 <div class="four wide column">
                                 </div>
@@ -596,17 +592,17 @@
 
                 StatisticsIntegration.configure(
                     SELF_PROFILE,
-                    'Poll saved characters',
+                    intl('dungeons.poll'),
                     'dungeons',
                     function ($statsList) {
                         for (let player of _sort_des(DatabaseManager.getLatestPlayers(), p => p.Timestamp)) {
                             $statsList.append($(`
                                 <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
                                     <div class="visible content">
-                                        <span style="color: black;">${ player.Name } @ ${ player.Prefix }</span>
+                                        <span style="color: black;">${player.Name} @ ${player.Prefix}</span>
                                     </div>
                                     <div class="hidden content">
-                                        <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }</span>
+                                        <span style="color: black;">${intl('editor.level')} ${player.Level} ${intl(`general.class${player.Class}`)}</span>
                                     </div>
                                 </div>
                                 `).click(() => {
@@ -948,12 +944,12 @@
                     preserveHTML: true,
                     values: [
                         {
-                            name: `<span data-intl="dungeons.cheats.keep_original">${intl('dungeons.cheats.keep_original')}</span>`,
+                            name: intl('dungeons.cheats.keep_original'),
                             value: 0
                         },
                         ... Object.keys(CLASS_MAP).map((e) => {
                             return {
-                                name: `<img class="ui centered image class-picture" src="res/class${e}.png"><span data-intl="general.class${e}"></span>`,
+                                name: `<img class="ui centered image class-picture" src="res/class${e}.png">${intl(`general.class${e}`)}`,
                                 value: e
                             };
                         })
