@@ -1,0 +1,145 @@
+{
+    "general": {
+        "no": "Non",
+        "yes": "Oui",
+        "class1": "Guerrier",
+        "class2": "Mage",
+        "class3": "Éclaireur",
+        "class4": "Assassin",
+        "class5": "Mage de Combat",
+        "class6": "Berserker",
+        "class7": "Chasseur de Démons",
+        "class8": "Druide",
+        "class9": "Barde",
+        "mask1": "Ours",
+        "mask2": "Chat",
+        "instrument0": "Harpe",
+        "instrument1": "Luth",
+        "instrument2": "Flute",
+        "strength": "Force",
+        "dexterity": "Habileté",
+        "intelligence": "Intelligence",
+        "constitution": "Endurance",
+        "luck": "Chnace",
+        "life_potion": "Vie Éternelle"
+    },
+    "index": {
+        "toggle": "Afficher les crédits",
+        "roles": {
+            "admin": "Quelqu'un avec beacoup de temps libre",
+            "helper": "Helpers - Recherche, Tests, Retours, etc...",
+            "tester": "Testers",
+            "wiki": "Chef/Manager du Wiki",
+            "translator": "Traducteurs",
+            "mention": "Autres Mentions"
+        },
+        "stats": {
+            "title": "Statistiques",
+            "desc": "Suiviez vos progrès et ceux de votre guilde"
+        },
+        "temp": {
+            "title": "Statistiques",
+            "desc": "Créez des instances temporaires de vos statistiques",
+            "temporary": "Temporaire"
+        },
+        "wiki": {
+            "title": "Wiki",
+            "desc": "Comment dominer le monde avec les tableaux et bien d'autre..."
+        },
+        "runes": {
+            "title": "Bonus des Runes",
+            "desc": "Tableau des bonus des runes (fait par Zorago)"
+        },
+        "inventory": {
+            "title": "Gestionnaire d'inventaire",
+            "desc": "Comparez vos objets, calculez les résultas d'améliorations etc..."
+        },
+        "idle": {
+            "title": "Manager d'Arène",
+            "desc": "Pleins d'outils pour le Manager d'Arène"
+        },
+        "calendar": {
+            "title": "Calendrier des Familiers",
+            "desc": "Planifier quand vous pourrez attraper les familiers"
+        },
+        "players": {
+            "title": "Simulateur d'Arène",
+            "desc": "Simulez les probabilités des résultats d'un combat en PvP"
+        },
+        "guild": {
+            "title": "Simulateur de Combat de Guilde",
+            "desc": "Simulez les probabilités des résultats d'un combat de guilde"
+        },
+        "pets": {
+            "title": "Simulateur de Combat de Familiers",
+            "desc": "Simulez les probabilités des résultats d'un combat de familiers"
+        },
+        "dungeons": {
+            "title": "Simulateur de Combat de Donjon",
+            "desc": "Simulez les probabilités des résultats d'un combat en donjon"
+        },
+        "underworld": {
+            "title": "Enfers",
+            "desc": "Simulez les probabilités des résultats d'un combats dans les Enfers"
+        },
+        "fights": {
+            "title": "Visionneuse de Combats PvP",
+            "desc": "Affiche tous les combats PvP stocker dans un fichier d'archives"
+        },
+        "digest": {
+            "title": "Visionneuse de Combats PvE",
+            "desc": "Affiche tous les combats PvE stocker dans un fichier d'archives"
+        },
+        "atts": {
+            "title": "Or & Expérience",
+            "desc": "Courbes & calculateurs"
+        },
+        "smith": {
+            "title": "Améliorations du Forgeron",
+            "desc": "Combien ça coûte, combien on perd"
+        },
+        "hydra": {
+            "title": "Simulateur de l'Hydre",
+            "desc": "Simulez quelle classe de familiers est la meilleure contre l'hydre actuelle"
+        }
+    },
+    "404": {
+        "title": "404",
+        "text": "Il semblerai que cette page n'existe pas, veulliez verifier votre recherche"
+    },
+    "dungeons": {
+        "simulate": "Simuler",
+        "simulate_remaining": "Simuler les Étages restants",
+        "simulate_all": "Tous",
+        "player": "Joueur",
+        "enemy": "Ennemis",
+        "yourself": "Vous",
+        "bert": "Bébert",
+        "mark": "Marc",
+        "kunigunde": "Diane",
+        "open": "Donjons actuellements ouverts",
+        "graph": {
+            "y": "PV Restants",
+            "x": "- Distribution pour le nombre d'essaies sélectionnés -"
+        },
+        "results": "Résultas",
+        "cheats": {
+            "title": "Menu de Cheat",
+            "subtitle": "Sélectionnez les cheats à appliquer et rechargez votre personnage",
+            "enable": "Activer les Cheats",
+            "general": "General",
+            "enchantments": "Tous les Enchantments",
+            "runes": "Runes Maximales",
+            "pets": "Familiers Maximum",
+            "potions": "Potions (max 3)",
+            "class": "Changer la classe",
+            "keep_original": "Garder l'original"
+        }
+    },
+    "simulator": {
+        "paste_target#": "Cliquez ici et appuyez sur <b>CTRL&nbsp;+&nbsp;V</b> pour copier dans le Simulateur",
+        "threads": "Threads pour la simulation. Gardez ce nombre EN DESSOUS du nombrede cœurs de votre proccesseur",
+        "iterations": "Nombre d'iterations par thread.",
+        "save_image": "Sauvegarder comme Image"
+    }
+}
