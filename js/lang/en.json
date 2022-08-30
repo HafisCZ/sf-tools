@@ -220,7 +220,7 @@
             "players": "Players",
             "groups": "Guilds",
             "primary": "Primary filter",
-            "secodary": "Secondary filter",
+            "secondary": "Secondary filter",
             "none": "None",
             "create": "Create new profile",
             "between": "between",

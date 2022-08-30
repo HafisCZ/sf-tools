@@ -220,7 +220,7 @@
             "players": "Giocatori",
             "groups": "Gilde",
             "primary": "Filtro principale",
-            "secodary": "Filtro secondario",
+            "secondary": "Filtro secondario",
             "none": "Nessuno",
             "create": "Crea nuovo profilo",
             "between": "tra",
