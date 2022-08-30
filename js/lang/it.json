@@ -162,9 +162,6 @@
                 "tooltip": "Works independently in simple & advanced mode!",
                 "migrate": "Nascondi i file che contengono giocatori nascosti"
             },
-            "merge": {
-                "selected": "Esporta selezionato"
-            },
             "delete": {
                 "all": "Elimina tutti",
                 "selected": "Elimina selezionati"

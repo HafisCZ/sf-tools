@@ -163,7 +163,7 @@
                 "migrate": "Mark files with all hidden players as hidden"
             },
             "merge": {
-                "selected": "Export selected"
+                "selected": "Merge selected"
             },
             "delete": {
                 "all": "Delete all",
