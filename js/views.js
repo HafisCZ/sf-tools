@@ -1161,6 +1161,7 @@ const Localization = new (class {
             'pl': 'Polski',
             'pt': 'Português',
             'cs': 'Česky',
+            'fr': 'Français',
             'it': 'Italiano',
             'es': 'Español',
             'ch': 'Schwyzerdüütsch',
