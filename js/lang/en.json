@@ -534,6 +534,10 @@
             "refresh": "Click here or refresh the page",
             "revert": "Revert back to default profile"
         },
+        "changelog": {
+            "release": "Release",
+            "continue": "Continue"
+        },
         "file_edit": {
             "title": "Edit file",
             "timestamp": "Timestamp",

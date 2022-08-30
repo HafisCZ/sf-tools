@@ -195,6 +195,10 @@ const TermsAndConditionsDialog = new (class extends Dialog {
 })();
 
 const ChangeLogDialog = new (class extends Dialog {
+    _intl_key () {
+        return 'changelog';
+    }
+
     _createModal () {
         const release = MODULE_VERSION;
         const entries = CHANGELOG[release];
@@ -215,19 +219,17 @@ const ChangeLogDialog = new (class extends Dialog {
                     `
                 }
             }
-        } else {
-            content = '<p style="text-align: center; margin-top: 20%; margin-bottom: 20%;"><b>Changes are yet to be announced</b></p>'
         }
 
         return `
             <div class="ui tiny basic modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
-                <h2 class="ui centered header" style="padding-top: 0; padding-bottom: 0.5em;">Release <span style="color: orange;">${release}</span></h2>
+                <h2 class="ui centered header" style="padding-top: 0; padding-bottom: 0.5em;">${this.intl('release')} <span style="color: orange;">${release}</span></h2>
                 <div style="text-align: left; line-height: 1.3em; margin-left: -18px; max-height: 50vh; overflow-y: scroll;">
                     <ul>
                         ${content}
                     </ul>
                 </div>
-                <button class="ui black fluid button" style="margin-top: 2em;" data-op="accept">Continue</button>
+                <button class="ui black fluid button" style="margin-top: 2em;" data-op="accept">${this.intl('continue')}</button>
             </div>
         `;
     }
