@@ -1242,7 +1242,7 @@ class TableInstance {
                 ${ this.getHeaderBlock(true) }
             </tr>
             ${ injector }
-            ${ this.entries.missing.length ? `<tr class="css-b-bold">${ CellGenerator.WideCell(CellGenerator.Small(`Player data is missing for following members:<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.rightFlatSpan + leftSpan, 'center') }</tr>` : '' }
+            ${ this.entries.missing.length ? `<tr class="css-b-bold">${ CellGenerator.WideCell(CellGenerator.Small(`${intl('stats.guilds.missing')}<br/>${ this.entries.missing.map((n, i) => `${ i != 0 && i % 10 == 0 ? '<br/>' : '' }<b>${ n }</b>`).join(', ') }!`), undefined, this.rightFlatSpan + leftSpan, 'center') }</tr>` : '' }
         `;
 
         let layout = this.settings.getLayout(this.cache.statistics, this.cache.rows, this.cache.members);
@@ -1525,15 +1525,7 @@ class TableController {
         // Check table content for unwanted tags
         if (!SiteOptions.insecure && $body.find('script, iframe, img[onerror]').toArray().length) {
             // Show error
-            this.$table.html(`
-                <div>
-                    <b style="font-weight: 1000;">Error in the system:</b>
-                    <br/>
-                    <br/>
-                    This table was not displayed because it contains HTML tags that are prohibited.<br/>
-                    Please remove them from your settings and try again.
-                </div>
-            `).css('width', `50vw`).css('left', `25vw`);
+            this.$table.html(`<div>${intl('stats.settings.insecure_error')}</div>`).css('width', `50vw`).css('left', `25vw`);
         } else {
             this.$table.empty().append($body).css('width', `${ width }px`).css('left', `max(0px, calc(50vw - 9px - ${ width / 2 }px))`);
 

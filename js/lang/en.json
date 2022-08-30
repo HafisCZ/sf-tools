@@ -21,7 +21,17 @@
         "intelligence": "Intelligence",
         "constitution": "Constitution",
         "luck": "Luck",
-        "life_potion": "Eternal Life"
+        "life_potion": "Eternal Life",
+        "potion1": "Strength",
+        "potion2": "Dexterity",
+        "potion3": "Intelligence",
+        "potion4": "Constitution",
+        "potion5": "Luck",
+        "potion6": "Life",
+        "rank1": "Leader",
+        "rank2": "Officer",
+        "rank3": "Member",
+        "rank4": "Invited"
     },
     "index": {
         "toggle": "Toggle credits",
@@ -132,8 +142,6 @@
             "group": "Group",
             "groups": "Groups",
             "origin": "Origin",
-            "tag": "Tag",
-            "tags": "Tags",
             "players": "Players",
             "version": "Version",
             "import": {
@@ -165,12 +173,78 @@
                 "title": "File options",
                 "advanced": "Show advanced file list",
                 "hidden": "Show hidden players"
+            },
+            "tags": {
+                "single": "Tag",
+                "multiple": "Tags",
+                "all": "All",
+                "none": "None"
+            },
+            "filters": {
+                "any": "Any",
+                "n_unique": "unique",
+                "expression": "Expression",
+                "expression_placeholder": "Your expression",
+                "timestamp": "Timestamp",
+                "player": "Player",
+                "group": "Guild",
+                "prefix": "Prefix",
+                "tags": "Tags",
+                "type": "Type",
+                "type_all": "Show all characters",
+                "type_own": "Show only own characters",
+                "type_other": "Show only other characters",
+                "origin": "Origin",
+                "hidden": "Hidden"
+            },
+            "online": {
+                "title": "File sharing",
+                "prompt": "Enter your code:",
+                "invalid": "Invalid or expired code!",
+                "cancel": "Cancel",
+                "ok": "Ok"
             }
         },
         "copy": {
             "image": "Save as image",
             "basic": "Copy table",
-            "fight": "Copy table for fight simulator"
+            "fight": "Copy table for fight simulator",
+            "player": "Copy",
+            "player_companions": "Copy with companions"
+        },
+        "context": {
+            "hide": "Show / Hide",
+            "remove": "Remove permanently"
+        },
+        "profiles": {
+            "players": "Players",
+            "groups": "Guilds",
+            "primary": "Primary filter",
+            "secodary": "Secondary filter",
+            "none": "None",
+            "create": "Create new profile",
+            "between": "between",
+            "and": "and"
+        },
+        "filters": {
+            "c": "Player class, use full class name in lower case (eg.: berserker, battle mage)",
+            "p": "Player name",
+            "g": "Guild name",
+            "s": "Server",
+            "e": "Custom expression",
+            "#": "Show only players with specified tags",
+            "l": "Show only latest",
+            "f": "Show only first or first n entries",
+            "r": "Force recalculation of global variables",
+            "x": "Enable simulator (argument is number of iterations)",
+            "h": "Show hidden",
+            "o": "Show own",
+            "a": "Show all",
+            "d": "Show other",
+            "q": "Custom settings (separate header names with comma)",
+            "t": "Show online template directly",
+            "sr": "Sort by custom expression",
+            "qc": "Show only selected categories"
         },
         "scripts": {
             "settings": "Settings",
@@ -187,6 +261,16 @@
                 "apply": "Apply",
                 "remove": "Remove",
                 "save_apply": "Save & Apply"
+            },
+            "types": {
+                "me": "Me",
+                "players": "Players",
+                "guilds": "Guilds",
+                "tracker": "Tracker Configuration",
+                "default": "Default"
+            },
+            "online": {
+                "not_available": "No scripts available"
             }
         },
         "players": {
@@ -195,7 +279,8 @@
         },
         "guilds": {
             "other": "Show other guilds",
-            "hidden": "Show hidden"
+            "hidden": "Show hidden",
+            "missing": "Player data is missing for following members:"
         },
         "browse": {
             "hidden": "Show hidden"
@@ -242,17 +327,71 @@
                 "update_tooltip": "Update template with current script",
                 "remove": "Remove",
                 "remove_tooltip": "Remove template"
-            }
-        },
-        "online_file": {
-            "title": "File sharing",
-            "prompt": "Enter your code:",
-            "invalid": "Invalid or expired code!",
-            "cancel": "Cancel",
-            "ok": "Ok"
+            },
+            "quick_swap": "Quick swap custom templates"
         },
         "group": {
             "compared_to": "compared to"
+        },
+        "player": {
+            "attributes": "Attributes",
+            "basis": "Basis",
+            "miscellaneous": "Misc",
+            "armor": "Armor",
+            "damage": "Damage",
+            "health": "Health",
+            "potions": "Potions",
+            "guild": "Guild",
+            "name": "Name",
+            "role": "Role",
+            "joined_on": "Joined on",
+            "bonuses": "Bonuses",
+            "scrapbook": "Scrapbook",
+            "achievements": "Achievements",
+            "mount": "Mount",
+            "heath_bonus": "Health Bonus",
+            "damage_bonus": "Damage Bonus",
+            "treasure": "Treasure",
+            "instructor": "Instructor",
+            "pet": "Pet",
+            "knights": "Hall of Knights",
+            "extras": {
+                "title": "Extras",
+                "registered": "Registered"
+            },
+            "runes": {
+                "title": "Runes",
+                "gold": "Gold",
+                "experience": "Experience",
+                "epic": "Epic Chance",
+                "quality": "Item Quality",
+                "health": "Health",
+                "fire_damage": "Fire Damage",
+                "cold_damage": "Cold Damage",
+                "lightning_damage": "Lightning Damage",
+                "fire_resist": "Fire Resistance",
+                "cold_resist": "Cold Resistance",
+                "lightning_resist": "Lightning Resistance"
+            },
+            "fortress": {
+                "title": "Fortress",
+                "upgrades": "Upgrades",
+                "rank": "Rank",
+                "honor": "Honor",
+                "building1": "Fortress",
+                "building2": "Quarters",
+                "building3": "Woodcutter",
+                "building4": "Quarry",
+                "building5": "Gem Mine",
+                "building6": "Academy",
+                "building7": "Archery GUild",
+                "building8": "Barracks",
+                "building9": "Mage Tower",
+                "building10": "Treasury",
+                "building11": "Smithy",
+                "building12": "Fortifications",
+                "working": "Building"
+            }
         },
         "settings": {
             "title": "Global configuration",
@@ -260,6 +399,7 @@
             "empty_groups": "Show empty groups",
             "obfuscated": "Hide player names",
             "insecure": "Allow unsecure html tags",
+            "insecure_error#": "This table was not displayed because it contains HTML tags that are prohibited.<br/>Please remove them from your settings and try again.",
             "terms": "Accept Terms of Service",
             "tab": "Default tab",
             "preload": "Preload rows",
@@ -376,6 +516,14 @@
         }
     },
     "dialog": {
+        "delete_all": {
+            "title": "Delete all",
+            "notice": "Are you sure you want to delete all stored player data?"
+        },
+        "delete_script": {
+            "title": "Remove script",
+            "notice": "Are you sure you want to permanently remove currently applied script?"
+        },
         "warning": {
             "title": "An issue has occured!",
             "continue": "Continue"
