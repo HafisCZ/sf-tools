@@ -141,5 +141,33 @@
         "threads": "Threads pour la simulation. Gardez ce nombre EN DESSOUS du nombrede cœurs de votre proccesseur",
         "iterations": "Nombre d'iterations par thread.",
         "save_image": "Sauvegarder comme Image"
+    },
+    "editor": {
+        "name": "Nom",
+        "class": "Classe",
+        "level": "Niveau",
+        "mask": "Masque",
+        "instrument": "Instrument",
+        "armor": "Armure",
+        "armor_placeholder": "Points d'Armure",
+        "min": "Min",
+        "min_placeholder": "Item Min",
+        "max": "Max",
+        "max_placeholder": "Item Max",
+        "weapon_enchant": "Crit",
+        "rune": "Rune",
+        "portal_damage": "Bonus Portail Dégâts",
+        "portal_health": "Bonus Portail PdV",
+        "rune_health": "PdV Runes",
+        "block": "% Parade",
+        "fire": "Feu",
+        "cold": "Glace",
+        "lightning": "Foudre",
+        "gladiator": "Gladiateur (0 - 15)",
+        "life_potion": "Vie Éternelle",
+        "hand_enchant": "Ombre du Cowboy",
+        "smart_change": "Changement de classe intelligent",
+        "copy": "Copie",
+        "none": "Vide"
     }
 }
