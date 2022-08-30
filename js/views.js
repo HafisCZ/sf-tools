@@ -986,7 +986,7 @@ const ConfirmDialog = new (class extends Dialog {
                 </div>
                 <div class="ui three fluid buttons">
                     <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
-                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">${this.intl('Ok')}</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">${this.intl('ok')}</button>
                 </div>
             </div>
         `;
