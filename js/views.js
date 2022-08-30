@@ -1113,6 +1113,7 @@ const Localization = new (class {
 
         window.document.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
         window.document.querySelectorAll('[data-intl-tooltip]').forEach(element => this.translateTooltip(element));
+        window.document.querySelectorAll('[data-intl-placeholder]').forEach(element => this.translatePlaceholder(element));
     }
 
     findTranslation (key) {
@@ -1122,6 +1123,14 @@ const Localization = new (class {
         }
 
         return obj;
+    }
+
+    translatePlaceholder (node) {
+        let key = node.getAttribute('data-intl-placeholder');
+        let val = this.findTranslation(key);
+
+        node.removeAttribute('data-intl-placeholder');
+        node.setAttribute('placeholder', val || key);
     }
 
     translateTooltip (node) {
