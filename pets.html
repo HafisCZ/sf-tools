@@ -45,9 +45,9 @@
             <!-- Header -->
             <div class="ui five columns middle aligned grid">
                 <div class="five wide column">
-                    <div class="ui checkbox" id="useArmor" style="float: right;"  data-position="bottom left" data-tooltip="Keep unchecked unless playing on new backend! Applies to: Beta, S31.DE, W55 and many more (check discord for full list)">
+                    <div class="ui checkbox" id="useArmor" style="float: right;"  data-position="bottom left" data-intl-tooltip="pets.new_backend.tooltip">
                         <input type="checkbox" name="useArmorCheckbox">
-                        <label for="useArmorCheckbox">New backend</label>
+                        <label for="useArmorCheckbox" data-intl="pets.new_backend.label"></label>
                     </div>
                 </div>
                 <div class="one wide column">
@@ -56,19 +56,19 @@
                 <div class="four wide column">
                     <h1 class="ui centered header">Pet Simulator</h1>
                 </div>
-                <div class="two wide column" data-tooltip="Generate a level / gladiator success map. Only possible with own pet against a dungeon boss." data-position="left center">
+                <div class="two wide column" data-intl-tooltip="pets.generate.tooltip" data-position="left center">
                     <div class="ui simple dropdown" id="sim-generate">
-                        Generate
+                        <span data-intl="pets.generate.one"></span>
                         <i class="dropdown icon"></i>
                         <div class="menu">
-                            <div class="item" id="sim-generate1">Generate</div>
-                            <div class="item" id="sim-generate5">Generate next 5</div>
-                            <div class="item" id="sim-generate10">Generate next 10</div>
+                            <div class="item" id="sim-generate1" data-intl="pets.generate.one"></div>
+                            <div class="item" id="sim-generate5" data-intl="pets.generate.five"></div>
+                            <div class="item" id="sim-generate10" data-intl="pets.generate.ten"></div>
                         </div>
                     </div>
                 </div>
                 <div class="two wide column">
-                    <button class="ui fluid small button" type="submit" id="sim-run">Run</button>
+                    <button class="ui fluid small button" type="submit" id="sim-run" data-intl="pets.simulate"></button>
                 </div>
                 <div class="two wide wide column" id="sim-result">
 
@@ -81,14 +81,14 @@
                         <div class="bordered bone">
                             <div class="three fields">
                                 <div class="field">
-                                    <label>Type</label>
+                                    <label data-intl="pets.editor.type"></label>
                                     <div class="ui selection compact dropdown" data-path="Type">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
                                 </div>
                                 <div class="field">
-                                    <label>Pet</label>
+                                    <label data-intl="pets.editor.pet"></label>
                                     <div class="ui search selection compact dropdown" data-path="Pet">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
@@ -97,14 +97,14 @@
                                 <div class="field">
                                     <div class="two fields">
                                         <div class="field">
-                                            <label>Habitat</label>
+                                            <label data-intl="pets.editor.habitat"></label>
                                             <div class="ui selection compact dropdown" data-path="Boss">
                                                 <div class="text"></div>
                                                 <i class="dropdown icon"></i>
                                             </div>
                                         </div>
                                         <div class="field">
-                                            <label>Level</label>
+                                            <label data-intl="editor.level"></label>
                                             <input class="text-center" data-path="Level">
                                         </div>
                                     </div>
@@ -112,25 +112,25 @@
                             </div>
                             <div class="three fields">
                                 <div class="field">
-                                    <label>At 100 - 149</label>
-                                    <input class="text-center" data-path="At100" placeholder="Pets at 100 - 149">
+                                    <label data-intl="pets.editor.at100.title"></label>
+                                    <input class="text-center" data-path="At100" data-intl-placeholder="pets.editor.at100.placeholder">
                                 </div>
                                 <div class="field">
-                                    <label>At 150 - 199</label>
-                                    <input class="text-center" data-path="At150" placeholder="Pets at 150 - 199">
+                                    <label data-intl="pets.editor.at150.title"></label>
+                                    <input class="text-center" data-path="At150" data-intl-placeholder="pets.editor.at150.placeholder">
                                 </div>
                                 <div class="field">
-                                    <label>At 200</label>
-                                    <input class="text-center" data-path="At200" placeholder="Pets at 200">
+                                    <label data-intl="pets.editor.at200.title"></label>
+                                    <input class="text-center" data-path="At200" data-intl-placeholder="pets.editor.at200.placeholder">
                                 </div>
                             </div>
                             <div class="three fields">
                                 <div class="field">
-                                    <label>Pack</label>
-                                    <input class="text-center" data-path="Pack" placeholder="Pets you caught">
+                                    <label data-intl="pets.editor.pack.title"></label>
+                                    <input class="text-center" data-path="Pack" data-intl-placeholder="pets.editor.pack.placeholder">
                                 </div>
                                 <div class="field">
-                                    <label>Gladiator</label>
+                                    <label data-intl="editor.gladiator"></label>
                                     <div class="ui search selection compact dropdown" data-path="Gladiator">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
@@ -141,45 +141,45 @@
                         <div class="bordered bone" data-debug="">
                             <div class="two fields">
                                 <div class="field">
-                                    <label>Class</label>
+                                    <label data-intl="editor.class"></label>
                                     <input class="text-center" disabled data-path="Class">
                                 </div>
                                 <div class="field">
-                                    <label>Health</label>
+                                    <label data-intl="pets.editor.health"></label>
                                     <input class="text-center" disabled data-path="Health">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
-                                    <label>Attribute</label>
+                                    <label data-intl="pets.editor.attribute"></label>
                                     <input class="text-center" disabled data-path="Attribute">
                                 </div>
                                 <div class="field">
-                                    <label>Defense</label>
+                                    <label data-intl="pets.editor.defense"></label>
                                     <input class="text-center" disabled data-path="Defense">
                                 </div>
                                 <div class="field">
-                                    <label>Luck</label>
+                                    <label data-intl="general.luck"></label>
                                     <input class="text-center" disabled data-path="Luck">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
-                                    <label>Skip Chance</label>
+                                    <label data-intl="pets.editor.skip"></label>
                                     <input class="text-center" disabled data-path="Skip">
                                 </div>
                                 <div class="field">
-                                    <label>Critical Chance</label>
+                                    <label data-intl="pets.editor.crit"></label>
                                     <input class="text-center" disabled data-path="Chance">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
-                                    <label>Damage</label>
+                                    <label data-intl="pets.editor.damage"></label>
                                     <input class="text-center" disabled data-path="Damage">
                                 </div>
                                 <div class="field">
-                                    <label>Critical</label>
+                                    <label data-intl="pets.editor.critical_bonus"></label>
                                     <input class="text-center" disabled data-path="Critical">
                                 </div>
                             </div>
@@ -192,14 +192,14 @@
                         <div class="bordered btwo">
                             <div class="three fields">
                                 <div class="field">
-                                    <label>Type</label>
+                                    <label data-intl="pets.editor.type"></label>
                                     <div class="ui selection compact dropdown" data-path="Type">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
                                     </div>
                                 </div>
                                 <div class="field">
-                                    <label>Pet</label>
+                                    <label data-intl="pets.editor.pet"></label>
                                     <div class="ui search selection compact dropdown" data-path="Pet">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
@@ -208,14 +208,14 @@
                                 <div class="field">
                                     <div class="two fields">
                                         <div class="field">
-                                            <label>Habitat</label>
+                                            <label data-intl="pets.editor.habitat"></label>
                                             <div class="ui selection compact dropdown" data-path="Boss">
                                                 <div class="text"></div>
                                                 <i class="dropdown icon"></i>
                                             </div>
                                         </div>
                                         <div class="field">
-                                            <label>Level</label>
+                                            <label data-intl="editor.level"></label>
                                             <input class="text-center" data-path="Level">
                                         </div>
                                     </div>
@@ -223,25 +223,25 @@
                             </div>
                             <div class="three fields">
                                 <div class="field">
-                                    <label>At 100 - 149</label>
-                                    <input class="text-center" data-path="At100" placeholder="Pets at 100 - 149">
+                                    <label data-intl="pets.editor.at100.title"></label>
+                                    <input class="text-center" data-path="At100" data-intl-placeholder="pets.editor.at100.placeholder">
                                 </div>
                                 <div class="field">
-                                    <label>At 150 - 199</label>
-                                    <input class="text-center" data-path="At150" placeholder="Pets at 150 - 199">
+                                    <label data-intl="pets.editor.at150.title"></label>
+                                    <input class="text-center" data-path="At150" data-intl-placeholder="pets.editor.at150.placeholder">
                                 </div>
                                 <div class="field">
-                                    <label>At 200</label>
-                                    <input class="text-center" data-path="At200" placeholder="Pets at 200">
+                                    <label data-intl="pets.editor.at200.title"></label>
+                                    <input class="text-center" data-path="At200" data-intl-placeholder="pets.editor.at200.placeholder">
                                 </div>
                             </div>
                             <div class="three fields">
                                 <div class="field">
-                                    <label>Pack</label>
-                                    <input class="text-center" data-path="Pack" placeholder="Pets you caught">
+                                    <label data-intl="pets.editor.pack.title"></label>
+                                    <input class="text-center" data-path="Pack" data-intl-placeholder="pets.editor.pack.placeholder">
                                 </div>
                                 <div class="field">
-                                    <label>Gladiator</label>
+                                    <label data-intl="editor.gladiator"></label>
                                     <div class="ui search selection compact dropdown" data-path="Gladiator">
                                         <div class="text"></div>
                                         <i class="dropdown icon"></i>
@@ -249,48 +249,48 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bordered btwo" data-debug="">
+                        <div class="bordered bone" data-debug="">
                             <div class="two fields">
                                 <div class="field">
-                                    <label>Class</label>
+                                    <label data-intl="editor.class"></label>
                                     <input class="text-center" disabled data-path="Class">
                                 </div>
                                 <div class="field">
-                                    <label>Health</label>
+                                    <label data-intl="pets.editor.health"></label>
                                     <input class="text-center" disabled data-path="Health">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
-                                    <label>Attribute</label>
+                                    <label data-intl="pets.editor.attribute"></label>
                                     <input class="text-center" disabled data-path="Attribute">
                                 </div>
                                 <div class="field">
-                                    <label>Defense</label>
+                                    <label data-intl="pets.editor.defense"></label>
                                     <input class="text-center" disabled data-path="Defense">
                                 </div>
                                 <div class="field">
-                                    <label>Luck</label>
+                                    <label data-intl="general.luck"></label>
                                     <input class="text-center" disabled data-path="Luck">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
-                                    <label>Skip Chance</label>
+                                    <label data-intl="pets.editor.skip"></label>
                                     <input class="text-center" disabled data-path="Skip">
                                 </div>
                                 <div class="field">
-                                    <label>Critical Chance</label>
+                                    <label data-intl="pets.editor.crit"></label>
                                     <input class="text-center" disabled data-path="Chance">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
-                                    <label>Damage</label>
+                                    <label data-intl="pets.editor.damage"></label>
                                     <input class="text-center" disabled data-path="Damage">
                                 </div>
                                 <div class="field">
-                                    <label>Critical</label>
+                                    <label data-intl="pets.editor.critical_bonus"></label>
                                     <input class="text-center" disabled data-path="Critical">
                                 </div>
                             </div>
@@ -305,545 +305,547 @@
         </div>
 
         <div id="results-modal" class="ui tiny modal">
-            <div class="header">Results</div>
+            <div class="header" data-intl="pets.results"></div>
             <div class="content">
 
             </div>
         </div>
 
         <script type="text/javascript">
-            function clearMaps () {
-                $('#sim-maps').html('');
-            }
+            Site.ready(function () {
+                function clearMaps () {
+                    $('#sim-maps').html('');
+                }
 
-            function addMap (map, key) {
-                var ml = map.reduce((col, a) => col + (a ? 1 : 0), 0);
+                function addMap (map, key) {
+                    var ml = map.reduce((col, a) => col + (a ? 1 : 0), 0);
 
-                $('#sim-maps').append(`
-                    <div class="map-parent">
-                        <button data-key="${ key }" class="map-save ui small basic icon button" data-position="bottom center" data-tooltip="Save as image"><i class="download icon"></i></button>
-                        <table data-key="${ key }" class="map-map ui celled structured table table-group table-map-pet fixed-header">
-                            <thead>
-                                <tr>
-                                    <td colspan="17" class="text-center spanned">${ key }</td>
-                                </tr>
-                                <tr>
-                                    ${ map.find(x => x && x.length).reduce((col, a, i) => col + `<td>Glad ${ i }</td>`, '<td>Level</td>') }
-                                </tr>
-                            </thead>
-                            <tbody style="height: ${ (Math.min(2.3 * ml, 46)).toFixed(1) }em;" data-proper="${ (2.3 * ml).toFixed(1) }em">
-                                ${ map.reduce((col, a, i) => col + `<tr><td>${ i + 1 }</td>${ a.reduce((c, w) => c + `<td class="${ getPetColor(w) }">${ w.toFixed(2) }%</td>`, '') }</tr>`, '') }
-                            </tbody>
-                        </table>
-                    </div>
-                `);
+                    $('#sim-maps').append(`
+                        <div class="map-parent">
+                            <button data-key="${ key }" class="map-save ui small basic icon button" data-position="bottom center" data-tooltip="${intl('stats.copy.image')}"><i class="download icon"></i></button>
+                            <table data-key="${ key }" class="map-map ui celled structured table table-group table-map-pet fixed-header">
+                                <thead>
+                                    <tr>
+                                        <td colspan="17" class="text-center spanned">${ key }</td>
+                                    </tr>
+                                    <tr>
+                                        ${ map.find(x => x && x.length).reduce((col, a, i) => col + `<td>${intl('pets.map.gladiator')} ${ i }</td>`, `<td>${intl('editor.level')}</td>`) }
+                                    </tr>
+                                </thead>
+                                <tbody style="height: ${ (Math.min(2.3 * ml, 46)).toFixed(1) }em;" data-proper="${ (2.3 * ml).toFixed(1) }em">
+                                    ${ map.reduce((col, a, i) => col + `<tr><td>${ i + 1 }</td>${ a.reduce((c, w) => c + `<td class="${ getPetColor(w) }">${ w.toFixed(2) }%</td>`, '') }</tr>`, '') }
+                                </tbody>
+                            </table>
+                        </div>
+                    `);
 
-                $('#sim-maps').find(`button[data-key="${ key }"]`).click(() => {
-                    html2canvas($(`table[data-key="${ key }"]`).get(0), {
-                        logging: false,
-                        onclone: (doc) => {
-                            var $table = $(doc).find(`table[data-key="${ key }"]`);
-                            var $body = $table.find('tbody');
+                    $('#sim-maps').find(`button[data-key="${ key }"]`).click(() => {
+                        html2canvas($(`table[data-key="${ key }"]`).get(0), {
+                            logging: false,
+                            onclone: (doc) => {
+                                var $table = $(doc).find(`table[data-key="${ key }"]`);
+                                var $body = $table.find('tbody');
 
-                            $body.css('height', $body.attr('data-proper'));
-                        }
-                    }).then((canvas) => {
-                        canvas.toBlob((blob) => {
-                            window.download(`${ key }.png`, blob);
+                                $body.css('height', $body.attr('data-proper'));
+                            }
+                        }).then((canvas) => {
+                            canvas.toBlob((blob) => {
+                                window.download(`${ key }.png`, blob);
+                            });
                         });
                     });
-                });
-            }
+                }
 
-            const IGNORED_FIELDS = ['class', 'health', 'attribute', 'defense', 'luck', 'skip', 'damage', 'chance', 'critical'];
-            const NON_BOSS_FIELDS = ['level', 'at100', 'at150', 'at200', 'pack', 'gladiator'];
+                const IGNORED_FIELDS = ['class', 'health', 'attribute', 'defense', 'luck', 'skip', 'damage', 'chance', 'critical'];
+                const NON_BOSS_FIELDS = ['level', 'at100', 'at150', 'at200', 'pack', 'gladiator'];
 
-            class PetController {
-                constructor (root, index) {
-                    this.Index = index;
+                class PetController {
+                    constructor (root, index) {
+                        this.Index = index;
 
-                    this.fields = {
-                        type: new Field(`${root} [data-path="Type"]`, '0'),
-                        pet: new Field(`${root} [data-path="Pet"]`, '0'),
-                        boss: new Field(`${root} [data-path="Boss"]`, '0'),
-                        level: new Field(`${root} [data-path="Level"]`, '', Field.isPetLevel),
-                        at100: new Field(`${root} [data-path="At100"]`, '', Field.isPetCount),
-                        at150: new Field(`${root} [data-path="At150"]`, '', Field.isPetCount),
-                        at200: new Field(`${root} [data-path="At200"]`, '', Field.isPetCount),
-                        pack: new Field(`${root} [data-path="Pack"]`, '', Field.isPetCount),
-                        gladiator: new Field(`${root} [data-path="Gladiator"]`, '0'),
+                        this.fields = {
+                            type: new Field(`${root} [data-path="Type"]`, '0'),
+                            pet: new Field(`${root} [data-path="Pet"]`, '0'),
+                            boss: new Field(`${root} [data-path="Boss"]`, '0'),
+                            level: new Field(`${root} [data-path="Level"]`, '', Field.isPetLevel),
+                            at100: new Field(`${root} [data-path="At100"]`, '', Field.isPetCount),
+                            at150: new Field(`${root} [data-path="At150"]`, '', Field.isPetCount),
+                            at200: new Field(`${root} [data-path="At200"]`, '', Field.isPetCount),
+                            pack: new Field(`${root} [data-path="Pack"]`, '', Field.isPetCount),
+                            gladiator: new Field(`${root} [data-path="Gladiator"]`, '0'),
 
-                        class: new Field(`${root} [data-path="Class"]`, '?'),
-                        health: new Field(`${root} [data-path="Health"]`, '?'),
-                        attribute: new Field(`${root} [data-path="Attribute"]`, '?'),
-                        defense: new Field(`${root} [data-path="Defense"]`, '?'),
-                        luck: new Field(`${root} [data-path="Luck"]`, '?'),
-                        skip: new Field(`${root} [data-path="Skip"]`, '?'),
-                        damage: new Field(`${root} [data-path="Damage"]`, '?'),
-                        chance: new Field(`${root} [data-path="Chance"]`, '?'),
-                        critical: new Field(`${root} [data-path="Critical"]`, '?')
-                    };
+                            class: new Field(`${root} [data-path="Class"]`, '?'),
+                            health: new Field(`${root} [data-path="Health"]`, '?'),
+                            attribute: new Field(`${root} [data-path="Attribute"]`, '?'),
+                            defense: new Field(`${root} [data-path="Defense"]`, '?'),
+                            luck: new Field(`${root} [data-path="Luck"]`, '?'),
+                            skip: new Field(`${root} [data-path="Skip"]`, '?'),
+                            damage: new Field(`${root} [data-path="Damage"]`, '?'),
+                            chance: new Field(`${root} [data-path="Chance"]`, '?'),
+                            critical: new Field(`${root} [data-path="Critical"]`, '?')
+                        };
 
-                    this.fields['gladiator'].$object.dropdown({
-                        values: [
-                            { name: 'None', value: 0 },
-                            ... [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ].map(gladiator => {
+                        this.fields['gladiator'].$object.dropdown({
+                            values: [
+                                { name: intl('pets.editor.none'), value: 0 },
+                                ... [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 ].map(gladiator => {
+                                    return {
+                                        name: `${ gladiator } (${ gladiator * 5 }%)`,
+                                        value: gladiator
+                                    }
+                                })
+                            ]
+                        }).dropdown('set selected', '0');
+
+                        this.fields['boss'].$object.dropdown({
+                            values: [
+                                { name: intl('general.no'), value: 0 },
+                                { name: intl('general.yes'), value: 1 }
+                            ]
+                        }).dropdown('setting', 'onChange', (value, text) => {
+                            for (let name of NON_BOSS_FIELDS) {
+                                this.fields[name].toggle(value == 0);
+                            }
+                        }).dropdown('set selected', '0');
+
+                        this.fields['pet'].$object.dropdown({
+                            fullTextSearch: true,
+                            preserveHTML: true,
+                            values: new Array(100).fill(0).map((_ , i) => {
                                 return {
-                                    name: `${ gladiator } (${ gladiator * 5 }%)`,
-                                    value: gladiator
+                                    name: `<img class="ui centered image pet-picture" src="res/pets/monster${ 800 + i }.png"><span class="pet-name">${intl(`pets.names.${i}`)}</span>`,
+                                    value: i
+                                };
+                            })
+                        }).dropdown('set selected', '0');
+
+                        this.fields['type'].$object.dropdown({
+                            values: [0, 1, 2, 3, 4].map((index) => {
+                                return {
+                                    name: intl(`pets.types.${index}`),
+                                    value: index
                                 }
                             })
-                        ]
-                    }).dropdown('set selected', '0');
+                        }).dropdown('set selected', '0');
 
-                    this.fields['boss'].$object.dropdown({
-                        values: [
-                            { name: 'No', value: 0 },
-                            { name: 'Yes', value: 1 }
-                        ]
-                    }).dropdown('setting', 'onChange', (value, text) => {
-                        for (let name of NON_BOSS_FIELDS) {
-                            this.fields[name].toggle(value == 0);
-                        }
-                    }).dropdown('set selected', '0');
-
-                    this.fields['pet'].$object.dropdown({
-                        fullTextSearch: true,
-                        preserveHTML: true,
-                        values: new Array(100).fill(0).map((_ , i) => {
-                            return {
-                                name: `<img class="ui centered image pet-picture" src="res/pets/monster${ 800 + i }.png"><span class="pet-name">${ NAME_MONSTER[800 + i] }</span>`,
-                                value: i
-                            };
-                        })
-                    }).dropdown('set selected', '0');
-
-                    this.fields['type'].$object.dropdown({
-                        values: PET_TYPE_NAMES.map((name, index) => {
-                            return {
-                                name: name,
-                                value: index
-                            }
-                        })
-                    }).dropdown('set selected', '0');
-
-                    this.$debugDisplay = $(`${root} [data-debug]`);
-                    this.$debugDisplay.hide();
-
-                    for (let [name, field] of Object.entries(this.fields)) {
-                        if (!IGNORED_FIELDS.includes(name)) {
-                            field.setListener(() => this.changeListener(name));
-                            field.triggerAlways = true;
-                        }
-                    }
-                }
-
-                fill (object) {
-                    if (object) {
-                        for (var [key, field] of Object.entries(this.fields)) {
-                            if (IGNORED_FIELDS.includes(key)) {
-                                field.clear();
-                            } else if (key == 'pet') {
-                                field.set(object.Type * 20 + object.Pet);
-                            } else {
-                                field.set(getObjectAt(object, field.path()));
-                            }
-                        }
-                    } else {
-                        for (var [key, field] of Object.entries(this.fields)) {
-                            field.clear();
-                        }
-                    }
-                }
-
-                read () {
-                    let object = {
-                        Index: this.Index
-                    };
-
-                    for (let [key, field] of Object.entries(this.fields)) {
-                        if (IGNORED_FIELDS.includes(key)) {
-                            continue;
-                        } else if (key == 'pet') {
-                            setObjectAt(object, field.path(), field.get() % 20);
-                        } else {
-                            setObjectAt(object, field.path(), field.get());
-                        }
-                    }
-
-                    return object;
-                }
-
-                valid () {
-                    let isBoss = this.fields['boss'].get() == 1;
-                    for (let [key, field] of Object.entries(this.fields)) {
-                        let isIgnoredField = IGNORED_FIELDS.includes(key);
-                        let isBossIgnoredField = isBoss && NON_BOSS_FIELDS.includes(key);
-
-                        if (!isIgnoredField && !isBossIgnoredField && !field.valid()) {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }
-
-                changeListener (name) {
-                    if (IGNORED_FIELDS.includes(name) || this._ignoreChanges) return;
-
-                    if (name == 'type') {
-                        let type = this.fields['type'].get();
-
-                        this.fields['pet'].set(type * 20);
-                        this.fields['pet'].$object.find('.item').each((i, e) => {
-                            let $e = $(e);
-                            let id = parseInt($e.attr('data-value'));
-
-                            if (Math.trunc(id / 20) == type) {
-                                $e.removeClass('css-hidden');
-                            } else {
-                                $e.addClass('css-hidden');
-                            }
-                        });
-                    }
-
-                    if (this.valid()) {
-                        models[this.Index] = PetModel.fromObject(this.read());
-                        this.$debugDisplay.show();
-                    } else {
-                        models[this.Index] = undefined;
+                        this.$debugDisplay = $(`${root} [data-debug]`);
                         this.$debugDisplay.hide();
-                    }
 
-                    refreshModels();
-                }
-
-                fillDebugInformation (model, initialized) {
-                    this.fields['class'].set(PLAYER_CLASS[model.Class]);
-                    this.fields['health'].set(formatAsSpacedNumber(model.TotalHealth, ' '));
-                    this.fields['attribute'].set(formatAsSpacedNumber(model.Attribute, ' '));
-                    this.fields['defense'].set(formatAsSpacedNumber(model.DefenseAttribute, ' '));
-                    this.fields['luck'].set(formatAsSpacedNumber(model.LuckAttribute, ' '));
-
-                    if (initialized) {
-                        this.fields['skip'].set(model.SkipChance > 0 ? `${ model.SkipChance.toFixed(2) }%` : 'None');
-                        this.fields['damage'].set(formatAsSpacedNumber(model.Damage, ' '));
-                        this.fields['chance'].set(model.CriticalChance > 0 ? `${ model.CriticalChance.toFixed(2) }%` : 'None');
-                        this.fields['critical'].set(`${ Math.round(100 * model.Critical) }%`);
-                    } else {
-                        for (let name of ['skip', 'damage', 'chance', 'critical']) {
-                            this.fields[name].clear();
+                        for (let [name, field] of Object.entries(this.fields)) {
+                            if (!IGNORED_FIELDS.includes(name)) {
+                                field.setListener(() => this.changeListener(name));
+                                field.triggerAlways = true;
+                            }
                         }
                     }
-                }
-            };
 
-            function refreshModels () {
-                let [a, b] = models;
-                if (a && b) {
-                    a.initialize(b);
-                    b.initialize(a);
-
-                    petA.fillDebugInformation(a, true);
-                    petB.fillDebugInformation(b, true);
-                } else if (a) {
-                    petA.fillDebugInformation(a, false);
-                } else if (b) {
-                    petB.fillDebugInformation(b, false);
-                }
-
-                if (petA.valid() && petB.valid() && petA.fields['boss'].get() == 0 && petB.fields['boss'].get() == 1) {
-                    $('#sim-generate').removeClass('disabled');
-                } else {
-                    $('#sim-generate').addClass('disabled');
-                }
-            }
-
-            var models = [ undefined, undefined ];
-
-            var petA = new PetController('#sim-a', 0);
-            var petB = new PetController('#sim-b', 1);
-
-            petA.fill();
-            petA.valid();
-
-            petB.fill();
-            petB.valid();
-
-            var useArmor = false;
-            var useArmorCheckbox = $('#useArmor').checkbox('uncheck').change((event) => {
-                useArmor = $(event.currentTarget).checkbox('is checked');
-            });
-
-            $('#sim-run').click(function () {
-                if (petA.valid() && petB.valid()) {
-                    Loader.toggle(true);
-                    simulateFight(petA.read(), petB.read()).then(([chance, a, b]) => {
-                        $('#sim-result').html(chance.toFixed(chance < 0.01 ? 5 : 2) + '%');
-                        Loader.toggle(false);
-                    }).catch(() => {
-                        Loader.toggle(false);
-                    });
-                }
-            });
-
-            function simulateFight (a, b) {
-                return new Promise(async (resolve, reject) => {
-                    if (a && b && (a.Level > 0 || a.Boss) && (b.Level > 0 || b.Boss)) {
-                        let worker = await createPetWorker();
-
-                        worker.addEventListener('message', (message) => {
-                            if (message.data.command == 'finished') {
-                                resolve([message.data.results, a, b]);
+                    fill (object) {
+                        if (object) {
+                            for (var [key, field] of Object.entries(this.fields)) {
+                                if (IGNORED_FIELDS.includes(key)) {
+                                    field.clear();
+                                } else if (key == 'pet') {
+                                    field.set(object.Type * 20 + object.Pet);
+                                } else {
+                                    field.set(getObjectAt(object, field.path()));
+                                }
                             }
-                        }, false);
+                        } else {
+                            for (var [key, field] of Object.entries(this.fields)) {
+                                field.clear();
+                            }
+                        }
+                    }
 
-                        worker.postMessage({
-                            mode: SimulatorType.Pet,
-                            players: [a, b],
-                            useArmor: useArmor
-                        });
+                    read () {
+                        let object = {
+                            Index: this.Index
+                        };
+
+                        for (let [key, field] of Object.entries(this.fields)) {
+                            if (IGNORED_FIELDS.includes(key)) {
+                                continue;
+                            } else if (key == 'pet') {
+                                setObjectAt(object, field.path(), field.get() % 20);
+                            } else {
+                                setObjectAt(object, field.path(), field.get());
+                            }
+                        }
+
+                        return object;
+                    }
+
+                    valid () {
+                        let isBoss = this.fields['boss'].get() == 1;
+                        for (let [key, field] of Object.entries(this.fields)) {
+                            let isIgnoredField = IGNORED_FIELDS.includes(key);
+                            let isBossIgnoredField = isBoss && NON_BOSS_FIELDS.includes(key);
+
+                            if (!isIgnoredField && !isBossIgnoredField && !field.valid()) {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }
+
+                    changeListener (name) {
+                        if (IGNORED_FIELDS.includes(name) || this._ignoreChanges) return;
+
+                        if (name == 'type') {
+                            let type = this.fields['type'].get();
+
+                            this.fields['pet'].set(type * 20);
+                            this.fields['pet'].$object.find('.item').each((i, e) => {
+                                let $e = $(e);
+                                let id = parseInt($e.attr('data-value'));
+
+                                if (Math.trunc(id / 20) == type) {
+                                    $e.removeClass('css-hidden');
+                                } else {
+                                    $e.addClass('css-hidden');
+                                }
+                            });
+                        }
+
+                        if (this.valid()) {
+                            models[this.Index] = PetModel.fromObject(this.read());
+                            this.$debugDisplay.show();
+                        } else {
+                            models[this.Index] = undefined;
+                            this.$debugDisplay.hide();
+                        }
+
+                        refreshModels();
+                    }
+
+                    fillDebugInformation (model, initialized) {
+                        this.fields['class'].set(intl(`general.class${model.Class}`));
+                        this.fields['health'].set(formatAsSpacedNumber(model.TotalHealth, ' '));
+                        this.fields['attribute'].set(formatAsSpacedNumber(model.Attribute, ' '));
+                        this.fields['defense'].set(formatAsSpacedNumber(model.DefenseAttribute, ' '));
+                        this.fields['luck'].set(formatAsSpacedNumber(model.LuckAttribute, ' '));
+
+                        if (initialized) {
+                            this.fields['skip'].set(model.SkipChance > 0 ? `${ model.SkipChance.toFixed(2) }%` : intl('pets.editor.none'));
+                            this.fields['damage'].set(formatAsSpacedNumber(model.Damage, ' '));
+                            this.fields['chance'].set(model.CriticalChance > 0 ? `${ model.CriticalChance.toFixed(2) }%` : intl('pets.editor.none'));
+                            this.fields['critical'].set(`${ Math.round(100 * model.Critical) }%`);
+                        } else {
+                            for (let name of ['skip', 'damage', 'chance', 'critical']) {
+                                this.fields[name].clear();
+                            }
+                        }
+                    }
+                };
+
+                function refreshModels () {
+                    let [a, b] = models;
+                    if (a && b) {
+                        a.initialize(b);
+                        b.initialize(a);
+
+                        petA.fillDebugInformation(a, true);
+                        petB.fillDebugInformation(b, true);
+                    } else if (a) {
+                        petA.fillDebugInformation(a, false);
+                    } else if (b) {
+                        petB.fillDebugInformation(b, false);
+                    }
+
+                    if (petA.valid() && petB.valid() && petA.fields['boss'].get() == 0 && petB.fields['boss'].get() == 1) {
+                        $('#sim-generate').removeClass('disabled');
                     } else {
-                        reject();
+                        $('#sim-generate').addClass('disabled');
+                    }
+                }
+
+                var models = [ undefined, undefined ];
+
+                var petA = new PetController('#sim-a', 0);
+                var petB = new PetController('#sim-b', 1);
+
+                petA.fill();
+                petA.valid();
+
+                petB.fill();
+                petB.valid();
+
+                var useArmor = false;
+                var useArmorCheckbox = $('#useArmor').checkbox('uncheck').change((event) => {
+                    useArmor = $(event.currentTarget).checkbox('is checked');
+                });
+
+                $('#sim-run').click(function () {
+                    if (petA.valid() && petB.valid()) {
+                        Loader.toggle(true);
+                        simulateFight(petA.read(), petB.read()).then(([chance, a, b]) => {
+                            $('#sim-result').html(chance.toFixed(chance < 0.01 ? 5 : 2) + '%');
+                            Loader.toggle(false);
+                        }).catch(() => {
+                            Loader.toggle(false);
+                        });
                     }
                 });
-            }
 
-            function getPetColor (num) {
-                if (num < 0.01) {
-                    return 'pet-0';
-                } else if (num >= 25) {
-                    return 'pet-25'
-                } else if (num >= 10) {
-                    return 'pet-10';
-                } else if (num >= 5) {
-                    return 'pet-5';
-                } else {
-                    return 'pet-1';
-                }
-            }
+                function simulateFight (a, b) {
+                    return new Promise(async (resolve, reject) => {
+                        if (a && b && (a.Level > 0 || a.Boss) && (b.Level > 0 || b.Boss)) {
+                            let worker = await createPetWorker();
 
-            async function generatePetMap (mapCount) {
-                if (petA.valid() && petB.valid()) {
-                    $('#sim-result').html('');
-                    clearMaps();
-
-                    var a = petA.read();
-                    var b = [];
-
-                    var temp = petB.read();
-
-                    if (a && temp && !a.Boss && temp.Boss) {
-                        Loader.toggle(true);
-
-                        var count = 0;
-                        for (var i = temp.Pet; i < Math.min(20, temp.Pet + mapCount); i++) {
-                            var bs = petB.read();
-                            bs.Pet = i;
-                            b.push(bs);
-
-                            count++;
-                        }
-
-                        var maps = [];
-                        var maps_finished = 0;
-
-                        for (var i = 0; i < count; i++) {
-                            var worker = await createPetWorker();
-
-                            worker.addEventListener('message', function (message) {
+                            worker.addEventListener('message', (message) => {
                                 if (message.data.command == 'finished') {
-                                    maps[message.data.tracking] = message.data.results;
-                                    maps_finished++;
-
-                                    if (maps_finished == count) {
-                                        Loader.toggle(false);
-
-                                        for (var j = 0; j < maps.length; j++) {
-                                            addMap(maps[j], `${ PET_TYPE_NAMES[a.Type] } ${ a.Pet + 1 } - ${ NAME_MONSTER[800 + a.Type * 20 + a.Pet] } (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${ PET_TYPE_NAMES[b[j].Type] } ${ b[j].Pet + 1 } - ${ NAME_MONSTER[800 + b[j].Type * 20 + b[j].Pet] }`);
-                                        }
-                                    }
+                                    resolve([message.data.results, a, b]);
                                 }
                             }, false);
 
                             worker.postMessage({
-                                mode: SimulatorType.PetMap,
-                                players: [a, b[i]],
-                                tracking: i,
+                                mode: SimulatorType.Pet,
+                                players: [a, b],
                                 useArmor: useArmor
                             });
+                        } else {
+                            reject();
+                        }
+                    });
+                }
+
+                function getPetColor (num) {
+                    if (num < 0.01) {
+                        return 'pet-0';
+                    } else if (num >= 25) {
+                        return 'pet-25'
+                    } else if (num >= 10) {
+                        return 'pet-10';
+                    } else if (num >= 5) {
+                        return 'pet-5';
+                    } else {
+                        return 'pet-1';
+                    }
+                }
+
+                async function generatePetMap (mapCount) {
+                    if (petA.valid() && petB.valid()) {
+                        $('#sim-result').html('');
+                        clearMaps();
+
+                        var a = petA.read();
+                        var b = [];
+
+                        var temp = petB.read();
+
+                        if (a && temp && !a.Boss && temp.Boss) {
+                            Loader.toggle(true);
+
+                            var count = 0;
+                            for (var i = temp.Pet; i < Math.min(20, temp.Pet + mapCount); i++) {
+                                var bs = petB.read();
+                                bs.Pet = i;
+                                b.push(bs);
+
+                                count++;
+                            }
+
+                            var maps = [];
+                            var maps_finished = 0;
+
+                            for (var i = 0; i < count; i++) {
+                                var worker = await createPetWorker();
+
+                                worker.addEventListener('message', function (message) {
+                                    if (message.data.command == 'finished') {
+                                        maps[message.data.tracking] = message.data.results;
+                                        maps_finished++;
+
+                                        if (maps_finished == count) {
+                                            Loader.toggle(false);
+
+                                            for (var j = 0; j < maps.length; j++) {
+                                                addMap(maps[j], `${intl(`pets.types.${a.Type}`)} ${ a.Pet + 1 } - ${intl(`pets.names.${a.Type * 20 + a.Pet}`)} (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${intl(`pets.types.${b[j].Type}`)} ${ b[j].Pet + 1 } - ${intl(`pets.names.${b[j].Type * 20 + b[j].Pet}`)}`);
+                                            }
+                                        }
+                                    }
+                                }, false);
+
+                                worker.postMessage({
+                                    mode: SimulatorType.PetMap,
+                                    players: [a, b[i]],
+                                    tracking: i,
+                                    useArmor: useArmor
+                                });
+                            }
                         }
                     }
                 }
-            }
 
-            $('#sim-generate1').click(() => generatePetMap(1));
-            $('#sim-generate5').click(() => generatePetMap(5));
-            $('#sim-generate10').click(() => generatePetMap(10));
+                $('#sim-generate1').click(() => generatePetMap(1));
+                $('#sim-generate5').click(() => generatePetMap(5));
+                $('#sim-generate10').click(() => generatePetMap(10));
 
-            StatisticsIntegration.configure(
-                SELF_PROFILE,
-                'Poll saved characters',
-                'pets',
-                function ($statsList) {
-                    function hasPets (player) {
-                        return typeof player.Pets !== 'undefined' && player.Pets.TotalLevel;
-                    }
+                StatisticsIntegration.configure(
+                    SELF_PROFILE,
+                    intl('pets.poll'),
+                    'pets',
+                    function ($statsList) {
+                        function hasPets (player) {
+                            return typeof player.Pets !== 'undefined' && player.Pets.TotalLevel;
+                        }
 
-                    for (let player of _sort_des(DatabaseManager.getLatestPlayers(), p => p.Timestamp).filter(hasPets)) {
-                        let hasDungeonsLeft = player.Pets.Dungeons.some(pet => pet < 20);
+                        for (let player of _sort_des(DatabaseManager.getLatestPlayers(), p => p.Timestamp).filter(hasPets)) {
+                            let hasDungeonsLeft = player.Pets.Dungeons.some(pet => pet < 20);
 
-                        $statsList.append($(`
-                            <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
-                                <div class="visible content">
-                                    <span style="color: black;">${ player.Name } @ ${ player.Prefix }</span>
+                            $statsList.append($(`
+                                <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
+                                    <div class="visible content">
+                                        <span style="color: black;">${ player.Name } @ ${ player.Prefix }</span>
+                                    </div>
+                                    <div class="hidden content">
+                                        <span style="color: black;">${intl('editor.level')} ${ player.Level } ${intl(`general.class${player.Class}`)}</span>
+                                    </div>
+                                    <div style="position: absolute; right: 0.25em; top: 32.5%; ${hasDungeonsLeft ? '' : 'display: none;'}" data-player-id="${ player.Identifier }">
+                                        <i class="expand icon"></i>
+                                    </div>
                                 </div>
-                                <div class="hidden content">
-                                    <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }</span>
-                                </div>
-                                <div style="position: absolute; right: 0.25em; top: 32.5%; ${hasDungeonsLeft ? '' : 'display: none;'}" data-player-id="${ player.Identifier }">
-                                    <i class="expand icon"></i>
-                                </div>
-                            </div>
-                            `).click(() => {
-                                let [playerPet, bossPet] = getPetsFor(player, petA.fields['type'].get(), null);
-                                petA.fill(playerPet);
-                                petB.fill(bossPet);
-                            }
-                        ));
+                                `).click(() => {
+                                    let [playerPet, bossPet] = getPetsFor(player, petA.fields['type'].get(), null);
+                                    petA.fill(playerPet);
+                                    petB.fill(bossPet);
+                                }
+                            ));
 
-                        $(`div[data-player-id="${ player.Identifier }"]`).click((event) => {
-                            event.stopPropagation();
-                            Loader.toggle(true);
+                            $(`div[data-player-id="${ player.Identifier }"]`).click((event) => {
+                                event.stopPropagation();
+                                Loader.toggle(true);
 
-                            let petFights = [];
-                            let results = [];
+                                let petFights = [];
+                                let results = [];
 
-                            for (let type = 0; type < 5; type++) {
-                                for (let klass = 1; klass <= 3; klass++) {
-                                    let [pet1, pet2] = getPetsFor(player, type, klass);
-                                    if (pet1 && pet2) {
-                                        petFights.push(simulateFight(pet1, pet2).then(([chance, a, b]) => {
-                                            results.push({
-                                                chance,
-                                                player: a,
-                                                boss: b
-                                            });
-                                        }));
+                                for (let type = 0; type < 5; type++) {
+                                    for (let klass = 1; klass <= 3; klass++) {
+                                        let [pet1, pet2] = getPetsFor(player, type, klass);
+                                        if (pet1 && pet2) {
+                                            petFights.push(simulateFight(pet1, pet2).then(([chance, a, b]) => {
+                                                results.push({
+                                                    chance,
+                                                    player: a,
+                                                    boss: b
+                                                });
+                                            }));
+                                        }
                                     }
                                 }
-                            }
 
-                            Toast.info('Starting simulation', `<b>Matches:</b> ${petFights.length}`);
+                                Toast.info(intl('pets.bulk.toast.title'), `<b>${intl('pets.bulk.toast.matches')}</b> ${petFights.length}`);
 
-                            Promise.all(petFights).then(() => {
-                                Loader.toggle(false);
-                                _sort_des(results, i => i.chance);
+                                Promise.all(petFights).then(() => {
+                                    Loader.toggle(false);
+                                    _sort_des(results, i => i.chance);
 
-                                let resultClasses = [0, 0, 0, 0, 0];
-                                results = results.filter(({ player }) => {
-                                    resultClasses[player.Type]++;
+                                    let resultClasses = [0, 0, 0, 0, 0];
+                                    results = results.filter(({ player }) => {
+                                        resultClasses[player.Type]++;
 
-                                    if (resultClasses[player.Type] == 1) {
-                                        return true;
-                                    } else {
-                                        return false;
-                                    }
+                                        if (resultClasses[player.Type] == 1) {
+                                            return true;
+                                        } else {
+                                            return false;
+                                        }
+                                    });
+
+                                    $('#results-modal .content').html(`
+                                        <div class="ui three column grid">
+                                            ${ results.map(({ chance, player, boss }) => {
+                                                let playerIndex = 20 * player.Type + player.Pet;
+                                                let bossIndex = 20 * boss.Type + boss.Pet;
+                                                return `
+                                                    <div class="two wide column">
+                                                        <img src="res/pets/monster${800 + playerIndex}.png" style="height: 3em;">
+                                                    </div>
+                                                    <div class="four wide column" style="line-height: 3em; font-size: 110%;">
+                                                        ${intl(`pets.names.${playerIndex}`)}
+                                                    </div>
+                                                    <div class="two wide column">
+                                                        <img src="res/pets/monster${800 + bossIndex}.png" style="height: 3em;">
+                                                    </div>
+                                                    <div class="four wide column" style="line-height: 3em; font-size: 110%;">
+                                                        ${intl(`pets.names.${bossIndex}`)}
+                                                    </div>
+                                                    <div class="four wide column text-center" style="line-height: 3em;">
+                                                        ${ chance == 0 ? intl('pets.bulk.not_possible') : `${ chance.toFixed(chance < 0.01 ? 5 : 2) }%` }
+                                                    </div>
+                                                `;
+                                            }).join('') }
+                                        </div>
+                                    `);
+                                    $('#results-modal').modal('show');
                                 });
-
-                                $('#results-modal .content').html(`
-                                    <div class="ui three column grid">
-                                        ${ results.map(({ chance, player, boss }) => {
-                                            let playerIndex = 800 + 20 * player.Type + player.Pet;
-                                            let bossIndex = 800 + 20 * boss.Type + boss.Pet;
-                                            return `
-                                                <div class="two wide column">
-                                                    <img src="res/pets/monster${ playerIndex }.png" style="height: 3em;">
-                                                </div>
-                                                <div class="four wide column" style="line-height: 3em; font-size: 110%;">
-                                                    ${ NAME_MONSTER[playerIndex] }
-                                                </div>
-                                                <div class="two wide column">
-                                                    <img src="res/pets/monster${ bossIndex }.png" style="height: 3em;">
-                                                </div>
-                                                <div class="four wide column" style="line-height: 3em; font-size: 110%;">
-                                                    ${ NAME_MONSTER[bossIndex] }
-                                                </div>
-                                                <div class="four wide column text-center" style="line-height: 3em;">
-                                                    ${ chance == 0 ? 'Not possible' : `${ chance.toFixed(chance < 0.01 ? 5 : 2) }%` }
-                                                </div>
-                                            `;
-                                        }).join('') }
-                                    </div>
-                                `);
-                                $('#results-modal').modal('show');
                             });
-                        });
+                        }
                     }
-                }
-            );
+                );
 
-            function getPetsFor (player, type, petClass) {
-                let currentType = type;
-                let currentName = [
-                    'Shadow', 'Light', 'Earth', 'Fire', 'Water'
-                ][currentType];
+                function getPetsFor (player, type, petClass) {
+                    let currentType = type;
+                    let currentName = [
+                        'Shadow', 'Light', 'Earth', 'Fire', 'Water'
+                    ][currentType];
 
-                let gladiator = _try(player.Fortress, 'Gladiator') || 0;
-                let pack = player.Pets[`${currentName}Count`];
-                let petLevels = player.Pets[`${currentName}Levels`];
-                let at100 = _len_where(petLevels, l => _between(l, 100 - 1, 150));
-                let at150 = _len_where(petLevels, l => _between(l, 150 - 1, 200));
-                let at200 = _len_where(petLevels, l => l == 200);
+                    let gladiator = _try(player.Fortress, 'Gladiator') || 0;
+                    let pack = player.Pets[`${currentName}Count`];
+                    let petLevels = player.Pets[`${currentName}Levels`];
+                    let at100 = _len_where(petLevels, l => _between(l, 100 - 1, 150));
+                    let at150 = _len_where(petLevels, l => _between(l, 150 - 1, 200));
+                    let at200 = _len_where(petLevels, l => l == 200);
 
-                let pets = petLevels.map((level, i) => {
-                    return {
-                        Gladiator: gladiator,
-                        Pet: i,
-                        Type: currentType,
-                        Boss: 0,
-                        Level: level,
-                        Pack: pack,
-                        At100: at100,
-                        At150: at150,
-                        At200: at200,
-                        Index: 0
+                    let pets = petLevels.map((level, i) => {
+                        return {
+                            Gladiator: gladiator,
+                            Pet: i,
+                            Type: currentType,
+                            Boss: 0,
+                            Level: level,
+                            Pack: pack,
+                            At100: at100,
+                            At150: at150,
+                            At200: at200,
+                            Index: 0
+                        }
+                    });
+
+                    let pet1 = null;
+                    let pet2 = null;
+
+                    // Boss
+                    let dungeonPet = player.Pets.Dungeons[currentType];
+                    if (dungeonPet < 20) {
+                        pet2 = {
+                            Gladiator: 0,
+                            Pet: dungeonPet,
+                            Type: currentType,
+                            Boss: 1,
+                            Level: 0,
+                            Pack: 0,
+                            At100: 0,
+                            At150: 0,
+                            At200: 0,
+                            Index: 1
+                        };
                     }
-                });
 
-                let pet1 = null;
-                let pet2 = null;
+                    let petModels = _sort_des(pets.filter(data => data.Level).map(data => PetModel.fromObject(data)), model => model.TotalHealth);
+                    let bestPet = petModels.find(model => model.Class == petClass);
+                    if (petClass == null && !bestPet) {
+                        bestPet = petModels[0];
+                    }
 
-                // Boss
-                let dungeonPet = player.Pets.Dungeons[currentType];
-                if (dungeonPet < 20) {
-                    pet2 = {
-                        Gladiator: 0,
-                        Pet: dungeonPet,
-                        Type: currentType,
-                        Boss: 1,
-                        Level: 0,
-                        Pack: 0,
-                        At100: 0,
-                        At150: 0,
-                        At200: 0,
-                        Index: 1
-                    };
+                    if (bestPet) {
+                        pet1 = pets[bestPet.Pet];
+                        pet1.Class = bestPet.Class;
+                    }
+
+                    return [pet1, pet2];
                 }
-
-                let petModels = _sort_des(pets.filter(data => data.Level).map(data => PetModel.fromObject(data)), model => model.TotalHealth);
-                let bestPet = petModels.find(model => model.Class == petClass);
-                if (petClass == null && !bestPet) {
-                    bestPet = petModels[0];
-                }
-
-                if (bestPet) {
-                    pet1 = pets[bestPet.Pet];
-                    pet1.Class = bestPet.Class;
-                }
-
-                return [pet1, pet2];
-            }
+            });
         </script>
     </body>
 </html>

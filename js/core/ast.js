@@ -246,7 +246,7 @@ class Expression {
                     } else {
                         value = SFormat.Constant(token);
                     }
-                } else if (/(\.*)this/.test(token)) {
+                } else if (/^(\.*)this$/.test(token)) {
                     value = SFormat.Constant(token);
                 } else if (SP_KEYWORD_MAPPING_0.hasOwnProperty(token)) {
                     value = SFormat.Reserved(token);
