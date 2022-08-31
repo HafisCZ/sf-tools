@@ -154,7 +154,7 @@
                 "selected": "Export selected"
             },
             "selected": {
-                "text": "items(s) selected",
+                "text": "item(s) selected",
                 "no": "No"
             },
             "hide": {
