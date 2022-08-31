@@ -34,7 +34,7 @@
         "rank4": "Invitato"
     },
     "index": {
-        "toggle": "Crediti",
+        "toggle": "Crediti_PROVA",
         "roles": {
             "admin": "Qualcuno con molto tempo libero",
             "helper": "Collaboratori - Ricerca, Test, Feedback, ecc.",
@@ -322,7 +322,7 @@
                 "code": "Code",
                 "publish": "Pubblica",
                 "publish_tooltip": "Pubblica template",
-                "unpublish_tooltip": "Unpublish template",
+                "unpublish_tooltip": "Annulla pubblicazione template",
                 "update": "Aggiorna",
                 "update_tooltip": "Aggiorna template con lo script corrente",
                 "remove": "Rimuovi",
@@ -744,32 +744,32 @@
             "profile": "Profilo",
             "none": "Nessuno",
             "ast": {
-                "primary": "Primary AST expression",
-                "secondary": "Secondary AST expression",
-                "optional": "optional"
+                "primary": "Espressione AST primaria",
+                "secondary": "Espressione AST secondaria",
+                "optional": "opzionale"
             },
             "player": {
-                "primary": "Primary filter configuration",
-                "secondary": "Secondary filter configuration"
+                "primary": "Configurazione filtro primario",
+                "secondary": "Configurazione filtro secondario"
             },
             "group": {
-                "primary": "Priamry group filter configuration",
-                "secondary": "Secondary group filter configuration"
+                "primary": "Configurazione filtro primario gilde",
+                "secondary": "Configurazione filtro secondario gilde"
             }
         },
         "template_save": {
-            "title": "Save template",
-            "select_existing": "Select existing template",
-            "select_new": "Create new template",
-            "or": "or",
-            "name": "Template name",
-            "cancel": "Cancel",
-            "save": "Save"
+            "title": "Salva template",
+            "select_existing": "Salva template esistente",
+            "select_new": "Crea nuovo template",
+            "or": "o",
+            "name": "Nome template",
+            "cancel": "Cancella",
+            "save": "Salva"
         },
         "confirm": {
-            "cancel": "Cancel",
+            "cancel": "Cancella",
             "ok": "Ok",
-            "wait_n_seconds": "Wait %1 seconds ..."
+            "wait_n_seconds": "Aspetta %1 secondi ..."
         }
     },
     "dungeon_enemies": {
