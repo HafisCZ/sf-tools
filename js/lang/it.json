@@ -34,7 +34,7 @@
         "rank4": "Invitato"
     },
     "index": {
-        "toggle": "Crediti_PROVA",
+        "toggle": "Crediti",
         "roles": {
             "admin": "Qualcuno con molto tempo libero",
             "helper": "Collaboratori - Ricerca, Test, Feedback, ecc.",
@@ -44,7 +44,7 @@
             "mention": "Menzioni speciali"
         },
         "stats": {
-            "title": "Statistiche",
+            "title": "Statisticheee",
             "desc": "Traccia i progressi tuoi e della tua gilda"
         },
         "temp": {
