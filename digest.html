@@ -531,11 +531,7 @@
                             let baseMin = baseRaw * Math.max(fistDamage.Min, player.Items.Wpn1.DamageMin);
                             let resistanceMin = player.Level * (100 * (1 - realMin / baseMin) - (boss.Class == 5 ? 40 : 0));
 
-                            let realMax = Math.max(... takenDamages);
-                            let baseMax = baseRaw * Math.max(fistDamage.Max, player.Items.Wpn1.DamageMax);
-                            let resistanceMax = player.Level * (100 * (1 - realMax / baseMax) - (boss.Class == 5 ? 40 : 0));
-
-                            boss.Armor = Math.trunc(Math.max(boss.Armor, resistanceMin, resistanceMax));
+                            boss.Armor = Math.trunc(Math.max(boss.Armor, resistanceMin));
                         }
                     }
 
