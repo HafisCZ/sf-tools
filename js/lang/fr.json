@@ -21,14 +21,24 @@
         "intelligence": "Intelligence",
         "constitution": "Endurance",
         "luck": "Chance",
-        "life_potion": "Vie Éternelle"
+        "life_potion": "Vie Éternelle",
+        "potion1": "Force",
+        "potion2": "Habileté",
+        "potion3": "Intelligence",
+        "potion4": "Endurance",
+        "potion5": "Chance",
+        "potion6": "Vie Éternelle",
+        "rank1": "Chef",
+        "rank2": "Officer",
+        "rank3": "Membre",
+        "rank4": "Invité"
     },
     "index": {
         "toggle": "Afficher les crédits",
         "roles": {
-            "admin": "Quelqu'un avec beacoup de temps libre",
-            "helper": "Helpers - Recherche, Tests, Retours, etc...",
-            "tester": "Testers",
+            "admin": "Quelqu'un avec beaucoup de temps libre",
+            "helper": "Contributeurs - Recherche, Tests, Retours, etc...",
+            "tester": "Testeurs",
             "wiki": "Chef/Manager du Wiki",
             "translator": "Traducteurs",
             "mention": "Autres Mentions"
