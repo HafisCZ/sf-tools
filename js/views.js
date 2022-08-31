@@ -1089,9 +1089,10 @@ const Localization = new (class {
     }
 
     _translationUrl (locale) {
-        let noServer = window.document.location.protocol === 'file:';
+        let useRemote = window.document.location.protocol === 'file:';
+        let useVersion = SiteOptions.debug ? Date.now() : LOCALES_VERSION;
 
-        return `${noServer ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json?v=${LOCALES_VERSION}`;
+        return `${useRemote ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json?v=${useVersion}`;
     }
 
     async translatePage () {
