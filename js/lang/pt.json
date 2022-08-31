@@ -166,5 +166,299 @@
         "smart_change": "Mudar de Classe",
         "copy": "Copiar",
         "none": "Nenhuma"
+    },
+    "stats": {
+        "topbar": {
+            "temporary_flag": "Temporário",
+            "players": "Jogadores",
+            "guilds": "Clãs",
+            "browse": "Pesquisar",
+            "scripts": "Scripts",
+            "files": "Ficheiros",
+            "settings": "Definições",
+            "temporary": "Sessão temporária",
+            "changelog": "Alterações",
+            "profile": "Perfil"
+        },
+        "files": {
+            "titles": {
+                "filters": "Filtros",
+                "io": "Importar / Exportar"
+            },
+            "timestamp": "Data",
+            "timestamps": "Datas",
+            "prefix": "Servidor",
+            "name": "Nome",
+            "group": "Grupo",
+            "groups": "Grupos",
+            "origin": "Origem",
+            "players": "Jogadores",
+            "version": "Versão",
+            "import": {
+                "file": "Importar pelo Ficheiro",
+                "shared": "Importar por Partilha",
+                "game": "Importar pelo Jogo"
+            },
+            "export": {
+                "all": "Exportar todos",
+                "selected": "Exportar selecionado(s)"
+            },
+            "selected": {
+                "text": "item(s) selecionado(s)",
+                "no": "Não"
+            },
+            "hide": {
+                "label": "Ocultar",
+                "tooltip": "Funciona independentemente em um modo simples & avançado!",
+                "migrate": "Marcar os ficheiros com todos os jogadores omitidos como oculto"
+            },
+            "merge": {
+                "selected": "Fundir Ficheiros"
+            },
+            "delete": {
+                "all": "Apagar todos",
+                "selected": "Apagar selecionado(s)"
+            },
+            "options": {
+                "title": "Opções de Ficheiros",
+                "advanced": "Mostrar lista de ficheiros advançada",
+                "hidden": "Mostrar jogadores omitidos"
+            },
+            "tags": {
+                "single": "Tag",
+                "multiple": "Tags",
+                "all": "All",
+                "none": "None"
+            },
+            "filters": {
+                "any": "Any",
+                "n_unique": "unique",
+                "expression": "Expression",
+                "expression_placeholder": "Your expression",
+                "timestamp": "Timestamp",
+                "player": "Player",
+                "group": "Guild",
+                "prefix": "Prefix",
+                "tags": "Tags",
+                "type": "Type",
+                "type_all": "Show all characters",
+                "type_own": "Show only own characters",
+                "type_other": "Show only other characters",
+                "origin": "Origin",
+                "hidden": "Hidden"
+            },
+            "online": {
+                "title": "File sharing",
+                "prompt": "Enter your code:",
+                "invalid": "Invalid or expired code!",
+                "cancel": "Cancel",
+                "ok": "Ok"
+            }
+        },
+        "copy": {
+            "image": "Save as image",
+            "basic": "Copy table",
+            "fight": "Copy table for fight simulator",
+            "player": "Copy",
+            "player_companions": "Copy with companions"
+        },
+        "context": {
+            "hide": "Show / Hide",
+            "remove": "Remove permanently"
+        },
+        "profiles": {
+            "players": "Players",
+            "groups": "Guilds",
+            "primary": "Primary filter",
+            "secondary": "Secondary filter",
+            "none": "None",
+            "create": "Create new profile",
+            "between": "between",
+            "and": "and"
+        },
+        "filters": {
+            "c": "Player class, use full class name in lower case (eg.: berserker, battle mage)",
+            "p": "Player name",
+            "g": "Guild name",
+            "s": "Server",
+            "e": "Custom expression",
+            "#": "Show only players with specified tags",
+            "l": "Show only latest",
+            "f": "Show only first or first n entries",
+            "r": "Force recalculation of global variables",
+            "x": "Enable simulator (argument is number of iterations)",
+            "h": "Show hidden",
+            "o": "Show own",
+            "a": "Show all",
+            "d": "Show other",
+            "q": "Custom settings (separate header names with comma)",
+            "t": "Show online template directly",
+            "sr": "Sort by custom expression",
+            "qc": "Show only selected categories"
+        },
+        "scripts": {
+            "settings": "Settings",
+            "templates": "Templates",
+            "sidebar": {
+                "wiki": "Wiki",
+                "scripts": "Scripts",
+                "templates": "Templates",
+                "save": "Save",
+                "copy": "Copy",
+                "undo": "Undo",
+                "redo": "Redo",
+                "close": "Close",
+                "apply": "Apply",
+                "remove": "Remove",
+                "save_apply": "Save & Apply"
+            },
+            "types": {
+                "me": "Me",
+                "players": "Players",
+                "guilds": "Guilds",
+                "tracker": "Tracker Configuration",
+                "default": "Default"
+            },
+            "online": {
+                "not_available": "No scripts available"
+            }
+        },
+        "players": {
+            "other": "Show other players",
+            "hidden": "Show hidden"
+        },
+        "guilds": {
+            "other": "Show other guilds",
+            "hidden": "Show hidden",
+            "missing": "Player data is missing for following members:"
+        },
+        "browse": {
+            "hidden": "Show hidden"
+        },
+        "fast_export": {
+            "label": "Share",
+            "title": "Export options",
+            "all": "All",
+            "latest": "Latest",
+            "latest5": "Latest 5",
+            "selected": "Selected",
+            "selected_both": "Selected & Reference"
+        },
+        "share": {
+            "title": "File sharing",
+            "options": "Options",
+            "code": "Your code",
+            "get": "Get code",
+            "ok": "Ok",
+            "expire": "The code will automatically expire after 2 days.",
+            "single_use": "Single use only",
+            "single_use_notice": "Please consider keeping this option enabled unless you plan to share the file with multiple people."
+        },
+        "online_templates": {
+            "title": "Public scripts",
+            "description": "Description",
+            "author": "Author",
+            "created_on": "Created on",
+            "loading": "Fetching scripts"
+        },
+        "templates": {
+            "title": "Templates",
+            "loading": "Committing changes",
+            "form": {
+                "changed_on": "Changed on",
+                "version": "Tool Version",
+                "compatibility": "Compatibility",
+                "published_on": "Published on",
+                "code": "Code",
+                "publish": "Publish",
+                "publish_tooltip": "Publish template",
+                "unpublish_tooltip": "Unpublish template",
+                "update": "Update",
+                "update_tooltip": "Update template with current script",
+                "remove": "Remove",
+                "remove_tooltip": "Remove template"
+            },
+            "quick_swap": "Quick swap custom templates"
+        },
+        "group": {
+            "compared_to": "compared to"
+        },
+        "player": {
+            "attributes": "Attributes",
+            "basis": "Basis",
+            "miscellaneous": "Misc",
+            "armor": "Armor",
+            "damage": "Damage",
+            "health": "Health",
+            "potions": "Potions",
+            "guild": "Guild",
+            "name": "Name",
+            "role": "Role",
+            "joined_on": "Joined on",
+            "bonuses": "Bonuses",
+            "scrapbook": "Scrapbook",
+            "achievements": "Achievements",
+            "mount": "Mount",
+            "heath_bonus": "Health Bonus",
+            "damage_bonus": "Damage Bonus",
+            "treasure": "Treasure",
+            "instructor": "Instructor",
+            "pet": "Pet",
+            "knights": "Hall of Knights",
+            "extras": {
+                "title": "Extras",
+                "registered": "Registered"
+            },
+            "runes": {
+                "title": "Runes",
+                "gold": "Gold",
+                "experience": "Experience",
+                "epic": "Epic Chance",
+                "quality": "Item Quality",
+                "health": "Health",
+                "fire_damage": "Fire Damage",
+                "cold_damage": "Cold Damage",
+                "lightning_damage": "Lightning Damage",
+                "fire_resist": "Fire Resistance",
+                "cold_resist": "Cold Resistance",
+                "lightning_resist": "Lightning Resistance"
+            },
+            "fortress": {
+                "title": "Fortress",
+                "upgrades": "Upgrades",
+                "rank": "Rank",
+                "honor": "Honor",
+                "building1": "Fortress",
+                "building2": "Quarters",
+                "building3": "Woodcutter",
+                "building4": "Quarry",
+                "building5": "Gem Mine",
+                "building6": "Academy",
+                "building7": "Archery Guild",
+                "building8": "Barracks",
+                "building9": "Mage Tower",
+                "building10": "Treasury",
+                "building11": "Smithy",
+                "building12": "Fortifications",
+                "working": "Building"
+            }
+        },
+        "settings": {
+            "title": "Global configuration",
+            "always_prev": "Compare previous (guilds)",
+            "empty_groups": "Show empty groups",
+            "obfuscated": "Hide player names",
+            "insecure": "Allow insecure html tags",
+            "insecure_error#": "This table was not displayed because it contains HTML tags that are prohibited.<br/>Please remove them from your settings and try again.",
+            "terms": "Accept Terms of Service",
+            "tab": "Default tab",
+            "preload": "Preload rows",
+            "actions": {
+                "title": "Actions",
+                "reset": "Reset actions",
+                "ignore": "Ignore changes",
+                "save": "Save actions"
+            }
+        }
     }
 }
