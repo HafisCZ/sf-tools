@@ -616,7 +616,7 @@ class PlayerDetailFloatView extends View {
                             <div class="detail-item text-center">${ player.Fortress.WoodcutterGuild }${ asDiff(player.Fortress.WoodcutterGuild, compare.Fortress.WoodcutterGuild) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building5')}</div>
+                            <div class="detail-item">${this.intl('fortress.building4')}</div>
                             <div class="detail-item text-center">${ player.Fortress.Quarry }${ asDiff(player.Fortress.Quarry, compare.Fortress.Quarry) }</div>
                         </div>
                         <div class="detail-entry">
