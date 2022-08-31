@@ -135,7 +135,8 @@ const SiteOptions = new (class {
             tab: 'groups',
             load_rows: 50,
             persisted: false,
-            locale: 'en'
+            locale: 'en',
+            debug: false
         };
 
         this.listeners = [];
