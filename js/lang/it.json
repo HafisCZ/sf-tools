@@ -540,104 +540,104 @@
         "username": "Username",
         "password": "Password",
         "mode": {
-            "own": "Capture own character",
-            "default": "Capture own + selected characters",
-            "guild": "Capture own + guild characters",
-            "friends": "Capture own + friend characters"
+            "own": "Importa il proprio personaggio",
+            "default": "Importa proprio + personaggi selezionati",
+            "guild": "Importa proprio + membri gilda",
+            "friends": "Importa proprio + amici"
         },
-        "cancel": "Cancel",
-        "continue": "Continue",
+        "cancel": "Cancella",
+        "continue": "Continua",
         "step2": {
             "title": "Loading Endpoint"
         },
         "step3": {
-            "title": "Select players to be imported"
+            "title": "Seleziona i personaggi da importare"
         },
         "step4": {
-            "title": "Contacting the server for information",
-            "message": "Fetching data"
+            "title": "Contattando il server",
+            "message": "Raccogliendo i dati"
         },
         "user_error": {
-            "title": "Your user name or password is not valid",
-            "message": "Please ensure that it is in correct format (username@url)"
+            "title": "Username o password non validi!",
+            "message": "Assicurati che il formato sia corretto (username@url)"
         },
-        "credentials_error": "Wrong username or password",
-        "download_error": "Download failed"
+        "credentials_error": "Username o password errati",
+        "download_error": "Download fallito"
     },
     "database": {
         "open_error": {
-            "title": "Database could not be opened",
-            "message": "Please verify that you are not in incognito mode and your browser supports Indexed DB"
+            "title": "Non è stato possibile aprire il database",
+            "message": "Per favore, verifica di non essere in incognito e che il tuo browser supporti Indexed DB"
         },
-        "import_error": "An error has occured while importing file",
-        "fatal_error#": "Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.",
+        "import_error": "Errore durante l'importazione dei file",
+        "fatal_error#": "Il tuo browser non supporta tutte le feature richieste da questa pagina!</br>Questo problema può anche essere causato dalla modalità incognito.",
         "update_info": {
-            "title": "A database update is in progress",
-            "message": "Please do not exit the page until loading stops. This may take a while depending on the size of your database."
+            "title": "Aggiornamento del database in corso",
+            "message": "Per favore, non lasciare la pagina prima della fine del caricamento. Potrebbe volerci un po' in base alla dimensione del tuo database."
         }
     },
     "dialog": {
         "delete_all": {
-            "title": "Delete all",
-            "notice": "Are you sure you want to delete all stored player data?"
+            "title": "Elimina tutti",
+            "notice": "Sicuro di voler eliminare tutti i dati personaggio salvati?"
         },
         "delete_script": {
-            "title": "Remove script",
-            "notice": "Are you sure you want to permanently remove currently applied script?"
+            "title": "Rimuovi script",
+            "notice": "Sicuro di voler eliminare definitivamente lo script attualmente applicato?"
         },
         "warning": {
-            "title": "An issue has occured!",
-            "continue": "Continue"
+            "title": "C'è stato un errore!",
+            "continue": "Continua"
         },
         "error": {
-            "title": "A fatal error has occured!",
-            "notice#": "This error might have also been caused by your current profile.<br>Click the revert button below to revert back to default profile.",
-            "refresh": "Click here or refresh the page",
-            "revert": "Revert back to default profile"
+            "title": "Errore critico!",
+            "notice#": "Quest'errore potrebbe essere stato causato dal tuo profilo corrente.<br>Clicca il pulsante di reset qui sotto per tornare al profilo di default.",
+            "refresh": "Clicca qui o aggiorna la pagina",
+            "revert": "Resetta al profilo di default"
         },
         "file_edit": {
-            "title": "Edit file",
+            "title": "Modifica file",
             "timestamp": "Timestamp",
-            "cancel": "Cancel",
-            "save": "Save"
+            "cancel": "Cancella",
+            "save": "Salva"
         },
         "save_online_script": {
-            "title": "Import template",
-            "loader": "Preparing Files",
-            "author": "Author",
-            "created_updated": "Created/Updated",
-            "name": "Name",
-            "name_placeholder": "Template name",
-            "error": "The requested template is not available!",
-            "cancel": "Cancel",
-            "save": "Save"
+            "title": "Importa template",
+            "loader": "Preparando i file",
+            "author": "Autore",
+            "created_updated": "Creato/Aggiornato",
+            "name": "Nome",
+            "name_placeholder": "Nome del template",
+            "error": "Il template richiesto non è disponibile!",
+            "cancel": "Cancella",
+            "save": "Salva"
         },
         "edit_file_tag": {
-            "title": "Edit tags",
-            "current": "Current tags",
-            "replacement": "Replacement tag",
-            "none": "None",
-            "cancel": "Cancel",
-            "save": "Save"
+            "title": "Modifica tag",
+            "current": "Tag correnti",
+            "replacement": "Sostituisci tag",
+            "none": "Nessuno",
+            "cancel": "Cancella",
+            "save": "Salva"
         },
         "profile_create": {
-            "title": "Create/Edit profile",
+            "title": "Crea/Modifica profilo",
             "id": "ID",
-            "name": "Name",
+            "name": "Nome",
             "slot": "Slot",
-            "index": "Index",
-            "operation": "Operation",
-            "equals": "Equals",
-            "above": "Above",
-            "below": "Below",
-            "between": "Between",
-            "value": "Value",
-            "secondary": "Secondary filter",
-            "cancel": "Cancel",
-            "save": "Save",
+            "index": "Indice",
+            "operation": "Operazione",
+            "equals": "Uguale a",
+            "above": "Sopra",
+            "below": "Sotto",
+            "between": "Tra",
+            "value": "Valore",
+            "secondary": "Filtro secondario",
+            "cancel": "Cancella",
+            "save": "Salva",
             "default": "Default",
-            "profile": "Profile",
-            "none": "None",
+            "profile": "Profilo",
+            "none": "Nessuno",
             "ast": {
                 "primary": "Primary AST expression",
                 "secondary": "Secondary AST expression",
