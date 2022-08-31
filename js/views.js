@@ -195,6 +195,10 @@ const TermsAndConditionsDialog = new (class extends Dialog {
 })();
 
 const ChangeLogDialog = new (class extends Dialog {
+    _intl_key () {
+        return 'changelog';
+    }
+
     _createModal () {
         const release = MODULE_VERSION;
         const entries = CHANGELOG[release];
@@ -215,19 +219,17 @@ const ChangeLogDialog = new (class extends Dialog {
                     `
                 }
             }
-        } else {
-            content = '<p style="text-align: center; margin-top: 20%; margin-bottom: 20%;"><b>Changes are yet to be announced</b></p>'
         }
 
         return `
             <div class="ui tiny basic modal" style="background-color: #0b0c0c; padding: 1em; margin: -2em; border-radius: 0.5em;">
-                <h2 class="ui centered header" style="padding-top: 0; padding-bottom: 0.5em;">Release <span style="color: orange;">${release}</span></h2>
+                <h2 class="ui centered header" style="padding-top: 0; padding-bottom: 0.5em;">${this.intl('release')} <span style="color: orange;">${release}</span></h2>
                 <div style="text-align: left; line-height: 1.3em; margin-left: -18px; max-height: 50vh; overflow-y: scroll;">
                     <ul>
                         ${content}
                     </ul>
                 </div>
-                <button class="ui black fluid button" style="margin-top: 2em;" data-op="accept">Continue</button>
+                <button class="ui black fluid button" style="margin-top: 2em;" data-op="accept">${this.intl('continue')}</button>
             </div>
         `;
     }
@@ -310,7 +312,7 @@ const ErrorDialog = new (class extends Dialog {
                 </div>
                 <div class="ui two buttons">
                     <button class="ui red fluid button" data-op="continue">${this.intl('refresh')}</button>
-                    <button class="ui red fluid button" data-op="continue-default">${this.intl('.revert')}</button>
+                    <button class="ui red fluid button" data-op="continue-default">${this.intl('revert')}</button>
                 </div>
             </div>
         `;
@@ -986,7 +988,7 @@ const ConfirmDialog = new (class extends Dialog {
                 </div>
                 <div class="ui three fluid buttons">
                     <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
-                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">${this.intl('Ok')}</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">${this.intl('ok')}</button>
                 </div>
             </div>
         `;
@@ -1092,23 +1094,6 @@ const Localization = new (class {
         return `${noServer ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json?v=${LOCALES_VERSION}`;
     }
 
-    _registerObserver () {
-        this.observer = new MutationObserver((mutations, observer) => {
-            for (let { addedNodes } of mutations) {
-                addedNodes.forEach(element => {
-                    if (element.nodeType === 1) {
-                        this.translate(element);
-                    }
-                });
-            }
-        });
-
-        this.observer.observe(window.document, {
-            subtree: true,
-            childList: true
-        });
-    }
-
     async translatePage () {
         let locale = this.getLocale();
 
@@ -1126,8 +1111,9 @@ const Localization = new (class {
             this.translation = Object.assign(await this._fetchTranslation('en'), this.translation);
         }
 
-        this.translate();
-        this._registerObserver();
+        window.document.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
+        window.document.querySelectorAll('[data-intl-tooltip]').forEach(element => this.translateTooltip(element));
+        window.document.querySelectorAll('[data-intl-placeholder]').forEach(element => this.translatePlaceholder(element));
     }
 
     findTranslation (key) {
@@ -1139,10 +1125,20 @@ const Localization = new (class {
         return obj;
     }
 
-    translate (node = window.document) {
-        if (node.querySelector('[data-intl]')) {
-            node.querySelectorAll('[data-intl]').forEach(element => this.translateElement(element));
-        }
+    translatePlaceholder (node) {
+        let key = node.getAttribute('data-intl-placeholder');
+        let val = this.findTranslation(key);
+
+        node.removeAttribute('data-intl-placeholder');
+        node.setAttribute('placeholder', val || key);
+    }
+
+    translateTooltip (node) {
+        let key = node.getAttribute('data-intl-tooltip');
+        let val = this.findTranslation(key);
+
+        node.removeAttribute('data-intl-tooltip');
+        node.setAttribute('data-tooltip', val || key);
     }
 
     translateElement (node) {
@@ -1164,9 +1160,11 @@ const Localization = new (class {
             'de': 'Deutsch',
             'pl': 'Polski',
             'pt': 'Português',
-            'ch': 'Schwyzerdüütsch',
-            'it': 'Italiano',
             'cs': 'Česky',
+            'fr': 'Français',
+            'it': 'Italiano',
+            'es': 'Español',
+            'ch': 'Schwyzerdüütsch',
             'pg': 'Pig Latin'
         };
     }

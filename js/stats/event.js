@@ -80,13 +80,13 @@ class GroupDetailView extends View {
         this.$context.context('create', {
             items: [
                 {
-                    label: 'Copy',
+                    label: intl('stats.copy.player'),
                     action: (source) => {
                         copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorModel()));
                     }
                 },
                 {
-                    label: 'Copy with companions',
+                    label: intl('stats.copy.player_companions'),
                     action: (source) => {
                         copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id'), this.timestamp).toSimulatorShadowModel()));
                     }
@@ -132,7 +132,7 @@ class GroupDetailView extends View {
             },
             values: [
                 {
-                    name: '<b>Quick swap custom templates</b>',
+                    name: `<b>${intl('stats.templates.quick_swap')}</b>`,
                     disabled: true
                 },
                 ... Templates.getKeys().map(t => {
@@ -312,6 +312,10 @@ class PlayerDetailFloatView extends View {
         super(player);
     }
 
+    intl (key) {
+        return intl(`stats.player.${key}`);
+    }
+
     show (identifier, timestamp, reference = timestamp) {
         let playerObject = DatabaseManager.getPlayer(identifier);
         let timestampsReverse = playerObject.List.map(([ts, ]) => ts).reverse(); // Newest to oldest
@@ -353,62 +357,62 @@ class PlayerDetailFloatView extends View {
                     <div class="detail-panel">
                         <!-- Player -->
                         <div class="detail-entry" style="border-bottom: white solid 1px;">
-                            <div class="detail-item">Attributes</div>
+                            <div class="detail-item">${this.intl('attributes')}</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Strength</div>
+                            <div class="detail-item">${intl('general.strength')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Strength.Total) }${ asDiff(player.Strength.Total, compare.Strength.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Dexterity</div>
+                            <div class="detail-item">${intl('general.dexterity')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Dexterity.Total) }${ asDiff(player.Dexterity.Total, compare.Dexterity.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Intelligence</div>
+                            <div class="detail-item">${intl('general.intelligence')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Intelligence.Total) }${ asDiff(player.Intelligence.Total, compare.Intelligence.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Constitution</div>
+                            <div class="detail-item">${intl('general.constitution')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Constitution.Total) }${ asDiff(player.Constitution.Total, compare.Constitution.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Luck</div>
+                            <div class="detail-item">${intl('general.luck')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Total) }${ asDiff(player.Luck.Total, compare.Luck.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <br/>
                         <div class="detail-entry" style="border-bottom: white solid 1px;">
-                            <div class="detail-item">Basis</div>
+                            <div class="detail-item">${this.intl('basis')}</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Strength</div>
+                            <div class="detail-item">${intl('general.strength')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Strength.Base) }${ asDiff(player.Strength.Base, compare.Strength.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Dexterity</div>
+                            <div class="detail-item">${intl('general.dexterity')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Dexterity.Base) }${ asDiff(player.Dexterity.Base, compare.Dexterity.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Intelligence</div>
+                            <div class="detail-item">${intl('general.intelligence')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Intelligence.Base) }${ asDiff(player.Intelligence.Base, compare.Intelligence.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Constitution</div>
+                            <div class="detail-item">${intl('general.constitution')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Constitution.Base) }${ asDiff(player.Constitution.Base, compare.Constitution.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Luck</div>
+                            <div class="detail-item">${intl('general.luck')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Base) }${ asDiff(player.Luck.Base, compare.Luck.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <br/>
                         <div class="detail-entry" style="border-bottom: white solid 1px;">
-                            <div class="detail-item">Misc</div>
+                            <div class="detail-item">${this.intl('miscellaneous')}</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Armor</div>
+                            <div class="detail-item">${this.intl('armor')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Armor) }${ asDiff(player.Armor, compare.Armor, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Damage</div>
+                            <div class="detail-item">${this.intl('damage')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Damage.Min) } - ${ formatAsSpacedNumber(player.Damage.Max) }</div>
                         </div>
                         ${ player.Class == 4 ? `
@@ -419,168 +423,164 @@ class PlayerDetailFloatView extends View {
                         ` : '' }
                         <br/>
                         <div class="detail-entry">
-                            <div class="detail-item">Health</div>
+                            <div class="detail-item">${this.intl('health')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Health) }</div>
                         </div>
                         ${ player.Potions[0].Size ? `
                             <br/>
                             <div class="detail-entry" style="border-bottom: white solid 1px;">
-                                <div class="detail-item">Potions</div>
+                                <div class="detail-item">${this.intl('potions')}</div>
                             </div>
-                            <div class="detail-entry">
-                                <div class="detail-item">${ POTIONS[player.Potions[0].Type] }</div>
-                                <div class="detail-item text-center">+ ${ player.Potions[0].Size }%</div>
-                            </div>
-                            ${ player.Potions[1].Size ? `
-                                <div class="detail-entry">
-                                    <div class="detail-item">${ POTIONS[player.Potions[1].Type] }</div>
-                                    <div class="detail-item text-center">+ ${ player.Potions[1].Size }%</div>
-                                </div>
-                            ` : '' }
-                            ${ player.Potions[2].Size ? `
-                                <div class="detail-entry">
-                                    <div class="detail-item">${ POTIONS[player.Potions[2].Type] }</div>
-                                    <div class="detail-item text-center">+ ${ player.Potions[2].Size }%</div>
-                                </div>
-                            ` : '' }
+                            ${player.Potions.map(potion => {
+                                if (potion.Size) {
+                                    return `
+                                        <div class="detail-entry">
+                                            <div class="detail-item">${intl(`general.potion${potion.Type}`)}</div>
+                                            <div class="detail-item text-center">+ ${potion.Size}%</div>
+                                        </div>
+                                    `;
+                                } else {
+                                    return '';
+                                }
+                            }).join('')}
                         ` : '' }
                     </div>
                     <div class="detail-panel">
                         ${ player.hasGuild() ? `
                             <div class="detail-entry" style="border-bottom: white solid 1px;">
-                                <div class="detail-item">Guild</div>
+                                <div class="detail-item">${this.intl('guild')}</div>
                             </div>
                             <div class="detail-entry">
-                                <div class="detail-item">Name</div>
+                                <div class="detail-item">${this.intl('name')}</div>
                                 <div class="detail-item text-center">${ player.Group.Name }</div>
                             </div>
                             ${ player.Group.Role ? `
                                 <div class="detail-entry">
-                                    <div class="detail-item">Role</div>
-                                    <div class="detail-item text-center">${ GROUP_ROLES[player.Group.Role] }</div>
+                                    <div class="detail-item">${this.intl('role')}</div>
+                                    <div class="detail-item text-center">${intl(`general.rank${player.Group.Role}`)}</div>
                                 </div>
                             ` : '' }
                             <div class="detail-entry">
-                                <div class="detail-item">Joined on</div>
+                                <div class="detail-item">${this.intl('joined_on')}</div>
                                 <div class="detail-item text-center">${ formatDate(player.Group.Joined) }</div>
                             </div>
                             <br/>
                         ` : '' }
                         <!-- Group -->
                         <div class="detail-entry" style="border-bottom: white solid 1px;">
-                            <div class="detail-item">Bonuses</div>
+                            <div class="detail-item">${this.intl('bonuses')}</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Scrapbook</div>
+                            <div class="detail-item">${this.intl('scrapbook')}</div>
                             <div class="detail-item text-center">${ player.Book } / ${ SCRAPBOOK_COUNT }${ asDiff(player.Book, compare.Book, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Achievements</div>
+                            <div class="detail-item">${this.intl('achievements')}</div>
                             <div class="detail-item text-center">${ player.Achievements.Owned } / ${ ACHIEVEMENTS_COUNT }${ asDiff(player.Achievements.Owned, compare.Achievements.Owned, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Mount</div>
+                            <div class="detail-item">${this.intl('mount')}</div>
                             <div class="detail-item text-center">${ PLAYER_MOUNT[player.Mount] }%</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Health Bonus</div>
+                            <div class="detail-item">${this.intl('heath_bonus')}</div>
                             <div class="detail-item text-center">${ player.Dungeons.Player }%${ asDiff(player.Dungeons.Player, compare.Dungeons.Player) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Damage Bonus</div>
+                            <div class="detail-item">${this.intl('damage_bonus')}</div>
                             <div class="detail-item text-center">${ player.Dungeons.Group }%${ asDiff(player.Dungeons.Group, compare.Dungeons.Group) }</div>
                         </div>
                         ${ player.Group && player.Group.Treasure ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Treasure</div>
+                                <div class="detail-item">${this.intl('treasure')}</div>
                                 <div class="detail-item text-center">${ player.Group.Treasure }${ asDiff(player.Group.Treasure, compare.Group.Treasure) }</div>
                             </div>
                         ` : '' }
                         ${ player.Group && player.Group.Instructor ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Instructor</div>
+                                <div class="detail-item">${this.intl('instructor')}</div>
                                 <div class="detail-item text-center">${ player.Group.Instructor }${ asDiff(player.Group.Instructor, compare.Group.Instructor) }</div>
                             </div>
                         ` : '' }
                         ${ player.Group && player.Group.Pet ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Pet</div>
+                                <div class="detail-item">${this.intl('pet')}</div>
                                 <div class="detail-item text-center">${ player.Group.Pet }${ asDiff(player.Group.Pet, compare.Group.Pet) }</div>
                             </div>
                         ` : '' }
                         ${ player.Fortress && player.Fortress.Knights ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Hall of Knights</div>
+                                <div class="detail-item">${this.intl('knights')}</div>
                                 <div class="detail-item text-center">${ player.Fortress.Knights }${ asDiff(player.Fortress.Knights, compare.Fortress.Knights) }</div>
                             </div>
                         ` : '' }
                         <br/>
                         <div class="detail-entry" style="border-bottom: white solid 1px;">
-                            <div class="detail-item">Runes</div>
+                            <div class="detail-item">${this.intl('runes.title')}</div>
                         </div>
                         ${ player.Runes.Gold ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Gold</div>
+                                <div class="detail-item">${this.intl('runes.gold')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.Gold }%</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.XP ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Experience</div>
+                                <div class="detail-item">${this.intl('runes.experience')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.XP }%</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.Chance ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Epic Chance</div>
+                                <div class="detail-item">${this.intl('runes.epic')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.Chance }%</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.Quality ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Item Quality</div>
+                                <div class="detail-item">${this.intl('runes.quality')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.Quality }</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.Health ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Health</div>
+                                <div class="detail-item">${this.intl('runes.health')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.Health }%</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.DamageFire || player.Runes.Damage2Fire ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Fire Damage</div>
+                                <div class="detail-item">${this.intl('runes.fire_damage')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.DamageFire }%${ player.Class == 4 ? ` / ${ player.Runes.Damage2Fire }%` : '' }</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.DamageCold || player.Runes.Damage2Cold ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Cold Damage</div>
+                                <div class="detail-item">${this.intl('runes.cold_damage')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.DamageCold }%${ player.Class == 4 ? ` / ${ player.Runes.Damage2Cold }%` : '' }</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.DamageLightning || player.Runes.Damage2Lightning ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Lightning Damage</div>
+                                <div class="detail-item">${this.intl('runes.lightning_damage')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.DamageLightning }%${ player.Class == 4 ? ` / ${ player.Runes.Damage2Lightning }%` : '' }</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.ResistanceFire ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Fire Resistance</div>
+                                <div class="detail-item">${this.intl('runes.fire_resist')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.ResistanceFire }%</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.ResistanceCold ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Cold Resistance</div>
+                                <div class="detail-item">${this.intl('runes.cold_resist')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.ResistanceCold }%</div>
                             </div>
                         ` : '' }
                         ${ player.Runes.ResistanceLightning ? `
                             <div class="detail-entry">
-                                <div class="detail-item">Lightning Resistance</div>
+                                <div class="detail-item">${this.intl('runes.lightning_resist')}</div>
                                 <div class="detail-item text-center">+ ${ player.Runes.ResistanceLightning }%</div>
                             </div>
                         ` : '' }
@@ -588,86 +588,86 @@ class PlayerDetailFloatView extends View {
                     <div class="detail-panel">
                         <!-- Fortress -->
                         <div class="detail-entry" style="border-bottom: white solid 1px;">
-                            <div class="detail-item">Fortress</div>
+                            <div class="detail-item">${this.intl('fortress.title')}</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Upgrades</div>
+                            <div class="detail-item">${this.intl('fortress.upgrades')}</div>
                             <div class="detail-item text-center">${ player.Fortress.Upgrades }${ asDiff(player.Fortress.Upgrades, compare.Fortress.Upgrades) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Rank</div>
+                            <div class="detail-item">${this.intl('fortress.rank')}</div>
                             <div class="detail-item text-center">${ player.Fortress.Rank }${ asDiff(player.Fortress.Rank, compare.Fortress.Rank) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Honor</div>
+                            <div class="detail-item">${this.intl('fortress.honor')}</div>
                             <div class="detail-item text-center">${ player.Fortress.Honor }${ asDiff(player.Fortress.Honor, compare.Fortress.Honor) }</div>
                         </div>
                         <br/>
                         <div class="detail-entry">
-                            <div class="detail-item">Fortress</div>
+                            <div class="detail-item">${this.intl('fortress.building1')}</div>
                             <div class="detail-item text-center">${ player.Fortress.Fortress }${ asDiff(player.Fortress.Fortress, compare.Fortress.Fortress) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Quarters</div>
+                            <div class="detail-item">${this.intl('fortress.building2')}</div>
                             <div class="detail-item text-center">${ player.Fortress.LaborerQuarters }${ asDiff(player.Fortress.LaborerQuarters, compare.Fortress.LaborerQuarters) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Woodcutter</div>
+                            <div class="detail-item">${this.intl('fortress.building3')}</div>
                             <div class="detail-item text-center">${ player.Fortress.WoodcutterGuild }${ asDiff(player.Fortress.WoodcutterGuild, compare.Fortress.WoodcutterGuild) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Quarry</div>
+                            <div class="detail-item">${this.intl('fortress.building5')}</div>
                             <div class="detail-item text-center">${ player.Fortress.Quarry }${ asDiff(player.Fortress.Quarry, compare.Fortress.Quarry) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Gem Mine</div>
+                            <div class="detail-item">${this.intl('fortress.building5')}</div>
                             <div class="detail-item text-center">${ player.Fortress.GemMine }${ asDiff(player.Fortress.GemMine, compare.Fortress.GemMine) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Academy</div>
+                            <div class="detail-item">${this.intl('fortress.building6')}</div>
                             <div class="detail-item text-center">${ player.Fortress.Academy }${ asDiff(player.Fortress.Academy, compare.Fortress.Academy) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Archery Guild</div>
+                            <div class="detail-item">${this.intl('fortress.building7')}</div>
                             <div class="detail-item text-center">${ player.Fortress.ArcheryGuild }${ asDiff(player.Fortress.ArcheryGuild, compare.Fortress.ArcheryGuild) } (${ player.Fortress.ArcheryGuild * 2 }x ${ player.Fortress.Archers }${ asDiff(player.Fortress.Archers, compare.Fortress.Archers) })</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Barracks</div>
+                            <div class="detail-item">${this.intl('fortress.building8')}</div>
                             <div class="detail-item text-center">${ player.Fortress.Barracks }${ asDiff(player.Fortress.Barracks, compare.Fortress.Barracks) } (${ player.Fortress.Barracks * 3 }x ${ player.Fortress.Warriors }${ asDiff(player.Fortress.Warriors, compare.Fortress.Warriors) })</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Mage Tower</div>
+                            <div class="detail-item">${this.intl('fortress.building9')}</div>
                             <div class="detail-item text-center">${ player.Fortress.MageTower }${ asDiff(player.Fortress.MageTower, compare.Fortress.MageTower) } (${ player.Fortress.MageTower }x ${ player.Fortress.Mages }${ asDiff(player.Fortress.Mages, compare.Fortress.Mages) })</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Treasury</div>
+                            <div class="detail-item">${this.intl('fortress.building10')}</div>
                             <div class="detail-item text-center">${ player.Fortress.Treasury }${ asDiff(player.Fortress.Treasury, compare.Fortress.Treasury) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Smithy</div>
+                            <div class="detail-item">${this.intl('fortress.building11')}</div>
                             <div class="detail-item text-center">${ player.Fortress.Smithy }${ asDiff(player.Fortress.Smithy, compare.Fortress.Smithy) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">Fortifications</div>
+                            <div class="detail-item">${this.intl('fortress.building12')}</div>
                             <div class="detail-item text-center">${ player.Fortress.Fortifications }${ asDiff(player.Fortress.Fortifications, compare.Fortress.Fortifications) } (${ player.Fortress.Wall }${ asDiff(player.Fortress.Wall, compare.Fortress.Wall) })</div>
                         </div>
                         ${ player.Fortress.Upgrade.Building >= 0 ? `
                             <br/>
                             <div class="detail-entry" style="border-bottom: white solid 1px;">
-                                <div class="detail-item">Building</div>
+                                <div class="detail-item">${this.intl('fortress.working')}</div>
                             </div>
                             <div class="detail-entry">
-                                <div class="detail-item">${ FORTRESS_BUILDINGS[player.Fortress.Upgrade.Building] }</div>
+                                <div class="detail-item">${this.intl(`fortress.building${player.Fortress.Upgrade.Building + 1}`)}</div>
                                 <div class="detail-item text-center">${ formatDate(player.Fortress.Upgrade.Finish) }</div>
                             </div>
                         ` : '' }
                         ${ player.Own ? `
                             <br/>
                             <div class="detail-entry" style="border-bottom: white solid 1px;">
-                                <div class="detail-item">Extras</div>
+                                <div class="detail-item">${this.intl('extras.title')}</div>
                             </div>
                             <div class="detail-entry">
-                                <div class="detail-item">Registered</div>
+                                <div class="detail-item">${this.intl('extras.registered')}</div>
                                 <div class="detail-item text-center">${ formatDate(player.Registered) }</div>
                             </div>
                         ` : '' }
@@ -774,7 +774,7 @@ class PlayerHistoryView extends View {
             },
             values: [
                 {
-                    name: '<b>Quick swap custom templates</b>',
+                    name: `<b>${intl('stats.templates.quick_swap')}</b>`,
                     disabled: true
                 },
                 ... Templates.getKeys().map(t => {
@@ -875,7 +875,7 @@ class BrowseView extends View {
         this.$context.context('create', {
             items: [
                 {
-                    label: 'Show / Hide',
+                    label: intl('stats.context.hide'),
                     action: (source) => {
                         var sel = this.$parent.find('[data-id].css-op-select');
                         if (sel.length) {
@@ -890,7 +890,7 @@ class BrowseView extends View {
                     }
                 },
                 {
-                    label: 'Copy',
+                    label: intl('stats.copy.player'),
                     action: (source) => {
                         let sel = this.$parent.find('[data-id].css-op-select');
                         let cnt = null;
@@ -905,13 +905,13 @@ class BrowseView extends View {
                     }
                 },
                 {
-                    label: 'Copy with companions',
+                    label: intl('stats.copy.player_companions'),
                     action: (source) => {
                         copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id'), source.attr('data-ts')).toSimulatorShadowModel()));
                     }
                 },
                 {
-                    label: 'Share',
+                    label: intl('stats.fast_export.label'),
                     action: (source) => {
                         let ids = this.$parent.find('[data-id].css-op-select').toArray().map(el => $(el).attr('data-id'));
                         ids.push(source.attr('data-id'));
@@ -920,7 +920,7 @@ class BrowseView extends View {
                     }
                 },
                 {
-                    label: 'Remove permanently',
+                    label: intl('stats.context.remove'),
                     action: (source) => {
                         var sel = this.$parent.find('[data-id].css-op-select');
                         if (sel.length) {
@@ -968,24 +968,14 @@ class BrowseView extends View {
         });
 
         // Filter
-        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield('create', 5, {
-            'c': 'Player class, use full class name in lower case (eg.: berserker, battle mage)',
-            'p': 'Player name',
-            'g': 'Guild name',
-            's': 'Server',
-            'e': 'Custom expression',
-            '#': 'Show only players with specified tags',
-            'l': 'Show only latest',
-            'f': 'Show only first or first n entries',
-            'r': 'Force recalculation of global variables',
-            'x': 'Enable simulator (argument is number of iterations)',
-            'h': 'Show hidden',
-            'o': 'Show own',
-            'sr': 'Sort by custom expression',
-            'q': 'Custom settings (separate header names with comma)',
-            'qc': 'Show only selected categories',
-            't': 'Show online template directly'
-        }).change((event) => {
+        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield(
+            'create',
+            5,
+            _array_to_hash(
+                ['c', 'p', 'g', 's', 'e', '#', 'l', 'f', 'r', 'x', 'h', 'o', 'sr', 'q', 'qc', 't'],
+                k => [k, intl(`stats.filters.${k}`)]
+            )
+        ).change((event) => {
             var filter = $(event.currentTarget).val().split(/(?:\s|\b|^)(c|p|g|s|e|l|f|r|x|h|o|sr|q|qc|t|#):/);
 
             var terms = [
@@ -1297,7 +1287,7 @@ class BrowseView extends View {
             },
             values: [
                 {
-                    name: '<b>Quick swap custom templates</b>',
+                    name: `<b>${intl(`stats.templates.quick_swap`)}</b>`,
                     disabled: true
                 },
                 ... Templates.getKeys().map(t => {
@@ -1358,14 +1348,14 @@ class GroupsView extends View {
         this.$context.context('create', {
             items: [
                 {
-                    label: 'Show / Hide',
+                    label: intl('stats.context.hide'),
                     action: (source) => {
                         DatabaseManager.hideIdentifier(source.attr('data-id'));
                         this.show();
                     }
                 },
                 {
-                    label: 'Copy',
+                    label: intl('stats.copy.player'),
                     action: (source) => {
                         let group = DatabaseManager.getGroup(source.attr('data-id')).Latest;
                         copyText(JSON.stringify(group.Members.map(id => {
@@ -1378,7 +1368,7 @@ class GroupsView extends View {
                     }
                 },
                 {
-                    label: 'Share',
+                    label: intl('stats.fast_export.label'),
                     action: (source) => {
                         const group = source.attr('data-id');
                         const members = DatabaseManager.Groups[group].List.reduce((memo, [, g]) => memo.concat(g.Members), []);
@@ -1386,7 +1376,7 @@ class GroupsView extends View {
                     }
                 },
                 {
-                    label: 'Remove permanently',
+                    label: intl('stats.context.remove'),
                     action: (source) => {
                         DatabaseManager.removeIdentifiers(source.attr('data-id'));
                         this.show();
@@ -1500,32 +1490,32 @@ class PlayersView extends View {
         this.$context.context('create', {
             items: [
                 {
-                    label: 'Show / Hide',
+                    label: intl('stats.context.hide'),
                     action: (source) => {
                         DatabaseManager.hideIdentifier(source.attr('data-id'));
                         this.show();
                     }
                 },
                 {
-                    label: 'Copy',
+                    label: intl('stats.copy.player'),
                     action: (source) => {
                         copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id')).Latest.toSimulatorModel()));
                     }
                 },
                 {
-                    label: 'Copy with companions',
+                    label: intl('stats.copy.player_companions'),
                     action: (source) => {
                         copyText(JSON.stringify(DatabaseManager.getPlayer(source.attr('data-id')).Latest.toSimulatorShadowModel()));
                     }
                 },
                 {
-                    label: 'Share',
+                    label: intl('stats.fast_export.label'),
                     action: (source) => {
                         DatabaseManager.export([ source.attr('data-id') ]).then(data => UI.OnlineShareFile.show(data));
                     }
                 },
                 {
-                    label: 'Remove permanently',
+                    label: intl('stats.context.remove'),
                     action: (source) => {
                         DatabaseManager.removeIdentifiers(source.attr('data-id'));
                         this.show();
@@ -1534,18 +1524,15 @@ class PlayersView extends View {
             ]
         });
 
-        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield('create', 5, {
-            'c': 'Player class, use full class name in lower case (eg.: berserker, battle mage)',
-            'p': 'Player name',
-            'g': 'Guild name',
-            's': 'Server',
-            'e': 'Custom expression',
-            'l': 'Show only latest',
-            'a': 'Show all',
-            'h': 'Show hidden',
-            'o': 'Show other'
-        }).change((event) => {
-            var filter = $(event.currentTarget).val().split(/(?:\s|\b)(c|p|g|s|e|l|a|h|o):/);
+        this.$filter = $(this.$parent.find('[data-op="filter"]')).searchfield(
+            'create',
+            5,
+            _array_to_hash(
+                ['c', 'p', 'g', 's', 'e', 'l', 'a', 'h', 'd'],
+                k => [k, intl(`stats.filters.${k}`)]
+            )
+        ).change((event) => {
+            var filter = $(event.currentTarget).val().split(/(?:\s|\b)(c|p|g|s|e|l|a|h|d):/);
 
             var terms = [
                 {
@@ -1782,7 +1769,7 @@ class FilesView extends View {
 
     // Delete all
     deleteAll () {
-        DialogController.open(ConfirmDialog, 'Delete all', 'Are you sure you want to delete all stored player data?', () => {
+        DialogController.open(ConfirmDialog, intl('dialog.delete_all.title'), intl('dialog.delete_all.notice'), () => {
             Loader.toggle(true);
             DatabaseManager.purge().then(() => this.show());
         }, () => {}, true, 2)
@@ -1837,7 +1824,7 @@ class FilesView extends View {
         Array.from(fileEvent.currentTarget.files).forEach(file => {
             pendingPromises.push(file.text().then(fileContent => {
                 return DatabaseManager.import(fileContent, file.lastModified).catch((e) => {
-                    Toast.error('An error has occured while importing file', e.message);
+                    Toast.error(intl('database.import_error'), e.message);
                     Logger.error(e, 'Error occured while trying to import a file!');
                 })
             }))
@@ -2119,7 +2106,7 @@ class FilesView extends View {
                         if (name === 'undefined') {
                             if (tagEntries.length > 1) {
                                 tagContent += `
-                                    <div class="ui gray horizontal label">None${countText}</div>
+                                    <div class="ui gray horizontal label">${intl('stats.files.tags.none')}${countText}</div>
                                 `;
                             }
                         } else {
@@ -2251,8 +2238,8 @@ class FilesView extends View {
         let currentTags = Object.keys(DatabaseManager.findUsedTags(undefined));
         if (currentTags.length > 1 || (currentTags.length == 1 && currentTags[0] !== 'undefined')) {
             let content = `
-                <div data-tag="*" class="ui basic tiny button" style="margin-bottom: 0.5rem;">All</div>
-                <div data-tag="" class="ui basic black tiny button" style="margin-bottom: 0.5rem;">None</div>
+                <div data-tag="*" class="ui basic tiny button" style="margin-bottom: 0.5rem;">${intl('stats.files.tags.all')}</div>
+                <div data-tag="" class="ui basic black tiny button" style="margin-bottom: 0.5rem;">${intl('stats.files.tags.none')}</div>
             `;
 
             for (const name of currentTags) {
@@ -2291,9 +2278,9 @@ class FilesView extends View {
         // Expression filter
         this.$filters.html(`
             <div class="field">
-                <label>Expression</label>
+                <label>${intl('stats.files.filters.expression')}</label>
                 <div class="ta-wrapper">
-                    <input class="ta-area" type="text" placeholder="Your expression">
+                    <input class="ta-area" type="text" placeholder="${intl('stats.files.filters.expression_placeholder')}">
                     <div class="ta-content" style="width: 100%; margin-top: -2.3em; margin-left: 1em;"></div>
                 </div>
             </div>
@@ -2359,46 +2346,46 @@ class FilesView extends View {
 
         this.$filters.html(`
             <div class="field">
-                <label>Timestamp (<span data-op="unique-timestamp"></span> unique)</label>
+                <label>${intl('stats.files.filters.timestamp')} (<span data-op="unique-timestamp"></span> ${intl('stats.files.filters.n_unique')})</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-timestamp">
                     ${ this.timeArray.map(([timestamp, value]) => `<option value="${ timestamp }">${ value }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
-                <label>Player (<span data-op="unique-player"></span> unique)</label>
+                <label>${intl('stats.files.filters.player')} (<span data-op="unique-player"></span> ${intl('stats.files.filters.n_unique')})</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-player">
                     ${ Object.entries(this.playerMap).map(([player, value]) => `<option value="${ player }">${ value }${ playerNameFrequency[value] > 1 ? ` - ${_pretty_prefix(player)}` : '' }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
-                <label>Group (<span data-op="unique-group"></span> unique)</label>
+                <label>${intl('stats.files.filters.group')} (<span data-op="unique-group"></span> ${intl('stats.files.filters.n_unique')})</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-group">
                     ${ Object.entries(this.groupMap).map(([group, value]) => `<option value="${ group }">${ value }${ groupNameFrequency[value] > 1 ? ` - ${_pretty_prefix(group)}` : '' }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
-                <label>Prefix (<span data-op="unique-prefix"></span> unique)</label>
+                <label>${intl('stats.files.filters.prefix')} (<span data-op="unique-prefix"></span> ${intl('stats.files.filters.n_unique')})</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-prefix">
                     ${ Object.entries(this.prefixMap).map(([prefix, value]) => `<option value="${ prefix }">${ value }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
-                <label>Tags (<span data-op="unique-tags"></span> unique)</label>
+                <label>${intl('stats.files.filters.tags')} (<span data-op="unique-tags"></span> ${intl('stats.files.filters.n_unique')})</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-tags">
-                    <option value="undefined">None</option>
+                    <option value="undefined">${intl('stats.files.tags.none')}</option>
                     ${ this.tagsArray.map((tag) => `<option value="${ tag }">${ tag }</option>`).join('') }
                 </select>
             </div>
             <div class="field">
-                <label>Type</label>
+                <label>${intl('stats.files.filters.type')}</label>
                 <select class="ui fluid search selection dropdown" data-op="files-search-type">
-                    <option value="0">Show all characters</option>
-                    <option value="1">Show only own characters</option>
-                    <option value="2">Show only other characters</option>
+                    <option value="0">${intl('stats.files.filters.type_all')}</option>
+                    <option value="1">${intl('stats.files.filters.type_own')}</option>
+                    <option value="2">${intl('stats.files.filters.type_other')}</option>
                 </select>
             </div>
             <div class="field">
-                <label>Origin</label>
+                <label>${intl('stats.files.filters.origin')}</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-origin">
                     <option value="undefined">HAR</option>
                     <option value="endpoint">Endpoint</option>
@@ -2412,47 +2399,47 @@ class FilesView extends View {
                 </select>
             </div>
             <div class="field" ${ SiteOptions.hidden ? '' : 'style="display: none;"' }>
-                <label>Hidden</label>
+                <label>${intl('stats.files.filters.hidden')}</label>
                 <select class="ui fluid search selection dropdown" multiple="" data-op="files-search-hidden">
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="yes">${intl('general.yes')}</option>
+                    <option value="no">${intl('general.no')}</option>
                 </select>
             </div>
         `);
 
         this.$filter_timestamp = this.$parent.find('[data-op="files-search-timestamp"]').dropdown({
             onChange: this.updateSearchResults.bind(this),
-            placeholder: 'Any'
+            placeholder: intl('stats.files.filters.any')
         });
 
         this.$filter_player = this.$parent.find('[data-op="files-search-player"]').dropdown({
             onChange: this.updateSearchResults.bind(this),
-            placeholder: 'Any'
+            placeholder: intl('stats.files.filters.any')
         });
 
         this.$filter_group = this.$parent.find('[data-op="files-search-group"]').dropdown({
             onChange: this.updateSearchResults.bind(this),
-            placeholder: 'Any'
+            placeholder: intl('stats.files.filters.any')
         });
 
         this.$filter_prefix = this.$parent.find('[data-op="files-search-prefix"]').dropdown({
             onChange: this.updateSearchResults.bind(this),
-            placeholder: 'Any'
+            placeholder: intl('stats.files.filters.any')
         });
 
         this.$filter_origin = this.$parent.find('[data-op="files-search-origin"]').dropdown({
             onChange: this.updateSearchResults.bind(this),
-            placeholder: 'Any'
+            placeholder: intl('stats.files.filters.any')
         });
 
         this.$filter_hidden = this.$parent.find('[data-op="files-search-hidden"]').dropdown({
             onChange: this.updateSearchResults.bind(this),
-            placeholder: 'Any'
+            placeholder: intl('stats.files.filters.any')
         });
 
         this.$filter_tags = this.$parent.find('[data-op="files-search-tags"]').dropdown({
             onChange: this.updateSearchResults.bind(this),
-            placeholder: 'Any'
+            placeholder: intl('stats.files.filters.any')
         });
 
         this.$filter_type = this.$parent.find('[data-op="files-search-type"]').dropdown({
@@ -2518,8 +2505,8 @@ class SettingsView extends View {
         this.$delete = this.$parent.find('[data-op="delete"]').click(() => {
             DialogController.open(
                 ConfirmDialog,
-                'Remove settings',
-                'Are you sure you want to permanently remove currently applied settings?',
+                intl('dialog.delete_script.title'),
+                intl('dialog.delete_script.notice'),
                 () => this.remove(),
                 null
             );
@@ -2620,17 +2607,17 @@ class SettingsView extends View {
         // Settings
         let settings = [
             {
-                name: 'Players',
+                name: intl('stats.scripts.types.players'),
                 value: 'players',
                 selected: this.settings.name == 'players'
             },
             {
-                name: 'Me',
+                name: intl('stats.scripts.types.me'),
                 value: 'me',
                 selected: this.settings.name == 'me'
             },
             {
-                name: 'Guilds',
+                name: intl('stats.scripts.types.guilds'),
                 value: 'guilds',
                 selected: this.settings.name == 'guilds'
             },
@@ -2648,7 +2635,7 @@ class SettingsView extends View {
         ];
 
         settings.unshift({
-            name: '<i>Tracker Configuration</i>',
+            name: `<i>${intl('stats.scripts.types.tracker')}</i>`,
             value: 'tracker',
             selected: this.settings.name == 'tracker'
         });
@@ -2697,15 +2684,15 @@ class SettingsView extends View {
         // Templates
         let templates = [
             {
-                name: 'Players (Default)',
+                name: `${intl('stats.scripts.types.players')} (${intl('stats.scripts.types.default')})`,
                 value: 'Players Default'
             },
             {
-                name: 'Me (Default)',
+                name: `${intl('stats.scripts.types.me')} (${intl('stats.scripts.types.default')})`,
                 value: 'Me Default'
             },
             {
-                name: 'Guilds (Default)',
+                name: `${intl('stats.scripts.types.guilds')} (${intl('stats.scripts.types.default')})`,
                 value: 'Guilds Default'
             },
             ... Templates.getKeys().map(key => {
@@ -3321,7 +3308,7 @@ class OnlineTemplatesView extends View {
                 });
             });
         } else {
-            this.$content.html('<b>No scripts available</b>');
+            this.$content.html(`<b>${intl('stats.scripts.online.not_available')}</b>`);
         }
 
         this.$dimmer.removeClass('active');
@@ -3493,18 +3480,18 @@ class ProfilesView extends View {
                         <table class="ui table" style="table-layout: fixed;">
                             <tr>
                                 <td style="width: 20%;"></td>
-                                <td style="width: 40%;">Players</td>
-                                <td style="width: 40%;">Groups</td>
+                                <td style="width: 40%;">${intl('stats.profiles.players')}</td>
+                                <td style="width: 40%;">${intl('stats.profiles.groups')}</td>
                             </tr>
                             <tr>
-                                <td>Primary filter</td>
+                                <td>${intl('stats.profiles.primary')}</td>
                                 <td>${ this.showRules(primary) }</td>
                                 <td>${ this.showRules(primary_g) }</td>
                             </tr>
                             <tr>
-                                <td>Secondary filter</td>
-                                <td>${ secondary ? Expression.format(secondary, undefined, PROFILES_PROPS) : '<b>None</b>' }</td>
-                                <td>${ secondary_g ? Expression.format(secondary_g, undefined, PROFILES_GROUP_PROPS) : '<b>None</b>' }</td>
+                                <td>${intl('stats.profiles.secondary')}</td>
+                                <td>${ secondary ? Expression.format(secondary, undefined, PROFILES_PROPS) : `<b>${intl('stats.profiles.none')}</b>` }</td>
+                                <td>${ secondary_g ? Expression.format(secondary_g, undefined, PROFILES_GROUP_PROPS) : `<b>${intl('stats.profiles.none')}</b>` }</td>
                             </tr>
                         </table>
                     </div>
@@ -3515,7 +3502,7 @@ class ProfilesView extends View {
         content += `
             <div class="row" style="margin-top: 1em;">
                 <div class="sixteen wide column" style="padding: 0;">
-                    <div class="ui fluid basic lightgray button" data-op="create" style="margin: -1em; padding: 1em; margin-left: 0; line-height: 2em;">Create new profile</div>
+                    <div class="ui fluid basic lightgray button" data-op="create" style="margin: -1em; padding: 1em; margin-left: 0; line-height: 2em;">${intl('stats.profiles.create')}</div>
                 </div>
             </div>
         `
@@ -3552,12 +3539,12 @@ class ProfilesView extends View {
         if (rule) {
             const { name, mode, value } = rule;
             if (mode == 'between') {
-                return `<b>${name}</b> between ${Expression.format(value[0])} and ${Expression.format(value[1])}`;
+                return `<b>${name}</b> ${intl('stats.profiles.between')} ${Expression.format(value[0])} ${intl('stats.profiles.and')} ${Expression.format(value[1])}`;
             } else {
                 return `<b>${name}</b> ${this.stringifyMode(mode)} ${value ? value.map(v => Expression.format(v)).join('<br/>') : ''}`;
             }
         } else {
-            return '<b>None</b>';
+            return `<b>${intl('stats.profiles.none')}</b>`;
         }
     }
 

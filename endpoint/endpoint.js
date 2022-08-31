@@ -94,6 +94,10 @@ const Endpoint = new ( class {
         })
     }
 
+    intl (key) {
+        return intl(`endpoint.${key}`);
+    }
+
     _show () {
         this.$step1.show();
         this.$step2.hide();
@@ -207,7 +211,7 @@ const Endpoint = new ( class {
             this.$step3.hide();
             this.endpoint.querry_collect((text) => {
                 DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
-                    Toast.error('An error has occured while importing file', e.message);
+                    Toast.error(intl('database.import_error'), e.message);
                     Logger.error(e, 'Error occured while trying to import a file!');
                 }).then(() => {
                     this._funcShutdown();
@@ -227,7 +231,7 @@ const Endpoint = new ( class {
             if (/^(.{3,})@(.+\.sfgame\..+)$/.test(username)) {
                 [, username, server, ] = username.split(/^(.{3,})@(.+\.sfgame\..+)$/);
             } else {
-                Toast.warn('Your user name or password is not valid', 'Please ensure that it is in correct format (username@url)')
+                Toast.warn(this.intl('user_error.title'), this.intl('user_error.message'));
                 return;
             }
 
@@ -272,14 +276,14 @@ const Endpoint = new ( class {
     _funcLoginSingle (server, username, password) {
         this.endpoint.login_querry_only(server, username, password, (text) => {
             DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
-                Toast.error('An error has occured while importing file', e.message);
+                Toast.error(intl('database.import_error'), e.message);
                 Logger.error(e, 'Error occured while trying to import a file!');
             }).then(() => {
                 this._funcShutdown();
             });
         }, () => {
             this.$step4.hide();
-            this._showError('Wrong username or password');
+            this._showError(this.intl('credentials_error'));
         });
     };
 
@@ -289,7 +293,7 @@ const Endpoint = new ( class {
             return kind == 'members' ? members : friends;
         }, (text) => {
             DatabaseManager.import(text, Date.now(), new Date().getTimezoneOffset() * 60 * 1000, this.origin).catch((e) => {
-                Toast.error('An error has occured while importing file', e.message);
+                Toast.error(intl('database.import_error'), e.message);
                 Logger.error(e, 'Error occured while trying to import a file!');
             }).then(() => {
                 this._funcShutdown();
@@ -297,7 +301,7 @@ const Endpoint = new ( class {
         }, () => {
             this.$step4.hide();
             this.$step5.hide();
-            this._showError('Wrong username or password');
+            this._showError(this.intl('credentials_error'));
         }, percentDone => {
             this.$step4.hide();
             this.$step5.show();
@@ -351,13 +355,13 @@ const Endpoint = new ( class {
                         this._removeDownloading(name);
                     }, () => {
                         this.$step3.hide();
-                        this._showError('Download failed', true);
+                        this._showError(this.intl('download_error'), true);
                     });
                 })
             }
         }, () => {
             this.$step4.hide();
-            this._showError('Wrong username or password');
+            this._showError(this.intl('credentials_error'));
         });
     }
 
@@ -379,43 +383,43 @@ const Endpoint = new ( class {
                     <div class="six wide column">
                         <div class="ui form darker-placeholder">
                             <div class="field">
-                                <label style="color: white;">Username</label>
+                                <label style="color: white;">${this.intl('username')}</label>
                                 <input type="text" autocomplete="username" data-op="textUsername" name="username" placeholder="username@s1.sfgame.de">
                             </div>
                             <div class="field">
-                                <label style="color: white;">Password</label>
+                                <label style="color: white;">${this.intl('password')}</label>
                                 <input type="password" autocomplete="current-password" name="password" data-op="textPassword">
                             </div>
                             <div class="grouped fields">
                                 <div class="field">
                                     <div class="ui radio checkbox" data-op="modeOwn">
                                         <input type="radio" name="endpointMode">
-                                        <label style="color: white;">Capture own character</label>
+                                        <label style="color: white;">${this.intl('mode.own')}</label>
                                     </div>
                                 </div>
                                 <div class="field">
                                     <div class="ui radio checkbox" data-op="modeDefault">
                                         <input type="radio" name="endpointMode" checked="checked">
-                                        <label style="color: white;">Capture own + selected characters</label>
+                                        <label style="color: white;">${this.intl('mode.default')}</label>
                                     </div>
                                 </div>
                                 <div class="field">
                                     <div class="ui radio checkbox" data-op="modeAllMembers">
                                         <input type="radio" name="endpointMode">
-                                        <label style="color: white;">Capture own + guild characters</label>
+                                        <label style="color: white;">${this.intl('mode.guild')}</label>
                                     </div>
                                 </div>
                                 <div class="field">
                                     <div class="ui radio checkbox" data-op="modeAllFriends">
                                         <input type="radio" name="endpointMode">
-                                        <label style="color: white;">Capture own + friend characters</label>
+                                        <label style="color: white;">${this.intl('mode.friends')}</label>
                                     </div>
                                 </div>
                             </div>
                             <br/>
                             <div class="ui two buttons">
-                                <button class="ui secondary button fluid" data-op="back">Cancel</button>
-                                <button class="ui primary button fluid" data-op="login">Continue</button>
+                                <button class="ui secondary button fluid" data-op="back">${this.intl('cancel')}</button>
+                                <button class="ui primary button fluid" data-op="login">${this.intl('continue')}</button>
                             </div>
                         </div>
                     </div>
@@ -426,31 +430,31 @@ const Endpoint = new ( class {
                         <img src="/endpoint/logo.png" class="unity-loading">
                     </div>
                     <div class="sixteen wide column">
-                        <h3 class="ui header centered white">Loading Endpoint</h3>
+                        <h3 class="ui header centered white">${this.intl('step2.title')}</h3>
                     </div>
                 </div>
                 <div class="ui grid" data-op="step3" style="display: none; margin-top: -14em;">
                     <div class="five wide column"></div>
                     <div class="six wide column">
-                        <h2 class="ui header centered white">Select players to be imported</h2>
+                        <h2 class="ui header centered white">${this.intl('step3.title')}</h2>
                         <hr/>
                         <div class="ui celled relaxed list" data-op="list" style="height: 30em; overflow-y: auto;">
 
                         </div>
                         <div class="ui two buttons">
-                            <button class="ui secondary button fluid" data-op="back">Cancel</button>
-                            <button class="ui primary button fluid" data-op="import">Continue</button>
+                            <button class="ui secondary button fluid" data-op="back">${this.intl('cancel')}</button>
+                            <button class="ui primary button fluid" data-op="import">${this.intl('continue')}</button>
                         </div>
                     </div>
                     <div class="five wide column"></div>
                 </div>
                 <div class="ui grid" data-op="step4" style="display: none;">
-                    <div class="ui large text loader">Contacting the server for information</div>
+                    <div class="ui large text loader">${this.intl('step4.title')}</div>
                 </div>
                 <div class="ui grid" data-op="step5" style="display: none; margin-top: -14em;">
                     <div class="five wide column"></div>
                     <div class="six wide column">
-                        <h3 class="ui header centered white">Fetching data</h3>
+                        <h3 class="ui header centered white">${this.intl('step4.message')}</h3>
                         <div class="ui green active progress" data-percent="0">
                             <div class="bar">
                             </div>
@@ -464,7 +468,7 @@ const Endpoint = new ( class {
                         <h2 class="ui header centered white" data-op="error-text"></h2>
                         <br/>
                         <br/>
-                        <button class="ui secondary button fluid" data-op="error-button">Continue</button>
+                        <button class="ui secondary button fluid" data-op="error-button">${this.intl('continue')}</button>
                     </div>
                     <div class="five wide column"></div>
                 </div>
@@ -516,7 +520,7 @@ const StatisticsIntegration = new (class {
                                     pendingPromises.push(file.text().then(fileContent => {
                                         return DatabaseManager.import(fileContent, file.lastModified, undefined, createOrigin('har'));
                                     }).catch(function (e) {
-                                        Toast.error('An error has occured while importing file', e.message);
+                                        Toast.error(intl('database.import_error'), e.message);
                                         Logger.error(e, 'Error occured while trying to import a file!');
                                     }));
                                 });
@@ -533,7 +537,7 @@ const StatisticsIntegration = new (class {
             }).catch(function (e) {
                 Loader.toggle(false);
 
-                Toast.error('Database could not be opened', 'Please verify that you are not in incognito mode and your browser supports Indexed DB');
+                Toast.error(intl('database.open_error.title'), intl('database.open_error.message'));
                 Logger.error(e, `Database could not be opened! Reason: ${e.message}`);
 
                 $statsList.empty();

@@ -457,16 +457,16 @@ DUNGEON_DATA = {
         pos: 19,
         shadow: false,
         floors: {
-            '1': { pos: 1, id: 1120, class: 2, level: 410, str: 7000, dex: 7000, int: 20000, con: 18000, lck: 4000, health: 10000000, min: 1420, max: 2290, armor: 35000 },
-            '2': { pos: 2, id: 1121, class: 1, level: 420, str: 24000, dex: 8500, int: 8500, con: 20000, lck: 5000, health: 30000000, min: 651, max: 1049, armor: 36000 },
-            '3': { pos: 3, id: 1122, class: 1, level: 430, str: 29000, dex: 10000, int: 10000, con: 22000, lck: 6000, health: 25000000, min: 650, max: 1099, armor: 37000 },
-            '4': { pos: 4, id: 1123, class: 3, level: 440, str: 12000, dex: 35000, int: 12000, con: 24000, lck: 7500, health: 35000000, min: 850, max: 1399, armor: 35000 },
-            '5': { pos: 5, id: 1124, class: 1, level: 450, str: 42000, dex: 15000, int: 15000, con: 26000, lck: 9000, health: 10000000, min: 703, max: 1136, armor: 37000 },
-            '6': { pos: 6, id: 1125, class: 2, level: 460, str: 18000, dex: 18000, int: 50000, con: 29000, lck: 11000, health: 25000000, min: 1551, max: 2599, armor: 34000 },
-            '7': { pos: 7, id: 1126, class: 3, level: 470, str: 21000, dex: 60000, int: 21000, con: 32000, lck: 13000, health: 35000000, min: 913, max: 1449, armor: 35000 },
-            '8': { pos: 8, id: 1127, class: 2, level: 480, str: 25000, dex: 25000, int: 72000, con: 35000, lck: 15000, health: 50000000, min: 1614, max: 2698, armor: 34000 },
-            '9': { pos: 9, id: 1128, class: 1, level: 490, str: 86000, dex: 30000, int: 30000, con: 39000, lck: 19000, health: 30000000, min: 750, max: 1244, armor: 37000 },
-            '10': { pos: 10, id: 1129, class: 2, level: 500, str: 35000, dex: 35000, int: 90000, con: 43000, lck: 21000, health: 50000000, min: 1701, max: 2798, armor: 34000 }
+            '1': { pos: 1, id: 1120, class: 2, level: 410, str: 7000, dex: 7000, int: 20000, con: 18000, lck: 4000, health: 10000000, min: 1416, max: 2290, armor: 2000 },
+            '2': { pos: 2, id: 1121, class: 1, level: 420, str: 24000, dex: 8500, int: 8500, con: 20000, lck: 5000, health: 30000000, min: 651, max: 1049, armor: 10500 },
+            '3': { pos: 3, id: 1122, class: 1, level: 430, str: 29000, dex: 10000, int: 10000, con: 22000, lck: 6000, health: 25000000, min: 650, max: 1096, armor: 10750 },
+            '4': { pos: 4, id: 1123, class: 3, level: 440, str: 12000, dex: 35000, int: 12000, con: 24000, lck: 7500, health: 35000000, min: 850, max: 1396, armor: 5500 },
+            '5': { pos: 5, id: 1124, class: 1, level: 450, str: 42000, dex: 15000, int: 15000, con: 26000, lck: 9000, health: 10000000, min: 703, max: 1136, armor: 11500 },
+            '6': { pos: 6, id: 1125, class: 2, level: 460, str: 18000, dex: 18000, int: 50000, con: 29000, lck: 11000, health: 25000000, min: 1551, max: 2599, armor: 2500 },
+            '7': { pos: 7, id: 1126, class: 3, level: 470, str: 21000, dex: 60000, int: 21000, con: 32000, lck: 13000, health: 35000000, min: 902, max: 1449, armor: 5800 },
+            '8': { pos: 8, id: 1127, class: 2, level: 480, str: 25000, dex: 25000, int: 72000, con: 35000, lck: 15000, health: 50000000, min: 1605, max: 2698, armor: 2387 },
+            '9': { pos: 9, id: 1128, class: 1, level: 490, str: 86000, dex: 30000, int: 30000, con: 39000, lck: 19000, health: 30000000, min: 750, max: 1244, armor: 12227 },
+            '10': { pos: 10, id: 1129, class: 2, level: 500, str: 35000, dex: 35000, int: 90000, con: 43000, lck: 21000, health: 50000000, min: 1701, max: 2798, armor: 2500 }
         }
     },
     '203': {
@@ -884,14 +884,14 @@ DUNGEON_DATA = {
         pos: 120,
         shadow: true,
         floors: {
-            '1': { pos: 1, id: 1120, class: 2, level: 400, str: 35000, dex: 15000, int: 35000, con: 180000, lck: 20000, health: 6074999808, min: 1351, max: 2249, armor: 35000 },
-            '2': { pos: 2, id: 1121, class: 1, level: 400, str: 45000, dex: 15000, int: 45000, con: 200000, lck: 23500, health: 3037499904, min: 600, max: 999, armor: 30000 },
-            '3': { pos: 3, id: 1122, class: 1, level: 400, str: 60000, dex: 20000, int: 20000, con: 220000, lck: 31500, health: 8099999744, min: 600, max: 999, armor: 33000 },
-            '4': { pos: 4, id: 1123, class: 3, level: 400, str: 25000, dex: 75000, int: 25000, con: 240000, lck: 45000, health: 8099999744, min: 750, max: 1249, armor: 30000 },
-            '5': { pos: 5, id: 1124, class: 1, level: 400, str: 90000, dex: 30000, int: 30000, con: 260000, lck: 48500, health: 5062499840, min: 600, max: 999, armor: 35000 },
-            '6': { pos: 6, id: 1125, class: 2, level: 400, str: 35000, dex: 35000, int: 105000, con: 280000, lck: 53500, health: 6074999808, min: 1350, max: 2249, armor: 25000 },
-            '7': { pos: 7, id: 1126, class: 3, level: 450, str: 40000, dex: 120000, int: 40000, con: 300000, lck: 71500, health: 16199999488, min: 850, max: 1399, armor: 30000 },
-            '8': { pos: 8, id: 1127, class: 2, level: 500, str: 50000, dex: 50000, int: 150000, con: 320000, lck: 93500, health: 16199999488, min: 1700, max: 2799, armor: 25000 },
+            '1': { pos: 1, id: 1120, class: 2, level: 400, str: 35000, dex: 15000, int: 35000, con: 180000, lck: 20000, health: 6074999808, min: 1351, max: 2249, armor: 7000 },
+            '2': { pos: 2, id: 1121, class: 1, level: 400, str: 45000, dex: 15000, int: 45000, con: 200000, lck: 23500, health: 3037499904, min: 600, max: 999, armor: 12500 },
+            '3': { pos: 3, id: 1122, class: 1, level: 400, str: 60000, dex: 20000, int: 20000, con: 220000, lck: 31500, health: 8099999744, min: 600, max: 999, armor: 20000 },
+            '4': { pos: 4, id: 1123, class: 3, level: 400, str: 25000, dex: 75000, int: 25000, con: 240000, lck: 45000, health: 8099999744, min: 750, max: 1249, armor: 15000 },
+            '5': { pos: 5, id: 1124, class: 1, level: 400, str: 90000, dex: 30000, int: 30000, con: 260000, lck: 48500, health: 5062499840, min: 600, max: 999, armor: 25000 },
+            '6': { pos: 6, id: 1125, class: 2, level: 400, str: 35000, dex: 35000, int: 105000, con: 280000, lck: 53500, health: 6074999808, min: 1350, max: 2249, armor: 7000 },
+            '7': { pos: 7, id: 1126, class: 3, level: 450, str: 40000, dex: 120000, int: 40000, con: 300000, lck: 71500, health: 16199999488, min: 850, max: 1399, armor: 15000 },
+            '8': { pos: 8, id: 1127, class: 2, level: 500, str: 50000, dex: 50000, int: 150000, con: 320000, lck: 93500, health: 16199999488, min: 1700, max: 2799, armor: 7000 },
             '9': { pos: 9, id: 1128, class: 1, level: 550, str: 200000, dex: 75000, int: 75000, con: 330000, lck: 100000, health: 18225000448, min: 850, max: 1399, armor: 35000 },
             '10': { pos: 10, id: 1129, class: 2, level: 600, str: 100000, dex: 100000, int: 250000, con: 430000, lck: 137000, health: 12149999616, min: 2050, max: 3398, armor: 25000 }
         }

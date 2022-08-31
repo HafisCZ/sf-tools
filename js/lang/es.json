@@ -1,0 +1,170 @@
+{
+    "general": {
+        "no": "No",
+        "yes": "Si",
+        "class1": "Guerrero",
+        "class2": "Mago",
+        "class3": "Explorador",
+        "class4": "Asesino",
+        "class5": "Mago de Batalla",
+        "class6": "Berserker",
+        "class7": "Cazademonios",
+        "class8": "Druida",
+        "class9": "Bardo",
+        "mask1": "Oso",
+        "mask2": "Gato",
+        "instrument0": "Arpa",
+        "instrument1": "Laúd",
+        "instrument2": "Flauta",
+        "strength": "Fuerza",
+        "dexterity": "Destreza",
+        "intelligence": "Inteligencia",
+        "constitution": "Constitución",
+        "luck": "Suerte",
+        "life_potion": "Vida Eterna"
+    },
+    "index": {
+        "toggle": "Alternar créditos",
+        "roles": {
+            "admin": "Aguien con mucho tiempo libre...",
+            "helper": "Ayudantes - Investigación, Testing, Feedback, etc.",
+            "tester": "Probadores",
+            "wiki": "Jefe de la Wiki",
+            "translator": "Traductores",
+            "mention": "Otras menciones"
+        },
+        "stats": {
+            "title": "Estadísticas",
+            "desc": "Sigue tu progreso y el de tu gremio"
+        },
+        "temp": {
+            "title": "Estadísticas",
+            "desc": "Crea una instancia temporal de Estadísticas",
+            "temporary": "Temporal"
+        },
+        "wiki": {
+            "title": "Wiki",
+            "desc": "Como hacer magia con las tablas y mucho más"
+        },
+        "runes": {
+            "title": "Bonuses de Runas",
+            "desc": "Tabla de bonuses de runas de Zorago"
+        },
+        "inventory": {
+            "title": "Gestor de inventario",
+            "desc": "Compara artículos, calcula mejoras y más"
+        },
+        "idle": {
+            "title": "Director de Arena",
+            "desc": "Comprueba la producción de tu Director de Arena"
+        },
+        "calendar": {
+            "title": "Calendario de mascotas",
+            "desc": "Mira cuando puedes obtener las mascotas"
+        },
+        "players": {
+            "title": "Simulador de Batallas",
+            "desc": "Simula el posible resultado de una batalla PVP"
+        },
+        "guild": {
+            "title": "Simulador de Batallas de Gremio",
+            "desc": "Simula el posible resultado de una batalla de gremio"
+        },
+        "pets": {
+            "title": "Simulador de mascotas",
+            "desc": "Simula el posible resultado de una batalla de mascotas"
+        },
+        "dungeons": {
+            "title": "Simulador de mazmorras",
+            "desc": "Simula el posible resultado de una mazmorra"
+        },
+        "underworld": {
+            "title": "Inframundo",
+            "desc": "Simula el posible resultado de una batalla del inframundo"
+        },
+        "fights": {
+            "title": "Visualizador de batallas",
+            "desc": "Muestra todas las batallas PVP almacenados en un archivo"
+        },
+        "digest": {
+            "title": "Visualizador de jefes",
+            "desc": "Muestra todas las batallas PVE almacenados en un archivo"
+        },
+        "atts": {
+            "title": "Oro & Experiencia",
+            "desc": "Curvas & calculadoras"
+        },
+        "smith": {
+            "title": "Mejoras del Herrero",
+            "desc": "Cuanto cuesta y cuanto se pierde"
+        },
+        "hydra": {
+            "title": "Simulador de Hidra",
+            "desc": "Simula que clase de mascota de gremio es mejor para la hidra actual."
+        }
+    },
+    "404": {
+        "title": "404",
+        "text": "No estoy seguro de lo que buscas pero no existe"
+    },
+    "dungeons": {
+        "simulate": "Simular",
+        "simulate_remaining": "Restantes",
+        "simulate_all": "Todas",
+        "player": "Jugador",
+        "enemy": "Enemigo",
+        "yourself": "Tú",
+        "bert": "Bert",
+        "mark": "Mark",
+        "kunigunde": "Kunigunde",
+        "open": "Mazmorras abiertas actual",
+        "graph": {
+            "y": "Vida restande del Jefe",
+            "x": "- Distribución por cantidad de intentos seleccionados -"
+        },
+        "results": "Resultados",
+        "cheats": {
+            "title": "Menu de trampas",
+            "subtitle": "Selecciona qué trampas aplicar y selecciona a tu personaje",
+            "enable": "Habilitar trampas",
+            "general": "General",
+            "enchantments": "Todos los encantamientos",
+            "runes": "Runas al máximo",
+            "pets": "Mascotas al máximo",
+            "potions": "Pociones (máx. 3)",
+            "class": "Cambiar clase",
+            "keep_original": "Mantener original"
+        }
+    },
+    "simulator": {
+        "paste_target#": "Clica aqui y pulsa <b>CTRL&nbsp;+&nbsp;V</b> para copiar en el simulador",
+        "threads": "Hilos de la simulación. Mantenga este número POR DEBAJO del número de núcleos de su procesador!",
+        "iterations": "Cantidad de iteraciones por hilo.",
+        "save_image": "Guardar como imagen"
+    },
+    "editor": {
+        "name": "Nombre",
+        "class": "Clase",
+        "level": "Nivel",
+        "mask": "Máscara",
+        "instrument": "Instrumento",
+        "armor": "Armadura",
+        "min": "Mínimo",
+        "max": "Máximo",
+        "weapon_enchant": "Crítico",
+        "rune": "Runa",
+        "portal_damage": "Portal de Daño",
+        "portal_health": "Portal de Vida",
+        "rune_health": "Runa de puntos de vida",
+        "block": "Bloqueo %",
+        "fire": "Fuego",
+        "cold": "Frío",
+        "lightning": "Rayo",
+        "gladiator": "Gladiador (0 - 15)",
+        "life_potion": "Poción de Vida Eterna",
+        "hand_enchant": "Sombra del Cowboy",
+        "smart_change": "Cambio de clase inteligente",
+        "copy": "Copiar",
+        "none": "Ninguno"
+    }
+}
