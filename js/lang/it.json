@@ -412,10 +412,6 @@
         }
     },
     "pets": {
-        "new_backend": {
-            "label": "Nuova backend",
-            "tooltip": "Attiva se giochi su un server con nuova backend!"
-        },
         "generate": {
             "tooltip": "Genera una tabella di successo per livello / gladiatore. Possibile solo per gli scontri contro i boss famigli.",
             "one": "Genera",

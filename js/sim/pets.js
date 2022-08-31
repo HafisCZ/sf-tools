@@ -27,11 +27,10 @@ self.addEventListener('message', function (message) {
     var iterations = message.data.iterations || 100000;
 
     var tracking = message.data.tracking || 0;
-    var useArmor = message.data.useArmor || false;
 
     // Sim type decision
     if (mode == SimulatorType.Pet) {
-        var r = new PetSimulator().simulate(players[0], players[1], 1E7, useArmor);
+        var r = new PetSimulator().simulate(players[0], players[1], 1E7);
         self.postMessage({
             command: 'finished',
             results: r,
@@ -58,7 +57,7 @@ self.addEventListener('message', function (message) {
             }
 
             obj.Gladiator = 15;
-            r[level][15] = new PetSimulator().simulate(obj, players[1], 1E5, useArmor);
+            r[level][15] = new PetSimulator().simulate(obj, players[1], 1E5);
 
             if (r[level - 1] != undefined) {
                 if (r[level - 1][15] > r[level][15]) {
@@ -74,7 +73,7 @@ self.addEventListener('message', function (message) {
                 for (var glad = 14; glad >= origGladiator; glad--) {
                     obj.Gladiator = glad;
 
-                    r[level][glad] = new PetSimulator().simulate(obj, players[1], 1E5, useArmor);
+                    r[level][glad] = new PetSimulator().simulate(obj, players[1], 1E5);
                     if (r[level][glad] > r[level][glad + 1]) {
                         r[level][glad] = r[level][glad + 1];
                     }
@@ -292,23 +291,19 @@ class PetModel {
         var multa = Math.trunc((this.Class == WARRIOR ? 2 : (this.Class == MAGE ? 4.5 : 2.5)) * (this.Level + 1));
         var multb = (1 + Math.max(this.Attribute / 2, this.Attribute - target.getDefenseAtribute(this)) / 10);
         var multc = (this.Boss == false && target.Boss == false && this.hasAdvantage(target)) ? 1.25 : 1;
-        this.Damage = Math.trunc(multa * multb * multc);
 
-        if (PetModel.useArmor) {
-            var ap = target.Armor / this.Level;
-            if (this.Class == MAGE) {
-                ap = 0;
-            } else if (target.Class == MAGE) {
-                ap = Math.min(10, ap);
-            } else if (target.Class == WARRIOR) {
-                ap = Math.min(50, ap);
-            } else if (target.Class == SCOUT) {
-                ap = Math.min(25, ap);
-            }
-
-            this.Damage = Math.trunc(this.Damage * (1 - ap / 100));
+        var ap = target.Armor / this.Level;
+        if (this.Class == MAGE) {
+            ap = 0;
+        } else if (target.Class == MAGE) {
+            ap = Math.min(10, ap);
+        } else if (target.Class == WARRIOR) {
+            ap = Math.min(50, ap);
+        } else if (target.Class == SCOUT) {
+            ap = Math.min(25, ap);
         }
 
+        this.Damage = Math.trunc(multa * multb * multc * (1 - ap / 100));
         this.Critical = 2 * (1 + 0.05 * this.Gladiator);
         this.SkipChance = target.Class == MAGE ? 0 : (this.Class == WARRIOR ? 25 : (this.Class == MAGE ? 0 : 50));
         this.CriticalChance = Math.min(50, 5 * this.LuckAttribute / (target.Level * 2));
@@ -351,9 +346,7 @@ class PetModel {
 }
 
 class PetSimulator {
-    simulate (source, target, iterations = 1E7, useArmor = false) {
-        PetModel.useArmor = useArmor;
-
+    simulate (source, target, iterations = 1E7) {
         this.ca = PetModel.fromObject(source);
         this.cb = PetModel.fromObject(target);
 

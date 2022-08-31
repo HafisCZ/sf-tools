@@ -412,10 +412,6 @@
         }
     },
     "pets": {
-        "new_backend": {
-            "label": "New backend",
-            "tooltip": "Keep unchecked unless playing on new backend!"
-        },
         "generate": {
             "tooltip": "Generate a level / gladiator success map. Only possible with own pet against a dungeon boss.",
             "one": "Generate",
