@@ -20,7 +20,7 @@
         "dexterity": "Habileté",
         "intelligence": "Intelligence",
         "constitution": "Endurance",
-        "luck": "Chnace",
+        "luck": "Chance",
         "life_potion": "Vie Éternelle"
     },
     "index": {
@@ -71,11 +71,11 @@
             "desc": "Simulez les probabilités des résultats d'un combat de guilde"
         },
         "pets": {
-            "title": "Simulateur de Combat de Familiers",
+            "title": "Simulateur de Familiers",
             "desc": "Simulez les probabilités des résultats d'un combat de familiers"
         },
         "dungeons": {
-            "title": "Simulateur de Combat de Donjon",
+            "title": "Simulateur de Donjon",
             "desc": "Simulez les probabilités des résultats d'un combat en donjon"
         },
         "underworld": {
@@ -141,5 +141,116 @@
         "threads": "Threads pour la simulation. Gardez ce nombre EN DESSOUS du nombrede cœurs de votre proccesseur",
         "iterations": "Nombre d'iterations par thread.",
         "save_image": "Sauvegarder comme Image"
+    },
+    "editor": {
+        "name": "Nom",
+        "class": "Classe",
+        "level": "Niveau",
+        "mask": "Masque",
+        "instrument": "Instrument",
+        "armor": "Armure",
+        "armor_placeholder": "Points d'Armure",
+        "min": "Min",
+        "min_placeholder": "Item Min",
+        "max": "Max",
+        "max_placeholder": "Item Max",
+        "weapon_enchant": "Crit",
+        "rune": "Rune",
+        "portal_damage": "Bonus Portail Dégâts",
+        "portal_health": "Bonus Portail PdV",
+        "rune_health": "PdV Runes",
+        "block": "% Parade",
+        "fire": "Feu",
+        "cold": "Glace",
+        "lightning": "Foudre",
+        "gladiator": "Gladiateur (0 - 15)",
+        "life_potion": "Vie Éternelle",
+        "hand_enchant": "Ombre du Cowboy",
+        "smart_change": "Changement de classe intelligent",
+        "copy": "Copie",
+        "none": "Aucun"
+    },
+    "dialog": {
+        "warning": {
+            "title": "Une erreur est survenue !",
+            "continue": "Continuer"
+        },
+        "error": {
+            "title": "Une erreur est survenue !",
+            "notice#": "Cette erreur a aussi pu être causé par votre profile<br>Cilquez le boutton revert ci-dessous pour revenir au profile par défault",
+            "refresh": "Cliquez ici pour rafraîchir la page",
+            "revert": "Revenir au profile par défault"
+        },
+        "file_edit": {
+            "title": "Éditer le fichier",
+            "timestamp": "Horodatage",
+            "cancel": "Annuler",
+            "save": "Sauvegarder"
+        },
+        "save_online_script": {
+            "title": "Importer le Modèle",
+            "loader": "Préparation des Fichiers",
+            "author": "Auteur",
+            "created_updated": "Créé/Mis à Jour",
+            "name": "Nom",
+            "name_placeholder": "Nom du Modèle",
+            "error": "Le modèle demandé n'est pas disponible",
+            "cancel": "Annuler",
+            "save": "Sauvegarder"
+        },
+        "edit_file_tag": {
+            "title": "Éditer les Marqueurs",
+            "current": "Marqueurs actuelles",
+            "replacement": "Marqueur de Remplacement",
+            "none": "Aucun",
+            "cancel": "Cancel",
+            "save": "Save"
+        },
+        "profile_create": {
+            "title": "Créer/Éditer un Profile",
+            "id": "ID",
+            "name": "Nom",
+            "slot": "Slot",
+            "index": "Indexe",
+            "operation": "Opération",
+            "equals": "Égaux",
+            "above": "Au Dessus",
+            "below": "Au Dessous",
+            "between": "Entre",
+            "value": "Valeure",
+            "secondary": "Second Filtre",
+            "cancel": "Annuler",
+            "save": "Sauvegarder",
+            "default": "Défault",
+            "profile": "Profile",
+            "none": "Aucun",
+            "ast": {
+                "primary": "Expression AST principale",
+                "secondary": "Expression AST secondaire",
+                "optional": "optionnel"
+            },
+            "player": {
+                "primary": "Configuration de filtre princpale",
+                "secondary": "Configuration de filtre secondaire"
+            },
+            "group": {
+                "primary": "Configuration de filtre de groupe princpale",
+                "secondary": "Configuration de filtre de groupe secondaire"
+            }
+        },
+        "template_save": {
+            "title": "Sauvegarder le Modèle",
+            "select_existing": "Selectionner un Modèle existant",
+            "select_new": "Créer un nouveau modèle",
+            "or": "ou",
+            "name": "Nom du modèle",
+            "cancel": "Annuler",
+            "save": "Sauvegarder"
+        },
+        "confirm": {
+            "cancel": "Annuler",
+            "ok": "Ok",
+            "wait_n_seconds": "Attendez %1 secondes ..."
+        }
     }
 }
