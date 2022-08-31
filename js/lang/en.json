@@ -313,7 +313,7 @@
         },
         "templates": {
             "title": "Templates",
-            "loading": "Commiting changes",
+            "loading": "Committing changes",
             "form": {
                 "changed_on": "Changed on",
                 "version": "Tool Version",
