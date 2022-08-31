@@ -107,6 +107,463 @@
         "title": "404",
         "text": "Nie wiem czego szukasz, ale tutaj tego nie ma"
     },
+     "stats": {
+        "topbar": {
+            "temporary_flag": "Tymczasowe",
+            "players": "Gracze",
+            "guilds": "Gildie",
+            "browse": "Przeglądaj",
+            "scripts": "Skrypty",
+            "files": "Pliki",
+            "settings": "Ustawienia",
+            "temporary": "Tymczasowa sesja",
+            "changelog": "Lista zmian",
+            "profile": "Profil"
+        },
+        "files": {
+            "titles": {
+                "filters": "Filtry",
+                "io": "Import / Export"
+            },
+            "timestamp": "Data",
+            "timestamps": "Daty",
+            "prefix": "Serwer",
+            "name": "Nazwa",
+            "group": "Grupa",
+            "groups": "Grupy",
+            "origin": "Pochodzenie",
+            "players": "Players",
+            "version": "Wersja",
+            "import": {
+                "file": "Wgraj z pliku",
+                "shared": "Wgraj Udostępnione",
+                "game": "Pobierz z Gry"
+            },
+            "export": {
+                "all": "Export wszystkich",
+                "selected": "Export wybranych"
+            },
+            "selected": {
+                "text": "wybranych",
+                "no": "Brak"
+            },
+            "hide": {
+                "label": "Ukryj",
+                "tooltip": "Działa niezależnie w trybie prostym i zaawansowanym!",
+                "migrate": "Oznaczaj pliki z wszystkimi ukrytymi graczami jako ukryte"
+            },
+            "merge": {
+                "selected": "Połącz wybrane"
+            },
+            "delete": {
+                "all": "Usuń wszystkie",
+                "selected": "Usuń wybrane"
+            },
+            "options": {
+                "title": "Opcje pliku",
+                "advanced": "Pokaż zaawansowaną liste plików",
+                "hidden": "Pokaż ukrytych graczy"
+            },
+            "tags": {
+                "single": "Tag",
+                "multiple": "Tagi",
+                "all": "Wszystkie",
+                "none": "Brak"
+            },
+            "filters": {
+                "any": "Wszystko",
+                "n_unique": "Unikalny",
+                "expression": "Wyrażenie",
+                "expression_placeholder": "Twoje wyrażenie",
+                "timestamp": "Data",
+                "player": "Gracz",
+                "group": "Gildia",
+                "prefix": "Serwer",
+                "tags": "Tagi",
+                "type": "Typ",
+                "type_all": "Pokaż wszystkie postacie",
+                "type_own": "Pokaż tylko własne postacie",
+                "type_other": "Pokaż tylko postacie innych",
+                "origin": "Pochodzenie",
+                "hidden": "Ukryte"
+            },
+            "online": {
+                "title": "Udostępnianie plików",
+                "prompt": "Wprowadź swój kod:",
+                "invalid": "Kod nieprawidłowy lub przedawniony!",
+                "cancel": "Anuluj",
+                "ok": "Ok"
+            }
+        },
+        "copy": {
+            "image": "Zapisz jako obraz",
+            "basic": "Kopiuj tabele",
+            "fight": "Kopiuj tabele do symulatora",
+            "player": "Kopiuj",
+            "player_companions": "Kopiuj wraz z pomocnikami"
+        },
+        "context": {
+            "hide": "Pokaż / Ukryj",
+            "remove": "Usun na stałe"
+        },
+        "profiles": {
+            "players": "Gracze",
+            "groups": "Gracze",
+            "primary": "Główny filtr",
+            "secondary": "Dodatkowy filtr",
+            "none": "Brak",
+            "create": "Utwórz nowy profil",
+            "between": "pomiędzy",
+            "and": "I"
+        },
+        "filters": {
+            "c": "Klasa gracza, użyj pełnej nazwy z malej litery (eg.: berserker, battle mage)",
+            "p": "Nick gracza",
+            "g": "Nazwa gildii",
+            "s": "Serwer",
+            "e": "Własne wyrażenie",
+            "#": "Pokaż tylko graczy z podanym tagiem",
+            "l": "Pokaż tylko najnowsze",
+            "f": "Pokaż tylko pierwsze lub pierwsze n pozycje",
+            "r": "Wymuś ponowne obliczenie zmiennych globalnych",
+            "x": "Włącz symulator (argumentem jest liczba iteracji)",
+            "h": "Pokaż ukryte",
+            "o": "Pokaż własne",
+            "a": "Pokaż wszystkie",
+            "d": "Pokaż inne",
+            "q": "Ustawienia własne (nazwy nagłówków oddziel przecinkami)",
+            "t": "Pokaż bezpośrednio szablon online",
+            "sr": "Sortuj po własnych wyrażeniach",
+            "qc": "Pokaż tylko wybrane kategorie"
+        },
+        "scripts": {
+            "settings": "Ustawienia",
+            "templates": "Szablony",
+            "sidebar": {
+                "wiki": "Wiki",
+                "scripts": "Skrypty",
+                "templates": "Szablony",
+                "save": "Zapisz",
+                "copy": "Kopiuj",
+                "undo": "Cofnj",
+                "redo": "Ponów",
+                "close": "Zamknij",
+                "apply": "Zastosuj",
+                "remove": "Usuń",
+                "save_apply": "Zapisz i Zastosuj"
+            },
+            "types": {
+                "me": "Ja",
+                "players": "Gracze",
+                "guilds": "Gidlie",
+                "tracker": "Konfiguracja trackera",
+                "default": "Domyślny"
+            },
+            "online": {
+                "not_available": "Brak dostępnych skryptów"
+            }
+        },
+        "players": {
+            "other": "Pokaż innych graczy",
+            "hidden": "Pokaż ukryte"
+        },
+        "guilds": {
+            "other": "Pokaż inne gildie",
+            "hidden": "Pokaż ukryte",
+            "missing": "Brakuje danych dla następujących członków:"
+        },
+        "browse": {
+            "hidden": "Pokaż ukryte"
+        },
+        "fast_export": {
+            "label": "Udostępnij",
+            "title": "Opcje exportu",
+            "all": "Wszystko",
+            "latest": "Najnowsze",
+            "latest5": "Najnowsze 5",
+            "selected": "Wybrane",
+            "selected_both": "Wybrane i powiązane z nimi"
+        },
+        "share": {
+            "title": "Udostępnianie plików",
+            "options": "Opcje",
+            "code": "Twój kod",
+            "get": "Zdobądź kod",
+            "ok": "Ok",
+            "expire": "Kod wygaśnie automacznie po 2 dniach.",
+            "single_use": "Jednorazowy",
+            "single_use_notice": "Proszę rozważyć pozostawienie tej opcji włączonej, chyba że planujesz udostępnić plik wielu osobom."
+        },
+        "online_templates": {
+            "title": "Publiczne skrytpy",
+            "description": "Opis",
+            "author": "Autor",
+            "created_on": "Utworzony",
+            "loading": "Pobieranie skryptów"
+        },
+        "templates": {
+            "title": "Szablony",
+            "loading": "Wprowadzanie zmian",
+            "form": {
+                "changed_on": "Zmieniony",
+                "version": "Wersja",
+                "compatibility": "Kompatybilność",
+                "published_on": "Opublikowany",
+                "code": "Kod",
+                "publish": "Opublikuj",
+                "publish_tooltip": "Opublikuj szablon",
+                "unpublish_tooltip": "Odpublicznij szablon",
+                "update": "Aktualizuj",
+                "update_tooltip": "Aktualizuj szablon obecnym skryptem",
+                "remove": "Usuń",
+                "remove_tooltip": "Usuń szablon"
+            },
+            "quick_swap": "Szybka zmiana z własnym szablonem"
+        },
+        "group": {
+            "compared_to": "Porównaj do"
+        },
+        "player": {
+            "attributes": "Statystyki",
+            "basis": "Podstawy",
+            "miscellaneous": "Różne",
+            "armor": "Pancers",
+            "damage": "Rozrzut",
+            "health": "Punkty Życia",
+            "potions": "Eliksiry",
+            "guild": "Gildia",
+            "name": "Nazwa",
+            "role": "Rola",
+            "joined_on": "Dołączono",
+            "bonuses": "Bonusy",
+            "scrapbook": "Klaser",
+            "achievements": "Osiągnięcia",
+            "mount": "Wierzchowiec",
+            "heath_bonus": "Bonus do HP",
+            "damage_bonus": "Bonus do Obrażeń",
+            "treasure": "Skarbiec",
+            "instructor": "Trener",
+            "pet": "Pupil",
+            "knights": "Sala Rycerska",
+            "extras": {
+                "title": "Dodatkowe",
+                "registered": "Zarejestrowany"
+            },
+            "runes": {
+                "title": "Runy",
+                "gold": "Złoto",
+                "experience": "Doświadczenie",
+                "epic": "Szansa na Epickie Przedmioty",
+                "quality": "Jakość Przedmiotu",
+                "health": "Punkty Życia",
+                "fire_damage": "Obrażenia od Ognia",
+                "cold_damage": "Obrażenia od Zimna",
+                "lightning_damage": "Obrażenia od Błyskawic",
+                "fire_resist": "Odporność na Ogień",
+                "cold_resist": "Odporność na Zimno",
+                "lightning_resist": "Odporność na Błyskawice"
+            },
+            "fortress": {
+                "title": "Twierdza",
+                "upgrades": "Ulepszenia",
+                "rank": "Ranking",
+                "honor": "Honor",
+                "building1": "Twierdza",
+                "building2": "Kwatery",
+                "building3": "Tartak",
+                "building4": "Kamieniołom",
+                "building5": "Kopalnia Klejnotów",
+                "building6": "Akademia",
+                "building7": "Gildia Łuczników",
+                "building8": "Koszary",
+                "building9": "Wieża Magów",
+                "building10": "Skarbiec",
+                "building11": "Kuźnia",
+                "building12": "Fortyfikacje",
+                "working": "Budowa"
+            }
+        },
+        "settings": {
+            "title": "Konfiguracja ogólna",
+            "always_prev": "Porównaj poprzednie (gildie)",
+            "empty_groups": "Pokaż puste grupy",
+            "obfuscated": "Ukryj nazwy graczy",
+            "insecure": "Zezwalaj na niezabezpieczone tagi html",
+            "insecure_error#": "Ta tabela nie została wyświetlona, ponieważ zawiera znaczniki HTML, które są zabronione.<br/>Proszę usunąć je ze swoich ustawień i spróbować ponownie.",
+            "terms": "Zaakceptuj warunki korzystania z usługi",
+            "tab": "Domyślna karta",
+            "preload": "Wstępne ładowanie wierszy",
+            "actions": {
+                "title": "Akcja",
+                "reset": "Reset akcji",
+                "ignore": "Ignoruj zmiany",
+                "save": "Zapisz akcje"
+            }
+        }
+    },
+    "pets": {
+        "new_backend": {
+            "label": "Nowy backend",
+            "tooltip": "Nie zaznaczaj, chyba że grasz na nowym backendzie!"
+        },
+        "generate": {
+            "tooltip": "Wygeneruj mapę sukcesu poziomu / gladiatora. Możliwe tylko z własnym pupilem przeciwko bossowi lochu.",
+            "one": "Generuj",
+            "five": "Generuj następne 5",
+            "ten": "Generuj następne 10"
+        },
+        "simulate": "Symuluj",
+        "results": "Wyniki",
+        "poll": "Pula zapisanych postaci",
+        "map": {
+            "gladiator": "Glad"
+        },
+        "types": {
+            "0": "Mrok",
+            "1": "Światło",
+            "2": "Ziemia",
+            "3": "Ogień",
+            "4": "Woda"
+        },
+        "names": {
+            "0": "Siorb",
+            "1": "Kretun",
+            "2": "Zębik",
+            "3": "Okulnica",
+            "4": "Pajałąk",
+            "5": "Dyniak",
+            "6": "Kremuchówka",
+            "7": "Żniwek",
+            "8": "Kiciur",
+            "9": "Grzybun",
+            "10": "Rybzorr",
+            "11": "Kulkon",
+            "12": "Toperz",
+            "13": "Lilaryś",
+            "14": "Mumifar",
+            "15": "Donnindżon",
+            "16": "Omnibum",
+            "17": "Zawiszawsza",
+            "18": "Diabłoczort",
+            "19": "Jadun",
+            "20": "Ponik",
+            "21": "Żeluza",
+            "22": "Dzyńka",
+            "23": "Obłączek",
+            "24": "Niedosyt",
+            "25": "Plutoid",
+            "26": "Dżintonik",
+            "27": "Rozmiazga",
+            "28": "Dżiunia",
+            "29": "Teslarr",
+            "30": "Rasłońc",
+            "31": "Lisorożec",
+            "32": "Ptaś",
+            "33": "Okołał",
+            "34": "Hipmen",
+            "35": "Rogun",
+            "36": "Magut",
+            "37": "Paladon",
+            "38": "Heraldon",
+            "39": "Jednoróg",
+            "40": "Mamutr",
+            "41": "Gorylołap",
+            "42": "Ponikoni",
+            "43": "Orzeszkun",
+            "44": "Ryczałd",
+            "45": "Mieczozęb",
+            "46": "Kijpans",
+            "47": "Koziutek",
+            "48": "Bździk",
+            "49": "Troglod",
+            "50": "Chraporożec",
+            "51": "Kamolak",
+            "52": "Lisowilk",
+            "53": "Wykijadło",
+            "54": "Wydrzew",
+            "55": "Krapier",
+            "56": "Panzernix",
+            "57": "Szczerbun",
+            "58": "Tricerakloc",
+            "59": "Tyranożarł",
+            "60": "Chognik",
+            "61": "Chomp",
+            "62": "Płomiełaz",
+            "63": "Papłomyk",
+            "64": "Lawopluj",
+            "65": "Ogniokrzew",
+            "66": "Kogieniut",
+            "67": "Czylipali",
+            "68": "Psytbum",
+            "69": "Ogniopląs",
+            "70": "Przepałka",
+            "71": "Ogniolot",
+            "72": "Infernix",
+            "73": "Skarabara",
+            "74": "Smołki",
+            "75": "Pirodliszka",
+            "76": "Ryboga",
+            "77": "Rokitek",
+            "78": "Jęzognix",
+            "79": "Rozpir",
+            "80": "Złotka",
+            "81": "Orek",
+            "82": "Krox",
+            "83": "Pingpong",
+            "84": "Delświn",
+            "85": "Ślimun",
+            "86": "Hydrosłoń",
+            "87": "Narwaly",
+            "88": "Siedmiornica",
+            "89": "Żartłacz",
+            "90": "Konix",
+            "91": "Małżon",
+            "92": "Dziubing",
+            "93": "Rybołaporyb",
+            "94": "Syrenia",
+            "95": "Szlauwąż",
+            "96": "Żółwio",
+            "97": "Głębion",
+            "98": "Posejdong",
+            "99": "Hydrowir"
+        },
+        "bulk": {
+            "toast": {
+                "title": "Startowanie symulacji",
+                "matches": "Matches:",
+                "not_possible": "Niemożliwe"
+            }
+        },
+        "editor": {
+            "none": "Brak",
+            "type": "Typ",
+            "pet": "Pupil",
+            "habitat": "Środowisko",
+            "health": "Punkty życia",
+            "attribute": "Statystyki",
+            "defense": "Obrona",
+            "skip": "Unik/Blok",
+            "crit": "Szansa na kryta",
+            "damage": "Obrażenia",
+            "critical_bonus": "Kryt",
+            "at100": {
+                "title": "Na 100 - 149",
+                "placeholder": "Pupile na 100 - 149"
+            },
+            "at150": {
+                "title": "Na 150 - 199",
+                "placeholder": "Pupile na 150 - 199"
+            },
+            "at200": {
+                "title": "Na 200",
+                "placeholder": "Pupile na 200"
+            },
+            "pack": {
+                "title": "Stadko",
+                "placeholder": "Złapane pupile"
+            }
+        }
+    },
     "dungeons": {
         "simulate": "Symuluj",
         "simulate_remaining": "Pozostałe",
@@ -166,6 +623,141 @@
         "smart_change": "Sprytna Zmiana Klasy",
         "copy": "Kopiuj",
         "none": "Brak"
+    },
+     "endpoint": {
+        "username": "Nazwa",
+        "password": "Hasło",
+        "mode": {
+            "own": "Zeskanuj własną postać",
+            "default": "Zeskanuj własną + wybrane postacie",
+            "guild": "Zeskanuj własną + gildia",
+            "friends": "Zeskanuj własną + lista znajomych"
+        },
+        "cancel": "Anuluj",
+        "continue": "Kontynuuj",
+        "step2": {
+            "title": "Ładowanie Endpoint"
+        },
+        "step3": {
+            "title": "Wybierz graczy do zeskanowania"
+        },
+        "step4": {
+            "title": "Łączenie z serwerem",
+            "message": "Pobieranie danych"
+        },
+        "user_error": {
+            "title": "Nieprawidłowa nazwa użytkowanika lub hasło",
+            "message": "Proszę upewnij się, że jest we własciwej formie(nazwa użytkownika@url)"
+        },
+        "credentials_error": "Nieprawidłowa nazwa użytkowanika lub hasło",
+        "download_error": "Skanowanie zakończone niepowodzeniem"
+    },
+    "database": {
+        "open_error": {
+            "title": "Baza danych nie mogła zostać otwarta",
+            "message": "Proszę sprawdzić, czy nie jesteś w trybie incognito i czy Twoja przeglądarka obsługuje Indexed DB."
+        },
+        "import_error": "Wystąpił błąd podczas importowanie pliku",
+        "fatal_error#": "Twoja przeglądarka nie obsługuje wszystkich funkcji wymaganych przez tę stronę!</br>Może to być spowodowane trybem incognito.",
+        "update_info": {
+            "title": "Trwa aktualizacja bazy danych",
+            "message": "Proszę nie opuszczać strony do czasu zakończenia ładowania. Może to zająć chwilę, w zależności od wielkości bazy danych."
+        }
+    },
+    "dialog": {
+        "delete_all": {
+            "title": "Usuń wszystko",
+            "notice": "Czy napewno chcesz usunąć wszystkie pliki graczy?"
+        },
+        "delete_script": {
+            "title": "Usuń skrypt",
+            "notice": "Czy jesteś pewny, że chcesz permanentnie usunąć skrypt?"
+        },
+        "warning": {
+            "title": "Wystąpił błąd!",
+            "continue": "Kontynuuj"
+        },
+        "error": {
+            "title": "Wystąpił błąd krytyczny!",
+            "notice#": "Ten błąd mógł być spowodowany aktualnym profilem.<br>Kliknij przycisk cofnięcia poniżej, aby powrócić do profilu domyślnego.",
+            "refresh": "Kliknij tutaj lub odśwież stronę",
+            "revert": "Przywrócenie profilu domyślnego"
+        },
+        "changelog": {
+            "release": "Wydanie",
+            "continue": "Kontynuuj"
+        },
+        "file_edit": {
+            "title": "Edytuj plik",
+            "timestamp": "Data",
+            "cancel": "Anuluj",
+            "save": "Zapisz"
+        },
+        "save_online_script": {
+            "title": "Imprtuj szablon",
+            "loader": "Przygotowanie plików",
+            "author": "Autor",
+            "created_updated": "Stworzono/Zaktualizowano",
+            "name": "Nazwa",
+            "name_placeholder": "Nazwa szablonu",
+            "error": "Żądany szablon nie jest dostępny!",
+            "cancel": "Anuluj",
+            "save": "Zapisz"
+        },
+        "edit_file_tag": {
+            "title": "Edytuj tagi",
+            "current": "Obecne tagi",
+            "replacement": "Tag zastępczy",
+            "none": "Brak",
+            "cancel": "Anuluj",
+            "save": "Zapisz"
+        },
+        "profile_create": {
+            "title": "Stwórz/Edytuj profil",
+            "id": "ID",
+            "name": "Nazwa",
+            "slot": "Slot",
+            "index": "Index",
+            "operation": "Operacja",
+            "equals": "Równo",
+            "above": "Ponad",
+            "below": "Poniżej",
+            "between": "Pomiędzy",
+            "value": "Wartość",
+            "secondary": "Filtr dodatkowy",
+            "cancel": "Anuluj",
+            "save": "Zapisz",
+            "default": "Domyślny",
+            "profile": "Profil",
+            "none": "Brak",
+            "ast": {
+                "primary": "Primary AST expression",
+                "secondary": "Secondary AST expression",
+                "optional": "optional"
+            },
+            "player": {
+                "primary": "Konfiguracja filtru głównego",
+                "secondary": "Konfiguracja filtra dodatkowego"
+            },
+            "group": {
+                "primary": "Konfiguracja filtra grupy podstawowej",
+                "secondary": "Konfiguracja dodatkowego filtra grupowego"
+            }
+        },
+        "template_save": {
+            "title": "Zapisz szablon",
+            "select_existing": "Wybierz istniejący szablon",
+            "select_new": "Stwórz nowy szablon",
+            "or": "albo",
+            "name": "Nazwa szablonu",
+            "cancel": "Anuluj",
+            "save": "Zapisz"
+        },
+        "confirm": {
+            "cancel": "Anuluj",
+            "ok": "Ok",
+            "wait_n_seconds": "Poczekaj %n sekund ..."
+        }
     },
     "dungeon_enemies": {
         "shadow": "Mrok",
