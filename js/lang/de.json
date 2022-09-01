@@ -159,8 +159,11 @@
         "mask": "Maske",
         "instrument": "Instrument",
         "armor": "Rüstung",
+        "armor_placeholder": "Rüstung Summe",
         "min": "Min",
+        "min_placeholder": "Min Dmg ",
         "max": "Max",
+        "max_placeholder": "Max Dmg",
         "weapon_enchant": "Krit",
         "rune": "Rune",
         "portal_damage": "Portal Schaden",
@@ -396,7 +399,264 @@
         "player": {
             "attributes": "Attribute",
             "basis": "Basis",
-            "miscellaneous": "Sonstiges"
+            "miscellaneous": "Sonstiges",
+            "armor": "Rüstung",
+            "damage": "Schaden",
+            "health": "Leben",
+            "potions": "Tränke",
+            "guild": "Gilde",
+            "name": "Name",
+            "role": "Rolle",
+            "joined_on": "Beigetreten am",
+            "bonuses": "Boni",
+            "scrapbook": "Sammelalbum",
+            "achievements": "Achievements",
+            "mount": "Reittier",
+            "heath_bonus": "Lebens Bonus",
+            "damage_bonus": "Schadens Bonus",
+            "treasure": "Golschatz",
+            "instructor": "Lehrmeister",
+            "pet": "Gildenpet",
+            "knights": "Ritterhalle",
+            "extras": {
+                "title": "Extras",
+                "registered": "Erstellt am"
+            },
+            "runes": {
+                "title": "Runen",
+                "gold": "Gold",
+                "experience": "Erfahrung",
+                "epic": "Epic chance",
+                "quality": "Item Qualität",
+                "health": "Leben",
+                "fire_damage": "Feuer Schaden",
+                "cold_damage": "Eis Schaden",
+                "lightning_damage": "Blitz Schaden",
+                "fire_resist": "Wiederstand gegen Feuer",
+                "cold_resist": "Wiederstand gegen Eis",
+                "lightning_resist": "Wiederstand gegen Blitz"
+            },
+            "fortress": {
+                "title": "Festung",
+                "upgrades": "Upgrades",
+                "rank": "Rang",
+                "honor": "Ehre",
+                "building1": "Festung",
+                "building2": "Arbeiterquartier",
+                "building3": "Holzfällerhütte",
+                "building4": "Steinbruch",
+                "building5": "Edelsteinmine",
+                "building6": "Akademie",
+                "building7": "Schützengilde",
+                "building8": "Kaserne",
+                "building9": "Magierturm",
+                "building10": "Schatzkammer",
+                "building11": "Schmiede",
+                "building12": "Befestigung",
+                "working": "baut"
+            }
+        },
+        "settings": {
+            "title": "Allgemeine Konfiguration",
+            "always_prev": "Vorherige vergleichen (Gilden)",
+            "empty_groups": "Leere Gruppen anzeigen",
+            "obfuscated": "Spielernamen ausblenden",
+            "insecure": "Unsichere html-Tags zulassen",
+            "insecure_error#": "Diese Tabelle konnte nicht angezeigt werden, da sie HTML-Tags enthält, die nicht zulässig sind.<br/>Bitte entfernen Sie diese aus Ihren Einstellungen und versuchen Sie es erneut.",
+            "terms": "Nutzungsbedingungen akzeptieren",
+            "tab": "Standard-Tab",
+            "preload": "Zeilen vorladen",
+            "actions": {
+                "title": "Aktionen",
+                "reset": "Aktionen zurücksetzen",
+                "ignore": "Änderungen ignorieren",
+                "save": "Aktionen speichern"
+            }
+        }
+    },
+    "pets": {
+        "generate": {
+            "tooltip": "Erstelle eine Level / Gladiator Erfolgskarte. Nur möglich mit eigenem Haustier gegen einen Dungeonboss.",
+            "one": "Generieren",
+            "five": "Die nächsten fünf generieren",
+            "ten": "Die nächsten zehn generieren"
+        },
+        "simulate": "Simulieren",
+        "results": "Resultate",
+        "poll": "Gespeicherte Charaktere abfragen",
+        "map": {
+            "gladiator": "Gladi"
+        },
+        "bulk": {
+            "toast": {
+                "title": "Simulation starten",
+                "matches": "Passend dazu:",
+                "not_possible": "Nicht möglich"
+            }
+        },
+        "editor": {
+            "none": "Kein",
+            "type": "Element",
+            "pet": "Pet",
+            "habitat": "Habitat",
+            "health": "Leben",
+            "attribute": "Attribute",
+            "defense": "Rüstung",
+            "skip": "Ausweichen Chance",
+            "crit": "Krit Chance",
+            "damage": "Schaden",
+            "critical_bonus": "Kritischer Schaden",
+            "at100": {
+                "title": "Zwischen 100 - 149",
+                "placeholder": "Pets zwischen 100 - 149"
+            },
+            "at150": {
+                "title": "Zwischen 150 - 199",
+                "placeholder": "Pets zwischen 150 - 199"
+            },
+            "at200": {
+                "title": "Mit 200",
+                "placeholder": "Pets zwischen 200"
+            },
+            "pack": {
+                "title": "Pack",
+                "placeholder": "Anzahl gefundener Pets"
+            }
+        }
+    },
+    "endpoint": {
+        "username": "Benutzername",
+        "password": "Passwort",
+        "mode": {
+            "own": "Eigenen Charakter erfassen",
+            "default": "Eigenen + ausgewählte Charaktere erfassen",
+            "guild": "Eigenen + Gildencharaktere erfassen",
+            "friends": "Eigenen + befreundete Charaktere erfassen"
+        },
+        "cancel": "Abbrechen",
+        "continue": "Weiter",
+        "step2": {
+            "title": "Endpunkt laden"
+        },
+        "step3": {
+            "title": "Wählen Sie die zu importierenden Spieler aus"
+        },
+        "step4": {
+            "title": "Kontaktiere den Server für Informationen",
+            "message": "Abrufen von Daten"
+        },
+        "user_error": {
+            "title": "Ihr Benutzername oder Passwort ist ungültig",
+            "message": "Bitte achten Sie auf das richtige Format (Benutzername@url)"
+        },
+        "credentials_error": "Falscher Benutzername oder falsches Passwort",
+        "download_error": "Download fehlgeschlagen"
+    },
+    "database": {
+        "open_error": {
+            "title": "Datenbank konnte nicht geöffnet werden",
+            "message": "Bitte vergewissern Sie sich, dass Sie sich nicht im Inkognito-Modus befinden und Ihr Browser Indexed DB unterstützt."
+        },
+        "import_error": "Beim Importieren der Datei ist ein Fehler aufgetreten",
+        "fatal_error#": "Ihr Browser unterstützt nicht alle für diese Seite erforderlichen Funktionen!</br>Dieses Problem kann auch durch die Verwendung des privaten Modus verursacht werden.",
+        "update_info": {
+            "title": "Eine Aktualisierung der Datenbank ist im Gange",
+            "message": "Bitte verlassen Sie die Seite erst, wenn der Ladevorgang beendet ist. Dies kann je nach Größe Ihrer Datenbank eine Weile dauern."
+        }
+    },
+    "dialog": {
+        "delete_all": {
+            "title": "Alles löschen",
+            "notice": "Sind Sie sicher, dass Sie alle gespeicherten Spielerdaten löschen wollen?"
+        },
+        "delete_script": {
+            "title": "Skript entfernen",
+            "notice": "Sind Sie sicher, dass Sie das derzeit verwendete Skript dauerhaft entfernen möchten?"
+        },
+        "warning": {
+            "title": "Es ist ein Problem aufgetreten!",
+            "continue": "Weiter"
+        },
+        "error": {
+            "title": "Es ist ein schwerwiegender Fehler aufgetreten!",
+            "notice#": "Dieser Fehler könnte auch durch Ihr aktuelles Profil verursacht worden sein.<br>Klicken Sie auf die Schaltfläche \"Zurücksetzen\", um zum Standardprofil zurückzukehren.",
+            "refresh": "Klicken Sie hier oder aktualisieren Sie die Seite",
+            "revert": "Zum Standardprofil zurückkehren"
+        },
+        "changelog": {
+            "release": "Veröffentlichung",
+            "continue": "Weiter"
+        },
+        "file_edit": {
+            "title": "Datei bearbeiten",
+            "timestamp": "Zeitstempel",
+            "cancel": "Abbrechen",
+            "save": "Speichern"
+        },
+        "save_online_script": {
+            "title": "Vorlage importieren",
+            "loader": "Dateien vorbereiten",
+            "author": "Autor",
+            "created_updated": "Erstellt/aktualisiert",
+            "name": "Name",
+            "name_placeholder": "Name der Vorlage",
+            "error": "Die gewünschte Vorlage ist nicht verfügbar!",
+            "cancel": "Abbrechen",
+            "save": "Speichern"
+        },
+        "edit_file_tag": {
+            "title": "Tags bearbeiten",
+            "current": "Aktuelle Tags",
+            "replacement": "Ersatz-Tag",
+            "none": "Kein",
+            "cancel": "Abbrechen",
+            "save": "Speichern"
+        },
+        "profile_create": {
+            "title": "Profil erstellen/bearbeiten",
+            "id": "ID",
+            "name": "Name",
+            "slot": "Slot",
+            "index": "Verzeichnis",
+            "operation": "Operation",
+            "equals": "Entspricht",
+            "above": "Über",
+            "below": "Unter",
+            "between": "Zwischen",
+            "value": "Wert",
+            "secondary": "Sekundärer Filter",
+            "cancel": "Abbrechen",
+            "save": "Speichern",
+            "default": "Standard",
+            "profile": "Profil",
+            "none": "Kein",
+            "ast": {
+                "primary": "Primärer AST-Ausdruck",
+                "secondary": "Sekundärer AST-Ausdruck",
+                "optional": "optional"
+            },
+            "player": {
+                "primary": "Primäre Filterkonfiguration",
+                "secondary": "Sekundäre Filterkonfiguration"
+            },
+            "group": {
+                "primary": "Primäre Konfiguration des Gruppenfilters",
+                "secondary": "Sekundäre Konfiguration des Gruppenfilters"
+            }
+        },
+        "template_save": {
+            "title": "Vorlage speichern",
+            "select_existing": "Vorhandene Vorlage auswählen",
+            "select_new": "Neue Vorlage erstellen",
+            "or": "oder",
+            "name": "Name der Vorlage",
+            "cancel": "Abbrechen",
+            "save": "Speichern"
+        },
+        "confirm": {
+            "cancel": "Abbrechen",
+            "ok": "Ok",
+            "wait_n_seconds": "Warte %1 Sekunden ..."
         }
     }
 }
