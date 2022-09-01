@@ -5,6 +5,16 @@
     border: none;
 }
 
+.fast-table-toggles {
+    --block-width: 200px;
+
+    position: fixed;
+    width: var(--block-width);
+
+    bottom: 32px;
+    left: calc(100vw - var(--block-width));
+}
+
 .locale-picker {
     position: absolute !important;
     right: 0;
@@ -778,30 +788,6 @@ h3.file-selected {
 
 .ta-lambda {
     background-color: #f5a44230;
-}
-
-.css-gl-show-other {
-    position: fixed;
-    bottom: 1em;
-    right: 1.5em;
-}
-
-.css-show-hidden {
-    position: fixed;
-    bottom: 3em;
-    right: 3.7em;
-}
-
-.css-show-empty {
-    position: fixed;
-    bottom: 5em;
-    right: 3.9em;
-}
-
-.css-ol-show-other {
-    position: fixed;
-    bottom: 1em;
-    right: 1em;
 }
 
 .padding-none {
