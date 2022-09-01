@@ -1,0 +1,428 @@
+.css-companions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 5em;
+    margin-bottom: 1.5em;
+}
+
+.css-companion {
+    width: 70px;
+}
+
+.css-options {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+    height: 6.5em;
+}
+
+.css-options-left {
+    flex: 1 0 50%;
+}
+
+.css-options-right {
+    flex: 1 0 50%;
+
+    display: flex;
+    flex-direction: row;
+
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+.selected[data-op="swap"] {
+    border: 1px magenta solid;
+    box-shadow: 0px 0px 2px 2px magenta;
+}
+
+.css-resource-item-footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    padding: 0.25em;
+
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.css-resource-item-footer [data-op] {
+    flex: 0 0 32%;
+    text-align: center;
+}
+
+.css-resource-item-footer [data-op="add"] {
+    flex: 0 0 17%;
+    border: 1px lightgray solid;
+    cursor: pointer;
+}
+
+.css-resource-item-footer [data-op="sub"] {
+    flex: 0 0 17%;
+    border: 1px lightgray solid;
+    cursor: pointer;
+}
+
+.css-resource-item-footer [data-op="ladd"] {
+    flex: 0 0 17%;
+    border: 1px lightgray solid;
+    cursor: pointer;
+}
+
+.css-resource-item-footer [data-op="lsub"] {
+    flex: 0 0 17%;
+    border: 1px lightgray solid;
+    cursor: pointer;
+}
+
+.noptr {
+    user-select: none;
+}
+
+.css-inventory-comparison .sub {
+    flex: 0 0 50%;
+}
+
+.css-inventory-comparison .sub:nth-child(1) {
+    text-align: right;
+    padding-right: 1em;
+}
+
+.css-inventory-comparison .sub:nth-child(2) {
+    text-align: left;
+}
+
+.css-inventory-comparison .csub:nth-child(1) {
+    flex: 0 0 40%;
+    text-align: right;
+    padding-right: 1em;
+}
+
+.css-inventory-comparison .csub:nth-child(2) {
+    flex: 0 0 60%;
+    text-align: left;
+}
+
+.css-inventory-comparison .dsub:nth-child(1) {
+    flex: 0 0 66%;
+    text-align: right;
+    padding-right: 1em;
+}
+
+.css-inventory-comparison .dsub:nth-child(2) {
+    flex: 0 0 34%;
+    text-align: left;
+}
+
+.css-inventory-item-extra {
+    position: absolute;
+    top: 15em;
+    padding-left: .5em;
+    display: flex;
+    flex-direction: column;
+}
+
+.css-inventory-segment:not(.css-basis-segment) {
+    margin-bottom: 1em;
+}
+
+.css-inventory-item-extra .item {
+    text-align: left;
+}
+
+.css-inventory-item-price {
+    position: absolute;
+    left:.75em;
+    bottom: .5em;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.css-inventory-item-sub3 {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.css-inventory-item-sub3 .item {
+    flex: 0 0 33%;
+}
+
+.css-inventory-item-sub3a {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.css-inventory-item-sub3a .item:nth-child(1) {
+    flex: 0 0 25%;
+    text-align: center;
+}
+
+.css-inventory-item-sub3a .item:nth-child(2) {
+    flex: 0 0 45%;
+    text-align: center;
+}
+
+.css-inventory-item-sub3a .item:nth-child(31) {
+    flex: 0 0 30%;
+}
+
+#view-inventory, #view-resources {
+    padding-left: 5em !important;
+    padding-right: 5em !important;
+    margin-bottom: 0;
+}
+
+.css-inventory-sub {
+    font-weight: normal;
+    font-style: italic;
+}
+
+.css-inventory-sub.socketed {
+    color: orange;
+    font-size: 95%;
+}
+
+.css-inventory-sub.runed {
+    color: cyan;
+    font-size: 95%;
+}
+
+.css-inventory-sub.washed {
+    color: lightgreen;
+    font-size: 95%;
+}
+
+.css-inventory-sub.enchanted {
+    color: magenta;
+    font-size: 95%;
+}
+
+.css-inventory-segment[data-op="equipped"] {
+    border: 1px solid white;
+}
+
+.css-inventory-segment[data-op="backpack"] {
+    border: 1px solid red;
+}
+
+.css-inventory-segment[data-op="chest"] {
+    border: 1px solid green;
+}
+
+.css-inventory-segment[data-op="player"] {
+    border: 1px solid yellow;
+}
+
+.css-inventory-segment[data-op="bert"] {
+    border: 1px solid lightblue;
+}
+
+.css-inventory-segment[data-op="mark"] {
+    border: 1px solid lightgreen;
+}
+
+.css-inventory-segment[data-op="kunigunde"] {
+    border: 1px solid lightyellow;
+}
+
+.css-inventory-segment[data-op="shops"] {
+    border: 1px solid orange;
+}
+
+.css-inventory-segment[data-op="dummy"] {
+    border: 1px solid gray;
+}
+
+.css-inventory-segment .ui.header {
+    color: lightgray;
+    padding-left: .75em;
+    padding-top: .25em;
+    padding-bottom: .25em;
+    margin: 0;
+}
+
+.css-inventory-segment {
+    padding: 0;
+}
+
+.css-inventory-segment .grid {
+    margin-top: -.25em;
+    margin-bottom: .25em;
+}
+
+.css-inventory-segment .grid .row {
+    padding: 0;
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.css-inventory-segment .grid .column {
+    padding: .25em !important;
+    margin: 0 !important;
+}
+
+.css-inventory-item {
+    height: 36em;
+    border: 1px gray solid;
+    padding: .25em;
+
+    color: white;
+    position: relative;
+    font-size: 85%;
+}
+
+.css-resource-item {
+    height: 27em;
+    border: 1px gray solid;
+    padding: .25em;
+
+    color: white;
+    position: relative;
+    font-size: 85%;
+}
+
+.css-inventory-segment.css-basis-segment {
+    border: 1px solid white;
+}
+
+.css-basis-header {
+    text-align: center;
+    font-weight: bold;
+    margin-top: -0.3em;
+    border-bottom: 1px gray solid;
+}
+
+.css-basis {
+    height: 55em;
+    border: 1px transparent solid;
+    padding: .25em;
+    color: white;
+    position: relative;
+    font-size: 100%;
+}
+
+.css-summary {
+    height: 61.5em;
+    border: 1px transparent solid;
+    padding: .25em;
+    padding-bottom: 0;
+    color: white;
+    position: relative;
+    font-size: 100%;
+}
+
+.css-inventory-item[data-eid].selected {
+    border: 1px cyan solid;
+    box-shadow: 0px 0px 2px 2px cyan;
+}
+
+.css-inventory-item.selected {
+    border: 1px lightgreen solid;
+    box-shadow: 0px 0px 2px 2px lightgreen;
+}
+
+.css-resource-item.selected {
+    border: 1px orange solid;
+    box-shadow: 0px 0px 2px 2px orange;
+}
+
+.css-inventory-item-header {
+    text-align: center;
+    font-weight: bold;
+    padding-bottom: 0.15em;
+    border-bottom: 1px gray solid;
+    height: 5.5em;
+}
+
+.css-inventory-item.micro {
+    height: 5.65em;
+}
+
+.css-inventory-item.micro .css-inventory-item-header {
+    border-bottom: none;
+}
+
+.css-inventory-item.micro .front {
+    display: none;
+}
+
+.css-inventory-item.micro .back {
+    display: none;
+}
+
+.css-inventory-item-attribute {
+    margin-top: 0.5em;
+    padding-left: .5em;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.nobr {
+    white-space: nowrap;
+}
+
+.css-resource-item-body {
+    margin-top: 0.5em;
+    padding-left: 0.5em;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.css-inventory-comparison {
+    margin-top: .5em;
+    padding-left: .5em;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.css-inventory-comparison .item {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.item.red {
+    color: red;
+}
+
+.item.orange {
+    color: orange;
+}
+
+.item.green {
+    color: lightgreen;
+}
+
+.css-dark {
+    background-color: #141414;
+}
+
+.css-inventory-player.css-transparent {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+}
+
+.css-inventory-player.css-transparent .muted {
+    color: gray !important;
+}
+
+.css-dark .ui.header {
+    color: white;
+}
