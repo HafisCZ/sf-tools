@@ -287,7 +287,7 @@
             "and": "Undo"
         },
         "filters": {
-            "c": "Spielerklasse in Kleinbuchstaben schreiben (z.B. berserker, kampfmagier)",
+            "c": "Spielerklasse in Kleinbuchstaben schreiben (z.B. berserker, battle mage)",
             "p": "Spielername",
             "g": "Gildenname",
             "s": "Server",
