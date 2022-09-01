@@ -21,7 +21,17 @@
         "intelligence": "Intelligenz",
         "constitution": "Ausdauer",
         "luck": "Glück",
-        "life_potion": "Trank des ewigen Lebens"
+        "life_potion": "Trank des ewigen Lebens",
+        "potion1": "Stärke",
+        "potion2": "Geschick",
+        "potion3": "Intelligenz",
+        "potion4": "Ausdauer",
+        "potion5": "Glück",
+        "potion6": "Lebensenergie",
+        "rank1": "Anführer",
+        "rank2": "Offizier",
+        "rank3": "Mitgglied",
+        "rank4": "Eingeladen"
     },
     "index": {
         "toggle": "Credits umschalten",
@@ -166,5 +176,227 @@
         "smart_change": "Klassenwechsel",
         "copy": "Kopieren",
         "none": "Nichts"
+    },
+    "stats": {
+        "topbar": {
+            "temporary_flag": "Temporär",
+            "players": "Spieler",
+            "guilds": "Gilden",
+            "browse": "Browse",
+            "scripts": "Skripte",
+            "files": "Dateien",
+            "settings": "Einstellungen",
+            "temporary": "Temporäre Session",
+            "changelog": "Changelog",
+            "profile": "Profile"
+        },
+        "files": {
+            "titles": {
+                "filters": "Filter",
+                "io": "Importieren / Exportieren"
+            },
+            "timestamp": "Zeitstempel",
+            "timestamps": "Zeitstempel",
+            "prefix": "Prefix",
+            "name": "Name",
+            "group": "Gruppe",
+            "groups": "Gruppen",
+            "origin": "Herkunft",
+            "players": "Spieler",
+            "version": "Version",
+            "import": {
+                "file": "Aus Datei importieren",
+                "shared": "Import Shared",
+                "game": "Aus Spiel importieren"
+            },
+            "export": {
+                "all": "Alles exportieren",
+                "selected": "Ausgewählte exportieren"
+            },
+            "selected": {
+                "text": "Ausgewählte(s)",
+                "no": "Nein"
+            },
+            "hide": {
+                "label": "Verstecken",
+                "tooltip": "Funktioniert unabhängig im einfachen und im erweiterten modus!",
+                "migrate": "Mark files with all hidden players as hidden"
+            },
+            "merge": {
+                "selected": "Ausgewählte zusammenführen"
+            },
+            "delete": {
+                "all": "Alle löschen",
+                "selected": "Ausgewählte löschen"
+            },
+            "options": {
+                "title": "Datei Optionen",
+                "advanced": "Erweiterte Dateiliste anzeigen",
+                "hidden": "Versteckte Spieler anzeigen"
+            },
+            "tags": {
+                "single": "Tag",
+                "multiple": "Tags",
+                "all": "Alle",
+                "none": "Keine(r)"
+            },
+            "filters": {
+                "any": "Einige",
+                "n_unique": "Einzig",
+                "expression": "Ausdruck",
+                "expression_placeholder": "Dein Ausdruck",
+                "timestamp": "Timestamp",
+                "player": "Spieler",
+                "group": "Gilde",
+                "prefix": "Prefix",
+                "tags": "Tags",
+                "type": "Typ",
+                "type_all": "Zeige alle Charactere",
+                "type_own": "Zeige nur den eigenen Charakter",
+                "type_other": "Zeige nur andere Charaktere",
+                "origin": "Herkunft",
+                "hidden": "Verstecken"
+            },
+            "online": {
+                "title": "Dateiaustausch",
+                "prompt": "Trage hier deinen Code ein:",
+                "invalid": "Ungültiger oder abgelaufener Code!",
+                "cancel": "Abbrechen",
+                "ok": "Ok"
+            }
+        },
+        "copy": {
+            "image": "Als Bild speichern",
+            "basic": "Tabelle kopieren",
+            "fight": "Tabelle für Kampfsimulation kopieren",
+            "player": "Kopieren",
+            "player_companions": "Mit Begleitern kopieren"
+        },
+        "context": {
+            "hide": "Anzeigen / Verstecken",
+            "remove": "Dauerhaft entfernen"
+        },
+        "profiles": {
+            "players": "Spieler",
+            "groups": "Gilden",
+            "primary": "Primärer Filter",
+            "secondary": "Sekundärer Filter",
+            "none": "Keine(r)",
+            "create": "Neues Profil erstellen",
+            "between": "zwischen",
+            "and": "Undo"
+        },
+        "filters": {
+            "c": "Spielerklasse in Kleinbuchstaben schreiben (z.B. berserker, kampfmagier)",
+            "p": "Spielername",
+            "g": "Gildenname",
+            "s": "Server",
+            "e": "Eigene Anmerkung",
+            "#": "Zeige nur Spieler mit spezifizierten Tags",
+            "l": "Nur den letzten anzeigen",
+            "f": "Nur den ersten oder die ersten 'n' Einträge anzeigen",
+            "r": "Neukalkulation der globalen Variablen erzwingen",
+            "x": "Simulator aktivieren (Argument ist die Anzahl der Iterationen)",
+            "h": "Versteckte anzeigen",
+            "o": "Eigene anzeigen",
+            "a": "Alle anzeigen",
+            "d": "Andere anzeigen",
+            "q": "Benutzerdefinierte Einstellungen (Kopfzeilentitel mit Komma trennen)",
+            "t": "Online Vorlage direkt anzeigen",
+            "sr": "Nach benutzerdefinierten sortieren",
+            "qc": "Nur ausgewählte Kategorien anzeigen"
+        },
+        "scripts": {
+            "settings": "Einstellungen",
+            "templates": "Vorlagen",
+            "sidebar": {
+                "wiki": "Wiki",
+                "scripts": "Skripte",
+                "templates": "Templates",
+                "save": "Speichern",
+                "copy": "Kopieren",
+                "undo": "Rückgängig",
+                "redo": "Wiederholen",
+                "close": "Schließen",
+                "apply": "Anwenden",
+                "remove": "Entfernen",
+                "save_apply": "Speichern & Anwenden"
+            },
+            "types": {
+                "me": "Ich",
+                "players": "Spieler",
+                "guilds": "Gilden",
+                "tracker": "Tracker Konfiguration",
+                "default": "Standard"
+            },
+            "online": {
+                "not_available": "Keine Skripte verfügbar"
+            }
+        },
+        "players": {
+            "other": "Andere Spieler anzeigen",
+            "hidden": "Versteckte anzeigen"
+        },
+        "guilds": {
+            "other": "Andere Gilden anzeigen",
+            "hidden": "Versteckte anzeigen",
+            "missing": "Für folgende Spieler fehlen Daten:"
+        },
+        "browse": {
+            "hidden": "Versteckte anzeigen"
+        },
+        "fast_export": {
+            "label": "Teilen",
+            "title": "Optionen exportieren",
+            "all": "Alle",
+            "latest": "Letzte",
+            "latest5": "Letzte 5",
+            "selected": "Ausgewählt",
+            "selected_both": "Ausgewählt & Referenz"
+        },
+        "share": {
+            "title": "Dateiaustausch",
+            "options": "Optionen",
+            "code": "Dein Code",
+            "get": "Code bekommen",
+            "ok": "Ok",
+            "expire": "Der Code wird nach 2 Tagen automatisch ungültig.",
+            "single_use": "Nur zur einmaligen Verwendung",
+            "single_use_notice": "Bitte diese Option aktiviert lassen, es sei denn, die Datei solll mit mehreren Personen geteilt werden."
+        },
+        "online_templates": {
+            "title": "Öffentliche Skripte",
+            "description": "Beschreibung",
+            "author": "Autor",
+            "created_on": "Erstellt am",
+            "loading": "Abrufen der Skripte"
+        },
+        "templates": {
+            "title": "Vorlagen",
+            "loading": "Änderungen übertragen",
+            "form": {
+                "changed_on": "Geändert am",
+                "version": "Tool Version",
+                "compatibility": "Kompatibilität",
+                "published_on": "Veröffentlicht am",
+                "code": "Code",
+                "publish": "Veröffentlichen",
+                "publish_tooltip": "Vorlage veröffentlichen",
+                "unpublish_tooltip": "Veröffentlichung der Vorlage aufheben",
+                "update": "Aktualisieren",
+                "update_tooltip": "Vorlage mit aktuellem Skript aktualisieren",
+                "remove": "Entfernen",
+                "remove_tooltip": "Vorlage entfernen"
+            },
+            "quick_swap": "Benutzerdefinierte Vorlagen schnell austauschen"
+        },
+        "group": {
+            "compared_to": "vergleichen mit"
+        },
+        "player": {
+            "attributes": "Attribute",
+            "basis": "Basis",
+            "miscellaneous": "Sonstiges"
+        }
     }
 }
