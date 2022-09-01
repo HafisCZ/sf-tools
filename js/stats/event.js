@@ -1981,9 +1981,9 @@ class FilesView extends View {
 
     updateSelectedCounter () {
         if (this.simple) {
-            this.$fileCounter.html(_empty(this.selectedFiles) ? 'No' : Object.keys(this.selectedFiles).length);
+            this.$fileCounter.html(_empty(this.selectedFiles) ? intl('stats.files.selected.no') : Object.keys(this.selectedFiles).length);
         } else {
-            this.$fileCounter.html(_empty(this.selectedPlayers) ? 'No' : Object.keys(this.selectedPlayers).length);
+            this.$fileCounter.html(_empty(this.selectedPlayers) ? intl('stats.files.selected.no') : Object.keys(this.selectedPlayers).length);
         }
     }
 
