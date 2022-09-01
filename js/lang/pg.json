@@ -21,7 +21,17 @@
         "intelligence": "Intelligenceway",
         "constitution": "Onstitutioncay",
         "luck": "Ucklay",
-        "life_potion": "Eternalway Ifelay"
+        "life_potion": "Eternalway Ifelay",
+        "potion1": "Engthstray",
+        "potion2": "Exterityday",
+        "potion3": "Intelligenceway",
+        "potion4": "Onstitutioncay",
+        "potion5": "Ucklay",
+        "potion6": "Ifelay",
+        "rank1": "Eaderlay",
+        "rank2": "Officerway",
+        "rank3": "Embermay",
+        "rank4": "Invitedway"
     },
     "index": {
         "toggle": "Oggletay editscray",
@@ -107,6 +117,459 @@
         "title": "404",
         "text": "Otnay uresay atwhay ou'reyay ookinglay orfay utbay itway oesday otnay existway"
     },
+    "stats": {
+        "topbar": {
+            "temporary_flag": "Emporarytay",
+            "players": "Ayersplay",
+            "guilds": "Uildsgay",
+            "browse": "Owsebray",
+            "scripts": "Iptsscray",
+            "files": "Ilesfay",
+            "settings": "Ettingssay",
+            "temporary": "Emporarytay essionsay",
+            "changelog": "Angelogchay",
+            "profile": "Ofilepray"
+        },
+        "files": {
+            "titles": {
+                "filters": "Iltersfay",
+                "io": "Importway / Exportway"
+            },
+            "timestamp": "Imestamptay",
+            "timestamps": "Imestampstay",
+            "prefix": "Efixpray",
+            "name": "Amenay",
+            "group": "Oupgray",
+            "groups": "Oupsgray",
+            "origin": "Originway",
+            "players": "Ayersplay",
+            "version": "Ersionvay",
+            "import": {
+                "file": "Importway omfray Ilefay",
+                "shared": "Importway Aredshay",
+                "game": "Importway omfray Amegay"
+            },
+            "export": {
+                "all": "Exportway allway",
+                "selected": "Exportway electedsay"
+            },
+            "selected": {
+                "text": "itemway(say) electedsay",
+                "no": "Onay"
+            },
+            "hide": {
+                "label": "Idehay",
+                "tooltip": "Orksway independentlyway inway implesay & advancedway odemay!",
+                "migrate": "Arkmay ilesfay ithway allway iddenhay ayersplay asway iddenhay"
+            },
+            "merge": {
+                "selected": "Ergemay electedsay"
+            },
+            "delete": {
+                "all": "Eleteday allway",
+                "selected": "Eleteday electedsay"
+            },
+            "options": {
+                "title": "Ilefay optionsway",
+                "advanced": "Owshay advancedway ilefay istlay",
+                "hidden": "Owshay iddenhay ayersplay"
+            },
+            "tags": {
+                "single": "Agtay",
+                "multiple": "Agstay",
+                "all": "Allway",
+                "none": "Onenay"
+            },
+            "filters": {
+                "any": "Anyway",
+                "n_unique": "uniqueway",
+                "expression": "Expressionway",
+                "expression_placeholder": "Ouryay expressionway",
+                "timestamp": "Imestamptay",
+                "player": "Ayerplay",
+                "group": "Uildgay",
+                "prefix": "Efixpray",
+                "tags": "Agstay",
+                "type": "Ypetay",
+                "type_all": "Owshay allway aracterschay",
+                "type_own": "Owshay onlyway ownway aracterschay",
+                "type_other": "Owshay onlyway otherway aracterschay",
+                "origin": "Originway",
+                "hidden": "Iddenhay"
+            },
+            "online": {
+                "title": "Ilefay aringshay",
+                "prompt": "Enterway ouryay odecay:",
+                "invalid": "Invalidway orway expiredway odecay!",
+                "cancel": "Ancelcay",
+                "ok": "Okway"
+            }
+        },
+        "copy": {
+            "image": "Avesay asway imageway",
+            "basic": "Opycay abletay",
+            "fight": "Opycay abletay orfay ightfay imulatorsay",
+            "player": "Opycay",
+            "player_companions": "Opycay ithway ompanionscay"
+        },
+        "context": {
+            "hide": "Owshay / Idehay",
+            "remove": "Emoveray ermanentlypay"
+        },
+        "profiles": {
+            "players": "Ayersplay",
+            "groups": "Uildsgay",
+            "primary": "Imarypray ilterfay",
+            "secondary": "Econdarysay ilterfay",
+            "none": "Onenay",
+            "create": "Eatecray ewnay ofilepray",
+            "between": "etweenbay",
+            "and": "andway"
+        },
+        "filters": {
+            "c": "Ayerplay assclay, useway ullfay assclay amenay inway owerlay asecay (e.g.: erserkerbay, attlebay agemay)",
+            "p": "Ayerplay amenay",
+            "g": "Uildgay amenay",
+            "s": "Erversay",
+            "e": "Ustomcay expressionway",
+            "#": "Owshay onlyway ayersplay ithway ecifiedspay agstay",
+            "l": "Owshay onlyway atestlay",
+            "f": "Owshay onlyway irstfay orway irstfay nay entriesway",
+            "r": "Orcefay ecalculationray ofway obalglay ariablesvay",
+            "x": "Enableway imulatorsay (argumentway isway umbernay ofway iterationsway)",
+            "h": "Owshay iddenhay",
+            "o": "Owshay ownway",
+            "a": "Owshay allway",
+            "d": "Owshay otherway",
+            "q": "Ustomcay ettingssay (eparatesay eaderhay amesnay ithway ommacay)",
+            "t": "Owshay onlineway emplatetay irectlyday",
+            "sr": "Ortsay ybay ustomcay expressionway",
+            "qc": "Owshay onlyway electedsay ategoriescay"
+        },
+        "scripts": {
+            "settings": "Ettingssay",
+            "templates": "Emplatestay",
+            "sidebar": {
+                "wiki": "Ikiway",
+                "scripts": "Iptsscray",
+                "templates": "Emplatestay",
+                "save": "Avesay",
+                "copy": "Opycay",
+                "undo": "Undoway",
+                "redo": "Edoray",
+                "close": "Oseclay",
+                "apply": "Applyway",
+                "remove": "Emoveray",
+                "save_apply": "Avesay & Applyway"
+            },
+            "types": {
+                "me": "Emay",
+                "players": "Ayersplay",
+                "guilds": "Uildsgay",
+                "tracker": "Ackertray Onfigurationcay",
+                "default": "Efaultday"
+            },
+            "online": {
+                "not_available": "Onay iptsscray availableway"
+            }
+        },
+        "players": {
+            "other": "Owshay otherway ayersplay",
+            "hidden": "Owshay iddenhay"
+        },
+        "guilds": {
+            "other": "Owshay otherway uildsgay",
+            "hidden": "Owshay iddenhay",
+            "missing": "Ayerplay ataday isway issingmay orfay ollowingfay embersmay:"
+        },
+        "browse": {
+            "hidden": "Owshay iddenhay"
+        },
+        "fast_export": {
+            "label": "Areshay",
+            "title": "Exportway optionsway",
+            "all": "Allway",
+            "latest": "Atestlay",
+            "latest5": "Atestlay 5",
+            "selected": "Electedsay",
+            "selected_both": "Electedsay & Eferenceray"
+        },
+        "share": {
+            "title": "Ilefay aringshay",
+            "options": "Optionsway",
+            "code": "Ouryay odecay",
+            "get": "Etgay odecay",
+            "ok": "Okway",
+            "expire": "Ethay odecay illway automaticallyway expireway afterway 2 aysday.",
+            "single_use": "Inglesay useway onlyway",
+            "single_use_notice": "Easeplay onsidercay eepingkay isthay optionway enabledway unlessway ouyay anplay otay areshay ethay ilefay ithway ultiplemay eoplepay."
+        },
+        "online_templates": {
+            "title": "Ublicpay iptsscray",
+            "description": "Escriptionday",
+            "author": "Authorway",
+            "created_on": "Eatedcray onway",
+            "loading": "Etchingfay iptsscray"
+        },
+        "templates": {
+            "title": "Emplatestay",
+            "loading": "Ommittingcay angeschay",
+            "form": {
+                "changed_on": "Angedchay onway",
+                "version": "Ooltay Ersionvay",
+                "compatibility": "Ompatibilitycay",
+                "published_on": "Ublishedpay onway",
+                "code": "Odecay",
+                "publish": "Ublishpay",
+                "publish_tooltip": "Ublishpay emplatetay",
+                "unpublish_tooltip": "Unpublishway emplatetay",
+                "update": "Updateway",
+                "update_tooltip": "Updateway emplatetay ithway urrentcay iptscray",
+                "remove": "Emoveray",
+                "remove_tooltip": "Emoveray emplatetay"
+            },
+            "quick_swap": "Ickquay apsway ustomcay emplatestay"
+        },
+        "group": {
+            "compared_to": "omparedcay otay"
+        },
+        "player": {
+            "attributes": "Attributesway",
+            "basis": "Asisbay",
+            "miscellaneous": "Iscmay",
+            "armor": "Armorway",
+            "damage": "Amageday",
+            "health": "Ealthhay",
+            "potions": "Otionspay",
+            "guild": "Uildgay",
+            "name": "Amenay",
+            "role": "Oleray",
+            "joined_on": "Oinedjay onway",
+            "bonuses": "Onusesbay",
+            "scrapbook": "Apbookscray",
+            "achievements": "Achievementsway",
+            "mount": "Ountmay",
+            "heath_bonus": "Ealthhay Onusbay",
+            "damage_bonus": "Amageday Onusbay",
+            "treasure": "Easuretray",
+            "instructor": "Instructorway",
+            "pet": "Etpay",
+            "knights": "Allhay ofway Ightsknay",
+            "extras": {
+                "title": "Extrasway",
+                "registered": "Egisteredray"
+            },
+            "runes": {
+                "title": "Unesray",
+                "gold": "Oldgay",
+                "experience": "Experienceway",
+                "epic": "Epicway Ancechay",
+                "quality": "Itemway Alityquay",
+                "health": "Ealthhay",
+                "fire_damage": "Irefay Amageday",
+                "cold_damage": "Oldcay Amageday",
+                "lightning_damage": "Ightninglay Amageday",
+                "fire_resist": "Irefay Esistanceray",
+                "cold_resist": "Oldcay Esistanceray",
+                "lightning_resist": "Ightninglay Esistanceray"
+            },
+            "fortress": {
+                "title": "Ortressfay",
+                "upgrades": "Upgradesway",
+                "rank": "Ankray",
+                "honor": "Onorhay",
+                "building1": "Ortressfay",
+                "building2": "Artersquay",
+                "building3": "Oodcutterway",
+                "building4": "Arryquay",
+                "building5": "Emgay Inemay",
+                "building6": "Academyway",
+                "building7": "Archeryway Uildgay",
+                "building8": "Arracksbay",
+                "building9": "Agemay Owertay",
+                "building10": "Easurytray",
+                "building11": "Ithysmay",
+                "building12": "Ortificationsfay",
+                "working": "Uildingbay"
+            }
+        },
+        "settings": {
+            "title": "Obalglay onfigurationcay",
+            "always_prev": "Omparecay eviouspray (uildsgay)",
+            "empty_groups": "Owshay emptyway oupsgray",
+            "obfuscated": "Idehay ayerplay amesnay",
+            "insecure": "Allowway insecureway htmlay agstay",
+            "insecure_error#": "Isthay abletay asway otnay isplayedday ecausebay itway ontainscay HTMLAY agstay atthay areway ohibitedpray.<br/>Easeplay emoveray emthay omfray ouryay ettingssay andway ytray againway.",
+            "terms": "Acceptway Ermstay ofway Ervicesay",
+            "tab": "Efaultday abtay",
+            "preload": "Eloadpray owsray",
+            "actions": {
+                "title": "Actionsway",
+                "reset": "Esetray actionsway",
+                "ignore": "Ignoreway angeschay",
+                "save": "Avesay actionsway"
+            }
+        }
+    },
+    "pets": {
+        "generate": {
+            "tooltip": "Enerategay away evellay / adiatorglay uccesssay apmay. Onlyway ossiblepay ithway ownway etpay againstway away ungeonday ossbay.",
+            "one": "Enerategay",
+            "five": "Enerategay extnay 5",
+            "ten": "Enerategay extnay 10"
+        },
+        "simulate": "Imulatesay",
+        "results": "Esultsray",
+        "poll": "Ollpay avedsay aracterschay",
+        "map": {
+            "gladiator": "Adglay"
+        },
+        "types": {
+            "0": "Adowshay",
+            "1": "Ightlay",
+            "2": "Earthway",
+            "3": "Irefay",
+            "4": "Aterway"
+        },
+        "names": {
+            "0": "Urpslay",
+            "1": "Igmolday",
+            "2": "Ootheytay",
+            "3": "Okultacleway",
+            "4": "Idorspay",
+            "5": "Ackobujay",
+            "6": "Impflyshray",
+            "7": "Eaprimray",
+            "8": "Etdacatpay",
+            "9": "Ykonmay",
+            "10": "Ishorrfay",
+            "11": "Uckoolycay",
+            "12": "Attlutterbay",
+            "13": "Inklynxpay",
+            "14": "Aramummphay",
+            "15": "Instarrnay",
+            "16": "Uchtablonglay",
+            "17": "Angrackway",
+            "18": "Evilsattday",
+            "19": "Oisnakepay",
+            "20": "Aggyllshay",
+            "21": "Ellclopsjay",
+            "22": "Incktay",
+            "23": "Oudningclay",
+            "24": "Evorfullnay",
+            "25": "Utoidplay",
+            "26": "Inntonicdjay",
+            "27": "Axtablay",
+            "28": "Ampcesslay",
+            "29": "Eslarrtay",
+            "30": "Unnyasay",
+            "31": "Uckfoxionbay",
+            "32": "Irdychirpbay",
+            "33": "Eyeorwhatway",
+            "34": "Esmeritmay",
+            "35": "Antlarway",
+            "36": "Iphantlay",
+            "37": "Ilightknay",
+            "38": "Eraldonhay",
+            "39": "Unikorway",
+            "40": "Amotonmay",
+            "41": "Onkorragemay",
+            "42": "Aponycksmay",
+            "43": "Ittnutzbay",
+            "44": "Oarearray",
+            "45": "Uscudonmay",
+            "46": "Apstickway",
+            "47": "Orrningtonhay",
+            "48": "Oaringgbay",
+            "49": "Amelothmay",
+            "50": "Eynoohrhay",
+            "51": "Ockastonnray",
+            "52": "Edwoofoxray",
+            "53": "Ilbeatzuplay",
+            "54": "Orrorfay",
+            "55": "Ipprabsnay",
+            "56": "Armoruckway",
+            "57": "Anoclecay",
+            "58": "Icerawoodtray",
+            "59": "Outhrexormay",
+            "60": "Irimpfay",
+            "61": "Ullpsgay",
+            "62": "Yrophibuspay",
+            "63": "Amechirrflay",
+            "64": "Ectospittay",
+            "65": "Yroplantpay",
+            "66": "Okofirekay",
+            "67": "Eppryonpay",
+            "68": "Oomywoomybay",
+            "69": "Ikirickytay",
+            "70": "Atchlitmay",
+            "71": "Irblazeybay",
+            "72": "Infernoxway",
+            "73": "Umbuzzishhay",
+            "74": "Agopyrdray",
+            "75": "Antiflamemay",
+            "76": "Innettlefay",
+            "77": "Etrockway",
+            "78": "Azingtonguesblay",
+            "79": "Evastorday",
+            "80": "Oldygay",
+            "81": "Orcahleway",
+            "82": "Ocodileway",
+            "83": "Enguwaterpay",
+            "84": "Alrophinway",
+            "85": "Olsnailcay",
+            "86": "Aquaphantway",
+            "87": "Aarnay",
+            "88": "Octobossway",
+            "89": "Ewilgrynway",
+            "90": "Eapardsay",
+            "91": "Ellzyshay",
+            "92": "Inghomay",
+            "93": "Angbiteway",
+            "94": "Ermoidmay",
+            "95": "Atnakeway",
+            "96": "Annoturtlecay",
+            "97": "Unhereway",
+            "98": "Itostingtray",
+            "99": "Ydrospirhay"
+        },
+        "bulk": {
+            "toast": {
+                "title": "Artingstay imulationsay",
+                "matches": "Atchesmay:",
+                "not_possible": "Otnay ossiblepay"
+            }
+        },
+        "editor": {
+            "none": "Onenay",
+            "type": "Ypetay",
+            "pet": "Etpay",
+            "habitat": "Abitathay",
+            "health": "Ealthhay",
+            "attribute": "Attributeway",
+            "defense": "Efenseday",
+            "skip": "Ipskay Ancechay",
+            "crit": "Iticalcray Ancechay",
+            "damage": "Amageday",
+            "critical_bonus": "Iticalcray",
+            "at100": {
+                "title": "Atway 100 - 149",
+                "placeholder": "Etspay atway 100 - 149"
+            },
+            "at150": {
+                "title": "Atway 150 - 199",
+                "placeholder": "Etspay atway 150 - 199"
+            },
+            "at200": {
+                "title": "Atway 200",
+                "placeholder": "Etspay atway 200"
+            },
+            "pack": {
+                "title": "Ackpay",
+                "placeholder": "Etspay ouyay aughtcay"
+            }
+        }
+    },
     "dungeons": {
         "simulate": "Imulatesay",
         "simulate_remaining": "Emainingray",
@@ -118,6 +581,7 @@
         "mark": "Arkmay",
         "kunigunde": "Unigundekay",
         "open": "Urrentlycay openway ungeonsday",
+        "poll": "Ollpay avedsay aracterschay",
         "graph": {
             "y": "Ossbay HPAY Eftlay",
             "x": "- Istributionday orfay electedsay amountway ofway iestray -"
@@ -139,8 +603,7 @@
     "simulator": {
         "paste_target#": "Ickclay erehay andway esspray <b>CTRL&nbsp;+&nbsp;V</b> otay astepay intoway ethay imulatorsay",
         "threads": "Imulatorsay eadsthray. Eepkay isthay umbernay ELOWBAY ouryay ocessorpray orecay ountcay!",
-        "iterations": "Amountway ofway iterationsway erpay eadthray.",
-        "save_image": "Avesay asway imageway"
+        "iterations": "Amountway ofway iterationsway erpay eadthray."
     },
     "editor": {
         "name": "Amenay",
@@ -149,8 +612,11 @@
         "mask": "Askmay",
         "instrument": "Instrumentway",
         "armor": "Armorway",
+        "armor_placeholder": "Armorway ointspay",
         "min": "Inmay",
+        "min_placeholder": "Itemway Inmay",
         "max": "Axmay",
+        "max_placeholder": "Itemway Axmay",
         "weapon_enchant": "Itcray",
         "rune": "Uneray",
         "portal_damage": "Ortalpay Amageday",
@@ -167,7 +633,55 @@
         "copy": "Opycay",
         "none": "Onenay"
     },
+    "endpoint": {
+        "username": "Usernameway",
+        "password": "Asswordpay",
+        "mode": {
+            "own": "Apturecay ownway aracterchay",
+            "default": "Apturecay ownway + electedsay aracterschay",
+            "guild": "Apturecay ownway + uildgay aracterschay",
+            "friends": "Apturecay ownway + iendfray aracterschay"
+        },
+        "cancel": "Ancelcay",
+        "continue": "Ontinuecay",
+        "step2": {
+            "title": "Oadinglay Endpointway"
+        },
+        "step3": {
+            "title": "Electsay ayersplay otay ebay importedway"
+        },
+        "step4": {
+            "title": "Ontactingcay ethay erversay orfay informationway",
+            "message": "Etchingfay ataday"
+        },
+        "user_error": {
+            "title": "Ouryay userway amenay orway asswordpay isway otnay alidvay",
+            "message": "Easeplay ensureway atthay itway isway inway orrectcay ormatfay (usernameway@urlway)"
+        },
+        "credentials_error": "Ongwray usernameway orway asswordpay",
+        "download_error": "Ownloadday ailedfay"
+    },
+    "database": {
+        "open_error": {
+            "title": "Atabaseday ouldcay otnay ebay openedway",
+            "message": "Easeplay erifyvay atthay ouyay areway otnay inway incognitoway odemay andway ouryay owserbray upportssay Indexedway DBAY"
+        },
+        "import_error": "Anway errorway ashay occuredway ilewhay importingway ilefay",
+        "fatal_error#": "Ouryay owserbray oesday otnay upportsay allway eaturesfay equiredray ybay isthay agepay!</br>Isthay issueway ancay ebay alsoway ausedcay ybay useway ofway ivatepray odemay.",
+        "update_info": {
+            "title": "Away atabaseday updateway isway inway ogresspray",
+            "message": "Easeplay oday otnay exitway ethay agepay untilway oadinglay opsstay. Isthay aymay aketay away ilewhay ependingday onway ethay izesay ofway ouryay atabaseday."
+        }
+    },
     "dialog": {
+        "delete_all": {
+            "title": "Eleteday allway",
+            "notice": "Areway ouyay uresay ouyay antway otay eleteday allway oredstay ayerplay ataday?"
+        },
+        "delete_script": {
+            "title": "Emoveray iptscray",
+            "notice": "Areway ouyay uresay ouyay antway otay ermanentlypay emoveray urrentlycay appliedway iptscray?"
+        },
         "warning": {
             "title": "Anway issueway ashay occuredway!",
             "continue": "Ontinuecay"
@@ -177,6 +691,10 @@
             "notice#": "Isthay errorway ightmay avehay alsoway eenbay ausedcay ybay ouryay urrentcay ofilepray.<br>Ickclay ethay evertray uttonbay elowbay otay evertray ackbay otay efaultday ofilepray.",
             "refresh": "Ickclay erehay orway efreshray ethay agepay",
             "revert": "Evertray ackbay otay efaultday ofilepray"
+        },
+        "changelog": {
+            "release": "Eleaseray",
+            "continue": "Ontinuecay"
         },
         "file_edit": {
             "title": "Editway ilefay",
@@ -640,6 +1158,30 @@
             "98": "Eepyslay Incesspray",
             "99": "Anobotnay Orridgepay",
             "100": "Arbpunzelbay"
+        },
+        "202": {
+            "name": "Ontinuouscay Ooplay ofway Idolsway",
+            "1": "OctorBenxday",
+            "2": "Akreblezay",
+            "3": "Oldengay Ianpygay",
+            "4": "Illyrexway",
+            "5": "Alvaroway845",
+            "6": "Aulpay Erratay",
+            "7": "Ieletrendspay",
+            "8": "Attyfay Illowpay",
+            "9": "Impergay",
+            "10": "Ungeway",
+            "11": "EysJorekay",
+            "12": "Aypierreway",
+            "13": "Andziomay",
+            "14": "Oruciakbay",
+            "15": "Ifqofay",
+            "16": "Ozezsay",
+            "17": "EboPLzay",
+            "18": "Alucarddhay",
+            "19": "Earliboyway",
+            "20": "Ateskay702",
+            "21": "Orzerday"
         },
         "203": {
             "name": "Istertway",
