@@ -2280,7 +2280,7 @@ class FilesView extends View {
             <div class="field">
                 <label>${intl('stats.files.filters.expression')}</label>
                 <div class="ta-wrapper">
-                    <input class="ta-area" type="text" placeholder="${intl('stats.files.filters.expression_placeholder')}">
+                    <input class="ta-area" type="text" placeholder="${intl('stats.files.filters.expression_placeholder', true)}">
                     <div class="ta-content" style="width: 100%; margin-top: -2.3em; margin-left: 1em;"></div>
                 </div>
             </div>
