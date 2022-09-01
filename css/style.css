@@ -617,7 +617,7 @@ input:disabled {
     color: #a37500;
 }
 
-.ta-reserved-itemized {
+.ta-reserved-scoped {
     text-shadow: -0.03ex 0 #3CB371, 0.03ex 0 #3CB371;
     color: #3CB371;
 }
