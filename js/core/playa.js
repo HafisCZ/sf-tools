@@ -77,6 +77,7 @@ class SFItem {
         this.RuneValue = this.getRuneValue();
 
         this.Name = Loca.get(this.Type, this.Index, this.Class);
+        this.ImageUrl = Loca.pic(this.Type, this.Index, this.Color, this.Class);
     }
 
     morph (from, to) {

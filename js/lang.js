@@ -14,6 +14,9 @@ const Loca = {
             return Loca[`item type ${ Loca.fill(type, 2) } class ${ cl } pic ${ Loca.fill(pic, 3) }`];
         }
     },
+    pic: function (type, pic, vr, cl) {
+        return `res/items/${type}_${pic}_${vr || '1'}_${cl || '1'}.png`;
+    },
     'item type 01 class 1 pic 001': 'Old Club',
     'item type 01 class 1 pic 002': 'Toy Sword',
     'item type 01 class 1 pic 003': 'Flimsy Flail',
