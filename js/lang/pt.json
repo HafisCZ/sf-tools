@@ -26,7 +26,7 @@
     "index": {
         "toggle": "Créditos",
         "roles": {
-            "admin": "Alguém com muito tempo livre",
+            "admin": "Alguém com muito tempo livre..!",
             "helper": "Ajudantes - Pesquisa, Testing, Feedback, etc.",
             "tester": "Testers",
             "wiki": "Chefe Wiki Manager",
@@ -227,104 +227,104 @@
             "tags": {
                 "single": "Tag",
                 "multiple": "Tags",
-                "all": "All",
-                "none": "None"
+                "all": "Todos",
+                "none": "Nenhum"
             },
             "filters": {
-                "any": "Any",
-                "n_unique": "unique",
-                "expression": "Expression",
-                "expression_placeholder": "Your expression",
-                "timestamp": "Timestamp",
-                "player": "Player",
-                "group": "Guild",
-                "prefix": "Prefix",
+                "any": "todos",
+                "n_unique": "único/a(s)",
+                "expression": "Expressão",
+                "expression_placeholder": "A tua expressão",
+                "timestamp": "Data",
+                "player": "Jogador",
+                "group": "Clã",
+                "prefix": "Servidor",
                 "tags": "Tags",
-                "type": "Type",
-                "type_all": "Show all characters",
-                "type_own": "Show only own characters",
-                "type_other": "Show only other characters",
-                "origin": "Origin",
-                "hidden": "Hidden"
+                "type": "Tipo",
+                "type_all": "Mostrar todas as personagens",
+                "type_own": "Mostrar apenas a tua personagem",
+                "type_other": "Mostrar apenas outras personagens",
+                "origin": "Origem",
+                "hidden": "Ocultar"
             },
             "online": {
-                "title": "File sharing",
-                "prompt": "Enter your code:",
-                "invalid": "Invalid or expired code!",
-                "cancel": "Cancel",
+                "title": "Partilha de ficheiros",
+                "prompt": "Introduz o teu código:",
+                "invalid": "Código inválido ou expirado!",
+                "cancel": "Cancelar",
                 "ok": "Ok"
             }
         },
         "copy": {
-            "image": "Save as image",
-            "basic": "Copy table",
-            "fight": "Copy table for fight simulator",
-            "player": "Copy",
-            "player_companions": "Copy with companions"
+            "image": "Guardar como imagem",
+            "basic": "Copiar tabela",
+            "fight": "Copiar tabela para simulador de combates",
+            "player": "Copiar",
+            "player_companions": "Copiar com companheiros"
         },
         "context": {
-            "hide": "Show / Hide",
-            "remove": "Remove permanently"
+            "hide": "Mostrar / Ocultar",
+            "remove": "Remover permanentemente"
         },
         "profiles": {
-            "players": "Players",
-            "groups": "Guilds",
-            "primary": "Primary filter",
-            "secondary": "Secondary filter",
-            "none": "None",
-            "create": "Create new profile",
-            "between": "between",
-            "and": "and"
+            "players": "Jogadores",
+            "groups": "Clãs",
+            "primary": "Primeiro filtro",
+            "secondary": "Segundo filtro",
+            "none": "Nenhum",
+            "create": "Criar um novo perfil",
+            "between": "entre",
+            "and": "e"
         },
         "filters": {
-            "c": "Player class, use full class name in lower case (eg.: berserker, battle mage)",
-            "p": "Player name",
-            "g": "Guild name",
-            "s": "Server",
-            "e": "Custom expression",
-            "#": "Show only players with specified tags",
-            "l": "Show only latest",
-            "f": "Show only first or first n entries",
-            "r": "Force recalculation of global variables",
-            "x": "Enable simulator (argument is number of iterations)",
-            "h": "Show hidden",
-            "o": "Show own",
-            "a": "Show all",
-            "d": "Show other",
-            "q": "Custom settings (separate header names with comma)",
-            "t": "Show online template directly",
-            "sr": "Sort by custom expression",
-            "qc": "Show only selected categories"
+            "c": "Classe do jogador, utiliza o nome inteiro da classe em inglês, em letras minúsculas (ex.: berserker, battle mage)",
+            "p": "Nome do jogador",
+            "g": "Nome do clã",
+            "s": "Servidor",
+            "e": "Expressão personalizada",
+            "#": "Mostrar apenas jogadores com tags específicas",
+            "l": "Mostrar apenas os últimos",
+            "f": "Mostrar apenas a primeira ou primeiras n entradas",
+            "r": "Recalcular tabela",
+            "x": "Ativar simulador (o valor é o número de tentativas)",
+            "h": "Mostrar oculto(s)",
+            "o": "Mostrar o próprio",
+            "a": "Mostrar todos",
+            "d": "Mostrar outro(s)",
+            "q": "Definições de Personalização (separar nomes do cabeçalho com uma vírgula)",
+            "t": "Mostrar modelo online diretamente",
+            "sr": "Classificar por expressão personalizada",
+            "qc": "Mostrar apenas categorias selecionadas"
         },
         "scripts": {
-            "settings": "Settings",
+            "settings": "Definições",
             "templates": "Templates",
             "sidebar": {
                 "wiki": "Wiki",
                 "scripts": "Scripts",
                 "templates": "Templates",
-                "save": "Save",
-                "copy": "Copy",
-                "undo": "Undo",
-                "redo": "Redo",
-                "close": "Close",
-                "apply": "Apply",
-                "remove": "Remove",
-                "save_apply": "Save & Apply"
+                "save": "Salvar",
+                "copy": "Copiar",
+                "undo": "Desfazer",
+                "redo": "Refazer",
+                "close": "Fechar",
+                "apply": "Aplicar",
+                "remove": "Remover",
+                "save_apply": "Salvar & Aplicar"
             },
             "types": {
-                "me": "Me",
-                "players": "Players",
-                "guilds": "Guilds",
+                "me": "Eu",
+                "players": "Jogadores",
+                "guilds": "Clãs",
                 "tracker": "Tracker Configuration",
-                "default": "Default"
+                "default": "Predefinição"
             },
             "online": {
                 "not_available": "No scripts available"
             }
         },
         "players": {
-            "other": "Show other players",
+            "other": "Mostrar outros jogadores",
             "hidden": "Show hidden"
         },
         "guilds": {
