@@ -643,7 +643,19 @@
         }
     },
     "guilds": {
-
+        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
+        "guild1": "Guild A",
+        "guild2": "Guild B",
+        "toast": {
+            "start": {
+                "title": "Starting simulation",
+                "message#": "<b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            }
+        }
     },
     "hydra": {
         "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",

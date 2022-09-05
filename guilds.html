@@ -41,28 +41,9 @@
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
 
-        <div class="paste-target" onpaste="console.log">
-            Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator
-        </div>
+        <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
 
         <div class="ui main container">
-            <div class="ui five columns middle aligned grid">
-                <div class="two wide column">
-
-                </div>
-                <div class="four wide column">
-
-                </div>
-                <div class="four wide column">
-                    <h1 class="ui centered header">Guild Simulator</h1>
-                </div>
-                <div class="four wide column">
-
-                </div>
-                <div class="two wide wide column">
-
-                </div>
-            </div>
             <div class="ui two columns grid">
                 <!-- Player edit field -->
                 <div class="column">
@@ -75,29 +56,29 @@
                     <div class="ui grid">
                         <div class="row">
                             <div class="four wide column">
-                                <button class="ui fluid small button" type="submit" id="add-player">Add</button>
+                                <button class="ui fluid small button" type="submit" id="add-player" data-intl="simulator.add"></button>
                             </div>
                             <div class="four wide column">
-                                <button class="ui fluid small button" type="submit" id="save-player">Save</button>
+                                <button class="ui fluid small button" type="submit" id="save-player" data-intl="simulator.save"></button>
                             </div>
                             <div class="eight wide column">
-                                <button class="ui small basic icon right floated button" data-position="bottom center" data-tooltip="Gladiator will be set to 15 regardless of your settings" id="gladiator-mode"><i class="bolt icon"></i></button>
+                                <button class="ui small basic icon right floated button" data-position="bottom center" data-intl-tooltip="guilds.gladiator_mode" id="gladiator-mode"><i class="bolt icon"></i></button>
                             </div>
                         </div>
                         <div class="css-small-row row">
                             <div class="four wide column">
                                 <div class="ui small basic icon fluid two buttons">
-                                    <button class="ui button" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="paste-mode"><i class="paste icon"></i></button>
-                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy everyone" id="copy-all"><i class="copy icon"></i> All</button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.paste_mode" id="paste-mode"><i class="paste icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.copy_all" id="copy-all"><i class="copy icon"></i></button>
                                 </div>
                             </div>
                             <div class="seven wide column">
                                 <div class="ui small form">
                                     <div class="two fields">
-                                        <div class="field" data-position="bottom center" data-tooltip="Simulator threads. Keep this number BELOW your processor core count!">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads">
                                             <input class="text-center fluid" type="text" id="sim-threads" value="4">
                                         </div>
-                                        <div class="field" data-position="bottom center" data-tooltip="Amount of iterations per thread.">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations">
                                             <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
                                             <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
                                         </div>
@@ -105,14 +86,14 @@
                                 </div>
                             </div>
                             <div class="five wide column">
-                                <button class="ui fluid small button" type="submit" id="simulate">Simulate</button>
+                                <button class="ui fluid small button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
                             </div>
                         </div>
                         <div class="css-small-row row">
                             <div class="sixteen wide column">
                                 <div class="ui basic fluid two buttons">
-                                    <div class="ui button" data-guild="0">Guild A</div>
-                                    <div class="ui button" data-guild="1">Guild B</div>
+                                    <div class="ui button" data-guild="0" data-intl="guilds.guild1"></div>
+                                    <div class="ui button" data-guild="1" data-intl="guilds.guild2"></div>
                                 </div>
                             </div>
                         </div>
@@ -120,18 +101,10 @@
 
                         </div>
                         <div class="row selectable-header">
-                            <div class="three wide text-center column">
-                                Class
-                            </div>
-                            <div class="two wide column">
-                                Level
-                            </div>
-                            <div class="ten wide column">
-                                Name
-                            </div>
-                            <div class="one wide column">
-
-                            </div>
+                            <div class="three wide text-center column" data-intl="editor.class"></div>
+                            <div class="two wide column" data-intl="editor.level"></div>
+                            <div class="ten wide column" data-intl="editor.name"></div>
+                            <div class="one wide column"></div>
                         </div>
                         <div class="row padding-none">
                             <div class="sixteen wide column">
@@ -452,7 +425,7 @@
 
                 StatisticsIntegration.configure(
                     HYDRA_PROFILE,
-                    'Poll saved guilds',
+                    intl('simulator.poll.guilds'),
                     'dungeons',
                     function ($statsList) {
                         let groups = Object.values(DatabaseManager.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MemberCount == gi.MembersPresent)[0])
@@ -497,7 +470,7 @@
                         let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
                         let iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
 
-                        Toast.info('Starting simulation', `<b>Iterations:</b> ${iterations}<br/><b>Thread cnt:</b> ${blocks}`);
+                        Toast.info(intl('guilds.toast.start.title'), intl('guilds.toast.start.message#', { iterations, blocks }))
 
                         let blocksResults = [];
 
@@ -507,7 +480,7 @@
                             worker.addEventListener('message', function ({ data: { results, time }}) {
                                 blocksResults.push(results);
 
-                                Toast.info(`Simulation thread ${blocksResults.length} / ${blocks} finished`, `<b>Time:</b> ${time / 1000} seconds`);
+                                Toast.info(intl('guild.toast.end.title', { done: blocksResults.length, total: blocks }), intl('guilds.toast.end.message#', { time: time / 1000 }))
 
                                 if (blocksResults.length == blocks) {
                                     displayResults(blocksResults, blocks * iterations);
