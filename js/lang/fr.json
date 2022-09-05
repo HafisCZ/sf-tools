@@ -16,11 +16,11 @@
         "instrument0": "Harpe",
         "instrument1": "Luth",
         "instrument2": "Flute",
-        "strength": "Force",
-        "dexterity": "Habileté",
-        "intelligence": "Intelligence",
-        "constitution": "Endurance",
-        "luck": "Chance",
+        "attribute1": "Force",
+        "attribute2": "Habileté",
+        "attribute3": "Intelligence",
+        "attribute4": "Endurance",
+        "attribute5": "Chance",
         "life_potion": "Vie Éternelle"
     },
     "index": {

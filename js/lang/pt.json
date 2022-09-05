@@ -16,11 +16,11 @@
         "instrument0": "Harpa",
         "instrument1": "Alaúde",
         "instrument2": "Flauta",
-        "strength": "Força",
-        "dexterity": "Reflexos",
-        "intelligence": "Inteligência",
-        "constitution": "Resistência",
-        "luck": "Sorte",
+        "attribute1": "Força",
+        "attribute2": "Reflexos",
+        "attribute3": "Inteligência",
+        "attribute4": "Resistência",
+        "attribute5": "Sorte",
         "life_potion": "Vida Eterna"
     },
     "index": {

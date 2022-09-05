@@ -360,23 +360,23 @@ class PlayerDetailFloatView extends View {
                             <div class="detail-item">${this.intl('attributes')}</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.strength')}</div>
+                            <div class="detail-item">${intl('general.attribute1')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Strength.Total) }${ asDiff(player.Strength.Total, compare.Strength.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.dexterity')}</div>
+                            <div class="detail-item">${intl('general.attribute2')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Dexterity.Total) }${ asDiff(player.Dexterity.Total, compare.Dexterity.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.intelligence')}</div>
+                            <div class="detail-item">${intl('general.attribute3')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Intelligence.Total) }${ asDiff(player.Intelligence.Total, compare.Intelligence.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.constitution')}</div>
+                            <div class="detail-item">${intl('general.attribute4')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Constitution.Total) }${ asDiff(player.Constitution.Total, compare.Constitution.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.luck')}</div>
+                            <div class="detail-item">${intl('general.attribute5')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Total) }${ asDiff(player.Luck.Total, compare.Luck.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <br/>
@@ -384,23 +384,23 @@ class PlayerDetailFloatView extends View {
                             <div class="detail-item">${this.intl('basis')}</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.strength')}</div>
+                            <div class="detail-item">${intl('general.attribute1')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Strength.Base) }${ asDiff(player.Strength.Base, compare.Strength.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.dexterity')}</div>
+                            <div class="detail-item">${intl('general.attribute2')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Dexterity.Base) }${ asDiff(player.Dexterity.Base, compare.Dexterity.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.intelligence')}</div>
+                            <div class="detail-item">${intl('general.attribute3')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Intelligence.Base) }${ asDiff(player.Intelligence.Base, compare.Intelligence.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.constitution')}</div>
+                            <div class="detail-item">${intl('general.attribute4')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Constitution.Base) }${ asDiff(player.Constitution.Base, compare.Constitution.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.luck')}</div>
+                            <div class="detail-item">${intl('general.attribute5')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Base) }${ asDiff(player.Luck.Base, compare.Luck.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <br/>
@@ -2280,7 +2280,7 @@ class FilesView extends View {
             <div class="field">
                 <label>${intl('stats.files.filters.expression')}</label>
                 <div class="ta-wrapper">
-                    <input class="ta-area" type="text" placeholder="${intl('stats.files.filters.expression_placeholder', true)}">
+                    <input class="ta-area" type="text" placeholder="${intl('stats.files.filters.expression_placeholder')}">
                     <div class="ta-content" style="width: 100%; margin-top: -2.3em; margin-left: 1em;"></div>
                 </div>
             </div>

@@ -42,12 +42,10 @@
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
 
-        <div class="paste-target" onpaste="console.log">
-            Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator
-        </div>
+        <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
 
         <div class="footer">
-            <span style="font-size: 90%;">Based on <a target="_blank" href="https://github.com/Timhot3p/GuildPet">Timhot3p's GuildPet</a> project.</span>
+            <span style="font-size: 90%;" data-intl="hydra.footer#"></span>
         </div>
 
         <div class="ui main container">
@@ -58,40 +56,40 @@
                         <div class="bordered bone">
                             <div class="two fields">
                                 <div class="field">
-                                    <label>Player Count</label>
+                                    <label data-intl="hydra.player_count"></label>
                                     <input class="text-center" type="text" data-path="PlayerCount" placeholder="10 - 50">
                                 </div>
                                 <div class="field">
-                                    <label>Level</label>
+                                    <label data-intl="editor.level"></label>
                                     <input class="text-center" type="text" data-path="Level" placeholder="1 - 700">
                                 </div>
                             </div>
                             <div class="five fields">
                                 <div class="field">
-                                    <label>Main</label>
+                                    <label data-intl="hydra.main"></label>
                                     <input class="text-center" type="text" data-path="Main">
                                 </div>
                                 <div class="field">
-                                    <label>Side 1</label>
+                                    <label data-intl="hydra.side1"></label>
                                     <input class="text-center" type="text" data-path="Side1">
                                 </div>
                                 <div class="field">
-                                    <label>Side 2</label>
+                                    <label data-intl="hydra.side2"></label>
                                     <input class="text-center" type="text" data-path="Side2">
                                 </div>
                                 <div class="field">
-                                    <label>Constitution</label>
+                                    <label data-intl="general.attribute4"></label>
                                     <input class="text-center" type="text" data-path="Constitution">
                                 </div>
                                 <div class="field">
-                                    <label>Luck</label>
+                                    <label data-intl="general.attribute5"></label>
                                     <input class="text-center" type="text" data-path="Luck">
                                 </div>
                             </div>
                         </div>
                         <div class="bordered bfive">
                             <div class="field">
-                                <label>Hydra</label>
+                                <label data-intl="hydra.hydra"></label>
                                 <div class="ui search selection compact dropdown" data-path="Hydra">
                                     <div class="text"></div>
                                     <i class="dropdown icon"></i>
@@ -103,18 +101,16 @@
                 <div class="column">
                     <div class="ui grid">
                         <div class="row">
-                            <div class="three wide column text-center" style="align-self: center;">
-                                Iterations:
-                            </div>
+                            <div class="three wide column text-center" style="align-self: center;" data-intl="hydra.iterations.label"></div>
                             <div class="five wide column">
                                 <div class="ui small form">
-                                    <div class="field" data-position="bottom center" data-tooltip="Amount of iterations per pet class.">
+                                    <div class="field" data-position="bottom center" data-intl-tooltip="hydra.iterations.popup">
                                         <input class="text-center fluid" type="text" id="sim-iterations" value="10000">
                                     </div>
                                 </div>
                             </div>
                             <div class="eight wide column">
-                                <button class="ui fluid button" type="submit" id="sim-run">Simulate</button>
+                                <button class="ui fluid button" type="submit" id="sim-run" data-intl="simulator.simulate"></button>
                             </div>
                         </div>
                         <div class="row padding-none">
@@ -133,7 +129,7 @@
         </div>
 
         <script type="text/javascript">
-            window.addEventListener('load', function () {
+            Site.ready(function () {
                 $('#sim-iterations').captiveInputField('hydra_sim/iterations', 10000, v => !isNaN(v) && v >= 1);
 
                 const EditorController = new (class {
@@ -151,9 +147,9 @@
 
                         this.fields['hydra'].$object.dropdown({
                             preserveHTML: true,
-                            values: Object.entries(HYDRA_MAP).map(([id, {class: klass, name}]) => {
+                            values: Object.entries(HYDRA_MAP).map(([id, { class: klass }]) => {
                                 return {
-                                    name: `<img class="ui centered image class-picture" src="res/class${klass}.png"><span>${name}</span>`,
+                                    name: `<img class="ui centered image class-picture" src="res/class${klass}.png"><span>${intl(`hydra.names.${id}`)}</span>`,
                                     value: id
                                 };
                             })
@@ -329,7 +325,7 @@
 
                 StatisticsIntegration.configure(
                     HYDRA_PROFILE,
-                    'Poll saved guilds',
+                    intl('simulator.poll.guilds'),
                     'dungeons',
                     function ($statsList) {
                         let groups = Object.values(DatabaseManager.Groups).map(g => g.List.map(([ts, gi]) => gi).filter(gi => gi.MemberCount == gi.MembersPresent)[0])
@@ -337,10 +333,10 @@
                             $statsList.append($(`
                                 <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
                                     <div class="visible content">
-                                        <span style="color: black;">${ group.Name } @ ${ group.Prefix }<span>
+                                        <span style="color: black;">${group.Name} @ ${group.Prefix}<span>
                                     </div>
                                     <div class="hidden content">
-                                        <span style="color: black;">${ formatDate(group.Timestamp) }<span>
+                                        <span style="color: black;">${formatDate(group.Timestamp)}<span>
                                     </div>
                                 </div>
                                 `).click(() => {
@@ -408,8 +404,8 @@
                                     <span>${(100 * score / iterations).toFixed(2)}%</span>
                                 </h3>
                                 <hr/>
-                                <div style="padding-left: 0.25em; padding-right: 0.25em;"><span style="font-size: 80%;">&Delta;</span> ${averageHealth}% HP left</div>
-                                <div style="padding-left: 0.25em; padding-right: 0.25em;"><span style="font-size: 80%;">&Delta;</span> ${averageFights} fight${averageFights > 1 ? 's' : ''}</div>
+                                <div style="padding-left: 0.25em; padding-right: 0.25em;"><span style="font-size: 80%;">&Delta;</span> ${intl('hydra.result.health', { health: averageHealth })}</div>
+                                <div style="padding-left: 0.25em; padding-right: 0.25em;"><span style="font-size: 80%;">&Delta;</span> ${intl(`hydra.result.fights_${averageFights > 1 ? 'multiple': 'single'}`, { count: averageFights })}</div>
                             </div>
                         `;
                     }

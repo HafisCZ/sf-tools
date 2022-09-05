@@ -41,29 +41,9 @@
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
 
-        <div class="paste-target" onpaste="console.log">
-            Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator
-        </div>
+        <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
 
         <div class="ui main container">
-            <!-- Header -->
-            <div class="ui five columns middle aligned grid">
-                <div class="two wide column">
-
-                </div>
-                <div class="four wide column">
-
-                </div>
-                <div class="four wide column">
-                    <h1 class="ui centered header">Fight Simulator</h1>
-                </div>
-                <div class="four wide column">
-
-                </div>
-                <div class="two wide wide column">
-
-                </div>
-            </div>
             <div class="ui two columns grid">
                 <!-- Player edit field -->
                 <div class="column">
@@ -76,10 +56,10 @@
                     <div class="ui grid screenshot-target">
                         <div class="row">
                             <div class="four wide column">
-                                <button class="ui fluid small button" type="submit" id="add-player"><i class="small arrow right icon"></i> Add</button>
+                                <button class="ui fluid small button" type="submit" id="add-player"><i class="small arrow right icon"></i> <span data-intl="simulator.add"></span></button>
                             </div>
                             <div class="four wide column">
-                                <button class="ui fluid small button" type="submit" id="save-player">Save</button>
+                                <button class="ui fluid small button" type="submit" id="save-player" data-intl="simulator.save"></button>
                             </div>
                             <div class="five wide column">
                                 <div class="ui small form">
@@ -93,25 +73,25 @@
                             </div>
                             <div class="three wide column">
                                 <div class="ui small basic icon fluid two buttons">
-                                    <button class="ui button" data-position="bottom center" data-tooltip="Gladiator will be set to 15 regardless of your settings" id="gladiator-mode"><i class="bolt icon"></i></button>
-                                    <button class="ui button" data-position="bottom center" data-tooltip="IHOF Mode: Gladiator is not reduced!" id="ihof-mode"><i class="trophy icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="players.gladiator_mode" id="gladiator-mode"><i class="bolt icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="players.ihof_mode" id="ihof-mode"><i class="trophy icon"></i></button>
                                 </div>
                             </div>
                         </div>
                         <div class="css-small-row row">
                             <div class="four wide column">
                                 <div class="ui small basic icon fluid two buttons">
-                                    <button class="ui button" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="paste-mode"><i class="paste icon"></i></button>
-                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy everyone" id="copy-all"><i class="copy icon"></i> All</button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.paste_mode" id="paste-mode"><i class="paste icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.copy_all" id="copy-all"><i class="copy icon"></i></button>
                                 </div>
                             </div>
                             <div class="seven wide column">
                                 <div class="ui small form">
                                     <div class="two fields">
-                                        <div class="field" data-position="bottom center" data-tooltip="Simulator threads. Keep this number BELOW your processor core count!">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads">
                                             <input class="text-center fluid" type="text" id="sim-threads" value="4">
                                         </div>
-                                        <div class="field" data-position="bottom center" data-tooltip="Amount of iterations per thread.">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations">
                                             <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
                                             <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
                                         </div>
@@ -119,45 +99,33 @@
                                 </div>
                             </div>
                             <div class="five wide column">
-                                <button class="ui fluid small button" type="submit" id="simulate">Simulate</button>
+                                <button class="ui fluid small button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
                             </div>
                         </div>
                         <div class="row clickable selectable-header">
                             <div class="two wide text-center column">
-                                <span data-sort="class">
-                                    Class
-                                </span>
+                                <span data-sort="class" data-intl="editor.class"></span>
                             </div>
                             <div class="two wide column">
-                                <span data-sort="level">
-                                    Level
-                                </span>
+                                <span data-sort="level" data-intl="editor.level"></span>
                             </div>
                             <div class="four wide column">
-                                <span data-sort="name">
-                                    Name
-                                </span>
+                                <span data-sort="name" data-intl="editor.name"></span>
                             </div>
                             <div class="two wide text-center column">
-                                <span data-sort="avg">
-                                    Win %
-                                </span>
+                                <span data-sort="avg" data-intl="simulator.win_chance"></span>
                             </div>
                             <div class="two wide text-center column">
-                                <span data-sort="min">
-                                    Min %
-                                </span>
+                                <span data-sort="min" data-intl="simulator.min_chance"></span>
                             </div>
                             <div class="two wide text-center column">
-                                <span data-sort="max">
-                                    Max %
-                                </span>
+                                <span data-sort="max" data-intl="simulator.max_chance"></span>
                             </div>
                             <div class="one wide column">
 
                             </div>
                             <div class="one wide column">
-                                <button id="save-screenshot" class="ui small basic icon button" style="position: absolute; right: .75em; top: -0.50em;" data-position="bottom center" data-tooltip="Save as image"><i class="download icon"></i></button>
+                                <button id="save-screenshot" class="ui small basic icon button" style="position: absolute; right: .75em; top: -0.50em;" data-position="bottom center" data-intl-tooltip="stats.copy.image"><i class="download icon"></i></button>
                             </div>
                         </div>
                         <div class="row padding-none">
@@ -228,24 +196,10 @@
                 });
 
                 $('#sim-mode').dropdown({
-                    values: [
-                        {
-                            name: 'All vs All',
-                            value: 'all'
-                        },
-                        {
-                            name: 'One vs All',
-                            value: 'attack'
-                        },
-                        {
-                            name: 'All vs One',
-                            value: 'defend'
-                        },
-                        {
-                            name: 'Tournament',
-                            value: 'tournament'
-                        }
-                    ]
+                    values: ['all', 'attack', 'defend', 'tournament'].map(value => ({
+                        name: intl(`players.mode.${value}`),
+                        value
+                    }))
                 }).dropdown('setting', 'onChange', (value, text) => {
                     if ((simulatorMode != 'attack' && simulatorMode != 'defend') || (value != 'attack' && value != 'defend')) {
                         yourself = -1;
@@ -345,7 +299,7 @@
 
                 function buildSimulatorLadder (array) {
                     return new Promise(async (resolve, reject) => {
-                        Toast.info('Preparing ladder', `<b>Players:</b> ${array.length}`);
+                        Toast.info(intl('players.toast.tournament.title'), intl('players.toast.tournament.message#', { count: array.length }))
 
                         let worker = await createSimulatorWorker('players');
 
@@ -399,7 +353,7 @@
                             ladder = await buildSimulatorLadder([ ...players ]);
                         }
 
-                        Toast.info('Starting simulation', `<b>Block size:</b> ${blockSize}<br/><b>Iterations:</b> ${iterations}<br/><b>Thread cnt:</b> ${blocks}`)
+                        Toast.info(intl('players.toast.start.title'), intl('players.toast.start.message#', { blocks, blockSize, iterations }));
 
                         let blocksFinished = 0;
                         for (var i = 0; i < players.length; i += blockSize) {
@@ -414,7 +368,7 @@
                                         logs.push(... message.data.logs);
                                     }
 
-                                    Toast.info(`Simulation thread ${blocksFinished += 1} / ${blocks} finished`, `<b>Time:</b> ${message.data.time / 1000} seconds`)
+                                    Toast.info(intl('players.toast.end.title', { done: blocksFinished += 1, total: blocks }), intl('players.toast.end.message#', { time: message.data.time / 1000 }));
 
                                     if (results.length == players.length) {
                                         Loader.toggle(false);
@@ -699,7 +653,7 @@
 
                 StatisticsIntegration.configure(
                     FIGHT_SIMULATOR_PROFILE,
-                    'Poll saved characters',
+                    intl('simulator.poll.players'),
                     'dungeons',
                     function ($statsList) {
                         for (let [prefix, players] of Object.entries(_group_by(DatabaseManager.getLatestPlayers(), p => p.Prefix))) {

@@ -156,7 +156,7 @@
                                     <input class="text-center" disabled data-path="Defense">
                                 </div>
                                 <div class="field">
-                                    <label data-intl="general.luck"></label>
+                                    <label data-intl="general.attribute5"></label>
                                     <input class="text-center" disabled data-path="Luck">
                                 </div>
                             </div>
@@ -267,7 +267,7 @@
                                     <input class="text-center" disabled data-path="Defense">
                                 </div>
                                 <div class="field">
-                                    <label data-intl="general.luck"></label>
+                                    <label data-intl="general.attribute5"></label>
                                     <input class="text-center" disabled data-path="Luck">
                                 </div>
                             </div>
@@ -319,7 +319,7 @@
 
                     $('#sim-maps').append(`
                         <div class="map-parent">
-                            <button data-key="${ key }" class="map-save ui small basic icon button" data-position="bottom center" data-tooltip="${intl('stats.copy.image', true)}"><i class="download icon"></i></button>
+                            <button data-key="${ key }" class="map-save ui small basic icon button" data-position="bottom center" data-tooltip="${intl('stats.copy.image')}"><i class="download icon"></i></button>
                             <table data-key="${ key }" class="map-map ui celled structured table table-group table-map-pet fixed-header">
                                 <thead>
                                     <tr>
@@ -674,7 +674,7 @@
 
                 StatisticsIntegration.configure(
                     SELF_PROFILE,
-                    intl('pets.poll'),
+                    intl('simulator.poll.players'),
                     'pets',
                     function ($statsList) {
                         function hasPets (player) {
