@@ -421,7 +421,6 @@
         },
         "simulate": "Simulate",
         "results": "Results",
-        "poll": "Poll saved characters",
         "map": {
             "gladiator": "Glad"
         },
@@ -582,7 +581,6 @@
         "mark": "Mark",
         "kunigunde": "Kunigunde",
         "open": "Currently open dungeons",
-        "poll": "Poll saved characters",
         "graph": {
             "y": "Boss HP Left",
             "x": "- Distribution for selected amount of tries -"
@@ -609,7 +607,6 @@
         "keeper": "Kepper",
         "keeper_upgrades": "Kepper Upgrades",
         "shield_mode": "Allow underworld units to use shield",
-        "poll": "Poll saved characters",
         "toast": {
             "start": {
                 "title": "Starting simulation",
@@ -655,7 +652,6 @@
         "side1": "Side 1",
         "side2": "Side 2",
         "hydra": "Hydra",
-        "poll": "Poll saved guilds",
         "iterations": {
             "label": "Iterations:",
             "popup": "Amount of iterations per pet class."
@@ -701,7 +697,11 @@
         },
         "win_chance": "Win %",
         "min_chance": "Min %",
-        "max_chance": "Max %"
+        "max_chance": "Max %",
+        "poll": {
+            "players": "Poll saved players",
+            "guilds": "Poll saved guilds"
+        }
     },
     "editor": {
         "name": "Name",
