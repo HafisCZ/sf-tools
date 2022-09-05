@@ -146,7 +146,7 @@
             "version": "Versione",
             "import": {
                 "file": "Importa da file",
-                "shared": "Importa condiviso",
+                "shared": "Importa con codice",
                 "game": "Importa dal gioco"
             },
             "export": {
@@ -227,7 +227,7 @@
             "and": "e"
         },
         "filters": {
-            "c": "Classe del giocatore, usare il nome completo in minuscolo (es. berserker, mago guerriero)",
+            "c": "Classe del giocatore, usare il nome completo in minuscolo in INGLESE! (es. mage, scout, ecc.)",
             "p": "Nome del giocatore",
             "g": "Nome della gilda",
             "s": "Server",
@@ -263,14 +263,14 @@
                 "save_apply": "Salva & applica"
             },
             "types": {
-                "me": "Io",
+                "me": "Me",
                 "players": "Giocatori",
                 "guilds": "Gilde",
                 "tracker": "Configurazione tracker",
                 "default": "Default"
             },
             "online": {
-                "not_available": "Nessun script disponibile"
+                "not_available": "Nessuno script disponibile"
             }
         },
         "players": {
@@ -544,7 +544,7 @@
         "cancel": "Cancella",
         "continue": "Continua",
         "step2": {
-            "title": "Loading Endpoint"
+            "title": "Caricamento Endpoint"
         },
         "step3": {
             "title": "Seleziona i personaggi da importare"
@@ -587,9 +587,9 @@
         },
         "error": {
             "title": "Errore critico!",
-            "notice#": "Quest'errore potrebbe essere stato causato dal tuo profilo corrente.<br>Clicca il pulsante di reset qui sotto per tornare al profilo di default.",
+            "notice#": "Quest'errore potrebbe essere stato causato dal tuo profilo corrente.<br>Clicca il pulsante di reset qui sotto per tornare al profilo predefinito.",
             "refresh": "Clicca qui o aggiorna la pagina",
-            "revert": "Resetta al profilo di default"
+            "revert": "Ripristina il profilo predefinito"
         },
         "changelog": {
             "release": "Lascia",
