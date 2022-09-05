@@ -610,7 +610,6 @@
         "keeper_upgrades": "Kepper Upgrades",
         "shield_mode": "Allow underworld units to use shield",
         "poll": "Poll saved characters",
-        "win_chance": "Win %",
         "toast": {
             "start": {
                 "title": "Starting simulation",
@@ -621,6 +620,33 @@
                 "message#": "<b>Time:</b> #{time} seconds"
             }
         }
+    },
+    "players": {
+        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
+        "ihof_mode": "IHOF Mode: Gladiator is not reduced!",
+        "mode": {
+            "all": "All vs All",
+            "attack": "One vs All",
+            "defend": "All vs One",
+            "tournament": "Tournament"
+        },
+        "toast": {
+            "start": {
+                "title": "Starting simulation",
+                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            },
+            "tournament": {
+                "title": "Preparing ladder",
+                "message#": "<b>Players:</b> #{count}"
+            }
+        }
+    },
+    "guilds": {
+
     },
     "hydra": {
         "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
@@ -672,7 +698,10 @@
         "clipboard": {
             "copy_all": "Copy everyone",
             "paste_mode": "Toggle Add/Replace insertion mode"
-        }
+        },
+        "win_chance": "Win %",
+        "min_chance": "Min %",
+        "max_chance": "Max %"
     },
     "editor": {
         "name": "Name",
