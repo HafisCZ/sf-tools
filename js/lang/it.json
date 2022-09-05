@@ -499,10 +499,121 @@
             "keep_original": "Mantieni l'originale"
         }
     },
+    "underworld": {
+        "goblin_pit": "Fossa dei goblin",
+        "goblin_upgrades": "Miglioramenti goblin",
+        "troll_block": "Blocco dei troll",
+        "troll_upgrades": "Miglioramenti troll",
+        "keeper": "Custode",
+        "keeper_upgrades": "Miglioramenti custode",
+        "shield_mode": "Abilita lo scudo per le unità del mondo sotterraneo",
+        "toast": {
+            "start": {
+                "title": "Iniziando la simulazione",
+                "message#": "<b>Dimensione blocco:</b> #{blockSize}<br/><b>Iterazioni:</b> #{iterations}<br/><b>Thread:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Thread di simulazione #{done} / #{total} completato",
+                "message#": "<b>Tempo:</b> #{time} secondi"
+            }
+        }
+    },
+    "players": {
+        "gladiator_mode": "Gladiatore al 15 indipendentemente dalle impostazioni",
+        "ihof_mode": "Modalità IHOF: Gladiatore non ridotto!",
+        "mode": {
+            "all": "Tutti vs Tutti",
+            "attack": "Uno vs Tutti",
+            "defend": "Tutti vs Uno",
+            "tournament": "Torneo"
+        },
+        "toast": {
+            "start": {
+                "title": "Iniziando la simulazione",
+                "message#": "<b>Dimensione blocco:</b> #{blockSize}<br/><b>Iterazioni:</b> #{iterations}<br/><b>Thread:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Thread di simulazione #{done} / #{total} completato",
+                "message#": "<b>Tempo:</b> #{time} secondi"
+            },
+            "tournament": {
+                "title": "Preparando la scaletta",
+                "message#": "<b>Giocatori:</b> #{count}"
+            }
+        }
+    },
+    "guilds": {
+        "gladiator_mode": "Gladiatore al 15 indipendentemente dalle impostazioni",
+        "guild1": "Gilda A",
+        "guild2": "Gilda B",
+        "toast": {
+            "start": {
+                "title": "Iniziando la simulazione",
+                "message#": "<b>Iterazioni:</b> #{iterations}<br/><b>Thread:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Thread di simulazione #{done} / #{total} completato",
+                "message#": "<b>Tempo:</b> #{time} secondi"
+            }
+        }
+    },
+    "hydra": {
+        "footer#": "Tratto dal progetto <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">famiglio di gilda</a> di Timhot3p.",
+        "player_count": "Giocatori",
+        "main": "Principale",
+        "side1": "Secondario 1",
+        "side2": "Secondario 2",
+        "hydra": "Idra",
+        "iterations": {
+            "label": "Iterazioni:",
+            "popup": "Numero di iterazioni per classe."
+        },
+        "result": {
+            "health": "#{health}% vita restante",
+            "fights_single": "#{count} scontro",
+            "fights_multiple": "#{count} scontri"
+        },
+        "names": {
+            "1": "Idra a una testa",
+            "2": "Idra a due teste",
+            "3": "Idra a tre teste",
+            "4": "Idra a quattro teste",
+            "5": "Idra a cinque teste",
+            "6": "Idra a sei teste",
+            "7": "Idra a sette teste",
+            "8": "Idra a otto teste",
+            "9": "Idra a nove teste",
+            "10": "Idra a dieci teste",
+            "11": "Idra a undici teste",
+            "12": "Idra a dodici teste",
+            "13": "Idra a tredici teste (poco accurata)",
+            "14": "Idra a quattordici teste",
+            "15": "Idra a quindici teste",
+            "16": "Idra a sedici teste (poco accurata)",
+            "17": "Idra a diciassette teste (poco accurata)",
+            "18": "Idra a diciotto teste",
+            "19": "Idra a diciannove teste",
+            "20": "Idra con molte teste"
+        }
+    },
     "simulator": {
         "paste_target#": "Clicca qui e premi <b>CTRL&nbsp;+&nbsp;V</b> per incollare nel simulatore",
         "threads": "Thread di simulazione. Mantieni questo numero SOTTO al numero dei core del tuo processore!",
-        "iterations": "Numero di iterazioni per thread."
+        "iterations": "Numero di iterazioni per thread.",
+        "add": "Aggiungi",
+        "save": "Salva",
+        "simulate": "Simula",
+        "clipboard": {
+            "copy_all": "Copia tutti",
+            "paste_mode": "Passa dalla modalità 'Aggiungi' a 'Rimpiazza'"
+        },
+        "win_chance": "% vittoria",
+        "min_chance": "% min",
+        "max_chance": "% max",
+        "poll": {
+            "players": "Importa personaggi salvati",
+            "guilds": "Importa gilde salvate"
+        }
     },
     "editor": {
         "name": "Nome",
