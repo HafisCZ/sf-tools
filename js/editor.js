@@ -586,11 +586,11 @@ class Editor {
                 <div class="five fields">
                     <div class="field">
                         <label>${this.intl('min')}</label>
-                        <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin" placeholder="${this.intl('copy')}">
+                        <input class="text-center" type="text" data-path="Items.Wpn1.DamageMin" placeholder="${this.intl('min_placeholder')}">
                     </div>
                     <div class="field">
                         <label>${this.intl('max')}</label>
-                        <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax" placeholder="${this.intl('copy')}">
+                        <input class="text-center" type="text" data-path="Items.Wpn1.DamageMax" placeholder="${this.intl('max_placeholder')}">
                     </div>
                     <div class="field">
                         <label>${this.intl('weapon_enchant')}</label>
@@ -616,11 +616,11 @@ class Editor {
                 <div class="five fields">
                     <div class="field">
                         <label>${this.intl('min')}</label>
-                        <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin" placeholder="${this.intl('copy')}">
+                        <input class="text-center" type="text" data-path="Items.Wpn2.DamageMin" placeholder="${this.intl('min_placeholder')}">
                     </div>
                     <div class="field">
                         <label>${this.intl('max')}</label>
-                        <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax" placeholder="${this.intl('copy')}">
+                        <input class="text-center" type="text" data-path="Items.Wpn2.DamageMax" placeholder="${this.intl('max_placeholder')}">
                     </div>
                     <div class="field">
                         <label>${this.intl('weapon_enchant')}</label>
@@ -646,7 +646,7 @@ class Editor {
                 <div class="four fields">
                     <div class="field">
                         <label>${this.intl('armor')}</label>
-                        <input class="text-center" type="text" data-path="Armor" placeholder="${this.intl('copy')}">
+                        <input class="text-center" type="text" data-path="Armor" placeholder="${this.intl('armor_placeholder')}">
                     </div>
                     <div class="field">
                         <label>${this.intl('block')}</label>
