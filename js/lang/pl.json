@@ -21,10 +21,20 @@
         "intelligence": "Inteligencja",
         "constitution": "Wytrzymałość",
         "luck": "Szczęście",
-        "life_potion": "Eliksir żywotności"
+        "life_potion": "Eliksir żywotności",
+        "potion1": "Siła",
+        "potion2": "Zręczność",
+        "potion3": "Inteligencja",
+        "potion4": "Wytrzymałość",
+        "potion5": "Szczęście",
+        "potion6": "Life",
+        "rank1": "Lider",
+        "rank2": "Oficer",
+        "rank3": "Członek",
+        "rank4": "Zaproszono"
     },
     "index": {
-        "toggle": "Toggle credits",
+        "toggle": "Pokaż/ukryj kontrybutorów",
         "roles": {
             "admin": "Osoba z dużą ilością czasu",
             "helper": "Pomocnicy - Research, Testowanie, Opinie, itd.",
@@ -204,7 +214,7 @@
         },
         "context": {
             "hide": "Pokaż / Ukryj",
-            "remove": "Usun na stałe"
+            "remove": "Usuń na stałe"
         },
         "profiles": {
             "players": "Gracze",
@@ -299,7 +309,8 @@
             "description": "Opis",
             "author": "Autor",
             "created_on": "Utworzony",
-            "loading": "Pobieranie skryptów"
+            "loading": "Pobieranie skryptów",
+            "code": "Wprowadź swój prywatny kod..."
         },
         "templates": {
             "title": "Szablony",
@@ -327,7 +338,7 @@
             "attributes": "Statystyki",
             "basis": "Podstawy",
             "miscellaneous": "Różne",
-            "armor": "Pancers",
+            "armor": "Pancerz",
             "damage": "Rozrzut",
             "health": "Punkty Życia",
             "potions": "Eliksiry",
@@ -367,7 +378,7 @@
                 "title": "Twierdza",
                 "upgrades": "Ulepszenia",
                 "rank": "Ranking",
-                "honor": "Honor",
+                "honor": "Cześć",
                 "building1": "Twierdza",
                 "building2": "Kwatery",
                 "building3": "Tartak",
@@ -575,6 +586,7 @@
         "mark": "Mariusz",
         "kunigunde": "Kunegunda",
         "open": "Obecnie dostępne lochy",
+        "poll": "Załaduj zapisane postacie",
         "graph": {
             "y": "Pozostałe HP Bossa",
             "x": "- Dystrybucja dla wybranej ilości prób -"
@@ -587,17 +599,16 @@
             "general": "General",
             "enchantments": "Wszystkie czary",
             "runes": "Maksymalne runy",
-            "pets": "Maksymakne pety",
+            "pets": "Maksymalne pupile",
             "potions": "Eliksiry (max 3)",
             "class": "Zmiana klasy",
             "keep_original": "Zachowaj pierwotną"
         }
     },
     "simulator": {
-        "paste_target#": "Kliknij tutaj i wcisnij <b>CTRL&nbsp;+&nbsp;V</b>, aby wkleić do symulatora",
-        "threads": "Wątki symulacjii. Utrzymaj liczbę PONIŻEJ ilości rdzeni procesora!",
-        "iterations": "Liczba iteracji na wątek.",
-        "save_image": "Zapisz jako obraz"
+        "paste_target#": "Kliknij tutaj i wcisnij <b>CTRL&nbsp;+&nbsp;V</b> aby wkleić do symulatora",
+        "threads": "Wątki symulacji. Utrzymaj liczbę PONIŻEJ ilości rdzeni procesora!",
+        "iterations": "Liczba iteracji na wątek."
     },
     "editor": {
         "name": "Nazwa",
@@ -606,13 +617,16 @@
         "mask": "Maska",
         "instrument": "Instrument",
         "armor": "Pancerz",
+        "armor_placeholder": "Punkty pancerza",
         "min": "Min",
+        "min_placeholder": "Obraż. Min",
         "max": "Max",
+        "max_placeholder": "Obraż. Max",
         "weapon_enchant": "Crit",
         "rune": "Runa",
-        "portal_damage": "Obrażenia Portalu",
-        "portal_health": "Życie Portalu",
-        "rune_health": "Punkty Życia(runa)",
+        "portal_damage": "Bonus Obrażeń (Portal)",
+        "portal_health": "Bonus HP (Portal)",
+        "rune_health": "Bonus HP (Runa)",
         "block": "Blok %",
         "fire": "Ogień",
         "cold": "Zimno",
@@ -667,11 +681,11 @@
     "dialog": {
         "delete_all": {
             "title": "Usuń wszystko",
-            "notice": "Czy napewno chcesz usunąć wszystkie pliki graczy?"
+            "notice": "Czy na pewno chcesz usunąć wszystkie pliki graczy?"
         },
         "delete_script": {
             "title": "Usuń skrypt",
-            "notice": "Czy jesteś pewny, że chcesz permanentnie usunąć skrypt?"
+            "notice": "Czy na pewno chcesz permanentnie usunąć skrypt?"
         },
         "warning": {
             "title": "Wystąpił błąd!",
@@ -731,12 +745,12 @@
             "profile": "Profil",
             "none": "Brak",
             "ast": {
-                "primary": "Primary AST expression",
-                "secondary": "Secondary AST expression",
-                "optional": "optional"
+                "primary": "Główne wyrażenie AST",
+                "secondary": "Dodatkowe wyrażenie AST",
+                "optional": "opcjonalne"
             },
             "player": {
-                "primary": "Konfiguracja filtru głównego",
+                "primary": "Konfiguracja filtra głównego",
                 "secondary": "Konfiguracja filtra dodatkowego"
             },
             "group": {
@@ -1181,7 +1195,7 @@
             "711": "Gragosz Niszczyciel",
             "777": "Prawica lalkarza",
             "830": "Szczur ściekowy",
-            "875": "Plugawy nietoperz",
+            "867": "Plugawy nietoperz",
             "868": "Plugawy nietoperz",
             "869": "Plugawy nietoperz",
             "870": "Plugawy nietoperz",
@@ -1189,6 +1203,7 @@
             "872": "Plugawy nietoperz",
             "873": "Plugawy nietoperz",
             "874": "Plugawy nietoperz",
+            "875": "Plugawy nietoperz",
             "876": "Obrzydliwy ożywieniec",
             "877": "Potępiona dusza",
             "939": "Piekielny dragor",
@@ -1200,11 +1215,6 @@
             "998": "Niedosyt",
             "999": "Bagienna nimfomanka",
             "1000": "Szara Sziwa"
-        },
-        "204": {
-            "name": "Tavern",
-            "5": "Strider",
-            "10": "ice bug fix"
         }
     }
 }

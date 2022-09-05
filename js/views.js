@@ -414,7 +414,7 @@ const SaveOnlineScriptDialog = new (class extends Dialog {
                     </div>
                     <div class="field">
                         <label>${this.intl('name')}:</label>
-                        <input data-op="name" type="text" placeholder="${this.intl('name_placeholder')}">
+                        <input data-op="name" type="text" placeholder="${this.intl('name_placeholder', true)}">
                     </div>
                 </div>
                 <div data-op="error" style="display: none;">
@@ -507,11 +507,11 @@ const EditFileTagDialog = new (class extends Dialog {
                 <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
                     <div class="field">
                         <label>${this.intl('current')}:</label>
-                        <input data-op="old-tags" type="text" placeholder="${this.intl('none')}" disabled>
+                        <input data-op="old-tags" type="text" placeholder="${this.intl('none', true)}" disabled>
                     </div>
                     <div class="field">
                         <label>${this.intl('replacement')}:</label>
-                        <input data-op="new-tags" type="text" placeholder="${this.intl('none')}">
+                        <input data-op="new-tags" type="text" placeholder="${this.intl('none', true)}">
                     </div>
                 </div>
                 <div class="ui three fluid buttons">
@@ -612,14 +612,14 @@ const ProfileCreateDialog = new (class extends Dialog {
                         <div class="field">
                             <label>${this.intl('value')} 1:</label>
                             <div class="ta-wrapper" style="height: initial;">
-                                <input class="ta-area" data-op="primary" type="text" placeholder="${this.intl('ast.primary')}">
+                                <input class="ta-area" data-op="primary" type="text" placeholder="${this.intl('ast.primary', true)}">
                                 <div data-op="primary-content" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('value')} 2:</label>
                             <div class="ta-wrapper" style="height: initial;">
-                                <input class="ta-area" data-op="primary-2" type="text" placeholder="${this.intl('ast.primary')} (${this.intl('ast.optional')})">
+                                <input class="ta-area" data-op="primary-2" type="text" placeholder="${this.intl('ast.primary', true)} (${this.intl('ast.optional', true)})">
                                 <div data-op="primary-content-2" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                             </div>
                         </div>
@@ -628,7 +628,7 @@ const ProfileCreateDialog = new (class extends Dialog {
                     <div class="field">
                         <label>${this.intl('secondary')}:</label>
                         <div class="ta-wrapper">
-                            <input class="ta-area" data-op="secondary" type="text" placeholder="${this.intl('ast.secondary')}">
+                            <input class="ta-area" data-op="secondary" type="text" placeholder="${this.intl('ast.secondary', true)}">
                             <div data-op="secondary-content" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                         </div>
                     </div>
@@ -655,14 +655,14 @@ const ProfileCreateDialog = new (class extends Dialog {
                         <div class="field">
                             <label>${this.intl('value')} 1:</label>
                             <div class="ta-wrapper" style="height: initial;">
-                                <input class="ta-area" data-op="primary-g" type="text" placeholder="${this.intl('ast.primary')}">
+                                <input class="ta-area" data-op="primary-g" type="text" placeholder="${this.intl('ast.primary', true)}">
                                 <div data-op="primary-content-g" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                             </div>
                         </div>
                         <div class="field">
                             <label>${this.intl('value')} 2:</label>
                             <div class="ta-wrapper" style="height: initial;">
-                                <input class="ta-area" data-op="primary-2-g" type="text" placeholder="${this.intl('ast.primary')} (${this.intl('ast.optional')})">
+                                <input class="ta-area" data-op="primary-2-g" type="text" placeholder="${this.intl('ast.primary', true)} (${this.intl('ast.optional', true)})">
                                 <div data-op="primary-content-2-g" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                             </div>
                         </div>
@@ -671,7 +671,7 @@ const ProfileCreateDialog = new (class extends Dialog {
                     <div class="field">
                         <label>${this.intl('secondary')}:</label>
                         <div class="ta-wrapper">
-                            <input class="ta-area" data-op="secondary-g" type="text" placeholder="${this.intl('ast.secondary')}">
+                            <input class="ta-area" data-op="secondary-g" type="text" placeholder="${this.intl('ast.secondary', true)}">
                             <div data-op="secondary-content-g" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                         </div>
                     </div>
@@ -925,7 +925,7 @@ const TemplateSaveDialog = new (class extends Dialog {
                     <div class="field text-center"><label>${this.intl('or')}</label></div>
                     <div class="field">
                         <label>${this.intl('select_new')}:</label>
-                        <input type="text" placeholder="${this.intl('name')}" data-op="input">
+                        <input type="text" placeholder="${this.intl('name', true)}" data-op="input">
                     </div>
                 </div>
                 <div class="ui two fluid buttons">
@@ -1181,7 +1181,14 @@ const Localization = new (class {
     }
 })();
 
-window.intl = (key) => Localization.findTranslation(key) || key;
+window.intl = (key, withinAttribute = false) => {
+    let val = Localization.findTranslation(key);
+    if (val) {
+        return val.replaceAll('&', '&amp;').replaceAll('"', '&quot;');
+    } else {
+        return key;
+    }
+}
 
 // Automatically open Terms and Conditions if not accepted yet
 window.addEventListener('load', async function () {

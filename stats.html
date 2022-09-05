@@ -100,7 +100,7 @@
                             <thead>
                                 <tr>
                                     <th class="clickable text-center" data-op="mark-all"><i class="adjust icon"></i></th>
-                                    <th style="width: 20%;" class="text-center" data-intl="stats.files.timestamps"></th>
+                                    <th style="width: 20%;" class="text-center" data-intl="stats.files.timestamp"></th>
                                     <th style="width: 10%;" class="text-center" data-intl="stats.files.players"></th>
                                     <th style="width: 10%;" class="text-center" data-intl="stats.files.groups"></th>
                                     <th style="width: 15%;" data-intl="stats.files.tags.single"></th>
@@ -287,13 +287,11 @@
                 <div class="ui five column grid" data-op="list"></div>
                 <div data-op="dynamic-loader"></div>
             </div>
-            <div class="css-ol-show-other">
+            <div class="fast-table-toggles">
                 <div class="ui checkbox" data-op="others">
                     <input type="checkbox">
                     <label data-intl="stats.players.other"></label>
                 </div>
-            </div>
-            <div class="css-show-hidden">
                 <div class="ui checkbox" data-op="hidden">
                     <input type="checkbox">
                     <label data-intl="stats.players.hidden"></label>
@@ -305,13 +303,11 @@
         <div id="view-groups" class="ui main container css-hidden sf-container">
             <div class="ui five column grid" data-op="list"></div>
             <div class="ui five column grid margin-large-top" data-op="list-secondary"></div>
-            <div class="css-gl-show-other">
+            <div class="fast-table-toggles">
                 <div class="ui checkbox" data-op="others">
                     <input type="checkbox">
                     <label data-intl="stats.guilds.other"></label>
                 </div>
-            </div>
-            <div class="css-show-hidden">
                 <div class="ui checkbox" data-op="hidden">
                     <input type="checkbox">
                     <label data-intl="stats.guilds.hidden"></label>
@@ -353,7 +349,7 @@
                 </div>
             </div>
             <table class="sftools-table" data-op="table"></table>
-            <div class="css-show-hidden">
+            <div class="fast-table-toggles">
                 <div class="ui checkbox" data-op="hidden">
                     <input type="checkbox">
                     <label data-intl="stats.browse.hidden"></label>
@@ -452,7 +448,7 @@
                 <div class="ui middle aligned grid css-nomargin-grid">
                     <div class="fifteen wide column">
                         <div class="ui fluid small input">
-                            <input type="text" placeholder="Enter your private code..." data-op="private-value">
+                            <input type="text" data-intl-placeholder="stats.online_templates.code" data-op="private-value">
                         </div>
                     </div>
                     <div class="one wide column css-template-buttons">

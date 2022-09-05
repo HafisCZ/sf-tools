@@ -1981,9 +1981,9 @@ class FilesView extends View {
 
     updateSelectedCounter () {
         if (this.simple) {
-            this.$fileCounter.html(_empty(this.selectedFiles) ? 'No' : Object.keys(this.selectedFiles).length);
+            this.$fileCounter.html(_empty(this.selectedFiles) ? intl('stats.files.selected.no') : Object.keys(this.selectedFiles).length);
         } else {
-            this.$fileCounter.html(_empty(this.selectedPlayers) ? 'No' : Object.keys(this.selectedPlayers).length);
+            this.$fileCounter.html(_empty(this.selectedPlayers) ? intl('stats.files.selected.no') : Object.keys(this.selectedPlayers).length);
         }
     }
 
@@ -2280,7 +2280,7 @@ class FilesView extends View {
             <div class="field">
                 <label>${intl('stats.files.filters.expression')}</label>
                 <div class="ta-wrapper">
-                    <input class="ta-area" type="text" placeholder="${intl('stats.files.filters.expression_placeholder')}">
+                    <input class="ta-area" type="text" placeholder="${intl('stats.files.filters.expression_placeholder', true)}">
                     <div class="ta-content" style="width: 100%; margin-top: -2.3em; margin-left: 1em;"></div>
                 </div>
             </div>

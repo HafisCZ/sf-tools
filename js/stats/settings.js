@@ -1719,6 +1719,10 @@ class Settings {
             // Merge shared
             this.merge(obj, this.shared);
 
+            if (obj.background) {
+                obj.color.rules.addRule('db', 0, obj.background);
+            }
+
             // Push
             this.customRows.push(obj);
             this.row = null;

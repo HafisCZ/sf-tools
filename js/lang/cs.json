@@ -21,7 +21,17 @@
         "intelligence": "Inteligence",
         "constitution": "Výdrž",
         "luck": "Štěstí",
-        "life_potion": "Lektvar nesmrtelnosti"
+        "life_potion": "Lektvar nesmrtelnosti",
+        "potion1": "Síla",
+        "potion2": "Obratnost",
+        "potion3": "INteligence",
+        "potion4": "Výdrž",
+        "potion5": "Štěstí",
+        "potion6": "Život",
+        "rank1": "Vůdce",
+        "rank2": "Důstojník",
+        "rank3": "Člen",
+        "rank4": "Pozvaný"
     },
     "index": {
         "toggle": "Zobrazit autory",
@@ -166,5 +176,490 @@
         "smart_change": "Chytrá změna třídy",
         "copy": "Kopírovat",
         "none": "Žádná"
+    },
+    "stats": {
+        "topbar": {
+            "temporary_flag": "Dočasné",
+            "players": "Hráči",
+            "guilds": "Cechy",
+            "browse": "Přehled",
+            "scripts": "Skripty",
+            "files": "Soubory",
+            "settings": "Nastavení",
+            "temporary": "Dočasná relace",
+            "changelog": "Changelog",
+            "profile": "Profil"
+        },
+        "files": {
+            "titles": {
+                "filters": "Filtry",
+                "io": "Import / Export"
+            },
+            "timestamp": "Datum",
+            "timestamps": "Datumy",
+            "prefix": "Prefix",
+            "name": "Jméno",
+            "group": "Cech",
+            "groups": "Cechy",
+            "origin": "Původ",
+            "players": "Hráči",
+            "version": "Verze",
+            "import": {
+                "file": "Načíst ze souboru",
+                "shared": "Načíst sdílený soubor",
+                "game": "Načíst ze hry"
+            },
+            "export": {
+                "all": "Exportovat vše",
+                "selected": "Exportovat vybrané"
+            },
+            "selected": {
+                "text": "položek vybráno",
+                "no": "0"
+            },
+            "hide": {
+                "label": "Skrýt",
+                "tooltip": "Funguje rozdílně v jednoduchém a pokročilém módu!",
+                "migrate": "Skrýt soubory bez vididelných hráčů"
+            },
+            "merge": {
+                "selected": "Sloučit vybrané"
+            },
+            "delete": {
+                "all": "Smazat vše",
+                "selected": "Smazat vybrané"
+            },
+            "options": {
+                "title": "Nastavení",
+                "advanced": "Zobrazit pokročilý seznam",
+                "hidden": "Zobrazit skryté hráče"
+            },
+            "tags": {
+                "single": "Tag",
+                "multiple": "Tagy",
+                "all": "Vše",
+                "none": "Žádné"
+            },
+            "filters": {
+                "any": "Vše",
+                "n_unique": "unikátních",
+                "expression": "AST výraz",
+                "expression_placeholder": "Tvůj AST výraz",
+                "timestamp": "Datum",
+                "player": "Hráč",
+                "group": "Cech",
+                "prefix": "Prefix",
+                "tags": "Tagy",
+                "type": "Typ",
+                "type_all": "Zobrazit všechny postavy",
+                "type_own": "Zobrazit pouze vlastní postavy",
+                "type_other": "Zobrazit pouze ostatní postavy",
+                "origin": "Původ",
+                "hidden": "Skryté"
+            },
+            "online": {
+                "title": "Sdílení souborů",
+                "prompt": "Vlož svůj kód:",
+                "invalid": "Tento kód není platný!",
+                "cancel": "Zrušit",
+                "ok": "Ok"
+            }
+        },
+        "copy": {
+            "image": "Uložit jako obrázek",
+            "basic": "Kopírovat tabulku",
+            "fight": "Kopírovat tabulku pro simulátory",
+            "player": "Kopírovat",
+            "player_companions": "Kopírovat s pomocníky"
+        },
+        "context": {
+            "hide": "Zobrazit / Skrýt",
+            "remove": "Smazat"
+        },
+        "profiles": {
+            "players": "Hráči",
+            "groups": "Cechy",
+            "primary": "Hlavní filtr",
+            "secondary": "Vedlejší filtr",
+            "none": "Žádný",
+            "create": "Vytvořit nový profil",
+            "between": "mezi",
+            "and": "a"
+        },
+        "filters": {
+            "c": "Třída postavy v angličtině (eg.: berserker, battle mage)",
+            "p": "Jméno hráče",
+            "g": "Jméno cechu",
+            "s": "Server",
+            "e": "Vlastní AST výraz",
+            "#": "Zobrazit pouze hráče s vybranými tagy",
+            "l": "Zobrazit poslední soubor",
+            "f": "Zobrazit první nebo n řádků",
+            "r": "Přepočítat tabulku",
+            "x": "Povolit integrovaný simulátor (parametr je počet iterací)",
+            "h": "Zobrazit skrýté",
+            "o": "Zobrazit vlastní",
+            "a": "Zobrazit vše",
+            "d": "Zobrazit ostatní",
+            "q": "Vlastní sloupce (názvy oddělte čárkami)",
+            "t": "Zobrazit sdílený skript",
+            "sr": "Seřadit pomocí vlastního AST výrazu",
+            "qc": "Zobrazit pouze vybrané kategorie"
+        },
+        "scripts": {
+            "settings": "Skripty",
+            "templates": "Šablony",
+            "sidebar": {
+                "wiki": "Wiki",
+                "scripts": "Skripty",
+                "templates": "Šablony",
+                "save": "Uložit",
+                "copy": "Kopírovat",
+                "undo": "Zpět",
+                "redo": "Opakovat",
+                "close": "Zavřít",
+                "apply": "Použít",
+                "remove": "Smazat",
+                "save_apply": "Uložit a použít"
+            },
+            "types": {
+                "me": "Já",
+                "players": "Hráči",
+                "guilds": "Cechy",
+                "tracker": "Nastavení trackeru",
+                "default": "Výchozí"
+            },
+            "online": {
+                "not_available": "Žádné skripty nalezeny"
+            }
+        },
+        "players": {
+            "other": "Zobrazit ostatní",
+            "hidden": "Zobrazit skrýté"
+        },
+        "guilds": {
+            "other": "Zobrazit ostatní",
+            "hidden": "Zobrazit skrýté",
+            "missing": "Data nebyla nalezena pro následující postavy:"
+        },
+        "browse": {
+            "hidden": "Zobrazit skryté"
+        },
+        "fast_export": {
+            "label": "Sdílet",
+            "title": "Rychlý export",
+            "all": "Vše",
+            "latest": "Poslední",
+            "latest5": "Posledních 5",
+            "selected": "Vybrané",
+            "selected_both": "Vybrané & k porovnání"
+        },
+        "share": {
+            "title": "Sdílení souborů",
+            "options": "Možnosti",
+            "code": "Tvůj kód",
+            "get": "Získat kód",
+            "ok": "Ok",
+            "expire": "Kód automaticky expiruje za 2 dny.",
+            "single_use": "Jedno použití",
+            "single_use_notice": "Zanechejte tuto možnost aktivní pokud sdílíte soubory pouze s jednou osobou."
+        },
+        "online_templates": {
+            "title": "Veřejné skripty",
+            "description": "Popis",
+            "author": "Autor",
+            "created_on": "Datum vytvoření",
+            "loading": "Načítání skriptů",
+            "code": "Soukromý kód ..."
+        },
+        "templates": {
+            "title": "Šablony",
+            "loading": "Ukládání změn",
+            "form": {
+                "changed_on": "Datum změny",
+                "version": "Verze",
+                "compatibility": "Kompatibilita",
+                "published_on": "Datum publikace",
+                "code": "Kód",
+                "publish": "Publikovat",
+                "publish_tooltip": "Publikovat šablonu",
+                "unpublish_tooltip": "Přestat publikovat šablonu",
+                "update": "Aktualizovat",
+                "update_tooltip": "Aktualizovat šablonu s aktuálním skriptem",
+                "remove": "Smazat",
+                "remove_tooltip": "Smazat šablonu"
+            },
+            "quick_swap": "Přepnout šablonu"
+        },
+        "group": {
+            "compared_to": "k porovnání s"
+        },
+        "player": {
+            "attributes": "Atributy",
+            "basis": "Základní atributy",
+            "miscellaneous": "Různé",
+            "armor": "Zbroj",
+            "damage": "Poškození",
+            "health": "Život",
+            "potions": "Lektvary",
+            "guild": "Cech",
+            "name": "Jméno",
+            "role": "Postavení",
+            "joined_on": "Datum přidání",
+            "bonuses": "Bonusy",
+            "scrapbook": "Album",
+            "achievements": "Úspěchy",
+            "mount": "Kúň",
+            "heath_bonus": "Bonus k životu",
+            "damage_bonus": "Bonus k poškození",
+            "treasure": "Pokladnice",
+            "instructor": "Instruktor",
+            "pet": "Mazlíček",
+            "knights": "Síň Rytířů",
+            "extras": {
+                "title": "Extra",
+                "registered": "Datum registrace"
+            },
+            "runes": {
+                "title": "Runy",
+                "gold": "Zlato",
+                "experience": "Zkušenosti",
+                "epic": "Šance na epik",
+                "quality": "Kvalita itemů",
+                "health": "Život",
+                "fire_damage": "Poškození ohněm",
+                "cold_damage": "Poškození ledem",
+                "lightning_damage": "Poškození bleskem",
+                "fire_resist": "Obrana proti ohni",
+                "cold_resist": "Obrana proti ledu",
+                "lightning_resist": "Obrana proti blesku"
+            },
+            "fortress": {
+                "title": "Pevnost",
+                "upgrades": "Vylepšení",
+                "rank": "Rank",
+                "honor": "Věhlas",
+                "building1": "Pevnost",
+                "building2": "Dělnická ubikace",
+                "building3": "Dřevorubec",
+                "building4": "Kamenolom",
+                "building5": "Důl na drahokamy",
+                "building6": "Akademie",
+                "building7": "Lučištnický spolek",
+                "building8": "Kasárny",
+                "building9": "Magická věž",
+                "building10": "Pokladnice",
+                "building11": "Kovárna",
+                "building12": "Opevnění",
+                "working": "Stavba"
+            }
+        },
+        "settings": {
+            "title": "Globání nastavení",
+            "always_prev": "Automaticky porovnat s předchozím souborem (cech)",
+            "empty_groups": "Zobrazit prázné cechy",
+            "obfuscated": "Anonymizovat názvy postav",
+            "insecure": "Povolit nebezpečné html tagy",
+            "insecure_error#": "Tabulka nebyla zobrazena protože obsahuje potenciálně nebezpečné html tagy.<br>Odstraňtě je a zkuste to znovu!",
+            "terms": "Příjmout podmínky použití",
+            "tab": "Výchozí okno",
+            "preload": "Načíst řádky",
+            "actions": {
+                "title": "Automatické akce",
+                "reset": "Smazat",
+                "ignore": "Vymazat aktuální změny",
+                "save": "Uložit"
+            }
+        }
+    },
+    "pets": {
+        "generate": {
+            "tooltip": "Generovat tabulku pro zbývající levely mazlíčka a úrověň gladiátora. Funguje pouze proti podzemí.",
+            "one": "Generovat",
+            "five": "Generovat dalších 5",
+            "ten": "Generovat dalších 10"
+        },
+        "simulate": "Simulovat",
+        "results": "Výsledky",
+        "poll": "Načíst uložené postavy",
+        "map": {
+            "gladiator": "Glad"
+        },
+        "types": {
+            "0": "Stín",
+            "1": "Světlo",
+            "2": "Země",
+            "3": "Oheň",
+            "4": "Voda"
+        },
+        "bulk": {
+            "toast": {
+                "title": "Start simulace",
+                "matches": "Bitvy:",
+                "not_possible": "Není možné"
+            }
+        },
+        "editor": {
+            "none": "Žádný",
+            "type": "Typ",
+            "pet": "Mazlíček",
+            "health": "Život",
+            "attribute": "Atribut",
+            "defense": "Obraný atribut",
+            "skip": "Šance na vyhnutí",
+            "crit": "Šance na kritický úder",
+            "damage": "Poškození",
+            "critical_bonus": "Kritické poškození",
+            "at100": {
+                "title": "Úroveň 100 - 149",
+                "placeholder": "Mazlíčci s úrovní 100 - 149"
+            },
+            "at150": {
+                "title": "Úroveň 150 - 199",
+                "placeholder": "Mazlíčci s úrovní 150 - 199"
+            },
+            "at200": {
+                "title": "Úroveň 200",
+                "placeholder": "Mazlíčci s úrovní 200"
+            },
+            "pack": {
+                "title": "Stádo",
+                "placeholder": "Počet mazlíčků které jsi již chytil"
+            }
+        }
+    },
+    "endpoint": {
+        "username": "Jméno",
+        "password": "Heslo",
+        "mode": {
+            "own": "Vlastní postava",
+            "default": "Vlastní postava + vybrané",
+            "guild": "Vlastní postava + členové tvého cechu",
+            "friends": "Vlastní postava + prátelé"
+        },
+        "cancel": "Zrušit",
+        "continue": "Pokračovat",
+        "step2": {
+            "title": "Načítám Endpoint"
+        },
+        "step3": {
+            "title": "Vyber postavy ke stažení"
+        },
+        "step4": {
+            "title": "Žádám informace ze serveru",
+            "message": "Stahuji data"
+        },
+        "user_error": {
+            "title": "Tvoje jméno nebo heslo není platné",
+            "message": "Prosím zkontroluj zda je ve vyžadovaném formátu (username@url)"
+        },
+        "credentials_error": "Špatné heslo nebo jméno",
+        "download_error": "Stahování nedokončeno"
+    },
+    "database": {
+        "open_error": {
+            "title": "Databáze nemohla být otevřena",
+            "message": "Tento problém může být způsobem použitím Incognito režimu prohlížeče"
+        },
+        "import_error": "Při načítání souboru došlo k chybě",
+        "update_info": {
+            "title": "Aktualizace databáze",
+            "message": "Prosím nechejte toto okno otevřené dokud aktualizace neskončí. Tato akce může trvat delší dobu v závislosti na množství vašich dat."
+        }
+    },
+    "dialog": {
+        "delete_all": {
+            "title": "Smazat vše",
+            "notice": "Opravdu chcete smazat všechny vaše data?"
+        },
+        "delete_script": {
+            "title": "Smazat skript",
+            "notice": "Opravdu chcete smazat právě používaný skript?"
+        },
+        "warning": {
+            "title": "Vyskytl se problém!",
+            "continue": "Pokračovat"
+        },
+        "error": {
+            "title": "Vyskytl se vážný problém!",
+            "notice#": "Tento problém mohl být způsoben vašim aktuálním profilem.<br>Klikněte níže pro přepnutí do výchozího profilu.",
+            "refresh": "Znovu načíst stránku",
+            "revert": "Přepnout na výchozí profil"
+        },
+        "changelog": {
+            "release": "Verze",
+            "continue": "Pokračovat"
+        },
+        "file_edit": {
+            "title": "Upravit soubor",
+            "timestamp": "Datum",
+            "cancel": "Zrušit",
+            "save": "Uložit"
+        },
+        "save_online_script": {
+            "title": "Importovat šablonu",
+            "loader": "Připravuji soubory",
+            "author": "Autor",
+            "created_updated": "Datum vytvoření",
+            "name": "Název",
+            "name_placeholder": "Název šablony",
+            "error": "Požadováná šablona neexistuje!",
+            "cancel": "Zrušit",
+            "save": "Uložit"
+        },
+        "edit_file_tag": {
+            "title": "Upravit tagy",
+            "current": "Aktuální tagy",
+            "replacement": "Nový tag",
+            "none": "Žádný",
+            "cancel": "Zrušit",
+            "save": "Uložit"
+        },
+        "profile_create": {
+            "title": "Vytvořit nebo upravit profil",
+            "id": "ID",
+            "name": "Název",
+            "slot": "Slot",
+            "index": "Index",
+            "operation": "Operace",
+            "equals": "Rovno",
+            "above": "Větší",
+            "below": "Menší",
+            "between": "Mezi",
+            "value": "Hodnota",
+            "secondary": "Vedlejší filtr",
+            "cancel": "Zrušit",
+            "save": "Uložit",
+            "default": "Výchozí",
+            "profile": "Profil",
+            "none": "Žádný",
+            "ast": {
+                "primary": "Hlavní AST výraz",
+                "secondary": "Vedlejší AST výraz",
+                "optional": "volitelný"
+            },
+            "player": {
+                "primary": "Hlavní filtr",
+                "secondary": "Vedlejší filtr"
+            },
+            "group": {
+                "primary": "Hlavní filter (cechy)",
+                "secondary": "Vedlejší filtr (cechy)"
+            }
+        },
+        "template_save": {
+            "title": "Uložit šablonu",
+            "select_existing": "Vybrat existující šablonu",
+            "select_new": "Vytvořit novou šablonu",
+            "or": "nebo",
+            "name": "Název šablony",
+            "cancel": "Zrušit",
+            "save": "Uložit"
+        },
+        "confirm": {
+            "cancel": "Zrušit",
+            "ok": "Ok",
+            "wait_n_seconds": "Počkej %1 sekund ..."
+        }
     }
 }

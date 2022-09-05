@@ -154,7 +154,7 @@
                 "selected": "Export selected"
             },
             "selected": {
-                "text": "items(s) selected",
+                "text": "item(s) selected",
                 "no": "No"
             },
             "hide": {
@@ -309,7 +309,8 @@
             "description": "Description",
             "author": "Author",
             "created_on": "Created on",
-            "loading": "Fetching scripts"
+            "loading": "Fetching scripts",
+            "code": "Enter your private code..."
         },
         "templates": {
             "title": "Templates",

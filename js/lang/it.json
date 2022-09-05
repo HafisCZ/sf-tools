@@ -309,7 +309,8 @@
             "description": "Descrizione",
             "author": "Autore",
             "created_on": "Creato il",
-            "loading": "Ricerca script"
+            "loading": "Ricerca script",
+            "code": "Inserisci il tuo codice privato..."
         },
         "templates": {
             "title": "Template",
