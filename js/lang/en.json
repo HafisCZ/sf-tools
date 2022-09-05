@@ -22,6 +22,11 @@
         "constitution": "Constitution",
         "luck": "Luck",
         "life_potion": "Eternal Life",
+        "attribute1": "Strength",
+        "attribute2": "Dexterity",
+        "attribute3": "Intelligence",
+        "attribute4": "Constitution",
+        "attribute5": "Luck",
         "potion1": "Strength",
         "potion2": "Dexterity",
         "potion3": "Intelligence",
@@ -620,6 +625,46 @@
                 "title": "Simulation thread #{done} / #{total} finished",
                 "message#": "<b>Time:</b> #{time} seconds"
             }
+        }
+    },
+    "hydra": {
+        "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
+        "player_count": "Player Count",
+        "main": "Main",
+        "side1": "Side 1",
+        "side2": "Side 2",
+        "hydra": "Hydra",
+        "poll": "Poll saved guilds",
+        "iterations": {
+            "label": "Iterations:",
+            "popup": "Amount of iterations per pet class."
+        },
+        "result": {
+            "health": "#{health}% HP left",
+            "fights_single": "#{count} fight",
+            "fights_multiple": "#{count} fights"
+        },
+        "names": {
+            "1": "One-headed Hydra",
+            "2": "Two-headed Hydra",
+            "3": "Three-headed Hydra",
+            "4": "Four-headed Hydra",
+            "5": "Five-headed Hydra",
+            "6": "Six-headed Hydra",
+            "7": "Seven-headed Hydra",
+            "8": "Eight-headed Hydra",
+            "9": "Nine-headed Hydra",
+            "10": "Ten-headed Hydra",
+            "11": "Eleven-headed Hydra",
+            "12": "Twelve-headed Hydra",
+            "13": "Thirteen-headed Hydra (low accuracy)",
+            "14": "Fourteen-headed Hydra",
+            "15": "Fifteen-headed Hydra",
+            "16": "Sixteen-headed Hydra (low accuracy)",
+            "17": "Seventeen-headed Hydra (low accuracy)",
+            "18": "Eighteen-headed Hydra",
+            "19": "Nineteen-headed Hydra",
+            "20": "Countless-headed Hydra"
         }
     },
     "simulator": {
