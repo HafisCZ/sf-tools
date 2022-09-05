@@ -859,7 +859,7 @@
                 "secondary": "Secondary filter configuration"
             },
             "group": {
-                "primary": "Priamry group filter configuration",
+                "primary": "Primary group filter configuration",
                 "secondary": "Secondary group filter configuration"
             }
         },
