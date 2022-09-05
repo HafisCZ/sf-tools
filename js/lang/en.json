@@ -601,10 +601,38 @@
             "keep_original": "Keep original"
         }
     },
+    "underworld": {
+        "goblin_pit": "Goblin Pit",
+        "goblin_upgrades": "Goblin Upgrades",
+        "troll_block": "Troll Block",
+        "troll_upgrades": "Troll Upgrades",
+        "keeper": "Kepper",
+        "keeper_upgrades": "Kepper Upgrades",
+        "shield_mode": "Allow underworld units to use shield",
+        "poll": "Poll saved characters",
+        "win_chance": "Win %",
+        "toast": {
+            "start": {
+                "title": "Starting simulation",
+                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            }
+        }
+    },
     "simulator": {
         "paste_target#": "Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator",
         "threads": "Simulator threads. Keep this number BELOW your processor core count!",
-        "iterations": "Amount of iterations per thread."
+        "iterations": "Amount of iterations per thread.",
+        "add": "Add",
+        "save": "Save",
+        "simulate": "Simulate",
+        "clipboard": {
+            "copy_all": "Copy everyone",
+            "paste_mode": "Toggle Add/Replace insertion mode"
+        }
     },
     "editor": {
         "name": "Name",
