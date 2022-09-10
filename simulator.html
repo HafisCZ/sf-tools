@@ -61,7 +61,7 @@
                             <div class="four wide column">
                                 <button class="ui fluid small button" type="submit" id="save-player" data-intl="simulator.save"></button>
                             </div>
-                            <div class="five wide column">
+                            <div class="four wide column">
                                 <div class="ui small form">
                                     <div class="field">
                                         <div class="ui fluid selection compact dropdown" id="sim-mode">
@@ -71,10 +71,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="three wide column">
-                                <div class="ui small basic icon fluid two buttons">
+                            <div class="four wide column">
+                                <div class="ui small basic icon fluid three buttons">
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.gladiator_mode" id="gladiator-mode"><i class="bolt icon"></i></button>
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.ihof_mode" id="ihof-mode"><i class="trophy icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="players.fireball_mode" id="fireball-mode"><i class="fire icon"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -165,6 +166,11 @@
                 let gladiatorMode = false;
                 $('#gladiator-mode').captiveToggleButton('player_sim/gladiator', active => {
                     gladiatorMode = active;
+                })
+
+                let fireballMode = false;
+                $('#fireball-mode').toggleButton(active => {
+                    fireballMode = active;
                 })
 
                 var modeDump = window.location.href.includes('log');
@@ -336,6 +342,7 @@
                             players[i].score = null;
                             players[i].player.ForceGladiator = gladiatorMode ? 15 : undefined;
                             players[i].player.NoGladiatorReduction = ihofMode;
+                            players[i].player.FireballFix = fireballMode;
                         }
 
                         showPlayers();

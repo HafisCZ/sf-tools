@@ -501,14 +501,26 @@ class BattlemageModel extends FighterModel {
     onFightStart (target) {
         if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE) {
             return 0;
-        } else if (target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER || target.Player.Class == DRUID || target.Player.Class == BARD) {
-            return Math.ceil(target.TotalHealth / 3);
-        } else if (target.Player.Class == WARRIOR) {
-            return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 4));
-        } else if (target.Player.Class == SCOUT || target.Player.Class == ASSASSIN) {
-            return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 5));
+        } else if (this.Player.FireballFix) {
+            if (target.Player.Class == WARRIOR || (target.Player.Class == DRUID && target.Player.Mask == MASK_BEAR)) {
+                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 4));
+            } else if (target.Player.Class == SCOUT || target.Player.Class == ASSASSIN || target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER || (target.Player.Class == DRUID && target.Player.Mask == MASK_CAT)) {
+                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 5));
+            } else if (target.Player.Class == DRUID || target.Player.Class == BARD) {
+                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 10));
+            } else {
+                return 0;
+            }
         } else {
-            return 0;
+            if (target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER || target.Player.Class == DRUID || target.Player.Class == BARD) {
+                return Math.ceil(target.TotalHealth / 3);
+            } else if (target.Player.Class == WARRIOR) {
+                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 4));
+            } else if (target.Player.Class == SCOUT || target.Player.Class == ASSASSIN) {
+                return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 5));
+            } else {
+                return 0;
+            }
         }
     }
 }
