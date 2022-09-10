@@ -1184,7 +1184,7 @@ const Localization = new (class {
     }
 
     sanitize (val) {
-        return val.replaceAll('&', '&amp;').replaceAll('"', '&quot;');
+        return val.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
     }
 })();
 
