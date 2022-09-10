@@ -502,11 +502,15 @@ class BattlemageModel extends FighterModel {
         if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE) {
             return 0;
         } else if (this.Player.FireballFix) {
-            if (target.Player.Class == WARRIOR || (target.Player.Class == DRUID && target.Player.Mask == MASK_BEAR)) {
+            let is2x = target.Player.Class == DRUID || target.Player.Class == BARD;
+            let is4x = target.Player.Class == SCOUT || target.Player.Class == ASSASSIN || target.Player.Class == BERSERKER || (target.Player.Class == DRUID && target.Player.Mask == MASK_CAT);
+            let is5x = target.Player.Class == WARRIOR || target.Player.Class == DEMONHUNTER || (target.Player.Class == DRUID && target.Player.Mask == MASK_BEAR);
+
+            if (is5x) {
                 return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 4));
-            } else if (target.Player.Class == SCOUT || target.Player.Class == ASSASSIN || target.Player.Class == BERSERKER || target.Player.Class == DEMONHUNTER || (target.Player.Class == DRUID && target.Player.Mask == MASK_CAT)) {
+            } else if (is4x) {
                 return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 5));
-            } else if (target.Player.Class == DRUID || target.Player.Class == BARD) {
+            } else if (is2x) {
                 return Math.min(Math.ceil(target.TotalHealth / 3), Math.ceil(this.TotalHealth / 10));
             } else {
                 return 0;
