@@ -1387,9 +1387,9 @@ class GroupsView extends View {
     }
 
     show () {
-        let identifiers = Object.keys(DatabaseManager.Groups);
-        if (identifiers.length == 1) {
-            return UI.show(UI.GroupDetail, identifiers[0]);
+        let viewableGroups = Object.entries(DatabaseManager.Groups)
+        if (viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter(([, g]) => g.MembersPresent).length > 0)) {
+            return UI.show(UI.GroupDetail, viewableGroups[0][0]);
         }
 
         var content = '';
