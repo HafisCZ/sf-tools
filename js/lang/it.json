@@ -521,6 +521,7 @@
     "players": {
         "gladiator_mode": "Gladiatore al 15 indipendentemente dalle impostazioni",
         "ihof_mode": "Modalità IHOF: Gladiatore non ridotto!",
+        "fireball_mode": "Applica il fix della palla di fuoco per Berserker, Cacciatori di Demoni, Druidi e Bardi",
         "mode": {
             "all": "Tutti vs Tutti",
             "attack": "Uno vs Tutti",
