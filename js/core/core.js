@@ -187,6 +187,79 @@ const Site = new (class {
     ready (callback) {
         this.promise.then(callback);
     }
+
+    async recover (json) {
+        let { preferences, data } = json;
+
+        Loader.toggle(true);
+
+        for (let [key, value] of Object.entries(preferences)) {
+            SharedPreferences.setRaw(key, value);
+        }
+
+        await DatabaseManager._reset();
+
+        for (let [slot, { players, groups, trackers, metadata }] of Object.entries(data)) {
+            let db = await DatabaseUtils.createSession(parseInt(slot || '0'));
+
+            await db.clear('players');
+            await db.clear('groups');
+            await db.clear('trackers');
+            await db.clear('metadata');
+
+            for (let player of players) {
+                await db.set('players', player);
+            }
+
+            for (let group of groups) {
+                await db.set('groups', group);
+            }
+
+            for (let tracker of trackers) {
+                await db.set('trackers', tracker);
+            }
+
+            for (let metadat of metadata) {
+                await db.set('metadata', metadat);
+            }
+        }
+
+        window.location.href = window.location.href;
+    }
+
+    dump () {
+        Loader.toggle(true);
+
+        let prefs = SharedPreferences.getAll();
+        let slots = _uniq(Object.values(ProfileManager.profiles).map(profile => profile.slot || 0));
+        let dumps = {};
+
+        let slotDumps = slots.map(slot => new Promise(async (resolve, reject) => {
+            let db = await DatabaseUtils.createSession(parseInt(slot || '0'));
+
+            dumps[slot] = {
+                players: await db.where('players'),
+                groups: await db.all('groups'),
+                trackers: await db.all('trackers'),
+                metadata: await db.all('metadata')
+            }
+
+            resolve()
+        }));
+
+        Promise.all(slotDumps).then(() => {
+            Loader.toggle(false);
+
+            Exporter.json(
+                {
+                    timestamp: Date.now(),
+                    preferences: prefs,
+                    data: dumps
+                },
+                `system_dump_${Date.now()}`
+            );
+        })
+    }
 })();
 
 const DEFAULT_PROFILE = {
