@@ -959,9 +959,15 @@ const TemplateSaveDialog = new (class extends Dialog {
 
     _applyArguments (parentName, callback) {
         this.callback = callback;
+        this.supressNext = false;
 
-        this.$input.val('');
+        this.$input.off('input').val('').on('input', (event) => {
+            this.supressNext = true;
+            this.$dropdown.dropdown('clear');
+        });
+
         this.$dropdown.dropdown({
+            placeholder: this.intl('select_existing'),
             values: Templates.getKeys().map(key => {
                 return {
                     name: key,
@@ -969,7 +975,11 @@ const TemplateSaveDialog = new (class extends Dialog {
                 }
             })
         }).dropdown('setting', 'onChange', () => {
-            this.$input.val('');
+            if (!this.supressNext) {
+                this.$input.val('');
+            }
+
+            this.supressNext = false;
         }).dropdown('set selected', parentName || '');
     }
 })();
