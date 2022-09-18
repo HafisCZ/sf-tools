@@ -1,4 +1,21 @@
 const CHANGELOG = {
+    'v5.XXXX': {
+        'Statistics': [
+            'Added option to export & import recovery files',
+            'Added item pictures',
+            'Fixed background color in custom rows',
+            'Fixed crash when displaying lone empty guild'
+        ],
+        'Pet Simulator': [
+            'Removed beta backend switch'
+        ],
+        'Fight Simulator': [
+            'Added option to enable fireball fix against certain classes'
+        ],
+        'Arena Manager': [
+            'Fixed runes not rounding down to 20 (as per new backend)'
+        ]
+    },
     'v5.2469': {
         'Statistics': [
             'Reworked player list',
