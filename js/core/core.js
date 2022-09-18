@@ -191,13 +191,11 @@ const Site = new (class {
     async recover (json) {
         let { preferences, data } = json;
 
-        Loader.toggle(true);
+        await DatabaseManager._reset();
 
         for (let [key, value] of Object.entries(preferences)) {
             SharedPreferences.setRaw(key, value);
         }
-
-        await DatabaseManager._reset();
 
         for (let [slot, { players, groups, trackers, metadata }] of Object.entries(data)) {
             let db = await DatabaseUtils.createSession(parseInt(slot || '0'));
@@ -223,13 +221,9 @@ const Site = new (class {
                 await db.set('metadata', metadat);
             }
         }
-
-        window.location.href = window.location.href;
     }
 
-    dump () {
-        Loader.toggle(true);
-
+    async dump () {
         let prefs = SharedPreferences.getAll();
         let slots = _uniq(Object.values(ProfileManager.profiles).map(profile => profile.slot || 0));
         let dumps = {};
@@ -247,17 +241,12 @@ const Site = new (class {
             resolve()
         }));
 
-        Promise.all(slotDumps).then(() => {
-            Loader.toggle(false);
-
-            Exporter.json(
-                {
-                    timestamp: Date.now(),
-                    preferences: prefs,
-                    data: dumps
-                },
-                `system_dump_${Date.now()}`
-            );
+        return Promise.all(slotDumps).then(() => {
+            return {
+                timestamp: Date.now(),
+                preferences: prefs,
+                data: dumps
+            };
         })
     }
 })();

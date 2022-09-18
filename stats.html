@@ -666,6 +666,19 @@
                                 </select>
                             </div>
                         </div>
+                        <br>
+                        <hr>
+                        <h3 class="ui centered header" data-intl="stats.settings.recovery.title"></h3>
+                        <p data-intl="stats.settings.recovery.description#"></p>
+                        <div class="sf-margin top-5 ui two buttons">
+                            <div class="fluid ui secondary button" data-op="export">
+                                <i class="small download icon"></i> <span data-intl="stats.settings.recovery.export"></span>
+                            </div>
+                            <label class="fluid ui button" style="background-color: orange; border-top-right-radius: .28571429rem; border-bottom-right-radius: .28571429rem;" for="button-recovery-upload">
+                                <i class="small upload icon"></i> <span data-intl="stats.settings.recovery.import"></span>
+                            </label>
+                            <input type="file" accept=".json" class="css-hidden" id="button-recovery-upload" data-op="import">
+                        </div>
                     </div>
                 </div>
                 <div class="ten wide column">

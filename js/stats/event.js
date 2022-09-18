@@ -3427,6 +3427,37 @@ class OptionsView extends View {
                 this.$reset.removeClass('disabled');
             }
         });
+
+        // recovery
+        this.$recoveryExport = this.$parent.find('[data-op="export"]');
+        this.$recoveryImport = this.$parent.find('[data-op="import"]');
+
+        this.$recoveryExport.click(() => this.exportDumpFile());
+        this.$recoveryImport.change((event) => this.importDumpFile(event));
+    }
+
+    async exportDumpFile () {
+        Loader.toggle(true);
+
+        Exporter.json(
+            await Site.dump(),
+            `recovery_dump_${formatDate(Date.now()).replace(/\W/g, '_')}`
+        );
+
+        Loader.toggle(false);
+    }
+
+    importDumpFile (fileEvent) {
+        DialogController.open(ConfirmDialog, intl('stats.settings.recovery.title'), intl('stats.settings.recovery.notice'), async function () {
+            Loader.toggle(true);
+
+            Toast.info(intl('stats.settings.recovery.title'), intl('stats.settings.recovery.toast'));
+
+            let data = await _dig(fileEvent, 'currentTarget', 'files', 0).text().then(fileContent => JSON.parse(fileContent));
+            await Site.recover(data);
+
+            window.location.href = window.location.href;
+        }, () => {}, true, 2)
     }
 
     // Prepare checkbox
