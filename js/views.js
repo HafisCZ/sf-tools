@@ -1131,9 +1131,6 @@ const Localization = new (class {
         let obj = this.translation[key];
         if (!obj) {
             Logger.log('IN_WARN', `Translation key ${key} not found!`);
-            if (typeof Sentry !== 'undefined') {
-                Sentry.captureMessage(`Translation key ${key} not found!`);
-            }
         }
 
         return obj;
