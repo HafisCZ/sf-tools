@@ -311,7 +311,7 @@ class Editor {
             preserveHTML: true,
             values: [
                 {
-                    name: this.intl('none'),
+                    name: `<img class="ui centered image class-picture" src="res/mask0.png">${intl('general.mask0')}</span>`,
                     value: 0
                 },
                 {
