@@ -508,14 +508,21 @@ class DruidModel extends FighterModel {
         let range = super.getDamageRange(weapon, target);
 
         if (this.Player.Mask == MASK_EAGLE) {
-            return {
+            range = {
                 Max: Math.ceil(range.Max / 3),
                 Min: Math.ceil(range.Min / 3)
             }
         } else if (this.Player.Mask == MASK_CAT) {
-            return {
+            range = {
                 Max: Math.ceil((1 + 2 / 3) * range.Max / 3),
                 Min: Math.ceil((1 + 2 / 3) * range.Min / 3)
+            }
+        }
+
+        if (target.Player.Class == MAGE || target.Player.Class == BARD) {
+            return {
+                Max: Math.ceil(range.Max / 2),
+                Min: Math.ceil(range.Min / 2)
             }
         } else {
             return range;
@@ -531,7 +538,7 @@ class DruidModel extends FighterModel {
                 return super.attack(
                     damage * 13,
                     target,
-                    attackType,
+                    5, // TODO: Replace with actual swoop value
                     skipped,
                     false
                 );
