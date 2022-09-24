@@ -775,7 +775,7 @@ DUNGEON_DATA = {
             '7': { pos: 7, id: 1326, class: 2, level: 399, str: 5000, dex: 5000, int: 240000, con: 206000, lck: 15000, health: 248000000, min: 10125, max: 13498 },
             '8': { pos: 8, id: 1327, class: 5, level: 444, str: 290000, dex: 6000, int: 6000, con: 248000, lck: 18000, health: 300000000, min: 5001, max: 6499 },
             '9': { pos: 9, id: 1328, class: 6, level: 488, str: 350000, dex: 7000, int: 7000, con: 300000, lck: 21500, health: 360000000, min: 4465, max: 6102 },
-            '10': { pos: 10, id: 1329, class: 4, level: 555, str: 10000, dex: 400000, int: 10000, con: 360000, lck: 24000, health: 430000000, min: 12001, max: 15998, broken: true },
+            '10': { pos: 10, id: 1329, class: 4, level: 555, str: 10000, dex: 400000, int: 10000, con: 360000, lck: 24000, health: 430000000, min: 12001, max: 15998 },
             '11': { pos: 11, id: 1330, class: 2, level: 557, str: 10100, dex: 10100, int: 404000, con: 361800, lck: 24240, health: 403768800, min: 13636, max: 18177 },
             '12': { pos: 12, id: 1331, class: 3, level: 559, str: 10200, dex: 408040, int: 10200, con: 363600, lck: 24480, health: 814464000, min: 7653, max: 10198 },
             '13': { pos: 13, id: 1332, class: 5, level: 561, str: 412120, dex: 10300, int: 10300, con: 365410, lck: 24720, health: 1026802112, min: 6182, max: 8241 },
