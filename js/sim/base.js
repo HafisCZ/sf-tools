@@ -481,6 +481,8 @@ class MageModel extends FighterModel {
 const DRUID_EAGLE_CHANCE = 50;
 const DRUID_EAGLE_CHANCE_DECAY = 5;
 
+const DRUID_BEAR_BRACKET = 25;
+
 const DRUID_BEAR_MAX_TRIGGER = 75;
 const DRUID_BEAR_MED_TRIGGER = 50;
 const DRUID_BEAR_MIN_TRIGGER = 25;
@@ -527,6 +529,16 @@ class DruidModel extends FighterModel {
         }
     }
 
+    getHealthLossDamageMultiplier () {
+        let healthMissing = 100 - Math.trunc(100 * this.Health / this.TotalHealth);
+
+        let missingLow = healthMissing > DRUID_BEAR_MIN_TRIGGER ? Math.min(DRUID_BEAR_BRACKET, healthMissing - DRUID_BEAR_MIN_TRIGGER) : 0;
+        let missingMed = healthMissing > DRUID_BEAR_MED_TRIGGER ? Math.min(DRUID_BEAR_BRACKET, healthMissing - DRUID_BEAR_MED_TRIGGER) : 0;
+        let missingMax = healthMissing > DRUID_BEAR_MAX_TRIGGER ? Math.min(DRUID_BEAR_BRACKET, healthMissing - DRUID_BEAR_MAX_TRIGGER) : 0;
+
+        return missingLow * DRUID_BEAR_MIN_MULTIPLIER + missingMed * DRUID_BEAR_MED_MULTIPLIER + missingMax * DRUID_BEAR_MAX_MULTIPLIER;
+    }
+
     attack (damage, target, type, skipped, critical) {
         if (this.Player.Mask == MASK_EAGLE) {
             if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
@@ -550,19 +562,8 @@ class DruidModel extends FighterModel {
                 );
             }
         } else if (this.Player.Mask == MASK_BEAR) {
-            let multiplier = 1;
-            let missing = 100 - Math.trunc(100 * this.Health / this.TotalHealth);
-
-            if (missing >= DRUID_BEAR_MAX_TRIGGER) {
-                multiplier = DRUID_BEAR_MAX_MULTIPLIER;
-            } else if (missing >= DRUID_BEAR_MED_TRIGGER) {
-                multiplier = DRUID_BEAR_MED_MULTIPLIER;
-            } else if (missing >= DRUID_BEAR_MIN_TRIGGER) {
-                multiplier = DRUID_BEAR_MIN_MULTIPLIER;
-            }
-
             return super.attack(
-                damage * ((1 + 1 / 3) / 3 + (multiplier * missing / 100)),
+                damage * (4 / 9 + this.getHealthLossDamageMultiplier() / 100),
                 target,
                 type,
                 skipped,
