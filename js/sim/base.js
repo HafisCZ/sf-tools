@@ -413,14 +413,18 @@ class FighterModel {
         return false;
     }
 
-    attack (target, attackType, damage, skipped, critical) {
+    onBeforeDamageFinalized (damage, target) {
+        return damage;
+    }
+
+    attack (damage, target, attackType, skipped, critical) {
         if (skipped) {
             damage = 0;
         } else {
-            damage = target.applyDynamicReduction(damage);
+            damage = target.onBeforeDamageFinalized(damage, target);
 
             if (critical) {
-                damage *= source.Critical;
+                damage *= this.Critical;
             }
 
             damage = Math.ceil(damage);
@@ -428,7 +432,7 @@ class FighterModel {
 
         if (FIGHT_LOG_ENABLED) {
             FIGHT_LOG.logAttack(
-                source,
+                this,
                 target,
                 (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + attackType * 10,
                 damage
@@ -438,11 +442,11 @@ class FighterModel {
         return damage;
     }
 
-    getActiveSkipChance (source) {
+    fetchSkipChance (source) {
         return this.SkipChance;
     }
 
-    getActiveCritChance (target) {
+    fetchCriticalChance (target) {
         return this.CriticalChance;
     }
 }
@@ -501,7 +505,7 @@ class DruidModel extends FighterModel {
     }
 
     getDamageRange (weapon, target) {
-        var range = super.getDamageRange(weapon, target);
+        let range = super.getDamageRange(weapon, target);
 
         if (this.Player.Mask == MASK_EAGLE) {
             return {
@@ -513,27 +517,29 @@ class DruidModel extends FighterModel {
                 Max: Math.ceil((1 + 2 / 3) * range.Max / 3),
                 Min: Math.ceil((1 + 2 / 3) * range.Min / 3)
             }
+        } else {
+            return range;
         }
     }
 
-    attack (target, attackType, damage, skipped, critical) {
+    attack (damage, target, attackType, skipped, critical) {
         if (this.Player.Mask == MASK_EAGLE) {
             if (this.SwoopChance && getRandom(this.SwoopChance)) {
                 this.SwoopChance -= DRUID_EAGLE_CHANCE_DECAY;
 
                 // Swoop
                 return super.attack(
+                    damage * 13,
                     target,
                     attackType,
-                    damage * 13,
                     skipped,
                     false
                 );
             } else {
                 return super.attack(
+                    damage,
                     target,
                     attackType,
-                    damage,
                     skipped,
                     critical
                 );
@@ -551,9 +557,9 @@ class DruidModel extends FighterModel {
             }
 
             return super.attack(
+                damage * ((1 + 1 / 3) / 3 + (multiplier * missing / 100)),
                 target,
                 attackType,
-                damage * ((1 + 1 / 3) / 3 + (multiplier * missing / 100)),
                 skipped,
                 critical
             );
@@ -561,7 +567,7 @@ class DruidModel extends FighterModel {
             if (skipped) {
                 damage = 0;
             } else {
-                damage = target.applyDynamicReduction(damage);
+                damage = target.onBeforeDamageFinalized(damage, target);
 
                 if (critical) {
                     damage *= this.Critical;
@@ -597,7 +603,7 @@ class DruidModel extends FighterModel {
         return super.onDamageTaken(source, damage, attackType);
     }
 
-    getActiveCritChance (target) {
+    fetchCriticalChance (target) {
         if (this.Player.Mask == MASK_CAT && this.RageState) {
             return this.getCriticalChance(target, 75);
         } else {
@@ -605,7 +611,7 @@ class DruidModel extends FighterModel {
         }
     }
 
-    getActiveSkipChance (source) {
+    fetchSkipChance (source) {
         if (source.Player.Class == MAGE) {
             return 0;
         } else if (this.Player.Mask == MASK_CAT && !this.RageState) {
@@ -862,7 +868,7 @@ class BardModel extends FighterModel {
         }
     }
 
-    attack (target, attackType, damage, skipped, critical) {
+    attack (damage, target, attackType, skipped, critical) {
         if (this.DamageMultiplier && critical && skipped) {
             skipped = false;
         }
@@ -874,17 +880,23 @@ class BardModel extends FighterModel {
                 damage *= this.DamageMultiplier;
             }
 
-            damage = super.attack(target, attackType, damage, skipped, critical);
+            damage = super.attack(
+                damage,
+                target,
+                attackType,
+                skipped,
+                critical
+            );
         }
 
-        if (source.DamageMultiplier) {
-            source.consumeMultiplier();
+        if (this.DamageMultiplier) {
+            this.consumeMultiplier();
         }
 
         return damage;
     }
 
-    applyDynamicReduction (damage) {
+    onBeforeDamageFinalized (damage, target) {
         if (target.IncomingDamageMultiplier) {
             damage *= target.IncomingDamageMultiplier;
 
@@ -1016,9 +1028,9 @@ class SimulatorBase {
         let damage = (1 + this.turn++ / 6) * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
 
         // Modifiers
-        let skipped = getRandom(target.getActiveSkipChance(source));
-        let critical = getRandom(source.getActiveCritChance(target));
+        let skipped = getRandom(target.fetchSkipChance(source));
+        let critical = getRandom(source.fetchCriticalChance(target));
 
-        return source.attack(target, attackType, damage, skipped, critical);
+        return source.attack(damage, target, attackType, skipped, critical);
     }
 }
