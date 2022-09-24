@@ -239,11 +239,11 @@ class FighterModel {
                 case WARRIOR:
                     return typeof this.Player.BlockChance !== 'undefined' ? this.Player.BlockChance : 25;
                 case DRUID:
-                switch (this.Player.Mask) {
-                    case MASK_BEAR: return 25;
-                    case MASK_CAT: return 50;
-                    default: 0;
-                }
+                    if (this.Player.Mask == MASK_BEAR) {
+                        return 20;
+                    } else {
+                        return 0;
+                    }
                 default:
                     return 0;
             }
@@ -277,8 +277,8 @@ class FighterModel {
     }
 
     // Critical Chance
-    getCriticalChance (target) {
-        return Math.min(50, this.Player.Luck.Total * 2.5 / target.Player.Level);
+    getCriticalChance (target, maximumChance = 50) {
+        return Math.min(maximumChance, this.Player.Luck.Total * 2.5 / target.Player.Level);
     }
 
     // Critical Multiplier
@@ -417,7 +417,7 @@ class FighterModel {
         if (skipped) {
             damage = 0;
         } else {
-            damage = target.dynamicReduction(damage);
+            damage = target.applyDynamicReduction(damage);
 
             if (critical) {
                 damage *= source.Critical;
@@ -436,6 +436,14 @@ class FighterModel {
         }
 
         return damage;
+    }
+
+    getActiveSkipChance (source) {
+        return this.SkipChance;
+    }
+
+    getActiveCritChance (target) {
+        return this.CriticalChance;
     }
 }
 
@@ -465,11 +473,31 @@ class MageModel extends FighterModel {
 
 const DRUID_EAGLE_CHANCE = 50;
 const DRUID_EAGLE_CHANCE_DECAY = 5;
-const DRUID_EAGLE_BONUS = 4;
+
+const DRUID_BEAR_MAX_TRIGGER = 75;
+const DRUID_BEAR_MED_TRIGGER = 50;
+const DRUID_BEAR_MIN_TRIGGER = 25;
+
+const DRUID_BEAR_MAX_MULTIPLIER = 1.5;
+const DRUID_BEAR_MED_MULTIPLIER = 1;
+const DRUID_BEAR_MIN_MULTIPLIER = 0.5;
 
 class DruidModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
+    }
+
+    reset () {
+        super.reset();
+
+        this.SwoopChance = DRUID_EAGLE_CHANCE;
+        this.RageState = false;
+    }
+
+    initialize (target) {
+        super.initialize(target);
+
+        this.DamageTaken = this.Player.Mask == MASK_CAT;
     }
 
     getDamageRange (weapon, target) {
@@ -480,17 +508,110 @@ class DruidModel extends FighterModel {
                 Max: Math.ceil(range.Max / 3),
                 Min: Math.ceil(range.Min / 3)
             }
-        } else if (this.Player.Mask == MASK_BEAR) {
-            // TODO: Add support for damage scaling
-            return {
-                Max: Math.ceil((1 + 1 / 3) * range.Max / 3),
-                Min: Math.ceil((1 + 1 / 3) * range.Min / 3)
-            }
         } else if (this.Player.Mask == MASK_CAT) {
             return {
                 Max: Math.ceil((1 + 2 / 3) * range.Max / 3),
                 Min: Math.ceil((1 + 2 / 3) * range.Min / 3)
             }
+        }
+    }
+
+    attack (target, attackType, damage, skipped, critical) {
+        if (this.Player.Mask == MASK_EAGLE) {
+            if (this.SwoopChance && getRandom(this.SwoopChance)) {
+                this.SwoopChance -= DRUID_EAGLE_CHANCE_DECAY;
+
+                // Swoop
+                return super.attack(
+                    target,
+                    attackType,
+                    damage * 13,
+                    skipped,
+                    false
+                );
+            } else {
+                return super.attack(
+                    target,
+                    attackType,
+                    damage,
+                    skipped,
+                    critical
+                );
+            }
+        } else if (this.Player.Mask == MASK_BEAR) {
+            let multiplier = 1;
+            let missing = 100 - Math.trunc(100 * this.Health / this.TotalHealth);
+
+            if (missing >= DRUID_BEAR_MAX_TRIGGER) {
+                multiplier = DRUID_BEAR_MAX_MULTIPLIER;
+            } else if (missing >= DRUID_BEAR_MED_TRIGGER) {
+                multiplier = DRUID_BEAR_MED_MULTIPLIER;
+            } else if (missing >= DRUID_BEAR_MIN_TRIGGER) {
+                multiplier = DRUID_BEAR_MIN_MULTIPLIER;
+            }
+
+            return super.attack(
+                target,
+                attackType,
+                damage * ((1 + 1 / 3) / 3 + (multiplier * missing / 100)),
+                skipped,
+                critical
+            );
+        } else if (this.Player.Mask == MASK_CAT) {
+            if (skipped) {
+                damage = 0;
+            } else {
+                damage = target.applyDynamicReduction(damage);
+
+                if (critical) {
+                    damage *= this.Critical;
+
+                    if (this.RageState) {
+                        damage *= 3;
+
+                        this.RageState = false;
+                    }
+                }
+
+                damage = Math.ceil(damage);
+            }
+
+            if (FIGHT_LOG_ENABLED) {
+                FIGHT_LOG.logAttack(
+                    source,
+                    target,
+                    (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + attackType * 10,
+                    damage
+                )
+            }
+
+            return damage;
+        }
+    }
+
+    onDamageTaken (source, damage, attackType) {
+        if (damage == 0) {
+            this.RageState = true;
+        }
+
+        return super.onDamageTaken(source, damage, attackType);
+    }
+
+    getActiveCritChance (target) {
+        if (this.Player.Mask == MASK_CAT && this.RageState) {
+            return this.getCriticalChance(target, 75);
+        } else {
+            return this.CriticalChance;
+        }
+    }
+
+    getActiveSkipChance (source) {
+        if (source.Player.Class == MAGE) {
+            return 0;
+        } else if (this.Player.Mask == MASK_CAT && !this.RageState) {
+            return 35;
+        } else {
+            return this.SkipChance;
         }
     }
 }
@@ -891,10 +1012,12 @@ class SimulatorBase {
     }
 
     attack (source, target, weapon = source.Weapon1, attackType = ATTACK_PRIMARY) {
-        let rage = 1 + this.turn++ / 6;
-        let damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
-        let skipped = getRandom(target.SkipChance);
-        let critical = getRandom(source.CriticalChance);
+        // Random damage for round
+        let damage = (1 + this.turn++ / 6) * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
+
+        // Modifiers
+        let skipped = getRandom(target.getActiveSkipChance(source));
+        let critical = getRandom(source.getActiveCritChance(target));
 
         return source.attack(target, attackType, damage, skipped, critical);
     }
