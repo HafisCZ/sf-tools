@@ -392,25 +392,28 @@ class FighterModel {
         this.Critical = this.getCriticalMultiplier(weapon1, weapon2, target);
     }
 
-    reset () {
-        this.Health = this.TotalHealth || this.getHealth();
-
-        // Trigger counters
-        this.DeathTriggers = 0;
+    reset (resetHealth = true) {
+        if (resetHealth) {
+            this.Health = this.TotalHealth || this.getHealth();
+        }
     }
 
-    onFightStart (target) {
+    // Triggers once before each fight and returns special damage to be dealt
+    onBeforeFight (target) {
         return false;
     }
 
+    // Triggers after player receives damage (blocked or evaded damage appears as 0)
     onDamageTaken (source, damage, type = ATTACK_PRIMARY) {
         return (this.Health -= damage) > 0 ? STATE_ALIVE : STATE_DEAD;
     }
 
+    // Allows player to skip opponent's turn completely
     skipNextRound () {
         return false;
     }
 
+    // Triggers before damage is finalized
     onBeforeDamageFinalized (damage, target) {
         return damage;
     }
@@ -419,7 +422,9 @@ class FighterModel {
         if (skipped) {
             damage = 0;
         } else {
-            damage = target.onBeforeDamageFinalized(damage, target);
+            if (target.BeforeDamageFinalized) {
+                damage = target.onBeforeDamageFinalized(damage, target);
+            }
 
             if (critical) {
                 damage *= this.Critical;
@@ -489,8 +494,8 @@ class DruidModel extends FighterModel {
         super(i, p);
     }
 
-    reset () {
-        super.reset();
+    reset (resetHealth = true) {
+        super.reset(resetHealth);
 
         this.SwoopChance = DRUID_EAGLE_CHANCE;
         this.RageState = false;
@@ -504,32 +509,27 @@ class DruidModel extends FighterModel {
 
     getDamageRange (weapon, target) {
         let range = super.getDamageRange(weapon, target);
+        let multiplier = 1;
 
         if (this.Player.Mask == MASK_EAGLE) {
-            range = {
-                Max: Math.ceil(range.Max / 3),
-                Min: Math.ceil(range.Min / 3)
-            }
+            multiplier = 1 / 3;
         } else if (this.Player.Mask == MASK_CAT) {
-            range = {
-                Max: Math.ceil((1 + 2 / 3) * range.Max / 3),
-                Min: Math.ceil((1 + 2 / 3) * range.Min / 3)
-            }
+            multiplier = 5 / 9;
         }
 
         if (target.Player.Class == MAGE || target.Player.Class == BARD) {
-            return {
-                Max: Math.ceil(range.Max / 2),
-                Min: Math.ceil(range.Min / 2)
-            }
-        } else {
-            return range;
+            multiplier /= 2;
+        }
+
+        return {
+            Max: Math.ceil(range.Max * multiplier),
+            Min: Math.ceil(range.Min * multiplier)
         }
     }
 
     attack (damage, target, type, skipped, critical) {
         if (this.Player.Mask == MASK_EAGLE) {
-            if (this.SwoopChance && getRandom(this.SwoopChance)) {
+            if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
                 this.SwoopChance -= DRUID_EAGLE_CHANCE_DECAY;
 
                 // Swoop
@@ -572,7 +572,9 @@ class DruidModel extends FighterModel {
             if (skipped) {
                 damage = 0;
             } else {
-                damage = target.onBeforeDamageFinalized(damage, target);
+                if (target.BeforeDamageFinalized) {
+                    damage = target.onBeforeDamageFinalized(damage, target);
+                }
 
                 if (critical) {
                     damage *= this.Critical;
@@ -659,9 +661,11 @@ class AssassinModel extends FighterModel {
 class BattlemageModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
+
+        this.BeforeFight = true;
     }
 
-    onFightStart (target) {
+    onBeforeFight (target) {
         if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE) {
             return 0;
         } else if (this.Player.FireballFix) {
@@ -721,7 +725,14 @@ const DH_REVIVE_HP_DECAY = 0.1;
 class DemonHunterModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
+
         this.DamageTaken = true;
+    }
+
+    reset (resetHealth = true) {
+        super.reset(resetHealth);
+
+        this.DeathTriggers = 0;
     }
 
     onDamageTaken (source, damage, type = ATTACK_PRIMARY) {
@@ -775,8 +786,8 @@ class BardModel extends FighterModel {
         this.EffectRound = BARD_EFFECT_ROUNDS;
     }
 
-    reset () {
-        super.reset();
+    reset (resetHealth = true) {
+        super.reset(resetHealth);
 
         this.resetEffects();
         this.resetTimers();
@@ -786,6 +797,7 @@ class BardModel extends FighterModel {
         super.initialize(target);
 
         this.BeforeAttack = target.Player.Class != MAGE;
+        this.BeforeDamageFinalized = this.Player.Instrument == INSTRUMENT_HARP;
     }
 
     rollEffectLevel () {

@@ -63,8 +63,8 @@ class GuildSimulator extends SimulatorBase {
             this.a.initialize(this.b);
             this.b.initialize(this.a);
 
-            this.as = this.a.onFightStart(this.b);
-            this.bs = this.b.onFightStart(this.a);
+            this.as = this.a.onBeforeFight(this.b);
+            this.bs = this.b.onBeforeFight(this.a);
 
             if (this.fight() == 0) {
                 this.la.shift();
@@ -81,9 +81,9 @@ class GuildSimulator extends SimulatorBase {
     }
 
     fight () {
-        // Ensure trigger counters are reset even if health is not
-        this.a.DeathTriggers = 0;
-        this.b.DeathTriggers = 0;
+        // Reset counters
+        this.a.reset(false);
+        this.b.reset(false);
 
         return super.fight();
     }

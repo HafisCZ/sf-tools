@@ -94,8 +94,8 @@ class DungeonSimulator extends SimulatorBase {
             this.a.initialize(this.b);
             this.b.initialize(this.a);
 
-            this.as = this.a.onFightStart(this.b);
-            this.bs = this.b.onFightStart(this.a);
+            this.as = this.a.onBeforeFight(this.b);
+            this.bs = this.b.onBeforeFight(this.a);
 
             if (FIGHT_LOG_ENABLED) {
                 FIGHT_LOG.logInit(this.a, this.b);
