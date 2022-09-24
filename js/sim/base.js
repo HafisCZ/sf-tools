@@ -121,7 +121,7 @@ const ATTACK_SECONDARY = 1;
 const ATTACK_SPECIAL = 2;
 
 // Masks
-const MASK_NONE = 0;
+const MASK_EAGLE = 0;
 const MASK_BEAR = 1;
 const MASK_CAT = 2;
 
@@ -266,9 +266,10 @@ class FighterModel {
                 return 2;
             case DRUID:
                 switch (this.Player.Mask) {
+                    case MASK_EAGLE: return 3;
                     case MASK_BEAR: return 5;
                     case MASK_CAT: return 4;
-                    default: 2;
+                    default: 0;
                 }
             default:
                 return 0;
@@ -411,6 +412,31 @@ class FighterModel {
     skipNextRound () {
         return false;
     }
+
+    attack (target, attackType, damage, skipped, critical) {
+        if (skipped) {
+            damage = 0;
+        } else {
+            damage = target.dynamicReduction(damage);
+
+            if (critical) {
+                damage *= source.Critical;
+            }
+
+            damage = Math.ceil(damage);
+        }
+
+        if (FIGHT_LOG_ENABLED) {
+            FIGHT_LOG.logAttack(
+                source,
+                target,
+                (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + attackType * 10,
+                damage
+            )
+        }
+
+        return damage;
+    }
 }
 
 class WarriorModel extends FighterModel {
@@ -437,6 +463,10 @@ class MageModel extends FighterModel {
     }
 }
 
+const DRUID_EAGLE_CHANCE = 50;
+const DRUID_EAGLE_CHANCE_DECAY = 5;
+const DRUID_EAGLE_BONUS = 4;
+
 class DruidModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
@@ -445,7 +475,13 @@ class DruidModel extends FighterModel {
     getDamageRange (weapon, target) {
         var range = super.getDamageRange(weapon, target);
 
-        if (this.Player.Mask == MASK_BEAR) {
+        if (this.Player.Mask == MASK_EAGLE) {
+            return {
+                Max: Math.ceil(range.Max / 3),
+                Min: Math.ceil(range.Min / 3)
+            }
+        } else if (this.Player.Mask == MASK_BEAR) {
+            // TODO: Add support for damage scaling
             return {
                 Max: Math.ceil((1 + 1 / 3) * range.Max / 3),
                 Min: Math.ceil((1 + 1 / 3) * range.Min / 3)
@@ -454,11 +490,6 @@ class DruidModel extends FighterModel {
             return {
                 Max: Math.ceil((1 + 2 / 3) * range.Max / 3),
                 Min: Math.ceil((1 + 2 / 3) * range.Min / 3)
-            }
-        } else {
-            return {
-                Max: Math.ceil(range.Max / 3),
-                Min: Math.ceil(range.Min / 3)
             }
         }
     }
@@ -709,6 +740,38 @@ class BardModel extends FighterModel {
             }
         }
     }
+
+    attack (target, attackType, damage, skipped, critical) {
+        if (this.DamageMultiplier && critical && skipped) {
+            skipped = false;
+        }
+
+        if (skipped) {
+            damage = 0;
+        } else {
+            if (this.DamageMultiplier) {
+                damage *= this.DamageMultiplier;
+            }
+
+            damage = super.attack(target, attackType, damage, skipped, critical);
+        }
+
+        if (source.DamageMultiplier) {
+            source.consumeMultiplier();
+        }
+
+        return damage;
+    }
+
+    applyDynamicReduction (damage) {
+        if (target.IncomingDamageMultiplier) {
+            damage *= target.IncomingDamageMultiplier;
+
+            target.consumeMultiplier();
+        }
+
+        return damage;
+    }
 }
 
 // Shared class between all simulators in order to make updates simple
@@ -828,49 +891,11 @@ class SimulatorBase {
     }
 
     attack (source, target, weapon = source.Weapon1, attackType = ATTACK_PRIMARY) {
-        var turn = this.turn++;
-        var rage = 1 + turn / 6;
+        let rage = 1 + this.turn++ / 6;
+        let damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
+        let skipped = getRandom(target.SkipChance);
+        let critical = getRandom(source.CriticalChance);
 
-        var damage = 0;
-        var skipped = getRandom(target.SkipChance);
-        var critical = false;
-
-        if (source.DamageMultiplier && critical && skipped) {
-            skipped = false;
-        }
-
-        if (!skipped) {
-            damage = rage * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
-            if (source.DamageMultiplier) {
-                damage *= source.DamageMultiplier;
-            }
-
-            if (target.IncomingDamageMultiplier) {
-                damage *= target.IncomingDamageMultiplier;
-
-                target.consumeMultiplier();
-            }
-
-            if (critical = getRandom(source.CriticalChance)) {
-                damage *= source.Critical;
-            }
-
-            damage = Math.ceil(damage);
-        }
-
-        if (FIGHT_LOG_ENABLED) {
-            FIGHT_LOG.logAttack(
-                source,
-                target,
-                (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + attackType * 10,
-                damage
-            )
-        }
-
-        if (source.DamageMultiplier) {
-            source.consumeMultiplier();
-        }
-
-        return damage;
+        return source.attack(target, attackType, damage, skipped, critical);
     }
 }

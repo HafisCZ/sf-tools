@@ -666,7 +666,7 @@ class SFPlayer {
                 switch (this.Mask) {
                     case 1: return 5;
                     case 2: return 4;
-                    default: 2;
+                    default: 3;
                 }
             default:
                 return 0;
