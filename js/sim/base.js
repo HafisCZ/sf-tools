@@ -403,10 +403,8 @@ class FighterModel {
         return false;
     }
 
-    onDamageTaken (source, damage, attackType = ATTACK_PRIMARY) {
-        this.Health -= damage;
-
-        return this.Health > 0 ? STATE_ALIVE : STATE_DEAD;
+    onDamageTaken (source, damage, type = ATTACK_PRIMARY) {
+        return (this.Health -= damage) > 0 ? STATE_ALIVE : STATE_DEAD;
     }
 
     skipNextRound () {
@@ -417,7 +415,7 @@ class FighterModel {
         return damage;
     }
 
-    attack (damage, target, attackType, skipped, critical) {
+    attack (damage, target, type, skipped, critical) {
         if (skipped) {
             damage = 0;
         } else {
@@ -434,7 +432,7 @@ class FighterModel {
             FIGHT_LOG.logAttack(
                 this,
                 target,
-                (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + attackType * 10,
+                (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + type * 10,
                 damage
             )
         }
@@ -529,7 +527,7 @@ class DruidModel extends FighterModel {
         }
     }
 
-    attack (damage, target, attackType, skipped, critical) {
+    attack (damage, target, type, skipped, critical) {
         if (this.Player.Mask == MASK_EAGLE) {
             if (this.SwoopChance && getRandom(this.SwoopChance)) {
                 this.SwoopChance -= DRUID_EAGLE_CHANCE_DECAY;
@@ -546,7 +544,7 @@ class DruidModel extends FighterModel {
                 return super.attack(
                     damage,
                     target,
-                    attackType,
+                    type,
                     skipped,
                     critical
                 );
@@ -566,7 +564,7 @@ class DruidModel extends FighterModel {
             return super.attack(
                 damage * ((1 + 1 / 3) / 3 + (multiplier * missing / 100)),
                 target,
-                attackType,
+                type,
                 skipped,
                 critical
             );
@@ -593,7 +591,7 @@ class DruidModel extends FighterModel {
                 FIGHT_LOG.logAttack(
                     source,
                     target,
-                    (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + attackType * 10,
+                    (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + type * 10,
                     damage
                 )
             }
@@ -602,12 +600,12 @@ class DruidModel extends FighterModel {
         }
     }
 
-    onDamageTaken (source, damage, attackType) {
+    onDamageTaken (source, damage, type) {
         if (damage == 0) {
             this.RageState = true;
         }
 
-        return super.onDamageTaken(source, damage, attackType);
+        return super.onDamageTaken(source, damage, type);
     }
 
     fetchCriticalChance (target) {
@@ -726,8 +724,8 @@ class DemonHunterModel extends FighterModel {
         this.DamageTaken = true;
     }
 
-    onDamageTaken (source, damage, attackType = ATTACK_PRIMARY) {
-        let state = super.onDamageTaken(source, damage, attackType);
+    onDamageTaken (source, damage, type = ATTACK_PRIMARY) {
+        let state = super.onDamageTaken(source, damage, type);
 
         if (state == STATE_DEAD) {
             let reviveChance = DH_REVIVE_CHANCE - DH_REVIVE_CHANCE_DECAY * this.DeathTriggers;
@@ -854,7 +852,7 @@ class BardModel extends FighterModel {
         }
     }
 
-    onBeforeAttack (target, attackType) {
+    onBeforeAttack (target, type) {
         // When this player attacks
         if (this != target) {
             if (this.HealMultiplier) {
@@ -875,7 +873,7 @@ class BardModel extends FighterModel {
         }
     }
 
-    attack (damage, target, attackType, skipped, critical) {
+    attack (damage, target, type, skipped, critical) {
         if (this.DamageMultiplier && critical && skipped) {
             skipped = false;
         }
@@ -890,7 +888,7 @@ class BardModel extends FighterModel {
             damage = super.attack(
                 damage,
                 target,
-                attackType,
+                type,
                 skipped,
                 critical
             );
@@ -1030,14 +1028,16 @@ class SimulatorBase {
         return (this.a.Health > 0 ? this.a.Index : this.b.Index) == 0;
     }
 
-    attack (source, target, weapon = source.Weapon1, attackType = ATTACK_PRIMARY) {
-        // Random damage for round
+    attack (source, target, weapon = source.Weapon1, type = ATTACK_PRIMARY) {
+        // Random damage for current round
         let damage = (1 + this.turn++ / 6) * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
 
-        // Modifiers
-        let skipped = getRandom(target.fetchSkipChance(source));
-        let critical = getRandom(source.fetchCriticalChance(target));
-
-        return source.attack(damage, target, attackType, skipped, critical);
+        return source.attack(
+            damage,
+            target,
+            type,
+            getRandom(target.fetchSkipChance(source)),
+            getRandom(source.fetchCriticalChance(target))
+        );
     }
 }
