@@ -218,7 +218,7 @@ class FighterModel {
                 return 10;
             case DRUID:
                 switch (this.Player.Mask) {
-                    case MASK_BEAR: return 50;
+                    case MASK_BEAR: return 0; // Return to 50 after playa fixes their bugs
                     case MASK_CAT: return 25;
                     default: 10;
                 }
