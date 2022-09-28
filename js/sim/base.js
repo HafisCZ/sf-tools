@@ -217,15 +217,15 @@ class FighterModel {
             case BATTLEMAGE:
                 return 10;
             case DRUID:
-                return 0;
-                /*
-                    Return back after playa fixes their bugs
+                if (this.Player.DruidArmorFix) {
                     switch (this.Player.Mask) {
                         case MASK_BEAR: return 50;
                         case MASK_CAT: return 25;
                         default: 10;
                     }
-                */
+                } else {
+                    return 0;
+                }
             default:
                 return 0;
         }
