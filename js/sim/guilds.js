@@ -45,6 +45,8 @@ class GuildSimulator extends SimulatorBase {
                 model.Player.ForceHealthMultiplier = 0.1;
             }
 
+            model.Player.NoGladiatorReduction = true;
+
             return model;
         }).sort((a, b) => a.Player.Level - b.Player.Level);
     }
