@@ -294,7 +294,10 @@ class FighterModel {
 
         if (typeof this.Player.ForceGladiator === 'number') {
             ownGladiator = this.Player.ForceGladiator;
-            reducingGladiator = this.Player.ForceGladiator;
+        }
+
+        if (typeof target.Player.ForceGladiator === 'number') {
+            reducingGladiator = target.Player.ForceGladiator;
         }
 
         if (this.Player.NoGladiatorReduction) {
