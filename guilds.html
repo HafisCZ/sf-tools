@@ -482,7 +482,7 @@
                             worker.addEventListener('message', function ({ data: { results, time }}) {
                                 blocksResults.push(results);
 
-                                Toast.info(intl('guild.toast.end.title', { done: blocksResults.length, total: blocks }), intl('guilds.toast.end.message#', { time: time / 1000 }))
+                                Toast.info(intl('guilds.toast.end.title', { done: blocksResults.length, total: blocks }), intl('guilds.toast.end.message#', { time: time / 1000 }))
 
                                 if (blocksResults.length == blocks) {
                                     displayResults(blocksResults, blocks * iterations);
