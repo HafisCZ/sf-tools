@@ -619,7 +619,7 @@ const ProfileCreateDialog = new (class extends Dialog {
                         <div class="field">
                             <label>${this.intl('value')} 2:</label>
                             <div class="ta-wrapper" style="height: initial;">
-                                <input class="ta-area" data-op="primary-2" type="text" placeholder="${this.intl('ast.primary')} (${this.intl('ast.optional')})">
+                                <input class="ta-area" data-op="primary-2" type="text" placeholder="${this.intl('ast.primary')})">
                                 <div data-op="primary-content-2" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                             </div>
                         </div>
@@ -662,7 +662,7 @@ const ProfileCreateDialog = new (class extends Dialog {
                         <div class="field">
                             <label>${this.intl('value')} 2:</label>
                             <div class="ta-wrapper" style="height: initial;">
-                                <input class="ta-area" data-op="primary-2-g" type="text" placeholder="${this.intl('ast.primary')} (${this.intl('ast.optional')})">
+                                <input class="ta-area" data-op="primary-2-g" type="text" placeholder="${this.intl('ast.primary')})">
                                 <div data-op="primary-content-2-g" class="ta-content" style="width: 100%; margin-top: -2em; margin-left: 1em;"></div>
                             </div>
                         </div>
@@ -959,9 +959,15 @@ const TemplateSaveDialog = new (class extends Dialog {
 
     _applyArguments (parentName, callback) {
         this.callback = callback;
+        this.supressNext = false;
 
-        this.$input.val('');
+        this.$input.off('input').val('').on('input', (event) => {
+            this.supressNext = true;
+            this.$dropdown.dropdown('clear');
+        });
+
         this.$dropdown.dropdown({
+            placeholder: this.intl('select_existing'),
             values: Templates.getKeys().map(key => {
                 return {
                     name: key,
@@ -969,7 +975,11 @@ const TemplateSaveDialog = new (class extends Dialog {
                 }
             })
         }).dropdown('setting', 'onChange', () => {
-            this.$input.val('');
+            if (!this.supressNext) {
+                this.$input.val('');
+            }
+
+            this.supressNext = false;
         }).dropdown('set selected', parentName || '');
     }
 })();
@@ -1089,9 +1099,10 @@ const Localization = new (class {
     }
 
     _translationUrl (locale) {
-        let noServer = window.document.location.protocol === 'file:';
+        let useRemote = window.document.location.protocol === 'file:';
+        let useVersion = SiteOptions.debug ? Date.now() : LOCALES_VERSION;
 
-        return `${noServer ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json?v=${LOCALES_VERSION}`;
+        return `${useRemote ? 'https://sftools.mar21.eu' : ''}/js/lang/${locale}.json?v=${useVersion}`;
     }
 
     async translatePage () {
@@ -1130,7 +1141,7 @@ const Localization = new (class {
         let val = this.findTranslation(key);
 
         node.removeAttribute('data-intl-placeholder');
-        node.setAttribute('placeholder', val || key);
+        node.setAttribute('placeholder', this.sanitize(val || key));
     }
 
     translateTooltip (node) {
@@ -1138,7 +1149,7 @@ const Localization = new (class {
         let val = this.findTranslation(key);
 
         node.removeAttribute('data-intl-tooltip');
-        node.setAttribute('data-tooltip', val || key);
+        node.setAttribute('data-tooltip', this.sanitize(val || key));
     }
 
     translateElement (node) {
@@ -1178,9 +1189,26 @@ const Localization = new (class {
 
         window.location.href = window.location.href;
     }
+
+    sanitize (val) {
+        return val.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+    }
 })();
 
-window.intl = (key) => Localization.findTranslation(key) || key;
+window.intl = (key, variables = undefined) => {
+    let val = Localization.findTranslation(key);
+    if (val) {
+        if (typeof variables !== 'undefined') {
+            for (const [key, vrl] of Object.entries(variables)) {
+                val = val.replaceAll(`#{${key}}`, vrl);
+            }
+        }
+
+        return Localization.sanitize(val);
+    } else {
+        return key;
+    }
+}
 
 // Automatically open Terms and Conditions if not accepted yet
 window.addEventListener('load', async function () {

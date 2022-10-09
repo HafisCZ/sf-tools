@@ -343,7 +343,7 @@ class PlayerDetailFloatView extends View {
             <div class="content" style="padding: 0;">
                 <div class="detail-top">
                     <img class="ui image" src="res/class${ player.Class }.png">
-                    ${ player.Class == 8 && player.Mask > 0 ? `<img class="ui image" src="res/mask${ player.Mask }.png" style="position: absolute; left: 1.5em; top: 1em; transform: scale(0.49, 0.49);">` : '' }
+                    ${ player.Class == 8 ? `<img class="ui image" src="res/mask${ player.Mask }.png" style="position: absolute; left: 1.5em; top: 1em; transform: scale(0.49, 0.49);">` : '' }
                     ${ player.Class == 9 ? `<img class="ui image" src="res/instrument${ player.Instrument }.png" style="position: absolute; left: 1.5em; top: 1em; transform: scale(0.49, 0.49);">` : '' }
                     <h1 class="ui header">${ player.Level } - ${ player.Name }</h1>
                 </div>
@@ -360,23 +360,23 @@ class PlayerDetailFloatView extends View {
                             <div class="detail-item">${this.intl('attributes')}</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.strength')}</div>
+                            <div class="detail-item">${intl('general.attribute1')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Strength.Total) }${ asDiff(player.Strength.Total, compare.Strength.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.dexterity')}</div>
+                            <div class="detail-item">${intl('general.attribute2')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Dexterity.Total) }${ asDiff(player.Dexterity.Total, compare.Dexterity.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.intelligence')}</div>
+                            <div class="detail-item">${intl('general.attribute3')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Intelligence.Total) }${ asDiff(player.Intelligence.Total, compare.Intelligence.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.constitution')}</div>
+                            <div class="detail-item">${intl('general.attribute4')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Constitution.Total) }${ asDiff(player.Constitution.Total, compare.Constitution.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.luck')}</div>
+                            <div class="detail-item">${intl('general.attribute5')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Total) }${ asDiff(player.Luck.Total, compare.Luck.Total, formatAsSpacedNumber) }</div>
                         </div>
                         <br/>
@@ -384,23 +384,23 @@ class PlayerDetailFloatView extends View {
                             <div class="detail-item">${this.intl('basis')}</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.strength')}</div>
+                            <div class="detail-item">${intl('general.attribute1')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Strength.Base) }${ asDiff(player.Strength.Base, compare.Strength.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.dexterity')}</div>
+                            <div class="detail-item">${intl('general.attribute2')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Dexterity.Base) }${ asDiff(player.Dexterity.Base, compare.Dexterity.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.intelligence')}</div>
+                            <div class="detail-item">${intl('general.attribute3')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Intelligence.Base) }${ asDiff(player.Intelligence.Base, compare.Intelligence.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.constitution')}</div>
+                            <div class="detail-item">${intl('general.attribute4')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Constitution.Base) }${ asDiff(player.Constitution.Base, compare.Constitution.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${intl('general.luck')}</div>
+                            <div class="detail-item">${intl('general.attribute5')}</div>
                             <div class="detail-item text-center">${ formatAsSpacedNumber(player.Luck.Base) }${ asDiff(player.Luck.Base, compare.Luck.Base, formatAsSpacedNumber) }</div>
                         </div>
                         <br/>
@@ -616,7 +616,7 @@ class PlayerDetailFloatView extends View {
                             <div class="detail-item text-center">${ player.Fortress.WoodcutterGuild }${ asDiff(player.Fortress.WoodcutterGuild, compare.Fortress.WoodcutterGuild) }</div>
                         </div>
                         <div class="detail-entry">
-                            <div class="detail-item">${this.intl('fortress.building5')}</div>
+                            <div class="detail-item">${this.intl('fortress.building4')}</div>
                             <div class="detail-item text-center">${ player.Fortress.Quarry }${ asDiff(player.Fortress.Quarry, compare.Fortress.Quarry) }</div>
                         </div>
                         <div class="detail-entry">
@@ -1387,9 +1387,9 @@ class GroupsView extends View {
     }
 
     show () {
-        let identifiers = Object.keys(DatabaseManager.Groups);
-        if (identifiers.length == 1) {
-            return UI.show(UI.GroupDetail, identifiers[0]);
+        let viewableGroups = Object.entries(DatabaseManager.Groups)
+        if (viewableGroups.length == 1 && (SiteOptions.groups_empty || viewableGroups[0][1].List.filter(([, g]) => g.MembersPresent).length > 0)) {
+            return UI.show(UI.GroupDetail, viewableGroups[0][0]);
         }
 
         var content = '';
@@ -1981,9 +1981,9 @@ class FilesView extends View {
 
     updateSelectedCounter () {
         if (this.simple) {
-            this.$fileCounter.html(_empty(this.selectedFiles) ? 'No' : Object.keys(this.selectedFiles).length);
+            this.$fileCounter.html(_empty(this.selectedFiles) ? intl('stats.files.selected.no') : Object.keys(this.selectedFiles).length);
         } else {
-            this.$fileCounter.html(_empty(this.selectedPlayers) ? 'No' : Object.keys(this.selectedPlayers).length);
+            this.$fileCounter.html(_empty(this.selectedPlayers) ? intl('stats.files.selected.no') : Object.keys(this.selectedPlayers).length);
         }
     }
 
@@ -3427,6 +3427,37 @@ class OptionsView extends View {
                 this.$reset.removeClass('disabled');
             }
         });
+
+        // recovery
+        this.$recoveryExport = this.$parent.find('[data-op="export"]');
+        this.$recoveryImport = this.$parent.find('[data-op="import"]');
+
+        this.$recoveryExport.click(() => this.exportDumpFile());
+        this.$recoveryImport.change((event) => this.importDumpFile(event));
+    }
+
+    async exportDumpFile () {
+        Loader.toggle(true);
+
+        Exporter.json(
+            await Site.dump(),
+            `recovery_dump_${formatDate(Date.now()).replace(/\W/g, '_')}`
+        );
+
+        Loader.toggle(false);
+    }
+
+    importDumpFile (fileEvent) {
+        DialogController.open(ConfirmDialog, intl('stats.settings.recovery.title'), intl('stats.settings.recovery.notice'), async function () {
+            Loader.toggle(true);
+
+            Toast.info(intl('stats.settings.recovery.title'), intl('stats.settings.recovery.toast'));
+
+            let data = await _dig(fileEvent, 'currentTarget', 'files', 0).text().then(fileContent => JSON.parse(fileContent));
+            await Site.recover(data);
+
+            window.location.href = window.location.href;
+        }, () => {}, true, 2)
     }
 
     // Prepare checkbox

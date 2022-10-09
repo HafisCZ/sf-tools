@@ -311,7 +311,7 @@ class Editor {
             preserveHTML: true,
             values: [
                 {
-                    name: this.intl('none'),
+                    name: `<img class="ui centered image class-picture" src="res/mask0.png">${intl('general.mask0')}</span>`,
                     value: 0
                 },
                 {
@@ -561,23 +561,23 @@ class Editor {
                 </div>
                 <div class="five fields">
                     <div class="field">
-                        <label>${intl('general.strength')}</label>
+                        <label>${intl('general.attribute1')}</label>
                         <input class="text-center" type="text" data-path="Strength.Total">
                     </div>
                     <div class="field">
-                        <label>${intl('general.dexterity')}</label>
+                        <label>${intl('general.attribute2')}</label>
                         <input class="text-center" type="text" data-path="Dexterity.Total">
                     </div>
                     <div class="field">
-                        <label>${intl('general.intelligence')}</label>
+                        <label>${intl('general.attribute3')}</label>
                         <input class="text-center" type="text" data-path="Intelligence.Total">
                     </div>
                     <div class="field">
-                        <label>${intl('general.constitution')}</label>
+                        <label>${intl('general.attribute4')}</label>
                         <input class="text-center" type="text" data-path="Constitution.Total">
                     </div>
                     <div class="field">
-                        <label>${intl('general.luck')}</label>
+                        <label>${intl('general.attribute5')}</label>
                         <input class="text-center" type="text" data-path="Luck.Total">
                     </div>
                 </div>

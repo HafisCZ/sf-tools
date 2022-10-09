@@ -11,17 +11,18 @@
         "class7": "Demon Hunter",
         "class8": "Druid",
         "class9": "Bard",
+        "mask0": "Eagle",
         "mask1": "Bear",
-        "mask2": "Cat",
+        "mask2": "Tiger",
         "instrument0": "Harp",
         "instrument1": "Lute",
         "instrument2": "Flute",
-        "strength": "Strength",
-        "dexterity": "Dexterity",
-        "intelligence": "Intelligence",
-        "constitution": "Constitution",
-        "luck": "Luck",
         "life_potion": "Eternal Life",
+        "attribute1": "Strength",
+        "attribute2": "Dexterity",
+        "attribute3": "Intelligence",
+        "attribute4": "Constitution",
+        "attribute5": "Luck",
         "potion1": "Strength",
         "potion2": "Dexterity",
         "potion3": "Intelligence",
@@ -154,7 +155,7 @@
                 "selected": "Export selected"
             },
             "selected": {
-                "text": "items(s) selected",
+                "text": "item(s) selected",
                 "no": "No"
             },
             "hide": {
@@ -309,11 +310,12 @@
             "description": "Description",
             "author": "Author",
             "created_on": "Created on",
-            "loading": "Fetching scripts"
+            "loading": "Fetching scripts",
+            "code": "Enter your private code..."
         },
         "templates": {
             "title": "Templates",
-            "loading": "Commiting changes",
+            "loading": "Committing changes",
             "form": {
                 "changed_on": "Changed on",
                 "version": "Tool Version",
@@ -408,14 +410,18 @@
                 "reset": "Reset actions",
                 "ignore": "Ignore changes",
                 "save": "Save actions"
+            },
+            "recovery": {
+                "title": "Recovery",
+                "import": "Import data",
+                "export": "Download data",
+                "description#": "With the options below you can export & import all data stored within the website.<br>It is recommended to export your data at least once a month in order to prevent accidental loss of data.",
+                "toast": "Recovery process just started. Please keep in mind that this can take a long time depending on the size of your recovery file.",
+                "notice": "Are you sure you want to recover SFTools from this file?<br><br>This operation will erase all of your existing data in order to proceed!"
             }
         }
     },
     "pets": {
-        "new_backend": {
-            "label": "New backend",
-            "tooltip": "Keep unchecked unless playing on new backend!"
-        },
         "generate": {
             "tooltip": "Generate a level / gladiator success map. Only possible with own pet against a dungeon boss.",
             "one": "Generate",
@@ -424,7 +430,6 @@
         },
         "simulate": "Simulate",
         "results": "Results",
-        "poll": "Poll saved characters",
         "map": {
             "gladiator": "Glad"
         },
@@ -585,7 +590,6 @@
         "mark": "Mark",
         "kunigunde": "Kunigunde",
         "open": "Currently open dungeons",
-        "poll": "Poll saved characters",
         "graph": {
             "y": "Boss HP Left",
             "x": "- Distribution for selected amount of tries -"
@@ -604,10 +608,123 @@
             "keep_original": "Keep original"
         }
     },
+    "underworld": {
+        "goblin_pit": "Goblin Pit",
+        "goblin_upgrades": "Goblin Upgrades",
+        "troll_block": "Troll Block",
+        "troll_upgrades": "Troll Upgrades",
+        "keeper": "Keeper",
+        "keeper_upgrades": "Keeper Upgrades",
+        "shield_mode": "Allow underworld units to use shield",
+        "toast": {
+            "start": {
+                "title": "Starting simulation",
+                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            }
+        }
+    },
+    "players": {
+        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
+        "ihof_mode": "IHOF Mode: Gladiator is not reduced!",
+        "fireball_mode": "Applies fireball fix for Berserkers, Demon Hunters, Druids and Bards",
+        "druid_armor_mode": "Applies armor fix for Druids",
+        "mode": {
+            "all": "All vs All",
+            "attack": "One vs All",
+            "defend": "All vs One",
+            "tournament": "Tournament"
+        },
+        "toast": {
+            "start": {
+                "title": "Starting simulation",
+                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            },
+            "tournament": {
+                "title": "Preparing ladder",
+                "message#": "<b>Players:</b> #{count}"
+            }
+        }
+    },
+    "guilds": {
+        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
+        "guild1": "Guild A",
+        "guild2": "Guild B",
+        "toast": {
+            "start": {
+                "title": "Starting simulation",
+                "message#": "<b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            }
+        }
+    },
+    "hydra": {
+        "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
+        "player_count": "Player Count",
+        "main": "Main",
+        "side1": "Side 1",
+        "side2": "Side 2",
+        "hydra": "Hydra",
+        "iterations": {
+            "label": "Iterations:",
+            "popup": "Amount of iterations per pet class."
+        },
+        "result": {
+            "health": "#{health}% HP left",
+            "fights_single": "#{count} fight",
+            "fights_multiple": "#{count} fights"
+        },
+        "names": {
+            "1": "One-headed Hydra",
+            "2": "Two-headed Hydra",
+            "3": "Three-headed Hydra",
+            "4": "Four-headed Hydra",
+            "5": "Five-headed Hydra",
+            "6": "Six-headed Hydra",
+            "7": "Seven-headed Hydra",
+            "8": "Eight-headed Hydra",
+            "9": "Nine-headed Hydra",
+            "10": "Ten-headed Hydra",
+            "11": "Eleven-headed Hydra",
+            "12": "Twelve-headed Hydra",
+            "13": "Thirteen-headed Hydra (low accuracy)",
+            "14": "Fourteen-headed Hydra",
+            "15": "Fifteen-headed Hydra",
+            "16": "Sixteen-headed Hydra (low accuracy)",
+            "17": "Seventeen-headed Hydra (low accuracy)",
+            "18": "Eighteen-headed Hydra",
+            "19": "Nineteen-headed Hydra",
+            "20": "Countless-headed Hydra"
+        }
+    },
     "simulator": {
         "paste_target#": "Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator",
         "threads": "Simulator threads. Keep this number BELOW your processor core count!",
-        "iterations": "Amount of iterations per thread."
+        "iterations": "Amount of iterations per thread.",
+        "add": "Add",
+        "save": "Save",
+        "simulate": "Simulate",
+        "clipboard": {
+            "copy_all": "Copy everyone",
+            "paste_mode": "Toggle Add/Replace insertion mode"
+        },
+        "win_chance": "Win %",
+        "min_chance": "Min %",
+        "max_chance": "Max %",
+        "poll": {
+            "players": "Poll saved players",
+            "guilds": "Poll saved guilds"
+        }
     },
     "editor": {
         "name": "Name",
@@ -753,7 +870,7 @@
                 "secondary": "Secondary filter configuration"
             },
             "group": {
-                "primary": "Priamry group filter configuration",
+                "primary": "Primary group filter configuration",
                 "secondary": "Secondary group filter configuration"
             }
         },

@@ -90,8 +90,8 @@ class HydraSimulator extends SimulatorBase {
         this.ca.initialize(this.cb);
         this.cb.initialize(this.ca);
 
-        this.as = this.ca.onFightStart(this.cb);
-        this.bs = this.cb.onFightStart(this.ca);
+        this.as = this.ca.onBeforeFight(this.cb);
+        this.bs = this.cb.onBeforeFight(this.ca);
     }
 
     battle () {

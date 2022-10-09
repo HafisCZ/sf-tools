@@ -257,7 +257,7 @@ class Expression {
                 } else if (SP_KEYWORD_MAPPING_3.hasOwnProperty(token)) {
                     value = SFormat.ReservedSpecial(token);
                 } else if (SP_KEYWORD_MAPPING_4.hasOwnProperty(token)) {
-                    value = SFormat.ReservedItemized(token);
+                    value = SFormat.ReservedScoped(token);
                 } else if (SP_KEYWORD_MAPPING_5.hasOwnProperty(token)) {
                     value = SFormat.ReservedItemizable(token);
                 } else if (root.constants.exists(token)) {

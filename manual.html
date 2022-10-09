@@ -33,32 +33,6 @@
         </div>
 
         <div class="ui main container margin-medium-bottom">
-            <h1 class="ui header">Creating a HAR file and importing</h1>
-            <br/>
-            <ol>
-                <li>
-                    Go to the game world where you want to gather the data
-                </li>
-                <li>
-                    Press F12 and click on the <b>Network</b> tab<br/>
-                    <img src="res/tut0.png" style="width: 1127px; height: 185px; margin-left: -40px;"></img>
-                </li>
-                <li>
-                    Press <b>F5</b> (this is required to load yourself, if you skip this step, then you'll be missing from the gathered data)
-                </li>
-                <li>
-                    Click on guilds and players that you want to collect. Keep in mind that you need to click all members of the guild (only clicking on guild is not enough)
-                </li>
-                <li>
-                    Click on <b>Save all as HAR</b> or similar<br/>
-                    <img src="res/tut1.png" style="height: 185px; margin-left: -40px;"></img>
-                </li>
-                <li>
-                    Now navigate over to the <b>Files</b> tab inside the <b>Statistics</b> module. Click <b>upload</b> button and select the file you've just saved.<br/>
-                    <img src="res/tut2.png" style="width: 1127px; height: 185px; margin-left: -40px;"></img>
-                </li>
-            </ol>
-            <br/>
             <h1 class="ui header">Table structure</h1>
             <br/>
             <p>
@@ -97,20 +71,6 @@
                     <div><code>category General</code></div>
                     <div><code>header Level</code></div>
                     <div><code>header Album</code></div>
-                </div>
-            </div>
-            <h3 class="ui header">Creating a itemized column</h3>
-            <hr/>
-            <div class="ui two column grid">
-                <div class="column">
-                    <p>
-                        You can create a itemized column using the keywords <code>itemized by</code>. First parameter is a itemizable header name, the second itemized header name, which will be applied to the itemizable value. Please be aware that using this column type can cause severe performance issues when generating the table.
-                    </p>
-                </div>
-                <div class="column">
-                    <div><code># Category must be created for the column to exist in</code></div>
-                    <div><code>category General</code></div>
-                    <div><code>itemized Items by Item Attribute</code></div>
                 </div>
             </div>
             <h2 class="ui header">Header names</h2>
@@ -161,7 +121,7 @@
             <br/>
             <hr/>
             <p>
-                Headers useable only within itemized headers
+                Scoped headers used to map object to another
             </p>
             <br/>
             <div class="ui four columns grid css-compact-grid" id="manual-headers-4">
@@ -1252,7 +1212,7 @@
             $('#manual-headers-1').html(Object.keys(SP_KEYWORD_MAPPING_1).map(header => `<div class="text-center three wide column ta-reserved-protected">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
             $('#manual-headers-2').html(Object.keys(SP_KEYWORD_MAPPING_2).map(header => `<div class="text-center three wide column ta-reserved-private">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
             $('#manual-headers-3').html(Object.keys(SP_KEYWORD_MAPPING_3).map(header => `<div class="text-center three wide column ta-reserved-special">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
-            $('#manual-headers-4').html(Object.keys(SP_KEYWORD_MAPPING_4).map(header => `<div class="text-center three wide column ta-reserved-itemized">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
+            $('#manual-headers-4').html(Object.keys(SP_KEYWORD_MAPPING_4).map(header => `<div class="text-center three wide column ta-reserved-scoped">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
             $('#manual-headers-5').html(Object.keys(SP_KEYWORD_MAPPING_5).map(header => `<div class="text-center three wide column ta-reserved-itemizable">${ header }</div><div class="text-left five wide column">${ descriptions[header] || '' }</div>`).join(''));
         </script>
     </body>

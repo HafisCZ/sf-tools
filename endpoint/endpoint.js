@@ -355,7 +355,7 @@ const Endpoint = new ( class {
                         this._removeDownloading(name);
                     }, () => {
                         this.$step3.hide();
-                        this._showError(this.intl('download_error'), true);
+                        this._showError(this.intl('download_error'));
                     });
                 })
             }

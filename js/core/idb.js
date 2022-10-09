@@ -200,6 +200,12 @@ class IndexedDBWrapper {
         ));
     }
 
+    clear (store) {
+        return new Promise((resolve, reject) => _bindOnSuccessOnError(
+            this.store(store).clear(), resolve, reject
+        ));
+    }
+
     where (store, index, query) {
         return new Promise((resolve, reject) => {
             let items = [];

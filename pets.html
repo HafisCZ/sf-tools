@@ -45,10 +45,7 @@
             <!-- Header -->
             <div class="ui five columns middle aligned grid">
                 <div class="five wide column">
-                    <div class="ui checkbox" id="useArmor" style="float: right;"  data-position="bottom left" data-intl-tooltip="pets.new_backend.tooltip">
-                        <input type="checkbox" name="useArmorCheckbox">
-                        <label for="useArmorCheckbox" data-intl="pets.new_backend.label"></label>
-                    </div>
+
                 </div>
                 <div class="one wide column">
 
@@ -159,7 +156,7 @@
                                     <input class="text-center" disabled data-path="Defense">
                                 </div>
                                 <div class="field">
-                                    <label data-intl="general.luck"></label>
+                                    <label data-intl="general.attribute5"></label>
                                     <input class="text-center" disabled data-path="Luck">
                                 </div>
                             </div>
@@ -270,7 +267,7 @@
                                     <input class="text-center" disabled data-path="Defense">
                                 </div>
                                 <div class="field">
-                                    <label data-intl="general.luck"></label>
+                                    <label data-intl="general.attribute5"></label>
                                     <input class="text-center" disabled data-path="Luck">
                                 </div>
                             </div>
@@ -571,11 +568,6 @@
                 petB.fill();
                 petB.valid();
 
-                var useArmor = false;
-                var useArmorCheckbox = $('#useArmor').checkbox('uncheck').change((event) => {
-                    useArmor = $(event.currentTarget).checkbox('is checked');
-                });
-
                 $('#sim-run').click(function () {
                     if (petA.valid() && petB.valid()) {
                         Loader.toggle(true);
@@ -601,8 +593,7 @@
 
                             worker.postMessage({
                                 mode: SimulatorType.Pet,
-                                players: [a, b],
-                                useArmor: useArmor
+                                players: [a, b]
                             });
                         } else {
                             reject();
@@ -670,8 +661,7 @@
                                 worker.postMessage({
                                     mode: SimulatorType.PetMap,
                                     players: [a, b[i]],
-                                    tracking: i,
-                                    useArmor: useArmor
+                                    tracking: i
                                 });
                             }
                         }
@@ -684,7 +674,7 @@
 
                 StatisticsIntegration.configure(
                     SELF_PROFILE,
-                    intl('pets.poll'),
+                    intl('simulator.poll.players'),
                     'pets',
                     function ($statsList) {
                         function hasPets (player) {

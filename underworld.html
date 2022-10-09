@@ -41,9 +41,7 @@
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
 
-        <div class="paste-target" onpaste="console.log">
-            Click here and press <b>CTRL&nbsp;+&nbsp;V</b> to paste into the simulator
-        </div>
+        <div class="paste-target" onpaste="console.log" data-intl="simulator.paste_target#"></div>
 
         <div class="ui main container">
             <div class="ui two columns grid">
@@ -56,31 +54,31 @@
                         <div class="bordered bthree">
                             <div class="two fields">
                                 <div class="field">
-                                    <label>Goblin Pit</label>
+                                    <label data-intl="underworld.goblin_pit"></label>
                                     <input class="text-center" data-path="GoblinPit" placeholder="0 - 15">
                                 </div>
                                 <div class="field">
-                                    <label>Goblin Upgrades</label>
+                                    <label data-intl="underworld.goblin_upgrades"></label>
                                     <input class="text-center" data-path="GoblinUpgrades">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
-                                    <label>Troll Block</label>
+                                    <label data-intl="underworld.troll_block"></label>
                                     <input class="text-center" data-path="TrollBlock" placeholder="0 - 15">
                                 </div>
                                 <div class="field">
-                                    <label>Troll Upgrades</label>
+                                    <label data-intl="underworld.troll_upgrades"></label>
                                     <input class="text-center" data-path="TrollUpgrades">
                                 </div>
                             </div>
                             <div class="two fields">
                                 <div class="field">
-                                    <label>Keeper</label>
+                                    <label data-intl="underworld.keeper"></label>
                                     <input class="text-center" data-path="Keeper" placeholder="0 - 15">
                                 </div>
                                 <div class="field">
-                                    <label>Keeper Upgrades</label>
+                                    <label data-intl="underworld.keeper_upgrades"></label>
                                     <input class="text-center" data-path="KeeperUpgrades">
                                 </div>
                             </div>
@@ -92,29 +90,29 @@
                     <div class="ui grid">
                         <div class="row">
                             <div class="four wide column">
-                                <button class="ui fluid small button" type="submit" id="add-player">Add</button>
+                                <button class="ui fluid small button" type="submit" id="add-player" data-intl="simulator.add"></button>
                             </div>
                             <div class="four wide column">
-                                <button class="ui fluid small button" type="submit" id="save-player">Save</button>
+                                <button class="ui fluid small button" type="submit" id="save-player" data-intl="simulator.save"></button>
                             </div>
                             <div class="eight wide column">
-                                <button class="ui small basic icon right floated button" data-position="bottom center" data-tooltip="Allow underworld units to use shield" id="shield-mode"><i class="shield alternate icon"></i></button>
+                                <button class="ui small basic icon right floated button" data-position="bottom center" data-intl-tooltip="underworld.shield_mode" id="shield-mode"><i class="shield alternate icon"></i></button>
                             </div>
                         </div>
                         <div class="css-small-row row">
                             <div class="four wide column">
                                 <div class="ui small basic icon fluid two buttons">
-                                    <button class="ui button" data-position="bottom center" data-tooltip="Toggle Add/Replace insertion mode" id="paste-mode"><i class="paste icon"></i></button>
-                                    <button class="ui button" data-position="bottom center" data-tooltip="Copy everyone" id="copy-all"><i class="copy icon"></i> All</button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.paste_mode" id="paste-mode"><i class="paste icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.clipboard.copy_all" id="copy-all"><i class="copy icon"></i></button>
                                 </div>
                             </div>
                             <div class="seven wide column">
                                 <div class="ui small form">
                                     <div class="two fields">
-                                        <div class="field" data-position="bottom center" data-tooltip="Simulator threads. Keep this number BELOW your processor core count!">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads">
                                             <input class="text-center fluid" type="text" id="sim-threads" value="4">
                                         </div>
-                                        <div class="field" data-position="bottom center" data-tooltip="Amount of iterations per thread.">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations">
                                             <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
                                             <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
                                         </div>
@@ -122,25 +120,15 @@
                                 </div>
                             </div>
                             <div class="five wide column">
-                                <button class="ui fluid small button" type="submit" id="simulate">Simulate</button>
+                                <button class="ui fluid small button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
                             </div>
                         </div>
                         <div class="row selectable-header">
-                            <div class="three wide text-center column">
-                                Class
-                            </div>
-                            <div class="two wide column">
-                                Level
-                            </div>
-                            <div class="six wide column">
-                                Name
-                            </div>
-                            <div class="four wide text-center column">
-                                Win %
-                            </div>
-                            <div class="one wide column">
-
-                            </div>
+                            <div class="three wide text-center column" data-intl="editor.class"></div>
+                            <div class="two wide column" data-intl="editor.level"></div>
+                            <div class="six wide column" data-intl="editor.name"></div>
+                            <div class="four wide text-center column" data-intl="simulator.win_chance"></div>
+                            <div class="one wide column"></div>
                         </div>
                         <div class="row padding-none">
                             <div class="sixteen wide column">
@@ -244,7 +232,7 @@
                 // Integration
                 StatisticsIntegration.configure(
                     SELF_PROFILE,
-                    'Poll saved characters',
+                    intl('simulator.poll.players'),
                     'dungeons',
                     function ($statsList) {
                         function hasUnderworld ({ Underworld: uw }) {
@@ -255,10 +243,10 @@
                             $statsList.append($(`
                                 <div class="ui fluid button basic vertical animated gray" style="margin-top: 0.5em;">
                                     <div class="visible content">
-                                        <span style="color: black;">${ player.Name } @ ${ player.Prefix }</span>
+                                        <span style="color: black;">${player.Name} @ ${player.Prefix}</span>
                                     </div>
                                     <div class="hidden content">
-                                        <span style="color: black;">Level ${ player.Level } ${ PLAYER_CLASS[player.Class] }</span>
+                                        <span style="color: black;">${intl('editor.level')} ${player.Level} ${intl(`general.class${player.Class}`)}</span>
                                     </div>
                                 </div>
                                 `).click(() => {
@@ -438,7 +426,7 @@
                                 <div class="player-index">${ i + 1 }</div>
                                 <div class="three wide text-center column">
                                     <img class="ui medium centered image" style="width: 50px;" src="res/class${ player.Class }.png">
-                                    ${ player.Class == 8 && player.Mask > 0 ? `<img class="ui image" src="res/mask${ player.Mask }.png" style="position: absolute; right: 2em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
+                                    ${ player.Class == 8 ? `<img class="ui image" src="res/mask${ player.Mask }.png" style="position: absolute; right: 2em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
                                     ${ player.Class == 9 ? `<img class="ui image" src="res/instrument${ player.Instrument }.png" style="position: absolute; right: 2em; bottom: 0.1em; width: 1.55em; height: 1.55em;">` : '' }
                                 </div>
                                 <div class="two wide column">
@@ -505,7 +493,7 @@
                         let blockSize = Math.ceil(playerList.length / blocks);
                         let iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
 
-                        Toast.info('Starting simulation', `<b>Block size:</b> ${blockSize}<br/><b>Iterations:</b> ${iterations}<br/><b>Thread cnt:</b> ${blocks}`);
+                        Toast.info(intl('underworld.toast.start.title'), intl('underworld.toast.start.message#', { blocks, blockSize, iterations }));
 
                         let resultList = [];
                         let blocksFinished = 0;
@@ -518,7 +506,7 @@
                                 if (message.data.command == 'finished') {
                                     resultList.push(... message.data.results);
 
-                                    Toast.info(`Simulation thread ${blocksFinished += 1} / ${blocks} finished`, `<b>Time:</b> ${message.data.time / 1000} seconds`);
+                                    Toast.info(intl('underworld.toast.end.title', { done: blocksFinished += 1, total: blocks }), intl('underworld.toast.end.message#', { time: message.data.time / 1000 }));
 
                                     if (playerList.length == resultList.length) {
                                         playerList = resultList;

@@ -287,7 +287,7 @@ const SFormat = {
     ReservedProtected: string => `<span class="ta-reserved-protected">${ escapeHTML(string) }</span>`,
     ReservedPrivate: string => `<span class="ta-reserved-private">${ escapeHTML(string) }</span>`,
     ReservedSpecial: string => `<span class="ta-reserved-special">${ escapeHTML(string) }</span>`,
-    ReservedItemized: string => `<span class="ta-reserved-itemized">${ escapeHTML(string) }</span>`,
+    ReservedScoped: string => `<span class="ta-reserved-scoped">${ escapeHTML(string) }</span>`,
     ReservedItemizable: string => `<span class="ta-reserved-itemizable">${ escapeHTML(string) }</span>`,
     Error: string => `<span class="ta-error">${ escapeHTML(string) }</span>`,
     Bool: (string, bool = string) => `<span class="ta-boolean-${ bool }">${ escapeHTML(string) }</span>`

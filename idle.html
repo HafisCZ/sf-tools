@@ -394,7 +394,7 @@
                 var suggestMode = parseInt($('#suggest-mode').dropdown('get value'));
 
                 // Money multiplier from runes
-                var runeMultiplier = 1 + 0.05 * getField('#runes');
+                var runeMultiplier = Math.trunc(1 + 0.05 * getField('#runes'));
 
                 var moneySpent = 0;
                 var productionApproximate = 0;
