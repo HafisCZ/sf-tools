@@ -62,7 +62,7 @@
         },
         "inventory": {
             "title": "Gestionnaire d'inventaire",
-            "desc": "Comparez vos objets, calculez les résultas d'améliorations etc..."
+            "desc": "Comparez vos objets, calculez les résultats d'améliorations etc..."
         },
         "idle": {
             "title": "Manager d'Arène",
@@ -115,7 +115,301 @@
     },
     "404": {
         "title": "404",
-        "text": "Il semblerai que cette page n'existe pas, veulliez verifier votre recherche"
+        "text": "Il semblerai que cette page n'existe pas, veuillez verifier votre recherche"
+    },
+    "stats": {
+        "topbar": {
+            "temporary_flag": "Temporaire",
+            "players": "Joueurs",
+            "guilds": "Guildes",
+            "browse": "Explorer",
+            "scripts": "Scripts",
+            "files": "Fichiers",
+            "settings": "Paramètres",
+            "temporary": "Session Temporaire",
+            "changelog": "Changelog",
+            "profile": "Profile"
+        },
+        "files": {
+            "titles": {
+                "filters": "Filtres",
+                "io": "Importer / Exporter"
+            },
+            "timestamp": "Horodatage",
+            "timestamps": "Horodatages",
+            "prefix": "Préfixe",
+            "name": "Nom",
+            "group": "Groupe",
+            "groups": "Groupes",
+            "origin": "Origine",
+            "players": "Joueurs",
+            "version": "Version",
+            "import": {
+                "file": "Importer depuis un Fichier",
+                "shared": "Importer via Partage",
+                "game": "Importer depuis le Jeu"
+            },
+            "export": {
+                "all": "Tout exporter",
+                "selected": "Exporter la Sélection"
+            },
+            "selected": {
+                "text": "items(s) sélectionné(s)",
+                "no": "Non"
+            },
+            "hide": {
+                "label": "Cacher",
+                "tooltip": "Fonctionne indépendamment en mode simple & avancé",
+                "migrate": "Marque les fichiers avec tout les joueurs cachés comme fichiers caché"
+            },
+            "merge": {
+                "selected": "Fusionner la sélection"
+            },
+            "delete": {
+                "all": "Tout supprimer",
+                "selected": "Supprimer la sélection"
+            },
+            "options": {
+                "title": "Options de Fichiers",
+                "advanced": "Afficher la liste des fichiers avancée",
+                "hidden": "Afficher les joueurs cachés"
+            },
+            "tags": {
+                "single": "Marqueur",
+                "multiple": "Marqueurs",
+                "all": "Tous",
+                "none": "Aucun"
+            },
+            "filters": {
+                "any": "Tout",
+                "n_unique": "unique",
+                "expression": "Expression",
+                "expression_placeholder": "Votre expression",
+                "timestamp": "Horodatage",
+                "player": "Joueur",
+                "group": "Groupe",
+                "prefix": "Préfixe",
+                "tags": "Marqueurs",
+                "type": "Type",
+                "type_all": "Afficher tous les personnages",
+                "type_own": "Afficher seulement votre personnage",
+                "type_other": "Afficher seulement les autres personnages",
+                "origin": "Origine",
+                "hidden": "Caché"
+            },
+            "online": {
+                "title": "Partage de Fichier",
+                "prompt": "Entrez votre code",
+                "invalid": "Code invalide ou expiré !",
+                "cancel": "Annuler",
+                "ok": "Ok"
+            }
+        },
+        "copy": {
+            "image": "Sauvegarder en tant qu'image",
+            "basic": "Copier le tableau",
+            "fight": "Copier le tableau pour le simulateur PvP",
+            "player": "Copier",
+            "player_companions": "Copier avec les companions"
+        },
+        "context": {
+            "hide": "Afficher / Masquer",
+            "remove": "Supprimer définitivement"
+        },
+        "profiles": {
+            "players": "Joueurs",
+            "groups": "Groupes",
+            "primary": "Filtre principale",
+            "secondary": "Filtre secondaire",
+            "none": "Aucun",
+            "create": "Créer un nouveau profile",
+            "between": "entre",
+            "and": "et"
+        },
+        "filters": {
+            "c": "Player class, use full class name in lower case (eg.: berserker, battle mage)",
+            "p": "Nom de Joueur",
+            "g": "Nom de Guilde",  
+            "s": "Serveur",
+            "e": "Expression personnalisé",
+            "#": "Show only players with specified tags",
+            "l": "Show only latest",
+            "f": "Show only first or first n entries",
+            "r": "Force recalculation of global variables",
+            "x": "Enable simulator (argument is number of iterations)",
+            "h": "Show hidden",
+            "o": "Show own",
+            "a": "Show all",
+            "d": "Show other",
+            "q": "Custom settings (separate header names with comma)",
+            "t": "Show online template directly",
+            "sr": "Sort by custom expression",
+            "qc": "Show only selected categories"
+        },
+        "scripts": {
+            "settings": "Settings",
+            "templates": "Templates",
+            "sidebar": {
+                "wiki": "Wiki",
+                "scripts": "Scripts",
+                "templates": "Templates",
+                "save": "Save",
+                "copy": "Copy",
+                "undo": "Undo",
+                "redo": "Redo",
+                "close": "Close",
+                "apply": "Apply",
+                "remove": "Remove",
+                "save_apply": "Save & Apply"
+            },
+            "types": {
+                "me": "Me",
+                "players": "Players",
+                "guilds": "Guilds",
+                "tracker": "Tracker Configuration",
+                "default": "Default"
+            },
+            "online": {
+                "not_available": "No scripts available"
+            }
+        },
+        "players": {
+            "other": "Show other players",
+            "hidden": "Show hidden"
+        },
+        "guilds": {
+            "other": "Show other guilds",
+            "hidden": "Show hidden",
+            "missing": "Player data is missing for following members:"
+        },
+        "browse": {
+            "hidden": "Show hidden"
+        },
+        "fast_export": {
+            "label": "Share",
+            "title": "Export options",
+            "all": "All",
+            "latest": "Latest",
+            "latest5": "Latest 5",
+            "selected": "Selected",
+            "selected_both": "Selected & Reference"
+        },
+        "share": {
+            "title": "File sharing",
+            "options": "Options",
+            "code": "Your code",
+            "get": "Get code",
+            "ok": "Ok",
+            "expire": "The code will automatically expire after 2 days.",
+            "single_use": "Single use only",
+            "single_use_notice": "Please consider keeping this option enabled unless you plan to share the file with multiple people."
+        },
+        "online_templates": {
+            "title": "Public scripts",
+            "description": "Description",
+            "author": "Author",
+            "created_on": "Created on",
+            "loading": "Fetching scripts"
+        },
+        "templates": {
+            "title": "Templates",
+            "loading": "Commiting changes",
+            "form": {
+                "changed_on": "Changed on",
+                "version": "Tool Version",
+                "compatibility": "Compatibility",
+                "published_on": "Published on",
+                "code": "Code",
+                "publish": "Publish",
+                "publish_tooltip": "Publish template",
+                "unpublish_tooltip": "Unpublish template",
+                "update": "Update",
+                "update_tooltip": "Update template with current script",
+                "remove": "Remove",
+                "remove_tooltip": "Remove template"
+            },
+            "quick_swap": "Quick swap custom templates"
+        },
+        "group": {
+            "compared_to": "compared to"
+        },
+        "player": {
+            "attributes": "Attributes",
+            "basis": "Basis",
+            "miscellaneous": "Misc",
+            "armor": "Armor",
+            "damage": "Damage",
+            "health": "Health",
+            "potions": "Potions",
+            "guild": "Guild",
+            "name": "Name",
+            "role": "Role",
+            "joined_on": "Joined on",
+            "bonuses": "Bonuses",
+            "scrapbook": "Scrapbook",
+            "achievements": "Achievements",
+            "mount": "Mount",
+            "heath_bonus": "Health Bonus",
+            "damage_bonus": "Damage Bonus",
+            "treasure": "Treasure",
+            "instructor": "Instructor",
+            "pet": "Pet",
+            "knights": "Hall of Knights",
+            "extras": {
+                "title": "Extras",
+                "registered": "Registered"
+            },
+            "runes": {
+                "title": "Runes",
+                "gold": "Gold",
+                "experience": "Experience",
+                "epic": "Epic Chance",
+                "quality": "Item Quality",
+                "health": "Health",
+                "fire_damage": "Fire Damage",
+                "cold_damage": "Cold Damage",
+                "lightning_damage": "Lightning Damage",
+                "fire_resist": "Fire Resistance",
+                "cold_resist": "Cold Resistance",
+                "lightning_resist": "Lightning Resistance"
+            },
+            "fortress": {
+                "title": "Fortress",
+                "upgrades": "Upgrades",
+                "rank": "Rank",
+                "honor": "Honor",
+                "building1": "Fortress",
+                "building2": "Quarters",
+                "building3": "Woodcutter",
+                "building4": "Quarry",
+                "building5": "Gem Mine",
+                "building6": "Academy",
+                "building7": "Archery Guild",
+                "building8": "Barracks",
+                "building9": "Mage Tower",
+                "building10": "Treasury",
+                "building11": "Smithy",
+                "building12": "Fortifications",
+                "working": "Building"
+            }
+        },
+        "settings": {
+            "title": "Global configuration",
+            "always_prev": "Compare previous (guilds)",
+            "empty_groups": "Show empty groups",
+            "obfuscated": "Hide player names",
+            "insecure": "Allow insecure html tags",
+            "insecure_error#": "This table was not displayed because it contains HTML tags that are prohibited.<br/>Please remove them from your settings and try again.",
+            "terms": "Accept Terms of Service",
+            "tab": "Default tab",
+            "preload": "Preload rows",
+            "actions": {
+                "title": "Actions",
+                "reset": "Reset actions",
+                "ignore": "Ignore changes",
+                "save": "Save actions"
+            }
+        }
     },
     "dungeons": {
         "simulate": "Simuler",
@@ -127,12 +421,12 @@
         "bert": "Bébert",
         "mark": "Marc",
         "kunigunde": "Diane",
-        "open": "Donjons actuellements ouverts",
+        "open": "Donjons actuellement ouverts",
         "graph": {
             "y": "PV Restants",
             "x": "- Distribution pour le nombre d'essaies sélectionnés -"
         },
-        "results": "Résultas",
+        "results": "Résultats",
         "cheats": {
             "title": "Menu de Cheat",
             "subtitle": "Sélectionnez les cheats à appliquer et rechargez votre personnage",
@@ -148,7 +442,7 @@
     },
     "simulator": {
         "paste_target#": "Cliquez ici et appuyez sur <b>CTRL&nbsp;+&nbsp;V</b> pour copier dans le Simulateur",
-        "threads": "Threads pour la simulation. Gardez ce nombre EN DESSOUS du nombrede cœurs de votre proccesseur",
+        "threads": "Threads pour la simulation. Gardez ce nombre EN DESSOUS du nombre de cœurs de votre processeur",
         "iterations": "Nombre d'iterations par thread.",
         "save_image": "Sauvegarder comme Image"
     },
@@ -187,9 +481,9 @@
         },
         "error": {
             "title": "Une erreur est survenue !",
-            "notice#": "Cette erreur a aussi pu être causé par votre profile<br>Cilquez le boutton revert ci-dessous pour revenir au profile par défault",
+            "notice#": "Cette erreur a aussi pu être causé par votre profile<br>Cliquez le bouton revert ci-dessous pour revenir au profile par default",
             "refresh": "Cliquez ici pour rafraîchir la page",
-            "revert": "Revenir au profile par défault"
+            "revert": "Revenir au profile par default"
         },
         "file_edit": {
             "title": "Éditer le fichier",
@@ -226,12 +520,12 @@
             "equals": "Égaux",
             "above": "Au Dessus",
             "below": "Au Dessous",
-            "between": "Entre",
-            "value": "Valeure",
+            "between": "entre",
+            "value": "Valeur",
             "secondary": "Second Filtre",
             "cancel": "Annuler",
             "save": "Sauvegarder",
-            "default": "Défault",
+            "default": "Default",
             "profile": "Profile",
             "none": "Aucun",
             "ast": {
@@ -240,17 +534,17 @@
                 "optional": "optionnel"
             },
             "player": {
-                "primary": "Configuration de filtre princpale",
+                "primary": "Configuration de filtre principale",
                 "secondary": "Configuration de filtre secondaire"
             },
             "group": {
-                "primary": "Configuration de filtre de groupe princpale",
+                "primary": "Configuration de filtre de groupe principale",
                 "secondary": "Configuration de filtre de groupe secondaire"
             }
         },
         "template_save": {
             "title": "Sauvegarder le Modèle",
-            "select_existing": "Selectionner un Modèle existant",
+            "select_existing": "Sélectionner un Modèle existant",
             "select_new": "Créer un nouveau modèle",
             "or": "ou",
             "name": "Nom du modèle",
