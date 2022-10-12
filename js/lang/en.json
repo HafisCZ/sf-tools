@@ -173,7 +173,8 @@
             "options": {
                 "title": "File options",
                 "advanced": "Show advanced file list",
-                "hidden": "Show hidden players"
+                "hidden": "Show hidden players",
+                "export_public_only": "Export only public data"
             },
             "tags": {
                 "single": "Tag",

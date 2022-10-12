@@ -1721,20 +1721,28 @@ class PlayersView extends View {
 
 // Files View
 class FilesView extends View {
+    exportConstraint () {
+        if (SiteOptions.export_public_only) {
+            return data => data.own !== 1 && data.own !== true;
+        } else {
+            return undefined;
+        }
+    }
+
     // Export all to json file
     exportAllJson () {
-        DatabaseManager.export().then(Exporter.json);
+        DatabaseManager.export(undefined, undefined, this.exportConstraint()).then(Exporter.json);
     }
 
     // Export all to cloud
     exportAllCloud () {
-        DatabaseManager.export().then(data => UI.OnlineShareFile.show(data));
+        DatabaseManager.export(undefined, undefined, this.exportConstraint()).then(data => UI.OnlineShareFile.show(data));
     }
 
     // Export selected to json file
     exportSelectedJson () {
         if (this.simple) {
-            DatabaseManager.export(undefined, this.selectedFiles).then((file) => {
+            DatabaseManager.export(undefined, this.selectedFiles, this.exportConstraint()).then((file) => {
                 Exporter.json(file);
             });
         } else {
@@ -1746,16 +1754,10 @@ class FilesView extends View {
         }
     }
 
-    tagSelected () {
-        if (this.simple && _not_empty(this.selectedFiles)) {
-            DialogController.open(EditFileTagDialog, this.selectedFiles, () => this.show());
-        }
-    }
-
     // Export selected to cloud
     exportSelectedCloud () {
         if (this.simple) {
-            DatabaseManager.export(undefined, this.selectedFiles).then((file) => {
+            DatabaseManager.export(undefined, this.selectedFiles, this.exportConstraint()).then((file) => {
                 UI.OnlineShareFile.show(file);
             });
         } else {
@@ -1764,6 +1766,12 @@ class FilesView extends View {
                 players: players,
                 groups: DatabaseManager.getGroupsFor(players)
             });
+        }
+    }
+
+    tagSelected () {
+        if (this.simple && _not_empty(this.selectedFiles)) {
+            DialogController.open(EditFileTagDialog, this.selectedFiles, () => this.show());
         }
     }
 
@@ -1900,6 +1908,8 @@ class FilesView extends View {
         SiteOptions.onChange('hidden', () => {
             window.location.href = window.location.href;
         });
+
+        this.prepareCheckbox('export_public_only', 'export-public-only');
 
         this.$tagFilter = this.$parent.find('[data-op="simple-tags"]');
         this.tagFilter = undefined;
