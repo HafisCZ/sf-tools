@@ -310,7 +310,8 @@
             "description": "Description",
             "author": "Author",
             "created_on": "Created on",
-            "loading": "Fetching scripts"
+            "loading": "Fetching scripts",
+            "code": "Enter your private code..."
         },
         "templates": {
             "title": "Templates",
@@ -409,6 +410,14 @@
                 "reset": "Reset actions",
                 "ignore": "Ignore changes",
                 "save": "Save actions"
+            },
+            "recovery": {
+                "title": "Recovery",
+                "import": "Import data",
+                "export": "Download data",
+                "description#": "With the options below you can export & import all data stored within the website.<br>It is recommended to export your data at least once a month in order to prevent accidental loss of data.",
+                "toast": "Recovery process just started. Please keep in mind that this can take a long time depending on the size of your recovery file.",
+                "notice": "Are you sure you want to recover SFTools from this file?<br><br>This operation will erase all of your existing data in order to proceed!"
             }
         }
     },
