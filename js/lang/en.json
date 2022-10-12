@@ -91,7 +91,7 @@
         },
         "underworld": {
             "title": "Underworld",
-            "desc": "Simulate the probably outcome of an underworld battle"
+            "desc": "Simulate the probable outcome of an underworld battle"
         },
         "fights": {
             "title": "Fight viewer",
@@ -112,6 +112,10 @@
         "hydra": {
             "title": "Hydra Simulator",
             "desc": "Simulate which guild pet class is best against current hydra."
+        },
+        "fortress": {
+            "title": "Fortress Simulator",
+            "desc": "Simulate the probable outcome of fortress raid"
         }
     },
     "404": {

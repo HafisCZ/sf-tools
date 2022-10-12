@@ -81,13 +81,14 @@ h3 {
 
 .wip {
     opacity: 0.5;
+    position: relative;
 }
 
 .wip::before {
-    content: 'WIP';
+    content: 'Work In Progress';
     position: absolute;
-    left: calc(50% - 1em);
-    top: 4em;
+    left: calc(50% - 4em);
+    top: 1em;
     color: orange;
     font-weight: bold;
 }
