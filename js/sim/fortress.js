@@ -1,54 +1,6 @@
-// Override some methods
-FighterModel.prototype.getHealth = function () {
-    if (this.Player.ForceHealth) {
-        return this.Player.ForceHealth;
-    } else {
-        return (this.getHealthMultiplier() * (this.Player.Level + 1) * this.Player.Constitution.Total) % Math.pow(2, 32);
-    }
-}
-
-FighterModel.prototype.getFixedDamage = function () {
-    return Math.trunc((this.Player.Level + 1) * this.getDamageMultiplier());
-}
-
-FighterModel.prototype.getDamageRange = function (weapon, target) {
-    let min = weapon.DamageMin;
-    let max = weapon.DamageMax;
-
-    let aa = this.getAttribute(this);
-    let ad = target.getAttribute(this) / 2;
-
-    let dm = target.DamageReduction * (1 + Math.max(aa / 2, aa - ad) / 10);
-
-    if (!min || !max) {
-        min = max = this.getFixedDamage();
-    }
-
-    return {
-        Max: Math.ceil(dm * min),
-        Min: Math.ceil(dm * max)
-    };
-}
-
-FighterModel.prototype.initialize = function (target) {
-    // Round modifiers
-    this.AttackFirst = false;
-    this.SkipChance = this.getBlockChance(target);
-    this.CriticalChance = this.getCriticalChance(target);
-    this.TotalHealth = this.getHealth();
-
-    target.DamageReduction = 1 - target.getDamageReduction(this) / 100;
-
-    this.Weapon1 = this.getDamageRange(this.Player.Items.Wpn1, target);
-    this.Critical = 2;
-}
-
 // WebWorker hooks
-self.addEventListener('message', function (message) {
-    let { iterations, player, target } = message.data;
-
+self.addEventListener('message', function ({ data: { iterations, player, target } }) {
     self.postMessage({
-        command: 'finished',
         results: new FortressSimulator().simulate(player, target, iterations)
     });
 

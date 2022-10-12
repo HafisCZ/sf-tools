@@ -276,13 +276,11 @@
                             const worker = await createSimulatorWorker('fortress');
 
                             worker.addEventListener('message', message => {
-                                if (message.data.command == 'finished') {
-                                    results.push(message.data.results);
+                                results.push(message.data.results);
 
-                                    if (results.length == blocks) {
-                                        Loader.toggle(false);
-                                        showResults(results);
-                                    }
+                                if (results.length == blocks) {
+                                    Loader.toggle(false);
+                                    showResults(results);
                                 }
                             }, false);
 

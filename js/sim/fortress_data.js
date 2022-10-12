@@ -95,7 +95,7 @@ const FORTRESS_WALL_MAP = {
 };
 
 const FortressUnits = new (class {
-    createData (tier, source, canBlock = false) {
+    createData (tier, source, isWall = false) {
         const { class: klass, level, str, dex, int, con, lck, min, max } = source[tier];
 
         return {
@@ -103,7 +103,7 @@ const FortressUnits = new (class {
             Class: klass,
             NoBaseDamage: true,
             ForceArmor: 1,
-            BlockChance: canBlock ? 25 : 0,
+            BlockChance: isWall ? 0 : undefined,
             Potions: {
                 Life: 0
             },
