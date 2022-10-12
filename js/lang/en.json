@@ -673,6 +673,19 @@
             }
         }
     },
+    "fortress": {
+        "warrior_count": "Warriors",
+        "warrior_level": "Warrior Level",
+        "archer_count": "Archers",
+        "archer_level": "Archer Level",
+        "mage_count": "Mages",
+        "mage_level": "Mage Level",
+        "units": {
+            "remaining": "Average remaning units:",
+            "player": "Warriors",
+            "target": "Defenses"
+        }
+    },
     "hydra": {
         "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
         "player_count": "Player Count",

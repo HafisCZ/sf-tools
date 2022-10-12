@@ -160,6 +160,10 @@ class Field {
     static isNonZero (val) {
         return !isNaN(val) && val > 0;
     }
+
+    static createRange (minimum, maximum) {
+        return (val) => Field.isNumber(val) && val >= minimum && val <= maximum;
+    }
 }
 
 class Editor {

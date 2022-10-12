@@ -93,3 +93,83 @@ const FORTRESS_WALL_MAP = {
     '19': { class: 1, level: 195, str: 2975, dex: 985, int: 985, con: 8925, lck: 0, min: 341, max: 679 },
     '20': { class: 1, level: 200, str: 3050, dex: 1010, int: 1010, con: 9150, lck: 0, min: 348, max: 697 }
 };
+
+const FortressUnits = new (class {
+    createData (tier, source, canBlock = false) {
+        const { class: klass, level, str, dex, int, con, lck, min, max } = source[tier];
+
+        return {
+            Level: level,
+            Class: klass,
+            NoBaseDamage: true,
+            ForceArmor: 1,
+            BlockChance: canBlock ? 25 : 0,
+            Potions: {
+                Life: 0
+            },
+            Strength: {
+                Total: str
+            },
+            Dexterity: {
+                Total: dex
+            },
+            Intelligence: {
+                Total: int
+            },
+            Constitution: {
+                Total: con
+            },
+            Luck: {
+                Total: lck
+            },
+            Dungeons: {
+                Player: 0,
+                Group: 0
+            },
+            Runes: {
+                Health: 0,
+                ResistanceFire: 0,
+                ResistanceCold: 0,
+                ResistanceLightning: 0
+            },
+            Fortress: {
+                Gladiator: 0
+            },
+            Items: {
+                Hand: {},
+                Wpn1: {
+                    AttributeTypes: { 2: 0 },
+                    Attributes: { 2: 0 },
+                    DamageMax: min,
+                    DamageMin: max,
+                    HasEnchantment: false
+                }
+            }
+        }
+    }
+
+    createFortification (level) {
+        if (level > 0) {
+            return [
+                this.createData(level, FORTRESS_WALL_MAP, true)
+            ];
+        } else {
+            return [];
+        }
+    }
+
+    createUnits (length, level, source) {
+        return Array.from({ length }).map(() => this.createData(level, source));
+    }
+
+    fromEditor (data) {
+        return {
+            player: this.createUnits(data.WarriorCount, data.WarriorLevel, FORTRESS_WARRIOR_MAP),
+            target: [
+                ...this.createFortification(data.FortificationsLevel),
+                ...this.createUnits(data.ArcherCount, data.ArcherLevel, FORTRESS_ARCHER_MAP),
+                ...this.createUnits(data.MageCount, data.MageLevel, FORTRESS_MAGE_MAP)
+            ]
+        }
+    }
+})();

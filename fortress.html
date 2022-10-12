@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>SFTools - Fortress Simulator</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="res/favicon.png"/>
+
+        <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
+        <link rel="stylesheet" href="css/style.css"/>
+        <link rel="stylesheet" href="css/editor.css"/>
+
+        <script src="vendor/js/jquery.3.4.1.min.js"></script>
+        <script src="vendor/js/semantic.min.js"></script>
+
+        <script src="js/enum.js"></script>
+        <script src="js/util.js"></script>
+        <script src="js/lang.js"></script>
+
+        <script src="js/plugins.js"></script>
+
+        <script src="js/core/util.js"></script>
+        <script src="js/core/playa.js"></script>
+        <script src="js/core/core.js"></script>
+        <script src="js/core/idb.js"></script>
+        <script src="js/core/ast.js"></script>
+        <script src="js/stats/settings.js"></script>
+        <script src="js/changelog.js"></script>
+        <script src="js/views.js"></script>
+        <script src="js/sim/fortress_data.js"></script>
+        <script src="js/editor.js"></script>
+
+        <script src="endpoint/endpoint.js"></script>
+
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
+    </head>
+    <body class="margin-none-bottom">
+        <div class="ui fixed borderless huge menu css-menu">
+            <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
+        </div>
+
+        <div class="ui main container">
+            <div class="ui two columns stackable grid">
+                <div class="column">
+                    <div class="ui form" id="fortress-editor">
+                        <div class="bordered bone">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label data-intl="fortress.warrior_count"></label>
+                                    <input class="text-center" data-path="WarriorCount" placeholder="1 - 45">
+                                </div>
+                                <div class="field">
+                                    <label data-intl="fortress.warrior_level"></label>
+                                    <div class="ui selection compact dropdown" data-path="WarriorLevel">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bordered bthree">
+                            <div class="two fields">
+                                <div class="field">
+                                    <label data-intl="stats.player.fortress.building12"></label>
+                                    <input class="text-center" data-path="FortificationsLevel" placeholder="0 - 20">
+                                </div>
+                                <div class="field"></div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label data-intl="fortress.archer_count"></label>
+                                    <input class="text-center" data-path="ArcherCount" placeholder="0 - 30">
+                                </div>
+                                <div class="field">
+                                    <label data-intl="fortress.archer_level"></label>
+                                    <div class="ui selection compact dropdown" data-path="ArcherLevel">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="two fields">
+                                <div class="field">
+                                    <label data-intl="fortress.mage_count"></label>
+                                    <input class="text-center" data-path="MageCount" placeholder="0 - 15">
+                                </div>
+                                <div class="field">
+                                    <label data-intl="fortress.mage_level"></label>
+                                    <div class="ui selection compact dropdown" data-path="MageLevel">
+                                        <div class="text"></div>
+                                        <i class="dropdown icon"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="ui grid">
+                        <div class="row">
+                            <div class="seven wide column">
+                                <div class="ui small form">
+                                    <div class="two fields" style="margin-bottom: 0;">
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.threads">
+                                            <input class="text-center fluid" type="text" id="sim-threads" value="4">
+                                        </div>
+                                        <div class="field" data-position="bottom center" data-intl-tooltip="simulator.iterations">
+                                            <span style="position: absolute; top: 0.5em; left: -0.25em;">x</span>
+                                            <input class="text-center fluid" type="text" id="sim-iterations" value="2500">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="nine wide column">
+                                <button class="ui fluid button" type="submit" id="simulate" data-intl="simulator.simulate"></button>
+                            </div>
+                        </div>
+                        <div class="row padding-none">
+                            <div class="sixteen wide column">
+                                <hr/>
+                            </div>
+                        </div>
+                        <div class="row" style="padding-left: 1em; padding-right: 1em">
+                            <div id="results" style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 15em;">
+                                <!-- Results -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            Site.ready(function () {
+                // Handle simulate button validation
+                let $simulateButton = $('#simulate');
+                function updateSimulateButton () {
+                    if (fortressEditor.valid()) {
+                        $simulateButton.removeClass('disabled');
+                    } else {
+                        $simulateButton.addClass('disabled');
+                    }
+                }
+
+                // Editor configuration
+                let fortressEditor = new (class {
+                    constructor () {
+                        this.fields = {
+                            warrior_count: new Field('[data-path="WarriorCount"]', '1', Field.createRange(1, 45)),
+                            warrior_level: new Field('[data-path="WarriorLevel"]', '0'),
+                            archer_count: new Field('[data-path="ArcherCount"]', '0', Field.createRange(0, 30)),
+                            archer_level: new Field('[data-path="ArcherLevel"]', '0'),
+                            mage_count: new Field('[data-path="MageCount"]', '0', Field.createRange(0, 15)),
+                            mage_level: new Field('[data-path="MageLevel"]', '0'),
+                            fortifications_level: new Field('[data-path="FortificationsLevel"]', '0', Field.createRange(0, 20))
+                        }
+
+                        this.fields['warrior_level'].$object.dropdown({
+                            values: Object.entries(FORTRESS_WARRIOR_MAP).map(([id, { level }]) => ({
+                                name: level,
+                                value: id
+                            }))
+                        }).dropdown('set selected', '0');
+
+                        this.fields['archer_level'].$object.dropdown({
+                            values: Object.entries(FORTRESS_ARCHER_MAP).map(([id, { level }]) => ({
+                                name: level,
+                                value: id
+                            }))
+                        }).dropdown('set selected', '0');
+
+                        this.fields['mage_level'].$object.dropdown({
+                            values: Object.entries(FORTRESS_MAGE_MAP).map(([id, { level }]) => ({
+                                name: level,
+                                value: id
+                            }))
+                        }).dropdown('set selected', '0');
+
+                        for (let field of Object.values(this.fields)) {
+                            field.setListener(() => this.onChangeLister());
+                            field.triggerAlways = true;
+                        }
+                    }
+
+                    fill (data) {
+                        if (data) {
+                            for (let field of Object.values(this.fields)) {
+                                field.set(getObjectAt(data, field.path()));
+                            }
+                        } else {
+                            for (let field of Object.values(this.fields)) {
+                                field.clear();
+                            }
+                        }
+                    }
+
+                    read () {
+                        let data = {};
+                        for (let field of Object.values(this.fields)) {
+                            setObjectAt(data, field.path(), field.get());
+                        }
+
+                        return data;
+                    }
+
+                    valid () {
+                        return Object.values(this.fields).every(field => field.valid())
+                    }
+
+                    onChangeLister () {
+                        updateSimulateButton();
+                    }
+                })('#fortress-editor');
+
+                // Reset editor content
+                fortressEditor.valid();
+                fortressEditor.onChangeLister();
+
+                // Captive inputs
+                $('#sim-threads').captiveInputField('fortress_sim/threads', 4, v => !isNaN(v) && v >= 1);
+                $('#sim-iterations').captiveInputField('fortress_sim/iterations', 2500, v => !isNaN(v) && v >= 1);
+
+                function showResults (results) {
+                    // TODO: Display results properly
+                    let score = 0;
+                    let iterations = 0;
+                    let playerUnits = 0;
+                    let targetUnits = 0;
+                    let averagePlayerUnits = 0;
+                    let averageTargetUnits = 0;
+
+                    for (const result of results) {
+                        score += result.score;
+                        iterations += result.iterations;
+                        playerUnits += result.player_units;
+                        targetUnits += result.target_units;
+                        averagePlayerUnits += result.avg_player_units;
+                        averageTargetUnits += result.avg_target_units;
+                    }
+
+                    playerUnits /= results.length;
+                    targetUnits /= results.length;
+                    averagePlayerUnits /= results.length;
+                    averageTargetUnits /= results.length;
+
+                    $('#results').html(`
+                        <div style="font-size: 140%;">
+                            <b>${(100 * score / iterations).toFixed(2)}%</b>
+                        </div>
+                        <div style="margin-top: 2.5em;">
+                            <b>${intl('fortress.units.remaining')}</b>
+                        </div>
+                        <div style="margin-top: 0.5em;">
+                            ${intl('fortress.units.player')}: &nbsp;&nbsp;&nbsp;<span>${Math.ceil(averagePlayerUnits)} / ${playerUnits}</span>
+                        </div>
+                        <div style="margin-top: 0.5em;">
+                            ${intl('fortress.units.target')}: &nbsp;&nbsp;&nbsp;<span>${Math.ceil(averageTargetUnits)} / ${targetUnits}</span>
+                        </div>
+                    `);
+                }
+
+                // Run simulation
+                $('#simulate').click(async function () {
+                    if (fortressEditor.valid()) {
+                        Loader.toggle(true);
+
+                        const { player, target } = FortressUnits.fromEditor(fortressEditor.read());
+
+                        // Set up threads & iterations
+                        let blocks = Math.max(1, Number($('#sim-threads').val()) || 4);
+                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 2500);
+                        let results = [];
+
+                        for (let i = 0; i < blocks; i++) {
+                            const worker = await createSimulatorWorker('fortress');
+
+                            worker.addEventListener('message', message => {
+                                if (message.data.command == 'finished') {
+                                    results.push(message.data.results);
+
+                                    if (results.length == blocks) {
+                                        Loader.toggle(false);
+                                        showResults(results);
+                                    }
+                                }
+                            }, false);
+
+                            worker.postMessage({
+                                iterations: iterations,
+                                player: player,
+                                target: target
+                            });
+                        }
+                    }
+                })
+            });
+        </script>
+    </body>
+</html>
