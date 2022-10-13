@@ -11,24 +11,35 @@
         "class7": "Chasseur de Démons",
         "class8": "Druide",
         "class9": "Barde",
+        "mask0": "Aigle",
         "mask1": "Ours",
-        "mask2": "Chat",
+        "mask2": "Tigre",
         "instrument0": "Harpe",
         "instrument1": "Luth",
         "instrument2": "Flute",
+        "life_potion": "Vie Éternelle",
         "attribute1": "Force",
         "attribute2": "Habileté",
         "attribute3": "Intelligence",
         "attribute4": "Endurance",
         "attribute5": "Chance",
-        "life_potion": "Vie Éternelle"
+        "potion1": "Force",
+        "potion2": "Habileté",
+        "potion3": "Intelligence",
+        "potion4": "Endurance",
+        "potion5": "Chance",
+        "potion6": "Vie Éternelle",
+        "rank1": "Chef",
+        "rank2": "Officer",
+        "rank3": "Membre",
+        "rank4": "Invité"
     },
     "index": {
         "toggle": "Afficher les crédits",
         "roles": {
-            "admin": "Quelqu'un avec beacoup de temps libre",
-            "helper": "Helpers - Recherche, Tests, Retours, etc...",
-            "tester": "Testers",
+            "admin": "Quelqu'un avec beaucoup de temps libre",
+            "helper": "Contributeurs - Recherche, Tests, Retours, etc...",
+            "tester": "Testeurs",
             "wiki": "Chef/Manager du Wiki",
             "translator": "Traducteurs",
             "mention": "Autres Mentions"
@@ -52,7 +63,7 @@
         },
         "inventory": {
             "title": "Gestionnaire d'inventaire",
-            "desc": "Comparez vos objets, calculez les résultas d'améliorations etc..."
+            "desc": "Comparez vos objets, calculez les résultats d'améliorations etc..."
         },
         "idle": {
             "title": "Manager d'Arène",
@@ -105,7 +116,468 @@
     },
     "404": {
         "title": "404",
-        "text": "Il semblerai que cette page n'existe pas, veulliez verifier votre recherche"
+        "text": "Il semblerai que cette page n'existe pas, veuillez verifier votre recherche"
+    },
+    "stats": {
+        "topbar": {
+            "temporary_flag": "Temporaire",
+            "players": "Joueurs",
+            "guilds": "Guildes",
+            "browse": "Explorer",
+            "scripts": "Scripts",
+            "files": "Fichiers",
+            "settings": "Paramètres",
+            "temporary": "Session Temporaire",
+            "changelog": "Changelog",
+            "profile": "Profile"
+        },
+        "files": {
+            "titles": {
+                "filters": "Filtres",
+                "io": "Importer / Exporter"
+            },
+            "timestamp": "Horodatage",
+            "timestamps": "Horodatages",
+            "prefix": "Préfixe",
+            "name": "Nom",
+            "group": "Groupe",
+            "groups": "Groupes",
+            "origin": "Origine",
+            "players": "Joueurs",
+            "version": "Version",
+            "import": {
+                "file": "Importer depuis un Fichier",
+                "shared": "Importer via Partage",
+                "game": "Importer depuis le Jeu"
+            },
+            "export": {
+                "all": "Tout exporter",
+                "selected": "Exporter la Sélection"
+            },
+            "selected": {
+                "text": "items(s) sélectionné(s)",
+                "no": "Non"
+            },
+            "hide": {
+                "label": "Cacher",
+                "tooltip": "Fonctionne indépendamment en mode simple & avancé",
+                "migrate": "Marque les fichiers avec tout les joueurs masqués comme fichiers caché"
+            },
+            "merge": {
+                "selected": "Fusionner la sélection"
+            },
+            "delete": {
+                "all": "Tout supprimer",
+                "selected": "Supprimer la sélection"
+            },
+            "options": {
+                "title": "Options de Fichiers",
+                "advanced": "Afficher la liste des fichiers avancée",
+                "hidden": "Afficher les joueurs masqués"
+            },
+            "tags": {
+                "single": "Marqueur",
+                "multiple": "Marqueurs",
+                "all": "Tous",
+                "none": "Aucun"
+            },
+            "filters": {
+                "any": "Tout",
+                "n_unique": "unique",
+                "expression": "Expression",
+                "expression_placeholder": "Votre expression",
+                "timestamp": "Horodatage",
+                "player": "Joueur",
+                "group": "Groupe",
+                "prefix": "Préfixe",
+                "tags": "Marqueurs",
+                "type": "Type",
+                "type_all": "Afficher tous les personnages",
+                "type_own": "Afficher seulement votre personnage",
+                "type_other": "Afficher seulement les autres personnages",
+                "origin": "Origine",
+                "hidden": "Caché"
+            },
+            "online": {
+                "title": "Partage de Fichier",
+                "prompt": "Entrez votre code",
+                "invalid": "Code invalide ou expiré !",
+                "cancel": "Annuler",
+                "ok": "Ok"
+            }
+        },
+        "copy": {
+            "image": "Sauvegarder en tant qu'image",
+            "basic": "Copier le tableau",
+            "fight": "Copier le tableau pour le simulateur PvP",
+            "player": "Copier",
+            "player_companions": "Copier avec les companions"
+        },
+        "context": {
+            "hide": "Afficher / Masquer",
+            "remove": "Supprimer définitivement"
+        },
+        "profiles": {
+            "players": "Joueurs",
+            "groups": "Groupes",
+            "primary": "Filtre principale",
+            "secondary": "Filtre secondaire",
+            "none": "Aucun",
+            "create": "Créer un nouveau profile",
+            "between": "entre",
+            "and": "et"
+        },
+        "filters": {
+            "c": "Classe du joueur, utilisez le nom complet de la classe en minuscules (ex. : berserker, mage de combat).",
+            "p": "Nom de Joueur",
+            "g": "Nom de Guilde",  
+            "s": "Serveur",
+            "e": "Expression personnalisé",
+            "#": "Afficher seulement les joueurs avec les marqueurs spécifiés",
+            "l": "Afficher uniquement les plus récents",
+            "f": "Afficher uniquement les premières ou les n premières entrées",
+            "r": "Forcer le re calcul des variables globales",
+            "x": "Activer le simulateur (l'argument est le nombre d'itérations)",
+            "h": "Afficher les joueurs masqués",
+            "o": "Afficher votre personnage",
+            "a": "Afficher tout les personnages",
+            "d": "Afficher les autres personnages",
+            "q": "Paramètres personnalisés (séparer les noms des en-têtes par une virgule)",
+            "t": "Afficher directement le modèle en ligne",
+            "sr": "Trier par expression personnalisée",
+            "qc": "Afficher uniquement les catégories sélectionnées"
+        },
+        "scripts": {
+            "settings": "Paramètres",
+            "templates": "Modèles",
+            "sidebar": {
+                "wiki": "Wiki",
+                "scripts": "Scripts",
+                "templates": "Modèles",
+                "save": "Sauvegarder",
+                "copy": "Copie",
+                "undo": "Annuler",
+                "redo": "Refaire",
+                "close": "Fermer",
+                "apply": "Appliquer",
+                "remove": "Supprimer",
+                "save_apply": "Sauvegarder & Appliquer"
+            },
+            "types": {
+                "me": "Me",
+                "players": "Players",
+                "guilds": "Guilds",
+                "tracker": "Tracker Configuration",
+                "default": "Default"
+            },
+            "online": {
+                "not_available": "Pas de script disponible"
+            }
+        },
+        "players": {
+            "other": "Afficher les autres personnages",
+            "hidden": "Afficher les joueurs masqués"
+        },
+        "guilds": {
+            "other": "Afficher les autres guildes",
+            "hidden": "Afficher les joueurs masqués",
+            "missing": "Données manquantes pour les membres suivants :"
+        },
+        "browse": {
+            "hidden": "Afficher les joueurs masqués"
+        },
+        "fast_export": {
+            "label": "Partager",
+            "title": "Options d'export",
+            "all": "Tous",
+            "latest": "Dernier",
+            "latest5": "5 derniers",
+            "selected": "Sélectionné",
+            "selected_both": "Sélectionné & Mention"
+        },
+        "share": {
+            "title": "Partage de Fichier",
+            "options": "Options",
+            "code": "Votre code",
+            "get": "Obtenir le code",
+            "ok": "Ok",
+            "expire": "Le code expirera automatiquement après 2 jours.",
+            "single_use": "Usage unique",
+            "single_use_notice": "Pensez à garder cette option activée, sauf si vous envisagez de partager le fichier avec plusieurs personnes."
+        },
+        "online_templates": {
+            "title": "Scripts publiques",
+            "description": "Description",
+            "author": "Auteur",
+            "created_on": "Créer le",
+            "loading": "Récupération des scripts",
+            "code": "Entrez votre code privé"
+        },
+        "templates": {
+            "title": "Modèles",
+            "loading": "Validation des modifications",
+            "form": {
+                "changed_on": "Changé le",
+                "version": "Version de l'outil",
+                "compatibility": "Compatibilité",
+                "published_on": "Publié le",
+                "code": "Code",
+                "publish": "Publier",
+                "publish_tooltip": "Publier le modèle",
+                "unpublish_tooltip": "Dé-publier le modèle",
+                "update": "Mettre à jour",
+                "update_tooltip": "Mettre à jour le modèle avec le script actuel",
+                "remove": "Supprimer",
+                "remove_tooltip": "Supprimer le modèle"
+            },
+            "quick_swap": "Échange rapide de modèles"
+        },
+        "group": {
+            "compared_to": "comparé à"
+        },
+        "player": {
+            "attributes": "Attributes",
+            "basis": "Basis",
+            "miscellaneous": "Misc",
+            "armor": "Armor",
+            "damage": "Damage",
+            "health": "Health",
+            "potions": "Potions",
+            "guild": "Guild",
+            "name": "Name",
+            "role": "Role",
+            "joined_on": "Joined on",
+            "bonuses": "Bonuses",
+            "scrapbook": "Scrapbook",
+            "achievements": "Achievements",
+            "mount": "Mount",
+            "heath_bonus": "Health Bonus",
+            "damage_bonus": "Damage Bonus",
+            "treasure": "Treasure",
+            "instructor": "Instructor",
+            "pet": "Pet",
+            "knights": "Hall of Knights",
+            "extras": {
+                "title": "Extras",
+                "registered": "Registered"
+            },
+            "runes": {
+                "title": "Runes",
+                "gold": "Gold",
+                "experience": "Experience",
+                "epic": "Epic Chance",
+                "quality": "Item Quality",
+                "health": "Health",
+                "fire_damage": "Fire Damage",
+                "cold_damage": "Cold Damage",
+                "lightning_damage": "Lightning Damage",
+                "fire_resist": "Fire Resistance",
+                "cold_resist": "Cold Resistance",
+                "lightning_resist": "Lightning Resistance"
+            },
+            "fortress": {
+                "title": "Fortress",
+                "upgrades": "Upgrades",
+                "rank": "Rank",
+                "honor": "Honor",
+                "building1": "Fortress",
+                "building2": "Quarters",
+                "building3": "Woodcutter",
+                "building4": "Quarry",
+                "building5": "Gem Mine",
+                "building6": "Academy",
+                "building7": "Archery Guild",
+                "building8": "Barracks",
+                "building9": "Mage Tower",
+                "building10": "Treasury",
+                "building11": "Smithy",
+                "building12": "Fortifications",
+                "working": "Building"
+            }
+        },
+        "settings": {
+            "title": "Global configuration",
+            "always_prev": "Compare previous (guilds)",
+            "empty_groups": "Show empty groups",
+            "obfuscated": "Hide player names",
+            "insecure": "Allow insecure html tags",
+            "insecure_error#": "This table was not displayed because it contains HTML tags that are prohibited.<br/>Please remove them from your settings and try again.",
+            "terms": "Accept Terms of Service",
+            "tab": "Default tab",
+            "preload": "Preload rows",
+            "actions": {
+                "title": "Actions",
+                "reset": "Reset actions",
+                "ignore": "Ignore changes",
+                "save": "Save actions"
+            },
+            "recovery": {
+                "title": "Recovery",
+                "import": "Import data",
+                "export": "Download data",
+                "description#": "With the options below you can export & import all data stored within the website.<br>It is recommended to export your data at least once a month in order to prevent accidental loss of data.",
+                "toast": "Recovery process just started. Please keep in mind that this can take a long time depending on the size of your recovery file.",
+                "notice": "Are you sure you want to recover SFTools from this file?<br><br>This operation will erase all of your existing data in order to proceed!"
+            }
+        }
+    },
+    "pets": {
+        "generate": {
+            "tooltip": "Generate a level / gladiator success map. Only possible with own pet against a dungeon boss.",
+            "one": "Generate",
+            "five": "Generate next 5",
+            "ten": "Generate next 10"
+        },
+        "simulate": "Simulate",
+        "results": "Results",
+        "map": {
+            "gladiator": "Glad"
+        },
+        "types": {
+            "0": "Shadow",
+            "1": "Light",
+            "2": "Earth",
+            "3": "Fire",
+            "4": "Water"
+        },
+        "names": {
+            "0": "Slurp",
+            "1": "Digmol",
+            "2": "Toothey",
+            "3": "Okultacle",
+            "4": "Spidor",
+            "5": "Jackobu",
+            "6": "Shrimpfly",
+            "7": "Reaprim",
+            "8": "Petdacat",
+            "9": "Mykon",
+            "10": "Fishorr",
+            "11": "Cuckooly",
+            "12": "Battlutter",
+            "13": "Pinklynx",
+            "14": "Pharamumm",
+            "15": "Ninstarr",
+            "16": "Luchtablong",
+            "17": "Angrack",
+            "18": "Devilsatt",
+            "19": "Poisnake",
+            "20": "Shaggyll",
+            "21": "Jellclops",
+            "22": "Tinck",
+            "23": "Cloudning",
+            "24": "Nevorfull",
+            "25": "Plutoid",
+            "26": "Djinntonic",
+            "27": "Blaxta",
+            "28": "Lampcess",
+            "29": "Teslarr",
+            "30": "Sunnya",
+            "31": "Buckfoxion",
+            "32": "Birdychirp",
+            "33": "Eyeorwhat",
+            "34": "Mesmerit",
+            "35": "Antlar",
+            "36": "Liphant",
+            "37": "Knilight",
+            "38": "Heraldon",
+            "39": "Unikor",
+            "40": "Mamoton",
+            "41": "Monkorrage",
+            "42": "Smaponyck",
+            "43": "Bittnutz",
+            "44": "Roarear",
+            "45": "Muscudon",
+            "46": "Apstick",
+            "47": "Horrnington",
+            "48": "Boaringg",
+            "49": "Mameloth",
+            "50": "Rheynooh",
+            "51": "Rockastonn",
+            "52": "Redwoofox",
+            "53": "Lilbeatzup",
+            "54": "Forror",
+            "55": "Nipprabs",
+            "56": "Armoruck",
+            "57": "Canocle",
+            "58": "Tricerawood",
+            "59": "Mouthrexor",
+            "60": "Firimp",
+            "61": "Gullps",
+            "62": "Pyrophibus",
+            "63": "Flamechirr",
+            "64": "Tectospit",
+            "65": "Pyroplant",
+            "66": "Kokofire",
+            "67": "Peppryon",
+            "68": "Boomywoomy",
+            "69": "Tikiricky",
+            "70": "Matchlit",
+            "71": "Birblazey",
+            "72": "Infernox",
+            "73": "Humbuzzish",
+            "74": "Dragopyr",
+            "75": "Mantiflame",
+            "76": "Finnettle",
+            "77": "Etrock",
+            "78": "Blazingtongues",
+            "79": "Devastor",
+            "80": "Goldy",
+            "81": "Orcahle",
+            "82": "Ocodile",
+            "83": "Penguwater",
+            "84": "Walrophin",
+            "85": "Colsnail",
+            "86": "Aquaphant",
+            "87": "Naar",
+            "88": "Octoboss",
+            "89": "Ewilgryn",
+            "90": "Seapard",
+            "91": "Shellzy",
+            "92": "Mingho",
+            "93": "Angbite",
+            "94": "Mermoid",
+            "95": "Watnake",
+            "96": "Cannoturtle",
+            "97": "Unhere",
+            "98": "Tritosting",
+            "99": "Hydrospir"
+        },
+        "bulk": {
+            "toast": {
+                "title": "Starting simulation",
+                "matches": "Matches:",
+                "not_possible": "Not possible"
+            }
+        },
+        "editor": {
+            "none": "None",
+            "type": "Type",
+            "pet": "Pet",
+            "habitat": "Habitat",
+            "health": "Health",
+            "attribute": "Attribute",
+            "defense": "Defense",
+            "skip": "Skip Chance",
+            "crit": "Critical Chance",
+            "damage": "Damage",
+            "critical_bonus": "Critical",
+            "at100": {
+                "title": "At 100 - 149",
+                "placeholder": "Pets at 100 - 149"
+            },
+            "at150": {
+                "title": "At 150 - 199",
+                "placeholder": "Pets at 150 - 199"
+            },
+            "at200": {
+                "title": "At 200",
+                "placeholder": "Pets at 200"
+            },
+            "pack": {
+                "title": "Pack",
+                "placeholder": "Pets you caught"
+            }
+        }
     },
     "dungeons": {
         "simulate": "Simuler",
@@ -117,12 +589,12 @@
         "bert": "Bébert",
         "mark": "Marc",
         "kunigunde": "Diane",
-        "open": "Donjons actuellements ouverts",
+        "open": "Donjons actuellement ouverts",
         "graph": {
             "y": "PV Restants",
             "x": "- Distribution pour le nombre d'essaies sélectionnés -"
         },
-        "results": "Résultas",
+        "results": "Résultats",
         "cheats": {
             "title": "Menu de Cheat",
             "subtitle": "Sélectionnez les cheats à appliquer et rechargez votre personnage",
@@ -136,11 +608,124 @@
             "keep_original": "Garder l'original"
         }
     },
+    "underworld": {
+        "goblin_pit": "Goblin Pit",
+        "goblin_upgrades": "Goblin Upgrades",
+        "troll_block": "Troll Block",
+        "troll_upgrades": "Troll Upgrades",
+        "keeper": "Keeper",
+        "keeper_upgrades": "Keeper Upgrades",
+        "shield_mode": "Allow underworld units to use shield",
+        "toast": {
+            "start": {
+                "title": "Starting simulation",
+                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            }
+        }
+    },
+    "players": {
+        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
+        "ihof_mode": "IHOF Mode: Gladiator is not reduced!",
+        "fireball_mode": "Applies fireball fix for Berserkers, Demon Hunters, Druids and Bards",
+        "druid_armor_mode": "Applies armor fix for Druids",
+        "mode": {
+            "all": "All vs All",
+            "attack": "One vs All",
+            "defend": "All vs One",
+            "tournament": "Tournament"
+        },
+        "toast": {
+            "start": {
+                "title": "Starting simulation",
+                "message#": "<b>Block size:</b> #{blockSize}<br/><b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            },
+            "tournament": {
+                "title": "Preparing ladder",
+                "message#": "<b>Players:</b> #{count}"
+            }
+        }
+    },
+    "guilds": {
+        "gladiator_mode": "Gladiator will be set to 15 regardless of your settings",
+        "guild1": "Guild A",
+        "guild2": "Guild B",
+        "toast": {
+            "start": {
+                "title": "Starting simulation",
+                "message#": "<b>Iterations:</b> #{iterations}<br/><b>Thread cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            }
+        }
+    },
+    "hydra": {
+        "footer#": "Based on <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
+        "player_count": "Player Count",
+        "main": "Main",
+        "side1": "Side 1",
+        "side2": "Side 2",
+        "hydra": "Hydra",
+        "iterations": {
+            "label": "Iterations:",
+            "popup": "Amount of iterations per pet class."
+        },
+        "result": {
+            "health": "#{health}% HP left",
+            "fights_single": "#{count} fight",
+            "fights_multiple": "#{count} fights"
+        },
+        "names": {
+            "1": "One-headed Hydra",
+            "2": "Two-headed Hydra",
+            "3": "Three-headed Hydra",
+            "4": "Four-headed Hydra",
+            "5": "Five-headed Hydra",
+            "6": "Six-headed Hydra",
+            "7": "Seven-headed Hydra",
+            "8": "Eight-headed Hydra",
+            "9": "Nine-headed Hydra",
+            "10": "Ten-headed Hydra",
+            "11": "Eleven-headed Hydra",
+            "12": "Twelve-headed Hydra",
+            "13": "Thirteen-headed Hydra (low accuracy)",
+            "14": "Fourteen-headed Hydra",
+            "15": "Fifteen-headed Hydra",
+            "16": "Sixteen-headed Hydra (low accuracy)",
+            "17": "Seventeen-headed Hydra (low accuracy)",
+            "18": "Eighteen-headed Hydra",
+            "19": "Nineteen-headed Hydra",
+            "20": "Countless-headed Hydra"
+        }
+    },
     "simulator": {
         "paste_target#": "Cliquez ici et appuyez sur <b>CTRL&nbsp;+&nbsp;V</b> pour copier dans le Simulateur",
-        "threads": "Threads pour la simulation. Gardez ce nombre EN DESSOUS du nombrede cœurs de votre proccesseur",
+        "threads": "Threads pour la simulation. Gardez ce nombre EN DESSOUS du nombre de cœurs de votre processeur",
         "iterations": "Nombre d'iterations par thread.",
-        "save_image": "Sauvegarder comme Image"
+        "save_image": "Sauvegarder comme Image",
+        "add": "Add",
+        "save": "Save",
+        "simulate": "Simulate",
+        "clipboard": {
+            "copy_all": "Copy everyone",
+            "paste_mode": "Toggle Add/Replace insertion mode"
+        },
+        "win_chance": "Win %",
+        "min_chance": "Min %",
+        "max_chance": "Max %",
+        "poll": {
+            "players": "Poll saved players",
+            "guilds": "Poll saved guilds"
+        }
     },
     "editor": {
         "name": "Nom",
@@ -170,16 +755,68 @@
         "copy": "Copie",
         "none": "Aucun"
     },
+    "endpoint": {
+        "username": "Username",
+        "password": "Password",
+        "mode": {
+            "own": "Capture own character",
+            "default": "Capture own + selected characters",
+            "guild": "Capture own + guild characters",
+            "friends": "Capture own + friend characters"
+        },
+        "cancel": "Cancel",
+        "continue": "Continue",
+        "step2": {
+            "title": "Loading Endpoint"
+        },
+        "step3": {
+            "title": "Select players to be imported"
+        },
+        "step4": {
+            "title": "Contacting the server for information",
+            "message": "Fetching data"
+        },
+        "user_error": {
+            "title": "Your user name or password is not valid",
+            "message": "Please ensure that it is in correct format (username@url)"
+        },
+        "credentials_error": "Wrong username or password",
+        "download_error": "Download failed"
+    },
+    "database": {
+        "open_error": {
+            "title": "Database could not be opened",
+            "message": "Please verify that you are not in incognito mode and your browser supports Indexed DB"
+        },
+        "import_error": "An error has occured while importing file",
+        "fatal_error#": "Your browser does not support all features required by this page!</br>This issue can be also caused by use of private mode.",
+        "update_info": {
+            "title": "A database update is in progress",
+            "message": "Please do not exit the page until loading stops. This may take a while depending on the size of your database."
+        }
+    },
     "dialog": {
+        "delete_all": {
+            "title": "Delete all",
+            "notice": "Are you sure you want to delete all stored player data?"
+        },
+        "delete_script": {
+            "title": "Remove script",
+            "notice": "Are you sure you want to permanently remove currently applied script?"
+        },
         "warning": {
             "title": "Une erreur est survenue !",
             "continue": "Continuer"
         },
         "error": {
             "title": "Une erreur est survenue !",
-            "notice#": "Cette erreur a aussi pu être causé par votre profile<br>Cilquez le boutton revert ci-dessous pour revenir au profile par défault",
+            "notice#": "Cette erreur a aussi pu être causé par votre profile<br>Cliquez le bouton revert ci-dessous pour revenir au profile par default",
             "refresh": "Cliquez ici pour rafraîchir la page",
-            "revert": "Revenir au profile par défault"
+            "revert": "Revenir au profile par default"
+        },
+        "changelog": {
+            "release": "Release",
+            "continue": "Continue"
         },
         "file_edit": {
             "title": "Éditer le fichier",
@@ -216,12 +853,12 @@
             "equals": "Égaux",
             "above": "Au Dessus",
             "below": "Au Dessous",
-            "between": "Entre",
-            "value": "Valeure",
+            "between": "entre",
+            "value": "Valeur",
             "secondary": "Second Filtre",
             "cancel": "Annuler",
             "save": "Sauvegarder",
-            "default": "Défault",
+            "default": "Default",
             "profile": "Profile",
             "none": "Aucun",
             "ast": {
@@ -230,17 +867,17 @@
                 "optional": "optionnel"
             },
             "player": {
-                "primary": "Configuration de filtre princpale",
+                "primary": "Configuration de filtre principale",
                 "secondary": "Configuration de filtre secondaire"
             },
             "group": {
-                "primary": "Configuration de filtre de groupe princpale",
+                "primary": "Configuration de filtre de groupe principale",
                 "secondary": "Configuration de filtre de groupe secondaire"
             }
         },
         "template_save": {
             "title": "Sauvegarder le Modèle",
-            "select_existing": "Selectionner un Modèle existant",
+            "select_existing": "Sélectionner un Modèle existant",
             "select_new": "Créer un nouveau modèle",
             "or": "ou",
             "name": "Nom du modèle",
