@@ -603,8 +603,120 @@
             "potions": "Eliksiry (max 3)",
             "class": "Zmiana klasy",
             "keep_original": "Zachowaj pierwotną"
+    },
+    "underworld": {
+        "goblin_pit": "Siedlisko Goblinów",
+        "goblin_upgrades": "Ulepszenia Goblinów",
+        "troll_block": "Siedlisko Trolli",
+        "troll_upgrades": "Ulepszenia Trolli",
+        "keeper": "Władca ",
+        "keeper_upgrades": "Ulepszenia Władcy",
+        "shield_mode": "Pozwól jednostkom na używanie tarczy",
+        "toast": {
+            "start": {
+                "title": "Startowanie Symulacji",
+                "message#": "<b>Rozmiar bloku:</b> #{blockSize}<br/><b>Iteracje:</b> #{iterations}<br/><b>Wątki cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Wątek Symulacji #{done} / #{total} ukończono",
+                "message#": "<b>Czas:</b> #{time} sekund"
+            }
         }
     },
+	"players": {
+        "gladiator_mode": "Gladiator zostanie ustawiony na 15 bez względu na ustawienia",
+        "ihof_mode": "IHOF Mode: Gladiator nie jest redukowany!",
+        "fireball_mode": "Włącza tryb naprawionego fireballa przeciwko Berserkerom, Łowcą Demonów, Druidom oraz Bardom",
+        "druid_armor_mode": "Włącza tryb naprawionego pancerza u Druida",
+        "mode": {
+            "all": "Wszyscy na Wszystkich",
+            "attack": "Jeden vs Wszyscy",
+            "defend": "Wszyscy vs Jeden",
+            "tournament": "Turniej"
+        },
+        "toast": {
+            "start": {
+                "title": "Startowanie Symulacji",
+                "message#": "<b>Rozmiar Bloku:</b> #{blockSize}<br/><b>Iteracje:</b> #{iterations}<br/><b>Wątki cnt:</b> #{blocks}"
+            },
+            "end": {
+                "title": "Wątek Symulacji #{done} / #{total} ukończono",
+                "message#": "<b>Czas:</b> #{time} sekund"
+            },
+            "tournament": {
+                "title": "Przygotowanie drabiny",
+                "message#": "<b>Gracze:</b> #{count}"
+            }
+        }
+    },
+    "guilds": {
+        "gladiator_mode": "Gladiator zostanie ustawiony na 15 bez względu na ustawienia",
+        "guild1": "Gildia A",
+        "guild2": "Gildia B",
+        "toast": {
+            "start": {
+                "title": "Startowanie Symulacji",
+                "message#": "<b>Iteracji:</b> #{iterations}<br/><b>Wątki cnt:</b> #{blocks}"
+             },
+            "end": {
+                "title": "Simulation thread #{done} / #{total} finished",
+                "message#": "<b>Time:</b> #{time} seconds"
+            }
+        }
+    },
+    "fortress": {
+        "warrior_count": "Żołnierze",
+        "warrior_level": "Poziom Żołnierzy",
+        "archer_count": "Łucznicy",
+        "archer_level": "Poziom Łuczników",
+        "mage_count": "Magowie",
+        "mage_level": "Poziom Magów",
+        "units": {
+            "remaining": "Średnio pozostało jednostek:",
+            "player": "Żołnierze",
+            "target": "Obrona"
+        }
+    },
+    "hydra": {
+        "footer#": "Bazowane na  <a target=\"_blank\" href=\"https://github.com/Timhot3p/GuildPet\">Timhot3p's GuildPet</a> project.",
+        "player_count": "Liczba Graczy",
+        "main": "Główna",
+        "side1": "Poboczna 1",
+        "side2": "Poboczna 2",
+        "hydra": "Hydra",
+        "iterations": {
+            "label": "Iteracje:",
+            "popup": "Liczba iteracji na klase pupila."
+        },
+        "result": {
+            "health": "#{health}% pozostałego HP",
+            "fights_single": "#{count} walk",
+            "fights_multiple": "#{count} walk"
+        },
+        "names": {
+            "1": "Jednogłowa Hydra",
+            "2": "Dwugłowa Hydra",
+            "3": "Trzygłowa Hydra",
+            "4": "Czterogłowa Hydra",
+            "5": "Pięciogłowa Hydra",
+            "6": "Sześciogłowa Hydra",
+            "7": "Siedmiogłowa Hydra",
+            "8": "Ośmiogłowa Hydra",
+            "9": "Dziewięciogłowa Hydra",
+            "10": "Dziesięciogłowa Hydra",
+            "11": "Jedenastogłowa Hydra",
+            "12": "Dwunastogłowa Hydra",
+            "13": "Trzynastogłowa Hydra (niska dokładność)",
+            "14": "Czternastogłowa Hydra",
+            "15": "Piętnastogłowa Hydra",
+            "16": "Szesnastogłowa Hydra (niska dokładność)",
+            "17": "Siedemnastogłowa Hydra (niska dokładność)",
+            "18": "Osiemnastogłowa Hydra",
+            "19": "Dziewiętnastogłowa Hydra",
+            "20": "Hydra o niewiarygodniej ilości głów"
+        }
+    },
+    
     "simulator": {
         "paste_target#": "Kliknij tutaj i wcisnij <b>CTRL&nbsp;+&nbsp;V</b> aby wkleić do symulatora",
         "threads": "Wątki symulacji. Utrzymaj liczbę PONIŻEJ ilości rdzeni procesora!",
