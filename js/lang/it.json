@@ -11,17 +11,18 @@
         "class7": "Cacciatore di Demoni",
         "class8": "Druido",
         "class9": "Bardo",
+        "mask0": "Aquila",
         "mask1": "Orso",
-        "mask2": "Gatto",
+        "mask2": "Tigre",
         "instrument0": "Arpa",
         "instrument1": "Liuto",
         "instrument2": "Flauto",
+        "life_potion": "Pozione della Vita Eterna",
         "attribute1": "Forza",
         "attribute2": "Destrezza",
         "attribute3": "Intelligenza",
         "attribute4": "Costituzione",
         "attribute5": "Fortuna",
-        "life_potion": "Pozione della Vita Eterna",
         "potion1": "Forza",
         "potion2": "Destrezza",
         "potion3": "Intelligenza",
@@ -111,6 +112,10 @@
         "hydra": {
             "title": "Simulatore Idra",
             "desc": "Simula le battaglie con l'idra per trovare la classe famiglio migliore"
+        },
+        "fortress": {
+            "title": "Simulatore fortezze",
+            "desc": "Simula il probabile esito di una attacco a una fortezza"
         }
     },
     "404": {
@@ -172,7 +177,8 @@
             "options": {
                 "title": "Opzioni file",
                 "advanced": "Mostra lista file avanzata",
-                "hidden": "Mostra giocatori nascosti"
+                "hidden": "Mostra giocatori nascosti",
+                "export_public_only": "Esporta solo dati pubblici"  
             },
             "tags": {
                 "single": "Tag",
@@ -409,6 +415,14 @@
                 "reset": "Reset azioni",
                 "ignore": "Ignora i cambiamenti",
                 "save": "Salve le azioni"
+            },
+            "recovery": {
+                "title": "Recupero",
+                "import": "Importa dati",
+                "export": "Esporta dati",
+                "description#": "Con le opzioni seguenti puoi esportare & importare tutti i dati salvati sul sito.<br>È consigliato fare un backup dei propri dati almeno una volta al mese per evitarne la perdita accidentale.",
+                "toast": "Processo di recupero iniziato. In base alle dimensioni del file da recuperare, potrebbe volerci un po' di tempo.",
+                "notice": "Sei sicuro di voler recuperare SFTools da questo file?<br><br>Quest' operazione sovrascriverà tutti i dati esistenti!"
             }
         }
     },
@@ -522,6 +536,7 @@
         "gladiator_mode": "Gladiatore al 15 indipendentemente dalle impostazioni",
         "ihof_mode": "Modalità IHOF: Gladiatore non ridotto!",
         "fireball_mode": "Applica il fix della palla di fuoco per Berserker, Cacciatori di Demoni, Druidi e Bardi",
+        "druid_armor_mode": "Applica il fix dell'armatura per i Druidi",
         "mode": {
             "all": "Tutti vs Tutti",
             "attack": "Uno vs Tutti",
@@ -556,6 +571,19 @@
                 "title": "Thread di simulazione #{done} / #{total} completato",
                 "message#": "<b>Tempo:</b> #{time} secondi"
             }
+        }
+    },
+    "fortress": {
+        "warrior_count": "Soldati",
+        "warrior_level": "Livello soldati",
+        "archer_count": "Arcieri",
+        "archer_level": "Livello arcieri",
+        "mage_count": "Maghi",
+        "mage_level": "Livello maghi",
+        "units": {
+            "remaining": "Media unità rimanenti:",
+            "player": "Soldati",
+            "target": "Difese"
         }
     },
     "hydra": {
