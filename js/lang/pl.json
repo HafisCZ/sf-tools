@@ -603,6 +603,7 @@
             "potions": "Eliksiry (max 3)",
             "class": "Zmiana klasy",
             "keep_original": "Zachowaj pierwotną"
+        }
     },
     "underworld": {
         "goblin_pit": "Siedlisko Goblinów",
