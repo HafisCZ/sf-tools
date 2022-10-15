@@ -1434,11 +1434,17 @@ class TableController {
         }
     }
 
+    resetInjector () {
+        this.injectCount = 0;
+    }
+
     inject (size = this.injectorBlockSize) {
         if (this.injectorCounter++ > 0) {
             let timestamp = Date.now();
 
             let blockSize = Math.min(this.injectorEntries.length, size);
+            this.injectCount += blockSize;
+
             let entries = $(this.injectorEntries.splice(0, size).join(''));
             this.injectorCallback(entries);
 
@@ -1479,6 +1485,8 @@ class TableController {
             if (this.categories) {
                 this.categories = -1;
             }
+
+            this.resetInjector();
         }
 
         // Fill entries
@@ -1519,8 +1527,9 @@ class TableController {
         `);
 
         this.injectorElement = $body.find('[data-entry-injector]');
+        this.injectCount = this.injectCount || SiteOptions.load_rows || 50;
 
-        onInject($(entries.splice(0, SiteOptions.load_rows || 50).join('')).insertBefore(this.injectorElement));
+        onInject($(entries.splice(0, this.injectCount).join('')).insertBefore(this.injectorElement));
 
         // Check table content for unwanted tags
         if (!SiteOptions.insecure && $body.find('script, iframe, img[onerror]').toArray().length) {

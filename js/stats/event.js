@@ -1182,6 +1182,9 @@ class BrowseView extends View {
     }
 
     show () {
+        this.tableBase.resetInjector();
+        this.tableQ.resetInjector();
+
         this.refreshTemplateDropdown();
 
         // Timestamp selector
