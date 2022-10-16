@@ -54,7 +54,8 @@ class SFItem {
         this.ColorClass = (this.Type >= 8) ? 0 : this.Class;
 
         this.SellPrice = {
-            Gold: gold / 100
+            Gold: gold / 100,
+            Mushrooms: coins
         }
 
         var dismantle = this.getDismantleReward();
