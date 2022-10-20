@@ -111,6 +111,10 @@
         "hydra": {
             "title": "Symulator hydry",
             "desc": "Przesymuluj, aby dowiedzieć się jaka jest najefektywniejsza klasa przeciwko obecnej głowie hydry."
+	},
+        "fortress": {
+            "title": "Symulator Twierdzy",
+            "desc": "Przesymuluj prawdopodobny wyniki ataku w twierdzy."	
         }
     },
     "404": {
