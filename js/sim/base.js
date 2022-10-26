@@ -217,14 +217,10 @@ class FighterModel {
             case BATTLEMAGE:
                 return 10;
             case DRUID:
-                if (this.Player.DruidArmorFix) {
-                    switch (this.Player.Mask) {
-                        case MASK_BEAR: return 50;
-                        case MASK_CAT: return 25;
-                        default: 10;
-                    }
-                } else {
-                    return 0;
+                switch (this.Player.Mask) {
+                    case MASK_BEAR: return 50;
+                    case MASK_CAT: return 25;
+                    default: 10;
                 }
             default:
                 return 0;
@@ -494,9 +490,9 @@ const DRUID_BEAR_MAX_TRIGGER = 75;
 const DRUID_BEAR_MED_TRIGGER = 50;
 const DRUID_BEAR_MIN_TRIGGER = 25;
 
-const DRUID_BEAR_MAX_MULTIPLIER = 1.5;
-const DRUID_BEAR_MED_MULTIPLIER = 1;
-const DRUID_BEAR_MIN_MULTIPLIER = 0.5;
+const DRUID_BEAR_MAX_MULTIPLIER = 1;
+const DRUID_BEAR_MED_MULTIPLIER = 0.5;
+const DRUID_BEAR_MIN_MULTIPLIER = 0.3;
 
 class DruidModel extends FighterModel {
     constructor (i, p) {
@@ -553,7 +549,7 @@ class DruidModel extends FighterModel {
 
                 // Swoop
                 return super.attack(
-                    damage * 13,
+                    damage * 16,
                     target,
                     5, // TODO: Replace with actual swoop value
                     skipped,
@@ -588,7 +584,7 @@ class DruidModel extends FighterModel {
                     damage *= this.Critical;
 
                     if (this.RageState) {
-                        damage *= 3;
+                        damage *= 2.5;
 
                         this.RageState = false;
                     }

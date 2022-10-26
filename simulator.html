@@ -76,7 +76,6 @@
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.gladiator_mode" id="gladiator-mode"><i class="bolt icon"></i></button>
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.ihof_mode" id="ihof-mode"><i class="trophy icon"></i></button>
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.fireball_mode" id="fireball-mode"><i class="fire icon"></i></button>
-                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="players.druid_armor_mode" id="druid-armor-mode"><i class="shield alternate icon"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -172,11 +171,6 @@
                 let fireballMode = false;
                 $('#fireball-mode').toggleButton(active => {
                     fireballMode = active;
-                })
-
-                let druidArmorMode = false;
-                $('#druid-armor-mode').toggleButton(active => {
-                    druidArmorMode = active;
                 })
 
                 var modeDump = window.location.href.includes('log');
@@ -349,7 +343,6 @@
                             players[i].player.ForceGladiator = gladiatorMode ? 15 : undefined;
                             players[i].player.NoGladiatorReduction = ihofMode;
                             players[i].player.FireballFix = fireballMode;
-                            players[i].player.DruidArmorFix = druidArmorMode;
                         }
 
                         showPlayers();

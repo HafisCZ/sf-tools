@@ -3,6 +3,8 @@ const CHANGELOG = {
         'Statistics': [
             'Added option to export & import recovery files',
             'Added item pictures',
+            'Added new dungeons',
+            'Added new achievements',
             'Fixed background color in custom rows',
             'Fixed crash when displaying lone empty guild'
         ],
@@ -14,6 +16,9 @@ const CHANGELOG = {
         ],
         'Arena Manager': [
             'Fixed runes not rounding down to 20 (as per new backend)'
+        ],
+        'All Simulators': [
+            'Added support for reworked Druid'
         ]
     },
     'v5.2469': {
