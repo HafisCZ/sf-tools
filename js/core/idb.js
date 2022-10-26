@@ -1425,6 +1425,11 @@ const DatabaseManager = new (class {
                         data.save[i] = 0;
                     }
 
+                    data.dungeons = {
+                        light: _try(r.dungeonprogresslight, 'numbers'),
+                        shadow: _try(r.dungeonprogressshadow, 'numbers')
+                    }
+
                     // Save version
                     currentVersion = r.serverversion.number;
                 } else {
