@@ -1014,7 +1014,7 @@ const ATTACK_TYPES = {
     100: 'Revive'
 };
 
-const ACHIEVEMENTS_COUNT = 93;
+const ACHIEVEMENTS_COUNT = 103;
 const ACHIEVEMENTS = [
     'Globetrotter',
     'The Count',
@@ -1108,7 +1108,17 @@ const ACHIEVEMENTS = [
     'A Thousand Points Plan',
     'Ten Grand',
     'Tavern Brawler',
-    'Closing Time'
+    'Closing Time',
+    'Dragon Adept',
+    'Chaser of Dragons',
+    'Bright Ghost Hunter',
+    'Dark Ghost Hunter',
+    'League of Incompetence',
+    'League of Vindictiveness',
+    'Ying Dojo Master',
+    'Yang Dojo Master',
+    'Understander of Giants',
+    'Tamer of Giants'
 ];
 
 const UNDERWORLD_BUILDINGS = [
