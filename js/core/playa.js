@@ -1673,6 +1673,14 @@ class SFOwnPlayer extends SFPlayer {
         this.Pets.WaterFood = dataType.long();
         this.Pets.TotalLevel = shadowLevel + lightLevel + fireLevel + earthLevel + waterLevel;
 
+        if (data.dungeons) {
+            // Dragons, Horror, Superheroes, Anime, Giant Monsters
+            for (let i = 0; i < 5; i++) {
+                this.Dungeons.Extra.Normal[5 + i] = data.dungeons.light[21 + i];
+                this.Dungeons.Extra.Shadow[5 + i] = data.dungeons.shadow[21 + i];
+            }
+        }
+
         this.Name = data.name;
         this.Prefix = _pretty_prefix(data.prefix);
         this.Identifier = data.prefix + '_p' + this.ID;

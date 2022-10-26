@@ -469,9 +469,39 @@ DUNGEON_DATA = {
             '10': { pos: 10, id: 1129, class: 2, level: 500, str: 35000, dex: 35000, int: 90000, con: 43000, lck: 21000, health: 50000000, min: 1701, max: 2798, armor: 2500 }
         }
     },
+    '22': {
+        key: '22',
+        pos: 20,
+        shadow: false,
+        floors: {}
+    },
+    '23': {
+        key: '23',
+        pos: 21,
+        shadow: false,
+        floors: {}
+    },
+    '24': {
+        key: '24',
+        pos: 22,
+        shadow: false,
+        floors: {}
+    },
+    '25': {
+        key: '25',
+        pos: 23,
+        shadow: false,
+        floors: {}
+    },
+    '26': {
+        key: '26',
+        pos: 24,
+        shadow: false,
+        floors: {}
+    },
     '203': {
         key: '203',
-        pos: 20,
+        pos: 99,
         floors: {
             '486': { pos: 486, id: 32, class: 1, level: 385, str: 56327, dex: 19741, int: 19625, con: 76759, lck: 12247, health: 148144864, min: 426, max: 808 },
             '658': { pos: 658, id: 573, class: 1, level: 428, str: 59957, dex: 21023, int: 20859, con: 81160, lck: 13318, health: 174088192, min: 469, max: 943 },
@@ -895,6 +925,36 @@ DUNGEON_DATA = {
             '9': { pos: 9, id: 1128, class: 1, level: 550, str: 200000, dex: 75000, int: 75000, con: 330000, lck: 100000, health: 18225000448, min: 850, max: 1399, armor: 35000 },
             '10': { pos: 10, id: 1129, class: 2, level: 600, str: 100000, dex: 100000, int: 250000, con: 430000, lck: 137000, health: 12149999616, min: 2050, max: 3398, armor: 25000 }
         }
+    },
+    '122': {
+        key: '22',
+        pos: 121,
+        shadow: true,
+        floors: {}
+    },
+    '123': {
+        key: '23',
+        pos: 122,
+        shadow: true,
+        floors: {}
+    },
+    '124': {
+        key: '24',
+        pos: 123,
+        shadow: true,
+        floors: {}
+    },
+    '125': {
+        key: '25',
+        pos: 124,
+        shadow: true,
+        floors: {}
+    },
+    '126': {
+        key: '26',
+        pos: 125,
+        shadow: true,
+        floors: {}
     },
     '204': {
         key: '204',

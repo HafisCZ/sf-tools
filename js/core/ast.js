@@ -2625,7 +2625,6 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Metal,
         statistics: false
     },
-
     '1 Catacombs': {
         expr: p => Math.max(0, p.Dungeons.Normal[0] - 2)
     },
@@ -2683,6 +2682,21 @@ const SP_KEYWORD_MAPPING_2 = {
     '19 Birthday': {
         expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[4] - 2) : undefined
     },
+    '20 Dragons': {
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[5] - 2) : undefined
+    },
+    '21 Horror': {
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[6] - 2) : undefined
+    },
+    '22 Superheroes': {
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[7] - 2) : undefined
+    },
+    '23 Anime': {
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[8] - 2) : undefined
+    },
+    '24 Giant Monsters': {
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[9] - 2) : undefined
+    },
     'S1 Catacombs': {
         expr: p => Math.max(0, p.Dungeons.Shadow[0] - 2)
     },
@@ -2739,6 +2753,21 @@ const SP_KEYWORD_MAPPING_2 = {
     },
     'S19 Birthday': {
         expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[4] - 2) : undefined
+    },
+    'S20 Dragons': {
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[5] - 2) : undefined
+    },
+    'S21 Horror': {
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[6] - 2) : undefined
+    },
+    'S22 Superheroes': {
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[7] - 2) : undefined
+    },
+    'S23 Anime': {
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[8] - 2) : undefined
+    },
+    'S24 Giant Monsters': {
+        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[9] - 2) : undefined
     },
     'Scrolls': {
         expr: p => p.Witch.Stage
