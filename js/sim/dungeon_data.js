@@ -936,7 +936,18 @@ DUNGEON_DATA = {
         key: '23',
         pos: 122,
         shadow: true,
-        floors: {}
+        floors: {
+            '1': { pos: 1, id: 1140, class: 2, level: 350, str: 11500, dex: 11500, int: 23000, con: 80500, lck: 11500, health: 226000000, min: 1102, max: 1349 },
+            '2': { pos: 2, id: 1141, class: 1, level: 354, str: 23480, dex: 11740, int: 11740, con: 82500, lck: 11740, health: 232000000, min: 1116, max: 1363 },
+            '3': { pos: 3, id: 1142, class: 1, level: 358, str: 23960, dex: 11980, int: 11980, con: 84500, lck: 11980, health: 238000000, min: 1140, max: 1380 },
+            '4': { pos: 4, id: 1143, class: 1, level: 362, str: 24440, dex: 12220, int: 12220, con: 86500, lck: 12220, health: 244000000, min: 1151, max: 1397 },
+            '5': { pos: 5, id: 1144, class: 3, level: 366, str: 12460, dex: 24920, int: 12460, con: 88500, lck: 12460, health: 250000000, min: 1167, max: 1404 },
+            '6': { pos: 6, id: 1145, class: 2, level: 370, str: 12700, dex: 12700, int: 25400, con: 90500, lck: 12700, health: 256000000, min: 1181, max: 1429 },
+            '7': { pos: 7, id: 1146, class: 3, level: 374, str: 12940, dex: 25880, int: 12940, con: 92500, lck: 12940, health: 262000000, min: 1199, max: 1441 },
+            '8': { pos: 8, id: 1147, class: 2, level: 378, str: 13180, dex: 13180, int: 26360, con: 94500, lck: 13180, health: 268000000, min: 1212, max: 1461 },
+            '9': { pos: 9, id: 1148, class: 2, level: 382, str: 13420, dex: 13420, int: 26840, con: 96500, lck: 13420, health: 274000000, min: 1230, max: 1474 },
+            '10': { pos: 10, id: 1149, class: 3, level: 390, str: 13900, dex: 27800, int: 13900, con: 100500, lck: 13900, health: 286000000, min: 1276, max: 1510 }
+        }
     },
     '124': {
         key: '24',
