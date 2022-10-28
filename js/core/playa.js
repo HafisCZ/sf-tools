@@ -1676,8 +1676,8 @@ class SFOwnPlayer extends SFPlayer {
         if (data.dungeons) {
             // Dragons, Horror, Superheroes, Anime, Giant Monsters
             for (let i = 0; i < 5; i++) {
-                this.Dungeons.Extra.Normal[5 + i] = data.dungeons.light[21 + i];
-                this.Dungeons.Extra.Shadow[5 + i] = data.dungeons.shadow[21 + i];
+                this.Dungeons.Extra.Normal[5 + i] = data.dungeons.light ? data.dungeons.light[21 + i] : undefined;
+                this.Dungeons.Extra.Shadow[5 + i] = data.dungeons.shadow ? data.dungeons.shadow[21 + i] : undefined;
             }
         }
 
