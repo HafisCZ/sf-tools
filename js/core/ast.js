@@ -2668,16 +2668,16 @@ const SP_KEYWORD_MAPPING_2 = {
     '24 Giant Monsters': {
         expr: p => Math.max(0, p.Dungeons.Normal[23])
     },
-    '25 Easteros B': {
+    '25 City': {
         expr: p => Math.max(0, p.Dungeons.Normal[24])
     },
-    '26 Academy B': {
+    '26 Magic Express': {
         expr: p => Math.max(0, p.Dungeons.Normal[25])
     },
-    '27 Hemorridor B': {
+    '27 Mountain': {
         expr: p => Math.max(0, p.Dungeons.Normal[26])
     },
-    '28 Floor B': {
+    '28 Playa': {
         expr: p => Math.max(0, p.Dungeons.Normal[27])
     },
     'S1 Catacombs': {
@@ -2752,16 +2752,16 @@ const SP_KEYWORD_MAPPING_2 = {
     'S24 Giant Monsters': {
         expr: p => Math.max(0, p.Dungeons.Shadow[23])
     },
-    'S25 Easteros B': {
+    'S25 City': {
         expr: p => Math.max(0, p.Dungeons.Shadow[24])
     },
-    'S26 Academy B': {
+    'S26 Magic Express': {
         expr: p => Math.max(0, p.Dungeons.Shadow[25])
     },
-    'S27 Hemorridor B': {
+    'S27 Mountain': {
         expr: p => Math.max(0, p.Dungeons.Shadow[26])
     },
-    'S28 Floor B': {
+    'S28 Playa': {
         expr: p => Math.max(0, p.Dungeons.Shadow[27])
     },
     'Youtube': {
