@@ -1074,17 +1074,7 @@
             "7": "Ben the Marketeer",
             "8": "Hector the Contractor",
             "9": "Motu with a Club",
-            "10": "Jack the Hammerer",
-            "11": "Thesi the Terrible",
-            "12": "Peter the Impaler",
-            "13": "Gert the Ghastly",
-            "14": "Leander, Lord of Lies",
-            "15": "Hannah the Hellish",
-            "16": "Alex, Angel of Abyss",
-            "17": "Jan the Hacker",
-            "18": "Four-handed Peter",
-            "19": "The Artist Andreas",
-            "20": "Marv the Minor Evil"
+            "10": "Jack the Hammerer"
         },
         "14": {
             "name": "Easteros",
@@ -1097,17 +1087,7 @@
             "7": "Queen Mother",
             "8": "The Miniature Poodle",
             "9": "The Riding Mountainrange",
-            "10": "Joffrey the Kid Despot",
-            "11": "Cool Villain",
-            "12": "Brygitte",
-            "13": "Snowman and Shadow Wolf",
-            "14": "The Woman in Red",
-            "15": "Boyish Brienne",
-            "16": "Ramsay the Degrader",
-            "17": "Faceless",
-            "18": "Vicious Gnome",
-            "19": "The Protector",
-            "20": "The Hard to Burn"
+            "10": "Joffrey the Kid Despot"
         },
         "16": {
             "name": "Time-honored School of Magic",
@@ -1120,17 +1100,7 @@
             "7": "Bad Kisser",
             "8": "Guardian of the Golden Egg",
             "9": "Gentle Giant",
-            "10": "Pedigree Bad Boy",
-            "11": "Unrepentant Penitent",
-            "12": "The Gifted One (and Ron)",
-            "13": "Stumbledoor",
-            "14": "Petey Rat",
-            "15": "Diabolical Dolores",
-            "16": "Inconveniently Infinite Inferi",
-            "17": "Bella the Beastly",
-            "18": "Lucius the Pure-Blood",
-            "19": "Cutsie Cuddler",
-            "20": "You Should Know Who ..."
+            "10": "Pedigree Bad Boy"
         },
         "17": {
             "name": "Hemorridor",
@@ -1143,17 +1113,7 @@
             "7": "Bezog",
             "8": "Smoulder",
             "9": "Nazguls...Nazgulses?",
-            "10": "Monster in the Lake",
-            "11": "Valaraukar",
-            "12": "Urcsi the Uruk",
-            "13": "Prompter Splittongue",
-            "14": "Samowar the Pale",
-            "15": "Oliphaunt Tamer",
-            "16": "Undead Army",
-            "17": "Shelantula",
-            "18": "Ruler of the Nine",
-            "19": "Mauron's Maw",
-            "20": "The Necromancer"
+            "10": "Monster in the Lake"
         },
         "19": {
             "name": "Nordic Gods",
@@ -1258,6 +1218,58 @@
             "8": "Three-headed Dragon God",
             "9": "Angry Giant Saurian",
             "10": "Berlin Scene Monster"
+        },
+        "27": {
+            "name": "City of Intrigues",
+            "1": "Cool Villain",
+            "2": "Brygitte",
+            "3": "Snowman and Shadow Wolf",
+            "4": "The Woman in Red",
+            "5": "Boyish Brienne",
+            "6": "Ramsay the Degrader",
+            "7": "Faceless",
+            "8": "Vicious Gnome",
+            "9": "The Protector",
+            "10": "The Hard to Burn"
+        },
+        "28": {
+            "name": "School of Magic Express",
+            "1": "Unrepentant Penitent",
+            "2": "The Gifted One (and Ron)",
+            "3": "Stumbledoor",
+            "4": "Petey Rat",
+            "5": "Diabolical Dolores",
+            "6": "Inconveniently Infinite Inferi",
+            "7": "Bella the Beastly",
+            "8": "Lucius the Pure-Blood",
+            "9": "Cutsie Cuddler",
+            "10": "You Should Know Who ..."
+        },
+        "29": {
+            "name": "Ash Mountain",
+            "1": "Valaraukar",
+            "2": "Urcsi the Uruk",
+            "3": "Prompter Splittongue",
+            "4": "Samowar the Pale",
+            "5": "Oliphaunt Tamer",
+            "6": "Undead Army",
+            "7": "Shelantula",
+            "8": "Ruler of the Nine",
+            "9": "Mauron's Maw",
+            "10": "The Necromancer"
+        },
+        "30": {
+            "name": "Playa HQ",
+            "1": "Thesi the Terrible",
+            "2": "Peter the Impaler",
+            "3": "Gert the Ghastly",
+            "4": "Leander, Lord of Lies",
+            "5": "Hannah the Hellish",
+            "6": "Alex, Angel of Abyss",
+            "7": "Jan the Hacker",
+            "8": "Four-handed Peter",
+            "9": "The Artist Andreas",
+            "10": "Marv the Minor Evil"
         },
         "201": {
             "name": "Tower",

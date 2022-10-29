@@ -535,7 +535,7 @@
                     settingsChanged();
                 }
 
-                const DUNGEON_ARR_TO_DID = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26 ];
+                const DUNGEON_ARR_TO_DID = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 ];
 
                 function getDungeonEnemyAt (dungeon, isShadow, enemyIndex) {
                     if (enemyIndex < 0) {
@@ -624,18 +624,18 @@
 
                                     showData(player.toSimulatorShadowModel());
 
-                                    let normalDungeons = player.Dungeons.Normal.concat(player.Dungeons.Extra.Normal);
-                                    let shadowDungeons = player.Dungeons.Shadow.concat(player.Dungeons.Extra.Shadow);
+                                    let normalDungeons = player.Dungeons.Normal;
+                                    let shadowDungeons = player.Dungeons.Shadow;
                                     let tower = player.Dungeons.Tower;
-                                    let youtube = player.Dungeons.Extra.Youtube;
+                                    let youtube = player.Dungeons.Youtube;
                                     let twister = player.Dungeons.Twister;
 
                                     availableBosses = [
-                                        ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon - 2)),
+                                        ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon)),
                                         getSpecialDungeonEnemyAt(201, player.Dungeons.Normal.Total < 90 ? -1 : tower),
-                                        getSpecialDungeonEnemyAt(203, twister - 1, true),
-                                        ... shadowDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], true, dungeon - 2)),
-                                        getSpecialDungeonEnemyAt(202, youtube - 2),
+                                        getSpecialDungeonEnemyAt(203, twister, true),
+                                        ... shadowDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], true, dungeon)),
+                                        getSpecialDungeonEnemyAt(202, youtube),
                                     ].filter(boss => boss);
 
                                     if (availableBosses.length) {

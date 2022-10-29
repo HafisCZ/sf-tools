@@ -2059,13 +2059,13 @@ const SP_KEYWORD_MAPPING_0 = {
         width: 130
     },
     'Tower': {
-        expr: p => p.Dungeons.Tower
+        expr: p => Math.max(0, p.Dungeons.Tower)
     },
     'Raids': {
         expr: p => p.Dungeons.Raid
     },
     'Portal': {
-        expr: p => p.Dungeons.Player
+        expr: p => Math.max(0, p.Dungeons.Player)
     },
     'Guild Portal': {
         expr: p => p.Dungeons.Group,
@@ -2557,10 +2557,6 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Toilet.Fill,
         statistics: false
     },
-    'Twister': {
-        expr: p => p.Dungeons.Twister ? Math.max(0, p.Dungeons.Twister - 2) : undefined,
-        statistics: false
-    },
     'Shrooms': {
         expr: p => p.Mushrooms ? p.Mushrooms.Current : undefined,
         statistics: false
@@ -2585,31 +2581,6 @@ const SP_KEYWORD_MAPPING_2 = {
         expr: p => p.Hourglass,
         statistics: false
     },
-    'Own Dungeon': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Normal.Total : undefined,
-        statistics: false,
-        width: 120
-    },
-    'Youtube': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Youtube - 2) : undefined,
-        statistics: false,
-        width: 120
-    },
-    'Own Shadow': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow.Total : undefined,
-        statistics: false,
-        width: 120
-    },
-    'Own Dungeon Unlocked': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Normal.Unlocked : undefined,
-        statistics: false,
-        width: 120
-    },
-    'Own Shadow Unlocked': {
-        expr: p => p.Dungeons.Extra ? p.Dungeons.Extra.Shadow.Unlocked : undefined,
-        statistics: false,
-        width: 120
-    },
     'Potion Expire': {
         expr: p => p.Own ? (p.Potions[0].Size == 0 ? 0 : Math.min(... (p.Potions.filter(pot => pot.Size > 0).map(pot => pot.Expire)))) : undefined,
         format: (p, c, e, x) => x == undefined ? '?' : formatDate(x),
@@ -2626,148 +2597,181 @@ const SP_KEYWORD_MAPPING_2 = {
         statistics: false
     },
     '1 Catacombs': {
-        expr: p => Math.max(0, p.Dungeons.Normal[0] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[0])
     },
     '2 Mines': {
-        expr: p => Math.max(0, p.Dungeons.Normal[1] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[1])
     },
     '3 Ruins': {
-        expr: p => Math.max(0, p.Dungeons.Normal[2] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[2])
     },
     '4 Grotto': {
-        expr: p => Math.max(0, p.Dungeons.Normal[3] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[3])
     },
     '5 Altar': {
-        expr: p => Math.max(0, p.Dungeons.Normal[4] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[4])
     },
     '6 Tree': {
-        expr: p => Math.max(0, p.Dungeons.Normal[5] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[5])
     },
     '7 Magma': {
-        expr: p => Math.max(0, p.Dungeons.Normal[6] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[6])
     },
     '8 Temple': {
-        expr: p => Math.max(0, p.Dungeons.Normal[7] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[7])
     },
     '9 Pyramid': {
-        expr: p => Math.max(0, p.Dungeons.Normal[8] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[8])
     },
     '10 Fortress': {
-        expr: p => Math.max(0, p.Dungeons.Normal[9] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[9])
     },
     '11 Circus': {
-        expr: p => Math.max(0, p.Dungeons.Normal[10] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[10])
     },
     '12 Hell': {
-        expr: p => Math.max(0, p.Dungeons.Normal[11] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[11])
     },
     '13 Floor': {
-        expr: p => Math.max(0, p.Dungeons.Normal[12] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[12])
     },
     '14 Easteros': {
-        expr: p => Math.max(0, p.Dungeons.Normal[13] - 2)
+        expr: p => Math.max(0, p.Dungeons.Normal[13])
     },
     '15 Academy': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[0] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Normal[14])
     },
     '16 Hemorridor': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[1] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Normal[15])
     },
     '17 Nordic': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[2] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Normal[16])
     },
     '18 Greek': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[3] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Normal[17])
     },
     '19 Birthday': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[4] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Normal[18])
     },
     '20 Dragons': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[5] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Normal[19])
     },
     '21 Horror': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[6] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Normal[20])
     },
     '22 Superheroes': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[7] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Normal[21])
     },
     '23 Anime': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[8] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Normal[22])
     },
     '24 Giant Monsters': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Normal[9] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Normal[23])
+    },
+    '25 Easteros B': {
+        expr: p => Math.max(0, p.Dungeons.Normal[24])
+    },
+    '26 Academy B': {
+        expr: p => Math.max(0, p.Dungeons.Normal[25])
+    },
+    '27 Hemorridor B': {
+        expr: p => Math.max(0, p.Dungeons.Normal[26])
+    },
+    '28 Floor B': {
+        expr: p => Math.max(0, p.Dungeons.Normal[27])
     },
     'S1 Catacombs': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[0] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[0])
     },
     'S2 Mines': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[1] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[1])
     },
     'S3 Ruins': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[2] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[2])
     },
     'S4 Grotto': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[3] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[3])
     },
     'S5 Altar': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[4] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[4])
     },
     'S6 Tree': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[5] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[5])
     },
     'S7 Magma': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[6] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[6])
     },
     'S8 Temple': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[7] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[7])
     },
     'S9 Pyramid': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[8] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[8])
     },
     'S10 Fortress': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[9] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[9])
     },
     'S11 Circus': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[10] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[10])
     },
     'S12 Hell': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[11] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[11])
     },
     'S13 Floor': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[12] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[12])
     },
     'S14 Easteros': {
-        expr: p => Math.max(0, p.Dungeons.Shadow[13] - 2)
+        expr: p => Math.max(0, p.Dungeons.Shadow[13])
     },
     'S15 Academy': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[0] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Shadow[14])
     },
     'S16 Hemorridor': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[1] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Shadow[15])
     },
     'S17 Nordic': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[2] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Shadow[16])
     },
     'S18 Greek': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[3] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Shadow[17])
     },
     'S19 Birthday': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[4] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Shadow[18])
     },
     'S20 Dragons': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[5] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Shadow[19])
     },
     'S21 Horror': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[6] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Shadow[20])
     },
     'S22 Superheroes': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[7] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Shadow[21])
     },
     'S23 Anime': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[8] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Shadow[22])
     },
     'S24 Giant Monsters': {
-        expr: p => p.Dungeons.Extra ? Math.max(0, p.Dungeons.Extra.Shadow[9] - 2) : undefined
+        expr: p => Math.max(0, p.Dungeons.Shadow[23])
+    },
+    'S25 Easteros B': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[24])
+    },
+    'S26 Academy B': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[25])
+    },
+    'S27 Hemorridor B': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[26])
+    },
+    'S28 Floor B': {
+        expr: p => Math.max(0, p.Dungeons.Shadow[27])
+    },
+    'Youtube': {
+        expr: p => Math.max(0, p.Dungeons.Youtube),
+        statistics: false,
+        width: 120
+    },
+    'Twister': {
+        expr: p => Math.max(0, p.Dungeons.Twister),
+        statistics: false
     },
     'Scrolls': {
         expr: p => p.Witch.Stage
