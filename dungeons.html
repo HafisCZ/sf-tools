@@ -626,9 +626,9 @@
 
                                     let normalDungeons = player.Dungeons.Normal;
                                     let shadowDungeons = player.Dungeons.Shadow;
-                                    let tower = player.Dungeons.Tower;
+                                    let tower = player.Dungeons.Tower + 1;
                                     let youtube = player.Dungeons.Youtube;
-                                    let twister = player.Dungeons.Twister;
+                                    let twister = player.Dungeons.Twister + 1;
 
                                     availableBosses = [
                                         ... normalDungeons.map((dungeon, index) => getDungeonEnemyAt(DUNGEON_ARR_TO_DID[index], false, dungeon)),

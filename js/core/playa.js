@@ -675,7 +675,7 @@ class DungeonHelper {
             }
 
             dungeons.Tower = legacyDungeons.Tower || 0;
-            dungeons.Twister = (legacyDungeons.Twister || 0) + DungeonHelper.DUNGEON_OPEN;
+            dungeons.Twister = (legacyDungeons.Twister || 0) + DungeonHelper.DUNGEON_LOCKED;
             dungeons.Player = legacyDungeons.Player || 0;
             dungeons.Youtube = (legacyDungeons.Youtube || 0) + DungeonHelper.DUNGEON_LOCKED;
         }
