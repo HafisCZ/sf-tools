@@ -607,6 +607,10 @@ class DungeonHelper {
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 16, 17, 18
     ];
 
+    static LEGACY_MISSING = [
+        19, 20, 21, 22, 23
+    ];
+
     static LEGACY_SPLIT_TO_INTERNAL_MAPPING = [
         [12, 27],
         [13, 24],
@@ -653,6 +657,11 @@ class DungeonHelper {
             for (const dungeonIndex of DungeonHelper.LEGACY_TO_INTERNAL_MAPPING) {
                 dungeons.Normal[dungeonIndex] = (legacyDungeons.Normal[dungeonIndex] || 0) + DungeonHelper.DUNGEON_LOCKED;
                 dungeons.Shadow[dungeonIndex] = (legacyDungeons.Shadow[dungeonIndex] || 0) + DungeonHelper.DUNGEON_LOCKED;
+            }
+
+            for (const dungeonIndex of DungeonHelper.LEGACY_MISSING) {
+                dungeons.Normal[dungeonIndex] = DungeonHelper.DUNGEON_LOCKED;
+                dungeons.Shadow[dungeonIndex] = DungeonHelper.DUNGEON_LOCKED;
             }
 
             // Convert legacy 20 floor dungeons
