@@ -624,7 +624,7 @@ class DungeonHelper {
             }
 
             // Special dungeons
-            dungeons.Tower = normal[14] + DungeonHelper.DUNGEON_OPEN;
+            dungeons.Tower = normal[14];
             dungeons.Twister = shadow[14];
             dungeons.Player = normal[17];
             dungeons.Youtube = shadow[17];
