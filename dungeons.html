@@ -336,6 +336,25 @@
                     $('#winchart').addClass('faded-out');
                 }
 
+                function getBossRunes (runes) {
+                    let values = [0, 0, 0];
+
+                    if (runes && runes.res) {
+                        if (Array.isArray(runes.res)) {
+                            values = runes.res;
+                        } else {
+                            values[runes.type - 40] = runes.res;
+                        }
+                    }
+
+                    return {
+                        Health: 0,
+                        ResistanceFire: values[0],
+                        ResistanceCold: values[1],
+                        ResistanceLightning: values[2]
+                    }
+                }
+
                 function getBossData (data) {
                     return {
                         ForceArmor: data.armor ? 0 : (dungeon.auto_armor_multiplier || 1),
@@ -356,12 +375,7 @@
                         Dungeons: { Player: 0, Group: 0 },
                         Fortress: { Gladiator: data.gladiator || 0 },
                         Potions: { Life: 0 },
-                        Runes: {
-                            Health: 0,
-                            ResistanceFire: data.runes && data.runes.res ? data.runes.res[0] : 0,
-                            ResistanceCold: data.runes && data.runes.res ? data.runes.res[1] : 0,
-                            ResistanceLightning: data.runes && data.runes.res ? data.runes.res[2] : 0,
-                        },
+                        Runes: getBossRunes(data.runes),
                         Items: {
                             Hand: {},
                             Wpn1: {
@@ -402,7 +416,7 @@
                                                ${ _boss.pos }. ${ _boss.name }
                                                ${ _boss.runes ? `
                                                    <span class="boss-rune">
-                                                       ${ _boss.runes.damage } ${ ['F', 'C', 'L'][ _boss.runes.type - 40 ] } / ${ (_boss.runes.res || ['?', '?', '?']).map((res, i) => `${ res } ${ [ 'F', 'C', 'L' ][i] }`).join('&nbsp; ') }
+                                                       ${ _boss.runes.damage } ${ ['F', 'C', 'L'][ _boss.runes.type - 40 ] } / ${ Array.isArray(_boss.runes.res) ? (_boss.runes.res || ['?', '?', '?']).map((res, i) => `${ res } ${ [ 'F', 'C', 'L' ][i] }`).join('&nbsp; ') : `${ _boss.runes.res } ${ ['F', 'C', 'L'][ _boss.runes.type - 40 ] }` }
                                                    </span>
                                                ` : '' }
                                        <span>`,
