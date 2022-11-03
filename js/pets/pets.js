@@ -763,7 +763,7 @@ const PetDescriptions = [
     'Can be found in Gnarogrim. Required: Hall of fame top 1,000 or 50,000 honor when finishing the quest.',
     'Can be found in Busted Lands during XP Event.',
     'Can be found in Rotten Lands on Friday the 13th.',
-    'Is rewarded for clearing 10th floor of the 13th dungeon of the Shadow World. Location: Plains of Oz\'Korr.',
+    'Is rewarded for clearing 10th floor of the 15th dungeon of the Shadow World. Location: Plains of Oz\'Korr.',
     'Can be found on the last floor of the Shadow Habitat. Location: Sunburn Desert.',
     'Can be found in Stumble Steppe during the day.',
     'Can be found in Moldy Forest at night.',
@@ -843,6 +843,6 @@ const PetDescriptions = [
     'Can\'t be found in the wild, but in your local magic shop.',
     'Can be found on Skull Island during the Birthday Event.',
     'Can be found in the Arcane Toilet. Required: Aura level 20.',
-    'Is rewarded for the next quest after clearing dungeon 14. Location: Busted Lands.',
+    'Is rewarded for the next quest after clearing dungeon 22. Location: Busted Lands.',
     'Can be found on the last floor of the Water Habitat. Location: Nevermoor.'
 ];
