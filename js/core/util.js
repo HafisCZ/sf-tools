@@ -140,7 +140,7 @@ function _sum (array, base = 0) {
     return array.reduce((m, v) => m + v, base);
 }
 
-function _msum(array, map, base = 0) {
+function _mapped_sum(array, map, base = 0) {
     return array.reduce((m, v) => m + map(v), base);
 }
 

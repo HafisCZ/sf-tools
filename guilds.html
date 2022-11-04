@@ -405,7 +405,7 @@
                 }
 
                 function displayResults (results, iterations) {
-                    let score = 100 * _msum(results, r => r.score) / iterations;
+                    let score = 100 * _mapped_sum(results, r => r.score) / iterations;
 
                     $('div.row.results').html(`
                         <div class="sixteen wide column" style="display: flex; flex-direction: row; align-items: center; justify-content: center;">
