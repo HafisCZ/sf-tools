@@ -204,7 +204,7 @@ DUNGEON_DATA = {
     },
     '13': {
         key: '13',
-        pos: 13,
+        pos: 15,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 0, class: 1, level: 355, str: 7570, dex: 2655, int: 2630, con: 7290, lck: 1716, health: 12976200, min: 401, max: 733 },
@@ -221,7 +221,7 @@ DUNGEON_DATA = {
     },
     '14': {
         key: '14',
-        pos: 14,
+        pos: 19,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 0, class: 1, level: 310, str: 6040, dex: 2120, int: 2095, con: 5760, lck: 1410, health: 8956800, min: 325, max: 504 },
@@ -238,7 +238,7 @@ DUNGEON_DATA = {
     },
     '201': {
         key: '201',
-        pos: 15,
+        pos: 29,
         shadow: true,
         auto_armor_multiplier: 1.5,
         floors: {
@@ -346,7 +346,7 @@ DUNGEON_DATA = {
     },
     '16': {
         key: '16',
-        pos: 16,
+        pos: 17,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 0, class: 3, level: 250, str: 1400, dex: 11000, int: 1400, con: 35000, lck: 4500, health: 62500000, min: 600, max: 649 },
@@ -363,7 +363,7 @@ DUNGEON_DATA = {
     },
     '17': {
         key: '17',
-        pos: 17,
+        pos: 18,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 0, class: 1, level: 200, str: 8800, dex: 1120, int: 1120, con: 28000, lck: 3600, health: 28140000, min: 684, max: 1154 },
@@ -380,7 +380,7 @@ DUNGEON_DATA = {
     },
     '19': {
         key: '19',
-        pos: 17,
+        pos: 24,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 1400, class: 1, level: 210, str: 8000, dex: 2000, int: 2000, con: 36000, lck: 4000, health: 43560000, runes: { type: 41, res: [0, 5, 0], damage: 30 }, min: 728, max: 1229, armor: 15500 },
@@ -397,7 +397,7 @@ DUNGEON_DATA = {
     },
     '20': {
         key: '20',
-        pos: 18,
+        pos: 27,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 1410, class: 2, level: 210, str: 2000, dex: 2000, int: 8000, con: 80000, lck: 4000, health: 52800000, runes: { type: 41, res: [5, 60, 5], damage: 30 }, min: 630, max: 1265 },
@@ -414,7 +414,7 @@ DUNGEON_DATA = {
     },
     '21': {
         key: '21',
-        pos: 19,
+        pos: 21,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 1120, class: 2, level: 410, str: 7000, dex: 7000, int: 20000, con: 18000, lck: 4000, health: 10000000, min: 1416, max: 2290, armor: 2000 },
@@ -431,7 +431,7 @@ DUNGEON_DATA = {
     },
     '22': {
         key: '22',
-        pos: 20,
+        pos: 13,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 1130, class: 3, level: 210, str: 3100, dex: 6200, int: 3100, con: 10500, lck: 3100, health: 16000000, min: 559, max: 787, runes: { type: 40, res: 25, damage: 25 } },
@@ -448,7 +448,7 @@ DUNGEON_DATA = {
     },
     '23': {
         key: '23',
-        pos: 21,
+        pos: 14,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 1140, class: 2, level: 240, str: 4900, dex: 4900, int: 9800, con: 25500, lck: 4900, health: 61000000, min: 662, max: 908, runes: { type: 41, res: 25, damage: 25 } },
@@ -465,25 +465,25 @@ DUNGEON_DATA = {
     },
     '24': {
         key: '24',
-        pos: 22,
+        pos: 16,
         shadow: false,
         floors: {}
     },
     '25': {
         key: '25',
-        pos: 23,
+        pos: 20,
         shadow: false,
         floors: {}
     },
     '26': {
         key: '26',
-        pos: 24,
+        pos: 28,
         shadow: false,
         floors: {}
     },
     '27': {
         key: '27',
-        pos: 25,
+        pos: 22,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 0, class: 3, level: 410, str: 8720, dex: 34720, int: 8680, con: 33600, lck: 12436, health: 55238400, min: 671, max: 1034 },
@@ -500,7 +500,7 @@ DUNGEON_DATA = {
     },
     '28': {
         key: '28',
-        pos: 26,
+        pos: 23,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 0, class: 2, level: 325, str: 3221, dex: 3221, int: 16577, con: 61790, lck: 8964, health: 64459324, min: 861, max: 2432 },
@@ -517,7 +517,7 @@ DUNGEON_DATA = {
     },
     '29': {
         key: '29',
-        pos: 27,
+        pos: 25,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 0, class: 5, level: 348, str: 17737, dex: 3446, int: 3446, con: 66115, lck: 9591, health: 115370672, min: 1187, max: 2007, armor: 7000 },
@@ -534,7 +534,7 @@ DUNGEON_DATA = {
     },
     '30': {
         key: '30',
-        pos: 28,
+        pos: 26,
         shadow: false,
         floors: {
             '1': { pos: 1, id: 0, class: 3, level: 410, str: 7080, dex: 20200, int: 7050, con: 18210, lck: 4280, health: 29937240, min: 1299, max: 3185 },
@@ -788,7 +788,7 @@ DUNGEON_DATA = {
     },
     '113': {
         key: '13',
-        pos: 113,
+        pos: 115,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 243, class: 1, level: 424, str: 9041, dex: 3171, int: 3141, con: 47883, lck: 2049, health: 101751376, min: 4535, max: 9045 },
@@ -805,7 +805,7 @@ DUNGEON_DATA = {
     },
     '114': {
         key: '14',
-        pos: 114,
+        pos: 119,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 600, class: 1, level: 464, str: 9040, dex: 3173, int: 3135, con: 47416, lck: 2110, health: 110242200, min: 4966, max: 9792, armor: 18000 },
@@ -822,7 +822,7 @@ DUNGEON_DATA = {
     },
     '202': {
         key: '202',
-        pos: 115,
+        pos: 130,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 1320, class: 1, level: 222, str: 90000, dex: 2000, int: 2000, con: 74000, lck: 5000, health: 80000000, min: 2000, max: 2996 },
@@ -850,7 +850,7 @@ DUNGEON_DATA = {
     },
     '116': {
         key: '16',
-        pos: 116,
+        pos: 117,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 1100, class: 3, level: 410, str: 8400, dex: 66000, int: 8400, con: 157500, lck: 27000, health: 468750016, min: 1500, max: 1624 },
@@ -867,7 +867,7 @@ DUNGEON_DATA = {
     },
     '117': {
         key: '17',
-        pos: 117,
+        pos: 118,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 1200, class: 1, level: 328, str: 52800, dex: 6720, int: 6720, con: 126000, lck: 21600, health: 207270000, min: 1118, max: 1891 },
@@ -884,7 +884,7 @@ DUNGEON_DATA = {
     },
     '119': {
         key: '19',
-        pos: 118,
+        pos: 124,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 1400, class: 1, level: 345, str: 48500, dex: 12000, int: 12000, con: 163000, lck: 23500, health: 318257504, runes: { type: 41, res: [0, 5, 0], damage: 60 }, min: 1190, max: 2011 },
@@ -901,7 +901,7 @@ DUNGEON_DATA = {
     },
     '120': {
         key: '20',
-        pos: 119,
+        pos: 127,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 1410, class: 2, level: 345, str: 15000, dex: 15000, int: 45000, con: 200000, lck: 23500, health: 2875500032, runes: { type: 41, res: [5, 60, 5], damage: 30 }, min: 1038, max: 2069 },
@@ -918,7 +918,7 @@ DUNGEON_DATA = {
     },
     '121': {
         key: '21',
-        pos: 120,
+        pos: 121,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 1120, class: 2, level: 400, str: 35000, dex: 15000, int: 35000, con: 180000, lck: 20000, health: 6074999808, min: 1351, max: 2249, armor: 7000 },
@@ -935,7 +935,7 @@ DUNGEON_DATA = {
     },
     '122': {
         key: '22',
-        pos: 121,
+        pos: 113,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 1130, class: 3, level: 320, str: 9700, dex: 19400, int: 9700, con: 65500, lck: 9700, health: 181000000, min: 981, max: 1226, runes: { type: 40, res: 50, damage: 50 } },
@@ -952,7 +952,7 @@ DUNGEON_DATA = {
     },
     '123': {
         key: '23',
-        pos: 122,
+        pos: 114,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 1140, class: 2, level: 350, str: 11500, dex: 11500, int: 23000, con: 80500, lck: 11500, health: 226000000, min: 1102, max: 1349, runes: { type: 41, res: 50, damage: 50 } },
@@ -969,25 +969,25 @@ DUNGEON_DATA = {
     },
     '124': {
         key: '24',
-        pos: 123,
+        pos: 116,
         shadow: true,
         floors: {}
     },
     '125': {
         key: '25',
-        pos: 124,
+        pos: 120,
         shadow: true,
         floors: {}
     },
     '126': {
         key: '26',
-        pos: 125,
+        pos: 128,
         shadow: true,
         floors: {}
     },
     '127': {
         key: '27',
-        pos: 126,
+        pos: 122,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 610, class: 3, level: 504, str: 10719, dex: 42680, int: 10670, con: 227166, lck: 15287, health: 458875328, min: 7833, max: 12252 },
@@ -1004,7 +1004,7 @@ DUNGEON_DATA = {
     },
     '128': {
         key: '28',
-        pos: 127,
+        pos: 123,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 1110, class: 2, level: 510, str: 19326, dex: 19326, int: 99462, con: 278055, lck: 53784, health: 483444928, min: 2152, max: 6080 },
@@ -1021,7 +1021,7 @@ DUNGEON_DATA = {
     },
     '129': {
         key: '29',
-        pos: 128,
+        pos: 125,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 1210, class: 5, level: 546, str: 106424, dex: 20679, int: 20679, con: 347519, lck: 57549, health: 950464448, min: 1870, max: 3141, armor: 14000 },
@@ -1038,7 +1038,7 @@ DUNGEON_DATA = {
     },
     '130': {
         key: '30',
-        pos: 129,
+        pos: 126,
         shadow: true,
         floors: {
             '1': { pos: 1, id: 253, class: 3, level: 468, str: 8140, dex: 23230, int: 8100, con: 115210, lck: 4920, health: 216133952, min: 7441, max: 14439 },
