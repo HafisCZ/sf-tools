@@ -80,10 +80,11 @@
                                 </div>
                             </div>
                             <div class="ten wide column">
-                                <div style="display: flex; flex-direction: row;">
-                                    <button class="ui fluid button" type="submit" id="sim-run" data-intl="dungeons.simulate"></button>
+                                <div class="compact-buttons" style="display: flex; flex-direction: row;">
+                                    <button class="ui fluid button" type="submit" id="sim-run" data-intl="dungeons.simulate_one"></button>
                                     <button class="ui fluid button" type="submit" id="sim-run-dungeon" data-intl="dungeons.simulate_remaining"></button>
                                     <button class="ui fluid button disabled" type="submit" id="sim-run-all" data-intl="dungeons.simulate_all"></button>
+                                    <button class="ui fluid button disabled" type="submit" id="sim-run-next" data-intl="dungeons.simulate_next"></button>
                                 </div>
                             </div>
                         </div>
@@ -669,7 +670,7 @@
 
                                     if (availableBosses.length) {
                                         $('#available-list').parent('.field').removeClass('disabled');
-                                        $('#sim-run-all').removeClass('disabled');
+                                        $('#sim-run-all, #sim-run-next').removeClass('disabled');
                                         $('#available-list').dropdown({
                                             values: _sort_asc(availableBosses, ({ dungeon: _dungeon }) => _dungeon.pos).map(({ dungeon: _dungeon, boss: _boss }, index) => {
                                                 return {
@@ -699,7 +700,7 @@
                                         });
                                     } else {
                                         $('#available-list').parent('.field').addClass('disabled');
-                                        $('#sim-run-all').addClass('disabled');
+                                        $('#sim-run-all, #sim-run-next').addClass('disabled');
                                     }
                                 }
                             ));
@@ -708,9 +709,21 @@
                 )
 
                 function showMassDungeonResults (bosses, results, sort = true) {
-                    bosses = bosses.map((dungeon, index) => Object.assign(_dig(results, index), dungeon));
+                    bosses = bosses.map((dungeon, index) => {
+                        let result = _dig(results, index);
+                        if (result) {
+                            return Object.assign(result, dungeon);
+                        } else {
+                            return false;
+                        }
+                    }).filter(v => v);
+
                     if (sort) {
-                        bosses.sort((b, a) => a.score - b.score);
+                        if (typeof sort == 'function') {
+                            bosses.sort(sort);
+                        } else {
+                            bosses.sort((b, a) => a.score - b.score);
+                        }
                     }
 
                     $('#results-modal .content').html(`
@@ -805,6 +818,125 @@
                         let currentInstances = Math.min(maximumInstances, pendingInstances.length);
                         for (let i = 0; i < currentInstances; i++) {
                             let [ worker, args ] = pendingInstances.pop();
+                            worker.postMessage(args);
+                        }
+                    }
+                });
+
+                $('#sim-run-next').click(async function () {
+                    if (availableBosses && availableBosses.length > 0 && editor.valid()) {
+                        Loader.toggle(true);
+
+                        let maximumInstances = Math.max(1, Number($('#sim-threads').val()) || LOGICAL_PROCS);
+                        let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+
+                        let dungeonStacks = [];
+                        for (let i = 0; i < availableBosses.length; i++) {
+                            dungeonStacks[i] = [];
+
+                            let { boss: _boss, dungeon: _dungeon } = availableBosses[i];
+                            for (let bossData of Object.values(_dungeon.floors)) {
+                                if (dungeonStacks[i].length > 0 || bossData.name == _boss.name) {
+                                    dungeonStacks[i].push({
+                                        dungeon: _dungeon,
+                                        boss: bossData
+                                    })
+                                }
+                            }
+                        }
+
+                        let floorStacks = [];
+                        for (let i = 0; i < Math.max(...dungeonStacks.map(s => s.length)); i++) {
+                            floorStacks[i] = [];
+
+                            for (let j = 0; j < dungeonStacks.length; j++) {
+                                if (dungeonStacks[j][i]) {
+                                    floorStacks[i].push(dungeonStacks[j][i]);
+                                }
+                            }
+                        }
+
+                        let currentStack = null;
+                        let pendingStacks = [];
+
+                        let results = [];
+                        let resultsRemaining = 0;
+                        let resultsRemainingStack = 0;
+
+                        for (let stack of floorStacks) {
+                            let tempStack = [];
+
+                            for (let { boss, dungeon } of stack) {
+                                let worker = await createSimulatorWorker('dungeons');
+
+                                worker.addEventListener('message', (message) => {
+                                    if (message.data.command == 'finished') {
+                                        let { score, iterations, healths } = message.data.results;
+
+                                        results[message.data.index] = {
+                                            score,
+                                            healths,
+                                            iterations
+                                        };
+
+                                        if (score < iterations / 100) {
+                                            for (let i = 0; i < pendingStacks.length; i++) {
+                                                pendingStacks[i] = pendingStacks[i].filter(({ worker: _worker, args: _args }) => {
+                                                    if (_args.pos == dungeon.pos) {
+                                                        _worker.terminate();
+
+                                                        return --resultsRemaining && false;
+                                                    } else {
+                                                        return true;
+                                                    }
+                                                })
+                                            }
+
+                                            pendingStacks = pendingStacks.filter((_stack) => _stack.length > 0);
+                                        }
+
+                                        resultsRemaining--;
+                                        resultsRemainingStack--;
+
+                                        if (resultsRemaining <= 0) {
+                                            Loader.toggle(false);
+                                            showMassDungeonResults(floorStacks.flat(), results, (a, b) => a.dungeon.pos == b.dungeon.pos ? (a.boss.pos - b.boss.pos) : (b.score - a.score));
+                                        } else if (resultsRemainingStack <= 0 && pendingStacks.length > 0) {
+                                            currentStack = pendingStacks.shift();
+                                            resultsRemainingStack = currentStack.length;
+
+                                            for (let i = 0; i < Math.min(currentStack.length, maximumInstances); i++) {
+                                                let { worker: _worker, args: _args } = currentStack.shift();
+                                                _worker.postMessage(_args);
+                                            }
+                                        } else if (currentStack.length > 0) {
+                                            let { worker: _worker, args: _args } = currentStack.shift();
+                                            _worker.postMessage(_args);
+                                        }
+                                    }
+                                }, false);
+
+                                tempStack.push({
+                                    worker,
+                                    args: {
+                                        players: preparePlayerInstances(dungeon),
+                                        boss: getBossData(boss),
+                                        iterations: iterations,
+                                        index: resultsRemaining++,
+                                        hpcap: 500,
+                                        pos: dungeon.pos
+                                    }
+                                })
+                            }
+
+                            pendingStacks.push(tempStack);
+                        }
+
+                        currentStack = pendingStacks.shift();
+                        resultsRemainingStack = currentStack.length;
+
+                        for (let i = 0; i < Math.min(currentStack.length, maximumInstances); i++) {
+                            let { worker, args } = currentStack.shift();
                             worker.postMessage(args);
                         }
                     }

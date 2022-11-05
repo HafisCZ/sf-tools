@@ -585,9 +585,10 @@
         }
     },
     "dungeons": {
-        "simulate": "Simulate",
+        "simulate_one": "Simulate",
         "simulate_remaining": "Remaining",
         "simulate_all": "All",
+        "simulate_next": "More",
         "player": "Player",
         "enemy": "Enemy",
         "yourself": "You",
