@@ -84,7 +84,7 @@
                                     <button class="ui fluid button" type="submit" id="sim-run" data-intl="dungeons.simulate_one"></button>
                                     <button class="ui fluid button" type="submit" id="sim-run-dungeon" data-intl="dungeons.simulate_remaining"></button>
                                     <button class="ui fluid button disabled" type="submit" id="sim-run-all" data-intl="dungeons.simulate_all"></button>
-                                    <button class="ui fluid button disabled" type="submit" id="sim-run-next" data-intl="dungeons.simulate_next"></button>
+                                    <button class="ui fluid button disabled" type="submit" id="sim-run-next" data-intl="dungeons.simulate_next" data-intl-tooltip="dungeons.simulate_next_settings.tooltip" data-position="bottom center"></button>
                                 </div>
                             </div>
                         </div>
@@ -279,6 +279,20 @@
 
                 $('#sim-threads').captiveInputField('dungeon_sim/threads', 4, v => !isNaN(v) && v >= 1);
                 $('#sim-iterations').captiveInputField('dungeon_sim/iterations', 5000, v => !isNaN(v) && v >= 1);
+
+                $('#sim-run-next').contextmenu((e) => {
+                    e.preventDefault();
+
+                    DialogController.open(
+                        InputDialog,
+                        intl(`dungeons.simulate_next_settings.title`),
+                        intl(`dungeons.simulate_next_settings.label`),
+                        SharedPreferences.getRaw('dungeon_sim/threshold', 5),
+                        (value) => SharedPreferences.setRaw('dungeon_sim/threshold', Number(value)),
+                        null,
+                        (value) => !isNaN(value) && value >= 0 && value <= 100
+                    );
+                });
 
                 let helperNames = ['player', 'bert', 'mark', 'kunigunde'].map(k => intl(`dungeons.${k}`));
 
@@ -829,6 +843,7 @@
 
                         let maximumInstances = Math.max(1, Number($('#sim-threads').val()) || LOGICAL_PROCS);
                         let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
+                        let threshold = Math.max(0, Number(SharedPreferences.getRaw('dungeon_sim/threshold', 5)));
 
                         let dungeonStacks = [];
                         for (let i = 0; i < availableBosses.length; i++) {
@@ -879,7 +894,7 @@
                                             iterations
                                         };
 
-                                        if (score < iterations / 100) {
+                                        if (score < threshold * iterations / 100) {
                                             for (let i = 0; i < pendingStacks.length; i++) {
                                                 pendingStacks[i] = pendingStacks[i].filter(({ worker: _worker, args: _args }) => {
                                                     if (_args.pos == dungeon.pos) {

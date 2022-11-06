@@ -612,6 +612,11 @@
             "potions": "Potions (max 3)",
             "class": "Change class",
             "keep_original": "Keep original"
+        },
+        "simulate_next_settings": {
+            "tooltip": "Right click to adjust the lowest acceptable win % against a dungeon",
+            "title": "Simulation threshold",
+            "label": "Threshold % - Any dungeon enemy below this threshold will be skipped"
         }
     },
     "underworld": {
@@ -905,6 +910,10 @@
             "cancel": "Cancel",
             "ok": "Ok",
             "wait_n_seconds": "Wait %1 seconds ..."
+        },
+        "input": {
+            "cancel": "Cancel",
+            "ok": "Ok"
         }
     },
     "dungeon_enemies": {
