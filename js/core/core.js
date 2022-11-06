@@ -16,8 +16,8 @@ const Logger = new (class {
             'ECLIENT': 'd142f5',
             'TRACKER': 'c8f542',
             'ACTIONS': 'eb73c3',
-            'IN_FTCH': 'd29af8',
-            'IN_WARN': 'ebd883'
+            'IN_WARN': 'ebd883',
+            'APPINFO': 'd29af8'
         };
 
         this.log('VERSION', `Module: ${ MODULE_VERSION }, Core: ${ CORE_VERSION }, Table: ${ TABLE_VERSION }`);
@@ -176,12 +176,15 @@ const SiteOptions = new (class {
 
 const Site = new (class {
     constructor () {
+        this.startup = Date.now();
         this.promise = new Promise((resolve) => {
             this.resolve = resolve;
         });
     }
 
     run () {
+        Logger.log('APPINFO', `Application ready in ${Date.now() - this.startup} ms`);
+
         this.resolve();
     }
 
