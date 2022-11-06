@@ -618,6 +618,10 @@
             "tooltip": "Right click to adjust the lowest acceptable win % against a dungeon",
             "title": "Simulation threshold",
             "label": "Threshold % - Any dungeon enemy below this threshold will be skipped"
+        },
+        "simulate_next_info": {
+            "title": "No dungeons beatable within threshold (#{threshold} %)",
+            "message#": "Use <b>All</b> function to simulate all open dungeons"
         }
     },
     "underworld": {

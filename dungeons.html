@@ -898,12 +898,6 @@
                                     if (message.data.command == 'finished') {
                                         let { score, iterations, healths } = message.data.results;
 
-                                        results[message.data.index] = {
-                                            score,
-                                            healths,
-                                            iterations
-                                        };
-
                                         if (score < threshold * iterations / 100) {
                                             for (let i = 0; i < pendingStacks.length; i++) {
                                                 pendingStacks[i] = pendingStacks[i].filter(({ worker: _worker, args: _args }) => {
@@ -918,6 +912,12 @@
                                             }
 
                                             pendingStacks = pendingStacks.filter((_stack) => _stack.length > 0);
+                                        } else {
+                                            results[message.data.index] = {
+                                                score,
+                                                healths,
+                                                iterations
+                                            };
                                         }
 
                                         resultsRemaining--;
@@ -925,7 +925,12 @@
 
                                         if (resultsRemaining <= 0) {
                                             Loader.toggle(false);
-                                            showMassDungeonResults(floorStacks.flat(), results, (a, b) => a.dungeon.pos == b.dungeon.pos ? (a.boss.pos - b.boss.pos) : (b.score - a.score), true);
+
+                                            if (results.length > 0) {
+                                                showMassDungeonResults(floorStacks.flat(), results, (a, b) => a.dungeon.pos == b.dungeon.pos ? (a.boss.pos - b.boss.pos) : (b.score - a.score), true);
+                                            } else {
+                                                Toast.info(intl('dungeons.simulate_next_info.title', { threshold }), intl('dungeons.simulate_next_info.message#'));
+                                            }
                                         } else if (resultsRemainingStack <= 0 && pendingStacks.length > 0) {
                                             currentStack = pendingStacks.shift();
                                             resultsRemainingStack = currentStack.length;
