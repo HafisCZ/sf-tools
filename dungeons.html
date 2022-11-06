@@ -142,10 +142,11 @@
         <div id="results-modal" class="ui mini modal">
             <div class="header" data-intl="dungeons.results"></div>
             <button id="save-screenshot" class="ui small basic icon button" style="position: absolute; right: .75em; top: 1em;" data-position="bottom center" data-intl-tooltip="stats.copy.image"><i class="download icon"></i></button>
+            <div class="experience"></div>
             <div style="padding-left: 1em; padding-right: 1em; border-bottom: 1px solid rgba(34,36,38,.15)">
                 <canvas id="list-winchart" style="width: 100%;"></canvas>
             </div>
-            <div class="content" style="max-height: 70vh; overflow-y: auto;">
+            <div class="content" style="max-height: 65vh; overflow-y: auto;">
 
             </div>
         </div>
@@ -722,7 +723,7 @@
                     }
                 )
 
-                function showMassDungeonResults (bosses, results, sort = true) {
+                function showMassDungeonResults (bosses, results, sort = true, calculateTotalExperience = false) {
                     bosses = bosses.map((dungeon, index) => {
                         let result = _dig(results, index);
                         if (result) {
@@ -738,6 +739,15 @@
                         } else {
                             bosses.sort((b, a) => a.score - b.score);
                         }
+                    }
+
+                    if (calculateTotalExperience) {
+                        let experienceTotal = _mapped_sum(bosses, ({ boss }) => boss.level >= 393 ? 3E8 : (ExperienceRequired[boss.level] / 5), 0);
+                        let experience = formatAsSpacedNumber(experienceTotal, ' ');
+
+                        $('#results-modal .experience').html(`<div>${intl('dungeons.experience', { experience })}</div>`);
+                    } else {
+                        $('#results-modal .experience').empty();
                     }
 
                     $('#results-modal .content').html(`
@@ -915,7 +925,7 @@
 
                                         if (resultsRemaining <= 0) {
                                             Loader.toggle(false);
-                                            showMassDungeonResults(floorStacks.flat(), results, (a, b) => a.dungeon.pos == b.dungeon.pos ? (a.boss.pos - b.boss.pos) : (b.score - a.score));
+                                            showMassDungeonResults(floorStacks.flat(), results, (a, b) => a.dungeon.pos == b.dungeon.pos ? (a.boss.pos - b.boss.pos) : (b.score - a.score), true);
                                         } else if (resultsRemainingStack <= 0 && pendingStacks.length > 0) {
                                             currentStack = pendingStacks.shift();
                                             resultsRemainingStack = currentStack.length;

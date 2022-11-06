@@ -601,6 +601,7 @@
             "x": "- Distribution for selected amount of tries -"
         },
         "results": "Results",
+        "experience": "Total: #{experience} XP",
         "cheats": {
             "title": "Cheat Menu",
             "subtitle": "Select which cheats to apply and poll your character",

@@ -111,3 +111,12 @@ div.text .boss-rune {
 #winchart.faded-out {
     opacity: 0.5 !important;
 }
+
+#results-modal .experience div {
+    text-align: center;
+    margin-top: 0.5em;
+    padding-bottom: 0.5em;
+    font-weight: bold;
+    color: #3E3E3E;
+    border-bottom: 1px solid rgba(34, 36, 38, 0.15);
+}
