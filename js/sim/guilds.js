@@ -43,6 +43,9 @@ class GuildSimulator extends SimulatorBase {
             } else if (inactive == 2) {
                 // Inactive players beyond 21 days have their HP reduced by 90%
                 model.Player.ForceHealthMultiplier = 0.1;
+            } else {
+                // Rest modifier
+                model.Player.ForceHealthMultiplier = 1.0;
             }
 
             model.Player.NoGladiatorReduction = true;
