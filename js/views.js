@@ -984,6 +984,73 @@ const TemplateSaveDialog = new (class extends Dialog {
     }
 })();
 
+const InputDialog = new (class extends Dialog {
+    _intl_key () {
+        return 'input';
+    }
+
+    _createModal () {
+        return `
+            <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;" data-op="title"></h2>
+                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 2em;">
+                    <div class="field" data-op="field">
+                        <label data-op="label"></label>
+                        <input type="text" data-op="input">
+                    </div>
+                </div>
+                <div class="ui two fluid buttons">
+                    <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">${this.intl('ok')}</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _callAndClose (callback, ...args) {
+        if (callback) callback(...args);
+
+        this.close();
+    }
+
+    _validate () {
+        if (this.validationCallback && !this.validationCallback(this.$input.val())) {
+            this.$field.addClass('error');
+            this.$okButton.addClass('disabled');
+        } else {
+            this.$field.removeClass('error');
+            this.$okButton.removeClass('disabled');
+        }
+    }
+
+    _createBindings () {
+        this.$cancelButton = this.$parent.find('[data-op="cancel"]');
+        this.$okButton = this.$parent.find('[data-op="ok"]');
+
+        this.$title = this.$parent.find('[data-op="title"]');
+        this.$label = this.$parent.find('[data-op="label"]');
+        this.$input = this.$parent.find('[data-op="input"]');
+        this.$field = this.$parent.find('[data-op="field"]');
+
+        this.$cancelButton.click(() => this._callAndClose(this.cancelCallback));
+        this.$okButton.click(() => this._callAndClose(this.okCallback, this.$input.val()));
+        this.$input.on('input change', () => this._validate());
+    }
+
+    _applyArguments (title, label, value, okCallback, cancelCallback, validationCallback) {
+        this.okCallback = okCallback;
+        this.cancelCallback = cancelCallback;
+        this.validationCallback = validationCallback;
+
+        this.$title.html(title);
+        this.$label.html(label);
+
+        this.$input.val(value);
+
+        this._validate();
+    }
+})
+
 const ConfirmDialog = new (class extends Dialog {
     _intl_key () {
         return 'confirm';
