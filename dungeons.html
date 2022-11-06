@@ -749,7 +749,7 @@
                                             <span${ dungeon.shadow ? ' style="text-shadow:0px 0px 8px #390074;"' : '' }>
                                                 <img class="ui centered image boss-image" style="position: absolute; left: 0; height: 2.5em; top: 0.5em; width: 2.5em;" src="res/class${ boss.class }.png">&nbsp;
                                                 <span style="position: absolute; left: 3.75em; top: 0.4em; font-size: 80%;">${ dungeon.name }</span>
-                                                <span style="position: absolute; left: 3em; top: 1.4em;">${ boss.name }</span>
+                                                <span style="position: absolute; left: 3em; top: 1.4em;">#${boss.pos} - ${ boss.name }</span>
                                             </span>
                                         </div>
                                         <div class="five wide column text-center" style="padding-top: 1rem; padding-bottom: 1rem;">${ score == 0 ? 'Not possible' : `${ (100 * score / iterations).toFixed(2) }%` }</div>
