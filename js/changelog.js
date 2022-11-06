@@ -5,8 +5,11 @@ const CHANGELOG = {
             'Added item pictures',
             'Added new dungeons',
             'Added new achievements',
+            'Added mushroom price to items',
             'Fixed background color in custom rows',
-            'Fixed crash when displaying lone empty guild'
+            'Fixed crash when displaying lone empty guild',
+            'Fixed scrapbook count',
+            'Removed separation between private & public dungeon headers'
         ],
         'Pet Simulator': [
             'Removed beta backend switch'
@@ -17,8 +20,15 @@ const CHANGELOG = {
         'Arena Manager': [
             'Fixed runes not rounding down to 20 (as per new backend)'
         ],
+        'Dungeon Simulator': [
+            'Added option to simulate all open dungeons until certain win threshold',
+            'Fixed dungeons not ordered properly'
+        ],
         'All Simulators': [
             'Added support for reworked Druid'
+        ],
+        'Pet Calendar': [
+            'Fixed location descriptions'
         ]
     },
     'v5.2469': {
