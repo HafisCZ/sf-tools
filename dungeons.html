@@ -873,7 +873,7 @@
                             let dungeonStack = [];
 
                             for (let bossData of Object.values(_dungeon.floors)) {
-                                if (dungeonStack.length > 0 || bossData.name == _boss.name) {
+                                if (dungeonStack.length > 0 || bossData.pos == _boss.pos) {
                                     dungeonStack.push({
                                         dungeon: _dungeon,
                                         boss: bossData
