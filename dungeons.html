@@ -816,7 +816,7 @@
                         let pendingInstances = [];
 
                         for (let [index, { boss, dungeon, name }] of Object.entries(availableBosses)) {
-                            let worker = await createSimulatorWorker('dungeons');
+                            let worker = await Workers.createSimulatorWorker('dungeons');
 
                             worker.addEventListener('message', (message) => {
                                 if (message.data.command == 'finished') {
@@ -906,7 +906,7 @@
                             let tempStack = [];
 
                             for (let { boss, dungeon } of stack) {
-                                let worker = await createSimulatorWorker('dungeons');
+                                let worker = await Workers.createSimulatorWorker('dungeons');
 
                                 worker.addEventListener('message', (message) => {
                                     if (message.data.command == 'finished') {
@@ -1008,7 +1008,7 @@
                         let results = [];
                         let pendingInstances = [];
                         for (let [index, { boss, dungeon }] of Object.entries(bossQueue)) {
-                            let worker = await createSimulatorWorker('dungeons');
+                            let worker = await Workers.createSimulatorWorker('dungeons');
 
                             worker.addEventListener('message', (message) => {
                                 if (message.data.command == 'finished') {
@@ -1065,7 +1065,7 @@
                         }
 
                         for (let i = 0; i < threads; i++) {
-                            let worker = await createSimulatorWorker('dungeons');
+                            let worker = await Workers.createSimulatorWorker('dungeons');
 
                             worker.addEventListener('message', (message) => {
                                 if (message.data.command == 'finished') {

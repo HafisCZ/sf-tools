@@ -479,7 +479,7 @@
                         let blocksResults = [];
 
                         for (let i = 0; i < blocks; i++) {
-                            let worker = await createSimulatorWorker('guilds');
+                            let worker = await Workers.createSimulatorWorker('guilds');
 
                             worker.addEventListener('message', function ({ data: { results, time }}) {
                                 blocksResults.push(results);

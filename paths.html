@@ -916,7 +916,7 @@
 
                         freeze();
 
-                        var worker = await createPetWorker();
+                        var worker = await Workers.createPetWorker();
 
                         worker.addEventListener('message', (message) => {
                             if (message.data.command == 'finished') {

@@ -199,39 +199,56 @@ function decodeScrapbook (data) {
     }
 }
 
-// Loads file contents using ajax
-function fetchContent (location, useHosted = false) {
-    return $.ajax({
-        method: 'GET',
-        url: `${useHosted ? 'https://sftools.mar21.eu' : ''}/${location}`,
-        dataType: 'text'
-    });
-}
-
-// Creates a worker for pet simulators
-async function createPetWorker () {
-    let location = 'js/sim/pets.js';
-
-    if (document.location.protocol == 'file:') {
-        let blob = new Blob([
-            await fetchContent(location, true)
-        ], { type: 'text/javascript' });
-
-        return new Worker(URL.createObjectURL(blob));
-    } else {
-        return new Worker(location);
+const Workers = new (class {
+    constructor () {
+        this.fetchCache = {};
+        this.objectCache = {};
     }
-}
 
-// Creates worker for normal simulators (they require base.js)
-async function createSimulatorWorker (type) {
-    let localEnv = document.location.protocol == 'file:';
-    let blob = new Blob([
-        await fetchContent('js/sim/base.js', localEnv) + await fetchContent(`js/sim/${type}.js`, localEnv)
-    ], { type: 'text/javascript' });
+    _local () {
+        return document.location.protocol == 'file:';
+    }
 
-    return new Worker(URL.createObjectURL(blob));
-}
+    async _fetchContent (location) {
+        if (typeof this.fetchCache[location] === 'undefined') {
+            let url = `${this._local() ? 'https://sftools.mar21.eu' : ''}/${location}`;
+
+            this.fetchCache[location] = await fetch(url).then(data => data.text());
+        }
+
+        return this.fetchCache[location];
+    }
+
+    async createPetWorker () {
+        let location = 'js/sim/pets.js';
+
+        if (this._local()) {
+            let blob = new Blob([
+                await this._fetchContent(location)
+            ], { type: 'text/javascript' });
+
+            return new Worker(URL.createObjectURL(blob));
+        } else {
+            return new Worker(location);
+        }
+    }
+
+    async _fetchObject (type) {
+        if (typeof this.objectCache[type] === 'undefined') {
+            let blob = new Blob([
+                await this._fetchContent('js/sim/base.js') + await this._fetchContent(`js/sim/${type}.js`)
+            ], { type: 'text/javascript' });
+
+            this.objectCache[type] = URL.createObjectURL(blob);
+        }
+
+        return this.objectCache[type];
+    }
+
+    async createSimulatorWorker (type) {
+        return new Worker(await this._fetchObject(type));
+    }
+})();
 
 // Helper function
 function merge (a, b) {

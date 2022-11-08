@@ -365,7 +365,7 @@
                         let finishedSimulations = 0;
 
                         for (let i = 0; i < pets.length; i++) {
-                            const worker = await createSimulatorWorker('hydra');
+                            const worker = await Workers.createSimulatorWorker('hydra');
 
                             worker.addEventListener('message', message => {
                                 if (message.data.command == 'finished') {

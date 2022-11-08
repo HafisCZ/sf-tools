@@ -501,7 +501,7 @@
                         for (let i = 0; i < playerList.length; i+= blockSize) {
                             let block = playerList.slice(i, i + blockSize);
 
-                            let worker = await createSimulatorWorker('underworld');
+                            let worker = await Workers.createSimulatorWorker('underworld');
                             worker.addEventListener('message', function (message) {
                                 if (message.data.command == 'finished') {
                                     resultList.push(... message.data.results);

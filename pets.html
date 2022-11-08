@@ -583,7 +583,7 @@
                 function simulateFight (a, b) {
                     return new Promise(async (resolve, reject) => {
                         if (a && b && (a.Level > 0 || a.Boss) && (b.Level > 0 || b.Boss)) {
-                            let worker = await createPetWorker();
+                            let worker = await Workers.createPetWorker();
 
                             worker.addEventListener('message', (message) => {
                                 if (message.data.command == 'finished') {
@@ -641,7 +641,7 @@
                             var maps_finished = 0;
 
                             for (var i = 0; i < count; i++) {
-                                var worker = await createPetWorker();
+                                var worker = await Workers.createPetWorker();
 
                                 worker.addEventListener('message', function (message) {
                                     if (message.data.command == 'finished') {

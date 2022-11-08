@@ -273,7 +273,7 @@
                         let results = [];
 
                         for (let i = 0; i < blocks; i++) {
-                            const worker = await createSimulatorWorker('fortress');
+                            const worker = await Workers.createSimulatorWorker('fortress');
 
                             worker.addEventListener('message', message => {
                                 results.push(message.data.results);

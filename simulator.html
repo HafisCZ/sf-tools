@@ -307,7 +307,7 @@
                     return new Promise(async (resolve, reject) => {
                         Toast.info(intl('players.toast.tournament.title'), intl('players.toast.tournament.message#', { count: array.length }))
 
-                        let worker = await createSimulatorWorker('players');
+                        let worker = await Workers.createSimulatorWorker('players');
 
                         worker.addEventListener('message', function (message) {
                             if (message.data.command == 'finished') {
@@ -365,7 +365,7 @@
                         let blocksFinished = 0;
                         for (var i = 0; i < players.length; i += blockSize) {
                             var block = players.slice(i, i + blockSize);
-                            var worker = await createSimulatorWorker('players');
+                            var worker = await Workers.createSimulatorWorker('players');
 
                             worker.addEventListener('message', function (message) {
                                 if (message.data.command == 'finished') {
