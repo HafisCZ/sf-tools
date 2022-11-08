@@ -462,7 +462,7 @@
                         settingsChanged();
 
                         dungeon = DUNGEON_DATA[dungeon_current];
-                        boss = getBossData(dungeon.floors[value]);
+                        boss = dungeon.floors[value];
                         boss_current = boss;
                     }).dropdown('set selected', Object.keys(dungeon.floors)[0]);
                     show();
@@ -705,7 +705,7 @@
                                                 let sel = availableBosses[value];
 
                                                 dungeon = sel.dungeon;
-                                                boss = getBossData(sel.boss);
+                                                boss = sel.boss;
 
                                                 withoutUpdate(() => {
                                                     $('#dungeon-list').dropdown('set selected', sel.id);
@@ -992,7 +992,7 @@
 
                         let bossQueue = [];
                         for (let bossData of Object.values(dungeon.floors)) {
-                            if (bossQueue.length > 0 || bossData.name === boss.Name) {
+                            if (bossQueue.length > 0 || bossData.pos == boss.pos) {
                                 bossQueue.push({
                                     dungeon,
                                     boss: bossData
@@ -1051,6 +1051,7 @@
                     if (boss && editor.valid()) {
                         Loader.toggle(true);
 
+                        let bossInstance = getBossData(boss);
                         let playerInstances = preparePlayerInstances(dungeon);
                         let threads = Math.max(1, Number($('#sim-threads').val()) || 2);
                         let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
@@ -1074,7 +1075,7 @@
                                         download('logs.json', new Blob([ JSON.stringify({
                                             fights: message.data.log,
                                             players: players,
-                                            boss: boss
+                                            boss: bossInstance
                                         }) ], {
                                             type: 'application/json'
                                         }));
@@ -1104,7 +1105,7 @@
 
                             worker.postMessage({
                                 players: playerInstances,
-                                boss: boss,
+                                boss: bossInstance,
                                 iterations: iterations,
                                 log: log
                             });
@@ -1114,7 +1115,7 @@
 
                 function showGraph (graph, dungeon, boss, score, tries, healths) {
                     graph.options.title.text = [
-                        `${ dungeon.shadow ? `${intl('dungeon_enemies.shadow')} ` : '' }${ dungeon.name }: ${ boss.Name || boss.name }`,
+                        `${ dungeon.shadow ? `${intl('dungeon_enemies.shadow')} ` : '' }${ dungeon.name }: ${ boss.name }`,
                         `Winrate: ${ (100 * score / tries).toFixed(2) }% (${ formatAsSpacedNumber(score, ' ') } out of ${ formatAsSpacedNumber(tries, ' ') })`
                     ];
                     graph.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
