@@ -321,6 +321,8 @@
                 function updatePlayerList () {
                     updateSimulateButton();
 
+                    _sort_des(playerList[currentList], entry => entry.player.Level);
+
                     let content = ''
                     for (let i = 0; i < playerList[currentList].length; i++) {
                         let {player, index, inactive} = playerList[currentList][i];
