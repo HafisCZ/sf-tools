@@ -219,30 +219,20 @@ const Workers = new (class {
         return this.fetchCache[location];
     }
 
-    async createPetWorker () {
-        let location = 'js/sim/pets.js';
-
-        if (this._local()) {
-            let blob = new Blob([
-                await this._fetchContent(location)
-            ], { type: 'text/javascript' });
-
-            return new Worker(URL.createObjectURL(blob));
-        } else {
-            return new Worker(location);
-        }
-    }
-
-    async _fetchObject (type) {
+    async _fetchObject (type, includeBase = true) {
         if (typeof this.objectCache[type] === 'undefined') {
             let blob = new Blob([
-                await this._fetchContent('js/sim/base.js') + await this._fetchContent(`js/sim/${type}.js`)
+                (includeBase ? await this._fetchContent('js/sim/base.js') : '') + await this._fetchContent(`js/sim/${type}.js`)
             ], { type: 'text/javascript' });
 
             this.objectCache[type] = URL.createObjectURL(blob);
         }
 
         return this.objectCache[type];
+    }
+
+    async createPetWorker () {
+        return new Worker(await this._fetchObject('pets', false));
     }
 
     async createSimulatorWorker (type) {
