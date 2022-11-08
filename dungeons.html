@@ -742,7 +742,15 @@
                     }
 
                     if (calculateTotalExperience) {
-                        let experienceTotal = _mapped_sum(bosses, ({ boss }) => boss.level >= 393 ? 3E8 : (ExperienceRequired[boss.level] / 5), 0);
+                        let experienceTotal = _mapped_sum(bosses, ({ boss, dungeon }) => {
+                            if (dungeon.key == '201') {
+                                return 0;
+                            } else if (boss.level >= 393) {
+                                return 3E8;
+                            } else {
+                                return ExperienceRequired[boss.level] / 5;
+                            }
+                        }, 0);
                         let experience = formatAsSpacedNumber(experienceTotal, ' ');
 
                         $('#results-modal .experience').html(`<div>${intl('dungeons.experience', { experience })}</div>`);
