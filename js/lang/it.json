@@ -487,6 +487,7 @@
         "simulate": "Simula",
         "simulate_remaining": "Restanti",
         "simulate_all": "Tutti",
+        "simulate_next": "Di più",
         "player": "Giocatore",
         "enemy": "Nemico",
         "yourself": "Tu",
@@ -511,6 +512,15 @@
             "potions": "Pozioni (max 3)",
             "class": "Cambia classe",
             "keep_original": "Mantieni l'originale"
+        },
+        "simulate_next_settings":{
+            "tooltip": "Click destro per modificare la minor % di vittoria accettabile",
+            "title": "Soglia di simulaizone",
+            "label": "% Soglia - Ogni boss al di sotto della soglia verrà saltato"
+        },
+        "simulate_next_info": {
+            "title": "Nessun dungeon battibile sopra la soglia(#{threshold} %)",
+            "message#": "Usa <b>Tutti</b> per simulate tutti i dungeons aperti"
         }
     },
     "underworld": {
