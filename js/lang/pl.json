@@ -11,6 +11,7 @@
         "class7": "Łowca Demonów",
         "class8": "Druid",
         "class9": "Bard",
+        "mask0": "Orzeł",
         "mask1": "Niedźwiedź",
         "mask2": "Kot",
         "instrument0": "Harfa",
@@ -114,7 +115,7 @@
 	},
         "fortress": {
             "title": "Symulator Twierdzy",
-            "desc": "Przesymuluj prawdopodobny wyniki ataku w twierdzy."	
+            "desc": "Przesymuluj prawdopodobny wyniki ataku w twierdzy."
         }
     },
     "404": {
@@ -176,7 +177,8 @@
             "options": {
                 "title": "Opcje pliku",
                 "advanced": "Pokaż zaawansowaną liste plików",
-                "hidden": "Pokaż ukrytych graczy"
+                "hidden": "Pokaż ukrytych graczy",
+                "export_public_only": "Eksportuj tylko publiczne dane"
             },
             "tags": {
                 "single": "Tag",
@@ -413,14 +415,18 @@
                 "reset": "Reset akcji",
                 "ignore": "Ignoruj zmiany",
                 "save": "Zapisz akcje"
+            },
+            "recovery": {
+                "title": "Recovery",
+                "import": "Importuj dane",
+                "export": "Pobierz (eksportuj) dane",
+                "description#": "Za pomocą opcji poniżej możesz eksportować i importować całe dane zgromadzone w przeglądarce.<br>Zalecane jest aby eksportować dane przynajmniej raz w miesiącu aby zapobiec stracie tych danych",
+                "toast": "Przywracanie danych w trakcie. Proces ten może zająć chwilę w zależności od wielkości pliku z danymi.",
+                "notice": "Czy na pewno chcesz przywrócić dane SFTools z tego pliku?<br><br>Ten proces usunie wszystkie dane SFTools zapisane w przeglądarce!"
             }
         }
     },
     "pets": {
-        "new_backend": {
-            "label": "Nowy backend",
-            "tooltip": "Nie zaznaczaj, chyba że grasz na nowym backendzie!"
-        },
         "generate": {
             "tooltip": "Wygeneruj mapę sukcesu poziomu / gladiatora. Możliwe tylko z własnym pupilem przeciwko bossowi lochu.",
             "one": "Generuj",
@@ -429,7 +435,6 @@
         },
         "simulate": "Symuluj",
         "results": "Wyniki",
-        "poll": "Pula zapisanych postaci",
         "map": {
             "gladiator": "Glad"
         },
@@ -580,9 +585,10 @@
         }
     },
     "dungeons": {
-        "simulate": "Symuluj",
+        "simulate_one": "Symuluj",
         "simulate_remaining": "Pozostałe",
         "simulate_all": "Wszystkie",
+        "simulate_next": "Więcej",
         "player": "Gracz",
         "enemy": "Przeciwnik",
         "yourself": "Ty",
@@ -590,12 +596,12 @@
         "mark": "Mariusz",
         "kunigunde": "Kunegunda",
         "open": "Obecnie dostępne lochy",
-        "poll": "Załaduj zapisane postacie",
         "graph": {
             "y": "Pozostałe HP Bossa",
             "x": "- Dystrybucja dla wybranej ilości prób -"
         },
         "results": "Wyniki",
+        "experience": "Łącznie: #{experience} XP",
         "cheats": {
             "title": "Cheat Menu",
             "subtitle": "Wybierz cheaty i załaduj postać",
@@ -607,6 +613,15 @@
             "potions": "Eliksiry (max 3)",
             "class": "Zmiana klasy",
             "keep_original": "Zachowaj pierwotną"
+        },
+        "simulate_next_settings": {
+            "tooltip": "Kliknij prawym przyciskiem myszy aby ustawić próg - najniższy akceptowalny % na pokonanie przeciwnika",
+            "title": "Próg symulacji",
+            "label": "Próg % - Każdy przeciwnik z szansą poniżej tego progu zostanie pominięty"
+        },
+        "simulate_next_info": {
+            "title": "Żaden przeciwnik nie jest do pokonania przy ustawionym progu (#{threshold} %)",
+            "message#": "Użyj przycisku <b>Wszystkie</b> aby zasymulować wszystkie otwarte lochy"
         }
     },
     "underworld": {
@@ -631,7 +646,6 @@
 	"players": {
         "gladiator_mode": "Gladiator zostanie ustawiony na 15 bez względu na ustawienia",
         "ihof_mode": "IHOF Mode: Gladiator nie jest redukowany!",
-        "fireball_mode": "Włącza tryb naprawionego fireballa przeciwko Berserkerom, Łowcą Demonów, Druidom oraz Bardom",
         "druid_armor_mode": "Włącza tryb naprawionego pancerza u Druida",
         "mode": {
             "all": "Wszyscy na Wszystkich",
@@ -721,11 +735,24 @@
             "20": "Hydra o niewiarygodniej ilości głów"
         }
     },
-    
     "simulator": {
         "paste_target#": "Kliknij tutaj i wcisnij <b>CTRL&nbsp;+&nbsp;V</b> aby wkleić do symulatora",
         "threads": "Wątki symulacji. Utrzymaj liczbę PONIŻEJ ilości rdzeni procesora!",
-        "iterations": "Liczba iteracji na wątek."
+        "add": "Dodaj",
+        "save": "Zapisz",
+        "simulate": "Symuluj",
+        "clipboard": {
+            "copy_all": "Kopiuj wszystkich",
+            "paste_mode": "Przełącz tryb wstawiania na Add/Replace"
+        },
+        "iterations": "Liczba iteracji na wątek.",
+        "win_chance": "Szansa na zwycięstwo %",
+        "min_chance": "Minimalna szansa %",
+        "max_chance": "Maksymalna szansa %",
+        "poll": {
+            "players": "Załaduja zapisanych graczy",
+            "guilds": "Załaduj zapisane gildie"
+        }
     },
     "editor": {
         "name": "Nazwa",
@@ -888,6 +915,10 @@
             "cancel": "Anuluj",
             "ok": "Ok",
             "wait_n_seconds": "Poczekaj %n sekund ..."
+        },
+        "input": {
+            "cancel": "Anuluj",
+            "ok": "Ok"
         }
     },
     "dungeon_enemies": {
@@ -1058,17 +1089,7 @@
             "7": "Robert Marketingowiec",
             "8": "Wacław Podwykonawca",
             "9": "Motu z pobijakiem",
-            "10": "Włodzimierz Młotowładny",
-            "11": "Tyranka Thesi",
-            "12": "Piekielny Peter",
-            "13": "Gruboskórny Gert",
-            "14": "Łżący Łgarz Leander",
-            "15": "Choleryczka Hannah",
-            "16": "Anioł Apokalipsy Alex",
-            "17": "Haker Jan",
-            "18": "Czteroręki Peter",
-            "19": "Artysta znany dawniej jako Andreas",
-            "20": "Maszkaronik Marv"
+            "10": "Włodzimierz Młotowładny"
         },
         "14": {
             "name": "Easteros",
@@ -1081,17 +1102,7 @@
             "7": "Królowa Matka",
             "8": "Pudel Miniatura",
             "9": "Górołaz",
-            "10": "Bachor-despota Joffrey",
-            "11": "Zimny Drań",
-            "12": "Brygitte",
-            "13": "Bałwan i Wilk Cienia",
-            "14": "Czerwona Demonica",
-            "15": "Chłopięcy Brienne",
-            "16": "Wzgardliwy Ramsay",
-            "17": "Bezlicy",
-            "18": "Złowrogi Gnom",
-            "19": "Obrońca",
-            "20": "Niepalna"
+            "10": "Bachor-despota Joffrey"
         },
         "16": {
             "name": "Uświęcona Tradycją Szkoła Magii",
@@ -1104,17 +1115,7 @@
             "7": "Demoralizator",
             "8": "Strażnik Złotego Jaja",
             "9": "Hurrdurrgrid",
-            "10": "Psyriusz Bork",
-            "11": "Suworyc Snap",
-            "12": "Dwójka wybrańców (no i Ron)",
-            "13": "Dyndendor",
-            "14": "Ślizgogon",
-            "15": "Diabolores",
-            "16": "Irracjonalnie Irytujące Infernusy",
-            "17": "Bestyjka Bella",
-            "18": "Lucjusz Czystokrwisty",
-            "19": "Przyjemniacząteczniątko",
-            "20": "Sami Wiecie Kto"
+            "10": "Psyriusz Bork"
         },
         "17": {
             "name": "Hemorridor",
@@ -1127,17 +1128,7 @@
             "7": "Bezog",
             "8": "Smoulder",
             "9": "Upiorny jeźdźca... jeźdźcy?",
-            "10": "Potwór w jeziorze",
-            "11": "Valaraukar",
-            "12": "Uruk Urcsi",
-            "13": "Wężoustny",
-            "14": "Samowar Blady",
-            "15": "Pogromca słoniowatych",
-            "16": "Nieumarła armia",
-            "17": "Szelantula",
-            "18": "Władca dziewiątek",
-            "19": "Paszcza Taurona",
-            "20": "Nekromancer"
+            "10": "Potwór w jeziorze"
         },
         "19": {
             "name": "Nordyccy bogowie",
@@ -1177,6 +1168,123 @@
             "8": "Apodyktyczny Abawuwu",
             "9": "Czachorozbijacz Shakes",
             "10": "Fenomenalny Fidget"
+        },
+        "22": {
+          "name": "Smoczy Skarbiec",
+          "1": "Niezbyt zgryźliwy smok",
+          "2": "Złoty smok z ognikami w oczach",
+          "3": "Uwodzicielska matka smosłów",
+          "4": "Ożywiona skamieniałość jaszczura",
+          "5": "Shenlong",
+          "6": "Smoczątko",
+          "7": "Smok noworoczny",
+          "8": "Szalony pupil",
+          "9": "Smok ze wstrząsem mózgu",
+          "10": "Poirytowana matka smoków"
+        },
+        "23": {
+          "name": "Dom Strachów",
+          "1": "Sztućcowa głowa",
+          "2": "Niezweryfikowany eksperyment",
+          "3": "Drakula",
+          "4": "Mistrz telefonicznych żartów",
+          "5": "Sympatyczne bliźniaczki",
+          "6": "Miły klaun z kanału",
+          "7": "Laleczka terapeutyczna",
+          "8": "Twój największy koszmar",
+          "9": "Rzeźnik z mieszkania obok",
+          "10": "Dziewczyna z telewizora"
+        },
+        "24": {
+            "name": "3. Liga Superbohaterów",
+            "1": "1,000 Punch Man",
+            "2": "Mister X-Ray",
+            "3": "Toilet Tracker",
+            "4": "Iron Man",
+            "5": "Rain Man",
+            "6": "Invisible Woman",
+            "7": "Candy Man",
+            "8": "Captain Caffeine",
+            "9": "Forgetful Fist",
+            "10": "Captain Monday"
+        },
+        "25": {
+            "name": "Dojo Bohateró z Dzieciństwa",
+            "1": "Magical Schoolgirl",
+            "2": "Master of Doppelgangers",
+            "3": "Friendly Helper from the Neighborhood",
+            "4": "Student Shinigami",
+            "5": "Wannabe Detective",
+            "6": "Rubber Pirate",
+            "7": "Pet Trainer",
+            "8": "Joseph Joker",
+            "9": "Supreme Alien",
+            "10": "Cheating Brat"
+        },
+        "26": {
+            "name": "Monster Grotto",
+            "1": "Doltopus",
+            "2": "Hairy Groom",
+            "3": "Monster Truck",
+            "4": "Nudist Giant",
+            "5": "Marshmallow Man",
+            "6": "Sandbox Worm",
+            "7": "Optimist Supreme",
+            "8": "Three-headed Dragon God",
+            "9": "Angry Giant Saurian",
+            "10": "Berlin Scene Monster"
+        },
+        "27": {
+            "name": "Miasto Intryg",
+            "1": "Zimny Drań",
+            "2": "Brygitte",
+            "3": "Bałwan i Wilk Cienia",
+            "4": "Czerwona Demonica",
+            "5": "Chłopięcy Brienne",
+            "6": "Wzgardliwy Ramsay",
+            "7": "Bezlicy",
+            "8": "Złowrogi Gnom",
+            "9": "Obrońca",
+            "10": "Niepalna"
+        },
+        "28": {
+            "name": "Ekspres do Szkoły Magii",
+            "1": "Suworyc Snap",
+            "2": "Dwójka wybrańców (no i Ron)",
+            "3": "Dyndendor",
+            "4": "Ślizgogon",
+            "5": "Diabolores",
+            "6": "Irracjonalnie Irytujące Infernusy",
+            "7": "Bestyjka Bella",
+            "8": "Lucjusz Czystokrwisty",
+            "9": "Przyjemniacząteczniątko",
+            "10": "Sami Wiecie Kto"
+        },
+        "29": {
+            "name": "Góra Popiołów",
+            "1": "Valaraukar",
+            "2": "Uruk Urcsi",
+            "3": "Wężoustny",
+            "4": "Samowar Blady",
+            "5": "Pogromca słoniowatych",
+            "6": "Nieumarła armia",
+            "7": "Szelantula",
+            "8": "Władca dziewiątek",
+            "9": "Paszcza Taurona",
+            "10": "Nekromancer"
+        },
+        "30": {
+            "name": "Siedziba główna firmy Playa Games",
+            "1": "Tyranka Thesi",
+            "2": "Piekielny Peter",
+            "3": "Gruboskórny Gert",
+            "4": "Łżący Łgarz Leander",
+            "5": "Choleryczka Hannah",
+            "6": "Anioł Apokalipsy Alex",
+            "7": "Haker Jan",
+            "8": "Czteroręki Peter",
+            "9": "Artysta znany dawniej jako Andreas",
+            "10": "Maszkaronik Marv"
         },
         "201": {
             "name": "Wieża",
@@ -1320,7 +1428,7 @@
             "872": "Plugawy nietoperz",
             "873": "Plugawy nietoperz",
             "874": "Plugawy nietoperz",
-            "875": "Plugawy nietoperz",
+            "875": "Monstrualny nietoperz",
             "876": "Obrzydliwy ożywieniec",
             "877": "Potępiona dusza",
             "939": "Piekielny dragor",
