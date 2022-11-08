@@ -856,18 +856,24 @@
                         let threshold = Math.max(0, Number(SharedPreferences.getRaw('dungeon_sim/threshold', 5)));
 
                         let dungeonStacks = [];
-                        for (let i = 0; i < availableBosses.length; i++) {
-                            dungeonStacks[i] = [];
+                        for (let { boss: _boss, dungeon: _dungeon } of availableBosses) {
+                            if (_dungeon.key == '203') {
+                                // Ignore twister
+                                continue;
+                            }
 
-                            let { boss: _boss, dungeon: _dungeon } = availableBosses[i];
+                            let dungeonStack = [];
+
                             for (let bossData of Object.values(_dungeon.floors)) {
-                                if (dungeonStacks[i].length > 0 || bossData.name == _boss.name) {
-                                    dungeonStacks[i].push({
+                                if (dungeonStack.length > 0 || bossData.name == _boss.name) {
+                                    dungeonStack.push({
                                         dungeon: _dungeon,
                                         boss: bossData
                                     })
                                 }
                             }
+
+                            dungeonStacks.push(dungeonStack);
                         }
 
                         let floorStacks = [];
