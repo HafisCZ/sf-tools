@@ -25,7 +25,8 @@ const CHANGELOG = {
             'Fixed dungeons not ordered properly'
         ],
         'All Simulators': [
-            'Added support for reworked Druid'
+            'Added support for reworked Druid',
+            'Fixed low performance when starting All & More simulation modes'
         ],
         'Pet Calendar': [
             'Fixed location descriptions'
