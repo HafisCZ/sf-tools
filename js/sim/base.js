@@ -552,7 +552,7 @@ class DruidModel extends FighterModel {
                 return super.attack(
                     damage * 16,
                     target,
-                    5, // TODO: Replace with actual swoop value
+                    5,
                     skipped,
                     false
                 );
