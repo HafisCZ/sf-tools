@@ -1051,6 +1051,7 @@ const ATTACK_TYPES = {
     2: 'Catapult',
     3: 'Blocked',
     4: 'Evaded',
+    5: 'Swoop',
     10: 'Normal',
     11: 'Critical',
     13: 'Blocked',
