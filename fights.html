@@ -210,6 +210,10 @@
                                         <label>Spells</label>
                                         <input type="text" disabled class="text-center" data-op="Spells">
                                     </div>
+                                    <div class="field" data-op="SwoopsField">
+                                        <label>Swoops</label>
+                                        <input type="text" disabled class="text-center" data-op="Swoops">
+                                    </div>
                                 </div>
                             </div>
                             <div class="column" id="fi-fighterB">
@@ -321,6 +325,10 @@
                                     <div class="field" data-op="SpellsField">
                                         <label>Spells</label>
                                         <input type="text" disabled class="text-center" data-op="Spells">
+                                    </div>
+                                    <div class="field" data-op="SwoopsField">
+                                        <label>Swoops</label>
+                                        <input type="text" disabled class="text-center" data-op="Swoops">
                                     </div>
                                 </div>
                             </div>
@@ -854,7 +862,7 @@
                     $parent.find('[data-op="CurrentHealth"]').parent('div').hide();
                 }
 
-                if ([1, 3, 4, 8].includes(f.Class)) {
+                if ([1, 3, 4].includes(f.Class) || (f.Class == 8 && f.Mask != 0)) {
                     $parent.find('[data-op="BlocksField"]').show();
                 } else {
                     $parent.find('[data-op="BlocksField"]').hide();
@@ -864,6 +872,12 @@
                     $parent.find('[data-op="RevivesField"]').show();
                 } else {
                     $parent.find('[data-op="RevivesField"]').hide();
+                }
+
+                if (f.Class == 8 && f.Mask == 0) {
+                    $parent.find('[data-op="SwoopsField"]').show();
+                } else {
+                    $parent.find('[data-op="SwoopsField"]').hide();
                 }
 
                 if (f.Class == 9) {
@@ -877,6 +891,7 @@
                 $parent.find('[data-op="Skips"]').val(f.Stats.Skips);
                 $parent.find('[data-op="Revives"]').val(f.Stats.Revives);
                 $parent.find('[data-op="Spells"]').val(f.Stats.Spells);
+                $parent.find('[data-op="Swoops"]').val(f.Stats.Swoops);
 
                 $parent.find('[data-op="copy"]').off('click').on('click', () => {
                     let multipliers = reverseHealthMultipliers(f.Level, getHPMultiplier(f.Class, f.Mask), f.Constitution, f.MaximumLife);
@@ -954,12 +969,14 @@
             }
 
             function generateCounters ({ fighterA, fighterB, rounds }) {
-                fighterA.Stats = { Hits: 0, Crits: 0, Skips: 0, Revives: 0, Spells: 0 };
-                fighterB.Stats = { Hits: 0, Crits: 0, Skips: 0, Revives: 0, Spells: 0 };
+                fighterA.Stats = { Hits: 0, Crits: 0, Skips: 0, Revives: 0, Spells: 0, Swoops: 0 };
+                fighterB.Stats = { Hits: 0, Crits: 0, Skips: 0, Revives: 0, Spells: 0, Swoops: 0 };
 
                 for (var r of rounds) {
                     if (r.attackType == 15 || r.attackType == 16) {
                         continue;
+                    } else if (r.attackType == 5) {
+                        r.attacker.Stats.Swoops++;
                     } else if (r.attackType == 100) {
                         r.target.Stats.Revives++;
                     } else if (r.attackType > 100) {
