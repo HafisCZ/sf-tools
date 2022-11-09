@@ -286,8 +286,8 @@ class FighterModel {
     getCriticalMultiplier (weapon, weapon2, target) {
         let baseMultiplier = (weapon.HasEnchantment || (weapon2 && weapon2.HasEnchantment)) ? 1.05 : 1;
 
-        let ownGladiator = this.Player.Fortress.Gladiator;
-        let reducingGladiator = target.Player.Fortress.Gladiator;
+        let ownGladiator = this.Player.Fortress.Gladiator || 0;
+        let reducingGladiator = target.Player.Fortress.Gladiator || 0;
 
         if (typeof this.Player.ForceGladiator === 'number') {
             ownGladiator = this.Player.ForceGladiator;
