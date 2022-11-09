@@ -422,7 +422,7 @@ class FighterModel {
         return damage;
     }
 
-    attack (damage, target, type, skipped, critical) {
+    attack (damage, target, skipped, critical, type, directType = false) {
         if (skipped) {
             damage = 0;
         } else {
@@ -441,7 +441,7 @@ class FighterModel {
             FIGHT_LOG.logAttack(
                 this,
                 target,
-                (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + type * 10,
+                directType ? type : ((critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + type * 10),
                 damage
             )
         }
@@ -543,7 +543,7 @@ class DruidModel extends FighterModel {
         return missingLow * DRUID_BEAR_MIN_MULTIPLIER + missingMed * DRUID_BEAR_MED_MULTIPLIER + missingMax * DRUID_BEAR_MAX_MULTIPLIER;
     }
 
-    attack (damage, target, type, skipped, critical) {
+    attack (damage, target, skipped, critical, type) {
         if (this.Player.Mask == MASK_EAGLE) {
             if (this.SwoopChance > 0 && getRandom(this.SwoopChance)) {
                 this.SwoopChance -= DRUID_EAGLE_CHANCE_DECAY;
@@ -552,26 +552,27 @@ class DruidModel extends FighterModel {
                 return super.attack(
                     damage * 16,
                     target,
-                    5,
                     skipped,
-                    false
+                    false,
+                    5,
+                    true
                 );
             } else {
                 return super.attack(
                     damage,
                     target,
-                    type,
                     skipped,
-                    critical
+                    critical,
+                    type
                 );
             }
         } else if (this.Player.Mask == MASK_BEAR) {
             return super.attack(
                 damage * (4 / 9 + this.getHealthLossDamageMultiplier() / 100),
                 target,
-                type,
                 skipped,
-                critical
+                critical,
+                type
             );
         } else if (this.Player.Mask == MASK_CAT) {
             if (skipped) {
@@ -890,7 +891,7 @@ class BardModel extends FighterModel {
         }
     }
 
-    attack (damage, target, type, skipped, critical) {
+    attack (damage, target, skipped, critical, type) {
         if (this.DamageMultiplier && critical && skipped) {
             skipped = false;
         }
@@ -905,9 +906,9 @@ class BardModel extends FighterModel {
             damage = super.attack(
                 damage,
                 target,
-                type,
                 skipped,
-                critical
+                critical,
+                type
             );
         }
 
@@ -1052,9 +1053,9 @@ class SimulatorBase {
         return source.attack(
             damage,
             target,
-            type,
             getRandom(target.fetchSkipChance(source)),
-            getRandom(source.fetchCriticalChance(target))
+            getRandom(source.fetchCriticalChance(target)),
+            type
         );
     }
 }
