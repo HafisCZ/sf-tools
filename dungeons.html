@@ -724,7 +724,7 @@
                 )
 
                 function showMassDungeonResults (bosses, results, sort = true, calculateTotalExperience = false) {
-                    bosses = bosses.map((dungeon, index) => {
+                    let entries = bosses.map((dungeon, index) => {
                         let result = _dig(results, index);
                         if (result) {
                             return Object.assign(result, dungeon);
@@ -733,16 +733,33 @@
                         }
                     }).filter(v => v);
 
-                    if (sort) {
-                        if (typeof sort == 'function') {
-                            bosses.sort(sort);
-                        } else {
-                            bosses.sort((b, a) => a.score - b.score);
+                    if (sort === 'extended') {
+                        let sortedBosses = [];
+                        for (let entry of entries) {
+                            let { score, boss, dungeon } = entry;
+
+                            let lowerChanceIndex = sortedBosses.findIndex(({ score: _score }) => _score < score);
+                            let index = sortedBosses.length;
+
+                            if (lowerChanceIndex != -1) {
+                                let sameDungeonIndex = sortedBosses.findLastIndex(({ dungeon: _dungeon, boss: _boss }) => _dungeon.pos === dungeon.pos && _boss.pos < boss.pos);
+                                if (sameDungeonIndex != -1) {
+                                    index = Math.max(lowerChanceIndex, sameDungeonIndex + 1);
+                                } else {
+                                    index = lowerChanceIndex;
+                                }
+                            }
+
+                            sortedBosses.splice(index, 0, entry);
                         }
+
+                        entries = sortedBosses;
+                    } else if (sort) {
+                        entries.sort((b, a) => a.score - b.score);
                     }
 
                     if (calculateTotalExperience) {
-                        let experienceTotal = _mapped_sum(bosses, ({ boss, dungeon }) => {
+                        let experienceTotal = _mapped_sum(entries, ({ boss, dungeon }) => {
                             if (dungeon.key == '201') {
                                 return 0;
                             } else if (boss.level >= 393) {
@@ -760,7 +777,7 @@
 
                     $('#results-modal .content').html(`
                         <div class="ui two column grid">
-                            ${ bosses.map(({ boss, dungeon, score, healths, iterations }, index) => {
+                            ${ entries.map(({ boss, dungeon, score, healths, iterations }, index) => {
                                 return `
                                     <div class="row" data-id="${index}" style="padding: 0;">
                                         <div class="eleven wide column" style="position: relative; padding-top: 1rem; padding-bottom: 1rem;">
@@ -778,7 +795,7 @@
                     `);
                     $('#results-modal .content .row').mouseenter((event) => {
                         let index = event.currentTarget.dataset.id;
-                        let { boss, dungeon, score, healths, iterations } = bosses[index];
+                        let { boss, dungeon, score, healths, iterations } = entries[index];
                         showGraph(chartList, dungeon, boss, score, iterations, healths);
                     });
                     $('#results-modal .content .row').first().trigger('mouseenter');
@@ -941,7 +958,7 @@
                                             Loader.toggle(false);
 
                                             if (results.length > 0) {
-                                                showMassDungeonResults(floorStacks.flat(), results, (a, b) => a.dungeon.pos == b.dungeon.pos ? (a.boss.pos - b.boss.pos) : (b.score - a.score), true);
+                                                showMassDungeonResults(floorStacks.flat(), results, 'extended', true);
                                             } else {
                                                 Toast.info(intl('dungeons.simulate_next_info.title', { threshold }), intl('dungeons.simulate_next_info.message#'));
                                             }
