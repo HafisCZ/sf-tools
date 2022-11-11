@@ -468,16 +468,16 @@ DUNGEON_DATA = {
         pos: 16,
         shadow: false,
         floors: {
-            '1': { pos: 1, id: 1150, class: 2, level: 280, str: 7300, dex: 7300, int: 14600, con: 45500, lck: 7300, health: 121000000, min: 820, max: 1069, runes: { type: 42, res: 25, damage: 25 },
-            '2': { pos: 2, id: 1151, class: 1, level: 283, str: 14960, dex: 7480, int: 7480, con: 47000, lck: 7480, health: 125500000, min: 832, max: 1080, runes: { type: 42, res: 25, damage: 25 },
-            '3': { pos: 3, id: 1152, class: 3, level: 286, str: 7660, dex: 15320, int: 7660, con: 48500, lck: 7660, health: 130000000, min: 847, max: 1094, runes: { type: 41, res: 25, damage: 25 },
-            '4': { pos: 4, id: 1153, class: 1, level: 289, str: 15680, dex: 7840, int: 7840, con: 50000, lck: 7840, health: 134500000, min: 857, max: 1106, runes: { type: 40, res: 25, damage: 25 },
-            '5': { pos: 5, id: 1154, class: 3, level: 292, str: 8020, dex: 16040, int: 8020, con: 51500, lck: 8020, health: 139000000, min: 868, max: 1118, runes: { type: 41, res: 25, damage: 25 },
-            '6': { pos: 6, id: 1155, class: 1, level: 295, str: 16400, dex: 8200, int: 8200, con: 53000, lck: 8200, health: 143500000, min: 880, max: 1130, runes: { type: 42, res: 25, damage: 25 },
-            '7': { pos: 7, id: 1156, class: 3, level: 298, str: 8380, dex: 16760, int: 8380, con: 54500, lck: 8380, health: 148000000, min: 894, max: 1142, runes: { type: 42, res: 25, damage: 25 },
-            '8': { pos: 8, id: 1157, class: 2, level: 301, str: 8560, dex: 8560, int: 17120, con: 56000, lck: 8560, health: 152500000, min: 908, max: 1152, runes: { type: 40, res: 25, damage: 25 },
-            '9': { pos: 9, id: 1158, class: 2, level: 304, str: 8740, dex: 8740, int: 17480, con: 57500, lck: 8740, health: 157000000, min: 918, max: 1162, runes: { type: 40, res: 25, damage: 25 },
-            '10': { pos: 10, id: 1159, class: 3, level: 310, str: 9100, dex: 18200, int: 9100, con: 60500, lck: 9100, health: 166000000, min: 941, max: 1189, runes: { type: 41, res: 25, damage: 25 }
+            '1': { pos: 1, id: 1150, class: 2, level: 280, str: 7300, dex: 7300, int: 14600, con: 45500, lck: 7300, health: 121000000, min: 820, max: 1069, runes: { type: 42, res: 25, damage: 25 } },
+            '2': { pos: 2, id: 1151, class: 1, level: 283, str: 14960, dex: 7480, int: 7480, con: 47000, lck: 7480, health: 125500000, min: 832, max: 1080, runes: { type: 42, res: 25, damage: 25 } },
+            '3': { pos: 3, id: 1152, class: 3, level: 286, str: 7660, dex: 15320, int: 7660, con: 48500, lck: 7660, health: 130000000, min: 847, max: 1094, runes: { type: 41, res: 25, damage: 25 } },
+            '4': { pos: 4, id: 1153, class: 1, level: 289, str: 15680, dex: 7840, int: 7840, con: 50000, lck: 7840, health: 134500000, min: 857, max: 1106, runes: { type: 40, res: 25, damage: 25 } },
+            '5': { pos: 5, id: 1154, class: 3, level: 292, str: 8020, dex: 16040, int: 8020, con: 51500, lck: 8020, health: 139000000, min: 868, max: 1118, runes: { type: 41, res: 25, damage: 25 } },
+            '6': { pos: 6, id: 1155, class: 1, level: 295, str: 16400, dex: 8200, int: 8200, con: 53000, lck: 8200, health: 143500000, min: 880, max: 1130, runes: { type: 42, res: 25, damage: 25 } },
+            '7': { pos: 7, id: 1156, class: 3, level: 298, str: 8380, dex: 16760, int: 8380, con: 54500, lck: 8380, health: 148000000, min: 894, max: 1142, runes: { type: 42, res: 25, damage: 25 } },
+            '8': { pos: 8, id: 1157, class: 2, level: 301, str: 8560, dex: 8560, int: 17120, con: 56000, lck: 8560, health: 152500000, min: 908, max: 1152, runes: { type: 40, res: 25, damage: 25 } },
+            '9': { pos: 9, id: 1158, class: 2, level: 304, str: 8740, dex: 8740, int: 17480, con: 57500, lck: 8740, health: 157000000, min: 918, max: 1162, runes: { type: 40, res: 25, damage: 25 } },
+            '10': { pos: 10, id: 1159, class: 3, level: 310, str: 9100, dex: 18200, int: 9100, con: 60500, lck: 9100, health: 166000000, min: 941, max: 1189, runes: { type: 41, res: 25, damage: 25 } }
         }
     },
     '25': {
@@ -983,16 +983,16 @@ DUNGEON_DATA = {
         pos: 116,
         shadow: true,
         floors: {
-            '1': { pos: 1, id: 1150, class: 2, level: 370, str: 12700, dex: 12700, int: 25400, con: 90500, lck: 12700, health: 256000000, min: 1181, max: 1427, runes: { type: 42, res: 50, damage: 50 },
-            '2': { pos: 2, id: 1151, class: 1, level: 376, str: 26120, dex: 13060, int: 13060, con: 93500, lck: 13060, health: 265000000, min: 1212, max: 1451, runes: { type: 42, res: 50, damage: 50 },
-            '3': { pos: 3, id: 1152, class: 3, level: 382, str: 13420, dex: 26840, int: 13420, con: 96500, lck: 13420, health: 274000000, min: 1230, max: 1471, runes: { type: 41, res: 50, damage: 50 },
-            '4': { pos: 4, id: 1153, class: 1, level: 388, str: 27560, dex: 13780, int: 13780, con: 99500, lck: 13780, health: 283000000, min: 1254, max: 1500, runes: { type: 40, res: 50, damage: 50 },
-            '5': { pos: 5, id: 1154, class: 3, level: 394, str: 14140, dex: 28280, int: 14140, con: 102500, lck: 14140, health: 292000000, min: 1282, max: 1526, runes: { type: 41, res: 50, damage: 50 },
-            '6': { pos: 6, id: 1155, class: 1, level: 400, str: 30000, dex: 15000, int: 15000, con: 110000, lck: 15000, health: 300000000, min: 1505, max: 1747, runes: { type: 42, res: 50, damage: 50 },
-            '7': { pos: 7, id: 1156, class: 3, level: 406, str: 16500, dex: 32700, int: 16500, con: 114800, lck: 16500, health: 318000000, min: 1532, max: 1779, runes: { type: 42, res: 50, damage: 50 },
-            '8': { pos: 8, id: 1157, class: 2, level: 412, str: 18000, dex: 18000, int: 35400, con: 119600, lck: 18000, health: 336000000, min: 1563, max: 1809, runes: { type: 40, res: 50, damage: 50 },
-            '9': { pos: 9, id: 1158, class: 2, level: 418, str: 19500, dex: 19500, int: 38100, con: 124400, lck: 19500, health: 354000000, min: 1590, max: 1834, runes: { type: 40, res: 50, damage: 50 },
-            '10': { pos: 10, id: 1159, class: 3, level: 430, str: 22500, dex: 43500, int: 22500, con: 134000, lck: 22500, health: 390000000, min: 1660, max: 1899, runes: { type: 41, res: 50, damage: 50 }
+            '1': { pos: 1, id: 1150, class: 2, level: 370, str: 12700, dex: 12700, int: 25400, con: 90500, lck: 12700, health: 256000000, min: 1181, max: 1427, runes: { type: 42, res: 50, damage: 50 } },
+            '2': { pos: 2, id: 1151, class: 1, level: 376, str: 26120, dex: 13060, int: 13060, con: 93500, lck: 13060, health: 265000000, min: 1212, max: 1451, runes: { type: 42, res: 50, damage: 50 } },
+            '3': { pos: 3, id: 1152, class: 3, level: 382, str: 13420, dex: 26840, int: 13420, con: 96500, lck: 13420, health: 274000000, min: 1230, max: 1471, runes: { type: 41, res: 50, damage: 50 } },
+            '4': { pos: 4, id: 1153, class: 1, level: 388, str: 27560, dex: 13780, int: 13780, con: 99500, lck: 13780, health: 283000000, min: 1254, max: 1500, runes: { type: 40, res: 50, damage: 50 } },
+            '5': { pos: 5, id: 1154, class: 3, level: 394, str: 14140, dex: 28280, int: 14140, con: 102500, lck: 14140, health: 292000000, min: 1282, max: 1526, runes: { type: 41, res: 50, damage: 50 } },
+            '6': { pos: 6, id: 1155, class: 1, level: 400, str: 30000, dex: 15000, int: 15000, con: 110000, lck: 15000, health: 300000000, min: 1505, max: 1747, runes: { type: 42, res: 50, damage: 50 } },
+            '7': { pos: 7, id: 1156, class: 3, level: 406, str: 16500, dex: 32700, int: 16500, con: 114800, lck: 16500, health: 318000000, min: 1532, max: 1779, runes: { type: 42, res: 50, damage: 50 } },
+            '8': { pos: 8, id: 1157, class: 2, level: 412, str: 18000, dex: 18000, int: 35400, con: 119600, lck: 18000, health: 336000000, min: 1563, max: 1809, runes: { type: 40, res: 50, damage: 50 } },
+            '9': { pos: 9, id: 1158, class: 2, level: 418, str: 19500, dex: 19500, int: 38100, con: 124400, lck: 19500, health: 354000000, min: 1590, max: 1834, runes: { type: 40, res: 50, damage: 50 } },
+            '10': { pos: 10, id: 1159, class: 3, level: 430, str: 22500, dex: 43500, int: 22500, con: 134000, lck: 22500, health: 390000000, min: 1660, max: 1899, runes: { type: 41, res: 50, damage: 50 } }
         }
     },
     '125': {
