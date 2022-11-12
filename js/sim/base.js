@@ -10,7 +10,7 @@ FIGHT_LOG = new (class {
             target: target.Player.ID || target.Index,
             targetHealth: (target.Health - damage) / target.TotalHealth,
             attackDamage: damage,
-            attackRage: this.currentRage,
+            attackRage: this.currentRage || 1,
             attackType: type,
             attackSecondary: type <= 100 && (type >= 10 && type <= 14),
             attackCrit: type <= 100 && (type % 10 == 1),
