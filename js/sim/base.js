@@ -77,10 +77,10 @@ FIGHT_LOG = new (class {
         )
     }
 
-    logRevive (source, target) {
+    logRevive (source) {
         this._newRound(
             source,
-            target,
+            source,
             100,
             0
         )
@@ -767,7 +767,7 @@ class DemonHunterModel extends FighterModel {
                 this.DeathTriggers += 1;
 
                 if (FIGHT_LOG_ENABLED) {
-                    FIGHT_LOG.logRevive(this, source);
+                    FIGHT_LOG.logRevive(this);
                 }
 
                 return STATE_ALIVE;
