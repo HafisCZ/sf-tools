@@ -220,8 +220,7 @@ class FightSimulator extends SimulatorBase {
         this.ca = FighterModel.create(0, source);
         this.cb = FighterModel.create(1, target);
 
-        this.ca.initialize(this.cb);
-        this.cb.initialize(this.ca);
+        FighterModel.initializeFighters(this.ca, this.cb);
     }
 
     fight () {

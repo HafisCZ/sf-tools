@@ -8,7 +8,7 @@ FIGHT_LOG = new (class {
         this.lastLog.rounds.push({
             attacker: attacker.Player.ID || attacker.Index,
             target: target.Player.ID || target.Index,
-            targetHealth: (target.Health - damage) / target.TotalHealth,
+            targetHealth: (target.Health - (type === 15 ? 0 : damage)) / target.TotalHealth,
             attackDamage: damage,
             attackRage: this.currentRage || 1,
             attackType: type,
@@ -388,6 +388,14 @@ class FighterModel {
         };
     }
 
+    static initializeFighters (fighterA, fighterB) {
+        fighterA.initialize(fighterB);
+        fighterB.initialize(fighterA);
+
+        fighterA.Initial = fighterA.getInitialDamage(fighterB);
+        fighterB.Initial = fighterB.getInitialDamage(fighterA);
+    }
+
     // Initialize model
     initialize (target) {
         // Round modifiers
@@ -403,7 +411,6 @@ class FighterModel {
         let weapon2 = this.Player.Items.Wpn2;
 
         this.Weapon1 = this.getDamageRange(weapon1, target);
-        this.Initial = this.getInitialDamage(target);
         this.Critical = this.getCriticalMultiplier(weapon1, weapon2, target);
     }
 

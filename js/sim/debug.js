@@ -45,8 +45,7 @@ class DebugSimulator extends SimulatorBase {
         let fighter1 = FighterModel.create(0, player1);
         let fighter2 = FighterModel.create(1, player2);
 
-        fighter1.initialize(fighter2);
-        fighter2.initialize(fighter1);
+        FighterModel.initializeFighters(fighter1, fighter2);
 
         fighter1.reset();
         fighter2.reset();

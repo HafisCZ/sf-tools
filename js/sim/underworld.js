@@ -55,8 +55,7 @@ class UnderworldSimulator extends SimulatorBase {
             this.a = this.la[0];
             this.b = this.lb[0];
 
-            this.a.initialize(this.b);
-            this.b.initialize(this.a);
+            FighterModel.initializeFighters(this.a, this.b);
 
             if (this.fight() == 0) {
                 this.la.shift();
