@@ -385,17 +385,19 @@
                                                 <th>#</th>
                                                 <th>Attacker</th>
                                                 <th>Target</th>
+                                                <th>Rage</th>
                                                 <th>Damage</th>
                                                 <th>Health Left</th>
                                                 <th>Type</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            ${sample.map(({ attacker, target, attackDamage, attackType, targetHealth }, index) => `
+                                            ${sample.map(({ attacker, target, attackDamage, attackRage, attackType, targetHealth }, index) => `
                                                 <tr>
                                                     <td>${index}</td>
                                                     <td>${fighters[attacker].Player.Name}</td>
                                                     <td>${fighters[target].Player.Name}</td>
+                                                    <td>${Math.trunc(100 * attackRage) / 100}</td>
                                                     <td>${formatAsSpacedNumber(attackDamage, ' ')}</td>
                                                     <td>${Math.trunc(1000 * targetHealth) / 10} %</td>
                                                     <td>${ATTACK_TYPES[attackType] || attackType}</td>

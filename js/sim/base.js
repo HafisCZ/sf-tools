@@ -10,6 +10,7 @@ FIGHT_LOG = new (class {
             target: target.Player.ID || target.Index,
             targetHealth: (target.Health - damage) / target.TotalHealth,
             attackDamage: damage,
+            attackRage: this.currentRage,
             attackType: type,
             attackSecondary: type <= 100 && (type >= 10 && type <= 14),
             attackCrit: type <= 100 && (type % 10 == 1),
@@ -52,6 +53,10 @@ FIGHT_LOG = new (class {
         }
 
         this.allLogs.push(this.lastLog)
+    }
+
+    logRage (currentRage) {
+        this.currentRage = currentRage;
     }
 
     logAttack (source, target, type, damage) {
@@ -1050,6 +1055,10 @@ class SimulatorBase {
     }
 
     attack (source, target, weapon = source.Weapon1, type = ATTACK_PRIMARY) {
+        if (FIGHT_LOG_ENABLED) {
+            FIGHT_LOG.logRage(1 + this.turn / 6);
+        }
+
         // Random damage for current round
         let damage = (1 + this.turn++ / 6) * (Math.random() * (1 + weapon.Max - weapon.Min) + weapon.Min);
 
