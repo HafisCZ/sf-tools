@@ -20,6 +20,10 @@ FIGHT_LOG = new (class {
         return this.allLogs;
     }
 
+    clear () {
+        this.allLogs = [];
+    }
+
     logInit (playerA, playerB) {
         this.playerA = playerA;
         this.playerB = playerB;
