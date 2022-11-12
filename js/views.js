@@ -1278,7 +1278,7 @@ window.intl = (key, variables = undefined) => {
 }
 
 // Automatically open Terms and Conditions if not accepted yet
-window.addEventListener('load', async function () {
+window.addEventListener('DOMContentLoaded', async function () {
     await Localization.translatePage();
 
     if (PreferencesHandler._isAccessible()) {
