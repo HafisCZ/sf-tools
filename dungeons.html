@@ -736,13 +736,13 @@
                     if (sort === 'extended') {
                         let sortedBosses = [];
                         for (let entry of entries) {
-                            let { score, boss, dungeon } = entry;
+                            let { score, boss, dungeon, id } = entry;
 
                             let lowerChanceIndex = sortedBosses.findIndex(({ score: _score }) => _score < score);
                             let index = sortedBosses.length;
 
                             if (lowerChanceIndex != -1) {
-                                let sameDungeonIndex = sortedBosses.findLastIndex(({ dungeon: _dungeon, boss: _boss }) => _dungeon.pos === dungeon.pos && _boss.pos < boss.pos);
+                                let sameDungeonIndex = sortedBosses.findLastIndex(({ dungeon: _dungeon, boss: _boss, id: _id }) => (id in NEXT_DUNGEONS_INVERTED) ? ((_id === id && _boss.pos < boss.pos) || (_id === NEXT_DUNGEONS_INVERTED[id])) : (_id === id && _boss.pos < boss.pos));
                                 if (sameDungeonIndex != -1) {
                                     index = Math.max(lowerChanceIndex, sameDungeonIndex + 1);
                                 } else {
@@ -872,6 +872,19 @@
                     }
                 });
 
+                const NEXT_DUNGEONS = {
+                    13: 30,
+                    113: 130,
+                    14: 27,
+                    114: 127,
+                    16: 28,
+                    116: 128,
+                    17: 29,
+                    117: 129
+                };
+
+                const NEXT_DUNGEONS_INVERTED = _array_to_hash(Object.entries(NEXT_DUNGEONS), ([a, b]) => [b, parseInt(a)], {});
+
                 $('#sim-run-next').click(async function () {
                     if (availableBosses && availableBosses.length > 0 && editor.valid()) {
                         Loader.toggle(true);
@@ -881,8 +894,8 @@
                         let threshold = Math.max(0, Number(SharedPreferences.getRaw('dungeon_sim/threshold', 5)));
 
                         let dungeonStacks = [];
-                        for (let { boss: _boss, dungeon: _dungeon } of availableBosses) {
-                            if (_dungeon.key == '203') {
+                        for (let { boss: _boss, dungeon: _dungeon, id: _id } of availableBosses) {
+                            if (_id === 203) {
                                 // Ignore twister
                                 continue;
                             }
@@ -892,7 +905,21 @@
                             for (let bossData of Object.values(_dungeon.floors)) {
                                 if (dungeonStack.length > 0 || bossData.pos == _boss.pos) {
                                     dungeonStack.push({
+                                        id: _id,
                                         dungeon: _dungeon,
+                                        boss: bossData
+                                    })
+                                }
+                            }
+
+                            if (_id in NEXT_DUNGEONS) {
+                                let nextId = NEXT_DUNGEONS[_id];
+                                let nextDungeon = DUNGEON_DATA[nextId];
+
+                                for (let bossData of Object.values(nextDungeon.floors)) {
+                                    dungeonStack.push({
+                                        id: nextId,
+                                        dungeon: nextDungeon,
                                         boss: bossData
                                     })
                                 }
@@ -922,7 +949,7 @@
                         for (let stack of floorStacks) {
                             let tempStack = [];
 
-                            for (let { boss, dungeon } of stack) {
+                            for (let { boss, dungeon, id } of stack) {
                                 let worker = await Workers.createSimulatorWorker('dungeons');
 
                                 worker.addEventListener('message', (message) => {
@@ -932,7 +959,7 @@
                                         if (score < threshold * iterations / 100) {
                                             for (let i = 0; i < pendingStacks.length; i++) {
                                                 pendingStacks[i] = pendingStacks[i].filter(({ worker: _worker, args: _args }) => {
-                                                    if (_args.pos == dungeon.pos) {
+                                                    if (_args.id === id || _args.id === NEXT_DUNGEONS[id]) {
                                                         _worker.terminate();
 
                                                         return --resultsRemaining && false;
@@ -985,7 +1012,7 @@
                                         iterations: iterations,
                                         index: resultsRemaining++,
                                         hpcap: 500,
-                                        pos: dungeon.pos
+                                        id
                                     }
                                 })
                             }
