@@ -742,6 +742,7 @@
         "add": "Add",
         "save": "Save",
         "simulate": "Simulate",
+        "simulate_debug": "Simulate in debug mode",
         "clipboard": {
             "copy_all": "Copy everyone",
             "paste_mode": "Toggle Add/Replace insertion mode"

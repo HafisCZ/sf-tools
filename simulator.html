@@ -76,6 +76,7 @@
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.gladiator_mode" id="gladiator-mode"><i class="bolt icon"></i></button>
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.ihof_mode" id="ihof-mode"><i class="trophy icon"></i></button>
                                     <button class="ui button" data-position="bottom center" data-intl-tooltip="players.fireball_mode" id="fireball-mode"><i class="fire icon"></i></button>
+                                    <button class="ui button" data-position="bottom center" data-intl-tooltip="simulator.simulate_debug" id="simulate-debug" style="display: none;"><i class="wrench icon"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -174,6 +175,11 @@
                 })
 
                 var modeDump = window.location.href.includes('log');
+
+                let modeDebug = window.location.href.includes('debug');
+                if (modeDebug) {
+                    $('#simulate-debug').show();
+                }
 
                 let pasteMode = false;
                 $('#paste-mode').toggleButton(active => pasteMode = active);
@@ -334,6 +340,30 @@
                 function canSimulate () {
                     return players.length > 1 && ((simulatorMode != 'attack' && simulatorMode != 'defend') || players.find(p => p.index == yourself));
                 }
+
+                $('#simulate-debug').click(async function () {
+                    if (_not_empty(players)) {
+                        Loader.toggle(true);
+
+                        let instances = players.map(({ player }) => mergeSoft(new SFPlayer(), preparePlayerData(player)).toSimulatorModel());
+                        for (let instance of instances) {
+                            instance.ForceGladiator = gladiatorMode ? 15 : undefined;
+                            instance.NoGladiatorReduction = ihofMode;
+                            instance.FireballFix = fireballMode;
+                        }
+
+                        let worker = await Workers.createSimulatorWorker('debug');
+                        worker.addEventListener('message', function ({ data: { json } }) {
+                            Loader.toggle(false);
+
+                            Exporter.json(json, 'debug');
+                        }, true);
+
+                        worker.postMessage({
+                            players: instances
+                        });
+                    }
+                })
 
                 // Run simulation
                 $('#simulate').click(async function () {
