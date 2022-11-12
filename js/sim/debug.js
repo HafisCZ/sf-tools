@@ -14,7 +14,7 @@ class DebugSimulator extends SimulatorBase {
         let output = [];
 
         for (let i = 0; i < array.length; i++) {
-            output.push({ player1: array[i], player2: array[i] });
+            // output.push({ player1: array[i], player2: array[i] });
 
             for (let j = i + 1; j < array.length; j++) {
                 output.push({ player1: array[i], player2: array[j] });
@@ -28,7 +28,7 @@ class DebugSimulator extends SimulatorBase {
         let matches = [];
 
         for (let { player1, player2 } of this._pairs(players)) {
-            this.fight(this.prepare(player1, player2));
+            this.fight(...this.prepare(player1, player2));
 
             matches.push({
                 fighters: this.prepare(player1, player2),
@@ -51,10 +51,10 @@ class DebugSimulator extends SimulatorBase {
         fighter1.reset();
         fighter2.reset();
 
-        return { fighter1, fighter2 };
+        return [ fighter1, fighter2 ];
     }
 
-    fight ({ fighter1, fighter2 }) {
+    fight (fighter1, fighter2) {
         this.a = fighter1;
         this.b = fighter2;
 

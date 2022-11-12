@@ -260,6 +260,33 @@ const Loader = new (class extends Dialog {
     }
 })();
 
+const HtmlDialog = new (class extends Dialog {
+    _createModal () {
+        return `
+            <div class="ui basic modal" style="color: black; background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em;">
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0;" data-op="title"></h2>
+                <i class="close icon" style="color: black; padding-top: 0.33em;" data-op="close"></i>
+                <div data-op="content" style="overflow-y: auto; max-height: 80vh; padding-top: 1em;"></div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$title = this.$parent.find('[data-op="title"]');
+        this.$content = this.$parent.find('[data-op="content"]');
+
+        this.$close = this.$parent.find('[data-op="close"]');
+        this.$close.click(() => {
+            this.close();
+        });
+    }
+
+    _applyArguments (title, html) {
+        this.$title.text(title);
+        this.$content.html(html);
+    }
+})
+
 // Non-blocking popup about an exception that occured
 const WarningDialog = new (class extends Dialog {
     constructor () {

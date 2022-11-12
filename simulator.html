@@ -342,7 +342,7 @@
                 }
 
                 $('#simulate-debug').click(async function () {
-                    if (_not_empty(players)) {
+                    if (players.length > 1) {
                         Loader.toggle(true);
 
                         let instances = players.map(({ player }) => mergeSoft(new SFPlayer(), preparePlayerData(player)).toSimulatorModel());
@@ -356,7 +356,61 @@
                         worker.addEventListener('message', function ({ data: { json } }) {
                             Loader.toggle(false);
 
-                            Exporter.json(json, 'debug');
+                            let content = '';
+
+                            let generatePreview = (p1, p2) => {
+                                let o1 = Localization._generateTranslation({}, p1);
+                                let o2 = Localization._generateTranslation({}, p2);
+
+                                let keys = new Set([ ...Object.keys(o1), ...Object.keys(o2) ]);
+                                for (let bannedKey of ['Player.Identifier']) {
+                                    keys.delete(bannedKey);
+                                }
+
+                                let formatPreviewValue = (v) => isNaN(v) ? v : formatAsSpacedNumber(v, ' ');
+
+                                return Array.from(keys).map(key => `<tr><td>${key}</td><td>${formatPreviewValue(o1[key])}</td><td>${formatPreviewValue(o2[key])}</td></tr>`).join('');
+                            }
+
+                            for (let { fighters, sample } of json) {
+                                content += `
+                                    <table class="ui red single text-center very compact fixed table">
+                                        <tbody>
+                                            ${generatePreview(...fighters)}
+                                        </tbody>
+                                    </table>
+                                    <table class="ui blue single text-center very compact fixed table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Attacker</th>
+                                                <th>Target</th>
+                                                <th>Damage</th>
+                                                <th>Type</th>
+                                                <th>Secondary</th>
+                                                <th>Critical</th>
+                                                <th>Miss</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${sample.map(({ attacker, target, attackDamage, attackType, attackSecondary, attackCrit, attackMissed }, index) => `
+                                                <tr>
+                                                    <td>${index}</td>
+                                                    <td>${attacker}</td>
+                                                    <td>${target}</td>
+                                                    <td>${formatAsSpacedNumber(attackDamage, ' ')}</td>
+                                                    <td>${attackType}</td>
+                                                    <td>${attackSecondary}</td>
+                                                    <td>${attackCrit}</td>
+                                                    <td>${attackMissed}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                `;
+                            }
+
+                            DialogController.open(HtmlDialog, 'Debug Match', content);
                         }, true);
 
                         worker.postMessage({
