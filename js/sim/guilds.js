@@ -68,9 +68,6 @@ class GuildSimulator extends SimulatorBase {
             this.a.initialize(this.b);
             this.b.initialize(this.a);
 
-            this.as = this.a.onBeforeFight(this.b);
-            this.bs = this.b.onBeforeFight(this.a);
-
             if (this.fight() == 0) {
                 this.la.shift();
             } else {

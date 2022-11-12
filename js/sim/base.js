@@ -393,6 +393,7 @@ class FighterModel {
         let weapon2 = this.Player.Items.Wpn2;
 
         this.Weapon1 = this.getDamageRange(weapon1, target);
+        this.Initial = this.getInitialDamage(target);
         this.Critical = this.getCriticalMultiplier(weapon1, weapon2, target);
     }
 
@@ -402,8 +403,7 @@ class FighterModel {
         }
     }
 
-    // Triggers once before each fight and returns special damage to be dealt
-    onBeforeFight (target) {
+    getInitialDamage (target) {
         return false;
     }
 
@@ -667,11 +667,9 @@ class AssassinModel extends FighterModel {
 class BattlemageModel extends FighterModel {
     constructor (i, p) {
         super(i, p);
-
-        this.BeforeFight = true;
     }
 
-    onBeforeFight (target) {
+    getInitialDamage (target) {
         if (target.Player.Class == MAGE || target.Player.Class == BATTLEMAGE) {
             return 0;
         } else if (this.Player.FireballFix) {
@@ -976,20 +974,20 @@ class SimulatorBase {
         this.turn = 0;
 
         // Special damage
-        if (this.as !== false || this.bs !== false) {
+        if (this.a.Initial !== false || this.b.Initial !== false) {
             this.turn++;
 
-            if (this.as > 0) {
-                this.b.Health -= this.as;
+            if (this.a.Initial > 0) {
+                this.b.Health -= this.a.Initial;
 
                 if (FIGHT_LOG_ENABLED) {
-                    FIGHT_LOG.logFireball(this.a, this.b, this.as);
+                    FIGHT_LOG.logFireball(this.a, this.b, this.a.Initial);
                 }
-            } else if (this.bs > 0) {
-                this.a.Health -= this.bs;
+            } else if (this.b.Initial > 0) {
+                this.a.Health -= this.b.Initial;
 
                 if (FIGHT_LOG_ENABLED) {
-                    FIGHT_LOG.logFireball(this.b, this.a, this.bs);
+                    FIGHT_LOG.logFireball(this.b, this.a, this.b.Initial);
                 }
             } else if (FIGHT_LOG_ENABLED) {
                 // Report fireball blocked
