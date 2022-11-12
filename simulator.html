@@ -363,7 +363,7 @@
                                 let o2 = Localization._generateTranslation({}, p2);
 
                                 let keys = new Set([ ...Object.keys(o1), ...Object.keys(o2) ]);
-                                for (let bannedKey of ['Player.Identifier']) {
+                                for (let bannedKey of ['Player.Identifier', 'Player.Prefix']) {
                                     keys.delete(bannedKey);
                                 }
 
