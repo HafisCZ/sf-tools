@@ -8,7 +8,7 @@ FIGHT_LOG = new (class {
         this.lastLog.rounds.push({
             attacker: attacker.Player.ID || attacker.Index,
             target: target.Player.ID || target.Index,
-            targetHealth: (target.Health - (type === 15 ? 0 : damage)) / target.TotalHealth,
+            targetHealth: Math.max(0, (target.Health - (type === 15 ? 0 : damage)) / target.TotalHealth),
             attackDamage: damage,
             attackRage: this.currentRage || 1,
             attackType: type,
