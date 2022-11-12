@@ -1008,7 +1008,11 @@ class SimulatorBase {
                 }
             } else if (FIGHT_LOG_ENABLED) {
                 // Report fireball blocked
-                FIGHT_LOG.logFireball(this.a, this.b, 0);
+                if (this.a.Player.Class === BATTLEMAGE) {
+                    FIGHT_LOG.logFireball(this.a, this.b, 0);
+                } else {
+                    FIGHT_LOG.logFireball(this.b, this.a, 0);
+                }
             }
         }
 
