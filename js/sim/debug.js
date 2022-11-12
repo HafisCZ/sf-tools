@@ -10,31 +10,35 @@ self.addEventListener('message', function ({ data: { players } }) {
 });
 
 class DebugSimulator extends SimulatorBase {
-    constructor () {
-        super();
+    _pairs (array) {
+        let output = [];
 
-        this.matches = [];
-    }
+        for (let i = 0; i < array.length; i++) {
+            output.push([ array[i], array[i] ]);
 
-    generate (players) {
-        for (let i = 0; i < players.length; i++) {
-            let player1 = players[i];
-
-            for (let j = 0; j < players.length; j++) {
-                let player2 = players[j];
-
-                this.fight(this.prepare(player1, player2));
-
-                this.matches.push({
-                    fighters: this.prepare(player1, player2),
-                    sample: FIGHT_LOG.lastLog.rounds
-                });
-
-                FIGHT_LOG.clear();
+            for (let j = i + 1; j < array.length; j++) {
+                output.push([ array[i], array[j] ]);
             }
         }
 
-        return this.matches;
+        return output;
+    }
+
+    generate (players) {
+        let matches = [];
+
+        for (let [player1, player2] of this._pairs(players)) {
+            this.fight(this.prepare(player1, player2));
+
+            matches.push({
+                fighters: this.prepare(player1, player2),
+                sample: FIGHT_LOG.lastLog.rounds
+            });
+
+            FIGHT_LOG.clear();
+        }
+
+        return matches;
     }
 
     prepare (player1, player2) {
