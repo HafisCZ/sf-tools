@@ -393,7 +393,7 @@
                                         </thead>
                                         <tbody>
                                             ${sample.map(({ attacker, target, attackDamage, attackRage, attackType, targetHealth }, index) => `
-                                                <tr>
+                                                <tr style="background-color: ${attacker === 1 ? 'lightgray' : 'white'}">
                                                     <td>${index}</td>
                                                     <td>${fighters[attacker].Player.Name}</td>
                                                     <td>${fighters[target].Player.Name}</td>
