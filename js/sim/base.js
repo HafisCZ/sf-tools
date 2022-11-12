@@ -445,7 +445,7 @@ class FighterModel {
             FIGHT_LOG.logAttack(
                 this,
                 target,
-                directType ? type : ((critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + type * 10),
+                directType ? type : ((skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : (critical ? 1 : 0)) + type * 10),
                 damage
             )
         }
@@ -603,7 +603,7 @@ class DruidModel extends FighterModel {
                 FIGHT_LOG.logAttack(
                     source,
                     target,
-                    (critical ? 1 : (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : 0)) + type * 10,
+                    (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : (critical ? 1 : 0)) + type * 10,
                     damage
                 )
             }
