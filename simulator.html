@@ -387,22 +387,16 @@
                                                 <th>Target</th>
                                                 <th>Damage</th>
                                                 <th>Type</th>
-                                                <th>Secondary</th>
-                                                <th>Critical</th>
-                                                <th>Miss</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            ${sample.map(({ attacker, target, attackDamage, attackType, attackSecondary, attackCrit, attackMissed }, index) => `
+                                            ${sample.map(({ attacker, target, attackDamage, attackType }, index) => `
                                                 <tr>
                                                     <td>${index}</td>
-                                                    <td>${attacker}</td>
-                                                    <td>${target}</td>
+                                                    <td>${fighters[attacker].Player.Name}</td>
+                                                    <td>${fighters[target].Player.Name}</td>
                                                     <td>${formatAsSpacedNumber(attackDamage, ' ')}</td>
-                                                    <td>${attackType}</td>
-                                                    <td>${attackSecondary}</td>
-                                                    <td>${attackCrit}</td>
-                                                    <td>${attackMissed}</td>
+                                                    <td>${ATTACK_TYPES[attackType] || attackType}</td>
                                                 </tr>
                                             `).join('')}
                                         </tbody>
