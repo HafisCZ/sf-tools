@@ -642,6 +642,7 @@
         "add": "Aggiungi",
         "save": "Salva",
         "simulate": "Simula",
+        "simulate_debug":"Simula in modalità debug",
         "clipboard": {
             "copy_all": "Copia tutti",
             "paste_mode": "Passa dalla modalità 'Aggiungi' a 'Rimpiazza'"
@@ -815,6 +816,10 @@
             "cancel": "Cancella",
             "ok": "Ok",
             "wait_n_seconds": "Aspetta %1 secondi ..."
+        },
+        "input": {
+            "cancel": "Cancella",
+            "ok": "Ok"
         }
     }
 }
