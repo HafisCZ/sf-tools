@@ -367,7 +367,7 @@
                                     keys.delete(bannedKey);
                                 }
 
-                                let formatPreviewValue = (v) => isNaN(v) ? v : formatAsSpacedNumber(v, ' ');
+                                let formatPreviewValue = (v) => Number.isInteger(v) ? formatAsSpacedNumber(v, ' ') : v;
 
                                 return Array.from(keys).map(key => `<tr><td>${key}</td><td>${formatPreviewValue(o1[key])}</td><td>${formatPreviewValue(o2[key])}</td></tr>`).join('');
                             }
