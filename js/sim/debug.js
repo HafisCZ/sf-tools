@@ -1,5 +1,6 @@
 // Logger is always enabled
 FIGHT_LOG_ENABLED = true;
+FIGHT_LOG_STORE_STATE = true;
 
 self.addEventListener('message', function ({ data: { players } }) {
     self.postMessage({

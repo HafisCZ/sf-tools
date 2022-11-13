@@ -1,11 +1,23 @@
 FIGHT_LOG_ENABLED = false;
+FIGHT_LOG_STORE_STATE = false;
+
 FIGHT_LOG = new (class {
     constructor () {
         this.allLogs = [];
     }
 
+    _storeState (model) {
+        return Object.entries(model).reduce((memo, [key, value]) => {
+            if (typeof value !== 'object' && typeof value !== 'undefined') {
+                memo[key] = value;
+            }
+
+            return memo;
+        }, {});
+    }
+
     _newRound (attacker, target, type, damage) {
-        this.lastLog.rounds.push({
+        let lastRound = {
             attacker: attacker.Player.ID || attacker.Index,
             target: target.Player.ID || target.Index,
             targetHealth: Math.max(0, (target.Health - (type === 15 ? 0 : damage)) / target.TotalHealth),
@@ -15,7 +27,14 @@ FIGHT_LOG = new (class {
             attackSecondary: type <= 100 && (type >= 10 && type <= 14),
             attackCrit: type <= 100 && (type % 10 == 1),
             attackMissed: type <= 100 && ((type % 10 == 3) || (type % 10 == 4))
-        })
+        }
+
+        if (FIGHT_LOG_STORE_STATE) {
+            lastRound.attackerState = this._storeState(attacker);
+            lastRound.targetState = this._storeState(target);
+        }
+
+        this.lastLog.rounds.push(lastRound);
     }
 
     dump () {
