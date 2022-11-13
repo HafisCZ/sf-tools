@@ -88,7 +88,7 @@ class HydraSimulator extends SimulatorBase {
         this.ca = FighterModel.create(0, pet);
         this.cb = FighterModel.create(1, hydra);
 
-        FighterModel.initializeFighters(this.a, this.b);
+        FighterModel.initializeFighters(this.ca, this.cb);
     }
 
     battle () {
