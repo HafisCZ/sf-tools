@@ -15,18 +15,23 @@ const CHANGELOG = {
             'Removed beta backend switch'
         ],
         'Fight Simulator': [
-            'Added option to enable fireball fix against certain classes'
+            'Added option to enable fireball fix against certain classes',
+            'Added <code>?debug</code> parameter for simulation debugging'
         ],
         'Arena Manager': [
             'Fixed runes not rounding down to 20 (as per new backend)'
         ],
         'Dungeon Simulator': [
             'Added option to simulate all open dungeons until certain win threshold',
-            'Fixed dungeons not ordered properly'
+            'Added floor numbers to result screen',
+            'Added display of total experience gainable from threshold simulation',
+            'Fixed dungeons not ordered properly',
+            'Fixed dungeons not selecting correct floor when duplicate enemies exist'
         ],
         'All Simulators': [
             'Added support for reworked Druid',
-            'Fixed low performance when starting All & More simulation modes'
+            'Fixed low performance when starting All & More simulation modes',
+            'Fixed undefined gladiator value when using integration'
         ],
         'Pet Calendar': [
             'Fixed location descriptions'
