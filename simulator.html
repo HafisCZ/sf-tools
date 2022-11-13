@@ -374,7 +374,7 @@
 
                             let stringifyState = (state) => {
                                 let keys = new Set(Object.keys(state));
-                                for (let bannedKey of ['Index', 'AttackFirst', 'SkipChance', 'CriticalChance', 'TotalHealth', 'Critical', 'DamageReduction', 'Initial', 'DamageTaken', 'BeforeDamageFinalized', 'BeforeAttack']) {
+                                for (let bannedKey of ['Index', 'AttackFirst', 'SkipChance', 'CriticalChance', 'TotalHealth', 'Critical', 'DamageReduction', 'Initial', 'DamageTaken', 'BeforeDamageFinalized', 'BeforeAttack', 'RageCriticalChance']) {
                                     keys.delete(bannedKey);
                                 }
 

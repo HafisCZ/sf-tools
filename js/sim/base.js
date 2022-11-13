@@ -539,14 +539,21 @@ class DruidModel extends FighterModel {
     reset (resetHealth = true) {
         super.reset(resetHealth);
 
-        this.SwoopChance = DRUID_EAGLE_CHANCE;
-        this.RageState = false;
+        if (this.Player.Mask == MASK_EAGLE) {
+            this.SwoopChance = DRUID_EAGLE_CHANCE;
+        } else if (this.Player.Mask == MASK_CAT) {
+            this.DamageTaken = true;
+
+            this.RageState = false;
+        }
     }
 
     initialize (target) {
         super.initialize(target);
 
-        this.DamageTaken = this.Player.Mask == MASK_CAT;
+        if (this.Player.Mask == MASK_CAT) {
+            this.RageCriticalChance = this.getCriticalChance(target, 75);
+        }
     }
 
     getDamageRange (weapon, target) {
@@ -654,7 +661,7 @@ class DruidModel extends FighterModel {
 
     fetchCriticalChance (target) {
         if (this.Player.Mask == MASK_CAT && this.RageState) {
-            return this.getCriticalChance(target, 75);
+            return this.RageCriticalChance;
         } else {
             return this.CriticalChance;
         }
