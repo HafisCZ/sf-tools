@@ -87,6 +87,7 @@
                 <a class="item"><i class="small upload icon"></i>Import fights</a>
             </label>
             <input type="file" id="file-open" accept=".har" multiple hidden>
+            <a class="item" id="copy-all"><i class="copy icon"></i>Copy</a>
         </div>
 
         <div class="ui main container full-width">
@@ -672,6 +673,19 @@
             function getBaseDamage (player, secondary = false) {
                 return FighterModel.create(0, player).getBaseDamage(secondary);
             }
+
+            $('#copy-all').click(() => {
+                let entries = Object.values(bosses).sort((a, b) => a.ID - b.ID);
+                let texts = entries.map((boss, i) => {
+                    let part1 = `pos: ${i + 1}, id: ${boss.ID}, class: ${boss.Class}, level: ${boss.Level}, str: ${boss.Strength}, dex: ${boss.Dexterity}, int: ${boss.Intelligence}, con: ${boss.Constitution}, lck: ${boss.Luck}, health: ${boss.Health}`;
+                    let part2 = `, min: ${Math.round(boss.Damage.Min)}, max: ${Math.round(boss.Damage.Max)}`;
+                    let part3 = boss.ElementalDamage.Value ? `, runes: { type: ${boss.ElementalDamage.Type +30}, res: ${boss.ElementalDamage.Value}, damage: ${boss.ElementalDamage.Value} }` : '';
+
+                    return `'${i + 1}': { ${part1}${part2}${part3} }`;
+                });
+
+                window.copyText(texts.join(',\n'));
+            });
         </script>
     </body>
 </html>
