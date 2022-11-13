@@ -633,7 +633,7 @@ class DruidModel extends FighterModel {
 
             if (FIGHT_LOG_ENABLED) {
                 FIGHT_LOG.logAttack(
-                    source,
+                    this,
                     target,
                     (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : (critical ? 1 : 0)) + type * 10,
                     damage
