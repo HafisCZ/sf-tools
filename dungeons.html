@@ -1066,7 +1066,7 @@
 
                                     if (--resultsRemaining <= 0) {
                                         Loader.toggle(false);
-                                        showMassDungeonResults(bossQueue, results, false);
+                                        showMassDungeonResults(bossQueue, results, false, true);
                                     } else if (pendingInstances.length > 0) {
                                         let [ secWorker, args ] = pendingInstances.pop();
                                         secWorker.postMessage(args);
