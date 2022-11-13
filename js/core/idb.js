@@ -1349,9 +1349,13 @@ const DatabaseManager = new (class {
             }
 
             if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername'))) {
-                var url = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
-                if (url.length > 2) {
-                    raws.push([val, url[1] + '_' + url[2]]);
+                if (url) {
+                    var url = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
+                    if (url.length > 2) {
+                        raws.push([val, url[1] + '_' + url[2]]);
+                    }
+                } else {
+                    raws.push([val, 'invalid_server']);
                 }
             }
         }
