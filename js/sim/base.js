@@ -458,7 +458,7 @@ class FighterModel {
             FIGHT_LOG.logAttack(
                 this,
                 target,
-                directType ? type : ((skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : (critical ? 1 : 0)) + type * 10),
+                directType ? (skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : type) : ((skipped ? (target.Player.Class == WARRIOR ? 3 : 4) : (critical ? 1 : 0)) + type * 10),
                 damage
             )
         }
