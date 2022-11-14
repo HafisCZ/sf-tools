@@ -598,7 +598,8 @@
         "open": "Currently open dungeons",
         "graph": {
             "y": "Boss HP Left",
-            "x": "- Distribution for selected amount of tries -"
+            "x": "- Distribution for selected amount of tries -",
+            "winrate": "Winrate: #{rate}% (#{score} out of #{tries})"
         },
         "results": "Results",
         "experience": "Total: #{experience} XP",

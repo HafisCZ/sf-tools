@@ -139,7 +139,7 @@
             </div>
         </div>
 
-        <div id="results-modal" class="ui mini modal">
+        <div id="results-modal" class="ui mini modal" style="width: 400px;">
             <div class="header" data-intl="dungeons.results"></div>
             <button id="save-screenshot" class="ui small basic icon button" style="position: absolute; right: .75em; top: 1em;" data-position="bottom center" data-intl-tooltip="stats.copy.image"><i class="download icon"></i></button>
             <div class="experience"></div>
@@ -759,8 +759,8 @@
                     }
 
                     if (calculateTotalExperience) {
-                        let experienceTotal = _mapped_sum(entries, ({ boss, dungeon }) => {
-                            if (dungeon.key == '201') {
+                        let experienceTotal = _mapped_sum(entries, ({ id, boss, dungeon }) => {
+                            if (id == 201) {
                                 return 0;
                             } else if (boss.level >= 393) {
                                 return 3E8;
@@ -776,7 +776,7 @@
                     }
 
                     $('#results-modal .content').html(`
-                        <div class="ui two column grid">
+                        <div class="ui grid">
                             ${ entries.map(({ boss, dungeon, score, healths, iterations }, index) => {
                                 return `
                                     <div class="row" data-id="${index}" style="padding: 0;">
@@ -795,8 +795,8 @@
                     `);
                     $('#results-modal .content .row').mouseenter((event) => {
                         let index = event.currentTarget.dataset.id;
-                        let { boss, dungeon, score, healths, iterations } = entries[index];
-                        showGraph(chartList, dungeon, boss, score, iterations, healths);
+                        let { boss, dungeon, score, healths, iterations, id } = entries[index];
+                        showGraph(chartList, dungeon, boss, score, iterations, healths, id != 201);
                     });
                     $('#results-modal .content .row').first().trigger('mouseenter');
                     $('#results-modal').modal('show');
@@ -1157,11 +1157,17 @@
                     }
                 });
 
-                function showGraph (graph, dungeon, boss, score, tries, healths) {
+                function showGraph (graph, dungeon, boss, score, tries, healths, showExperience = false) {
                     graph.options.title.text = [
                         `${ dungeon.shadow ? `${intl('dungeon_enemies.shadow')} ` : '' }${ dungeon.name }: ${ boss.name }`,
                         `Winrate: ${ (100 * score / tries).toFixed(2) }% (${ formatAsSpacedNumber(score, ' ') } out of ${ formatAsSpacedNumber(tries, ' ') })`
                     ];
+
+                    if (showExperience) {
+                        let experience = boss.level >= 393 ? 3E8 : ExperienceRequired[boss.level] / 5;
+                        graph.options.title.text.splice(1, 0, `${formatAsSpacedNumber(experience, ' ')} XP`);
+                    }
+
                     graph.data.datasets[0].data = healths.map((h, i) => { return { x: i, y: h * 100 }; });
                     graph.data.labels = healths.map((a, b) => b);
                     graph.update(0);
