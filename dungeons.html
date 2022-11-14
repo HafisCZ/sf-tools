@@ -723,7 +723,7 @@
                     }
                 )
 
-                function showMassDungeonResults (bosses, results, sort = true, calculateTotalExperience = false) {
+                function showMassDungeonResults (bosses, results, sort, calculateTotalExperience) {
                     let entries = bosses.map((dungeon, index) => {
                         let result = _dig(results, index);
                         if (result) {
@@ -847,7 +847,7 @@
 
                                     if (--resultsRemaining <= 0) {
                                         Loader.toggle(false);
-                                        showMassDungeonResults(availableBosses, results, false, true);
+                                        showMassDungeonResults(availableBosses, results, true, true);
                                     } else if (pendingInstances.length > 0) {
                                         let [ secWorker, args ] = pendingInstances.pop();
                                         secWorker.postMessage(args);
