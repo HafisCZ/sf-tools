@@ -2,32 +2,47 @@ body {
     background-color: #141414;
 }
 
-h1 {
-    text-align: center;
-    font-size: 3em;
+h2 {
+    margin-top: 1.5em;
     color: white;
-    font-weight: bold;
-    padding-bottom: 1em;
-
-    border-image: linear-gradient(to right, #141414 0%, white 50%, #141414 100%);
-    border-image-slice: 1;
-    border-bottom: 1px solid transparent;
+    text-decoration: underline;
+    text-decoration-color: orange;
 }
 
-#sf-about h2 {
-    text-align: left;
-    margin-top: 0;
-    filter: brightness(130%);
+.mentions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    font-weight: 700;
+    font-size: 1.28571429em;
 }
 
-.bright {
-    filter: brightness(130%);
+.mentions > * {
+    color: rgba(255, 255, 255, .75);
 }
 
-h3 {
-    text-align: left;
-    color: white;
-    margin-top: 0;
+.mentions > *:not(:last-child)::after {
+    content: ",";
+}
+
+.mentions > a {
+    text-decoration: underline;
+}
+
+.mentions > [data-title]::after {
+    content: attr(data-title);
+    margin-left: 5px;
+    font-size: 70%;
+    color: rgba(255, 255, 255, .5);
+}
+
+.mentions > .translator {
+    display: flex;
+    align-items: center;
+}
+
+.mentions > .translator > span {
+    margin-left: 0.5em;
 }
 
 .dvselection {
@@ -95,37 +110,30 @@ h3 {
 
 .footer {
     color: white;
-    opacity: 0.6;
-    font-size: 90%;
+    opacity: 60%;
+    font-size: 12.6px;
     pointer-events: none;
-}
-
-.footer-repo {
-    height: 4.1em;
+    display: flex;
     width: 100%;
     position: fixed;
+    left: 0;
     bottom: 0;
-    text-align: left;
-    padding-left: 1em;
+    right: 0;
+    justify-content: space-between;
+    align-items: flex-end;
 }
 
-.footer-legal {
-    height: 7.25em;
-    width: 100%;
-    position: fixed;
-    bottom: 0;
+.footer-item {
+    width: 33.3%;
+    margin: 1em;
+}
+
+.footer-item:nth-child(1) {
+
+}
+
+.footer-item:nth-child(2) {
     text-align: right;
-    padding-right: 1em;
-}
-
-.footer-about {
-    height: 2.6em;
-    margin: auto;
-    width: 100%;
-    bottom: 0;
-    position: fixed;
-    text-align: center;
-    cursor: default;
 }
 
 .dvholder {
@@ -139,68 +147,6 @@ h3 {
 
     color: orange;
     font-size: 50%;
-}
-
-.role-adventurer {
-    color: #06a9ef;
-}
-
-.role-veteran {
-    color: #8256c7;
-}
-
-.role-promoter {
-    color: #e180de;
-}
-
-.role-playa {
-    color: #eb0064;
-}
-
-.role-admin {
-    color: #923232;
-}
-
-.role-toolwizard {
-    color: #0e9958;
-}
-
-.role-mentor {
-    color: #2ecc71;
-}
-
-.role-moderator {
-    color: #ce5858;
-}
-
-.newcol {
-    color: white;
-    text-align: center;
-    margin-bottom: 1em;
-}
-
-.newcol h3 {
-    text-align: center;
-}
-
-.newcol h2 {
-    display: inline;
-    margin-left: 0.75em;
-    margin-right: 0.75em;
-}
-
-.newcol .extras {
-    color: white;
-    font-weight: normal;
-    font-size: 65%;
-}
-
-.linked {
-    text-decoration: underline;
-}
-
-.divider {
-    margin-bottom: 0.75em;
 }
 
 #sf-menu {
