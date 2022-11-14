@@ -24,7 +24,7 @@ const CHANGELOG = {
         'Dungeon Simulator': [
             'Added option to simulate all open dungeons until certain win threshold',
             'Added floor numbers to result screen',
-            'Added display of total experience gainable from threshold simulation',
+            'Added display of total experience gainable to mass simulations',
             'Fixed dungeons not ordered properly',
             'Fixed dungeons not selecting correct floor when duplicate enemies exist'
         ],
