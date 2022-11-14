@@ -17,7 +17,8 @@ const Logger = new (class {
             'TRACKER': 'c8f542',
             'ACTIONS': 'eb73c3',
             'IN_WARN': 'ebd883',
-            'APPINFO': 'd29af8'
+            'APPINFO': 'd29af8',
+            'MESSAGE': 'ffffff'
         };
 
         this.log('VERSION', `Module: ${ MODULE_VERSION }, Core: ${ CORE_VERSION }, Table: ${ TABLE_VERSION }`);
