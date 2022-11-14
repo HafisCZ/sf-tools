@@ -262,32 +262,19 @@
             <a id="about" data-intl="index.toggle"></a>
         </div>
         <script>
-            function formatDate (date) {
-                if (typeof date !== 'object') {
-                    date = new Date(date);
+            Site.ready(function () {
+                function formatDate (date) {
+                    if (typeof date !== 'object') {
+                        date = new Date(date);
+                    }
+
+                    return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
                 }
 
-                return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-            }
-
-            var item = SharedPreferences.get('version', { expire: 0 });
-            if (item.expire < Date.now()) {
-                $.ajax(
-                    "https://api.github.com/repos/hafiscz/sf-tools/commits",
-                    {
-                        data: {
-                            per_page: 1
-                        },
-                        dataType: 'jsonp',
-                        type: 'get'
-                    }
-                ).then(function (response) {
-                    var date = new Date(response.data[0].commit.author.date);
-                    var message = response.data[0].commit.message;
-                    var sha = response.data[0].sha;
-
+                let item = SharedPreferences.get('version', { expire: 0 });
+                if (item.expire < Date.now()) {
                     $.ajax(
-                        `https://api.github.com/repos/hafiscz/sf-tools/compare/88b32f42210cb848c77b7891f6e47a0000876ed4...${ sha }`,
+                        "https://api.github.com/repos/hafiscz/sf-tools/commits",
                         {
                             data: {
                                 per_page: 1
@@ -295,34 +282,47 @@
                             dataType: 'jsonp',
                             type: 'get'
                         }
-                    ).then(function (response2) {
-                        var version = parseInt(response2.data.total_commits) + 1;
-                        SharedPreferences.set('version', {
-                            timestamp: date.getTime(),
-                            message: message,
-                            version: version,
-                            expire: Date.now() + 1800000
+                    ).then(function (response) {
+                        var date = new Date(response.data[0].commit.author.date);
+                        var message = response.data[0].commit.message;
+                        var sha = response.data[0].sha;
+
+                        $.ajax(
+                            `https://api.github.com/repos/hafiscz/sf-tools/compare/88b32f42210cb848c77b7891f6e47a0000876ed4...${ sha }`,
+                            {
+                                data: {
+                                    per_page: 1
+                                },
+                                dataType: 'jsonp',
+                                type: 'get'
+                            }
+                        ).then(function (response2) {
+                            var version = parseInt(response2.data.total_commits) + 1;
+                            SharedPreferences.set('version', {
+                                timestamp: date.getTime(),
+                                message: message,
+                                version: version,
+                                expire: Date.now() + 1800000
+                            })
+
+                            $(".footer-repo").html(`v${ MODULE_VERSION_MAJOR }.${ version }<br/>Last updated on ${ formatDate(date) } - ${ message }`);
                         })
-
-                        $(".footer-repo").html(`v${ MODULE_VERSION_MAJOR }.${ version }<br/>Last updated on ${ formatDate(date) } - ${ message }`);
-                    })
-                });
-            } else {
-                $(".footer-repo").html(`v${ MODULE_VERSION_MAJOR }.${ item.version }<br/>Last updated on ${ formatDate(item.timestamp) } - ${ item.message }`);
-            }
-
-            var showAbout = false;
-            $('#about').click(function () {
-                showAbout = !showAbout;
-
-                if (showAbout) {
-                    $('#sf-menu').hide();
-                    $('#sf-about').show();
+                    });
                 } else {
-                    $('#sf-menu').show();
-                    $('#sf-about').hide();
+                    $(".footer-repo").html(`v${ MODULE_VERSION_MAJOR }.${ item.version }<br/>Last updated on ${ formatDate(item.timestamp) } - ${ item.message }`);
                 }
-            });
+
+                let showAbout = false;
+                $('#about').click(function () {
+                    if (showAbout = !showAbout) {
+                        $('#sf-menu').hide();
+                        $('#sf-about').show();
+                    } else {
+                        $('#sf-menu').show();
+                        $('#sf-about').hide();
+                    }
+                });    
+            })
         </script>
     </body>
 </html>
