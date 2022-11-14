@@ -262,11 +262,12 @@
             <a id="about" data-intl="index.toggle"></a>
         </div>
         <script>
-            const VERSION_MAJOR = 5;
-
-            const months = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ];
             function formatDate (date) {
-                return `${ date.getDate() }. ${ months[date.getMonth()] } ${ date.getFullYear() } ${ date.getHours() }:${ date.getMinutes() < 10 ? '0' : '' }${ date.getMinutes() }`;
+                if (typeof date !== 'object') {
+                    date = new Date(date);
+                }
+
+                return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
             }
 
             var item = SharedPreferences.get('version', { expire: 0 });
@@ -303,11 +304,11 @@
                             expire: Date.now() + 1800000
                         })
 
-                        $(".footer-repo").html(`v${ VERSION_MAJOR }.${ version }<br/>Last updated on ${ formatDate(date) } - ${ message }`);
+                        $(".footer-repo").html(`v${ MODULE_VERSION_MAJOR }.${ version }<br/>Last updated on ${ formatDate(date) } - ${ message }`);
                     })
                 });
             } else {
-                $(".footer-repo").html(`v${ VERSION_MAJOR }.${ item.version }<br/>Last updated on ${ formatDate(new Date(item.timestamp)) } - ${ item.message }`);
+                $(".footer-repo").html(`v${ MODULE_VERSION_MAJOR }.${ item.version }<br/>Last updated on ${ formatDate(item.timestamp) } - ${ item.message }`);
             }
 
             var showAbout = false;
