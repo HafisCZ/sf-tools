@@ -498,9 +498,11 @@
         "poll": "Importa personaggi salvati",
         "graph": {
             "y": "HP boss residui",
-            "x": "- Distribuzione per l'ammontare dei tentativi selezionati -"
+            "x": "- Distribuzione per l'ammontare dei tentativi selezionati -",
+            "winrate":"Winrate: #{rate}% (#{score} su #{tries})"
         },
         "results": "Risultati",
+        "experience":"Totale: #{experience} XP",
         "cheats": {
             "title": "Menu modificatori",
             "subtitle": "Seleziona quali modificatori applicare, poi importa nuovamente il tuo personaggio",
@@ -546,7 +548,6 @@
         "gladiator_mode": "Gladiatore al 15 indipendentemente dalle impostazioni",
         "ihof_mode": "Modalità IHOF: Gladiatore non ridotto!",
         "fireball_mode": "Applica il fix della palla di fuoco per Berserker, Cacciatori di Demoni, Druidi e Bardi",
-        "druid_armor_mode": "Applica il fix dell'armatura per i Druidi",
         "mode": {
             "all": "Tutti vs Tutti",
             "attack": "Uno vs Tutti",
