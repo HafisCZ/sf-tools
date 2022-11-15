@@ -433,6 +433,8 @@
                 // Run simulation
                 $('#simulate').click(async function () {
                     if (canSimulate()) {
+                        let realStart = Date.now();
+
                         for (var i = 0; i < players.length; i++) {
                             players[i].score = null;
                             players[i].player.ForceGladiator = gladiatorMode ? 15 : undefined;
@@ -474,6 +476,7 @@
 
                                     if (results.length == players.length) {
                                         Loader.toggle(false);
+                                        Logger.log('MESSAGE', `Simulation took ${Date.now() - realStart} ms`);
 
                                         players = results;
                                         setSort('avg', 0);
