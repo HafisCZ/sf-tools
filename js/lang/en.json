@@ -923,6 +923,70 @@
             "ok": "Ok"
         }
     },
+    "attributes": {
+        "tabs": {
+            "gold_exp": "Gold & Experience",
+            "fortress": "Fortress",
+            "underworld": "Underworld",
+            "gold_table": "Gold Table"
+        },
+        "float": {
+            "title": "Character values",
+            "quarters": "Labourer's Quarters"
+        },
+        "gold": {
+            "title": "Gold",
+            "group": "Guild bonus %",
+            "tower": "Tower bonus %",
+            "mine": "Gem Mine",
+            "pit": "Gold Pit",
+            "pit_cap": "Gold Pit capacity",
+            "pit_hr": "Hourly Gold Pit",
+            "pit_time": "Gold Pit time",
+            "rune": "Item Quality Rune",
+            "reward": "Environmental reward",
+            "guard_hr": "Hourly guard duty",
+            "dice_3": "Dice game (3 of a kind)",
+            "dice_4": "Dice game (4 of a kind)",
+            "dice_5": "Dice game (5 of a kind)",
+            "gem_s": "Small gem",
+            "gem_m": "Medium gem",
+            "gem_l": "Large gem",
+            "pot_10": "10% Potion",
+            "pot_15": "15% Potion",
+            "pot_25": "25% Potion",
+            "pot_w": "Witch Potion",
+            "pot_pm": "Mushroom PoEL",
+            "pot_pg": "Gold PoEL",
+            "scroll": "Witch Scroll",
+            "glass": "Quicksand Hourglass",
+            "glass_10": "10 Quicksand Hourglasses",
+            "calendar_1": "Calendar 1 bar",
+            "calendar_3": "Calendar 3 bars / Locked",
+            "arena": "Arena Max",
+            "reroll": "Fortress Reroll",
+            "tower_reward": "Tower (Level is enemy level)",
+            "twister_reward": "Twister (Level is enemy level)"
+        },
+        "experience": {
+
+        },
+        "quests": {
+            
+        },
+        "misc": {
+            "title": "Miscellaneous"
+        },
+        "gold_table": {
+            "copy": "Copy table",
+            "copy_comma": "Copy table (use comma as decimal separator)",
+            "level": "Attribute / Level",
+            "price": "Attribute Price",
+            "curve": "Gold Curve",
+            "mount": "Griffin",
+            "guard": "Guard Duty / Dice (3)"
+        }
+    },
     "dungeon_enemies": {
         "shadow": "Shadow",
         "1": {
