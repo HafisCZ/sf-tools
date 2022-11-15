@@ -1160,7 +1160,7 @@
                 function showGraph (graph, dungeon, boss, score, tries, healths, showExperience = false) {
                     graph.options.title.text = [
                         `${ dungeon.shadow ? `${intl('dungeon_enemies.shadow')} ` : '' }${ dungeon.name }: ${ boss.name }`,
-                        `Winrate: ${ (100 * score / tries).toFixed(2) }% (${ formatAsSpacedNumber(score, ' ') } out of ${ formatAsSpacedNumber(tries, ' ') })`
+                        intl('dungeons.graph.winrate', { rate: (100 * score / tries).toFixed(2), score: formatAsSpacedNumber(score, ' '), tries: formatAsSpacedNumber(tries, ' ') })
                     ];
 
                     if (showExperience) {
