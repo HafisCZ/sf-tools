@@ -35,6 +35,9 @@ const CHANGELOG = {
         ],
         'Pet Calendar': [
             'Fixed location descriptions'
+        ],
+        'Blacksmith Upgrades': [
+            'Complete rework'
         ]
     },
     'v5.2469': {
