@@ -32,8 +32,8 @@
         "rank1": "Lider",
         "rank2": "Oficer",
         "rank3": "Członek",
-        "rank4": "Zaproszono"
-		 "level": "Poziom",
+        "rank4": "Zaproszono",
+        "level": "Poziom",
         "gold": "Złoto",
         "wood": "Drewno",
         "stone": "Kamień",
@@ -82,9 +82,9 @@
             "underworld7": "Siedlisko Trolli",
             "underworld8": "Przygodomat",
             "underworld9": "Władca",
-            "underworld10": "Kopalnia Złota",
+            "underworld10": "Kopalnia Złota"
         },
-        "reduction": "Redukcja"				 
+        "reduction": "Redukcja"
     },
     "index": {
         "toggle": "Pokaż/ukryj kontrybutorów",
@@ -164,7 +164,7 @@
         "hydra": {
             "title": "Symulator hydry",
             "desc": "Przesymuluj, aby dowiedzieć się jaka jest najefektywniejsza klasa przeciwko obecnej głowie hydry."
-	},
+        },
         "fortress": {
             "title": "Symulator Twierdzy",
             "desc": "Przesymuluj prawdopodobny wyniki ataku w twierdzy."
@@ -174,7 +174,7 @@
         "title": "404",
         "text": "Nie wiem czego szukasz, ale tutaj tego nie ma"
     },
-     "stats": {
+    "stats": {
         "topbar": {
             "temporary_flag": "Tymczasowe",
             "players": "Gracze",
@@ -695,7 +695,7 @@
             }
         }
     },
-	"players": {
+    "players": {
         "gladiator_mode": "Gladiator zostanie ustawiony na 15 bez względu na ustawienia",
         "ihof_mode": "IHOF Mode: Gladiator nie jest redukowany!",
         "druid_armor_mode": "Włącza tryb naprawionego pancerza u Druida",
@@ -728,7 +728,7 @@
             "start": {
                 "title": "Startowanie Symulacji",
                 "message#": "<b>Iteracji:</b> #{iterations}<br/><b>Wątki cnt:</b> #{blocks}"
-             },
+            },
             "end": {
                 "title": "Simulation thread #{done} / #{total} finished",
                 "message#": "<b>Time:</b> #{time} seconds"
@@ -834,7 +834,7 @@
         "copy": "Kopiuj",
         "none": "Brak"
     },
-     "endpoint": {
+    "endpoint": {
         "username": "Nazwa",
         "password": "Hasło",
         "mode": {
@@ -973,7 +973,7 @@
             "ok": "Ok"
         }
     },
-	"attributes": {
+    "attributes": {
         "tabs": {
             "gold_exp": "Złoto i Doświadczenie",
             "fortress": "Twierdza",
@@ -1094,7 +1094,7 @@
             "reclaimable": "Do odzyskania",
             "required": "Wymagane"
         }
-    },			   
+    },
     "dungeon_enemies": {
         "shadow": "Mrok",
         "1": {
@@ -1344,30 +1344,30 @@
             "10": "Fenomenalny Fidget"
         },
         "22": {
-          "name": "Smoczy Skarbiec",
-          "1": "Niezbyt zgryźliwy smok",
-          "2": "Złoty smok z ognikami w oczach",
-          "3": "Uwodzicielska matka smosłów",
-          "4": "Ożywiona skamieniałość jaszczura",
-          "5": "Shenlong",
-          "6": "Smoczątko",
-          "7": "Smok noworoczny",
-          "8": "Szalony pupil",
-          "9": "Smok ze wstrząsem mózgu",
-          "10": "Poirytowana matka smoków"
+            "name": "Smoczy Skarbiec",
+            "1": "Niezbyt zgryźliwy smok",
+            "2": "Złoty smok z ognikami w oczach",
+            "3": "Uwodzicielska matka smosłów",
+            "4": "Ożywiona skamieniałość jaszczura",
+            "5": "Shenlong",
+            "6": "Smoczątko",
+            "7": "Smok noworoczny",
+            "8": "Szalony pupil",
+            "9": "Smok ze wstrząsem mózgu",
+            "10": "Poirytowana matka smoków"
         },
         "23": {
-          "name": "Dom Strachów",
-          "1": "Sztućcowa głowa",
-          "2": "Niezweryfikowany eksperyment",
-          "3": "Drakula",
-          "4": "Mistrz telefonicznych żartów",
-          "5": "Sympatyczne bliźniaczki",
-          "6": "Miły klaun z kanału",
-          "7": "Laleczka terapeutyczna",
-          "8": "Twój największy koszmar",
-          "9": "Rzeźnik z mieszkania obok",
-          "10": "Dziewczyna z telewizora"
+            "name": "Dom Strachów",
+            "1": "Sztućcowa głowa",
+            "2": "Niezweryfikowany eksperyment",
+            "3": "Drakula",
+            "4": "Mistrz telefonicznych żartów",
+            "5": "Sympatyczne bliźniaczki",
+            "6": "Miły klaun z kanału",
+            "7": "Laleczka terapeutyczna",
+            "8": "Twój największy koszmar",
+            "9": "Rzeźnik z mieszkania obok",
+            "10": "Dziewczyna z telewizora"
         },
         "24": {
             "name": "3. Liga Superbohaterów",
