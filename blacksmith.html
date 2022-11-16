@@ -10,6 +10,7 @@
         <link rel="stylesheet" href="vendor/css/semantic.min.css"/>
         <link rel="stylesheet" href="css/style.css"/>
         <link rel="stylesheet" href="css/editor.css"/>
+        <link rel="stylesheet" href="css/blacksmith.css"/>
 
         <script src="vendor/js/jquery.3.4.1.min.js"></script>
         <script src="vendor/js/semantic.min.js"></script>
@@ -25,54 +26,7 @@
         <script src="js/changelog.js"></script>
         <script src="js/views.js"></script>
         <script src="js/editor.js"></script>
-
-        <style>
-            #priceTable .column {
-                margin-bottom: 1.05em;
-            }
-
-            .segmented {
-                display: flex !important;
-                flex-wrap: wrap;
-                width: 100%;
-                box-sizing: border-box;
-            }
-
-            .segmented .half {
-                flex: 0 0 50%;
-                text-align: right;
-            }
-
-            .right {
-                text-align: right;
-            }
-
-            .my-table {
-                width: 100%;
-
-            }
-
-            .my-table thead td {
-                text-align: center;
-            }
-
-            .my-table td.left {
-                text-align: left;
-            }
-
-            .my-table td.center {
-                text-align: center;
-            }
-
-            .my-table tbody tr {
-                height: 2.5em;
-            }
-
-            .my-table tbody td {
-                padding-right: 0.5em;
-                padding-left: 0.5em;
-            }
-        </style>
+        <script src="js/blacksmith.js"></script>
 
         <link href="https://fonts.googleapis.com/css?family=Roboto:300&display=swap" rel="stylesheet">
     </head>
@@ -81,280 +35,132 @@
             <div class="header item"><a class="css-a-blank" href="index.html">SFTools</a></div>
         </div>
 
-        <div class="ui main container" style="width: 70vw;">
-            <h3 class="ui centered header">Upgrade prices & returns</h3>
-            <div class="ui grid">
-                <div class="row">
-                    <div class="sixteen wide column">
-                        <div class="ui small form">
-                            <div class="three fields">
-                                <div class="field">
-                                    <label>Type</label>
-                                    <div class="ui selection compact dropdown" id="itemType">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
-                                <div class="field">
-                                    <label>Attribute</label>
-                                    <input type="text" id="itemAttribute">
-                                </div>
-                                <div class="field">
-                                    <label>Mage / Scout weapon</label>
-                                    <div class="ui selection compact dropdown" id="itemDoubled">
-                                        <div class="text"></div>
-                                        <i class="dropdown icon"></i>
-                                    </div>
-                                </div>
+        <div class="ui main container" style="width: 80vw;">
+            <div class="ui form">
+                <div class="bordered bone">
+                    <div class="three fields">
+                        <div class="field">
+                            <label data-intl="blacksmith.item.type"></label>
+                            <div class="ui selection compact dropdown" data-path="type">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label data-intl="blacksmith.item.value"></label>
+                            <input type="text" data-path="value">
+                        </div>
+                        <div class="field">
+                            <label data-intl="blacksmith.item.double"></label>
+                            <div class="ui selection compact dropdown" data-path="double">
+                                <div class="text"></div>
+                                <i class="dropdown icon"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <table class="my-table">
+            <table class="ui black single very compact line table fixed" style="margin-top: 2em;">
                 <thead>
                     <tr>
-                        <td style="width: 4%;">#</td>
-                        <td style="width: 8%;">Bonus</td>
-                        <td style="width: 8%;">Total Bonus</td>
-                        <td style="width: 10%;">Needed</td>
-                        <td style="width: 10%;">Total</td>
-                        <td style="width: 10%;">Reclaimable</td>
-                        <td style="width: 10%;">Total</td>
-                        <td style="width: 20%;">Lost</td>
-                        <td style="width: 20%;">Total Lost</td>
+                        <th style="width: 5%;" class="text-center">#</th>
+                        <th style="width: 6%;" class="text-center" data-intl="blacksmith.table.bonus"></th>
+                        <th style="width: 6%;" class="text-center" data-intl="blacksmith.table.total"></th>
+                        <th style="width: 4%;"></th>
+                        <th data-intl="blacksmith.table.required"></th>
+                        <th data-intl="blacksmith.table.total"></th>
+                        <th data-intl="blacksmith.table.reclaimable"></th>
+                        <th data-intl="blacksmith.table.total"></th>
+                        <th data-intl="blacksmith.table.lost"></th>
+                        <th data-intl="blacksmith.table.total"></th>
                     </tr>
                 </thead>
-                <tbody id="priceTable">
-
-                </tbody>
+                <tbody id="table"></tbody>
             </table>
         </div>
 
-        <script type="text/javascript">
-            var itemType = new Field('#itemType', '0');
-            itemType.$object.dropdown({
-                values: [
-                    {
-                        name: 'Normal (1 attribute)',
-                        value: 0
-                    },
-                    {
-                        name: 'Normal (2 attributes)',
-                        value: 1
-                    },
-                    {
-                        name: 'Epic (3 attributes)',
-                        value: 2
-                    },
-                    {
-                        name: 'Epic (5 attributes)',
-                        value: 3
+        <script>
+            Site.ready(function () {
+                let $table = $('#table');
+
+                const EditorController = new (class extends EditorBase {
+                    constructor () {
+                        super();
+
+                        this.fields = {
+                            type: new Field('[data-path="type"]', 'normal_1'),
+                            value: new Field('[data-path="value"]', 0, Field.isNumber),
+                            double: new Field('[data-path="double"]', 'false')
+                        };
+
+                        this.fields['type'].$object.dropdown({
+                            values: ['normal_1', 'normal_2', 'epic_3', 'epic_5'].map(value => ({
+                                name: intl(`blacksmith.item.types.${value}`),
+                                value
+                            }))
+                        }).dropdown('set selected', 'normal_1');
+
+                        this.fields['double'].$object.dropdown({
+                            values: [
+                                {
+                                    name: intl('general.no'),
+                                    value: false
+                                },
+                                {
+                                    name: intl('general.yes'),
+                                    value: true
+                                }
+                            ]
+                        }).dropdown('set selected', 'false');
+
+                        for (let field of Object.values(this.fields)) {
+                            field.triggerAlways = true;
+                            field.setListener(() => generateTable());
+                        }
                     }
-                ]
-            }).dropdown('set selected', '0').dropdown('setting', 'onChange', (value, text) => {
-                update();
-            });
+                });
 
-            var itemDoubled = new Field('#itemDoubled', 'false');
-            itemDoubled.$object.dropdown({
-                values: [
-                    {
-                        name: 'No',
-                        value: false
-                    },
-                    {
-                        name: 'Yes',
-                        value: true
-                    }
-                ]
-            }).dropdown('set selected', 'false').dropdown('setting', 'onChange', (value, text) => {
-                update();
-            });
+                function generateResource ({ Metal: metal, Crystal: crystal }, relateTo = null) {
+                    return `
+                        <div class="resource${relateTo ? ' related' : ''}">
+                            <div class="row"><div class="value"><img src="res/icon_metal.png"> ${formatAsSpacedNumber(metal, ' ')}</div><div class="percentage">${relateTo ? (100 * metal / Math.max(1, relateTo.Metal)).toFixed(1) : ''}%</div></div>
+                            <div class="row"><div class="value"><img src="res/icon_crystal.png"> ${formatAsSpacedNumber(crystal, ' ')}</div><div class="percentage">${relateTo ? (100 * crystal / Math.max(1, relateTo.Crystal)).toFixed(1) : ''}%</div></div>
+                        </div>
+                    `;
+                }
 
-            var itemAttribute = new Field('#itemAttribute', '1', Field.isNumber);
-            itemAttribute.set(1);
+                function generateTable () {
+                    if (EditorController.valid()) {
+                        let { type, value, double } = EditorController.read();
 
-            itemAttribute.$object.on('input change', function () {
-                update();
-            });
-
-            function update () {
-                if (itemAttribute.valid()) {
-                    var type = itemType.get();
-                    var attribute = itemAttribute.get();
-                    var doubled = itemDoubled.get();
-
-                    var item = SFItem.empty();
-                    item.PicIndex = doubled ? 1000 : 1;
-                    item.Attributes[0] = attribute;
-                    item.Type = 1;
-                    item.SellPrice.Gold = 1;
-
-                    if (type == 0) {
-                        item.AttributeTypes = [ 1, 0, 0 ];
-                    } else if (type == 1) {
-                        item.AttributeTypes = [ 1, 1, 0 ];
-                    } else if (type == 2) {
-                        item.AttributeTypes = [ 21, 0, 0 ];
-                    } else if (type == 3) {
-                        item.AttributeTypes = [ 6, 0, 0 ];
-                    }
-
-                    var prices = [];
-
-                    var totalPrice = {
-                        Metal: 0,
-                        Crystal: 0
-                    }
-
-                    var totalReclaimed = {
-                        Metal: 0,
-                        Crystal: 0
-                    }
-
-                    var original = item.getBlacksmithPrice();
-
-                    for (var i = 0; i < 20; i++) {
-                        var upgradePrice = item.getBlacksmithUpgradePrice();
-                        totalPrice.Metal += upgradePrice.Metal;
-                        totalPrice.Crystal += upgradePrice.Crystal;
-
-                        var previousDismantlePrice = item.getBlacksmithPrice();
-                        var previousAttribute = item.Attributes[0];
-                        item.upgradeTo(i + 1);
-
-                        var dismantlePrice = item.getBlacksmithPrice();
-                        var currentAttribute = item.Attributes[0];
-
-                        var totalReturn = {
-                            Metal: dismantlePrice.Metal - original.Metal,
-                            Crystal: dismantlePrice.Crystal - original.Crystal
+                        let html = '';
+                        for (let { level, attribute, attributeTotal, upgrade, upgradeTotal, dismantle, dismantleTotal, lost, lostTotal } of Blacksmith.upgradeList(type, value, double)) {
+                            html += `
+                                <tr>
+                                    <td class="text-center">${level}</td>
+                                    <td class="text-center">${formatAsSpacedNumber(attribute, ' ')}</td>
+                                    <td class="text-center">${formatAsSpacedNumber(attributeTotal, ' ')}</td>
+                                    <td></td>
+                                    <td>${generateResource(upgrade)}</td>
+                                    <td>${generateResource(upgradeTotal)}</td>
+                                    <td>${generateResource(dismantle)}</td>
+                                    <td>${generateResource(dismantleTotal)}</td>
+                                    <td>${generateResource(lost, upgrade)}</td>
+                                    <td>${generateResource(lostTotal, upgradeTotal)}</td>
+                                </tr>
+                            `;
                         }
 
-                        dismantlePrice.Metal -= previousDismantlePrice.Metal;
-                        dismantlePrice.Crystal -= previousDismantlePrice.Crystal;
-
-                        totalReclaimed.Metal += dismantlePrice.Metal;
-                        totalReclaimed.Crystal += dismantlePrice.Crystal;
-
-                        prices.push({
-                            Index: i,
-                            Upgrade: upgradePrice,
-                            Return: dismantlePrice,
-                            Attribute: currentAttribute,
-                            TotalReturn: totalReturn,
-                            Lost: {
-                                Metal: upgradePrice.Metal - dismantlePrice.Metal,
-                                Crystal: upgradePrice.Crystal - dismantlePrice.Crystal
-                            },
-                            TotalLost: {
-                                Metal: totalPrice.Metal - totalReclaimed.Metal,
-                                Crystal: totalPrice.Crystal - totalReclaimed.Crystal
-                            },
-                            TotalUpgrade: {
-                                Metal: totalPrice.Metal,
-                                Crystal: totalPrice.Crystal
-                            },
-                            AttributeDelta: currentAttribute - previousAttribute,
-                            TotalAttributeDelta: currentAttribute - attribute
-                        });
+                        $table.html(html);
+                    } else {
+                        $table.html(
+                            `<tr><td colspan="9" class="text-center" style="padding: 1em;">${intl('blacksmith.table.invalid')}</td></tr>`
+                        );
                     }
-
-                    function formatNum (x) {
-                        return formatAsSpacedNumber(x, ' ');
-                    }
-
-                    var content = '';
-                    for (var price of prices) {
-                        content += `
-                            <tr>
-                                <td class="center">
-                                    ${ price.Index + 1 }
-                                </td>
-                                <td class="center">
-                                    ${ formatNum(price.AttributeDelta) }
-                                </td>
-                                <td class="center">
-                                    ${ formatNum(price.TotalAttributeDelta) }
-                                </td>
-                                <td>
-                                    <div class="right">
-                                        ${ formatAsSpacedNumber(price.Upgrade.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                    </div>
-                                    <div class="right">
-                                        ${ formatAsSpacedNumber(price.Upgrade.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="right">
-                                        ${ formatAsSpacedNumber(price.TotalUpgrade.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                    </div>
-                                    <div class="right">
-                                        ${ formatAsSpacedNumber(price.TotalUpgrade.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="right">
-                                        ${ formatAsSpacedNumber(price.Return.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                    </div>
-                                    <div class="right">
-                                        ${ formatAsSpacedNumber(price.Return.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="right">
-                                        ${ formatAsSpacedNumber(price.TotalReturn.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                    </div>
-                                    <div class="right">
-                                        ${ formatAsSpacedNumber(price.TotalReturn.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="segmented right">
-                                        <div class="half">
-                                            ${ formatAsSpacedNumber(price.Lost.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                        </div>
-                                        <div class="half text-center">
-                                            ${ (100 * price.Lost.Metal / Math.max(1, price.Upgrade.Metal)).toFixed(1) }%
-                                        </div>
-                                    </div>
-                                    <div class="segmented">
-                                        <div class="half">
-                                            ${ formatAsSpacedNumber(price.Lost.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                        </div>
-                                        <div class="half text-center">
-                                            ${ (100 * price.Lost.Crystal / Math.max(1, price.Upgrade.Crystal)).toFixed(1) }%
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="segmented right">
-                                        <div class="half">
-                                            ${ formatAsSpacedNumber(price.TotalLost.Metal, ' ') } <img src="res/icon_metal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                        </div>
-                                        <div class="half text-center">
-                                            ${ (100 * price.TotalLost.Metal / Math.max(1, price.TotalUpgrade.Metal)).toFixed(1) }%
-                                        </div>
-                                    </div>
-                                    <div class="segmented">
-                                        <div class="half">
-                                            ${ formatAsSpacedNumber(price.TotalLost.Crystal, ' ') } <img src="res/icon_crystal.png" style="width: 2em; height: 2em; margin-top: -0.5em; margin-bottom: -0.625em; margin-right: -0.25em; display: inline-block;"></img>
-                                        </div>
-                                        <div class="half text-center">
-                                            ${ (100 * price.TotalLost.Crystal / Math.max(1, price.TotalUpgrade.Crystal)).toFixed(1) }%
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    }
-
-                    $('#priceTable').html(content);
                 }
-            }
 
-            update();
+                generateTable();
+            });
         </script>
     </body>
 </html>

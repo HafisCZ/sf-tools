@@ -1078,6 +1078,26 @@
             "guard": "Guard Duty / Dice (3)"
         }
     },
+    "blacksmith": {
+        "item": {
+            "type": "Type",
+            "value": "Attribute",
+            "double": "Mage or Scout weapon?",
+            "types": {
+                "normal_1": "Normal (1 attribute)",
+                "normal_2": "Normal (2 attributes)",
+                "epic_3": "Epic (3 attributes)",
+                "epic_5": "Epic (5 attributes)"
+            }
+        },
+        "table": {
+            "total": "Total",
+            "bonus": "Bonus",
+            "lost": "Lost",
+            "reclaimable": "Reclaimable",
+            "required": "Required"
+        }
+    },
     "dungeon_enemies": {
         "shadow": "Shadow",
         "1": {

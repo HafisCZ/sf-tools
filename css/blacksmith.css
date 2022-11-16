@@ -1,0 +1,31 @@
+div.resource img {
+    display: inline-block;
+    width: 2em;
+    height: 2em;
+    margin-top: -0.5em;
+    margin-right: 0.5em;
+    margin-bottom: -0.625em;
+}
+
+div.resource {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5em;
+}
+
+div.resource div.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+div.resource:not(.related) div.percentage {
+    display: none;
+}
+
+div.percentage {
+    padding-right: 1em;
+}
+
+thead tr th {
+    width: calc(80% / 6);
+}

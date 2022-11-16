@@ -166,15 +166,7 @@ class Field {
     }
 }
 
-class Editor {
-    constructor ($parent, callback) {
-        this._html(typeof $parent === 'string' ? $($parent) : $parent);
-        this._bind();
-
-        this._changeCallback = callback;
-        this.clear();
-    }
-
+class EditorBase {
     fill (object) {
         if (object) {
             for (var [key, field] of Object.entries(this.fields)) {
@@ -187,10 +179,41 @@ class Editor {
         }
     }
 
+    read () {
+        let object = {};
+        for (var [key, field] of Object.entries(this.fields)) {
+            setObjectAt(object, field.path(), field.get());
+        }
+
+        return object;
+    }
+
     clear () {
         for (var [key, field] of Object.entries(this.fields)) {
             field.clear();
         }
+    }
+
+    valid () {
+        for (var [key, field] of Object.entries(this.fields)) {
+            if (!field.valid()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+class Editor extends EditorBase {
+    constructor ($parent, callback) {
+        super();
+
+        this._html(typeof $parent === 'string' ? $($parent) : $parent);
+        this._bind();
+
+        this._changeCallback = callback;
+        this.clear();
     }
 
     read () {
