@@ -713,9 +713,9 @@
 
         <!-- UI Handler -->
         <script type="text/javascript">
-            Site.ready(function (params) {
-                let profile = ProfileManager.getProfile(params.get('profile'));
-                if (params.has('temp')) {
+            Site.ready(function (urlParams) {
+                let profile = ProfileManager.getProfile(urlParams.get('profile'));
+                if (urlParams.has('temp')) {
                     Preferences.temporary();
 
                     $('#show-profile').addClass('profiles-disabled');
@@ -724,8 +724,8 @@
                     profile = {
                         temporary: true
                     };
-                } else if (params.has('slot')) {
-                    profile['slot'] = params.get('slot');
+                } else if (urlParams.has('slot')) {
+                    profile['slot'] = urlParams.get('slot');
                 }
 
                 // Save current profile in UI
@@ -768,8 +768,8 @@
                         'files': UI.Files
                     }[SiteOptions.tab] || UI.Groups);
 
-                    if (params.has('template')) {
-                        DialogController.open(SaveOnlineScriptDialog, params.get('template'));
+                    if (urlParams.has('template')) {
+                        DialogController.open(SaveOnlineScriptDialog, urlParams.get('template'));
                     }
                 }).catch(function (e) {
                     Loader.toggle(false);

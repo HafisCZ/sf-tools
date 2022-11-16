@@ -148,7 +148,7 @@
         </div>
 
         <script type="text/javascript">
-            Site.ready(function () {
+            Site.ready(function (urlParams) {
                 let simulatorMode = 'players_all';
 
                 let editor = new Editor($('#sim-editor'));
@@ -174,9 +174,8 @@
                     fireballMode = active;
                 })
 
-                var modeDump = window.location.href.includes('log');
-
-                let modeDebug = window.location.href.includes('debug');
+                let modeDump = urlParams.has('log');
+                let modeDebug = urlParams.has('debug');
                 if (modeDebug) {
                     $('#simulate-debug').show();
                 }

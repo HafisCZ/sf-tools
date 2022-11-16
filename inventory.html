@@ -214,15 +214,15 @@
         <!-- UI Handler -->
         <script type="text/javascript">
             $('#show-compare, #show-crystal').hide();
-            Site.ready(function () {
+            Site.ready(function (urlParams) {
                 Loader.toggle(true);
                 DatabaseManager.load(SELF_PROFILE).then(function () {
                     UI.initialize();
                     Loader.toggle(false);
 
-                    var id = window.location.href.match(/^.*\?id=(.*)$/);
-                    if (id && DatabaseManager.Players[id[1]]) {
-                        UI.show(UI.Inventory, id[1]);
+                    var id = urlParams.get('id');
+                    if (DatabaseManager.Players[id]) {
+                        UI.show(UI.Inventory, id);
                         UI.reset(true);
                     } else {
                         UI.show(UI.PlayerSelect);

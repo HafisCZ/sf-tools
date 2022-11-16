@@ -234,7 +234,7 @@
         </div>
 
         <script type="text/javascript">
-            Site.ready(function () {
+            Site.ready(function (urlParams) {
                 $('#cheat-menu-toggle').click(() => {
                     $('#cheat-menu').transition('fade left');
                     $('#cheat-menu-toggle .icon').toggleClass('left right');
@@ -346,7 +346,7 @@
                 var dungeon_current = null;
                 var dungeon = null;
                 var availableBosses = null;
-                var log = window.location.href.includes('log');
+                var log = urlParams.has('log');
 
                 function settingsChanged () {
                     $('#winchart').addClass('faded-out');
