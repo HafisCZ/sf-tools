@@ -713,26 +713,19 @@
 
         <!-- UI Handler -->
         <script type="text/javascript">
-            Site.ready(function() {
-                let params = parseParams(window.location.href);
-                let param_temporary = params['temp'] == -1;
-                let param_profile = params['profile'];
-                let param_slot = params['slot'];
-                let param_template = params['template'];
-
-                if (param_temporary) {
-                    $('.css-temporary').removeClass('css-hidden');
-                }
-
-                let profile = ProfileManager.getProfile(param_profile);
-                if (param_temporary) {
+            Site.ready(function (params) {
+                let profile = ProfileManager.getProfile(params.get('profile'));
+                if (params.has('temp')) {
                     Preferences.temporary();
+
                     $('#show-profile').addClass('profiles-disabled');
+                    $('.css-temporary').removeClass('css-hidden');
+
                     profile = {
                         temporary: true
                     };
-                } else if (param_slot) {
-                    profile['slot'] = param_slot;
+                } else if (params.has('slot')) {
+                    profile['slot'] = params.get('slot');
                 }
 
                 // Save current profile in UI
@@ -775,8 +768,8 @@
                         'files': UI.Files
                     }[SiteOptions.tab] || UI.Groups);
 
-                    if (param_template) {
-                        DialogController.open(SaveOnlineScriptDialog, param_template);
+                    if (params.has('template')) {
+                        DialogController.open(SaveOnlineScriptDialog, params.get('template'));
                     }
                 }).catch(function (e) {
                     Loader.toggle(false);

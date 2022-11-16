@@ -168,20 +168,6 @@ class Constants {
 
 Constants.DEFAULT = new Constants();
 
-function parseParams (text) {
-    let keys = {};
-    for (const key of text.split(/[\?\&]/).slice(1)) {
-        if (key.includes('=')) {
-            var [k, v] = key.split('=', 2);
-            keys[k] = v;
-        } else {
-            keys[key] = -1;
-        }
-    }
-
-    return keys;
-}
-
 function decodeScrapbook (data) {
     if (data) {
         let base_string = atob(data.replace(/-/g, '+').replace(/_/g, '/'));
