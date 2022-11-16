@@ -476,7 +476,7 @@
 
                                     if (results.length == players.length) {
                                         Loader.toggle(false);
-                                        Logger.log('MESSAGE', `Simulation took ${Date.now() - realStart} ms`);
+                                        Logger.log('MESSAGE', `Simulation took ${_format_duration(Date.now() - realStart)}`);
 
                                         players = results;
                                         setSort('avg', 0);

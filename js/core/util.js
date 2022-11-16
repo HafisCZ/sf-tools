@@ -262,3 +262,22 @@ function _fast_min(arr) {
     }
     return m;
 }
+
+function _join_sentence (array) {
+    let last = array.length > 1 ? ` and ${array.pop()}` : ''
+    return array.join(', ') + last;
+}
+
+function _format_duration(ms) {
+    let mil = ms % 1000;
+    let sec = ((ms -= mil) / 1000) % 60;
+    let min = ((ms -= sec * 1000) / 60000) % 60;
+    let hrs = ((ms -= min * 60000) / 360000);
+
+    return _join_sentence([
+        hrs > 0 ? `${hrs} h` : '',
+        min > 0 ? `${min} m` : '',
+        sec > 0 ? `${sec} s` : '',
+        mil > 0 ? `${mil} ms` : ''
+    ].filter(value => value));
+}
