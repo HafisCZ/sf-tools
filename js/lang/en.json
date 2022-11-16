@@ -969,13 +969,51 @@
             "twister_reward": "Twister (Level is enemy level)"
         },
         "experience": {
-
+            "title": "Experience",
+            "hydra": "Hydra heads",
+            "academy": "Academy",
+            "academy_hr": "Hourly Academy",
+            "academy_time": "Academy time",
+            "academy_cap": "Academy capacity",
+            "next": "Next level",
+            "arena": "Arena",
+            "daily": "Daily mission",
+            "dungeon": "Dungeon (Level is enemy level)",
+            "twister": "Twister (Level is enemy level)",
+            "wheel_1": "Wheel book",
+            "wheel_2": "Wheel books",
+            "calendar_1": "Calendar 1 book",
+            "calendar_2": "Calendar 2 books",
+            "calendar_3": "Calendar 3 books",
+            "habitat": "Habitat Boss"
         },
         "quests": {
-            
+            "title": "Quests (Experimental)",
+            "notice": "* Final values represent smallest quest segment with no enchantments applied.",
+            "album": "Scrapbook %",
+            "group_exp": "Guild XP %",
+            "group_gold": "Guild Gold %",
+            "tower": "Tower",
+            "rune_exp": "Experience Rune",
+            "rune_gold": "Gold Rune",
+            "min_xp": "Minimum XP",
+            "max_xp": "Maximum XP",
+            "min_gold": "Minimum Gold",
+            "max_gold": "Maximum Gold"
         },
         "misc": {
-            "title": "Miscellaneous"
+            "title": "Miscellaneous",
+            "gate": "Underworld Gate",
+            "torture": "Torture Chamber",
+            "souls": "Souls (Level is enemy level)"
+        },
+        "calc": {
+            "title_at": "Calculate attribute price at",
+            "title_between": "Calculate attribute price between",
+            "attribute": "Attribute",
+            "cost": "Cost",
+            "from": "From",
+            "to": "To"
         },
         "gold_table": {
             "copy": "Copy table",
