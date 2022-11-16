@@ -869,13 +869,51 @@
             "twister_reward": "Tornado (usa livello del nemico)"
         },
         "experience": {
-
+            "title": "Esperienza",
+            "hydra": "Teste idra",
+            "academy": "Accademia",
+            "academy_hr": "Accademia oraria",
+            "academy_time": "Tempo riempimento acc.",
+            "academy_cap": "Capienza accademia",
+            "next": "Prossimo livello",
+            "arena": "Arena",
+            "daily": "Missione giornaliera",
+            "dungeon": "Dungeon (usa livello nemico)",
+            "twister": "Tornado (usa livello nemico)",
+            "wheel_1": "1 libro ruota",
+            "wheel_2": "3 libri ruota",
+            "calendar_1": "1 libro calendario",
+            "calendar_2": "2 libri calendario",
+            "calendar_3": "3 libri calendario",
+            "habitat": "Boss famigli"
         },
         "quests": {
-            
+            "title": "Missioni (sperimentale)",
+            "notice": "* I valori rappresentano il segmento minore missione (senza incantesimo xp strega).",
+            "album": "% album dei ritagli",
+            "group_exp": "% bonus gilda xp",
+            "group_gold": "% bonus gilda oro",
+            "tower": "Torre",
+            "rune_exp": "Rune esperienza",
+            "rune_gold": "Rune oro",
+            "min_xp": "XP minima",
+            "max_xp": "XP massima",
+            "min_gold": "Oro minimo",
+            "max_gold": "Oro massimo"
         },
         "misc": {
-            "title": "Miscellanea"
+            "title": "Miscellanea",
+            "gate": "Porta mondo sotterraneo",
+            "torture": "Camera delle torture",
+            "souls": "Anime (usa livello del nemico)"
+        },
+        "calc": {
+            "title_at": "Calcola costo statistica al",
+            "title_between": "Calcola costo statistica tra",
+            "attribute": "Statistica",
+            "cost": "Costo",
+            "from": "Da",
+            "to": "A"
         },
         "gold_table": {
             "copy": "Copia tabella",
@@ -886,5 +924,25 @@
             "mount": "Grifone",
             "guard": "Lavoro guardia / Dadi (3)"
         }
-    } 
+    },
+    "blacksmith": {
+        "item": {
+            "type": "Tipo",
+            "value": "Statistiche",
+            "double": "arma da mago o esploratore?",
+            "types": {
+                "normal_1": "Normale (1 stat)",
+                "normal_2": "Normale (2 stats)",
+                "epic_3": "Epico (3 stats)",
+                "epic_5": "Epico (5 stats)"
+            }
+        },
+        "table": {
+            "total": "Totale",
+            "bonus": "Bonus",
+            "lost": "Persi",
+            "reclaimable": "Ottenibili",
+            "required": "Richiesti"
+        }
+    }
 }
