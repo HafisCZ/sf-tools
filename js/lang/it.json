@@ -822,5 +822,69 @@
             "cancel": "Cancella",
             "ok": "Ok"
         }
-    }
+    },
+    "attributes": {
+        "tabs": {
+            "gold_exp": "Oro & Esperienza",
+            "fortress": "Fortezza",
+            "underworld": "Mondo sotterraneo",
+            "gold_table": "Tabella oro"
+        },
+        "float": {
+            "title": "Valori del personaggio",
+            "quarters": "Quartiere degli operai"
+        },
+        "gold": {
+            "title": "Oro",
+            "group": "Bonus gilda %",
+            "tower": "Bonus torre %",
+            "mine": "Miniera di gemme",
+            "pit": "Fossa d'oro",
+            "pit_cap": "Capacità fossa d'oro",
+            "pit_hr": "Produzione oraria fossa",
+            "pit_time": "Tempo riempimento fossa",
+            "rune": "Rune migl. oggetti",
+            "reward": "Ricompensa ambiente",
+            "guard_hr": "Paga oraria guardia",
+            "dice_3": "Dadi (3 uguali)",
+            "dice_4": "Dadi (4 uguali)",
+            "dice_5": "Dadi (5 uguali)",
+            "gem_s": "Gemma piccola",
+            "gem_m": "Gemma media",
+            "gem_l": "Gemma grande",
+            "pot_10": "Pozione 10%",
+            "pot_15": "Pozione 15%",
+            "pot_25": "Pozione 25%",
+            "pot_w": "Pozione strega",
+            "pot_pm": "Funghi poz. vita",
+            "pot_pg": "Oro poz. vita",
+            "scroll": "Incantesimo strega",
+            "glass": "Clessidre",
+            "glass_10": "10 Clessidre",
+            "calendar_1": "Calendario 1 oro",
+            "calendar_3": "Calendario 3 oro / Bloccato",
+            "arena": "Max arena",
+            "reroll": "Reroll fortezza",
+            "tower_reward": "Torre (usa livello del nemico)",
+            "twister_reward": "Tornado (usa livello del nemico)"
+        },
+        "experience": {
+
+        },
+        "quests": {
+            
+        },
+        "misc": {
+            "title": "Miscellanea"
+        },
+        "gold_table": {
+            "copy": "Copia tabella",
+            "copy_comma": "Copia tabella (usa la virgola come separatore decimali)",
+            "level": "Caratteristica / Livello",
+            "price": "Costo caratteristica",
+            "curve": "Curva oro",
+            "mount": "Grifone",
+            "guard": "Lavoro guardia / Dadi (3)"
+        }
+    } 
 }
