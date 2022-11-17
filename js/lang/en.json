@@ -973,6 +973,16 @@
         "input": {
             "cancel": "Cancel",
             "ok": "Ok"
+        },
+        "data_manage": {
+            "cancel": "Cancel",
+            "ok": "Delete",
+            "title": "Are you sure you want to delete these files, players or guilds?",
+            "label": {
+                "group": "Following guild(s) will be removed:",
+                "player": "Following player(s) will be removed:",
+                "file": "Following file(s) will be removed:"
+            }
         }
     },
     "attributes": {

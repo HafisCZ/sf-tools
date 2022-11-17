@@ -1011,6 +1011,127 @@ const TemplateSaveDialog = new (class extends Dialog {
     }
 })();
 
+const DataManageDialog = new (class extends Dialog {
+    _intl_key () {
+        return 'data_manage';
+    }
+
+    _createModal () {
+        return `
+            <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
+                <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h2>
+                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 1em; max-height: 60vh; overflow-y: auto; color: black;" data-op="content"></div>
+                <div class="ui two fluid buttons">
+                    <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
+                    <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">${this.intl('ok')}</button>
+                </div>
+            </div>
+        `;
+    }
+
+    _createBindings () {
+        this.$cancelButton = this.$parent.find('[data-op="cancel"]');
+        this.$cancelButton.click(() => {
+            this.close();
+            this.callback();
+        });
+
+        this.$okButton = this.$parent.find('[data-op="ok"]');
+        this.$okButton.click(() => {
+            this.close();
+
+            Loader.toggle(true);
+            this._deleteData().then(() => this.callback())
+        });
+
+        this.$content = this.$parent.find('[data-op="content"]');
+    }
+
+    async _deleteData () {
+        let { identifiers, timestamps, instances } = this.data;
+
+        if (identifiers.length > 0) {
+            await DatabaseManager.removeIdentifiers(...identifiers);
+        }
+
+        if (timestamps.length > 0) {
+            await DatabaseManager.removeTimestamps(...timestamps);
+        }
+
+        if (instances.length > 0) {
+            await DatabaseManager.remove(instances);
+        }
+
+        Loader.toggle(false);
+    }
+
+    _applyArguments (data, callback) {
+        this.callback = callback;
+        this.data = Object.assign({ identifiers: [], timestamps: [], instances: [] }, data);
+
+        let { identifiers, timestamps, instances } = this.data;
+        let content = '';
+
+        if (timestamps.length > 0) {
+            content += `
+                <div>
+                    <h3 class="ui header">${this.intl('label.file')}</h3>
+                    <ul>
+                        ${timestamps.map(ts => `<li style="margin-bottom: 5px;">${formatDate(ts)}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        let players = [];
+        let groups = [];
+
+        if (identifiers.length > 0) {
+            players.push(
+                ...identifiers.filter(id => DatabaseManager._isPlayer(id)).map(id => DatabaseManager.Players[id].Latest)
+            )
+
+            groups.push(
+                ...identifiers.filter(id => !DatabaseManager._isPlayer(id)).map(id => DatabaseManager.Groups[id].Latest)
+            )
+        }
+
+        if (instances.length > 0) {
+            players.push(
+                ...instances.filter(({ identifier }) => DatabaseManager._isPlayer(identifier)).map(({ prefix, name }) => ({ Prefix: _pretty_prefix(prefix), Name: name }))
+            )
+
+            groups.push(
+                ...instances.filter(({ identifier }) => !DatabaseManager._isPlayer(identifier)).map(({ prefix, name }) => ({ Prefix: _pretty_prefix(prefix), Name: name }))
+            )
+        }
+
+        if (players.length > 0) {
+            content += `
+                <div>
+                    <h3 class="ui header">${this.intl('label.player')}</h3>
+                    <ul>
+                        ${players.map(({ Name: name, Prefix: prefix }) => `<li style="margin-bottom: 5px;">${prefix} - ${name}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        if (groups.length > 0) {
+            content += `
+                <div>
+                    <h3 class="ui header">${this.intl('label.group')}</h3>
+                    <ul>
+                        ${groups.map(({ Name: name, Prefix: prefix }) => `<li style="margin-bottom: 5px;">${prefix} - ${name}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        this.$content.html(content);
+    }
+})();
+
 const InputDialog = new (class extends Dialog {
     _intl_key () {
         return 'input';

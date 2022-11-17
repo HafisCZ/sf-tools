@@ -922,16 +922,10 @@ class BrowseView extends View {
                 {
                     label: intl('stats.context.remove'),
                     action: (source) => {
-                        var sel = this.$parent.find('[data-id].css-op-select');
-                        if (sel.length) {
-                            for (var el of sel) {
-                                DatabaseManager.removeIdentifiers($(el).attr('data-id'));
-                            }
-                        } else {
-                            DatabaseManager.removeIdentifiers(source.attr('data-id'));
-                        }
+                        let elements = this.$parent.find('[data-id].css-op-select').toArray();
+                        let identifiers = elements.length ? elements.map(el => el.dataset.id) : [source.data('id')];
 
-                        this.$filter.trigger('change');
+                        DialogController.open(DataManageDialog, { identifiers }, () => this.$filter.trigger('change'));
                     }
                 }
             ]
@@ -1381,8 +1375,7 @@ class GroupsView extends View {
                 {
                     label: intl('stats.context.remove'),
                     action: (source) => {
-                        DatabaseManager.removeIdentifiers(source.attr('data-id'));
-                        this.show();
+                        DialogController.open(DataManageDialog, { identifiers: [ source.data('id') ] }, () => this.show());
                     }
                 }
             ]
@@ -1520,8 +1513,7 @@ class PlayersView extends View {
                 {
                     label: intl('stats.context.remove'),
                     action: (source) => {
-                        DatabaseManager.removeIdentifiers(source.attr('data-id'));
-                        this.show();
+                        DialogController.open(DataManageDialog, { identifiers: [ source.data('id') ] }, () => this.show());
                     }
                 }
             ]
@@ -1788,11 +1780,12 @@ class FilesView extends View {
 
     // Delete selected
     deleteSelected () {
-        Loader.toggle(true);
         if (this.simple) {
-            DatabaseManager.removeTimestamps(... this.selectedFiles).then(() => this.show());
-        } else {
-            DatabaseManager.remove(Object.values(this.selectedPlayers)).then(() => this.show());
+            if (this.selectedFiles.length > 0) {
+                DialogController.open(DataManageDialog, { timestamps: this.selectedFiles }, () => this.show());
+            }
+        } else if (Object.keys(this.selectedPlayers).length > 0) {
+            DialogController.open(DataManageDialog, { instances: Object.values(this.selectedPlayers) }, () => this.show());
         }
     }
 
