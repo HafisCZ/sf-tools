@@ -1,14 +1,17 @@
 const CHANGELOG = {
-    'v5.XXXX': {
+    'v5.2675': {
         'Statistics': [
             'Added option to export & import recovery files',
             'Added item pictures',
             'Added new dungeons',
             'Added new achievements',
             'Added mushroom price to items',
+            'Added new dialog for deleting players, groups and files',
             'Fixed background color in custom rows',
             'Fixed crash when displaying lone empty guild',
             'Fixed scrapbook count',
+            'Fixed endpoint not fetching player groups',
+            'Fixed crash when importing files without server urls',
             'Removed separation between private & public dungeon headers'
         ],
         'Pet Simulator': [
@@ -24,20 +27,33 @@ const CHANGELOG = {
         'Dungeon Simulator': [
             'Added option to simulate all open dungeons until certain win threshold',
             'Added floor numbers to result screen',
+            'Added display of boss experience to mass simulations',
             'Added display of total experience gainable to mass simulations',
+            'Added console method for export current boss and dungeon to fight simulator',
             'Fixed dungeons not ordered properly',
             'Fixed dungeons not selecting correct floor when duplicate enemies exist'
         ],
         'All Simulators': [
             'Added support for reworked Druid',
             'Fixed low performance when starting All & More simulation modes',
-            'Fixed undefined gladiator value when using integration'
+            'Fixed undefined gladiator value when using integration',
+            'Fixed logging for Demon Hunter and Druid'
         ],
         'Pet Calendar': [
             'Fixed location descriptions'
         ],
+        'Gold & Experience': [
+            'Added support for translations'
+        ],
         'Blacksmith Upgrades': [
-            'Complete rework'
+            'Added support for translations',
+            'Reworked UI using new editor'
+        ],
+        'Boss Viewer': [
+            'Added option to export current data into usable sftools format'
+        ],
+        'All Tools': [
+            'Fixed content appearing only after page is fully loaded'
         ]
     },
     'v5.2469': {
