@@ -2,7 +2,11 @@ body {
     background-color: #141414;
 }
 
-h2 {
+.mentions-container {
+    margin-left: 2.5em;
+}
+
+.mentions-container h2 {
     margin-top: 1.5em;
     color: white;
     text-decoration: underline;
