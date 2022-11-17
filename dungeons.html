@@ -883,7 +883,7 @@
                     117: 129
                 };
 
-                const NEXT_DUNGEONS_INVERTED = _array_to_hash(Object.entries(NEXT_DUNGEONS), ([a, b]) => [b, parseInt(a)], {});
+                const NEXT_DUNGEONS_INVERTED = _invert(NEXT_DUNGEONS, true);
 
                 $('#sim-run-next').click(async function () {
                     if (availableBosses && availableBosses.length > 0 && editor.valid()) {

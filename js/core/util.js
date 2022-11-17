@@ -176,6 +176,13 @@ function _array_to_hash (array, processor, base = {}) {
     }, base);
 }
 
+function _invert (hash, integerKeys = false) {
+    return Object.entries(hash).reduce((memo, [key, value]) => {
+        memo[value] = integerKeys ? parseInt(key) : key;
+        return memo;
+    }, {});
+}
+
 function _group_by (array, processor) {
     let groups = {};
     for (const object of array) {
