@@ -1334,6 +1334,20 @@
                         }
                     }
                 }
+
+                return {
+                    currentBoss: () => _tap(getBossData(boss), function (data) {
+                        let level = data.Level;
+                        let health = data.ForceHealth;
+                        let healthMultiplier = [5, 2, 4, 4, 5, 4, 4, [3, 5, 4][data.Mask], 2][data.Class - 1];
+
+                        data.Constitution.Total = Math.ceil(health / (healthMultiplier * (level + 1)));
+
+                        let armorMultiplier = [50, 10, 25, 25, 10, 25, 50, [10, 50, 25][data.Mask], 25][data.Class - 1];
+
+                        data.Armor = armorMultiplier * level;
+                    })
+                };
             });
         </script>
     </body>

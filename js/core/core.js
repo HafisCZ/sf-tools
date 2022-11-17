@@ -191,7 +191,9 @@ const Site = new (class {
     }
 
     ready (callback) {
-        this.promise.then(() => callback(new URLSearchParams(window.location.search)));
+        this.promise.then(() => {
+            this.data = callback(new URLSearchParams(window.location.search)) || {};
+        });
     }
 
     async recover (json) {

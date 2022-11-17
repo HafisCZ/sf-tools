@@ -183,6 +183,11 @@ function _invert (hash, integerKeys = false) {
     }, {});
 }
 
+function _tap (object, processor) {
+    processor(object);
+    return object;
+}
+
 function _group_by (array, processor) {
     let groups = {};
     for (const object of array) {
