@@ -33,7 +33,7 @@
         "rank2": "Ufficiale",
         "rank3": "Membro",
         "rank4": "Invitato",
-	"level": "Livello",
+        "level": "Livello",
         "gold": "Oro",
         "wood": "Legna",
         "stone": "Pietra",
@@ -230,7 +230,7 @@
                 "title": "Opzioni file",
                 "advanced": "Mostra lista file avanzata",
                 "hidden": "Mostra giocatori nascosti",
-                "export_public_only": "Esporta solo dati pubblici"  
+                "export_public_only": "Esporta solo dati pubblici"
             },
             "tags": {
                 "single": "Tag",
@@ -551,10 +551,10 @@
         "graph": {
             "y": "HP boss residui",
             "x": "- Distribuzione per l'ammontare dei tentativi selezionati -",
-            "winrate":"Winrate: #{rate}% (#{score} su #{tries})"
+            "winrate": "Winrate: #{rate}% (#{score} su #{tries})"
         },
         "results": "Risultati",
-        "experience":"Totale: #{experience} XP",
+        "experience": "Totale: #{experience} XP",
         "cheats": {
             "title": "Menu modificatori",
             "subtitle": "Seleziona quali modificatori applicare, poi importa nuovamente il tuo personaggio",
@@ -567,7 +567,7 @@
             "class": "Cambia classe",
             "keep_original": "Mantieni l'originale"
         },
-        "simulate_next_settings":{
+        "simulate_next_settings": {
             "tooltip": "Click destro per modificare la minor % di vittoria accettabile",
             "title": "Soglia di simulaizone",
             "label": "% Soglia - Ogni boss al di sotto della soglia verrà saltato"
@@ -695,7 +695,7 @@
         "add": "Aggiungi",
         "save": "Salva",
         "simulate": "Simula",
-        "simulate_debug":"Simula in modalità debug",
+        "simulate_debug": "Simula in modalità debug",
         "clipboard": {
             "copy_all": "Copia tutti",
             "paste_mode": "Passa dalla modalità 'Aggiungi' a 'Rimpiazza'"

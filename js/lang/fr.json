@@ -230,7 +230,7 @@
         "filters": {
             "c": "Classe du joueur, utilisez le nom complet de la classe en minuscules (ex. : berserker, mage de combat).",
             "p": "Nom de Joueur",
-            "g": "Nom de Guilde",  
+            "g": "Nom de Guilde",
             "s": "Serveur",
             "e": "Expression personnalisé",
             "#": "Afficher seulement les joueurs avec les marqueurs spécifiés",
