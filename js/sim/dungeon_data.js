@@ -362,9 +362,11 @@ DUNGEON_DATA = {
         }
     },
     '17': {
+        // Hemorridor
         key: '17',
         pos: 18,
         shadow: false,
+        armor_multiplier: 1.0,
         floors: {
             '1': { pos: 1, id: 0, class: 1, level: 200, str: 8800, dex: 1120, int: 1120, con: 28000, lck: 3600, health: 28140000, min: 684, max: 1154 },
             '2': { pos: 2, id: 0, class: 1, level: 213, str: 8069, dex: 1995, int: 2014, con: 36296, lck: 3954, health: 38836720, min: 728, max: 1229 },
@@ -374,11 +376,12 @@ DUNGEON_DATA = {
             '6': { pos: 6, id: 0, class: 1, level: 273, str: 11818, dex: 4209, int: 4209, con: 51395, lck: 7562, health: 70411152, min: 932, max: 1574 },
             '7': { pos: 7, id: 0, class: 3, level: 289, str: 3832, dex: 12720, int: 3773, con: 53410, lck: 7811, health: 61955600, min: 1232, max: 2084 },
             '8': { pos: 8, id: 0, class: 2, level: 305, str: 3163, dex: 3163, int: 15023, con: 58878, lck: 8102, health: 36033336, min: 2340, max: 3959 },
-            '9': { pos: 9, id: 0, class: 5, level: 319, str: 14904, dex: 5706, int: 5736, con: 72152, lck: 10503, health: 115443200, min: 1088, max: 1839, armor: 7000 },
+            '9': { pos: 9, id: 0, class: 5, level: 319, str: 14904, dex: 5706, int: 5736, con: 72152, lck: 10503, health: 115443200, min: 1088, max: 1839 },
             '10': { pos: 10, id: 0, class: 3, level: 333, str: 6207, dex: 12783, int: 6207, con: 73553, lck: 8967, health: 98266808, min: 1420, max: 2399 }
         }
     },
     '19': {
+        // Nordic
         key: '19',
         pos: 24,
         shadow: false,
@@ -397,6 +400,7 @@ DUNGEON_DATA = {
         }
     },
     '20': {
+        // Olympus
         key: '20',
         pos: 27,
         shadow: false,
@@ -415,6 +419,7 @@ DUNGEON_DATA = {
         }
     },
     '21': {
+        // Birthday
         key: '21',
         pos: 21,
         shadow: false,
@@ -433,6 +438,7 @@ DUNGEON_DATA = {
         }
     },
     '22': {
+        // Dragons
         key: '22',
         pos: 13,
         shadow: false,
@@ -450,6 +456,7 @@ DUNGEON_DATA = {
         }
     },
     '23': {
+        // Horror
         key: '23',
         pos: 14,
         shadow: false,
@@ -467,6 +474,7 @@ DUNGEON_DATA = {
         }
     },
     '24': {
+        // Superheroes
         key: '24',
         pos: 16,
         shadow: false,
@@ -484,6 +492,7 @@ DUNGEON_DATA = {
         }
     },
     '25': {
+        // Anime
         key: '25',
         pos: 20,
         shadow: false,
@@ -501,6 +510,7 @@ DUNGEON_DATA = {
         }
     },
     '26': {
+        // Giant Monsters
         key: '26',
         pos: 28,
         shadow: false,
