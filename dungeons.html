@@ -371,7 +371,7 @@
                     }
                 }
 
-                function getBossData (data) {
+                function getBossData (data, dungeon) {
                     return {
                         ForceArmor: data.armor ? 0 : (dungeon.armor_multiplier || 1),
                         Armor: data.armor,
@@ -857,7 +857,7 @@
 
                             pendingInstances.push([worker, {
                                 players: preparePlayerInstances(dungeon),
-                                boss: getBossData(boss),
+                                boss: getBossData(boss, dungeon),
                                 iterations: iterations,
                                 index: index,
                                 hpcap: 500
@@ -1008,7 +1008,7 @@
                                     worker,
                                     args: {
                                         players: preparePlayerInstances(dungeon),
-                                        boss: getBossData(boss),
+                                        boss: getBossData(boss, dungeon),
                                         iterations: iterations,
                                         index: resultsRemaining++,
                                         hpcap: 500,
@@ -1076,7 +1076,7 @@
 
                             pendingInstances.push([worker, {
                                 players: preparePlayerInstances(dungeon),
-                                boss: getBossData(boss),
+                                boss: getBossData(boss, dungeon),
                                 iterations: iterations,
                                 index: index,
                                 hpcap: 500
@@ -1095,7 +1095,7 @@
                     if (boss && editor.valid()) {
                         Loader.toggle(true);
 
-                        let bossInstance = getBossData(boss);
+                        let bossInstance = getBossData(boss, dungeon);
                         let playerInstances = preparePlayerInstances(dungeon);
                         let threads = Math.max(1, Number($('#sim-threads').val()) || 2);
                         let iterations = Math.max(1, Number($('#sim-iterations').val()) || 5000);
@@ -1335,17 +1335,19 @@
                     }
                 }
 
-                function convertBossToSimulatorFormat (rawData) {
-                    return _tap(getBossData(rawData), function (data) {
+                function convertBossToSimulatorFormat (rawData, rawDungeon) {
+                    return _tap(getBossData(rawData, rawDungeon), function (data) {
                         let level = data.Level;
                         let health = data.ForceHealth;
                         let healthMultiplier = [5, 2, 4, 4, 5, 4, 4, [3, 5, 4][data.Mask], 2][data.Class - 1];
 
                         data.Constitution.Total = Math.ceil(health / (healthMultiplier * (level + 1)));
 
-                        let armorMultiplier = [50, 10, 25, 25, 10, 25, 50, [10, 50, 25][data.Mask], 25][data.Class - 1];
+                        if (typeof data.Armor === 'undefined') {
+                            let armorMultiplier = [50, 10, 25, 25, 10, 25, 50, [10, 50, 25][data.Mask], 25][data.Class - 1];
 
-                        data.Armor = armorMultiplier * level;
+                            data.Armor = armorMultiplier * level * (rawDungeon.armor_multiplier || 1.0);
+                        }
 
                         if (data.Class === 1) {
                             data.BlockChance = 25;
@@ -1354,8 +1356,8 @@
                 }
 
                 return {
-                    currentBoss: () => convertBossToSimulatorFormat(boss),
-                    currentDungeon: () => Object.values(dungeon.floors).map(convertBossToSimulatorFormat)
+                    currentBoss: () => convertBossToSimulatorFormat(boss, dungeon),
+                    currentDungeon: () => Object.values(dungeon.floors).map(b => convertBossToSimulatorFormat(b, dungeon))
                 };
             });
         </script>
