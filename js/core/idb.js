@@ -1472,10 +1472,9 @@ const DatabaseManager = new (class {
 
                     bonusPool[identifier] = {
                         gtsave: {
-                            timestamp: parseInt(gtEntry[2]),
-                            tokens_all: parseInt(gtEntry[1]),
-                            tokens_max: parseInt(gtEntry[5]),
-                            tokens_now: parseInt(gtEntry[6])
+                            tokens: parseInt(gtEntry[1]),
+                            floor_max: parseInt(gtEntry[5]),
+                            floor: parseInt(gtEntry[6])
                         }
                     };
                 }

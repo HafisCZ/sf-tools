@@ -2521,6 +2521,15 @@ const SP_KEYWORD_MAPPING_1 = {
     },
     'Guild Instructor': {
         expr: p => (_dig(p, 'Group', 'Group', 'TotalInstructor') || 0) + 2 * Math.min(p.Dungeons.Raid, 50)
+    },
+    'GT Tokens': {
+        expr: p => _dig(p, 'GroupTournament', 'Tokens')
+    },
+    'GT Floor': {
+        expr: p => _dig(p, 'GroupTournament', 'Floor')
+    },
+    'GT Maximum Floor': {
+        expr: p => _dig(p, 'GroupTournament', 'FloorMax')
     }
 };
 

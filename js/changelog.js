@@ -1,4 +1,9 @@
 const CHANGELOG = {
+    'v5.XXXX': {
+        'Statistics': [
+            'Added guild tournament headers <code>GT Tokens</code>, <code>GT Floor</code> and <code>GT Maximum Floor</code>'
+        ]
+    },
     'v5.2675': {
         'Statistics': [
             'Added option to export & import recovery files',

@@ -731,12 +731,9 @@ class SFPlayer {
 
         if (data.gtsave) {
             this.GroupTournament = {
-                Timestamp: data.gtsave.timestamp * 1000 + data.offset,
-                Tokens: {
-                    Total: data.gtsave.tokens_all,
-                    Current: data.gtsave.tokens_now,
-                    Record: data.gtsave.tokens_max
-                }
+                Tokens: data.gtsave.tokens,
+                Floor: data.gtsave.floor,
+                FloorMax: data.gtsave.floor_max
             }
         }
     }
