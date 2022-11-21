@@ -728,6 +728,17 @@ class SFPlayer {
 
         this.Achievements.Dehydration = this.Achievements[63].Owned;
         this.Achievements.Grail = this.Achievements[76].Owned;
+
+        if (data.gtsave) {
+            this.GroupTournament = {
+                Timestamp: data.gtsave.timestamp * 1000 + data.offset,
+                Tokens: {
+                    Total: data.gtsave.tokens_all,
+                    Current: data.gtsave.tokens_now,
+                    Record: data.gtsave.tokens_max
+                }
+            }
+        }
     }
 
     toSimulatorModel () {
