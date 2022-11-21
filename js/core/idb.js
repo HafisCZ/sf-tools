@@ -385,6 +385,10 @@ class PlayaResponse {
     get string () {
         return this._value;
     }
+
+    get table () {
+        return this._value.split(';').filter(v => v).map(v => v.split(',').filter(v => v));
+    }
 };
 
 class ModelRegistry {
@@ -1340,6 +1344,7 @@ const DatabaseManager = new (class {
         let raws = [];
         let groups = [];
         let players = [];
+        let bonusPool = {};
         let currentVersion = undefined;
 
         for (var [key, val, url, ts] of filterPlayaJSON(json)) {
@@ -1348,7 +1353,7 @@ const DatabaseManager = new (class {
                 offset = ts.getTimezoneOffset() * 60 * 1000;
             }
 
-            if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername'))) {
+            if (key === 'text' && (val.includes('otherplayername') || val.includes('othergroup') || val.includes('ownplayername') || val.includes('gtinternal'))) {
                 if (url) {
                     var url = url.split(/.*\/(.*)\.sfgame\.(.*)\/.*/g);
                     if (url.length > 2) {
@@ -1460,10 +1465,30 @@ const DatabaseManager = new (class {
                     players.push(data);
                 }
             }
+
+            if (r.gtinternal) {
+                for (let gtEntry of r.gtinternal.table) {
+                    let identifier = `${prefix}_p${gtEntry[0]}`;
+
+                    bonusPool[identifier] = {
+                        gtsave: {
+                            timestamp: parseInt(gtEntry[2]),
+                            tokens_all: parseInt(gtEntry[1]),
+                            tokens_max: parseInt(gtEntry[5]),
+                            tokens_now: parseInt(gtEntry[6])
+                        }
+                    };
+                }
+            }
         }
 
         for (const player of players) {
             player.version = currentVersion;
+
+            let bonusEntry = undefined;
+            if (bonusEntry = bonusPool[player.identifier]) {
+                Object.assign(player, bonusEntry);
+            }
         }
 
         return { players, groups };
