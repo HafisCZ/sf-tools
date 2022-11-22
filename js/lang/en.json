@@ -979,6 +979,7 @@
             "cancel": "Cancel",
             "ok": "Delete",
             "title": "Are you sure you want to delete these files, players or guilds?",
+            "skip_next": "Do not show next time",
             "label": {
                 "group": "Following guild(s) will be removed:",
                 "player": "Following player(s) will be removed:",

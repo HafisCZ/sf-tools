@@ -1020,7 +1020,10 @@ const DataManageDialog = new (class extends Dialog {
         return `
             <div class="ui basic tiny modal" style="background-color: #ffffff; padding: 1em; margin: -2em; border-radius: 0.5em; border: 1px solid #0b0c0c;">
                 <h2 class="ui header" style="color: black; padding-bottom: 0.5em; padding-top: 0; padding-left: 0;">${this.intl('title')}</h2>
-                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 1em; max-height: 60vh; overflow-y: auto; color: black;" data-op="content"></div>
+                <div class="ui form" style="margin-top: 1em; line-height: 1.3em; margin-bottom: 1em; max-height: 60vh; overflow-y: auto; color: black; border-bottom: 1px solid rgba(34, 36, 38, .15);" data-op="content"></div>
+                <div class="ui checkbox" style="margin-left: 1em; margin-bottom: 1em; color: black;" data-op="checkbox">
+                    <input type="checkbox"><label>${this.intl('skip_next')}</label>
+                </div>
                 <div class="ui two fluid buttons">
                     <button class="ui black fluid button" data-op="cancel">${this.intl('cancel')}</button>
                     <button class="ui fluid button" style="background-color: orange; color: black;" data-op="ok">${this.intl('ok')}</button>
@@ -1040,6 +1043,10 @@ const DataManageDialog = new (class extends Dialog {
         this.$okButton.click(() => {
             this.close();
 
+            if (this.$checkbox.checkbox('is checked')) {
+                SiteOptions.unsafe_delete = true;
+            }
+
             Loader.toggle(true);
             DatabaseManager._removeAuto(this.data).then(() => {
                 Loader.toggle(false);
@@ -1048,6 +1055,7 @@ const DataManageDialog = new (class extends Dialog {
         });
 
         this.$content = this.$parent.find('[data-op="content"]');
+        this.$checkbox = this.$parent.find('[data-op="checkbox"]');
     }
 
     _applyArguments (data, callback) {
@@ -1114,6 +1122,8 @@ const DataManageDialog = new (class extends Dialog {
         }
 
         this.$content.html(content);
+
+        this.$checkbox.checkbox('set unchecked');
     }
 })();
 
