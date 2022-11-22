@@ -842,6 +842,35 @@ const DatabaseManager = new (class {
         });
     }
 
+    async _removeAuto (data) {
+        let { identifiers, timestamps, instances } = Object.assign({ identifiers: [], timestamps: [], instances: [] }, data);
+
+        if (identifiers.length > 0) {
+            await this.removeIdentifiers(...identifiers);
+        }
+
+        if (timestamps.length > 0) {
+            await this.removeTimestamps(...timestamps);
+        }
+
+        if (instances.length > 0) {
+            await this.remove(instances);
+        }
+    }
+
+    safeRemove (data, callback) {
+        if (SiteOptions.unsafe_delete) {
+            Loader.toggle(true);
+
+            this._removeAuto(data).then(() => {
+                Loader.toggle(false);
+                callback();
+            });
+        } else {
+            DialogController.open(DataManageDialog, data, callback);
+        }
+    }
+
     _unload (identifier, timestamp) {
         this._removeFromPool(identifier, timestamp);
 

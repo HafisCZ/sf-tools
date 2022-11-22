@@ -1041,28 +1041,13 @@ const DataManageDialog = new (class extends Dialog {
             this.close();
 
             Loader.toggle(true);
-            this._deleteData().then(() => this.callback())
+            DatabaseManager._removeAuto(this.data).then(() => {
+                Loader.toggle(false);
+                this.callback()
+            });
         });
 
         this.$content = this.$parent.find('[data-op="content"]');
-    }
-
-    async _deleteData () {
-        let { identifiers, timestamps, instances } = this.data;
-
-        if (identifiers.length > 0) {
-            await DatabaseManager.removeIdentifiers(...identifiers);
-        }
-
-        if (timestamps.length > 0) {
-            await DatabaseManager.removeTimestamps(...timestamps);
-        }
-
-        if (instances.length > 0) {
-            await DatabaseManager.remove(instances);
-        }
-
-        Loader.toggle(false);
     }
 
     _applyArguments (data, callback) {

@@ -3,7 +3,7 @@ const MODULE_VERSION_MAJOR = '5';
 const MODULE_VERSION = 'v5.2675';
 const TABLE_VERSION = 'v10';
 const CORE_VERSION = 'v3.5';
-const LOCALES_VERSION = 'v11.1';
+const LOCALES_VERSION = 'v11.2';
 
 const Logger = new (class {
     constructor () {
@@ -139,7 +139,8 @@ const SiteOptions = new (class {
             persisted: false,
             locale: 'en',
             debug: false,
-            export_public_only: false
+            export_public_only: false,
+            unsafe_delete: false
         };
 
         this.listeners = [];

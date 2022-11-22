@@ -459,6 +459,7 @@
             "obfuscated": "Hide player names",
             "insecure": "Allow insecure html tags",
             "insecure_error#": "This table was not displayed because it contains HTML tags that are prohibited.<br/>Please remove them from your settings and try again.",
+            "unsafe_delete": "Skip confirmation when deleting files",
             "terms": "Accept Terms of Service",
             "tab": "Default tab",
             "preload": "Preload rows",

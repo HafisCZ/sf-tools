@@ -925,7 +925,7 @@ class BrowseView extends View {
                         let elements = this.$parent.find('[data-id].css-op-select').toArray();
                         let identifiers = elements.length ? elements.map(el => el.dataset.id) : [source.data('id')];
 
-                        DialogController.open(DataManageDialog, { identifiers }, () => this.$filter.trigger('change'));
+                        DatabaseManager.safeRemove({ identifiers }, () => this.$filter.trigger('change'));
                     }
                 }
             ]
@@ -1375,7 +1375,7 @@ class GroupsView extends View {
                 {
                     label: intl('stats.context.remove'),
                     action: (source) => {
-                        DialogController.open(DataManageDialog, { identifiers: [ source.data('id') ] }, () => this.show());
+                        DatabaseManager.safeRemove({ identifiers: [ source.data('id') ] }, () => this.show());
                     }
                 }
             ]
@@ -1513,7 +1513,7 @@ class PlayersView extends View {
                 {
                     label: intl('stats.context.remove'),
                     action: (source) => {
-                        DialogController.open(DataManageDialog, { identifiers: [ source.data('id') ] }, () => this.show());
+                        DatabaseManager.safeRemove({ identifiers: [ source.data('id') ] }, () => this.show());
                     }
                 }
             ]
@@ -1782,10 +1782,10 @@ class FilesView extends View {
     deleteSelected () {
         if (this.simple) {
             if (this.selectedFiles.length > 0) {
-                DialogController.open(DataManageDialog, { timestamps: this.selectedFiles }, () => this.show());
+                DatabaseManager.safeRemove({ timestamps: this.selectedFiles }, () => this.show());
             }
         } else if (Object.keys(this.selectedPlayers).length > 0) {
-            DialogController.open(DataManageDialog, { instances: Object.values(this.selectedPlayers) }, () => this.show());
+            DatabaseManager.safeRemove({ instances: Object.values(this.selectedPlayers) }, () => this.show());
         }
     }
 
@@ -3395,6 +3395,7 @@ class OptionsView extends View {
         this.prepareCheckbox('always_prev', 'alwaysprev');
         this.prepareCheckbox('obfuscated', 'obfuscated');
         this.prepareCheckbox('insecure', 'insecure');
+        this.prepareCheckbox('unsafe_delete', 'unsafe-delete');
         this.prepareCheckbox('groups_empty', 'empty-groups');
         this.prepareCheckbox('terms_accepted', 'terms');
 
