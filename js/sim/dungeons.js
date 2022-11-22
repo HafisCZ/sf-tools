@@ -11,7 +11,6 @@ self.addEventListener('message', function (message) {
 
     if (players && boss) {
         self.postMessage({
-            command: 'finished',
             results: new DungeonSimulator().simulate(players, boss, iterations, hpcap),
             log: FIGHT_LOG.dump(),
             index: index

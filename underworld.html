@@ -503,17 +503,15 @@
 
                             let worker = await Workers.createSimulatorWorker('underworld');
                             worker.addEventListener('message', function (message) {
-                                if (message.data.command == 'finished') {
-                                    resultList.push(... message.data.results);
+                                resultList.push(... message.data.results);
 
-                                    Toast.info(intl('underworld.toast.end.title', { done: blocksFinished += 1, total: blocks }), intl('underworld.toast.end.message#', { time: message.data.time / 1000 }));
+                                Toast.info(intl('underworld.toast.end.title', { done: blocksFinished += 1, total: blocks }), intl('underworld.toast.end.message#', { time: message.data.time / 1000 }));
 
-                                    if (playerList.length == resultList.length) {
-                                        playerList = resultList;
-                                        updatePlayerList();
+                                if (playerList.length == resultList.length) {
+                                    playerList = resultList;
+                                    updatePlayerList();
 
-                                        Loader.toggle(false);
-                                    }
+                                    Loader.toggle(false);
                                 }
                             }, false);
 

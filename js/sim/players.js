@@ -15,7 +15,6 @@ self.addEventListener('message', function (message) {
     if (mode == 'all') {
         new FightSimulator().simulateMultiple(player, players, iterations);
         self.postMessage({
-            command: 'finished',
             results: player,
             logs: FIGHT_LOG.dump(),
             time: Date.now() - ts
@@ -23,7 +22,6 @@ self.addEventListener('message', function (message) {
     } else if (mode == 'attack') {
         new FightSimulator().simulateSingle(player, players, iterations, false);
         self.postMessage({
-            command: 'finished',
             results: players,
             logs: FIGHT_LOG.dump(),
             time: Date.now() - ts
@@ -31,7 +29,6 @@ self.addEventListener('message', function (message) {
     } else if (mode == 'defend') {
         new FightSimulator().simulateSingle(player, players, iterations, true);
         self.postMessage({
-            command: 'finished',
             results: players,
             logs: FIGHT_LOG.dump(),
             time: Date.now() - ts
@@ -39,7 +36,6 @@ self.addEventListener('message', function (message) {
     } else if (mode == 'tournament') {
         new FightSimulator().simulateTournament(player, players, iterations);
         self.postMessage({
-            command: 'finished',
             results: player,
             logs: FIGHT_LOG.dump(),
             time: Date.now() - ts

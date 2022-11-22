@@ -314,11 +314,7 @@
 
                         let worker = await Workers.createSimulatorWorker('players');
 
-                        worker.addEventListener('message', function (message) {
-                            if (message.data.command == 'finished') {
-                                resolve(message.data.results);
-                            }
-                        }, false);
+                        worker.addEventListener('message', (message) => resolve(message.data.results), false);
 
                         worker.postMessage({
                             mode: 'all',
@@ -464,27 +460,25 @@
                             var worker = await Workers.createSimulatorWorker('players');
 
                             worker.addEventListener('message', function (message) {
-                                if (message.data.command == 'finished') {
-                                    results.push(... message.data.results);
+                                results.push(... message.data.results);
+
+                                if (modeDump) {
+                                    logs.push(... message.data.logs);
+                                }
+
+                                Toast.info(intl('players.toast.end.title', { done: blocksFinished += 1, total: blocks }), intl('players.toast.end.message#', { time: message.data.time / 1000 }));
+
+                                if (results.length == players.length) {
+                                    Loader.toggle(false);
+                                    Logger.log('MESSAGE', `Simulation took ${_format_duration(Date.now() - realStart)}`);
+
+                                    players = results;
+                                    setSort('avg', 0);
 
                                     if (modeDump) {
-                                        logs.push(... message.data.logs);
-                                    }
-
-                                    Toast.info(intl('players.toast.end.title', { done: blocksFinished += 1, total: blocks }), intl('players.toast.end.message#', { time: message.data.time / 1000 }));
-
-                                    if (results.length == players.length) {
-                                        Loader.toggle(false);
-                                        Logger.log('MESSAGE', `Simulation took ${_format_duration(Date.now() - realStart)}`);
-
-                                        players = results;
-                                        setSort('avg', 0);
-
-                                        if (modeDump) {
-                                            download('logs.json', new Blob([ JSON.stringify(logs) ], {
-                                                type: 'application/json'
-                                            }));
-                                        }
+                                        download('logs.json', new Blob([ JSON.stringify(logs) ], {
+                                            type: 'application/json'
+                                        }));
                                     }
                                 }
                             }, false);

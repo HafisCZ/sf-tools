@@ -836,22 +836,20 @@
                             let worker = await Workers.createSimulatorWorker('dungeons');
 
                             worker.addEventListener('message', (message) => {
-                                if (message.data.command == 'finished') {
-                                    let { score, iterations, healths } = message.data.results;
+                                let { score, iterations, healths } = message.data.results;
 
-                                    results[message.data.index] = {
-                                        score,
-                                        healths,
-                                        iterations
-                                    };
+                                results[message.data.index] = {
+                                    score,
+                                    healths,
+                                    iterations
+                                };
 
-                                    if (--resultsRemaining <= 0) {
-                                        Loader.toggle(false);
-                                        showMassDungeonResults(availableBosses, results, true, true);
-                                    } else if (pendingInstances.length > 0) {
-                                        let [ secWorker, args ] = pendingInstances.pop();
-                                        secWorker.postMessage(args);
-                                    }
+                                if (--resultsRemaining <= 0) {
+                                    Loader.toggle(false);
+                                    showMassDungeonResults(availableBosses, results, true, true);
+                                } else if (pendingInstances.length > 0) {
+                                    let [ secWorker, args ] = pendingInstances.pop();
+                                    secWorker.postMessage(args);
                                 }
                             }, false);
 
@@ -953,54 +951,52 @@
                                 let worker = await Workers.createSimulatorWorker('dungeons');
 
                                 worker.addEventListener('message', (message) => {
-                                    if (message.data.command == 'finished') {
-                                        let { score, iterations, healths } = message.data.results;
+                                    let { score, iterations, healths } = message.data.results;
 
-                                        if (score < threshold * iterations / 100) {
-                                            for (let i = 0; i < pendingStacks.length; i++) {
-                                                pendingStacks[i] = pendingStacks[i].filter(({ worker: _worker, args: _args }) => {
-                                                    if (_args.id === id || _args.id === NEXT_DUNGEONS[id]) {
-                                                        _worker.terminate();
+                                    if (score < threshold * iterations / 100) {
+                                        for (let i = 0; i < pendingStacks.length; i++) {
+                                            pendingStacks[i] = pendingStacks[i].filter(({ worker: _worker, args: _args }) => {
+                                                if (_args.id === id || _args.id === NEXT_DUNGEONS[id]) {
+                                                    _worker.terminate();
 
-                                                        return --resultsRemaining && false;
-                                                    } else {
-                                                        return true;
-                                                    }
-                                                })
-                                            }
-
-                                            pendingStacks = pendingStacks.filter((_stack) => _stack.length > 0);
-                                        } else {
-                                            results[message.data.index] = {
-                                                score,
-                                                healths,
-                                                iterations
-                                            };
+                                                    return --resultsRemaining && false;
+                                                } else {
+                                                    return true;
+                                                }
+                                            })
                                         }
 
-                                        resultsRemaining--;
-                                        resultsRemainingStack--;
+                                        pendingStacks = pendingStacks.filter((_stack) => _stack.length > 0);
+                                    } else {
+                                        results[message.data.index] = {
+                                            score,
+                                            healths,
+                                            iterations
+                                        };
+                                    }
 
-                                        if (resultsRemaining <= 0) {
-                                            Loader.toggle(false);
+                                    resultsRemaining--;
+                                    resultsRemainingStack--;
 
-                                            if (results.length > 0) {
-                                                showMassDungeonResults(floorStacks.flat(), results, 'extended', true);
-                                            } else {
-                                                Toast.info(intl('dungeons.simulate_next_info.title', { threshold }), intl('dungeons.simulate_next_info.message#'));
-                                            }
-                                        } else if (resultsRemainingStack <= 0 && pendingStacks.length > 0) {
-                                            currentStack = pendingStacks.shift();
-                                            resultsRemainingStack = currentStack.length;
+                                    if (resultsRemaining <= 0) {
+                                        Loader.toggle(false);
 
-                                            for (let i = 0; i < Math.min(currentStack.length, maximumInstances); i++) {
-                                                let { worker: _worker, args: _args } = currentStack.shift();
-                                                _worker.postMessage(_args);
-                                            }
-                                        } else if (currentStack.length > 0) {
+                                        if (results.length > 0) {
+                                            showMassDungeonResults(floorStacks.flat(), results, 'extended', true);
+                                        } else {
+                                            Toast.info(intl('dungeons.simulate_next_info.title', { threshold }), intl('dungeons.simulate_next_info.message#'));
+                                        }
+                                    } else if (resultsRemainingStack <= 0 && pendingStacks.length > 0) {
+                                        currentStack = pendingStacks.shift();
+                                        resultsRemainingStack = currentStack.length;
+
+                                        for (let i = 0; i < Math.min(currentStack.length, maximumInstances); i++) {
                                             let { worker: _worker, args: _args } = currentStack.shift();
                                             _worker.postMessage(_args);
                                         }
+                                    } else if (currentStack.length > 0) {
+                                        let { worker: _worker, args: _args } = currentStack.shift();
+                                        _worker.postMessage(_args);
                                     }
                                 }, false);
 
@@ -1055,22 +1051,20 @@
                             let worker = await Workers.createSimulatorWorker('dungeons');
 
                             worker.addEventListener('message', (message) => {
-                                if (message.data.command == 'finished') {
-                                    let { score, iterations, healths } = message.data.results;
+                                let { score, iterations, healths } = message.data.results;
 
-                                    results[message.data.index] = {
-                                        score,
-                                        healths,
-                                        iterations
-                                    };
+                                results[message.data.index] = {
+                                    score,
+                                    healths,
+                                    iterations
+                                };
 
-                                    if (--resultsRemaining <= 0) {
-                                        Loader.toggle(false);
-                                        showMassDungeonResults(bossQueue, results, false, true);
-                                    } else if (pendingInstances.length > 0) {
-                                        let [ secWorker, args ] = pendingInstances.pop();
-                                        secWorker.postMessage(args);
-                                    }
+                                if (--resultsRemaining <= 0) {
+                                    Loader.toggle(false);
+                                    showMassDungeonResults(bossQueue, results, false, true);
+                                } else if (pendingInstances.length > 0) {
+                                    let [ secWorker, args ] = pendingInstances.pop();
+                                    secWorker.postMessage(args);
                                 }
                             }, false);
 
@@ -1113,37 +1107,35 @@
                             let worker = await Workers.createSimulatorWorker('dungeons');
 
                             worker.addEventListener('message', (message) => {
-                                if (message.data.command == 'finished') {
-                                    let { score, iterations, healths } = message.data.results;
-                                    if (message.data.log.length) {
-                                        download('logs.json', new Blob([ JSON.stringify({
-                                            fights: message.data.log,
-                                            players: players,
-                                            boss: bossInstance
-                                        }) ], {
-                                            type: 'application/json'
-                                        }));
-                                    }
+                                let { score, iterations, healths } = message.data.results;
+                                if (message.data.log.length) {
+                                    download('logs.json', new Blob([ JSON.stringify({
+                                        fights: message.data.log,
+                                        players: players,
+                                        boss: bossInstance
+                                    }) ], {
+                                        type: 'application/json'
+                                    }));
+                                }
 
-                                    results.push(healths)
-                                    totalScore += score;
-                                    totalTries += iterations;
+                                results.push(healths)
+                                totalScore += score;
+                                totalTries += iterations;
 
-                                    if (totalTries == threads * iterations) {
-                                        let finalResults = new Array(results[0].length);
-                                        for (let i = 0; i < results[0].length; i++) {
-                                            let healthsSum = 0;
-                                            for (let j = 0; j < threads; j++) {
-                                                healthsSum += results[j][i];
-                                            }
-
-                                            finalResults[i] = healthsSum / threads;
+                                if (totalTries == threads * iterations) {
+                                    let finalResults = new Array(results[0].length);
+                                    for (let i = 0; i < results[0].length; i++) {
+                                        let healthsSum = 0;
+                                        for (let j = 0; j < threads; j++) {
+                                            healthsSum += results[j][i];
                                         }
 
-                                        showGraph(chart, dungeon, boss, totalScore, totalTries, _sort_asc(finalResults));
-                                        $('#winchart').removeClass('faded-out');
-                                        Loader.toggle(false);
+                                        finalResults[i] = healthsSum / threads;
                                     }
+
+                                    showGraph(chart, dungeon, boss, totalScore, totalTries, _sort_asc(finalResults));
+                                    $('#winchart').removeClass('faded-out');
+                                    Loader.toggle(false);
                                 }
                             }, false);
 

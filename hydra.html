@@ -368,14 +368,12 @@
                             const worker = await Workers.createSimulatorWorker('hydra');
 
                             worker.addEventListener('message', message => {
-                                if (message.data.command == 'finished') {
-                                    results[i] = message.data.results;
-                                    finishedSimulations++;
+                                results[i] = message.data.results;
+                                finishedSimulations++;
 
-                                    if (finishedSimulations == pets.length) {
-                                        Loader.toggle(false);
-                                        showResults(results);
-                                    }
+                                if (finishedSimulations == pets.length) {
+                                    Loader.toggle(false);
+                                    showResults(results);
                                 }
                             }, false);
 

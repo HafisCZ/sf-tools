@@ -51,7 +51,6 @@ self.addEventListener('message', function (message) {
     let { iterations, hydra, pet } = message.data;
 
     self.postMessage({
-        command: 'finished',
         results: new HydraSimulator().simulate(pet, hydra, iterations)
     });
 

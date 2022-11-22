@@ -7,7 +7,6 @@ self.addEventListener('message', function (message) {
         new UnderworldSimulator().simulate(units, players, iterations);
 
         self.postMessage({
-            command: 'finished',
             results: players,
             time: Date.now() - timestamp
         })
