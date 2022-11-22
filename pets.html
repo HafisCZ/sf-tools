@@ -585,14 +585,9 @@
                         if (a && b && (a.Level > 0 || a.Boss) && (b.Level > 0 || b.Boss)) {
                             let worker = await Workers.createPetWorker();
 
-                            worker.addEventListener('message', (message) => {
-                                if (message.data.command == 'finished') {
-                                    resolve([message.data.results, a, b]);
-                                }
-                            }, false);
-
+                            worker.addEventListener('message', (message) => resolve([message.data.results, a, b]), false);
                             worker.postMessage({
-                                mode: SimulatorType.Pet,
+                                mode: 'pet',
                                 players: [a, b]
                             });
                         } else {
@@ -644,22 +639,20 @@
                                 var worker = await Workers.createPetWorker();
 
                                 worker.addEventListener('message', function (message) {
-                                    if (message.data.command == 'finished') {
-                                        maps[message.data.tracking] = message.data.results;
-                                        maps_finished++;
+                                    maps[message.data.tracking] = message.data.results;
+                                    maps_finished++;
 
-                                        if (maps_finished == count) {
-                                            Loader.toggle(false);
+                                    if (maps_finished == count) {
+                                        Loader.toggle(false);
 
-                                            for (var j = 0; j < maps.length; j++) {
-                                                addMap(maps[j], `${intl(`pets.types.${a.Type}`)} ${ a.Pet + 1 } - ${intl(`pets.names.${a.Type * 20 + a.Pet}`)} (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${intl(`pets.types.${b[j].Type}`)} ${ b[j].Pet + 1 } - ${intl(`pets.names.${b[j].Type * 20 + b[j].Pet}`)}`);
-                                            }
+                                        for (var j = 0; j < maps.length; j++) {
+                                            addMap(maps[j], `${intl(`pets.types.${a.Type}`)} ${ a.Pet + 1 } - ${intl(`pets.names.${a.Type * 20 + a.Pet}`)} (${ a.Pack }, ${ a.At100 }, ${ a.At150 }, ${ a.At200 }) vs ${intl(`pets.types.${b[j].Type}`)} ${ b[j].Pet + 1 } - ${intl(`pets.names.${b[j].Type * 20 + b[j].Pet}`)}`);
                                         }
                                     }
                                 }, false);
 
                                 worker.postMessage({
-                                    mode: SimulatorType.PetMap,
+                                    mode: 'pet_map',
                                     players: [a, b[i]],
                                     tracking: i
                                 });
