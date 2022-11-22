@@ -601,10 +601,10 @@
             "99": "Hydrospir"
         },
         "bulk": {
+            "not_possible": "Not possible",
             "toast": {
                 "title": "Starting simulation",
-                "matches": "Matches:",
-                "not_possible": "Not possible"
+                "matches": "Matches:"
             }
         },
         "editor": {
